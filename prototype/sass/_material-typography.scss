@@ -1,0 +1,88 @@
+// style
+
+.md-type-headline {
+	font-weight: 400;
+	font-size: 24px;
+	line-height: 28px;
+}
+.md-type-title {
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 24px;
+}
+.md-type-subhead {
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 24px;
+}
+.md-type-body2 {
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 20px;
+}
+.md-type-body1 {
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+}
+.md-type-caption {
+	font-weight: 400;
+	font-size: 12px;
+	line-height: 16px;
+}
+.md-type-button {
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 16px;
+	text-transform: uppercase;
+}
+
+// color
+
+.md-type-black {
+	color: $color-black-1;
+}
+.md-type-black-secondary {
+	color: $color-black-2;
+}
+.md-type-black-disabled {
+	color: $color-black-3;
+}
+a.md-type-black {
+	color: $color-black-1;
+	text-decoration: none;
+}
+a.md-type-black:hover,
+a.md-type-black:active {
+	color: $color-black-0;
+}
+a.md-type-black:visited {
+	color: $color-black-2;
+}
+a.md-type-black:disabled {
+	color: $color-black-3;
+}
+
+.md-type-white-primary {
+	color: $color-white-1
+}
+.md-type-white-secondary {
+	color: $color-white-2;
+}
+.md-type-white-disabled {
+	color: $color-white-3;
+}
+a.md-type-white {
+	color: $color-white-1;
+	text-decoration: none;
+}
+a.md-type-white:hover,
+a.md-type-white:active {
+	color: $color-white-0;
+}
+a.md-type-white:visited {
+	color: $color-white-2;
+}
+a.md-type-white:disabled {
+	color: $color-white-3;
+}

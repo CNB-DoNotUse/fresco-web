@@ -1,0 +1,45 @@
+<%- include('segments/console_sidebar', {title:"Highlights", user : user, config : config}) %>
+
+<div class="col-md-12 col-lg-10">
+<!-- navbar -->
+<nav class="navbar navbar-fixed-top navbar-default">
+	<div class="dim transparent toggle-drop toggler"></div>
+	<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
+		<span class="mdi mdi-menu icon"></span>
+	</button>
+	<div class="spacer"></div>
+	<h1 class="md-type-title">Highlights</h1>
+</nav>
+<!-- end navbar -->
+<!-- grid -->
+<div class="container-fluid grid">
+	<div class="col-md-8">
+		<div class="row tiles">
+			
+		</div>
+	</div>
+	<!-- suggestions -->
+	<div class="col-md-4">
+		<h3 class="md-type-button md-type-black-secondary">Trending Stories</h3>
+		<ul class="md-type-subhead trending-stories">
+			
+		</ul>
+		<!--
+		<h3 class="md-type-button md-type-black-secondary">Trending tags</h3>
+		<ul class="md-type-subhead">
+ 			<li><a href="">#adventure</a></li>
+			<li><a href="">#fun</a></li>
+			<li><a href="">#wow-tags</a></li>
+			<li><a href="">#ayylmao</a></li>
+			<li><a href="">#boxofinfants</a></li>
+		</ul>
+		-->
+	</div>
+	<!-- end suggestions -->
+</div>
+<!-- end grid -->
+<%- include('segments/gallery-create') %>
+<%- include('segments/console_scripts') %>
+<script type="text/javascript" src="/javascripts/handlers/highlights.js"></script>
+</body>
+</html>

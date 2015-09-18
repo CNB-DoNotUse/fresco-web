@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= title %> | Fresco News</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no" />
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,500">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/material.min.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/ripples.min.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/materialdesignicons.min.css"/>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/snackbar.min.css"/>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/slick.css"/>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/screen.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/slick-theme.css"/>
+	<link rel="stylesheet" href="/stylesheets/alertify.core.css" />
+	<!-- include a theme, can be included into the core instead of 2 separate files -->
+	<link rel="stylesheet" href="/stylesheets/alertify.default.css" />
+</head>
+<body>
+<!-- drawer -->
+<div class="dim toggle-drawer toggler">
+</div>
+<!-- end drawer -->
+<div class="container-fluid">
+	<!-- sidebar -->
+	<div class="col-lg-2 sidebar toggle-drawer">
+		<div>
+			<a href="/"><img src="<%= config.STATIC_CDN %>images/wordmark-news.png"></a>
+			<div class="form-group-default">
+				<!--<input type="text" class="form-control" placeholder="Search">-->
+			</div>
+			<ul class="md-type-body1">
+				<li id="sidebar-highlights" class="sidebar-tab"><span class="mdi mdi-star icon"></span>Highlights</li>
+				<li id="sidebar-all" class="sidebar-tab"><span class="mdi mdi-play-box-outline icon"></span>All content</li>
+				<ul>
+					<li id="sidebar-images" class="sidebar-tab"><span class="mdi mdi-file-image-box icon"></span>Photos</li>
+					<li id="sidebar-videos" class="sidebar-tab"><span class="mdi mdi-movie icon"></span>Videos</li>
+					<li id="sidebar-galleries" class="sidebar-tab"><span class="mdi mdi-image-filter icon"></span>Galleries</li>
+					<li id="sidebar-stories" class="sidebar-tab"><span class="mdi mdi-newspaper icon"></span>Stories</li>
+				</ul>
+				<% 	if (user.outlet || user.rank >= config.RANKS.CONTENT_MANAGER){ %>
+				<li id="sidebar-dispatch" class="sidebar-tab"><span class="mdi mdi-map-marker icon"></span>Dispatch</li>
+				<%	}
+
+					if (user.outlet){ %>
+				<li id="sidebar-outlet" class="sidebar-tab"><span class="mdi mdi-account-multiple icon"></span><%= user.outlet.title %></li>
+
+				<%	} %>
+				<!--<li><span class="mdi mdi-account-alert icon"></span>Activity</li>-->
+				<%
+					if(user.rank >= 2) {
+				%>
+				<li id="sidebar-admin"><span class="mdi mdi-dots-horizontal icon"></span>Admin</li>
+				<li id="sidebar-purchases"><span class="mdi mdi-currency-usd icon"></span>Purchases</li>
+				<%
+					}
+				%>
+			</ul>
+		</div>
+		<div>
+			<img class="img-circle" id="side-bar-avatar" src="<%= user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png' %>">
+			<a class="md-type-title user-name-view"  href="/user"><%= user.firstname + ' ' + user.lastname %></a>
+			<ul>
+				<li><a href="/user/settings">Settings</a></li>
+				<li><a href="">Help</a></li>
+				<li><a href="/scripts/user/logout">Log out</a></li>
+			</ul>
+			<!--<p class="md-type-body1">
+				<span>&copy;2015 Fresco News, Inc.</span>
+				<span class="mdi mdi-information-outline icon pull-right"></span>
+			</p>-->
+		</div>
+	</div>
+	<!-- end sidebar -->

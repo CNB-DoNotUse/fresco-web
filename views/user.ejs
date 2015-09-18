@@ -1,0 +1,85 @@
+<%- include('segments/console_sidebar', {title: title, user : user, config : config}) %>
+	<div class="col-md-12 col-lg-10">
+		<!-- navbar -->
+		<nav class="navbar navbar-fixed-top navbar-default">
+			<div class="dim transparent toggle-drop toggler"></div>
+			<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
+				<span class="mdi mdi-menu icon"></span>
+			</button>
+			<div class="spacer"></div>
+			<h1 class="md-type-title"><%= page_user.firstname + ' ' + page_user.lastname %></h1>
+			<a class="mdi mdi-pencil icon pull-right hidden-xs"></a>
+		</nav>
+		<!-- end navbar -->
+		<!-- profile -->
+		<div class="profile visible-xs">
+		</div>
+		<div class="col-sm-4 profile hidden-xs">
+			<div class="container-fluid fat">
+				<div class="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+					<img class="img-responsive" src="<%= page_user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png' %>">
+					<div class="meta">
+						<!--<div class="meta-user">
+							<button type="button" class="btn fat tall">Follow</button>
+						</div>-->
+						<% if (page_user.stats){ %>
+							<div class="meta-list">
+								<ul class="md-type-subhead">
+									<% if (user.rank >= config.RANKS.CONTENT_MANAGER) { %>
+										<li class="ellipses">
+											<span class="mdi mdi-email icon"></span><a target="_top" href="mailto:<%= page_user.email %>"><%= page_user.email %></a>
+										</li>
+									<% } %>
+									<% if (page_user.stats.followers) { %>
+										<li>
+											<span class="mdi mdi-account-multiple icon"></span><%= page_user.stats.followers + ( page_user.stats.followers == 1 ? ' follower' : ' followers' ) %>
+										</li>
+									<% } %>
+									<% if (page_user.stats.following) { %>
+										<li>
+											<span class="mdi mdi-account-star-variant icon"></span><%= page_user.stats.following %> following
+										</li>
+									<% } %>
+									<% if (page_user.stats.galleries) { %>
+										<li>
+											<span class="mdi mdi-image-filter icon"></span><%= page_user.stats.galleries + ( page_user.stats.galleries == 1 ? ' gallery' : ' galleries' ) %>
+										</li>
+									<% } %>
+									<% if (page_user.stats.photos) { %>
+										<li>
+											<span class="mdi mdi-file-image-box icon"></span><%= page_user.stats.photos + ( page_user.stats.photos == 1 ? ' photo' : ' photos' ) %>
+										</li>
+									<% } %>
+									<% if (page_user.stats.videos) { %>
+										<li>
+											<span class="mdi mdi-movie icon"></span><%= page_user.stats.videos + ( page_user.stats.videos == 1 ? ' video' : ' videos' ) %>
+										</li>
+									<% } %>
+								</ul>
+							</div>
+						<% } %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end profile -->
+		<!-- grid -->
+		<div class="col-sm-8 tall">
+			<div class="grid">
+				<div id="posts" class="row tiles">
+				</div>
+			</div>
+		</div>
+		<!-- end grid -->
+	</div>
+</div>
+<%- include('segments/bulk-select') %>
+<%- include('segments/gallery-create') %>
+<!-- end edit -->
+<%- include('segments/console_scripts') %>
+<script type="text/javascript" src="/javascripts/handlers/user.js"></script>
+<script type="text/javascript">
+	PAGE_User.user = { _id: '<%= page_user._id %>' };
+</script>
+</body>
+</html>

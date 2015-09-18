@@ -1,0 +1,111 @@
+<!-- edit -->
+<div class="dim toggle-gedit">
+</div>
+<div class="edit panel panel-default toggle-gedit gedit">
+	<div class="col-xs-12 col-lg-12 edit-new dialog">
+		<div class="dialog-head">
+			<span class="md-type-title">Edit Gallery</span>
+			<span class="mdi mdi-close pull-right icon toggle-gedit toggler"></span>
+		</div>
+		<div class="dialog-foot">
+			<button id="gallery-revert-button" type="button" class="btn btn-flat">Revert changes</button>
+			<button id="gallery-clear-button" type="button" class="btn btn-flat">Clear all</button>
+			<button id="gallery-discard-button" type="button" class="btn btn-flat pull-right toggle-gedit toggler">Discard</button>
+			<button id="gallery-delete-button" type="button" class="btn btn-flat pull-right">Delete</button>
+			<button id="gallery-save-button" type="button" class="btn btn-flat pull-right">Save</button>
+		</div>
+		<div class="dialog-body">
+			<div class="dialog-col col-xs-12 col-md-7 form-group-default">
+				<div class="dialog-row">
+					<input id="gallery-byline-input" type="text" class="form-control floating-label" placeholder="Byline">
+				</div>
+				<div class="dialog-row">
+					<textarea id="gallery-caption-input" type="text" class="form-control floating-label" placeholder="Caption"></textarea>
+				</div>
+				<div class="dialog-row split chips">
+					<div class="split-cell">
+						<input id="gallery-tags-input" type="text" class="form-control floating-label" placeholder="Tags">
+						<ul id="gallery-tags-list" class="chips"></ul>
+					</div>
+					<div class="split-cell">
+						<span class="md-type-body2">Suggested tags</span>
+						<ul id="gallery-suggested-tags-list" class="chips"></ul>
+					</div>
+				</div>
+				<div class="dialog-row split chips">
+					<div class="split-cell">
+						<input id="gallery-stories-input" type="text" class="form-control floating-label" placeholder="Stories">
+						<ul id="gallery-stories-list" class="chips"></ul>
+					</div>
+					<div class="split-cell">
+						<span class="md-type-body2">Suggested stories</span>
+						<ul id="gallery-suggested-stories-list" class="chips"></ul>
+					</div>
+				</div>
+				<div class="dialog-row split chips">
+					<div class="split-cell">
+						<input id="gallery-articles-input" type="text" class="form-control floating-label" placeholder="Articles">
+						<ul id="gallery-articles-list" class="chips"></ul>
+					</div>
+				</div>
+				<%
+					if(user.rank && user.rank >= config.RANKS.CONTENT_MANAGER){
+				%>
+					<div class="dialog-row">
+						<div class="checkbox">
+							<label>
+								<input id="gallery-highlight-input" type="checkbox"> Highlighted
+							</label>
+						</div>
+					</div>
+				<%
+					}
+				%>
+			</div>
+			<div class="dialog-col col-xs-12 col-md-5">
+				<div class="dialog-row map-group">
+					<div class="form-group-default">
+						<input id="gallery-location-input" type="text" class="form-control floating-label" placeholder="Location">
+					</div>
+					<div id="gallery-map-canvas" class="map-container">
+						Just pretend there's a map here ok
+					</div>
+				</div>
+			</div> 
+			<div class="dialog-col col-xs-12 col-md-5">
+				<div class="edit-gallery-images">
+
+				</div>
+			</div> 
+		</div>
+	</div>
+</div>
+<style>
+.checkbox input[type=checkbox]:checked~.check:before, .checkbox input[type=checkbox]:checked~.check{
+	color: #0077ff;
+}
+
+.tt-menu {
+	background: white;
+}
+.tt-suggestion {
+	padding: 5px;
+	font-size: 16px;
+}
+.article-suggestion {
+	padding: 5px;
+	font-size: 12px;
+}
+
+.tt-cursor {
+	background: lightgrey;
+}
+
+.new-story div.chip, .new-story div.icon{
+	background-color: lightgreen !important;
+}
+.map-container {
+	height: 240px;
+}
+</style>
+<!-- end edit -->

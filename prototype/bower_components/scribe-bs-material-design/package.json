@@ -1,0 +1,36 @@
+{
+  "name": "scribe-bs-material-design",
+  "version": "0.3.0",
+  "description": "Scribe's fork of Material Design for Bootstrap 3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://scribe.software/code/scm/polyr/bootstrap-material-design.git"
+  },
+  "author": "Federico Zivolo",
+  "license": "https://scribe.software/code/projects/POLYR/repos/bootstrap-material-design/browse/LICENSE.md",
+  "homepage": "https://scribe.software/code/projects/POLYR/repos/bootstrap-material-design",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-autoprefixer": "^1.0.1",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-connect": "^0.8.0",
+    "grunt-contrib-copy": "^0.6.0",
+    "grunt-contrib-jasmine": "^0.8.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-less": "^0.11.4",
+    "grunt-contrib-sass": "^0.8.1",
+    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-csswring": "^1.1.0",
+    "grunt-dependency-installer": "^0.2.0",
+    "grunt-exec": "^0.4.6",
+    "grunt-newer": "^0.7.0",
+    "jshint-stylish": "^1.0.0",
+    "load-grunt-tasks": "^0.6.0",
+    "spacejam": "^1.1.1"
+  }
+}
