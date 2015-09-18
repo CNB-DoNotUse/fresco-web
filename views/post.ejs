@@ -1,0 +1,265 @@
+<%- include('segments/console_sidebar') %>
+	<div class="col-md-12 col-lg-10">
+		<!-- navbar -->
+		<nav class="navbar navbar-fixed-top navbar-default">
+			<div class="dim transparent toggle-drop toggler"></div>
+			<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
+				<span class="mdi mdi-menu icon"></span>
+			</button>
+			<div class="spacer"></div>
+			<h1 class="md-type-title"><%= post.video ? 'Video' : 'Photo' %></h1>
+			<% if(user.rank >= 1){ %> <a id="post-edit-button" class="mdi mdi-pencil icon pull-right hidden-xs"></a> <% } %>
+		</nav>
+		<!-- end navbar -->
+		<!-- content -->
+		<div class="content">
+			<div class="row">
+				<div class="flexy">
+				</div>
+				<div class="main">
+					<div class="col-xs-12 col-md-8">
+						<div class="card panel">
+							<div class="card-foot small">
+								<%
+								if (user.rank < config.RANKS.CONTENT_MANAGER){
+									if (user.outlet){
+										if (purchases && purchases.indexOf(post._id) >= 0) {
+								%>
+											<span class="mdi mdi-download icon hidden-xs"></span>
+								<%
+										}else if (post.license == 1){
+								%>
+											<span class="mdi mdi-cash icon hidden-xs"></span>
+								<%		}
+									}
+								}else{ %>
+									<span class="mdi mdi-download icon hidden-xs"></span>
+									<% if (purchases && purchases.indexOf(post._id) == -1) { %><span class="mdi mdi-cash icon hidden-xs"></span><% } %>
+							<%	} %>
+
+								<span class="md-type-body1"><%= post.byline %></span>
+								<!--<span class="mdi mdi-share icon pull-right"></span>
+								<span class="mdi mdi-library-plus icon pull-right hidden-xs"></span>-->
+							</div>
+							<div class="card-body">
+								<%
+									if (post.video){
+								%>
+								<video width="100%" height="100%" controls>
+									<source src="<%= post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4') %>" type="video/mp4">
+									Your browser does not support the video tag.
+								</video>
+								<%
+									}else{
+								%>
+								<img class="img-responsive" src="<%= config.formatImg(post.image, 'large') %>">
+								<%
+									}
+								%>
+								<%
+
+								%>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-md-4 meta">
+						<div class="row">
+							<div class="col-xs-12 col-sm-7 col-md-12">
+								<div class="meta-user">
+									<% if (post.owner) { %>
+									<div>
+										<img class="img-circle img-responsive" src="<%=post.owner && post.owner.avatar ? post.owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'%>">
+									</div>
+									<% } %>
+									<div>
+										<span class="md-type-title"><%= post.meta.twitter ? post.meta.twitter.user_name : (post.owner ? post.owner.firstname + ' ' + post.owner.lastname : '') %></span>
+										<span class="md-type-body1"><%= post.affiliation %></span>
+									</div>
+								</div>
+								<div class="meta-description">
+									<%= gallery.caption || '' %>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-5 col-md-12 meta-list">
+								<ul class="md-type-subhead">
+									<li>
+										<span class="mdi mdi-clock icon"></span><%= config.getTimeAgo(post.time_created) %>
+									</li>
+									<li>
+										<span class="mdi mdi-map-marker icon"></span><%= post.location.address || 'No Location' %>
+									</li>
+									<% if (post.meta.twitter && post.meta.twitter.url){ %>
+									<li>
+										<span class="mdi mdi-twitter icon"></span><a href="<%=post.meta.twitter.url%>" target="_blank">See original</a>
+									</li>
+									<% } %>
+									<li>
+										<span class="mdi mdi-alert-circle icon"></span><%=post.approvals ? 'Verified' : 'Not yet verified'%>
+									</li>
+									<% if (gallery.curator) { %>
+									<li>
+										<span class="mdi mdi-account icon"></span><%= gallery.curator.firstname + ' ' + gallery.curator.lastname %>
+									</li>
+									<% } %>
+									<!--<li class="toggle-add toggler">
+										<span class="mdi mdi-plus-circle-outline icon"></span>Add an article...
+									</li>-->
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="flexy">
+				</div>
+			</div>
+			<% if (gallery.posts && gallery.posts.length > 1) { %>
+			<div class="row related hidden-xs">
+				<div class="tab-control">
+					<button class="btn btn-flat toggled">
+						More from this gallery
+					</button>
+					<!--<button class="btn btn-flat">
+						Alice's adventures in wonderland
+					</button>-->
+				</div>
+				<div class="tabs">
+					<div class="tab toggled">
+						<%
+							for (var index in gallery.posts){
+								if (gallery.posts[index]._id != post._id){
+						%>
+						<img class="img-link" data-href="/post/<%=gallery.posts[index]._id%>" src="<%=config.formatImg(gallery.posts[index].image, 'small')%>">
+						<%
+								}
+							}
+						%>
+					</div>
+					<!--<div class="tab">
+						<button class="btn btn-flat">See all</button>
+						<img src="../img/placeholder-photo.jpg">
+					</div>-->
+				</div>
+			</div>
+			<% } %>
+			<!--<div class="row related hidden-xs">
+				<div class="tab-control">
+					<button class="btn btn-flat toggled">
+						#tag
+					</button>
+					<button class="btn btn-flat">
+						#tag
+					</button>
+					<button class="btn btn-flat">
+						#tag
+					</button>
+				</div>
+				<div class="tabs">
+					<div class="tab toggled">
+						<button class="btn btn-flat">See all</button>
+						<img src="../img/placeholder-photo.jpg">
+					</div>
+					<div class="tab">
+						<button class="btn btn-flat">See all</button>
+						<img src="../img/placeholder-photo.jpg">
+					</div>
+					<div class="tab">
+						<button class="btn btn-flat">See all</button>
+						<img src="../img/placeholder-photo.jpg">
+					</div>
+				</div>
+			</div>-->
+		</div>
+		<!-- end content -->
+	</div>
+</div>
+<!-- add article -->
+<!--<div class="dim toggle-add">
+</div>
+<div class="edit panel panel-default toggle-add">
+	<div class="col-lg-3 visible-lg edit-current">
+		<div class="meta">
+			<div class="meta-user">
+				<div>
+					<img class="img-circle img-responsive" src="../img/placeholder-account.jpg">
+				</div>
+				<div>
+					<span class="md-type-title">Brandon Olsen</span>
+					<span class="md-type-body1">@dotbran &bull; Fresco News</span>
+				</div>
+			</div>
+			<div class="meta-description">
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+				quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+				consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+				cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+				proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			</div>
+			<div class="meta-list">
+				<ul class="md-type-subhead">
+					<li>
+						<span class="mdi mdi-clock icon"></span>Date and time
+					</li>
+					<li>
+						<span class="mdi mdi-map-marker icon"></span>Location
+					</li>
+					<li>
+						<span class="mdi mdi-twitter icon"></span>See original
+					</li>
+					<li>
+						<span class="mdi mdi-alert-circle icon"></span>Not yet verified
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-lg-9 edit-new dialog">
+		<div class="dialog-head">
+			<span class="md-type-title">Add articles</span>
+			<span class="mdi mdi-close pull-right icon toggle-add toggler"></span>
+		</div>
+		<div class="dialog-foot">
+			<button type="button" class="btn btn-flat pull-right">Save</button>
+		</div>
+		<div class="dialog-body">
+			<div class="dialog-col col-xs-12 col-md-7 form-group-default">
+				<div class="dialog-row split chips">
+					<div class="split-cell">
+						<input type="text" class="form-control floating-label" placeholder="Articles">
+						<ul class="chips">
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-minus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">Only articles added by this outlet are shown here</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="dialog-col col-xs-12 col-md-5">
+				<img class="dialog-row img-responsive" src="../img/placeholder-photo.jpg">
+			</div>
+		</div>
+	</div>-->
+<%- include('segments/gallery-edit') %>
+<%- include('segments/console_scripts') %>
+<script type="text/javascript" src="/javascripts/alertify.min.js"></script>
+<script type="text/javascript" src="/javascripts/handlers/post.js"></script>
+<script type="text/javascript">
+	PAGE_Post.post = <%- JSON.stringify(post) %>;
+	var purchases = <%- JSON.stringify(purchases) %>;
+</script>
+<style>
+	.meta-description, .meta-user, .meta-list {
+		-webkit-user-select: text;
+		-moz-user-select: text;
+		-ms-user-select: text;
+		user-select: text;
+	}
+</style>
+</div>
+</body>
+</html>

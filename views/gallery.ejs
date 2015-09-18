@@ -1,0 +1,68 @@
+<%- include('segments/console_sidebar') %>
+<div class="col-md-12 col-lg-10">
+	<!-- navbar -->
+	<nav class="navbar navbar-fixed-top navbar-default">
+		<div class="dim transparent toggle-drop toggler"></div>
+		<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
+			<span class="mdi mdi-menu icon"></span>
+		</button>
+		<div class="spacer"></div>
+		<% if (gallery.owner && gallery.owner.firstname) { %>
+			<h1 class="md-type-title" id="gallery-title">Gallery by <%=gallery.owner.firstname%> <%=gallery.owner.lastname || ''%></h1>
+		<% } else { %>
+			<h1 class="md-type-title" id="gallery-title">Gallery</h1>
+		<% } %>
+		<%
+			if(user.rank && user.rank >= config.RANKS.CONTENT_MANAGER){
+		%>
+				 <a class="mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler"></a> 
+		<% 
+			}else{
+		%>
+				<!--<a class="mdi mdi-download icon pull-right hidden-xs" href="/gallery/download/<%= gallery._id %>"></a>-->
+		<%
+			}
+		%>
+	</nav>
+	<!-- end navbar -->
+	<!-- profile -->
+	<div class="profile visible-xs">
+	</div>
+	<div class="col-sm-4 profile hidden-xs">
+		<div class="container-fluid fat">
+			<div class="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+				<div class="meta">
+					<div class="meta-description" id="gallery-description"><%=gallery.caption%></div>
+					<% if (gallery.stats){ %>
+					<div class="meta-list">
+						<ul class="md-type-subhead">
+							<% if (gallery.stats.photos) { %><li><span class="mdi mdi-file-image-box icon"></span><%= gallery.stats.photos %> photo<%= gallery.stats.photos > 1 ? 's' : '' %></li><% } %>
+							<% if (gallery.stats.videos) { %><li><span class="mdi mdi-movie icon"></span><%= gallery.stats.videos %> video<%= gallery.stats.videos > 1 ? 's' : '' %></li><% } %>
+						</ul>
+					</div>
+					<% } %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end profile -->
+	<!-- grid -->
+	<div class="col-sm-8 tall">
+		<div class="grid">
+			<div class="row tiles" id="posts"></div>
+		</div>
+	</div>
+	<!-- end grid -->
+	<%- include('segments/bulk-select') %>
+	<%- include('segments/gallery-edit') %>
+</div>
+<!-- end edit -->
+<%- include('segments/console_scripts') %>
+<script type="text/javascript" src="/javascripts/handlers/gallery.js"></script>
+<script type="text/javascript">
+	PAGE_Gallery.gallery = GALLERY_EDIT = <%- JSON.stringify(gallery) %>;
+	var purchases = <%- JSON.stringify(purchases) %>;
+	var rank = <%- user.rank %>;
+</script>
+</body>
+</html>

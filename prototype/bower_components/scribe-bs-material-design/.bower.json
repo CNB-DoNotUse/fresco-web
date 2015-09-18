@@ -1,0 +1,59 @@
+{
+  "name": "scribe-bs-material-design",
+  "version": "0.3.0",
+  "homepage": "https://scribe.software/code/projects/POLYR/repos/bootstrap-material-design",
+  "authors": [
+    "Federico Zivolo <info@mywebexpression.com>",
+    "Scribe Inc. <rmf@open.scribe.tools>"
+  ],
+  "description": "Scribe's fork of Material Design theme for Bootstrap 3",
+  "main": [
+    "dist/css/material.css",
+    "dist/js/material.js",
+    "dist/css/ripples.css",
+    "dist/js/ripples.js",
+    "dist/fonts/Material-Design-Icons.eot",
+    "dist/fonts/Material-Design-Icons.svg",
+    "dist/fonts/Material-Design-Icons.ttf",
+    "dist/fonts/Material-Design-Icons.woff"
+  ],
+  "ignore": [
+    "test",
+    "screenshots",
+    "demo",
+    ".editorconfig",
+    ".gitignore",
+    ".jshintrc",
+    ".travis.yml",
+    "CONTRIBUTING.md",
+    "Gruntfile.json",
+    "index.html",
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "keywords": [
+    "material",
+    "design",
+    "bootstrap",
+    "theme",
+    "google",
+    "android"
+  ],
+  "license": "https://scribe.software/code/projects/POLYR/repos/bootstrap-material-design/browse/LICENSE.md",
+  "dependencies": {
+    "jquery": "~2.1.1"
+  },
+  "_release": "0.3.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.3.0",
+    "commit": "ce29fa2b5e08acaeab5a83ac2276478a0458e512"
+  },
+  "_source": "git://github.com/scribenet/bootstrap-material-design.git",
+  "_target": "~0.3.0",
+  "_originalSource": "scribe-bs-material-design",
+  "_direct": true
+}

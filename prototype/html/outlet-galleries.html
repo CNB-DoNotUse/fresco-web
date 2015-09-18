@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Fresco News's galleries | Fresco News</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no" />
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:400,500">
+	<link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../bower_components/scribe-bs-material-design/dist/css/material.min.css">
+	<link rel="stylesheet" type="text/css" href="../bower_components/scribe-bs-material-design/dist/css/ripples.min.css">
+	<link rel="stylesheet" type="text/css" href="../bower_components/mdi/css/materialdesignicons.min.css"/>
+	<link rel="stylesheet" type="text/css" href="../css/screen.css">
+</head>
+<body>
+<!-- drawer -->
+<div class="dim toggle-drawer toggler">
+</div>
+<!-- end drawer -->
+<div class="container-fluid">
+	<!-- sidebar -->
+	<div class="col-lg-2 sidebar toggle-drawer">
+		<div>
+			<img src="../img/wordmark-news.png">
+			<div class="form-group-default">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+			<ul class="md-type-body1">
+				<li><span class="mdi mdi-star icon"></span>Highlights</li>
+				<li><span class="mdi mdi-map-marker icon"></span>Dispatch</li>
+				<li><span class="mdi mdi-play-box-outline icon"></span>All content</li>
+				<ul>
+					<li><span class="mdi mdi-file-image-box icon"></span>Photos</li>
+					<li><span class="mdi mdi-movie icon"></span>Videos</li>
+					<li><span class="mdi mdi-image-filter icon"></span>Galleries</li>
+					<li><span class="mdi mdi-newspaper icon"></span>Stories</li>
+				</ul>
+				<li><span class="mdi mdi-account-alert icon"></span>Activity</li>
+				<li><span class="mdi mdi-dots-horizontal icon"></span>Admin</li>
+			</ul>
+		</div>
+		<div>
+			<img class="img-circle" src="../img/placeholder-account.jpg">
+			<a class="md-type-title" href="">Brandon Olsen</a>
+			<ul>
+				<li><a href="">Settings</a></li>
+				<li><a href="">Help</a></li>
+				<li><a href="">Log out</a></li>
+			</ul>
+			<p class="md-type-body1">
+				<span>&copy;2015 Fresco News, Inc.</span>
+				<span class="mdi mdi-information-outline icon pull-right"></span>
+			</p>
+		</div>
+	</div>
+	<!-- end sidebar -->
+	<div class="col-md-12 col-lg-10">
+		<!-- navbar -->
+		<nav class="navbar navbar-fixed-top navbar-default">
+			<div class="dim transparent toggle-drop toggler"></div>
+			<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
+				<span class="mdi mdi-menu icon"></span>
+			</button>
+			<div class="spacer"></div>
+			<h1 class="md-type-title">Fresco News's galleries</h1>
+			<li class="drop pull-right hidden-xs">
+				<button class="toggle-drop md-type-subhead">
+					Any tags<span class="mdi mdi-menu-down icon"></span>
+				</button>
+				<div class="drop-menu panel panel-default">
+					<div class="toggle-drop toggler md-type-subhead">Any tags<span class="mdi mdi-menu-up icon pull-right"></span></div>
+					<div class="drop-body">
+						<div class="chips">
+							<div class="split-cell">
+								<div class="form-group-default">
+									<input type="text" class="form-control floating-label" placeholder="Tags">
+								</div>
+								<ul class="chips">
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-minus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#art</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-minus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#toomanycooks</span>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div class="split-cell">
+								<span class="md-type-body2">Suggested tags</span>
+								<ul class="chips">
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#weather</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#fire</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#protest</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#crash</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#politics</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#tech</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#sports</span>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li class="drop pull-right hidden-xs">
+				<button class="toggle-drop md-type-subhead">
+					All locations<span class="mdi mdi-menu-down icon"></span>
+				</button>
+				<div class="drop-menu panel panel-default">
+					<div class="toggle-drop toggler md-type-subhead">All locations<span class="mdi mdi-menu-up icon pull-right"></span></div>
+					<div class="drop-body">
+						<ul class="md-type-subhead">
+							<li>All locations</li>
+							<li>Near me</li>
+						</ul>
+						<div class="map-group">
+							<div class="form-group-default">
+								<input type="text" class="form-control floating-label" placeholder="Location">
+								<input type="text" class="form-control floating-label" data-hint="miles" placeholder="Radius">
+							</div>
+							<div class="map-container">
+								Just pretend there's a map here ok
+							</div>
+						</div>
+						<ul class="md-type-subhead">
+							<li>Save this location</li>
+						</ul>
+						<span class="md-type-body2 md-type-black-secondary">Saved</span>
+						<ul class="md-type-subhead">
+							<li>Saved location</li>
+							<li>Saved location</li>
+							<li>Saved location</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+		</nav>
+		<!-- end navbar -->
+		<!-- grid -->
+		<div class="container-fluid fat grid">
+			<div class="row tiles">
+				<!-- story-2 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-row">
+							<div class="img">
+								<img src="../img/placeholder-tile.jpg">
+							</div>
+							<div class="img">
+								<img src="../img/placeholder-tile.jpg">
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-2 -->
+				<!-- story-5 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-row">
+							<div class="flex-col">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+							<div class="flex-col">
+								<div class="flex-row">
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+								</div>
+								<div class="flex-row">
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-5 -->
+				<!-- story-8 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-col">
+							<div class="flex-row">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+							<div class="flex-row">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-8 -->
+				<!-- story-2 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-row">
+							<div class="img">
+								<img src="../img/placeholder-tile.jpg">
+							</div>
+							<div class="img">
+								<img src="../img/placeholder-tile.jpg">
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-2 -->
+				<!-- story-5 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-row">
+							<div class="flex-col">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+							<div class="flex-col">
+								<div class="flex-row">
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+								</div>
+								<div class="flex-row">
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-5 -->
+				<!-- story-8 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-col">
+							<div class="flex-row">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+							<div class="flex-row">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-8 -->
+				<!-- story-2 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-row">
+							<div class="img">
+								<img src="../img/placeholder-tile.jpg">
+							</div>
+							<div class="img">
+								<img src="../img/placeholder-tile.jpg">
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-2 -->
+				<!-- story-5 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-row">
+							<div class="flex-col">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+							<div class="flex-col">
+								<div class="flex-row">
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+								</div>
+								<div class="flex-row">
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-5 -->
+				<!-- story-8 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-col">
+							<div class="flex-row">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+							<div class="flex-row">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-8 -->
+				<!-- story-2 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-row">
+							<div class="img">
+								<img src="../img/placeholder-tile.jpg">
+							</div>
+							<div class="img">
+								<img src="../img/placeholder-tile.jpg">
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-2 -->
+				<!-- story-5 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-row">
+							<div class="flex-col">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+							<div class="flex-col">
+								<div class="flex-row">
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+								</div>
+								<div class="flex-row">
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+									<div class="img">
+										<img src="../img/placeholder-tile.jpg">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-5 -->
+				<!-- story-8 -->
+				<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 tile story">
+					<div class="tile-body">
+						<div class="frame">
+						</div>
+						<div class="hover">
+							<p class="md-type-body1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<ul class="md-type-body2">
+								<li>22 photos</li>
+								<li>6 videos</li>
+							</ul>
+						</div>
+						<div class="flex-col">
+							<div class="flex-row">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+							<div class="flex-row">
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+								<div class="img">
+									<img src="../img/placeholder-tile.jpg">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tile-foot">
+						<div class="hover">
+							<a class="md-type-body2">See all</a>
+						</div>
+						<div>
+							<div>
+								<span class="md-type-body2">Title</span>
+								<span class="md-type-caption">Time</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end story-8 -->
+			</div>
+		</div>
+		<!-- end grid -->
+	</div>
+</div>
+<!-- bulk select -->
+<div class="well hover bulk">
+	<div class="thumbs"> <!--WHAT THE FUCK IS GOING ON WITH THE MARGINS IN HERE STARTING AT THE FOURTH IMG-->
+		<a class="thumb" href=""><img class="img-responsive" src="../img/placeholder-thumb.jpg"></a>
+		<a class="thumb" href=""><img class="img-responsive" src="../img/placeholder-thumb.jpg"></a>
+		<a class="thumb" href=""><img class="img-responsive" src="../img/placeholder-thumb.jpg"></a>
+		<a class="thumb" href=""><img class="img-responsive" src="../img/placeholder-thumb.jpg"></a>
+		<a class="thumb" href=""><img class="img-responsive" src="../img/placeholder-thumb.jpg"></a>
+	</div>
+	<div class="row md-type-button">
+		<button type="button" class="btn btn-flat" id="clear">Clear selection (5 videos)</button><button type="button" class="btn btn-flat pull-right">Download</button><button type="button" class="btn btn-flat pull-right toggle-edit toggler">Edit</button><button type="button" class="btn btn-flat pull-right">Create gallery</button>
+	</div>
+</div>
+<!-- end bulk select -->
+<!-- edit -->
+<div class="dim toggle-edit">
+</div>
+<div class="edit panel panel-default toggle-edit">
+	<div class="col-lg-3 visible-lg edit-current">
+		<div class="meta">
+			<div class="meta-user">
+				<div>
+					<img class="img-circle img-responsive" src="../img/placeholder-account.jpg">
+				</div>
+				<div>
+					<span class="md-type-title">Brandon Olsen</span>
+					<span class="md-type-body1">@dotbran &bull; Fresco News</span>
+				</div>
+			</div>
+			<div class="meta-description">
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+				quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+				consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+				cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+				proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			</div>
+			<div class="meta-list">
+				<ul class="md-type-subhead">
+					<li>
+						<span class="mdi mdi-clock icon"></span>Date and time
+					</li>
+					<li>
+						<span class="mdi mdi-map-marker icon"></span>Location
+					</li>
+					<li>
+						<span class="mdi mdi-twitter icon"></span>See original
+					</li>
+					<li>
+						<span class="mdi mdi-alert-circle icon"></span>Not yet verified
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-lg-9 edit-new dialog">
+		<div class="dialog-head">
+			<span class="md-type-title">Edit photo</span>
+			<span class="mdi mdi-close pull-right icon toggle-edit toggler"></span>
+		</div>
+		<div class="dialog-foot">
+			<button type="button" class="btn btn-flat">Revert changes</button>
+			<button type="button" class="btn btn-flat">Clear all</button>
+			<button type="button" class="btn btn-flat pull-right">Save</button>
+			<button type="button" class="btn btn-flat pull-right">Discard</button>
+		</div>
+		<div class="dialog-body">
+			<div class="dialog-col col-xs-12 col-md-7 form-group-default">
+				<div class="dialog-row">
+					<textarea type="text" class="form-control floating-label" placeholder="Caption"></textarea>
+				</div>
+				<div class="dialog-row split">
+					<div class="split-cell">
+						<input type="text" class="form-control floating-label" placeholder="Name">
+					</div>
+					<div class="split-cell">
+						<input type="text" class="form-control floating-label" placeholder="Affiliation">
+					</div>
+				</div>
+				<div class="dialog-row split chips">
+					<div class="split-cell">
+						<input type="text" class="form-control floating-label" placeholder="Tags">
+						<ul class="chips">
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-minus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">#art</span>
+								</div>
+							</li>
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-minus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">#toomanycooks</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="split-cell">
+						<span class="md-type-body2">Suggested tags</span>
+						<ul class="chips">
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-plus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">#weather</span>
+								</div>
+							</li>
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-plus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">#fire</span>
+								</div>
+							</li>
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-plus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">#protest</span>
+								</div>
+							</li>
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-plus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">#crash</span>
+								</div>
+							</li>
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-plus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">#politics</span>
+								</div>
+							</li>
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-plus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">#tech</span>
+								</div>
+							</li>
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-plus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">#sports</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="dialog-row split chips">
+					<div class="split-cell">
+						<input type="text" class="form-control floating-label" placeholder="Stories">
+						<ul class="chips">
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-minus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">Too Many Cooks</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="split-cell">
+						<span class="md-type-body2">Suggested stories</span>
+						<ul class="chips">
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-plus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">Tag-based suggestions algorithm revolutionizes this page</span>
+								</div>
+							</li>
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-plus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">The future is now</span>
+								</div>
+							</li>
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-plus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">The "other" internet</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="dialog-row split chips">
+					<div class="split-cell">
+						<input type="text" class="form-control floating-label" placeholder="Articles">
+						<ul class="chips">
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-minus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">Too Many Cooks will spoil the broth</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="dialog-col col-xs-12 col-md-5">
+				<img class="dialog-row img-responsive" src="../img/placeholder-photo.jpg">
+				<div class="dialog-row map-group">
+					<div class="form-group-default">
+						<input type="text" class="form-control floating-label" placeholder="Location">
+					</div>
+					<div class="map-container">
+						Just pretend there's a map here ok
+					</div>
+				</div>
+			</div> 
+		</div>
+	</div>
+</div>
+<!-- end edit -->
+<script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../bower_components/scribe-bs-material-design/dist/js/material.js">
+</script>
+<script type="text/javascript" src="../bower_components/scribe-bs-material-design/dist/js/ripples.min.js"></script>
+<script type="text/javascript" src ="../js/fresco.js"></script>
+</script>
+</body>
+</html>

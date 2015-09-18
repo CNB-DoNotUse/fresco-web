@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Activity | Fresco News</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no" />
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:400,500">
+	<link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../bower_components/scribe-bs-material-design/dist/css/material.min.css">
+	<link rel="stylesheet" type="text/css" href="../bower_components/scribe-bs-material-design/dist/css/ripples.min.css">
+	<link rel="stylesheet" type="text/css" href="../bower_components/mdi/css/materialdesignicons.min.css"/>
+	<link rel="stylesheet" type="text/css" href="../css/screen.css">
+</head>
+<body>
+<!-- drawer -->
+<div class="dim toggle-drawer toggler">
+</div>
+<!-- end drawer -->
+<div class="container-fluid">
+	<!-- sidebar -->
+	<div class="col-lg-2 sidebar toggle-drawer">
+		<div>
+			<img src="../img/wordmark-news.png">
+			<div class="form-group-default">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+			<ul class="md-type-body1">
+				<li><span class="mdi mdi-star icon"></span>Highlights</li>
+				<li><span class="mdi mdi-map-marker icon"></span>Dispatch</li>
+				<li><span class="mdi mdi-play-box-outline icon"></span>All content</li>
+				<ul>
+					<li><span class="mdi mdi-file-image-box icon"></span>Photos</li>
+					<li><span class="mdi mdi-movie icon"></span>Videos</li>
+					<li><span class="mdi mdi-image-filter icon"></span>Galleries</li>
+					<li><span class="mdi mdi-newspaper icon"></span>Stories</li>
+				</ul>
+				<li><span class="mdi mdi-account-alert icon"></span>Activity</li>
+				<li><span class="mdi mdi-dots-horizontal icon"></span>Admin</li>
+			</ul>
+		</div>
+		<div>
+			<img class="img-circle" src="../img/placeholder-account.jpg">
+			<a class="md-type-title" href="">Brandon Olsen</a>
+			<ul>
+				<li><a href="">Settings</a></li>
+				<li><a href="">Help</a></li>
+				<li><a href="">Log out</a></li>
+			</ul>
+			<p class="md-type-body1">
+				<span>&copy;2015 Fresco News, Inc.</span>
+				<span class="mdi mdi-information-outline icon pull-right"></span>
+			</p>
+		</div>
+	</div>
+	<!-- end sidebar -->
+	<div class="col-md-12 col-lg-10">
+		<!-- navbar -->
+		<nav class="navbar navbar-fixed-top navbar-default">
+			<div class="dim transparent toggle-drop toggler"></div>
+			<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
+				<span class="mdi mdi-menu icon"></span>
+			</button>
+			<div class="spacer"></div>
+			<h1 class="md-type-title">Activity</h1>
+		</nav>
+		<!-- end navbar -->
+		<!-- list -->
+		<div class="container-fluid fat grid">
+			<div class="col-md-8 col-md-offset-2 list">
+				<!-- use (video) -->
+				<div class="list-item active"> <!-- .active = unread. set on a per-user basis; if we can't do that, don't implement unread indicators at all -->
+					<div>
+						<img class="img-circle" src="../img/placeholder-photo.jpg">
+					</div>
+					<div>
+						<p class="md-type-body1">Time</p>
+					</div>
+					<div class="flexy">
+						<p class="md-type-body1">Your outlet downloaded a video</p>
+					</div>
+					<div>
+						<p class="md-type-body2">Watch video</p>
+					</div>
+					<div>
+						<p class="md-type-body2 toggle-edit toggler">Add an article</p>
+					</div>
+				</div>
+				<!-- end use -->
+				<!-- use (photo) -->
+				<div class="list-item active">
+					<div>
+						<img class="img-circle" src="../img/placeholder-photo.jpg">
+					</div>
+					<div>
+						<p class="md-type-body1">Time</p>
+					</div>
+					<div class="flexy">
+						<p class="md-type-body1">Your outlet downloaded a photo</p>
+					</div>
+					<div>
+							<p class="md-type-body2">View photo</p>
+					</div>
+					<div>
+						<p class="md-type-body2 toggle-add toggler">Add an article</p>
+					</div>
+				</div>
+				<!-- end use -->
+				<!-- response -->
+				<!-- READ: This will update as more content is added. Only one of these per assignment per outlet. -->
+				<div class="list-item active">
+					<div>
+						<img class="img-circle" src="../img/placeholder-photo.jpg">
+					</div>
+					<div>
+						<p class="md-type-body1">Time</p>
+					</div>
+					<div class="flexy">
+						<p class="md-type-body1">4 photos and 1 video for <span class="md-type-body2">{Assignment name}</span></p>
+					</div>
+					<div>
+						<p class="md-type-body2">See all</p>
+					</div>
+				</div>
+				<!-- end response -->
+				<!-- approval -->
+				<div class="list-item">
+					<div>
+						<img class="img-circle" src="../img/placeholder-photo.jpg">
+					</div>
+					<div>
+						<p class="md-type-body1">Time</p>
+					</div>
+					<div class="flexy">
+						<p class="md-type-body1"><span class="md-type-body2">{Assignment name}</span> has been approved</p>
+					</div>
+				</div>
+				<!-- end approval -->
+				<!-- rejection -->
+				<div class="list-item">
+					<div>
+						<img class="img-circle" src="../img/placeholder-photo.jpg">
+					</div>
+					<div>
+						<p class="md-type-body1">Time</p>
+					</div>
+					<div class="flexy">
+						<p class="md-type-body1"><span class="md-type-body2">{Assignment name}</span> has been rejected</p>
+					</div>
+					<div>
+						<p class="md-type-body2">Email support</p>
+					</div>
+				</div>
+				<!-- end rejection -->
+				<!-- story update (USER NOTIFICATION, NOT OUTLET — OPTIONAL FOR NOW) -->
+				<div class="list-item">
+					<div>
+						<img class="img-circle" src="../img/placeholder-photo.jpg">
+					</div>
+					<div>
+						<p class="md-type-body1">Time</p>
+					</div>
+					<div class="flexy">
+						<p class="md-type-body1">New photos in <span class="md-type-body2">{Story title}</span></p>
+					</div>
+					<div>
+						<p class="md-type-body2">See all</p>
+					</div>
+				</div>
+				<!-- end story update -->
+			</div>
+		</div>
+		<!-- end list -->
+	</div>
+</div>
+<!-- bulk select -->
+<div class="well hover bulk">
+	<div class="thumbs"> <!--WHAT THE FUCK IS GOING ON WITH THE MARGINS IN HERE STARTING AT THE FOURTH IMG-->
+		<a class="thumb" href=""><img class="img-responsive" src="../img/placeholder-thumb.jpg"></a>
+		<a class="thumb" href=""><img class="img-responsive" src="../img/placeholder-thumb.jpg"></a>
+		<a class="thumb" href=""><img class="img-responsive" src="../img/placeholder-thumb.jpg"></a>
+		<a class="thumb" href=""><img class="img-responsive" src="../img/placeholder-thumb.jpg"></a>
+		<a class="thumb" href=""><img class="img-responsive" src="../img/placeholder-thumb.jpg"></a>
+	</div>
+	<div class="row md-type-button">
+		<button type="button" class="btn btn-flat" id="clear">Clear selection (5 videos)</button><button type="button" class="btn btn-flat pull-right">Download</button><button type="button" class="btn btn-flat pull-right toggle-edit toggler">Edit</button><button type="button" class="btn btn-flat pull-right">Create gallery</button>
+	</div>
+</div>
+<!-- end bulk select -->
+<!-- add article -->
+<div class="dim toggle-add">
+</div>
+<div class="edit panel panel-default toggle-add">
+	<div class="col-lg-3 visible-lg edit-current">
+		<div class="meta">
+			<div class="meta-user">
+				<div>
+					<img class="img-circle img-responsive" src="../img/placeholder-account.jpg">
+				</div>
+				<div>
+					<span class="md-type-title">Brandon Olsen</span>
+					<span class="md-type-body1">@dotbran &bull; Fresco News</span>
+				</div>
+			</div>
+			<div class="meta-description">
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+				quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+				consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+				cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+				proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			</div>
+			<div class="meta-list">
+				<ul class="md-type-subhead">
+					<li>
+						<span class="mdi mdi-clock icon"></span>Date and time
+					</li>
+					<li>
+						<span class="mdi mdi-map-marker icon"></span>Location
+					</li>
+					<li>
+						<span class="mdi mdi-twitter icon"></span>See original
+					</li>
+					<li>
+						<span class="mdi mdi-alert-circle icon"></span>Not yet verified
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-lg-9 edit-new dialog">
+		<div class="dialog-head">
+			<span class="md-type-title">Add articles</span>
+			<span class="mdi mdi-close pull-right icon toggle-add toggler"></span>
+		</div>
+		<div class="dialog-foot">
+			<button type="button" class="btn btn-flat pull-right">Save</button>
+		</div>
+		<div class="dialog-body">
+			<div class="dialog-col col-xs-12 col-md-7 form-group-default">
+				<div class="dialog-row split chips">
+					<div class="split-cell">
+						<input type="text" class="form-control floating-label" placeholder="Articles">
+						<ul class="chips">
+							<li class="chip">
+								<div class="chip">
+									<div class="icon">
+										<span class="mdi mdi-minus icon md-type-subhead"></span>
+									</div>
+									<span class="chip md-type-body1">Only articles added by this outlet are shown here</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="dialog-col col-xs-12 col-md-5">
+				<img class="dialog-row img-responsive" src="../img/placeholder-photo.jpg">
+			</div> 
+		</div>
+	</div>
+</div>
+<!-- end add article -->
+<script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../bower_components/scribe-bs-material-design/dist/js/material.js">
+</script>
+<script type="text/javascript" src="../bower_components/scribe-bs-material-design/dist/js/ripples.min.js"></script>
+<script type="text/javascript" src ="../js/fresco.js"></script>
+</script>
+</body>
+</html>

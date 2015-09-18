@@ -1,0 +1,538 @@
+<%- include('segments/console_sidebar') %>
+	<div class="col-md-12 col-lg-10">
+		<!-- navbar -->
+		<nav class="navbar navbar-fixed-top navbar-default">
+				<input type="file" class="upload-import-files" style="position:absolute;top:-100px" accept="image/*,video/*,video/mp4" multiple>
+			<div class="dim transparent toggle-drop toggler"></div>
+			<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
+				<span class="mdi mdi-menu icon"></span>
+			</button>
+			<button type="button" class="icon-button hidden-xs upload-import">
+				<span class="mdi mdi-upload icon"></span>
+			</button>
+			<div class="form-group-default">
+				<input type="text" class="form-control twitter-import" placeholder="Link">
+			</div>
+			<div class="tab-control">
+				<button class="btn btn-flat tab-admin" data-tab="assignments">
+					Assignments
+				</button>
+				<button class="btn btn-flat tab-admin"  data-tab="submissions">
+					Submissions
+				</button>
+				<button class="btn btn-flat tab-admin" data-tab="imports">
+					Imports
+				</button>
+				<!--<button class="btn btn-flat tab-admin" data-tab="">
+					List: Public Safety
+				</button>-->
+			</div>
+			<li class="drop no-border pull-right hidden-xs" style="opacity:0">
+				<button class="toggle-drop md-type-subhead">
+					<span class="mdi mdi-settings icon"></span><span class="mdi mdi-menu-down icon"></span>
+				</button>
+				<div class="drop-menu panel panel-default">
+					<div class="toggle-drop toggler md-type-subhead">Settings<span class="mdi mdi-menu-up icon pull-right"></span></div>
+					<div class="drop-body">
+						<ul class="md-type-subhead">
+							<li>Import alternate</li>
+							<li>Import alternate</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+		</nav>
+		<!-- end navbar -->
+		<!-- admin -->
+		<div class="container-fluid admin tabs">
+			<!-- assignments -->
+			<div class="tab tab-assignments">
+				<div class="col-md-6 col-lg-7 list">
+				</div>
+				<div class="col-md-6 col-lg-5 form-group-default">
+					<div class="dialog">
+						<div class="dialog-foot">
+							<!--<button type="button" class="btn btn-flat">Revert changes</button>-->
+							<button type="button" class="btn btn-flat assignment-approve pull-right" data-id="">Approve</button>
+							<button type="button" class="btn btn-flat assignment-deny pull-right" data-id="">Reject</button>
+						</div>
+						<div class="dialog-body">
+							<input type="text" class="form-control floating-label assignment-title" placeholder="Title">
+							<textarea type="text" class="form-control floating-label assignment-caption" placeholder="Description"></textarea>
+							<div class="map-group">
+								<div class="form-group-default">
+									<input type="text" class="form-control floating-label assignment-location" placeholder=" ">
+									<input type="text" class="form-control floating-label assignment-radius numbers" data-hint="feet" placeholder="Radius">
+								</div>
+								<div class="assignment-map-container">
+									Just pretend there's a map here ok
+								</div>
+							</div>
+							<input type="text" class="form-control floating-label assignment-hours" data-hint="hours from now" placeholder="Expiration time">
+							<!--
+							<div class="split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Tags">
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-minus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">#art</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-minus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">#toomanycooks</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+								<div class="split-cell">
+									<span class="md-type-body2">Suggested tags</span>
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">#weather</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">#fire</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">#protest</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">#crash</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">#politics</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">#tech</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">#sports</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Stories">
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-minus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">Too Many Cooks</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+								<div class="split-cell">
+									<span class="md-type-body2">Suggested stories</span>
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">Tag-based suggestions algorithm revolutionizes this page</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">The future is now</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">The "other" internet</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>-->
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end assignments -->
+			<!-- submissions -->
+			<div class="tab tab-submissions">
+				<div class="col-md-6 col-lg-7 list">
+				</div>
+				<div class="col-md-6 col-lg-5 form-group-default">
+					<div class="dialog">
+						<div class="dialog-foot">
+							<button type="button" class="btn btn-flat submission-revert">Revert changes</button>
+							<button type="button" class="btn btn-flat pull-right submission-verify">Verify</button>
+							<button type="button" class="btn btn-flat pull-right submission-skip">Skip</button>
+							<button type="button" class="btn btn-flat pull-right submission-delete">Delete</button>
+						</div>
+						<div class="dialog-body">
+							<div class="frick submission-images"></div>
+							<input type="text" class="form-control floating-label submission-byline" placeholder="Byline">
+							<textarea type="text" class="form-control floating-label submission-caption" placeholder="Caption"></textarea>
+							<!--<div class="split">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Name">
+								</div>
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Affiliation">
+								</div>
+							</div>-->
+							<div class="split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label tags-input" placeholder="Tags">
+									<ul class="chips tags submission-tags">
+									</ul>
+								</div>
+								<div class="split-cell">
+									<span class="md-type-body2">Suggested tags</span>
+									<ul class="chips submission-suggested-tags">
+									</ul>
+								</div>
+							</div>
+							<div class="dialog-row split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label submission-stories-input" placeholder="Stories">
+									<ul class="chips submission-stories"></ul>
+								</div>
+								<div class="split-cell">
+									<span class="md-type-body2">Suggested stories</span>
+									<ul class="chips submission-suggested-stories"></ul>
+								</div>
+							</div>
+							<!--<div class="split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Articles">
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-minus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">Too Many Cooks will spoil the broth</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Assignments">
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-minus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">An assignment</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+								<div class="split-cell">
+									<span class="md-type-body2">Suggested assignments</span>
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">This assignment</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">That assignment</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>-->
+							<div class="map-group">
+								<div class="form-group-default">
+									<input type="text" class="form-control floating-label submission-location" placeholder=" " disabled>
+								</div>
+								<div class="submission-map-container">
+									Just pretend there's a map here ok
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end submissions -->
+			<!-- imports -->
+			<div class="tab tab-imports">
+				<div class="col-md-6 col-lg-7 list">
+					<!-- tweet
+					<div class="list-item">
+						<div>
+							<img class="img-circle" src="../img/placeholder-photo.jpg">
+						</div>
+						<div class="flexy">
+							<p class="md-type-body1">Caption</p>
+						</div>
+						<div>
+					 		<p class="md-type-body2">@user</p>
+						</div>
+						<div>
+							<p class="md-type-body1">Location</p>
+						</div>
+						<div>
+							<p class="md-type-body1">Time</p>
+						</div>
+					</div>
+					<!-- end tweet -->
+				</div>
+				<div class="col-md-6 col-lg-5 form-group-default">
+					<div class="dialog">
+						<div class="dialog-foot">
+							<button type="button" class="btn btn-flat import-revert">Revert changes</button>
+							<button type="button" class="btn btn-flat pull-right import-verify">Verify</button>
+							<button type="button" class="btn btn-flat pull-right import-skip">Skip</button>
+							<button type="button" class="btn btn-flat pull-right import-delete">Delete</button>
+						</div>
+						<div class="dialog-body">
+							<div class="import-images"></div>
+							<input type="text" class="form-control floating-label import-byline" placeholder="Byline">
+							<textarea type="text" class="form-control floating-label import-caption" placeholder="Caption"></textarea>
+							<!--<div class="split">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Name">
+								</div>
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Affiliation">
+								</div>
+							</div>-->
+							<div class="split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label tags-input" placeholder="Tags">
+									<ul class="chips tags import-tags">
+									</ul>
+								</div>
+								<div class="split-cell">
+									<span class="md-type-body2">Suggested tags</span>
+									<ul class="chips import-suggested">
+									</ul>
+								</div>
+							</div>
+							<div class="dialog-row split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label import-stories-input" placeholder="Stories">
+									<ul class="chips import-stories"></ul>
+								</div>
+								<div class="split-cell">
+									<span class="md-type-body2">Suggested stories</span>
+									<ul class="chips import-suggested-stories"></ul>
+								</div>
+							</div>
+							<!--
+							<div class="split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Stories">
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-minus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">Too Many Cooks</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+								<div class="split-cell">
+									<span class="md-type-body2">Suggested stories</span>
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">Tag-based suggestions algorithm revolutionizes this page</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">The future is now</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">The "other" internet</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Articles">
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-minus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">Too Many Cooks will spoil the broth</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="split chips">
+								<div class="split-cell">
+									<input type="text" class="form-control floating-label" placeholder="Assignments">
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-minus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">An assignment</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+								<div class="split-cell">
+									<span class="md-type-body2">Suggested assignments</span>
+									<ul class="chips">
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">This assignment</span>
+											</div>
+										</li>
+										<li class="chip">
+											<div class="chip">
+												<div class="icon">
+													<span class="mdi mdi-plus icon md-type-subhead"></span>
+												</div>
+												<span class="chip md-type-body1">That assignment</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>-->
+							<div class="map-group">
+								<div class="form-group-default">
+									<input type="text" class="form-control floating-label import-location" placeholder=" ">
+								</div>
+								<div class="import-map-container">
+									Just pretend there's a map here ok
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end imports -->
+		</div>
+		<!-- end admin -->
+	</div>
+<%- include('segments/console_scripts') %>
+<script type="text/javascript" src="/javascripts/moment.min.js"></script>
+<script type="text/javascript" src="javascripts/handlers/admin.js"></script>
+<style>
+	.map-container {height: 240px}
+	.assignment-map-container {height: 240px}
+	.submission-map-container {height: 240px}
+	.import-map-container {height: 240px}
+	.assignment-link{
+		cursor: pointer;
+		margin: -15px 0px !important;
+	}
+	.assignment-link:hover {
+		text-decoration: underline;
+	}
+	
+	.checkbox input[type=checkbox]:checked~.check:before, .checkbox input[type=checkbox]:checked~.check{
+		color: #0077ff;
+	}
+	
+	.tt-menu {
+		background: white;
+	}
+	.tt-suggestion {
+		padding: 5px;
+		font-size: 16px;
+	}
+	.article-suggestion {
+		padding: 5px;
+		font-size: 12px;
+	}
+	
+	.tt-cursor {
+		background: lightgrey;
+	}
+	
+	.new-story div.chip, .new-story div.icon{
+		background-color: lightgreen !important;
+	}
+	.map-container {
+		height: 240px;
+	}
+</style>
+</div>
+</body>
+</html>

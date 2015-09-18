@@ -1,0 +1,25 @@
+<%- include('segments/console_sidebar', {title:title, user : user, config : config}) %>
+
+<div class="col-md-12 col-lg-10">
+	<!-- navbar -->
+	<nav class="navbar navbar-fixed-top navbar-default">
+		<div class="dim transparent toggle-drop toggler"></div>
+		<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
+			<span class="mdi mdi-menu icon"></span>
+		</button>
+		<div class="spacer"></div>
+		<h1 class="md-type-title"><%= outlet.title %>'s galleries</h1>
+	</nav>
+	<!-- end navbar -->
+	<!-- grid -->
+	<div class="container-fluid fat grid">
+		<div class="row tiles" id="galleries"></div>
+	</div>
+	<!-- end grid -->
+<%- include('segments/gallery-create') %>
+</div>
+<%- include('segments/console_scripts') %>
+<script type="text/javascript" src="/javascripts/handlers/outlet-galleries.js"></script>
+<script type="text/javascript">PAGE_OutletGalleries.outlet = <%- {_id: outlet._id} %>;</script>
+</body>
+</html>

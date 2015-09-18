@@ -1,0 +1,122 @@
+<%- include('segments/console_sidebar', {title:title, user : user, config : config}) %>
+
+<div class="col-md-12 col-lg-10">
+	<!-- navbar -->
+	<nav class="navbar navbar-fixed-top navbar-default">
+		<div class="dim transparent toggle-drop toggler"></div>
+		<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
+			<span class="mdi mdi-menu icon"></span>
+		</button>
+		<div class="spacer"></div>
+		<h1 class="md-type-title"><%= outlet.title %></h1>
+		<div class="tab-control">
+			<button class="btn btn-flat vault vault-toggler toggled">
+				Vault
+			</button>
+			<button class="btn btn-flat purchases purchases-toggler">
+				Purchases
+			</button>
+		</div>
+		<% if (user._id == outlet.owner._id){ %><a class="mdi mdi-pencil icon pull-right hidden-xs"></a>  <% } %>
+	</nav>
+	<!-- end navbar -->
+	<!-- profile -->
+	<div class="tab vault toggled">
+		<div class="container-fluid fat grid">
+			<div class="profile visible-xs">
+			</div>
+			<div class="col-sm-4 profile hidden-xs">
+				<div class="container-fluid fat">
+					<div class="col-sm-12 col-md-9 col-sm-offset-1 col-md-offset-2">
+						<img class="img-responsive" src="<%= outlet.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png' %>">
+						<div class="meta">
+							<%
+								if (user._id != outlet.owner._id && outlet.users.indexOf(user._id) == -1){
+									following = user.following.outlets.indexOf(outlet._id) >= 0;
+							%>
+							<div class="meta-user">
+								<!--<button type="button" class="btn fat tall btn-<%=following ? 'unfollow' : 'follow'%>" data-type="outlets" data-id="<%=outlet._id%>"><%=following ? 'Unfollow' : 'Follow'%></button>-->
+							</div>
+							<% } %>
+							<div class="meta-list">
+								<ul class="md-type-subhead">
+									<!--<li>
+										<span class="mdi mdi-account-multiple icon"></span><%= 0 %> followers
+									</li> -->
+									<%
+										if (outlet.link){	
+									%>
+									<li class="ellipses">
+										<span class="mdi mdi-web icon"></span><a href="<%= (outlet.link.indexOf('//') == -1 ? '//' : '') + outlet.link %>"><%= outlet.link %></a>
+									</li>
+									<%
+										}
+									%>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end profile -->
+			<!-- grid -->
+			<div class="col-sm-8 tall">
+				<div class="grid">
+					<div class="row tiles" id="posts"></div>
+				</div>
+			</div>
+		</div>
+		<!-- end grid -->
+	</div>
+	<div class="tab purchases">
+		<!-- purchases -->
+		<div class="container-fluid fat grid">
+			<div id="purchase-list" class="col-md-8 col-xs-12 list"></div>
+			<!-- stats -->
+			<div class="col-md-4">
+				<h3 class="md-type-button md-type-black-secondary">Total purchases</h3>
+				<ul class="md-type-subhead">
+					<li><span id="past-day"></span><span class="md-type-caption"> last 24 hours</span></li>
+					<li><span id="past-week"></span><span class="md-type-caption"> last 7 days</span></li>
+					<li><span id="past-month"></span><span class="md-type-caption"> last 30 days</span></li>
+				</ul>
+				<button id="email-statement-button" type="button" class="btn">Email my statement</button><span class="md-type-caption">Updated 9/1/2015</span>
+			</div>
+			<!-- end stats -->
+		</div>
+		<!-- end purchases -->
+	</div>
+	<!--<%- include('segments/bulk-select') %>
+	<%- include('segments/gallery-create') %>-->
+</div>
+</div>
+<%- include('segments/add-article') %>
+<%- include('segments/console_scripts') %>
+<script type="text/javascript" src="/javascripts/handlers/outlet.js"></script>
+<script type="text/javascript">
+	PAGE_Outlet.outlet = <%- JSON.stringify({_id: outlet._id}) %>;
+	PAGE_Purchases.outlet = <%- JSON.stringify({_id: outlet._id}) %>;
+	PAGE_Purchases.PRICE_VIDEO = <%- JSON.stringify(config.PRICE_VIDEO) %>;
+	PAGE_Purchases.PRICE_IMAGE = <%- JSON.stringify(config.PRICE_IMAGE) %>;
+</script>
+<style>
+	.tab:not(.toggled){
+		display: none;
+	}
+	.list-item {
+		cursor: pointer;
+	}
+	.list-item img.img-circle{
+		width: 40px;
+		height: 40px;
+	}
+	.assignment-link{
+		cursor: pointer;
+		margin: -15px 0px !important;
+	}
+	.assignment-link:hover {
+		text-decoration: underline;
+	}
+</style>
+</body>
+</html>

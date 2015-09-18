@@ -1,0 +1,1260 @@
+html,
+body {
+	height: 100%;
+	background-color: $color-shade-1;
+	color: $color-black-1;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 400;
+	@include user-select(none);
+	overflow-y: hidden;
+}
+a {
+	font-weight: 500;
+	color: #000;
+}
+a:hover {
+	color: #000;
+	text-decoration: none;
+}
+.toggler:hover {
+	cursor: hand;
+}
+
+// container fix
+body > .container-fluid {
+	@include display(flex);
+	> .sidebar + div {
+		@include flex(1);
+	}
+}
+.container-fluid {
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	> div {
+		height: 100%;
+		padding: 0;
+	}
+}
+
+// social buttons
+button.btn > span {
+	line-height: 20px;
+	color: inherit;
+}
+div.settings > div.form-group-default > button.btn.btn-twitter {
+	color: #fff;
+	background-color: #55acee;
+}
+div.settings > div.form-group-default > button.btn.btn-facebook {
+	color: #fff;
+	background-color: #3b5998;
+}
+
+// icons
+.icon {
+	color: $color-black-2;
+	font-size: 24px;
+	line-height: 24px;
+}
+.icon-button {
+	padding: 0;
+	border: 0;
+	background-color: transparent;
+	@include transition-duration(0.3s);
+}
+.icon-button.toggled {
+	margin-left: 0px;
+	margin-right: 48px;
+}
+
+
+// forms
+.btn {
+	margin: 0 4px;
+	padding: 8px;
+	font-weight: 500;
+}
+.form-group-default {
+	display: inline-block;
+	font-weight: 400;
+	input.form-control,
+	textarea.form-control {
+		background-color: transparent;
+	}
+	.form-control:focus {
+		@include background-image(linear-gradient($color-accent-primary, $color-accent-primary), linear-gradient($color-black-4, $color-black-4));
+	}
+	.floating-label,
+	.hint {
+		color: $color-black-3;
+	}
+	input.form-control:not(.empty) ~ .floating-label,
+	textarea.form-control:not(.empty) ~ .floating-label {
+		color: $color-black-3;
+		white-space: nowrap;
+	}
+	input.form-control:not(.empty):focus ~ .floating-label,
+	textarea.form-control:not(.empty):focus ~ .floating-label {
+		color: $color-accent-primary;
+	}
+	textarea {
+		resize: vertical;
+	}
+	textarea.empty ~ .floating-label {
+		margin-top: -5px;
+	}
+	.form-control.error {
+		@include background-image(linear-gradient($color-error, $color-error), linear-gradient($color-error, $color-error));
+	}
+	.form-control.success {
+		@include background-image(linear-gradient($color-success, $color-success), linear-gradient($color-success, $color-success));
+	}
+	.form-control.error:not(.empty):focus ~ .floating-label {
+		color: $color-error;
+	}
+	.form-control.success:not(.empty):focus ~ .floating-label {
+		color: $color-success;
+	}
+	.checkbox input[type=checkbox]:checked~.check, .checkbox input[type=checkbox]:checked~.check:before {
+		color: $color-accent-primary;
+	}
+}
+
+
+// map
+.map-group {
+	> .form-group-default {
+		@include display(flex);
+		@include flex-direction(row);
+		margin-bottom: 8px;
+		> .form-control-wrapper {
+			@include flex(3);
+			+ .form-control-wrapper {
+				@include flex(1);
+				margin-left: 16px;
+				margin-bottom: 8px;
+			}
+		}
+	}
+	> .map-container {
+		width: 100%;
+		margin-bottom: 8px;
+		background-color: $color-shade-2;
+	}
+	> .map-container.full {
+		padding-top: 64px;
+		margin-bottom: 0;
+	}
+}
+
+
+// content
+.content {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow-y: auto;
+	div {
+		margin: 0;
+		padding: 0;
+	}
+	> .row:first-child {
+		@include display(flex);
+		> div.main {
+			max-width: 1120px;
+			padding: 96px 24px 32px;
+			> div {
+				padding: 0 24px;
+				> div.card {
+					margin-bottom: 24px;
+					> div.card-body {
+						padding: 0 0 48px;
+					}
+					> div.card-foot {
+						border-top-style: none;
+					}
+				}
+			}
+		}
+		> div.flexy {
+			@include flex(1);
+		}
+	}
+	> .related {
+		margin-bottom: 32px;
+	}
+}
+
+
+// related
+.related > div.tabs > div.tab {
+	height: 144px;
+	width: 100%;
+	background-color: $color-shade-2;
+	white-space: nowrap;
+	overflow-x: auto;
+	> button {
+		margin: 0;
+		padding: 0;
+		width: 192px;
+		line-height: 144px;
+		background-color: $color-shade-4;
+	}
+	> img {
+		display: inline-block;
+		margin-left: -3px;
+		height: 144px;
+	}
+}
+
+
+// meta
+.meta {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	.meta-user {
+		@include display(flex);
+		position: relative;
+		margin-bottom: 16px;
+		width: 100%;
+		> div {
+			padding: 0;
+			> img {
+				width: 48px;
+				margin-right: 16px;
+			}
+			> span {
+				display: block;
+				margin-top: 1px;
+			}
+		}
+		div:last-of-type {
+			@include flex(1);
+		}
+		> button.btn {
+			margin: 0;
+			background-color: $color-shade-0;
+		}
+	}
+	.meta-description {
+		display: block;
+		margin-bottom: 16px;
+	}
+	.meta-list > ul {
+		margin-bottom: 0;
+		padding: 0 24px;
+		list-style-type: none;
+		> li {
+			padding: 8px 0;
+			margin-bottom: 4px;
+			> span {
+				margin-right: 16px;
+			}
+		}
+		> li:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+
+// split
+.split {
+	@include display(flex);
+	@include flex-direction(row);
+	> .split-cell {
+		@include flex(1);
+	}
+	> .split-cell:last-child {
+		margin-left: 16px;
+	}
+	> .split-cell:first-child {
+		margin-left: 0;
+	}
+}
+
+
+// chips
+div.chips {
+	> div.split-cell + div.split-cell {
+		padding-top: 4px;
+	}
+	ul.chips {
+		padding: 8px 0 0;
+		> li.chip {
+			display: inline-block;
+			position: relative;
+			top: 0px;
+			margin-bottom: 4px;
+			border: 1px solid $color-black-4;
+			border-radius: 2px;
+			background-color: $color-shade-1;
+			box-shadow: $color-black-4 0 1px;
+			> div.chip {
+				position: relative;
+				display: inline-block;
+				> div.icon {
+					display: block;
+					opacity: 0;
+					position: absolute;
+					width: 100%;
+					height: 100%;
+					background-color: $color-shade-1;
+					> span.icon {
+						position: absolute;
+						top: 50%;
+						margin-top: -12px;
+						height: 24px;
+						width: 100%;
+						text-align: center;
+					}
+				}
+				> span.chip {
+					display: block;
+					padding: 4px 8px;
+				}
+			}
+		}
+		> li.chip:hover {
+			cursor: pointer;
+			> div.chip > div.icon {
+				opacity: 1;
+			}
+		}
+		> li.chip:active {
+			position: relative;
+			top: 1px;
+			box-shadow: none;
+			background-color: $color-shade-2;
+			> div.chip > div.icon {
+				background-color: $color-shade-2;
+			}
+		}
+	}
+}
+
+
+// tabs
+.tab-control {
+	> button {
+		height: 40px;
+		margin: 0 -3px 0 0;
+		padding: 8px 24px;
+		text-align: center;
+		box-sizing: border-box;
+		border-radius: 0;
+		border-bottom: 1px solid $color-black-4;
+		line-height: 25px;
+		color: $color-black-2 !important;
+	}
+	> button:last-child {
+		margin: 0;
+	}
+	> button.toggled {
+		border-bottom: 2px solid $color-accent-primary;
+		line-height: 25px;
+		color: $color-black-1 !important;
+	}
+}
+.tab-control.full {
+	@include display(flex);
+	> button {
+		@include flex(1);
+		margin: 0;
+	}
+}
+.tabs {
+	> .tab {
+		display: none;
+		position: relative;
+	}
+	> .tab.toggled {
+		display: block;
+		height: 100%;
+	}
+}
+
+// list
+div.list {
+	height: 100%;
+	overflow-y: auto;
+	> div.list-item {
+		padding: 16px;
+		@include display(flex);
+		> div {
+			margin-right: 16px;
+			padding: 2px 0;
+			height: 40px;
+			> img.img-circle {
+				margin: -2px 0;
+				width: 40px;
+				height: 40px;
+			}
+			> span.md-type-body1,
+			> span.md-type-body2,
+			> span.md-type-caption {
+				display: block;
+			}
+			> a.icon,
+			> span.icon {
+				line-height: 40px;
+			}
+			> p.md-type-body1,
+			> p.md-type-body2,
+			> p.md-type-caption {
+				line-height: 36px;
+				margin: 0;
+			}
+			> span,
+			> p {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		}
+		> div:last-child {
+			margin-right: 0;
+		}
+		> div.flexy {
+			@include flex(1);
+		}
+		> div.peek {
+			display: none;
+		}
+	}
+	> div.list-item:hover {
+		background-color: $color-shade-2;
+		> div.peek {
+			display: initial;
+		}
+	}
+	> div.list-item.active {
+		background-color: $color-accent-faded;
+	}
+}
+
+
+// dim
+.dim {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: -100%;
+	left: -100%;
+	background-color: $color-black-2;
+	opacity: 0;
+	z-index: $z-dim;
+	@include transition-duration(0.3s);
+	@include transition-property(opacity);
+}
+.dim.toggled {
+	top: 0;
+	left: 0;
+	opacity: 1;
+}
+.dim.transparent.toggled {
+	opacity: 0.12;
+}
+
+
+// dialog
+.dialog {
+	position: relative;
+	padding: 0;
+	background-color: $color-shade-0;
+	> .dialog-head,
+	> .dialog-body,
+	> .dialog-foot {
+		width: 100%;
+		background-color: $color-shade-0;
+	}
+	> .dialog-head {
+		position: absolute;
+		z-index: 1;
+		height: 64px;
+		padding: 20px 24px 20px 32px;
+		> .icon {
+			font-size: 20px;
+			line-height: 24px;
+		}
+		~ .dialog-body {
+			padding-top: 76px;
+		}
+	}
+	> .dialog-body {
+		padding: 24px 32px;
+		max-height: 100%;
+		overflow-y: auto;
+		> .dialog-col {
+			padding: 0;
+			+ .dialog-col {
+				padding-left: 32px;
+			}
+			> .dialog-row {
+				padding: 16px 0;
+			}
+			> .dialog-row:first-child {
+				padding-top: 0;
+			}
+		}
+	}
+	> .dialog-foot {
+		position: absolute;
+		z-index: 1;
+		bottom: 0px;
+		height: 64px;
+		padding: 14px 16px;
+		border-top: 1px solid $color-black-4;
+		~ .dialog-body {
+			padding-bottom: 76px;
+		}
+	}
+}
+
+
+// sidebar
+.sidebar {
+	@media (max-width: 1199px) {
+		position: fixed;
+		height: 100%;
+		z-index: $z-drawer;
+		margin-left: -$drawer-width;
+		@include transition-duration(0.3s);
+	}
+	position: relative;
+	z-index: $z-sidebar;
+	height: 100%;
+	width: $drawer-width;
+	background-color: $color-shade-0;
+	border-right: 1px solid $color-black-4;
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+	> div:first-child {
+		position: absolute;
+		padding: 16px 20px 209px;
+		height: 100%;
+		width: 100%;
+		overflow-y: auto;
+		img {
+			width: 194px;
+			max-width: 100%;
+		}
+		.form-group-default {
+			margin: 16px 0 32px;
+			width: 100%;
+			padding: 0;
+		}
+		> ul {
+			> ul > li {
+				padding-left: 60px;
+			}
+			li {
+				margin: 0 -20px;
+				padding: 8px 20px;
+				line-height: 22px;
+				cursor: pointer;
+				> span {
+					margin-right: 20px;
+				}
+			}
+			li:hover {
+				background-color: $color-shade-2;
+			}
+			li.active {
+				font-weight: 500;
+				> span {
+					color: $color-accent-primary;
+				}
+			}
+		}
+	}
+	> div:last-child {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		border-top: 1px solid $color-black-4;
+		background-color: $color-shade-1;
+		text-align: center;
+		> img {
+			display: block;
+			width: 80px;
+			margin: -40px auto 12px;
+		}
+		> ul {
+			padding: 4px 12px 16px;
+			> li {
+				display: inline;
+				padding: 0;
+				margin: 0;
+			}
+			> li:after {
+				content: " â€¢ ";
+			}
+			> li:last-child:after {
+				content: none;
+			}
+		}
+		> p {
+			margin: 0;
+			padding: 16px 12px 16px 14px;
+			border-top: 1px solid $color-black-4;
+			text-align: left;
+			> span {
+				line-height: 24px;
+			}
+		}
+	}
+}
+.sidebar.toggled {
+	@media (max-width: 1199px) {
+		margin-left: 0;
+		box-shadow: $color-black-4 0 0 8px 0, $color-black-4 8px 0 8px 0;
+	}
+}
+
+
+// navbar
+.navbar {
+	position: absolute;
+	height: 64px;
+	padding-right: 8px;
+	color: inherit;
+	z-index: $z-navbar;
+	box-sizing: border-box;
+	border-bottom: 1px solid $color-black-4;
+	.icon-button {
+		margin: 20px 24px;
+	}
+	.spacer {
+		display: inline-block;
+		@media (max-width: 1199px) {
+			display: none;
+		}
+		width: 24px;
+	}
+	> .tab-control {
+		display: inline-block;
+		position: relative;
+		top: 9px;
+		margin: 0 24px;
+	}
+	> .form-group-default {
+		margin: 18px 0;
+	}
+	> h1 {
+		display: inline-block;
+	}
+	> .icon {
+		margin: 20px 12px;
+	}
+	> .dim {
+		z-index: $z-dim;
+	}
+	> .drop {
+		display: inline-block;
+		position: relative;
+		margin: 18px 0;
+		padding: 2px 24px;
+		border-left: 1px solid $color-black-4;
+		> button > span,
+		> div > div > span {
+			margin-left: 12px;
+			margin-right: -6px;
+		}
+		> .toggle-drop {
+			position: relative;
+			z-index: $z-drop-enable;
+			padding: 0;
+			background-color: transparent;
+			border-style: none;
+		}
+		> .drop-menu {
+			display: none;
+			position: absolute;
+			z-index: $z-drop-menu;
+			top: 28px;
+			left: 0;
+			margin-top: -38px;
+			padding: 0;
+			border-radius: 2px;
+			> .toggle-drop {
+				padding: 12px 24px;
+				border-bottom: 1px solid $color-black-4;
+				cursor: pointer;
+			}
+			> .drop-body {
+				padding: 10px 0 0;
+				display: block;
+				max-height: 80%;
+				overflow-y: auto; 
+				ul {
+					list-style-type: none;
+				}
+				> ul.md-type-subhead {
+					padding-left: 0;
+					li {
+						width: 100%;
+						height: 32px;
+						padding: 4px 24px;
+						white-space: nowrap;
+					}
+					li:hover {
+						background-color: $color-shade-2;
+					}
+				}
+				> .map-group {
+					width: 320px;
+					padding: 10px 24px 0;
+				}
+				> .chips {
+					width: 280px;
+					padding: 0 24px 8px;
+					> .split-cell > .form-group-default {
+						width: 100%;
+					}
+				}
+				> span {
+					padding: 16px 24px 4px;
+				}
+				> span.md-type-body2 {
+					margin: 0;
+				}
+			}
+		}
+		> .drop-menu.toggled {
+			display: initial;
+		}
+		> .drop-menu.toggled:hover {
+			opacity: 1;
+		}
+	}
+	> .drop:last-child {
+		border-left-style: none;
+	}
+	> .drop.no-border {
+		border-left-style: none;
+	}
+}
+.navbar.navbar-default {
+	background-color: $color-shade-0;
+	color: inherit;
+}
+
+
+// grid
+.grid {
+	position: absolute;
+	height: 100%;
+	overflow-y:auto;
+	padding: 64px 0 0;
+	.frame {
+		position: absolute;
+		z-index: $z-tile-body-frame;
+		@include frame();
+	}
+	.tiles {
+		margin: 0;
+		> .tile {
+			position: relative;
+			padding: 2px;
+			.hover {
+				position: absolute;
+				z-index: 1;
+				width: 100%;
+				height: 100%;
+				visibility: hidden;
+			}
+			> .tile-body {
+				position: relative;
+				> .frame {
+					position: absolute;
+					width: 100%;
+					height: 100%;
+					@include frame();
+				}
+				> .hover {
+					@include display(flex);
+					@include flex-direction(column);
+					background-color: $color-black-2;
+					color: $color-white-1;
+					> p {
+						@include flex(1);
+						width: 100%;
+						margin-bottom: 0;
+						padding: 7px 12px 0;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					}
+					> span {
+						display: block;
+						width: 100%;
+						padding: 7px 12px;
+						text-align: right;
+						overflow: hidden;
+						white-space: nowrap;
+						text-overflow: ellipsis;
+					}
+					> ul {
+						margin-bottom: 0;
+						padding: 7px 12px;
+						border-top: 1px solid $color-white-4;
+						list-style-type: none;
+						li {
+							line-height: 24px;
+							overflow: hidden;
+							white-space: nowrap;
+							text-overflow: ellipsis;
+						}
+					}
+				}
+				.flex-row,
+				.flex-col {
+					@include display(flex);
+					@include flex(1);
+					position: relative;
+					padding: 0;
+					margin: 0;
+					> .img {
+						@include flex(1);
+						padding-bottom: 50%;
+					}
+				}
+				.flex-col {
+					@include flex-direction(column);
+				}
+				> .flex-col > .flex-row > .img {
+					padding-bottom: 25%;
+				}
+				.img {
+					position: relative;
+					margin: 0;
+					padding-bottom: 100%;
+					overflow: hidden;
+					> img {
+						height: 100%;
+						min-width: 100%;
+						position: absolute;
+						z-index: 0;
+					}
+				}
+			}
+			> .tile-foot {
+				position: relative;
+				height: 64px;
+				border: 1px solid $color-black-4;
+				background-color: $color-shade-0;
+				> .hover {
+					background-color: $color-shade-0;
+					> a {
+						margin: 0 12px;
+						line-height: 62px;
+						overflow: hidden;
+						white-space: nowrap;
+						text-overflow: ellipsis;
+					}
+					> span {
+						margin-right: 12px;
+						line-height: 62px;
+					}
+				}
+				> div > div {
+					display: inline-block;
+					padding: 7px 12px;
+					> span {
+						display: block;
+						line-height: 24px;
+						overflow: hidden;
+						white-space: nowrap;
+						text-overflow: ellipsis;
+					};
+					~ span {
+						margin: 0 12px;
+						line-height: 62px;
+					}
+				}
+			}
+		}
+		> .tile:hover .hover {
+			visibility: visible;
+		}
+		> .tile.toggled {
+			> .tile-body > .frame {
+				background-color: rgba(92,133,245,.54);
+			}
+			> .tile-foot {
+				background-color: $color-accent-faded;
+				border: 1px solid $color-accent-light;
+				> .hover {
+					background-color: $color-accent-faded;
+				}
+			}
+		}
+	}
+	> div + div {
+		padding: 0 24px;
+		> h3 {
+			margin: 32px 0 12px;
+		}
+		> ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+			> li {
+				margin: 12px 0;
+			}
+		}
+	}
+}
+
+
+// profile
+.profile.hidden-xs {
+	padding: 64px 24px 0;
+	height: 100%;
+	overflow-y: auto;
+	img {
+		margin-top: 24px;
+		width: 100%;
+	}
+	.meta {
+		padding: 24px 0;
+	}
+	+ .tall {
+		padding: 0;
+		> .grid {
+			width: 100%;
+		}
+	}
+}
+
+
+// settings
+div.settings {
+	padding-top: 64px;
+	height: 100%;
+	overflow-y: auto;
+	> div {
+		padding: 24px;
+	}
+	> div.form-group-default {
+		> * + * {
+			margin-top: 24px;
+		}
+		> div.flex-row > img.img-circle {
+			height: 48px;
+			+ div.flexy {
+				padding: 8px 0 8px 8px
+			}
+		}
+		> button.btn {
+			background-color: $color-shade-0;
+		}
+	}
+	> div.list {
+		padding: 24px 0;
+		> h3.md-type-title {
+			margin-left: 16px;
+		}
+	}
+}
+
+
+// admin
+div.admin {
+	padding-top: 64px;
+	> div.tab > div.list {
+		padding: 0;
+		+ div {
+			padding: 0;
+			height: 100%;
+			background-color: $color-shade-0;
+			border-left: 1px solid $color-black-4;
+			> div.dialog {
+				height: 100%;
+				> div.dialog-body > * + * {
+					margin-top: 24px;
+				}
+			}
+		}
+	}
+}
+
+
+// cards
+.cards {
+	position: absolute;
+	top: 64px;
+	right: 0px;
+	width: 384px;
+	max-width: 100%;
+	height: 100%;
+	padding: 8px 8px 72px;
+	overflow-y: auto;
+}
+.card.panel {
+	position: relative;
+	padding: 0;
+	margin-bottom: 8px;
+	background-color: $color-shade-0;
+	> .card-head,
+	> .card-body,
+	> .card-foot {
+		width: 100%;
+	}
+	> .card-head {
+		position: absolute;
+		z-index: 1;
+		height: 56px;
+		padding: 16px 20px;
+		border-top-left-radius: 2px;
+		border-top-right-radius: 2px;
+		background-color: $color-shade-0;
+		> .icon {
+			font-size: 20px;
+			line-height: 24px;
+		}
+		~ .card-body {
+			padding-top: 56px;
+		}
+		> .tab-control {
+			margin: -16px -20px 0;
+		}
+	}
+	> .card-head.small {
+		height: 40px;
+		~ .card-body {
+			padding-top: 40px;
+		}
+	}
+	> .card-body {
+		padding: 16px 20px;
+		max-height: 100%;
+		overflow-y: auto;
+		border-radius: 2px;
+		> .card-col {
+			padding: 0;
+			+ .card-col {
+				padding-left: 32px;
+			}
+			> .card-row {
+				padding: 16px 0;
+			}
+			> .card-row:first-child {
+				padding-top: 0;
+			}
+		}
+		> .tabs.full {
+			margin: 0 -20px;
+			width: calc(100% + 40px);
+			> .tab {
+				height: 50vh;
+			}
+		}
+		> .form-group-default {
+			width: 100%;
+			> .form-control-wrapper {
+				margin-bottom: 24px;
+			}
+		}
+		> .map-group {
+			margin-bottom: 24px;
+		}
+	}
+	> .card-foot {
+		position: absolute;
+		z-index: 1;
+		bottom: 0px;
+		height: 64px;
+		padding: 14px 16px;
+		border-top: 1px solid $color-black-4;
+		border-bottom-left-radius: 2px;
+		border-bottom-right-radius: 2px;
+		background-color: $color-shade-0;
+		~ .card-body {
+			padding-bottom: 64px;
+		}
+	}
+	> .card-foot.small {
+		height: 48px;
+		padding: 0 4px;
+		> span {
+			line-height: 48px;
+			padding: 0 12px;
+		}
+		~ .card-body {
+			padding-bottom: 48px;
+		}
+	}
+	> .card-foot.center {
+		text-align: center;
+	}
+	> .card-foot.center.toggled {
+		display: none;
+		~ .card-body {
+			padding-bottom: 0;
+		}
+	}
+}
+.card.panel.toggled {
+	display: none;
+}
+
+
+// bulk select
+.hover.well.bulk {
+	position: fixed;
+	z-index: $z-dialog-under;
+	bottom: -276px;
+	right: 32px;
+	margin: 0;
+	padding: 0;
+	width: 640px;
+	@include transition-duration(0.3s);
+	> .thumbs {
+		width: 640px;
+		height: 144px;
+		padding-left: 3px;
+		border-radius: 2px 2px 0 0;
+		overflow-x: auto;
+		overflow-y: hidden;
+		white-space: nowrap;
+		> .thumb {
+			display: inline-block;
+			margin-left: -3px;
+			height: 144px;
+			> .img-responsive {
+				max-height: 100%;
+			}
+		}
+	}
+	> .row {
+		margin: 0;
+		padding: 14px 16px;
+	}
+}
+.hover.well.bulk.toggled {
+	bottom: 32px;
+}
+
+
+// edit
+.edit {
+	position: fixed;
+	top: 105%;
+	left: 5%;
+	z-index: $z-dialog-over;
+	width: 90%;
+	height: 90%;
+	border-radius: 2px;
+	@include transition-duration(0.3s);
+	> .edit-current,
+	> .edit-new {
+		height: 100%;
+	}
+	> .edit-current {
+		border-top-left-radius: 2px;
+		border-bottom-left-radius: 2px;
+		border-right: 1px solid $color-black-4;
+		padding: 24px;
+		background-color: $color-shade-1;
+	}
+	> .edit-new {
+		> .dialog-head {
+			border-top-right-radius: 2px;
+		}
+		> .dialog-foot {
+			border-bottom-right-radius: 2px;
+		}
+	}
+}
+.edit.toggled {
+	top: 5%;
+}
+
+
+// payment
+a.payment {
+	display: block;
+	margin-bottom: 24px;
+	font-size: 12px;
+	line-height: 12px;
+	font-weight: normal;
+	color: $color-black-2;
+	> span {
+		&.available {
+			color: $color-success;
+		}
+		&.unavailable {
+			color: $color-error;
+		}
+	}
+}
+p.payment {
+	@extend a.payment;
+	margin-top: -16px;
+}
+div.payment {
+	margin-bottom: 48px;
+	h3 {
+		margin: 48px 0 24px;
+	}
+	.flex-row, .row {
+		margin-bottom: 24px;
+	}
+	.md-type-caption {
+		line-height: 32px;
+	}
+	input {
+		&[maxLength="2"] {
+			width: 20px;
+		}
+		&[maxLength="3"] {
+			width: 28px;
+		}
+		&[maxLength="5"] {
+			width: 40px;
+		}
+	}
+}
+
+
+// time
+div.time 
+
+
+// stretch utilities
+.tall {
+	height: 100%;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.fat {
+	width: 100%;
+	margin-left: 0;
+	margin-right: 0;
+}
+.flex-row {
+	@include display(flex);
+	> div {
+		margin: 0 8px;
+	}
+	> div:first-child {
+		margin-left: 0;
+	}
+	> div:last-child {
+		margin-right: 0;
+	}
+}
+.flex-col {
+	@include display(flex);
+	@include flex-direction(column);
+}
+.flexy {
+	@include flex(1);
+}
