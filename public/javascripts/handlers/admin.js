@@ -1048,11 +1048,12 @@ $(document).ready(function(){
 		if (PAGE_Admin.importsCaption.val().trim() != gallery.caption)
 			params.caption = PAGE_Admin.importsCaption.val().trim();
 
-		//var gmap_place = PAGE_Admin.importsGoogleMap.autocomplete.getPlace();
+		var gmap_place = PAGE_Admin.importsGoogleMap.autocomplete.getPlace();
 		var coord = PAGE_Admin.importsGoogleMap.marker.getPosition();
 		params.lat = coord ? coord.lat() : null;
 		params.lon = coord ? coord.lng() : null;
-		//if (gmap_place) params.address = gmap_place.formatted_address;
+		if(gmap_place)	
+			params.address = gmap_place.formatted_address;
 
 		PAGE_Admin.Gallery.verify(params, function(err){
 			if (err)
