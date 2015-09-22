@@ -360,6 +360,8 @@ var PAGE_Dispatch = {
 		var geocoder = new google.maps.Geocoder();
 		google.maps.event.addListener(PAGE_Dispatch.map, 'click', function(ev){
 			if(!PAGE_Dispatch.initialToggle){
+				var oldLocation = PAGE_Dispatch.assignmentMap.marker.getPosition();
+				
 				PAGE_Dispatch.assignmentMap.panTo(ev.latLng);
 				PAGE_Dispatch.assignmentMap.marker.setPosition(ev.latLng);
 				PAGE_Dispatch.assignmentMap.circle.setCenter(ev.latLng);
@@ -376,6 +378,9 @@ var PAGE_Dispatch = {
 						PAGE_Dispatch.createLocation.val(results[0].formatted_address).trigger('keyup');
 					}
 				});
+				if(google.maps.geometry.spherical.computeDistanceBetween(oldLocation, ev.latLng) > 5000){
+					PAGE_Dispatch.checkForUsers(PAGE_Dispatch.assignmentMap.circle.getRadius() || 0);
+				}
 			}
 		})
 	
@@ -641,6 +646,10 @@ var PAGE_Dispatch = {
 		function setUpMainMap(){
 			PAGE_Dispatch.map.marker = PAGE_Dispatch.makeMarker(PAGE_Dispatch.map, PAGE_Dispatch.assignmentMap.getCenter(), "New Assignment", 'active', true);
 			PAGE_Dispatch.map.circle = PAGE_Dispatch.makeCircle(PAGE_Dispatch.map, PAGE_Dispatch.assignmentMap.getCenter(), feetToMeters(parseInt(PAGE_Dispatch.createRadius.val())));
+			var oldLocation;
+			google.maps.event.addListener(PAGE_Dispatch.map.marker, 'dragstart', function(ev){
+				oldLocation = ev.latLng;
+			});
 			google.maps.event.addListener(PAGE_Dispatch.map.marker, 'drag', function(ev){
 				PAGE_Dispatch.assignmentMap.marker.setPosition(ev.latLng);
 				PAGE_Dispatch.assignmentMap.circle.setCenter(ev.latLng);
@@ -653,6 +662,9 @@ var PAGE_Dispatch = {
 						PAGE_Dispatch.createLocation.val(results[0].formatted_address).trigger('keyup');
 					}
 				});
+				if(google.maps.geometry.spherical.computeDistanceBetween(oldLocation, ev.latLng) > 5000){
+					PAGE_Dispatch.checkForUsers(PAGE_Dispatch.assignmentMap.circle.getRadius() || 0);
+				}
 			});
 		}
 		
