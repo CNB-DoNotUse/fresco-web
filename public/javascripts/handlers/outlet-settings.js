@@ -28,16 +28,22 @@ var PAGE_OutletSettings = {
 
 		if (!Stripe.card.validateCardNumber(params.number)){
 			$('.stripe-ccn').addClass('error');
+			PAGE_OutletSettings.saving = false;
+			PAGE_OutletSettings.setDisabled(false);
 			return $.snackbar({content:'Invalid credit card number'});
 		}
 		if (!Stripe.card.validateExpiry(params['exp-month'], params['exp-year'])){
 			$('.stripe-month').addClass('error');
 			$('.stripe-year').addClass('error');
-			$.snackbar({content:'Invalid expiration date'});
+			PAGE_OutletSettings.saving = false;
+			PAGE_OutletSettings.setDisabled(false);
+			return $.snackbar({content:'Invalid expiration date'});
 		}
 		if (!Stripe.card.validateCVC(params.cvv)){
 			$('.stripe-cvv').addClass('error');
-			$.snackbar({content:'Invalid CVV number'});
+			PAGE_OutletSettings.saving = false;
+			PAGE_OutletSettings.setDisabled(false);
+			return $.snackbar({content:'Invalid CVV number'});
 		}
 
 		var stripeResponseHandler = function(status, response) {

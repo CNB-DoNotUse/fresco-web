@@ -193,63 +193,8 @@
 	<h2><span>Newsroom Tools<span></h2>
 	<!-- remove style attribute -->
 	<div class="newsroom-container" style="">
-		<div class="slick">
-			<div class="slide">
-				<div class="content">
-					<h3>Dispatch</h3>
-					<h4>On Demand Visual <br class="mobile-hide">Coverage In 30 Min or Less</h4>
-					<ul>
-						<li>Mobilize the <strong><i>world's largest</i></strong> <br class="mobile-hide">
-						network of amateur <br class="mobile-hide">videographers
-						</li>
-						<li><strong>Pay only for what your use</strong></li>
-						<li>$75 per video</li>
-						<li>$30 per photo</li>
-					</ul>
-				</div>
-				<div class="screenshot">
-					<img src="https://d1dw1p6sgigznj.cloudfront.net/images/dashboard-2.jpg" alt="Fresco News - Dispatch">
-				</div>
-			</div>
-			<div class="slide">
-				<div class="content">
-					<h3>Social <br class="mobile-hide">Dashboard</h3>
-					<h4>Breaking News Content <br class="mobile-hide">That's Already Vetted + <br class="mobile-hide">Licensed</h4>
-					<ul>
-						<li>Content sourced from Twitter <br class="mobile-hide">&amp; Instagram</li>
-						<li>Searchable metadata</li>
-						<li>Use a photo with one click</li>
-						<li>Unlimited use of our library</li>
-						<li>24/7 coverage</li>
-					</ul>
-				</div>
-				<div class="screenshot">
-					<img src="https://d1dw1p6sgigznj.cloudfront.net/images/dashboard-1.jpg" alt="Fresco News - Social Dashboard">
-				</div>
-			</div>
-			<div class="slide">
-				<div class="screenshot-standalone">
-					<img src="https://d1dw1p6sgigznj.cloudfront.net/images/fresco-news-dispatch-assignment.jpg">
-				</div>
-			</div>
-			<div class="slide">
-				<div class="content-standalone">
-					<h3>Additional Features</h3>
-					<h4>Content Sourcing</h4>
-					<ul>
-						<li>Submit assignments to Fresco's dispatch system</li>
-						<li>Follow Fresco users and story feeds</li>
-						<li>Sort content into private galleries</li>
-					</ul>
-					<h4>Miscellaneous</h4>
-					<ul>
-						<li>Attach article URLs to Fresco content</li>
-						<li>Direct line of communication with Fresco's newsroom</li>
-						<li>Technical support from Fresco's product team</li>
-						<li>Browse and search content on phones and tablets</li>
-					</ul>
-				</div>
-			</div>
+		<div id="newsroom-video-container">
+			<div id="newstools-player"></div>
 		</div>
 		<div class="text-center">
 			<div data-toggle-id="partner-signup" data-toggle-role="controller" data-toggle-action="enable" onclick="document.getElementById('close-newsroom-modal').click();" class="get-in-touch">Get Started</div>
@@ -372,6 +317,25 @@
 	$(document).ready(function(){
 		$('#open-newsroom-modal').click();
 	})
+	
+	// 2. This code loads the IFrame Player API code asynchronously.
+	var tag = document.createElement('script');
+
+	tag.src = "https://www.youtube.com/iframe_api";
+	var firstScriptTag = document.getElementsByTagName('script')[0];
+	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+	// 3. This function creates an <iframe> (and YouTube player)
+	//    after the API code downloads.
+	var player;
+	function onYouTubeIframeAPIReady() {
+		player = new YT.Player('newstools-player', {
+			height: '390',
+			width: '640',
+			videoId: 'I3Dhw6YCT-U',
+			events: { }
+		});
+	}
 </script>
 <% } %>
 <script>
@@ -382,7 +346,6 @@
 
   ga('create', 'UA-58884254-1', 'auto');
   ga('send', 'pageview');
-
 </script>
 </body>
 </html>

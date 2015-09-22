@@ -452,7 +452,7 @@ footer ul > li {
   font-size: 24px; }
 
 section.dark, footer.dark {
-  color: #fff; }
+  color: #fff }
   section.dark a, section.dark a:visited, footer.dark a, footer.dark a:visited {
     color: rgba(255, 255, 255, 0.9); }
   section.dark a:hover, section.dark a:active, footer.dark a:hover, footer.dark a:active {
@@ -1094,4 +1094,21 @@ div.modal {
 {
   opacity: 1;
   color: white;
+}
+section.dark span.mdi {
+  color: #fff }
+  
+#newsroom-video-container {
+  position: relative;
+  padding-bottom: 38%;
+  padding-top: 35px;
+  height: 0;
+  overflow: hidden;
+}
+#newsroom-video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
