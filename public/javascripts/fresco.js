@@ -164,4 +164,10 @@ $(document).ready(function() {
               (e.which == 46 && $(this).val().indexOf('.') == -1)))
             e.preventDefault();
     });
+	
+	$('#sidebar-search').keypress(function(e) {
+		if(e.which == 13 && $(this).val().trim() !== '') {
+			window.location.assign('/search?q=' + $(this).val());
+		}
+	});
 });

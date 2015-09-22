@@ -23,6 +23,7 @@ var config = require('./lib/config'),
     routes_scripts = require('./routes/scripts'),
     routes_content = require('./routes/content'),
     routes_external = require('./routes/external'),
+    routes_search = require('./routes/search'),
     
     app = express(),
     FileStore = require('session-file-store')(session);
@@ -147,6 +148,7 @@ app.use('/scripts', routes_scripts);
 app.use('/content', routes_content);
 app.use('/purchases', routes_purchases);
 app.use('/external', routes_external);
+app.use('/search', routes_search);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
