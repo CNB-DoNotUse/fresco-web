@@ -290,6 +290,15 @@ var PAGE_Dispatch = {
 		PAGE_Dispatch.infoWindow.open(PAGE_Dispatch.map);
 	},
 	
+	checkForUsers: function(radius) {
+		radius = ((PAGE_Dispatch.assignmentMap.circle.getRadius() || 0) * 0.000621371192) + 15 //Convert to miles, add 15
+		PAGE_Dispatch.findUsersCenterRadius(PAGE_Dispatch.assignmentMap.circle.getCenter(), radius, function(err, users){
+			if(!users || users.length < 3) {
+				$.snackbar({content: "There aren't that many users around here. It could take a while to get coverage."});
+			}
+		});
+	},
+	
 	/*
 	Main map
 	*/
@@ -687,8 +696,8 @@ var PAGE_Dispatch = {
 				else{
 					PAGE_Dispatch.assignmentMap.panTo(place.geometry.location);
 					PAGE_Dispatch.map.panTo(place.geometry.location);
-					if(!(PAGE_Dispatch.assignmentMap.circle.getRadius() <= 100)){
-						PAGE_Dispatch.assignmentMap.setZoom(18);
+					if(PAGE_Dispatch.assignmentMap.circle.getRadius() <= 100){
+						PAGE_Dispatch.assignmentMap.setZoom(17);
 						PAGE_Dispatch.map.setZoom(18);
 					}
 					else{
@@ -700,12 +709,7 @@ var PAGE_Dispatch = {
 			else{
 				console.log("incorrect place");
 			}
-			var radius = ((PAGE_Dispatch.assignmentMap.circle.getRadius() || 0) * 0.000621371192) + 15 //Convert to miles, add 15
-			PAGE_Dispatch.findUsersCenterRadius(PAGE_Dispatch.assignmentMap.circle.getCenter(), radius, function(err, users){
-				if(!users || users.length < 3) {
-					$.snackbar({content: "There aren't that many users around here. It could take a while to get coverage."});
-				}
-			});
+			PAGE_Dispatch.checkForUsers(PAGE_Dispatch.assignmentMap.circle.getRadius() || 0);
 		});
 		
 		PAGE_Dispatch.createSubmit.on('click', function(e){
