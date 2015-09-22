@@ -687,7 +687,7 @@ var PAGE_Dispatch = {
 				else{
 					PAGE_Dispatch.assignmentMap.panTo(place.geometry.location);
 					PAGE_Dispatch.map.panTo(place.geometry.location);
-					if(!(PAGE_Dispatch.assignmentMap.circle.getRadius() >= 100)){
+					if(!(PAGE_Dispatch.assignmentMap.circle.getRadius() <= 100)){
 						PAGE_Dispatch.assignmentMap.setZoom(18);
 						PAGE_Dispatch.map.setZoom(18);
 					}
