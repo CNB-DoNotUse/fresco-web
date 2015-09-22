@@ -374,7 +374,8 @@ function createGallery(caption, tags, posts, highlight, callback){
 	});
 }
 //AJAX - Update the gallery
-function updateGallery(caption, byline, tags, posts, highlight, lat, lon, callback){
+function updateGallery(caption, byline, tags, posts, highlight, lat, lon, address, callback){
+	
 	var params = {
 		caption: caption,
 		byline: byline,
@@ -385,8 +386,10 @@ function updateGallery(caption, byline, tags, posts, highlight, lat, lon, callba
 		stories: $('#gallery-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		articles: $('#gallery-articles-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		lat: lat,
-		lon: lon
+		lon: lon, 
+		address : address
 	};
+
 	if(GALLERY_EDIT.visibility == 2 && !highlight){
 		params.visibility = 1;
 	}
@@ -809,9 +812,14 @@ function galleryEditSave(){
 
 	var coord = galleryEditMarker.getPosition(),
 		lat = coord ? coord.lat() : null,
-		lon = coord ? coord.lng() : null;
+		lon = coord ? coord.lng() : null,
+		address = undefined;
 
-	updateGallery(caption, byline, tags, posts, highlight, lat, lon, function(err, GALLERY_EDIT){
+	//Save the formatted address from the Google Maps Autocomplete
+	if(galleryEditAutocomplete.getPlace())
+		address = galleryEditAutocomplete.getPlace()['formatted_address'];
+
+	updateGallery(caption, byline, tags, posts, highlight, lat, lon, address, function(err, GALLERY_EDIT){
 		if (err){
 			$.snackbar({content: resolveError(err)});
 			console.log(err);
@@ -902,6 +910,7 @@ function galleryEditUpdate(){
 		$('#gallery-location-input').attr('placeholder', '');
 		google.maps.event.addListener(galleryEditAutocomplete, 'place_changed', function(){
 			var place = galleryEditAutocomplete.getPlace();
+			console.log(place);
 			if(place.geometry){
 				galleryEditMarker.setPosition(place.geometry.location);
 				if(place.geometry.viewport){
@@ -920,6 +929,7 @@ function galleryEditUpdate(){
 	
 	var lat = GALLERY_EDIT.posts[0].location.geo.coordinates[1];
 	var lng = GALLERY_EDIT.posts[0].location.geo.coordinates[0];
+
 	var center = new google.maps.LatLng(lat, lng);
 	
 	galleryEditMarker.setPosition(center);

@@ -26,7 +26,9 @@ router.get('/:id', function(req, res, next){console.log(req.params.id)
         }
   
         res.render('gallery', { user: req.session.user, gallery: body.data, title: 'Gallery', purchases: purchases, config: config, alerts: req.alerts });
-      }else
+      
+      }
+      else
         res.render('public_gallery', {gallery: body.data, title: 'Gallery', config: config, alerts: req.alerts})
     }
   );

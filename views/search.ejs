@@ -1,0 +1,207 @@
+<%- include('segments/console_sidebar') %>
+<div class="col-md-12 col-lg-10">
+		<!-- navbar -->
+		<nav class="navbar navbar-fixed-top navbar-default">
+			<div class="dim transparent toggle-drop toggler"></div>
+			<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
+				<span class="mdi mdi-menu icon"></span>
+			</button>
+			<div class="spacer"></div>
+			<h1 class="md-type-title">Results for "<%= query %>"</h1>
+			<li class="drop pull-right hidden-xs">
+				<button class="toggle-drop md-type-subhead">
+					By capture time<span class="mdi mdi-menu-down icon"></span>
+				</button>
+				<div class="drop-menu panel panel-default">
+					<div class="toggle-drop toggler md-type-subhead">By capture time<span class="mdi mdi-menu-up icon pull-right"></span></div>
+					<div class="drop-body">
+						<ul class="md-type-subhead">
+							<li>By capture time</li>
+							<li>By upload time</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			<li class="drop pull-right hidden-xs">
+				<button class="toggle-drop md-type-subhead">
+					Any tags<span class="mdi mdi-menu-down icon"></span>
+				</button>
+				<div class="drop-menu panel panel-default">
+					<div class="toggle-drop toggler md-type-subhead">Any tags<span class="mdi mdi-menu-up icon pull-right"></span></div>
+					<div class="drop-body">
+						<div class="chips">
+							<div class="split-cell">
+								<div class="form-group-default">
+									<input type="text" class="form-control floating-label" placeholder="Tags">
+								</div>
+								<ul class="chips">
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-minus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#art</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-minus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#toomanycooks</span>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div class="split-cell">
+								<span class="md-type-body2">Suggested tags</span>
+								<ul class="chips">
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#weather</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#fire</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#protest</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#crash</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#politics</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#tech</span>
+										</div>
+									</li>
+									<li class="chip">
+										<div class="chip">
+											<div class="icon">
+												<span class="mdi mdi-plus icon md-type-subhead"></span>
+											</div>
+											<span class="chip md-type-body1">#sports</span>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li class="drop pull-right hidden-xs">
+				<button class="toggle-drop md-type-subhead">
+					All locations<span class="mdi mdi-menu-down icon"></span>
+				</button>
+				<div class="drop-menu panel panel-default">
+					<div class="toggle-drop toggler md-type-subhead">All locations<span class="mdi mdi-menu-up icon pull-right"></span></div>
+					<div class="drop-body">
+						<ul class="md-type-subhead">
+							<li>All locations</li>
+							<li>Near me</li>
+						</ul>
+						<div class="map-group">
+							<div class="form-group-default">
+								<input type="text" class="form-control floating-label" placeholder="Location">
+								<input type="text" class="form-control floating-label" data-hint="miles" placeholder="Radius">
+							</div>
+							<div class="map-container">
+								Just pretend there's a map here ok
+							</div>
+						</div>
+						<ul class="md-type-subhead">
+							<li>Save this location</li>
+						</ul>
+						<span class="md-type-body2 md-type-black-secondary">Saved</span>
+						<ul class="md-type-subhead">
+							<li>Saved location</li>
+							<li>Saved location</li>
+							<li>Saved location</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			<li class="drop pull-right hidden-xs">
+				<button class="toggle-drop md-type-subhead">
+					Verified content<span class="mdi mdi-menu-down icon"></span>
+				</button>
+				<div class="drop-menu panel panel-default">
+					<div class="toggle-drop toggler md-type-subhead">Verified content<span class="mdi mdi-menu-up icon pull-right"></span></div>
+					<div class="drop-body">
+						<ul class="md-type-subhead">
+							<li>Verified content</li>
+							<li>All content</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+		</nav>
+		<!-- end navbar -->
+		<!-- grid -->
+		<div class="container-fluid grid">
+			<div class="col-md-8">
+				<div id="posts" class="row tiles">
+					
+				</div>
+			</div>
+			<!-- suggestions -->
+			<div class="col-md-4">
+				<h3 class="md-type-button md-type-black-secondary">Stories</h3>
+				<ul id="stories" class="md-type-subhead">
+					<!--<li><a href="">Alice's Adventures in Wonderland</a></li>-->
+				</ul>
+				<h3 class="md-type-button md-type-black-secondary">Users</h3>
+				<ul id="users" class="meta">
+					<!--<li class="meta-user">
+						<div>
+							<img class="img-circle img-responsive" src="../img/placeholder-account.jpg">
+						</div>
+						<div>
+							<span class="md-type-title">Brandon Olsen</span>
+							<span class="md-type-body1">@dotbran &bull; Fresco News</span>
+						</div>
+					</li>-->
+				</ul>
+			</div>
+			<!-- end suggestions -->
+		</div>
+		<!-- end grid -->
+	</div>
+</div>
+<%- include('segments/console_scripts') %>
+<script type="text/javascript" src="/javascripts/handlers/search.js"></script>
+<script type="text/javascript">
+	PAGE_Search.query = <%- JSON.stringify(query) %>;
+	var purchases = <%- JSON.stringify(purchases) %>;
+</script>
+</body>
+</html>

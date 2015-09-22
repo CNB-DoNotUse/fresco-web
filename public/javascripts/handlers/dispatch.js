@@ -290,6 +290,15 @@ var PAGE_Dispatch = {
 		PAGE_Dispatch.infoWindow.open(PAGE_Dispatch.map);
 	},
 	
+	checkForUsers: function(radius) {
+		radius = ((PAGE_Dispatch.assignmentMap.circle.getRadius() || 0) * 0.000621371192) + 15 //Convert to miles, add 15
+		PAGE_Dispatch.findUsersCenterRadius(PAGE_Dispatch.assignmentMap.circle.getCenter(), radius, function(err, users){
+			if(!users || users.length < 3) {
+				$.snackbar({content: "There aren't that many users around here. It could take a while to get coverage."});
+			}
+		});
+	},
+	
 	/*
 	Main map
 	*/
@@ -351,6 +360,8 @@ var PAGE_Dispatch = {
 		var geocoder = new google.maps.Geocoder();
 		google.maps.event.addListener(PAGE_Dispatch.map, 'click', function(ev){
 			if(!PAGE_Dispatch.initialToggle){
+				var oldLocation = PAGE_Dispatch.assignmentMap.marker.getPosition();
+				
 				PAGE_Dispatch.assignmentMap.panTo(ev.latLng);
 				PAGE_Dispatch.assignmentMap.marker.setPosition(ev.latLng);
 				PAGE_Dispatch.assignmentMap.circle.setCenter(ev.latLng);
@@ -367,6 +378,9 @@ var PAGE_Dispatch = {
 						PAGE_Dispatch.createLocation.val(results[0].formatted_address).trigger('keyup');
 					}
 				});
+				if(google.maps.geometry.spherical.computeDistanceBetween(oldLocation, ev.latLng) > 5000){
+					PAGE_Dispatch.checkForUsers(PAGE_Dispatch.assignmentMap.circle.getRadius() || 0);
+				}
 			}
 		})
 	
@@ -632,6 +646,10 @@ var PAGE_Dispatch = {
 		function setUpMainMap(){
 			PAGE_Dispatch.map.marker = PAGE_Dispatch.makeMarker(PAGE_Dispatch.map, PAGE_Dispatch.assignmentMap.getCenter(), "New Assignment", 'active', true);
 			PAGE_Dispatch.map.circle = PAGE_Dispatch.makeCircle(PAGE_Dispatch.map, PAGE_Dispatch.assignmentMap.getCenter(), feetToMeters(parseInt(PAGE_Dispatch.createRadius.val())));
+			var oldLocation;
+			google.maps.event.addListener(PAGE_Dispatch.map.marker, 'dragstart', function(ev){
+				oldLocation = ev.latLng;
+			});
 			google.maps.event.addListener(PAGE_Dispatch.map.marker, 'drag', function(ev){
 				PAGE_Dispatch.assignmentMap.marker.setPosition(ev.latLng);
 				PAGE_Dispatch.assignmentMap.circle.setCenter(ev.latLng);
@@ -644,6 +662,9 @@ var PAGE_Dispatch = {
 						PAGE_Dispatch.createLocation.val(results[0].formatted_address).trigger('keyup');
 					}
 				});
+				if(google.maps.geometry.spherical.computeDistanceBetween(oldLocation, ev.latLng) > 5000){
+					PAGE_Dispatch.checkForUsers(PAGE_Dispatch.assignmentMap.circle.getRadius() || 0);
+				}
 			});
 		}
 		
@@ -687,8 +708,8 @@ var PAGE_Dispatch = {
 				else{
 					PAGE_Dispatch.assignmentMap.panTo(place.geometry.location);
 					PAGE_Dispatch.map.panTo(place.geometry.location);
-					if(!(PAGE_Dispatch.assignmentMap.circle.getRadius() >= 100)){
-						PAGE_Dispatch.assignmentMap.setZoom(18);
+					if(PAGE_Dispatch.assignmentMap.circle.getRadius() <= 100){
+						PAGE_Dispatch.assignmentMap.setZoom(17);
 						PAGE_Dispatch.map.setZoom(18);
 					}
 					else{
@@ -700,12 +721,7 @@ var PAGE_Dispatch = {
 			else{
 				console.log("incorrect place");
 			}
-			var radius = ((PAGE_Dispatch.assignmentMap.circle.getRadius() || 0) * 0.000621371192) + 15 //Convert to miles, add 15
-			PAGE_Dispatch.findUsersCenterRadius(PAGE_Dispatch.assignmentMap.circle.getCenter(), radius, function(err, users){
-				if(!users || users.length < 3) {
-					$.snackbar({content: "There aren't that many users around here. It could take a while to get coverage."});
-				}
-			});
+			PAGE_Dispatch.checkForUsers(PAGE_Dispatch.assignmentMap.circle.getRadius() || 0);
 		});
 		
 		PAGE_Dispatch.createSubmit.on('click', function(e){
