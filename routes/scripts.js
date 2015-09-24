@@ -170,6 +170,17 @@ router.get('/assignment/getAll', function(req, res, next){
     res.json(body).end();
   });
 });
+router.get('/assignment/search', function(req, res, next){
+  var api = requestJson.createClient(config.API_URL);
+  api.headers['authtoken'] = req.session.user.token;
+  var params = Object.keys(req.query).map(function(key){
+    return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
+  }).join('&');
+
+  api.get('/v1/assignment/search?' + params, function(err, response, body){
+    res.json(body).end();
+  });
+});
 router.post('/assignment/update', function(req, res, next){
   if (!req.session.user || (!req.session.user.outlet && req.session.user.rank < config.RANKS.CONTENT_MANAGER))
     return res.status(403).json({err: 'ERR_UNAUTHORIZED'}).end();
@@ -839,8 +850,11 @@ router.get('/post/gallery', function(req, res, next){
 router.get('/story/search', function(req, res, next){
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
+  var params = Object.keys(req.query).map(function(key){
+    return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
+  }).join('&');
 
-  api.get('/v1/story/search?q=' + req.query.q, function(err, response, body){
+  api.get('/v1/story/search?' + params, function(err, response, body){
     res.json(body).end();
   });
 });
@@ -952,6 +966,17 @@ router.post('/user/register', function(req, res, next) {console.log(req.body);
     req.session.save(function(){
       res.json(login_body).end();
     });
+  });
+});
+router.get('/user/search', function(req, res, next){
+  var api = requestJson.createClient(config.API_URL);
+  api.headers['authtoken'] = req.session.user.token;
+  var params = Object.keys(req.query).map(function(key){
+    return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
+  }).join('&');
+
+  api.get('/v1/user/search?' + params, function(err, response, body){
+    res.json(body).end();
   });
 });
 router.post('/user/unfollow', function(req, res, next) {
