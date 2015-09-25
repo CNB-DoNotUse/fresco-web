@@ -194,6 +194,8 @@ var PAGE_Search = {
 $(document).ready(function() {
 	PAGE_Search.refresh();
 	
+	$('#sidebar-search').val(PAGE_Search.query);
+	
 	$('.filter-type').click(function(){
 		$('.filter-text').text($(this).text());
 		if($(this).text() == 'Verified content' && !PAGE_Search.verified){
