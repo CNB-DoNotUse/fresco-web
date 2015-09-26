@@ -1871,3 +1871,11 @@ nav, .mdi, .sidebar {
   -ms-user-select: none;
   user-select: none;
 }
+
+.mdi-close-circle {
+  transition: transform 300ms;
+}
+
+.mdi-close-circle.addback {
+  transform: rotate(45deg);
+}
