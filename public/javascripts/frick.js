@@ -32,12 +32,20 @@ jQuery.fn.frick = function(option1, option2){
         
         o.find('.frick-frame > a').on('click', function(){
             var _ = $(this).parent();
-
+            
             var index = _.data('slick-index');
 
             if (index != null){
                 _.toggleClass('frick-delete');
                 _.parents('.frick').find('.slick-dots').children(':nth-child(' + (index + 1) + ')').toggleClass('frick-delete');
+                if ($(this).children('.icon').hasClass('mdi-close-circle')) {
+                    $(this).children('.icon').removeClass('mdi-close-circle');
+                    $(this).children('.icon').addClass('mdi-plus-circle');
+                }
+                else {
+                    $(this).children('.icon').addClass('mdi-close-circle');
+                    $(this).children('.icon').removeClass('mdi-plus-circle');
+                }
             }
         });
 
