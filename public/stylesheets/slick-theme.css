@@ -157,7 +157,7 @@
     margin: auto;
 }
 .frick-delete > .frick-overlay {
-    opacity: 0.54;
+    opacity: 0.30;
 }
 .frick-delete > .frick-overlay > span {
     opacity: 0.75;
