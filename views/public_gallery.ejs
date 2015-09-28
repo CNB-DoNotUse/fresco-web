@@ -30,6 +30,7 @@
 		<a id="wordmark" href="/"><img alt="Fresco" src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-nav.png"></a>
 	</nav>
 	<section class="dark nohover" id="highlights">
+		
 		<div class="slick slick_gallery">
 			<% for (var index in gallery.posts){ %>
 				<% if (index > 0) { %>
@@ -38,13 +39,17 @@
 				<div class="slide">
 				<% } %>
 					<div>
-						<img class="carousel" data-lazy="<%= config.formatImg(gallery.posts[index].image, 'large') %>" width="800" height="500">
+						<% if(index == 0) {%>
+							<img class="carousel" src="<%= config.formatImg(gallery.posts[index].image, 'large') %>">
+						<%} else{ %>
+							<img class="carousel" data-lazy="<%= config.formatImg(gallery.posts[index].image, 'large') %>">
+						<% } %>
 					</div>
 					<div class="meta">
 						<table>
 							<thead>
 								<tr>
-									<th><img class="lazy" src="<%= gallery.posts[index].owner ? gallery.posts[index].owner.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png' : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png' %>" width="36" height="36"></th>
+									<th><img class="lazy" src="<%= gallery.posts[index].owner ? gallery.posts[index].owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png' %>" width="36" height="36"></th>
 									<th><%= gallery.posts[index].byline %></th>
 								</tr>
 							</thead>
@@ -85,8 +90,13 @@
 			bottom: 0;
 			width: 100%;
 		}
-		.slick_gallery{
-			min-height:300px;
+		.no-select{
+		    -webkit-touch-callout: none;
+		    -webkit-user-select: none;
+		    -khtml-user-select: none;
+		    -moz-user-select: none;
+		    -ms-user-select: none;
+		    user-select: none;
 		}
 		#gallery-info {
 			padding: 24px;
@@ -113,7 +123,6 @@
 			align-items: center;
 			flex-direction: column;
 		}
-		
 		.slide.hide {
 			display: none;
 		}
@@ -159,7 +168,6 @@
 	<script type="text/javascript" src="/javascripts/jquery.min.js"></script>
 	<script type="text/javascript" src="/javascripts/jquery.lazyload.min.js"></script>
 	<script type="text/javascript" src="/javascripts/slick.min.js"></script>
-	<script type="text/javascript" src="/javascripts/handlers/index.js"></script>
 	<script type="text/javascript" src="/javascripts/jquery.transit.min.js"></script>
 	<script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/javascripts/material.min.js"></script>
