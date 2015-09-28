@@ -341,6 +341,23 @@ $(document).ready(function(){
 			return false;
 		}
 	});
+	
+	$('#sidebar-search').keypress(function(e) {
+		if(e.which == 13 && $(this).val().trim() !== '') {
+			var qstr = $(this).val().split(' '),
+				tags = [],
+				query = [];
+			
+			for (var index in qstr){
+				if (qstr[index][0] === '#' )
+					tags.push(qstr[index].substr(1, qstr[index].length));
+				else
+					query.push(qstr[index]);
+			}
+			
+			window.location.assign('/search?q=' + query.join(' ') + (tags.length > 0 ? '&tags=' + tags.join(',') : ''));
+		}
+	});
 });
 
 //Post selected via multiselect

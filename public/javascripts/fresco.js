@@ -164,21 +164,4 @@ $(document).ready(function() {
               (e.which == 46 && $(this).val().indexOf('.') == -1)))
             e.preventDefault();
     });
-	
-	$('#sidebar-search').keypress(function(e) {
-		if(e.which == 13 && $(this).val().trim() !== '') {
-			var qstr = $(this).val().split(' '),
-				tags = [],
-				query = [];
-			
-			for (var index in qstr){
-				if (qstr[index][0] === '#' )
-					tags.push(qstr[index].substr(1, qstr[index].length));
-				else
-					query.push(qstr[index]);
-			}
-			
-			window.location.assign('/search?q=' + query.join(' ') + (tags ? '&tags=' + tags.join(',') : ''));
-		}
-	});
 });

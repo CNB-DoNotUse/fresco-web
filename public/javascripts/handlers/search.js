@@ -1,5 +1,6 @@
 var PAGE_Search = {
 	query: '',
+	tags: '',
 	purchases: [],
 	verified: true,
 	makeStoryListItem: function(story) {
