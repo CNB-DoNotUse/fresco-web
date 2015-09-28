@@ -14,9 +14,10 @@ router.get('/', function(req, res, next){
 		});
 	}
 
-	var query = req.query.q;
+	var query = req.query.q,
+		tags = req.query.tags || '';
 
-	res.render('search', { user: req.session.user, query: query, title: query, purchases: purchases, config: config, alerts: req.alerts });
+	res.render('search', { user: req.session.user, query: query, tags: tags, title: query, purchases: purchases, config: config, alerts: req.alerts });
 });
 
 module.exports = router;

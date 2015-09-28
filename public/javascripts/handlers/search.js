@@ -2,7 +2,6 @@ var PAGE_Search = {
 	query: '',
 	purchases: [],
 	verified: true,
-	tags: '',
 	makeStoryListItem: function(story) {
 		var elemText = '<li><a href="/story/' + story._id + '">' + story.title + '</a></li>';
 		return $(elemText);
@@ -184,6 +183,8 @@ var PAGE_Search = {
 		$('#tag-dropdown').text(tags.length > 0 ? 'Tags: ' + tags.join(', ') : 'Any tags');
 		PAGE_Search.tags = tags.join(',');
 		
+		window.history.pushState({}, null, '?q=' + encodeURIComponent(PAGE_Search.query) + (tags.length > 0 ? '&tags=' + encodeURIComponent(PAGE_Search.tags) : ''));
+		
 		PAGE_Search.refreshStories();
 		PAGE_Search.refreshPosts();
 		PAGE_Search.refreshAssignments();
@@ -192,6 +193,9 @@ var PAGE_Search = {
 };
 
 $(document).ready(function() {
+	if (PAGE_Search.tags) for (var index in PAGE_Search.tags.split(','))
+		addTagToQuery(PAGE_Search.tags.split(',')[index]);
+		
 	PAGE_Search.refresh();
 	
 	$('#sidebar-search').val(PAGE_Search.query);
@@ -210,13 +214,8 @@ $(document).ready(function() {
 	});
 	
 	$('#tag-filter-input').change(function(){
-		var elem = makeTag('#' + $(this).val());
-		$('#tag-filter').append(elem);
-		$(this).val('');
+		addTagToQuery($(this).val());
 		PAGE_Search.refresh();
-		elem.click(function(){
-			PAGE_Search.refresh();
-		});
 	});
 	
 	$('.container-fluid.grid').scroll(function() {
@@ -224,3 +223,12 @@ $(document).ready(function() {
 			PAGE_Search.refreshPosts();
 	});
 });
+
+function addTagToQuery(tag){
+	var elem = makeTag('#' + tag);
+	$('#tag-filter').append(elem);
+	$(this).val('');
+	elem.click(function(){
+		PAGE_Search.refresh();
+	});
+}

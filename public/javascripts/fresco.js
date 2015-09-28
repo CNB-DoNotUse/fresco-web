@@ -76,7 +76,7 @@ function getTimeAgo(now, timestamp){
     var intervals = {
 	        year: 31556926, month: 2629744, week: 604800, day: 86400, hour: 3600, minute: 60
 		};
-
+		
     var diff = now - timestamp;
 	diff = Math.floor(diff / 1000);
 
@@ -167,7 +167,18 @@ $(document).ready(function() {
 	
 	$('#sidebar-search').keypress(function(e) {
 		if(e.which == 13 && $(this).val().trim() !== '') {
-			window.location.assign('/search?q=' + $(this).val());
+			var qstr = $(this).val().split(' '),
+				tags = [],
+				query = [];
+			
+			for (var index in qstr){
+				if (qstr[index][0] === '#' )
+					tags.push(qstr[index].substr(1, qstr[index].length));
+				else
+					query.push(qstr[index]);
+			}
+			
+			window.location.assign('/search?q=' + query.join(' ') + (tags ? '&tags=' + tags.join(',') : ''));
 		}
 	});
 });

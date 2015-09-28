@@ -689,9 +689,9 @@ function buildPost(post, purchased, size, forsale){
 				+ icons +
 			'</div>\
 			<div>\
-				<div class="tile-info">\
-					<span class="md-type-body2">' + ( post.location.address || 'No Location' )  +'</span>\
-					<span class="md-type-caption">' +  getTimeAgo(Date.now(), post.time_created) + '</span>\
+				<div class="tile-info">'
+					+ ((post.location && post.location.address) ? '<span class="md-type-body2">' + post.location.address + '</span>' : '')
+					+ '<span class="md-type-caption">' +  getTimeAgo(Date.now(), post.time_created) + '</span>\
 				</div>\
 				<span class="mdi ' + (post.video == null ? "mdi-file-image-box" : 'mdi-movie') + ' icon ' + (purchased ? 'available' : 'md-type-black-disabled') + ' pull-right"></span>\
 			</div>\
