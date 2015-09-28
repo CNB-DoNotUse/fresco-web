@@ -25,8 +25,16 @@ router.get('/:id', function(req, res, next){
         res.redirect(req.headers['Referer'] || config.DASH_HOME);
       });
     }
+    
+    var purchases = null;
+    if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified){
+      purchases = req.session.user.outlet.purchases || [];
+      purchases = purchases.map(function(purchase){
+        return purchase.post;
+      });
+    }
 
-    res.render('user', { title: body.data.firstname + ' ' + body.data.lastname, user: req.session.user, page_user: body.data, config: config, alerts: req.alerts });
+    res.render('user', { title: body.data.firstname + ' ' + body.data.lastname, user: req.session.user, page_user: body.data, config: config, purchases: purchases, alerts: req.alerts });
   });
 });
 
@@ -34,8 +42,16 @@ router.get('/:id', function(req, res, next){
 router.get('/', function(req, res, next){
   if (!req.session || !req.session.user)
     return res.redirect('/');
+    
+  var purchases = null;
+	if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified){
+		purchases = req.session.user.outlet.purchases || [];
+		purchases = purchases.map(function(purchase){
+			return purchase.post;
+		});
+	}
   
-  res.render('user', { title: req.session.user.firstname + ' ' + req.session.user.lastname, user: req.session.user, page_user: req.session.user, config: config, alerts: req.alerts });
+  res.render('user', { title: req.session.user.firstname + ' ' + req.session.user.lastname, user: req.session.user, page_user: req.session.user, config: config, purchases: purchases, alerts: req.alerts });
 });
 
 module.exports = router;

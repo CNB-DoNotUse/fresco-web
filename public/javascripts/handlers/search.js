@@ -216,6 +216,7 @@ $(document).ready(function() {
 	
 	$('#tag-filter-input').change(function(){
 		addTagToQuery($(this).val());
+		$(this).val('');
 		PAGE_Search.refresh();
 	});
 	

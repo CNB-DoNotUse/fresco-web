@@ -80,6 +80,7 @@
 <script type="text/javascript" src="/javascripts/handlers/user.js"></script>
 <script type="text/javascript">
 	PAGE_User.user = { _id: '<%= page_user._id %>' };
+	PAGE_User.purchases = <%- JSON.stringify(purchases || []) %>;
 </script>
 </body>
 </html>

@@ -22,7 +22,7 @@ var PAGE_User = {
 				var posts = result.data;
 				
 				for (var index in posts)
-					PAGE_User.postsElm.append(buildPost(posts[index], true, 'large'));
+					PAGE_User.postsElm.append(buildPost(posts[index], PAGE_User.purchases.indexOf(posts[index]._id) >= 0, 'large'));
 			
 				PAGE_User.offset += posts.length;
 			},
