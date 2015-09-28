@@ -813,11 +813,7 @@ function galleryEditSave(){
 	var coord = galleryEditMarker.getPosition(),
 		lat = coord ? coord.lat() : null,
 		lon = coord ? coord.lng() : null,
-		address = undefined;
-
-	//Save the formatted address from the Google Maps Autocomplete
-	if(galleryEditAutocomplete.getPlace())
-		address = galleryEditAutocomplete.getPlace()['formatted_address'];
+		address = $('#gallery-location-input').val();
 
 	updateGallery(caption, byline, tags, posts, highlight, lat, lon, address, function(err, GALLERY_EDIT){
 		if (err){
@@ -1211,7 +1207,7 @@ function createStoryView(story, half){
 				<div class="hover">\
 					<p class="md-type-body1">' + (story.caption || '') + '</p>\
 					<ul class="md-type-body2">\
-						<li>' +  story.galleries.length +  (story.galleries.length == 1 ? ' gallery' : ' galleries') +'</li>\
+						<li>' +  story.gallery_count +  (story.gallery_count == 1 ? ' gallery' : ' galleries') +'</li>\
 					</ul>\
 				</div>\
 				' + images + '\

@@ -38,7 +38,7 @@
   font-size: 48px;
   margin-top: 25px;
   margin-left: 96px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.87);
+  /* border-bottom: 1px solid rgba(0, 0, 0, 0.87); */
   position: relative;
   height: 42px;
 }
@@ -51,7 +51,7 @@
 }
 
 #newsroom-tools h2, #consumer-app h2, #partner-signup h2 {
-  color: #ffc600;
+  color: rgba(0, 0, 0, 0.87);
 }
 
 #newsroom-tools h3, #consumer-app h3, #partner-signup h3 {

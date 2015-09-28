@@ -126,7 +126,7 @@ var PAGE_Admin = {
 		}
 	},
 	Gallery: {
-		verify: function(options, cb){
+		verify: function(options, cb){console.log(options);
 			$.ajax({
 				url: '/scripts/gallery/verify',
 				method: 'post',
@@ -593,7 +593,7 @@ var PAGE_Admin = {
 					map.map.fitBounds(place.geometry.viewport);
 				}else{
 					map.map.panTo(place.geometry.location);
-					if(!(map.circle || map.circle.getRadius() >= 100))
+					if(!(map.circle && map.circle.getRadius() >= 100))
 						map.map.setZoom(18);
 					else
 						map.map.fitBounds(map.circle.getBounds());
@@ -1048,12 +1048,11 @@ $(document).ready(function(){
 		if (PAGE_Admin.importsCaption.val().trim() != gallery.caption)
 			params.caption = PAGE_Admin.importsCaption.val().trim();
 
-		var gmap_place = PAGE_Admin.importsGoogleMap.autocomplete.getPlace();
 		var coord = PAGE_Admin.importsGoogleMap.marker.getPosition();
 		params.lat = coord ? coord.lat() : null;
 		params.lon = coord ? coord.lng() : null;
-		if(gmap_place)	
-			params.address = gmap_place.formatted_address;
+		if(PAGE_Admin.importsLocation.val())	
+			params.address = PAGE_Admin.importsLocation.val();
 
 		PAGE_Admin.Gallery.verify(params, function(err){
 			if (err)
