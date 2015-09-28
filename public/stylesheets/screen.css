@@ -334,7 +334,7 @@ input:disabled {
   padding: 0;
 }
 /* line 221, ../sass/_rules.scss */
-.meta .meta-user > div > img {
+.meta .meta-user > div img {
   width: 48px;
   margin-right: 16px;
 }
@@ -1870,4 +1870,12 @@ nav, .mdi, .sidebar {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.mdi-close-circle {
+  transition: transform 300ms;
+}
+
+.mdi-close-circle.addback {
+  transform: rotate(45deg);
 }

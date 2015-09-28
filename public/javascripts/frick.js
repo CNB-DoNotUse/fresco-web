@@ -32,12 +32,13 @@ jQuery.fn.frick = function(option1, option2){
         
         o.find('.frick-frame > a').on('click', function(){
             var _ = $(this).parent();
-
+            
             var index = _.data('slick-index');
 
             if (index != null){
                 _.toggleClass('frick-delete');
                 _.parents('.frick').find('.slick-dots').children(':nth-child(' + (index + 1) + ')').toggleClass('frick-delete');
+                $(this).children('.icon').toggleClass('addback');
             }
         });
 
