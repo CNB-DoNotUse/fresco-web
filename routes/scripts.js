@@ -854,7 +854,7 @@ router.get('/story/search', function(req, res, next){
     return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
   }).join('&');
 
-  api.get('/v1/story/search?' + params, function(err, response, body){
+  api.get('/v1/story/autocomplete?' + params, function(err, response, body){console.log(err, body);
     res.json(body).end();
   });
 });

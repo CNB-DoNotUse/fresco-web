@@ -125,7 +125,7 @@ $(document).ready(function(){
 				if (result.err)
 					return this.error(null, null, result.err);
 				
-				window.location.replace('/highlights');
+				window.location.replace('/content');
 			},
 			error: function(xhr, status, error){
 				console.log(error);
