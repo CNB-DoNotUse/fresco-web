@@ -123,7 +123,7 @@
 }
 
 #partner-signup p {
-  margin-bottom: 10px;
+  margin: 10px 0;
 }
 
 #partner-signup ul {
@@ -213,6 +213,25 @@
 
 .text-center {
   text-align: center;
+}
+
+.get-in-touch {
+  margin-bottom: 20px;
+}
+
+#newsroom-video-container {
+  position: relative;
+  padding-bottom: 34%;
+  padding-top: 35px;
+  height: 0;
+  overflow: hidden;
+}
+#newsroom-video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 @media only screen and (max-width: 1024px) {

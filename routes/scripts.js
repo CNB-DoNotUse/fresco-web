@@ -358,7 +358,7 @@ router.get('/gallery/search', function(req, res, next){
     res.json(body).end();
   });
 });
-router.post('/gallery/skip', function(req, res, next){console.log(req.body);
+router.post('/gallery/skip', function(req, res, next){
   req.body.visibility = config.VISIBILITY.PENDING;
   req.body.rated = '1';
   var api = requestJson.createClient(config.API_URL);
@@ -379,7 +379,7 @@ router.post('/gallery/update', function(req, res, next){
       res.json(body).end();
     });
 });
-router.post('/gallery/verify', function(req, res, next){console.log(req.body);
+router.post('/gallery/verify', function(req, res, next){
   req.body.visibility = config.VISIBILITY.VERIFIED;
   req.body.rated = '1';
   var api = requestJson.createClient(config.API_URL);
@@ -508,6 +508,20 @@ router.post('/outlet/create', function(req, res, next){
       req.session.save(function(){
         res.json({err: err}).end();
       });
+    }
+  );
+});
+router.post('/outlet/dispatch/request', function(req, res, next){
+  if (!req.session.user || !req.session.user.outlet)
+    return res.status(402).json({err: 'ERR_UNAUTHORIZED'}).end();
+
+  var api = requestJson.createClient(config.API_URL);
+  api.headers['authtoken'] = req.session.user.token;
+  api.post(
+    '/v1/outlet/dispatch/request',
+    req.body,
+    function(error, response, body){
+      res.json({err: error || (!body ? 'ERR_EMPTY_BODY' : null) || body.err}).end();
     }
   );
 });

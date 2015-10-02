@@ -27,7 +27,7 @@ jQuery.fn.frick = function(option1, option2){
             speed: 300,
             slidesToShow: 1,
             slidesToScroll: 1,
-            adaptiveHeight: true
+            adaptiveHeight: false
         });
         
         o.find('.frick-frame > a').on('click', function(){

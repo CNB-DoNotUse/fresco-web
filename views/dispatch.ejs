@@ -59,7 +59,8 @@
 <!-- end map -->
 <!-- cards -->
 <div class="cards">
-	<div class="card panel">
+	<% if (user.outlet && user.outlet.dispatch_enabled) { %>
+	<div class="card panel assignments-panel">
 		<div class="card-head small">
 			<div class="tab-control full">
 				<button id="active-button" class="btn btn-flat toggled">
@@ -135,14 +136,46 @@
 			</a>
 		</div>
 	</div>
+	<% }else{ %>
+	<div class="card panel bodyless">
+		<!--<div class="card-head small">
+		</div>-->
+		<div class="card-foot center toggle-card">
+			<button type="button" id="open-request-access-window" class="btn btn-flat toggle-card toggler">REQUEST ACCESS TO DISPATCH</button>
+		</div>
+		<div class="card-body">
+			<!--<div class="tabs full">
+				<div class="tab toggled">
+					<div id="active-list" class="list"></div>
+				</div>
+				<div class="tab">
+					<div id="pending-list" class="list"></div>
+				</div>
+				<div class="tab">
+					<div id="history-list" class="list"></div>
+				</div>
+			</div>-->
+		</div>
+	</div>
+	<div class="card panel toggle-card toggled">
+		<div class="card-head">
+			<span class="md-type-title">Request Access</span>
+			<span id="close-request-access-window" class="mdi mdi-close pull-right icon toggle-card toggler"></span>
+		</div>
+		<div class="card-foot center">
+			<button id="request-dispatch-submit" type="button" class="btn btn-flat toggle-card toggler">Submit</button>
+		</div>
+		<div class="card-body">
+			<div class="form-group-default">
+				<textarea id="request-access-comment" type="text" class="form-control floating-label" placeholder="Comments (optional)"></textarea>
+			</div>
+		</div>
+	</div>
+	<% } %>
 </div>
 <!-- end cards -->
 </div>
 </div>
-<%- include('segments/console_scripts') %>
-<script type="text/javascript" src="/javascripts/moment.min.js"></script>
-<script type="text/javascript" src="/javascripts/handlers/dispatch.js"></script>
-<script type="text/javascript">PAGE_Dispatch.outlet = <%- JSON.stringify(user.outlet || {}) %>;</script>
 <style>
     .map-group { height: 100% }
     .map-group > .map-container { height: 100% }
@@ -197,5 +230,9 @@
 		color: #0077ff !important;
 	}
 </style>
+<%- include('segments/console_scripts') %>
+<script type="text/javascript" src="/javascripts/moment.min.js"></script>
+<script type="text/javascript" src="/javascripts/handlers/dispatch.js"></script>
+<script type="text/javascript">PAGE_Dispatch.outlet = <%- JSON.stringify(user.outlet || {}) %>;</script>
 </body>
 </html>

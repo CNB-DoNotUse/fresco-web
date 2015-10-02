@@ -126,7 +126,7 @@ var PAGE_Admin = {
 		}
 	},
 	Gallery: {
-		verify: function(options, cb){console.log(options);
+		verify: function(options, cb){
 			$.ajax({
 				url: '/scripts/gallery/verify',
 				method: 'post',

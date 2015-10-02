@@ -2,6 +2,8 @@
 /// <reference path="../../../typings/jquery/jquery.d.ts" />
 
 var PAGE_Dispatch = {
+	enabled: $('.assignments-panel').length > 0,
+	
 	createTitle: $('#add-assignment-title'),
 	createCaption: $('#add-assignment-description'),
 	createLocation: $('#add-assignment-location-input'),
@@ -22,6 +24,8 @@ var PAGE_Dispatch = {
 	// 	});
 	// },
 	getExpiredAssignments: function(offset, limit, callback){
+		if (!PAGE_Dispatch.enabled) return callback(null, []);
+		
 		$.ajax("/scripts/assignment/expired", {
 			data: {
 				offset: offset,
@@ -44,6 +48,8 @@ var PAGE_Dispatch = {
 	},
 	
 	findAssignments: function(map, callback){
+		if (!PAGE_Dispatch.enabled) return callback(null, []);
+		
 		var bounds = map.getBounds();
 		var sw = bounds.getSouthWest(); 
 		var ne = bounds.getNorthEast();
@@ -74,6 +80,8 @@ var PAGE_Dispatch = {
 	},
 	
 	addAssignment: function(assignment, callback){
+		if (!PAGE_Dispatch.enabled) return callback(null, {});
+		
 		$.ajax({
 			url: "/scripts/assignment/create",
 			contentType: 'application/json',
@@ -130,6 +138,10 @@ var PAGE_Dispatch = {
 	
 	findUsers: function(map, callback){
 		var bounds = map.getBounds();
+		
+		if (!bounds)
+			callback(null, []);
+		
 		var sw = bounds.getSouthWest(); 
 		var ne = bounds.getNorthEast();
 		var proximitymeter = google.maps.geometry.spherical.computeDistanceBetween (sw, ne);
@@ -784,7 +796,7 @@ var PAGE_Dispatch = {
 $(function(){
 	google.maps.event.addDomListener(window, 'load', PAGE_Dispatch.initialize);
 	
-	$('.card-body input, .card-body textarea').on('change textInput input', function(e){
+	if (PAGE_Dispatch.enabled) $('.card-body input, .card-body textarea').on('change textInput input', function(e){
 		if (PAGE_Dispatch.createTitle.val() === '' || 
 			PAGE_Dispatch.createCaption.val() === '' || 
 			PAGE_Dispatch.createLocation.val() === '' || 
@@ -798,10 +810,35 @@ $(function(){
 		
 		PAGE_Dispatch.createSubmit.attr('disabled', false);
 	});
+	else $('#request-dispatch-submit').on('click', function(e){
+		var _this = $(this);
+		_this.prop('disabled', true);
+		
+		$.ajax({
+			url: '/scripts/outlet/dispatch/request',
+			contentType: 'application/json',
+			data: JSON.stringify({ comment: $('#request-access-comment').val() }),
+			method: 'POST',
+			success: function(result){
+				if (result.err)
+					return this.error(null, null, result.err);
+				
+				$('#request-access-comment').val('')
+				$.snackbar({content: 'Your request to access Fresco Dispatch has been sent!  We will be in touch soon!'});
+			},
+			error: function(xhr, status, error){
+				e.preventDefault();
+				$.snackbar({content: resolveError(error, 'There was an error processing your request, please wait and try again.')});
+			},
+			complete: function(){
+				_this.prop('disabled', false);
+			}
+		});
+	});
 	
 	$(".toggle-card.toggler").click(function() {
 		$(".toggle-card").toggleClass("toggled");
 		$(".cards").animate({ scrollTop: $(".cards")[0].scrollHeight}, 300);
-		PAGE_Dispatch.assignmentToggled();
+		if (PAGE_Dispatch.enabled) PAGE_Dispatch.assignmentToggled();
 	});
 });

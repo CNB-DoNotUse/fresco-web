@@ -120,9 +120,9 @@ function resolveError(err, _default){
 		case 'ERR_INCOMPLETE':
 			return 'There was an error while completing your purchase.';
 		case 'ERR_MISSING_PAYMENT_INFO':
-			return 'Payment Info Not Found'
+			return 'Payment info not found.';
 		default:
-			return _default || err.capitalize();
+			return _default || err.toString().capitalize();
 	}
 }
 	
@@ -164,4 +164,9 @@ $(document).ready(function() {
               (e.which == 46 && $(this).val().indexOf('.') == -1)))
             e.preventDefault();
     });
+	
+	//Auto-resize textarea fields
+	$('textarea').on('change textInput input', function(e){
+		$(this).css('height', Math.min($(this).prop('scrollHeight'), 250) + 'px');
+	});
 });

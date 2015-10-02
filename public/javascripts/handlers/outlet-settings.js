@@ -127,7 +127,7 @@ var PAGE_OutletSettings = {
 
 	invite: function(e){
 		var textarea = $('textarea.outlet-invite'),
-				button = $('button.outlet-invite');
+			button = $('button.outlet-invite');
 
 		textarea.prop('disabled', true);
 		button.prop('disabled', true);
@@ -136,6 +136,9 @@ var PAGE_OutletSettings = {
 
 		if (addresses == '' || (addresses.length == 1 && addresses[0].split() == '')){
 			e.preventDefault();
+			textarea.prop('disabled', false);
+			button.prop('disabled', false);
+			$.snackbar({content:'Must invite at least 1 member'});
 			return false;
 		}
 

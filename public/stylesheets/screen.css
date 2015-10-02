@@ -1860,6 +1860,10 @@ a.md-type-white:disabled {
   pointer-events: all;
 }
 
+.card.bodyless .card-body {
+  padding: 0;
+}
+
 .list-item img.img-circle {
   width: 40px;
   height: 40px;
