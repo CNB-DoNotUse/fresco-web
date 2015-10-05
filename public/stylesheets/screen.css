@@ -964,7 +964,11 @@ div.list > div.list-item.active {
 /* line 707, ../sass/_rules.scss */
 .navbar > .drop > .drop-menu > .drop-body > .map-group {
   width: 320px;
-  padding: 10px 24px 0;
+  /*padding: 10px 24px 0;*/
+  padding: 10px 24px;
+}
+.navbar > .drop > .drop-menu > .drop-body > .map-group > .map-container {
+  padding-bottom: 100%;
 }
 /* line 711, ../sass/_rules.scss */
 .navbar > .drop > .drop-menu > .drop-body > .chips {

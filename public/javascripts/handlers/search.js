@@ -3,6 +3,20 @@ var PAGE_Search = {
 	tags: '',
 	purchases: [],
 	verified: true,
+	searchGoogleMap: {
+		marker: null,
+		circle: true,
+		map: null,
+		autocomplete: null,
+		classes: {
+			location: 'search-location',
+			container: 'search-map-container',
+			radius:	'search-radius'
+		}
+	},
+	
+	
+	
 	makeStoryListItem: function(story) {
 		var elemText = '<li><a href="/story/' + story._id + '">' + story.title + '</a></li>';
 		return $(elemText);
@@ -190,6 +204,78 @@ var PAGE_Search = {
 		PAGE_Search.refreshPosts();
 		PAGE_Search.refreshAssignments();
 		PAGE_Search.refreshUsers();
+	},
+	initMap: function(map){
+		var styles = [{"featureType": "all", "elementType":"all", "stylers": [{"gamma":1.54}]},
+			{"featureType":"road.highway","elementType":"all","stylers":[{"gamma":1.54}]},
+			{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#e0e0e0"}]},
+			{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#bdbdbd"}]},
+			{"featureType":"road.highway","elementType":"labels.text.fill","stylers":[{"color":"#757575"}]},
+			{"featureType":"poi.park","elementType":"all","stylers":[{"gamma":1.26}]},
+			{"featureType":"poi.park","elementType":"labels.text","stylers":[{"saturation":-54}]}];
+
+		var mapOptions = {
+			center: new google.maps.LatLng(40.7, -74),
+			zoom: 12,
+			mapTypeControl: false,
+			styles: styles
+		};
+
+		map.map = new google.maps.Map(document.getElementsByClassName(map.classes.container)[0], mapOptions);
+
+		var image = {
+			url: "/images/assignment-active@2x.png",
+			size: new google.maps.Size(114, 114),
+			scaledSize: new google.maps.Size(60, 60),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(30, 30)
+		};
+
+		map.marker = new google.maps.Marker({
+			position: new google.maps.LatLng(40.7, -74),
+			map: null,
+			icon: image
+		});
+		if (map.circle) map.circle = new google.maps.Circle({
+			map: null,
+			center: new google.maps.LatLng(40.7, -74),
+			radius: 1,
+
+			strokeWeight: 0,
+			fillColor: '#ffc600',
+			fillOpacity: 0.26
+		});
+
+		map.autocomplete = new google.maps.places.Autocomplete(document.getElementsByClassName(map.classes.location)[0]);
+		if (map.location) map.location.keyup();
+		google.maps.event.addListener(map.autocomplete, 'place_changed', function(){
+			var place = map.autocomplete.getPlace();
+			if(place.geometry){
+				map.marker.setPosition(place.geometry.location);
+				if (map.circle) map.circle.setCenter(place.geometry.location);
+				if(place.geometry.viewport){
+					map.map.fitBounds(place.geometry.viewport);
+				}else{
+					map.map.panTo(place.geometry.location);
+					if(!(map.circle && map.circle.getRadius() >= 100))
+						map.map.setZoom(18);
+					else
+						map.map.fitBounds(map.circle.getBounds());
+				}
+			}
+		});
+		
+		if(map.circle && map.classes.radius){
+			$('.' + map.classes.radius).on('change', function(){
+				var radius = feetToMeters(parseInt($(this).val()))
+				map.circle.setRadius(radius);
+				
+				if(!(map.circle || map.circle.getRadius() >= 100))
+					map.map.setZoom(18);
+				else
+					map.map.fitBounds(map.circle.getBounds());
+			});			
+		}
 	}
 };
 
@@ -197,6 +283,7 @@ $(document).ready(function() {
 	if (PAGE_Search.tags) for (var index in PAGE_Search.tags.split(','))
 		addTagToQuery(PAGE_Search.tags.split(',')[index]);
 		
+	PAGE_Search.initMap(PAGE_Search.searchGoogleMap);	
 	PAGE_Search.refresh();
 	
 	$('#sidebar-search').val(PAGE_Search.query);
