@@ -17,8 +17,8 @@ router.get('/', function(req, res, next){
 	var query = req.query.q,
 		tags = req.query.tags || '',
 		location = {
-			lat: isNaN(req.query.lat) ? 40.7 : parseFloat(req.query.lat),
-			lon: isNaN(req.query.lon) ? -74 : parseFloat(req.query.lon),
+			lat: isNaN(req.query.lat) ? null : parseFloat(req.query.lat),
+			lon: isNaN(req.query.lon) ? null : parseFloat(req.query.lon),
 			radius: isNaN(req.query.r) ? null : parseFloat(req.query.r) 
 		};
 

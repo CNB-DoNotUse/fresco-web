@@ -208,8 +208,11 @@ var PAGE_Search = {
 			null,
 			'?q=' + encodeURIComponent(PAGE_Search.query) +
 			(tags.length > 0 ? '&tags=' + encodeURIComponent(PAGE_Search.tags) : '') +
-			(PAGE_Search.location.lat && PAGE_Search.location.lon && PAGE_Search.location.radius ? '&lat=' + PAGE_Search.location.lat + '&lon=' + PAGE_Search.location.lon + '&r=' + PAGE_Search.location.radius : '')
+			(PAGE_Search.location.lat !== null && PAGE_Search.location.lon !== null && PAGE_Search.location.radius ? '&lat=' + PAGE_Search.location.lat + '&lon=' + PAGE_Search.location.lon + '&r=' + PAGE_Search.location.radius : '')
 		);
+		
+		if (PAGE_Search.location.lat === null || PAGE_Search.location.lon === null)
+			$('.filter-location .filter-text').text('Any Location');
 		
 		PAGE_Search.refreshStories();
 		PAGE_Search.refreshPosts();
@@ -233,6 +236,22 @@ var PAGE_Search = {
 		};
 
 		map.map = new google.maps.Map(document.getElementsByClassName(map.classes.container)[0], mapOptions);
+		map.map.addListener('click', function(e){
+			if (PAGE_Search.location.lat && PAGE_Search.location.lon){
+				PAGE_Search.searchGoogleMap.marker.setMap(PAGE_Search.searchGoogleMap.map);
+				PAGE_Search.searchGoogleMap.circle.setMap(PAGE_Search.searchGoogleMap.map);
+				PAGE_Search.searchGoogleMap.marker.setPosition(e.latLng);
+				PAGE_Search.searchGoogleMap.circle.setPosition(e.latLng);
+				
+				PAGE_Search.location.lat = e.latLng.lat();
+				PAGE_Search.location.lon = e.latLng.lng();
+			}else{
+				PAGE_Search.searchGoogleMap.marker.setMap(null);
+				PAGE_Search.searchGoogleMap.circle.setMap(null);
+				
+				PAGE_Search.location.lat = PAGE_Search.location.lon = null;
+			}
+		});
 
 		var image = {
 			url: "/images/assignment-active@2x.png",
@@ -241,21 +260,23 @@ var PAGE_Search = {
 			origin: new google.maps.Point(0, 0),
 			anchor: new google.maps.Point(30, 30)
 		};
-
-		map.marker = new google.maps.Marker({
-			position: new google.maps.LatLng(40.7, -74),
-			map: null,
-			icon: image
-		});
-		if (map.circle) map.circle = new google.maps.Circle({
-			map: null,
-			center: new google.maps.LatLng(40.7, -74),
-			radius: 1,
-
-			strokeWeight: 0,
-			fillColor: '#ffc600',
-			fillOpacity: 0.26
-		});
+		
+		if (PAGE_Search.location.lat !== null && PAGE_Search.location.lon !== null){
+			map.marker = new google.maps.Marker({
+				position: new google.maps.LatLng(PAGE_Search.location.lat, PAGE_Search.location.lat),
+				map: map.map,
+				icon: image
+			});
+			map.circle = new google.maps.Circle({
+				map: map.map,
+				center: new google.maps.LatLng(PAGE_Search.location.lat, PAGE_Search.location.lat),
+				radius: 1,
+	
+				strokeWeight: 0,
+				fillColor: '#ffc600',
+				fillOpacity: 0.26
+			});
+		}
 
 		map.autocomplete = new google.maps.places.Autocomplete(document.getElementsByClassName(map.classes.location)[0]);
 		if (map.location) map.location.keyup();
@@ -273,6 +294,10 @@ var PAGE_Search = {
 					else
 						map.map.fitBounds(map.circle.getBounds());
 				}
+				
+				if (place.formatted_address)
+					$('.filter-location .filter-text').html(place.formatted_address);
+					
 				
 				PAGE_Search.location.lat = place.geometry.location.H;
 				PAGE_Search.location.lon = place.geometry.location.L;
@@ -304,6 +329,35 @@ $(document).ready(function() {
 	PAGE_Search.refresh();
 	
 	$('#sidebar-search').val(PAGE_Search.query);
+	if (PAGE_Search.location.radius){
+		$('.search-radius')
+			.val(PAGE_Search.location.radius)
+			.trigger('keyup');
+		
+		if (PAGE_Search.location.lat && PAGE_Search.location.lon){
+			PAGE_Search.searchGoogleMap.map.setCenter({lat: PAGE_Search.location.lat, lng: PAGE_Search.location.lon});
+		}
+	}
+	
+	$('.search-radius').on('blur', function(e){
+		var _this = $(this);
+			
+		PAGE_Search.location.radius = parseFloat(_this.val());
+		
+		if (isNaN(PAGE_Search.location.radius)){
+			PAGE_Search.location.radius = null;
+			setTimeout(function(){_this.val('')},0);
+			return e.preventDefault();
+		}
+		
+		PAGE_Search.refresh();
+	});
+	$('.search-location').on('blur', function(e){
+		if (!PAGE_Search.searchGoogleMap.autocomplete.getPlace()){
+			PAGE_Search.location.lat = PAGE_Search.location.lon = null;
+			PAGE_Search.refresh();
+		}
+	});
 	
 	$('.filter-type').click(function(){
 		$('.filter-text').text($(this).text());

@@ -905,8 +905,8 @@ div.list > div.list-item.active {
   border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
 /* line 661, ../sass/_rules.scss */
-.navbar > .drop > button > span,
-.navbar > .drop > div > div > span {
+.navbar > .drop > button > span.mdi,
+.navbar > .drop > div > div > span.mdi {
   margin-left: 12px;
   margin-right: -6px;
 }
