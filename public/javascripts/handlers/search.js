@@ -1,6 +1,11 @@
 var PAGE_Search = {
 	query: '',
 	tags: '',
+	location: {
+		lat: null,
+		lon: null,
+		radius: null
+	},
 	purchases: [],
 	verified: true,
 	searchGoogleMap: {
@@ -198,7 +203,13 @@ var PAGE_Search = {
 		$('#tag-dropdown').text(tags.length > 0 ? 'Tags: ' + tags.join(', ') : 'Any tags');
 		PAGE_Search.tags = tags.join(',');
 		
-		window.history.pushState({}, null, '?q=' + encodeURIComponent(PAGE_Search.query) + (tags.length > 0 ? '&tags=' + encodeURIComponent(PAGE_Search.tags) : ''));
+		window.history.pushState(
+			{},
+			null,
+			'?q=' + encodeURIComponent(PAGE_Search.query) +
+			(tags.length > 0 ? '&tags=' + encodeURIComponent(PAGE_Search.tags) : '') +
+			(PAGE_Search.location.lat && PAGE_Search.location.lon && PAGE_Search.location.radius ? '&lat=' + PAGE_Search.location.lat + '&lon=' + PAGE_Search.location.lon + '&r=' + PAGE_Search.location.radius : '')
+		);
 		
 		PAGE_Search.refreshStories();
 		PAGE_Search.refreshPosts();
@@ -215,7 +226,7 @@ var PAGE_Search = {
 			{"featureType":"poi.park","elementType":"labels.text","stylers":[{"saturation":-54}]}];
 
 		var mapOptions = {
-			center: new google.maps.LatLng(40.7, -74),
+			center: new google.maps.LatLng(PAGE_Search.location.lat, PAGE_Search.location.lon),
 			zoom: 12,
 			mapTypeControl: false,
 			styles: styles
@@ -262,6 +273,12 @@ var PAGE_Search = {
 					else
 						map.map.fitBounds(map.circle.getBounds());
 				}
+				
+				PAGE_Search.location.lat = place.geometry.location.H;
+				PAGE_Search.location.lon = place.geometry.location.L;
+				if (!PAGE_Search.location.radius) PAGE_Search.location.radius = 1000;
+				
+				PAGE_Search.refresh();
 			}
 		});
 		

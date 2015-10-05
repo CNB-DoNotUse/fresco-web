@@ -15,9 +15,14 @@ router.get('/', function(req, res, next){
 	}
 
 	var query = req.query.q,
-		tags = req.query.tags || '';
+		tags = req.query.tags || '',
+		location = {
+			lat: isNaN(req.query.lat) ? 40.7 : parseFloat(req.query.lat),
+			lon: isNaN(req.query.lon) ? -74 : parseFloat(req.query.lon),
+			radius: isNaN(req.query.r) ? null : parseFloat(req.query.r) 
+		};
 
-	res.render('search', { user: req.session.user, query: query, tags: tags, title: query, purchases: purchases, config: config, alerts: req.alerts });
+	res.render('search', { user: req.session.user, query: query, tags: tags, title: query, location: location, purchases: purchases, config: config, alerts: req.alerts });
 });
 
 module.exports = router;
