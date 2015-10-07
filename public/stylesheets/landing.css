@@ -553,7 +553,7 @@ section#hero {
       display: inline-block;
       font-size:5em;
       max-width:80%;
-    /* text-indent: -.32em; */}
+      text-indent: -.32em; }
     section#hero > div > h3 {
       display: inline-block;
       width: 352px;
