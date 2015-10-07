@@ -128,8 +128,8 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 }
 /* line 85, ../sass/_rules.scss */
 .form-group-default .form-control:focus {
-  background-image: -webkit-linear-gradient(#0077ff, #0077ff), -webkit-linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12));
-  background-image: linear-gradient(#0077ff, #0077ff), linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12));
+  background-image: -webkit-linear-gradient(#0047bb, #0047bb), -webkit-linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12));
+  background-image: linear-gradient(#0047bb, #0047bb), linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12));
 }
 /* line 88, ../sass/_rules.scss */
 .form-group-default .floating-label,
@@ -145,7 +145,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 /* line 97, ../sass/_rules.scss */
 .form-group-default input.form-control:not(.empty):focus ~ .floating-label,
 .form-group-default textarea.form-control:not(.empty):focus ~ .floating-label {
-  color: #0077ff;
+  color: #0047bb;
 }
 /* line 101, ../sass/_rules.scss */
 .form-group-default textarea {
@@ -175,7 +175,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 }
 /* line 119, ../sass/_rules.scss */
 .form-group-default .checkbox input[type=checkbox]:checked ~ .check, .form-group-default .checkbox input[type=checkbox]:checked ~ .check:before {
-  color: #0077ff;
+  color: #0047bb;
 }
 
 /* line 127, ../sass/_rules.scss */
@@ -505,7 +505,7 @@ div.chips ul.chips > li.chip:active > div.chip > div.icon {
 }
 /* line 355, ../sass/_rules.scss */
 .tab-control > button.toggled {
-  border-bottom: 2px solid #0077ff;
+  border-bottom: 2px solid #0047bb;
   line-height: 25px;
   color: rgba(0, 0, 0, 0.87) !important;
 }
@@ -793,7 +793,7 @@ div.list > div.list-item.active {
 }
 /* line 570, ../sass/_rules.scss */
 .sidebar > div:first-child > ul li.active > span {
-  color: #0077ff;
+  color: #0047bb;
 }
 /* line 576, ../sass/_rules.scss */
 .sidebar > div:last-child {
