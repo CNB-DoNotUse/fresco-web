@@ -1,0 +1,546 @@
+/*! Reset/normalize hybrid with major contributions from normalize.css, html5doctor.com Reset Stylesheet, and http://html5reset.org/
+
+* Sam Richard - http://snugug.com/
+* Nicholas Gallagher, Jonathan Neal - http://necolas.github.io/normalize.css/
+* Richard Clark - http://richclarkdesign.com
+* Tim Murtaugh - http://monkeydo.biz/
+*/
+abbr,
+address,
+article,
+aside,
+audio,
+b,
+blockquote,
+body,
+canvas,
+caption,
+cite,
+code,
+dd,
+del,
+details,
+dfn,
+div,
+dl,
+dt,
+em,
+fieldset,
+figcaption,
+figure,
+footer,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+header,
+hgroup,
+html,
+i,
+iframe,
+img,
+ins,
+kbd,
+label,
+legend,
+li,
+mark,
+main,
+menu,
+nav,
+object,
+ol,
+p,
+pre,
+q,
+samp,
+section,
+small,
+span,
+strong,
+sub,
+summary,
+sup,
+table,
+tbody,
+td,
+tfoot,
+th,
+thead,
+time,
+tr,
+ul,
+var,
+video {
+  background: transparent;
+  border: 0;
+  font-size: 100%;
+  margin: 0;
+  outline: 0;
+  padding: 0;
+  vertical-align: baseline; }
+
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%; }
+
+body {
+  line-height: 1; }
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block; }
+
+audio,
+canvas,
+progress,
+video {
+  display: inline-block;
+  vertical-align: baseline; }
+
+audio:not([controls]) {
+  display: none;
+  height: 0; }
+
+[hidden],
+template {
+  display: none; }
+
+a {
+  background-color: transparent;
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline; }
+
+a:active,
+a:hover {
+  outline: 0; }
+
+abbr[title],
+dfn[title] {
+  border-bottom: 1px dotted;
+  cursor: help; }
+
+ins {
+  text-decoration: none; }
+
+del {
+  text-decoration: line-through; }
+
+blockquote,
+q {
+  quotes: none; }
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none; }
+
+ul {
+  list-style: none; }
+
+img {
+  border: 0; }
+
+svg:not(:root) {
+  overflow: hidden; }
+
+pre {
+  overflow: auto;
+  white-space: pre;
+  white-space: pre-wrap;
+  white-space: pre-line;
+  word-wrap: break-word; }
+
+code,
+kbd,
+pre,
+samp {
+  font-size: 1em;
+  font-family: monospace, sans-serif; }
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid;
+  margin: 1em 0;
+  padding: 0; }
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit;
+  font: inherit;
+  margin: 0; }
+
+button,
+input[type="button"] {
+  overflow: visible; }
+
+button,
+select {
+  text-transform: none; }
+
+button,
+html input[type="button"],
+input[type="file"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  cursor: pointer; }
+
+button[disabled],
+html input[disabled] {
+  cursor: default; }
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0; }
+
+input {
+  line-height: normal; }
+
+input[type="checkbox"],
+input[type="radio"] {
+  padding: 0; }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto; }
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none; }
+
+legend {
+  border: 0;
+  padding: 0; }
+
+textarea {
+  overflow: auto; }
+
+input,
+select {
+  vertical-align: middle; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+td,
+th {
+  padding: 0; }
+
+html {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+embed,
+img,
+object,
+video {
+  max-width: 100%;
+  height: auto; }
+
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-ThinWeb.eot");
+  font-weight: 100; }
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-ThinWeb.woff") format("woff");
+  font-weight: 100; }
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-ThinObliqueWeb.eot");
+  font-weight: 100;
+  font-style: oblique; }
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-ThinObliqueWeb.woff") format("woff");
+  font-weight: 100;
+  font-style: oblique; }
+/* xlight
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-XLightWeb.eot");
+  font-weight: 200;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-XLightWeb.woff") format("woff");
+  font-weight: 200;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-XLightObliqueWeb.eot");
+  font-weight: 200;
+  font-style: oblique;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-XLightObliqueWeb.woff") format("woff");
+  font-weight: 200;
+  font-style: oblique;
+} */
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-LightWeb.eot");
+  font-weight: 300; }
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-LightWeb.woff") format("woff");
+  font-weight: 300; }
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-LightObliqueWeb.eot");
+  font-weight: 300;
+  font-style: oblique; }
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-LightObliqueWeb.woff") format("woff");
+  font-weight: 300;
+  font-style: oblique; }
+/* normal
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-NormalWeb.eot");
+  font-weight: 400;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-NormalWeb.woff") format("woff");
+  font-weight: 400;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-NormalObliqueWeb.eot");
+  font-weight: 400;
+  font-style: oblique;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-NormalObliqueWeb.woff") format("woff");
+  font-weight: 400;
+  font-style: oblique;
+} */
+/* medium
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-MediumWeb.eot");
+  font-weight: 500;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-MediumWeb.woff") format("woff");
+  font-weight: 500;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-MediumObliqueWeb.eot");
+  font-weight: 500;
+  font-style: oblique;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-MediumObliqueWeb.woff") format("woff");
+  font-weight: 500;
+  font-style: oblique;
+} */
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-BoldWeb.eot");
+  font-weight: 700; }
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-BoldWeb.woff") format("woff");
+  font-weight: 700; }
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-BoldObliqueWeb.eot");
+  font-weight: 700;
+  font-style: oblique; }
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-BoldObliqueWeb.woff") format("woff");
+  font-weight: 700;
+  font-style: oblique; }
+/* xbold
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-XboldWeb.eot");
+  font-weight: 800;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-XboldWeb.woff") format("woff");
+  font-weight: 800;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-XboldObliqueWeb.eot");
+  font-weight: 800;
+  font-style: oblique;
+}
+@font-face {
+  font-family: Nota;
+  src: url("../font/Nota-XboldObliqueWeb.woff") format("woff");
+  font-weight: 800;
+  font-style: oblique;
+} */
+.head {
+  font-family: "Nota", sans-serif;
+  font-weight: bold;
+  font-size: 24pt; }
+
+.secondary {
+  color: rgba(0, 0, 0, 0.54); }
+
+.hint {
+  color: rgba(0, 0, 0, 0.26); }
+
+.card {
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.1), 0 2px 2px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden; }
+  .card + .card {
+    margin-top: 12px; }
+  .card header, .card footer {
+    line-height: 1.2em;
+    text-align: center;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12); }
+    .card header.head, .card footer.head {
+      padding: 16px 16px 12px; }
+
+input {
+  background-color: transparent;
+  border-radius: 2px;
+  outline: 0;
+  height: 36px;
+  margin-bottom: 12px; }
+  input[type="email"] {
+    font-size: 16pt;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    margin-right: 16px; }
+    input[type="email"]:-moz-placeholder {
+      color: rgba(0, 0, 0, 0.26); }
+    input[type="email"]::-moz-placeholder {
+      color: rgba(0, 0, 0, 0.26); }
+    input[type="email"]:-ms-input-placeholder {
+      color: rgba(0, 0, 0, 0.26); }
+    input[type="email"]::-webkit-input-placeholder {
+      color: rgba(0, 0, 0, 0.26); }
+  input[type="submit"] {
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 0 12px;
+    border: none;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24);
+    -moz-transition-duration: 0.1s;
+    -o-transition-duration: 0.1s;
+    -webkit-transition-duration: 0.1s;
+    transition-duration: 0.1s;
+    -moz-transition-timing-function: ease-out;
+    -o-transition-timing-function: ease-out;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out; }
+    input[type="submit"]:hover {
+      box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12), 0 8px 8px 0 rgba(0, 0, 0, 0.24); }
+    input[type="submit"]:active {
+      background-color: rgba(0, 0, 0, 0.12); }
+
+html {
+  background-color: #f2f2ed; }
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 13pt;
+  line-height: 1.6em;
+  color: rgba(0, 0, 0, 0.87); }
+  @media (max-width: 768px) {
+    body {
+      font-size: 14pt; } }
+  body > header {
+    background-color: rgba(0, 0, 0, 0.87);
+    padding: 33vh 16px;
+    text-align: center; }
+    body > header span {
+      color: #fff;
+      text-transform: uppercase;
+      margin-top: 12px; }
+    body > header img {
+      width: 768px;
+      max-width: 100%;
+      display: block;
+      margin: 12px auto 0; }
+  body > main {
+    width: 736px;
+    max-width: 100%;
+    margin: 0 auto; }
+    body > main .card {
+      width: 736px;
+      max-width: calc(100vw - 32px);
+      margin: 0 auto; }
+      body > main .card:last-of-type {
+        margin-bottom: 24px; }
+    body > main figure.card {
+      margin-top: -56px;
+      overflow: initial; }
+      body > main figure.card img {
+        margin-top: -12px; }
+      body > main figure.card figcaption {
+        padding: 12px 16px 24px;
+        text-align: center; }
+        body > main figure.card figcaption div {
+          margin-top: 12px; }
+    body > main article.card table {
+      margin: 24px 0 12px; }
+      @media (min-width: 415px) {
+        body > main article.card table {
+          margin: 24px auto 12px; } }
+      body > main article.card table tr td {
+        vertical-align: middle;
+        padding: 0 16px 12px 0;
+        font-size: 16pt; }
+        @media (max-width: 414px) {
+          body > main article.card table tr td {
+            vertical-align: top;
+            padding: 2px 16px 12px 0; } }
+        body > main article.card table tr td:first-of-type {
+          padding: 0 16px 12px;
+          font-size: 24pt;
+          color: #ffc600; }
+    body > main article.card div {
+      text-align: center;
+      margin-bottom: 12px; }
+    body > main form.card div {
+      text-align: center;
+      padding: 16px 12px; }
+      body > main form.card div p {
+        margin-bottom: 12px; }

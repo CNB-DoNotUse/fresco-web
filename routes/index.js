@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
     if (!error && body && !body.err)
       highlights = body.data
     
-    res.render('index', { user: req.session.user, highlights: highlights, config: config, alerts: req.alerts, partner: false });
+    res.render('index', { user: req.session ? req.session.user : null, highlights: highlights, config: config, alerts: req.alerts, partner: false });
   });
 });
 
@@ -23,8 +23,12 @@ router.get('/partners', function(req, res, next){
     if (!error && body && !body.err)
       highlights = body.data
     
-    res.render('index', { user: req.session.user, highlights: highlights, config: config, alerts: req.alerts, partner: true });
+    res.render('index', { user: req.session ? req.session.user : null, highlights: highlights, config: config, alerts: req.alerts, partner: true });
   });
+});
+
+router.get('/promo', function(req, res, next){
+  res.render('promo', { user: req.session ? req.session.user : null, config: config, alerts: req.alerts });
 });
 
 /* Highlights page. */
@@ -37,7 +41,7 @@ router.get('/highlights', function(req, res, next) {
 		});
 	}
   
-  res.render('highlights', {user: req.session.user, purchases: purchases, config : config, alerts: req.alerts});
+  res.render('highlights', {user: req.session ? req.session.user : null, purchases: purchases, config : config, alerts: req.alerts});
 });
 
 /* Register page. */

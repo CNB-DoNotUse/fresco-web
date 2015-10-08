@@ -161,7 +161,7 @@ $(document).ready(function() {
 	//Float input field
 	$('input.float').keypress(function(e){
         if (!([8,9,13,37,39,48,49,50,51,52,53,54,55,56,57].indexOf(e.which) >= 0 ||
-              (e.which == 46 && $(this).val().indexOf('.') == -1)))
+          	 (e.which == 46 && $(this).val().indexOf('.') == -1)))
             e.preventDefault();
     });
 	

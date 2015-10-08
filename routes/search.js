@@ -16,10 +16,15 @@ router.get('/', function(req, res, next){
 
 	var query = req.query.q,
 		tags = req.query.tags || '',
+		location = null;
+		
+	if (!isNaN(req.query.lat) && !isNaN(req.query.lon) && !isNaN(req.query.r))
 		location = {
-			lat: isNaN(req.query.lat) ? null : parseFloat(req.query.lat),
-			lon: isNaN(req.query.lon) ? null : parseFloat(req.query.lon),
-			radius: isNaN(req.query.r) ? null : parseFloat(req.query.r) 
+			latlng: {
+				lat: parseFloat(req.query.lat),
+				lng: parseFloat(req.query.lon)
+			},
+			radius: parseFloat(req.query.r) 
 		};
 
 	res.render('search', { user: req.session.user, query: query, tags: tags, title: query, location: location, purchases: purchases, config: config, alerts: req.alerts });
