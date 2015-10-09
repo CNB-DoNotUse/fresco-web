@@ -127,6 +127,10 @@ $(document).ready(function(){
 	$('#gallery-upload-files').change(galleryEditFiles);
 	$('.toggle-gedit.toggler').click(galleryEditUpdate);
 
+	if(GALLERY_EDIT && !GALLERY_EDIT.imported) {
+		$('#gallery-add-more-button').remove();
+	}
+
 	//Gallery save mappings
 	$('#gallery-create-clear-button').click(galleryCreateClear);
 	$('#gallery-create-discard-button').click(galleryCreateClear);
