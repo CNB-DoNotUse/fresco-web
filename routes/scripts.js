@@ -207,6 +207,10 @@ router.post('/gallery/addpost', function(req, res, next){
     gallery: req.body.gallery,
     posts: {}
   };
+  var lat = req.body.lat || 0;
+  var lon = req.body.lon || 0;
+  
+  console.log("lat: " + lat + " lon: " + lon);
   
   var cleanupFiles = [];
 
@@ -226,7 +230,7 @@ router.post('/gallery/addpost', function(req, res, next){
   for (var index in req.files){
     cleanupFiles.push(req.files[index].path);
     params[i] = fs.createReadStream(req.files[index].path);
-    params.posts[i] = {lat:0,lon:0};
+    params.posts[i] = {lat:parseFloat(lat),lon:parseFloat(lon)};
     ++i;
   }
 

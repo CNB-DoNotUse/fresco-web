@@ -846,6 +846,8 @@ function galleryEditSave(){
 		lon = coord ? coord.lng() : null,
 		address = $('#gallery-location-input').val();
 
+	var firstPost = GALLERY_EDIT.posts.length > 0 ? GALLERY_EDIT.posts[0] : null;
+
 	updateGallery(caption, byline, tags, posts, highlight, lat, lon, address, function(err, GALLERY_EDIT){
 		if (err){
 			$.snackbar({content: resolveError(err)});
@@ -855,6 +857,15 @@ function galleryEditSave(){
 			var data = new FormData();
 			for (var index in added) {
 				data.append(index, added[index]);
+			}
+			
+			if(firstPost) {
+				data.append('lat', firstPost.location.geo.coordinates[1]);
+				data.append('lon', firstPost.location.geo.coordinates[0]);
+			}
+			else {
+				data.append('lat', 0);
+				data.append('lon', 0);
 			}
 			
 			data.append('gallery', GALLERY_EDIT._id);
