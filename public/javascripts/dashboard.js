@@ -822,6 +822,14 @@ function galleryEditSave(){
 	var tags = $('#gallery-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
 	var posts = $('.edit-gallery-images').frick('frickPosts');
 
+	var added = posts.filter(function(id) {return id.indexOf('NEW') !== -1});
+	added = added.map(function(index) {
+		index = index.split('=')[1];
+		return GALLERY_EDIT.files[index];
+	});
+	
+	posts = posts.filter(function(id) {return id.indexOf('NEW') == -1});
+
 	if (posts.length == 0)
 		return $.snackbar({content:"Galleries must have at least 1 post"});
 
@@ -839,7 +847,31 @@ function galleryEditSave(){
 			$.snackbar({content: resolveError(err)});
 			console.log(err);
 		}
-		else{
+		else if (added.length > 0) {
+			var data = new FormData();
+			for (var index in added) {
+				data.append(index, added[index]);
+			}
+			
+			data.append('gallery', GALLERY_EDIT._id);
+			$.ajax({
+				url: '/scripts/gallery/addpost',
+				type: 'POST',
+				data: data,
+				processData: false,
+				contentType: false,
+				cache: false,
+				dataType: 'json',
+				success: function(result, status, xhr){
+					window.location.reload();
+				},
+				error: function(xhr, status, error){
+					$.snackbar({content: resolveError(err)});
+					console.log(err);
+				}
+			})
+		}
+		else {
 			window.location.reload();
 		}
 	});
@@ -1007,7 +1039,7 @@ function galleryEditUpdate(){
 				}
 			}
 			else { //image
-				var elem = $('<img class="img-responsive" id="' + file.lastModified + '"/>');
+				var elem = $('<img class="img-responsive" id="' + file.lastModified + '" data-id="NEW=' + index + '"/>');
 				$('.edit-gallery-images').append(elem);
 				reader.onload = function(e) {
 					$('.edit-gallery-images').find('#' + file.lastModified).attr('src', e.target.result);
@@ -1029,27 +1061,6 @@ function galleryEditFiles(e) {
 	
 	GALLERY_EDIT.files = files;
 	galleryEditUpdate();
-	// for (var index in files) {
-	// 	data.append(index, files[index]);
-	// }
-	
-	// data.append('gallery', GALLERY_EDIT._id);
-	// return;
-	// $.ajax({
-	// 	url: '/scripts/gallery/addpost',
-	// 	type: 'POST',
-	// 	data: data,
-	// 	processData: false,
-	// 	contentType: false,
-	// 	cache: false,
-	// 	dataType: 'json',
-	// 	success: function(result, status, xhr){
-	// 		console.log(result);
-	// 	},
-	// 	error: function(xhr, status, error){
-	// 		console.log(error);
-	// 	}
-	// })
 }
 
 //Clear the gallery create fields
