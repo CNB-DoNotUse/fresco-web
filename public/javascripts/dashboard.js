@@ -120,9 +120,11 @@ $(document).ready(function(){
 	//Gallery edit mappings
 	$('#gallery-revert-button').click(galleryEditUpdate);
 	$('#gallery-clear-button').click(galleryEditClear);
+	$('#gallery-add-more-button').click(galleryEditAddMore);
 	$('#gallery-discard-button').click(galleryEditClear);
-	$('#gallery-save-button').click(galleryEditSave);
 	$('#gallery-delete-button').click(galleryEditDelete);
+	$('#gallery-save-button').click(galleryEditSave);
+	$('#gallery-upload-files').change(galleryEditFiles);
 	$('.toggle-gedit.toggler').click(galleryEditUpdate);
 
 	//Gallery save mappings
@@ -988,6 +990,36 @@ function galleryEditUpdate(){
 	}
 
 	$('.edit-gallery-images').frick();
+}
+
+function galleryEditAddMore() {
+	$('#gallery-upload-files').click();
+}
+function galleryEditFiles() {
+	var data = new FormData();
+	var files = $('#gallery-upload-files').prop('files');
+	
+	for (var index in files) {
+		data.append(index, files[index]);
+	}
+	
+	data.append('gallery', GALLERY_EDIT._id);
+	
+	$.ajax({
+		url: '/scripts/gallery/addpost',
+		type: 'POST',
+		data: data,
+		processData: false,
+		contentType: false,
+		cache: false,
+		dataType: 'json',
+		success: function(result, status, xhr){
+			console.log(result);
+		},
+		error: function(xhr, status, error){
+			console.log(error);
+		}
+	})
 }
 
 //Clear the gallery create fields
