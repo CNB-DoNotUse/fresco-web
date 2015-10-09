@@ -977,6 +977,7 @@ function galleryEditUpdate(){
 		$('#gallery-articles-list').append(elem);
 	});
 
+	$('.edit-gallery-images').empty();
 	for (var index in GALLERY_EDIT.posts){
 		if (GALLERY_EDIT.posts[index].video)
 			$('.edit-gallery-images').append('\
@@ -989,37 +990,66 @@ function galleryEditUpdate(){
 			$('.edit-gallery-images').append('<img class="img-responsive" src="' + formatImg(GALLERY_EDIT.posts[index].image, 'medium') + '" data-id="' + GALLERY_EDIT.posts[index]._id + '"/>');
 	}
 
+	if (GALLERY_EDIT.files) {
+		Object.keys(GALLERY_EDIT.files).forEach(function(index) {
+			var file = GALLERY_EDIT.files[index];
+			var reader = new FileReader()
+			if (file.type.indexOf('video') !== -1) { //video
+				var elem = $('\
+					<video width="100%" height="100%" controls>\
+						<source id="' + file.lastModified + '" type="video/mp4">\
+						Your browser does not support the video tag.\
+					</video>\
+				');
+				$('.edit-gallery-images').append(elem);
+				reader.onload = function(e) {
+					$('.edit-gallery-images').find('#' + file.lastModified).attr('src', e.target.result);
+				}
+			}
+			else { //image
+				var elem = $('<img class="img-responsive" id="' + file.lastModified + '"/>');
+				$('.edit-gallery-images').append(elem);
+				reader.onload = function(e) {
+					$('.edit-gallery-images').find('#' + file.lastModified).attr('src', e.target.result);
+				}
+			}	
+			reader.readAsDataURL(file);
+		});
+	}
+
 	$('.edit-gallery-images').frick();
 }
 
 function galleryEditAddMore() {
 	$('#gallery-upload-files').click();
 }
-function galleryEditFiles() {
-	var data = new FormData();
+function galleryEditFiles(e) {
+	// var data = new FormData();
 	var files = $('#gallery-upload-files').prop('files');
 	
-	for (var index in files) {
-		data.append(index, files[index]);
-	}
+	GALLERY_EDIT.files = files;
+	galleryEditUpdate();
+	// for (var index in files) {
+	// 	data.append(index, files[index]);
+	// }
 	
-	data.append('gallery', GALLERY_EDIT._id);
-	
-	$.ajax({
-		url: '/scripts/gallery/addpost',
-		type: 'POST',
-		data: data,
-		processData: false,
-		contentType: false,
-		cache: false,
-		dataType: 'json',
-		success: function(result, status, xhr){
-			console.log(result);
-		},
-		error: function(xhr, status, error){
-			console.log(error);
-		}
-	})
+	// data.append('gallery', GALLERY_EDIT._id);
+	// return;
+	// $.ajax({
+	// 	url: '/scripts/gallery/addpost',
+	// 	type: 'POST',
+	// 	data: data,
+	// 	processData: false,
+	// 	contentType: false,
+	// 	cache: false,
+	// 	dataType: 'json',
+	// 	success: function(result, status, xhr){
+	// 		console.log(result);
+	// 	},
+	// 	error: function(xhr, status, error){
+	// 		console.log(error);
+	// 	}
+	// })
 }
 
 //Clear the gallery create fields
