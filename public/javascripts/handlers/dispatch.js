@@ -535,7 +535,7 @@ var PAGE_Dispatch = {
 					
 					if(assignment.visibility == -1)
 						return;
-					console.log(assignment.visibility, assignment.expiration_time, Date.now(), status);
+						
 					var marker = PAGE_Dispatch.makeMarker(PAGE_Dispatch.map, new google.maps.LatLng(lat, lng), assignment.title, status);
 					var circle = PAGE_Dispatch.makeCircle(PAGE_Dispatch.map, new google.maps.LatLng(lat, lng), milesToMeters(assignment.location.radius), status);
 					

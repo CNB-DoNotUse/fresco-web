@@ -96,6 +96,7 @@ app.use(function(req, res, next){
       req.path.indexOf('/scripts') == -1 && 
       req.path.indexOf('/verify') == -1 && 
       req.path.indexOf('/external') == -1 && 
+      req.path.indexOf('/promo') == -1 && 
       req.path.indexOf('/gallery')){
     if (req.session && req.session.user){
       var now = Date.now();

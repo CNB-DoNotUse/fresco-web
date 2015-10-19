@@ -427,6 +427,25 @@ function updateGallery(caption, byline, tags, posts, highlight, lat, lon, addres
 	});
 }
 
+function circleToPolygon(circle, numSides){
+	var center = circle.getCenter(),
+		topleft = circle.getBounds().getNorthEast(),
+  		radiusX = Math.abs(topleft.lat() - center.lat()),
+  		radiusY = Math.abs(topleft.lng() - center.lng()),
+  		points = [],
+		degreeStep = Math.PI * 2 / numSides;
+		
+	for(var i = 0; i < numSides; i++){
+		//var gpos = google.maps.geometry.spherical.computeOffset(center, radius, degreeStep * i);
+		points.push([center.lng() + radiusY * Math.sin(i * degreeStep), center.lat() + radiusX * Math.cos(i * degreeStep)]);
+	};
+
+	// Duplicate the last point to close the geojson ring
+	points.push(points[0]);
+
+	return [ points ];
+}
+
 //AJAX - Purchase selected posts
 function bulkPurchase(assignment){
 	var postIDs = [],
@@ -1238,7 +1257,7 @@ function createStoryView(story, half){
 				<div>\
 					<div>\
 						<span class="md-type-body2">' + story.title + '</span>\
-						<span class="md-type-caption">' + getTimeAgo(Date.now(), story.time_created) +'</span>\
+						<span class="md-type-caption">' + getTimeAgo(Date.now(), story.time_uedited || story.time_created) +'</span>\
 					</div>\
 				</div>\
 			</div>\

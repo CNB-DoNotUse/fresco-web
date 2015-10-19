@@ -6,7 +6,7 @@ var express = require('express'),
     request = require('request'),
     async = require('async');
 
-router.get('/:id', function(req, res, next){console.log(req.params.id)
+router.get('/:id', function(req, res, next){
   request(
     {
       url: config.API_URL + "/v1/gallery/get?stories=true&stats=1&id=" + req.params.id,

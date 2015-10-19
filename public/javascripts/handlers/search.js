@@ -56,6 +56,7 @@ var PAGE_Search = {
 				limit: 10,
 				verified: PAGE_Search.verified,
 				tags: PAGE_Search.tags,
+				polygon: PAGE_Search.searchGoogleMap.circle.getMap() == null ? undefined : encodeURIComponent(JSON.stringify(circleToPolygon(PAGE_Search.searchGoogleMap.circle, 8)))
 			},
 			success: function(result) {
 				if (Object.keys(result.err).length > 0) {
@@ -90,12 +91,13 @@ var PAGE_Search = {
 				offset: PAGE_Search.post_offset,
 				limit: 12,
 				verified: PAGE_Search.verified,
-				tags: PAGE_Search.tags
+				tags: PAGE_Search.tags,
+				polygon: PAGE_Search.searchGoogleMap.circle.getMap() == null ? undefined : encodeURIComponent(JSON.stringify(circleToPolygon(PAGE_Search.searchGoogleMap.circle, 8)))
 			},
 			success: function(result) {
 				if (Object.keys(result.err).length > 0) {
 					$.snackbar({content: resolveError(result.err)});
-					return callback(result.err, null);
+					return this.error(null, null, result.err);
 				}
 				result.data.forEach(function(post){
 					var elem = buildPost(post, purchases ? purchases.indexOf(post._id) != -1 : null, 'large', true);
@@ -104,7 +106,8 @@ var PAGE_Search = {
 				});
 			},
 			error: function(xhr, status, error ){
-				callback(error, null);
+				if (callback) return callback(error, null);
+				console.log(error);
 			},
 			complete: function(){
 				PAGE_Search.post_loading = false;
@@ -211,7 +214,7 @@ var PAGE_Search = {
 		);
 		
 		if (!PAGE_Search.location)
-			$('.filter-location .filter-text').text('Any Location');
+			$('.filter-location .filter-text').text('Location');
 		
 		PAGE_Search.refreshStories();
 		PAGE_Search.refreshPosts();

@@ -6,12 +6,9 @@
 var API_URL = 'http://staging.fresconews.com',
 	FEET_PER_MILE = 5280;
 
-/*
-Custom prototype methods
-*/
 String.prototype.capitalize = function(){
-	return ;
-};
+	return this.charAt(0).toUpperCase() + this.slice(1);
+}
 
 /*
 Event Listeners
