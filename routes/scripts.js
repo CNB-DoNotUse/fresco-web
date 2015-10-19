@@ -201,6 +201,43 @@ router.post('/assignment/update', function(req, res, next){
 //---------------------------^^^-ASSIGNMENT-ENDPOINTS-^^^---------------------------//
 
 //---------------------------vvv-GALLERY-ENDPOINTS-vvv---------------------------//
+router.post('/gallery/addpost', function(req, res, next){
+  var request = require('request');
+  var params = {
+    gallery: req.body.gallery,
+    posts: {}
+  };
+  var lat = req.body.lat || 0;
+  var lon = req.body.lon || 0;
+  
+  console.log("lat: " + lat + " lon: " + lon);
+  
+  var cleanupFiles = [];
+
+  function upload(cb){
+    params.posts = JSON.stringify(params.posts);
+    request.post({ url: config.API_URL + '/v1/gallery/addpost', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
+      for (var index in cleanupFiles)
+        fs.unlink(cleanupFiles[index], function(){});
+        
+      body = JSON.parse(body);
+
+      cb(err || body.err, body.data);
+    });
+  }
+  
+  var i = 0;
+  for (var index in req.files){
+    cleanupFiles.push(req.files[index].path);
+    params[i] = fs.createReadStream(req.files[index].path);
+    params.posts[i] = {lat:parseFloat(lat),lon:parseFloat(lon)};
+    ++i;
+  }
+
+  upload(function(err, gallery){
+    res.json({err: err, data: gallery}).end();
+  });
+});
 router.post('/gallery/create', function(req, res, next){
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;

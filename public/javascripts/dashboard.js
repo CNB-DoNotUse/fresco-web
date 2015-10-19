@@ -120,10 +120,16 @@ $(document).ready(function(){
 	//Gallery edit mappings
 	$('#gallery-revert-button').click(galleryEditUpdate);
 	$('#gallery-clear-button').click(galleryEditClear);
+	$('#gallery-add-more-button').click(galleryEditAddMore);
 	$('#gallery-discard-button').click(galleryEditClear);
-	$('#gallery-save-button').click(galleryEditSave);
 	$('#gallery-delete-button').click(galleryEditDelete);
+	$('#gallery-save-button').click(galleryEditSave);
+	$('#gallery-upload-files').change(galleryEditFiles);
 	$('.toggle-gedit.toggler').click(galleryEditUpdate);
+
+	if(GALLERY_EDIT && !GALLERY_EDIT.imported) {
+		$('#gallery-add-more-button').remove();
+	}
 
 	//Gallery save mappings
 	$('#gallery-create-clear-button').click(galleryCreateClear);
@@ -839,6 +845,14 @@ function galleryEditSave(){
 	var tags = $('#gallery-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
 	var posts = $('.edit-gallery-images').frick('frickPosts');
 
+	var added = posts.filter(function(id) {return id.indexOf('NEW') !== -1});
+	added = added.map(function(index) {
+		index = index.split('=')[1];
+		return GALLERY_EDIT.files[index];
+	});
+	
+	posts = posts.filter(function(id) {return id.indexOf('NEW') == -1});
+
 	if (posts.length == 0)
 		return $.snackbar({content:"Galleries must have at least 1 post"});
 
@@ -851,12 +865,47 @@ function galleryEditSave(){
 		lon = coord ? coord.lng() : null,
 		address = $('#gallery-location-input').val();
 
+	var firstPost = GALLERY_EDIT.posts.length > 0 ? GALLERY_EDIT.posts[0] : null;
+
 	updateGallery(caption, byline, tags, posts, highlight, lat, lon, address, function(err, GALLERY_EDIT){
 		if (err){
 			$.snackbar({content: resolveError(err)});
 			console.log(err);
 		}
-		else{
+		else if (added.length > 0) {
+			var data = new FormData();
+			for (var index in added) {
+				data.append(index, added[index]);
+			}
+			
+			if(firstPost) {
+				data.append('lat', firstPost.location.geo.coordinates[1]);
+				data.append('lon', firstPost.location.geo.coordinates[0]);
+			}
+			else {
+				data.append('lat', 0);
+				data.append('lon', 0);
+			}
+			
+			data.append('gallery', GALLERY_EDIT._id);
+			$.ajax({
+				url: '/scripts/gallery/addpost',
+				type: 'POST',
+				data: data,
+				processData: false,
+				contentType: false,
+				cache: false,
+				dataType: 'json',
+				success: function(result, status, xhr){
+					window.location.reload();
+				},
+				error: function(xhr, status, error){
+					$.snackbar({content: resolveError(err)});
+					console.log(err);
+				}
+			})
+		}
+		else {
 			window.location.reload();
 		}
 	});
@@ -994,6 +1043,7 @@ function galleryEditUpdate(){
 		$('#gallery-articles-list').append(elem);
 	});
 
+	$('.edit-gallery-images').empty();
 	for (var index in GALLERY_EDIT.posts){
 		if (GALLERY_EDIT.posts[index].video)
 			$('.edit-gallery-images').append('\
@@ -1006,7 +1056,45 @@ function galleryEditUpdate(){
 			$('.edit-gallery-images').append('<img class="img-responsive" src="' + formatImg(GALLERY_EDIT.posts[index].image, 'medium') + '" data-id="' + GALLERY_EDIT.posts[index]._id + '"/>');
 	}
 
+	if (GALLERY_EDIT.files) {
+		Object.keys(GALLERY_EDIT.files).forEach(function(index) {
+			var file = GALLERY_EDIT.files[index];
+			var reader = new FileReader()
+			if (file.type.indexOf('video') !== -1) { //video
+				var elem = $('\
+					<video width="100%" height="100%" controls>\
+						<source id="' + file.lastModified + '" type="video/mp4">\
+						Your browser does not support the video tag.\
+					</video>\
+				');
+				$('.edit-gallery-images').append(elem);
+				reader.onload = function(e) {
+					$('.edit-gallery-images').find('#' + file.lastModified).attr('src', e.target.result);
+				}
+			}
+			else { //image
+				var elem = $('<img class="img-responsive" id="' + file.lastModified + '" data-id="NEW=' + index + '"/>');
+				$('.edit-gallery-images').append(elem);
+				reader.onload = function(e) {
+					$('.edit-gallery-images').find('#' + file.lastModified).attr('src', e.target.result);
+				}
+			}	
+			reader.readAsDataURL(file);
+		});
+	}
+
 	$('.edit-gallery-images').frick();
+}
+
+function galleryEditAddMore() {
+	$('#gallery-upload-files').click();
+}
+function galleryEditFiles(e) {
+	// var data = new FormData();
+	var files = $('#gallery-upload-files').prop('files');
+	
+	GALLERY_EDIT.files = files;
+	galleryEditUpdate();
 }
 
 //Clear the gallery create fields

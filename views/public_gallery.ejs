@@ -73,7 +73,12 @@
 	</section>
 	<div class="container" id="gallery-info">
 		<div class="row">
-			<div class="col-md-6 section"><%= gallery.caption %></div>
+			<div class="col-md-6 section">
+				<p><%= gallery.caption %></p><br />
+				<a href="https://itunes.apple.com/app/apple-store/id872040692?pt=83522801&ct=GalleryPostBtn&mt=8" target="_blank">
+					<img src="https://d1dw1p6sgigznj.cloudfront.net/images/store-apple.svg">
+				</a>
+			</div>
 			<div class="col-md-6 hidden-xs" id="more-galleries">
 				<!--<% gallery.related_stories.forEach(function(story){ %>
 					<h2 class="section">More From <%= story.title %></h2>
