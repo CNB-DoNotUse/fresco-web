@@ -182,7 +182,11 @@
 	<script type="text/javascript" src="/javascripts/fresco.js"></script>
 	<script type="text/javascript" src="/javascripts/handlers/public_gallery.js"></script>
 	<script type="text/javascript">
-		PAGE_Public_Gallery.gallery = <%- JSON.stringify(gallery) %>;
+		PAGE_Public_Gallery.gallery = {};
+		PAGE_Public_Gallery.gallery._id = <%- JSON.stringify(gallery._id) %>;
+		PAGE_Public_Gallery.gallery.related_stories = <%- JSON.stringify(gallery.related_stories) %>;
+		PAGE_Public_Gallery.gallery.articles = <%- JSON.stringify(gallery.articles) %>;
+		PAGE_Public_Gallery.gallery.tags = <%- JSON.stringify(gallery.tags) %>;
 	</script>
 </body>
 </html>

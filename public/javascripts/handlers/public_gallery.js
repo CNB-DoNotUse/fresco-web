@@ -1,5 +1,25 @@
 var PAGE_Public_Gallery = {
 	
+	getGallery: function(callback) {
+		$.ajax({
+			url: API_URL + '/v1/gallery/get',
+			type: 'GET',
+			data: {
+				id: PAGE_Public_Gallery.gallery_id,
+				stories: true,
+				stats: 1
+			},
+			dataTYpe: 'json',
+			success: function(result, status, xhr) {
+				return callback(null, result.data);
+			},
+			error: function(chr, status, error) {
+				$.snackbar({content: resolveError(error)});
+				callback(error);
+			}
+		});
+	},
+	
 	loadGalleries: function(galleries, callback){
 		$.ajax({
 			url: API_URL + "/v1/gallery/resolve/",
@@ -53,7 +73,7 @@ var PAGE_Public_Gallery = {
 	}
 };
 
-$(document).ready(function(){
+$(document).ready(function() {
 	
 	$("img.lazy").lazyload({
 	 	threshold : 240
