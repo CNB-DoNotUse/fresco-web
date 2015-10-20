@@ -191,6 +191,8 @@
 	</div>
 </div>
 <%- include('segments/gallery-edit') %>
+<%- include('segments/gallery-create') %>
+<%- include('segments/bulk-select') %>
 <!-- end edit -->
 <%- include('segments/console_scripts') %>
 <script src="/javascripts/handlers/content.js"></script>
@@ -199,5 +201,7 @@
 	var purchases = <%- JSON.stringify(purchases || []) %>;
 	var outlet = <%- user.outlet ? JSON.stringify(user.outlet._id) : 'undefined'; %>
 </script>
+
+<!--<script src="/javascripts/segments/gallery-create.js"></script>-->
 </body>
 </html>
