@@ -805,7 +805,7 @@ function buildPost(post, purchased, size, forsale){
 	}
 	
 	var elem = $('\
-	<div class="' + sizes[size || 'medium'] + '">\
+	<div class="' + sizes[size || 'medium'] + ' tile">\
 		<div class="tile-body">\
 			<div class="frame">\
 			</div>\
