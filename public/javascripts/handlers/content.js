@@ -2,6 +2,7 @@ var PAGE_Content = {
 	offset: 0,
 	loading: false,
 	verified: true,
+	sort: 'capture',
 	
 	refreshList: function(){
 		PAGE_Content.offset = 0;
@@ -23,6 +24,8 @@ var PAGE_Content = {
 			params.type = 'video';
 		
 		params.verified = PAGE_Content.verified;
+		
+		params.sort = PAGE_Content.sort;
 		
 		$.ajax({
 			url: '/scripts/post/list',
@@ -61,6 +64,19 @@ $(document).ready(function(){
 			PAGE_Content.refreshList();
 		}
 		$('.filter-button').click();
+	});
+	
+	$('.time-filter-type').click(function(){
+		$('.time-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'capture' && PAGE_Content.sort !== 'capture'){
+			PAGE_Content.sort = 'capture';
+			PAGE_Content.refreshList();
+		}
+		else if ($(this).data('filter-type') == 'upload' && PAGE_Content.sort !== 'upload'){
+			PAGE_Content.sort = 'upload';
+			PAGE_Content.refreshList();
+		}
+		$('.time-filter-button').click();
 	});
 	
 	$('.container-fluid.grid').scroll(function() {
