@@ -763,7 +763,7 @@ function refreshBulkThumbs(){
 }
 
 //Builds a DOM representation of a post with the given post object
-function buildPost(post, purchased, size, forsale, timeType, timeDisplay){
+function buildPost(post, purchased, size, forsale, timeType){
 	if (!post) return '';
 
 	var sizes = {
@@ -806,12 +806,7 @@ function buildPost(post, purchased, size, forsale, timeType, timeDisplay){
 	
 	var timestamp = timeType == 'captured' ? post.time_captured : post.time_created;
 	
-	var timeString = '';
-	if (timeDisplay == 'absolute') {
-		timeString = timestampToDate(timestamp);
-	} else {
-		timeString = getTimeAgo(Date.now(), timestamp);
-	}
+	var timeString = getTimeAgo(Date.now(), timestamp);
 	
 	var elem = $('\
 	<div class="' + sizes[size || 'medium'] + ' tile">\

@@ -40,6 +40,8 @@ var PAGE_Content = {
 					$('.content-tiles').append(elem);
 					PAGE_Content.offset += 1;
 				});
+				
+				setTimeDisplayType(PAGE_Content.display);
 			},
 			error: function(xhr, status, error){
 				$.snackbar({content: resolveError(error)});
