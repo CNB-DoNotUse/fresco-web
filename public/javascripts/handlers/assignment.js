@@ -230,6 +230,19 @@ $(document).ready(function(){
 		});
 	});
 	
+	$('.time-filter-type').click(function(){
+		$('.time-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'capture' && PAGE_Assignment.sort_key !== 'time_captured'){
+			PAGE_Assignment.sort_key = 'time_captured';
+			PAGE_Assignment.refreshList();
+		}
+		else if ($(this).data('filter-type') == 'upload' && PAGE_Assignment.sort_key !== 'time_created'){
+			PAGE_Assignment.sort_key = 'time_created';
+			PAGE_Assignment.refreshList();
+		}
+		$('.time-filter-button').click();
+	});
+	
 	$('.time-display-filter-type').click(function(){
 		$('.time-display-filter-text').text($(this).text());
 		if($(this).data('filter-type') == 'relative'){
