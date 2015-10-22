@@ -82,14 +82,13 @@ $(document).ready(function(){
 	
 	$('.time-display-filter-type').click(function(){
 		$('.time-display-filter-text').text($(this).text());
-		if($(this).data('filter-type') == 'relative' && PAGE_Content.display !== 'relative'){
+		if($(this).data('filter-type') == 'relative'){
 			PAGE_Content.display = 'relative';
-			PAGE_Content.refreshList();
 		}
-		else if ($(this).data('filter-type') == 'absolute' && PAGE_Content.display !== 'absolute'){
+		else if ($(this).data('filter-type') == 'absolute'){
 			PAGE_Content.display = 'absolute';
-			PAGE_Content.refreshList();
 		}
+		setTimeDisplayType(PAGE_Content.display);
 		$('.time-display-filter-button').click();
 	});
 	

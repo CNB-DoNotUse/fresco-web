@@ -806,11 +806,11 @@ function buildPost(post, purchased, size, forsale, timeType, timeDisplay){
 	
 	var timestamp = timeType == 'captured' ? post.time_captured : post.time_created;
 	
-	var timesString = '';
+	var timeString = '';
 	if (timeDisplay == 'absolute') {
-		timesString = timestampToDate(timestamp);
+		timeString = timestampToDate(timestamp);
 	} else {
-		timesString = getTimeAgo(Date.now(), post.time_created);
+		timeString = getTimeAgo(Date.now(), timestamp);
 	}
 	
 	var elem = $('\
@@ -835,7 +835,7 @@ function buildPost(post, purchased, size, forsale, timeType, timeDisplay){
 			<div>\
 				<div class="tile-info">'
 					+ ((post.location && post.location.address) ? '<span class="md-type-body2">' + post.location.address + '</span>' : '')
-					+ '<span class="md-type-caption">' + timesString + '</span>\
+					+ '<span class="md-type-caption timestring" data-timestamp="' + timestamp + '">' + timeString + '</span>\
 				</div>\
 				<span class="mdi ' + (post.video == null ? "mdi-file-image-box" : 'mdi-movie') + ' icon ' + (purchased ? 'available' : 'md-type-black-disabled') + ' pull-right"></span>\
 			</div>\
@@ -942,6 +942,20 @@ function buildPost(post, purchased, size, forsale, timeType, timeDisplay){
 	}
 
 	return elem;
+}
+
+function setTimeDisplayType(timeDisplay) {
+	$('.timestring').each(function() {
+		var timestamp = $(this).data('timestamp');
+	
+		var timeString = '';
+		if (timeDisplay == 'absolute') {
+			timeString = timestampToDate(timestamp);
+		} else {
+			timeString = getTimeAgo(Date.now(), timestamp);
+		}
+		$(this).text(timeString);
+	});
 }
 
 //Save gallery edits
