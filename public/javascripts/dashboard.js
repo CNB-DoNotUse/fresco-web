@@ -763,7 +763,7 @@ function refreshBulkThumbs(){
 }
 
 //Builds a DOM representation of a post with the given post object
-function buildPost(post, purchased, size, forsale){
+function buildPost(post, purchased, size, forsale, timeType, timeDisplay){
 	if (!post) return '';
 
 	var sizes = {
@@ -804,6 +804,15 @@ function buildPost(post, purchased, size, forsale){
 		}
 	}
 	
+	var timestamp = timeType == 'captured' ? post.time_captured : post.time_created;
+	
+	var timesString = '';
+	if (timeDisplay == 'absolute') {
+		timesString = timestampToDate(timestamp);
+	} else {
+		timesString = getTimeAgo(Date.now(), post.time_created);
+	}
+	
 	var elem = $('\
 	<div class="' + sizes[size || 'medium'] + ' tile">\
 		<div class="tile-body">\
@@ -826,7 +835,7 @@ function buildPost(post, purchased, size, forsale){
 			<div>\
 				<div class="tile-info">'
 					+ ((post.location && post.location.address) ? '<span class="md-type-body2">' + post.location.address + '</span>' : '')
-					+ '<span class="md-type-caption">' +  getTimeAgo(Date.now(), post.time_created) + '</span>\
+					+ '<span class="md-type-caption">' + timesString + '</span>\
 				</div>\
 				<span class="mdi ' + (post.video == null ? "mdi-file-image-box" : 'mdi-movie') + ' icon ' + (purchased ? 'available' : 'md-type-black-disabled') + ' pull-right"></span>\
 			</div>\
