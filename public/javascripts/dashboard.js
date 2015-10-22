@@ -1325,6 +1325,9 @@ function createGalleryView(gallery, half){
 			stories += '<li><a href="/story/' + gallery.related_stories[index]._id + '">' + gallery.related_stories[index].title + '</a></li>';
 	}
 
+	var timestamp = gallery.time_created;
+	var timeString = getTimeAgo(Date.now(), gallery.time_created);
+
 	var elem = $('<div class="' + size + ' tile story">\
 			<div class="tile-body">\
 				<div class="frame"></div>\
@@ -1343,7 +1346,7 @@ function createGalleryView(gallery, half){
 				<div>\
 					<div class="ellipses">\
 						<span class="md-type-body2">' + location + '</span>\
-						<span class="md-type-caption">' + getTimeAgo(Date.now(), gallery.time_created) +'</span>\
+						<span class="md-type-caption timestring" data-timestamp="' + timestamp + '">' + timeString +'</span>\
 					</div>\
 				</div>\
 			</div>\
@@ -1442,6 +1445,9 @@ function createStoryView(story, half){
 
 	var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 
+	var timestamp = story.time_created;
+	var timeString = getTimeAgo(Date.now(), story.time_created);
+	
 	var elem = $('<div class="' + size + ' tile story">\
 			<div class="tile-body">\
 				<div class="frame"></div>\
@@ -1462,7 +1468,7 @@ function createStoryView(story, half){
 				<div>\
 					<div>\
 						<span class="md-type-body2">' + story.title + '</span>\
-						<span class="md-type-caption">' + getTimeAgo(Date.now(), story.time_created) +'</span>\
+						<span class="md-type-caption timestring" data-timestamp="' + timestamp + '">' + timeString +'</span>\
 					</div>\
 				</div>\
 			</div>\
