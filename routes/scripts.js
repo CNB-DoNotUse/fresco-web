@@ -260,10 +260,14 @@ router.post('/gallery/import', function(req, res, next){
   function upload(cb){
     params.posts = JSON.stringify(params.posts);
     request.post({ url: config.API_URL + '/v1/gallery/assemble', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
-      for (var index in cleanupFiles)
+      console.log(err, body);for (var index in cleanupFiles)
         fs.unlink(cleanupFiles[index], function(){});
-        
-      body = JSON.parse(body);
+      
+      try{
+        body = JSON.parse(body);
+      }catch(e){
+        return cb('INVALID_JSON');
+      }
 
       cb(err || body.err, body.data);
     });
@@ -314,8 +318,6 @@ router.post('/gallery/import', function(req, res, next){
           var file = fs.createWriteStream(tempName);
           cleanupFiles.push(tempName);
           params.posts[i] = {
-            lat: 0,
-            lon: 0,
             external_url: req.body.tweet
           };
 
@@ -345,7 +347,7 @@ router.post('/gallery/import', function(req, res, next){
     for (var index in req.files){
       cleanupFiles.push(req.files[index].path);
       params[i] = fs.createReadStream(req.files[index].path);
-      params.posts[i] = {lat:0,lon:0};
+      params.posts[i] = {};
       ++i;
     }
 

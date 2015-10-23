@@ -44,7 +44,7 @@ var PAGE_Admin = {
 	submissionSkip: null,
 
 	submissionGoogleMap: {
-		marker: null,
+		polygon: null,
 		map: null,
 		autocomplete: null,
 		classes: {
@@ -73,7 +73,7 @@ var PAGE_Admin = {
 	importsImportLocalFiles: null,
 
 	importsGoogleMap: {
-		marker: null,
+		polygon: null,
 		map: null,
 		autocomplete: null,
 		classes: {
@@ -281,15 +281,23 @@ var PAGE_Admin = {
 					for (var index in PAGE_Admin.submissions){
 						if (!old_submissions[index] || PAGE_Admin.submissions[index]._id != old_submissions[index]._id)
 							same = false;
-						var sub = result.data[index];
+						var sub = result.data[index],
+							location = 'No Location';
+							
+						for (var i in sub.posts){
+							if (sub.posts[i].location.address){
+								location = sub.posts[i].location.address;
+								break;
+							}
+						}
 
 						var assignmentText = '<div>'+
-							'<p class="md-type-body1">' + sub.posts[0].location.address + '</p>'+
+							'<p class="md-type-body1">' + location + '</p>'+
 						'</div>';
 						if(sub.assignment){
 							assignmentText = '<div>' +
 							'	<p class="md-type-body2 assignment-link" data-id="' + sub.assignment._id + '">' + sub.assignment.title + '</p>' +
-							'	<p class="md-type-body1 assignment-location">' + sub.posts[0].location.address + '</p>' +
+							'	<p class="md-type-body1 assignment-location">' + location + '</p>' +
 							'</div>';
 						}
 
@@ -423,9 +431,7 @@ var PAGE_Admin = {
 		submissions: function(gallery){
 			if (!gallery) gallery = {};
 
-			var center = gallery.posts && gallery.posts[0] && gallery.posts[0].location.geo ? new google.maps.LatLng(gallery.posts[0].location.geo.coordinates[1], gallery.posts[0].location.geo.coordinates[0]) : null;
-
-			PAGE_Admin.setMarker(PAGE_Admin.submissionGoogleMap, center);
+			PAGE_Admin.setPolygon(PAGE_Admin.submissionGoogleMap, gallery.location ? gallery.location.coordinates[0] : null);
 
 			PAGE_Admin.submissionTags.html('');
 			PAGE_Admin.submissionSuggestedTags.html('');
@@ -473,9 +479,7 @@ var PAGE_Admin = {
 		imports: function(gallery){
 			if (!gallery) gallery = {};
 
-			var center = gallery.posts && gallery.posts[0] && gallery.posts[0].location.geo ? new google.maps.LatLng(gallery.posts[0].location.geo.coordinates[1], gallery.posts[0].location.geo.coordinates[0]) : null;
-
-			PAGE_Admin.setMarker(PAGE_Admin.importsGoogleMap, center);
+			PAGE_Admin.setPolygon(PAGE_Admin.importsGoogleMap, gallery.location ? gallery.location.coordinates[0] : null);
 
 			PAGE_Admin.importsTags.html('');
 			PAGE_Admin.importsSuggestedTags.html('');
@@ -522,6 +526,14 @@ var PAGE_Admin = {
 			$('.form-control').filter(function(){return this.value == '';}).trigger('keyup');
 		}
 	},
+	setPolygon: function(map, coords){
+		if (!coords)
+			return map.polygon.setMap(null);
+			
+		map.polygon.setPath(coords.map(function(a){ return { lat: a[1], lng: a[0] }; }));
+		map.polygon.setMap(map.map);
+		map.map.fitBounds(map.polygon.getBounds());
+	},
 	setMarker: function(map, location, radius){
 		if (!location && !radius){
 			if (map.circle) map.circle.setMap(null);
@@ -567,12 +579,23 @@ var PAGE_Admin = {
 			anchor: new google.maps.Point(30, 30)
 		};
 
-		map.marker = new google.maps.Marker({
+		if (map.polygon !== undefined){
+			map.polygon = new google.maps.Polygon({
+					paths: [],
+					strokeColor: "#FFB500",
+					strokeOpacity: 0.8,
+					strokeWeight: 2,
+					fillColor: "#FFC600",
+					fillOpacity: 0.35,
+					map: null
+				});
+		}
+		if (map.marker !== undefined) map.marker = new google.maps.Marker({
 			position: new google.maps.LatLng(40.7, -74),
 			map: null,
 			icon: image
 		});
-		if (map.circle) map.circle = new google.maps.Circle({
+		if (map.circle !== undefined) map.circle = new google.maps.Circle({
 			map: null,
 			center: new google.maps.LatLng(40.7, -74),
 			radius: 1,

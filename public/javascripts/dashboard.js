@@ -1,3 +1,17 @@
+if (google)
+google.maps.Polygon.prototype.getBounds = function() {
+    var bounds = new google.maps.LatLngBounds();
+    var paths = this.getPaths();
+    var path;        
+    for (var i = 0; i < paths.getLength(); i++) {
+        path = paths.getAt(i);
+        for (var ii = 0; ii < path.getLength(); ii++) {
+            bounds.extend(path.getAt(ii));
+        }
+    }
+    return bounds;
+}
+
 $(document).ready(function(){
 	$.material.init();
 	
@@ -566,13 +580,18 @@ function editorUpdate(post){
 
 		edit_initial_toggle = false;
 	}
-
-	var lat = post.location.geo.coordinates[1];
-	var lng = post.location.geo.coordinates[0];
-
-	edit_marker.setPosition(new google.maps.LatLng(lat, lng));
-	edit_map.setCenter(edit_marker.getPosition());
-	edit_map.setZoom(18);
+	
+	if (post.location.geo){
+		var lat = post.location.geo.coordinates[1];
+		var lng = post.location.geo.coordinates[0];
+	
+		edit_marker.setMap(edit_map);
+		edit_marker.setPosition(new google.maps.LatLng(lat, lng));
+		edit_map.setCenter(edit_marker.getPosition());
+		edit_map.setZoom(18);
+	}else{
+		edit_marker.setMap(null);
+	}
 
 	$('#edit-tags-list').empty();
 	$('#edit-tags-input').on('change', function(){
@@ -731,9 +750,9 @@ function buildPost(post, purchased, size, forsale){
 				+ icons +
 			'</div>\
 			<div>\
-				<div class="tile-info">'
-					+ ((post.location && post.location.address) ? '<span class="md-type-body2">' + post.location.address + '</span>' : '')
-					+ '<span class="md-type-caption">' +  getTimeAgo(Date.now(), post.time_created) + '</span>\
+				<div class="tile-info">\
+					   <span class="md-type-body2">' + (post.location.address || 'No Location') + '</span>\
+					   <span class="md-type-caption">' +  getTimeAgo(Date.now(), post.time_created) + '</span>\
 				</div>\
 				<span class="mdi ' + (post.video == null ? "mdi-file-image-box" : 'mdi-movie') + ' icon ' + (purchased ? 'available' : 'md-type-black-disabled') + ' pull-right"></span>\
 			</div>\
@@ -865,7 +884,14 @@ function galleryEditSave(){
 		lon = coord ? coord.lng() : null,
 		address = $('#gallery-location-input').val();
 
-	var firstPost = GALLERY_EDIT.posts.length > 0 ? GALLERY_EDIT.posts[0] : null;
+	var firstLocation = null;
+
+	for (var index in GALLERY_EDIT.posts){
+		if (GALLERY_EDIT.posts[index].location.geo){
+			firstLocation = GALLERY_EDIT.posts[index].location.geo.coordinates;
+			break;
+		}
+	}
 
 	updateGallery(caption, byline, tags, posts, highlight, lat, lon, address, function(err, GALLERY_EDIT){
 		if (err){
@@ -878,13 +904,9 @@ function galleryEditSave(){
 				data.append(index, added[index]);
 			}
 			
-			if(firstPost) {
-				data.append('lat', firstPost.location.geo.coordinates[1]);
-				data.append('lon', firstPost.location.geo.coordinates[0]);
-			}
-			else {
-				data.append('lat', 0);
-				data.append('lon', 0);
+			if(firstLocation) {
+				data.append('lat', firstLocation[1]);
+				data.append('lon', firstLocation[0]);
 			}
 			
 			data.append('gallery', GALLERY_EDIT._id);
@@ -1008,13 +1030,26 @@ function galleryEditUpdate(){
 		});
 	}
 	
-	var lat = GALLERY_EDIT.posts[0].location.geo.coordinates[1];
-	var lng = GALLERY_EDIT.posts[0].location.geo.coordinates[0];
+	var firstLocation = null;
 
-	var center = new google.maps.LatLng(lat, lng);
+	for (var index in GALLERY_EDIT.posts){
+		if (GALLERY_EDIT.posts[index].location.geo){
+			firstLocation = GALLERY_EDIT.posts[index].location.geo.coordinates;
+			break;
+		}
+	}
 	
-	galleryEditMarker.setPosition(center);
-	galleryEditMap.setCenter(center);
+	if (firstLocation){
+		var lat = firstLocation[1];
+		var lng = firstLocation[0];
+	
+		var center = new google.maps.LatLng(lat, lng);
+		
+		galleryEditMarker.setMap(galleryEditMap);
+		galleryEditMarker.setPosition(center);
+		galleryEditMap.setCenter(center);
+	}else
+		galleryEditMarker.setMap(null);
 	$('#gallery-location-input').val(GALLERY_EDIT.posts[0].location.address).trigger('keydown');
 	
 	$('#gallery-caption-input').val(GALLERY_EDIT.caption).trigger('keydown');
@@ -1199,13 +1234,20 @@ function createGalleryView(gallery, half){
 				</div>';
 	}
 
-	var location = gallery.posts[0].location.address || 'No Location';
+	var location = 'No Location';
 	var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 	var stories = '';
 
 	if (Array.isArray(gallery.related_stories)){
 		for (var index in gallery.related_stories)
 			stories += '<li><a href="/story/' + gallery.related_stories[index]._id + '">' + gallery.related_stories[index].title + '</a></li>';
+	}
+	
+	for (var i in gallery.posts){
+		if (gallery.posts[i].location.address){
+			location = gallery.posts[i].location.address;
+			break;
+		}
 	}
 
 	var elem = $('<div class="' + size + ' tile story">\
