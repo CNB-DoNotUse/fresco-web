@@ -51,6 +51,11 @@
 		<meta property="og:type" content="place"/>
 		<meta property="place:location:longitude" content="<%= assignment.location.geocode[0] %>"/>
 		<meta property="place:location:latitude" content="<%= assignment.location.geocode[1] %>"/>
+	<% } else if (type == 'story') {%>
+		<meta property="og:description" content="<%= story.caption %>"/>
+		<meta property="og:url" content="http://www.fresconews.com/story/<%= story._id %>"/>
+		<meta property="og:site_name" content="Fresco News"/>
+		<meta property="og:type" content="article"/>
 	<% } %>
 </head>
 <body>
