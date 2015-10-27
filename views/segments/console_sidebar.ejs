@@ -39,6 +39,18 @@
 		<meta property="profile:last_name" content="<%= page_user.lastname %>"/>
 		<meta property="profile:username" content="<%= page_user.username %>"
 		<meta property="og:image" content="<%= page_user.avatar %>"/>
+	<% } else if (type == 'outlet') {%>
+		<meta property="og:url" content="http://www.fresconews.com/outlet/<%= outlet._id %>"/>
+		<meta property="og:site_name" content="Fresco News"/>
+		<meta property="og:type" content="article"/>
+		<meta property="og:image" content="<%= outlet.avatar %>"/>
+	<% } else if (type == 'assignment') {%>
+		<meta property="og:description" content="<%= assignment.caption %>"/>
+		<meta property="og:url" content="http://www.fresconews.com/assignment/<%= assignment._id %>"/>
+		<meta property="og:site_name" content="Fresco News"/>
+		<meta property="og:type" content="place"/>
+		<meta property="place:location:longitude" content="<%= assignment.location.geocode[0] %>"/>
+		<meta property="place:location:latitude" content="<%= assignment.location.geocode[1] %>"/>
 	<% } %>
 </head>
 <body>
