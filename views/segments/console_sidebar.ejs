@@ -15,6 +15,23 @@
 	<link rel="stylesheet" href="/stylesheets/alertify.core.css" />
 	<!-- include a theme, can be included into the core instead of 2 separate files -->
 	<link rel="stylesheet" href="/stylesheets/alertify.default.css" />
+	
+	<meta name="apple-itunes-app" content="app-id=872040692"/>
+	<meta property="og:title" content="<%= title %> | Fresco News"/>
+	
+	<% if (post) { %>
+		<meta property="og:description" content="<%= gallery.caption %>"/>
+		<meta property="og:url" content="http://www.fresconews.com/post/<%= post._id %>"/>
+		<meta property="og:site_name" content="Fresco News"/>
+		<meta property="og:type" content="article"/>
+		<meta property="og:image" content="<%= config.formatImg(post.image, 'large') %>"/>
+	<% } else if (gallery) {%>
+		<meta property="og:description" content="<%= gallery.caption %>"/>
+		<meta property="og:url" content="http://www.fresconews.com/gallery/<%= gallery._id %>"/>
+		<meta property="og:site_name" content="Fresco News"/>
+		<meta property="og:type" content="article"/>
+		<meta property="og:image" content="<%= config.formatImg(gallery.posts[0].image, 'large') %>"/>
+	<% } %>
 </head>
 <body>
 <!-- drawer -->
