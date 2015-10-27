@@ -35,7 +35,7 @@ router.get('/:id', function(req, res, next){
           });
         }
   
-        res.render('gallery', { user: req.session.user, gallery: gallery, title: title, purchases: purchases, config: config, alerts: req.alerts });
+        res.render('gallery', { user: req.session.user, gallery: gallery, title: title, purchases: purchases, config: config, alerts: req.alerts, type: 'gallery' });
       }
       else { //User is not logged in, show public gallery page
         res.render('public_gallery', {gallery: gallery, title: title, config: config, alerts: req.alerts });

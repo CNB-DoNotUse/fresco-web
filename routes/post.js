@@ -45,7 +45,7 @@ router.get('/:id', function(req, res, next){
         title += post.curator.firstname + ' ' + post.owner.lastname;
       }
       
-      res.render('post', { user: req.session.user, post: post, gallery: gallery_body.data, title: title, purchases: purchases, config: config, alerts: req.alerts });
+      res.render('post', { user: req.session.user, post: post, gallery: gallery_body.data, title: title, purchases: purchases, config: config, alerts: req.alerts, type: 'post' });
     });
   });
 });

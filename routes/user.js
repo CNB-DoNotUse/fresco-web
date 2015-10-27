@@ -34,7 +34,7 @@ router.get('/:id', function(req, res, next){
       });
     }
 
-    res.render('user', { title: body.data.firstname + ' ' + body.data.lastname, user: req.session.user, page_user: body.data, config: config, purchases: purchases, alerts: req.alerts });
+    res.render('user', { title: body.data.firstname + ' ' + body.data.lastname, user: req.session.user, page_user: body.data, config: config, purchases: purchases, alerts: req.alerts, type: 'user' });
   });
 });
 

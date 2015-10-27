@@ -19,18 +19,26 @@
 	<meta name="apple-itunes-app" content="app-id=872040692"/>
 	<meta property="og:title" content="<%= title %> | Fresco News"/>
 	
-	<% if (post) { %>
+	<% if (type == 'post') { %>
 		<meta property="og:description" content="<%= gallery.caption %>"/>
 		<meta property="og:url" content="http://www.fresconews.com/post/<%= post._id %>"/>
 		<meta property="og:site_name" content="Fresco News"/>
 		<meta property="og:type" content="article"/>
 		<meta property="og:image" content="<%= config.formatImg(post.image, 'large') %>"/>
-	<% } else if (gallery) {%>
+	<% } else if (type == 'gallery') {%>
 		<meta property="og:description" content="<%= gallery.caption %>"/>
 		<meta property="og:url" content="http://www.fresconews.com/gallery/<%= gallery._id %>"/>
 		<meta property="og:site_name" content="Fresco News"/>
 		<meta property="og:type" content="article"/>
 		<meta property="og:image" content="<%= config.formatImg(gallery.posts[0].image, 'large') %>"/>
+	<% } else if (type == 'user') {%>
+		<meta property="og:url" content="http://www.fresconews.com/user/<%= page_user._id %>"/>
+		<meta property="og:site_name" content="Fresco News"/>
+		<meta property="og:type" content="profile"/>
+		<meta property="profile:first_name" content="<%= page_user.firstname %>"/>
+		<meta property="profile:last_name" content="<%= page_user.lastname %>"/>
+		<meta property="profile:username" content="<%= page_user.username %>"
+		<meta property="og:image" content="<%= page_user.avatar %>"/>
 	<% } %>
 </head>
 <body>
