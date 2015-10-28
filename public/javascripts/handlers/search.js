@@ -59,18 +59,20 @@ var PAGE_Search = {
 				polygon: PAGE_Search.searchGoogleMap.circle.getMap() == null ? undefined : encodeURIComponent(JSON.stringify(circleToPolygon(PAGE_Search.searchGoogleMap.circle, 8)))
 			},
 			success: function(result) {
-				if (result.err) {
-					$.snackbar({content: resolveError(result.err)});
-					return callback(result.err, null);
-				}
+				if (result.err)
+					return this.error(null, null, result.err);
+					
 				result.data.forEach(function(story){
 					var elem = PAGE_Search.makeStoryListItem(story);
 					$('#stories').append(elem);
 					PAGE_Search.story_offset += 1;
 				});
+				
+				if (callback) callback();
 			},
-			error: function(xhr, status, error ){
-				callback(error, null);
+			error: function(xhr, status, error){
+				$.snackbar({content: resolveError(error)});
+				if (callback) callback(error);
 			},
 			complete: function(){
 				PAGE_Search.story_loading = false;
@@ -94,19 +96,21 @@ var PAGE_Search = {
 				tags: PAGE_Search.tags,
 				polygon: PAGE_Search.searchGoogleMap.circle.getMap() == null ? undefined : encodeURIComponent(JSON.stringify(circleToPolygon(PAGE_Search.searchGoogleMap.circle, 8)))
 			},
-			success: function(result) {console.log(JSON.stringify(result));
-				if (result.err) {
-					$.snackbar({content: resolveError(result.err)});
+			success: function(result) {
+				if (result.err)
 					return this.error(null, null, result.err);
-				}
+					
 				result.data.forEach(function(post){
 					var elem = buildPost(post, purchases ? purchases.indexOf(post._id) != -1 : null, 'large', true);
 					$('#posts').append(elem);
 					PAGE_Search.post_offset += 1;
 				});
+				
+				if (callback) callback();
 			},
-			error: function(xhr, status, error ){
-				if (callback) return callback(error, null);
+			error: function(xhr, status, error){
+				$.snackbar({content: resolveError(error)});
+				if (callback) callback(error);
 			},
 			complete: function(){
 				PAGE_Search.post_loading = false;
@@ -133,18 +137,20 @@ var PAGE_Search = {
 				radius: PAGE_Search.location ? PAGE_Search.location.radius : undefined
 			},
 			success: function(result) {
-				if (Object.keys(result.err).length > 0) {
-					$.snackbar({content: resolveError(result.err)});
-					return callback(result.err, null);
-				}
+				if (result.err)
+					return this.error(null, null, result.err);
+					
 				result.data.forEach(function(assignment){
 					var elem = PAGE_Search.makeAssignmentListItem(assignment);
 					$('#assignments').append(elem);
 					PAGE_Search.assignment_offset += 1;
 				});
+				
+				if (callback) callback();
 			},
-			error: function(xhr, status, error ){
-				callback(error, null);
+			error: function(xhr, status, error){
+				$.snackbar({content: resolveError(error)});
+				if (callback) callback(error);
 			},
 			complete: function(){
 				PAGE_Search.assignment_loading = false;
@@ -168,18 +174,20 @@ var PAGE_Search = {
 				tags: PAGE_Search.tags
 			},
 			success: function(result) {
-				if (Object.keys(result.err).length > 0) {
-					$.snackbar({content: resolveError(result.err)});
-					return callback(result.err, null);
-				}
+				if (result.err)
+					return this.error(null, null, result.err);
+					
 				result.data.forEach(function(user){
 					var elem = PAGE_Search.makeUserListItem(user);
 					$('#users').append(elem);
 					PAGE_Search.user_offset += 1;
 				});
+				
+				if (callback) callback();
 			},
 			error: function(xhr, status, error ){
-				callback(error, null);
+				$.snackbar({content: resolveError(error)});
+				if (callback) callback(error);
 			},
 			complete: function(){
 				PAGE_Search.user_loading = false;
@@ -227,13 +235,15 @@ var PAGE_Search = {
 			
 			PAGE_Search.searchGoogleMap.marker.setPosition(PAGE_Search.location.latlng);
 			PAGE_Search.searchGoogleMap.circle.setCenter(PAGE_Search.location.latlng);
-			PAGE_Search.searchGoogleMap.circle.setRadius(milesToMeters(PAGE_Search.location.radius));
+			PAGE_Search.searchGoogleMap.circle.setRadius(milesToMeters(PAGE_Search.location.radius || 10));
 			
 			PAGE_Search.searchGoogleMap.map.fitBounds(PAGE_Search.searchGoogleMap.circle.getBounds());
 		}else{
 			PAGE_Search.searchGoogleMap.marker.setMap(null);
 			PAGE_Search.searchGoogleMap.circle.setMap(null);
 		}
+		
+		PAGE_Search.refresh();
 	},
 	initMap: function(map){
 		var styles = [{"featureType": "all", "elementType":"all", "stylers": [{"gamma":1.54}]},
@@ -317,36 +327,27 @@ var PAGE_Search = {
 		google.maps.event.addListener(map.autocomplete, 'place_changed', function(){
 			var place = map.autocomplete.getPlace();
 			if(place.geometry){
-				map.marker.setPosition(place.geometry.location);
-				if (map.circle) map.circle.setCenter(place.geometry.location);
-				if(place.geometry.viewport){
-					map.map.fitBounds(place.geometry.viewport);
-				}else{
-					map.map.panTo(place.geometry.location);
-					if(!(map.circle && map.circle.getRadius() >= 100))
-						map.map.setZoom(18);
-					else
-						map.map.fitBounds(map.circle.getBounds());
-				}
+				PAGE_Search.location = {
+					latlng: {
+						lat: place.geometry.location.lat(),
+						lng: place.geometry.location.lng()
+					},
+					//Rounded to 3 decimals (500 = 0.5 * 1000)
+					radius: place.geometry.viewport ?
+								Math.round(500 * google.maps.geometry.spherical.computeDistanceBetween(place.geometry.viewport.getNorthEast(), place.geometry.viewport.getSouthWest(), 3959)) / 1000 :
+								0.25
+				};
 				
-				// if (place.formatted_address)
-				// 	$('.filter-location .filter-text').html(place.formatted_address);
-					
-				// PAGE_Search.location.latlng = place.geometry.location.;
-				// if (!PAGE_Search.location.radius) PAGE_Search.location.radius = 1000;
-				
-				// PAGE_Search.refresh();
+				$('.' + PAGE_Search.searchGoogleMap.classes.radius).val(PAGE_Search.location.radius).keyup();
+				PAGE_Search.updateMarker();
 			}
 		});
 		
 		$('.' + map.classes.radius).on('change', function(){
-			var radius = feetToMeters(parseInt($(this).val()))
+			var radius = parseInt($(this).val());
 			map.circle.setRadius(milesToMeters(radius));
 			
-			if(!(map.circle || map.circle.getRadius() >= 100))
-				map.map.setZoom(18);
-			else
-				map.map.fitBounds(map.circle.getBounds());
+			map.map.fitBounds(map.circle.getBounds());
 		});
 	}
 };

@@ -176,7 +176,7 @@ $(document).ready(function(){
 	// 	datumTokenizer: storyTokenizer,
 	// 	queryTokenizer: Bloodhound.tokenizers.whitespace,
 	// 	remote: {
-	// 		url: '/scripts/story/search?q=%QUERY',
+	// 		url: '/scripts/story/autocomplete?q=%QUERY',
 	// 		wildcard: '%QUERY',
 	// 		transform: function(res){
 	// 			return res.data;
@@ -228,7 +228,7 @@ $(document).ready(function(){
 		display: 'title',
 		source: function(query, syncResults, asyncResults){
 			$.ajax({
-				url: '/scripts/story/search',
+				url: '/scripts/story/autocomplete',
 				data: {
 					q: query
 				},
@@ -236,7 +236,6 @@ $(document).ready(function(){
 					asyncResults(result.data || []);
 				},
 				error: function(xhr, statur, error){
-					console.log(error);
 					asyncResults([]);
 				}
 			});
@@ -266,7 +265,7 @@ $(document).ready(function(){
 			var elem = makeTag($(this).val());
 			var id = 'NEW={"title":"' + $(this).val() + '"}';
 			elem.data('id', id);
-			console.log(elem.data('id'));
+			
 			elem.addClass('new-story');
 			if($('#gallery-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray().indexOf(id) == -1)
 				$('#gallery-stories-list').append(elem);
@@ -298,7 +297,6 @@ $(document).ready(function(){
 					asyncResults(result.data || []);
 				},
 				error: function(xhr, statur, error){
-					console.log(error);
 					asyncResults([]);
 				}
 			});
@@ -338,7 +336,7 @@ $(document).ready(function(){
 		display: 'title',
 		source: function(query, syncResults, asyncResults){
 			$.ajax({
-				url: '/scripts/story/search',
+				url: '/scripts/story/autocomplete',
 				data: {
 					q: query
 				},
@@ -346,7 +344,6 @@ $(document).ready(function(){
 					asyncResults(result.data || []);
 				},
 				error: function(xhr, statur, error){
-					console.log(error);
 					asyncResults([]);
 				}
 			});
@@ -376,7 +373,6 @@ $(document).ready(function(){
 			var elem = makeTag($(this).val());
 			var id = 'NEW={"title":"' + $(this).val() + '"}';
 			elem.data('id', id);
-			console.log(elem.data('id'));
 			elem.addClass('new-story');
 			if($('#gallery-create-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray().indexOf(id) == -1)
 				$('#gallery-create-stories-list').append(elem);
@@ -408,7 +404,6 @@ $(document).ready(function(){
 					asyncResults(result.data || []);
 				},
 				error: function(xhr, statur, error){
-					console.log(error);
 					asyncResults([]);
 				}
 			});
@@ -523,8 +518,7 @@ function createGallery(caption, tags, posts, highlight, articles, stories, callb
 	});
 }
 //AJAX - Update the gallery
-function updateGallery(caption, byline, tags, posts, highlight, lat, lon, address, callback){
-	
+function updateGallery(caption, byline, tags, posts, highlight, callback){
 	var params = {
 		caption: caption,
 		byline: byline,
@@ -534,9 +528,6 @@ function updateGallery(caption, byline, tags, posts, highlight, lat, lon, addres
 		id: GALLERY_EDIT._id,
 		stories: $('#gallery-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		articles: $('#gallery-articles-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
-		lat: lat,
-		lon: lon, 
-		address : address
 	};
 
 	if(GALLERY_EDIT.visibility == 2 && !highlight){
@@ -548,10 +539,7 @@ function updateGallery(caption, byline, tags, posts, highlight, lat, lon, addres
 		contentType: "application/json",
 		data: JSON.stringify(params),
 		success: function(result){
-			if(result.err){
-				return callback(result.err, null);
-			};
-			callback(null, result.data);
+			callback(result.err, result.data);
 		},
 		error: function(xhr, status, error){
 			callback(error, null);
@@ -997,7 +985,7 @@ function galleryEditSave(){
 	var byline = $('#gallery-byline-input').val();
 	var tags = $('#gallery-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
 	var posts = $('.edit-gallery-images').frick('frickPosts');
-
+	
 	var added = posts.filter(function(id) {return id.indexOf('NEW') !== -1});
 	added = added.map(function(index) {
 		index = index.split('=')[1];
@@ -1013,34 +1001,13 @@ function galleryEditSave(){
 	if( $('#gallery-highlight-input').length !== 0)
 		highlight = $('#gallery-highlight-input').prop('checked');
 
-	var coord = galleryEditMarker.getPosition(),
-		lat = coord ? coord.lat() : null,
-		lon = coord ? coord.lng() : null,
-		address = $('#gallery-location-input').val();
-
-	var firstLocation = null;
-
-	for (var index in GALLERY_EDIT.posts){
-		if (GALLERY_EDIT.posts[index].location.geo){
-			firstLocation = GALLERY_EDIT.posts[index].location.geo.coordinates;
-			break;
-		}
-	}
-
-	updateGallery(caption, byline, tags, posts, highlight, lat, lon, address, function(err, GALLERY_EDIT){
-		if (err){
+	updateGallery(caption, byline, tags, posts, highlight, function(err, GALLERY_EDIT){
+		if (err)
 			$.snackbar({content: resolveError(err)});
-			console.log(err);
-		}
 		else if (added.length > 0) {
 			var data = new FormData();
 			for (var index in added) {
 				data.append(index, added[index]);
-			}
-			
-			if(firstLocation) {
-				data.append('lat', firstLocation[1]);
-				data.append('lon', firstLocation[0]);
 			}
 			
 			data.append('gallery', GALLERY_EDIT._id);
@@ -1057,13 +1024,11 @@ function galleryEditSave(){
 				},
 				error: function(xhr, status, error){
 					$.snackbar({content: resolveError(err)});
-					console.log(err);
 				}
-			})
+			});
 		}
-		else {
+		else 
 			window.location.reload();
-		}
 	});
 }
 //Save gallery edits
@@ -1104,7 +1069,7 @@ function galleryEditClear(){
 
 var galleryEditInitialToggle = true;
 var galleryEditMap = null;
-var galleryEditMarker = null;
+var galleryEditPolygon = null;
 var galleryEditAutocomplete = null;
 
 //Update the edit fields
@@ -1137,19 +1102,22 @@ function galleryEditUpdate(){
 			anchor: new google.maps.Point(30, 30)
 		};
 		
-		galleryEditMarker = new google.maps.Marker({
-			position: new google.maps.LatLng(40.7, -74),
-			map: galleryEditMap,
-			icon: image
-		});
+		galleryEditPolygon = new google.maps.Polygon({
+					paths: [],
+					strokeColor: "#FFB500",
+					strokeOpacity: 0.8,
+					strokeWeight: 2,
+					fillColor: "#FFC600",
+					fillOpacity: 0.35,
+					map: galleryEditMap
+				});
 		
 		galleryEditAutocomplete = new google.maps.places.Autocomplete(document.getElementById('gallery-location-input'));
 		$('#gallery-location-input').attr('placeholder', '');
 		google.maps.event.addListener(galleryEditAutocomplete, 'place_changed', function(){
 			var place = galleryEditAutocomplete.getPlace();
-			console.log(place);
+			
 			if(place.geometry){
-				galleryEditMarker.setPosition(place.geometry.location);
 				if(place.geometry.viewport){
 					galleryEditMap.fitBounds(place.geometry.viewport);
 				}
@@ -1157,9 +1125,6 @@ function galleryEditUpdate(){
 					galleryEditMap.panTo(place.geometry.location);
 					galleryEditMap.setZoom(18);
 				}
-			}
-			else {
-				$.snackbar({content: 'Invalid location'});
 			}
 		});
 	}
@@ -1173,17 +1138,12 @@ function galleryEditUpdate(){
 		}
 	}
 	
-	if (firstLocation){
-		var lat = firstLocation[1];
-		var lng = firstLocation[0];
-	
-		var center = new google.maps.LatLng(lat, lng);
-		
-		galleryEditMarker.setMap(galleryEditMap);
-		galleryEditMarker.setPosition(center);
-		galleryEditMap.setCenter(center);
+	if (GALLERY_EDIT.location){
+		galleryEditPolygon.setMap(galleryEditMap);
+		galleryEditPolygon.setPath(GALLERY_EDIT.location.coordinates[0].map(function(a){ return { lat: a[1], lng: a[0] }; }));
+		galleryEditMap.fitBounds(galleryEditPolygon.getBounds());
 	}else
-		galleryEditMarker.setMap(null);
+		galleryEditPolygon.setMap(null);
 	$('#gallery-location-input').val(GALLERY_EDIT.posts[0].location.address).trigger('keydown');
 	
 	$('#gallery-caption-input').val(GALLERY_EDIT.caption).trigger('keydown');
@@ -1231,8 +1191,8 @@ function galleryEditUpdate(){
 			var reader = new FileReader()
 			if (file.type.indexOf('video') !== -1) { //video
 				var elem = $('\
-					<video width="100%" height="100%" controls>\
-						<source id="' + file.lastModified + '" type="video/mp4">\
+					<video id="' + file.lastModified + '" data-id="NEW=' + index + '" width="100%" height="100%" controls>\
+						<source type="video/mp4">\
 						Your browser does not support the video tag.\
 					</video>\
 				');

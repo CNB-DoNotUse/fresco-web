@@ -545,10 +545,19 @@ body {
       body > main form.card div p {
         margin-bottom: 12px; }
         
+section ul > li,
+footer ul > li {
+  font-size: 24px; }
+
 footer {
   padding: 48px;
   display: -webkit-flex;
+  font-family: "Nota", sans-serif;
+  line-height: 1;
   display: flex;
+  font-weight: 300;
+  font-size: 16px;
+  font-style: normal;
   -webkit-justify-content: space-between;
   justify-content: space-between;
   -webkit-align-items: flex-end;

@@ -376,7 +376,7 @@ var PAGE_Admin = {
 									'<p class="md-type-body1">' + (sub.caption || '') + '</p>'+
 								'</div>'+
 								'<div>'+
-									'<p class="md-type-body2"><a href="/user/' + sub.owner._id + '" target="_blank">' + (sub.owner ? sub.owner.firstname : '') + ' ' + (sub.owner ? sub.owner.lastname : '') + '</a></p>'+
+									(sub.owner ? ('<p class="md-type-body2"><a href="/user/' + sub.owner._id + '" target="_blank">' + sub.owner.firstname + ' ' + sub.owner.lastname + '</a></p>') : '') +
 								'</div>'+
 								'<div>'+
 									'<p class="md-type-body1">' + sub.posts[0].location.address + '</p>'+
@@ -696,7 +696,7 @@ $(document).ready(function(){
 		display: 'title',
 		source: function(query, syncResults, asyncResults){
 			$.ajax({
-				url: '/scripts/story/search',
+				url: '/scripts/story/autocomplete',
 				data: {
 					q: query
 				},
@@ -755,7 +755,7 @@ $(document).ready(function(){
 		display: 'title',
 		source: function(query, syncResults, asyncResults){
 			$.ajax({
-				url: '/scripts/story/search',
+				url: '/scripts/story/autocomplete',
 				data: {
 					q: query
 				},
@@ -1071,11 +1071,11 @@ $(document).ready(function(){
 		if (PAGE_Admin.importsCaption.val().trim() != gallery.caption)
 			params.caption = PAGE_Admin.importsCaption.val().trim();
 
-		var coord = PAGE_Admin.importsGoogleMap.marker.getPosition();
-		params.lat = coord ? coord.lat() : null;
-		params.lon = coord ? coord.lng() : null;
-		if(PAGE_Admin.importsLocation.val())	
-			params.address = PAGE_Admin.importsLocation.val();
+		// var coord = PAGE_Admin.importsGoogleMap.marker.getPosition();
+		// params.lat = coord ? coord.lat() : null;
+		// params.lon = coord ? coord.lng() : null;
+		// if(PAGE_Admin.importsLocation.val())	
+		// 	params.address = PAGE_Admin.importsLocation.val();
 
 		PAGE_Admin.Gallery.verify(params, function(err){
 			if (err)

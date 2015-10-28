@@ -1,5 +1,6 @@
 var express = require('express'),
     requestJson = require('request-json'),
+    request = require('request'),
     config = require('../lib/config'),
     async = require('async'),
     Request = require('request'),
@@ -202,20 +203,13 @@ router.post('/assignment/update', function(req, res, next){
 
 //---------------------------vvv-GALLERY-ENDPOINTS-vvv---------------------------//
 router.post('/gallery/addpost', function(req, res, next){
-  var request = require('request');
   var params = {
-    gallery: req.body.gallery,
-    posts: {}
+    gallery: req.body.gallery
   };
-  var lat = req.body.lat || 0;
-  var lon = req.body.lon || 0;
-  
-  console.log("lat: " + lat + " lon: " + lon);
   
   var cleanupFiles = [];
 
   function upload(cb){
-    params.posts = JSON.stringify(params.posts);
     request.post({ url: config.API_URL + '/v1/gallery/addpost', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
       for (var index in cleanupFiles)
         fs.unlink(cleanupFiles[index], function(){});
@@ -230,7 +224,6 @@ router.post('/gallery/addpost', function(req, res, next){
   for (var index in req.files){
     cleanupFiles.push(req.files[index].path);
     params[i] = fs.createReadStream(req.files[index].path);
-    params.posts[i] = {lat:parseFloat(lat),lon:parseFloat(lon)};
     ++i;
   }
 
@@ -283,7 +276,7 @@ router.post('/gallery/import', function(req, res, next){
         }),
         twitterId = req.body.tweet.split('/').pop();
 
-    tClient.get('/statuses/show/' + twitterId, function(error, tweet, response){
+    tClient.get('/statuses/show/' + twitterId + '.json', function(error, tweet, response){
       if (error)
         return res.json({err: 'ERR_TWITTER', data: {}}).end();
 
@@ -301,6 +294,10 @@ router.post('/gallery/import', function(req, res, next){
         handle: handle,
         user_name: tweet.user.name
       });
+      if (tweet.coordinates){
+        params.lon = tweet.coordinates.coordinates[0];
+        params.lat = tweet.coordinates.coordinates[1];
+      }
 
       if (media.length == 0)
         return res.json({err: 'ERR_NO_MEDIA'}).end();
@@ -902,7 +899,7 @@ router.get('/post/gallery', function(req, res, next){
 //     res.json(body).end();
 //   });
 // });
-router.get('/story/search', function(req, res, next){
+router.get('/story/autocomplete', function(req, res, next){
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
   var params = Object.keys(req.query).map(function(key){
@@ -910,6 +907,17 @@ router.get('/story/search', function(req, res, next){
   }).join('&');
 
   api.get('/v1/story/autocomplete?' + params, function(err, response, body){
+    res.json(body).end();
+  });
+});
+router.get('/story/search', function(req, res, next){
+  var api = requestJson.createClient(config.API_URL);
+  api.headers['authtoken'] = req.session.user.token;
+  var params = Object.keys(req.query).map(function(key){
+    return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
+  }).join('&');
+
+  api.get('/v1/story/search?' + params, function(err, response, body){
     res.json(body).end();
   });
 });

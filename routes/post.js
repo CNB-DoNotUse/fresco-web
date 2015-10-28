@@ -40,9 +40,8 @@ router.get('/:id', function(req, res, next){
       var title = 'Post by ';
       if (post.owner) {
         title += post.owner.firstname + ' ' + post.owner.lastname;
-      }
-      else {
-        title += post.curator.firstname + ' ' + post.owner.lastname;
+      } else if (post.curator) {
+        title += post.curator.firstname + ' ' + post.curator.lastname;
       }
       
       res.render('post', { user: req.session.user, post: post, gallery: gallery_body.data, title: title, purchases: purchases, config: config, alerts: req.alerts, type: 'post' });

@@ -4,6 +4,7 @@ var PAGE_UserSettings = {
 	email: null,
 	n_password: null,
 	c_password: null,
+	o_password: null,
 	avatar: null,
 	names: null,
 	avatarFile: null,
@@ -34,7 +35,12 @@ var PAGE_UserSettings = {
 
 		if(/\S/.test(PAGE_UserSettings.firstName.val()) && /\S/.test(PAGE_UserSettings.lastName.val()) && /\S/.test(PAGE_UserSettings.email.val())){
 			PAGE_UserSettings.updating = true;
-
+			
+			if (PAGE_UserSettings.c_password.val() && PAGE_UserSettings.n_password.val()){
+				if (!PAGE_UserSettings.o_password.val())
+					return $.snackbar({content: 'Please enter your current password'});
+			}
+			
 			$.ajax({
 				url: "/scripts/user/update",
 				type: 'POST',
@@ -115,6 +121,7 @@ $(document).ready(function(){
 	PAGE_UserSettings.email = $('#email');
 	PAGE_UserSettings.n_password = $('#n_pw');
 	PAGE_UserSettings.c_password = $('#c_pw');
+	PAGE_UserSettings.o_password = $('#o_pw');
 	PAGE_UserSettings.avatarFile = $('#user-profile-file');
 	PAGE_UserSettings.avatar = $('#avatar');
 	PAGE_UserSettings.sideBarAvatar = $('#side-bar-avatar');
