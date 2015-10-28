@@ -25,7 +25,7 @@ router.get('/', function(req, res, next){
         'This outlet is in demo mode. Purchases and downloads are currently disabled.<div><a>OK</a></div>');
     }
   
-    res.render('outlet', { user: req.session.user, title: 'Outlet', outlet: body.data, purchases: purchases, config: config, alerts: req.alerts });
+    res.render('outlet', { user: req.session.user, title: 'Outlet', outlet: body.data, purchases: purchases, config: config, alerts: req.alerts, type: 'outlet' });
   });
 });
 

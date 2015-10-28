@@ -548,7 +548,7 @@ section#hero {
   -webkit-background-size: cover;
   background-size: cover; }
   section#hero > div {
-       padding:80px 48px; }
+       padding:88px 48px; }
     section#hero > div > h1 {
       display: inline-block;
       font-size:5em;
@@ -1097,4 +1097,21 @@ div.modal {
 }
 section.dark span.mdi {
   color: #fff
+}
+
+@media(min-width: 1024px) {
+  .quote {
+    display: inline-block;
+    width: 70%;
+  }
+  .quoted {
+    display: inline-block;
+    width: 25%;
+  } 
+}
+
+@media(max-width: 400px) {
+  #about > div > div {
+    margin-left: 80px;
+  }
 }

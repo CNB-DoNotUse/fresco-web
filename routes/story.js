@@ -1,4 +1,5 @@
 var express = require('express'), config = require('../lib/config');
+var request = require('request');
 var router = express.Router();
 
 router.get('/:id', function(req, res, next) {
@@ -10,7 +11,18 @@ router.get('/:id', function(req, res, next) {
 		});
 	}
   
-	res.render('story', {user: req.session.user,  story_id: req.params.id, purchases: purchases, config : config, alerts: req.alerts});
+	request(
+		{
+			url: config.API_URL + '/v1/story/get?id=' + req.params.id,
+			json: true
+		},
+		function (err, response, body) {
+			if (err || !body || body.err)
+				return res.render('error', { user: req.session.user, error_code: 404, error_message: config.ERR_PAGE_MESSAGES[404] });
+			var story = body.data;
+			res.render('story', {user: req.session.user,  story_id: req.params.id, story: story, purchases: purchases, config : config, alerts: req.alerts, type: 'story'});
+		}
+	);
 });
 
 module.exports = router;

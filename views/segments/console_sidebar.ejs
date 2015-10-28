@@ -15,6 +15,49 @@
 	<link rel="stylesheet" href="/stylesheets/alertify.core.css" />
 	<!-- include a theme, can be included into the core instead of 2 separate files -->
 	<link rel="stylesheet" href="/stylesheets/alertify.default.css" />
+	
+	<meta name="apple-itunes-app" content="app-id=872040692"/>
+	<meta property="og:title" content="<%= title %> | Fresco News"/>
+	<% if (typeof(type) !== 'undefined') { %>
+		<% if (type == 'post') { %>
+			<meta property="og:description" content="<%= gallery.caption %>"/>
+			<meta property="og:url" content="http://www.fresconews.com/post/<%= post._id %>"/>
+			<meta property="og:site_name" content="Fresco News"/>
+			<meta property="og:type" content="article"/>
+			<meta property="og:image" content="<%= config.formatImg(post.image, 'large') %>"/>
+		<% } else if (type == 'gallery') {%>
+			<meta property="og:description" content="<%= gallery.caption %>"/>
+			<meta property="og:url" content="http://www.fresconews.com/gallery/<%= gallery._id %>"/>
+			<meta property="og:site_name" content="Fresco News"/>
+			<meta property="og:type" content="article"/>
+			<meta property="og:image" content="<%= config.formatImg(gallery.posts[0].image, 'large') %>"/>
+		<% } else if (type == 'user') {%>
+			<meta property="og:url" content="http://www.fresconews.com/user/<%= page_user._id %>"/>
+			<meta property="og:site_name" content="Fresco News"/>
+			<meta property="og:type" content="profile"/>
+			<meta property="profile:first_name" content="<%= page_user.firstname %>"/>
+			<meta property="profile:last_name" content="<%= page_user.lastname %>"/>
+			<meta property="profile:username" content="<%= page_user.username %>"
+			<meta property="og:image" content="<%= page_user.avatar %>"/>
+		<% } else if (type == 'outlet') {%>
+			<meta property="og:url" content="http://www.fresconews.com/outlet/<%= outlet._id %>"/>
+			<meta property="og:site_name" content="Fresco News"/>
+			<meta property="og:type" content="article"/>
+			<meta property="og:image" content="<%= outlet.avatar %>"/>
+		<% } else if (type == 'assignment') {%>
+			<meta property="og:description" content="<%= assignment.caption %>"/>
+			<meta property="og:url" content="http://www.fresconews.com/assignment/<%= assignment._id %>"/>
+			<meta property="og:site_name" content="Fresco News"/>
+			<meta property="og:type" content="place"/>
+			<meta property="place:location:longitude" content="<%= assignment.location.geocode[0] %>"/>
+			<meta property="place:location:latitude" content="<%= assignment.location.geocode[1] %>"/>
+		<% } else if (type == 'story') {%>
+			<meta property="og:description" content="<%= story.caption %>"/>
+			<meta property="og:url" content="http://www.fresconews.com/story/<%= story._id %>"/>
+			<meta property="og:site_name" content="Fresco News"/>
+			<meta property="og:type" content="article"/>
+		<% } %>
+	<% } %>
 </head>
 <body>
 <!-- drawer -->

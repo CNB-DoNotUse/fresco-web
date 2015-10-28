@@ -36,7 +36,16 @@ router.get('/:id', function(req, res, next){
         });
       }
       
-      res.render('post', { user: req.session.user, post: post_body.data, gallery: gallery_body.data, title: 'Post', purchases: purchases, config: config, alerts: req.alerts });
+      var post = post_body.data;
+      var title = 'Post by ';
+      if (post.owner) {
+        title += post.owner.firstname + ' ' + post.owner.lastname;
+      }
+      else {
+        title += post.curator.firstname + ' ' + post.owner.lastname;
+      }
+      
+      res.render('post', { user: req.session.user, post: post, gallery: gallery_body.data, title: title, purchases: purchases, config: config, alerts: req.alerts, type: 'post' });
     });
   });
 });
