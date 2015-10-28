@@ -523,14 +523,14 @@ function createGallery(caption, tags, posts, highlight, articles, stories, callb
 	});
 }
 //AJAX - Update the gallery
-function updateGallery(caption, byline, tags, posts, highlight, lat, lon, address, callback){
+function updateGallery(caption, byline, tags, posts, visibility, lat, lon, address, callback){
 	
 	var params = {
 		caption: caption,
 		byline: byline,
 		posts: posts,
-		visibility: highlight ? 2 : GALLERY_EDIT.visibility,
 		tags: tags,
+		visibility: visibility != null ? visibility : undefined,
 		id: GALLERY_EDIT._id,
 		stories: $('#gallery-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		articles: $('#gallery-articles-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
@@ -538,10 +538,6 @@ function updateGallery(caption, byline, tags, posts, highlight, lat, lon, addres
 		lon: lon, 
 		address : address
 	};
-
-	if(GALLERY_EDIT.visibility == 2 && !highlight){
-		params.visibility = 1;
-	}
 
 	$.ajax("/scripts/gallery/update", {
 		method: 'post',
@@ -1009,9 +1005,10 @@ function galleryEditSave(){
 	if (posts.length == 0)
 		return $.snackbar({content:"Galleries must have at least 1 post"});
 
-	var highlight = GALLERY_EDIT.visibility >= 2;
-	if( $('#gallery-highlight-input').length !== 0)
-		highlight = $('#gallery-highlight-input').prop('checked');
+	if( $('#gallery-highlight-input').length !== 0 && galleryEditVisibilityChanged == 1)
+		visibility = $('#gallery-highlight-input').prop('checked') ? 2 : 1;
+	else
+		visibility = null;
 
 	var coord = galleryEditMarker.getPosition(),
 		lat = coord ? coord.lat() : null,
@@ -1027,7 +1024,7 @@ function galleryEditSave(){
 		}
 	}
 
-	updateGallery(caption, byline, tags, posts, highlight, lat, lon, address, function(err, GALLERY_EDIT){
+	updateGallery(caption, byline, tags, posts, visibility, lat, lon, address, function(err, GALLERY_EDIT){
 		if (err){
 			$.snackbar({content: resolveError(err)});
 			console.log(err);
@@ -1106,6 +1103,7 @@ var galleryEditInitialToggle = true;
 var galleryEditMap = null;
 var galleryEditMarker = null;
 var galleryEditAutocomplete = null;
+var galleryEditVisibilityChanged = null;
 
 //Update the edit fields
 function galleryEditUpdate(){
@@ -1142,7 +1140,13 @@ function galleryEditUpdate(){
 			map: galleryEditMap,
 			icon: image
 		});
-		
+
+		//Listener to check if the visibility has actually been changed
+		$("#gallery-highlight-input").change(function() {
+		    if(!galleryEditVisibilityChanged)
+			    galleryEditVisibilityChanged = 1;
+		});
+				
 		galleryEditAutocomplete = new google.maps.places.Autocomplete(document.getElementById('gallery-location-input'));
 		$('#gallery-location-input').attr('placeholder', '');
 		google.maps.event.addListener(galleryEditAutocomplete, 'place_changed', function(){
