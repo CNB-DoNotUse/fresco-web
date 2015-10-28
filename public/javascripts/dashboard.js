@@ -468,7 +468,7 @@ $(document).ready(function(){
 	});
 	
 	$('#sidebar-search').keypress(function(e) {
-		if(e.which == 13 && $(this).val().trim() !== '') {
+		if(e.which == 13) {
 			var qstr = $(this).val().split(' '),
 				tags = [],
 				query = [];
