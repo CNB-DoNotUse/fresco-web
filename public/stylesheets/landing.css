@@ -1109,3 +1109,9 @@ section.dark span.mdi {
     width: 25%;
   } 
 }
+
+@media(max-width: 400px) {
+  #about > div > div {
+    margin-left: 80px;
+  }
+}
