@@ -518,21 +518,17 @@ function createGallery(caption, tags, posts, highlight, articles, stories, callb
 	});
 }
 //AJAX - Update the gallery
-function updateGallery(caption, byline, tags, posts, highlight, callback){
+function updateGallery(caption, byline, tags, posts, visibility, callback){
 	var params = {
 		caption: caption,
 		byline: byline,
 		posts: posts,
-		visibility: highlight ? 2 : GALLERY_EDIT.visibility,
 		tags: tags,
+		visibility: visibility != null ? visibility : undefined,
 		id: GALLERY_EDIT._id,
 		stories: $('#gallery-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		articles: $('#gallery-articles-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 	};
-
-	if(GALLERY_EDIT.visibility == 2 && !highlight){
-		params.visibility = 1;
-	}
 
 	$.ajax("/scripts/gallery/update", {
 		method: 'post',
@@ -985,6 +981,7 @@ function galleryEditSave(){
 	var byline = $('#gallery-byline-input').val();
 	var tags = $('#gallery-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
 	var posts = $('.edit-gallery-images').frick('frickPosts');
+	var visibility = null;
 	
 	var added = posts.filter(function(id) {return id.indexOf('NEW') !== -1});
 	added = added.map(function(index) {
@@ -997,14 +994,14 @@ function galleryEditSave(){
 	if (posts.length == 0)
 		return $.snackbar({content:"Galleries must have at least 1 post"});
 
-	var highlight = GALLERY_EDIT.visibility >= 2;
-	if( $('#gallery-highlight-input').length !== 0)
-		highlight = $('#gallery-highlight-input').prop('checked');
+	if( $('#gallery-highlight-input').length !== 0 && galleryEditVisibilityChanged == 1)
+		visibility = $('#gallery-highlight-input').prop('checked') ? 2 : 1;
 
-	updateGallery(caption, byline, tags, posts, highlight, function(err, GALLERY_EDIT){
+	updateGallery(caption, byline, tags, posts, visibility, function(err, GALLERY_EDIT){
 		if (err)
-			$.snackbar({content: resolveError(err)});
-		else if (added.length > 0) {
+			return $.snackbar({content: resolveError(err)});
+			
+		if (added.length > 0) {
 			var data = new FormData();
 			for (var index in added) {
 				data.append(index, added[index]);
@@ -1071,6 +1068,7 @@ var galleryEditInitialToggle = true;
 var galleryEditMap = null;
 var galleryEditPolygon = null;
 var galleryEditAutocomplete = null;
+var galleryEditVisibilityChanged = null;
 
 //Update the edit fields
 function galleryEditUpdate(){
@@ -1111,6 +1109,12 @@ function galleryEditUpdate(){
 					fillOpacity: 0.35,
 					map: galleryEditMap
 				});
+		
+		//Listener to check if the visibility has actually been changed
+		$("#gallery-highlight-input").change(function() {
+		    if(!galleryEditVisibilityChanged)
+			    galleryEditVisibilityChanged = 1;
+		});
 		
 		galleryEditAutocomplete = new google.maps.places.Autocomplete(document.getElementById('gallery-location-input'));
 		$('#gallery-location-input').attr('placeholder', '');
