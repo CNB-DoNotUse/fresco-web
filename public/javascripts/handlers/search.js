@@ -59,7 +59,7 @@ var PAGE_Search = {
 				polygon: PAGE_Search.searchGoogleMap.circle.getMap() == null ? undefined : encodeURIComponent(JSON.stringify(circleToPolygon(PAGE_Search.searchGoogleMap.circle, 8)))
 			},
 			success: function(result) {
-				if (Object.keys(result.err).length > 0) {
+				if (result.err) {
 					$.snackbar({content: resolveError(result.err)});
 					return callback(result.err, null);
 				}
@@ -94,8 +94,8 @@ var PAGE_Search = {
 				tags: PAGE_Search.tags,
 				polygon: PAGE_Search.searchGoogleMap.circle.getMap() == null ? undefined : encodeURIComponent(JSON.stringify(circleToPolygon(PAGE_Search.searchGoogleMap.circle, 8)))
 			},
-			success: function(result) {
-				if (Object.keys(result.err).length > 0) {
+			success: function(result) {console.log(JSON.stringify(result));
+				if (result.err) {
 					$.snackbar({content: resolveError(result.err)});
 					return this.error(null, null, result.err);
 				}
@@ -107,7 +107,6 @@ var PAGE_Search = {
 			},
 			error: function(xhr, status, error ){
 				if (callback) return callback(error, null);
-				console.log(error);
 			},
 			complete: function(){
 				PAGE_Search.post_loading = false;

@@ -31,6 +31,7 @@ var PAGE_Assignment = {
 			var elem = buildPost(post, purchases ? purchases.indexOf(post._id) != -1 : null, 'large', true);
 			$('#posts').append(elem);
 		});
+		setTimeDisplayType(PAGE_Assignment.display);
 	},
 	
 	updateAssignment: function(params, callback){
@@ -227,6 +228,31 @@ $(document).ready(function(){
 				$.snackbar({content: resolveError(error)});
 			}
 		});
+	});
+	
+	$('.time-filter-type').click(function(){
+		$('.time-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'capture' && PAGE_Assignment.sort_key !== 'time_captured'){
+			PAGE_Assignment.sort_key = 'time_captured';
+			PAGE_Assignment.refreshList();
+		}
+		else if ($(this).data('filter-type') == 'upload' && PAGE_Assignment.sort_key !== 'time_created'){
+			PAGE_Assignment.sort_key = 'time_created';
+			PAGE_Assignment.refreshList();
+		}
+		$('.time-filter-button').click();
+	});
+	
+	$('.time-display-filter-type').click(function(){
+		$('.time-display-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'relative'){
+			PAGE_Assignment.display = 'relative';
+		}
+		else if ($(this).data('filter-type') == 'absolute'){
+			PAGE_Assignment.display = 'absolute';
+		}
+		setTimeDisplayType(PAGE_Assignment.display);
+		$('.time-display-filter-button').click();
 	});
 	
 	//Assignment edit listeners

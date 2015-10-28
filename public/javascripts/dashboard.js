@@ -325,6 +325,116 @@ $(document).ready(function(){
 		}
 	});
 
+	$('#gallery-create-stories-input').typeahead({
+		hint: true,
+		highlight: true,
+		minLength: 1,
+		classNames: {
+			menu: 'tt-menu shadow-z-2'
+		}
+	},
+	{
+		name: 'stories',
+		display: 'title',
+		source: function(query, syncResults, asyncResults){
+			$.ajax({
+				url: '/scripts/story/search',
+				data: {
+					q: query
+				},
+				success: function(result, status, xhr){
+					asyncResults(result.data || []);
+				},
+				error: function(xhr, statur, error){
+					console.log(error);
+					asyncResults([]);
+				}
+			});
+		},
+		templates: {
+			empty: [
+				'<div class="story-empty-message tt-suggestion">',
+					'Create new story',
+				'</div>'
+			].join('\n'),
+		}
+	}).on('typeahead:select', function(ev, story){
+		var elem = makeTag(story.title);
+		elem.data('id', story._id);
+		if($('#gallery-create-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray().indexOf(story._id) == -1)
+			$('#gallery-create-stories-list').append(elem);
+		else
+			$.snackbar({content: 'This gallery is already in that story!'});
+			
+		$(this).typeahead('val', '');
+	}).on('keydown', function(ev){
+		if (ev.keyCode == 13 && $('.story-empty-message').length == 1) {
+			if($(this).val().indexOf('http://') != -1) {
+				$.snackbar({content: 'No URLs please!'});
+				return;
+			}
+			var elem = makeTag($(this).val());
+			var id = 'NEW={"title":"' + $(this).val() + '"}';
+			elem.data('id', id);
+			console.log(elem.data('id'));
+			elem.addClass('new-story');
+			if($('#gallery-create-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray().indexOf(id) == -1)
+				$('#gallery-create-stories-list').append(elem);
+			else
+				$.snackbar({content: 'This gallery is already in that story!'});
+			$(this).typeahead('val', '');
+		}
+	});
+
+	$('#gallery-create-articles-input').typeahead({
+		hint: true,
+		highlight: true,
+		minLength: 1,
+		classNames: {
+			menu: 'tt-menu shadow-z-2',
+			suggestion: 'article-suggestion'
+		}
+	},
+	{
+		name: 'articles',
+		display: 'link',
+		source: function(query, syncResults, asyncResults){
+			$.ajax({
+				url: '/scripts/article/search',
+				data: {
+					q: query
+				},
+				success: function(result, status, xhr){
+					asyncResults(result.data || []);
+				},
+				error: function(xhr, statur, error){
+					console.log(error);
+					asyncResults([]);
+				}
+			});
+		},
+		templates: {
+			empty: [
+				'<div class="article-empty-message tt-suggestion">',
+					'Create new article',
+				'</div>'
+			].join('\n'),
+		}
+	}).on('typeahead:select', function(ev, article){
+		var elem = makeTag(article.link);
+		elem.data('id', article._id);
+		$('#gallery-create-articles-list').append(elem);
+		$(this).typeahead('val', '');
+	}).on('keydown', function(ev){
+		if (ev.keyCode == 13 && $('.article-empty-message').length == 1) {
+			var elem = makeTag($(this).val());
+			elem.data('id', 'NEW={"link":"' + $(this).val() + '"}');
+			elem.addClass('new-story');
+			$('#gallery-create-articles-list').append(elem);
+			$(this).typeahead('val', '');
+		}
+	});
+
 	//Clear bulk selection
 	$('#bulk-clear-button').click(function(){
 		$('.tile.toggled').each(function(i, elem){
@@ -388,12 +498,14 @@ var GALLERY_EDIT = null,
 	edit_marker = null;
 
 //AJAX - Create new gallery
-function createGallery(caption, tags, posts, highlight, callback){
+function createGallery(caption, tags, posts, highlight, articles, stories, callback){
 	var params = {
 		caption: caption,
 		posts: posts,
 		tags: tags,
-		highlight: highlight,
+		visibility: highlight ? 2 : 1,
+		articles: articles,
+		stories: stories,
 	};
 	$.ajax("/scripts/gallery/create", {
 		method: 'post',
@@ -689,7 +801,7 @@ function refreshBulkThumbs(){
 }
 
 //Builds a DOM representation of a post with the given post object
-function buildPost(post, purchased, size, forsale){
+function buildPost(post, purchased, size, forsale, timeType){
 	if (!post) return '';
 
 	var sizes = {
@@ -730,8 +842,12 @@ function buildPost(post, purchased, size, forsale){
 		}
 	}
 	
+	var timestamp = timeType == 'captured' ? post.time_captured : post.time_created;
+	
+	var timeString = getTimeAgo(Date.now(), timestamp);
+	
 	var elem = $('\
-	<div class="' + sizes[size || 'medium'] + '">\
+	<div class="' + sizes[size || 'medium'] + ' tile">\
 		<div class="tile-body">\
 			<div class="frame">\
 			</div>\
@@ -752,7 +868,7 @@ function buildPost(post, purchased, size, forsale){
 			<div>\
 				<div class="tile-info">\
 					   <span class="md-type-body2">' + (post.location.address || 'No Location') + '</span>\
-					   <span class="md-type-caption">' +  getTimeAgo(Date.now(), post.time_created) + '</span>\
+					   <span class="md-type-caption timestring" data-timestamp="' + timestamp + '">' + timeString + '</span>\
 				</div>\
 				<span class="mdi ' + (post.video == null ? "mdi-file-image-box" : 'mdi-movie') + ' icon ' + (purchased ? 'available' : 'md-type-black-disabled') + ' pull-right"></span>\
 			</div>\
@@ -761,9 +877,13 @@ function buildPost(post, purchased, size, forsale){
 
 	attachOnImageLoadError(elem.find('img.img-cover'));
 	elem.find('img.img-cover').prop('src',formatImg(post.image, 'small'));
-	elem.find('.tile-body').click(function(){ window.location.assign('/post/' + post._id)}).css('cursor', 'pointer');
+	elem.find('.tile-body').click(function(event){
+		if(event.shiftKey) return;
+		window.location.assign('/post/' + post._id)
+	}).css('cursor', 'pointer');
 	elem.click(function(event) {
-		if (event.shiftKey && !$(this).hasClass("story") && $(this).find('.mdi-library-plus').length > 0) {
+		//if (event.shiftKey && !$(this).hasClass("story") && $(this).find('.mdi-library-plus').length > 0) {
+		if (event.shiftKey && !$(this).hasClass("story")) {
 			toggleSelected(this, post);
 		}
 	});
@@ -855,6 +975,20 @@ function buildPost(post, purchased, size, forsale){
 	}
 
 	return elem;
+}
+
+function setTimeDisplayType(timeDisplay) {
+	$('.timestring').each(function() {
+		var timestamp = $(this).data('timestamp');
+	
+		var timeString = '';
+		if (timeDisplay == 'absolute') {
+			timeString = timestampToDate(timestamp);
+		} else {
+			timeString = getTimeAgo(Date.now(), timestamp);
+		}
+		$(this).text(timeString);
+	});
 }
 
 //Save gallery edits
@@ -1142,12 +1276,14 @@ function galleryCreateClear(){
 //Create the new gallery
 function galleryCreateSave(){
 	var caption = $('#gallery-create-caption-input').val();
-	var tags = $('.tag').text().split('#').filter(function(t){ return t.length > 0; });
+	var tags = $('#gallery-create-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
+	var articles = $('#gallery-create-articles-list li.chip').map(function(elem){return $(this).data('id')}).toArray();
+	var stories = $('#gallery-create-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray();
 	var posts = selectedPosts.map(function(post){ return post._id });
 
 	var highlight = $('#gallery-create-highlight-input').prop('checked');
 
-	createGallery(caption, tags, posts, highlight, function(err, gallery){
+	createGallery(caption, tags, posts, highlight, articles, stories, function(err, gallery){
 		if (err)
 			$.snackbar({content: resolveError(err)});
 		else
@@ -1250,6 +1386,9 @@ function createGalleryView(gallery, half){
 		}
 	}
 
+	var timestamp = gallery.time_created;
+	var timeString = getTimeAgo(Date.now(), gallery.time_created);
+
 	var elem = $('<div class="' + size + ' tile story">\
 			<div class="tile-body">\
 				<div class="frame"></div>\
@@ -1268,7 +1407,7 @@ function createGalleryView(gallery, half){
 				<div>\
 					<div class="ellipses">\
 						<span class="md-type-body2">' + location + '</span>\
-						<span class="md-type-caption">' + getTimeAgo(Date.now(), gallery.time_created) +'</span>\
+						<span class="md-type-caption timestring" data-timestamp="' + timestamp + '">' + timeString +'</span>\
 					</div>\
 				</div>\
 			</div>\
@@ -1367,6 +1506,9 @@ function createStoryView(story, half){
 
 	var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 
+	var timestamp = story.time_created;
+	var timeString = getTimeAgo(Date.now(), story.time_created);
+	
 	var elem = $('<div class="' + size + ' tile story">\
 			<div class="tile-body">\
 				<div class="frame"></div>\
@@ -1387,7 +1529,7 @@ function createStoryView(story, half){
 				<div>\
 					<div>\
 						<span class="md-type-body2">' + story.title + '</span>\
-						<span class="md-type-caption">' + getTimeAgo(Date.now(), story.time_uedited || story.time_created) +'</span>\
+						<span class="md-type-caption timestring" data-timestamp="' + timestamp + '">' + timeString +'</span>\
 					</div>\
 				</div>\
 			</div>\

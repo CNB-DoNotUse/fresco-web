@@ -40,6 +40,8 @@ var PAGE_Stories = {
 					$('#stories').append(elem);
 					PAGE_Stories.offset += 1;
 				});
+				
+				setTimeDisplayType(PAGE_Stories.display);
 			},
 			error: function(xhr, status, error){
 				$.snackbar({content: resolveError(error)});
@@ -59,6 +61,18 @@ $(document).ready(function(){
 		elem.click(function(){
 			PAGE_Stories.refreshList();
 		});
+	});
+	
+	$('.time-display-filter-type').click(function(){
+		$('.time-display-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'relative'){
+			PAGE_Stories.display = 'relative';
+		}
+		else if ($(this).data('filter-type') == 'absolute'){
+			PAGE_Stories.display = 'absolute';
+		}
+		setTimeDisplayType(PAGE_Stories.display);
+		$('.time-display-filter-button').click();
 	});
 	
 	$('.container-fluid.grid').scroll(function() {

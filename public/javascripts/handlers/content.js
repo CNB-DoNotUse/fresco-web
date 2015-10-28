@@ -2,6 +2,8 @@ var PAGE_Content = {
 	offset: 0,
 	loading: false,
 	verified: true,
+	sort: 'capture',
+	display: 'relative',
 	
 	refreshList: function(){
 		PAGE_Content.offset = 0;
@@ -24,6 +26,8 @@ var PAGE_Content = {
 		
 		params.verified = PAGE_Content.verified;
 		
+		params.sort = PAGE_Content.sort;
+		
 		$.ajax({
 			url: '/scripts/post/list',
 			type: 'GET',
@@ -32,10 +36,12 @@ var PAGE_Content = {
 				if (result.err) return this.error(null, null, result.err);
 				
 				result.data.forEach(function(post){
-					var elem = buildPost(post, purchases ? purchases.indexOf(post._id) != -1 : null, 'small', true);
+					var elem = buildPost(post, purchases ? purchases.indexOf(post._id) != -1 : null, 'small', true, PAGE_Content.sort, PAGE_Content.display);
 					$('.content-tiles').append(elem);
 					PAGE_Content.offset += 1;
 				});
+				
+				setTimeDisplayType(PAGE_Content.display);
 			},
 			error: function(xhr, status, error){
 				$.snackbar({content: resolveError(error)});
@@ -50,17 +56,42 @@ var PAGE_Content = {
 $(document).ready(function(){
 	PAGE_Content.refreshList();
 	
-	$('.filter-type').click(function(){
-		$('.filter-text').text($(this).text());
-		if($(this).text() == 'Verified content' && !PAGE_Content.verified){
+	$('.content-filter-type').click(function(){
+		$('.content-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'verified' && !PAGE_Content.verified){
 			PAGE_Content.verified = true;
 			PAGE_Content.refreshList();
 		}
-		else if ($(this).text() == 'All content' && PAGE_Content.verified){
+		else if ($(this).data('filter-type') == 'all' && PAGE_Content.verified){
 			PAGE_Content.verified = false;
 			PAGE_Content.refreshList();
 		}
-		$('.filter-button').click();
+		$('.content-filter-button').click();
+	});
+	
+	$('.time-filter-type').click(function(){
+		$('.time-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'capture' && PAGE_Content.sort !== 'capture'){
+			PAGE_Content.sort = 'capture';
+			PAGE_Content.refreshList();
+		}
+		else if ($(this).data('filter-type') == 'upload' && PAGE_Content.sort !== 'upload'){
+			PAGE_Content.sort = 'upload';
+			PAGE_Content.refreshList();
+		}
+		$('.time-filter-button').click();
+	});
+	
+	$('.time-display-filter-type').click(function(){
+		$('.time-display-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'relative'){
+			PAGE_Content.display = 'relative';
+		}
+		else if ($(this).data('filter-type') == 'absolute'){
+			PAGE_Content.display = 'absolute';
+		}
+		setTimeDisplayType(PAGE_Content.display);
+		$('.time-display-filter-button').click();
 	});
 	
 	$('.container-fluid.grid').scroll(function() {

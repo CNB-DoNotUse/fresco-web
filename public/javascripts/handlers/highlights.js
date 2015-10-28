@@ -33,6 +33,8 @@ var PAGE_Highlights = {
 						++PAGE_Highlights.offset;
 					});
 	
+					setTimeDisplayType(PAGE_Highlights.display);
+	
 					PAGE_Highlights.loading = false;
 				},
 				error: function(xhr, status, error){
@@ -81,6 +83,18 @@ $(document).ready(function(){
 	PAGE_Highlights.loadGalleries();
 	//Load trending stories
 	PAGE_Highlights.loadStories();
+
+	$('.time-display-filter-type').click(function(){
+		$('.time-display-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'relative'){
+			PAGE_Highlights.display = 'relative';
+		}
+		else if ($(this).data('filter-type') == 'absolute'){
+			PAGE_Highlights.display = 'absolute';
+		}
+		setTimeDisplayType(PAGE_Highlights.display);
+		$('.time-display-filter-button').click();
+	});
 
 	//Load when scrolled to bottom
 	$('.container-fluid.grid').scroll(function() {

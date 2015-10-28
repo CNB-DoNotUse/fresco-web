@@ -21,6 +21,8 @@ var PAGE_Story = {
 					PAGE_Story.postList.append(elem);
 					++PAGE_Story.offset;
 				});
+				
+				setTimeDisplayType(PAGE_Story.display);
 			},
 			error: function(xhr, status, error){
 				$.snackbar({content: 'Error loading story content: ' + resolveError(error)});
@@ -168,6 +170,18 @@ $(document).ready(function(){
 			PAGE_Story.follow();
 		else
 			PAGE_Story.unfollow();
+	});
+
+	$('.time-display-filter-type').click(function(){
+		$('.time-display-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'relative'){
+			PAGE_Story.display = 'relative';
+		}
+		else if ($(this).data('filter-type') == 'absolute'){
+			PAGE_Story.display = 'absolute';
+		}
+		setTimeDisplayType(PAGE_Story.display);
+		$('.time-display-filter-button').click();
 	});
 
 	$('.grid').scroll(function() {

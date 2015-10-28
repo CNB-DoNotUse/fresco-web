@@ -1880,6 +1880,13 @@ nav, .mdi, .sidebar {
   user-select: none;
 }
 
+.tile {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .mdi-close-circle {
   transition: transform 300ms;
 }
