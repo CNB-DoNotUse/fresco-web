@@ -1112,14 +1112,18 @@ section.dark span.mdi {
   } 
 }
 
-@media(max-width: 400px) {
-  #about > div > div {
-    margin-left: 80px;
-  }
-}
-
 @media(max-width: 767px) {
   .quote > h1 {
     font-size: 64px;
+  }
+}
+
+@media(max-width: 439px) {
+  section#about > div > div:first-of-type > ul {
+    width: initial;
+  }
+  
+  section#dashboard > div > div:first-of-type > ul {
+    width: initial;
   }
 }
