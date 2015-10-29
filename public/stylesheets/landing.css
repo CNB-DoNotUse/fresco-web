@@ -1117,3 +1117,9 @@ section.dark span.mdi {
     margin-left: 80px;
   }
 }
+
+@media(max-width: 767px) {
+  .quote > h1 {
+    font-size: 64px;
+  }
+}
