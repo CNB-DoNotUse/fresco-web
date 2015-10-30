@@ -94,7 +94,7 @@
 									</li>
 									<% } %>
 									<li>
-										<span class="mdi mdi-alert-circle icon"></span><%=post.approvals ? 'Verified' : 'Not yet verified'%>
+										<span class="mdi mdi-alert-circle icon"></span><%=post.approvals ? verifiedString : 'Not yet verified'%>
 									</li>
 									<% if (gallery.curator) { %>
 									<li>
