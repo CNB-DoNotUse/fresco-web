@@ -13,6 +13,9 @@
 	<link rel="stylesheet" type="text/css" href="/stylesheets/screen.css">
 	<link rel="stylesheet" type="text/css" href="/stylesheets/slick-theme.css"/>
 	<link rel="stylesheet" href="/stylesheets/alertify.core.css" />
+	<% if (links) for (var i in links){ %>
+		<link rel="stylesheet" href="<%= links[i] %>" />
+	<% } %>
 	<!-- include a theme, can be included into the core instead of 2 separate files -->
 	<link rel="stylesheet" href="/stylesheets/alertify.default.css" />
 	

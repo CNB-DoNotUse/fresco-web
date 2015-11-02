@@ -1,4 +1,4 @@
-<%- include('segments/console_sidebar') %>
+<%- include('segments/console_sidebar', { links: ['/stylesheets/fresco/outlet-settings.css'] }) %>
 	<div class="col-md-12 col-lg-10">
 		<!-- navbar -->
 		<nav class="navbar navbar-fixed-top navbar-default">
@@ -11,93 +11,21 @@
 		</nav>
 		<!-- end navbar -->
 		<!-- settings -->
-		<div class="settings">
-			<%- include('segments/cards/outlet-info.ejs') %>
-			<%- include('segments/cards/outlet-card.ejs') %>
-			<%- include('segments/cards/outlet-members.ejs') %>
-			<div class="col-xs-12 col-sm-6 col-md-4 col-md-offset-2 form-group-default">
-				<div class="flex-row">
-					<img class="img-circle outlet-settings-avatar" src="<%= outlet.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png' %>">
-					<div class="flexy">
-						<input type="text" readonly="" class="form-control floating-label" placeholder="Profile image">
-						<input type="file" class="outlet-field outlet-edit-avatar" accept=".jpg,.jfif,.jpeg,.png">
-					</div>
+		<div class="outlet-settings">
+			<div>
+				<%- include('segments/cards/outlet-info.ejs', { avatar: outlet.avatar, title: outlet.title, website: outlet.link, bio: outlet.bio }) %>
+				<%- include('segments/cards/outlet-card.ejs', { last4: outlet.card ? outlet.card.last4 : null, brand: outlet.card ? outlet.card.brand : null }) %>
+				<div class="outlet-quick-support">
+					<h3>QUICK SUPPORT</h3>
+					<ul>
+						<li><span class="mdi mdi-ticket"></span> <a>Submit a ticket</a></li>
+						<li><span class="mdi mdi-email"></span> <a href="mailto:support@fresconews.com">Email us</a></li>
+					</ul>
 				</div>
-				<input type="text" class="form-control floating-label outlet-field outlet-edit-title" placeholder="Name" value="<%= outlet.title %>">
-				<input type="text" class="form-control floating-label outlet-field outlet-edit-link" placeholder="Website" value="<%= outlet.link %>">
-				<button class="btn fat tall profile-save">
-					Save Account Info
-				</button>
-				<button class="btn btn-twitter">
-					<span class="mdi mdi-twitter"></span> Connect
-				</button>
-				<button class="btn btn-facebook">
-					<span class="mdi mdi-facebook-box"></span> Connect
-				</button>
-				<div class="payment">
-					<h3 class="md-type-title">Update payment information</h3>
-					<p class="payment" href="outlet-settings.html#payment">
-						<% 	if (outlet.card) { %>
-							<span class="mdi mdi-check available"></span> Payment information available (<%= outlet.card.brand %> ending in <%= outlet.card.last4 %>)
-						<%	}else{ %>
-							<span class="mdi mdi-close unavailable"></span> Payment information unavailable
-						<%	} %>
-					</p>
-					<div class="flex-row">
-						<div class="flexy">
-							<% 	if (outlet.card) { %>
-								<input type="text" class="form-control floating-label outlet-field stripe-field stripe-ccn outlet-ccn integer" placeholder="Card number" maxLength="16" value="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;<%= outlet.card.last4 %>">
-							<%	}else{ %>
-								<input type="text" class="form-control floating-label outlet-field stripe-field stripe-ccn outlet-ccn integer" placeholder="Card number" maxLength="16">
-							<%	} %>
-						</div>
-						<input type="password" class="form-control outlet-field stripe-field stripe-cvv floating-label integer" placeholder="CVV" maxlength="3">
-						<span class="md-type-caption">Exp:</span>
-						<input type="text" class="form-control outlet-field stripe-field stripe-month floating-label integer" placeholder="mo" maxLength="2">
-						<span class="md-type-caption">/</span>
-						<input type="text" class="form-control outlet-field stripe-field stripe-year floating-label integer" placeholder="yr" maxLength="2">
-					</div>
-					<div class="flex-row">
-						<div class="flexy">
-							<input type="text" class="form-control outlet-field floating-label" placeholder="Name on card" maxLength="40">
-						</div>
-						<input type="text" class="form-control outlet-field floating-label" placeholder="ZIP" maxLength="5">
-					</div>
-					<div class="flex-row">
-						<button class="btn fat tall stripe-save" <%= outlet && outlet.verified ? '' : 'disabled' %>>
-							Save Payment Info
-						</button>
-					</div>
-				</div>
-				<h3 class="md-type-title">Invite members</h3>
-				<textarea type="text" class="form-control outlet-invite floating-label" placeholder="Email addresses" data-hint="Separate multiple addresses with spaces"></textarea>
-				<button class="btn fat tall outlet-invite">
-					Send Invitations
-				</button>
 			</div>
-			<div class="hidden-xs col-md-4 list">
-				<h3 class="md-type-title">Active members</a>
-				</h3>
-				<% for (var index in outlet.users){ %>
-				<div class="list-item">
-					<div>
-						<a href="/user/<%= outlet.users[index]._id %>"><img class="img-circle" src="<%= outlet.users[index].avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png' %>"></a>
-					</div>
-					<div class="flexy">
-						<%
-							if (outlet.users[index].twitter){
-						%>
-						<span class="md-type-body2"><%= outlet.users[index].firstname + ' ' + outlet.users[index].lastname %></span>
-						<span class="md-type-caption"><%= outlet.users[index].twitter %></span>
-						<% }else{ %>
-						<p><%= outlet.users[index].firstname + ' ' + outlet.users[index].lastname %></p>
-						<% } %>
-					</div>
-					<div class="peek">
-						<a class="mdi mdi-close-circle icon outlet-remove-user" data-uid="<%= outlet.users[index]._id %>"></a>
-					</div>
-				</div>
-				<% } %>
+			<div>
+				<%- include('segments/cards/outlet-members.ejs', { members: outlet.users }) %>
+				<!--<%- include('segments/cards/outlet-locations.ejs') %>-->
 			</div>
 		</div>
 		<!-- end settings -->

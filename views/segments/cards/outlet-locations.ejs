@@ -1,0 +1,239 @@
+<style>
+	.card.panel.card-outlet-locations {
+		display: inline-flex;
+		flex-direction: row;
+		font-family: 'Roboto', sans-serif;
+		font-weight: 500;
+		font-size: 14px;
+		margin: 8px;
+		display: inline-block;
+		width: 560px;
+		height: 480px;
+		overflow: hidden;
+	}
+	.card.panel.card-outlet-locations > *:not(:last-child) {
+		border-bottom: solid 1px rgba(0, 0, 0, 0.12);
+	}
+	.card.panel.card-outlet-locations > .header,
+	.card.panel.card-outlet-locations > .footer {
+		color: rgba(0, 0, 0, 0.54);
+		font-weight: 600;
+		padding: 8px;
+		height: 48px;
+	}
+	.card.panel.card-outlet-locations > .header > * {
+		padding: 8px;
+	}
+	.card.panel.card-outlet-locations > .header > *:first-child {
+		float: left;
+	}
+	.card.panel.card-outlet-locations > .header > *:not(:first-child) {
+		float: right;
+	}
+	.card.panel.card-outlet-locations > .outlet-members-container {
+		height: 384px;
+		width: 100%;
+		padding: 0;
+		margin: 0;
+		overflow: hidden;
+	}
+	.card.panel.card-outlet-locations > .outlet-members-container > .outlet-members {
+		height: auto;
+		width: 575px;
+		max-height: 384px;
+		padding: 0;
+		margin: 0;
+		list-style-type: none;
+		overflow: auto;
+	}
+	.card.panel.card-outlet-locations > .outlet-members-container > .outlet-members > li {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		font-family: 'Roboto', sans-serif;
+		height: 72px;
+		padding: 8px;
+	}
+	.card.panel.card-outlet-locations > .outlet-members-container > .outlet-members > li:hover {
+		background-color: #f5f5f5;
+	}
+	.card.panel.card-outlet-locations > .outlet-members-container > .outlet-members > li > .member-info {
+		width: 380px;
+		font-weight: 600;
+		text-overflow: ellipsis;
+		padding: 0 8px;
+	}
+	.card.panel.card-outlet-locations > .outlet-members-container > .outlet-members > li > .checkbox.disabled {
+		color: rgba(0, 0, 0, 0.26);
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+	.card.panel.card-outlet-locations > .outlet-members-container > .outlet-members > li > .member-info > div:first-child {
+		font-size: 16px;
+	}
+	.card.panel.card-outlet-locations > .outlet-members-container > .outlet-members > li > .member-info > div:nth-child(2) {
+		font-size: 14px;
+		line-height: 20px;
+		color: rgba(0, 0, 0, 0.54);
+	}
+	.card.panel.card-outlet-locations > .outlet-members-container > .outlet-members > li > .checkbox,
+	.card.panel.card-outlet-locations > .footer > .checkbox {
+		margin: -8px 0 0 0;
+		padding: 0 5px 0 6px;
+	}
+	.card.panel.card-outlet-locations > .outlet-members-container > .outlet-members > li > a.delete-member > span.mdi.mdi-delete {
+		cursor: pointer;
+		font-size: 24px;
+		color: rgba(0, 0, 0, 0.54);
+		margin-right: 56px;
+	}
+	.card.panel.card-outlet-locations > .footer {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+	.card.panel.card-outlet-locations > .footer > .outlet-invite {
+		width: 282px;
+		margin: 0 8px;
+		border: none;
+	}
+	.card.panel.card-outlet-locations > .footer > span {
+		padding: 0 20px 0 28px;
+	}
+</style>
+<div class="card panel card-outlet-locations">
+	<div class="header">
+		<span class="title">USERS</span>
+		<span>EMAIL</span>
+		<span>SMS</span>
+		<span>RECEIVE NOTIFICATIONS:</span>
+	</div>
+	<div class="outlet-members-container">
+		<ul class="outlet-members">
+			<li data-user-id="">
+				<div class="member-info">
+					<div>
+						Harvey Dent
+					</div>
+					<div>
+						cat@freshconews.com
+					</div>
+				</div>
+				<a class="delete-member"><span class="mdi mdi-delete"></span></a>
+				<div class="checkbox checkbox-info">
+					<label>
+						<input type="checkbox" class="notify-fresco">
+					</label>
+				</div>
+				<div class="checkbox checkbox-info">
+					<label>
+						<input type="checkbox" class="notify-email">
+					</label>
+				</div>
+				<div class="checkbox checkbox-info">
+					<label>
+						<input type="checkbox" class="notify-sms">
+					</label>
+				</div>
+			</li>
+			<li data-user-id="">
+				<div class="member-info">
+					<div>
+						Harvey Dent
+					</div>
+					<div>
+						cat@freshconews.com • (234) 438-0931
+					</div>
+				</div>
+				<a class="delete-member"><span class="mdi mdi-delete"></span></a>
+				<div class="checkbox checkbox-info">
+					<label>
+						<input type="checkbox" class="notify-fresco">
+					</label>
+				</div>
+				<div class="checkbox checkbox-info">
+					<label>
+						<input type="checkbox" class="notify-email">
+					</label>
+				</div>
+				<div class="checkbox checkbox-info">
+					<label>
+						<input type="checkbox" class="notify-sms">
+					</label>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<div class="footer">
+		<input type="text" class="outlet-invite" placeholder="Invite users by email">
+		<span>SELECT ALL:</span>
+		<div class="checkbox checkbox-info">
+			<label>
+				<input type="checkbox" class="notify-fresco-all">
+			</label>
+		</div>
+		<div class="checkbox checkbox-info">
+			<label>
+				<input type="checkbox" class="notify-email-all">
+			</label>
+		</div>
+		<div class="checkbox checkbox-info">
+			<label>
+				<input type="checkbox" class="notify-sms-all">
+			</label>
+		</div>
+	</div>
+</div>
+
+<script>
+	window.onload = function(){
+		$('.notify-email').change(function(){
+			if ($('.notify-email-all').is(':checked') || $('.notify-email:not([disabled]):not(:checked)').length === 0)
+				$('.notify-email-all').click();
+			else if ($('.notify-email:not([disabled]):not(:checked)').length === 0)
+				$('.notify-email-all').click();
+		});
+		$('.notify-sms').change(function(){
+			if ($('.notify-sms-all').is(':checked'))
+				$('.notify-sms-all').click();
+			else if ($('.notify-sms:not([disabled]):not(:checked)').length === 0)
+				$('.notify-sms-all').click();
+		});
+		$('.notify-fresco').change(function(){
+			if ($('.notify-fresco-all').is(':checked'))
+				$('.notify-fresco-all').click();
+			else if ($('.notify-fresco:not([disabled]):not(:checked)').length === 0)
+				$('.notify-fresco-all').click();
+		});
+		$('.notify-email-all').change(function(){
+			if ($(this).is(':checked'))
+				$('.notify-email:not(:checked)').click();
+			else if ($('.notify-email:not([disabled]):not(:checked)').length === 0)
+				$('.notify-email:checked').click();
+		});
+		$('.notify-sms-all').change(function(){
+			if ($(this).is(':checked'))
+				$('.notify-sms:not(:checked)').click();
+			else if ($('.notify-sms:not([disabled]):not(:checked)').length === 0)
+				$('.notify-sms:checked').click();
+		});
+		$('.notify-fresco-all').change(function(){
+			if ($(this).is(':checked'))
+				$('.notify-fresco:not(:checked)').click();
+			else if ($('.notify-fresco:not([disabled]):not(:checked)').length === 0)
+				$('.notify-fresco:checked').click();
+		});
+		
+		//Disable all disabled checkboxes
+		$('.checkbox.disabled').each(function(i, v){
+			$(v).find('label > input').prop('disabled', true);
+		})
+		
+		if ($('.notify-email:not([disabled]):not(:checked)').length === 0)
+			$('.notify-email-all').click();
+		if ($('.notify-sms:not([disabled]):not(:checked)').length === 0)
+			$('.notify-sms-all').click();
+		if ($('.notify-fresco:not([disabled]):not(:checked)').length === 0)
+			$('.notify-fresco-all').click();
+	};
+</script>

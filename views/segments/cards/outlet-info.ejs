@@ -1,86 +1,15 @@
-<style>
-	.card.panel.card-outlet-info {
-		font-family: "Robo-Regular", sans-serif;
-		margin: 8px;
-		display: inline-flex;
-		flex-direction: row;
-		height: 240px;
-		width: 560px;
-	}
-	.card.panel.card-outlet-info > .card-image {
-		display: inline-block;
-		height: 240px;
-		width: 240px;
-	}
-	.card.panel.card-outlet-info > .card-image > img,
-	.card.panel.card-outlet-info > .card-image > .img-overlay {
-		position: absolute;
-		height: 100%;
-		width: 100%;
-	}
-	.card.panel.card-outlet-info > .card-image > .img-overlay {
-		background-color: rgba(0, 0, 0, 0.54);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.card.panel.card-outlet-info > .card-image > .img-overlay > span {
-		font-size: 96px;
-		text-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
-		color: white;
-	}
-	.card.panel.card-outlet-info > .card-controls {
-		font-size:16px;
-		display: inline-flex;
-		flex-direction: column;
-		height: 48px;
-		width: 320px;
-	}
-	.card.panel.card-outlet-info > .card-controls > * {
-		border: none;
-	}
-	.card.panel.card-outlet-info > .card-controls > *:not(:last-child) {
-		border-bottom: solid 1px rgba(0, 0, 0, 0.12);
-	}
-	.card.panel.card-outlet-info > .card-controls > input,
-	.card.panel.card-outlet-info > .card-controls > button.outlet-card-save {
-		background-color: white;
-		margin: 0;
-		font-size: inherit;
-		padding: 14px 16px;
-		min-height: 48px;
-		max-height: 48px;
-		height: 48px;
-		width: 320px;
-	}
-	.card.panel.card-outlet-info > .card-controls > button.outlet-card-save {
-		font-family: "Robo-Medium", sans-serif;
-		font-size: 14px;
-		font-weight: 600;
-		color: rgba(0, 0, 0, 0.26);
-		text-align: right;
-	}
-	.card.panel.card-outlet-info > .card-controls > textarea {
-		font-size: inherit;
-		resize: none;
-		padding: 14px 16px;
-		min-height: 96px;
-		max-height: 96px;
-		height: 96px;
-		width: 100%;
-	}
-</style>
 <div class="card panel card-outlet-info">
-		<div class="card-image">
-			<img src="https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png">
-			<div class="img-overlay">
-				<span class="mdi mdi-upload"></span>
-			</div>
+	<input type="file" class="outlet-avatar" style="position:absolute;top:-100px" accept="image/png,image/jpeg" multiple>
+	<div class="card-image">
+		<div class="img" style="background-image:url('<%= avatar %>')"></div>
+		<div class="img-overlay">
+			<span class="mdi mdi-upload"></span>
 		</div>
-		<div class="card-controls">
-			<input type="text" class="outlet-name" placeholder="Outlet name">
-			<input type="text" class="outlet-website" placeholder="Website">
-			<textarea class="outlet-bio" rows="2" placeholder="Bio"></textarea>
-			<button class="btn btn-flat outlet-card-save">SAVE CHANGES</button>
-		</div>
+	</div>
+	<div class="card-controls">
+		<input type="text" class="outlet-name" placeholder="Outlet name" value="<%= title %>">
+		<input type="text" class="outlet-website" placeholder="Website" value="<%= website %>">
+		<textarea class="outlet-bio" rows="2" placeholder="Bio" value="<%= bio %>"></textarea>
+		<button class="btn btn-flat outlet-info-save">SAVE CHANGES</button>
+	</div>
 </div>

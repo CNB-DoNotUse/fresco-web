@@ -1,0 +1,286 @@
+/* OUTLET QUICK SUPPORT */
+.outlet-quick-support {
+	padding: 12px 0; 
+	width: 560px;
+}
+.outlet-quick-support > h3 {
+	margin: 12px 16px;
+	font-size: 14px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 500;
+	color: rgba(0, 0, 0, 0.54);
+}
+.outlet-quick-support > ul {
+	padding: 0;
+	list-style-type: none;
+	font-size: 16px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 500;
+	color: rgba(0, 0, 0, 0.87);
+}
+.outlet-quick-support > ul > li {
+	margin: 16px;
+}
+.outlet-quick-support > ul > li > a {
+	cursor: pointer;
+}
+.outlet-quick-support > ul > li > span {
+	font-size: 24px;
+	color: rgba(0, 0, 0, 0.54);
+	padding-right: 32px;
+}
+
+/* OUTLET PAYMENT CARD */
+.card.panel.card-outlet-card {
+	display: inline-flex;
+	flex-direction: row;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 500;
+	font-size: 14px;
+	margin: 8px;
+	display: inline-block;
+	width: 560px;
+}
+.card.panel.card-outlet-card > *:not(:last-child) {
+	border-bottom: solid 1px rgba(0, 0, 0, 0.12);
+}
+.card.panel.card-outlet-card > button.outlet-card-save {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 500;
+	font-weight: 600;
+	text-align: right;
+	background-color: white;
+	color: rgba(0, 0, 0, 0.26);
+	padding: 14px 16px;
+	margin: 0;
+	height: 48px;
+	width: 100%;
+}
+.card.panel.card-outlet-card > .header {
+	font-weight: 600;
+	padding: 8px;
+	height: 48px;
+}
+.card.panel.card-outlet-card > .header > * {
+	padding: 8px;
+}
+.card.panel.card-outlet-card > .header > *:first-child {
+	color: rgba(0, 0, 0, 0.54);
+	float: left;
+}
+.card.panel.card-outlet-card > .header > *:not(:first-child) {
+	float: right;
+}
+.card.panel.card-outlet-card > .header > .current-card {
+	color: #4cd764
+}
+.card.panel.card-outlet-card > .payment-content {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	padding: 4px 8px;
+}
+.card.panel.card-outlet-card > .payment-content > div:first-child {
+	flex: 3;
+}
+.card.panel.card-outlet-card > .payment-content > div:first-child > *:first-child {
+	padding: 8px;
+}
+.card.panel.card-outlet-card > .payment-content > div:first-child > *:nth-child(2) {
+	margin: 8px;
+}
+.card.panel.card-outlet-card > .payment-content > div:nth-child(2) {
+	flex: 2;
+}
+.card.panel.card-outlet-card > .payment-content > div:nth-child(2) > *:nth-child(2) {
+	margin: 8px;
+}
+.card.panel.card-outlet-card > .payment-content > div:nth-child(2) > div {
+	display: flex;
+	flex-direction: row;
+}
+.card.panel.card-outlet-card > .payment-content > div:nth-child(2) > div:first-child > * {
+	margin: 8px;
+}
+
+/* OUTLET INFO CARD */
+.card.panel.card-outlet-info {
+	font-family: "Robo-Regular", sans-serif;
+	margin: 8px;
+	display: inline-flex;
+	flex-direction: row;
+	height: 240px;
+	width: 560px;
+}
+.card.panel.card-outlet-info > .card-image {
+	display: inline-block;
+	height: 240px;
+	width: 240px;
+}
+.card.panel.card-outlet-info > .card-image > .img,
+.card.panel.card-outlet-info > .card-image > .img-overlay {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+}
+.card.panel.card-outlet-info > .card-image > .img {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+.card.panel.card-outlet-info > .card-image > .img-overlay {
+	background-color: rgba(0, 0, 0, 0.54);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.card.panel.card-outlet-info > .card-image > .img-overlay > span {
+	font-size: 96px;
+	text-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+	color: white;
+}
+.card.panel.card-outlet-info > .card-controls {
+	font-size:16px;
+	display: inline-flex;
+	flex-direction: column;
+	height: 48px;
+	width: 320px;
+}
+.card.panel.card-outlet-info > .card-controls > * {
+	border: none;
+}
+.card.panel.card-outlet-info > .card-controls > *:not(:last-child) {
+	border-bottom: solid 1px rgba(0, 0, 0, 0.12);
+}
+.card.panel.card-outlet-info > .card-controls > input,
+.card.panel.card-outlet-info > .card-controls > button.outlet-info-save {
+	background-color: white;
+	margin: 0;
+	font-size: inherit;
+	padding: 14px 16px;
+	min-height: 48px;
+	max-height: 48px;
+	height: 48px;
+	width: 320px;
+}
+.card.panel.card-outlet-info > .card-controls > button.outlet-info-save {
+	font-family: "Robo-Medium", sans-serif;
+	font-size: 14px;
+	font-weight: 600;
+	color: rgba(0, 0, 0, 0.26);
+	text-align: right;
+}
+.card.panel.card-outlet-info > .card-controls > textarea {
+	font-size: inherit;
+	resize: none;
+	padding: 14px 16px;
+	min-height: 96px;
+	max-height: 96px;
+	height: 96px;
+	width: 100%;
+}
+
+/* OUTLET MEMBERS CARD */
+.card.panel.card-outlet-members {
+	display: inline-flex;
+	flex-direction: row;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 500;
+	font-size: 14px;
+	margin: 8px;
+	display: inline-block;
+	width: 560px;
+	height: 480px;
+	overflow: hidden;
+}
+.card.panel.card-outlet-members > *:not(:last-child) {
+	border-bottom: solid 1px rgba(0, 0, 0, 0.12);
+}
+.card.panel.card-outlet-members > .header,
+.card.panel.card-outlet-members > .footer {
+	color: rgba(0, 0, 0, 0.54);
+	font-weight: 600;
+	padding: 8px;
+	height: 48px;
+}
+.card.panel.card-outlet-members > .header > * {
+	padding: 8px;
+}
+.card.panel.card-outlet-members > .header > *:first-child {
+	float: left;
+}
+.card.panel.card-outlet-members > .header > *:not(:first-child) {
+	float: right;
+}
+.card.panel.card-outlet-members > .outlet-members-container {
+	height: 384px;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+.card.panel.card-outlet-members > .outlet-members-container > .outlet-members {
+	height: auto;
+	width: 575px;
+	max-height: 384px;
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+	overflow: auto;
+}
+.card.panel.card-outlet-members > .outlet-members-container > .outlet-members > li {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	font-family: 'Roboto', sans-serif;
+	height: 72px;
+	padding: 8px;
+}
+.card.panel.card-outlet-members > .outlet-members-container > .outlet-members > li:hover {
+	background-color: #f5f5f5;
+}
+.card.panel.card-outlet-members > .outlet-members-container > .outlet-members > li > .member-info {
+	width: 380px;
+	font-weight: 600;
+	text-overflow: ellipsis;
+	padding: 0 8px;
+}
+.card.panel.card-outlet-members > .outlet-members-container > .outlet-members > li > .checkbox.disabled {
+	color: rgba(0, 0, 0, 0.26);
+	cursor: not-allowed;
+	pointer-events: none;
+}
+.card.panel.card-outlet-members > .outlet-members-container > .outlet-members > li > .member-info > div:first-child {
+	font-size: 16px;
+}
+.card.panel.card-outlet-members > .outlet-members-container > .outlet-members > li > .member-info > div:nth-child(2) {
+	font-size: 14px;
+	line-height: 20px;
+	color: rgba(0, 0, 0, 0.54);
+}
+.card.panel.card-outlet-members > .outlet-members-container > .outlet-members > li > .checkbox,
+.card.panel.card-outlet-members > .footer > .checkbox {
+	margin: -8px 0 0 0;
+	padding: 0 5px 0 6px;
+}
+.card.panel.card-outlet-members > .outlet-members-container > .outlet-members > li > a.delete-member > span.mdi.mdi-delete {
+	cursor: pointer;
+	font-size: 24px;
+	color: rgba(0, 0, 0, 0.54);
+	margin-right: 56px;
+}
+.card.panel.card-outlet-members > .footer {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+.card.panel.card-outlet-members > .footer > .outlet-invite {
+	width: 282px;
+	margin: 0 8px;
+	border: none;
+}
+.card.panel.card-outlet-members > .footer > span {
+	padding: 0 20px 0 28px;
+}
+
+/* OUTLET LOCATIONS CARD */
