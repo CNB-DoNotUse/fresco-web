@@ -44,7 +44,47 @@ router.get('/:id', function(req, res, next){
         title += post.curator.firstname + ' ' + post.curator.lastname;
       }
       
-      res.render('post', { user: req.session.user, post: post, gallery: gallery_body.data, title: title, purchases: purchases, config: config, alerts: req.alerts, type: 'post' });
+      var verifiedString = 'Verified';
+      
+      if (post.approvals) {
+        var verifier = null;
+        for (var i in gallery_body.data.edits) {
+          var edit = gallery_body.data.edits[i];
+          if (edit.changes.visibility == 1) {
+            verifier = edit.editor;
+            break;
+          }
+        }
+        if (verifier) {
+          api.get('/v1/user/profile?id=' + verifier, function(error, response, user_body) {
+            if (!error && user_body && !user_body.err) {
+              verifiedString = 'Verified by ' + user_body.data.firstname + ' ' + user_body.data.lastname;
+              respond();
+            }
+          });
+        }
+        else {
+          respond();
+        }
+      }
+      else {
+        respond();
+      }
+      
+      function respond() {
+        res.render('post', { 
+          user: req.session.user,
+          post: post,
+          gallery: gallery_body.data,
+          title: title,
+          purchases: purchases,
+          config: config,
+          alerts: req.alerts,
+          type: 'post',
+          verifiedString: verifiedString,
+        });
+      }
+      
     });
   });
 });

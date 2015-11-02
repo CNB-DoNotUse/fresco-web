@@ -22,7 +22,7 @@ router.get('/:id', function(req, res, next){
       if (gallery.owner) {
         title += gallery.owner.firstname + ' ' + gallery.owner.lastname;
       }
-      else {
+      else if (gallery.curator) {
         title += gallery.curator.firstname + ' ' + gallery.curator.lastname;
       }
       
