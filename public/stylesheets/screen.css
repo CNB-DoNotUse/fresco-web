@@ -367,7 +367,7 @@ input:disabled {
 /* line 242, ../sass/_rules.scss */
 .meta .meta-list > ul {
   margin-bottom: 0;
-  padding: 0 24px;
+  padding: 0;
   list-style-type: none;
 }
 /* line 246, ../sass/_rules.scss */
@@ -1893,4 +1893,16 @@ nav, .mdi, .sidebar {
 
 .mdi-close-circle.addback {
   transform: rotate(45deg);
+}
+
+.outlet-settings {
+  height: 100%;
+  padding-top: 64px;
+  display: flex;
+  flex-direction: row;
+  overflow-y: auto;
+}
+.outlet-settings > div {
+  display: flex;
+  flex-direction: column;
 }

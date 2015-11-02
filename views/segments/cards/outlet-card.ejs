@@ -1,0 +1,94 @@
+<style>
+	.card.panel.card-outlet-card {
+		display: inline-flex;
+		flex-direction: row;
+		font-family: "Roboto-Medium", sans-serif;
+		font-size: 14px;
+		margin: 8px;
+		display: inline-block;
+		width: 560px;
+	}
+	.card.panel.card-outlet-card > *:not(:last-child) {
+		border-bottom: solid 1px rgba(0, 0, 0, 0.12);
+	}
+	.card.panel.card-outlet-card > button.outlet-card-save {
+		font-family: "Roboto-Medium", sans-serif;
+		font-weight: 600;
+		text-align: right;
+		background-color: white;
+		color: rgba(0, 0, 0, 0.26);
+		padding: 14px 16px;
+		margin: 0;
+		height: 48px;
+		width: 100%;
+	}
+	.card.panel.card-outlet-card > .header {
+		font-weight: 600;
+		padding: 8px;
+		height: 48px;
+	}
+	.card.panel.card-outlet-card > .header > * {
+		padding: 8px;
+	}
+	.card.panel.card-outlet-card > .header > *:first-child {
+		color: rgba(0, 0, 0, 0.54);
+		float: left;
+	}
+	.card.panel.card-outlet-card > .header > *:not(:first-child) {
+		float: right;
+	}
+	.card.panel.card-outlet-card > .header > .current-card {
+		color: #4cd764
+	}
+	.card.panel.card-outlet-card > .payment-content {
+		display: flex;
+		flex-direction: row;
+		width: 100%;
+		padding: 4px 8px;
+	}
+	.card.panel.card-outlet-card > .payment-content > div:first-child {
+		flex: 3;
+	}
+	.card.panel.card-outlet-card > .payment-content > div:first-child > *:first-child {
+		padding: 8px;
+	}
+	.card.panel.card-outlet-card > .payment-content > div:first-child > *:nth-child(2) {
+		margin: 8px;
+	}
+	.card.panel.card-outlet-card > .payment-content > div:nth-child(2) {
+		flex: 2;
+	}
+	.card.panel.card-outlet-card > .payment-content > div:nth-child(2) > *:nth-child(2) {
+		margin: 8px;
+	}
+	.card.panel.card-outlet-card > .payment-content > div:nth-child(2) > div {
+		display: flex;
+		flex-direction: row;
+	}
+	.card.panel.card-outlet-card > .payment-content > div:nth-child(2) > div:first-child > * {
+		margin: 8px;
+	}
+</style>
+<div class="card panel card-outlet-card">
+	<div class="header">
+		<span class="title">PAYMENT INFORMATION</span>
+		<span>PURCHASE HISTORY</span>
+		<span class="current-card">USING-VISA 3189</span>
+	</div>
+	<div class="payment-content">
+		<div>
+			<div>
+				<input class="form-control floating-label payment-ccn" placeholder="Card number">
+			</div>
+			<input class="form-control floating-label payment-name" placeholder="Name on card">
+		</div>
+		<div>
+			<div>
+				<input class="form-control floating-label payment-exp" placeholder="00 / 00">
+				<input class="form-control floating-label payment-cvv" placeholder="CVV">
+			</div>
+			<input class="form-control floating-label payment-zip" placeholder="ZIP">
+		</div>
+	</div>
+	<button class="btn btn-flat outlet-card-save">SAVE CHANGES</button>
+</div>

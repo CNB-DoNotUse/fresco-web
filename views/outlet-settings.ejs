@@ -12,6 +12,9 @@
 		<!-- end navbar -->
 		<!-- settings -->
 		<div class="settings">
+			<%- include('segments/cards/outlet-info.ejs') %>
+			<%- include('segments/cards/outlet-card.ejs') %>
+			<%- include('segments/cards/outlet-members.ejs') %>
 			<div class="col-xs-12 col-sm-6 col-md-4 col-md-offset-2 form-group-default">
 				<div class="flex-row">
 					<img class="img-circle outlet-settings-avatar" src="<%= outlet.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png' %>">

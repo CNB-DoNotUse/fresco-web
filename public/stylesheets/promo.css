@@ -268,106 +268,106 @@ video {
 
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-ThinWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-ThinWeb.eot");
   font-weight: 100; }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-ThinWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-ThinWeb.woff") format("woff");
   font-weight: 100; }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-ThinObliqueWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-ThinObliqueWeb.eot");
   font-weight: 100;
   font-style: oblique; }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-ThinObliqueWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-ThinObliqueWeb.woff") format("woff");
   font-weight: 100;
   font-style: oblique; }
 /* xlight
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-XLightWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-XLightWeb.eot");
   font-weight: 200;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-XLightWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-XLightWeb.woff") format("woff");
   font-weight: 200;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-XLightObliqueWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-XLightObliqueWeb.eot");
   font-weight: 200;
   font-style: oblique;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-XLightObliqueWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-XLightObliqueWeb.woff") format("woff");
   font-weight: 200;
   font-style: oblique;
 } */
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-LightWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-LightWeb.eot");
   font-weight: 300; }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-LightWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-LightWeb.woff") format("woff");
   font-weight: 300; }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-LightObliqueWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-LightObliqueWeb.eot");
   font-weight: 300;
   font-style: oblique; }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-LightObliqueWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-LightObliqueWeb.woff") format("woff");
   font-weight: 300;
   font-style: oblique; }
 /* normal
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-NormalWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-NormalWeb.eot");
   font-weight: 400;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-NormalWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-NormalWeb.woff") format("woff");
   font-weight: 400;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-NormalObliqueWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-NormalObliqueWeb.eot");
   font-weight: 400;
   font-style: oblique;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-NormalObliqueWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-NormalObliqueWeb.woff") format("woff");
   font-weight: 400;
   font-style: oblique;
 } */
 /* medium
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-MediumWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-MediumWeb.eot");
   font-weight: 500;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-MediumWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-MediumWeb.woff") format("woff");
   font-weight: 500;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-MediumObliqueWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-MediumObliqueWeb.eot");
   font-weight: 500;
   font-style: oblique;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-MediumObliqueWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-MediumObliqueWeb.woff") format("woff");
   font-weight: 500;
   font-style: oblique;
 } */
@@ -392,23 +392,23 @@ video {
 /* xbold
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-XboldWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-XboldWeb.eot");
   font-weight: 800;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-XboldWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-XboldWeb.woff") format("woff");
   font-weight: 800;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-XboldObliqueWeb.eot");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-XboldObliqueWeb.eot");
   font-weight: 800;
   font-style: oblique;
 }
 @font-face {
   font-family: Nota;
-  src: url("../font/Nota-XboldObliqueWeb.woff") format("woff");
+  src: url("https://d1dw1p6sgigznj.cloudfront.net/fonts/Nota-XboldObliqueWeb.woff") format("woff");
   font-weight: 800;
   font-style: oblique;
 } */
@@ -488,8 +488,18 @@ body {
       font-size: 14pt; } }
   body > header {
     background-color: rgba(0, 0, 0, 0.87);
+    background: url("https://d1dw1p6sgigznj.cloudfront.net/images/bg-promo.jpg") no-repeat center center scroll;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -webkit-background-size: cover;
+    background-size: cover;
     padding: 33vh 16px;
     text-align: center; }
+    body > header * {
+      -webkit-filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.12));
+      filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.12));
+      -webkit-filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.24));
+      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.24)); }
     body > header span {
       color: #fff;
       text-transform: uppercase;
@@ -544,7 +554,7 @@ body {
       padding: 16px 12px; }
       body > main form.card div p {
         margin-bottom: 12px; }
-        
+
 section ul > li,
 footer ul > li {
   font-size: 24px; }
