@@ -1,5 +1,4 @@
-if (google)
-google.maps.Polygon.prototype.getBounds = function() {
+if (google) google.maps.Polygon.prototype.getBounds = function() {
     var bounds = new google.maps.LatLngBounds();
     var paths = this.getPaths();
     var path;        
@@ -1067,6 +1066,7 @@ function galleryEditClear(){
 var galleryEditInitialToggle = true;
 var galleryEditMap = null;
 var galleryEditPolygon = null;
+var galleryEditMarker = null;
 var galleryEditAutocomplete = null;
 var galleryEditVisibilityChanged = null;
 
@@ -1109,6 +1109,12 @@ function galleryEditUpdate(){
 					fillOpacity: 0.35,
 					map: galleryEditMap
 				});
+				
+		galleryEditMarker = new google.maps.Marker({
+			position: new google.maps.LatLng(40.7, -74),
+			map: null,
+			icon: image
+		});
 		
 		//Listener to check if the visibility has actually been changed
 		$("#gallery-highlight-input").change(function() {
@@ -1144,10 +1150,17 @@ function galleryEditUpdate(){
 	
 	if (GALLERY_EDIT.location){
 		galleryEditPolygon.setMap(galleryEditMap);
+		galleryEditMarker.setMap(galleryEditMap);
 		galleryEditPolygon.setPath(GALLERY_EDIT.location.coordinates[0].map(function(a){ return { lat: a[1], lng: a[0] }; }));
-		galleryEditMap.fitBounds(galleryEditPolygon.getBounds());
-	}else
+		
+		var bounds = galleryEditPolygon.getBounds();
+		
+		galleryEditMarker.setPosition(bounds.getCenter());
+		galleryEditMap.fitBounds(bounds);
+	}else{
 		galleryEditPolygon.setMap(null);
+		galleryEditMarker.setMap(null);
+	}
 	$('#gallery-location-input').val(GALLERY_EDIT.posts[0].location.address).trigger('keydown');
 	
 	$('#gallery-caption-input').val(GALLERY_EDIT.caption).trigger('keydown');

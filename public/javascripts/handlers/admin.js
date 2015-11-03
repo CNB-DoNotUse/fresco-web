@@ -44,6 +44,7 @@ var PAGE_Admin = {
 	submissionSkip: null,
 
 	submissionGoogleMap: {
+		marker: null,
 		polygon: null,
 		map: null,
 		autocomplete: null,
@@ -73,6 +74,7 @@ var PAGE_Admin = {
 	importsImportLocalFiles: null,
 
 	importsGoogleMap: {
+		marker: null,
 		polygon: null,
 		map: null,
 		autocomplete: null,
@@ -529,10 +531,16 @@ var PAGE_Admin = {
 	setPolygon: function(map, coords){
 		if (!coords)
 			return map.polygon.setMap(null);
-			
-		map.polygon.setPath(coords.map(function(a){ return { lat: a[1], lng: a[0] }; }));
+		
+		coords = coords.map(function(a){ return new google.maps.LatLng(a[1], a[0]);});
+		
+		var bounds = map.polygon.getBounds();
+		
+		map.polygon.setPath(coords);
+		map.marker.setPosition(bounds.getCenter());
+		map.marker.setMap(map.map);
 		map.polygon.setMap(map.map);
-		map.map.fitBounds(map.polygon.getBounds());
+		map.map.fitBounds(bounds);
 	},
 	setMarker: function(map, location, radius){
 		if (!location && !radius){
@@ -584,13 +592,13 @@ var PAGE_Admin = {
 					paths: [],
 					strokeColor: "#FFB500",
 					strokeOpacity: 0.8,
-					strokeWeight: 2,
+					strokeWeight: 0,
 					fillColor: "#FFC600",
 					fillOpacity: 0.35,
 					map: null
 				});
 		}
-		if (map.marker !== undefined) map.marker = new google.maps.Marker({
+		map.marker = new google.maps.Marker({
 			position: new google.maps.LatLng(40.7, -74),
 			map: null,
 			icon: image
