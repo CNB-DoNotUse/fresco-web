@@ -534,7 +534,7 @@ function createGallery(caption, tags, posts, highlight, articles, stories, callb
 	});
 }
 //AJAX - Update the gallery
-function updateGallery(caption, byline, tags, posts, visibility, callback){
+function updateGallery(caption, byline, tags, posts, visibility, other_origin, callback){
 	var params = {
 		caption: caption,
 		byline: byline,
@@ -545,6 +545,11 @@ function updateGallery(caption, byline, tags, posts, visibility, callback){
 		stories: $('#gallery-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		articles: $('#gallery-articles-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 	};
+
+	if (other_origin) {
+		params.other_origin_name = other_origin.name;
+		params.other_origin_affiliation = other_origin.affiliation;
+	}
 
 	$.ajax("/scripts/gallery/update", {
 		method: 'post',
@@ -995,9 +1000,18 @@ function setTimeDisplayType(timeDisplay) {
 function galleryEditSave(){
 	var caption = $('#gallery-caption-input').val();
 	var byline = $('#gallery-byline-input').val();
+	var other_origin = null;
 	var tags = $('#gallery-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
 	var posts = $('.edit-gallery-images').frick('frickPosts');
 	var visibility = null;
+	
+	if ($('#gallery-other-origin').css('display') !== 'none') {
+		byline = $('#gallery-name-input').val().trim() + ' / ' + $('#gallery-affiliation-input').val().trim();
+		other_origin = {
+			name: $('#gallery-name-input').val().trim(),
+			affiliation: $('#gallery-affiliation-input').val().trim(),
+		}
+	}
 	
 	var added = posts.filter(function(id) {return id.indexOf('NEW') !== -1});
 	added = added.map(function(index) {
@@ -1013,7 +1027,7 @@ function galleryEditSave(){
 	if( $('#gallery-highlight-input').length !== 0 && galleryEditVisibilityChanged == 1)
 		visibility = $('#gallery-highlight-input').prop('checked') ? 2 : 1;
 
-	updateGallery(caption, byline, tags, posts, visibility, function(err, GALLERY_EDIT){
+	updateGallery(caption, byline, tags, posts, visibility, other_origin, function(err, GALLERY_EDIT){
 		if (err)
 			return $.snackbar({content: resolveError(err)});
 			
@@ -1179,6 +1193,20 @@ function galleryEditUpdate(){
 	
 	$('#gallery-caption-input').val(GALLERY_EDIT.caption).trigger('keydown');
 	$('#gallery-byline-input').val(GALLERY_EDIT.posts && GALLERY_EDIT.posts[0] ? GALLERY_EDIT.posts[0].byline : '').trigger('keydown');
+
+	if (GALLERY_EDIT.posts[0]) {
+		var post = GALLERY_EDIT.posts[0];
+		if (!post.owner && post.curator && !post.meta.twitter) {
+			$('#gallery-other-origin').show();
+			if (post.meta.other_origin) {
+				$('#gallery-name-input').val(post.meta.other_origin.name).trigger('keydown');
+				$('#gallery-affiliation-input').val(post.meta.other_origin.affiliation).trigger('keydown');
+			}
+		}
+		else {
+			$('#gallery-other-origin').hide();
+		}
+	}
 
 	$('#gallery-highlight-input').prop('checked', GALLERY_EDIT.visibility >= 2);
 

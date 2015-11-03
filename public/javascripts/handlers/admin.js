@@ -529,7 +529,7 @@ var PAGE_Admin = {
 			PAGE_Admin.importsName.attr('data-id', gallery._id || '');
 			PAGE_Admin.importsAffiliation.attr('data-id', gallery._id || '');
 
-			if (!gallery.posts[0].meta.twitter) {
+			if (!gallery.posts || !gallery.posts[0].meta.twitter) {
 				PAGE_Admin.importsOtherOrigin.show();
 			}
 			else {
