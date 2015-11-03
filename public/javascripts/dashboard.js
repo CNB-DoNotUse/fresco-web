@@ -1104,7 +1104,7 @@ function galleryEditUpdate(){
 					paths: [],
 					strokeColor: "#FFB500",
 					strokeOpacity: 0.8,
-					strokeWeight: 2,
+					strokeWeight: 0,
 					fillColor: "#FFC600",
 					fillOpacity: 0.35,
 					map: galleryEditMap
