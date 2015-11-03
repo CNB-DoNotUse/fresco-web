@@ -63,8 +63,14 @@ var PAGE_Story = {
 	},
 
 	storyEditUpdate: function(){
-		$('#story-edit-date').text(getTimeAgo(Date.now(), PAGE_Story.story.time_created));
-		$('#story-edit-caption').text(PAGE_Story.story.caption || 'No Description');
+		if (PAGE_Story.story.caption)
+			$('#story-edit-caption').css('display', 'inline-block').text(PAGE_Story.story.caption);
+		else
+			$('#story-edit-caption').css('display', 'none');
+		$('#story-edit-date').text(timestampToDate(PAGE_Story.story.time_created));
+		$('#story-edit-photo-num').text(PAGE_Story.story.stats.photos + (PAGE_Story.story.stats.photos === 1 ? ' photo' : ' photos'));
+		$('#story-edit-video-num').text(PAGE_Story.story.stats.videos + (PAGE_Story.story.stats.photos === 1 ? ' video' : ' videos'));
+		//$('#story-edit-caption').text(PAGE_Story.story.caption || '');
 		$('#story-edit-title-input').val(PAGE_Story.story.title).trigger('keyup');
 		$('#story-edit-caption-input').val(PAGE_Story.story.caption).trigger('keyup');
 

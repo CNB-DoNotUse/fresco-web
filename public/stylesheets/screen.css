@@ -367,7 +367,7 @@ input:disabled {
 /* line 242, ../sass/_rules.scss */
 .meta .meta-list > ul {
   margin-bottom: 0;
-  padding: 0;
+  padding: 0 24px;
   list-style-type: none;
 }
 /* line 246, ../sass/_rules.scss */
