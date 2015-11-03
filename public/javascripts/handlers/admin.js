@@ -1089,6 +1089,8 @@ $(document).ready(function(){
 
 		if (PAGE_Admin.importsOtherOrigin.css('display') !== 'none') {
 			params.byline = PAGE_Admin.importsName.val().trim() + ' / ' + PAGE_Admin.importsAffiliation.val().trim();
+			params.other_origin_name = PAGE_Admin.importsName.val().trim();
+			params.other_origin_affiliation = PAGE_Admin.importsAffiliation.val().trim();
 		}
 
 		if (tagsChanged)
