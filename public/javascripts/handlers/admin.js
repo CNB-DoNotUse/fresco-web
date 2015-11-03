@@ -534,13 +534,11 @@ var PAGE_Admin = {
 		
 		coords = coords.map(function(a){ return new google.maps.LatLng(a[1], a[0]);});
 		
-		var bounds = map.polygon.getBounds();
-		
 		map.polygon.setPath(coords);
-		map.marker.setPosition(bounds.getCenter());
+		map.marker.setPosition(map.polygon.getCentroid());
 		map.marker.setMap(map.map);
 		map.polygon.setMap(map.map);
-		map.map.fitBounds(bounds);
+		map.map.fitBounds(map.polygon.getBounds());
 	},
 	setMarker: function(map, location, radius){
 		if (!location && !radius){

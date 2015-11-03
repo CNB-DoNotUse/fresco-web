@@ -1,14 +1,31 @@
-if (google) google.maps.Polygon.prototype.getBounds = function() {
-    var bounds = new google.maps.LatLngBounds();
-    var paths = this.getPaths();
-    var path;        
-    for (var i = 0; i < paths.getLength(); i++) {
-        path = paths.getAt(i);
-        for (var ii = 0; ii < path.getLength(); ii++) {
-            bounds.extend(path.getAt(ii));
-        }
-    }
-    return bounds;
+if (google) {
+	google.maps.Polygon.prototype.getBounds = function() {
+		var bounds = new google.maps.LatLngBounds();
+		var paths = this.getPaths();
+		var path;        
+		for (var i = 0; i < paths.getLength(); i++) {
+			path = paths.getAt(i);
+			for (var ii = 0; ii < path.getLength(); ii++) {
+				bounds.extend(path.getAt(ii));
+			}
+		}
+		return bounds;
+	};
+	google.maps.Polygon.prototype.getCentroid = function() {
+		var path = this.getPath(),
+			lat = 0,
+			lon = 0;
+		
+		for (var i = 0; i < path.getLength() - 1; ++i) {
+			lat += path.getAt(i).lat();
+			lon += path.getAt(i).lng();
+		}
+		
+		lat /= path.getLength() - 1;
+		lon /= path.getLength() - 1;
+		
+		return new google.maps.LatLng(lat, lon);
+	};
 }
 
 $(document).ready(function(){
@@ -1152,11 +1169,8 @@ function galleryEditUpdate(){
 		galleryEditPolygon.setMap(galleryEditMap);
 		galleryEditMarker.setMap(galleryEditMap);
 		galleryEditPolygon.setPath(GALLERY_EDIT.location.coordinates[0].map(function(a){ return { lat: a[1], lng: a[0] }; }));
-		
-		var bounds = galleryEditPolygon.getBounds();
-		
-		galleryEditMarker.setPosition(bounds.getCenter());
-		galleryEditMap.fitBounds(bounds);
+		galleryEditMarker.setPosition(galleryEditPolygon.getCentroid());
+		galleryEditMap.fitBounds(galleryEditPolygon.getBounds());
 	}else{
 		galleryEditPolygon.setMap(null);
 		galleryEditMarker.setMap(null);
