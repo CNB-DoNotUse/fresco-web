@@ -72,6 +72,9 @@ var PAGE_Admin = {
 	importsImportTwitter: null,
 	importsImportLocal: null,
 	importsImportLocalFiles: null,
+	importsName: null,
+	importsAffiliation: null,
+	importsOtherOrigin: null,
 
 	importsGoogleMap: {
 		marker: null,
@@ -523,6 +526,15 @@ var PAGE_Admin = {
 			PAGE_Admin.importsVerify.attr('data-id', gallery._id || '');
 			PAGE_Admin.importsSkip.attr('data-id', gallery._id || '');
 			PAGE_Admin.importsDelete.attr('data-id', gallery._id || '');
+			PAGE_Admin.importsName.attr('data-id', gallery._id || '');
+			PAGE_Admin.importsAffiliation.attr('data-id', gallery._id || '');
+
+			if (!gallery.posts[0].meta.twitter) {
+				PAGE_Admin.importsOtherOrigin.show();
+			}
+			else {
+				PAGE_Admin.importsOtherOrigin.hide();
+			}
 
 			$('.form-control').filter(function(){return this.value != '';}).trigger('keydown');
 			$('.form-control').filter(function(){return this.value == '';}).trigger('keyup');
@@ -687,6 +699,9 @@ $(document).ready(function(){
 	PAGE_Admin.importsImportTwitter = $('.twitter-import');
 	PAGE_Admin.importsImportLocal = $('.upload-import');
 	PAGE_Admin.importsImportLocalFiles = $('.upload-import-files');
+	PAGE_Admin.importsName = $('.import-name');
+	PAGE_Admin.importsAffiliation = $('.import-affiliation');
+	PAGE_Admin.importsOtherOrigin = $('.import-other-origin');
 	
 	//Submissions Stories Autocomplete
 	PAGE_Admin.submissionStoriesInput.typeahead({
@@ -1071,6 +1086,10 @@ $(document).ready(function(){
 			posts: PAGE_Admin.importsImages.frick('frickPosts'),
 			stories: PAGE_Admin.importsStories.children('li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		};
+
+		if (PAGE_Admin.importsOtherOrigin.css('display') !== 'none') {
+			params.byline = PAGE_Admin.importsName.val().trim() + ' / ' + PAGE_Admin.importsAffiliation.val().trim();
+		}
 
 		if (tagsChanged)
 			params.tags = tags;
