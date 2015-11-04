@@ -302,7 +302,7 @@ var PAGE_Admin = {
 							'	<p class="md-type-body1 assignment-location">' + location + '</p>' +
 							'</div>';
 						}
-
+						
 						listString +=
 							'<div class="list-item" data-index="' + index + '">'+
 								'<div>'+
@@ -367,7 +367,15 @@ var PAGE_Admin = {
 					for (var index in PAGE_Admin.imports){
 						if (!old_imports[index] || PAGE_Admin.imports[index]._id != old_imports[index]._id)
 							same = false;
-						var sub = result.data[index];
+						var sub = result.data[index],
+							location = '';
+							
+						for (var i in sub.posts){
+							if (sub.posts[i].location.address){
+								location = sub.posts[i].location.address;
+								break;
+							}
+						}
 
 						listString +=
 							'<div class="list-item" data-index="' + index + '">'+
@@ -381,7 +389,7 @@ var PAGE_Admin = {
 									(sub.owner ? ('<p class="md-type-body2"><a href="/user/' + sub.owner._id + '" target="_blank">' + sub.owner.firstname + ' ' + sub.owner.lastname + '</a></p>') : '') +
 								'</div>'+
 								'<div>'+
-									'<p class="md-type-body1">' + sub.posts[0].location.address + '</p>'+
+									'<p class="md-type-body1">' + location + '</p>'+
 								'</div>'+
 								'<div>'+
 									'<p class="md-type-body1">' + timestampToDate(sub.time_created) + '</p>'+
