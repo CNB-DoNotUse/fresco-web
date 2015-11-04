@@ -1196,7 +1196,14 @@ function galleryEditUpdate(){
 	$('.gallery-byline-text').text(GALLERY_EDIT.posts && GALLERY_EDIT.posts[0] ? GALLERY_EDIT.posts[0].byline : '').trigger('keydown');
 
 	$('#gallery-byline-options').empty();
-	generateBylines(GALLERY_EDIT.posts[0]).forEach(function(byline) {
+	var bylines = generateBylines(GALLERY_EDIT.posts[0]);
+	if (bylines.length > 1) {
+		$('#gallery-byline-selection').show();
+	}
+	else {
+		$('#gallery-byline-selection').hide();
+	}
+	bylines.forEach(function(byline) {
 		var elem = $('<li class="gallery-byline-type">' + byline + '</li>')
 		elem.click(function() {
 			$('.gallery-byline-text').text(byline);
@@ -1294,10 +1301,10 @@ function generateBylines(post) {
 	
 	if (owner) {
 		if (owner.outlet) {
-			if (owner.username) {
-				bylines.push(owner.username + ' / ' + owner.outlet.title);
-			}
-			bylines.push(owner.firstname + ' ' + owner.lastname + ' / ' + owner.outlet.title);
+			// if (owner.username) {
+			// 	bylines.push(owner.username + ' / ' + owner.outlet.title);
+			// }
+			// bylines.push(owner.firstname + ' ' + owner.lastname + ' / ' + owner.outlet.title);
 		}
 		else {
 			if (owner.username) {

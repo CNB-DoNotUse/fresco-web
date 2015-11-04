@@ -529,6 +529,25 @@ var PAGE_Admin = {
 			PAGE_Admin.importsName.attr('data-id', gallery._id || '');
 			PAGE_Admin.importsAffiliation.attr('data-id', gallery._id || '');
 
+			$('.import-byline-text').text(gallery.posts && gallery.posts[0] ? gallery.posts[0].byline : '').trigger('keydown');
+
+			$('#import-byline-options').empty();
+			var bylines = generateBylines(gallery.posts[0]);
+			if (bylines.length > 1) {
+				PAGE_Admin.importsBylineSelection.show();
+			}
+			else {
+				PAGE_Admin.importsBylineSelection.hide();
+			}
+			bylines.forEach(function(byline) {
+				var elem = $('<li class="import-byline-type">' + byline + '</li>')
+				elem.click(function() {
+					$('.import-byline-text').text(byline);
+					$('.byline-drop').removeClass('toggled');
+				});
+				$('#import-byline-options').append(elem);
+			});
+
 			if (!gallery.posts || !gallery.posts[0].meta.twitter) {
 				PAGE_Admin.importsOtherOrigin.show();
 			}
@@ -702,6 +721,8 @@ $(document).ready(function(){
 	PAGE_Admin.importsName = $('.import-name');
 	PAGE_Admin.importsAffiliation = $('.import-affiliation');
 	PAGE_Admin.importsOtherOrigin = $('.import-other-origin');
+	PAGE_Admin.importsBylineText = $('.import-byline-text');
+	PAGE_Admin.importsBylineSelection = $('#import-byline-selection');
 	
 	//Submissions Stories Autocomplete
 	PAGE_Admin.submissionStoriesInput.typeahead({
@@ -1082,7 +1103,7 @@ $(document).ready(function(){
 
 		var params = {
 			id: gallery._id,
-			byline: PAGE_Admin.importsByline.val().trim(),
+			byline: PAGE_Admin.importsBylineText.eq(0).text().trim(),
 			posts: PAGE_Admin.importsImages.frick('frickPosts'),
 			stories: PAGE_Admin.importsStories.children('li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		};
