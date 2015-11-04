@@ -1115,7 +1115,6 @@ $(document).ready(function(){
 			posts: PAGE_Admin.importsImages.frick('frickPosts'),
 			stories: PAGE_Admin.importsStories.children('li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		};
-
 		if (PAGE_Admin.importsOtherOrigin.css('display') !== 'none') {
 			params.byline = PAGE_Admin.importsName.val().trim() + ' / ' + PAGE_Admin.importsAffiliation.val().trim();
 			params.other_origin_name = PAGE_Admin.importsName.val().trim();
@@ -1132,6 +1131,9 @@ $(document).ready(function(){
 		// params.lon = coord ? coord.lng() : null;
 		// if(PAGE_Admin.importsLocation.val())	
 		// 	params.address = PAGE_Admin.importsLocation.val();
+
+		if (!params.posts || params.posts.length == 0)
+			return $.snackbar({content: 'A gallery must have at least one post'});
 
 		PAGE_Admin.Gallery.verify(params, function(err){
 			if (err)

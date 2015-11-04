@@ -53,7 +53,7 @@ router.get('/settings', function(req, res, next){
   client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, function(error, response, body){
     if (error || !body || body.err || body.data.owner._id != req.session.user._id)
       return res.status(404).render('error', {user: req.session.user, error_code: 404, error_message: config.ERR_PAGE_MESSAGES[404]});
-    
+    console.log(body.data);
     res.render('outlet-settings', { user: req.session.user, outlet: body.data, title: 'Outlet', config: config, alerts: req.alerts });
   });
 });

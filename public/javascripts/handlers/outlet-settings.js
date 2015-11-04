@@ -3,6 +3,16 @@ var PAGE_OutletSettings = {
 };
 
 $(document).ready(function(){
+	//Display fresco support email when hovering on email link
+	$('.outlet-quick-support > ul > li > a').hover(
+		function(){
+			$(this).html('support@fresconews.com');
+		},
+		function(){
+			$(this).html('Email us');
+		}
+	);
+	
 	//Save card info
 	$('.card-outlet-card > .outlet-card-save').on('click', function(){
 		var _this = $(this),
