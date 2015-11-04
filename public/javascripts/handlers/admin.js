@@ -543,9 +543,11 @@ var PAGE_Admin = {
 			var bylines = generateBylines(gallery.posts[0]);
 			if (bylines.length > 1) {
 				PAGE_Admin.importsBylineSelection.show();
+				PAGE_Admin.importsByline.hide();
 			}
 			else {
 				PAGE_Admin.importsBylineSelection.hide();
+				PAGE_Admin.importsByline.show();
 			}
 			bylines.forEach(function(byline) {
 				var elem = $('<li class="import-byline-type">' + byline + '</li>')
