@@ -819,6 +819,7 @@ router.post('/outlet/update', function(req, res, next){
       };
 
   if (req.body.title) params.title = req.body.title;
+  if (req.body.bio) params.bio = req.body.bio;
   if (req.body.link) params.link = req.body.link;
   if (req.body.stripe_token) params.stripe_token = req.body.stripe_token;
 
