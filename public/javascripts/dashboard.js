@@ -999,7 +999,7 @@ function setTimeDisplayType(timeDisplay) {
 //Save gallery edits
 function galleryEditSave(){
 	var caption = $('#gallery-caption-input').val();
-	var byline = $('#gallery-byline-input').val();
+	var byline = $('.gallery-byline-text').eq(0).text();
 	var other_origin = null;
 	var tags = $('#gallery-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
 	var posts = $('.edit-gallery-images').frick('frickPosts');
@@ -1192,7 +1192,18 @@ function galleryEditUpdate(){
 	$('#gallery-location-input').val(GALLERY_EDIT.posts[0].location.address).trigger('keydown');
 	
 	$('#gallery-caption-input').val(GALLERY_EDIT.caption).trigger('keydown');
-	$('#gallery-byline-input').val(GALLERY_EDIT.posts && GALLERY_EDIT.posts[0] ? GALLERY_EDIT.posts[0].byline : '').trigger('keydown');
+	// $('#gallery-byline-input').val(GALLERY_EDIT.posts && GALLERY_EDIT.posts[0] ? GALLERY_EDIT.posts[0].byline : '').trigger('keydown');
+	$('.gallery-byline-text').text(GALLERY_EDIT.posts && GALLERY_EDIT.posts[0] ? GALLERY_EDIT.posts[0].byline : '').trigger('keydown');
+
+	$('#gallery-byline-options').empty();
+	generateBylines(GALLERY_EDIT.posts[0]).forEach(function(byline) {
+		var elem = $('<li class="gallery-byline-type">' + byline + '</li>')
+		elem.click(function() {
+			$('.gallery-byline-text').text(byline);
+			$('.byline-drop').removeClass('toggled');
+		});
+		$('#gallery-byline-options').append(elem);
+	});
 
 	if (GALLERY_EDIT.posts[0]) {
 		var post = GALLERY_EDIT.posts[0];
@@ -1272,6 +1283,38 @@ function galleryEditUpdate(){
 	}
 
 	$('.edit-gallery-images').frick();
+}
+
+function generateBylines(post) {
+	var bylines = [];
+	var owner = post.owner;
+	var curator = post.curator;
+	var twitter = post.meta.twitter;
+	var other_origin = post.meta.other_origin;
+	
+	if (owner) {
+		if (owner.outlet) {
+			if (owner.username) {
+				bylines.push(owner.username + ' / ' + owner.outlet.title);
+			}
+			bylines.push(owner.firstname + ' ' + owner.lastname + ' / ' + owner.outlet.title);
+		}
+		else {
+			if (owner.username) {
+				bylines.push(owner.username + 'via Fresco News');
+			}
+			bylines.push(owner.firstname + ' ' + owner.lastname + 'via Fresco News');
+		}
+	}
+	else if (!twitter && curator && other_origin) {
+		bylines.push(other_origin.name + ' / ' + other_origin.affiliation);
+	}
+	else if (twitter && curator) {
+		bylines.push(twitter.handle + ' via Twitter');
+		bylines.push(twitter.user_name + ' via Twitter');
+	}
+	
+	return bylines;
 }
 
 function galleryEditAddMore() {

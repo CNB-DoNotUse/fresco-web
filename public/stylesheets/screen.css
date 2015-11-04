@@ -897,7 +897,7 @@ div.list > div.list-item.active {
   z-index: 5;
 }
 /* line 655, ../sass/_rules.scss */
-.navbar > .drop {
+.drop {
   display: inline-block;
   position: relative;
   margin: 18px 0;
@@ -905,13 +905,13 @@ div.list > div.list-item.active {
   border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
 /* line 661, ../sass/_rules.scss */
-.navbar > .drop > button > span.mdi,
-.navbar > .drop > div > div > span.mdi {
+.drop > button > span.mdi,
+.drop > div > div > span.mdi {
   margin-left: 12px;
   margin-right: -6px;
 }
 /* line 666, ../sass/_rules.scss */
-.navbar > .drop > .toggle-drop {
+.drop > .toggle-drop {
   position: relative;
   z-index: 4;
   padding: 0;
@@ -919,7 +919,7 @@ div.list > div.list-item.active {
   border-style: none;
 }
 /* line 673, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu {
+.drop > .drop-menu {
   display: none;
   position: absolute;
   z-index: 6;
@@ -930,77 +930,77 @@ div.list > div.list-item.active {
   border-radius: 2px;
 }
 /* line 682, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .toggle-drop {
+.drop > .drop-menu > .toggle-drop {
   padding: 12px 24px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   cursor: pointer;
 }
 /* line 687, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .drop-body {
+.drop > .drop-menu > .drop-body {
   padding: 10px 0 0;
   display: block;
   max-height: 80%;
   overflow-y: auto;
 }
 /* line 692, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .drop-body ul {
+.drop > .drop-menu > .drop-body ul {
   list-style-type: none;
 }
 /* line 695, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .drop-body > ul.md-type-subhead {
+.drop > .drop-menu > .drop-body > ul.md-type-subhead {
   padding-left: 0;
 }
 /* line 697, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .drop-body > ul.md-type-subhead li {
+.drop > .drop-menu > .drop-body > ul.md-type-subhead li {
   width: 100%;
   height: 32px;
   padding: 4px 24px;
   white-space: nowrap;
 }
 /* line 703, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .drop-body > ul.md-type-subhead li:hover {
+.drop > .drop-menu > .drop-body > ul.md-type-subhead li:hover {
   background-color: #f5f5f5;
 }
 /* line 707, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .drop-body > .map-group {
+.drop > .drop-menu > .drop-body > .map-group {
   width: 320px;
   /*padding: 10px 24px 0;*/
   padding: 10px 24px;
 }
-.navbar > .drop > .drop-menu > .drop-body > .map-group > .map-container {
+.drop > .drop-menu > .drop-body > .map-group > .map-container {
   padding-bottom: 100%;
 }
 /* line 711, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .drop-body > .chips {
+.drop > .drop-menu > .drop-body > .chips {
   width: 280px;
   padding: 0 24px 8px;
 }
 /* line 714, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .drop-body > .chips > .split-cell > .form-group-default {
+.drop > .drop-menu > .drop-body > .chips > .split-cell > .form-group-default {
   width: 100%;
 }
 /* line 718, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .drop-body > span {
+.drop > .drop-menu > .drop-body > span {
   padding: 16px 24px 4px;
 }
 /* line 721, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu > .drop-body > span.md-type-body2 {
+.drop > .drop-menu > .drop-body > span.md-type-body2 {
   margin: 0;
 }
 /* line 726, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu.toggled {
+.drop > .drop-menu.toggled {
   display: initial;
 }
 /* line 729, ../sass/_rules.scss */
-.navbar > .drop > .drop-menu.toggled:hover {
+.drop > .drop-menu.toggled:hover {
   opacity: 1;
 }
 /* line 733, ../sass/_rules.scss */
-.navbar > .drop:last-child {
+.drop:last-child {
   border-left-style: none;
 }
 /* line 736, ../sass/_rules.scss */
-.navbar > .drop.no-border {
+.drop.no-border {
   border-left-style: none;
 }
 
