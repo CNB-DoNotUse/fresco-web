@@ -1192,16 +1192,18 @@ function galleryEditUpdate(){
 	$('#gallery-location-input').val(GALLERY_EDIT.posts[0].location.address).trigger('keydown');
 	
 	$('#gallery-caption-input').val(GALLERY_EDIT.caption).trigger('keydown');
-	// $('#gallery-byline-input').val(GALLERY_EDIT.posts && GALLERY_EDIT.posts[0] ? GALLERY_EDIT.posts[0].byline : '').trigger('keydown');
+	$('#gallery-byline-input').val(GALLERY_EDIT.posts && GALLERY_EDIT.posts[0] ? GALLERY_EDIT.posts[0].byline : '').trigger('keydown');
 	$('.gallery-byline-text').text(GALLERY_EDIT.posts && GALLERY_EDIT.posts[0] ? GALLERY_EDIT.posts[0].byline : '').trigger('keydown');
 
 	$('#gallery-byline-options').empty();
 	var bylines = generateBylines(GALLERY_EDIT.posts[0]);
 	if (bylines.length > 1) {
 		$('#gallery-byline-selection').show();
+		$('#gallery-byline-input-span').hide();
 	}
 	else {
 		$('#gallery-byline-selection').hide();
+		$('#gallery-byline-input-span').show();
 	}
 	bylines.forEach(function(byline) {
 		var elem = $('<li class="gallery-byline-type">' + byline + '</li>')
@@ -1216,6 +1218,7 @@ function galleryEditUpdate(){
 		var post = GALLERY_EDIT.posts[0];
 		if (!post.owner && post.curator && !post.meta.twitter) {
 			$('#gallery-other-origin').show();
+			$('#gallery-byline-input-span').hide();
 			if (post.meta.other_origin) {
 				$('#gallery-name-input').val(post.meta.other_origin.name).trigger('keydown');
 				$('#gallery-affiliation-input').val(post.meta.other_origin.affiliation).trigger('keydown');
@@ -1301,6 +1304,7 @@ function generateBylines(post) {
 	
 	if (owner) {
 		if (owner.outlet) {
+			//Owner isn't unpacked, so outlet isn't expanded
 			// if (owner.username) {
 			// 	bylines.push(owner.username + ' / ' + owner.outlet.title);
 			// }
