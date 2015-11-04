@@ -72,6 +72,9 @@ var PAGE_Admin = {
 	importsImportTwitter: null,
 	importsImportLocal: null,
 	importsImportLocalFiles: null,
+	importsName: null,
+	importsAffiliation: null,
+	importsOtherOrigin: null,
 
 	importsGoogleMap: {
 		marker: null,
@@ -531,6 +534,34 @@ var PAGE_Admin = {
 			PAGE_Admin.importsVerify.attr('data-id', gallery._id || '');
 			PAGE_Admin.importsSkip.attr('data-id', gallery._id || '');
 			PAGE_Admin.importsDelete.attr('data-id', gallery._id || '');
+			PAGE_Admin.importsName.attr('data-id', gallery._id || '');
+			PAGE_Admin.importsAffiliation.attr('data-id', gallery._id || '');
+
+			$('.import-byline-text').text(gallery.posts && gallery.posts[0] ? gallery.posts[0].byline : '').trigger('keydown');
+
+			$('#import-byline-options').empty();
+			var bylines = generateBylines(gallery.posts[0]);
+			if (bylines.length > 1) {
+				PAGE_Admin.importsBylineSelection.show();
+			}
+			else {
+				PAGE_Admin.importsBylineSelection.hide();
+			}
+			bylines.forEach(function(byline) {
+				var elem = $('<li class="import-byline-type">' + byline + '</li>')
+				elem.click(function() {
+					$('.import-byline-text').text(byline);
+					$('.byline-drop').removeClass('toggled');
+				});
+				$('#import-byline-options').append(elem);
+			});
+
+			if (!gallery.posts || !gallery.posts[0].meta.twitter) {
+				PAGE_Admin.importsOtherOrigin.show();
+			}
+			else {
+				PAGE_Admin.importsOtherOrigin.hide();
+			}
 
 			$('.form-control').filter(function(){return this.value != '';}).trigger('keydown');
 			$('.form-control').filter(function(){return this.value == '';}).trigger('keyup');
@@ -695,6 +726,11 @@ $(document).ready(function(){
 	PAGE_Admin.importsImportTwitter = $('.twitter-import');
 	PAGE_Admin.importsImportLocal = $('.upload-import');
 	PAGE_Admin.importsImportLocalFiles = $('.upload-import-files');
+	PAGE_Admin.importsName = $('.import-name');
+	PAGE_Admin.importsAffiliation = $('.import-affiliation');
+	PAGE_Admin.importsOtherOrigin = $('.import-other-origin');
+	PAGE_Admin.importsBylineText = $('.import-byline-text');
+	PAGE_Admin.importsBylineSelection = $('#import-byline-selection');
 	
 	//Submissions Stories Autocomplete
 	PAGE_Admin.submissionStoriesInput.typeahead({
@@ -1075,10 +1111,16 @@ $(document).ready(function(){
 
 		var params = {
 			id: gallery._id,
-			byline: PAGE_Admin.importsByline.val().trim(),
+			byline: PAGE_Admin.importsBylineText.eq(0).text().trim(),
 			posts: PAGE_Admin.importsImages.frick('frickPosts'),
 			stories: PAGE_Admin.importsStories.children('li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		};
+
+		if (PAGE_Admin.importsOtherOrigin.css('display') !== 'none') {
+			params.byline = PAGE_Admin.importsName.val().trim() + ' / ' + PAGE_Admin.importsAffiliation.val().trim();
+			params.other_origin_name = PAGE_Admin.importsName.val().trim();
+			params.other_origin_affiliation = PAGE_Admin.importsAffiliation.val().trim();
+		}
 
 		if (tagsChanged)
 			params.tags = tags;

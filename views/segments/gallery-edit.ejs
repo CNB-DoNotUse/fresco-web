@@ -19,7 +19,27 @@
 		<div class="dialog-body">
 			<div class="dialog-col col-xs-12 col-md-7 form-group-default">
 				<div class="dialog-row">
-					<input id="gallery-byline-input" type="text" class="form-control floating-label" placeholder="Byline">
+					<!--<input id="gallery-byline-input" type="text" class="form-control floating-label" placeholder="Byline" disabled>-->
+					<div class="drop" id="gallery-byline-selection">
+						<button class="toggle-drop md-type-subhead gallery-byline-button">
+							<span class="gallery-byline-text"></span><span class="mdi mdi-menu-down icon"></span>
+						</button>
+						<div class="drop-menu panel panel-default byline-drop">
+							<div class="toggle-drop toggler md-type-subhead"><span class="gallery-byline-text"></span><span class="mdi mdi-menu-up icon pull-right"></span></div>
+							<div class="drop-body">
+								<ul class="md-type-subhead" id="gallery-byline-options">
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="split" id="gallery-other-origin">
+					<div class="split-cell">
+						<input type="text" class="form-control floating-label" id="gallery-name-input" placeholder="Name">
+					</div>
+					<div class="split-cell">
+						<input type="text" class="form-control floating-label" id="gallery-affiliation-input" placeholder="Affiliation">
+					</div>
 				</div>
 				<div class="dialog-row">
 					<textarea id="gallery-caption-input" type="text" class="form-control floating-label" placeholder="Caption"></textarea>
