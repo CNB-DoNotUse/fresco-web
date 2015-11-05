@@ -34,11 +34,22 @@ var PAGE_Stories = {
 				invalidate: 1
 			},
 			success: function(result, status, xhr){
-				if (result.err) return this.error(null, null, result.err);		
-				result.data.forEach(function(gallery){
-					var elem = createStoryView(gallery, true);
-					$('#stories').append(elem);
-					PAGE_Stories.offset += 1;
+				
+				if (result.err) 
+					return this.error(null, null, result.err);	
+				
+				result.data.forEach(function(story){
+					
+					if(story.thumbnails.length > 0){
+
+						var elm = createStoryView(story, true);
+			
+						$('#stories').append(elm);
+				
+						PAGE_Stories.offset += 1;
+
+					}
+				
 				});
 				
 				setTimeDisplayType(PAGE_Stories.display);
@@ -49,6 +60,7 @@ var PAGE_Stories = {
 		});
 	}
 };
+
 
 $(document).ready(function(){
 	PAGE_Stories.refreshList();

@@ -7,15 +7,14 @@
 				<span class="mdi mdi-menu icon"></span>
 			</button>
 			<div class="spacer"></div>
-			<h1 class="md-type-title"><%= post.video ? 'Video' : 'Photo' %></h1>
+			<h1 class="md-type-title"><%= post.video ? 'Video' : 'Photo' + ' by ' + user.firstname + ' ' + user.lastname %></h1>
 			<% if(user.rank >= 1){ %> <a id="post-edit-button" class="mdi mdi-pencil icon pull-right hidden-xs"></a> <% } %>
 		</nav>
 		<!-- end navbar -->
 		<!-- content -->
 		<div class="content">
 			<div class="row">
-				<div class="flexy">
-				</div>
+				<div class="flexy"></div>
 				<div class="main">
 					<div class="col-xs-12 col-md-8">
 						<div class="card panel">
