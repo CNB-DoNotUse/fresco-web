@@ -1908,15 +1908,15 @@ nav, .mdi, .sidebar {
 }
 
 /* Google Autocomplete styles */
-.map-group > .form-group-default > .form-control-wrapper > input[type="text"]::-webkit-input-placeholder {
+.form-group-default .form-control::-webkit-input-placeholder {
   color: rgba(0,0,0,0.12) !important;
 }
-.map-group > .form-group-default > .form-control-wrapper > input[type="text"]:-moz-placeholder {
+.form-group-default .form-control:-moz-placeholder {
   color: rgba(0,0,0,0.12) !important;
 }
-.map-group > .form-group-default > .form-control-wrapper > input[type="text"]::-moz-placeholder {
+.form-group-default .form-control::-moz-placeholder {
   color: rgba(0,0,0,0.12) !important;
 }
-.map-group > .form-group-default > .form-control-wrapper > input[type="text"]::-ms-input-placeholder {
+.form-group-default .form-control::-ms-input-placeholder {
   color: rgba(0,0,0,0.12) !important;
 }
