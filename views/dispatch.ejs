@@ -8,7 +8,7 @@
 	</button>
 	<div class="spacer"></div>
 	<div class="form-group-default">
-		<input id="navbar-location-input" type="text" class="form-control" placeholder="Location">
+		<input id="navbar-location-input" type="text" class="form-control google-autocomplete" placeholder="Location">
 	</div>
 	<%
 		if(user.rank && user.rank >= 2){
@@ -106,7 +106,7 @@
 			</div>
 			<div class="map-group">
 				<div class="form-group-default">
-					<input id="add-assignment-location-input" type="text" class="form-control floating-label" placeholder="Location">
+					<input id="add-assignment-location-input" type="text" class="form-control floating-label google-autocomplete" placeholder="Location">
 					<input id="add-assignment-radius-input" type="text" class="form-control floating-label integer" data-hint="feet" placeholder="Radius">
 				</div>
 				<div class="map-container">

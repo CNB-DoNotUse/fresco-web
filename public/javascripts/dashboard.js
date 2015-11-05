@@ -738,7 +738,7 @@ function editorUpdate(post){
 	$('#edit-owner').text(post.byline);
 	$('#edit-location').text(post.location_label);
 	$('#edit-image').attr('src', formatImg(post.image, 'small'));
-	$('#edit-license').text(post.license);
+	//$('#edit-license').text(post.license);
 	$('#edit-caption').text(post.caption || '');
 	$('#edit-caption-input').val(post.caption || '').trigger('keydown');
 	$('#edit-name-input').val(post.byline).trigger('keydown');
