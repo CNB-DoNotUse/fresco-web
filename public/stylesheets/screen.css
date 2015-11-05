@@ -1908,15 +1908,15 @@ nav, .mdi, .sidebar {
 }
 
 /* Google Autocomplete styles */
-.form-group-default .form-control::-webkit-input-placeholder {
+.google-autocomplete::-webkit-input-placeholder {
   color: rgba(0,0,0,0.12) !important;
 }
-.form-group-default .form-control:-moz-placeholder {
+.google-autocomplete:-moz-placeholder {
   color: rgba(0,0,0,0.12) !important;
 }
-.form-group-default .form-control::-moz-placeholder {
+.google-autocomplete::-moz-placeholder {
   color: rgba(0,0,0,0.12) !important;
 }
-.form-group-default .form-control::-ms-input-placeholder {
+.google-autocomplete::-ms-input-placeholder {
   color: rgba(0,0,0,0.12) !important;
 }
