@@ -687,6 +687,7 @@ var PAGE_Admin = {
 }
 
 $(document).ready(function(){
+	
 	PAGE_Admin.initMap(PAGE_Admin.assignmentGoogleMap);
 	PAGE_Admin.initMap(PAGE_Admin.importsGoogleMap);
 	PAGE_Admin.initMap(PAGE_Admin.submissionGoogleMap);
@@ -912,8 +913,12 @@ $(document).ready(function(){
 		if (!params.posts || params.posts.length == 0)
 			return $.snackbar({content: 'A gallery must have at least one post'});
 
+		if(PAGE_Admin.submissionCaption.val().length == 0)
+			return $.snackbar({content: 'A gallery must have a caption'});
+
 		if (tagsChanged)
 			params.tags = tags;
+
 		if (PAGE_Admin.submissionCaption.val().trim() != gallery.caption)
 			params.caption = PAGE_Admin.submissionCaption.val().trim();
 
@@ -1098,6 +1103,9 @@ $(document).ready(function(){
 		if (!gallery)
 			return $.snackbar({content: 'Unable to verify gallery'});
 
+		if(PAGE_Admin.submissionCaption.val().length == 0)
+			return $.snackbar({content: 'A gallery must have a caption'});
+
 		var tags = [],
 			tagChips = PAGE_Admin.importsTags.find('li.chip'),
 			tagsChanged = tagChips.length != gallery.tags.length;
@@ -1118,14 +1126,21 @@ $(document).ready(function(){
 			posts: PAGE_Admin.importsImages.frick('frickPosts'),
 			stories: PAGE_Admin.importsStories.children('li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 		};
+		
 		if (PAGE_Admin.importsOtherOrigin.css('display') !== 'none') {
+
+			if(PAGE_Admin.importsName.val().length == 0 || PAGE_Admin.importsAffiliation.val().length == 0)
+				return $.snackbar({content: 'A gallery must have a byline'});
+
 			params.byline = PAGE_Admin.importsName.val().trim() + ' / ' + PAGE_Admin.importsAffiliation.val().trim();
 			params.other_origin_name = PAGE_Admin.importsName.val().trim();
 			params.other_origin_affiliation = PAGE_Admin.importsAffiliation.val().trim();
+
 		}
 
 		if (tagsChanged)
 			params.tags = tags;
+
 		if (PAGE_Admin.importsCaption.val().trim() != gallery.caption)
 			params.caption = PAGE_Admin.importsCaption.val().trim();
 
