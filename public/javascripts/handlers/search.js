@@ -391,6 +391,24 @@ $(document).ready(function() {
 		}
 		
 		$('.filter-button').click();
+		
+		$('.filter-type').removeClass('active');
+		$(this).addClass('active');
+	});
+	
+	$('.time-display-filter-type').click(function(){
+		$('.time-display-filter-text').text($(this).text());
+		if($(this).data('filter-type') == 'relative'){
+			PAGE_Search.display = 'relative';
+		}
+		else if ($(this).data('filter-type') == 'absolute'){
+			PAGE_Search.display = 'absolute';
+		}
+		setTimeDisplayType(PAGE_Search.display);
+		$('.time-display-filter-button').click();
+		
+		$('.time-display-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	$('.filter-location > .toggle-drop').on('click', function(e){
