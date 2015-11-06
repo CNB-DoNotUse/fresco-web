@@ -216,10 +216,14 @@ var PAGE_Admin = {
 					PAGE_Admin.assignments = result.data.concat();
 					same = PAGE_Admin.assignments.length == old_assignments.length;
 
-					if(PAGE_Admin.assignments.length == 0 && PAGE_Admin.firstLoad) {
-						$('[data-tab="submissions"]').click();
+					if (PAGE_Admin.firstLoad){
+						if(PAGE_Admin.assignments.length == 0)
+							$('button[data-tab="submissions"]').click();
+						else
+							$('button[data-tab="assignments"]').click();
+							
+						PAGE_Admin.firstLoad = false;
 					}
-					PAGE_Admin.firstLoad = false;
 
 					for (var index in PAGE_Admin.assignments){
 						var a = result.data[index];
@@ -423,7 +427,16 @@ var PAGE_Admin = {
 	},
 	autofill: {
 		assignments: function(assignment){
-			if (!assignment) assignment = {};
+			var assFormBody = $('.tab-assignments > .form-group-default > .dialog > .dialog-body');
+			
+			if (assignment){
+				assFormBody.css('visibility', 'visible');
+				assFormBody.siblings('.dialog-foot').find('button').prop('disabled', false);
+			}else{
+				assFormBody.css('visibility', 'hidden');
+				assFormBody.siblings('.dialog-foot').find('button').prop('disabled', true);
+				assignment = {};
+			}
 
 			var center = assignment.location ? new google.maps.LatLng(assignment.location.geo.coordinates[1], assignment.location.geo.coordinates[0]) : null;
 			var radius = assignment.location ? milesToMeters(assignment.location.radius) : null;
@@ -442,7 +455,16 @@ var PAGE_Admin = {
 			$('.form-control').filter(function(){return this.value == '';}).trigger('keyup');
 		},
 		submissions: function(gallery){
-			if (!gallery) gallery = {};
+			var subFormBody = $('.tab-submissions > .form-group-default > .dialog > .dialog-body');
+				
+			if (gallery){
+				subFormBody.css('visibility', 'visible');
+				subFormBody.siblings('.dialog-foot').find('button').prop('disabled', false);
+			}else{
+				subFormBody.css('visibility', 'hidden');
+				subFormBody.siblings('.dialog-foot').find('button').prop('disabled', true);
+				gallery = {};
+			}
 
 			PAGE_Admin.setPolygon(PAGE_Admin.submissionGoogleMap, gallery.location ? gallery.location.coordinates[0] : null);
 
@@ -453,10 +475,9 @@ var PAGE_Admin = {
 			PAGE_Admin.submissionSuggestedStories.html('');
 			PAGE_Admin.submissionStories.html('');
 			
-			if (gallery.related_stories){
+			if (gallery.related_stories)
 				for (var story in gallery.related_stories)
 					PAGE_Admin.submissionStories.append('<li class="chip"><div class="chip"><div class="icon"><span class="mdi mdi-minus icon md-type-subhead"></span></div><span class="chip md-type-body1 tag">' + story.title + '</span></div></li>');
-			}
 
 			if (gallery.tags)
 				for (var index in gallery.tags)
@@ -490,8 +511,17 @@ var PAGE_Admin = {
 			$('.form-control').filter(function(){return this.value == '';}).trigger('keyup');
 		},
 		imports: function(gallery){
-			if (!gallery) gallery = {};
-
+			var impFormBody = $('.tab-imports > .form-group-default > .dialog > .dialog-body');
+				
+			if (gallery){
+				impFormBody.css('visibility', 'visible');
+				impFormBody.siblings('.dialog-foot').find('button').prop('disabled', false);
+			}else{
+				impFormBody.css('visibility', 'hidden');
+				impFormBody.siblings('.dialog-foot').find('button').prop('disabled', true);
+				gallery = {};
+			}
+			
 			PAGE_Admin.setPolygon(PAGE_Admin.importsGoogleMap, gallery.location ? gallery.location.coordinates[0] : null);
 
 			PAGE_Admin.importsTags.html('');
@@ -687,7 +717,6 @@ var PAGE_Admin = {
 }
 
 $(document).ready(function(){
-	
 	PAGE_Admin.initMap(PAGE_Admin.assignmentGoogleMap);
 	PAGE_Admin.initMap(PAGE_Admin.importsGoogleMap);
 	PAGE_Admin.initMap(PAGE_Admin.submissionGoogleMap);
@@ -1317,6 +1346,6 @@ $(document).ready(function(){
 			list.scrollTop(scroll);
 		}); else console.log(PAGE_Admin.tab);
 	}, 5000);
-
-	$('button[data-tab="assignments"]').click();
+	
+	PAGE_Admin.load.assignments();
 });

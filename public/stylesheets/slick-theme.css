@@ -100,6 +100,7 @@
 .frick-frame {
     position: relative;
     width: 100%;
+    padding: 2px;
 }
 .frick-frame a {
     position: absolute;
@@ -119,9 +120,9 @@
     -o-transition:text-shadow 0.2s linear; 
     transition:text-shadow 0.2s linear; 
     
-    -webkit-transition:opacity 0.2s linear
-    -moz-transition:opacity 0.2s linear
-    -ms-transition:opacity 0.2s linear
+    -webkit-transition:opacity 0.2s linear;
+    -moz-transition:opacity 0.2s linear;
+    -ms-transition:opacity 0.2s linear;
     -o-transition:opacity 0.2s linear; 
     transition:opacity 0.2s linear;    
 }

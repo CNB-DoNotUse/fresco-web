@@ -25,7 +25,7 @@ router.get('/', function(req, res, next){
         'This outlet is in demo mode. Purchases and downloads are currently disabled.<div><a>OK</a></div>');
     }
   
-    res.render('outlet', { user: req.session.user, title: 'Outlet', outlet: body.data, purchases: purchases, config: config, alerts: req.alerts, type: 'outlet' });
+    res.render('outlet', { pageindex: 7, user: req.session.user, title: 'Outlet', outlet: body.data, purchases: purchases, config: config, alerts: req.alerts, type: 'outlet' });
   });
 });
 
@@ -42,7 +42,7 @@ router.get('/:id/galleries', function(req, res, next){
       });
     }
     
-    res.render('outlet-galleries', { user: req.session.user, title: 'Outlet', outlet: body.data, purchases: purchases, config: config, alerts: req.alerts });
+    res.render('outlet-galleries', { pageindex: -1, user: req.session.user, title: 'Outlet', outlet: body.data, purchases: purchases, config: config, alerts: req.alerts });
   });
 });
 
@@ -54,7 +54,7 @@ router.get('/settings', function(req, res, next){
     if (error || !body || body.err || body.data.owner._id != req.session.user._id)
       return res.status(404).render('error', {user: req.session.user, error_code: 404, error_message: config.ERR_PAGE_MESSAGES[404]});
     console.log(body.data);
-    res.render('outlet-settings', { user: req.session.user, outlet: body.data, title: 'Outlet', config: config, alerts: req.alerts });
+    res.render('outlet-settings', { pageindex: -1, user: req.session.user, outlet: body.data, title: 'Outlet', config: config, alerts: req.alerts });
   });
 });
 
@@ -74,7 +74,7 @@ router.get('/:id', function(req, res, next){
       });
     }
     
-    res.render('outlet', { user: req.session.user, title: 'Outlet', outlet: body.data, purchases: purchases, config: config, alerts: req.alerts });
+    res.render('outlet', { pageindex: -1, user: req.session.user, title: 'Outlet', outlet: body.data, purchases: purchases, config: config, alerts: req.alerts });
   });
 });
 

@@ -119,8 +119,8 @@ $(document).ready(function(){
 		window.location.assign("/content");
 	});
 	// sidebar
-	$("#sidebar-images").click(function(){
-		window.location.assign("/content/images");
+	$("#sidebar-photos").click(function(){
+		window.location.assign("/content/photos");
 	});
 	// sidebar
 	$("#sidebar-videos").click(function(){

@@ -7,7 +7,7 @@ var express = require('express'),
 
 /* GET users listing. */
 router.get('/settings', function(req, res, next){
-  res.render('user-settings', { user: req.session.user, title: 'Profile Settings', config: config, alerts: req.alerts });
+  res.render('user-settings', { pageindex: -1, user: req.session.user, title: 'Profile Settings', config: config, alerts: req.alerts });
 });
 
 /* GET users listing. */
@@ -34,7 +34,7 @@ router.get('/:id', function(req, res, next){
       });
     }
 
-    res.render('user', { title: body.data.firstname + ' ' + body.data.lastname, user: req.session.user, page_user: body.data, config: config, purchases: purchases, alerts: req.alerts, type: 'user' });
+    res.render('user', { pageindex: -1, title: body.data.firstname + ' ' + body.data.lastname, user: req.session.user, page_user: body.data, config: config, purchases: purchases, alerts: req.alerts, type: 'user' });
   });
 });
 
@@ -51,7 +51,7 @@ router.get('/', function(req, res, next){
 		});
 	}
   
-  res.render('user', { title: req.session.user.firstname + ' ' + req.session.user.lastname, user: req.session.user, page_user: req.session.user, config: config, purchases: purchases, alerts: req.alerts });
+  res.render('user', { pageindex: -1, title: req.session.user.firstname + ' ' + req.session.user.lastname, user: req.session.user, page_user: req.session.user, config: config, purchases: purchases, alerts: req.alerts });
 });
 
 module.exports = router;

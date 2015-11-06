@@ -72,7 +72,8 @@ router.get('/:id', function(req, res, next){
       }
       
       function respond() {
-        res.render('post', { 
+        res.render('post', {
+          pageindex: -1,
           user: req.session.user,
           post: post,
           gallery: gallery_body.data,

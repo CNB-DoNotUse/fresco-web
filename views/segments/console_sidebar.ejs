@@ -76,28 +76,28 @@
 				<input type="text" id="sidebar-search" class="form-control" placeholder="Search">
 			</div>
 			<ul class="md-type-body1">
-				<li id="sidebar-highlights" class="sidebar-tab"><span class="mdi mdi-star icon"></span>Highlights</li>
-				<li id="sidebar-all" class="sidebar-tab"><span class="mdi mdi-play-box-outline icon"></span>All content</li>
+				<li id="sidebar-highlights" class="sidebar-tab <%= pageindex === 0 ? 'active' : '' %>"><span class="mdi mdi-star icon"></span>Highlights</li>
+				<li id="sidebar-all" class="sidebar-tab <%= pageindex === 1 ? 'active' : '' %>"><span class="mdi mdi-play-box-outline icon"></span>All content</li>
 				<ul>
-					<li id="sidebar-images" class="sidebar-tab"><span class="mdi mdi-file-image-box icon"></span>Photos</li>
-					<li id="sidebar-videos" class="sidebar-tab"><span class="mdi mdi-movie icon"></span>Videos</li>
-					<li id="sidebar-galleries" class="sidebar-tab"><span class="mdi mdi-image-filter icon"></span>Galleries</li>
-					<li id="sidebar-stories" class="sidebar-tab"><span class="mdi mdi-newspaper icon"></span>Stories</li>
+					<li id="sidebar-photos" class="sidebar-tab <%= pageindex === 2 ? 'active' : '' %>"><span class="mdi mdi-file-image-box icon"></span>Photos</li>
+					<li id="sidebar-videos" class="sidebar-tab <%= pageindex === 3 ? 'active' : '' %>"><span class="mdi mdi-movie icon"></span>Videos</li>
+					<li id="sidebar-galleries" class="sidebar-tab <%= pageindex === 4 ? 'active' : '' %>"><span class="mdi mdi-image-filter icon"></span>Galleries</li>
+					<li id="sidebar-stories" class="sidebar-tab <%= pageindex === 5 ? 'active' : '' %>"><span class="mdi mdi-newspaper icon"></span>Stories</li>
 				</ul>
 				<% 	if (user.outlet || user.rank >= config.RANKS.CONTENT_MANAGER){ %>
-				<li id="sidebar-dispatch" class="sidebar-tab"><span class="mdi mdi-map icon"></span>Dispatch</li>
+				<li id="sidebar-dispatch" class="sidebar-tab <%= pageindex === 6 ? 'active' : '' %>"><span class="mdi mdi-map icon"></span>Dispatch</li>
 				<%	}
 
 					if (user.outlet){ %>
-				<li id="sidebar-outlet" class="sidebar-tab"><span class="mdi mdi-account-multiple icon"></span><%= user.outlet.title %></li>
+				<li id="sidebar-outlet" class="sidebar-tab <%= pageindex === 7 ? 'active' : '' %>"><span class="mdi mdi-account-multiple icon"></span><%= user.outlet.title %></li>
 
 				<%	} %>
 				<!--<li><span class="mdi mdi-account-alert icon"></span>Activity</li>-->
 				<%
 					if(user.rank >= 2) {
 				%>
-				<li id="sidebar-admin"><span class="mdi mdi-dots-horizontal icon"></span>Admin</li>
-				<li id="sidebar-purchases"><span class="mdi mdi-currency-usd icon"></span>Purchases</li>
+				<li id="sidebar-admin" class="sidebar-tab  <%= pageindex === 8 ? 'active' : '' %>"><span class="mdi mdi-dots-horizontal icon"></span>Admin</li>
+				<li id="sidebar-purchases" class="sidebar-tab  <%= pageindex === 9 ? 'active' : '' %>"><span class="mdi mdi-currency-usd icon"></span>Purchases</li>
 				<%
 					}
 				%>

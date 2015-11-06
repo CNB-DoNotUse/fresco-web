@@ -27,7 +27,7 @@ router.get('/', function(req, res, next){
 			radius: parseFloat(req.query.r) 
 		};
 
-	res.render('search', { user: req.session.user, query: query, tags: tags, title: query, location: location, purchases: purchases, config: config, alerts: req.alerts });
+	res.render('search', { pageindex: -1, user: req.session.user, query: query, tags: tags, title: query, location: location, purchases: purchases, config: config, alerts: req.alerts });
 });
 
 module.exports = router;

@@ -8,7 +8,7 @@ router.get('/', function(req, res, next){
   if(!req.session.user || req.session.user.rank < 1)
     return res.render('error', {error_code: 403, error_message: config.ERR_PAGE_MESSAGES[403]});
   
-  res.render('purchases', {user: req.session.user, title: 'Purchases', config: config, alerts: req.alerts});
+  res.render('purchases', { pageindex: 9, user: req.session.user, title: 'Purchases', config: config, alerts: req.alerts});
 });
 
 module.exports = router;

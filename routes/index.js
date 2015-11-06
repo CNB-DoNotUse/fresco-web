@@ -41,7 +41,7 @@ router.get('/highlights', function(req, res, next) {
 		});
 	}
   
-  res.render('highlights', {user: req.session ? req.session.user : null, purchases: purchases, config : config, alerts: req.alerts});
+  res.render('highlights', { pageindex: 0, title: 'Highlights', user: req.session ? req.session.user : null, purchases: purchases, config : config, alerts: req.alerts});
 });
 
 /* Register page. */

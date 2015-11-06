@@ -1,4 +1,4 @@
-<%- include('segments/console_sidebar') %>
+<%- include('segments/console_sidebar', { pageindex: pageindex, user: user, config: config, title: title}) %>
 	<div class="col-md-12 col-lg-10">
 		<!-- navbar -->
 		<nav class="navbar navbar-fixed-top navbar-default">
@@ -53,10 +53,10 @@
 					<div class="dialog">
 						<div class="dialog-foot">
 							<!--<button type="button" class="btn btn-flat">Revert changes</button>-->
-							<button type="button" class="btn btn-flat assignment-approve pull-right" data-id="">Approve</button>
-							<button type="button" class="btn btn-flat assignment-deny pull-right" data-id="">Reject</button>
+							<button type="button" class="btn btn-flat assignment-approve pull-right" data-id="" disabled>Approve</button>
+							<button type="button" class="btn btn-flat assignment-deny pull-right" data-id="" disabled>Reject</button>
 						</div>
-						<div class="dialog-body">
+						<div class="dialog-body" style="visibility: hidden;">
 							<input type="text" class="form-control floating-label assignment-title" placeholder="Title">
 							<textarea type="text" class="form-control floating-label assignment-caption" placeholder="Description"></textarea>
 							<div class="map-group">
@@ -210,12 +210,12 @@
 				<div class="col-md-6 col-lg-5 form-group-default">
 					<div class="dialog">
 						<div class="dialog-foot">
-							<button type="button" class="btn btn-flat submission-revert">Revert changes</button>
-							<button type="button" class="btn btn-flat pull-right submission-verify">Verify</button>
-							<button type="button" class="btn btn-flat pull-right submission-skip">Skip</button>
-							<button type="button" class="btn btn-flat pull-right submission-delete">Delete</button>
+							<button type="button" class="btn btn-flat submission-revert" disabled>Revert changes</button>
+							<button type="button" class="btn btn-flat pull-right submission-verify" disabled>Verify</button>
+							<button type="button" class="btn btn-flat pull-right submission-skip" disabled>Skip</button>
+							<button type="button" class="btn btn-flat pull-right submission-delete" disabled>Delete</button>
 						</div>
-						<div class="dialog-body">
+						<div class="dialog-body" style="visibility: hidden;">
 							<div class="frick submission-images"></div>
 							<input type="text" class="form-control floating-label submission-byline" placeholder="Byline" disabled>
 							<textarea type="text" class="form-control floating-label submission-caption" placeholder="Caption"></textarea>
@@ -339,12 +339,12 @@
 				<div class="col-md-6 col-lg-5 form-group-default">
 					<div class="dialog">
 						<div class="dialog-foot">
-							<button type="button" class="btn btn-flat import-revert">Revert changes</button>
-							<button type="button" class="btn btn-flat pull-right import-verify">Verify</button>
-							<button type="button" class="btn btn-flat pull-right import-skip">Skip</button>
-							<button type="button" class="btn btn-flat pull-right import-delete">Delete</button>
+							<button type="button" class="btn btn-flat import-revert" disabled>Revert changes</button>
+							<button type="button" class="btn btn-flat pull-right import-verify" disabled>Verify</button>
+							<button type="button" class="btn btn-flat pull-right import-skip" disabled>Skip</button>
+							<button type="button" class="btn btn-flat pull-right import-delete" disabled>Delete</button>
 						</div>
-						<div class="dialog-body">
+						<div class="dialog-body" style="visibility: hidden;">
 							<div class="import-images"></div>
 							<span id="import-byline-span"><input type="text" class="form-control floating-label import-byline" placeholder="Byline" disabled></span>
 							<div class="drop" id="import-byline-selection">
