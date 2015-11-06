@@ -961,6 +961,10 @@ div.list > div.list-item.active {
 .drop > .drop-menu > .drop-body > ul.md-type-subhead li:hover {
   background-color: #f5f5f5;
 }
+
+.drop > .drop-menu > .drop-body > ul.md-type-subhead li.active {
+  background-color: #f5f5f5;
+}
 /* line 707, ../sass/_rules.scss */
 .drop > .drop-menu > .drop-body > .map-group {
   width: 320px;
