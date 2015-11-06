@@ -167,7 +167,7 @@ var PAGE_Purchases = {
 			url += 'outlets[]=' + outlet._id;
 		});
 		
-		window.open(url);
+		window.open(url, '_self');
 	}
 }
 
