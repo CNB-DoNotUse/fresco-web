@@ -1207,6 +1207,9 @@ function galleryEditUpdate(){
 	}
 	bylines.forEach(function(byline) {
 		var elem = $('<li class="gallery-byline-type">' + byline + '</li>')
+		if (byline == GALLERY_EDIT.posts[0].byline) {
+			elem.addClass('active');
+		}
 		elem.click(function() {
 			$('.gallery-byline-text').text(byline);
 			$('.byline-drop').removeClass('toggled');

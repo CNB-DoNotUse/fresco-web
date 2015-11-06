@@ -581,6 +581,9 @@ var PAGE_Admin = {
 			}
 			bylines.forEach(function(byline) {
 				var elem = $('<li class="import-byline-type">' + byline + '</li>')
+				if (byline == gallery.posts[0].byline) {
+					elem.addClass('active');
+				}
 				elem.click(function() {
 					$('.import-byline-text').text(byline);
 					$('.byline-drop').removeClass('toggled');
