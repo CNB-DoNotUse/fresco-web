@@ -54,7 +54,7 @@ router.get('/:id', function(req, res, next){
 		}
 			
 		assignment.created_text = moment(assignment.time_created, 'x').format('MMMM Do YYYY, h:mm a');
-		res.render('assignment', { user: req.session.user, config: config, assignment: assignment, posts: assignment.posts || [], purchases: purchases, alerts: req.alerts, type: 'assignment' });
+		res.render('assignment', { pageindex: -1, user: req.session.user, config: config, assignment: assignment, posts: assignment.posts || [], purchases: purchases, alerts: req.alerts, type: 'assignment' });
 	});
 });
 
