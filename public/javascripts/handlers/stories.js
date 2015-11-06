@@ -85,6 +85,9 @@ $(document).ready(function(){
 		}
 		setTimeDisplayType(PAGE_Stories.display);
 		$('.time-display-filter-button').click();
+		
+		$('.time-display-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	$('.container-fluid.grid').scroll(function() {

@@ -188,6 +188,9 @@ $(document).ready(function(){
 		}
 		setTimeDisplayType(PAGE_Story.display);
 		$('.time-display-filter-button').click();
+		
+		$('.time-display-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 
 	$('.grid').scroll(function() {

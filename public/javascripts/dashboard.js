@@ -1210,6 +1210,8 @@ function galleryEditUpdate(){
 		elem.click(function() {
 			$('.gallery-byline-text').text(byline);
 			$('.byline-drop').removeClass('toggled');
+			$('.gallery-byline-type').removeClass('active');
+			$(this).addClass('active');
 		});
 		$('#gallery-byline-options').append(elem);
 	});

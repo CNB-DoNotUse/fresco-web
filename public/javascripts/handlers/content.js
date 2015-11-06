@@ -67,6 +67,9 @@ $(document).ready(function(){
 			PAGE_Content.refreshList();
 		}
 		$('.content-filter-button').click();
+		
+		$('.content-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	$('.time-filter-type').click(function(){
@@ -80,6 +83,9 @@ $(document).ready(function(){
 			PAGE_Content.refreshList();
 		}
 		$('.time-filter-button').click();
+		
+		$('.time-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	$('.time-display-filter-type').click(function(){
@@ -92,6 +98,9 @@ $(document).ready(function(){
 		}
 		setTimeDisplayType(PAGE_Content.display);
 		$('.time-display-filter-button').click();
+		
+		$('.time-display-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	$('.container-fluid.grid').scroll(function() {

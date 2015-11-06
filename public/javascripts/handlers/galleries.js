@@ -63,6 +63,9 @@ $(document).ready(function(){
 			PAGE_Galleries.refreshList();
 		}
 		$('.filter-button').click();
+		
+		$('.filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	$('#tag-filter-input').change(function(){
@@ -85,6 +88,9 @@ $(document).ready(function(){
 		}
 		setTimeDisplayType(PAGE_Galleries.display);
 		$('.time-display-filter-button').click();
+		
+		$('.time-display-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	$('.container-fluid.grid').scroll(function() {

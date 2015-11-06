@@ -584,6 +584,8 @@ var PAGE_Admin = {
 				elem.click(function() {
 					$('.import-byline-text').text(byline);
 					$('.byline-drop').removeClass('toggled');
+					$('.import-byline-type').removeClass('active');
+					$(this).addClass('active');
 				});
 				$('#import-byline-options').append(elem);
 			});

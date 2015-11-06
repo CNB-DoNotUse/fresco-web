@@ -197,6 +197,9 @@ $(document).ready(function(){
 			PAGE_Assignment.filter = 'all';
 		}
 		PAGE_Assignment.refreshList();
+		
+		$('.filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	$('.sort-type').click(function(){
@@ -241,6 +244,9 @@ $(document).ready(function(){
 			PAGE_Assignment.refreshList();
 		}
 		$('.time-filter-button').click();
+		
+		$('.time-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	$('.time-display-filter-type').click(function(){
@@ -253,6 +259,9 @@ $(document).ready(function(){
 		}
 		setTimeDisplayType(PAGE_Assignment.display);
 		$('.time-display-filter-button').click();
+		
+		$('.time-display-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	//Assignment edit listeners

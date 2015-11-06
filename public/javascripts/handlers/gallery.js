@@ -33,6 +33,9 @@ $(document).ready(function(){
 			PAGE_Assignment.refreshList();
 		}
 		$('.time-filter-button').click();
+		
+		$('.time-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	$('.time-display-filter-type').click(function(){
@@ -45,6 +48,9 @@ $(document).ready(function(){
 		}
 		setTimeDisplayType(PAGE_Gallery.display);
 		$('.time-display-filter-button').click();
+		
+		$('.time-display-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 	
 	PAGE_Gallery.loadPostsForGallery();

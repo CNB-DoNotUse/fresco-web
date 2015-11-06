@@ -94,6 +94,9 @@ $(document).ready(function(){
 		}
 		setTimeDisplayType(PAGE_Highlights.display);
 		$('.time-display-filter-button').click();
+		
+		$('.time-display-filter-type').removeClass('active');
+		$(this).addClass('active');
 	});
 
 	//Load when scrolled to bottom
