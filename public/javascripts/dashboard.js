@@ -514,6 +514,7 @@ function createGallery(caption, tags, posts, highlight, articles, stories, callb
 		caption: caption,
 		posts: posts,
 		tags: tags,
+		rated: true,
 		visibility: highlight ? 2 : 1,
 		articles: articles,
 		stories: stories,
