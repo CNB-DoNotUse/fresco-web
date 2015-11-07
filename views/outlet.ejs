@@ -1,4 +1,6 @@
-<%- include('segments/console_sidebar', { pageindex: pageindex, title:title, user : user, config : config}) %>
+<% include segments/head %>
+
+	<%- include('segments/sidebar', { title: title, user : user, config : config}) %>
 
 <div class="col-md-12 col-lg-10">
 	<!-- navbar -->
@@ -44,7 +46,7 @@
 										<span class="mdi mdi-account-multiple icon"></span><%= 0 %> followers
 									</li> -->
 									<%
-										if (outlet.link){	
+										if (outlet.link){
 									%>
 									<li class="ellipses">
 										<span class="mdi mdi-web icon"></span><a href="<%= (outlet.link.indexOf('//') == -1 ? '//' : '') + outlet.link %>"><%= outlet.link %></a>
@@ -91,8 +93,7 @@
 </div>
 </div>
 <%- include('segments/add-article') %>
-<%- include('segments/console_scripts') %>
-<script type="text/javascript" src="/javascripts/handlers/outlet.js"></script>
+<%- include('segments/scripts') %>
 <script type="text/javascript">
 	PAGE_Outlet.outlet = <%- JSON.stringify({_id: outlet._id}) %>;
 	PAGE_Purchases.outlet = <%- JSON.stringify({_id: outlet._id}) %>;

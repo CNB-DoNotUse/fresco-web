@@ -1,4 +1,7 @@
-<%- include('segments/console_sidebar', { pageindex: pageindex, title: title, user : user, config : config}) %>
+<% include segments/head %>
+
+<%- include('segments/sidebar', { user: user, config: config, title: title}) %>
+
 	<div class="col-md-12 col-lg-10">
 		<!-- navbar -->
 		<nav class="navbar navbar-fixed-top navbar-default">
@@ -21,7 +24,7 @@
 									<input id="tag-filter-input" type="text" class="form-control floating-label" placeholder="Tags">
 								</div>
 								<ul id="tag-filter" class="chips">
-									
+
 								</ul>
 							</div>
 						</div>
@@ -79,14 +82,13 @@
 		<!-- grid -->
 		<div class="container-fluid fat grid">
 			<div id="stories" class="row tiles">
-				
+
 			</div>
 		</div>
 		<!-- end grid -->
 	</div>
 </div>
-<%- include('segments/console_scripts') %>
-<script type="text/javascript" src="/javascripts/handlers/stories.js"></script>
+<%- include('segments/scripts') %>
 </script>
 </body>
 </html>

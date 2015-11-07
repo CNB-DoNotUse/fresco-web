@@ -1,4 +1,7 @@
-<%- include('segments/console_sidebar', { pageindex: pageindex, title: title, user : user, config : config}) %>
+<% include segments/head %>
+
+<%- include('segments/sidebar', { title: title, user : user, config : config}) %>
+
 <div class="col-md-12 col-lg-10">
 <!-- navbar -->
 <nav class="navbar navbarfixed-top navbar-default" style="width: 100%">
@@ -230,9 +233,8 @@
 		color: #0047bb !important;
 	}
 </style>
-<%- include('segments/console_scripts') %>
+<%- include('segments/scripts') %>
 <script type="text/javascript" src="/javascripts/moment.min.js"></script>
-<script type="text/javascript" src="/javascripts/handlers/dispatch.js"></script>
 <script type="text/javascript">PAGE_Dispatch.outlet = <%- JSON.stringify(user.outlet || {}) %>;</script>
 </body>
 </html>

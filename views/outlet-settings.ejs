@@ -1,4 +1,7 @@
-<%- include('segments/console_sidebar', { pageindex: pageindex, title: title, user : user, config : config, links: ['/stylesheets/fresco/outlet-settings.css'] }) %>
+<% include segments/head %>
+
+	<%- include('segments/sidebar', { title: title, user : user, config : config}) %>
+
 	<div class="col-md-12 col-lg-10">
 		<!-- navbar -->
 		<nav class="navbar navbar-fixed-top navbar-default">
@@ -31,9 +34,8 @@
 		<!-- end settings -->
 	</div>
 </div>
-<%- include('segments/console_scripts') %>
+<%- include('segments/scripts') %>
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-<script type="text/javascript" src="/javascripts/handlers/outlet-settings.js"></script>
 <script type="text/javascript">
 	PAGE_OutletSettings.outlet = <%- JSON.stringify({_id: outlet._id}) %>;
 	Stripe.setPublishableKey('<%= config.STRIPE_PUBLISHABLE %>');

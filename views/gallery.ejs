@@ -1,5 +1,6 @@
-<%- include('segments/console_sidebar', { pageindex: pageindex, title: title, user : user, config : config}) %>
-<div class="col-md-12 col-lg-10">
+<% include segments/head %>
+
+	<%- include('segments/sidebar', { user: user, config: config, title: title}) %><div class="col-md-12 col-lg-10">
 	<!-- navbar -->
 	<nav class="navbar navbar-fixed-top navbar-default">
 		<div class="dim transparent toggle-drop toggler"></div>
@@ -15,8 +16,8 @@
 		<%
 			if(user.rank && user.rank >= config.RANKS.CONTENT_MANAGER){
 		%>
-				 <a class="mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler"></a> 
-		<% 
+				 <a class="mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler"></a>
+		<%
 			}else{
 		%>
 				<!--<a class="mdi mdi-download icon pull-right hidden-xs" href="/gallery/download/<%= gallery._id %>"></a>-->
@@ -86,8 +87,7 @@
 	<%- include('segments/gallery-edit') %>
 </div>
 <!-- end edit -->
-<%- include('segments/console_scripts') %>
-<script type="text/javascript" src="/javascripts/handlers/gallery.js"></script>
+<%- include('segments/scripts') %>
 <script type="text/javascript">
 	PAGE_Gallery.gallery = GALLERY_EDIT = <%- JSON.stringify(gallery) %>;
 	var purchases = <%- JSON.stringify(purchases) %>;

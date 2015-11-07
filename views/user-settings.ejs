@@ -1,4 +1,6 @@
-<%- include('segments/console_sidebar', { pageindex: -1, title: title, user : user, config : config}) %>
+<% include segments/head %>
+
+	<%- include('segments/sidebar', { user: user, config: config, title: title}) %>
 
 <div class="col-md-12 col-lg-10">
 	<!-- navbar -->
@@ -54,8 +56,7 @@
 	<!-- end settings -->
 </div>
 
-<%- include('segments/console_scripts') %>
-<script type="text/javascript" src="/javascripts/handlers/user-settings.js"></script>
+<%- include('segments/scripts') %>
 <script type="text/javascript">PAGE_UserSettings.user = <%- JSON.stringify({_id: user._id}) %>;</script>
 </body>
 </html>

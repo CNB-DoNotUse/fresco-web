@@ -1,4 +1,7 @@
-<%- include('segments/console_sidebar', { pageindex: pageindex, title: title, user : user, config : config}) %>
+<% include segments/head %>
+
+<%- include('segments/sidebar', { user: user, config: config, title: title}) %>
+
 	<div class="col-md-12 col-lg-10">
 		<!-- navbar -->
 		<nav class="navbar navbar-fixed-top navbar-default">
@@ -208,8 +211,7 @@
 <%- include('segments/gallery-create') %>
 <%- include('segments/bulk-select') %>
 <!-- end edit -->
-<%- include('segments/console_scripts') %>
-<script src="/javascripts/handlers/content.js"></script>
+<%- include('segments/scripts') %>
 <script type="text/javascript">
 	var rank = <%- user.rank %>;
 	var purchases = <%- JSON.stringify(purchases || []) %>;

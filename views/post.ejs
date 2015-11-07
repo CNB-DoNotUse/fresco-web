@@ -1,4 +1,6 @@
-<%- include('segments/console_sidebar', { pageindex: pageindex, title: title, user : user, config : config}) %>
+<% include segments/head %>
+
+	<%- include('segments/sidebar', { user: user, config: config, title: title}) %>
 	<div class="col-md-12 col-lg-10">
 		<!-- navbar -->
 		<nav class="navbar navbar-fixed-top navbar-default">
@@ -244,9 +246,8 @@
 		</div>
 	</div>-->
 <%- include('segments/gallery-edit') %>
-<%- include('segments/console_scripts') %>
+<%- include('segments/scripts') %>
 <script type="text/javascript" src="/javascripts/alertify.min.js"></script>
-<script type="text/javascript" src="/javascripts/handlers/post.js"></script>
 <script type="text/javascript">
 	PAGE_Post.post = <%- JSON.stringify(post) %>;
 	var purchases = <%- JSON.stringify(purchases) %>;

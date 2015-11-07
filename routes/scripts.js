@@ -8,7 +8,6 @@ var express = require('express'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
     User = require('../lib/user'),
-    
     router = express.Router();
 
 //---------------------------vvv-ARTICLE-ENDPOINTS-vvv---------------------------//
@@ -206,20 +205,20 @@ router.post('/gallery/addpost', function(req, res, next){
   var params = {
     gallery: req.body.gallery
   };
-  
+
   var cleanupFiles = [];
 
   function upload(cb){
     request.post({ url: config.API_URL + '/v1/gallery/addpost', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
       for (var index in cleanupFiles)
         fs.unlink(cleanupFiles[index], function(){});
-        
+
       body = JSON.parse(body);
 
       cb(err || body.err, body.data);
     });
   }
-  
+
   var i = 0;
   for (var index in req.files){
     cleanupFiles.push(req.files[index].path);
@@ -255,7 +254,7 @@ router.post('/gallery/import', function(req, res, next){
     request.post({ url: config.API_URL + '/v1/gallery/assemble', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
       console.log(err, body);for (var index in cleanupFiles)
         fs.unlink(cleanupFiles[index], function(){});
-      
+
       try{
         body = JSON.parse(body);
       }catch(e){
@@ -311,7 +310,7 @@ router.post('/gallery/import', function(req, res, next){
             tempName += '.png';
           else
             tempName += '.jpeg';
-          
+
           var file = fs.createWriteStream(tempName);
           cleanupFiles.push(tempName);
           params.posts[i] = {
@@ -389,7 +388,7 @@ router.get('/gallery/search', function(req, res, next){
   var params = Object.keys(req.query).map(function(key){
     return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
   }).join('&');
-  
+
   api.get('/v1/gallery/search?' + params, function(err, response, body){
     res.json(body).end();
   });
@@ -461,7 +460,7 @@ router.post('/outlet/checkout', function(req, res, next){
 router.post('/outlet/create', function(req, res, next){
   var api = requestJson.createClient(config.API_URL),
       parse = requestJson.createClient(config.PARSE_API);
-  
+
   async.waterfall(
     [
       //Create/Fetch the user
@@ -480,7 +479,7 @@ router.post('/outlet/create', function(req, res, next){
                   return res.status(401).json({err: 'ERR_UNAUTHORIZED'}).end();
                 if (!parse_body)
                   return res.json({err: 'ERR_EMPTY_BODY'}).end();
-          
+
                 api.post('/v1/auth/loginparse', {parseSession: parse_body.sessionToken}, function(err,response,login_body){
                   if (err)
                     return cb(err);
@@ -490,7 +489,7 @@ router.post('/outlet/create', function(req, res, next){
                     return cb('ERR_EMPTY_BODY');
                   if (login_body.err)
                     return cb(login_body.err);
-          
+
                   return cb(null, login_body.data);
                 });
               });
@@ -500,7 +499,7 @@ router.post('/outlet/create', function(req, res, next){
           }
           if (!register_body)
             return cb('ERR_EMPTY_BODY');
-            
+
           cb(null, register_body.data);
         });
       },
@@ -527,9 +526,9 @@ router.post('/outlet/create', function(req, res, next){
               return cb('ERR_EMPTY_BODY');
             if (outlet_body.err)
               return cb(outlet_body.err);
-              
+
             authtoken.user.outlet = outlet_body.data;
-              
+
             cb(null, authtoken);
           }
         );
@@ -538,7 +537,7 @@ router.post('/outlet/create', function(req, res, next){
     function(err, authtoken){
       if (err)
         return res.json({err: err, data: {}}).end();
-      
+
       req.session.alerts = ['Your outlet request has been submitted. We will be in touch with you shortly!'];
       req.session.user = authtoken.user;
       req.session.user.token = authtoken.token;
@@ -571,14 +570,14 @@ router.get('/outlet/export', function(req, res, next){
 
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
-  
+
   var url = '/v1/outlet/export?'
   if(req.query.outlets){
     req.query.outlets.forEach(function(outlet){
       url += 'outlets[]=' + outlet + '&';
     });
   }
-  
+
   api.get(url, function(err, response, body){
     if (err)
       return res.json({err: err.err}).end();
@@ -586,26 +585,26 @@ router.get('/outlet/export', function(req, res, next){
       return res.json({err: 'ERR_EMPTY_BODY'}).end();
     if (body.err)
       return res.json({err: body.err}).end();
-    
+
     var lines = body.data;
     if(req.query.format == 'xlsx'){
       var data = [['time', 'type', 'price', 'assignment', 'outlet']];
-      
+
       lines.forEach(function(line){
         data.push([line.time, line.type, line.price, line.assignment, line.outlet]);
       });
-      
+
       res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
       res.set('Content-Disposition', 'inline; filename="export.xlsx"')
       return res.send(xlsx.build([{name: 'Purchases', data: data}])).end();
     }
     else { //CSV
       var output = "time,type,price,assignment,outlet\r\n";
-      
+
       lines.forEach(function(line){
         output += line.time + ',' + line.type + ',' + line.price + ',' + line.assignment + ',' + line.outlet + '\r\n';
       });
-      
+
       res.set('Content-Type', 'text/csv');
       res.set('Content-Disposition', 'inline; filename="export.csv"')
       return res.send(output).end();
@@ -654,7 +653,7 @@ router.post('/outlet/invite/accept', function(req, res, next){
     return res.json({err:'ERR_INVALID_TOKEN'}).end();
   if (!req.body.password)
     return res.json({err:'ERR_INVALID_PASSWORD'}).end();
-  
+
   var api = requestJson.createClient(config.API_URL);
 
   api.get('/v1/outlet/invite/get?token='+req.body.token, function(err, response, token_body){
@@ -666,7 +665,7 @@ router.post('/outlet/invite/accept', function(req, res, next){
       return res.json({err: 'ERR_NOT_FOUND'}).end();
     if (token_body.err)
       return res.json({err: token_body.err}).end();
-    
+
     var querystring = require('querystring'),
         parse = requestJson.createClient(config.PARSE_API);
 
@@ -698,16 +697,16 @@ router.post('/outlet/invite/accept', function(req, res, next){
             return res.json({err: 'ERR_EMPTY_BODY'}).end();
           if (accept_body.err)
             return res.json({err: accept_body.err}).end();
-          
+
           req.session.user = accept_body.data;
           req.session.user.token = login_body.data.token;
           req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
-  
+
           if (!req.session.user.outlet)
             return  req.session.save(function(){
                       res.json({err: null}).end();
                     });
-  
+
           api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(purchase_err,purchase_response,purchase_body){
             if (!purchase_err && purchase_body && !purchase_body.err)
               req.session.user.outlet.purchases = purchase_body.data;
@@ -743,7 +742,7 @@ router.get('/outlet/purchases', function(req, res, next){
 
   var api = requestJson.createClient(config.API_URL),
       url = "/v1/outlet/purchases?";
-      
+
   for (var index in req.query)
     url += index + '=' + req.query[index] + '&';
 
@@ -756,17 +755,17 @@ router.get('/outlet/purchases', function(req, res, next){
       return res.json({err: 'ERR_EMPTY_BODY'}).end();
     if (body.err)
       return res.json({err: body.err}).end();
-      
+
     res.json(body).end();
   });
 });
 router.get('/outlet/purchases/list', function(req, res, next){
   if (!req.session.user || !req.session.user.outlet)
     return res.json({err: 'ERR_INVALID_OUTLET'}).end();
-  
+
   var api = requestJson.createClient(config.API_URL),
       url = "/v1/outlet/purchases/list?";
-      
+
   for (var index in req.query){
     if(index != 'outlets') {
       url += index + '=' + req.query[index] + '&';
@@ -777,7 +776,7 @@ router.get('/outlet/purchases/list', function(req, res, next){
       });
     }
   }
-  
+
   api.headers['authtoken'] = req.session.user.token;
   api.get(url, function(err, response, body){
     if (err)
@@ -786,7 +785,7 @@ router.get('/outlet/purchases/list', function(req, res, next){
       return res.json({err: 'ERR_EMPTY_BODY'}).end();
     if (body.err)
       return res.json({err: body.err}).end();
-    
+
     res.json(body).end();
   });
 });
@@ -833,7 +832,7 @@ router.post('/outlet/update', function(req, res, next){
   request.post({ url: config.API_URL + '/v1/outlet/update', headers: { authtoken: req.session.user.token }, formData: params }, function(error, response, body){console.log(error, body);
     if (error)
       return res.json({err: error}).end();
-    
+
     try{
       body = JSON.parse(body);
     }catch(e){
@@ -952,6 +951,8 @@ router.post('/user/follow', function(req, res, next) {
   });
 });
 router.post('/user/login', function(req, res, next) {
+
+  console.log('asd');
   if(req.body.email && req.body.password){
     var parse = requestJson.createClient(config.PARSE_API);
 
@@ -1003,7 +1004,7 @@ router.get('/user/logout', function(req, res, next) {
       return req.session.destroy(function(){
         res.redirect('/');
       });
-  
+
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
   api.post('/v1/auth/logout', { }, function(err,response,body){
@@ -1019,11 +1020,11 @@ router.post('/user/register', function(req, res, next) {console.log(req.body);
       firstname = req.body.firstname,
       lastname = req.body.lastname,
       token = req.body.token;
-  
+
   User.registerUser(email, password, firstname, lastname, token, function(err, user_body, login_body){
     if (err)
       return res.json({err: err, data: {}}).end();
-      
+
     req.session.user = user_body.data;
     req.session.user.token = login_body.data.token;
     req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
@@ -1126,7 +1127,7 @@ console.log(req.session.user.token);
         res.end();
       });
     }
-    
+
       req.session.alerts = ['A comfirmation email has been sent to your email.  Please click the link within it in order to verify your email address.'];
       return req.session.save(function(){
         res.redirect(req.headers['Referer'] || config.DASH_HOME);

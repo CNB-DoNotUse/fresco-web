@@ -1,11 +1,11 @@
-var express = require('express'), 
+var express = require('express'),
     config = require('../lib/config'),
     Gallery = require('../lib/gallery'),
-    
+
     request = require('request-json'),
     archiver = require('archiver'),
     async = require('async'),
-    
+
     router = express.Router(),
     api = request.createClient(config.API_URL);
 
@@ -14,13 +14,13 @@ router.get('/:id', function(req, res, next){
     if (error || !post_body){
       req.session.alerts = ['Error connecting to server'];
       return req.session.save(function(){
-        res.redirect(req.headers['Referer'] || config.DASH_HOME);
+        res.redirect(req.headers.Referer || config.DASH_HOME);
       });
     }
     if (post_body.err){
       req.session.alerts = [config.resolveError(post_body.err)];
       return req.session.save(function(){
-        res.redirect(req.headers['Referer'] || config.DASH_HOME);
+        res.redirect(req.headers.Referer || config.DASH_HOME);
       });
     }
 
@@ -35,7 +35,7 @@ router.get('/:id', function(req, res, next){
           return purchase.post;
         });
       }
-      
+
       var post = post_body.data;
       var title = 'Post by ';
       if (post.owner) {
@@ -43,9 +43,9 @@ router.get('/:id', function(req, res, next){
       } else if (post.curator) {
         title += post.curator.firstname + ' ' + post.curator.lastname;
       }
-      
+
       var verifiedString = 'Verified';
-      
+
       if (post.approvals) {
         var verifier = null;
         for (var i in gallery_body.data.edits) {
@@ -70,10 +70,9 @@ router.get('/:id', function(req, res, next){
       else {
         respond();
       }
-      
+
       function respond() {
         res.render('post', {
-          pageindex: -1,
           user: req.session.user,
           post: post,
           gallery: gallery_body.data,
@@ -81,11 +80,11 @@ router.get('/:id', function(req, res, next){
           purchases: purchases,
           config: config,
           alerts: req.alerts,
-          type: 'post',
+          page: 'post',
           verifiedString: verifiedString,
         });
       }
-      
+
     });
   });
 });

@@ -1,0 +1,67 @@
+<!-- drawer -->
+<div class="dim toggle-drawer toggler"></div>
+<!-- end drawer -->
+<div class="container-fluid">
+  <!-- sidebar -->
+  <div class="col-lg-2 sidebar toggle-drawer">
+    <div>
+      <a href="/highlights"><img src="<%= config.STATIC_CDN %>images/wordmark-news.png"></a>
+      <div class="form-group-default">
+        <input class="form-control" id="sidebar-search" placeholder="Search" type="text">
+      </div>
+      <ul class="md-type-body1">
+        <li class="sidebar-tab" data-link='/highlights' id="sidebar-highlights">
+          <span class="mdi mdi-star icon"></span>Highlights</li>
+        <li class="sidebar-tab" data-link='/content' id="sidebar-content">
+          <span class="mdi mdi-play-box-outline icon"></span>All content</li>
+        <ul>
+          <li class="sidebar-tab" data-link='/content/photos' id="sidebar-photos">
+            <span class="mdi mdi-file-image-box icon"></span>Photos</li>
+          <li class="sidebar-tab" data-link='/content/videos' id="sidebar-videos">
+            <span class="mdi mdi-movie icon"></span>Videos</li>
+          <li class="sidebar-tab" data-link='/content/galleries' id="sidebar-galleries">
+            <span class="mdi mdi-image-filter icon"></span>Galleries</li>
+          <li class="sidebar-tab" data-link='/stories' id="sidebar-stories">
+            <span class="mdi mdi-newspaper icon"></span>Stories</li>
+        </ul>
+        <% if (user.outlet || user.rank >= config.RANKS.CONTENT_MANAGER){ %>
+        <li class="sidebar-tab" data-link="/dispatch" id="sidebar-dispatch">
+          <span class="mdi mdi-map icon"></span>Dispatch</li>
+        <% }
+        if (user.outlet){ %>
+        <li class="sidebar-tab" data-link="/outlet" id="sidebar-outlet">
+          <span class="mdi mdi-account-multiple icon"></span>
+          <%= user.outlet.title %>
+        </li>
+        <%	}
+        if(user.rank >= 2) { %>
+        <li class="sidebar-tab" data-link="/admin" id="sidebar-admin">
+          <span class="mdi mdi-dots-horizontal icon"></span>Admin
+        </li>
+        <li class="sidebar-tab" data-link="/purchases" id="sidebar-purchases">
+          <span class="mdi mdi-currency-usd icon"></span>Purchases
+        </li>
+        <% } %>
+  </ul>
+</div>
+<div>
+  <img class="img-circle" id="side-bar-avatar" src="<%= user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png' %>">
+  <a class="md-type-title user-name-view" href="/user">
+    <%= user.firstname + ' ' + user.lastname %>
+  </a>
+  <ul>
+    <li>
+      <a href="/user/settings">Settings</a>
+    </li>
+    <!--<li><a href="">Help</a></li>-->
+    <li>
+      <a href="/scripts/user/logout">Log out</a>
+    </li>
+  </ul>
+  <!--<p class="md-type-body1">
+				<span>&copy;2015 Fresco News, Inc.</span>
+				<span class="mdi mdi-information-outline icon pull-right"></span>
+			</p>-->
+</div>
+</div>
+<!-- end sidebar -->

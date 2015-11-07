@@ -1,4 +1,7 @@
-<%- include('segments/console_sidebar', { pageindex: pageindex, user: user, config: config, title: assignment.title}) %>
+<% include segments/head %>
+
+<%- include('segments/sidebar', { user: user, config: config, title:title}) %>
+
 <div class="col-md-12 col-lg-10">
 		<!-- navbar -->
 		<nav class="navbar navbar-fixed-top navbar-default">
@@ -190,16 +193,15 @@
 						<input id="assignment-expiration-input" type="text" class="form-control floating-label float" data-hint="hours from now" placeholder="Expiration time">
 					</div>
 				</div>
-			</div> 
+			</div>
 		</div>
 	</div>
 </div>
 <%- include('segments/gallery-edit') %>
 <%- include('segments/gallery-create') %>
 <%- include('segments/bulk-select') %>
-<%- include('segments/console_scripts') %>
+<%- include('segments/scripts') %>
 <script type="text/javascript" src="/javascripts/moment.min.js"></script>
-<script type="text/javascript" src="/javascripts/handlers/assignment.js"></script>
 <script type="text/javascript">
 	PAGE_Assignment.posts = <%- JSON.stringify(posts || []) %>;
 	PAGE_Assignment.assignment = <%- JSON.stringify(assignment || {}) %>;

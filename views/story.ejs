@@ -1,4 +1,6 @@
-<%- include('segments/console_sidebar', { pageindex: pageindex, title: title, user : user, config : config}) %>
+<% include segments/head %>
+
+<%- include('segments/sidebar', { user: user, config: config, title: title}) %>
 
 	<div class="col-md-12 col-lg-10">
 		<!-- navbar -->
@@ -96,8 +98,7 @@
 		<%- include('segments/bulk-select') %>
 		<%- include('segments/gallery-edit') %>
 	</div>
-<%- include('segments/console_scripts') %>
-<script type="text/javascript" src="/javascripts/handlers/story.js"></script>
+<%- include('segments/scripts') %>
 <script type="text/javascript">
 	var purchases = <%- JSON.stringify(purchases || []) %>;
 	var following = <%- JSON.stringify(user.following || []) %>;

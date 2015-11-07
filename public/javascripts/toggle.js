@@ -19,12 +19,12 @@ $(document).ready(function() {
 			target.children("span").transition({y: "-96px"});
 			target.children("div").transition({y: "100%"});
 			body.removeClass("toggled");
-			
+
 			if (typeof player !== 'undefined')
-				player.pauseVideo()
-		} else {
+				player.pauseVideo();
+			} else {
 			// target.toggleClass("toggled");
-			// body.toggleClass("toggled");
+				// body.toggleClass("toggled");
 		}
 	});
 });
