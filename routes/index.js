@@ -106,7 +106,6 @@ router.get('/join', function(req, res, next) {
 
   api.get('/v1/outlet/invite/get?token=' + req.query.o, function(error, response, body) {
 
-    console.log(body);
     if (error || !body) {
       req.session.alerts = ['Error connecting to server'];
       return req.session.save(function() {

@@ -1,6 +1,3 @@
-// var API_URL = 'https://api.fresconews.com';
-var API_URL = 'http://staging.fresconews.com';
-
 $(document).ready(function(){
 	$("img.lazy").lazyload({
 	 	threshold : 240

@@ -35,7 +35,8 @@ $(document).ready(function(){
 	//Add active indicator to left bar (PURE JS @ MIKE, RYAN)
 	if(page !== undefined){
 		var listItem = document.getElementById('sidebar-' + page);
-		if(listItem) listItem.className += ' active';
+		if(listItem) 
+			listItem.className += ' active';
 	}
 	// drawer
 	$(".toggle-drawer.toggler").click(function() {
@@ -965,16 +966,21 @@ function buildPost(post, purchased, size, forsale, timeType){
 }
 
 function setTimeDisplayType(timeDisplay) {
+
 	$('.timestring').each(function() {
+		
 		var timestamp = $(this).data('timestamp');
 
 		var timeString = '';
+		
 		if (timeDisplay == 'absolute') {
 			timeString = timestampToDate(timestamp);
-		} else {
+		} 
+		else {
 			timeString = getTimeAgo(Date.now(), timestamp);
 		}
 		$(this).text(timeString);
+
 	});
 }
 

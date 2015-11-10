@@ -952,7 +952,6 @@ router.post('/user/follow', function(req, res, next) {
 });
 router.post('/user/login', function(req, res, next) {
 
-  console.log('asd');
   if(req.body.email && req.body.password){
     var parse = requestJson.createClient(config.PARSE_API);
 
@@ -960,6 +959,7 @@ router.post('/user/login', function(req, res, next) {
     parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
     parse.headers['X-Parse-Revocable-Session'] = "1";
     parse.get('/1/login?username=' + querystring.escape(req.body.email) + '&password=' + querystring.escape(req.body.password), function(err,response,parse_body){
+      console.log(err);
       if(err)
         return res.json({err: err}).end();
       if (response.statusCode == 401)
@@ -1137,8 +1137,6 @@ console.log(req.session.user.token);
 });
 //---------------------------^^^-USER-ENDPOINTS-^^^---------------------------//
 
-module.exports = router;
-
 // router.get('/gallery/download/:id', function(req, res, next){
 //   var gallery_id = req.params.id;
 //   Gallery.get(gallery_id, function(err, gallery){
@@ -1181,3 +1179,5 @@ module.exports = router;
 //     archive.finalize();
 //   });
 // });
+// 
+module.exports = router;

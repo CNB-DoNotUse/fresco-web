@@ -2,8 +2,8 @@
 	• Optimize event delegations to $([s]).on(click, [child], [handler]);
 */
 
-// var API_URL = 'https://api.fresconews.com';
-var API_URL = 'http://staging.fresconews.com',
+var API_URL = 'https://api.fresconews.com',
+// var API_URL = 'http://staging.fresconews.com',
 	FEET_PER_MILE = 5280;
 
 String.prototype.capitalize = function(){
@@ -17,6 +17,7 @@ function attachOnImageLoadError(img, size){
 	size = size || 'medium';
 
 	img.error(function(){
+		
 		var _this = $(this),
 				timeout = parseInt(_this.prop('data-t') || 1),
 				lasttimeout = parseInt(_this.prop('data-lt') || 1);

@@ -79,29 +79,29 @@ var PAGE_Highlights = {
 };
 
 $(document).ready(function(){
-	//Load initial galleries
-	PAGE_Highlights.loadGalleries();
-	//Load trending stories
-	PAGE_Highlights.loadStories();
+	// //Load initial galleries
+	// PAGE_Highlights.loadGalleries();
+	// //Load trending stories
+	// PAGE_Highlights.loadStories();
 
-	$('.time-display-filter-type').click(function(){
-		$('.time-display-filter-text').text($(this).text());
-		if($(this).data('filter-type') == 'relative'){
-			PAGE_Highlights.display = 'relative';
-		}
-		else if ($(this).data('filter-type') == 'absolute'){
-			PAGE_Highlights.display = 'absolute';
-		}
-		setTimeDisplayType(PAGE_Highlights.display);
-		$('.time-display-filter-button').click();
+	// $('.time-display-filter-type').click(function(){
+	// 	$('.time-display-filter-text').text($(this).text());
+	// 	if($(this).data('filter-type') == 'relative'){
+	// 		PAGE_Highlights.display = 'relative';
+	// 	}
+	// 	else if ($(this).data('filter-type') == 'absolute'){
+	// 		PAGE_Highlights.display = 'absolute';
+	// 	}
+	// 	setTimeDisplayType(PAGE_Highlights.display);
+	// 	$('.time-display-filter-button').click();
 		
-		$('.time-display-filter-type').removeClass('active');
-		$(this).addClass('active');
-	});
+	// 	$('.time-display-filter-type').removeClass('active');
+	// 	$(this).addClass('active');
+	// });
 
-	//Load when scrolled to bottom
-	$('.container-fluid.grid').scroll(function() {
-		if(!PAGE_Highlights.loading && $('.container-fluid.grid')[0].scrollHeight - $('.container-fluid.grid').scrollTop() <= $('.container-fluid.grid').height() + 64)
-			PAGE_Highlights.loadGalleries();
-	});
+	// //Load when scrolled to bottom
+	// $('.container-fluid.grid').scroll(function() {
+	// 	if(!PAGE_Highlights.loading && $('.container-fluid.grid')[0].scrollHeight - $('.container-fluid.grid').scrollTop() <= $('.container-fluid.grid').height() + 64)
+	// 		PAGE_Highlights.loadGalleries();
+	// });
 });

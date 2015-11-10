@@ -21,7 +21,7 @@
             <span class="mdi mdi-movie icon"></span>Videos</li>
           <li class="sidebar-tab" data-link='/content/galleries' id="sidebar-galleries">
             <span class="mdi mdi-image-filter icon"></span>Galleries</li>
-          <li class="sidebar-tab" data-link='/stories' id="sidebar-stories">
+          <li class="sidebar-tab" data-link='/content/stories' id="sidebar-stories">
             <span class="mdi mdi-newspaper icon"></span>Stories</li>
         </ul>
         <% if (user.outlet || user.rank >= config.RANKS.CONTENT_MANAGER){ %>
@@ -42,26 +42,26 @@
           <span class="mdi mdi-currency-usd icon"></span>Purchases
         </li>
         <% } %>
-  </ul>
-</div>
-<div>
-  <img class="img-circle" id="side-bar-avatar" src="<%= user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png' %>">
-  <a class="md-type-title user-name-view" href="/user">
-    <%= user.firstname + ' ' + user.lastname %>
-  </a>
-  <ul>
-    <li>
-      <a href="/user/settings">Settings</a>
-    </li>
-    <!--<li><a href="">Help</a></li>-->
-    <li>
-      <a href="/scripts/user/logout">Log out</a>
-    </li>
-  </ul>
-  <!--<p class="md-type-body1">
-				<span>&copy;2015 Fresco News, Inc.</span>
-				<span class="mdi mdi-information-outline icon pull-right"></span>
-			</p>-->
-</div>
-</div>
+      </ul>
+    </div>
+    <div>
+      <img class="img-circle" id="side-bar-avatar" src="<%= user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png' %>">
+      <a class="md-type-title user-name-view" href="/user">
+        <%= user.firstname + ' ' + user.lastname %>
+      </a>
+      <ul>
+        <li>
+          <a href="/user/settings">Settings</a>
+        </li>
+        <!--<li><a href="">Help</a></li>-->
+        <li>
+          <a href="/scripts/user/logout">Log out</a>
+        </li>
+      </ul>
+      <!--<p class="md-type-body1">
+    				<span>&copy;2015 Fresco News, Inc.</span>
+    				<span class="mdi mdi-information-outline icon pull-right"></span>
+    			</p>-->
+    </div>
+  </div>
 <!-- end sidebar -->

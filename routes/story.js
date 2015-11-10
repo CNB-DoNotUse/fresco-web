@@ -23,7 +23,6 @@ router.get('/:id', function(req, res, next) {
       json: true
     },
     function(err, response, body) {
-
 			if (err || !body || body.err){
         return res.render('error', {
           user: req.session.user,

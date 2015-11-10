@@ -54,9 +54,9 @@ router.get('/galleries', function(req, res, next) {
  */
 
 router.get('/stories', function(req, res, next) {
+
   // if (!req.session.user || req.session.user.rank < config.RANKS.CONTENT_MANAGER)
   // 	return res.render('error', {error_code: 403, error_message: config.ERR_PAGE_MESSAGES[403]});
-
   res.render('stories', {
     user: req.session.user,
     title: 'Stories',
