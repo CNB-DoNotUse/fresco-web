@@ -30,8 +30,7 @@
         <% }
         if (user.outlet){ %>
         <li class="sidebar-tab" data-link="/outlet" id="sidebar-outlet">
-          <span class="mdi mdi-account-multiple icon"></span>
-          <%= user.outlet.title %>
+          <span class="mdi mdi-account-multiple icon"></span><%= user.outlet.title %>
         </li>
         <%	}
         if(user.rank >= 2) { %>

@@ -45,7 +45,7 @@ var TimeToggle = React.createClass({
 		return (
 			<li className="drop pull-right hidden-xs">
 				<button className="toggle-drop md-type-subhead time-display-filter-button" ref="time_toggle_button">
-					<span className="time-display-filter-text">Relative</span><span className="mdi mdi-menu-down icon"></span>
+					<span className="time-display-filter-text" ref="currentTimeFilter">Relative</span><span className="mdi mdi-menu-down icon"></span>
 				</button>
 				<div className="drop-menu panel panel-default">
 					<div className="toggle-drop toggler md-type-subhead">
@@ -66,6 +66,8 @@ var TimeToggle = React.createClass({
 	toggleTimeClicked: function(){
 
 		var currentTimeFilter = this.refs.currentTimeFilter;
+
+		console.log(currentTimeFilter);
 		
 		var displayMode = '';
 
@@ -81,7 +83,6 @@ var TimeToggle = React.createClass({
 		setTimeDisplayType(displayMode);
 		
 		this.refs.time_toggle_button.click();
-
 
 		$('.time-display-filter-type').removeClass('active');
 

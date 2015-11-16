@@ -94,8 +94,6 @@ app.use(function(req, res, next) {
           //Check if the session has expired
           if (!req.session.user.TTL || req.session.user.TTL - now < 0) {
 
-            console.log('fetching user');
-
             //Create client
             var api = requestJson.createClient(config.API_URL);
 

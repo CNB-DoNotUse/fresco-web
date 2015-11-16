@@ -32,12 +32,6 @@ $(document).ready(function(){
 
 	$.material.init();
 
-	//Add active indicator to left bar (PURE JS @ MIKE, RYAN)
-	if(page !== undefined){
-		var listItem = document.getElementById('sidebar-' + page);
-		if(listItem) 
-			listItem.className += ' active';
-	}
 	// drawer
 	$(".toggle-drawer.toggler").click(function() {
 		$(".toggle-drawer").toggleClass("toggled");
@@ -56,9 +50,11 @@ $(document).ready(function(){
 		}
 		$(".dim.toggle-drop").toggleClass("toggled");
 	});
+
 	$(".toggle-drop.toggler").click(function() {
 		$(".drop-menu").removeClass("toggled");
 	});
+	
 	// tabs
 	$(".related > .tab-control > button").click(function() {
 		$(this).siblings().removeClass("toggled");
@@ -114,21 +110,6 @@ $(document).ready(function(){
 	$(".toggle-aradd.toggler").click(function() {
 		$(".toggle-aradd").toggleClass("toggled");
 	});
-
-	sideBarItems = document.getElementsByClassName('sidebar-tab');
-
-	var navigateTo = function() {
-		if(this.dataset.link !== undefined)
-			window.location.assign(this.dataset.link);
-	};
-
-	for (var i = 0; i < sideBarItems.length; i++) {
-
-		sideBarItems[i].addEventListener('click', navigateTo, false);
-
-	}
-
-
 
 	//Gallery edit mappings
 	$('#gallery-revert-button').click(galleryEditUpdate);

@@ -22,6 +22,7 @@ router.get('/', function(req, res, next) {
     if (!error && body && !body.err)
       highlights = body.data;
 
+
     res.render('index', {
       user: req.session ? req.session.user : null,
       highlights: highlights,
@@ -53,6 +54,7 @@ router.get('/partners', function(req, res, next) {
       alerts: req.alerts,
       partner: true
     });
+
   });
 });
 
@@ -84,12 +86,17 @@ router.get('/highlights', function(req, res, next) {
     });
   }
 
+  var props = {
+    user : req.session.user
+  };
+
   res.render('highlights', {
     user: req.session ? req.session.user : null,
     config: config,
     alerts: req.alerts,
     page : 'highlights',
-    title : 'Highlights'
+    title : 'Highlights',
+    props : JSON.stringify(props)
   });
 
 });

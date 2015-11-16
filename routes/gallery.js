@@ -1,16 +1,21 @@
 var express = require('express'),
-  config = require('../lib/config'),
-  router = express.Router(),
-  archiver = require('archiver'),
-  Gallery = require('../lib/gallery'),
-  request = require('request'),
-  async = require('async');
+    config = require('../lib/config'),
+    router = express.Router(),
+    request = require('request'),
+    React = require('react'),
+    ReactDOMServer = require('react-dom/server'),
+    galleryDetail = require('../app/server/galleryDetail');
 
 /** //
 
-	Description : Gallery Specific Routes ~ prefix /gallery/endpoint
+	Description : Gallery Specific Routes ~ prefix /gallery/~
 
 // **/
+
+/**
+ * Gallery Detail Page
+ * @param Gallery ID
+ */
 
 router.get('/:id', function(req, res, next) {
 
@@ -19,6 +24,7 @@ router.get('/:id', function(req, res, next) {
     json: true
   }, function(err, response, body) {
 
+    //Check for error, 404 if true
     if (err || !body || body.err) {
 
       return res.render('error', {
@@ -30,14 +36,11 @@ router.get('/:id', function(req, res, next) {
     }
 
     var gallery = body.data;
+ 
+    var title = '';
 
-    var title = 'Gallery by ';
-
-    if (gallery.owner) {
-      title += gallery.owner.firstname + ' ' + gallery.owner.lastname;
-    } else if (gallery.curator) {
-      title += gallery.curator.firstname + ' ' + gallery.curator.lastname;
-    }
+    if (gallery.owner)
+      title += 'Gallery by ' + gallery.owner.firstname + ' ' + gallery.owner.lastname;
 
     //User is logged in, show full gallery page
     if (req.session && req.session.user) {
@@ -51,19 +54,31 @@ router.get('/:id', function(req, res, next) {
         });
       }
 
-      res.render('gallery', {
+      var props = {
         user: req.session.user,
-        gallery: gallery,
-        title: title,
         purchases: purchases,
-        config: config,
+        gallery: gallery,
+        title: title
+      };
+
+      // console.log(props);
+
+      // var element = React.createElement(galleryDetail, props
+
+      // var reactString = ReactDOMServer.renderToString(element);
+
+      res.render('gallery', {
+        title: title,
         alerts: req.alerts,
-        page: 'gallery'
+        react : '',
+        page: 'galleryDetail',
+        props: JSON.stringify(props)
       });
 
     }
     //User is not logged in, show public gallery page
     else {
+
       res.render('public_gallery', {
         gallery: gallery,
         title: title,
@@ -71,8 +86,11 @@ router.get('/:id', function(req, res, next) {
         alerts: req.alerts,
         page: 'public_gallery'
       });
+
     }
+
   });
+
 });
 
 module.exports = router;
