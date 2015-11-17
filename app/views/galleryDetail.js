@@ -25,7 +25,12 @@ var isNode = require('detect-node'),
 
  		return (
  			<App user={this.props.user}>
- 				<TopBar title={this.props.title} />
+ 				<TopBar 
+ 					title={this.props.title}
+ 					editable={true}
+ 					verifiedToggle={false}
+ 					timeToggle={true}
+ 					chronToggle={true} />
  				<GallerySidebar gallery={this.props.gallery} />
  				<div className="col-sm-8 tall">
 	 				<PostList
@@ -33,6 +38,7 @@ var isNode = require('detect-node'),
 	 					purchases={this.props.purchases}
 	 					posts={this.props.gallery.posts}
 	 					scrollable={false}
+	 					editable={false}
 	 					size='small' />
 				</div>
 				<GalleryEdit 

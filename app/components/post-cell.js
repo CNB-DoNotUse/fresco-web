@@ -48,7 +48,11 @@ var PostCell = React.createClass({
 					</div>
 				</div>
 				<div className="tile-foot">
-					<PostCellActions post={this.props.post} purchased={this.props.purchased} rank={this.props.rank} />
+					<PostCellActions 
+						post={this.props.post} 
+						purchased={this.props.purchased} 
+						rank={this.props.rank}
+						editable={this.props.editable} />
 					<div>
 						<div className="tile-info">
 						  	<span className="md-type-body2">{address}</span>
@@ -112,44 +116,43 @@ var PostCellActions = React.createClass({
 
 	render : function(){
 
-		var icons = '';
-
+		var actions = [],
+			key = 0;
 		//Check if the purchased property is set on the post
 		if (this.props.post.purchased !== null){
 			
 			//Check if we're CM or Admin
-			if(typeof rank !== 'undefined' && rank >= 1) {
+			if(typeof this.props.rank !== 'undefined' && this.props.rank >= 1) {
 				
 				if(this.props.post.purhcased === false){
+
+					if(this.props.editable) 
+						actions.push(<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.edit} key={key++}></span>);
 					
-					icons = [
-						<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.edit}></span>,
-						<span className="mdi mdi-download icon pull-right" onClick={this.download}></span>,
-						<span className="mdi mdi-cash icon pull-right" data-id={this.props.post._id} onClick={this.purchase}></span>
-					];
+					actions.push(<span className="mdi mdi-download icon pull-right" onClick={this.download} key={key++}></span>);
+					actions.push(<span className="mdi mdi-cash icon pull-right" data-id={this.props.post._id} onClick={this.purchase} key={key++}></span>);
 					
 				}
 				else{
 					
-					icons = [
-						<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler"></span>,
-						<span className="mdi mdi-download icon pull-right" onClick={this.download}></span>
-					];
+					if(this.props.editable) 
+						actions.push(<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.edit} key={key++}></span>);
+
+					actions.push(<span className="mdi mdi-download icon pull-right" onClick={this.download} key={key++}></span>);
 
 				}
 
 			}
 			//Check if the post has been purchased
 			else if (this.props.post.purhcased === true)
-				icons = <span className="mdi mdi-download icon pull-right" onClick={this.download}></span>
+				actions.push(<span className="mdi mdi-download icon pull-right" onClick={this.download} key={key++}></span>);
 			
 			//Check if the post is not purhcased, and it is for sale
 			else if (this.props.post.purchased == false && forsale) {
 			
-				icons = [
-					<span class="mdi mdi-library-plus icon pull-right"></span>,
-					<span class="mdi mdi-cash icon pull-right" data-id="' + post._id + '"></span>
-				];
+				actions.push(<span class="mdi mdi-library-plus icon pull-right" key={key++}></span>);
+				actions.push(purhcase = <span class="mdi mdi-cash icon pull-right" data-id="' + post._id + '" key={key++}></span>);
+				
 			
 			}
 	
@@ -158,7 +161,7 @@ var PostCellActions = React.createClass({
 		return (
 			<div className="hover">
 				<a className="md-type-body2 post-link" href={'/post/'+ this.props.post._id}>See more</a>
-				{icons}
+				{actions}
 			</div>
 		);
 

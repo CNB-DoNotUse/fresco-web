@@ -99,7 +99,6 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
   .form-group-default .form-control:focus {
     background-image: -webkit-linear-gradient(#0047bb, #0047bb), -webkit-linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12));
     background-image: linear-gradient(#0047bb, #0047bb), linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12)); }
-  .form-group-default .floating-label,
   .form-group-default .hint {
     color: rgba(0, 0, 0, 0.26); }
   .form-group-default input.form-control:not(.empty) ~ .floating-label,
@@ -164,6 +163,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
       margin-bottom: 8px; }
 .map-group > .map-container {
   width: 100%;
+  height: 240px;
   margin-bottom: 8px;
   background-color: #f5f5f5; }
 .map-group > .map-container.full {
@@ -1094,6 +1094,8 @@ div.admin {
     border-top-right-radius: 2px; }
   .edit > .edit-new > .dialog-foot {
     border-bottom-right-radius: 2px; }
+  .edit .checkbox input[type=checkbox]:checked ~ .check:before, .edit .checkbox input[type=checkbox]:checked ~ .check {
+    color: #0047bb; }
 
 .edit.toggled {
   top: 5%; }

@@ -20157,6 +20157,8 @@
 
 		render: function () {
 
+			var edit = '';
+
 			return React.createElement(
 				'nav',
 				{ className: 'navbar navbar-fixed-top navbar-default' },
@@ -20172,9 +20174,15 @@
 					{ className: 'md-type-title' },
 					this.props.title
 				),
-				React.createElement(TimeToggle, null),
-				React.createElement(VerifiedToggle, null)
+				this.props.editable ? React.createElement('a', { className: 'mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler', onClick: this.toggleEdit }) : '',
+				this.props.chronToggle ? React.createElement(ChronToggle, null) : '',
+				this.props.timeToggle ? React.createElement(TimeToggle, null) : '',
+				this.props.verifiedToggle ? React.createElement(VerifiedToggle, null) : ''
 			);
+		},
+		toggleEdit: function () {
+
+			$(".toggle-gedit").toggleClass("toggled");
 		}
 
 	});
@@ -20219,12 +20227,12 @@
 							{ className: 'md-type-subhead' },
 							React.createElement(
 								'li',
-								{ className: 'time-display-filter-type active', 'data-filter-type': 'relative', onClick: this.toggleTimeClicked },
+								{ className: 'time-display-filter-type active', 'data-filter-type': 'relative', onClick: this.clicked },
 								'Relative'
 							),
 							React.createElement(
 								'li',
-								{ className: 'time-display-filter-type', 'data-filter-type': 'absolute', onClick: this.toggleTimeClicked },
+								{ className: 'time-display-filter-type', 'data-filter-type': 'absolute', onClick: this.clicked },
 								'Absolute'
 							)
 						)
@@ -20232,7 +20240,7 @@
 				)
 			);
 		},
-		toggleTimeClicked: function () {
+		clicked: function () {
 
 			var currentTimeFilter = this.refs.currentTimeFilter;
 
@@ -20316,28 +20324,68 @@
 				)
 			);
 		},
-		toggleTimeClicked: function () {
+		clicked: function () {}
 
-			var currentTimeFilter = this.refs.currentTimeFilter;
+	});
 
-			var displayMode = '';
+	var ChronToggle = React.createClass({
 
-			if (currentTimeFilter.innerHTML == 'Relative') {
-				displayMode = 'absolute';
-				currentTimeFilter.innerHTML = 'Absolute';
-			} else {
-				displayMode = 'relative';
-				currentTimeFilter.innerHTML = 'Relative';
-			}
+		displayName: 'ChronToggle',
 
-			setTimeDisplayType(displayMode);
+		render: function () {
 
-			this.refs.time_toggle_button.click();
+			return(
 
-			$('.time-display-filter-type').removeClass('active');
-
-			$(currentTimeFilter).addClass('active');
-		}
+				//Check if content manger or creater (config.RANKS.CONTENT_MANAGER)
+				React.createElement(
+					'li',
+					{ className: 'drop pull-right hidden-xs' },
+					React.createElement(
+						'button',
+						{ className: 'toggle-drop md-type-subhead filter-button' },
+						React.createElement(
+							'span',
+							{ className: 'filter-text' },
+							'By capture time'
+						),
+						React.createElement('span', { className: 'mdi mdi-menu-down icon' })
+					),
+					React.createElement(
+						'div',
+						{ className: 'drop-menu panel panel-default' },
+						React.createElement(
+							'div',
+							{ className: 'toggle-drop toggler md-type-subhead' },
+							React.createElement(
+								'span',
+								{ className: 'filter-text' },
+								'By capture time'
+							),
+							React.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
+						),
+						React.createElement(
+							'div',
+							{ className: 'drop-body' },
+							React.createElement(
+								'ul',
+								{ className: 'md-type-subhead' },
+								React.createElement(
+									'li',
+									{ className: 'filter-type' },
+									'By capture time'
+								),
+								React.createElement(
+									'li',
+									{ className: 'filter-type active' },
+									'By upload time'
+								)
+							)
+						)
+					)
+				)
+			);
+		},
+		clicked: function () {}
 
 	});
 

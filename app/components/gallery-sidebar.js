@@ -59,7 +59,7 @@ var GalleryStats = React.createClass({
 		if(this.props.gallery.stats.videos){
 			videos = <li>
 						<span className="mdi mdi-movie icon"></span>
-						{this.props.gallery.stats.videos + 'video'}
+						{this.props.gallery.stats.videos + ' video'}
 					</li>
 		}
 

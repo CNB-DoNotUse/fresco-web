@@ -17,19 +17,51 @@ var EditPost = React.createClass({
 		}
 
 	},
+	//Add source after rendering for local files
+	componentDidMount: function(){
+
+		if(!this.props.file) return;
+
+	
+	},
 
 	render: function(){
 
-		if(!this.props.post) return;
+		//Check if we're reading from a file, and we have the file's source
+		if(this.props.file && this.props.source){
 
-		if(this.props.post.video){
+			if (this.props.file.type.indexOf('video') !== -1) { //video
+
+				return (
+					<video width="100%" height="100%" data-id={this.props.post._id} controls>
+						<source 
+							id={this.props.file.lastModified}
+							src={this.props.source}
+							type='video/mp4' ref='video' />
+						Your browser does not support the video tag.
+					</video>
+				)
+			
+			}
+			else { //image
+
+				return (
+					<img 
+						className='img-responsive'
+						id={this.props.file.lastModified}
+						src={this.props.source}
+						ref="image" />
+				)
+			}	
+		}
+		else if(this.props.post.video){
 
 			return (
 				<video width="100%" height="100%" data-id={this.props.post._id} controls>
 					<source 
 						src={this.props.post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')}
 						type="video/mp4" />
-					Your browser does not support the video tag.\
+					Your browser does not support the video tag.
 				</video>
 			)
 

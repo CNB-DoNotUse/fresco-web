@@ -19826,6 +19826,8 @@
 
 		render: function () {
 
+			var edit = '';
+
 			return React.createElement(
 				'nav',
 				{ className: 'navbar navbar-fixed-top navbar-default' },
@@ -19841,9 +19843,15 @@
 					{ className: 'md-type-title' },
 					this.props.title
 				),
-				React.createElement(TimeToggle, null),
-				React.createElement(VerifiedToggle, null)
+				this.props.editable ? React.createElement('a', { className: 'mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler', onClick: this.toggleEdit }) : '',
+				this.props.chronToggle ? React.createElement(ChronToggle, null) : '',
+				this.props.timeToggle ? React.createElement(TimeToggle, null) : '',
+				this.props.verifiedToggle ? React.createElement(VerifiedToggle, null) : ''
 			);
+		},
+		toggleEdit: function () {
+
+			$(".toggle-gedit").toggleClass("toggled");
 		}
 
 	});
@@ -19888,12 +19896,12 @@
 							{ className: 'md-type-subhead' },
 							React.createElement(
 								'li',
-								{ className: 'time-display-filter-type active', 'data-filter-type': 'relative', onClick: this.toggleTimeClicked },
+								{ className: 'time-display-filter-type active', 'data-filter-type': 'relative', onClick: this.clicked },
 								'Relative'
 							),
 							React.createElement(
 								'li',
-								{ className: 'time-display-filter-type', 'data-filter-type': 'absolute', onClick: this.toggleTimeClicked },
+								{ className: 'time-display-filter-type', 'data-filter-type': 'absolute', onClick: this.clicked },
 								'Absolute'
 							)
 						)
@@ -19901,7 +19909,7 @@
 				)
 			);
 		},
-		toggleTimeClicked: function () {
+		clicked: function () {
 
 			var currentTimeFilter = this.refs.currentTimeFilter;
 
@@ -19985,28 +19993,68 @@
 				)
 			);
 		},
-		toggleTimeClicked: function () {
+		clicked: function () {}
 
-			var currentTimeFilter = this.refs.currentTimeFilter;
+	});
 
-			var displayMode = '';
+	var ChronToggle = React.createClass({
 
-			if (currentTimeFilter.innerHTML == 'Relative') {
-				displayMode = 'absolute';
-				currentTimeFilter.innerHTML = 'Absolute';
-			} else {
-				displayMode = 'relative';
-				currentTimeFilter.innerHTML = 'Relative';
-			}
+		displayName: 'ChronToggle',
 
-			setTimeDisplayType(displayMode);
+		render: function () {
 
-			this.refs.time_toggle_button.click();
+			return(
 
-			$('.time-display-filter-type').removeClass('active');
-
-			$(currentTimeFilter).addClass('active');
-		}
+				//Check if content manger or creater (config.RANKS.CONTENT_MANAGER)
+				React.createElement(
+					'li',
+					{ className: 'drop pull-right hidden-xs' },
+					React.createElement(
+						'button',
+						{ className: 'toggle-drop md-type-subhead filter-button' },
+						React.createElement(
+							'span',
+							{ className: 'filter-text' },
+							'By capture time'
+						),
+						React.createElement('span', { className: 'mdi mdi-menu-down icon' })
+					),
+					React.createElement(
+						'div',
+						{ className: 'drop-menu panel panel-default' },
+						React.createElement(
+							'div',
+							{ className: 'toggle-drop toggler md-type-subhead' },
+							React.createElement(
+								'span',
+								{ className: 'filter-text' },
+								'By capture time'
+							),
+							React.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
+						),
+						React.createElement(
+							'div',
+							{ className: 'drop-body' },
+							React.createElement(
+								'ul',
+								{ className: 'md-type-subhead' },
+								React.createElement(
+									'li',
+									{ className: 'filter-type' },
+									'By capture time'
+								),
+								React.createElement(
+									'li',
+									{ className: 'filter-type active' },
+									'By upload time'
+								)
+							)
+						)
+					)
+				)
+			);
+		},
+		clicked: function () {}
 
 	});
 
@@ -20387,7 +20435,10 @@
 		},
 
 		getDefaultProps: function () {
-			size: 'small';
+			return {
+				size: 'small',
+				editable: true
+			};
 		},
 
 		componentDidMount: function () {
@@ -20397,7 +20448,7 @@
 
 			var self = this;
 
-			//Access parent var
+			//Access parent var load method
 			this.props.loadPosts(0, function (posts) {
 
 				var offset = posts ? posts.length : 0;
@@ -20448,7 +20499,8 @@
 			//Otherwise use the state posts
 			else posts = this.state.posts;
 
-			purchases = this.props.purchases, rank = this.props.rank;
+			var purchases = this.props.purchases,
+			    rank = this.props.rank;
 
 			//Map all the posts into cells
 			var posts = posts.map(function (post, i) {
@@ -20460,8 +20512,9 @@
 					post: post,
 					rank: rank,
 					purchaed: purchased,
-					key: i });
-			});
+					key: i,
+					editable: this.props.editable });
+			}, this);
 
 			return React.createElement(
 				'div',
@@ -20547,7 +20600,11 @@
 				React.createElement(
 					'div',
 					{ className: 'tile-foot' },
-					React.createElement(PostCellActions, { post: this.props.post, purchased: this.props.purchased, rank: this.props.rank }),
+					React.createElement(PostCellActions, {
+						post: this.props.post,
+						purchased: this.props.purchased,
+						rank: this.props.rank,
+						editable: this.props.editable }),
 					React.createElement(
 						'div',
 						null,
@@ -20623,29 +20680,35 @@
 
 		render: function () {
 
-			var icons = '';
-
+			var actions = [],
+			    key = 0;
 			//Check if the purchased property is set on the post
 			if (this.props.post.purchased !== null) {
 
 				//Check if we're CM or Admin
-				if (typeof rank !== 'undefined' && rank >= 1) {
+				if (typeof this.props.rank !== 'undefined' && this.props.rank >= 1) {
 
 					if (this.props.post.purhcased === false) {
 
-						icons = [React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit }), React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download }), React.createElement('span', { className: 'mdi mdi-cash icon pull-right', 'data-id': this.props.post._id, onClick: this.purchase })];
+						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
+
+						actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
+						actions.push(React.createElement('span', { className: 'mdi mdi-cash icon pull-right', 'data-id': this.props.post._id, onClick: this.purchase, key: key++ }));
 					} else {
 
-						icons = [React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler' }), React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download })];
+						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
+
+						actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
 					}
 				}
 				//Check if the post has been purchased
-				else if (this.props.post.purhcased === true) icons = React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download });
+				else if (this.props.post.purhcased === true) actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
 
 					//Check if the post is not purhcased, and it is for sale
 					else if (this.props.post.purchased == false && forsale) {
 
-							icons = [React.createElement('span', { 'class': 'mdi mdi-library-plus icon pull-right' }), React.createElement('span', { 'class': 'mdi mdi-cash icon pull-right', 'data-id': '\' + post._id + \'' })];
+							actions.push(React.createElement('span', { 'class': 'mdi mdi-library-plus icon pull-right', key: key++ }));
+							actions.push(purhcase = React.createElement('span', { 'class': 'mdi mdi-cash icon pull-right', 'data-id': '\' + post._id + \'', key: key++ }));
 						}
 			}
 
@@ -20657,7 +20720,7 @@
 					{ className: 'md-type-body2 post-link', href: '/post/' + this.props.post._id },
 					'See more'
 				),
-				icons
+				actions
 			);
 		},
 		edit: function () {

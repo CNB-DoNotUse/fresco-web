@@ -1,3 +1,30 @@
+<style>
+.checkbox input[type=checkbox]:checked~.check:before, .checkbox input[type=checkbox]:checked~.check{
+  color: #0047bb;
+}
+
+.tt-menu {
+  background: white;
+}
+.tt-suggestion {
+  padding: 5px;
+  font-size: 16px;
+}
+.article-suggestion {
+  padding: 5px;
+  font-size: 12px;
+}
+
+.tt-cursor {
+  background: lightgrey;
+}
+
+.new-story div.chip, .new-story div.icon{
+  background-color: lightgreen !important;
+}
+
+</style><!--TEMPPPPPPPP -->
+
 <!--Dependicies-->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places&sensor=false"></script>
 <script type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script>
@@ -11,7 +38,10 @@
 <!-- Client Scripts -->
 <script type="text/javascript" src="/javascripts/frick.js"></script>
 <script type="text/javascript" src="/javascripts/fresco.js"></script>
-<script type="text/javascript" src="/javascripts/dashboard.js"></script>
+<script type="text/javascript">
+    $.material.init();
+</script>
+<!-- <script type="text/javascript" src="/javascripts/dashboard.js"></script> -->
 
 <!-- Page Specific -->
 <% if(typeof props !== 'undefined'){ %>

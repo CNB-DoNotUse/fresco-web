@@ -26,7 +26,10 @@ var PostList = React.createClass({
 	},
 
 	getDefaultProps: function(){
-		size : 'small'
+		return {
+			size : 'small',
+			editable: true
+		}
 	},
 
 	componentDidMount: function(){
@@ -36,7 +39,7 @@ var PostList = React.createClass({
 
 		var self = this;
 
-		//Access parent var
+		//Access parent var load method
 		this.props.loadPosts(0, function(posts){
 			
 			var offset = posts ? posts.length : 0;
@@ -91,8 +94,8 @@ var PostList = React.createClass({
 		else
 			posts = this.state.posts;
 
-		purchases = this.props.purchases,
-		rank = this.props.rank;
+		var purchases = this.props.purchases,
+			rank = this.props.rank;
 
 		//Map all the posts into cells
 		var posts = posts.map(function (post, i) {
@@ -106,11 +109,12 @@ var PostList = React.createClass({
 	        		post={post} 
 	        		rank={rank} 
 	        		purchaed={purchased}
-	        		key={i} />
+	        		key={i}
+	        		editable={this.props.editable} />
 	        		
 	      	)
 
-  		});
+  		}, this);
 
 		return (
 

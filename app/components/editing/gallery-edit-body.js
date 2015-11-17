@@ -1,7 +1,8 @@
 var React = require('react'),
 	ReactDOM = require('react-dom'),
 	Tag = require('./tag.js'),
-	EditPost = require('./edit-post.js');
+	EditPost = require('./edit-post.js'),
+	EditMap = require('./edit-map.js');
 
 /**
  * Gallery Edit Body, inside of the GalleryEditClass
@@ -11,21 +12,27 @@ var GalleryEditBody = React.createClass({
 
 	displayName: 'GalleryEditBody',
 
-	componentDidMount: function(){
-
-
+	getInitialState: function(){
+		return{
+			gallery: this.props.gallery
+		}
 	},
 
 	render: function(){
 
 		var highlightCheckbox = '';
 
+		console.log(this.state);
+
+		//Check if the rank is valid for toggling the highlighted state
 		if(this.props.user.rank && this.props.user.rank >= 1){
 
 			highlightCheckbox = <div className="dialog-row">
 									<div className="checkbox">
 										<label>
-											<input id="gallery-highlight-input" type="checkbox" /> Highlighted
+											<input id="gallery-highlight-input" type="checkbox" />
+											<span className="ripple"></span>
+											<span className="check"></span> Highlighted
 										</label>
 									</div>
 								</div>
@@ -35,27 +42,38 @@ var GalleryEditBody = React.createClass({
 		return(
 			
 			<div className="dialog-body">
+
 				<div className="dialog-col col-xs-12 col-md-7 form-group-default">
-					<GalleryEditByline gallery={this.props.gallery} />
+
+					<GalleryEditByline gallery={this.state.gallery} />
+					
 					<div className="dialog-row">
-						<textarea 
-							id="gallery-caption-input" 
-							type="text" 
-							className="form-control floating-label" 
-							placeholder="Caption">
-						</textarea>
+										
+						<div className="form-control-wrapper">
+							<textarea id="gallery-caption-input" type="text" className="form-control" defaultValue={this.state.gallery.caption} />
+							<div className="floating-label">Caption</div>
+							<span className="material-input"></span>
+						</div>
+
 					</div>
-					<GalleryEditTags ref='tags' tags={this.props.gallery.tags} />
-					<GalleryEditStories ref='stories' stories={this.props.gallery.related_stories} />
-					<GalleryEditArticles ref='articles' articles={this.props.gallery.articles} />
+					
+					<GalleryEditTags ref='tags' tags={this.state.gallery.tags} />
+					<GalleryEditStories ref='stories' stories={this.state.gallery.related_stories} />
+					<GalleryEditArticles ref='articles' articles={this.state.gallery.articles} />
+					
 					{highlightCheckbox}
+
 				</div>
-				<GalleryEditPosts posts={this.props.gallery.posts} />
-				<GalleryEditMap />
+				
+				<GalleryEditPosts posts={this.state.gallery.posts} files={this.state.gallery.files} />
+				
+				<GalleryEditMap gallery={this.state.gallery} />
+
 			</div>
 
 		);
 	}
+
 });
 
 /**
@@ -68,53 +86,101 @@ var GalleryEditByline = React.createClass({
 
 	render: function(){
 
-		return(
+		var post = this.props.gallery.posts[0];
 
-			<div className="dialog-row">
-				
-				<span id="gallery-byline-input-span">
-					<input 
-						id="gallery-byline-input" 
-						type="text" 
-						className="form-control floating-label" 
-						placeholder="Byline" 
-						disabled />
-				</span>
-			
-				<div className="drop" id="gallery-byline-selection">
-					<button className="toggle-drop md-type-subhead gallery-byline-button">
-						<span className="gallery-byline-text"></span>
-						<span className="mdi mdi-menu-down icon"></span>
-					</button>
-					<div className="drop-menu panel panel-default byline-drop">
-						<div className="toggle-drop toggler md-type-subhead"><span className="gallery-byline-text"></span><span className="mdi mdi-menu-up icon pull-right"></span></div>
-						<div className="drop-body">
-							<ul className="md-type-subhead" id="gallery-byline-options">
-							</ul>
+		//If the post contains twitter info, show twitter byline editor
+		if (post.meta && post.meta.twitter) {
+
+			var isHandleByline = post.byline.indexOf('@') == 0;
+
+			if (isHandleByline)
+				byline = post.meta.twitter.handle;
+			else 
+				byline = post.meta.twitter.user_name;
+
+
+			return (
+				<div className="dialog-row">
+					<div className="split byline-section" id="gallery-byline-twitter">
+						<div className="split-cell drop">
+							<button className="toggle-drop md-type-subhead">
+								<span className="gallery-byline-text">{byline}</span>
+								<span className="mdi mdi-menu-down icon pull-right"></span>
+							</button>
+							<div className="drop-menu panel panel-default byline-drop">
+								<div className="toggle-drop toggler md-type-subhead">
+									<span className="gallery-byline-text">{post.meta.twitter.handle}</span>
+									<span className="mdi mdi-menu-up icon pull-right"></span>
+								</div>
+								<div className="drop-body">
+									<ul className="md-type-subhead" id="gallery-byline-twitter-options">
+										<li className={'gallery-byline-type ' + (isHandleByline ? 'active' : '')}>{post.meta.twitter.handle}</li>
+										<li className={'gallery-byline-type ' + (!isHandleByline ? 'active' : '')}>{post.meta.twitter.user_name}</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div className="split-cell">
+							<div className="form-control-wrapper">
+								<input type="text" className="form-control" defaultValue={post.meta.other_origin.affiliation} id="gallery-twitter-affiliation-input" />
+								<div className="floating-label">Affiliation</div>
+								<span className="material-input"></span>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div className="split" id="gallery-other-origin">
-					<div className="split-cell">
-						<input 
-							type="text" 
-							className="form-control floating-label" 
-							id="gallery-name-input" 
-							placeholder="Name" />
-					</div>
-					<div className="split-cell">
-						<input 
-							type="text" 
-							className="form-control floating-label" 
-							id="gallery-affiliation-input" 
-							placeholder="Affiliation" />
+			);
+
+		}
+		//If the post doesn't have an owner, but has a curator i.e. manually imported
+		else if(!post.owner && post.curator){
+
+			var name = '',
+				affiliation = '';
+
+			if (post.meta.other_origin) {
+				name = post.meta.other_origin.name;
+				affiliation = post.meta.other_origin.affiliation;
+			}
+			
+			return (
+				<div className="dialog-row">
+					<div className="split byline-section" id="gallery-byline-other-origin">
+						<div className="split-cell" id="gallery-name-span">
+							<div className="form-control-wrapper">
+								<input type="text" className="form-control empty" defaultValue={name} id="gallery-name-input" />
+								<div className="floating-label">Name</div>
+								<span className="material-input"></span>
+							</div>
+						</div>
+						<div className="split-cell">
+							<div className="form-control-wrapper">
+								<input type="text" className="form-control empty" defaultValue={affiliation} id="gallery-affiliation-input" />
+								<div className="floating-label">Affiliation</div>
+								<span className="material-input"></span>
+							</div>
+						</div>
 					</div>
 				</div>
 
-			</div>
+			);
 
-		);
+		}
+		else{
+			return (
+				<div className="dialog-row">
+					<span className="byline-section" id="gallery-byline-span">
+						<div className="form-control-wrapper">
+							<input id="gallery-byline-input" defaultValue={post.byline} type="text" className="form-control" disabled={true} />
+							<div className="floating-label">Byline</div>
+							<span className="material-input"></span>
+						</div>
+					</span>
+				</div>
+			);
+		}
 	}
+
 });
 
 
@@ -126,21 +192,26 @@ var GalleryEditTags = React.createClass({
 
 	displayName: 'GalleryEditTags',
 
+	//Set state as passed properties
 	getInitialState: function() {
-		return {
-			tags: this.props.tags
-		}
+		return { tags: this.props.tags }
+	},
+
+	componentWillReceiveProps: function(nextProps){
+		
+		this.setState({
+			tags: nextProps.tags
+		})
 	},
 
 	render: function(){
 
-		tags = this.state.tags.map(function (story, i) {
-
+		tags = this.state.tags.map(function (tag, i) {
 			return(
 
 				<Tag 
 					onClick={this.handleClick.bind(this, i)} 
-					text={tag.title} 
+					text={'#' + tag} 
 					plus={false}
 					key={i} />
 
@@ -169,6 +240,7 @@ var GalleryEditTags = React.createClass({
 		);
 
 	},
+
 	handleClick: function(index){
 
 		var updatedTags = this.state.tags;
@@ -195,10 +267,18 @@ var GalleryEditStories = React.createClass({
 
 
 	getInitialState: function() {
-		return {
-			stories: this.props.stories
-		}
+		
+		return { stories: this.props.stories }
+
 	},
+
+
+	componentWillReceiveProps: function(nextProps){
+		
+		this.setState({ stories: nextProps.stories });
+	
+	},
+
 
 	render: function(){
 
@@ -266,19 +346,56 @@ var GalleryEditArticles = React.createClass({
 
 	displayName: 'GalleryEditArticles',
 
+	getInitialState: function() {
+		return { articles: this.props.articles }
+	},
+
+	componentWillReceiveProps: function(nextProps){
+
+		this.setState({	articles: nextProps.articles });
+	},
+
 	render: function(){
+
+		articles = this.state.articles.map(function (article, i) {
+
+			return(
+
+				<Tag 
+					onClick={this.handleClick.bind(this, i)} 
+					text={article.link} 
+					plus={false}
+					key={i} />
+
+			)
+
+		}, this);
 		
 		return(
 			<div className="dialog-row split chips">
 				<div className="split-cell">
 					<input 
 						id="gallery-articles-input" 
-						type="text" className="form-control floating-label" 
+						type="text" 
+						className="form-control floating-label" 
 						placeholder="Articles" />
-					<ul id="gallery-articles-list" className="chips"></ul>
+					<ul id="gallery-articles-list" className="chips">{articles}</ul>
 				</div>
 			</div>
 		);
+
+	},
+	handleClick: function(index){
+
+		var updateArticles = this.state.articles;
+
+		//Remove from index
+		updateArticles.splice(index, 1);
+
+		//Update state
+		this.setState({
+			articles: updateArticles
+		});
 
 	}
 
@@ -296,62 +413,23 @@ var GalleryEditMap = React.createClass({
 	//Configure google maps after component mounts
 	componentDidMount: function(){
 
-		var styles = [{"featureType": "all", "elementType":"all", "stylers": [{"gamma":1.54}]},
-			{"featureType":"road.highway","elementType":"all","stylers":[{"gamma":1.54}]},
-			{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#e0e0e0"}]},
-			{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#bdbdbd"}]},
-			{"featureType":"road.highway","elementType":"labels.text.fill","stylers":[{"color":"#757575"}]},
-			{"featureType":"poi.park","elementType":"all","stylers":[{"gamma":1.26}]},
-			{"featureType":"poi.park","elementType":"labels.text","stylers":[{"saturation":-54}]}];
+		//Set up autocomplete listener
+		autocomplete = new google.maps.places.Autocomplete(document.getElementById('gallery-location-input'));
+				
+		google.maps.event.addListener(autocomplete, 'place_changed', function(){
 
-		var mapOptions = {
-			center: {lat: 40.7, lng: -74},
-			zoom: 12,
-			mapTypeControl: false,
-			styles: styles
-		};
-
-		galleryEditMap = new google.maps.Map(document.getElementById('gallery-map-canvas'), mapOptions);
-
-		var image = {
-			url: "/images/assignment-active@2x.png",
-			size: new google.maps.Size(114, 114),
-			scaledSize: new google.maps.Size(60, 60),
-			origin: new google.maps.Point(0, 0),
-			anchor: new google.maps.Point(30, 30)
-		};
-
-		galleryEditPolygon = new google.maps.Polygon({
-					paths: [],
-					strokeColor: "#FFB500",
-					strokeOpacity: 0.8,
-					strokeWeight: 0,
-					fillColor: "#FFC600",
-					fillOpacity: 0.35,
-					map: galleryEditMap
-				});
-
-		galleryEditMarker = new google.maps.Marker({
-			position: new google.maps.LatLng(40.7, -74),
-			map: null,
-			icon: image
-		});
-
-		galleryEditAutocomplete = new google.maps.places.Autocomplete(document.getElementById('gallery-location-input'));
-		
-		$('#gallery-location-input').attr('placeholder', '');
-		
-		google.maps.event.addListener(galleryEditAutocomplete, 'place_changed', function(){
-			
-			var place = galleryEditAutocomplete.getPlace();
+			var place = autocomplete.getPlace();
 
 			if(place.geometry){
+				
+				marker.setPosition(place.geometry.location);
+
 				if(place.geometry.viewport){
-					galleryEditMap.fitBounds(place.geometry.viewport);
+					map.fitBounds(place.geometry.viewport);
 				}
 				else {
-					galleryEditMap.panTo(place.geometry.location);
-					galleryEditMap.setZoom(18);
+					map.panTo(place.geometry.location);
+					map.setZoom(18);
 				}
 			}
 
@@ -362,17 +440,19 @@ var GalleryEditMap = React.createClass({
 	render: function(){
 
 		return(
-			<div className="dialog-col col-xs-12 col-md-5">
-				<div className="dialog-row map-group">
-					<div className="form-group-default">
-						<input 
-							id="gallery-location-input" 
-							type="text" className="form-control floating-label" 
-							placeholder="Location" />
+
+				<div className="dialog-col col-xs-12 col-md-5 pull-right">
+					<div className="dialog-row map-group">
+						<div className="form-group-default">
+							<input 
+								id="gallery-location-input" 
+								type="text" className="form-control floating-label" 
+								placeholder="Location" />
+						</div>
+						<EditMap gallery={this.props.gallery} />
 					</div>
-					<div id="gallery-map-canvas" className="map-container"></div>
 				</div>
-			</div> 
+
 		);
 
 	}
@@ -389,19 +469,23 @@ var GalleryEditPosts = React.createClass({
 	displayName: 'GalleryEditPosts',
 
 	getInitialState: function(){
-		return{
-			posts: []
+		return {
+			posts: this.props.posts,
+			files: []
 		}
 	},
 
-	componentDidMount: function(){
+	componentWillReceiveProps: function(nextProps){
 
-		this.setState({
-			posts : this.props.posts
+		this.setState({	
+			posts: nextProps.posts,
+			files: nextProps.files
 		});
 
-		console.log(this.refs.galleryEditPosts);
+	},
 
+	componentDidUpdate: function(){
+		
 		$(this.refs.galleryEditPosts).frick();
 
 	},
@@ -410,14 +494,22 @@ var GalleryEditPosts = React.createClass({
 
 		var posts = this.state.posts.map(function (post, i) {
 
-			return <EditPost post={post} />
+			return <EditPost key={i} post={post} />
 
 		}, this);
 
+		var files = [];
+
+		for (var i = 0; i < this.state.files.length; i++){
+			
+			files.push(<EditPost key={i} file={this.state.files[i]} source={this.state.files.sources[i]} />);
+
+		}
+
 		return(
 			<div className="dialog-col col-xs-12 col-md-5">
-				<div ref='galleryEditPosts' className="edit-gallery-images">{posts}</div>
-			</div> 
+				<div ref='galleryEditPosts' className="edit-gallery-images">{posts}{files}</div>
+			</div>
 		);
 
 	}

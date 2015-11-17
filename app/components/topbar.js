@@ -19,6 +19,8 @@ var TopBar = React.createClass({
 
 	render: function(){
 
+		var edit = '';
+
 		return (
 			<nav className="navbar navbar-fixed-top navbar-default">
 				<div className="dim transparent toggle-drop toggler"></div>
@@ -27,10 +29,18 @@ var TopBar = React.createClass({
 				</button>
 				<div className="spacer"></div>
 				<h1 className="md-type-title">{this.props.title}</h1>
-				<TimeToggle />
-				<VerifiedToggle />
+				{this.props.editable ? <a className="mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler" onClick={this.toggleEdit}></a> : ''}
+				{this.props.chronToggle ? <ChronToggle /> : ''}
+				{this.props.timeToggle ? <TimeToggle /> : ''}
+				{this.props.verifiedToggle ? <VerifiedToggle /> : ''}
 			</nav>
 		);
+	},
+	toggleEdit: function(){
+
+		$(".toggle-gedit").toggleClass("toggled");
+
+
 	}
 
 });
@@ -54,8 +64,8 @@ var TimeToggle = React.createClass({
 					</div>
 					<div className="drop-body">
 						<ul className="md-type-subhead">
-							<li className="time-display-filter-type active" data-filter-type="relative" onClick={this.toggleTimeClicked}>Relative</li>
-							<li className="time-display-filter-type" data-filter-type="absolute" onClick={this.toggleTimeClicked}>Absolute</li>
+							<li className="time-display-filter-type active" data-filter-type="relative" onClick={this.clicked}>Relative</li>
+							<li className="time-display-filter-type" data-filter-type="absolute" onClick={this.clicked}>Absolute</li>
 						</ul>
 					</div>
 				</div>
@@ -63,7 +73,7 @@ var TimeToggle = React.createClass({
 		)
 
 	},
-	toggleTimeClicked: function(){
+	clicked: function(){
 
 		var currentTimeFilter = this.refs.currentTimeFilter;
 
@@ -123,29 +133,46 @@ var VerifiedToggle = React.createClass({
 		)
 
 	},
-	toggleTimeClicked: function(){
+	clicked: function(){
 
-		var currentTimeFilter = this.refs.currentTimeFilter;
+
+	}
+
+});
+
+var ChronToggle = React.createClass({
+
+	displayName: 'ChronToggle',
+
+	render: function(){
+
+		return (
+			
+			//Check if content manger or creater (config.RANKS.CONTENT_MANAGER)
+			<li className="drop pull-right hidden-xs">
+				<button className="toggle-drop md-type-subhead filter-button">
+					<span className="filter-text">By capture time</span>
+					<span className="mdi mdi-menu-down icon"></span>
+				</button>
+				<div className="drop-menu panel panel-default">
+					<div className="toggle-drop toggler md-type-subhead">
+						<span className="filter-text">By capture time</span>
+						<span className="mdi mdi-menu-up icon pull-right"></span>
+					</div>
+					<div className="drop-body">
+						<ul className="md-type-subhead">
+							<li className="filter-type">By capture time</li>
+							<li className="filter-type active">By upload time</li>
+						</ul>
+					</div>
+				</div>
+			</li>
 		
-		var displayMode = '';
+		)
 
-		if(currentTimeFilter.innerHTML == 'Relative'){
-			displayMode = 'absolute';
-			currentTimeFilter.innerHTML = 'Absolute';
-		}
-		else{
-			displayMode = 'relative';
-			currentTimeFilter.innerHTML = 'Relative';
-		}
-		
-		setTimeDisplayType(displayMode);
-		
-		this.refs.time_toggle_button.click();
+	},
+	clicked: function(){
 
-
-		$('.time-display-filter-type').removeClass('active');
-
-		$(currentTimeFilter).addClass('active');
 
 	}
 
