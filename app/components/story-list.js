@@ -70,9 +70,8 @@ var StoryList = React.createClass({
 			}, this);
 		}
 	},
+	
 	render : function(){
-
-		console.log('Test');
 
 		//Check if list was initialzied with stories
 		stories = this.state.stories;

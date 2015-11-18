@@ -612,7 +612,7 @@ module.exports =
 			if (this.props.user.outlet || this.props.user.rank >= config.RANKS.CONTENT_MANAGER) {
 				var dispatch = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked('/dispatch'), id: 'sidebar-dispatch' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': 'dispatch', id: 'sidebar-dispatch' },
 					React.createElement('span', { className: 'mdi mdi-map icon' }),
 					'Dispatch'
 				);
@@ -621,7 +621,7 @@ module.exports =
 			if (this.props.user.outlet != null) {
 				var outlet = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked('/outlet'), id: 'sidebar-outlet' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-outlet' },
 					React.createElement('span', { className: 'mdi mdi-account-multiple icon' }),
 					this.props.user.outlet.title
 				);
@@ -629,13 +629,13 @@ module.exports =
 			if (this.props.user.rank >= 2) {
 				var admin = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked('/admin'), id: 'sidebar-admin' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-admin' },
 					React.createElement('span', { className: 'mdi mdi-dots-horizontal icon' }),
 					'Admin'
 				);
 				var purchases = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked('/purchases'), id: 'sidebar-purchases' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-purchases' },
 					React.createElement('span', { className: 'mdi mdi-currency-usd icon' }),
 					'Purchases'
 				);
@@ -645,13 +645,13 @@ module.exports =
 				{ className: 'md-type-body1' },
 				React.createElement(
 					'li',
-					{ className: 'sidebar-tabb', onClick: this.itemClicked('/highlights'), id: 'sidebar-highlights' },
+					{ className: 'sidebar-tabb', onClick: this.itemClicked, id: 'sidebar-highlights' },
 					React.createElement('span', { className: 'mdi mdi-star icon' }),
 					'Highlights'
 				),
 				React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked('/content'), id: 'sidebar-content' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-content' },
 					React.createElement('span', { className: 'mdi mdi-play-box-outline icon' }),
 					'All content'
 				),
@@ -660,25 +660,25 @@ module.exports =
 					null,
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked('/content/photos'), id: 'sidebar-photos' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-photos' },
 						React.createElement('span', { className: 'mdi mdi-file-image-box icon' }),
 						'Photos'
 					),
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked('/content/videos'), id: 'sidebar-videos' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-videos' },
 						React.createElement('span', { className: 'mdi mdi-movie icon' }),
 						'Videos'
 					),
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked('/content/galleries'), id: 'sidebar-galleries' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-galleries' },
 						React.createElement('span', { className: 'mdi mdi-image-filter icon' }),
 						'Galleries'
 					),
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked('/content/stories'), id: 'sidebar-stories' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-stories' },
 						React.createElement('span', { className: 'mdi mdi-newspaper icon' }),
 						'Stories'
 					)
@@ -689,11 +689,14 @@ module.exports =
 				purchases
 			);
 		},
-		itemClicked: function () {
+		itemClicked: function (event) {
+
+			console.log(event);
+
+			// var link = event.currentTarget.data.link;
 
 			// if(link && typeof window !== 'undefined')
 			// 	window.location.assign(link);
-
 		}
 
 	});

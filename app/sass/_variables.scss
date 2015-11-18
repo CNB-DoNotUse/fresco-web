@@ -1,0 +1,57 @@
+// colors
+
+$color-brand-primary: #ffc53d;
+$color-brand-light: #ffd675;
+$color-brand-dark: #ffb814;
+@mixin color-brand-gradient() {
+	@include radial-gradient(circle, $color-brand-light, $color-brand-dark);
+}
+
+$color-accent-primary: #0047bb;
+$color-accent-light: #9baaf5;
+$color-accent-dark: #2564d9;
+$color-accent-faded: #ebf0fd; //d5e0fd
+
+$color-success: #4cd764;
+$color-error: #d0021b;
+
+$color-shade-0: #ffffff;
+$color-shade-1: #fafafa;
+$color-shade-2: #f5f5f5;
+$color-shade-3: #f0f0f0;
+$color-shade-4: #ebebeb;
+
+$color-black-0: rgba(0,0,0,1);
+$color-black-1: rgba(0,0,0,0.87); // text
+$color-black-2: rgba(0,0,0,0.54); // secondary text / icons
+$color-black-3: rgba(0,0,0,0.26); // disabled/hint text
+$color-black-4: rgba(0,0,0,0.12); // dividers
+
+$color-white-0: rgba(255,255,255,1);
+$color-white-1: rgba(255,255,255,1); // text / icons
+$color-white-2: rgba(255,255,255,0.7); // secondary text
+$color-white-3: rgba(255,255,255,0.3); // disabled/hint text
+$color-white-4: rgba(255,255,255,0.12); // dividers
+
+// metrics
+
+$increment: 8px;
+
+$drawer-width: 226px;
+
+$z-dim: 5;
+
+$z-tile-body-frame: 1;
+$z-tile-hover: $z-tile-body-frame + 1;
+
+$z-drawer: $z-dim + 1;
+$z-drawer-search: $z-drawer + 1;
+
+$z-navbar: $z-dim - 2;
+$z-drop-enable: $z-navbar + 1;
+$z-drop-menu: $z-dim + 1;
+
+$z-sidebar: $z-navbar + 1;
+
+$z-dialog-under: $z-dim - 1;
+$z-dialog-over: $z-dim + 1;

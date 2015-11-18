@@ -322,6 +322,16 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 
 div.chips > div.split-cell + div.split-cell {
   padding-top: 4px; }
+div.chips ul.suggestions {
+  position: absolute;
+  z-index: 19;
+  background: white;
+  list-style: none;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
+  padding: 0; }
+  div.chips ul.suggestions li {
+    padding: 5px;
+    font-size: 16px; }
 div.chips ul.chips {
   padding: 8px 0 0; }
   div.chips ul.chips > li.chip {

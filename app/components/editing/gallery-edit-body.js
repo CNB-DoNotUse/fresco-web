@@ -2,10 +2,13 @@ var React = require('react'),
 	ReactDOM = require('react-dom'),
 	Tag = require('./tag.js'),
 	EditPost = require('./edit-post.js'),
-	EditMap = require('./edit-map.js');
+	EditMap = require('./edit-map.js'),
+	StoriesAutoComplete = require('./stories-autocomplete.js'),
+	BylineEdit = require('./byline-edit.js');
 
 /**
  * Gallery Edit Body, inside of the GalleryEditClass
+ * @description manages all of the input fields, and speaks to parent
  */
 
 var GalleryEditBody = React.createClass({
@@ -43,12 +46,16 @@ var GalleryEditBody = React.createClass({
 
 				<div className="dialog-col col-xs-12 col-md-7 form-group-default">
 
-					<GalleryEditByline gallery={this.state.gallery} />
+					<BylineEdit gallery={this.state.gallery} />
 					
 					<div className="dialog-row">
 										
 						<div className="form-control-wrapper">
-							<textarea id="gallery-caption-input" type="text" className="form-control" defaultValue={this.state.gallery.caption} />
+							<textarea 
+								id="gallery-edit-caption" 
+								type="text" 
+								className="form-control" 
+								defaultValue={this.state.gallery.caption} />
 							<div className="floating-label">Caption</div>
 							<span className="material-input"></span>
 						</div>
@@ -56,7 +63,9 @@ var GalleryEditBody = React.createClass({
 					</div>
 					
 					<GalleryEditTags ref='tags' tags={this.state.gallery.tags} />
-					<GalleryEditStories ref='stories' stories={this.state.gallery.related_stories} />
+					<GalleryEditStories ref='stories' 
+						stories={this.state.gallery.related_stories} 
+						updateRelatedStories={this.updateRelatedStories} />
 					<GalleryEditArticles ref='articles' articles={this.state.gallery.articles} />
 					
 					{highlightCheckbox}
@@ -70,126 +79,33 @@ var GalleryEditBody = React.createClass({
 			</div>
 
 		);
+	},
+
+	updateRelatedStories: function(updatedStories){
+
+		this.state.gallery.related_stories = updatedStories;
+
+		this.props.updateGallery(this.state.gallery);
+
+	},
+
+	updateArticles: function(articles){
+
+		this.state.gallery.articles = articles;
+
+		this.props.updateGallery(gallery);
+
+	},
+
+	updatedTags: function(tags){
+
+		this.state.gallery.tags = tags;
+
+		this.props.updateGallery(gallery);
+
 	}
 
 });
-
-/**
- * Component for managing byline editing
- */
-
-var GalleryEditByline = React.createClass({
-
-	displayName: 'GalleryEditByline',
-
-	/**
-	 * Renders byline field
-	 * @description Three types of instances for the byline
-	 */
-	render: function(){
-
-		var post = this.props.gallery.posts[0];
-
-		//If the post contains twitter info, show twitter byline editor
-		if (post.meta && post.meta.twitter) {
-
-			var isHandleByline = post.byline.indexOf('@') == 0;
-
-			if (isHandleByline)
-				byline = post.meta.twitter.handle;
-			else 
-				byline = post.meta.twitter.user_name;
-
-			return (
-
-				<div className="dialog-row">
-					<div className="split byline-section" id="gallery-byline-twitter">
-						<div className="split-cell drop">
-							<button className="toggle-drop md-type-subhead">
-								<span className="gallery-byline-text">{byline}</span>
-								<span className="mdi mdi-menu-down icon pull-right"></span>
-							</button>
-							<div className="drop-menu panel panel-default byline-drop">
-								<div className="toggle-drop toggler md-type-subhead">
-									<span className="gallery-byline-text">{post.meta.twitter.handle}</span>
-									<span className="mdi mdi-menu-up icon pull-right"></span>
-								</div>
-								<div className="drop-body">
-									<ul className="md-type-subhead" id="gallery-byline-twitter-options">
-										<li className={'gallery-byline-type ' + (isHandleByline ? 'active' : '')}>
-											{post.meta.twitter.handle}
-										</li>
-										<li className={'gallery-byline-type ' + (!isHandleByline ? 'active' : '')}>
-											{post.meta.twitter.user_name}
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div className="split-cell">
-							<div className="form-control-wrapper">
-								<input type="text" className="form-control" defaultValue={post.meta.other_origin.affiliation} id="gallery-twitter-affiliation-input" />
-								<div className="floating-label">Affiliation</div>
-								<span className="material-input"></span>
-							</div>
-						</div>
-					</div>
-				</div>
-			);
-
-		}
-		//If the post doesn't have an owner, but has a curator i.e. manually imported
-		else if(!post.owner && post.curator){
-
-			var name = '',
-				affiliation = '';
-
-			if (post.meta.other_origin) {
-				name = post.meta.other_origin.name;
-				affiliation = post.meta.other_origin.affiliation;
-			}
-			
-			return (
-				<div className="dialog-row">
-					<div className="split byline-section" id="gallery-byline-other-origin">
-						<div className="split-cell" id="gallery-name-span">
-							<div className="form-control-wrapper">
-								<input type="text" className="form-control empty" defaultValue={name} id="gallery-name-input" />
-								<div className="floating-label">Name</div>
-								<span className="material-input"></span>
-							</div>
-						</div>
-						<div className="split-cell">
-							<div className="form-control-wrapper">
-								<input type="text" className="form-control empty" defaultValue={affiliation} id="gallery-affiliation-input" />
-								<div className="floating-label">Affiliation</div>
-								<span className="material-input"></span>
-							</div>
-						</div>
-					</div>
-				</div>
-
-			);
-
-		}
-		//If organically submitted content i.e. user submitted the gallery, can't change the byline
-		else{
-			return (
-				<div className="dialog-row">
-					<span className="byline-section" id="gallery-byline-span">
-						<div className="form-control-wrapper">
-							<input id="gallery-byline-input" defaultValue={post.byline} type="text" className="form-control" disabled={true} />
-							<div className="floating-label">Byline</div>
-							<span className="material-input"></span>
-						</div>
-					</span>
-				</div>
-			);
-		}
-	}
-
-});
-
 
 /**
  * Component for managing added/removed tags
@@ -279,13 +195,17 @@ var GalleryEditStories = React.createClass({
 
 	},
 
-
 	componentWillReceiveProps: function(nextProps){
 		
 		this.setState({ stories: nextProps.stories });
 	
 	},
+	//Add's story element
+	addStory: function(newStory){
 
+		this.props.updateRelatedStories(this.state.stories.concat(newStory));
+
+	},
 
 	render: function(){
 
@@ -308,12 +228,7 @@ var GalleryEditStories = React.createClass({
 			<div className="dialog-row split chips">
 				
 				<div className="split-cell">
-					<input 
-						id="gallery-stories-input" 
-						type="text" 
-						className="form-control floating-label" 
-						placeholder="Stories"
-						onChange={this.change} />
+					<StoriesAutoComplete addStory={this.addStory} stories={this.state.stories} />
 					<ul id="gallery-stories-list" className="chips">
 						{stories}
 					</ul>
@@ -336,10 +251,7 @@ var GalleryEditStories = React.createClass({
 		//Remove from index
 		updatedStories.splice(index, 1);
 
-		//Update state
-		this.setState({
-			stories: updatedStories
-		});
+		this.props.updateRelatedStories(updatedStories);
 
 	}
 });
@@ -412,7 +324,6 @@ var GalleryEditArticles = React.createClass({
  * Component for managing gallery map representation
  */
 
-
 var GalleryEditMap = React.createClass({
 
 	displayName: 'GalleryEditMap',
@@ -454,7 +365,8 @@ var GalleryEditMap = React.createClass({
 							<input 
 								id="gallery-location-input" 
 								type="text" className="form-control floating-label" 
-								placeholder="Location" />
+								placeholder="Location"
+								defaultValue={this.props.gallery.posts[0].location.address} />
 						</div>
 						<EditMap gallery={this.props.gallery} />
 					</div>
@@ -486,15 +398,17 @@ var GalleryEditPosts = React.createClass({
 
 		this.setState({	
 			posts: nextProps.posts,
-			files: nextProps.files
+			files: nextProps.files ? nextProps.files : []
 		});
 
 	},
 
-	componentDidUpdate: function(){
-		
+	componentDidMount: function(){
 		$(this.refs.galleryEditPosts).frick();
+	},
 
+	componentDidUpdate: function(){
+		$(this.refs.galleryEditPosts).frick();
 	},
 
 	render: function(){
@@ -507,6 +421,8 @@ var GalleryEditPosts = React.createClass({
 
 		var files = [];
 
+		console.log(this.state);
+
 		for (var i = 0; i < this.state.files.length; i++){
 			
 			files.push(<EditPost key={i} file={this.state.files[i]} source={this.state.files.sources[i]} />);
@@ -515,7 +431,7 @@ var GalleryEditPosts = React.createClass({
 
 		return(
 			<div className="dialog-col col-xs-12 col-md-5">
-				<div ref='galleryEditPosts' className="edit-gallery-images">{posts}{files}</div>
+				<div ref='galleryEditPosts' id="gallery-edit-images">{posts}{files}</div>
 			</div>
 		);
 

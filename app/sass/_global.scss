@@ -1,0 +1,29 @@
+img {
+	.img-circle {
+	  width: 40px;
+	  height: 40px;
+	}
+}
+
+
+nav, .mdi, .sidebar {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
+/* Google Autocomplete styles */
+.google-autocomplete::-webkit-input-placeholder {
+  color: rgba(0,0,0,0.12) !important;
+}
+.google-autocomplete:-moz-placeholder {
+  color: rgba(0,0,0,0.12) !important;
+}
+.google-autocomplete::-moz-placeholder {
+  color: rgba(0,0,0,0.12) !important;
+}
+.google-autocomplete::-ms-input-placeholder {
+  color: rgba(0,0,0,0.12) !important;
+}
