@@ -19,7 +19,7 @@ var GalleryCell = React.createClass({
 	render : function(){
 
 		var timestamp = this.props.gallery.time_created;
-		var timeString = getTimeAgo(Date.now(), this.props.gallery.time_created);
+		var timeString = formatTime(this.props.gallery.time_created);
 		var size = this.props.half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 		var location = 'No Location';
 
@@ -143,7 +143,7 @@ var GalleryCellImages = React.createClass({
 
 			return (
 				<div className="flex-col">
-					<div className="flex-row">	
+					<div className="flex-row">
 						<GalleryCellImage post={this.props.posts[0]} size="small" />
 						<GalleryCellImage post={this.props.posts[1]} size="small" />
 						<GalleryCellImage post={this.props.posts[4]} size="small" />
@@ -173,7 +173,7 @@ var GalleryCellImage = React.createClass({
 	render : function(){
 		return (
 			<div className="img">
-				<img className="img-cover" 
+				<img className="img-cover"
 					data-src={formatImg(this.props.post.image, this.props.size)}
 					src={formatImg(this.props.post.image, this.props.size)} />
 			</div>

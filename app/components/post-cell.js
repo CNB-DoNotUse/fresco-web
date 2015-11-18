@@ -21,12 +21,12 @@ var PostCell = React.createClass({
 	render : function(){
 
 		var timestamp = this.props.post.time_created;
-		var timeString = getTimeAgo(Date.now(), this.props.post.time_created);
+		var timeString = formatTime(this.props.post.time_created);
 		var address = this.props.post.location.address || 'No Location';
 		var size = this.props.sizes.large;
 
 		//Class name for post tile icons
-		var statusClass = 'mdi icon pull-right '; 
+		var statusClass = 'mdi icon pull-right ';
 		statusClass += this.props.post.video == null ? 'mdi-file-image-box ' : 'mdi-movie ';
 		statusClass += this.props.post.purchased ? 'available ' : 'md-type-black-disabled ';
 
@@ -48,9 +48,9 @@ var PostCell = React.createClass({
 					</div>
 				</div>
 				<div className="tile-foot">
-					<PostCellActions 
-						post={this.props.post} 
-						purchased={this.props.purchased} 
+					<PostCellActions
+						post={this.props.post}
+						purchased={this.props.purchased}
 						rank={this.props.rank}
 						editable={this.props.editable} />
 					<div>
@@ -78,22 +78,22 @@ var PostCellStories = React.createClass({
 
 	displayName : 'Post Cell Stories',
 
-	render : function(){	
+	render : function(){
 
 		var stores = ''
 
 		if(this.props.stories){
 
 			var stories = this.props.stories.map(function (story, i) {
-		    
+
 		      return (
-		    
+
 		        <li key={i}>
 		        	<a href={"/story/" + story._id}>{story.title}</a>
 		        </li>
-		    
+
 		      )
-		    
+
 		    });
 
 		}
@@ -106,7 +106,7 @@ var PostCellStories = React.createClass({
 });
 
 /**
- * Post Cell Actions 
+ * Post Cell Actions
  * Description : Set of icons on the the post cell's hover
  */
 
@@ -120,22 +120,22 @@ var PostCellActions = React.createClass({
 			key = 0;
 		//Check if the purchased property is set on the post
 		if (this.props.post.purchased !== null){
-			
+
 			//Check if we're CM or Admin
 			if(typeof this.props.rank !== 'undefined' && this.props.rank >= 1) {
-				
+
 				if(this.props.post.purhcased === false){
 
-					if(this.props.editable) 
+					if(this.props.editable)
 						actions.push(<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.edit} key={key++}></span>);
-					
+
 					actions.push(<span className="mdi mdi-download icon pull-right" onClick={this.download} key={key++}></span>);
 					actions.push(<span className="mdi mdi-cash icon pull-right" data-id={this.props.post._id} onClick={this.purchase} key={key++}></span>);
-					
+
 				}
 				else{
-					
-					if(this.props.editable) 
+
+					if(this.props.editable)
 						actions.push(<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.edit} key={key++}></span>);
 
 					actions.push(<span className="mdi mdi-download icon pull-right" onClick={this.download} key={key++}></span>);
@@ -146,16 +146,16 @@ var PostCellActions = React.createClass({
 			//Check if the post has been purchased
 			else if (this.props.post.purhcased === true)
 				actions.push(<span className="mdi mdi-download icon pull-right" onClick={this.download} key={key++}></span>);
-			
+
 			//Check if the post is not purhcased, and it is for sale
 			else if (this.props.post.purchased == false && forsale) {
-			
+
 				actions.push(<span class="mdi mdi-library-plus icon pull-right" key={key++}></span>);
 				actions.push(purhcase = <span class="mdi mdi-cash icon pull-right" data-id="' + post._id + '" key={key++}></span>);
-				
-			
+
+
 			}
-	
+
 		}
 
 		return (
@@ -196,11 +196,11 @@ var PostCellActions = React.createClass({
 			return $.snackbar({content:'Invalid post'});
 
 		alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", function (e) {
-		   
+
 		    if (e) {
-				
+
 				var assignment = null;
-				
+
 				if(typeof PAGE_Assignment !== 'undefined'){
 					assignment = PAGE_Assignment.assignment;
 				}
@@ -214,7 +214,7 @@ var PostCellActions = React.createClass({
 						assignment: (assignment ? assignment._id : null)
 					}),
 					success: function(result, status, xhr){
-						
+
 						if (result.err)
 							return this.error(null, null, result.err);
 
@@ -246,13 +246,13 @@ var PostCellActions = React.createClass({
 
 		console.log(this.props.post);
 
-		var href = this.props.post.video ? 
-					this.props.post.video.replace('videos/','videos/mp4/').replace('.m3u8','.mp4') 
-					: 
+		var href = this.props.post.video ?
+					this.props.post.video.replace('videos/','videos/mp4/').replace('.m3u8','.mp4')
+					:
 					this.props.post.image;
-		
+
 		var link = document.createElement("a");
-	    
+
 	    link.download = Date.now() + '.' + href.split('.').pop();
 	    link.href = href;
 	    link.click();

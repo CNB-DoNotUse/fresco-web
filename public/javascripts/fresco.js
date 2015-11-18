@@ -17,11 +17,11 @@ function attachOnImageLoadError(img, size){
 	size = size || 'medium';
 
 	img.error(function(){
-		
+
 		var _this = $(this),
 				timeout = parseInt(_this.prop('data-t') || 1),
 				lasttimeout = parseInt(_this.prop('data-lt') || 1);
-				
+
 		_this.prop('data-lt', timeout);
 		_this.prop('data-t', timeout + lasttimeout);
 		_this.prop('data-src', _this.prop('src'));
@@ -74,7 +74,7 @@ function getTimeAgo(now, timestamp){
     var intervals = {
 	        year: 31556926, month: 2629744, week: 604800, day: 86400, hour: 3600, minute: 60
 		};
-		
+
     var diff = now - timestamp;
 	diff = Math.floor(diff / 1000);
 
@@ -109,6 +109,23 @@ function getTimeAgo(now, timestamp){
     }
 }
 
+function setTimeDisplayType(timeFormat) {
+	window.timeFormat = timeFormat;
+	$('.timestring').each(function(i, elem) {
+		var timestamp = parseInt($(elem).data('timestamp'));
+		$(elem).text(formatTime(timestamp));
+	});
+}
+
+function formatTime(timestamp) {
+	if (!window.timeFormat || window.timeFormat == 'relative') {
+		return getTimeAgo(Date.now(), timestamp);
+	}
+	else if (window.timeFormat == 'absolute') {
+		return timestampToDate(timestamp);
+	}
+}
+
 function resolveError(err, _default){
 	switch(err){
 		case 'ERR_OUTLET_UNVERIFIED':
@@ -123,7 +140,7 @@ function resolveError(err, _default){
 			return _default || err.toString().capitalize();
 	}
 }
-	
+
 function formatImg(img, size){
 	if (!size || size == 'original')
 		return img;
@@ -164,7 +181,7 @@ $(document).ready(function() {
 		}
 		$(".dim.toggle-drop").toggleClass("toggled");
 	});
-	
+
 	//img links
 	$('.img-link').click(function(){
 		window.location.assign($(this).data('href'));
@@ -181,7 +198,7 @@ $(document).ready(function() {
           	 (e.which == 46 && $(this).val().indexOf('.') == -1)))
             e.preventDefault();
     });
-	
+
 	//Auto-resize textarea fields
 	$('textarea').on('change textInput input', function(e){
 		$(this).css('height', Math.min($(this).prop('scrollHeight'), 250) + 'px');
