@@ -6,8 +6,6 @@ var PAGE_Story = {
 	photoCount: $('.story-photos'),
 	videoCount: $('.story-videos'),
 	
-	
-
 	loadPosts: function(){
 		$.ajax({
 			url: API_URL + "/v1/story/posts?limit=15&offset="+PAGE_Story.offset+"&id="+PAGE_Story.story._id,

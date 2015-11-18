@@ -1,4 +1,5 @@
 jQuery.fn.frick = function(option1, option2){
+    
     var o = $(this[0]);
 
     if (option1 === undefined)

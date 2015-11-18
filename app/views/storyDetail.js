@@ -3,21 +3,21 @@ var isNode = require('detect-node'),
 	ReactDOM = require('react-dom'),
 	TopBar = require('./../components/topbar.js'),
 	PostList = require('./../components/post-list.js'),
-	GallerySidebar = require('./../components/gallery-sidebar.js'),
-	GalleryEdit = require('./../components/editing/gallery-edit.js'),
+	StorySidebar = require('./../components/Story-sidebar.js'),
+	StoryEdit = require('./../components/editing/Story-edit.js'),
 	App = require('./app.js');
 
 /**
- * Gallery Detail Parent Object, made of a side column and PostList
+ * Story Detail Parent Object, made of a side column and PostList
  */
 
- var GalleryDetail = React.createClass({
+ var StoryDetail = React.createClass({
 
- 	displayName: 'GalleryDetail',
+ 	displayName: 'StoryDetail',
 
  	getDefaultProps: function(){
  		return {
- 			gallery : {}
+ 			story : {}
  		};
  	},
 
@@ -31,18 +31,18 @@ var isNode = require('detect-node'),
  					verifiedToggle={false}
  					timeToggle={true}
  					chronToggle={true} />
- 				<GallerySidebar gallery={this.props.gallery} />
+ 				<StorySidebar Story={this.props.Story} />
  				<div className="col-sm-8 tall">
 	 				<PostList
 	 					rank={this.props.user.rank}
 	 					purchases={this.props.purchases}
-	 					posts={this.props.gallery.posts}
+	 					posts={this.props.Story.posts}
 	 					scrollable={false}
 	 					editable={false}
-	 					size='large' />
+	 					size='small' />
 				</div>
-				<GalleryEdit 
-					gallery={this.props.gallery}
+				<StoryEdit 
+					Story={this.props.Story}
 					user={this.props.user}	/>
  			</App>
  		);
@@ -53,15 +53,15 @@ var isNode = require('detect-node'),
 
 if(isNode){
 
-	module.exports = GalleryDetail;
+	module.exports = StoryDetail;
 }
 else{
 
 	ReactDOM.render(
-	  <GalleryDetail 
+	  <StoryDetail 
 	  user={window.__initialProps__.user} 
 	  purchases={window.__initialProps__.purchases} 
-	  gallery={window.__initialProps__.gallery}
+	  Story={window.__initialProps__.Story}
 	  title={window.__initialProps__.title} />,
 	  document.getElementById('app')
 	);

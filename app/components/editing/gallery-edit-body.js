@@ -22,8 +22,6 @@ var GalleryEditBody = React.createClass({
 
 		var highlightCheckbox = '';
 
-		console.log(this.state);
-
 		//Check if the rank is valid for toggling the highlighted state
 		if(this.props.user.rank && this.props.user.rank >= 1){
 
@@ -84,6 +82,10 @@ var GalleryEditByline = React.createClass({
 
 	displayName: 'GalleryEditByline',
 
+	/**
+	 * Renders byline field
+	 * @description Three types of instances for the byline
+	 */
 	render: function(){
 
 		var post = this.props.gallery.posts[0];
@@ -98,8 +100,8 @@ var GalleryEditByline = React.createClass({
 			else 
 				byline = post.meta.twitter.user_name;
 
-
 			return (
+
 				<div className="dialog-row">
 					<div className="split byline-section" id="gallery-byline-twitter">
 						<div className="split-cell drop">
@@ -114,8 +116,12 @@ var GalleryEditByline = React.createClass({
 								</div>
 								<div className="drop-body">
 									<ul className="md-type-subhead" id="gallery-byline-twitter-options">
-										<li className={'gallery-byline-type ' + (isHandleByline ? 'active' : '')}>{post.meta.twitter.handle}</li>
-										<li className={'gallery-byline-type ' + (!isHandleByline ? 'active' : '')}>{post.meta.twitter.user_name}</li>
+										<li className={'gallery-byline-type ' + (isHandleByline ? 'active' : '')}>
+											{post.meta.twitter.handle}
+										</li>
+										<li className={'gallery-byline-type ' + (!isHandleByline ? 'active' : '')}>
+											{post.meta.twitter.user_name}
+										</li>
 									</ul>
 								</div>
 							</div>
@@ -166,6 +172,7 @@ var GalleryEditByline = React.createClass({
 			);
 
 		}
+		//If organically submitted content i.e. user submitted the gallery, can't change the byline
 		else{
 			return (
 				<div className="dialog-row">

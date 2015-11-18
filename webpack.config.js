@@ -5,6 +5,9 @@ module.exports = [
       highlights: './app/views/highlights.js',
       galleries: './app/views/galleries.js',
       photos: './app/views/photos.js',
+      videos: './app/views/videos.js',
+      stories: './app/views/stories.js',
+      storyDetail: './app/views/storyDetail.js',
       galleryDetail: './app/views/galleryDetail.js'
     },
     output: {
@@ -28,6 +31,9 @@ module.exports = [
       highlights: './app/views/highlights.js',
       galleries: './app/views/galleries.js',
       photos: './app/views/photos.js',
+      videos: './app/views/videos.js',
+      stories: './app/views/stories.js',
+      storyDetail: './app/views/storyDetail.js',
       galleryDetail: './app/views/galleryDetail.js',
     },
     target: "node",

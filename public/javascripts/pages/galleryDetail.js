@@ -88,7 +88,7 @@
 						posts: this.props.gallery.posts,
 						scrollable: false,
 						editable: false,
-						size: 'small' })
+						size: 'large' })
 				),
 				React.createElement(GalleryEdit, {
 					gallery: this.props.gallery,
@@ -20501,7 +20501,7 @@
 				var purchased = purchases ? purchases.indexOf(post._id) != -1 : null;
 
 				return React.createElement(PostCell, {
-					size: 'large',
+					size: this.props.size,
 					post: post,
 					rank: rank,
 					purchaed: purchased,
@@ -21011,8 +21011,6 @@
 
 			var highlightCheckbox = '';
 
-			console.log(this.state);
-
 			//Check if the rank is valid for toggling the highlighted state
 			if (this.props.user.rank && this.props.user.rank >= 1) {
 
@@ -21076,6 +21074,10 @@
 
 		displayName: 'GalleryEditByline',
 
+		/**
+	  * Renders byline field
+	  * @description Three types of instances for the byline
+	  */
 		render: function () {
 
 			var post = this.props.gallery.posts[0];
@@ -21206,27 +21208,29 @@
 							)
 						)
 					);
-				} else {
-					return React.createElement(
-						'div',
-						{ className: 'dialog-row' },
-						React.createElement(
-							'span',
-							{ className: 'byline-section', id: 'gallery-byline-span' },
+				}
+				//If organically submitted content i.e. user submitted the gallery, can't change the byline
+				else {
+						return React.createElement(
+							'div',
+							{ className: 'dialog-row' },
 							React.createElement(
-								'div',
-								{ className: 'form-control-wrapper' },
-								React.createElement('input', { id: 'gallery-byline-input', defaultValue: post.byline, type: 'text', className: 'form-control', disabled: true }),
+								'span',
+								{ className: 'byline-section', id: 'gallery-byline-span' },
 								React.createElement(
 									'div',
-									{ className: 'floating-label' },
-									'Byline'
-								),
-								React.createElement('span', { className: 'material-input' })
+									{ className: 'form-control-wrapper' },
+									React.createElement('input', { id: 'gallery-byline-input', defaultValue: post.byline, type: 'text', className: 'form-control', disabled: true }),
+									React.createElement(
+										'div',
+										{ className: 'floating-label' },
+										'Byline'
+									),
+									React.createElement('span', { className: 'material-input' })
+								)
 							)
-						)
-					);
-				}
+						);
+					}
 		}
 
 	});
@@ -21826,11 +21830,16 @@
 
 			var addMore = '';
 
+			//Check if the gallery has been imported, to show the 'Add More' button or not
 			if (this.state.gallery.imported) addMore = React.createElement(
 				'button',
 				{ id: 'gallery-add-more-button', type: 'button', onClick: this.addMore, className: 'btn btn-flat' },
 				'Add More'
 			);
+
+			inputStyle = {
+				display: 'none'
+			};
 
 			return React.createElement(
 				'div',
@@ -21840,8 +21849,8 @@
 					type: 'file',
 					accept: 'image/*,video/*,video/mp4',
 					multiple: true,
-					style: style,
 					ref: 'fileUpload',
+					style: inputStyle,
 					onChange: this.fileUploaderChanged }),
 				React.createElement(
 					'button',
@@ -21881,6 +21890,7 @@
 			gallery.related_stories = [];
 			gallery.articles = [];
 			gallery.location = {};
+			gallery.files = [];
 
 			this.props.updateGallery(gallery);
 		},
@@ -21921,74 +21931,131 @@
 
 			$(".toggle-gedit").toggleClass("toggled");
 		},
-		delete: function () {},
+		delete: function () {
+
+			var gallery = this.state.gallery;
+
+			alertify.confirm("Are you sure you want to delete this gallery?", function (confirmed) {
+
+				if (!confirmed) return;
+
+				//Consturct params with gallery id
+				var params = {
+					id: gallery._id
+				};
+
+				//Send delete request
+				$.ajax({
+					url: "/scripts/gallery/remove",
+					method: 'post',
+					contentType: "application/json",
+					data: params,
+					dataType: 'json',
+					success: function (result) {
+
+						if (result.err) {
+							return this.error(null, null, result.err);
+						};
+
+						location.href = document.referrer || '/highlights';
+					},
+					error: function (xhr, status, error) {
+						$.snackbar({
+							content: 'Couldn\'t successfully delete this gallery!'
+						});
+					}
+				});
+			}, this);
+		},
 		//Save function
 		save: function () {
 
-			var caption = $('#gallery-caption-input').val();
-			var byline = $('.gallery-byline-text').eq(0).text();
-			var other_origin = null;
-			var tags = $('#gallery-tags-list .tag').text().split('#').filter(function (t) {
-				return t.length > 0;
-			});
-			var posts = $('.edit-gallery-images').frick('frickPosts');
-			var visibility = null;
+			console.log(this.state.gallery);
 
-			if ($('#gallery-other-origin').css('display') !== 'none') {
-				byline = $('#gallery-name-input').val().trim() + ' / ' + $('#gallery-affiliation-input').val().trim();
-				other_origin = {
-					name: $('#gallery-name-input').val().trim(),
-					affiliation: $('#gallery-affiliation-input').val().trim()
-				};
-			}
+			// var caption = this.state.gallery.caption;
 
-			var added = posts.filter(function (id) {
-				return id.indexOf('NEW') !== -1;
-			});
-			added = added.map(function (index) {
-				index = index.split('=')[1];
-				return GALLERY_EDIT.files[index];
-			});
+			// var byline = $('.gallery-byline-text').eq(0).text ();
 
-			posts = posts.filter(function (id) {
-				return id.indexOf('NEW') == -1;
-			});
+			// /*
 
-			if (posts.length == 0) return $.snackbar({ content: "Galleries must have at least 1 post" });
+			// 	Byline : Send over other_origin object
 
-			if ($('#gallery-highlight-input').length !== 0 && galleryEditVisibilityChanged == 1) visibility = $('#gallery-highlight-input').prop('checked') ? 2 : 1;
+			// 		//Twitter
+			// 			other_origin = {
+			// 				affiliation: whatevers in the field
+			// 				name: handle or user_name
+			// 			}
+			// 			byline = name + affiliation ? ' / ' + affiliation : 'via Fresco News'
+			// 		//Manual Import
 
-			updateGallery(caption, byline, tags, posts, visibility, other_origin, function (err, GALLERY_EDIT) {
+			//  */
 
-				if (err) return $.snackbar({ content: resolveError(err) });
+			// var other_origin = null;
 
-				if (added.length > 0) {
+			// var tags = $('#gallery-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
 
-					var data = new FormData();
+			// var posts = $('.edit-gallery-images').frick('frickPosts');
 
-					for (var index in added) {
-						data.append(index, added[index]);
-					}
+			// var visibility = null;
 
-					data.append('gallery', GALLERY_EDIT._id);
+			// if ($('#gallery-other-origin').css('display') !== 'none') {
+			// 	byline = $('#gallery-name-input').val().trim() + ' / ' + $('#gallery-affiliation-input').val().trim();
+			// 	other_origin = {
+			// 		name: $('#gallery-name-input').val().trim(),
+			// 		affiliation: $('#gallery-affiliation-input').val().trim(),
+			// 	}
+			// }
 
-					$.ajax({
-						url: '/scripts/gallery/addpost',
-						type: 'POST',
-						data: data,
-						processData: false,
-						contentType: false,
-						cache: false,
-						dataType: 'json',
-						success: function (result, status, xhr) {
-							window.location.reload();
-						},
-						error: function (xhr, status, error) {
-							$.snackbar({ content: resolveError(err) });
-						}
-					});
-				} else window.location.reload();
-			});
+			// var added = posts.filter(function(id) {return id.indexOf('NEW') !== -1});
+
+			// added = added.map(function(index) {
+			// 	index = index.split('=')[1];
+			// 	return GALLERY_EDIT.files[index];
+			// });
+
+			// posts = posts.filter(function(id) {return id.indexOf('NEW') == -1});
+
+			// if (posts.length == 0)
+			// 	return $.snackbar({content:"Galleries must have at least 1 post"});
+
+			// if( $('#gallery-highlight-input').length !== 0 && galleryEditVisibilityChanged == 1)
+			// 	visibility = $('#gallery-highlight-input').prop('checked') ? 2 : 1;
+
+			// updateGallery(caption, byline, tags, posts, visibility, other_origin, function(err, GALLERY_EDIT){
+
+			// 	if (err)
+			// 		return $.snackbar({content: resolveError(err)});
+
+			// 	if (added.length > 0) {
+
+			// 		var data = new FormData();
+
+			// 		for (var index in added) {
+			// 			data.append(index, added[index]);
+			// 		}
+
+			// 		data.append('gallery', GALLERY_EDIT._id);
+
+			// 		$.ajax({
+			// 			url: '/scripts/gallery/addpost',
+			// 			type: 'POST',
+			// 			data: data,
+			// 			processData: false,
+			// 			contentType: false,
+			// 			cache: false,
+			// 			dataType: 'json',
+			// 			success: function(result, status, xhr){
+			// 				window.location.reload();
+			// 			},
+			// 			error: function(xhr, status, error){
+			// 				$.snackbar({content: resolveError(err)});
+			// 			}
+			// 		});
+
+			// 	}
+			// 	else
+			// 		window.location.reload();
+			// });
 		}
 
 	});

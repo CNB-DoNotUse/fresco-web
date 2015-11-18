@@ -53,12 +53,12 @@ module.exports =
 	    App = __webpack_require__(8);
 
 	/**
-	 * Photos Parent Object (composed of PhotoList and Navbar)
+	 * Videos Parent Object (composed of Post and Navbar)
 	 */
 
-	var Photos = React.createClass({
+	var Videos = React.createClass({
 
-		displayName: 'Photos',
+		displayName: 'Videos',
 
 		getDefaultProps: function () {
 			return {
@@ -92,7 +92,7 @@ module.exports =
 				limit: 14,
 				verified: true,
 				offset: passedOffset,
-				type: 'photo'
+				type: 'video'
 			};
 
 			$.ajax({
@@ -116,10 +116,10 @@ module.exports =
 
 	if (isNode) {
 
-		module.exports = Photos;
+		module.exports = Videos;
 	} else {
 
-		ReactDOM.render(React.createElement(Photos, {
+		ReactDOM.render(React.createElement(Videos, {
 			user: window.__initialProps__.user,
 			purchases: window.__initialProps__.purchases }), document.getElementById('app'));
 	}

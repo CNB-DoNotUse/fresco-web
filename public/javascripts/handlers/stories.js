@@ -3,8 +3,6 @@ var PAGE_Stories = {
 	loading: false,
 	verified: true,
 
-
-
 	refreshList: function(){
 		$('.container-fluid.grid').scrollTop(0);
 		PAGE_Stories.offset = 0;

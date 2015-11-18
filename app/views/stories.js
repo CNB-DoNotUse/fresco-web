@@ -1,60 +1,53 @@
 var isNode = require('detect-node'),
 	React = require('react'),
 	ReactDOM = require('react-dom'),
-	PostList = require('./../components/post-list.js'),
 	TopBar = require('./../components/topbar.js'),
+	StoryList = require('./../components/story-list.js')
 	App = require('./app.js');
 
 /**
- * Photos Parent Object (composed of PhotoList and Navbar)
+ * Stories Parent Object, contains StoryList composed of StoryCells
  */
 
-var Photos = React.createClass({
+var Stories = React.createClass({
 
-	displayName: 'Photos',
-
-	getDefaultProps: function(){
-		return {
-			purchases : []
-		};
-	},
+	displayName: 'Stories',
 
 	render: function(){
 
 		return (
 			<App user={this.props.user}>
 				<TopBar 
-					title="Photos"
+					title="Stories"
 					timeToggle={true}
-					verifiedToggle={true}
-					chronToggle={true} />
-				<PostList
-					loadPosts={this.loadPosts}
-					rank={this.props.user.rank}
-					purchases={this.props.purchases}
-					size='small' />
+					tagToggle={true} />
+				<StoryList 
+					loadStories={this.loadStories}
+					scrollable={true} />
 			</App>
 		);
 
 	},
 
 	//Returns array of posts with offset and callback, used in child PostList
-	loadPosts: function(passedOffset, callback){
+	loadStories: function(passedOffset, callback){
 
 		var endpoint = '/v1/post/list',
 				params = {
-					limit: 14,
+					limit: 10,
 					verified : true,
+					invalidate: 1,
 					offset: passedOffset,
-					type: 'photo'
 				};
 
 		$.ajax({
-			url:  API_URL + endpoint,
+			url:  API_URL + '/v1/story/recent',
 			type: 'GET',
 			data: params,
 			dataType: 'json',
 			success: function(response, status, xhr){
+
+				console.log(response);
 
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
@@ -64,27 +57,26 @@ var Photos = React.createClass({
 
 			},
 			error: function(xhr, status, error){
-				$.snackbar({content: resolveError(error)});
+				$.snackbar({
+					content:  'Couldn\'t fetch any stories!'
+				});
 			}
 
 		});
-
 	}
 
 });
 
 if(isNode){
 
-	module.exports = Photos;
+	module.exports = Stories;
 
 }
 else{
 
 	ReactDOM.render(
-	 	<Photos 
-	 		user={window.__initialProps__.user} 
-	 		purchases={window.__initialProps__.purchases} />,
-		document.getElementById('app')
+	  <Stories user={window.__initialProps__.user} />,
+	  document.getElementById('app')
 	);
 
 }

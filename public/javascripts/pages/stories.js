@@ -47,23 +47,17 @@
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
-	    PostList = __webpack_require__(167),
 	    TopBar = __webpack_require__(163),
-	    App = __webpack_require__(164);
+	    StoryList = __webpack_require__(176);
+	App = __webpack_require__(164);
 
 	/**
-	 * Photos Parent Object (composed of PhotoList and Navbar)
+	 * Stories Parent Object, contains StoryList composed of StoryCells
 	 */
 
-	var Photos = React.createClass({
+	var Stories = React.createClass({
 
-		displayName: 'Photos',
-
-		getDefaultProps: function () {
-			return {
-				purchases: []
-			};
-		},
+		displayName: 'Stories',
 
 		render: function () {
 
@@ -71,41 +65,42 @@
 				App,
 				{ user: this.props.user },
 				React.createElement(TopBar, {
-					title: 'Photos',
+					title: 'Stories',
 					timeToggle: true,
-					verifiedToggle: true,
-					chronToggle: true }),
-				React.createElement(PostList, {
-					loadPosts: this.loadPosts,
-					rank: this.props.user.rank,
-					purchases: this.props.purchases,
-					size: 'small' })
+					tagToggle: true }),
+				React.createElement(StoryList, {
+					loadStories: this.loadStories,
+					scrollable: true })
 			);
 		},
 
 		//Returns array of posts with offset and callback, used in child PostList
-		loadPosts: function (passedOffset, callback) {
+		loadStories: function (passedOffset, callback) {
 
 			var endpoint = '/v1/post/list',
 			    params = {
-				limit: 14,
+				limit: 10,
 				verified: true,
-				offset: passedOffset,
-				type: 'photo'
+				invalidate: 1,
+				offset: passedOffset
 			};
 
 			$.ajax({
-				url: API_URL + endpoint,
+				url: API_URL + '/v1/story/recent',
 				type: 'GET',
 				data: params,
 				dataType: 'json',
 				success: function (response, status, xhr) {
 
+					console.log(response);
+
 					//Do nothing, because of bad response
 					if (!response.data || response.err) callback([]);else callback(response.data);
 				},
 				error: function (xhr, status, error) {
-					$.snackbar({ content: resolveError(error) });
+					$.snackbar({
+						content: 'Couldn\'t fetch any stories!'
+					});
 				}
 
 			});
@@ -115,12 +110,10 @@
 
 	if (isNode) {
 
-		module.exports = Photos;
+		module.exports = Stories;
 	} else {
 
-		ReactDOM.render(React.createElement(Photos, {
-			user: window.__initialProps__.user,
-			purchases: window.__initialProps__.purchases }), document.getElementById('app'));
+		ReactDOM.render(React.createElement(Stories, { user: window.__initialProps__.user }), document.getElementById('app'));
 	}
 
 /***/ },
@@ -19722,91 +19715,7 @@
 
 /***/ },
 /* 160 */,
-/* 161 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(159);
-
-	/** //
-
-	Description : Suggestion Column
-
-	// **/
-
-	/**
-	 * Suggestion List Parent Object
-	 */
-
-	var SuggestionList = React.createClass({
-
-		displayName: 'SuggestionList',
-
-		getInitialState: function () {
-			return {
-				stories: []
-			};
-		},
-
-		componentDidMount: function () {
-
-			self = this;
-
-			$.ajax({
-				url: API_URL + "/v1/story/recent",
-				type: 'GET',
-				data: {
-					limit: 3
-				},
-				dataType: 'json',
-				success: function (response, status, xhr) {
-
-					//Do nothing, because of bad response
-					if (!response.data || response.err) return;
-
-					//Set galleries from successful response
-					self.setState({
-						stories: response.data
-					});
-				},
-				error: function (xhr, status, error) {
-					$.snackbar({ content: resolveError(error) });
-				}
-			});
-		},
-
-		render: function () {
-
-			return React.createElement(
-				'div',
-				{ className: 'col-md-4' },
-				React.createElement(
-					'h3',
-					{ className: 'md-type-button md-type-black-secondary' },
-					'Trending Stories'
-				),
-				React.createElement(
-					'ul',
-					{ className: 'md-type-subhead trending-stories' },
-					this.state.stories.map(function (story, i) {
-						return React.createElement(
-							'li',
-							{ key: i },
-							React.createElement(
-								'a',
-								{ href: '/story/' + story._id },
-								story.title
-							)
-						);
-					})
-				)
-			);
-		}
-	});
-
-	module.exports = SuggestionList;
-
-/***/ },
+/* 161 */,
 /* 162 */,
 /* 163 */
 /***/ function(module, exports, __webpack_require__) {
@@ -20411,60 +20320,55 @@
 	module.exports = config;
 
 /***/ },
-/* 167 */
+/* 167 */,
+/* 168 */,
+/* 169 */,
+/* 170 */,
+/* 171 */,
+/* 172 */,
+/* 173 */,
+/* 174 */,
+/* 175 */,
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	ReactDOM = __webpack_require__(159), SuggestionList = __webpack_require__(161);
-	PostCell = __webpack_require__(168);
+	ReactDOM = __webpack_require__(159), StoryCell = __webpack_require__(177);
 
 	/** //
 
-	Description : List for a set of posts used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
+	Description : List for a set of stories used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
 
 	// **/
 
 	/**
-	 * Post List Parent Object 
+	 * Story List Parent Object 
 	 */
 
-	var PostList = React.createClass({
+	var StoryList = React.createClass({
 
-		displayName: 'Post List',
+		displayName: 'StoryList',
 
 		getInitialState: function () {
 			return {
-				offset: 0,
-				posts: [],
-				loading: false
-			};
-		},
-
-		getDefaultProps: function () {
-			return {
-				size: 'small',
-				editable: true
+				stories: []
 			};
 		},
 
 		componentDidMount: function () {
 
-			//Check if list is initialzied with posts
-			if (this.props.posts) return;
-
-			var self = this;
+			self = this;
 
 			//Access parent var load method
-			this.props.loadPosts(0, function (posts) {
+			this.props.loadStories(0, function (stories) {
 
-				var offset = posts ? posts.length : 0;
+				var offset = stories ? stories.length : 0;
 
-				//Set posts from successful response
+				//Set stories from successful response
 				self.setState({
-					posts: posts,
-					offset: offset
+					stories: stories
 				});
-			});
+			}, this);
 		},
 
 		//Scroll listener for main window
@@ -20473,53 +20377,48 @@
 			var grid = this.refs.grid;
 
 			//Check that nothing is loading and that we're at the end of the scroll,
-			//and that we have a parent bind to load  more posts
-			if (!this.state.loading && grid.scrollTop === grid.scrollHeight - grid.offsetHeight && this.props.loadPosts) {
+			//and that we have a parent bind to load  more stories
+			if (!this.state.loading && grid.scrollTop === grid.scrollHeight - grid.offsetHeight && this.props.loadStories) {
 
-				//Global store `this`
-				var self = this;
+				self = this;
 
 				//Set that we're loading
-				self.setState({ loading: true });
+				this.setState({ loading: true });
 
 				//Run load on parent call
-				this.props.loadPosts(this.state.offset, function (posts) {
+				this.props.loadStories(this.state.offset, function (stories) {
 
-					if (!posts) return;
+					if (!stories) return;
 
-					var offset = self.state.posts.length + posts.length;
+					var offset = self.state.stories.length + stories.length;
 
 					//Set galleries from successful response, and unset loading
 					self.setState({
-						posts: self.state.posts.concat(posts),
+						stories: self.state.stories.concat(stories),
 						offset: offset,
 						loading: false
 					});
-				});
+				}, this);
 			}
 		},
 		render: function () {
 
-			//Check if list was initialzied with posts
-			if (this.props.posts != null) posts = this.props.posts;
-			//Otherwise use the state posts
-			else posts = this.state.posts;
+			console.log('Test');
+
+			//Check if list was initialzied with stories
+			stories = this.state.stories;
 
 			var purchases = this.props.purchases,
 			    rank = this.props.rank;
 
-			//Map all the posts into cells
-			var posts = posts.map(function (post, i) {
+			//Map all the stories into cells
+			var stories = stories.map(function (story, i) {
 
-				var purchased = purchases ? purchases.indexOf(post._id) != -1 : null;
+				var purchased = purchases ? purchases.indexOf(story._id) != -1 : null;
 
-				return React.createElement(PostCell, {
-					size: this.props.size,
-					post: post,
-					rank: rank,
-					purchaed: purchased,
-					key: i,
-					editable: this.props.editable });
+				return React.createElement(StoryCell, {
+					story: story,
+					key: i });
 			}, this);
 
 			return React.createElement(
@@ -20527,57 +20426,41 @@
 				{ className: 'container-fluid fat grid', ref: 'grid', onScroll: this.props.scrollable ? this.scroll : null },
 				React.createElement(
 					'div',
-					{ className: 'row tiles', id: 'posts' },
-					posts
+					{ className: 'row tiles', id: 'stories' },
+					stories
 				)
 			);
 		}
 
 	});
 
-	module.exports = PostList;
+	module.exports = StoryList;
 
 /***/ },
-/* 168 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(159);
 
 	/**
-	 * Single Post Cell, child of PostList
+	 * Single Story Cell, child of StoryList
 	 */
 
-	var PostCell = React.createClass({
+	var StoryCell = React.createClass({
 
-		displayName: 'Post Cell',
-
-		getDefaultProps: function () {
-			return {
-				sizes: {
-					large: 'col-xs-12 col-sm-6 col-lg-4',
-					small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
-				}
-			};
-		},
+		displayName: 'StoryCell',
 
 		render: function () {
 
-			var timestamp = this.props.post.time_created;
-			var timeString = getTimeAgo(Date.now(), this.props.post.time_created);
-			var address = this.props.post.location.address || 'No Location';
-			var size = this.props.sizes.large;
+			// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 
-			//Class name for post tile icons
-			var statusClass = 'mdi icon pull-right ';
-			statusClass += this.props.post.video == null ? 'mdi-file-image-box ' : 'mdi-movie ';
-			statusClass += this.props.post.purchased ? 'available ' : 'md-type-black-disabled ';
-
-			if (this.props.size == 'small') size = this.props.sizes.small;
+			var timestamp = this.props.story.time_created;
+			var timeString = getTimeAgo(Date.now(), this.props.story.time_created);
 
 			return React.createElement(
 				'div',
-				{ className: size + ' tile' },
+				{ className: 'col-xs-6 col-md-3 tile story' },
 				React.createElement(
 					'div',
 					{ className: 'tile-body' },
@@ -20588,232 +20471,154 @@
 						React.createElement(
 							'p',
 							{ className: 'md-type-body1' },
-							this.props.post.caption
+							this.props.story.caption
 						),
 						React.createElement(
-							'span',
-							{ className: 'md-type-caption' },
-							this.props.post.byline
-						),
-						React.createElement(PostCellStories, { stories: this.props.post.stories })
+							'ul',
+							{ className: 'md-type-body2' },
+							React.createElement(
+								'li',
+								null,
+								this.props.story.gallery_count + ' gallery' + (this.props.story.gallery_count == 1 ? 's' : '')
+							)
+						)
 					),
-					React.createElement(
-						'div',
-						{ className: 'img' },
-						React.createElement('img', { className: 'img-cover', src: formatImg(this.props.post.image, 'small') })
-					)
+					React.createElement(StoryCellImages, { thumbnails: this.props.story.thumbnails })
 				),
 				React.createElement(
 					'div',
 					{ className: 'tile-foot' },
-					React.createElement(PostCellActions, {
-						post: this.props.post,
-						purchased: this.props.purchased,
-						rank: this.props.rank,
-						editable: this.props.editable }),
+					React.createElement(
+						'div',
+						{ className: 'hover' },
+						React.createElement(
+							'a',
+							{ href: '/story/' + this.props.story._id, className: 'md-type-body2' },
+							'See all'
+						)
+					),
 					React.createElement(
 						'div',
 						null,
 						React.createElement(
 							'div',
-							{ className: 'tile-info' },
+							null,
 							React.createElement(
 								'span',
 								{ className: 'md-type-body2' },
-								address
+								this.props.story.title
 							),
 							React.createElement(
 								'span',
-								{ className: 'md-type-caption timestring', 'data-timestamp': this.props.post.time_created },
+								{ className: 'md-type-caption timestring', 'data-timestamp': timestamp },
 								timeString
 							)
-						),
-						React.createElement('span', { className: statusClass })
+						)
 					)
 				)
 			);
 		}
 	});
 
-	// <span className="mdi mdi-library-plus icon pull-right"></span>
-	// <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
-
 	/**
-	 * Gallery Cell Stories List
+	 * Post Cell Images
 	 */
 
-	var PostCellStories = React.createClass({
+	var StoryCellImages = React.createClass({
 
-		displayName: 'Post Cell Stories',
+		displayName: "StoryCellImages",
 
 		render: function () {
 
-			var stores = '';
+			if (!this.props.thumbnails || this.props.thumbnails.length == 0) {
+				return React.createElement('div', { className: 'flex-row' });
+			} else if (this.props.thumbnails.length == 1) {
+				return React.createElement(
+					'div',
+					{ className: 'flex-row' },
+					React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' })
+				);
+			} else if (this.props.thumbnails.length < 5) {
 
-			if (this.props.stories) {
-
-				var stories = this.props.stories.map(function (story, i) {
-
-					return React.createElement(
-						'li',
-						{ key: i },
+				return React.createElement(
+					'div',
+					{ className: 'flex-row' },
+					React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' }),
+					React.createElement(StoryCellImage, { post: this.props.thumbnails[1], size: 'small' })
+				);
+			} else if (this.props.thumbnails.length >= 5 && this.props.thumbnails.length < 8) {
+				return React.createElement(
+					'div',
+					{ className: 'flex-row' },
+					React.createElement(
+						'div',
+						{ className: 'flex-col' },
+						React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' })
+					),
+					React.createElement(
+						'div',
+						{ className: 'flex-col' },
 						React.createElement(
-							'a',
-							{ href: "/story/" + story._id },
-							story.title
+							'div',
+							{ className: 'flex-row' },
+							React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' }),
+							React.createElement(StoryCellImage, { post: this.props.thumbnails[1], size: 'small' })
+						),
+						React.createElement(
+							'div',
+							{ className: 'flex-row' },
+							React.createElement(StoryCellImage, { post: this.props.thumbnails[3], size: 'small' }),
+							React.createElement(StoryCellImage, { post: this.props.thumbnails[3], size: 'small' })
 						)
-					);
-				});
-			}
+					)
+				);
+			} else if (this.props.thumbnails.length >= 8) {
 
-			return React.createElement(
-				'ul',
-				{ className: 'md-type-body2' },
-				stories
-			);
+				return React.createElement(
+					'div',
+					{ className: 'flex-col' },
+					React.createElement(
+						'div',
+						{ className: 'flex-row' },
+						React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' }),
+						React.createElement(StoryCellImage, { post: this.props.thumbnails[1], size: 'small' }),
+						React.createElement(StoryCellImage, { post: this.props.thumbnails[2], size: 'small' }),
+						React.createElement(StoryCellImage, { post: this.props.thumbnails[3], size: 'small' })
+					),
+					React.createElement(
+						'div',
+						{ className: 'flex-row' },
+						React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' }),
+						React.createElement(StoryCellImage, { post: this.props.thumbnails[2], size: 'small' }),
+						React.createElement(StoryCellImage, { post: this.props.thumbnails[3], size: 'small' }),
+						React.createElement(StoryCellImage, { post: this.props.thumbnails[4], size: 'small' })
+					)
+				);
+			}
 		}
 
 	});
 
 	/**
-	 * Post Cell Actions 
-	 * Description : Set of icons on the the post cell's hover
+	 * Single Post Cell Image Item
 	 */
 
-	var PostCellActions = React.createClass({
+	var StoryCellImage = React.createClass({
 
-		displayName: 'Post Cell Actions',
+		displayName: 'StoryCellImage',
 
 		render: function () {
-
-			var actions = [],
-			    key = 0;
-			//Check if the purchased property is set on the post
-			if (this.props.post.purchased !== null) {
-
-				//Check if we're CM or Admin
-				if (typeof this.props.rank !== 'undefined' && this.props.rank >= 1) {
-
-					if (this.props.post.purhcased === false) {
-
-						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
-
-						actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
-						actions.push(React.createElement('span', { className: 'mdi mdi-cash icon pull-right', 'data-id': this.props.post._id, onClick: this.purchase, key: key++ }));
-					} else {
-
-						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
-
-						actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
-					}
-				}
-				//Check if the post has been purchased
-				else if (this.props.post.purhcased === true) actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
-
-					//Check if the post is not purhcased, and it is for sale
-					else if (this.props.post.purchased == false && forsale) {
-
-							actions.push(React.createElement('span', { 'class': 'mdi mdi-library-plus icon pull-right', key: key++ }));
-							actions.push(purhcase = React.createElement('span', { 'class': 'mdi mdi-cash icon pull-right', 'data-id': '\' + post._id + \'', key: key++ }));
-						}
-			}
-
 			return React.createElement(
 				'div',
-				{ className: 'hover' },
-				React.createElement(
-					'a',
-					{ className: 'md-type-body2 post-link', href: '/post/' + this.props.post._id },
-					'See more'
-				),
-				actions
+				{ className: 'img' },
+				React.createElement('img', { className: 'img-cover',
+					'data-src': formatImg(this.props.post.image, this.props.size),
+					src: formatImg(this.props.post.image, this.props.size) })
 			);
-		},
-		edit: function () {
-
-			// $.ajax({
-			// 	url: '/scripts/post/gallery',
-			// 	type: 'GET',
-			// 	data: {id: post._id},
-			// 	success: function(result, status, xhr){
-			// 		if (result.err)
-			// 			return this.error(null, null, result.err);
-
-			// 		GALLERY_EDIT = result.data;
-			// 		galleryEditUpdate();
-			// 		$(".toggle-gedit").toggleClass("toggled");
-			// 	},
-			// 	error: function(xhr, status, error){
-			// 		$.snackbar({content:resolveError(error)});
-			// 	}
-			// })
-
-		},
-		//Purhcase icon
-		purhcase: function () {
-
-			var thisElem = $(this),
-			    post = $(this).attr('data-id');
-
-			if (!post) return $.snackbar({ content: 'Invalid post' });
-
-			alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", function (e) {
-
-				if (e) {
-
-					var assignment = null;
-
-					if (typeof PAGE_Assignment !== 'undefined') {
-						assignment = PAGE_Assignment.assignment;
-					}
-					$.ajax({
-						url: '/scripts/outlet/checkout',
-						dataType: 'json',
-						method: 'post',
-						contentType: "application/json",
-						data: JSON.stringify({
-							posts: [post],
-							assignment: assignment ? assignment._id : null
-						}),
-						success: function (result, status, xhr) {
-
-							if (result.err) return this.error(null, null, result.err);
-
-							$.snackbar({ content: 'Purchase successful! Visit your <a style="color:white;" href="/outlet">outlet page</a> to view your purchased content', timeout: 0 });
-
-							var card = thisElem.parents('tile');
-							thisElem.siblings('.mdi-library-plus').remove();
-							thisElem.parent().parent().find('.mdi-file-image-box').addClass('available');
-							thisElem.parent().parent().find('.mdi-movie').addClass('available');
-							card.removeClass('toggled');
-							thisElem.remove();
-						},
-						error: function (xhr, status, error) {
-							if (error == 'ERR_INCOMPLETE') $.snackbar({ content: 'There was an error while completing your purchase!' });else $.snackbar({ content: resolveError(error) });
-						}
-					});
-				} else {
-					// user clicked "cancel"
-				}
-			});
-		},
-		//Download function for icon
-		download: function () {
-
-			console.log(this.props.post);
-
-			var href = this.props.post.video ? this.props.post.video.replace('videos/', 'videos/mp4/').replace('.m3u8', '.mp4') : this.props.post.image;
-
-			var link = document.createElement("a");
-
-			link.download = Date.now() + '.' + href.split('.').pop();
-			link.href = href;
-			link.click();
 		}
-
 	});
 
-	module.exports = PostCell;
+	module.exports = StoryCell;
 
 /***/ }
 /******/ ]);

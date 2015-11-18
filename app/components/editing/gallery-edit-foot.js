@@ -15,8 +15,13 @@ var GalleryEditFoot = React.createClass({
 
 		var addMore = '';
 
+		//Check if the gallery has been imported, to show the 'Add More' button or not
 		if(this.state.gallery.imported) 
 			addMore = <button id="gallery-add-more-button" type="button" onClick={this.addMore} className="btn btn-flat">Add More</button>
+
+		inputStyle ={
+			display: 'none'
+		};
 
 		return (
 			
@@ -27,8 +32,8 @@ var GalleryEditFoot = React.createClass({
 					type="file"  
 					accept="image/*,video/*,video/mp4" 
 					multiple
-					style={style} 
 					ref='fileUpload'
+					style={inputStyle}
 					onChange={this.fileUploaderChanged} />
 
 				<button id="gallery-revert-button" type="button" onClick={this.revert} className="btn btn-flat">Revert changes</button>
@@ -55,6 +60,7 @@ var GalleryEditFoot = React.createClass({
 		gallery.related_stories = [];
 		gallery.articles = [];
 		gallery.location = {};
+		gallery.files = [];
 
 		this.props.updateGallery(gallery);
 
@@ -105,74 +111,134 @@ var GalleryEditFoot = React.createClass({
 	},
 	delete: function(){
 
+		var gallery = this.state.gallery;
+		
+		alertify.confirm("Are you sure you want to delete this gallery?", function (confirmed) {
+			
+			if (!confirmed) return;
+
+			//Consturct params with gallery id
+			var params = {
+				id: gallery._id
+			}
+			
+			//Send delete request
+			$.ajax({
+				url: "/scripts/gallery/remove",
+				method: 'post',
+				contentType: "application/json",
+				data: params,
+				dataType: 'json',
+				success: function(result){
+					
+					if(result.err){
+						return this.error(null, null, result.err);
+					};
+		
+					location.href = document.referrer || '/highlights';
+
+				},
+				error: function(xhr, status, error){
+					$.snackbar({
+						content: 'Couldn\'t successfully delete this gallery!'
+					});
+				}
+			});
+
+		}, this);
+
 	},
 	//Save function 
 	save: function(){
 
-		var caption = $('#gallery-caption-input').val();
-		var byline = $('.gallery-byline-text').eq(0).text();
-		var other_origin = null;
-		var tags = $('#gallery-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
-		var posts = $('.edit-gallery-images').frick('frickPosts');
-		var visibility = null;
+		console.log(this.state.gallery);
 
-		if ($('#gallery-other-origin').css('display') !== 'none') {
-			byline = $('#gallery-name-input').val().trim() + ' / ' + $('#gallery-affiliation-input').val().trim();
-			other_origin = {
-				name: $('#gallery-name-input').val().trim(),
-				affiliation: $('#gallery-affiliation-input').val().trim(),
-			}
-		}
+		// var caption = this.state.gallery.caption;
 
-		var added = posts.filter(function(id) {return id.indexOf('NEW') !== -1});
-		added = added.map(function(index) {
-			index = index.split('=')[1];
-			return GALLERY_EDIT.files[index];
-		});
 
-		posts = posts.filter(function(id) {return id.indexOf('NEW') == -1});
+		// var byline = $('.gallery-byline-text').eq(0).text ();
 
-		if (posts.length == 0)
-			return $.snackbar({content:"Galleries must have at least 1 post"});
-
-		if( $('#gallery-highlight-input').length !== 0 && galleryEditVisibilityChanged == 1)
-			visibility = $('#gallery-highlight-input').prop('checked') ? 2 : 1;
-
-		updateGallery(caption, byline, tags, posts, visibility, other_origin, function(err, GALLERY_EDIT){
+		// /*
 			
-			if (err)
-				return $.snackbar({content: resolveError(err)});
-
-			if (added.length > 0) {
+		// 	Byline : Send over other_origin object
 				
-				var data = new FormData();
-				
-				for (var index in added) {
-					data.append(index, added[index]);
-				}
+		// 		//Twitter
+		// 			other_origin = {
+		// 				affiliation: whatevers in the field 
+		// 				name: handle or user_name
+		// 			}
+		// 			byline = name + affiliation ? ' / ' + affiliation : 'via Fresco News'
+		// 		//Manual Import
 
-				data.append('gallery', GALLERY_EDIT._id);
-				
-				$.ajax({
-					url: '/scripts/gallery/addpost',
-					type: 'POST',
-					data: data,
-					processData: false,
-					contentType: false,
-					cache: false,
-					dataType: 'json',
-					success: function(result, status, xhr){
-						window.location.reload();
-					},
-					error: function(xhr, status, error){
-						$.snackbar({content: resolveError(err)});
-					}
-				});
+		//  */
 
-			}
-			else
-				window.location.reload();
-		});
+
+		// var other_origin = null;
+		
+		// var tags = $('#gallery-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
+		
+		// var posts = $('.edit-gallery-images').frick('frickPosts');
+		
+		// var visibility = null;
+
+		// if ($('#gallery-other-origin').css('display') !== 'none') {
+		// 	byline = $('#gallery-name-input').val().trim() + ' / ' + $('#gallery-affiliation-input').val().trim();
+		// 	other_origin = {
+		// 		name: $('#gallery-name-input').val().trim(),
+		// 		affiliation: $('#gallery-affiliation-input').val().trim(),
+		// 	}
+		// }
+
+		// var added = posts.filter(function(id) {return id.indexOf('NEW') !== -1});
+
+		// added = added.map(function(index) {
+		// 	index = index.split('=')[1];
+		// 	return GALLERY_EDIT.files[index];
+		// });
+
+		// posts = posts.filter(function(id) {return id.indexOf('NEW') == -1});
+
+		// if (posts.length == 0)
+		// 	return $.snackbar({content:"Galleries must have at least 1 post"});
+
+		// if( $('#gallery-highlight-input').length !== 0 && galleryEditVisibilityChanged == 1)
+		// 	visibility = $('#gallery-highlight-input').prop('checked') ? 2 : 1;
+
+		// updateGallery(caption, byline, tags, posts, visibility, other_origin, function(err, GALLERY_EDIT){
+			
+		// 	if (err)
+		// 		return $.snackbar({content: resolveError(err)});
+
+		// 	if (added.length > 0) {
+				
+		// 		var data = new FormData();
+				
+		// 		for (var index in added) {
+		// 			data.append(index, added[index]);
+		// 		}
+
+		// 		data.append('gallery', GALLERY_EDIT._id);
+				
+		// 		$.ajax({
+		// 			url: '/scripts/gallery/addpost',
+		// 			type: 'POST',
+		// 			data: data,
+		// 			processData: false,
+		// 			contentType: false,
+		// 			cache: false,
+		// 			dataType: 'json',
+		// 			success: function(result, status, xhr){
+		// 				window.location.reload();
+		// 			},
+		// 			error: function(xhr, status, error){
+		// 				$.snackbar({content: resolveError(err)});
+		// 			}
+		// 		});
+
+		// 	}
+		// 	else
+		// 		window.location.reload();
+		// });
 
 
 	}

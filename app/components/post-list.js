@@ -105,7 +105,7 @@ var PostList = React.createClass({
 	      	return (
 	        	
 	        	<PostCell 
-	        		size='large' 
+	        		size={this.props.size} 
 	        		post={post} 
 	        		rank={rank} 
 	        		purchaed={purchased}

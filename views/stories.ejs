@@ -1,94 +1,10 @@
 <% include segments/head %>
+	
+	<div id="app" class="wrapper"><%- react %></div>
 
-<%- include('segments/sidebar', { user: user, config: config, title: title}) %>
-
-	<div class="col-md-12 col-lg-10">
-		<!-- navbar -->
-		<nav class="navbar navbar-fixed-top navbar-default">
-			<div class="dim transparent toggle-drop toggler"></div>
-			<button type="button" class="icon-button toggle-drawer toggler hidden-lg">
-				<span class="mdi mdi-menu icon"></span>
-			</button>
-			<div class="spacer"></div>
-			<h1 class="md-type-title">Stories</h1>
-			<li class="drop pull-right hidden-xs">
-				<button class="toggle-drop md-type-subhead">
-					<span id="tag-dropdown">Any tags</span><span class="mdi mdi-menu-down icon"></span>
-				</button>
-				<div class="drop-menu panel panel-default">
-					<div class="toggle-drop toggler md-type-subhead">Filter by tags<span class="mdi mdi-menu-up icon pull-right"></span></div>
-					<div class="drop-body">
-						<div class="chips">
-							<div class="split-cell">
-								<div class="form-group-default">
-									<input id="tag-filter-input" type="text" class="form-control floating-label" placeholder="Tags">
-								</div>
-								<ul id="tag-filter" class="chips">
-
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</li>
-			<!--<li class="drop pull-right hidden-xs">
-				<button class="toggle-drop md-type-subhead">
-					All locations<span class="mdi mdi-menu-down icon"></span>
-				</button>
-				<div class="drop-menu panel panel-default">
-					<div class="toggle-drop toggler md-type-subhead">All locations<span class="mdi mdi-menu-up icon pull-right"></span></div>
-					<div class="drop-body">
-						<ul class="md-type-subhead">
-							<li>All locations</li>
-							<li>Near me</li>
-						</ul>
-						<div class="map-group">
-							<div class="form-group-default">
-								<input type="text" class="form-control floating-label" placeholder="Location">
-								<input type="text" class="form-control floating-label" data-hint="miles" placeholder="Radius">
-							</div>
-							<div class="map-container">
-								Just pretend there's a map here ok
-							</div>
-						</div>
-						<ul class="md-type-subhead">
-							<li>Save this location</li>
-						</ul>
-						<span class="md-type-body2 md-type-black-secondary">Saved</span>
-						<ul class="md-type-subhead">
-							<li>Saved location</li>
-							<li>Saved location</li>
-							<li>Saved location</li>
-						</ul>
-					</div>
-				</div>
-			</li>-->
-			<li class="drop pull-right hidden-xs">
-				<button class="toggle-drop md-type-subhead time-display-filter-button">
-					<span class="time-display-filter-text">Relative</span><span class="mdi mdi-menu-down icon"></span>
-				</button>
-				<div class="drop-menu panel panel-default">
-					<div class="toggle-drop toggler md-type-subhead"><span class="time-display-filter-text">Relative</span><span class="mdi mdi-menu-up icon pull-right"></span></div>
-					<div class="drop-body">
-						<ul class="md-type-subhead">
-							<li class="time-display-filter-type active" data-filter-type="relative">Relative</li>
-							<li class="time-display-filter-type" data-filter-type="absolute">Absolute</li>
-						</ul>
-					</div>
-				</div>
-			</li>
-		</nav>
-		<!-- end navbar -->
-		<!-- grid -->
-		<div class="container-fluid fat grid">
-			<div id="stories" class="row tiles">
-
-			</div>
-		</div>
-		<!-- end grid -->
-	</div>
-</div>
+<!--Components-->
+<%- include('segments/gallery-create') %>
+<!--Scripts-->
 <%- include('segments/scripts') %>
-</script>
 </body>
 </html>

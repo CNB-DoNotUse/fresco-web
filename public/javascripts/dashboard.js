@@ -535,6 +535,7 @@ function createGallery(caption, tags, posts, highlight, articles, stories, callb
 }
 //AJAX - Update the gallery
 function updateGallery(caption, byline, tags, posts, visibility, other_origin, callback){
+	
 	var params = {
 		caption: caption,
 		byline: byline,
@@ -542,7 +543,10 @@ function updateGallery(caption, byline, tags, posts, visibility, other_origin, c
 		tags: tags,
 		visibility: visibility != null ? visibility : undefined,
 		id: GALLERY_EDIT._id,
-		stories: $('#gallery-stories-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
+		//Sent over as either `string` of `mongoId`
+		stories: $('#gallery-stories-list li.chip').map(function(elem){
+					return $(this).data('id')
+				  }).toArray(),
 		articles: $('#gallery-articles-list li.chip').map(function(elem){return $(this).data('id')}).toArray(),
 	};
 
@@ -1006,11 +1010,18 @@ function setTimeDisplayType(timeDisplay) {
 
 //Save gallery edits
 function galleryEditSave(){
-	var caption = $('#gallery-caption-input').val();
+	
+	var caption = document.getElementById('gallery-caption-input').value;
+	
 	var byline = $('.gallery-byline-text').eq(0).text();
+	
 	var other_origin = null;
+	//Get tags and remove anything with empty strings
 	var tags = $('#gallery-tags-list .tag').text().split('#').filter(function(t){ return t.length > 0; });
+	
+	//Returns an array of posts ids
 	var posts = $('.edit-gallery-images').frick('frickPosts');
+	
 	var visibility = null;
 	
 	var children = GALLERY_EDIT.posts.filter(function(a){return a.parent === GALLERY_EDIT._id});
@@ -1054,6 +1065,7 @@ function galleryEditSave(){
 	}
 	
 	var added = posts.filter(function(id) {return id.indexOf('NEW') !== -1});
+
 	added = added.map(function(index) {
 		index = index.split('=')[1];
 		return GALLERY_EDIT.files[index];
@@ -1072,12 +1084,15 @@ function galleryEditSave(){
 			return $.snackbar({content: resolveError(err)});
 			
 		if (added.length > 0) {
+			
 			var data = new FormData();
+			
 			for (var index in added) {
 				data.append(index, added[index]);
 			}
 			
 			data.append('gallery', GALLERY_EDIT._id);
+
 			$.ajax({
 				url: '/scripts/gallery/addpost',
 				type: 'POST',
