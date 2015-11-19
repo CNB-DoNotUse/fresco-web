@@ -48,17 +48,29 @@ module.exports =
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
+	    PostList = __webpack_require__(4),
 	    TopBar = __webpack_require__(9),
-	    StoryList = __webpack_require__(29);
-	App = __webpack_require__(11);
+	    App = __webpack_require__(11);
+
+	/** //
+
+	Description : View page for content
+
+	// **/
 
 	/**
-	 * Stories Parent Object, contains StoryList composed of StoryCells
+	 * Content Parent Object (composed of PostList and Navbar)
 	 */
 
-	var Stories = React.createClass({
+	var Content = React.createClass({
 
-		displayName: 'Stories',
+		displayName: 'Content',
+
+		getDefaultProps: function () {
+			return {
+				purchases: []
+			};
+		},
 
 		render: function () {
 
@@ -66,42 +78,41 @@ module.exports =
 				App,
 				{ user: this.props.user },
 				React.createElement(TopBar, {
-					title: 'Stories',
+					title: this.props.title,
 					timeToggle: true,
-					tagToggle: true }),
-				React.createElement(StoryList, {
-					loadStories: this.loadStories,
-					scrollable: true })
+					verifiedToggle: true,
+					chronToggle: true }),
+				React.createElement(PostList, {
+					loadPosts: this.loadPosts,
+					rank: this.props.user.rank,
+					purchases: this.props.purchases,
+					size: 'small',
+					scrollabe: true })
 			);
 		},
 
 		//Returns array of posts with offset and callback, used in child PostList
-		loadStories: function (passedOffset, callback) {
+		loadPosts: function (passedOffset, callback) {
 
 			var endpoint = '/v1/post/list',
 			    params = {
-				limit: 10,
+				limit: 14,
 				verified: true,
-				invalidate: 1,
 				offset: passedOffset
 			};
 
 			$.ajax({
-				url: API_URL + '/v1/story/recent',
+				url: API_URL + endpoint,
 				type: 'GET',
 				data: params,
 				dataType: 'json',
 				success: function (response, status, xhr) {
 
-					console.log(response);
-
 					//Do nothing, because of bad response
 					if (!response.data || response.err) callback([]);else callback(response.data);
 				},
 				error: function (xhr, status, error) {
-					$.snackbar({
-						content: 'Couldn\'t fetch any stories!'
-					});
+					$.snackbar({ content: resolveError(error) });
 				}
 
 			});
@@ -111,10 +122,13 @@ module.exports =
 
 	if (isNode) {
 
-		module.exports = Stories;
+		module.exports = Content;
 	} else {
 
-		ReactDOM.render(React.createElement(Stories, { user: window.__initialProps__.user }), document.getElementById('app'));
+		ReactDOM.render(React.createElement(Content, {
+			user: window.__initialProps__.user,
+			purchases: window.__initialProps__.purchases,
+			title: window.__initialProps__.title }), document.getElementById('app'));
 	}
 
 /***/ },
@@ -136,11 +150,561 @@ module.exports =
 	module.exports = require("react-dom");
 
 /***/ },
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	ReactDOM = __webpack_require__(3), SuggestionList = __webpack_require__(5);
+	PostCell = __webpack_require__(6);
+
+	/** //
+
+	Description : List for a set of posts used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
+
+	// **/
+
+	/**
+	 * Post List Parent Object 
+	 */
+
+	var PostList = React.createClass({
+
+		displayName: 'Post List',
+
+		getInitialState: function () {
+			return {
+				offset: 0,
+				posts: [],
+				loading: false
+			};
+		},
+
+		getDefaultProps: function () {
+			return {
+				size: 'small',
+				editable: true
+			};
+		},
+
+		componentDidMount: function () {
+
+			//Check if list is initialzied with posts
+			if (this.props.posts) return;
+
+			var self = this;
+
+			//Access parent var load method
+			this.props.loadPosts(0, function (posts) {
+
+				var offset = posts ? posts.length : 0;
+
+				//Set posts from successful response
+				self.setState({
+					posts: posts,
+					offset: offset
+				});
+			});
+		},
+
+		//Scroll listener for main window
+		scroll: function () {
+
+			var grid = this.refs.grid;
+
+			//Check that nothing is loading and that we're at the end of the scroll,
+			//and that we have a parent bind to load  more posts
+			if (!this.state.loading && grid.scrollTop === grid.scrollHeight - grid.offsetHeight && this.props.loadPosts) {
+
+				self = this;
+
+				//Set that we're loading
+				this.setState({ loading: true });
+
+				//Run load on parent call
+				this.props.loadPosts(this.state.offset, function (posts) {
+
+					if (!posts) return;
+
+					console.log(self.state);
+
+					var offset = self.state.posts.length + posts.length;
+
+					//Set galleries from successful response, and unset loading
+					self.setState({
+						posts: self.state.posts.concat(posts),
+						offset: offset,
+						loading: false
+					});
+				});
+			}
+		},
+		render: function () {
+
+			//Check if list was initialzied with posts
+			if (this.props.posts != null) posts = this.props.posts;
+			//Otherwise use the state posts
+			else posts = this.state.posts;
+
+			var purchases = this.props.purchases,
+			    rank = this.props.rank;
+
+			//Map all the posts into cells
+			var posts = posts.map(function (post, i) {
+
+				var purchased = purchases ? purchases.indexOf(post._id) != -1 : null;
+
+				return React.createElement(PostCell, {
+					size: this.props.size,
+					post: post,
+					rank: rank,
+					purchaed: purchased,
+					key: i,
+					editable: this.props.editable });
+			}, this);
+
+			return React.createElement(
+				'div',
+				{ className: 'container-fluid fat grid', ref: 'grid', onScroll: this.props.scrollable ? this.scroll : null },
+				React.createElement(
+					'div',
+					{ className: 'row tiles', id: 'posts' },
+					posts
+				)
+			);
+		}
+
+	});
+
+	module.exports = PostList;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	var ReactDOM = __webpack_require__(3);
+
+	/** //
+
+	Description : Suggestion Column
+
+	// **/
+
+	/**
+	 * Suggestion List Parent Object
+	 */
+
+	var SuggestionList = React.createClass({
+
+		displayName: 'SuggestionList',
+
+		getInitialState: function () {
+			return {
+				stories: []
+			};
+		},
+
+		componentDidMount: function () {
+
+			self = this;
+
+			$.ajax({
+				url: API_URL + "/v1/story/recent",
+				type: 'GET',
+				data: {
+					limit: 3
+				},
+				dataType: 'json',
+				success: function (response, status, xhr) {
+
+					//Do nothing, because of bad response
+					if (!response.data || response.err) return;
+
+					//Set galleries from successful response
+					self.setState({
+						stories: response.data
+					});
+				},
+				error: function (xhr, status, error) {
+					$.snackbar({ content: resolveError(error) });
+				}
+			});
+		},
+
+		render: function () {
+
+			return React.createElement(
+				'div',
+				{ className: 'col-md-4' },
+				React.createElement(
+					'h3',
+					{ className: 'md-type-button md-type-black-secondary' },
+					'Trending Stories'
+				),
+				React.createElement(
+					'ul',
+					{ className: 'md-type-subhead trending-stories' },
+					this.state.stories.map(function (story, i) {
+						return React.createElement(
+							'li',
+							{ key: i },
+							React.createElement(
+								'a',
+								{ href: '/story/' + story._id },
+								story.title
+							)
+						);
+					})
+				)
+			);
+		}
+	});
+
+	module.exports = SuggestionList;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	ReactDOM = __webpack_require__(3), PurchaseAction = __webpack_require__(7), DownloadAction = __webpack_require__(8);
+
+	/**
+	 * Single Post Cell, child of PostList
+	 */
+
+	var PostCell = React.createClass({
+
+		displayName: 'PostCell',
+
+		getDefaultProps: function () {
+			return {
+				sizes: {
+					large: 'col-xs-12 col-sm-6 col-lg-4',
+					small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
+				}
+			};
+		},
+
+		render: function () {
+
+			var timestamp = this.props.post.time_created;
+			var timeString = formatTime(this.props.post.time_created);
+			var address = this.props.post.location.address || 'No Location';
+			var size = this.props.sizes.large;
+
+			//Class name for post tile icons
+			var statusClass = 'mdi icon pull-right ';
+			statusClass += this.props.post.video == null ? 'mdi-file-image-box ' : 'mdi-movie ';
+			statusClass += this.props.post.purchased ? 'available ' : 'md-type-black-disabled ';
+
+			if (this.props.size == 'small') size = this.props.sizes.small;
+
+			return React.createElement(
+				'div',
+				{ className: size + ' tile' },
+				React.createElement(
+					'div',
+					{ className: 'tile-body' },
+					React.createElement('div', { className: 'frame' }),
+					React.createElement(
+						'div',
+						{ className: 'hover' },
+						React.createElement(
+							'p',
+							{ className: 'md-type-body1' },
+							this.props.post.caption
+						),
+						React.createElement(
+							'span',
+							{ className: 'md-type-caption' },
+							this.props.post.byline
+						),
+						React.createElement(PostCellStories, { stories: this.props.post.stories })
+					),
+					React.createElement(
+						'div',
+						{ className: 'img' },
+						React.createElement('img', { className: 'img-cover', src: formatImg(this.props.post.image, 'small') })
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'tile-foot' },
+					React.createElement(PostCellActions, {
+						post: this.props.post,
+						purchased: this.props.purchased,
+						rank: this.props.rank,
+						editable: this.props.editable }),
+					React.createElement(
+						'div',
+						null,
+						React.createElement(
+							'div',
+							{ className: 'tile-info' },
+							React.createElement(
+								'span',
+								{ className: 'md-type-body2' },
+								address
+							),
+							React.createElement(
+								'span',
+								{ className: 'md-type-caption timestring', 'data-timestamp': this.props.post.time_created },
+								timeString
+							)
+						),
+						React.createElement('span', { className: statusClass })
+					)
+				)
+			);
+		}
+	});
+
+	// <span className="mdi mdi-library-plus icon pull-right"></span>
+	// <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
+
+	/**
+	 * Gallery Cell Stories List
+	 */
+
+	var PostCellStories = React.createClass({
+
+		displayName: 'Post Cell Stories',
+
+		render: function () {
+
+			var stores = '';
+
+			if (this.props.stories) {
+
+				var stories = this.props.stories.map(function (story, i) {
+
+					return React.createElement(
+						'li',
+						{ key: i },
+						React.createElement(
+							'a',
+							{ href: "/story/" + story._id },
+							story.title
+						)
+					);
+				});
+			}
+
+			return React.createElement(
+				'ul',
+				{ className: 'md-type-body2' },
+				stories
+			);
+		}
+
+	});
+
+	/**
+	 * Post Cell Actions
+	 * Description : Set of icons on the the post cell's hover
+	 */
+
+	var PostCellActions = React.createClass({
+
+		displayName: 'Post Cell Actions',
+
+		render: function () {
+
+			var actions = [],
+			    key = 0;
+			//Check if the purchased property is set on the post
+			if (this.props.post.purchased !== null) {
+
+				//Check if we're CM or Admin
+				if (typeof this.props.rank !== 'undefined' && this.props.rank >= 1) {
+
+					if (this.props.post.purhcased === false) {
+
+						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
+
+						actions.push(React.createElement(PurchaseAction, { post: this.post }));
+
+						actions.push(React.createElement('span', { className: 'mdi mdi-cash icon pull-right', 'data-id': this.props.post._id, onClick: this.purchase, key: key++ }));
+					} else {
+
+						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
+
+						actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
+					}
+				}
+				//Check if the post has been purchased
+				else if (this.props.post.purhcased === true) actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
+
+					//Check if the post is not purhcased, and it is for sale
+					else if (this.props.post.purchased == false && forsale) {
+
+							actions.push(React.createElement('span', { 'class': 'mdi mdi-library-plus icon pull-right', key: key++ }));
+							actions.push(React.createElement('span', { 'class': 'mdi mdi-cash icon pull-right', 'data-id': '\' + post._id + \'', key: key++ }));
+						}
+			}
+
+			return React.createElement(
+				'div',
+				{ className: 'hover' },
+				React.createElement(
+					'a',
+					{ className: 'md-type-body2 post-link', href: '/post/' + this.props.post._id },
+					'See more'
+				),
+				actions
+			);
+		},
+		edit: function () {
+
+			// $.ajax({
+			// 	url: '/scripts/post/gallery',
+			// 	type: 'GET',
+			// 	data: {id: post._id},
+			// 	success: function(result, status, xhr){
+			// 		if (result.err)
+			// 			return this.error(null, null, result.err);
+
+			// 		GALLERY_EDIT = result.data;
+			// 		galleryEditUpdate();
+			// 		$(".toggle-gedit").toggleClass("toggled");
+			// 	},
+			// 	error: function(xhr, status, error){
+			// 		$.snackbar({content:resolveError(error)});
+			// 	}
+			// })
+
+		}
+
+	});
+
+	module.exports = PostCell;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(3);
+
+	/**
+	 * Global purchase actions
+	 */
+
+	var PurchaseAction = React.createClass({
+
+		displayName: 'PurchaseAction',
+
+		render: function () {
+
+			return React.createElement('span', { className: 'mdi mdi-cash icon pull-right', onClick: this.purchase });
+		},
+		//Called whenever the purhcase icon is selected
+		purchase: function (event) {
+
+			//Check if the prop exists first
+			if (!this.props.post) return;
+
+			var post = this.props.post._id,
+			    assignment = this.props.assignment ? this.props.assignment._id : null;
+
+			//Confirm the purchase
+			alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", function (e) {
+
+				if (e) {
+
+					//Send request for purchase
+					$.ajax({
+						url: '/scripts/outlet/checkout',
+						dataType: 'json',
+						method: 'post',
+						contentType: "application/json",
+						data: JSON.stringify({
+							posts: post,
+							assignment: assignment
+						}),
+						success: function (result, status, xhr) {
+
+							console.log(result);
+
+							if (result.err) return this.error(null, null, result.err);
+
+							$.snackbar({
+								content: 'Purchase successful! Visit your <a style="color:white;" href="/outlet">outlet page</a> to view your purchased content',
+								timeout: 0
+							});
+
+							// var card = thisElem.parents('tile');
+							// thisElem.siblings('.mdi-library-plus').remove();
+							// thisElem.parent().parent().find('.mdi-file-image-box').addClass('available');
+							// thisElem.parent().parent().find('.mdi-movie').addClass('available');
+							// card.removeClass('toggled');
+							// thisElem.remove();
+						},
+						error: function (xhr, status, error) {
+							$.snackbar({
+								content: resolveError(error, 'There was an error while completing your purchase!')
+							});
+						}
+					});
+				} else {
+					// user clicked "cancel"
+				}
+			});
+		}
+
+	});
+
+	module.exports = PurchaseAction;
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(3);
+
+	/**
+	 * Global download action
+	 */
+
+	var DownloadAction = React.createClass({
+
+		displayName: 'DownloadAction',
+
+		render: function () {
+
+			return React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download });
+		},
+		//Called whenever the purhcase icon is selected
+		download: function (event) {
+
+			console.log('test');
+
+			if (!this.props.post) {
+
+				$.snackbar({
+					content: 'There was an error downloading this post',
+					timeout: 0
+				});
+
+				return;
+			}
+
+			var href = this.props.post.video ? this.props.post.video.replace('videos/', 'videos/mp4/').replace('.m3u8', '.mp4') : this.props.post.image;
+
+			var link = document.createElement("a");
+
+			link.download = Date.now() + '.' + href.split('.').pop();
+			link.href = href;
+			link.click();
+		}
+
+	});
+
+	module.exports = DownloadAction;
+
+/***/ },
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -748,312 +1312,6 @@ module.exports =
 	};
 
 	module.exports = config;
-
-/***/ },
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	ReactDOM = __webpack_require__(3), StoryCell = __webpack_require__(30);
-
-	/** //
-
-	Description : List for a set of stories used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
-
-	// **/
-
-	/**
-	 * Story List Parent Object 
-	 */
-
-	var StoryList = React.createClass({
-
-		displayName: 'StoryList',
-
-		getInitialState: function () {
-			return {
-				stories: []
-			};
-		},
-
-		componentDidMount: function () {
-
-			self = this;
-
-			//Access parent var load method
-			this.props.loadStories(0, function (stories) {
-
-				var offset = stories ? stories.length : 0;
-
-				//Set stories from successful response
-				self.setState({
-					stories: stories
-				});
-			}, this);
-		},
-
-		//Scroll listener for main window
-		scroll: function () {
-
-			var grid = this.refs.grid;
-
-			//Check that nothing is loading and that we're at the end of the scroll,
-			//and that we have a parent bind to load  more stories
-			if (!this.state.loading && grid.scrollTop === grid.scrollHeight - grid.offsetHeight && this.props.loadStories) {
-
-				self = this;
-
-				//Set that we're loading
-				this.setState({ loading: true });
-
-				//Run load on parent call
-				this.props.loadStories(this.state.offset, function (stories) {
-
-					if (!stories) return;
-
-					var offset = self.state.stories.length + stories.length;
-
-					//Set galleries from successful response, and unset loading
-					self.setState({
-						stories: self.state.stories.concat(stories),
-						offset: offset,
-						loading: false
-					});
-				}, this);
-			}
-		},
-
-		render: function () {
-
-			//Check if list was initialzied with stories
-			stories = this.state.stories;
-
-			var purchases = this.props.purchases,
-			    rank = this.props.rank;
-
-			//Map all the stories into cells
-			var stories = stories.map(function (story, i) {
-
-				var purchased = purchases ? purchases.indexOf(story._id) != -1 : null;
-
-				return React.createElement(StoryCell, {
-					story: story,
-					key: i });
-			}, this);
-
-			return React.createElement(
-				'div',
-				{ className: 'container-fluid fat grid', ref: 'grid', onScroll: this.props.scrollable ? this.scroll : null },
-				React.createElement(
-					'div',
-					{ className: 'row tiles', id: 'stories' },
-					stories
-				)
-			);
-		}
-
-	});
-
-	module.exports = StoryList;
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	ReactDOM = __webpack_require__(3);
-
-	/**
-	 * Single Story Cell, child of StoryList
-	 */
-
-	var StoryCell = React.createClass({
-
-		displayName: 'StoryCell',
-
-		render: function () {
-
-			// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
-
-			var timestamp = this.props.story.time_created;
-			var timeString = formatTime(this.props.story.time_created);
-
-			return React.createElement(
-				'div',
-				{ className: 'col-xs-6 col-md-3 tile story' },
-				React.createElement(
-					'div',
-					{ className: 'tile-body' },
-					React.createElement('div', { className: 'frame' }),
-					React.createElement(
-						'div',
-						{ className: 'hover' },
-						React.createElement(
-							'p',
-							{ className: 'md-type-body1' },
-							this.props.story.caption
-						),
-						React.createElement(
-							'ul',
-							{ className: 'md-type-body2' },
-							React.createElement(
-								'li',
-								null,
-								this.props.story.gallery_count + ' gallery' + (this.props.story.gallery_count == 1 ? 's' : '')
-							)
-						)
-					),
-					React.createElement(StoryCellImages, { thumbnails: this.props.story.thumbnails })
-				),
-				React.createElement(
-					'div',
-					{ className: 'tile-foot' },
-					React.createElement(
-						'div',
-						{ className: 'hover' },
-						React.createElement(
-							'a',
-							{ href: '/story/' + this.props.story._id, className: 'md-type-body2' },
-							'See all'
-						)
-					),
-					React.createElement(
-						'div',
-						null,
-						React.createElement(
-							'div',
-							null,
-							React.createElement(
-								'span',
-								{ className: 'md-type-body2' },
-								this.props.story.title
-							),
-							React.createElement(
-								'span',
-								{ className: 'md-type-caption timestring', 'data-timestamp': timestamp },
-								timeString
-							)
-						)
-					)
-				)
-			);
-		}
-	});
-
-	/**
-	 * Post Cell Images
-	 */
-
-	var StoryCellImages = React.createClass({
-
-		displayName: "StoryCellImages",
-
-		render: function () {
-
-			if (!this.props.thumbnails || this.props.thumbnails.length == 0) {
-				return React.createElement('div', { className: 'flex-row' });
-			} else if (this.props.thumbnails.length == 1) {
-				return React.createElement(
-					'div',
-					{ className: 'flex-row' },
-					React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' })
-				);
-			} else if (this.props.thumbnails.length < 5) {
-
-				return React.createElement(
-					'div',
-					{ className: 'flex-row' },
-					React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' }),
-					React.createElement(StoryCellImage, { post: this.props.thumbnails[1], size: 'small' })
-				);
-			} else if (this.props.thumbnails.length >= 5 && this.props.thumbnails.length < 8) {
-				return React.createElement(
-					'div',
-					{ className: 'flex-row' },
-					React.createElement(
-						'div',
-						{ className: 'flex-col' },
-						React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' })
-					),
-					React.createElement(
-						'div',
-						{ className: 'flex-col' },
-						React.createElement(
-							'div',
-							{ className: 'flex-row' },
-							React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' }),
-							React.createElement(StoryCellImage, { post: this.props.thumbnails[1], size: 'small' })
-						),
-						React.createElement(
-							'div',
-							{ className: 'flex-row' },
-							React.createElement(StoryCellImage, { post: this.props.thumbnails[3], size: 'small' }),
-							React.createElement(StoryCellImage, { post: this.props.thumbnails[3], size: 'small' })
-						)
-					)
-				);
-			} else if (this.props.thumbnails.length >= 8) {
-
-				return React.createElement(
-					'div',
-					{ className: 'flex-col' },
-					React.createElement(
-						'div',
-						{ className: 'flex-row' },
-						React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' }),
-						React.createElement(StoryCellImage, { post: this.props.thumbnails[1], size: 'small' }),
-						React.createElement(StoryCellImage, { post: this.props.thumbnails[2], size: 'small' }),
-						React.createElement(StoryCellImage, { post: this.props.thumbnails[3], size: 'small' })
-					),
-					React.createElement(
-						'div',
-						{ className: 'flex-row' },
-						React.createElement(StoryCellImage, { post: this.props.thumbnails[0], size: 'small' }),
-						React.createElement(StoryCellImage, { post: this.props.thumbnails[2], size: 'small' }),
-						React.createElement(StoryCellImage, { post: this.props.thumbnails[3], size: 'small' }),
-						React.createElement(StoryCellImage, { post: this.props.thumbnails[4], size: 'small' })
-					)
-				);
-			}
-		}
-
-	});
-
-	/**
-	 * Single Post Cell Image Item
-	 */
-
-	var StoryCellImage = React.createClass({
-
-		displayName: 'StoryCellImage',
-
-		render: function () {
-			return React.createElement(
-				'div',
-				{ className: 'img' },
-				React.createElement('img', { className: 'img-cover',
-					'data-src': formatImg(this.props.post.image, this.props.size),
-					src: formatImg(this.props.post.image, this.props.size) })
-			);
-		}
-	});
-
-	module.exports = StoryCell;
 
 /***/ }
 /******/ ]);

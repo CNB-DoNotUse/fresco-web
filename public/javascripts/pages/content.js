@@ -47,23 +47,27 @@
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
-	    TopBar = __webpack_require__(165),
 	    PostList = __webpack_require__(160),
-	    StorySidebar = __webpack_require__(187),
-	    StoryEdit = __webpack_require__(188),
+	    TopBar = __webpack_require__(165),
 	    App = __webpack_require__(167);
 
+	/** //
+
+	Description : View page for content
+
+	// **/
+
 	/**
-	 * Story Detail Parent Object, made of a side column and PostList
+	 * Content Parent Object (composed of PostList and Navbar)
 	 */
 
-	var StoryDetail = React.createClass({
+	var Content = React.createClass({
 
-		displayName: 'StoryDetail',
+		displayName: 'Content',
 
 		getDefaultProps: function () {
 			return {
-				story: {}
+				purchases: []
 			};
 		},
 
@@ -74,39 +78,55 @@
 				{ user: this.props.user },
 				React.createElement(TopBar, {
 					title: this.props.title,
-					editable: true,
-					verifiedToggle: false,
 					timeToggle: true,
+					verifiedToggle: true,
 					chronToggle: true }),
-				React.createElement(StorySidebar, { Story: this.props.Story }),
-				React.createElement(
-					'div',
-					{ className: 'col-sm-8 tall' },
-					React.createElement(PostList, {
-						rank: this.props.user.rank,
-						purchases: this.props.purchases,
-						posts: this.props.Story.posts,
-						scrollable: false,
-						editable: false,
-						size: 'small' })
-				),
-				React.createElement(StoryEdit, {
-					Story: this.props.Story,
-					user: this.props.user })
+				React.createElement(PostList, {
+					loadPosts: this.loadPosts,
+					rank: this.props.user.rank,
+					purchases: this.props.purchases,
+					size: 'small',
+					scrollabe: true })
 			);
+		},
+
+		//Returns array of posts with offset and callback, used in child PostList
+		loadPosts: function (passedOffset, callback) {
+
+			var endpoint = '/v1/post/list',
+			    params = {
+				limit: 14,
+				verified: true,
+				offset: passedOffset
+			};
+
+			$.ajax({
+				url: API_URL + endpoint,
+				type: 'GET',
+				data: params,
+				dataType: 'json',
+				success: function (response, status, xhr) {
+
+					//Do nothing, because of bad response
+					if (!response.data || response.err) callback([]);else callback(response.data);
+				},
+				error: function (xhr, status, error) {
+					$.snackbar({ content: resolveError(error) });
+				}
+
+			});
 		}
 
 	});
 
 	if (isNode) {
 
-		module.exports = StoryDetail;
+		module.exports = Content;
 	} else {
 
-		ReactDOM.render(React.createElement(StoryDetail, {
+		ReactDOM.render(React.createElement(Content, {
 			user: window.__initialProps__.user,
 			purchases: window.__initialProps__.purchases,
-			Story: window.__initialProps__.Story,
 			title: window.__initialProps__.title }), document.getElementById('app'));
 	}
 
@@ -20870,126 +20890,6 @@
 	};
 
 	module.exports = config;
-
-/***/ },
-/* 170 */,
-/* 171 */,
-/* 172 */,
-/* 173 */,
-/* 174 */,
-/* 175 */,
-/* 176 */,
-/* 177 */,
-/* 178 */,
-/* 179 */,
-/* 180 */,
-/* 181 */,
-/* 182 */,
-/* 183 */,
-/* 184 */,
-/* 185 */,
-/* 186 */,
-/* 187 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(159);
-
-	/** //
-
-	Description : Column on the left of the posts grid on the story detail page
-
-	// **/
-
-	/**
-	 * Story sidebar parent object
-	 */
-
-	var StorySidebar = React.createClass({
-
-		displayName: 'StorySidebar',
-
-		render: function () {
-
-			return React.createElement(
-				'div',
-				{ className: 'col-sm-4 profile hidden-xs' },
-				React.createElement(
-					'div',
-					{ className: 'container-fluid fat' },
-					React.createElement(
-						'div',
-						{ className: 'col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2' },
-						React.createElement(
-							'div',
-							{ className: 'meta' },
-							React.createElement(
-								'div',
-								{ className: 'meta-description', id: 'story-description' },
-								this.props.story.caption
-							),
-							React.createElement(StoryStats, { story: this.props.story })
-						)
-					)
-				)
-			);
-		}
-
-	});
-
-	/**
-	 * Story stats inside the sidebar
-	 */
-
-	var StoryStats = React.createClass({
-
-		displayName: 'StoryStats',
-
-		render: function () {
-
-			if (!this.props.story.stats) return;
-
-			var photos = '';
-			videos = '';
-
-			if (this.props.story.stats.photos) {
-				photos = React.createElement(
-					'li',
-					null,
-					React.createElement('span', { className: 'mdi mdi-file-image-box icon' }),
-					this.props.story.stats.photos,
-					'photos'
-				);
-			}
-			if (this.props.story.stats.videos) {
-				videos = React.createElement(
-					'li',
-					null,
-					React.createElement('span', { className: 'mdi mdi-movie icon' }),
-					this.props.story.stats.videos + ' video'
-				);
-			}
-
-			return React.createElement(
-				'div',
-				{ className: 'meta-list' },
-				React.createElement(
-					'ul',
-					{ className: 'md-type-subhead' },
-					photos,
-					videos
-				)
-			);
-		}
-	});
-
-	module.exports = StorySidebar;
-
-/***/ },
-/* 188 */
-/***/ function(module, exports) {
-
-	
 
 /***/ }
 /******/ ]);

@@ -10,13 +10,13 @@ var isNode = require('detect-node'),
  * Half = False, to render at large size instead of half size
  */
 
-var Highlights = React.createClass({
+var Galleries = React.createClass({
 
 	displayName: 'Galleries',
 
 	render: function(){
 		return (
-			<App>
+			<App user={this.props.user}>
 				<TopBar title="Galleries" />
 				<GalleryList 
 					withList={false}
@@ -27,10 +27,12 @@ var Highlights = React.createClass({
 
 });
 
-if(isNode)
-	module.exports = Highlights;
-else
+if(isNode){
+	module.exports = Galleries;
+}
+else{
 	ReactDOM.render(
-	  <Highlights />,
+	  <Galleries user={window.__initialProps__.user}/>,
 	  document.getElementById('app')
 	);
+}

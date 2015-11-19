@@ -32,7 +32,8 @@ var Videos = React.createClass({
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}
 					purchases={this.props.purchases}
-					size='small' />
+					size='small'
+					scrollable={true} />
 			</App>
 		);
 

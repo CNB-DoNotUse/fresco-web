@@ -8,7 +8,8 @@ var express = require('express'),
     photos = require('../app/server/photos.js'),
     videos = require('../app/server/videos.js'),
     stories = require('../app/server/stories.js');
-    galleries = require('../app/server/galleries.js');
+    galleries = require('../app/server/galleries.js'),
+    content = require('../app/server/content.js');
 
 /** //
 
@@ -23,23 +24,32 @@ var express = require('express'),
 
 router.get('/', function(req, res, next) {
 
-  var purchases = null;
 
-  if (req.session && req.session.user && req.session.user.outlet && req.session
-    .user.outlet.verified) {
-    purchases = req.session.user.outlet.purchases || [];
-    purchases = purchases.map(function(purchase) {
-      return purchase.post;
-    });
-  }
+  var purchases = mapPurchases(req.session),
+     title = 'All Content';
+
+  var reactString = ReactDOMServer.renderToString(
+                      React.createElement(
+                        content, 
+                        props, 
+                        null
+                      )
+                    );
+
+  var props = {
+    user : req.session.user,
+    purchases : purchases,
+    title:title
+  };
 
   res.render('content', {
+    title: title,
     user: req.session.user,
-    title: 'All content',
+    page : 'content',
     config: config,
-    purchases: purchases,
     alerts: req.alerts,
-    page: 'content'
+    react : reactString,
+    props : JSON.stringify(props)
   });
 
 });
@@ -50,9 +60,11 @@ router.get('/', function(req, res, next) {
 
 router.get('/galleries', function(req, res, next) {
 
-  var props = {
-    user : req.session.user
-  };
+  var title = 'Galleries',
+      props = {
+        user : req.session.user,
+        title: title
+      };
 
   var element = React.createElement(galleries, props, null);
 
@@ -60,10 +72,11 @@ router.get('/galleries', function(req, res, next) {
 
   res.render('galleries', {
     user: req.session.user,
-    title: 'Galleries',
+    title: title,
     config: config,
     alerts: req.alerts,
     page: 'galleries',
+    react: reactString,
     props : JSON.stringify(props)
   });
 
@@ -76,20 +89,19 @@ router.get('/galleries', function(req, res, next) {
 router.get('/stories', function(req, res, next) {
 
   var props = {
-    user : req.session.user
-  };
-
-  var element = React.createElement(stories, props, null);
-
-  var reactString = ReactDOMServer.renderToString(element);
+        user : req.session.user
+      },
+      elm = React.createElement(stories, props, null),
+      react = ReactDOMServer.renderToString(elm),
+      title = 'Stories';
 
   res.render('stories', {
     user: req.session.user,
-    title: 'Stories',
+    title: title,
     config: config,
     alerts: req.alerts,
     page: 'stories',
-    react: reactString,
+    react: react,
     props : JSON.stringify(props)
   });
 
@@ -112,46 +124,24 @@ router.get('/:filter', function(req, res, next) {
 
   }
 
-  var purchases = null;
-
-  if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified) {
-
-    purchases = req.session.user.outlet.purchases || [];
-
-    purchases = purchases.map(function(purchase) {
-      return purchase.post;
-    });
-
-  }
-
   var props = {
     user : req.session.user,
-    purchases : purchases
+    purchases : mapPurchases(req.session)
   };
 
   //Load photos page
   if (req.params.filter == 'photos') {
 
-      var reactString = ReactDOMServer.renderToString(
-                          React.createElement(
-                            photos, 
-                            props, 
-                            null
-                          )
-                        ),
-          title = 'Photos';
+    var elm = React.createElement(photos, props, null),
+        react = ReactDOMServer.renderToString(elm),
+        title = 'Photos';
 
   }
   //Load videos page
   else if(req.params.filter == 'videos'){
 
-    var reactString = ReactDOMServer.renderToString(
-                        React.createElement(
-                          videos, 
-                          props, 
-                          null
-                        )
-                      ),
+    var elm = React.createElement(videos, props, null),
+        react = ReactDOMServer.renderToString(elm),
         title = 'Videos';
 
   }
@@ -162,11 +152,29 @@ router.get('/:filter', function(req, res, next) {
     page : 'photos',
     config: config,
     alerts: req.alerts,
-    react : reactString,
+    react : react,
     props : JSON.stringify(props)
   });
 
 
 });
+
+function mapPurchases(session){
+
+  var purchases = [];
+
+  if (session && session.user && session.user.outlet && session.user.outlet.verified) {
+
+    purchases = session.user.outlet.purchases || [];
+
+    purchases = purchases.map(function(purchase) {
+      return purchase.post;
+    });
+
+  }
+
+  return purchases;
+
+}
 
 module.exports = router;

@@ -47,9 +47,15 @@
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
-	    PostList = __webpack_require__(167),
-	    TopBar = __webpack_require__(163),
-	    App = __webpack_require__(164);
+	    PostList = __webpack_require__(160),
+	    TopBar = __webpack_require__(165),
+	    App = __webpack_require__(167);
+
+	/** //
+
+	Description : View page for content/photos
+
+	// **/
 
 	/**
 	 * Photos Parent Object (composed of PhotoList and Navbar)
@@ -79,7 +85,8 @@
 					loadPosts: this.loadPosts,
 					rank: this.props.user.rank,
 					purchases: this.props.purchases,
-					size: 'small' })
+					size: 'small',
+					scrollable: true })
 			);
 		},
 
@@ -19721,7 +19728,134 @@
 
 
 /***/ },
-/* 160 */,
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	ReactDOM = __webpack_require__(159), SuggestionList = __webpack_require__(161);
+	PostCell = __webpack_require__(162);
+
+	/** //
+
+	Description : List for a set of posts used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
+
+	// **/
+
+	/**
+	 * Post List Parent Object 
+	 */
+
+	var PostList = React.createClass({
+
+		displayName: 'Post List',
+
+		getInitialState: function () {
+			return {
+				offset: 0,
+				posts: [],
+				loading: false
+			};
+		},
+
+		getDefaultProps: function () {
+			return {
+				size: 'small',
+				editable: true
+			};
+		},
+
+		componentDidMount: function () {
+
+			//Check if list is initialzied with posts
+			if (this.props.posts) return;
+
+			var self = this;
+
+			//Access parent var load method
+			this.props.loadPosts(0, function (posts) {
+
+				var offset = posts ? posts.length : 0;
+
+				//Set posts from successful response
+				self.setState({
+					posts: posts,
+					offset: offset
+				});
+			});
+		},
+
+		//Scroll listener for main window
+		scroll: function () {
+
+			var grid = this.refs.grid;
+
+			//Check that nothing is loading and that we're at the end of the scroll,
+			//and that we have a parent bind to load  more posts
+			if (!this.state.loading && grid.scrollTop === grid.scrollHeight - grid.offsetHeight && this.props.loadPosts) {
+
+				self = this;
+
+				//Set that we're loading
+				this.setState({ loading: true });
+
+				//Run load on parent call
+				this.props.loadPosts(this.state.offset, function (posts) {
+
+					if (!posts) return;
+
+					console.log(self.state);
+
+					var offset = self.state.posts.length + posts.length;
+
+					//Set galleries from successful response, and unset loading
+					self.setState({
+						posts: self.state.posts.concat(posts),
+						offset: offset,
+						loading: false
+					});
+				});
+			}
+		},
+		render: function () {
+
+			//Check if list was initialzied with posts
+			if (this.props.posts != null) posts = this.props.posts;
+			//Otherwise use the state posts
+			else posts = this.state.posts;
+
+			var purchases = this.props.purchases,
+			    rank = this.props.rank;
+
+			//Map all the posts into cells
+			var posts = posts.map(function (post, i) {
+
+				var purchased = purchases ? purchases.indexOf(post._id) != -1 : null;
+
+				return React.createElement(PostCell, {
+					size: this.props.size,
+					post: post,
+					rank: rank,
+					purchaed: purchased,
+					key: i,
+					editable: this.props.editable });
+			}, this);
+
+			return React.createElement(
+				'div',
+				{ className: 'container-fluid fat grid', ref: 'grid', onScroll: this.props.scrollable ? this.scroll : null },
+				React.createElement(
+					'div',
+					{ className: 'row tiles', id: 'posts' },
+					posts
+				)
+			);
+		}
+
+	});
+
+	module.exports = PostList;
+
+/***/ },
 /* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -19807,12 +19941,354 @@
 	module.exports = SuggestionList;
 
 /***/ },
-/* 162 */,
-/* 163 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(159);
+	ReactDOM = __webpack_require__(159), PurchaseAction = __webpack_require__(163), DownloadAction = __webpack_require__(164);
+
+	/**
+	 * Single Post Cell, child of PostList
+	 */
+
+	var PostCell = React.createClass({
+
+		displayName: 'PostCell',
+
+		getDefaultProps: function () {
+			return {
+				sizes: {
+					large: 'col-xs-12 col-sm-6 col-lg-4',
+					small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
+				}
+			};
+		},
+
+		render: function () {
+
+			var timestamp = this.props.post.time_created;
+			var timeString = formatTime(this.props.post.time_created);
+			var address = this.props.post.location.address || 'No Location';
+			var size = this.props.sizes.large;
+
+			//Class name for post tile icons
+			var statusClass = 'mdi icon pull-right ';
+			statusClass += this.props.post.video == null ? 'mdi-file-image-box ' : 'mdi-movie ';
+			statusClass += this.props.post.purchased ? 'available ' : 'md-type-black-disabled ';
+
+			if (this.props.size == 'small') size = this.props.sizes.small;
+
+			return React.createElement(
+				'div',
+				{ className: size + ' tile' },
+				React.createElement(
+					'div',
+					{ className: 'tile-body' },
+					React.createElement('div', { className: 'frame' }),
+					React.createElement(
+						'div',
+						{ className: 'hover' },
+						React.createElement(
+							'p',
+							{ className: 'md-type-body1' },
+							this.props.post.caption
+						),
+						React.createElement(
+							'span',
+							{ className: 'md-type-caption' },
+							this.props.post.byline
+						),
+						React.createElement(PostCellStories, { stories: this.props.post.stories })
+					),
+					React.createElement(
+						'div',
+						{ className: 'img' },
+						React.createElement('img', { className: 'img-cover', src: formatImg(this.props.post.image, 'small') })
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'tile-foot' },
+					React.createElement(PostCellActions, {
+						post: this.props.post,
+						purchased: this.props.purchased,
+						rank: this.props.rank,
+						editable: this.props.editable }),
+					React.createElement(
+						'div',
+						null,
+						React.createElement(
+							'div',
+							{ className: 'tile-info' },
+							React.createElement(
+								'span',
+								{ className: 'md-type-body2' },
+								address
+							),
+							React.createElement(
+								'span',
+								{ className: 'md-type-caption timestring', 'data-timestamp': this.props.post.time_created },
+								timeString
+							)
+						),
+						React.createElement('span', { className: statusClass })
+					)
+				)
+			);
+		}
+	});
+
+	// <span className="mdi mdi-library-plus icon pull-right"></span>
+	// <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
+
+	/**
+	 * Gallery Cell Stories List
+	 */
+
+	var PostCellStories = React.createClass({
+
+		displayName: 'Post Cell Stories',
+
+		render: function () {
+
+			var stores = '';
+
+			if (this.props.stories) {
+
+				var stories = this.props.stories.map(function (story, i) {
+
+					return React.createElement(
+						'li',
+						{ key: i },
+						React.createElement(
+							'a',
+							{ href: "/story/" + story._id },
+							story.title
+						)
+					);
+				});
+			}
+
+			return React.createElement(
+				'ul',
+				{ className: 'md-type-body2' },
+				stories
+			);
+		}
+
+	});
+
+	/**
+	 * Post Cell Actions
+	 * Description : Set of icons on the the post cell's hover
+	 */
+
+	var PostCellActions = React.createClass({
+
+		displayName: 'Post Cell Actions',
+
+		render: function () {
+
+			var actions = [],
+			    key = 0;
+			//Check if the purchased property is set on the post
+			if (this.props.post.purchased !== null) {
+
+				//Check if we're CM or Admin
+				if (typeof this.props.rank !== 'undefined' && this.props.rank >= 1) {
+
+					if (this.props.post.purhcased === false) {
+
+						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
+
+						actions.push(React.createElement(PurchaseAction, { post: this.post }));
+
+						actions.push(React.createElement('span', { className: 'mdi mdi-cash icon pull-right', 'data-id': this.props.post._id, onClick: this.purchase, key: key++ }));
+					} else {
+
+						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
+
+						actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
+					}
+				}
+				//Check if the post has been purchased
+				else if (this.props.post.purhcased === true) actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
+
+					//Check if the post is not purhcased, and it is for sale
+					else if (this.props.post.purchased == false && forsale) {
+
+							actions.push(React.createElement('span', { 'class': 'mdi mdi-library-plus icon pull-right', key: key++ }));
+							actions.push(React.createElement('span', { 'class': 'mdi mdi-cash icon pull-right', 'data-id': '\' + post._id + \'', key: key++ }));
+						}
+			}
+
+			return React.createElement(
+				'div',
+				{ className: 'hover' },
+				React.createElement(
+					'a',
+					{ className: 'md-type-body2 post-link', href: '/post/' + this.props.post._id },
+					'See more'
+				),
+				actions
+			);
+		},
+		edit: function () {
+
+			// $.ajax({
+			// 	url: '/scripts/post/gallery',
+			// 	type: 'GET',
+			// 	data: {id: post._id},
+			// 	success: function(result, status, xhr){
+			// 		if (result.err)
+			// 			return this.error(null, null, result.err);
+
+			// 		GALLERY_EDIT = result.data;
+			// 		galleryEditUpdate();
+			// 		$(".toggle-gedit").toggleClass("toggled");
+			// 	},
+			// 	error: function(xhr, status, error){
+			// 		$.snackbar({content:resolveError(error)});
+			// 	}
+			// })
+
+		}
+
+	});
+
+	module.exports = PostCell;
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159);
+
+	/**
+	 * Global purchase actions
+	 */
+
+	var PurchaseAction = React.createClass({
+
+		displayName: 'PurchaseAction',
+
+		render: function () {
+
+			return React.createElement('span', { className: 'mdi mdi-cash icon pull-right', onClick: this.purchase });
+		},
+		//Called whenever the purhcase icon is selected
+		purchase: function (event) {
+
+			//Check if the prop exists first
+			if (!this.props.post) return;
+
+			var post = this.props.post._id,
+			    assignment = this.props.assignment ? this.props.assignment._id : null;
+
+			//Confirm the purchase
+			alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", function (e) {
+
+				if (e) {
+
+					//Send request for purchase
+					$.ajax({
+						url: '/scripts/outlet/checkout',
+						dataType: 'json',
+						method: 'post',
+						contentType: "application/json",
+						data: JSON.stringify({
+							posts: post,
+							assignment: assignment
+						}),
+						success: function (result, status, xhr) {
+
+							console.log(result);
+
+							if (result.err) return this.error(null, null, result.err);
+
+							$.snackbar({
+								content: 'Purchase successful! Visit your <a style="color:white;" href="/outlet">outlet page</a> to view your purchased content',
+								timeout: 0
+							});
+
+							// var card = thisElem.parents('tile');
+							// thisElem.siblings('.mdi-library-plus').remove();
+							// thisElem.parent().parent().find('.mdi-file-image-box').addClass('available');
+							// thisElem.parent().parent().find('.mdi-movie').addClass('available');
+							// card.removeClass('toggled');
+							// thisElem.remove();
+						},
+						error: function (xhr, status, error) {
+							$.snackbar({
+								content: resolveError(error, 'There was an error while completing your purchase!')
+							});
+						}
+					});
+				} else {
+					// user clicked "cancel"
+				}
+			});
+		}
+
+	});
+
+	module.exports = PurchaseAction;
+
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159);
+
+	/**
+	 * Global download action
+	 */
+
+	var DownloadAction = React.createClass({
+
+		displayName: 'DownloadAction',
+
+		render: function () {
+
+			return React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download });
+		},
+		//Called whenever the purhcase icon is selected
+		download: function (event) {
+
+			console.log('test');
+
+			if (!this.props.post) {
+
+				$.snackbar({
+					content: 'There was an error downloading this post',
+					timeout: 0
+				});
+
+				return;
+			}
+
+			var href = this.props.post.video ? this.props.post.video.replace('videos/', 'videos/mp4/').replace('.m3u8', '.mp4') : this.props.post.image;
+
+			var link = document.createElement("a");
+
+			link.download = Date.now() + '.' + href.split('.').pop();
+			link.href = href;
+			link.click();
+		}
+
+	});
+
+	module.exports = DownloadAction;
+
+/***/ },
+/* 165 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159),
+	    Dropdown = __webpack_require__(166);
 
 	/** //
 
@@ -19834,6 +20310,40 @@
 
 			var edit = '';
 
+			var topbarItems = [];
+
+			if (this.props.editable) {
+				topbarItems.push(React.createElement('a', { className: 'mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler',
+					key: 'edit',
+					onClick: this.toggleEdit }));
+			}
+			if (this.props.chronToggle) {
+				topbarItems.push(React.createElement(Dropdown, {
+					options: ['By capture time', 'By upload time'],
+					selected: 'By capture time',
+					onSelected: this.chronToggleSelected,
+					key: 'chronToggle',
+					inList: true }));
+			}
+			if (this.props.timeToggle) {
+
+				topbarItems.push(React.createElement(Dropdown, {
+					options: ['Relative', 'Absolute'],
+					selected: 'Absolute',
+					onSelected: this.timeToggleSelected,
+					key: 'timeToggle',
+					inList: true }));
+			}
+			if (this.props.verifiedToggle) {
+
+				topbarItems.push(React.createElement(Dropdown, {
+					options: ['All content', 'Verified'],
+					selected: 'Verified',
+					onSelected: this.verifiedToggleSelected,
+					key: 'verifiedToggle',
+					inList: true }));
+			}
+
 			return React.createElement(
 				'nav',
 				{ className: 'navbar navbar-fixed-top navbar-default' },
@@ -19849,12 +20359,25 @@
 					{ className: 'md-type-title' },
 					this.props.title
 				),
-				this.props.editable ? React.createElement('a', { className: 'mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler', onClick: this.toggleEdit }) : '',
-				this.props.chronToggle ? React.createElement(ChronToggle, null) : '',
-				this.props.timeToggle ? React.createElement(TimeToggle, null) : '',
-				this.props.verifiedToggle ? React.createElement(VerifiedToggle, null) : ''
+				topbarItems
 			);
 		},
+
+		//Called when the user selectes a time format
+		timeToggleSelected: function (selected) {
+			if (selected == 'Absolute') {
+				setTimeDisplayType('absolute');
+			} else if (selected == 'Relative') {
+				setTimeDisplayType('relative');
+			}
+		},
+
+		//Called when the user selectes a time format
+		verifiedToggleSelected: function (selected) {},
+
+		//Called when the user selectes a time format
+		chronToggleSelected: function (selected) {},
+
 		toggleEdit: function () {
 
 			$(".toggle-gedit").toggleClass("toggled");
@@ -19862,218 +20385,170 @@
 
 	});
 
-	var TimeToggle = React.createClass({
-
-		displayName: 'TimeToggle',
-
-		render: function () {
-
-			return React.createElement(
-				'li',
-				{ className: 'drop pull-right hidden-xs' },
-				React.createElement(
-					'button',
-					{ className: 'toggle-drop md-type-subhead time-display-filter-button', ref: 'time_toggle_button' },
-					React.createElement(
-						'span',
-						{ className: 'time-display-filter-text', ref: 'currentTimeFilter' },
-						'Relative'
-					),
-					React.createElement('span', { className: 'mdi mdi-menu-down icon' })
-				),
-				React.createElement(
-					'div',
-					{ className: 'drop-menu panel panel-default' },
-					React.createElement(
-						'div',
-						{ className: 'toggle-drop toggler md-type-subhead' },
-						React.createElement(
-							'span',
-							{ className: 'time-display-filter-text', ref: 'currentTimeFilter' },
-							'Relative'
-						),
-						React.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
-					),
-					React.createElement(
-						'div',
-						{ className: 'drop-body' },
-						React.createElement(
-							'ul',
-							{ className: 'md-type-subhead' },
-							React.createElement(
-								'li',
-								{ className: 'time-display-filter-type active', 'data-filter-type': 'relative', onClick: this.clicked },
-								'Relative'
-							),
-							React.createElement(
-								'li',
-								{ className: 'time-display-filter-type', 'data-filter-type': 'absolute', onClick: this.clicked },
-								'Absolute'
-							)
-						)
-					)
-				)
-			);
-		},
-		clicked: function () {
-
-			var currentTimeFilter = this.refs.currentTimeFilter;
-
-			console.log(currentTimeFilter);
-
-			var displayMode = '';
-
-			if (currentTimeFilter.innerHTML == 'Relative') {
-				displayMode = 'absolute';
-				currentTimeFilter.innerHTML = 'Absolute';
-			} else {
-				displayMode = 'relative';
-				currentTimeFilter.innerHTML = 'Relative';
-			}
-
-			setTimeDisplayType(displayMode);
-
-			this.refs.time_toggle_button.click();
-
-			$('.time-display-filter-type').removeClass('active');
-
-			$(currentTimeFilter).addClass('active');
-		}
-
-	});
-
-	var VerifiedToggle = React.createClass({
-
-		displayName: 'VerifiedToggle',
-
-		render: function () {
-
-			return(
-
-				//Check if content manger or creater (config.RANKS.CONTENT_MANAGER)
-				React.createElement(
-					'li',
-					{ className: 'drop pull-right hidden-xs' },
-					React.createElement(
-						'button',
-						{ className: 'toggle-drop md-type-subhead filter-button' },
-						React.createElement(
-							'span',
-							{ className: 'filter-text' },
-							'Verified content'
-						),
-						React.createElement('span', { className: 'mdi mdi-menu-down icon' })
-					),
-					React.createElement(
-						'div',
-						{ className: 'drop-menu panel panel-default' },
-						React.createElement(
-							'div',
-							{ className: 'toggle-drop toggler md-type-subhead' },
-							React.createElement(
-								'span',
-								{ className: 'filter-text' },
-								'Verified content'
-							),
-							React.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
-						),
-						React.createElement(
-							'div',
-							{ className: 'drop-body' },
-							React.createElement(
-								'ul',
-								{ className: 'md-type-subhead' },
-								React.createElement(
-									'li',
-									{ className: 'filter-type' },
-									'All content'
-								),
-								React.createElement(
-									'li',
-									{ className: 'filter-type active' },
-									'Verified content'
-								)
-							)
-						)
-					)
-				)
-			);
-		},
-		clicked: function () {}
-
-	});
-
-	var ChronToggle = React.createClass({
-
-		displayName: 'ChronToggle',
-
-		render: function () {
-
-			return(
-
-				//Check if content manger or creater (config.RANKS.CONTENT_MANAGER)
-				React.createElement(
-					'li',
-					{ className: 'drop pull-right hidden-xs' },
-					React.createElement(
-						'button',
-						{ className: 'toggle-drop md-type-subhead filter-button' },
-						React.createElement(
-							'span',
-							{ className: 'filter-text' },
-							'By capture time'
-						),
-						React.createElement('span', { className: 'mdi mdi-menu-down icon' })
-					),
-					React.createElement(
-						'div',
-						{ className: 'drop-menu panel panel-default' },
-						React.createElement(
-							'div',
-							{ className: 'toggle-drop toggler md-type-subhead' },
-							React.createElement(
-								'span',
-								{ className: 'filter-text' },
-								'By capture time'
-							),
-							React.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
-						),
-						React.createElement(
-							'div',
-							{ className: 'drop-body' },
-							React.createElement(
-								'ul',
-								{ className: 'md-type-subhead' },
-								React.createElement(
-									'li',
-									{ className: 'filter-type' },
-									'By capture time'
-								),
-								React.createElement(
-									'li',
-									{ className: 'filter-type active' },
-									'By upload time'
-								)
-							)
-						)
-					)
-				)
-			);
-		},
-		clicked: function () {}
-
-	});
-
 	module.exports = TopBar;
 
 /***/ },
-/* 164 */
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159);
+
+	/**
+	 * Generic Dropdown Element
+	 * @param  {function} onSelected A function called wtih the user's selection
+	 */
+
+	var Dropdown = React.createClass({
+
+		displayName: 'Dropdown',
+
+		getDefaultProps: function () {
+			return {
+				options: ['Relative', 'Absolute'],
+				inList: false
+			};
+		},
+
+		getInitialState: function () {
+			return {
+				selected: this.props.selected
+			};
+		},
+
+		//Called whenever the master button is clicked
+		clicked: function (event) {
+
+			var drop = $(this.refs.toggle_button).siblings(".drop-menu");
+
+			drop.toggleClass("toggled");
+
+			if (drop.hasClass("toggled")) {
+				var offset = drop.offset().left;
+				while (offset + drop.outerWidth() > $(window).width() - 7) {
+					drop.css("left", parseInt(drop.css("left")) - 1 + "px");
+					offset = drop.offset().left;
+				}
+			}
+
+			$(".dim.toggle-drop").toggleClass("toggled");
+		},
+
+		//Called whenever an option is selected from the dropdown
+		optionClicked: function (event) {
+
+			var selected = event.currentTarget.innerHTML;
+
+			//If the user chose the already selected option, don't do anything
+			if (this.state.selected == selected) {
+				this.hideDropdown();
+				return;
+			}
+
+			this.setState({
+				selected: selected
+			});
+
+			this.hideDropdown();
+
+			if (this.props.onSelected) {
+				this.props.onSelected(selected);
+			}
+		},
+
+		//Hides the dropdown menu and removes the whole-screen dim
+		hideDropdown: function () {
+
+			this.refs.drop.classList.remove('toggled');
+
+			var toRemoveToggle = document.getElementsByClassName('toggle-drop');
+
+			for (var i = 0; i < toRemoveToggle.length; i++) {
+				toRemoveToggle[i].classList.remove('toggled');
+			}
+		},
+
+		render: function () {
+
+			var options = this.props.options.map(function (option) {
+
+				var className = '';
+
+				if (option === this.state.selected) {
+					//Highlight the current selection
+					className += ' active';
+				}
+
+				return React.createElement(
+					'li',
+					{ className: className, key: option, onClick: this.optionClicked },
+					option
+				);
+			}, this);
+
+			var dropdownButton = React.createElement(
+				'button',
+				{ className: 'toggle-drop md-type-subhead', ref: 'toggle_button', onClick: this.clicked },
+				React.createElement(
+					'span',
+					null,
+					this.state.selected
+				),
+				React.createElement('span', { className: 'mdi mdi-menu-down icon' })
+			);
+
+			var dropdownList = React.createElement(
+				'div',
+				{ className: 'drop-menu panel panel-default', ref: 'drop', onClick: this.hideDropdown },
+				React.createElement(
+					'div',
+					{ className: 'toggle-drop toggler md-type-subhead' },
+					React.createElement(
+						'span',
+						null,
+						this.state.selected
+					),
+					React.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
+				),
+				React.createElement(
+					'div',
+					{ className: 'drop-body' },
+					React.createElement(
+						'ul',
+						{ className: 'md-type-subhead' },
+						options
+					)
+				)
+			);
+
+			if (this.props.inList) {
+				return React.createElement(
+					'li',
+					{ className: 'drop pull-right hidden-xs' },
+					dropdownButton,
+					dropdownList
+				);
+			} else {
+				return React.createElement(
+					'div',
+					{ className: 'split-cell drop' },
+					dropdownButton,
+					dropdownList
+				);
+			}
+		}
+	});
+
+	module.exports = Dropdown;
+
+/***/ },
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
-	    Sidebar = __webpack_require__(165);
+	    Sidebar = __webpack_require__(168);
 
 	/**
 	 * Gallery Detail Parent Object
@@ -20107,12 +20582,12 @@
 	module.exports = App;
 
 /***/ },
-/* 165 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
-	    config = __webpack_require__(166);
+	    config = __webpack_require__(169);
 
 	/**
 	 * Side bar object
@@ -20190,30 +20665,33 @@
 			if (this.props.user.outlet || this.props.user.rank >= config.RANKS.CONTENT_MANAGER) {
 				var dispatch = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': 'dispatch', id: 'sidebar-dispatch' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/dispatch' },
 					React.createElement('span', { className: 'mdi mdi-map icon' }),
 					'Dispatch'
 				);
 			}
 
 			if (this.props.user.outlet != null) {
+
 				var outlet = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-outlet' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/outlet' },
 					React.createElement('span', { className: 'mdi mdi-account-multiple icon' }),
 					this.props.user.outlet.title
 				);
 			}
 			if (this.props.user.rank >= 2) {
+
 				var admin = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-admin' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/admin' },
 					React.createElement('span', { className: 'mdi mdi-dots-horizontal icon' }),
 					'Admin'
 				);
+
 				var purchases = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-purchases' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/purchases' },
 					React.createElement('span', { className: 'mdi mdi-currency-usd icon' }),
 					'Purchases'
 				);
@@ -20223,13 +20701,13 @@
 				{ className: 'md-type-body1' },
 				React.createElement(
 					'li',
-					{ className: 'sidebar-tabb', onClick: this.itemClicked, id: 'sidebar-highlights' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/highlights' },
 					React.createElement('span', { className: 'mdi mdi-star icon' }),
 					'Highlights'
 				),
 				React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-content' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/content' },
 					React.createElement('span', { className: 'mdi mdi-play-box-outline icon' }),
 					'All content'
 				),
@@ -20238,25 +20716,25 @@
 					null,
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-photos' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/content/photos' },
 						React.createElement('span', { className: 'mdi mdi-file-image-box icon' }),
 						'Photos'
 					),
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-videos' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/content/videos' },
 						React.createElement('span', { className: 'mdi mdi-movie icon' }),
 						'Videos'
 					),
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-galleries' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/content/admin' },
 						React.createElement('span', { className: 'mdi mdi-image-filter icon' }),
 						'Galleries'
 					),
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-stories' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/content/stories' },
 						React.createElement('span', { className: 'mdi mdi-newspaper icon' }),
 						'Stories'
 					)
@@ -20282,7 +20760,7 @@
 	module.exports = Sidebar;
 
 /***/ },
-/* 166 */
+/* 169 */
 /***/ function(module, exports) {
 
 	var config = {
@@ -20412,411 +20890,6 @@
 	};
 
 	module.exports = config;
-
-/***/ },
-/* 167 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	ReactDOM = __webpack_require__(159), SuggestionList = __webpack_require__(161);
-	PostCell = __webpack_require__(168);
-
-	/** //
-
-	Description : List for a set of posts used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
-
-	// **/
-
-	/**
-	 * Post List Parent Object 
-	 */
-
-	var PostList = React.createClass({
-
-		displayName: 'Post List',
-
-		getInitialState: function () {
-			return {
-				offset: 0,
-				posts: [],
-				loading: false
-			};
-		},
-
-		getDefaultProps: function () {
-			return {
-				size: 'small',
-				editable: true
-			};
-		},
-
-		componentDidMount: function () {
-
-			//Check if list is initialzied with posts
-			if (this.props.posts) return;
-
-			var self = this;
-
-			//Access parent var load method
-			this.props.loadPosts(0, function (posts) {
-
-				var offset = posts ? posts.length : 0;
-
-				//Set posts from successful response
-				self.setState({
-					posts: posts,
-					offset: offset
-				});
-			});
-		},
-
-		//Scroll listener for main window
-		scroll: function () {
-
-			var grid = this.refs.grid;
-
-			//Check that nothing is loading and that we're at the end of the scroll,
-			//and that we have a parent bind to load  more posts
-			if (!this.state.loading && grid.scrollTop === grid.scrollHeight - grid.offsetHeight && this.props.loadPosts) {
-
-				//Global store `this`
-				var self = this;
-
-				//Set that we're loading
-				self.setState({ loading: true });
-
-				//Run load on parent call
-				this.props.loadPosts(this.state.offset, function (posts) {
-
-					if (!posts) return;
-
-					var offset = self.state.posts.length + posts.length;
-
-					//Set galleries from successful response, and unset loading
-					self.setState({
-						posts: self.state.posts.concat(posts),
-						offset: offset,
-						loading: false
-					});
-				});
-			}
-		},
-		render: function () {
-
-			//Check if list was initialzied with posts
-			if (this.props.posts != null) posts = this.props.posts;
-			//Otherwise use the state posts
-			else posts = this.state.posts;
-
-			var purchases = this.props.purchases,
-			    rank = this.props.rank;
-
-			//Map all the posts into cells
-			var posts = posts.map(function (post, i) {
-
-				var purchased = purchases ? purchases.indexOf(post._id) != -1 : null;
-
-				return React.createElement(PostCell, {
-					size: this.props.size,
-					post: post,
-					rank: rank,
-					purchaed: purchased,
-					key: i,
-					editable: this.props.editable });
-			}, this);
-
-			return React.createElement(
-				'div',
-				{ className: 'container-fluid fat grid', ref: 'grid', onScroll: this.props.scrollable ? this.scroll : null },
-				React.createElement(
-					'div',
-					{ className: 'row tiles', id: 'posts' },
-					posts
-				)
-			);
-		}
-
-	});
-
-	module.exports = PostList;
-
-/***/ },
-/* 168 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	ReactDOM = __webpack_require__(159);
-
-	/**
-	 * Single Post Cell, child of PostList
-	 */
-
-	var PostCell = React.createClass({
-
-		displayName: 'Post Cell',
-
-		getDefaultProps: function () {
-			return {
-				sizes: {
-					large: 'col-xs-12 col-sm-6 col-lg-4',
-					small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
-				}
-			};
-		},
-
-		render: function () {
-
-			var timestamp = this.props.post.time_created;
-			var timeString = getTimeAgo(Date.now(), this.props.post.time_created);
-			var address = this.props.post.location.address || 'No Location';
-			var size = this.props.sizes.large;
-
-			//Class name for post tile icons
-			var statusClass = 'mdi icon pull-right ';
-			statusClass += this.props.post.video == null ? 'mdi-file-image-box ' : 'mdi-movie ';
-			statusClass += this.props.post.purchased ? 'available ' : 'md-type-black-disabled ';
-
-			if (this.props.size == 'small') size = this.props.sizes.small;
-
-			return React.createElement(
-				'div',
-				{ className: size + ' tile' },
-				React.createElement(
-					'div',
-					{ className: 'tile-body' },
-					React.createElement('div', { className: 'frame' }),
-					React.createElement(
-						'div',
-						{ className: 'hover' },
-						React.createElement(
-							'p',
-							{ className: 'md-type-body1' },
-							this.props.post.caption
-						),
-						React.createElement(
-							'span',
-							{ className: 'md-type-caption' },
-							this.props.post.byline
-						),
-						React.createElement(PostCellStories, { stories: this.props.post.stories })
-					),
-					React.createElement(
-						'div',
-						{ className: 'img' },
-						React.createElement('img', { className: 'img-cover', src: formatImg(this.props.post.image, 'small') })
-					)
-				),
-				React.createElement(
-					'div',
-					{ className: 'tile-foot' },
-					React.createElement(PostCellActions, {
-						post: this.props.post,
-						purchased: this.props.purchased,
-						rank: this.props.rank,
-						editable: this.props.editable }),
-					React.createElement(
-						'div',
-						null,
-						React.createElement(
-							'div',
-							{ className: 'tile-info' },
-							React.createElement(
-								'span',
-								{ className: 'md-type-body2' },
-								address
-							),
-							React.createElement(
-								'span',
-								{ className: 'md-type-caption timestring', 'data-timestamp': this.props.post.time_created },
-								timeString
-							)
-						),
-						React.createElement('span', { className: statusClass })
-					)
-				)
-			);
-		}
-	});
-
-	// <span className="mdi mdi-library-plus icon pull-right"></span>
-	// <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
-
-	/**
-	 * Gallery Cell Stories List
-	 */
-
-	var PostCellStories = React.createClass({
-
-		displayName: 'Post Cell Stories',
-
-		render: function () {
-
-			var stores = '';
-
-			if (this.props.stories) {
-
-				var stories = this.props.stories.map(function (story, i) {
-
-					return React.createElement(
-						'li',
-						{ key: i },
-						React.createElement(
-							'a',
-							{ href: "/story/" + story._id },
-							story.title
-						)
-					);
-				});
-			}
-
-			return React.createElement(
-				'ul',
-				{ className: 'md-type-body2' },
-				stories
-			);
-		}
-
-	});
-
-	/**
-	 * Post Cell Actions 
-	 * Description : Set of icons on the the post cell's hover
-	 */
-
-	var PostCellActions = React.createClass({
-
-		displayName: 'Post Cell Actions',
-
-		render: function () {
-
-			var actions = [],
-			    key = 0;
-			//Check if the purchased property is set on the post
-			if (this.props.post.purchased !== null) {
-
-				//Check if we're CM or Admin
-				if (typeof this.props.rank !== 'undefined' && this.props.rank >= 1) {
-
-					if (this.props.post.purhcased === false) {
-
-						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
-
-						actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
-						actions.push(React.createElement('span', { className: 'mdi mdi-cash icon pull-right', 'data-id': this.props.post._id, onClick: this.purchase, key: key++ }));
-					} else {
-
-						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
-
-						actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
-					}
-				}
-				//Check if the post has been purchased
-				else if (this.props.post.purhcased === true) actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
-
-					//Check if the post is not purhcased, and it is for sale
-					else if (this.props.post.purchased == false && forsale) {
-
-							actions.push(React.createElement('span', { 'class': 'mdi mdi-library-plus icon pull-right', key: key++ }));
-							actions.push(purhcase = React.createElement('span', { 'class': 'mdi mdi-cash icon pull-right', 'data-id': '\' + post._id + \'', key: key++ }));
-						}
-			}
-
-			return React.createElement(
-				'div',
-				{ className: 'hover' },
-				React.createElement(
-					'a',
-					{ className: 'md-type-body2 post-link', href: '/post/' + this.props.post._id },
-					'See more'
-				),
-				actions
-			);
-		},
-		edit: function () {
-
-			// $.ajax({
-			// 	url: '/scripts/post/gallery',
-			// 	type: 'GET',
-			// 	data: {id: post._id},
-			// 	success: function(result, status, xhr){
-			// 		if (result.err)
-			// 			return this.error(null, null, result.err);
-
-			// 		GALLERY_EDIT = result.data;
-			// 		galleryEditUpdate();
-			// 		$(".toggle-gedit").toggleClass("toggled");
-			// 	},
-			// 	error: function(xhr, status, error){
-			// 		$.snackbar({content:resolveError(error)});
-			// 	}
-			// })
-
-		},
-		//Purhcase icon
-		purhcase: function () {
-
-			var thisElem = $(this),
-			    post = $(this).attr('data-id');
-
-			if (!post) return $.snackbar({ content: 'Invalid post' });
-
-			alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", function (e) {
-
-				if (e) {
-
-					var assignment = null;
-
-					if (typeof PAGE_Assignment !== 'undefined') {
-						assignment = PAGE_Assignment.assignment;
-					}
-					$.ajax({
-						url: '/scripts/outlet/checkout',
-						dataType: 'json',
-						method: 'post',
-						contentType: "application/json",
-						data: JSON.stringify({
-							posts: [post],
-							assignment: assignment ? assignment._id : null
-						}),
-						success: function (result, status, xhr) {
-
-							if (result.err) return this.error(null, null, result.err);
-
-							$.snackbar({ content: 'Purchase successful! Visit your <a style="color:white;" href="/outlet">outlet page</a> to view your purchased content', timeout: 0 });
-
-							var card = thisElem.parents('tile');
-							thisElem.siblings('.mdi-library-plus').remove();
-							thisElem.parent().parent().find('.mdi-file-image-box').addClass('available');
-							thisElem.parent().parent().find('.mdi-movie').addClass('available');
-							card.removeClass('toggled');
-							thisElem.remove();
-						},
-						error: function (xhr, status, error) {
-							if (error == 'ERR_INCOMPLETE') $.snackbar({ content: 'There was an error while completing your purchase!' });else $.snackbar({ content: resolveError(error) });
-						}
-					});
-				} else {
-					// user clicked "cancel"
-				}
-			});
-		},
-		//Download function for icon
-		download: function () {
-
-			console.log(this.props.post);
-
-			var href = this.props.post.video ? this.props.post.video.replace('videos/', 'videos/mp4/').replace('.m3u8', '.mp4') : this.props.post.image;
-
-			var link = document.createElement("a");
-
-			link.download = Date.now() + '.' + href.split('.').pop();
-			link.href = href;
-			link.click();
-		}
-
-	});
-
-	module.exports = PostCell;
 
 /***/ }
 /******/ ]);

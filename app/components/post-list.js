@@ -62,16 +62,17 @@ var PostList = React.createClass({
 		//and that we have a parent bind to load  more posts
 		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight) && this.props.loadPosts){
 
-			//Global store `this`
-			var self = this;
+			self = this;
 
 			//Set that we're loading
-			self.setState({ loading : true })
+			this.setState({ loading : true });
 
 			//Run load on parent call
 			this.props.loadPosts(this.state.offset, function(posts){
 
 				if(!posts) return;
+
+				console.log(self.state);
 
 				var offset = self.state.posts.length + posts.length;
 

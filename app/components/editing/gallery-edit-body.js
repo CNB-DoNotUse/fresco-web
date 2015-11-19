@@ -7,7 +7,7 @@ var React = require('react'),
 	BylineEdit = require('./byline-edit.js');
 
 /**
- * Gallery Edit Body, inside of the GalleryEditClass
+ * Gallery Edit Body, inside of the GalleryEdit class
  * @description manages all of the input fields, and speaks to parent
  */
 
@@ -63,9 +63,11 @@ var GalleryEditBody = React.createClass({
 					</div>
 					
 					<GalleryEditTags ref='tags' tags={this.state.gallery.tags} />
+					
 					<GalleryEditStories ref='stories' 
 						stories={this.state.gallery.related_stories} 
 						updateRelatedStories={this.updateRelatedStories} />
+					
 					<GalleryEditArticles ref='articles' articles={this.state.gallery.articles} />
 					
 					{highlightCheckbox}
@@ -100,6 +102,14 @@ var GalleryEditBody = React.createClass({
 	updatedTags: function(tags){
 
 		this.state.gallery.tags = tags;
+
+		this.props.updateGallery(gallery);
+
+	},
+
+	updatedLocation: function(location){
+
+		this.state.gallery.locations[0] = location;
 
 		this.props.updateGallery(gallery);
 
@@ -366,7 +376,8 @@ var GalleryEditMap = React.createClass({
 								id="gallery-location-input" 
 								type="text" className="form-control floating-label" 
 								placeholder="Location"
-								defaultValue={this.props.gallery.posts[0].location.address} />
+								defaultValue={this.props.gallery.posts[0].location.address}
+								disabled={!this.props.gallery.imported} />
 						</div>
 						<EditMap gallery={this.props.gallery} />
 					</div>
@@ -396,7 +407,7 @@ var GalleryEditPosts = React.createClass({
 
 	componentWillReceiveProps: function(nextProps){
 
-		this.setState({	
+		this.replaceState({	
 			posts: nextProps.posts,
 			files: nextProps.files ? nextProps.files : []
 		});
@@ -413,19 +424,19 @@ var GalleryEditPosts = React.createClass({
 
 	render: function(){
 
-		var posts = this.state.posts.map(function (post, i) {
+		var k = 0;
 
-			return <EditPost key={i} post={post} />
+		var posts = this.state.posts.map(function (post) {
+
+			return <EditPost key={k++} post={post} />
 
 		}, this);
 
 		var files = [];
 
-		console.log(this.state);
-
 		for (var i = 0; i < this.state.files.length; i++){
 			
-			files.push(<EditPost key={i} file={this.state.files[i]} source={this.state.files.sources[i]} />);
+			files.push(<EditPost key={k++} file={this.state.files[i]} source={this.state.files.sources[i]} />);
 
 		}
 

@@ -7,17 +7,17 @@ var isNode = require('detect-node'),
 
 /** //
 
-Description : View page for content/photos
+Description : View page for content
 
 // **/
 
 /**
- * Photos Parent Object (composed of PhotoList and Navbar)
+ * Content Parent Object (composed of PostList and Navbar)
  */
 
-var Photos = React.createClass({
+var Content = React.createClass({
 
-	displayName: 'Photos',
+	displayName: 'Content',
 
 	getDefaultProps: function(){
 		return {
@@ -30,7 +30,7 @@ var Photos = React.createClass({
 		return (
 			<App user={this.props.user}>
 				<TopBar 
-					title="Photos"
+					title={this.props.title}
 					timeToggle={true}
 					verifiedToggle={true}
 					chronToggle={true} />
@@ -39,7 +39,7 @@ var Photos = React.createClass({
 					rank={this.props.user.rank}
 					purchases={this.props.purchases}
 					size='small'
-					scrollable={true} />
+					scrollabe={true} />
 			</App>
 		);
 
@@ -52,8 +52,7 @@ var Photos = React.createClass({
 				params = {
 					limit: 14,
 					verified : true,
-					offset: passedOffset,
-					type: 'photo'
+					offset: passedOffset
 				};
 
 		$.ajax({
@@ -82,15 +81,16 @@ var Photos = React.createClass({
 
 if(isNode){
 
-	module.exports = Photos;
+	module.exports = Content;
 
 }
 else{
 
 	ReactDOM.render(
-	 	<Photos 
+	 	<Content 
 	 		user={window.__initialProps__.user} 
-	 		purchases={window.__initialProps__.purchases} />,
+	 		purchases={window.__initialProps__.purchases}
+	 		title={window.__initialProps__.title} />,
 		document.getElementById('app')
 	);
 

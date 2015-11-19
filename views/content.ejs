@@ -1,18 +1,8 @@
 <% include segments/head %>
+	
+	<div id="app" class="wrapper"><%- react %></div>
 
-<%- include('segments/sidebar', { user: user, config: config, title: title}) %>
-
-	<div 
-</div>
-<%- include('segments/gallery-edit') %>
-<%- include('segments/gallery-create') %>
-<%- include('segments/bulk-select') %>
-<!-- end edit -->
+<!--Scripts-->
 <%- include('segments/scripts') %>
-<script type="text/javascript">
-	var rank = <%- user.rank %>;
-	var purchases = <%- JSON.stringify(purchases || []) %>;
-	var outlet = <%- user.outlet ? JSON.stringify(user.outlet._id) : 'undefined'; %>
-</script>
 </body>
 </html>

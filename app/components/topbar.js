@@ -1,6 +1,6 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Dropdown = require('./Dropdown')
+var React = require('react'),
+	ReactDOM = require('react-dom'),
+	Dropdown = require('./global/dropdown');
 
 /** //
 
@@ -23,6 +23,7 @@ var TopBar = React.createClass({
 		var edit = '';
 
 		var topbarItems = [];
+		
 		if (this.props.editable) {
 			topbarItems.push(
 				<a className="mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler"
@@ -31,19 +32,39 @@ var TopBar = React.createClass({
 			);
 		}
 		if (this.props.chronToggle) {
-			topbarItems.push(<ChronToggle key="chronToggle" />);
+			topbarItems.push(
+							<Dropdown
+								options={['By capture time', 'By upload time']}
+								selected='By capture time'
+								onSelected={this.chronToggleSelected}
+								key="chronToggle"
+								inList={true} />
+						);
 		}
 		if (this.props.timeToggle) {
+			
 			topbarItems.push(
+			
 				<Dropdown
 					options={['Relative', 'Absolute']}
 					selected='Absolute'
 					onSelected={this.timeToggleSelected}
-					key="timeToggle" />
-			)
+					key="timeToggle"
+					inList={true} />
+			);
+
 		}
 		if (this.props.verifiedToggle) {
-			topbarItems.push(<VerifiedToggle key="verifiedToggle" />);
+
+			topbarItems.push(
+				<Dropdown
+					options={['All content', 'Verified']}
+					selected='Verified'
+					onSelected={this.verifiedToggleSelected}
+					key="verifiedToggle"
+					inList={true} />
+			);
+
 		}
 
 		return (
@@ -55,7 +76,6 @@ var TopBar = React.createClass({
 				<div className="spacer"></div>
 				<h1 className="md-type-title">{this.props.title}</h1>
 				{topbarItems}
-
 			</nav>
 		);
 	},
@@ -70,86 +90,19 @@ var TopBar = React.createClass({
 		}
 	},
 
+	//Called when the user selectes a time format
+	verifiedToggleSelected: function(selected){
+		
+	},
+
+	//Called when the user selectes a time format
+	chronToggleSelected: function(selected){
+		
+	},
+
 	toggleEdit: function(){
 
 		$(".toggle-gedit").toggleClass("toggled");
-
-
-	}
-
-});
-
-var VerifiedToggle = React.createClass({
-
-	displayName: 'VerifiedToggle',
-
-	render: function(){
-
-		return (
-
-			//Check if content manger or creater (config.RANKS.CONTENT_MANAGER)
-			<li className="drop pull-right hidden-xs">
-				<button className="toggle-drop md-type-subhead filter-button">
-					<span className="filter-text">Verified content</span>
-					<span className="mdi mdi-menu-down icon"></span>
-				</button>
-				<div className="drop-menu panel panel-default">
-					<div className="toggle-drop toggler md-type-subhead">
-						<span className="filter-text">Verified content</span>
-						<span className="mdi mdi-menu-up icon pull-right"></span>
-					</div>
-					<div className="drop-body">
-						<ul className="md-type-subhead">
-							<li className="filter-type">All content</li>
-							<li className="filter-type active">Verified content</li>
-						</ul>
-					</div>
-				</div>
-			</li>
-
-		)
-
-	},
-	clicked: function(){
-
-
-	}
-
-});
-
-var ChronToggle = React.createClass({
-
-	displayName: 'ChronToggle',
-
-	render: function(){
-
-		return (
-
-			//Check if content manger or creater (config.RANKS.CONTENT_MANAGER)
-			<li className="drop pull-right hidden-xs">
-				<button className="toggle-drop md-type-subhead filter-button">
-					<span className="filter-text">By capture time</span>
-					<span className="mdi mdi-menu-down icon"></span>
-				</button>
-				<div className="drop-menu panel panel-default">
-					<div className="toggle-drop toggler md-type-subhead">
-						<span className="filter-text">By capture time</span>
-						<span className="mdi mdi-menu-up icon pull-right"></span>
-					</div>
-					<div className="drop-body">
-						<ul className="md-type-subhead">
-							<li className="filter-type">By capture time</li>
-							<li className="filter-type active">By upload time</li>
-						</ul>
-					</div>
-				</div>
-			</li>
-
-		)
-
-	},
-	clicked: function(){
-
 
 	}
 

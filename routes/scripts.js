@@ -436,6 +436,8 @@ router.post('/outlet/checkout', function(req, res, next){
 
   req.body.outlet = req.session.user.outlet._id;
 
+  console.log('rest');
+
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
   api.post(

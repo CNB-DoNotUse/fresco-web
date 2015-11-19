@@ -47,9 +47,9 @@
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
-	    TopBar = __webpack_require__(163),
-	    StoryList = __webpack_require__(176);
-	App = __webpack_require__(164);
+	    TopBar = __webpack_require__(165),
+	    StoryList = __webpack_require__(185);
+	App = __webpack_require__(167);
 
 	/**
 	 * Stories Parent Object, contains StoryList composed of StoryCells
@@ -19717,11 +19717,14 @@
 /* 160 */,
 /* 161 */,
 /* 162 */,
-/* 163 */
+/* 163 */,
+/* 164 */,
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(159);
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159),
+	    Dropdown = __webpack_require__(166);
 
 	/** //
 
@@ -19743,6 +19746,40 @@
 
 			var edit = '';
 
+			var topbarItems = [];
+
+			if (this.props.editable) {
+				topbarItems.push(React.createElement('a', { className: 'mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler',
+					key: 'edit',
+					onClick: this.toggleEdit }));
+			}
+			if (this.props.chronToggle) {
+				topbarItems.push(React.createElement(Dropdown, {
+					options: ['By capture time', 'By upload time'],
+					selected: 'By capture time',
+					onSelected: this.chronToggleSelected,
+					key: 'chronToggle',
+					inList: true }));
+			}
+			if (this.props.timeToggle) {
+
+				topbarItems.push(React.createElement(Dropdown, {
+					options: ['Relative', 'Absolute'],
+					selected: 'Absolute',
+					onSelected: this.timeToggleSelected,
+					key: 'timeToggle',
+					inList: true }));
+			}
+			if (this.props.verifiedToggle) {
+
+				topbarItems.push(React.createElement(Dropdown, {
+					options: ['All content', 'Verified'],
+					selected: 'Verified',
+					onSelected: this.verifiedToggleSelected,
+					key: 'verifiedToggle',
+					inList: true }));
+			}
+
 			return React.createElement(
 				'nav',
 				{ className: 'navbar navbar-fixed-top navbar-default' },
@@ -19758,12 +19795,25 @@
 					{ className: 'md-type-title' },
 					this.props.title
 				),
-				this.props.editable ? React.createElement('a', { className: 'mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler', onClick: this.toggleEdit }) : '',
-				this.props.chronToggle ? React.createElement(ChronToggle, null) : '',
-				this.props.timeToggle ? React.createElement(TimeToggle, null) : '',
-				this.props.verifiedToggle ? React.createElement(VerifiedToggle, null) : ''
+				topbarItems
 			);
 		},
+
+		//Called when the user selectes a time format
+		timeToggleSelected: function (selected) {
+			if (selected == 'Absolute') {
+				setTimeDisplayType('absolute');
+			} else if (selected == 'Relative') {
+				setTimeDisplayType('relative');
+			}
+		},
+
+		//Called when the user selectes a time format
+		verifiedToggleSelected: function (selected) {},
+
+		//Called when the user selectes a time format
+		chronToggleSelected: function (selected) {},
+
 		toggleEdit: function () {
 
 			$(".toggle-gedit").toggleClass("toggled");
@@ -19771,218 +19821,170 @@
 
 	});
 
-	var TimeToggle = React.createClass({
-
-		displayName: 'TimeToggle',
-
-		render: function () {
-
-			return React.createElement(
-				'li',
-				{ className: 'drop pull-right hidden-xs' },
-				React.createElement(
-					'button',
-					{ className: 'toggle-drop md-type-subhead time-display-filter-button', ref: 'time_toggle_button' },
-					React.createElement(
-						'span',
-						{ className: 'time-display-filter-text', ref: 'currentTimeFilter' },
-						'Relative'
-					),
-					React.createElement('span', { className: 'mdi mdi-menu-down icon' })
-				),
-				React.createElement(
-					'div',
-					{ className: 'drop-menu panel panel-default' },
-					React.createElement(
-						'div',
-						{ className: 'toggle-drop toggler md-type-subhead' },
-						React.createElement(
-							'span',
-							{ className: 'time-display-filter-text', ref: 'currentTimeFilter' },
-							'Relative'
-						),
-						React.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
-					),
-					React.createElement(
-						'div',
-						{ className: 'drop-body' },
-						React.createElement(
-							'ul',
-							{ className: 'md-type-subhead' },
-							React.createElement(
-								'li',
-								{ className: 'time-display-filter-type active', 'data-filter-type': 'relative', onClick: this.clicked },
-								'Relative'
-							),
-							React.createElement(
-								'li',
-								{ className: 'time-display-filter-type', 'data-filter-type': 'absolute', onClick: this.clicked },
-								'Absolute'
-							)
-						)
-					)
-				)
-			);
-		},
-		clicked: function () {
-
-			var currentTimeFilter = this.refs.currentTimeFilter;
-
-			console.log(currentTimeFilter);
-
-			var displayMode = '';
-
-			if (currentTimeFilter.innerHTML == 'Relative') {
-				displayMode = 'absolute';
-				currentTimeFilter.innerHTML = 'Absolute';
-			} else {
-				displayMode = 'relative';
-				currentTimeFilter.innerHTML = 'Relative';
-			}
-
-			setTimeDisplayType(displayMode);
-
-			this.refs.time_toggle_button.click();
-
-			$('.time-display-filter-type').removeClass('active');
-
-			$(currentTimeFilter).addClass('active');
-		}
-
-	});
-
-	var VerifiedToggle = React.createClass({
-
-		displayName: 'VerifiedToggle',
-
-		render: function () {
-
-			return(
-
-				//Check if content manger or creater (config.RANKS.CONTENT_MANAGER)
-				React.createElement(
-					'li',
-					{ className: 'drop pull-right hidden-xs' },
-					React.createElement(
-						'button',
-						{ className: 'toggle-drop md-type-subhead filter-button' },
-						React.createElement(
-							'span',
-							{ className: 'filter-text' },
-							'Verified content'
-						),
-						React.createElement('span', { className: 'mdi mdi-menu-down icon' })
-					),
-					React.createElement(
-						'div',
-						{ className: 'drop-menu panel panel-default' },
-						React.createElement(
-							'div',
-							{ className: 'toggle-drop toggler md-type-subhead' },
-							React.createElement(
-								'span',
-								{ className: 'filter-text' },
-								'Verified content'
-							),
-							React.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
-						),
-						React.createElement(
-							'div',
-							{ className: 'drop-body' },
-							React.createElement(
-								'ul',
-								{ className: 'md-type-subhead' },
-								React.createElement(
-									'li',
-									{ className: 'filter-type' },
-									'All content'
-								),
-								React.createElement(
-									'li',
-									{ className: 'filter-type active' },
-									'Verified content'
-								)
-							)
-						)
-					)
-				)
-			);
-		},
-		clicked: function () {}
-
-	});
-
-	var ChronToggle = React.createClass({
-
-		displayName: 'ChronToggle',
-
-		render: function () {
-
-			return(
-
-				//Check if content manger or creater (config.RANKS.CONTENT_MANAGER)
-				React.createElement(
-					'li',
-					{ className: 'drop pull-right hidden-xs' },
-					React.createElement(
-						'button',
-						{ className: 'toggle-drop md-type-subhead filter-button' },
-						React.createElement(
-							'span',
-							{ className: 'filter-text' },
-							'By capture time'
-						),
-						React.createElement('span', { className: 'mdi mdi-menu-down icon' })
-					),
-					React.createElement(
-						'div',
-						{ className: 'drop-menu panel panel-default' },
-						React.createElement(
-							'div',
-							{ className: 'toggle-drop toggler md-type-subhead' },
-							React.createElement(
-								'span',
-								{ className: 'filter-text' },
-								'By capture time'
-							),
-							React.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
-						),
-						React.createElement(
-							'div',
-							{ className: 'drop-body' },
-							React.createElement(
-								'ul',
-								{ className: 'md-type-subhead' },
-								React.createElement(
-									'li',
-									{ className: 'filter-type' },
-									'By capture time'
-								),
-								React.createElement(
-									'li',
-									{ className: 'filter-type active' },
-									'By upload time'
-								)
-							)
-						)
-					)
-				)
-			);
-		},
-		clicked: function () {}
-
-	});
-
 	module.exports = TopBar;
 
 /***/ },
-/* 164 */
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159);
+
+	/**
+	 * Generic Dropdown Element
+	 * @param  {function} onSelected A function called wtih the user's selection
+	 */
+
+	var Dropdown = React.createClass({
+
+		displayName: 'Dropdown',
+
+		getDefaultProps: function () {
+			return {
+				options: ['Relative', 'Absolute'],
+				inList: false
+			};
+		},
+
+		getInitialState: function () {
+			return {
+				selected: this.props.selected
+			};
+		},
+
+		//Called whenever the master button is clicked
+		clicked: function (event) {
+
+			var drop = $(this.refs.toggle_button).siblings(".drop-menu");
+
+			drop.toggleClass("toggled");
+
+			if (drop.hasClass("toggled")) {
+				var offset = drop.offset().left;
+				while (offset + drop.outerWidth() > $(window).width() - 7) {
+					drop.css("left", parseInt(drop.css("left")) - 1 + "px");
+					offset = drop.offset().left;
+				}
+			}
+
+			$(".dim.toggle-drop").toggleClass("toggled");
+		},
+
+		//Called whenever an option is selected from the dropdown
+		optionClicked: function (event) {
+
+			var selected = event.currentTarget.innerHTML;
+
+			//If the user chose the already selected option, don't do anything
+			if (this.state.selected == selected) {
+				this.hideDropdown();
+				return;
+			}
+
+			this.setState({
+				selected: selected
+			});
+
+			this.hideDropdown();
+
+			if (this.props.onSelected) {
+				this.props.onSelected(selected);
+			}
+		},
+
+		//Hides the dropdown menu and removes the whole-screen dim
+		hideDropdown: function () {
+
+			this.refs.drop.classList.remove('toggled');
+
+			var toRemoveToggle = document.getElementsByClassName('toggle-drop');
+
+			for (var i = 0; i < toRemoveToggle.length; i++) {
+				toRemoveToggle[i].classList.remove('toggled');
+			}
+		},
+
+		render: function () {
+
+			var options = this.props.options.map(function (option) {
+
+				var className = '';
+
+				if (option === this.state.selected) {
+					//Highlight the current selection
+					className += ' active';
+				}
+
+				return React.createElement(
+					'li',
+					{ className: className, key: option, onClick: this.optionClicked },
+					option
+				);
+			}, this);
+
+			var dropdownButton = React.createElement(
+				'button',
+				{ className: 'toggle-drop md-type-subhead', ref: 'toggle_button', onClick: this.clicked },
+				React.createElement(
+					'span',
+					null,
+					this.state.selected
+				),
+				React.createElement('span', { className: 'mdi mdi-menu-down icon' })
+			);
+
+			var dropdownList = React.createElement(
+				'div',
+				{ className: 'drop-menu panel panel-default', ref: 'drop', onClick: this.hideDropdown },
+				React.createElement(
+					'div',
+					{ className: 'toggle-drop toggler md-type-subhead' },
+					React.createElement(
+						'span',
+						null,
+						this.state.selected
+					),
+					React.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
+				),
+				React.createElement(
+					'div',
+					{ className: 'drop-body' },
+					React.createElement(
+						'ul',
+						{ className: 'md-type-subhead' },
+						options
+					)
+				)
+			);
+
+			if (this.props.inList) {
+				return React.createElement(
+					'li',
+					{ className: 'drop pull-right hidden-xs' },
+					dropdownButton,
+					dropdownList
+				);
+			} else {
+				return React.createElement(
+					'div',
+					{ className: 'split-cell drop' },
+					dropdownButton,
+					dropdownList
+				);
+			}
+		}
+	});
+
+	module.exports = Dropdown;
+
+/***/ },
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
-	    Sidebar = __webpack_require__(165);
+	    Sidebar = __webpack_require__(168);
 
 	/**
 	 * Gallery Detail Parent Object
@@ -20016,12 +20018,12 @@
 	module.exports = App;
 
 /***/ },
-/* 165 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
-	    config = __webpack_require__(166);
+	    config = __webpack_require__(169);
 
 	/**
 	 * Side bar object
@@ -20099,30 +20101,33 @@
 			if (this.props.user.outlet || this.props.user.rank >= config.RANKS.CONTENT_MANAGER) {
 				var dispatch = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': 'dispatch', id: 'sidebar-dispatch' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/dispatch' },
 					React.createElement('span', { className: 'mdi mdi-map icon' }),
 					'Dispatch'
 				);
 			}
 
 			if (this.props.user.outlet != null) {
+
 				var outlet = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-outlet' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/outlet' },
 					React.createElement('span', { className: 'mdi mdi-account-multiple icon' }),
 					this.props.user.outlet.title
 				);
 			}
 			if (this.props.user.rank >= 2) {
+
 				var admin = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-admin' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/admin' },
 					React.createElement('span', { className: 'mdi mdi-dots-horizontal icon' }),
 					'Admin'
 				);
+
 				var purchases = React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-purchases' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/purchases' },
 					React.createElement('span', { className: 'mdi mdi-currency-usd icon' }),
 					'Purchases'
 				);
@@ -20132,13 +20137,13 @@
 				{ className: 'md-type-body1' },
 				React.createElement(
 					'li',
-					{ className: 'sidebar-tabb', onClick: this.itemClicked, id: 'sidebar-highlights' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/highlights' },
 					React.createElement('span', { className: 'mdi mdi-star icon' }),
 					'Highlights'
 				),
 				React.createElement(
 					'li',
-					{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-content' },
+					{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/content' },
 					React.createElement('span', { className: 'mdi mdi-play-box-outline icon' }),
 					'All content'
 				),
@@ -20147,25 +20152,25 @@
 					null,
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-photos' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/content/photos' },
 						React.createElement('span', { className: 'mdi mdi-file-image-box icon' }),
 						'Photos'
 					),
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-videos' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/content/videos' },
 						React.createElement('span', { className: 'mdi mdi-movie icon' }),
 						'Videos'
 					),
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-galleries' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/content/admin' },
 						React.createElement('span', { className: 'mdi mdi-image-filter icon' }),
 						'Galleries'
 					),
 					React.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.itemClicked, id: 'sidebar-stories' },
+						{ className: 'sidebar-tab', onClick: this.itemClicked, 'data-link': '/content/stories' },
 						React.createElement('span', { className: 'mdi mdi-newspaper icon' }),
 						'Stories'
 					)
@@ -20191,7 +20196,7 @@
 	module.exports = Sidebar;
 
 /***/ },
-/* 166 */
+/* 169 */
 /***/ function(module, exports) {
 
 	var config = {
@@ -20323,20 +20328,26 @@
 	module.exports = config;
 
 /***/ },
-/* 167 */,
-/* 168 */,
-/* 169 */,
 /* 170 */,
 /* 171 */,
 /* 172 */,
 /* 173 */,
 /* 174 */,
 /* 175 */,
-/* 176 */
+/* 176 */,
+/* 177 */,
+/* 178 */,
+/* 179 */,
+/* 180 */,
+/* 181 */,
+/* 182 */,
+/* 183 */,
+/* 184 */,
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	ReactDOM = __webpack_require__(159), StoryCell = __webpack_require__(177);
+	ReactDOM = __webpack_require__(159), StoryCell = __webpack_require__(186);
 
 	/** //
 
@@ -20439,7 +20450,7 @@
 	module.exports = StoryList;
 
 /***/ },
-/* 177 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -20458,7 +20469,7 @@
 			// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 
 			var timestamp = this.props.story.time_created;
-			var timeString = getTimeAgo(Date.now(), this.props.story.time_created);
+			var timeString = formatTime(this.props.story.time_created);
 
 			return React.createElement(
 				'div',

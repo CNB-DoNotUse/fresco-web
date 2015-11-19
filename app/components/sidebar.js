@@ -59,43 +59,48 @@ var SideBarListItems = React.createClass({
 		if(!this.props.user) return;
 
 		if (this.props.user.outlet || this.props.user.rank >= config.RANKS.CONTENT_MANAGER){
-			var dispatch = <li className="sidebar-tab" onClick={this.itemClicked} data-link="dispatch" id="sidebar-dispatch">
+			var dispatch = <li className="sidebar-tab" onClick={this.itemClicked} data-link="/dispatch">
 								<span className="mdi mdi-map icon"></span>Dispatch
 							</li>;
 		}
 
 		if (this.props.user.outlet != null){
-			var outlet = <li className="sidebar-tab" onClick={this.itemClicked} id="sidebar-outlet">
+		
+			var outlet = <li className="sidebar-tab" onClick={this.itemClicked} data-link="/outlet">
 							<span className="mdi mdi-account-multiple icon"></span>{this.props.user.outlet.title}
 						</li>;
+		
 		}
 		if(this.props.user.rank >= 2) { 
-			var admin = <li className="sidebar-tab" onClick={this.itemClicked} id="sidebar-admin">
+			
+			var admin = <li className="sidebar-tab" onClick={this.itemClicked} data-link="/admin">
 							<span className="mdi mdi-dots-horizontal icon"></span>Admin
 						</li>;
-			var purchases = 
-			<li className="sidebar-tab" onClick={this.itemClicked} id="sidebar-purchases">
-				<span className="mdi mdi-currency-usd icon"></span>Purchases
-			</li>;
+			
+			var purchases =  <li className="sidebar-tab" onClick={this.itemClicked} data-link="/purchases">
+								<span className="mdi mdi-currency-usd icon"></span>Purchases
+							</li>;
 		}	
 		return(
 	
 			<ul className="md-type-body1">
-				<li className="sidebar-tabb" onClick={this.itemClicked} id="sidebar-highlights">
+				<li className="sidebar-tab" onClick={this.itemClicked} data-link="/highlights">
 					<span className="mdi mdi-star icon"></span>Highlights
 				</li>
-				<li className="sidebar-tab" onClick={this.itemClicked} id="sidebar-content">
+				<li className="sidebar-tab" onClick={this.itemClicked} data-link="/content">
 					<span className="mdi mdi-play-box-outline icon"></span>All content
 				</li>
 				<ul>
-					<li className="sidebar-tab" onClick={this.itemClicked} id="sidebar-photos">
-						<span className="mdi mdi-file-image-box icon"></span>Photos</li>
-					<li className="sidebar-tab" onClick={this.itemClicked}id="sidebar-videos">
+					<li className="sidebar-tab" onClick={this.itemClicked} data-link="/content/photos">
+						<span className="mdi mdi-file-image-box icon"></span>Photos
+					</li>
+					<li className="sidebar-tab" onClick={this.itemClicked} data-link="/content/videos">
 						<span className="mdi mdi-movie icon"></span>Videos
 					</li>
-					<li className="sidebar-tab" onClick={this.itemClicked} id="sidebar-galleries">
-						<span className="mdi mdi-image-filter icon"></span>Galleries</li>
-					<li className="sidebar-tab" onClick={this.itemClicked} id="sidebar-stories">
+					<li className="sidebar-tab" onClick={this.itemClicked} data-link="/content/admin">
+						<span className="mdi mdi-image-filter icon"></span>Galleries
+					</li>
+					<li className="sidebar-tab" onClick={this.itemClicked} data-link="/content/stories">
 						<span className="mdi mdi-newspaper icon"></span>Stories
 					</li>
 				</ul>
@@ -104,6 +109,7 @@ var SideBarListItems = React.createClass({
 				{admin}	
 				{purchases}
 			</ul>
+			
 		)
 	},
 	itemClicked: function(event){

@@ -1,5 +1,6 @@
 var React = require('react');
-	ReactDOM = require('react-dom');
+	ReactDOM = require('react-dom'),
+	Dropdown = require('./../global/dropdown.js');
 
 /**
  * Component for managing byline editing
@@ -32,31 +33,17 @@ var GalleryEditByline = React.createClass({
 
 				<div className="dialog-row">
 					<div className="split byline-section" id="gallery-byline-twitter">
-						<div className="split-cell drop">
-							<button className="toggle-drop md-type-subhead">
-								<span className="gallery-byline-text">{byline}</span>
-								<span className="mdi mdi-menu-down icon pull-right"></span>
-							</button>
-							<div className="drop-menu panel panel-default byline-drop">
-								<div className="toggle-drop toggler md-type-subhead">
-									<span className="gallery-byline-text">{post.meta.twitter.handle}</span>
-									<span className="mdi mdi-menu-up icon pull-right"></span>
-								</div>
-								<div className="drop-body">
-									<ul className="md-type-subhead" id="gallery-byline-twitter-options">
-										<li className={'gallery-byline-type ' + (isHandleByline ? 'active' : '')}>
-											{post.meta.twitter.handle}
-										</li>
-										<li className={'gallery-byline-type ' + (!isHandleByline ? 'active' : '')}>
-											{post.meta.twitter.user_name}
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div>
+						<Dropdown
+							options={[post.meta.twitter.handle, post.meta.twitter.user_name]}
+							selected={byline}
+							onSelected={this.bylineSelected} />
 						<div className="split-cell">
 							<div className="form-control-wrapper">
-								<input type="text" className="form-control" defaultValue={post.meta.other_origin.affiliation} id="gallery-twitter-affiliation-input" />
+								<input 
+									type="text" 
+									className="form-control" 
+									defaultValue={post.meta.other_origin.affiliation} 
+									id="gallery-edit-affiliation" />
 								<div className="floating-label">Affiliation</div>
 								<span className="material-input"></span>
 							</div>

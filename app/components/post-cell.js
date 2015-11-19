@@ -1,5 +1,7 @@
 var React = require('react');
-	ReactDOM = require('react-dom');
+	ReactDOM = require('react-dom'),
+	PurchaseAction = require('./actions/purchase-action.js'),
+	DownloadAction = require('./actions/download-action.js');
 
 /**
  * Single Post Cell, child of PostList
@@ -7,7 +9,7 @@ var React = require('react');
 
 var PostCell = React.createClass({
 
-	displayName: 'Post Cell',
+	displayName: 'PostCell',
 
 	getDefaultProps: function() {
 		return {
@@ -129,7 +131,8 @@ var PostCellActions = React.createClass({
 					if(this.props.editable)
 						actions.push(<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.edit} key={key++}></span>);
 
-					actions.push(<span className="mdi mdi-download icon pull-right" onClick={this.download} key={key++}></span>);
+					actions.push(<PurchaseAction post={this.post} />);
+
 					actions.push(<span className="mdi mdi-cash icon pull-right" data-id={this.props.post._id} onClick={this.purchase} key={key++}></span>);
 
 				}
@@ -151,7 +154,7 @@ var PostCellActions = React.createClass({
 			else if (this.props.post.purchased == false && forsale) {
 
 				actions.push(<span class="mdi mdi-library-plus icon pull-right" key={key++}></span>);
-				actions.push(purhcase = <span class="mdi mdi-cash icon pull-right" data-id="' + post._id + '" key={key++}></span>);
+				actions.push(<span class="mdi mdi-cash icon pull-right" data-id="' + post._id + '" key={key++}></span>);
 
 
 			}
@@ -184,78 +187,6 @@ var PostCellActions = React.createClass({
 		// 		$.snackbar({content:resolveError(error)});
 		// 	}
 		// })
-
-	},
-	//Purhcase icon
-	purhcase: function(){
-
-		var thisElem = $(this),
-			post = $(this).attr('data-id');
-
-		if (!post)
-			return $.snackbar({content:'Invalid post'});
-
-		alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", function (e) {
-
-		    if (e) {
-
-				var assignment = null;
-
-				if(typeof PAGE_Assignment !== 'undefined'){
-					assignment = PAGE_Assignment.assignment;
-				}
-				$.ajax({
-					url: '/scripts/outlet/checkout',
-					dataType: 'json',
-					method: 'post',
-					contentType: "application/json",
-					data: JSON.stringify({
-						posts: [post],
-						assignment: (assignment ? assignment._id : null)
-					}),
-					success: function(result, status, xhr){
-
-						if (result.err)
-							return this.error(null, null, result.err);
-
-						$.snackbar({content:'Purchase successful! Visit your <a style="color:white;" href="/outlet">outlet page</a> to view your purchased content', timeout:0});
-
-						var card = thisElem.parents('tile');
-						thisElem.siblings('.mdi-library-plus').remove();
-						thisElem.parent().parent().find('.mdi-file-image-box').addClass('available');
-						thisElem.parent().parent().find('.mdi-movie').addClass('available');
-						card.removeClass('toggled');
-						thisElem.remove();
-					},
-					error: function(xhr, status, error){
-						if (error == 'ERR_INCOMPLETE')
-							$.snackbar({content:'There was an error while completing your purchase!'});
-						else
-							$.snackbar({content:resolveError(error)});
-					}
-				});
-		    } else {
-		        // user clicked "cancel"
-		    }
-
-		});
-
-	},
-	//Download function for icon
-	download: function(){
-
-		console.log(this.props.post);
-
-		var href = this.props.post.video ?
-					this.props.post.video.replace('videos/','videos/mp4/').replace('.m3u8','.mp4')
-					:
-					this.props.post.image;
-
-		var link = document.createElement("a");
-
-	    link.download = Date.now() + '.' + href.split('.').pop();
-	    link.href = href;
-	    link.click();
 
 	}
 

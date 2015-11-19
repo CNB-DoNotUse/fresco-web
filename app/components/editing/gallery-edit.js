@@ -3,6 +3,12 @@ var React = require('react'),
 	GalleryEditBody = require('./gallery-edit-body.js'),
 	GalleryEditFoot = require('./gallery-edit-foot.js');
 
+/** //
+
+Description : Component for adding gallery editing to the current view
+
+// **/
+
 /**
  * Gallery Edit Parent Object
  */
@@ -14,12 +20,14 @@ var GalleryEdit = React.createClass({
 	getInitialState: function(){
 
 		return{
-			gallery : this.props.gallery
+			gallery: this.props.gallery
 		}
 
 	},
 
 	render: function(){
+
+		if(!this.props.user) return;
 
  		style ={
  			position: 'absolute',
@@ -48,14 +56,30 @@ var GalleryEdit = React.createClass({
  	},
  	updateGallery: function(gallery){
  		//Update new gallery
- 		this.setState({ gallery: gallery });
+ 		this.setState({ 
+ 			gallery: gallery 
+ 		});
  	},
 
  	saveGallery: function(){
 
  		var gallery = this.state.gallery,
+ 			files = gallery.files ? gallery.files : [],
  			caption = document.getElementById('gallery-edit-caption').value,
  			tags = gallery.tags;	
+
+ 		console.log(files);
+
+ 		//Generate post ids for update
+ 		var posts = $('#edit-gallery-images').frick('frickPosts')
+
+ 		console.log(posts);
+
+ 		return;
+
+		if(gallery.posts.length + files.length == 0 )
+			return $.snackbar({content:"Galleries must have at least 1 post"});
+
 
  		//Generate stories for update
  		var stories = gallery.related_stories.map(function(story){
@@ -79,44 +103,49 @@ var GalleryEdit = React.createClass({
 
  		});	
 
- 		//Configure the byline's other origin
- 		if(post.meta && post.meta.twitter){
- 			
- 			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value()
- 		}
- 		else if(!post.owner && post.curator){
-
- 			params.other_origin_name = document.getElementById('gallery-edit-name').value();
- 			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value()
-
- 		}
-
- 		if (gallery.imported) {
- 			params.lat = galery.location.getPosition().lat();
- 			params.lon = galleryEditMarker.getPosition().lng();
- 			if (gallery.location.address) {
- 				params.address = $('#gallery-location-input').val();
- 			}
- 		}
-
-
+ 		//Configure params for the updated gallery
  		var params = {
  			id: gallery._id,
  			caption: caption,
- 			byline: byline,
  			posts: posts,
  			tags: tags,
- 			visibility: visibility != null ? visibility : undefined,
+ 			visibility: 1,
  			stories: stories,
  			articles: articles
  		};
 
+ 		//Configure the byline's other origin
+ 		//From twitter
+ 		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter){
+
+ 			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value;
+
+ 		}
+ 		//Imported
+ 		else if(!gallery.posts[0].owner && gallery.posts[0].curator){
+
+ 			params.other_origin_name = document.getElementById('gallery-edit-name').value;
+ 			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value;
+
+ 		}
+
+ 		if (gallery.imported) {
+ 			params.lat = marker.getPosition().lat();
+ 			params.lon = marker.getPosition().lng();
+ 			if (gallery.location.address) {
+ 				params.address = document.getElementById('gallery-location-input').value;
+ 			}
+ 		}
+
+ 		console.log(params);
+
  		$.ajax("/scripts/gallery/update", {
- 			
  			method: 'post',
  			contentType: "application/json",
  			data: JSON.stringify(params),
  			success: function(result){
+
+ 				console.log(result);
  			
  				$.snackbar({
  					content: "Gallery successfully saved!"
@@ -132,99 +161,6 @@ var GalleryEdit = React.createClass({
  			}
 
  		});
-
- 		$.ajax({
- 			url: '/scripts/gallery/addpost',
- 			type: 'POST',
- 			data: data,
- 			processData: false,
- 			contentType: false,
- 			cache: false,
- 			dataType: 'json',
- 			success: function(result, status, xhr){
- 				
- 			},
- 			error: function(xhr, status, error){
- 				$.snackbar({content: resolveError(err)});
- 			}
- 		});
-
- 		/*
- 			
- 			Byline : Send over other_origin object
- 				
- 				//Twitter
- 					other_origin = {
- 						affiliation: whatevers in the field 
- 						name: handle or user_name
- 					}
- 					byline = name + affiliation ? ' / ' + affiliation : 'via Fresco News'
- 				//Manual Import
-
- 		 */
- 		
- 		
- 		// var visibility = null;
-
- 		// if ($('#gallery-other-origin').css('display') !== 'none') {
- 		// 	byline = $('#gallery-name-input').val().trim() + ' / ' + $('#gallery-affiliation-input').val().trim();
- 		// 	other_origin = {
- 		// 		name: $('#gallery-name-input').val().trim(),
- 		// 		affiliation: $('#gallery-affiliation-input').val().trim(),
- 		// 	}
- 		// }
-
- 		// var added = posts.filter(function(id) {return id.indexOf('NEW') !== -1});
-
- 		// added = added.map(function(index) {
- 		// 	index = index.split('=')[1];
- 		// 	return GALLERY_EDIT.files[index];
- 		// });
-
- 		// posts = posts.filter(function(id) {return id.indexOf('NEW') == -1});
-
- 		// if (posts.length == 0)
- 		// 	return $.snackbar({content:"Galleries must have at least 1 post"});
-
- 		// if( $('#gallery-highlight-input').length !== 0 && galleryEditVisibilityChanged == 1)
- 		// 	visibility = $('#gallery-highlight-input').prop('checked') ? 2 : 1;
-
- 		// updateGallery(caption, byline, tags, posts, visibility, other_origin, function(err, GALLERY_EDIT){
- 			
- 		// 	if (err)
- 		// 		return $.snackbar({content: resolveError(err)});
-
- 		// 	if (added.length > 0) {
- 				
- 		// 		var data = new FormData();
- 				
- 		// 		for (var index in added) {
- 		// 			data.append(index, added[index]);
- 		// 		}
-
- 		// 		data.append('gallery', GALLERY_EDIT._id);
- 				
- 		// 		$.ajax({
- 		// 			url: '/scripts/gallery/addpost',
- 		// 			type: 'POST',
- 		// 			data: data,
- 		// 			processData: false,
- 		// 			contentType: false,
- 		// 			cache: false,
- 		// 			dataType: 'json',
- 		// 			success: function(result, status, xhr){
- 		// 				window.location.reload();
- 		// 			},
- 		// 			error: function(xhr, status, error){
- 		// 				$.snackbar({content: resolveError(err)});
- 		// 			}
- 		// 		});
-
- 		// 	}
- 		// 	else
- 		// 		window.location.reload();
- 		// });
-
  	}
 
 });

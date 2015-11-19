@@ -41,6 +41,8 @@ router.get('/:id', function(req, res, next) {
 
     if (gallery.owner)
       title += 'Gallery by ' + gallery.owner.firstname + ' ' + gallery.owner.lastname;
+    else
+      title += 'Imported by ' + gallery.curator.firstname + ' ' + gallery.curator.lastname;
 
     //User is logged in, show full gallery page
     if (req.session && req.session.user) {

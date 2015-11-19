@@ -135,9 +135,10 @@ function resolveError(err, _default){
 		case 'ERR_INCOMPLETE':
 			return 'There was an error while completing your purchase.';
 		case 'ERR_MISSING_PAYMENT_INFO':
-			return 'Payment info not found.';
+			return 'We couldn\'t seem to find your payment info. Please check your outlet settings.';
 		default:
-			return _default || err.toString().capitalize();
+			return _default || 'Seems like we ran into an error'	
+
 	}
 }
 
@@ -148,6 +149,12 @@ function formatImg(img, size){
 		return img;
 
 	return img.replace('images/', 'images/' + size + '/');
+}
+
+function formatVideo(video){
+
+	return video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')
+	
 }
 
 function getUrlVars(){
@@ -167,19 +174,6 @@ $(document).ready(function() {
 	// drawer
 	$(".toggle-drawer.toggler").click(function() {
 		$(".toggle-drawer").toggleClass("toggled");
-	});
-	// navbar drops
-	$(".toggle-drop").click(function() {
-		var drop =  $(this).siblings(".drop-menu");
-		drop.toggleClass("toggled");
-		if (drop.hasClass("toggled")) {
-			var offset = drop.offset().left;
-			while (offset + drop.outerWidth() > $(window).width() - 7) {
-				drop.css("left", parseInt(drop.css("left")) - 1 + "px");
-				offset = drop.offset().left;
-			}
-		}
-		$(".dim.toggle-drop").toggleClass("toggled");
 	});
 
 	//img links

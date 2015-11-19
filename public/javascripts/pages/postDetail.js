@@ -48,66 +48,77 @@
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
 	    TopBar = __webpack_require__(165),
-	    PostList = __webpack_require__(160),
-	    StorySidebar = __webpack_require__(187),
-	    StoryEdit = __webpack_require__(188),
+	    PostInfo = __webpack_require__(182),
+	    PostRelated = __webpack_require__(183),
+	    PostDetailImage = __webpack_require__(184),
+	    GalleryEdit = __webpack_require__(173),
 	    App = __webpack_require__(167);
 
 	/**
-	 * Story Detail Parent Object, made of a side column and PostList
+	 * Gallery Detail Parent Object, made of a side column and PostList
 	 */
 
-	var StoryDetail = React.createClass({
+	var PostDetail = React.createClass({
 
-		displayName: 'StoryDetail',
+	  displayName: 'PostDetail',
 
-		getDefaultProps: function () {
-			return {
-				story: {}
-			};
-		},
+	  getDefaultProps: function () {
+	    return {
+	      gallery: {}
+	    };
+	  },
 
-		render: function () {
+	  render: function () {
 
-			return React.createElement(
-				App,
-				{ user: this.props.user },
-				React.createElement(TopBar, {
-					title: this.props.title,
-					editable: true,
-					verifiedToggle: false,
-					timeToggle: true,
-					chronToggle: true }),
-				React.createElement(StorySidebar, { Story: this.props.Story }),
-				React.createElement(
-					'div',
-					{ className: 'col-sm-8 tall' },
-					React.createElement(PostList, {
-						rank: this.props.user.rank,
-						purchases: this.props.purchases,
-						posts: this.props.Story.posts,
-						scrollable: false,
-						editable: false,
-						size: 'small' })
-				),
-				React.createElement(StoryEdit, {
-					Story: this.props.Story,
-					user: this.props.user })
-			);
-		}
+	    return React.createElement(
+	      App,
+	      { user: this.props.user },
+	      React.createElement(TopBar, {
+	        title: this.props.title,
+	        editable: true
+	      }),
+	      React.createElement(
+	        'div',
+	        { className: 'content' },
+	        React.createElement(
+	          'div',
+	          { className: 'row' },
+	          React.createElement(
+	            'div',
+	            { className: 'main' },
+	            React.createElement(PostDetailImage, {
+	              post: this.props.post,
+	              user: this.props.user,
+	              purchases: this.props.purchases }),
+	            React.createElement(PostInfo, {
+	              post: this.props.post,
+	              gallery: this.props.gallery,
+	              verifier: this.props.verifier })
+	          )
+	        ),
+	        React.createElement(PostRelated, { gallery: this.props.gallery })
+	      ),
+	      React.createElement(GalleryEdit, {
+	        gallery: this.props.gallery,
+	        user: this.props.user
+	      })
+	    );
+	  }
 
 	});
 
 	if (isNode) {
 
-		module.exports = StoryDetail;
+	  module.exports = PostDetail;
 	} else {
 
-		ReactDOM.render(React.createElement(StoryDetail, {
-			user: window.__initialProps__.user,
-			purchases: window.__initialProps__.purchases,
-			Story: window.__initialProps__.Story,
-			title: window.__initialProps__.title }), document.getElementById('app'));
+	  //Make sure to remove this
+	  ReactDOM.render(React.createElement(PostDetail, {
+	    user: window.__initialProps__.user,
+	    purchases: window.__initialProps__.purchases,
+	    gallery: window.__initialProps__.gallery,
+	    post: window.__initialProps__.post,
+	    title: window.__initialProps__.title }), document.getElementById('app'));
 	}
 
 /***/ },
@@ -19708,437 +19719,9 @@
 
 
 /***/ },
-/* 160 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	ReactDOM = __webpack_require__(159), SuggestionList = __webpack_require__(161);
-	PostCell = __webpack_require__(162);
-
-	/** //
-
-	Description : List for a set of posts used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
-
-	// **/
-
-	/**
-	 * Post List Parent Object 
-	 */
-
-	var PostList = React.createClass({
-
-		displayName: 'Post List',
-
-		getInitialState: function () {
-			return {
-				offset: 0,
-				posts: [],
-				loading: false
-			};
-		},
-
-		getDefaultProps: function () {
-			return {
-				size: 'small',
-				editable: true
-			};
-		},
-
-		componentDidMount: function () {
-
-			//Check if list is initialzied with posts
-			if (this.props.posts) return;
-
-			var self = this;
-
-			//Access parent var load method
-			this.props.loadPosts(0, function (posts) {
-
-				var offset = posts ? posts.length : 0;
-
-				//Set posts from successful response
-				self.setState({
-					posts: posts,
-					offset: offset
-				});
-			});
-		},
-
-		//Scroll listener for main window
-		scroll: function () {
-
-			var grid = this.refs.grid;
-
-			//Check that nothing is loading and that we're at the end of the scroll,
-			//and that we have a parent bind to load  more posts
-			if (!this.state.loading && grid.scrollTop === grid.scrollHeight - grid.offsetHeight && this.props.loadPosts) {
-
-				self = this;
-
-				//Set that we're loading
-				this.setState({ loading: true });
-
-				//Run load on parent call
-				this.props.loadPosts(this.state.offset, function (posts) {
-
-					if (!posts) return;
-
-					console.log(self.state);
-
-					var offset = self.state.posts.length + posts.length;
-
-					//Set galleries from successful response, and unset loading
-					self.setState({
-						posts: self.state.posts.concat(posts),
-						offset: offset,
-						loading: false
-					});
-				});
-			}
-		},
-		render: function () {
-
-			//Check if list was initialzied with posts
-			if (this.props.posts != null) posts = this.props.posts;
-			//Otherwise use the state posts
-			else posts = this.state.posts;
-
-			var purchases = this.props.purchases,
-			    rank = this.props.rank;
-
-			//Map all the posts into cells
-			var posts = posts.map(function (post, i) {
-
-				var purchased = purchases ? purchases.indexOf(post._id) != -1 : null;
-
-				return React.createElement(PostCell, {
-					size: this.props.size,
-					post: post,
-					rank: rank,
-					purchaed: purchased,
-					key: i,
-					editable: this.props.editable });
-			}, this);
-
-			return React.createElement(
-				'div',
-				{ className: 'container-fluid fat grid', ref: 'grid', onScroll: this.props.scrollable ? this.scroll : null },
-				React.createElement(
-					'div',
-					{ className: 'row tiles', id: 'posts' },
-					posts
-				)
-			);
-		}
-
-	});
-
-	module.exports = PostList;
-
-/***/ },
-/* 161 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(159);
-
-	/** //
-
-	Description : Suggestion Column
-
-	// **/
-
-	/**
-	 * Suggestion List Parent Object
-	 */
-
-	var SuggestionList = React.createClass({
-
-		displayName: 'SuggestionList',
-
-		getInitialState: function () {
-			return {
-				stories: []
-			};
-		},
-
-		componentDidMount: function () {
-
-			self = this;
-
-			$.ajax({
-				url: API_URL + "/v1/story/recent",
-				type: 'GET',
-				data: {
-					limit: 3
-				},
-				dataType: 'json',
-				success: function (response, status, xhr) {
-
-					//Do nothing, because of bad response
-					if (!response.data || response.err) return;
-
-					//Set galleries from successful response
-					self.setState({
-						stories: response.data
-					});
-				},
-				error: function (xhr, status, error) {
-					$.snackbar({ content: resolveError(error) });
-				}
-			});
-		},
-
-		render: function () {
-
-			return React.createElement(
-				'div',
-				{ className: 'col-md-4' },
-				React.createElement(
-					'h3',
-					{ className: 'md-type-button md-type-black-secondary' },
-					'Trending Stories'
-				),
-				React.createElement(
-					'ul',
-					{ className: 'md-type-subhead trending-stories' },
-					this.state.stories.map(function (story, i) {
-						return React.createElement(
-							'li',
-							{ key: i },
-							React.createElement(
-								'a',
-								{ href: '/story/' + story._id },
-								story.title
-							)
-						);
-					})
-				)
-			);
-		}
-	});
-
-	module.exports = SuggestionList;
-
-/***/ },
-/* 162 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	ReactDOM = __webpack_require__(159), PurchaseAction = __webpack_require__(163), DownloadAction = __webpack_require__(164);
-
-	/**
-	 * Single Post Cell, child of PostList
-	 */
-
-	var PostCell = React.createClass({
-
-		displayName: 'PostCell',
-
-		getDefaultProps: function () {
-			return {
-				sizes: {
-					large: 'col-xs-12 col-sm-6 col-lg-4',
-					small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
-				}
-			};
-		},
-
-		render: function () {
-
-			var timestamp = this.props.post.time_created;
-			var timeString = formatTime(this.props.post.time_created);
-			var address = this.props.post.location.address || 'No Location';
-			var size = this.props.sizes.large;
-
-			//Class name for post tile icons
-			var statusClass = 'mdi icon pull-right ';
-			statusClass += this.props.post.video == null ? 'mdi-file-image-box ' : 'mdi-movie ';
-			statusClass += this.props.post.purchased ? 'available ' : 'md-type-black-disabled ';
-
-			if (this.props.size == 'small') size = this.props.sizes.small;
-
-			return React.createElement(
-				'div',
-				{ className: size + ' tile' },
-				React.createElement(
-					'div',
-					{ className: 'tile-body' },
-					React.createElement('div', { className: 'frame' }),
-					React.createElement(
-						'div',
-						{ className: 'hover' },
-						React.createElement(
-							'p',
-							{ className: 'md-type-body1' },
-							this.props.post.caption
-						),
-						React.createElement(
-							'span',
-							{ className: 'md-type-caption' },
-							this.props.post.byline
-						),
-						React.createElement(PostCellStories, { stories: this.props.post.stories })
-					),
-					React.createElement(
-						'div',
-						{ className: 'img' },
-						React.createElement('img', { className: 'img-cover', src: formatImg(this.props.post.image, 'small') })
-					)
-				),
-				React.createElement(
-					'div',
-					{ className: 'tile-foot' },
-					React.createElement(PostCellActions, {
-						post: this.props.post,
-						purchased: this.props.purchased,
-						rank: this.props.rank,
-						editable: this.props.editable }),
-					React.createElement(
-						'div',
-						null,
-						React.createElement(
-							'div',
-							{ className: 'tile-info' },
-							React.createElement(
-								'span',
-								{ className: 'md-type-body2' },
-								address
-							),
-							React.createElement(
-								'span',
-								{ className: 'md-type-caption timestring', 'data-timestamp': this.props.post.time_created },
-								timeString
-							)
-						),
-						React.createElement('span', { className: statusClass })
-					)
-				)
-			);
-		}
-	});
-
-	// <span className="mdi mdi-library-plus icon pull-right"></span>
-	// <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
-
-	/**
-	 * Gallery Cell Stories List
-	 */
-
-	var PostCellStories = React.createClass({
-
-		displayName: 'Post Cell Stories',
-
-		render: function () {
-
-			var stores = '';
-
-			if (this.props.stories) {
-
-				var stories = this.props.stories.map(function (story, i) {
-
-					return React.createElement(
-						'li',
-						{ key: i },
-						React.createElement(
-							'a',
-							{ href: "/story/" + story._id },
-							story.title
-						)
-					);
-				});
-			}
-
-			return React.createElement(
-				'ul',
-				{ className: 'md-type-body2' },
-				stories
-			);
-		}
-
-	});
-
-	/**
-	 * Post Cell Actions
-	 * Description : Set of icons on the the post cell's hover
-	 */
-
-	var PostCellActions = React.createClass({
-
-		displayName: 'Post Cell Actions',
-
-		render: function () {
-
-			var actions = [],
-			    key = 0;
-			//Check if the purchased property is set on the post
-			if (this.props.post.purchased !== null) {
-
-				//Check if we're CM or Admin
-				if (typeof this.props.rank !== 'undefined' && this.props.rank >= 1) {
-
-					if (this.props.post.purhcased === false) {
-
-						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
-
-						actions.push(React.createElement(PurchaseAction, { post: this.post }));
-
-						actions.push(React.createElement('span', { className: 'mdi mdi-cash icon pull-right', 'data-id': this.props.post._id, onClick: this.purchase, key: key++ }));
-					} else {
-
-						if (this.props.editable) actions.push(React.createElement('span', { className: 'mdi mdi-pencil icon pull-right toggle-gedit toggler', onClick: this.edit, key: key++ }));
-
-						actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
-					}
-				}
-				//Check if the post has been purchased
-				else if (this.props.post.purhcased === true) actions.push(React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download, key: key++ }));
-
-					//Check if the post is not purhcased, and it is for sale
-					else if (this.props.post.purchased == false && forsale) {
-
-							actions.push(React.createElement('span', { 'class': 'mdi mdi-library-plus icon pull-right', key: key++ }));
-							actions.push(React.createElement('span', { 'class': 'mdi mdi-cash icon pull-right', 'data-id': '\' + post._id + \'', key: key++ }));
-						}
-			}
-
-			return React.createElement(
-				'div',
-				{ className: 'hover' },
-				React.createElement(
-					'a',
-					{ className: 'md-type-body2 post-link', href: '/post/' + this.props.post._id },
-					'See more'
-				),
-				actions
-			);
-		},
-		edit: function () {
-
-			// $.ajax({
-			// 	url: '/scripts/post/gallery',
-			// 	type: 'GET',
-			// 	data: {id: post._id},
-			// 	success: function(result, status, xhr){
-			// 		if (result.err)
-			// 			return this.error(null, null, result.err);
-
-			// 		GALLERY_EDIT = result.data;
-			// 		galleryEditUpdate();
-			// 		$(".toggle-gedit").toggleClass("toggled");
-			// 	},
-			// 	error: function(xhr, status, error){
-			// 		$.snackbar({content:resolveError(error)});
-			// 	}
-			// })
-
-		}
-
-	});
-
-	module.exports = PostCell;
-
-/***/ },
+/* 160 */,
+/* 161 */,
+/* 162 */,
 /* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -20875,21 +20458,1309 @@
 /* 170 */,
 /* 171 */,
 /* 172 */,
-/* 173 */,
-/* 174 */,
-/* 175 */,
-/* 176 */,
-/* 177 */,
-/* 178 */,
-/* 179 */,
+/* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159),
+	    GalleryEditBody = __webpack_require__(174),
+	    GalleryEditFoot = __webpack_require__(181);
+
+	/** //
+
+	Description : Component for adding gallery editing to the current view
+
+	// **/
+
+	/**
+	 * Gallery Edit Parent Object
+	 */
+
+	var GalleryEdit = React.createClass({
+
+	  displayName: 'Gallery Edit',
+
+	  getInitialState: function () {
+
+	    return {
+	      gallery: this.props.gallery
+	    };
+	  },
+
+	  render: function () {
+
+	    if (!this.props.user) return;
+
+	    style = {
+	      position: 'absolute',
+	      top: '-100px'
+	    };
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement('div', { className: 'dim toggle-gedit' }),
+	      React.createElement(
+	        'div',
+	        { className: 'edit panel panel-default toggle-gedit gedit' },
+	        React.createElement(
+	          'div',
+	          { className: 'col-xs-12 col-lg-12 edit-new dialog' },
+	          React.createElement(GalleryEditHead, null),
+	          React.createElement(GalleryEditFoot, {
+	            updateGallery: this.updateGallery,
+	            saveGallery: this.saveGallery,
+	            gallery: this.state.gallery }),
+	          React.createElement(GalleryEditBody, {
+	            gallery: this.state.gallery,
+	            user: this.props.user,
+	            updateGallery: this.updateGallery })
+	        )
+	      )
+	    );
+	  },
+	  updateGallery: function (gallery) {
+	    //Update new gallery
+	    this.setState({
+	      gallery: gallery
+	    });
+	  },
+
+	  saveGallery: function () {
+
+	    var gallery = this.state.gallery,
+	        files = gallery.files ? gallery.files : [],
+	        caption = document.getElementById('gallery-edit-caption').value,
+	        tags = gallery.tags;
+
+	    console.log(files);
+
+	    //Generate post ids for update
+	    var posts = $('#edit-gallery-images').frick('frickPosts');
+
+	    console.log(posts);
+
+	    return;
+
+	    if (gallery.posts.length + files.length == 0) return $.snackbar({ content: "Galleries must have at least 1 post" });
+
+	    //Generate stories for update
+	    var stories = gallery.related_stories.map(function (story) {
+
+	      if (story.new) {
+	        return 'NEW=' + JSON.stringify(story);
+	      } else return story._id;
+	    });
+
+	    //Generate articles for update
+	    var articles = gallery.articles.map(function (articles) {
+
+	      if (articles.new) {
+	        return 'NEW=' + JSON.stringify(articles);
+	      } else return articles._id;
+	    });
+
+	    //Configure params for the updated gallery
+	    var params = {
+	      id: gallery._id,
+	      caption: caption,
+	      posts: posts,
+	      tags: tags,
+	      visibility: 1,
+	      stories: stories,
+	      articles: articles
+	    };
+
+	    //Configure the byline's other origin
+	    //From twitter
+	    if (gallery.posts[0].meta && gallery.posts[0].meta.twitter) {
+
+	      params.other_origin_affiliation = document.getElementById('gallery-edit-affiliation').value;
+	    }
+	    //Imported
+	    else if (!gallery.posts[0].owner && gallery.posts[0].curator) {
+
+	        params.other_origin_name = document.getElementById('gallery-edit-name').value;
+	        params.other_origin_affiliation = document.getElementById('gallery-edit-affiliation').value;
+	      }
+
+	    if (gallery.imported) {
+	      params.lat = marker.getPosition().lat();
+	      params.lon = marker.getPosition().lng();
+	      if (gallery.location.address) {
+	        params.address = document.getElementById('gallery-location-input').value;
+	      }
+	    }
+
+	    console.log(params);
+
+	    $.ajax("/scripts/gallery/update", {
+	      method: 'post',
+	      contentType: "application/json",
+	      data: JSON.stringify(params),
+	      success: function (result) {
+
+	        console.log(result);
+
+	        $.snackbar({
+	          content: "Gallery successfully saved!"
+	        });
+	      },
+	      error: function (xhr, status, error) {
+
+	        $.snackbar({
+	          content: "We ran into an error saving your gallery"
+	        });
+	      }
+
+	    });
+	  }
+
+	});
+
+	var GalleryEditHead = React.createClass({
+
+	  displayName: 'GalleryEditHead',
+
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'dialog-head' },
+	      React.createElement(
+	        'span',
+	        { className: 'md-type-title' },
+	        'Edit Gallery'
+	      ),
+	      React.createElement('span', { className: 'mdi mdi-close pull-right icon toggle-gedit toggler', onClick: this.hide })
+	    );
+	  },
+	  hide: function () {
+	    $(".toggle-gedit").toggleClass("toggled");
+	  }
+
+	});
+
+	module.exports = GalleryEdit;
+
+/***/ },
+/* 174 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159),
+	    Tag = __webpack_require__(175),
+	    EditPost = __webpack_require__(176),
+	    EditMap = __webpack_require__(177),
+	    StoriesAutoComplete = __webpack_require__(178),
+	    BylineEdit = __webpack_require__(179);
+
+	/**
+	 * Gallery Edit Body, inside of the GalleryEdit class
+	 * @description manages all of the input fields, and speaks to parent
+	 */
+
+	var GalleryEditBody = React.createClass({
+
+		displayName: 'GalleryEditBody',
+
+		getInitialState: function () {
+			return {
+				gallery: this.props.gallery
+			};
+		},
+
+		render: function () {
+
+			var highlightCheckbox = '';
+
+			//Check if the rank is valid for toggling the highlighted state
+			if (this.props.user.rank && this.props.user.rank >= 1) {
+
+				highlightCheckbox = React.createElement(
+					'div',
+					{ className: 'dialog-row' },
+					React.createElement(
+						'div',
+						{ className: 'checkbox' },
+						React.createElement(
+							'label',
+							null,
+							React.createElement('input', { id: 'gallery-highlight-input', type: 'checkbox' }),
+							React.createElement('span', { className: 'ripple' }),
+							React.createElement('span', { className: 'check' }),
+							' Highlighted'
+						)
+					)
+				);
+			}
+
+			return React.createElement(
+				'div',
+				{ className: 'dialog-body' },
+				React.createElement(
+					'div',
+					{ className: 'dialog-col col-xs-12 col-md-7 form-group-default' },
+					React.createElement(BylineEdit, { gallery: this.state.gallery }),
+					React.createElement(
+						'div',
+						{ className: 'dialog-row' },
+						React.createElement(
+							'div',
+							{ className: 'form-control-wrapper' },
+							React.createElement('textarea', {
+								id: 'gallery-edit-caption',
+								type: 'text',
+								className: 'form-control',
+								defaultValue: this.state.gallery.caption }),
+							React.createElement(
+								'div',
+								{ className: 'floating-label' },
+								'Caption'
+							),
+							React.createElement('span', { className: 'material-input' })
+						)
+					),
+					React.createElement(GalleryEditTags, { ref: 'tags', tags: this.state.gallery.tags }),
+					React.createElement(GalleryEditStories, { ref: 'stories',
+						stories: this.state.gallery.related_stories,
+						updateRelatedStories: this.updateRelatedStories }),
+					React.createElement(GalleryEditArticles, { ref: 'articles', articles: this.state.gallery.articles }),
+					highlightCheckbox
+				),
+				React.createElement(GalleryEditPosts, { posts: this.state.gallery.posts, files: this.state.gallery.files }),
+				React.createElement(GalleryEditMap, { gallery: this.state.gallery })
+			);
+		},
+
+		updateRelatedStories: function (updatedStories) {
+
+			this.state.gallery.related_stories = updatedStories;
+
+			this.props.updateGallery(this.state.gallery);
+		},
+
+		updateArticles: function (articles) {
+
+			this.state.gallery.articles = articles;
+
+			this.props.updateGallery(gallery);
+		},
+
+		updatedTags: function (tags) {
+
+			this.state.gallery.tags = tags;
+
+			this.props.updateGallery(gallery);
+		},
+
+		updatedLocation: function (location) {
+
+			this.state.gallery.locations[0] = location;
+
+			this.props.updateGallery(gallery);
+		}
+
+	});
+
+	/**
+	 * Component for managing added/removed tags
+	 */
+
+	var GalleryEditTags = React.createClass({
+
+		displayName: 'GalleryEditTags',
+
+		//Set state as passed properties
+		getInitialState: function () {
+			return { tags: this.props.tags };
+		},
+
+		componentWillReceiveProps: function (nextProps) {
+
+			this.setState({
+				tags: nextProps.tags
+			});
+		},
+
+		render: function () {
+
+			tags = this.state.tags.map(function (tag, i) {
+				return React.createElement(Tag, {
+					onClick: this.handleClick.bind(this, i),
+					text: '#' + tag,
+					plus: false,
+					key: i });
+			}, this);
+
+			return React.createElement(
+				'div',
+				{ className: 'dialog-row split chips' },
+				React.createElement(
+					'div',
+					{ className: 'split-cell' },
+					React.createElement('input', {
+						id: 'gallery-tags-input',
+						type: 'text',
+						className: 'form-control floating-label',
+						placeholder: 'Tags',
+						onChange: this.change }),
+					React.createElement(
+						'ul',
+						{ ref: 'gallery-tags-list', className: 'chips' },
+						tags
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'split-cell' },
+					React.createElement(
+						'span',
+						{ className: 'md-type-body2' },
+						'Suggested tags'
+					),
+					React.createElement('ul', { id: 'gallery-suggested-tags-list', className: 'chips' })
+				)
+			);
+		},
+
+		handleClick: function (index) {
+
+			var updatedTags = this.state.tags;
+
+			//Remove from index
+			updatedTags.splice(index, 1);
+
+			//Update state
+			this.setState({
+				tags: updatedTags
+			});
+		}
+
+	});
+
+	/**
+	 * Component for managing added/removed stories
+	 */
+
+	var GalleryEditStories = React.createClass({
+
+		displayName: 'GalleryEditStories',
+
+		getInitialState: function () {
+
+			return { stories: this.props.stories };
+		},
+
+		componentWillReceiveProps: function (nextProps) {
+
+			this.setState({ stories: nextProps.stories });
+		},
+		//Add's story element
+		addStory: function (newStory) {
+
+			this.props.updateRelatedStories(this.state.stories.concat(newStory));
+		},
+
+		render: function () {
+
+			stories = this.state.stories.map(function (story, i) {
+
+				return React.createElement(Tag, {
+					onClick: this.handleClick.bind(this, i),
+					text: story.title,
+					plus: false,
+					key: i });
+			}, this);
+
+			return React.createElement(
+				'div',
+				{ className: 'dialog-row split chips' },
+				React.createElement(
+					'div',
+					{ className: 'split-cell' },
+					React.createElement(StoriesAutoComplete, { addStory: this.addStory, stories: this.state.stories }),
+					React.createElement(
+						'ul',
+						{ id: 'gallery-stories-list', className: 'chips' },
+						stories
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'split-cell' },
+					React.createElement(
+						'span',
+						{ className: 'md-type-body2' },
+						'Suggested stories'
+					),
+					React.createElement('ul', { id: 'gallery-suggested-stories-list', className: 'chips' })
+				)
+			);
+		},
+
+		handleClick: function (index) {
+
+			var updatedStories = this.state.stories;
+
+			//Remove from index
+			updatedStories.splice(index, 1);
+
+			this.props.updateRelatedStories(updatedStories);
+		}
+	});
+
+	/**
+	 * Component for managing added/removed articles
+	 */
+
+	var GalleryEditArticles = React.createClass({
+
+		displayName: 'GalleryEditArticles',
+
+		getInitialState: function () {
+			return { articles: this.props.articles };
+		},
+
+		componentWillReceiveProps: function (nextProps) {
+
+			this.setState({ articles: nextProps.articles });
+		},
+
+		render: function () {
+
+			articles = this.state.articles.map(function (article, i) {
+
+				return React.createElement(Tag, {
+					onClick: this.handleClick.bind(this, i),
+					text: article.link,
+					plus: false,
+					key: i });
+			}, this);
+
+			return React.createElement(
+				'div',
+				{ className: 'dialog-row split chips' },
+				React.createElement(
+					'div',
+					{ className: 'split-cell' },
+					React.createElement('input', {
+						id: 'gallery-articles-input',
+						type: 'text',
+						className: 'form-control floating-label',
+						placeholder: 'Articles' }),
+					React.createElement(
+						'ul',
+						{ id: 'gallery-articles-list', className: 'chips' },
+						articles
+					)
+				)
+			);
+		},
+		handleClick: function (index) {
+
+			var updateArticles = this.state.articles;
+
+			//Remove from index
+			updateArticles.splice(index, 1);
+
+			//Update state
+			this.setState({
+				articles: updateArticles
+			});
+		}
+
+	});
+
+	/**
+	 * Component for managing gallery map representation
+	 */
+
+	var GalleryEditMap = React.createClass({
+
+		displayName: 'GalleryEditMap',
+
+		//Configure google maps after component mounts
+		componentDidMount: function () {
+
+			//Set up autocomplete listener
+			autocomplete = new google.maps.places.Autocomplete(document.getElementById('gallery-location-input'));
+
+			google.maps.event.addListener(autocomplete, 'place_changed', function () {
+
+				var place = autocomplete.getPlace();
+
+				if (place.geometry) {
+
+					marker.setPosition(place.geometry.location);
+
+					if (place.geometry.viewport) {
+						map.fitBounds(place.geometry.viewport);
+					} else {
+						map.panTo(place.geometry.location);
+						map.setZoom(18);
+					}
+				}
+			});
+		},
+
+		render: function () {
+
+			return React.createElement(
+				'div',
+				{ className: 'dialog-col col-xs-12 col-md-5 pull-right' },
+				React.createElement(
+					'div',
+					{ className: 'dialog-row map-group' },
+					React.createElement(
+						'div',
+						{ className: 'form-group-default' },
+						React.createElement('input', {
+							id: 'gallery-location-input',
+							type: 'text', className: 'form-control floating-label',
+							placeholder: 'Location',
+							defaultValue: this.props.gallery.posts[0].location.address,
+							disabled: !this.props.gallery.imported })
+					),
+					React.createElement(EditMap, { gallery: this.props.gallery })
+				)
+			);
+		}
+
+	});
+
+	/**
+	 * Component for managing gallery's posts
+	 */
+
+	var GalleryEditPosts = React.createClass({
+
+		displayName: 'GalleryEditPosts',
+
+		getInitialState: function () {
+			return {
+				posts: this.props.posts,
+				files: []
+			};
+		},
+
+		componentWillReceiveProps: function (nextProps) {
+
+			this.replaceState({
+				posts: nextProps.posts,
+				files: nextProps.files ? nextProps.files : []
+			});
+		},
+
+		componentDidMount: function () {
+			$(this.refs.galleryEditPosts).frick();
+		},
+
+		componentDidUpdate: function () {
+			$(this.refs.galleryEditPosts).frick();
+		},
+
+		render: function () {
+
+			var k = 0;
+
+			var posts = this.state.posts.map(function (post) {
+
+				return React.createElement(EditPost, { key: k++, post: post });
+			}, this);
+
+			var files = [];
+
+			for (var i = 0; i < this.state.files.length; i++) {
+
+				files.push(React.createElement(EditPost, { key: k++, file: this.state.files[i], source: this.state.files.sources[i] }));
+			}
+
+			return React.createElement(
+				'div',
+				{ className: 'dialog-col col-xs-12 col-md-5' },
+				React.createElement(
+					'div',
+					{ ref: 'galleryEditPosts', id: 'gallery-edit-images' },
+					posts,
+					files
+				)
+			);
+		}
+	});
+
+	module.exports = GalleryEditBody;
+
+/***/ },
+/* 175 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159);
+
+	/**
+	 * Single Tag Element
+	 * @param {string} text Text of the tag
+	 * @param {bool} plus if component should show `+` or `-` on hover
+	 */
+
+	var Tag = React.createClass({
+
+		displayName: 'Tag',
+
+		getDefaultProps: function () {
+
+			return {
+				text: '',
+				plus: false
+			};
+		},
+
+		render: function () {
+
+			var editClass = 'mdi-minus';
+
+			if (this.props.plus) editClass = 'mdi-plus';
+
+			return React.createElement(
+				'li',
+				{ className: 'chip', onClick: this.props.onClick },
+				React.createElement(
+					'div',
+					{ className: 'chip' },
+					React.createElement(
+						'div',
+						{ className: 'icon' },
+						React.createElement('span', { className: 'mdi ' + editClass + ' icon md-type-subhead' })
+					),
+					React.createElement(
+						'span',
+						{ className: 'chip md-type-body1 tag' },
+						this.props.text
+					)
+				)
+			);
+		}
+
+	});
+
+	module.exports = Tag;
+
+/***/ },
+/* 176 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159);
+
+	/**
+	 * Single Edit-Post Element
+	 * @description Post element that is wrapped inside container slick usually
+	 */
+
+	var EditPost = React.createClass({
+
+		displayName: 'EditPost',
+
+		getDefaultProps: function () {
+
+			return {
+				post: {}
+			};
+		},
+		//Add source after rendering for local files
+		componentDidMount: function () {
+
+			if (!this.props.file) return;
+		},
+
+		render: function () {
+
+			//Check if we're reading from a file, and we have the file's source
+			if (this.props.file && this.props.source) {
+
+				if (this.props.file.type.indexOf('video') !== -1) {
+					//video
+
+					return React.createElement(
+						'video',
+						{ width: '100%', height: '100%', 'data-id': this.props.post._id, controls: true },
+						React.createElement('source', {
+							id: this.props.file.lastModified,
+							src: this.props.source,
+							type: 'video/mp4', ref: 'video' }),
+						'Your browser does not support the video tag.'
+					);
+				} else {
+					//image
+
+					return React.createElement('img', {
+						className: 'img-responsive',
+						id: this.props.file.lastModified,
+						src: this.props.source,
+						ref: 'image' });
+				}
+			} else if (this.props.post.video) {
+
+				return React.createElement(
+					'video',
+					{ width: '100%', height: '100%', 'data-id': this.props.post._id, controls: true },
+					React.createElement('source', {
+						src: this.props.post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4'),
+						type: 'video/mp4' }),
+					'Your browser does not support the video tag.'
+				);
+			} else {
+
+				console.log(this.props);
+
+				return React.createElement('img', {
+					className: 'img-responsive',
+					src: formatImg(this.props.post.image, 'medium'),
+					'data-id': this.props.post._id });
+			}
+		}
+
+	});
+
+	module.exports = EditPost;
+
+/***/ },
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159);
+
+	/**
+	 * Single Edit-Map Element
+	 * @description Map element that is found in Gallery Edit, Admin Panel, etc.
+	 */
+
+	var EditMap = React.createClass({
+
+		displayName: 'EditMap',
+
+		componentDidMount: function () {
+
+			var styles = [{ "featureType": "all", "elementType": "all", "stylers": [{ "gamma": 1.54 }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "gamma": 1.54 }] }, { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [{ "color": "#e0e0e0" }] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#bdbdbd" }] }, { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] }, { "featureType": "poi.park", "elementType": "all", "stylers": [{ "gamma": 1.26 }] }, { "featureType": "poi.park", "elementType": "labels.text", "stylers": [{ "saturation": -54 }] }];
+
+			var mapOptions = {
+				center: { lat: 40.7, lng: -74 },
+				zoom: 12,
+				mapTypeControl: false,
+				styles: styles
+			};
+
+			//Instantiate google maps object
+			map = new google.maps.Map(document.getElementById('gallery-map-canvas'), mapOptions);
+
+			//Marker image
+			var markerImage = {
+				url: "/images/assignment-active@2x.png",
+				size: new google.maps.Size(114, 114),
+				scaledSize: new google.maps.Size(60, 60),
+				origin: new google.maps.Point(0, 0),
+				anchor: new google.maps.Point(30, 30)
+			};
+
+			//Instantiate polygon
+			polygon = new google.maps.Polygon({
+				paths: [],
+				strokeColor: "#FFB500",
+				strokeOpacity: 0.8,
+				strokeWeight: 0,
+				fillColor: "#FFC600",
+				fillOpacity: 0.35,
+				map: map
+			});
+
+			//Set default marker to NYC
+			marker = new google.maps.Marker({
+				position: new google.maps.LatLng(40.7, -74),
+				map: map,
+				icon: markerImage
+			});
+
+			//Location is present
+			if (this.props.gallery.location) {
+
+				polygon.setMap(map);
+
+				polygon.setPath(this.props.gallery.location.coordinates[0].map(function (a) {
+					return {
+						lat: a[1],
+						lng: a[0]
+					};
+				}));
+
+				marker.setPosition(this.getCentroid(polygon));
+
+				map.fitBounds(this.getBounds(polygon));
+			}
+			//No location is present
+			else {
+					polygon.setMap(null);
+				}
+		},
+		render: function () {
+
+			return React.createElement('div', { id: 'gallery-map-canvas', className: 'map-container' });
+		},
+		//Returns centroid for passed polygon
+		getCentroid: function (polygon) {
+
+			var path = polygon.getPath(),
+			    lat = 0,
+			    lon = 0;
+
+			for (var i = 0; i < path.getLength() - 1; ++i) {
+				lat += path.getAt(i).lat();
+				lon += path.getAt(i).lng();
+			}
+
+			lat /= path.getLength() - 1;
+			lon /= path.getLength() - 1;
+
+			return new google.maps.LatLng(lat, lon);
+		},
+		getBounds: function (polygon) {
+
+			var bounds = new google.maps.LatLngBounds();
+			var paths = polygon.getPaths();
+			var path;
+
+			for (var i = 0; i < paths.getLength(); i++) {
+				path = paths.getAt(i);
+				for (var ii = 0; ii < path.getLength(); ii++) {
+					bounds.extend(path.getAt(ii));
+				}
+			}
+			return bounds;
+		}
+
+	});
+
+	module.exports = EditMap;
+
+/***/ },
+/* 178 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	ReactDOM = __webpack_require__(159);
+
+	/**
+	 * Auto-complete component for stories input
+	 */
+
+	var StoriesAutoComplete = React.createClass({
+
+		displayName: 'StoriesAutoComplete',
+
+		componentDidMount: function () {
+
+			var self = this;
+
+			//Gallery Stories Autocomplete
+			$(this.refs.story_input).typeahead({
+				hint: true,
+				highlight: true,
+				minLength: 1,
+				classNames: {
+					menu: 'tt-menu shadow-z-2'
+				}
+			}, {
+				name: 'stories',
+				display: 'title',
+				source: function (query, syncResults, asyncResults) {
+					$.ajax({
+						url: '/scripts/story/autocomplete',
+						data: {
+							q: query
+						},
+						success: function (result, status, xhr) {
+							asyncResults(result.data || []);
+						},
+						error: function (xhr, statur, error) {
+							asyncResults([]);
+						}
+					});
+				},
+				templates: {
+					empty: ['<div id="story-empty-message" class="tt-suggestion">', 'Create new story', '</div>'].join('\n')
+				}
+			}).on('typeahead:select', function (ev, selectedStory) {
+
+				//Check if the story is not in our existing set of stories by object id
+				var filter = self.props.stories.filter(function (story) {
+					return story._id == selectedStory._id;
+				});
+
+				if (filter.length == 0) self.props.addStory(selectedStory);else $.snackbar({ content: 'This gallery is already in that story!' });
+
+				$(this).typeahead('val', '');
+			}).on('keydown', function (ev) {
+
+				emptyMessage = document.getElementById('story-empty-message');
+
+				//Check if we're hitting enter and there is a new story option present
+				if (ev.keyCode == 13 && typeof emptyMessage !== 'undefined') {
+
+					//Check if we have a url
+					if ($(this).val().indexOf('http://') != -1) {
+						$.snackbar({ content: 'No URLs please!' });
+						return;
+					}
+
+					var newStory = {
+						title: $(this).val(),
+						new: true
+					};
+
+					//Check if the story is not in our existing set of stories by title
+					var filter = self.props.stories.filter(function (story) {
+						return story.title == newStory.title;
+					});
+
+					if (filter.length > 0) {
+						$.snackbar({ content: 'This gallery is already in that story!' });
+						return;
+					}
+
+					self.props.addStory(newStory);
+
+					$(this).typeahead('val', '');
+				}
+			});
+		},
+
+		render: function () {
+
+			return React.createElement('input', {
+				id: 'gallery-stories-input',
+				type: 'text',
+				className: 'form-control floating-label',
+				placeholder: 'Stories',
+				onChange: this.change,
+				ref: 'story_input' });
+		}
+
+	});
+
+	module.exports = StoriesAutoComplete;
+
+/***/ },
+/* 179 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	ReactDOM = __webpack_require__(159), Dropdown = __webpack_require__(166);
+
+	/**
+	 * Component for managing byline editing
+	 * @param {object} gallery Gallery object to base byline representation off of
+	 */
+
+	var GalleryEditByline = React.createClass({
+
+		displayName: 'GalleryEditByline',
+
+		/**
+	  * Renders byline field
+	  * @description Three types of instances for the byline
+	  */
+		render: function () {
+
+			var post = this.props.gallery.posts[0];
+
+			//If the post contains twitter info, show twitter byline editor
+			if (post.meta && post.meta.twitter) {
+
+				var isHandleByline = post.byline.indexOf('@') == 0;
+
+				if (isHandleByline) byline = post.meta.twitter.handle;else byline = post.meta.twitter.user_name;
+
+				return React.createElement(
+					'div',
+					{ className: 'dialog-row' },
+					React.createElement(
+						'div',
+						{ className: 'split byline-section', id: 'gallery-byline-twitter' },
+						React.createElement(Dropdown, {
+							options: [post.meta.twitter.handle, post.meta.twitter.user_name],
+							selected: byline,
+							onSelected: this.bylineSelected }),
+						React.createElement(
+							'div',
+							{ className: 'split-cell' },
+							React.createElement(
+								'div',
+								{ className: 'form-control-wrapper' },
+								React.createElement('input', {
+									type: 'text',
+									className: 'form-control',
+									defaultValue: post.meta.other_origin.affiliation,
+									id: 'gallery-edit-affiliation' }),
+								React.createElement(
+									'div',
+									{ className: 'floating-label' },
+									'Affiliation'
+								),
+								React.createElement('span', { className: 'material-input' })
+							)
+						)
+					)
+				);
+			}
+			//If the post doesn't have an owner, but has a curator i.e. manually imported
+			else if (!post.owner && post.curator) {
+
+					var name = '',
+					    affiliation = '';
+
+					if (post.meta.other_origin) {
+						name = post.meta.other_origin.name;
+						affiliation = post.meta.other_origin.affiliation;
+					}
+
+					return React.createElement(
+						'div',
+						{ className: 'dialog-row' },
+						React.createElement(
+							'div',
+							{ className: 'split byline-section', id: 'gallery-byline-other-origin' },
+							React.createElement(
+								'div',
+								{ className: 'split-cell', id: 'gallery-name-span' },
+								React.createElement(
+									'div',
+									{ className: 'form-control-wrapper' },
+									React.createElement('input', { type: 'text', className: 'form-control empty', defaultValue: name, id: 'gallery-edit-name' }),
+									React.createElement(
+										'div',
+										{ className: 'floating-label' },
+										'Name'
+									),
+									React.createElement('span', { className: 'material-input' })
+								)
+							),
+							React.createElement(
+								'div',
+								{ className: 'split-cell' },
+								React.createElement(
+									'div',
+									{ className: 'form-control-wrapper' },
+									React.createElement('input', { type: 'text', className: 'form-control empty', defaultValue: affiliation, id: 'gallery-edit-affiliation' }),
+									React.createElement(
+										'div',
+										{ className: 'floating-label' },
+										'Affiliation'
+									),
+									React.createElement('span', { className: 'material-input' })
+								)
+							)
+						)
+					);
+				}
+				//If organically submitted content i.e. user submitted the gallery, can't change the byline
+				else {
+						return React.createElement(
+							'div',
+							{ className: 'dialog-row' },
+							React.createElement(
+								'span',
+								{ className: 'byline-section', id: 'gallery-byline-span' },
+								React.createElement(
+									'div',
+									{ className: 'form-control-wrapper' },
+									React.createElement('input', { id: 'gallery-byline-input', defaultValue: post.byline, type: 'text', className: 'form-control', disabled: true }),
+									React.createElement(
+										'div',
+										{ className: 'floating-label' },
+										'Byline'
+									),
+									React.createElement('span', { className: 'material-input' })
+								)
+							)
+						);
+					}
+		}
+
+	});
+
+	module.exports = GalleryEditByline;
+
+/***/ },
 /* 180 */,
-/* 181 */,
-/* 182 */,
-/* 183 */,
-/* 184 */,
-/* 185 */,
-/* 186 */,
-/* 187 */
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159);
+
+	/**
+	 * Gallery Edit Foot component
+	 * @description Contains all the interaction buttons
+	 */
+
+	var GalleryEditFoot = React.createClass({
+
+		displayName: 'GalleryEditFoot',
+
+		getInitialState: function () {
+			return {
+				gallery: this.props.gallery
+			};
+		},
+
+		render: function () {
+
+			var addMore = '';
+
+			//Check if the gallery has been imported, to show the 'Add More' button or not
+			if (this.state.gallery.imported) addMore = React.createElement(
+				'button',
+				{ id: 'gallery-add-more-button', type: 'button', onClick: this.addMore, className: 'btn btn-flat' },
+				'Add More'
+			);
+
+			inputStyle = {
+				display: 'none'
+			};
+
+			return React.createElement(
+				'div',
+				{ className: 'dialog-foot' },
+				React.createElement('input', {
+					id: 'gallery-upload-files',
+					type: 'file',
+					accept: 'image/*,video/*,video/mp4',
+					multiple: true,
+					ref: 'fileUpload',
+					style: inputStyle,
+					onChange: this.fileUploaderChanged }),
+				React.createElement(
+					'button',
+					{ id: 'gallery-revert-button', type: 'button', onClick: this.revert, className: 'btn btn-flat' },
+					'Revert changes'
+				),
+				React.createElement(
+					'button',
+					{ id: 'gallery-clear-button', type: 'button', onClick: this.clear, className: 'btn btn-flat' },
+					'Clear all'
+				),
+				addMore,
+				React.createElement(
+					'button',
+					{ id: 'gallery-cancel-button', type: 'button', onClick: this.cancel, className: 'btn btn-flat pull-right toggle-gedit toggler' },
+					'Cancel'
+				),
+				React.createElement(
+					'button',
+					{ id: 'gallery-delete-button', type: 'button', onClick: this.delete, className: 'btn btn-flat pull-right' },
+					'Delete'
+				),
+				React.createElement(
+					'button',
+					{ id: 'gallery-save-button', type: 'button', onClick: this.props.saveGallery, className: 'btn btn-flat pull-right' },
+					'Save'
+				)
+			);
+		},
+		revert: function () {},
+		clear: function () {
+
+			gallery = this.state.gallery;
+
+			gallery.caption = '';
+			gallery.tags = [];
+			gallery.related_stories = [];
+			gallery.articles = [];
+			gallery.location = {};
+			gallery.files = [];
+
+			this.props.updateGallery(gallery);
+		},
+		addMore: function () {
+
+			document.getElementById('gallery-upload-files').click();
+		},
+		fileUploaderChanged: function () {
+
+			var gallery = this.state.gallery,
+			    files = this.refs.fileUpload.files,
+			    self = this;
+
+			//Set gallery files from input file
+			gallery.files = files, gallery.files.sources = [];
+
+			for (var i = 0; i < files.length; i++) {
+
+				var file = files[i];
+
+				var reader = new FileReader();
+
+				reader.onload = (function (index) {
+
+					return function (e) {
+
+						gallery.files.sources.push(e.target.result);
+
+						//When we're at the end of the loop, send the state update to the parent
+						if (index == files.length - 1) self.props.updateGallery(gallery);
+					};
+				})(i);
+
+				reader.readAsDataURL(file);
+			}
+		},
+		cancel: function () {
+
+			$(".toggle-gedit").toggleClass("toggled");
+		},
+		delete: function () {
+
+			var gallery = this.state.gallery;
+
+			alertify.confirm("Are you sure you want to delete this gallery?", function (confirmed) {
+
+				if (!confirmed) return;
+
+				//Consturct params with gallery id
+				var params = {
+					id: gallery._id
+				};
+
+				//Send delete request
+				$.ajax({
+					url: "/scripts/gallery/remove",
+					method: 'post',
+					contentType: "application/json",
+					data: params,
+					dataType: 'json',
+					success: function (result) {
+
+						if (result.err) {
+							return this.error(null, null, result.err);
+						};
+
+						location.href = document.referrer || '/highlights';
+					},
+					error: function (xhr, status, error) {
+						$.snackbar({
+							content: 'Couldn\'t successfully delete this gallery!'
+						});
+					}
+				});
+			}, this);
+		}
+
+	});
+
+	module.exports = GalleryEditFoot;
+
+/***/ },
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -20897,38 +21768,124 @@
 
 	/** //
 
-	Description : Column on the left of the posts grid on the story detail page
+	Description : Column on the right of the detail post showing all the post's info
 
 	// **/
 
 	/**
-	 * Story sidebar parent object
+	 * PostInfo parent object
 	 */
 
-	var StorySidebar = React.createClass({
+	var PostInfo = React.createClass({
 
-		displayName: 'StorySidebar',
+		displayName: 'PostInfo',
 
 		render: function () {
 
+			//Init needed vars to make list
+			var post = this.props.post,
+			    gallery = this.props.gallery,
+			    userIcon = '',
+			    twitter = '',
+			    curator = '',
+			    timeString = formatTime(this.props.post.time_created),
+			    verifiedBy = this.props.verifier ? 'Verified by ' + this.props.verifier.firstname + ' ' + this.props.verifier.lastname : 'Not yet verified';
+
+			//Check to show user icon
+			if (this.props.post.owner) {
+				userIcon = React.createElement(
+					'div',
+					null,
+					React.createElement('img', {
+						className: 'img-circle img-responsive',
+						src: post.owner && post.owner.avatar ? post.owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png' })
+				);
+			}
+
+			//Check to show twitter item
+			if (post.meta.twitter && post.meta.twitter.url) {
+				var twitter = React.createElement(
+					'li',
+					null,
+					React.createElement('span', { className: 'mdi mdi-twitter icon' }),
+					React.createElement(
+						'a',
+						{ href: '<%=post.meta.twitter.url%>', target: '_blank' },
+						'See original'
+					)
+				);
+			}
+
+			//Check to show curator item
+			if (gallery.curator) {
+				var curator = React.createElement(
+					'li',
+					null,
+					React.createElement('span', { className: 'mdi mdi-account icon' }),
+					this.props.gallery.curator.firstname + ' ' + this.props.gallery.curator.lastname
+				);
+			}
+
 			return React.createElement(
 				'div',
-				{ className: 'col-sm-4 profile hidden-xs' },
+				{ className: 'col-xs-12 col-md-4 meta' },
 				React.createElement(
 					'div',
-					{ className: 'container-fluid fat' },
+					{ className: 'row' },
 					React.createElement(
 						'div',
-						{ className: 'col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2' },
+						{ className: 'col-xs-12 col-sm-7 col-md-12' },
 						React.createElement(
 							'div',
-							{ className: 'meta' },
+							{ className: 'meta-user' },
+							userIcon,
 							React.createElement(
 								'div',
-								{ className: 'meta-description', id: 'story-description' },
-								this.props.story.caption
+								null,
+								React.createElement(
+									'span',
+									{ className: 'md-type-title' },
+									post.meta.twitter ? post.meta.twitter.user_name : post.owner ? post.owner.firstname + ' ' + post.owner.lastname : ''
+								),
+								React.createElement(
+									'span',
+									{ className: 'md-type-body1' },
+									this.props.post.affiliation
+								)
+							)
+						),
+						React.createElement(
+							'div',
+							{ className: 'meta-description' },
+							this.props.gallery.caption
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'col-xs-12 col-sm-5 col-md-12 meta-list' },
+						React.createElement(
+							'ul',
+							{ className: 'md-type-subhead' },
+							React.createElement(
+								'li',
+								null,
+								React.createElement('span', { className: 'mdi mdi-clock icon' }),
+								timeString
 							),
-							React.createElement(StoryStats, { story: this.props.story })
+							React.createElement(
+								'li',
+								null,
+								React.createElement('span', { className: 'mdi mdi-map-marker icon' }),
+								post.location.address || 'No Location'
+							),
+							twitter,
+							React.createElement(
+								'li',
+								null,
+								React.createElement('span', { className: 'mdi mdi-alert-circle icon' }),
+								verifiedBy
+							),
+							curator
 						)
 					)
 				)
@@ -20937,59 +21894,168 @@
 
 	});
 
+	module.exports = PostInfo;
+
+/***/ },
+/* 183 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ReactDOM = __webpack_require__(159);
+
+	/** //
+
+	Description : Related posts at the bottom of the PostDetail view
+
+	// **/
+
 	/**
-	 * Story stats inside the sidebar
+	 * PostRelated parent object
+	 * @description Contains set of all other posts in the parent gallery
 	 */
 
-	var StoryStats = React.createClass({
+	var PostRelated = React.createClass({
 
-		displayName: 'StoryStats',
+		displayName: 'PostRelated',
 
 		render: function () {
 
-			if (!this.props.story.stats) return;
+			if (this.props.gallery.posts && this.props.gallery.posts.length > 1) {
 
-			var photos = '';
-			videos = '';
+				var posts = this.props.gallery.posts.map(function (post, i) {
 
-			if (this.props.story.stats.photos) {
-				photos = React.createElement(
-					'li',
-					null,
-					React.createElement('span', { className: 'mdi mdi-file-image-box icon' }),
-					this.props.story.stats.photos,
-					'photos'
+					return React.createElement('img', {
+						className: 'img-link',
+						src: formatImg(post.image, 'small'),
+						key: i });
+				});
+
+				return React.createElement(
+					'div',
+					{ className: 'row related hidden-xs' },
+					React.createElement(
+						'div',
+						{ className: 'tab-control' },
+						React.createElement(
+							'button',
+							{ className: 'btn btn-flat toggled' },
+							'More from this gallery'
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'tabs' },
+						React.createElement(
+							'div',
+							{ className: 'tab toggled' },
+							posts
+						)
+					)
 				);
+			} else return null;
+		}
+
+	});
+
+	module.exports = PostRelated;
+
+/***/ },
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	ReactDOM = __webpack_require__(159), PurchaseAction = __webpack_require__(163), DownloadAction = __webpack_require__(164);
+
+	/** //
+
+	Description : Image of the PostDetail page, contains byline and actions
+
+	// **/
+
+	/**
+	 * PostDetailImage parent object
+	 */
+
+	var PostDetailImage = React.createClass({
+
+		displayName: 'PostDetailImage',
+
+		render: function () {
+
+			console.log(this.props);
+
+			var actions = [],
+			    postMedia = '';
+			i = 0;
+
+			//Check rank of user, if less than a CM
+			if (this.props.user.rank < 1) {
+				//config.RANKS_CONTENT_MANAGER
+
+				//Check to make sure the user has an outlet
+				if (this.props.user.outlet) {
+
+					//Check if the post has been purchased
+					if (this.props.purchases && this.props.purchases.indexOf(this.props.post._id) >= 0) {
+						actions.push(React.createElement(DownloadAction, { post: this.props.post, key: i++ }));
+					}
+					//Check if the post is licensed
+					else if (this.props.post.license == 1) {
+							actions.push(React.createElement(PurchaseAction, { post: this.props.post, key: i++ }));
+						}
+				}
 			}
-			if (this.props.story.stats.videos) {
-				videos = React.createElement(
-					'li',
-					null,
-					React.createElement('span', { className: 'mdi mdi-movie icon' }),
-					this.props.story.stats.videos + ' video'
+			//We are of a rank higher than a content manager
+			else {
+
+					actions.push(React.createElement(DownloadAction, { post: this.props.post, key: i++ }));
+
+					if (this.props.purchases && this.props.purchases.indexOf(this.props.post._id) == -1) {
+
+						actions.push(React.createElement(PurchaseAction, { post: this.props.post, key: i++ }));
+					}
+				}
+
+			if (this.props.post.video) {
+				postMedia = React.createElement(
+					'video',
+					{ width: '100%', height: '100%', controls: true },
+					React.createElement('source', { src: formatVideo(this.props.post.video), type: 'video/mp4' }),
+					'Your browser does not support the video tag.'
 				);
+			} else {
+
+				postMedia = React.createElement('img', { className: 'img-responsive', src: formatImg(this.props.post.image, 'large') });
 			}
 
 			return React.createElement(
 				'div',
-				{ className: 'meta-list' },
+				{ className: 'col-xs-12 col-md-8' },
 				React.createElement(
-					'ul',
-					{ className: 'md-type-subhead' },
-					photos,
-					videos
+					'div',
+					{ className: 'card panel' },
+					React.createElement(
+						'div',
+						{ className: 'card-foot small' },
+						actions,
+						React.createElement(
+							'span',
+							{ className: 'md-type-body1' },
+							this.props.post.byline
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'card-body' },
+						postMedia
+					)
 				)
 			);
 		}
+
 	});
 
-	module.exports = StorySidebar;
-
-/***/ },
-/* 188 */
-/***/ function(module, exports) {
-
-	
+	module.exports = PostDetailImage;
 
 /***/ }
 /******/ ]);

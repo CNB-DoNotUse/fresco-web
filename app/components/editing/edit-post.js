@@ -68,6 +68,8 @@ var EditPost = React.createClass({
 		}
 		else{
 
+			console.log(this.props);
+			
 			return (
 				<img 
 					className='img-responsive'
