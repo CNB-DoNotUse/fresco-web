@@ -1,20 +1,17 @@
-var isNode = require('detect-node'),
-	React = require('react'),
-	ReactDOM = require('react-dom'),
-	GalleryList = require('./../components/gallery-list.js'),
-	TopBar = require('./../components/topbar.js'),
-	App = require('./app.js');
+import React from 'react'
+import ReactDOM from 'react-dom'
+import GalleryList from './../components/gallery-list.js'
+import TopBar from './../components/topbar.js'
+import App from './app.js'
 
 /**
  * Galleries Parent Object (composed of GalleryList and Navbar) 
  * Half = False, to render at large size instead of half size
  */
 
-var Galleries = React.createClass({
+ class Galleries extends React.Component {
 
-	displayName: 'Galleries',
-
-	render: function(){
+	render() {
 		return (
 			<App user={this.props.user}>
 				<TopBar title="Galleries" />
@@ -25,14 +22,9 @@ var Galleries = React.createClass({
 		)
 	}
 
-});
+}
 
-if(isNode){
-	module.exports = Galleries;
-}
-else{
-	ReactDOM.render(
-	  <Galleries user={window.__initialProps__.user}/>,
-	  document.getElementById('app')
-	);
-}
+ReactDOM.render(
+  <Galleries user={window.__initialProps__.user}/>,
+  document.getElementById('app')
+);

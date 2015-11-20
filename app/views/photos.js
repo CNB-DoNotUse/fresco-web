@@ -1,9 +1,8 @@
-var isNode = require('detect-node'),
-	React = require('react'),
-	ReactDOM = require('react-dom'),
-	PostList = require('./../components/post-list.js'),
-	TopBar = require('./../components/topbar.js'),
-	App = require('./app.js');
+import React from 'react'
+import ReactDOM from 'react-dom'
+import PostList from './../components/post-list.js'
+import TopBar from './../components/topbar.js'
+import App from './app.js'
 
 /** //
 
@@ -15,17 +14,14 @@ Description : View page for content/photos
  * Photos Parent Object (composed of PhotoList and Navbar)
  */
 
-var Photos = React.createClass({
+class Photos extends React.Component {
 
-	displayName: 'Photos',
+	constructor(props) {
+		super(props);
+		this.loadPosts = this.loadPosts.bind(this);
+	}
 
-	getDefaultProps: function(){
-		return {
-			purchases : []
-		};
-	},
-
-	render: function(){
+	render() {
 
 		return (
 			<App user={this.props.user}>
@@ -43,10 +39,10 @@ var Photos = React.createClass({
 			</App>
 		);
 
-	},
+	}
 
 	//Returns array of posts with offset and callback, used in child PostList
-	loadPosts: function(passedOffset, callback){
+	loadPosts (passedOffset, callback) {
 
 		var endpoint = '/v1/post/list',
 				params = {
@@ -61,7 +57,7 @@ var Photos = React.createClass({
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: function(response, status, xhr){
+			success: (response, status, xhr) => {
 
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
@@ -70,7 +66,7 @@ var Photos = React.createClass({
 					callback(response.data);
 
 			},
-			error: function(xhr, status, error){
+			error: (xhr, status, error) =>{
 				$.snackbar({content: resolveError(error)});
 			}
 
@@ -78,20 +74,15 @@ var Photos = React.createClass({
 
 	}
 
-});
-
-if(isNode){
-
-	module.exports = Photos;
-
 }
-else{
 
-	ReactDOM.render(
-	 	<Photos 
-	 		user={window.__initialProps__.user} 
-	 		purchases={window.__initialProps__.purchases} />,
-		document.getElementById('app')
-	);
-
+Photos.defaultProps = {
+	purchases : []
 }
+
+ReactDOM.render(
+ 	<Photos 
+ 		user={window.__initialProps__.user} 
+ 		purchases={window.__initialProps__.purchases} />,
+	document.getElementById('app')
+);

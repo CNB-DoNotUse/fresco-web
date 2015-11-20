@@ -1,9 +1,8 @@
-var isNode = require('detect-node'),
-	React = require('react'),
-	ReactDOM = require('react-dom'),
-	PostList = require('./../components/post-list.js'),
-	TopBar = require('./../components/topbar.js'),
-	App = require('./app.js');
+import React from 'react'
+import ReactDOM from 'react-dom'
+import PostList from './../components/post-list.js'
+import TopBar from './../components/topbar.js'
+import App from './app.js'
 
 /** //
 
@@ -15,17 +14,19 @@ Description : View page for content
  * Content Parent Object (composed of PostList and Navbar)
  */
 
-var Content = React.createClass({
 
-	displayName: 'Content',
+class Content extends React.Component {
 
-	getDefaultProps: function(){
+	constructor(props) {
+		super(props);
 		return {
 			purchases : []
-		};
-	},
+		}
 
-	render: function(){
+		this.loadPosts = this.loadPosts.bind(this);
+	}
+
+	render() {
 
 		return (
 			<App user={this.props.user}>
@@ -43,10 +44,10 @@ var Content = React.createClass({
 			</App>
 		);
 
-	},
+	}
 
 	//Returns array of posts with offset and callback, used in child PostList
-	loadPosts: function(passedOffset, callback){
+	loadPosts (passedOffset, callback) {
 
 		var endpoint = '/v1/post/list',
 				params = {
@@ -60,7 +61,7 @@ var Content = React.createClass({
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: function(response, status, xhr){
+			success: (response, status, xhr) => {
 
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
@@ -69,7 +70,7 @@ var Content = React.createClass({
 					callback(response.data);
 
 			},
-			error: function(xhr, status, error){
+			error: (xhr, status, error) => {
 				$.snackbar({content: resolveError(error)});
 			}
 
@@ -77,21 +78,12 @@ var Content = React.createClass({
 
 	}
 
-});
-
-if(isNode){
-
-	module.exports = Content;
-
 }
-else {
 
-	ReactDOM.render(
-	 	<Content 
-	 		user={window.__initialProps__.user} 
-	 		purchases={window.__initialProps__.purchases}
-	 		title={window.__initialProps__.title} />,
-		document.getElementById('app')
-	);
-
-}
+ReactDOM.render(
+ 	<Content 
+ 		user={window.__initialProps__.user} 
+ 		purchases={window.__initialProps__.purchases}
+ 		title={window.__initialProps__.title} />,
+	document.getElementById('app')
+);

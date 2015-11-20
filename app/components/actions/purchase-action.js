@@ -1,15 +1,16 @@
-var React = require('react'),
-	ReactDOM = require('react-dom');
+import React from 'react'
 
 /**
  * Global purchase actions
  */
 
-var PurchaseAction = React.createClass({
+export default class PurchaseAction extends React.Component {
 
-	displayName: 'PurchaseAction',
+	constructor(props) {
+		super(props);
+	}
 
-	render: function(){
+	render() {
 
 		return(
 
@@ -17,9 +18,10 @@ var PurchaseAction = React.createClass({
 
 		);
 		
-	},
+	}
+
 	//Called whenever the purhcase icon is selected
-	purchase: function(event){
+	purchase(event) {
 
 		//Check if the prop exists first
 		if(!this.props.post) return;
@@ -28,7 +30,7 @@ var PurchaseAction = React.createClass({
 			assignment = this.props.assignment ? this.props.assignment._id : null
 
 		//Confirm the purchase
-		alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", function (e) {
+		alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", (e) => {
 
 		    if (e) {
 
@@ -42,9 +44,7 @@ var PurchaseAction = React.createClass({
 						posts: post,
 						assignment:assignment
 					}),
-					success: function(result, status, xhr){
-
-						console.log(result);
+					success: (result, status, xhr) => {
 
 						if (result.err)
 							return this.error(null, null, result.err);
@@ -61,7 +61,7 @@ var PurchaseAction = React.createClass({
 						// card.removeClass('toggled');
 						// thisElem.remove();
 					},
-					error: function(xhr, status, error){
+					error: (xhr, status, error) => {
 						$.snackbar({
 							content:resolveError(error, 'There was an error while completing your purchase!')
 						});
@@ -73,8 +73,6 @@ var PurchaseAction = React.createClass({
 
 		});
 		
-	},
+	}
 
-});
-
-module.exports = PurchaseAction;
+}

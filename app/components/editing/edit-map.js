@@ -1,16 +1,19 @@
-var React = require('react'),
-	ReactDOM = require('react-dom');
+import React from 'react'
 
 /**
  * Single Edit-Map Element
  * @description Map element that is found in Gallery Edit, Admin Panel, etc.
  */
 
-var EditMap = React.createClass({
+export default class EditMap extends React.Component {
 
-	displayName: 'EditMap',
+	constructor(props) {
+		super(props);
+		this.getCentroid = this.getCentroid.bind(this);
+		this.getBounds = this.getBounds.bind(this);
+	}
 
-	componentDidMount: function(){
+	componentDidMount() {
 
 		var styles = [{"featureType": "all", "elementType":"all", "stylers": [{"gamma":1.54}]},
 			{"featureType":"road.highway","elementType":"all","stylers":[{"gamma":1.54}]},
@@ -86,16 +89,18 @@ var EditMap = React.createClass({
 		else{
 			polygon.setMap(null);
 		}
-	},
-	render: function(){
+	}
+
+	render() {
 
 		return(
 			<div id="gallery-map-canvas" className="map-container"></div>
 		);
 		
-	},
+	}
+
 	//Returns centroid for passed polygon
-	getCentroid: function(polygon){
+	getCentroid(polygon) {
 
 		var path = polygon.getPath(),
 			lat = 0,
@@ -111,8 +116,9 @@ var EditMap = React.createClass({
 
 		return new google.maps.LatLng(lat, lon);
 
-	},
-	getBounds: function(polygon) {
+	}
+
+	getBounds(polygon) {
 		
 		var bounds = new google.maps.LatLngBounds();
 		var paths = polygon.getPaths();
@@ -127,6 +133,4 @@ var EditMap = React.createClass({
 		return bounds;
 	}
 
-});
-
-module.exports = EditMap;
+}

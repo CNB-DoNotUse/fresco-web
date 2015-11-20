@@ -1,21 +1,18 @@
-var React = require('react');
-	ReactDOM = require('react-dom'),
-	Dropdown = require('./../global/dropdown.js');
+import React from 'react'
+import Dropdown from './../global/dropdown.js'
 
 /**
  * Component for managing byline editing
  * @param {object} gallery Gallery object to base byline representation off of
  */
 
-var GalleryEditByline = React.createClass({
-
-	displayName: 'GalleryEditByline',
+export default class GalleryEditByline extends React.Component {
 
 	/**
 	 * Renders byline field
 	 * @description Three types of instances for the byline
 	 */
-	render: function(){
+	render() {
 
 		var post = this.props.gallery.posts[0];
 
@@ -54,7 +51,7 @@ var GalleryEditByline = React.createClass({
 
 		}
 		//If the post doesn't have an owner, but has a curator i.e. manually imported
-		else if(!post.owner && post.curator){
+		else if(!post.owner && post.curator) {
 
 			var name = '',
 				affiliation = '';
@@ -88,7 +85,7 @@ var GalleryEditByline = React.createClass({
 
 		}
 		//If organically submitted content i.e. user submitted the gallery, can't change the byline
-		else{
+		else {
 			return (
 				<div className="dialog-row">
 					<span className="byline-section" id="gallery-byline-span">
@@ -103,7 +100,4 @@ var GalleryEditByline = React.createClass({
 		}
 	}
 
-});
-
-
-module.exports = GalleryEditByline;
+}

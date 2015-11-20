@@ -1,32 +1,34 @@
-var React = require('react'),
-	ReactDOM = require('react-dom'),
-	Tag = require('./tag.js'),
-	EditPost = require('./edit-post.js'),
-	EditMap = require('./edit-map.js'),
-	StoriesAutoComplete = require('./stories-autocomplete.js'),
-	BylineEdit = require('./byline-edit.js');
+import React from 'react'
+import Tag from './tag.js'
+import EditPost from './edit-post.js'
+import EditMap from './edit-map.js'
+import StoriesAutoComplete from './stories-autocomplete.js'
+import BylineEdit from './byline-edit.js'
 
 /**
  * Gallery Edit Body, inside of the GalleryEdit class
  * @description manages all of the input fields, and speaks to parent
  */
 
-var GalleryEditBody = React.createClass({
+export default class GalleryEditBody extends React.Component {
 
-	displayName: 'GalleryEditBody',
-
-	getInitialState: function(){
-		return{
+	constructor(props) {
+		super(props);
+		this.state ={
 			gallery: this.props.gallery
 		}
-	},
+		this.updateRelatedStories = this.updateRelatedStories.bind(this);
+		this.updateArticles = this.updateArticles.bind(this);
+		this.updatedTags = this.updatedTags.bind(this);
+		this.updatedLocation = this.updatedLocation.bind(this);
+	}
 
-	render: function(){
+	render() {
 
 		var highlightCheckbox = '';
 
 		//Check if the rank is valid for toggling the highlighted state
-		if(this.props.user.rank && this.props.user.rank >= 1){
+		if(this.props.user.rank && this.props.user.rank >= 1) {
 
 			highlightCheckbox = <div className="dialog-row">
 									<div className="checkbox">
@@ -40,7 +42,7 @@ var GalleryEditBody = React.createClass({
 
 		}
 
-		return(
+		return (
 			
 			<div className="dialog-body">
 
@@ -81,33 +83,33 @@ var GalleryEditBody = React.createClass({
 			</div>
 
 		);
-	},
+	}
 
-	updateRelatedStories: function(updatedStories){
+	updateRelatedStories(updatedStories) {
 
 		this.state.gallery.related_stories = updatedStories;
 
 		this.props.updateGallery(this.state.gallery);
 
-	},
+	}
 
-	updateArticles: function(articles){
+	updateArticles(articles) {
 
 		this.state.gallery.articles = articles;
 
 		this.props.updateGallery(gallery);
 
-	},
+	}
 
-	updatedTags: function(tags){
+	updatedTags(tags) {
 
 		this.state.gallery.tags = tags;
 
 		this.props.updateGallery(gallery);
 
-	},
+	}
 
-	updatedLocation: function(location){
+	updatedLocation(location) {
 
 		this.state.gallery.locations[0] = location;
 
@@ -115,32 +117,35 @@ var GalleryEditBody = React.createClass({
 
 	}
 
-});
+}
 
 /**
  * Component for managing added/removed tags
  */
 
-var GalleryEditTags = React.createClass({
+class GalleryEditTags extends React.Component {
 
-	displayName: 'GalleryEditTags',
+	constructor(props) {
+		super(props);
+		this.state = {
+			tags: this.props.tags
+		}
 
-	//Set state as passed properties
-	getInitialState: function() {
-		return { tags: this.props.tags }
-	},
+		this.handleClick = this.handleClick.bind(this);
+	}
 
-	componentWillReceiveProps: function(nextProps){
+	componentWillReceiveProps(nextProps) {
 		
 		this.setState({
 			tags: nextProps.tags
 		})
-	},
 
-	render: function(){
+	}
 
-		tags = this.state.tags.map(function (tag, i) {
-			return(
+	render() {
+
+		tags = this.state.tags.map((tag, i) => {
+			return (
 
 				<Tag 
 					onClick={this.handleClick.bind(this, i)} 
@@ -150,9 +155,9 @@ var GalleryEditTags = React.createClass({
 
 			)
 
-		}, this);
+		});
 
-		return(
+		return (
 			
 			<div className="dialog-row split chips">
 				<div className="split-cell">
@@ -172,9 +177,9 @@ var GalleryEditTags = React.createClass({
 
 		);
 
-	},
+	}
 
-	handleClick: function(index){
+	handleClick(index) {
 
 		var updatedTags = this.state.tags;
 
@@ -188,40 +193,51 @@ var GalleryEditTags = React.createClass({
 
 	}
 
-});
+}
 
 /**
  * Component for managing added/removed stories
  */
 
-var GalleryEditStories = React.createClass({
+class GalleryEditStories extends React.Component {
 
-	displayName: 'GalleryEditStories',
-
-
-	getInitialState: function() {
+	constructor(props)  {
 		
-		return { stories: this.props.stories }
+		super(props);
+		this.state = { stories: this.props.stories }
+		this.addStory = this.addStory.bind(this);
 
-	},
+	}
 
-	componentWillReceiveProps: function(nextProps){
+	componentWillReceiveProps(nextProps) {
 		
 		this.setState({ stories: nextProps.stories });
 	
-	},
+	}
+
 	//Add's story element
-	addStory: function(newStory){
+	addStory(newStory) {
 
 		this.props.updateRelatedStories(this.state.stories.concat(newStory));
 
-	},
+	}
 
-	render: function(){
+	handleClick(index) {
 
-		stories = this.state.stories.map(function (story, i) {
+		var updatedStories = this.state.stories;
 
-			return(
+		//Remove from index
+		updatedStories.splice(index, 1);
+
+		this.props.updateRelatedStories(updatedStories);
+
+	}
+
+	render() {
+
+		var stories = this.state.stories.map((story, i) => {
+
+			return (
 
 				<Tag 
 					onClick={this.handleClick.bind(this, i)} 
@@ -231,9 +247,9 @@ var GalleryEditStories = React.createClass({
 
 			)
 
-		}, this);
+		});
 
-		return(
+		return (
 
 			<div className="dialog-row split chips">
 				
@@ -252,69 +268,27 @@ var GalleryEditStories = React.createClass({
 			</div>
 
 		);
-	},
-
-	handleClick: function(index){
-
-		var updatedStories = this.state.stories;
-
-		//Remove from index
-		updatedStories.splice(index, 1);
-
-		this.props.updateRelatedStories(updatedStories);
-
 	}
-});
+}
 
 /**
  * Component for managing added/removed articles
  */
 
-var GalleryEditArticles = React.createClass({
+class GalleryEditArticles extends React.Component {
 
+	constructor(props) {
+		super(props);
+		this.state = { articles: this.props.articles }
+		this.handleClick = this.handleClick.bind(this);
+	}
 
-	displayName: 'GalleryEditArticles',
-
-	getInitialState: function() {
-		return { articles: this.props.articles }
-	},
-
-	componentWillReceiveProps: function(nextProps){
+	componentWillReceiveProps(nextProps) {
 
 		this.setState({	articles: nextProps.articles });
-	},
+	}
 
-	render: function(){
-
-		articles = this.state.articles.map(function (article, i) {
-
-			return(
-
-				<Tag 
-					onClick={this.handleClick.bind(this, i)} 
-					text={article.link} 
-					plus={false}
-					key={i} />
-
-			)
-
-		}, this);
-		
-		return(
-			<div className="dialog-row split chips">
-				<div className="split-cell">
-					<input 
-						id="gallery-articles-input" 
-						type="text" 
-						className="form-control floating-label" 
-						placeholder="Articles" />
-					<ul id="gallery-articles-list" className="chips">{articles}</ul>
-				</div>
-			</div>
-		);
-
-	},
-	handleClick: function(index){
+	handleClick(index) {
 
 		var updateArticles = this.state.articles;
 
@@ -328,23 +302,52 @@ var GalleryEditArticles = React.createClass({
 
 	}
 
-});
+	render() {
+
+		articles = this.state.articles.map((article, i) => {
+
+			return (
+
+				<Tag 
+					onClick={this.handleClick.bind(this, i)} 
+					text={article.link} 
+					plus={false}
+					key={i} />
+
+			)
+
+		});
+		
+		return (
+			<div className="dialog-row split chips">
+				<div className="split-cell">
+					<input 
+						id="gallery-articles-input" 
+						type="text" 
+						className="form-control floating-label" 
+						placeholder="Articles" />
+					<ul id="gallery-articles-list" className="chips">{articles}</ul>
+				</div>
+			</div>
+		);
+
+	}
+
+}
 
 /**
  * Component for managing gallery map representation
  */
 
-var GalleryEditMap = React.createClass({
-
-	displayName: 'GalleryEditMap',
+class GalleryEditMap extends React.Component {
 
 	//Configure google maps after component mounts
-	componentDidMount: function(){
+	componentDidMount() {
 
 		//Set up autocomplete listener
 		autocomplete = new google.maps.places.Autocomplete(document.getElementById('gallery-location-input'));
 				
-		google.maps.event.addListener(autocomplete, 'place_changed', function(){
+		google.maps.event.addListener(autocomplete, 'place_changed', () => {
 
 			var place = autocomplete.getPlace();
 
@@ -363,11 +366,11 @@ var GalleryEditMap = React.createClass({
 
 		});
 
-	},
+	}
 
-	render: function(){
+	render() {
 
-		return(
+		return (
 
 				<div className="dialog-col col-xs-12 col-md-5 pull-right">
 					<div className="dialog-row map-group">
@@ -388,49 +391,48 @@ var GalleryEditMap = React.createClass({
 	}
 
 
-});
+}
 
 /**
  * Component for managing gallery's posts
  */
 
-var GalleryEditPosts = React.createClass({
+class GalleryEditPosts extends React.Component {
 
-	displayName: 'GalleryEditPosts',
-
-	getInitialState: function(){
-		return {
+	constructor(props) {
+		super(props);
+		this.state = {
 			posts: this.props.posts,
 			files: []
 		}
-	},
+	}
 
-	componentWillReceiveProps: function(nextProps){
+	componentWillReceiveProps(nextProps) {
 
 		this.replaceState({	
 			posts: nextProps.posts,
 			files: nextProps.files ? nextProps.files : []
 		});
 
-	},
+	}
 
-	componentDidMount: function(){
+	componentDidMount() {
 		$(this.refs.galleryEditPosts).frick();
-	},
+	}
 
-	componentDidUpdate: function(){
+	componentDidUpdate() {
 		$(this.refs.galleryEditPosts).frick();
-	},
+	}
 
-	render: function(){
+	render() {
 
 		var k = 0;
 
-		var posts = this.state.posts.map(function (post) {
+		var posts = this.state.posts.map((post) => {
 
 			return <EditPost key={k++} post={post} />
 
-		}, this);
+		});
 
 		var files = [];
 
@@ -440,15 +442,11 @@ var GalleryEditPosts = React.createClass({
 
 		}
 
-		return(
+		return (
 			<div className="dialog-col col-xs-12 col-md-5">
 				<div ref='galleryEditPosts' id="gallery-edit-images">{posts}{files}</div>
 			</div>
 		);
 
 	}
-});
-
-
-
-module.exports = GalleryEditBody;
+}

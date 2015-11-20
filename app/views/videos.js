@@ -1,25 +1,21 @@
-var isNode = require('detect-node'),
-	React = require('react'),
-	ReactDOM = require('react-dom'),
-	PostList = require('./../components/post-list.js'),
-	TopBar = require('./../components/topbar.js'),
-	App = require('./app.js');
+import React from 'react'
+import ReactDOM from 'react-dom'
+import PostList from './../components/post-list.js'
+import TopBar from './../components/topbar.js'
+import App from './app.js'
 
 /**
  * Videos Parent Object (composed of Post and Navbar)
  */
 
-var Videos = React.createClass({
+class Videos extends React.Component {
 
-	displayName: 'Videos',
+	constructor(props) {
+		super(props);
+		this.loadPosts = this.loadPosts.bind(this);
+	}
 
-	getDefaultProps: function(){
-		return {
-			purchases : []
-		};
-	},
-
-	render: function(){
+	render() {
 
 		return (
 			<App user={this.props.user}>
@@ -37,10 +33,10 @@ var Videos = React.createClass({
 			</App>
 		);
 
-	},
+	}
 
 	//Returns array of posts with offset and callback, used in child PostList
-	loadPosts: function(passedOffset, callback){
+	loadPosts (passedOffset, callback) {
 
 		var endpoint = '/v1/post/list',
 				params = {
@@ -55,7 +51,7 @@ var Videos = React.createClass({
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: function(response, status, xhr){
+			success: (response, status, xhr) => {
 
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
@@ -64,28 +60,23 @@ var Videos = React.createClass({
 					callback(response.data);
 
 			},
-			error: function(xhr, status, error){
+			error: (xhr, status, error) => {
 				$.snackbar({content: resolveError(error)});
 			}
 
 		});
-
+d
 	}
 
-});
-
-if(isNode){
-
-	module.exports = Videos;
-
 }
-else{
 
-	ReactDOM.render(
-	 	<Videos 
-	 		user={window.__initialProps__.user} 
-	 		purchases={window.__initialProps__.purchases} />,
-	 	document.getElementById('app')
-	);
-
+Videos.defaultProps = {
+	purchases : []
 }
+
+ReactDOM.render(
+ 	<Videos 
+ 		user={window.__initialProps__.user} 
+ 		purchases={window.__initialProps__.purchases} />,
+ 	document.getElementById('app')
+);

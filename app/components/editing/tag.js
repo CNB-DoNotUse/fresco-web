@@ -1,5 +1,4 @@
-var React = require('react'),
-	ReactDOM = require('react-dom');
+import React from 'react'
 
 /**
  * Single Tag Element
@@ -7,20 +6,13 @@ var React = require('react'),
  * @param {bool} plus if component should show `+` or `-` on hover
  */
 
-var Tag = React.createClass({
+export default class Tag extends React.Component {
 
-	displayName: 'Tag',
+	constructor(props) {
+		super(props);
+	}
 
-	getDefaultProps: function(){
-
-		return{
-			text: '',
-			plus: false
-		}
-
-	},
-
-	render: function(){
+	render() {
 
 		var editClass = 'mdi-minus'
 
@@ -41,6 +33,9 @@ var Tag = React.createClass({
 
 	}
 
-});
+}
 
-module.exports = Tag;
+Tag.defaultProps = {
+	text: '',
+	plus: false
+}

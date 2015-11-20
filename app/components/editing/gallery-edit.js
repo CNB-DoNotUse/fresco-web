@@ -1,7 +1,6 @@
-var React = require('react'),
-	ReactDOM = require('react-dom'),
-	GalleryEditBody = require('./gallery-edit-body.js'),
-	GalleryEditFoot = require('./gallery-edit-foot.js');
+import React from 'react'
+import GalleryEditBody from './gallery-edit-body.js'
+import GalleryEditFoot from './gallery-edit-foot.js'
 
 /** //
 
@@ -13,23 +12,24 @@ Description : Component for adding gallery editing to the current view
  * Gallery Edit Parent Object
  */
 
-var GalleryEdit = React.createClass({
+export default class GalleryEdit extends React.Component {
 
-	displayName: 'Gallery Edit',
-
-	getInitialState: function(){
-
-		return{
+	constructor(props) {
+		super(props);
+		this.state = {
 			gallery: this.props.gallery
 		}
 
-	},
+		this.updateGallery = this.updateGallery.bind(this);
+		this.saveGallery = this.saveGallery.bind(this);
 
-	render: function(){
+	}
+
+	render() {
 
 		if(!this.props.user) return;
 
- 		style ={
+ 		style = {
  			position: 'absolute',
  			top: '-100px'
  		};
@@ -53,15 +53,16 @@ var GalleryEdit = React.createClass({
 	 			</div>
  			</div>
  		);
- 	},
- 	updateGallery: function(gallery){
+ 	}
+
+ 	updateGallery(gallery) {
  		//Update new gallery
  		this.setState({ 
  			gallery: gallery 
  		});
- 	},
+ 	}
 
- 	saveGallery: function(){
+ 	saveGallery() {
 
  		var gallery = this.state.gallery,
  			files = gallery.files ? gallery.files : [],
@@ -82,7 +83,7 @@ var GalleryEdit = React.createClass({
 
 
  		//Generate stories for update
- 		var stories = gallery.related_stories.map(function(story){
+ 		var stories = gallery.related_stories.map((story) => {
 
  			if(story.new){
  				return 'NEW=' + JSON.stringify(story)
@@ -93,7 +94,7 @@ var GalleryEdit = React.createClass({
  		});
 
  		//Generate articles for update
- 		var articles = gallery.articles.map(function(articles){
+ 		var articles = gallery.articles.map((articles) => {
 
  			if(articles.new){
  				return 'NEW=' + JSON.stringify(articles)
@@ -116,13 +117,13 @@ var GalleryEdit = React.createClass({
 
  		//Configure the byline's other origin
  		//From twitter
- 		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter){
+ 		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter) {
 
  			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value;
 
  		}
  		//Imported
- 		else if(!gallery.posts[0].owner && gallery.posts[0].curator){
+ 		else if(!gallery.posts[0].owner && gallery.posts[0].curator) {
 
  			params.other_origin_name = document.getElementById('gallery-edit-name').value;
  			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value;
@@ -143,7 +144,7 @@ var GalleryEdit = React.createClass({
  			method: 'post',
  			contentType: "application/json",
  			data: JSON.stringify(params),
- 			success: function(result){
+ 			success: (result) => {
 
  				console.log(result);
  			
@@ -152,7 +153,7 @@ var GalleryEdit = React.createClass({
  				});
 
  			},
- 			error: function(xhr, status, error){
+ 			error: (xhr, status, error) => {
  				
  				$.snackbar({
  					content: "We ran into an error saving your gallery"
@@ -163,24 +164,26 @@ var GalleryEdit = React.createClass({
  		});
  	}
 
-});
+}
 
-var GalleryEditHead = React.createClass({
+class GalleryEditHead extends React.Component {
 
-	displayName: 'GalleryEditHead',
+	constructor(props) {
+		super(props);
+		this.hide = this.hide.bind(this);
+	}
 
-	render: function(){
+	render() {
 		return (
 			<div className="dialog-head">
 				<span className="md-type-title">Edit Gallery</span>
 				<span className="mdi mdi-close pull-right icon toggle-gedit toggler" onClick={this.hide}></span>
 			</div>
 		);
-	},
-	hide: function(){
+	}
+
+	hide() {
 		$(".toggle-gedit").toggleClass("toggled");
 	}
 
-});
-
-module.exports = GalleryEdit;
+}

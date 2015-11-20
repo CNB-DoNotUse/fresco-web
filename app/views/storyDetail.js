@@ -1,27 +1,22 @@
-var isNode = require('detect-node'),
-	React = require('react'),
-	ReactDOM = require('react-dom'),
-	TopBar = require('./../components/topbar.js'),
-	PostList = require('./../components/post-list.js'),
-	StorySidebar = require('./../components/story-sidebar.js'),
-	StoryEdit = require('./../components/editing/story-edit.js'),
-	App = require('./app.js');
+import React from 'react'
+import ReactDOM from 'react-dom'
+import TopBar from './../components/topbar.js'
+import PostList from './../components/post-list.js'
+import StorySidebar from './../components/story-sidebar.js'
+import StoryEdit from './../components/editing/story-edit.js'
+import App from './app.js'
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
  */
 
- var StoryDetail = React.createClass({
+class StoryDetail extends React.Component {
 
- 	displayName: 'StoryDetail',
+	constructor(props) {
+		super(props);
+	}
 
- 	getDefaultProps: function(){
- 		return {
- 			story : {}
- 		};
- 	},
-
- 	render: function(){
+ 	render() {
 
  		return (
  			<App user={this.props.user}>
@@ -47,21 +42,17 @@ var isNode = require('detect-node'),
 
  	}
 
- });
-
-if(isNode){
-
-	module.exports = StoryDetail;
 }
-else{
 
-	ReactDOM.render(
-	  	<StoryDetail 
-	  		user={window.__initialProps__.user} 
-	  		purchases={window.__initialProps__.purchases} 
-	  		story={window.__initialProps__.story}
-	  		title={window.__initialProps__.title} />,
-	  	document.getElementById('app')
-	);
-
+StoryDetail.defaultProps = {
+	story : {}
 }
+
+ReactDOM.render(
+  	<StoryDetail 
+  		user={window.__initialProps__.user} 
+  		purchases={window.__initialProps__.purchases} 
+  		story={window.__initialProps__.story}
+  		title={window.__initialProps__.title} />,
+  	document.getElementById('app')
+);

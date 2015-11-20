@@ -1,19 +1,21 @@
-var isNode = require('detect-node'),
-	React = require('react'),
-	ReactDOM = require('react-dom'),
-	TopBar = require('./../components/topbar.js'),
-	StoryList = require('./../components/story-list.js')
-	App = require('./app.js');
+import React from 'react'
+import ReactDOM from 'react-dom'
+import TopBar from './../components/topbar.js'
+import StoryList from './../components/story-list.js'
+import App from './app.js'
 
 /**
  * Stories Parent Object, contains StoryList composed of StoryCells
  */
 
-var Stories = React.createClass({
+class Stories extends React.Component {
 
-	displayName: 'Stories',
+	constructor(props) {
+		super(props);
+		this.loadStories = this.loadStories.bind(this);
+	}
 
-	render: function(){
+	render() {
 
 		return (
 			<App user={this.props.user}>
@@ -27,10 +29,10 @@ var Stories = React.createClass({
 			</App>
 		);
 
-	},
+	}
 
 	//Returns array of posts with offset and callback, used in child PostList
-	loadStories: function(passedOffset, callback){
+	loadStories (passedOffset, callback) {
 
 		var endpoint = '/v1/post/list',
 				params = {
@@ -45,7 +47,7 @@ var Stories = React.createClass({
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: function(response, status, xhr){
+			success: (response, status, xhr) => {
 
 				console.log(response);
 
@@ -56,7 +58,7 @@ var Stories = React.createClass({
 					callback(response.data);
 
 			},
-			error: function(xhr, status, error){
+			error: (xhr, status, error) => {
 				$.snackbar({
 					content:  'Couldn\'t fetch any stories!'
 				});
@@ -65,18 +67,9 @@ var Stories = React.createClass({
 		});
 	}
 
-});
-
-if(isNode){
-
-	module.exports = Stories;
-
 }
-else{
 
-	ReactDOM.render(
-	  <Stories user={window.__initialProps__.user} />,
-	  document.getElementById('app')
-	);
-
-}
+ReactDOM.render(
+  <Stories user={window.__initialProps__.user} />,
+  document.getElementById('app')
+);

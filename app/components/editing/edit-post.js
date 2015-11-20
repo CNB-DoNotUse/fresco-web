@@ -1,31 +1,24 @@
-var React = require('react'),
-	ReactDOM = require('react-dom');
+import React from 'react'
 
 /**
  * Single Edit-Post Element
  * @description Post element that is wrapped inside container slick usually
  */
 
-var EditPost = React.createClass({
+class EditPostextends extends React.Components {
 
-	displayName: 'EditPost',
+	constructor(props) {
+		super(props);
+	}
 
-	getDefaultProps: function(){
-
-		return{
-			post: {}
-		}
-
-	},
 	//Add source after rendering for local files
-	componentDidMount: function(){
+	componentDidMount() {
 
 		if(!this.props.file) return;
-
 	
-	},
+	}
 
-	render: function(){
+	render() {
 
 		//Check if we're reading from a file, and we have the file's source
 		if(this.props.file && this.props.source){
@@ -80,6 +73,8 @@ var EditPost = React.createClass({
 		}
 	}
 
-});
+}
 
-module.exports = EditPost;
+EditPostextends.defaultProps = {
+	post: {}
+}

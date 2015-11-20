@@ -1,5 +1,4 @@
-var React = require('react'),
-	ReactDOM = require('react-dom');
+import React from 'react'
 
 
 /**
@@ -7,17 +6,22 @@ var React = require('react'),
  * @description Contains all the interaction buttons
  */
 
-var GalleryEditFoot = React.createClass({
+export default class GalleryEditFoot extends React.Component {
 
-	displayName: 'GalleryEditFoot',
-
-	getInitialState: function(){
-		return{
+	constructor(props) {
+		super(props);
+		this.state = {
 			gallery: this.props.gallery
 		}
-	},
+		this.revert = this.revert.bind(this);
+		this.clear = this.clear.bind(this);
+		this.addMore = this.addMore.bind(this);
+		this.fileUploaderChanged = this.fileUploaderChanged.bind(this);
+		this.cancel = this.cancel.bind(this);
+		this.delete = this.delete.bind(this);
+	}
 
-	render: function(){
+	render() {
 
 		var addMore = '';
 
@@ -25,7 +29,7 @@ var GalleryEditFoot = React.createClass({
 		if(this.state.gallery.imported) 
 			addMore = <button id="gallery-add-more-button" type="button" onClick={this.addMore} className="btn btn-flat">Add More</button>
 
-		inputStyle ={
+		inputStyle = {
 			display: 'none'
 		};
 
@@ -53,11 +57,13 @@ var GalleryEditFoot = React.createClass({
 
 		);
 
-	},
-	revert: function(){
+	}
 
-	},
-	clear: function(){
+	revert() {
+
+	}
+
+	clear() {
 
 		gallery = this.state.gallery;
 
@@ -70,13 +76,15 @@ var GalleryEditFoot = React.createClass({
 
 		this.props.updateGallery(gallery);
 
-	},
-	addMore: function(){
+	}
+
+	addMore() {
 
 		document.getElementById('gallery-upload-files').click()
 
-	},
-	fileUploaderChanged: function(){
+	}
+
+	fileUploaderChanged() {
 			
 		var gallery = this.state.gallery,
 			files = this.refs.fileUpload.files,
@@ -92,9 +100,9 @@ var GalleryEditFoot = React.createClass({
 
 			var reader = new FileReader();
 
-			reader.onload = (function(index) {
+			reader.onload = ((index) => {
 
-	            return function(e) {
+	            return (e) => {
 
 	            	gallery.files.sources.push(e.target.result);
 
@@ -109,17 +117,19 @@ var GalleryEditFoot = React.createClass({
 			reader.readAsDataURL(file);
 
 		}
-	},
-	cancel: function(){
+	}
+
+	cancel() {
 
 		$(".toggle-gedit").toggleClass("toggled");
 
-	},
-	delete: function(){
+	}
+
+	delete() {
 
 		var gallery = this.state.gallery;
 		
-		alertify.confirm("Are you sure you want to delete this gallery?", function (confirmed) {
+		alertify.confirm("Are you sure you want to delete this gallery?", (confirmed) => {
 			
 			if (!confirmed) return;
 
@@ -135,7 +145,7 @@ var GalleryEditFoot = React.createClass({
 				contentType: "application/json",
 				data: params,
 				dataType: 'json',
-				success: function(result){
+				success: (result) => {
 					
 					if(result.err){
 						return this.error(null, null, result.err);
@@ -144,17 +154,15 @@ var GalleryEditFoot = React.createClass({
 					location.href = document.referrer || '/highlights';
 
 				},
-				error: function(xhr, status, error){
+				error: (xhr, status, error) => {
 					$.snackbar({
 						content: 'Couldn\'t successfully delete this gallery!'
 					});
 				}
 			});
 
-		}, this);
+		});
 
 	}
 
-});
-
-module.exports = GalleryEditFoot;
+}

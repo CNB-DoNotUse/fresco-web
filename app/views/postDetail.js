@@ -1,28 +1,23 @@
-var isNode = require('detect-node'),
-	React = require('react'),
-	ReactDOM = require('react-dom'),
-	TopBar = require('./../components/topbar.js'),
-	PostInfo = require('./../components/post-info.js'),
-	PostRelated = require('./../components/post-related.js'),
-	PostDetailImage = require('./../components/post-detail-image.js'),
-	GalleryEdit = require('./../components/editing/gallery-edit.js'),
-	App = require('./app.js');
+import React from 'react'
+import ReactDOM from 'react-dom'
+import TopBar from './../components/topbar.js'
+import PostInfo from './../components/post-info.js'
+import PostRelated from './../components/post-related.js'
+import PostDetailImage from './../components/post-detail-image.js'
+import GalleryEdit from './../components/editing/gallery-edit.js'
+import App from './app.js'
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
  */
 
- var PostDetail = React.createClass({
+class PostDetail extends React.Component {
 
- 	displayName: 'PostDetail',
+ 	constructor(props) {
+ 		super(props);
+ 	}
 
- 	getDefaultProps: function(){
- 		return {
- 			gallery : {}
- 		};
- 	},
-
- 	render: function(){
+ 	render() {
 
  		return (
  			<App user={this.props.user}>
@@ -53,23 +48,18 @@ var isNode = require('detect-node'),
  		);
  	}
 
- });
-
-if(isNode){
-
-	module.exports = PostDetail;
 }
-else{
 
-	//Make sure to remove this
-	ReactDOM.render(
-	  <PostDetail 
-		  user={window.__initialProps__.user} 
-		  purchases={window.__initialProps__.purchases} 
-		  gallery={window.__initialProps__.gallery}
-		  post={window.__initialProps__.post}
-		  title={window.__initialProps__.title} />,
-	  document.getElementById('app')
-	);
-
+PostDetail.defaultProps = {
+	gallery : {}
 }
+
+ReactDOM.render(
+  <PostDetail 
+	  user={window.__initialProps__.user} 
+	  purchases={window.__initialProps__.purchases} 
+	  gallery={window.__initialProps__.gallery}
+	  post={window.__initialProps__.post}
+	  title={window.__initialProps__.title} />,
+  document.getElementById('app')
+);

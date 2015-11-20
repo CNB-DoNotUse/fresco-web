@@ -1,17 +1,12 @@
-var React = require('react');
-	ReactDOM = require('react-dom');
+import React from 'react'
 
 /**
  * Auto-complete component for stories input
  */
 
-var StoriesAutoComplete = React.createClass({
+export default class StoriesAutoComplete extends React.Component {
 
-	displayName: 'StoriesAutoComplete',
-
-	componentDidMount: function(){
-
-		var self = this;
+	componentDidMount() {
 
 		//Gallery Stories Autocomplete
 		$(this.refs.story_input).typeahead({
@@ -25,16 +20,16 @@ var StoriesAutoComplete = React.createClass({
 		{
 			name: 'stories',
 			display: 'title',
-			source: function(query, syncResults, asyncResults){
+			source: (query, syncResults, asyncResults) => {
 				$.ajax({
 					url: '/scripts/story/autocomplete',
 					data: {
 						q: query
 					},
-					success: function(result, status, xhr){
+					success: (result, status, xhr) => {
 						asyncResults(result.data || []);
 					},
-					error: function(xhr, statur, error){
+					error: (xhr, statur, error) => {
 						asyncResults([]);
 					}
 				});
@@ -46,21 +41,21 @@ var StoriesAutoComplete = React.createClass({
 					'</div>'
 				].join('\n'),
 			}
-		}).on('typeahead:select', function(ev, selectedStory){
+		}).on('typeahead:select', (ev, selectedStory) => {
 
 			//Check if the story is not in our existing set of stories by object id
-			var filter = self.props.stories.filter(function(story){
+			var filter = this.props.stories.filter((story) => {
 				return story._id == selectedStory._id;
 			})
 
 			if(filter.length == 0)
-				self.props.addStory(selectedStory);
+				this.props.addStory(selectedStory);
 			else
 				$.snackbar({content: 'This gallery is already in that story!'});
 				
 			$(this).typeahead('val', '');
 
-		}).on('keydown', function(ev){
+		}).on('keydown', (ev) => {
 			
 			emptyMessage = document.getElementById('story-empty-message');
 
@@ -79,7 +74,7 @@ var StoriesAutoComplete = React.createClass({
 				};
 
 				//Check if the story is not in our existing set of stories by title
-				var filter = self.props.stories.filter(function(story){
+				var filter = this.props.stories.filter((story) => {
 					return story.title == newStory.title;
 				})
 
@@ -88,18 +83,18 @@ var StoriesAutoComplete = React.createClass({
 					return;
 				}
 
-				self.props.addStory(newStory)
+				this.props.addStory(newStory)
 				
 
 				$(this).typeahead('val', '');
 			}
 		});
 
-	},
+	}
 
-	render: function(){
+	render() {
 
-		return(
+		return (
 
 			<input 
 				id="gallery-stories-input" 
@@ -111,6 +106,4 @@ var StoriesAutoComplete = React.createClass({
 		);
 	}
 
-});
-
-module.exports = StoriesAutoComplete;
+}

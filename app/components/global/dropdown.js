@@ -1,30 +1,25 @@
-var React = require('react'),
-	ReactDOM = require('react-dom');
+import React from 'react'
 
 /**
  * Generic Dropdown Element
  * @param  {function} onSelected A function called wtih the user's selection
  */
 
-var Dropdown = React.createClass({
+export default class Dropdown extends React.Component {
 
-	displayName: 'Dropdown',
-
-	getDefaultProps: function(){
-		return {
-			options: ['Relative', 'Absolute'],
-			inList: false
-		}
-	},
-
-	getInitialState: function(){
-		return {
+	constructor(props) {
+		super(props);
+		this.state = {
 			selected: this.props.selected
 		}
-	},
+		this.clicked = this.clicked.bind(this);
+		this.optionClicked = this.optionClicked.bind(this);
+		this.hideDropdown = this.hideDropdown.bind(this);
+		this.render = this.render.bind(this);
+	}
 
 	//Called whenever the master button is clicked
-	clicked: function(event){
+	clicked(event) {
 
 		var drop =  $(this.refs.toggle_button).siblings(".drop-menu");
 			
@@ -40,10 +35,10 @@ var Dropdown = React.createClass({
 		
 		$(".dim.toggle-drop").toggleClass("toggled");
 
-	},
+	}
 
 	//Called whenever an option is selected from the dropdown
-	optionClicked: function(event){
+	optionClicked(event) {
 
 		var selected = event.currentTarget.innerHTML;
 
@@ -62,10 +57,10 @@ var Dropdown = React.createClass({
 		if(this.props.onSelected) {
 			this.props.onSelected(selected);
 		}
-	},
+	}
 
 	//Hides the dropdown menu and removes the whole-screen dim
-	hideDropdown: function(){
+	hideDropdown() {
 		
 		this.refs.drop.classList.remove('toggled');
 		
@@ -74,11 +69,11 @@ var Dropdown = React.createClass({
 		for (var i = 0; i < toRemoveToggle.length; i++) {
 			toRemoveToggle[i].classList.remove('toggled');
 		}
-	},
+	}
 
-	render: function(){
+	render() {
 
-		var options = this.props.options.map(function(option){
+		var options = this.props.options.map((option) => {
 			
 			var className = '';
 			
@@ -90,7 +85,7 @@ var Dropdown = React.createClass({
 				<li className={className} key={option} onClick={this.optionClicked}>{option}</li> 
 			);
 
-		}, this);
+		});
 
 		var dropdownButton = <button className="toggle-drop md-type-subhead" ref="toggle_button" onClick={this.clicked}>
 								<span>{this.state.selected}</span>
@@ -110,16 +105,16 @@ var Dropdown = React.createClass({
 							</div>;
 					
 
-		if(this.props.inList){
-			return(
+		if(this.props.inList) {
+			return (
 				<li className="drop pull-right hidden-xs">
 					{dropdownButton}
 					{dropdownList}
 				</li>
 			);
 		}
-		else{
-			return(
+		else {
+			return (
 				<div className="split-cell drop">
 					{dropdownButton}
 					{dropdownList}
@@ -127,6 +122,9 @@ var Dropdown = React.createClass({
 			);
 		}
 	}
-});
+}
 
-module.exports = Dropdown;
+Dropdown.defaultProps = {
+	options: ['Relative', 'Absolute'],
+	inList: false
+}

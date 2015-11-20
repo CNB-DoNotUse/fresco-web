@@ -1,27 +1,28 @@
-var React = require('react'),
-	ReactDOM = require('react-dom');
+import React from 'react'
 
 /**
  * Global download action
  */
 
-var DownloadAction = React.createClass({
+export default class DownloadAction extends React.Component {
 
-	displayName: 'DownloadAction',
+	constructor(props) {
+		super(props);
+		this.download = this.download.bind(this);
+	}
 
-	render: function(){
+	render() {
 
-		return(
+		return (
 
 			<span className="mdi mdi-download icon pull-right" onClick={this.download}></span>
 
 		);
 		
-	},
-	//Called whenever the purhcase icon is selected
-	download: function(event){
+	} 
 
-		console.log('test');
+	//Called whenever the purhcase icon is selected
+	download(event) {
 
 		if(!this.props.post){
 			
@@ -44,8 +45,6 @@ var DownloadAction = React.createClass({
 	    link.href = href;
 	    link.click();
 		
-	},
+	}
 
-});
-
-module.exports = DownloadAction;
+}
