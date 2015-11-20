@@ -24,15 +24,15 @@ var express = require('express'),
 
 router.get('/', function(req, res, next) {
 
-  var purchases = mapPurchases(req.session),
-      elm = React.createElement(content, props, null),
-      react = ReactDOMServer.renderToString(elm),
-      title = 'All content',
+  var title = 'All content'; 
       props = {
         user : req.session.user,
         purchases : purchases,
         title:title
-      };
+      },
+      purchases = mapPurchases(req.session),
+      elm = React.createElement(content, props, null),
+      react = ReactDOMServer.renderToString(elm);
 
   res.render('app', {
     title: title,
@@ -56,14 +56,9 @@ router.get('/galleries', function(req, res, next) {
       props = {
         user : req.session.user,
         title: title
-      };
-
-  var props = {
-        user : req.session.user
       },
       elm = React.createElement(galleries, props, null),
-      react = ReactDOMServer.renderToString(elm),
-      title = 'Stories';
+      react = ReactDOMServer.renderToString(elm);
 
   res.render('app', {
     user: req.session.user,

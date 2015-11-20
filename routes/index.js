@@ -2,7 +2,10 @@ var express = require('express'),
   router = express.Router(),
   requestJson = require('request-json'),
   config = require('../lib/config'),
-  api = requestJson.createClient(config.API_URL);
+  api = requestJson.createClient(config.API_URL),
+  React = require('react'),
+  ReactDOMServer = require('react-dom/server'),
+  highlights = require('../app/server/highlights')
 
 /** //
 
@@ -76,26 +79,21 @@ router.get('/promo', function(req, res, next) {
 
 router.get('/highlights', function(req, res, next) {
 
-  var purchases = null;
+  var  props = {
+        user : req.session.user,
+        title:title
+      },
+      elm = React.createElement(highlights, props, null),
+      react = ReactDOMServer.renderToString(elm),
+      title = 'Highlights';
 
-  if (req.session && req.session.user && req.session.user.outlet && req.session
-    .user.outlet.verified) {
-    purchases = req.session.user.outlet.purchases || [];
-    purchases = purchases.map(function(purchase) {
-      return purchase.post;
-    });
-  }
-
-  var props = {
-    user : req.session.user
-  };
-
-  res.render('highlights', {
+  res.render('app', {
     user: req.session ? req.session.user : null,
     config: config,
     alerts: req.alerts,
+    react: '',
     page : 'highlights',
-    title : 'Highlights',
+    title : title,
     props : JSON.stringify(props)
   });
 
