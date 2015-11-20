@@ -1,4 +1,5 @@
 /node_modules/*
 /sessions/*
-/uploads/*
 /public/vendor/*
+/public/javascript/pages
+/app/server/*
