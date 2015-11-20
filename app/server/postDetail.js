@@ -45,6 +45,8 @@ module.exports =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
@@ -63,13 +65,13 @@ module.exports =
 
 	  displayName: 'PostDetail',
 
-	  getDefaultProps: function () {
+	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      gallery: {}
 	    };
 	  },
 
-	  render: function () {
+	  render: function render() {
 
 	    return React.createElement(
 	      App,
@@ -147,6 +149,8 @@ module.exports =
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3);
 
@@ -158,12 +162,12 @@ module.exports =
 
 		displayName: 'PurchaseAction',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement('span', { className: 'mdi mdi-cash icon pull-right', onClick: this.purchase });
 		},
 		//Called whenever the purhcase icon is selected
-		purchase: function (event) {
+		purchase: function purchase(event) {
 
 			//Check if the prop exists first
 			if (!this.props.post) return;
@@ -186,7 +190,7 @@ module.exports =
 							posts: post,
 							assignment: assignment
 						}),
-						success: function (result, status, xhr) {
+						success: function success(result, status, xhr) {
 
 							console.log(result);
 
@@ -204,9 +208,9 @@ module.exports =
 							// card.removeClass('toggled');
 							// thisElem.remove();
 						},
-						error: function (xhr, status, error) {
+						error: function error(xhr, status, _error) {
 							$.snackbar({
-								content: resolveError(error, 'There was an error while completing your purchase!')
+								content: resolveError(_error, 'There was an error while completing your purchase!')
 							});
 						}
 					});
@@ -224,6 +228,8 @@ module.exports =
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3);
 
@@ -235,12 +241,12 @@ module.exports =
 
 		displayName: 'DownloadAction',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download });
 		},
 		//Called whenever the purhcase icon is selected
-		download: function (event) {
+		download: function download(event) {
 
 			console.log('test');
 
@@ -271,6 +277,8 @@ module.exports =
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
 	    Dropdown = __webpack_require__(10);
@@ -285,13 +293,13 @@ module.exports =
 
 		displayName: 'TopBar',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				title: ''
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var edit = '';
 
@@ -349,7 +357,7 @@ module.exports =
 		},
 
 		//Called when the user selectes a time format
-		timeToggleSelected: function (selected) {
+		timeToggleSelected: function timeToggleSelected(selected) {
 			if (selected == 'Absolute') {
 				setTimeDisplayType('absolute');
 			} else if (selected == 'Relative') {
@@ -358,12 +366,12 @@ module.exports =
 		},
 
 		//Called when the user selectes a time format
-		verifiedToggleSelected: function (selected) {},
+		verifiedToggleSelected: function verifiedToggleSelected(selected) {},
 
 		//Called when the user selectes a time format
-		chronToggleSelected: function (selected) {},
+		chronToggleSelected: function chronToggleSelected(selected) {},
 
-		toggleEdit: function () {
+		toggleEdit: function toggleEdit() {
 
 			$(".toggle-gedit").toggleClass("toggled");
 		}
@@ -375,6 +383,8 @@ module.exports =
 /***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3);
@@ -388,21 +398,21 @@ module.exports =
 
 		displayName: 'Dropdown',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				options: ['Relative', 'Absolute'],
 				inList: false
 			};
 		},
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				selected: this.props.selected
 			};
 		},
 
 		//Called whenever the master button is clicked
-		clicked: function (event) {
+		clicked: function clicked(event) {
 
 			var drop = $(this.refs.toggle_button).siblings(".drop-menu");
 
@@ -420,7 +430,7 @@ module.exports =
 		},
 
 		//Called whenever an option is selected from the dropdown
-		optionClicked: function (event) {
+		optionClicked: function optionClicked(event) {
 
 			var selected = event.currentTarget.innerHTML;
 
@@ -442,7 +452,7 @@ module.exports =
 		},
 
 		//Hides the dropdown menu and removes the whole-screen dim
-		hideDropdown: function () {
+		hideDropdown: function hideDropdown() {
 
 			this.refs.drop.classList.remove('toggled');
 
@@ -453,7 +463,7 @@ module.exports =
 			}
 		},
 
-		render: function () {
+		render: function render() {
 
 			var options = this.props.options.map(function (option) {
 
@@ -530,6 +540,8 @@ module.exports =
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
@@ -543,7 +555,7 @@ module.exports =
 
 		displayName: 'App',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				'div',
@@ -570,6 +582,8 @@ module.exports =
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
 	    config = __webpack_require__(13);
@@ -582,7 +596,7 @@ module.exports =
 
 		displayName: 'Sidebar',
 
-		render: function () {
+		render: function render() {
 
 			var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 
@@ -644,7 +658,7 @@ module.exports =
 	var SideBarListItems = React.createClass({
 		displayName: 'SideBarListItems',
 
-		render: function () {
+		render: function render() {
 
 			if (!this.props.user) return;
 
@@ -731,7 +745,7 @@ module.exports =
 				purchases
 			);
 		},
-		itemClicked: function (event) {
+		itemClicked: function itemClicked(event) {
 
 			console.log(event);
 
@@ -748,6 +762,8 @@ module.exports =
 /***/ },
 /* 13 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	var config = {
 	  STATIC_CDN: 'https://d1dw1p6sgigznj.cloudfront.net/',
@@ -810,14 +826,14 @@ module.exports =
 
 	  DASH_HOME: '/highlights',
 
-	  formatImg: function (img, size) {
+	  formatImg: function formatImg(img, size) {
 	    if (!size || size == 'original') return img;
 	    if (img.indexOf('d2j1l98c0ybckw.cloudfront.net') == -1) return img;
 
 	    return img.replace('images/', 'images/' + size + '/');
 	  },
 
-	  resolveError: function (err, _default) {
+	  resolveError: function resolveError(err, _default) {
 	    switch (err) {
 	      case 'ERR_OUTLET_UNVERIFIED':
 	        return 'This outlet is in demo mode. Purchases and downloads are currently disabled.';
@@ -832,7 +848,7 @@ module.exports =
 	    }
 	  },
 
-	  getTimeAgo: function (timestamp) {
+	  getTimeAgo: function getTimeAgo(timestamp) {
 	    var intervals = {
 	      year: 31556926,
 	      month: 2629744,
@@ -884,6 +900,8 @@ module.exports =
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
 	    GalleryEditBody = __webpack_require__(18),
@@ -903,14 +921,14 @@ module.exports =
 
 	  displayName: 'Gallery Edit',
 
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 
 	    return {
 	      gallery: this.props.gallery
 	    };
 	  },
 
-	  render: function () {
+	  render: function render() {
 
 	    if (!this.props.user) return;
 
@@ -942,14 +960,14 @@ module.exports =
 	      )
 	    );
 	  },
-	  updateGallery: function (gallery) {
+	  updateGallery: function updateGallery(gallery) {
 	    //Update new gallery
 	    this.setState({
 	      gallery: gallery
 	    });
 	  },
 
-	  saveGallery: function () {
+	  saveGallery: function saveGallery() {
 
 	    var gallery = this.state.gallery,
 	        files = gallery.files ? gallery.files : [],
@@ -1021,7 +1039,7 @@ module.exports =
 	      method: 'post',
 	      contentType: "application/json",
 	      data: JSON.stringify(params),
-	      success: function (result) {
+	      success: function success(result) {
 
 	        console.log(result);
 
@@ -1029,7 +1047,7 @@ module.exports =
 	          content: "Gallery successfully saved!"
 	        });
 	      },
-	      error: function (xhr, status, error) {
+	      error: function error(xhr, status, _error) {
 
 	        $.snackbar({
 	          content: "We ran into an error saving your gallery"
@@ -1045,7 +1063,7 @@ module.exports =
 
 	  displayName: 'GalleryEditHead',
 
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'div',
 	      { className: 'dialog-head' },
@@ -1057,7 +1075,7 @@ module.exports =
 	      React.createElement('span', { className: 'mdi mdi-close pull-right icon toggle-gedit toggler', onClick: this.hide })
 	    );
 	  },
-	  hide: function () {
+	  hide: function hide() {
 	    $(".toggle-gedit").toggleClass("toggled");
 	  }
 
@@ -1068,6 +1086,8 @@ module.exports =
 /***/ },
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
@@ -1086,13 +1106,13 @@ module.exports =
 
 		displayName: 'GalleryEditBody',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				gallery: this.props.gallery
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var highlightCheckbox = '';
 
@@ -1155,28 +1175,28 @@ module.exports =
 			);
 		},
 
-		updateRelatedStories: function (updatedStories) {
+		updateRelatedStories: function updateRelatedStories(updatedStories) {
 
 			this.state.gallery.related_stories = updatedStories;
 
 			this.props.updateGallery(this.state.gallery);
 		},
 
-		updateArticles: function (articles) {
+		updateArticles: function updateArticles(articles) {
 
 			this.state.gallery.articles = articles;
 
 			this.props.updateGallery(gallery);
 		},
 
-		updatedTags: function (tags) {
+		updatedTags: function updatedTags(tags) {
 
 			this.state.gallery.tags = tags;
 
 			this.props.updateGallery(gallery);
 		},
 
-		updatedLocation: function (location) {
+		updatedLocation: function updatedLocation(location) {
 
 			this.state.gallery.locations[0] = location;
 
@@ -1194,18 +1214,18 @@ module.exports =
 		displayName: 'GalleryEditTags',
 
 		//Set state as passed properties
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return { tags: this.props.tags };
 		},
 
-		componentWillReceiveProps: function (nextProps) {
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
 			this.setState({
 				tags: nextProps.tags
 			});
 		},
 
-		render: function () {
+		render: function render() {
 
 			tags = this.state.tags.map(function (tag, i) {
 				return React.createElement(Tag, {
@@ -1246,7 +1266,7 @@ module.exports =
 			);
 		},
 
-		handleClick: function (index) {
+		handleClick: function handleClick(index) {
 
 			var updatedTags = this.state.tags;
 
@@ -1269,22 +1289,22 @@ module.exports =
 
 		displayName: 'GalleryEditStories',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 
 			return { stories: this.props.stories };
 		},
 
-		componentWillReceiveProps: function (nextProps) {
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
 			this.setState({ stories: nextProps.stories });
 		},
 		//Add's story element
-		addStory: function (newStory) {
+		addStory: function addStory(newStory) {
 
 			this.props.updateRelatedStories(this.state.stories.concat(newStory));
 		},
 
-		render: function () {
+		render: function render() {
 
 			stories = this.state.stories.map(function (story, i) {
 
@@ -1321,7 +1341,7 @@ module.exports =
 			);
 		},
 
-		handleClick: function (index) {
+		handleClick: function handleClick(index) {
 
 			var updatedStories = this.state.stories;
 
@@ -1340,16 +1360,16 @@ module.exports =
 
 		displayName: 'GalleryEditArticles',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return { articles: this.props.articles };
 		},
 
-		componentWillReceiveProps: function (nextProps) {
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
 			this.setState({ articles: nextProps.articles });
 		},
 
-		render: function () {
+		render: function render() {
 
 			articles = this.state.articles.map(function (article, i) {
 
@@ -1379,7 +1399,7 @@ module.exports =
 				)
 			);
 		},
-		handleClick: function (index) {
+		handleClick: function handleClick(index) {
 
 			var updateArticles = this.state.articles;
 
@@ -1403,7 +1423,7 @@ module.exports =
 		displayName: 'GalleryEditMap',
 
 		//Configure google maps after component mounts
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			//Set up autocomplete listener
 			autocomplete = new google.maps.places.Autocomplete(document.getElementById('gallery-location-input'));
@@ -1426,7 +1446,7 @@ module.exports =
 			});
 		},
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				'div',
@@ -1459,14 +1479,14 @@ module.exports =
 
 		displayName: 'GalleryEditPosts',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				posts: this.props.posts,
 				files: []
 			};
 		},
 
-		componentWillReceiveProps: function (nextProps) {
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
 			this.replaceState({
 				posts: nextProps.posts,
@@ -1474,15 +1494,15 @@ module.exports =
 			});
 		},
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 			$(this.refs.galleryEditPosts).frick();
 		},
 
-		componentDidUpdate: function () {
+		componentDidUpdate: function componentDidUpdate() {
 			$(this.refs.galleryEditPosts).frick();
 		},
 
-		render: function () {
+		render: function render() {
 
 			var k = 0;
 
@@ -1517,6 +1537,8 @@ module.exports =
 /* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3);
 
@@ -1530,7 +1552,7 @@ module.exports =
 
 		displayName: 'Tag',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 
 			return {
 				text: '',
@@ -1538,7 +1560,7 @@ module.exports =
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var editClass = 'mdi-minus';
 
@@ -1572,6 +1594,8 @@ module.exports =
 /* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3);
 
@@ -1584,19 +1608,19 @@ module.exports =
 
 		displayName: 'EditPost',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 
 			return {
 				post: {}
 			};
 		},
 		//Add source after rendering for local files
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			if (!this.props.file) return;
 		},
 
-		render: function () {
+		render: function render() {
 
 			//Check if we're reading from a file, and we have the file's source
 			if (this.props.file && this.props.source) {
@@ -1651,6 +1675,8 @@ module.exports =
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3);
 
@@ -1663,7 +1689,7 @@ module.exports =
 
 		displayName: 'EditMap',
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			var styles = [{ "featureType": "all", "elementType": "all", "stylers": [{ "gamma": 1.54 }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "gamma": 1.54 }] }, { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [{ "color": "#e0e0e0" }] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#bdbdbd" }] }, { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] }, { "featureType": "poi.park", "elementType": "all", "stylers": [{ "gamma": 1.26 }] }, { "featureType": "poi.park", "elementType": "labels.text", "stylers": [{ "saturation": -54 }] }];
 
@@ -1725,12 +1751,12 @@ module.exports =
 					polygon.setMap(null);
 				}
 		},
-		render: function () {
+		render: function render() {
 
 			return React.createElement('div', { id: 'gallery-map-canvas', className: 'map-container' });
 		},
 		//Returns centroid for passed polygon
-		getCentroid: function (polygon) {
+		getCentroid: function getCentroid(polygon) {
 
 			var path = polygon.getPath(),
 			    lat = 0,
@@ -1746,7 +1772,7 @@ module.exports =
 
 			return new google.maps.LatLng(lat, lon);
 		},
-		getBounds: function (polygon) {
+		getBounds: function getBounds(polygon) {
 
 			var bounds = new google.maps.LatLngBounds();
 			var paths = polygon.getPaths();
@@ -1769,6 +1795,8 @@ module.exports =
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(3);
 
@@ -1780,7 +1808,7 @@ module.exports =
 
 		displayName: 'StoriesAutoComplete',
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			var self = this;
 
@@ -1795,16 +1823,16 @@ module.exports =
 			}, {
 				name: 'stories',
 				display: 'title',
-				source: function (query, syncResults, asyncResults) {
+				source: function source(query, syncResults, asyncResults) {
 					$.ajax({
 						url: '/scripts/story/autocomplete',
 						data: {
 							q: query
 						},
-						success: function (result, status, xhr) {
+						success: function success(result, status, xhr) {
 							asyncResults(result.data || []);
 						},
-						error: function (xhr, statur, error) {
+						error: function error(xhr, statur, _error) {
 							asyncResults([]);
 						}
 					});
@@ -1857,7 +1885,7 @@ module.exports =
 			});
 		},
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement('input', {
 				id: 'gallery-stories-input',
@@ -1876,6 +1904,8 @@ module.exports =
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(3), Dropdown = __webpack_require__(10);
 
@@ -1892,7 +1922,7 @@ module.exports =
 	  * Renders byline field
 	  * @description Three types of instances for the byline
 	  */
-		render: function () {
+		render: function render() {
 
 			var post = this.props.gallery.posts[0];
 
@@ -2017,6 +2047,8 @@ module.exports =
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3);
 
@@ -2029,13 +2061,13 @@ module.exports =
 
 		displayName: 'GalleryEditFoot',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				gallery: this.props.gallery
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var addMore = '';
 
@@ -2089,8 +2121,8 @@ module.exports =
 				)
 			);
 		},
-		revert: function () {},
-		clear: function () {
+		revert: function revert() {},
+		clear: function clear() {
 
 			gallery = this.state.gallery;
 
@@ -2103,11 +2135,11 @@ module.exports =
 
 			this.props.updateGallery(gallery);
 		},
-		addMore: function () {
+		addMore: function addMore() {
 
 			document.getElementById('gallery-upload-files').click();
 		},
-		fileUploaderChanged: function () {
+		fileUploaderChanged: function fileUploaderChanged() {
 
 			var gallery = this.state.gallery,
 			    files = this.refs.fileUpload.files,
@@ -2136,11 +2168,11 @@ module.exports =
 				reader.readAsDataURL(file);
 			}
 		},
-		cancel: function () {
+		cancel: function cancel() {
 
 			$(".toggle-gedit").toggleClass("toggled");
 		},
-		delete: function () {
+		delete: function _delete() {
 
 			var gallery = this.state.gallery;
 
@@ -2160,7 +2192,7 @@ module.exports =
 					contentType: "application/json",
 					data: params,
 					dataType: 'json',
-					success: function (result) {
+					success: function success(result) {
 
 						if (result.err) {
 							return this.error(null, null, result.err);
@@ -2168,7 +2200,7 @@ module.exports =
 
 						location.href = document.referrer || '/highlights';
 					},
-					error: function (xhr, status, error) {
+					error: function error(xhr, status, _error) {
 						$.snackbar({
 							content: 'Couldn\'t successfully delete this gallery!'
 						});
@@ -2184,6 +2216,8 @@ module.exports =
 /***/ },
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(3);
@@ -2202,7 +2236,7 @@ module.exports =
 
 		displayName: 'PostInfo',
 
-		render: function () {
+		render: function render() {
 
 			//Init needed vars to make list
 			var post = this.props.post,
@@ -2322,6 +2356,8 @@ module.exports =
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3);
 
@@ -2340,7 +2376,7 @@ module.exports =
 
 		displayName: 'PostRelated',
 
-		render: function () {
+		render: function render() {
 
 			if (this.props.gallery.posts && this.props.gallery.posts.length > 1) {
 
@@ -2385,6 +2421,8 @@ module.exports =
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(3), PurchaseAction = __webpack_require__(7), DownloadAction = __webpack_require__(8);
 
@@ -2402,7 +2440,7 @@ module.exports =
 
 		displayName: 'PostDetailImage',
 
-		render: function () {
+		render: function render() {
 
 			console.log(this.props);
 

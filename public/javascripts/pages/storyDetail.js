@@ -44,6 +44,8 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
@@ -61,13 +63,13 @@
 
 		displayName: 'StoryDetail',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				story: {}
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				App,
@@ -19714,6 +19716,8 @@
 /* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(159), SuggestionList = __webpack_require__(161);
 	PostCell = __webpack_require__(162);
@@ -19732,7 +19736,7 @@
 
 		displayName: 'Post List',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				offset: 0,
 				posts: [],
@@ -19740,14 +19744,14 @@
 			};
 		},
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				size: 'small',
 				editable: true
 			};
 		},
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			//Check if list is initialzied with posts
 			if (this.props.posts) return;
@@ -19768,7 +19772,7 @@
 		},
 
 		//Scroll listener for main window
-		scroll: function () {
+		scroll: function scroll() {
 
 			var grid = this.refs.grid;
 
@@ -19799,7 +19803,7 @@
 				});
 			}
 		},
-		render: function () {
+		render: function render() {
 
 			//Check if list was initialzied with posts
 			if (this.props.posts != null) posts = this.props.posts;
@@ -19842,6 +19846,8 @@
 /* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(159);
 
@@ -19859,13 +19865,13 @@
 
 		displayName: 'SuggestionList',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				stories: []
 			};
 		},
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			self = this;
 
@@ -19876,7 +19882,7 @@
 					limit: 3
 				},
 				dataType: 'json',
-				success: function (response, status, xhr) {
+				success: function success(response, status, xhr) {
 
 					//Do nothing, because of bad response
 					if (!response.data || response.err) return;
@@ -19886,13 +19892,13 @@
 						stories: response.data
 					});
 				},
-				error: function (xhr, status, error) {
-					$.snackbar({ content: resolveError(error) });
+				error: function error(xhr, status, _error) {
+					$.snackbar({ content: resolveError(_error) });
 				}
 			});
 		},
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				'div',
@@ -19927,6 +19933,8 @@
 /* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(159), PurchaseAction = __webpack_require__(163), DownloadAction = __webpack_require__(164);
 
@@ -19938,7 +19946,7 @@
 
 		displayName: 'PostCell',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				sizes: {
 					large: 'col-xs-12 col-sm-6 col-lg-4',
@@ -19947,7 +19955,7 @@
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var timestamp = this.props.post.time_created;
 			var timeString = formatTime(this.props.post.time_created);
@@ -20032,7 +20040,7 @@
 
 		displayName: 'Post Cell Stories',
 
-		render: function () {
+		render: function render() {
 
 			var stores = '';
 
@@ -20070,7 +20078,7 @@
 
 		displayName: 'Post Cell Actions',
 
-		render: function () {
+		render: function render() {
 
 			var actions = [],
 			    key = 0;
@@ -20116,7 +20124,7 @@
 				actions
 			);
 		},
-		edit: function () {
+		edit: function edit() {
 
 			// $.ajax({
 			// 	url: '/scripts/post/gallery',
@@ -20145,6 +20153,8 @@
 /* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
 
@@ -20156,12 +20166,12 @@
 
 		displayName: 'PurchaseAction',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement('span', { className: 'mdi mdi-cash icon pull-right', onClick: this.purchase });
 		},
 		//Called whenever the purhcase icon is selected
-		purchase: function (event) {
+		purchase: function purchase(event) {
 
 			//Check if the prop exists first
 			if (!this.props.post) return;
@@ -20184,7 +20194,7 @@
 							posts: post,
 							assignment: assignment
 						}),
-						success: function (result, status, xhr) {
+						success: function success(result, status, xhr) {
 
 							console.log(result);
 
@@ -20202,9 +20212,9 @@
 							// card.removeClass('toggled');
 							// thisElem.remove();
 						},
-						error: function (xhr, status, error) {
+						error: function error(xhr, status, _error) {
 							$.snackbar({
-								content: resolveError(error, 'There was an error while completing your purchase!')
+								content: resolveError(_error, 'There was an error while completing your purchase!')
 							});
 						}
 					});
@@ -20222,6 +20232,8 @@
 /* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
 
@@ -20233,12 +20245,12 @@
 
 		displayName: 'DownloadAction',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download });
 		},
 		//Called whenever the purhcase icon is selected
-		download: function (event) {
+		download: function download(event) {
 
 			console.log('test');
 
@@ -20269,6 +20281,8 @@
 /* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
 	    Dropdown = __webpack_require__(166);
@@ -20283,13 +20297,13 @@
 
 		displayName: 'TopBar',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				title: ''
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var edit = '';
 
@@ -20347,7 +20361,7 @@
 		},
 
 		//Called when the user selectes a time format
-		timeToggleSelected: function (selected) {
+		timeToggleSelected: function timeToggleSelected(selected) {
 			if (selected == 'Absolute') {
 				setTimeDisplayType('absolute');
 			} else if (selected == 'Relative') {
@@ -20356,12 +20370,12 @@
 		},
 
 		//Called when the user selectes a time format
-		verifiedToggleSelected: function (selected) {},
+		verifiedToggleSelected: function verifiedToggleSelected(selected) {},
 
 		//Called when the user selectes a time format
-		chronToggleSelected: function (selected) {},
+		chronToggleSelected: function chronToggleSelected(selected) {},
 
-		toggleEdit: function () {
+		toggleEdit: function toggleEdit() {
 
 			$(".toggle-gedit").toggleClass("toggled");
 		}
@@ -20373,6 +20387,8 @@
 /***/ },
 /* 166 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
@@ -20386,21 +20402,21 @@
 
 		displayName: 'Dropdown',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				options: ['Relative', 'Absolute'],
 				inList: false
 			};
 		},
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				selected: this.props.selected
 			};
 		},
 
 		//Called whenever the master button is clicked
-		clicked: function (event) {
+		clicked: function clicked(event) {
 
 			var drop = $(this.refs.toggle_button).siblings(".drop-menu");
 
@@ -20418,7 +20434,7 @@
 		},
 
 		//Called whenever an option is selected from the dropdown
-		optionClicked: function (event) {
+		optionClicked: function optionClicked(event) {
 
 			var selected = event.currentTarget.innerHTML;
 
@@ -20440,7 +20456,7 @@
 		},
 
 		//Hides the dropdown menu and removes the whole-screen dim
-		hideDropdown: function () {
+		hideDropdown: function hideDropdown() {
 
 			this.refs.drop.classList.remove('toggled');
 
@@ -20451,7 +20467,7 @@
 			}
 		},
 
-		render: function () {
+		render: function render() {
 
 			var options = this.props.options.map(function (option) {
 
@@ -20528,45 +20544,70 @@
 /* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isNode = __webpack_require__(1),
-	    React = __webpack_require__(2),
-	    ReactDOM = __webpack_require__(159),
-	    Sidebar = __webpack_require__(168);
+	'use strict';
 
-	/**
-	 * Gallery Detail Parent Object
-	 */
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var App = React.createClass({
-
-		displayName: 'App',
-
-		render: function () {
-
-			return React.createElement(
-				'div',
-				null,
-				React.createElement('div', { className: 'dim toggle-drawer toggler' }),
-				React.createElement(
-					'div',
-					{ className: 'container-fluid' },
-					React.createElement(Sidebar, { user: this.props.user }),
-					React.createElement(
-						'div',
-						{ className: 'col-md-12 col-lg-10' },
-						this.props.children
-					)
-				)
-			);
-		}
-
+	Object.defineProperty(exports, "__esModule", {
+		value: true
 	});
 
-	module.exports = App;
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _sidebar = __webpack_require__(168);
+
+	var _sidebar2 = _interopRequireDefault(_sidebar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var App = (function (_React$Component) {
+		_inherits(App, _React$Component);
+
+		function App() {
+			_classCallCheck(this, App);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
+		}
+
+		_createClass(App, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement('div', { className: 'dim toggle-drawer toggler' }),
+					_react2.default.createElement(
+						'div',
+						{ className: 'container-fluid' },
+						_react2.default.createElement(_sidebar2.default, { user: this.props.user }),
+						_react2.default.createElement(
+							'div',
+							{ className: 'col-md-12 col-lg-10' },
+							this.props.children
+						)
+					)
+				);
+			}
+		}]);
+
+		return App;
+	})(_react2.default.Component);
+
+	exports.default = App;
 
 /***/ },
 /* 168 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
@@ -20580,7 +20621,7 @@
 
 		displayName: 'Sidebar',
 
-		render: function () {
+		render: function render() {
 
 			var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 
@@ -20642,7 +20683,7 @@
 	var SideBarListItems = React.createClass({
 		displayName: 'SideBarListItems',
 
-		render: function () {
+		render: function render() {
 
 			if (!this.props.user) return;
 
@@ -20729,7 +20770,7 @@
 				purchases
 			);
 		},
-		itemClicked: function (event) {
+		itemClicked: function itemClicked(event) {
 
 			console.log(event);
 
@@ -20746,6 +20787,8 @@
 /***/ },
 /* 169 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	var config = {
 	  STATIC_CDN: 'https://d1dw1p6sgigznj.cloudfront.net/',
@@ -20808,14 +20851,14 @@
 
 	  DASH_HOME: '/highlights',
 
-	  formatImg: function (img, size) {
+	  formatImg: function formatImg(img, size) {
 	    if (!size || size == 'original') return img;
 	    if (img.indexOf('d2j1l98c0ybckw.cloudfront.net') == -1) return img;
 
 	    return img.replace('images/', 'images/' + size + '/');
 	  },
 
-	  resolveError: function (err, _default) {
+	  resolveError: function resolveError(err, _default) {
 	    switch (err) {
 	      case 'ERR_OUTLET_UNVERIFIED':
 	        return 'This outlet is in demo mode. Purchases and downloads are currently disabled.';
@@ -20830,7 +20873,7 @@
 	    }
 	  },
 
-	  getTimeAgo: function (timestamp) {
+	  getTimeAgo: function getTimeAgo(timestamp) {
 	    var intervals = {
 	      year: 31556926,
 	      month: 2629744,
@@ -20895,6 +20938,8 @@
 /* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(159);
 
@@ -20912,7 +20957,7 @@
 
 		displayName: 'StorySidebar',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				'div',
@@ -20948,7 +20993,7 @@
 
 		displayName: 'StoryStats',
 
-		render: function () {
+		render: function render() {
 
 			if (!this.props.story.stats) return;
 
@@ -20992,7 +21037,7 @@
 /* 187 */
 /***/ function(module, exports) {
 
-	
+	"use strict";
 
 /***/ }
 /******/ ]);

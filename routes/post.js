@@ -2,10 +2,7 @@ var express = require('express'),
     config = require('../lib/config'),
     request = require('request-json'),
     router = express.Router(),
-    api = request.createClient(config.API_URL),
-    React = require('react'),
-    ReactDOMServer = require('react-dom/server'),
-    postDetail = require('../app/server/postDetail');
+    api = request.createClient(config.API_URL);
 
 /** //
 
@@ -109,10 +106,7 @@ router.get('/:id', function(req, res, next){
         config: config,
         title: title,
         purchases: purchases
-      }
-
-      // var element = React.createElement(postDetail, props)
-      // var reactString = ReactDOMServer.renderToString(element);
+      };
 
       function render() {
         res.render('post', {
@@ -120,7 +114,6 @@ router.get('/:id', function(req, res, next){
           title: title,
           config: config,
           alerts: req.alerts,
-          react:'',
           page: 'postDetail',
         });
       }

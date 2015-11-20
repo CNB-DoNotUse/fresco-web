@@ -1,10 +1,7 @@
 var express = require('express'),
     config = require('../lib/config'),
     router = express.Router(),
-    request = require('request'),
-    React = require('react'),
-    ReactDOMServer = require('react-dom/server'),
-    galleryDetail = require('../app/server/galleryDetail');
+    request = require('request')
 
 /** //
 
@@ -63,16 +60,9 @@ router.get('/:id', function(req, res, next) {
         title: title
       };
 
-      // console.log(props);
-
-      // var element = React.createElement(galleryDetail, props
-
-      // var reactString = ReactDOMServer.renderToString(element);
-
       res.render('app', {
         title: title,
         alerts: req.alerts,
-        react : '',
         page: 'galleryDetail',
         props: JSON.stringify(props)
       });

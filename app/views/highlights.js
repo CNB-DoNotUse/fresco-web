@@ -1,20 +1,15 @@
-var isNode = require('detect-node'),
-	React = require('react'),
-	ReactDOM = require('react-dom'),
-	App = require('./app.js'),
-	GalleryList = require('./../components/gallery-list.js'),
-	TopBar = require('./../components/topbar.js');
+import React from 'react'
+import App from './app.js'
+import GalleryList from './../components/gallery-list.js'
+import TopBar from './../components/topbar.js'
 	
 /**
  * Highlights Parent Object (composed of GalleryList and Navbar) 
  * Half = False, to render at large size instead of half size
  */
 
-var Highlights = React.createClass({
-
-	displayName: 'Highlights',
-
-	render: function(){
+class Highlights extends React.Component {
+	render() {
 		return (
 			<App user={this.props.user}>
 				<TopBar title="Highlights" />
@@ -22,15 +17,6 @@ var Highlights = React.createClass({
 					withList={true} 
 					highlighted={true} />
 			</App>
-		)
+		);
 	}
-
-});
-
-if(isNode)
-	module.exports = Highlights;
-else
-	ReactDOM.render(
-	  <Highlights user={window.__initialProps__.user} />,
-	  document.getElementById('app')
-	);
+}

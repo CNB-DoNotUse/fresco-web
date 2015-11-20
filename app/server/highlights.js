@@ -45,36 +45,95 @@ module.exports =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isNode = __webpack_require__(1),
-	    React = __webpack_require__(2),
-	    ReactDOM = __webpack_require__(3),
-	    App = __webpack_require__(11),
-	    GalleryList = __webpack_require__(14),
-	    TopBar = __webpack_require__(9);
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _detectNode = __webpack_require__(1);
+
+	var _detectNode2 = _interopRequireDefault(_detectNode);
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(3);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _app = __webpack_require__(11);
+
+	var _app2 = _interopRequireDefault(_app);
+
+	var _galleryList = __webpack_require__(14);
+
+	var _galleryList2 = _interopRequireDefault(_galleryList);
+
+	var _topbar = __webpack_require__(9);
+
+	var _topbar2 = _interopRequireDefault(_topbar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	/**
 	 * Highlights Parent Object (composed of GalleryList and Navbar) 
 	 * Half = False, to render at large size instead of half size
 	 */
 
-	var Highlights = React.createClass({
+	var Highlights = (function (_React$Component) {
+		_inherits(Highlights, _React$Component);
 
-		displayName: 'Highlights',
+		function Highlights() {
+			_classCallCheck(this, Highlights);
 
-		render: function () {
-			return React.createElement(
-				App,
-				{ user: this.props.user },
-				React.createElement(TopBar, { title: 'Highlights' }),
-				React.createElement(GalleryList, {
-					withList: true,
-					highlighted: true })
-			);
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Highlights).apply(this, arguments));
 		}
 
-	});
+		_createClass(Highlights, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					_app2.default,
+					{ user: this.props.user },
+					_react2.default.createElement(_topbar2.default, { title: 'Highlights' }),
+					_react2.default.createElement(_galleryList2.default, {
+						withList: true,
+						highlighted: true })
+				);
+			}
+		}]);
 
-	if (isNode) module.exports = Highlights;else ReactDOM.render(React.createElement(Highlights, { user: window.__initialProps__.user }), document.getElementById('app'));
+		return Highlights;
+	})(_react2.default.Component);
+
+	// var Highlights = React.createClass({
+
+	// 	displayName: 'Highlights',
+
+	// 	render: function(){
+	// 		return (
+	// 			<App user={this.props.user}>
+	// 				<TopBar title="Highlights" />
+	// 				<GalleryList
+	// 					withList={true}
+	// 					highlighted={true} />
+	// 			</App>
+	// 		)
+	// 	}
+
+	// });
+
+	exports.default = highlights;
 
 /***/ },
 /* 1 */
@@ -99,6 +158,8 @@ module.exports =
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(3);
 
@@ -116,13 +177,13 @@ module.exports =
 
 		displayName: 'SuggestionList',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				stories: []
 			};
 		},
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			self = this;
 
@@ -133,7 +194,7 @@ module.exports =
 					limit: 3
 				},
 				dataType: 'json',
-				success: function (response, status, xhr) {
+				success: function success(response, status, xhr) {
 
 					//Do nothing, because of bad response
 					if (!response.data || response.err) return;
@@ -143,13 +204,13 @@ module.exports =
 						stories: response.data
 					});
 				},
-				error: function (xhr, status, error) {
-					$.snackbar({ content: resolveError(error) });
+				error: function error(xhr, status, _error) {
+					$.snackbar({ content: resolveError(_error) });
 				}
 			});
 		},
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				'div',
@@ -187,6 +248,8 @@ module.exports =
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
 	    Dropdown = __webpack_require__(10);
@@ -201,13 +264,13 @@ module.exports =
 
 		displayName: 'TopBar',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				title: ''
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var edit = '';
 
@@ -265,7 +328,7 @@ module.exports =
 		},
 
 		//Called when the user selectes a time format
-		timeToggleSelected: function (selected) {
+		timeToggleSelected: function timeToggleSelected(selected) {
 			if (selected == 'Absolute') {
 				setTimeDisplayType('absolute');
 			} else if (selected == 'Relative') {
@@ -274,12 +337,12 @@ module.exports =
 		},
 
 		//Called when the user selectes a time format
-		verifiedToggleSelected: function (selected) {},
+		verifiedToggleSelected: function verifiedToggleSelected(selected) {},
 
 		//Called when the user selectes a time format
-		chronToggleSelected: function (selected) {},
+		chronToggleSelected: function chronToggleSelected(selected) {},
 
-		toggleEdit: function () {
+		toggleEdit: function toggleEdit() {
 
 			$(".toggle-gedit").toggleClass("toggled");
 		}
@@ -291,6 +354,8 @@ module.exports =
 /***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3);
@@ -304,21 +369,21 @@ module.exports =
 
 		displayName: 'Dropdown',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				options: ['Relative', 'Absolute'],
 				inList: false
 			};
 		},
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				selected: this.props.selected
 			};
 		},
 
 		//Called whenever the master button is clicked
-		clicked: function (event) {
+		clicked: function clicked(event) {
 
 			var drop = $(this.refs.toggle_button).siblings(".drop-menu");
 
@@ -336,7 +401,7 @@ module.exports =
 		},
 
 		//Called whenever an option is selected from the dropdown
-		optionClicked: function (event) {
+		optionClicked: function optionClicked(event) {
 
 			var selected = event.currentTarget.innerHTML;
 
@@ -358,7 +423,7 @@ module.exports =
 		},
 
 		//Hides the dropdown menu and removes the whole-screen dim
-		hideDropdown: function () {
+		hideDropdown: function hideDropdown() {
 
 			this.refs.drop.classList.remove('toggled');
 
@@ -369,7 +434,7 @@ module.exports =
 			}
 		},
 
-		render: function () {
+		render: function render() {
 
 			var options = this.props.options.map(function (option) {
 
@@ -446,6 +511,8 @@ module.exports =
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
@@ -459,7 +526,7 @@ module.exports =
 
 		displayName: 'App',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				'div',
@@ -486,6 +553,8 @@ module.exports =
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
 	    config = __webpack_require__(13);
@@ -498,7 +567,7 @@ module.exports =
 
 		displayName: 'Sidebar',
 
-		render: function () {
+		render: function render() {
 
 			var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 
@@ -560,7 +629,7 @@ module.exports =
 	var SideBarListItems = React.createClass({
 		displayName: 'SideBarListItems',
 
-		render: function () {
+		render: function render() {
 
 			if (!this.props.user) return;
 
@@ -647,7 +716,7 @@ module.exports =
 				purchases
 			);
 		},
-		itemClicked: function (event) {
+		itemClicked: function itemClicked(event) {
 
 			console.log(event);
 
@@ -664,6 +733,8 @@ module.exports =
 /***/ },
 /* 13 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	var config = {
 	  STATIC_CDN: 'https://d1dw1p6sgigznj.cloudfront.net/',
@@ -726,14 +797,14 @@ module.exports =
 
 	  DASH_HOME: '/highlights',
 
-	  formatImg: function (img, size) {
+	  formatImg: function formatImg(img, size) {
 	    if (!size || size == 'original') return img;
 	    if (img.indexOf('d2j1l98c0ybckw.cloudfront.net') == -1) return img;
 
 	    return img.replace('images/', 'images/' + size + '/');
 	  },
 
-	  resolveError: function (err, _default) {
+	  resolveError: function resolveError(err, _default) {
 	    switch (err) {
 	      case 'ERR_OUTLET_UNVERIFIED':
 	        return 'This outlet is in demo mode. Purchases and downloads are currently disabled.';
@@ -748,7 +819,7 @@ module.exports =
 	    }
 	  },
 
-	  getTimeAgo: function (timestamp) {
+	  getTimeAgo: function getTimeAgo(timestamp) {
 	    var intervals = {
 	      year: 31556926,
 	      month: 2629744,
@@ -797,6 +868,8 @@ module.exports =
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(3), SuggestionList = __webpack_require__(5), GalleryCell = __webpack_require__(15);
 
@@ -814,7 +887,7 @@ module.exports =
 
 		displayName: 'GalleryList',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				galleries: [],
 				offset: 0,
@@ -822,7 +895,7 @@ module.exports =
 				tags: []
 			};
 		},
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			var self = this;
 
@@ -838,7 +911,7 @@ module.exports =
 			});
 		},
 		//Returns array of galleries with offset and callback
-		loadGalleries: function (passedOffset, callback) {
+		loadGalleries: function loadGalleries(passedOffset, callback) {
 
 			var endpoint,
 			    params = {
@@ -863,19 +936,19 @@ module.exports =
 				type: 'GET',
 				data: params,
 				dataType: 'json',
-				success: function (response, status, xhr) {
+				success: function success(response, status, xhr) {
 
 					//Do nothing, because of bad response
 					if (!response.data || response.err) callback([]);else callback(response.data);
 				},
-				error: function (xhr, status, error) {
-					$.snackbar({ content: resolveError(error) });
+				error: function error(xhr, status, _error) {
+					$.snackbar({ content: resolveError(_error) });
 				}
 
 			});
 		},
 		//Scroll listener for main window
-		scroll: function () {
+		scroll: function scroll() {
 
 			var grid = this.refs.grid;
 
@@ -900,7 +973,7 @@ module.exports =
 				});
 			}
 		},
-		render: function () {
+		render: function render() {
 
 			var half = !this.props.withList;
 
@@ -945,6 +1018,8 @@ module.exports =
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(3);
 
@@ -956,14 +1031,14 @@ module.exports =
 
 		displayName: 'GalleryCell',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				//Size of the cell
 				half: false
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var timestamp = this.props.gallery.time_created;
 			var timeString = formatTime(this.props.gallery.time_created);
@@ -1042,7 +1117,7 @@ module.exports =
 
 		displayName: "GalleryCellStories",
 
-		render: function () {
+		render: function render() {
 
 			var stories = this.props.stories.map(function (story, i) {
 				return React.createElement(
@@ -1073,7 +1148,7 @@ module.exports =
 
 		displayName: "GalleryCellImages",
 
-		render: function () {
+		render: function render() {
 
 			if (!this.props.posts || this.props.posts.length == 0) {
 
@@ -1155,7 +1230,7 @@ module.exports =
 
 		displayName: 'GalleryCellImage',
 
-		render: function () {
+		render: function render() {
 			return React.createElement(
 				'div',
 				{ className: 'img' },

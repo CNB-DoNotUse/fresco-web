@@ -45,6 +45,8 @@ module.exports =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
@@ -60,7 +62,7 @@ module.exports =
 
 		displayName: 'Stories',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				App,
@@ -76,7 +78,7 @@ module.exports =
 		},
 
 		//Returns array of posts with offset and callback, used in child PostList
-		loadStories: function (passedOffset, callback) {
+		loadStories: function loadStories(passedOffset, callback) {
 
 			var endpoint = '/v1/post/list',
 			    params = {
@@ -91,14 +93,14 @@ module.exports =
 				type: 'GET',
 				data: params,
 				dataType: 'json',
-				success: function (response, status, xhr) {
+				success: function success(response, status, xhr) {
 
 					console.log(response);
 
 					//Do nothing, because of bad response
 					if (!response.data || response.err) callback([]);else callback(response.data);
 				},
-				error: function (xhr, status, error) {
+				error: function error(xhr, status, _error) {
 					$.snackbar({
 						content: 'Couldn\'t fetch any stories!'
 					});
@@ -144,6 +146,8 @@ module.exports =
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
 	    Dropdown = __webpack_require__(10);
@@ -158,13 +162,13 @@ module.exports =
 
 		displayName: 'TopBar',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				title: ''
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var edit = '';
 
@@ -222,7 +226,7 @@ module.exports =
 		},
 
 		//Called when the user selectes a time format
-		timeToggleSelected: function (selected) {
+		timeToggleSelected: function timeToggleSelected(selected) {
 			if (selected == 'Absolute') {
 				setTimeDisplayType('absolute');
 			} else if (selected == 'Relative') {
@@ -231,12 +235,12 @@ module.exports =
 		},
 
 		//Called when the user selectes a time format
-		verifiedToggleSelected: function (selected) {},
+		verifiedToggleSelected: function verifiedToggleSelected(selected) {},
 
 		//Called when the user selectes a time format
-		chronToggleSelected: function (selected) {},
+		chronToggleSelected: function chronToggleSelected(selected) {},
 
-		toggleEdit: function () {
+		toggleEdit: function toggleEdit() {
 
 			$(".toggle-gedit").toggleClass("toggled");
 		}
@@ -248,6 +252,8 @@ module.exports =
 /***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3);
@@ -261,21 +267,21 @@ module.exports =
 
 		displayName: 'Dropdown',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				options: ['Relative', 'Absolute'],
 				inList: false
 			};
 		},
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				selected: this.props.selected
 			};
 		},
 
 		//Called whenever the master button is clicked
-		clicked: function (event) {
+		clicked: function clicked(event) {
 
 			var drop = $(this.refs.toggle_button).siblings(".drop-menu");
 
@@ -293,7 +299,7 @@ module.exports =
 		},
 
 		//Called whenever an option is selected from the dropdown
-		optionClicked: function (event) {
+		optionClicked: function optionClicked(event) {
 
 			var selected = event.currentTarget.innerHTML;
 
@@ -315,7 +321,7 @@ module.exports =
 		},
 
 		//Hides the dropdown menu and removes the whole-screen dim
-		hideDropdown: function () {
+		hideDropdown: function hideDropdown() {
 
 			this.refs.drop.classList.remove('toggled');
 
@@ -326,7 +332,7 @@ module.exports =
 			}
 		},
 
-		render: function () {
+		render: function render() {
 
 			var options = this.props.options.map(function (option) {
 
@@ -403,6 +409,8 @@ module.exports =
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
@@ -416,7 +424,7 @@ module.exports =
 
 		displayName: 'App',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				'div',
@@ -443,6 +451,8 @@ module.exports =
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
 	    config = __webpack_require__(13);
@@ -455,7 +465,7 @@ module.exports =
 
 		displayName: 'Sidebar',
 
-		render: function () {
+		render: function render() {
 
 			var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 
@@ -517,7 +527,7 @@ module.exports =
 	var SideBarListItems = React.createClass({
 		displayName: 'SideBarListItems',
 
-		render: function () {
+		render: function render() {
 
 			if (!this.props.user) return;
 
@@ -604,7 +614,7 @@ module.exports =
 				purchases
 			);
 		},
-		itemClicked: function (event) {
+		itemClicked: function itemClicked(event) {
 
 			console.log(event);
 
@@ -621,6 +631,8 @@ module.exports =
 /***/ },
 /* 13 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	var config = {
 	  STATIC_CDN: 'https://d1dw1p6sgigznj.cloudfront.net/',
@@ -683,14 +695,14 @@ module.exports =
 
 	  DASH_HOME: '/highlights',
 
-	  formatImg: function (img, size) {
+	  formatImg: function formatImg(img, size) {
 	    if (!size || size == 'original') return img;
 	    if (img.indexOf('d2j1l98c0ybckw.cloudfront.net') == -1) return img;
 
 	    return img.replace('images/', 'images/' + size + '/');
 	  },
 
-	  resolveError: function (err, _default) {
+	  resolveError: function resolveError(err, _default) {
 	    switch (err) {
 	      case 'ERR_OUTLET_UNVERIFIED':
 	        return 'This outlet is in demo mode. Purchases and downloads are currently disabled.';
@@ -705,7 +717,7 @@ module.exports =
 	    }
 	  },
 
-	  getTimeAgo: function (timestamp) {
+	  getTimeAgo: function getTimeAgo(timestamp) {
 	    var intervals = {
 	      year: 31556926,
 	      month: 2629744,
@@ -768,6 +780,8 @@ module.exports =
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(3), StoryCell = __webpack_require__(29);
 
@@ -785,13 +799,13 @@ module.exports =
 
 		displayName: 'StoryList',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				stories: []
 			};
 		},
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			self = this;
 
@@ -808,7 +822,7 @@ module.exports =
 		},
 
 		//Scroll listener for main window
-		scroll: function () {
+		scroll: function scroll() {
 
 			var grid = this.refs.grid;
 
@@ -838,7 +852,7 @@ module.exports =
 			}
 		},
 
-		render: function () {
+		render: function render() {
 
 			//Check if list was initialzied with stories
 			stories = this.state.stories;
@@ -875,6 +889,8 @@ module.exports =
 /* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(3);
 
@@ -886,7 +902,7 @@ module.exports =
 
 		displayName: 'StoryCell',
 
-		render: function () {
+		render: function render() {
 
 			// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 
@@ -963,7 +979,7 @@ module.exports =
 
 		displayName: "StoryCellImages",
 
-		render: function () {
+		render: function render() {
 
 			if (!this.props.thumbnails || this.props.thumbnails.length == 0) {
 				return React.createElement('div', { className: 'flex-row' });
@@ -1042,7 +1058,7 @@ module.exports =
 
 		displayName: 'StoryCellImage',
 
-		render: function () {
+		render: function render() {
 			return React.createElement(
 				'div',
 				{ className: 'img' },

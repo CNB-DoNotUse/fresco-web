@@ -44,6 +44,8 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var isNode = __webpack_require__(1),
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
@@ -62,13 +64,13 @@
 
 	  displayName: 'PostDetail',
 
-	  getDefaultProps: function () {
+	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      gallery: {}
 	    };
 	  },
 
-	  render: function () {
+	  render: function render() {
 
 	    return React.createElement(
 	      App,
@@ -19728,6 +19730,8 @@
 /* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
 
@@ -19739,12 +19743,12 @@
 
 		displayName: 'PurchaseAction',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement('span', { className: 'mdi mdi-cash icon pull-right', onClick: this.purchase });
 		},
 		//Called whenever the purhcase icon is selected
-		purchase: function (event) {
+		purchase: function purchase(event) {
 
 			//Check if the prop exists first
 			if (!this.props.post) return;
@@ -19767,7 +19771,7 @@
 							posts: post,
 							assignment: assignment
 						}),
-						success: function (result, status, xhr) {
+						success: function success(result, status, xhr) {
 
 							console.log(result);
 
@@ -19785,9 +19789,9 @@
 							// card.removeClass('toggled');
 							// thisElem.remove();
 						},
-						error: function (xhr, status, error) {
+						error: function error(xhr, status, _error) {
 							$.snackbar({
-								content: resolveError(error, 'There was an error while completing your purchase!')
+								content: resolveError(_error, 'There was an error while completing your purchase!')
 							});
 						}
 					});
@@ -19805,6 +19809,8 @@
 /* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
 
@@ -19816,12 +19822,12 @@
 
 		displayName: 'DownloadAction',
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download });
 		},
 		//Called whenever the purhcase icon is selected
-		download: function (event) {
+		download: function download(event) {
 
 			console.log('test');
 
@@ -19852,6 +19858,8 @@
 /* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
 	    Dropdown = __webpack_require__(166);
@@ -19866,13 +19874,13 @@
 
 		displayName: 'TopBar',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				title: ''
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var edit = '';
 
@@ -19930,7 +19938,7 @@
 		},
 
 		//Called when the user selectes a time format
-		timeToggleSelected: function (selected) {
+		timeToggleSelected: function timeToggleSelected(selected) {
 			if (selected == 'Absolute') {
 				setTimeDisplayType('absolute');
 			} else if (selected == 'Relative') {
@@ -19939,12 +19947,12 @@
 		},
 
 		//Called when the user selectes a time format
-		verifiedToggleSelected: function (selected) {},
+		verifiedToggleSelected: function verifiedToggleSelected(selected) {},
 
 		//Called when the user selectes a time format
-		chronToggleSelected: function (selected) {},
+		chronToggleSelected: function chronToggleSelected(selected) {},
 
-		toggleEdit: function () {
+		toggleEdit: function toggleEdit() {
 
 			$(".toggle-gedit").toggleClass("toggled");
 		}
@@ -19956,6 +19964,8 @@
 /***/ },
 /* 166 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
@@ -19969,21 +19979,21 @@
 
 		displayName: 'Dropdown',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				options: ['Relative', 'Absolute'],
 				inList: false
 			};
 		},
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				selected: this.props.selected
 			};
 		},
 
 		//Called whenever the master button is clicked
-		clicked: function (event) {
+		clicked: function clicked(event) {
 
 			var drop = $(this.refs.toggle_button).siblings(".drop-menu");
 
@@ -20001,7 +20011,7 @@
 		},
 
 		//Called whenever an option is selected from the dropdown
-		optionClicked: function (event) {
+		optionClicked: function optionClicked(event) {
 
 			var selected = event.currentTarget.innerHTML;
 
@@ -20023,7 +20033,7 @@
 		},
 
 		//Hides the dropdown menu and removes the whole-screen dim
-		hideDropdown: function () {
+		hideDropdown: function hideDropdown() {
 
 			this.refs.drop.classList.remove('toggled');
 
@@ -20034,7 +20044,7 @@
 			}
 		},
 
-		render: function () {
+		render: function render() {
 
 			var options = this.props.options.map(function (option) {
 
@@ -20111,45 +20121,70 @@
 /* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isNode = __webpack_require__(1),
-	    React = __webpack_require__(2),
-	    ReactDOM = __webpack_require__(159),
-	    Sidebar = __webpack_require__(168);
+	'use strict';
 
-	/**
-	 * Gallery Detail Parent Object
-	 */
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var App = React.createClass({
-
-		displayName: 'App',
-
-		render: function () {
-
-			return React.createElement(
-				'div',
-				null,
-				React.createElement('div', { className: 'dim toggle-drawer toggler' }),
-				React.createElement(
-					'div',
-					{ className: 'container-fluid' },
-					React.createElement(Sidebar, { user: this.props.user }),
-					React.createElement(
-						'div',
-						{ className: 'col-md-12 col-lg-10' },
-						this.props.children
-					)
-				)
-			);
-		}
-
+	Object.defineProperty(exports, "__esModule", {
+		value: true
 	});
 
-	module.exports = App;
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _sidebar = __webpack_require__(168);
+
+	var _sidebar2 = _interopRequireDefault(_sidebar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var App = (function (_React$Component) {
+		_inherits(App, _React$Component);
+
+		function App() {
+			_classCallCheck(this, App);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
+		}
+
+		_createClass(App, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement('div', { className: 'dim toggle-drawer toggler' }),
+					_react2.default.createElement(
+						'div',
+						{ className: 'container-fluid' },
+						_react2.default.createElement(_sidebar2.default, { user: this.props.user }),
+						_react2.default.createElement(
+							'div',
+							{ className: 'col-md-12 col-lg-10' },
+							this.props.children
+						)
+					)
+				);
+			}
+		}]);
+
+		return App;
+	})(_react2.default.Component);
+
+	exports.default = App;
 
 /***/ },
 /* 168 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
@@ -20163,7 +20198,7 @@
 
 		displayName: 'Sidebar',
 
-		render: function () {
+		render: function render() {
 
 			var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 
@@ -20225,7 +20260,7 @@
 	var SideBarListItems = React.createClass({
 		displayName: 'SideBarListItems',
 
-		render: function () {
+		render: function render() {
 
 			if (!this.props.user) return;
 
@@ -20312,7 +20347,7 @@
 				purchases
 			);
 		},
-		itemClicked: function (event) {
+		itemClicked: function itemClicked(event) {
 
 			console.log(event);
 
@@ -20329,6 +20364,8 @@
 /***/ },
 /* 169 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	var config = {
 	  STATIC_CDN: 'https://d1dw1p6sgigznj.cloudfront.net/',
@@ -20391,14 +20428,14 @@
 
 	  DASH_HOME: '/highlights',
 
-	  formatImg: function (img, size) {
+	  formatImg: function formatImg(img, size) {
 	    if (!size || size == 'original') return img;
 	    if (img.indexOf('d2j1l98c0ybckw.cloudfront.net') == -1) return img;
 
 	    return img.replace('images/', 'images/' + size + '/');
 	  },
 
-	  resolveError: function (err, _default) {
+	  resolveError: function resolveError(err, _default) {
 	    switch (err) {
 	      case 'ERR_OUTLET_UNVERIFIED':
 	        return 'This outlet is in demo mode. Purchases and downloads are currently disabled.';
@@ -20413,7 +20450,7 @@
 	    }
 	  },
 
-	  getTimeAgo: function (timestamp) {
+	  getTimeAgo: function getTimeAgo(timestamp) {
 	    var intervals = {
 	      year: 31556926,
 	      month: 2629744,
@@ -20465,6 +20502,8 @@
 /* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
 	    GalleryEditBody = __webpack_require__(174),
@@ -20484,14 +20523,14 @@
 
 	  displayName: 'Gallery Edit',
 
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 
 	    return {
 	      gallery: this.props.gallery
 	    };
 	  },
 
-	  render: function () {
+	  render: function render() {
 
 	    if (!this.props.user) return;
 
@@ -20523,14 +20562,14 @@
 	      )
 	    );
 	  },
-	  updateGallery: function (gallery) {
+	  updateGallery: function updateGallery(gallery) {
 	    //Update new gallery
 	    this.setState({
 	      gallery: gallery
 	    });
 	  },
 
-	  saveGallery: function () {
+	  saveGallery: function saveGallery() {
 
 	    var gallery = this.state.gallery,
 	        files = gallery.files ? gallery.files : [],
@@ -20602,7 +20641,7 @@
 	      method: 'post',
 	      contentType: "application/json",
 	      data: JSON.stringify(params),
-	      success: function (result) {
+	      success: function success(result) {
 
 	        console.log(result);
 
@@ -20610,7 +20649,7 @@
 	          content: "Gallery successfully saved!"
 	        });
 	      },
-	      error: function (xhr, status, error) {
+	      error: function error(xhr, status, _error) {
 
 	        $.snackbar({
 	          content: "We ran into an error saving your gallery"
@@ -20626,7 +20665,7 @@
 
 	  displayName: 'GalleryEditHead',
 
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'div',
 	      { className: 'dialog-head' },
@@ -20638,7 +20677,7 @@
 	      React.createElement('span', { className: 'mdi mdi-close pull-right icon toggle-gedit toggler', onClick: this.hide })
 	    );
 	  },
-	  hide: function () {
+	  hide: function hide() {
 	    $(".toggle-gedit").toggleClass("toggled");
 	  }
 
@@ -20649,6 +20688,8 @@
 /***/ },
 /* 174 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
@@ -20667,13 +20708,13 @@
 
 		displayName: 'GalleryEditBody',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				gallery: this.props.gallery
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var highlightCheckbox = '';
 
@@ -20736,28 +20777,28 @@
 			);
 		},
 
-		updateRelatedStories: function (updatedStories) {
+		updateRelatedStories: function updateRelatedStories(updatedStories) {
 
 			this.state.gallery.related_stories = updatedStories;
 
 			this.props.updateGallery(this.state.gallery);
 		},
 
-		updateArticles: function (articles) {
+		updateArticles: function updateArticles(articles) {
 
 			this.state.gallery.articles = articles;
 
 			this.props.updateGallery(gallery);
 		},
 
-		updatedTags: function (tags) {
+		updatedTags: function updatedTags(tags) {
 
 			this.state.gallery.tags = tags;
 
 			this.props.updateGallery(gallery);
 		},
 
-		updatedLocation: function (location) {
+		updatedLocation: function updatedLocation(location) {
 
 			this.state.gallery.locations[0] = location;
 
@@ -20775,18 +20816,18 @@
 		displayName: 'GalleryEditTags',
 
 		//Set state as passed properties
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return { tags: this.props.tags };
 		},
 
-		componentWillReceiveProps: function (nextProps) {
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
 			this.setState({
 				tags: nextProps.tags
 			});
 		},
 
-		render: function () {
+		render: function render() {
 
 			tags = this.state.tags.map(function (tag, i) {
 				return React.createElement(Tag, {
@@ -20827,7 +20868,7 @@
 			);
 		},
 
-		handleClick: function (index) {
+		handleClick: function handleClick(index) {
 
 			var updatedTags = this.state.tags;
 
@@ -20850,22 +20891,22 @@
 
 		displayName: 'GalleryEditStories',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 
 			return { stories: this.props.stories };
 		},
 
-		componentWillReceiveProps: function (nextProps) {
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
 			this.setState({ stories: nextProps.stories });
 		},
 		//Add's story element
-		addStory: function (newStory) {
+		addStory: function addStory(newStory) {
 
 			this.props.updateRelatedStories(this.state.stories.concat(newStory));
 		},
 
-		render: function () {
+		render: function render() {
 
 			stories = this.state.stories.map(function (story, i) {
 
@@ -20902,7 +20943,7 @@
 			);
 		},
 
-		handleClick: function (index) {
+		handleClick: function handleClick(index) {
 
 			var updatedStories = this.state.stories;
 
@@ -20921,16 +20962,16 @@
 
 		displayName: 'GalleryEditArticles',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return { articles: this.props.articles };
 		},
 
-		componentWillReceiveProps: function (nextProps) {
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
 			this.setState({ articles: nextProps.articles });
 		},
 
-		render: function () {
+		render: function render() {
 
 			articles = this.state.articles.map(function (article, i) {
 
@@ -20960,7 +21001,7 @@
 				)
 			);
 		},
-		handleClick: function (index) {
+		handleClick: function handleClick(index) {
 
 			var updateArticles = this.state.articles;
 
@@ -20984,7 +21025,7 @@
 		displayName: 'GalleryEditMap',
 
 		//Configure google maps after component mounts
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			//Set up autocomplete listener
 			autocomplete = new google.maps.places.Autocomplete(document.getElementById('gallery-location-input'));
@@ -21007,7 +21048,7 @@
 			});
 		},
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				'div',
@@ -21040,14 +21081,14 @@
 
 		displayName: 'GalleryEditPosts',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				posts: this.props.posts,
 				files: []
 			};
 		},
 
-		componentWillReceiveProps: function (nextProps) {
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
 			this.replaceState({
 				posts: nextProps.posts,
@@ -21055,15 +21096,15 @@
 			});
 		},
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 			$(this.refs.galleryEditPosts).frick();
 		},
 
-		componentDidUpdate: function () {
+		componentDidUpdate: function componentDidUpdate() {
 			$(this.refs.galleryEditPosts).frick();
 		},
 
-		render: function () {
+		render: function render() {
 
 			var k = 0;
 
@@ -21098,6 +21139,8 @@
 /* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
 
@@ -21111,7 +21154,7 @@
 
 		displayName: 'Tag',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 
 			return {
 				text: '',
@@ -21119,7 +21162,7 @@
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var editClass = 'mdi-minus';
 
@@ -21153,6 +21196,8 @@
 /* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
 
@@ -21165,19 +21210,19 @@
 
 		displayName: 'EditPost',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 
 			return {
 				post: {}
 			};
 		},
 		//Add source after rendering for local files
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			if (!this.props.file) return;
 		},
 
-		render: function () {
+		render: function render() {
 
 			//Check if we're reading from a file, and we have the file's source
 			if (this.props.file && this.props.source) {
@@ -21232,6 +21277,8 @@
 /* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
 
@@ -21244,7 +21291,7 @@
 
 		displayName: 'EditMap',
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			var styles = [{ "featureType": "all", "elementType": "all", "stylers": [{ "gamma": 1.54 }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "gamma": 1.54 }] }, { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [{ "color": "#e0e0e0" }] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#bdbdbd" }] }, { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] }, { "featureType": "poi.park", "elementType": "all", "stylers": [{ "gamma": 1.26 }] }, { "featureType": "poi.park", "elementType": "labels.text", "stylers": [{ "saturation": -54 }] }];
 
@@ -21306,12 +21353,12 @@
 					polygon.setMap(null);
 				}
 		},
-		render: function () {
+		render: function render() {
 
 			return React.createElement('div', { id: 'gallery-map-canvas', className: 'map-container' });
 		},
 		//Returns centroid for passed polygon
-		getCentroid: function (polygon) {
+		getCentroid: function getCentroid(polygon) {
 
 			var path = polygon.getPath(),
 			    lat = 0,
@@ -21327,7 +21374,7 @@
 
 			return new google.maps.LatLng(lat, lon);
 		},
-		getBounds: function (polygon) {
+		getBounds: function getBounds(polygon) {
 
 			var bounds = new google.maps.LatLngBounds();
 			var paths = polygon.getPaths();
@@ -21350,6 +21397,8 @@
 /* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(159);
 
@@ -21361,7 +21410,7 @@
 
 		displayName: 'StoriesAutoComplete',
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			var self = this;
 
@@ -21376,16 +21425,16 @@
 			}, {
 				name: 'stories',
 				display: 'title',
-				source: function (query, syncResults, asyncResults) {
+				source: function source(query, syncResults, asyncResults) {
 					$.ajax({
 						url: '/scripts/story/autocomplete',
 						data: {
 							q: query
 						},
-						success: function (result, status, xhr) {
+						success: function success(result, status, xhr) {
 							asyncResults(result.data || []);
 						},
-						error: function (xhr, statur, error) {
+						error: function error(xhr, statur, _error) {
 							asyncResults([]);
 						}
 					});
@@ -21438,7 +21487,7 @@
 			});
 		},
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement('input', {
 				id: 'gallery-stories-input',
@@ -21457,6 +21506,8 @@
 /* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(159), Dropdown = __webpack_require__(166);
 
@@ -21473,7 +21524,7 @@
 	  * Renders byline field
 	  * @description Three types of instances for the byline
 	  */
-		render: function () {
+		render: function render() {
 
 			var post = this.props.gallery.posts[0];
 
@@ -21598,6 +21649,8 @@
 /* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
 
@@ -21610,13 +21663,13 @@
 
 		displayName: 'GalleryEditFoot',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				gallery: this.props.gallery
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var addMore = '';
 
@@ -21670,8 +21723,8 @@
 				)
 			);
 		},
-		revert: function () {},
-		clear: function () {
+		revert: function revert() {},
+		clear: function clear() {
 
 			gallery = this.state.gallery;
 
@@ -21684,11 +21737,11 @@
 
 			this.props.updateGallery(gallery);
 		},
-		addMore: function () {
+		addMore: function addMore() {
 
 			document.getElementById('gallery-upload-files').click();
 		},
-		fileUploaderChanged: function () {
+		fileUploaderChanged: function fileUploaderChanged() {
 
 			var gallery = this.state.gallery,
 			    files = this.refs.fileUpload.files,
@@ -21717,11 +21770,11 @@
 				reader.readAsDataURL(file);
 			}
 		},
-		cancel: function () {
+		cancel: function cancel() {
 
 			$(".toggle-gedit").toggleClass("toggled");
 		},
-		delete: function () {
+		delete: function _delete() {
 
 			var gallery = this.state.gallery;
 
@@ -21741,7 +21794,7 @@
 					contentType: "application/json",
 					data: params,
 					dataType: 'json',
-					success: function (result) {
+					success: function success(result) {
 
 						if (result.err) {
 							return this.error(null, null, result.err);
@@ -21749,7 +21802,7 @@
 
 						location.href = document.referrer || '/highlights';
 					},
-					error: function (xhr, status, error) {
+					error: function error(xhr, status, _error) {
 						$.snackbar({
 							content: 'Couldn\'t successfully delete this gallery!'
 						});
@@ -21765,6 +21818,8 @@
 /***/ },
 /* 181 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(159);
@@ -21783,7 +21838,7 @@
 
 		displayName: 'PostInfo',
 
-		render: function () {
+		render: function render() {
 
 			//Init needed vars to make list
 			var post = this.props.post,
@@ -21903,6 +21958,8 @@
 /* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
 
@@ -21921,7 +21978,7 @@
 
 		displayName: 'PostRelated',
 
-		render: function () {
+		render: function render() {
 
 			if (this.props.gallery.posts && this.props.gallery.posts.length > 1) {
 
@@ -21966,6 +22023,8 @@
 /* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(159), PurchaseAction = __webpack_require__(163), DownloadAction = __webpack_require__(164);
 
@@ -21983,7 +22042,7 @@
 
 		displayName: 'PostDetailImage',
 
-		render: function () {
+		render: function render() {
 
 			console.log(this.props);
 

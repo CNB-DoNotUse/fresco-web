@@ -84,7 +84,7 @@ if(isNode){
 	module.exports = Content;
 
 }
-else{
+else {
 
 	ReactDOM.render(
 	 	<Content 

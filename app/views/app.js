@@ -1,19 +1,8 @@
-var isNode = require('detect-node'),
-	React = require('react'),
-	ReactDOM = require('react-dom'),
-    Sidebar = require('../components/sidebar.js');
+import React from 'react'
+import Sidebar from '../components/sidebar'
 
-
-/**
- * Gallery Detail Parent Object
- */
-
-var App = React.createClass({
-
-	displayName: 'App',
-
-	render: function(){
-
+export default class App extends React.Component {
+	render() {
 		return (
 			<div>
 				<div className="dim toggle-drawer toggler"></div>
@@ -24,10 +13,6 @@ var App = React.createClass({
 					</div>
 				</div>
 			</div>
-		)
+		);
 	}
-	
-});
-
-
-module.exports = App;
+}

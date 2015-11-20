@@ -1,5 +1,4 @@
-var React = require('react');
-	ReactDOM = require('react-dom');
+import React from 'react';
 
 /**
  * Single Gallery Cell, child of GalleryList

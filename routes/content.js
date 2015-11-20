@@ -2,14 +2,7 @@ var express = require('express'),
     config = require('../lib/config'),
     request = require('request-json'),
     router = express.Router(),
-    api = request.createClient(config.API_URL),
-    React = require('react'),
-    ReactDOMServer = require('react-dom/server'),
-    photos = require('../app/server/photos.js'),
-    videos = require('../app/server/videos.js'),
-    stories = require('../app/server/stories.js');
-    galleries = require('../app/server/galleries.js'),
-    content = require('../app/server/content.js');
+    api = request.createClient(config.API_URL)
 
 /** //
 
@@ -56,9 +49,7 @@ router.get('/galleries', function(req, res, next) {
       props = {
         user : req.session.user,
         title: title
-      },
-      elm = React.createElement(galleries, props, null),
-      react = ReactDOMServer.renderToString(elm);
+      }
 
   res.render('app', {
     user: req.session.user,
@@ -66,7 +57,6 @@ router.get('/galleries', function(req, res, next) {
     config: config,
     alerts: req.alerts,
     page: 'galleries',
-    react: react,
     props : JSON.stringify(props)
   });
 
@@ -78,12 +68,10 @@ router.get('/galleries', function(req, res, next) {
 
 router.get('/stories', function(req, res, next) {
 
-  var props = {
+  var title = 'Stories',
+      props = {
         user : req.session.user
-      },
-      elm = React.createElement(stories, props, null),
-      react = ReactDOMServer.renderToString(elm),
-      title = 'Stories';
+      };
 
   res.render('app', {
     user: req.session.user,
@@ -91,7 +79,6 @@ router.get('/stories', function(req, res, next) {
     config: config,
     alerts: req.alerts,
     page: 'stories',
-    react: react,
     props : JSON.stringify(props)
   });
 
@@ -122,17 +109,13 @@ router.get('/:filter', function(req, res, next) {
   //Load photos page
   if (req.params.filter == 'photos') {
 
-    var elm = React.createElement(photos, props, null),
-        react = ReactDOMServer.renderToString(elm),
-        title = 'Photos';
+    var title = 'Photos';
 
   }
   //Load videos page
   else if(req.params.filter == 'videos'){
 
-    var elm = React.createElement(videos, props, null),
-        react = ReactDOMServer.renderToString(elm),
-        title = 'Videos';
+    var title = 'Videos';
 
   }
 
@@ -142,7 +125,6 @@ router.get('/:filter', function(req, res, next) {
     page : req.params.filter,
     config: config,
     alerts: req.alerts,
-    react : react,
     props : JSON.stringify(props)
   });
 

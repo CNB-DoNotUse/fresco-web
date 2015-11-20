@@ -2,10 +2,7 @@ var express = require('express'),
   router = express.Router(),
   requestJson = require('request-json'),
   config = require('../lib/config'),
-  api = requestJson.createClient(config.API_URL),
-  React = require('react'),
-  ReactDOMServer = require('react-dom/server'),
-  highlights = require('../app/server/highlights')
+  api = requestJson.createClient(config.API_URL)
 
 /** //
 
@@ -83,15 +80,12 @@ router.get('/highlights', function(req, res, next) {
       props = {
         user : req.session.user,
         title: title
-      },
-      elm = React.createElement(highlights, props, null),
-      react = ReactDOMServer.renderToString(elm);
+      };
 
   res.render('app', {
     user: req.session ? req.session.user : null,
     config: config,
     alerts: req.alerts,
-    react: '',
     page : 'highlights',
     title : title,
     props : JSON.stringify(props)

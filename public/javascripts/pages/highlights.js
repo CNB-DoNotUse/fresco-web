@@ -44,51 +44,67 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isNode = __webpack_require__(1),
-	    React = __webpack_require__(2),
-	    ReactDOM = __webpack_require__(159),
-	    App = __webpack_require__(167),
-	    GalleryList = __webpack_require__(170),
-	    TopBar = __webpack_require__(165);
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _app = __webpack_require__(167);
+
+	var _app2 = _interopRequireDefault(_app);
+
+	var _galleryList = __webpack_require__(170);
+
+	var _galleryList2 = _interopRequireDefault(_galleryList);
+
+	var _topbar = __webpack_require__(165);
+
+	var _topbar2 = _interopRequireDefault(_topbar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	/**
 	 * Highlights Parent Object (composed of GalleryList and Navbar) 
 	 * Half = False, to render at large size instead of half size
 	 */
 
-	var Highlights = React.createClass({
+	var Highlights = (function (_React$Component) {
+		_inherits(Highlights, _React$Component);
 
-		displayName: 'Highlights',
+		function Highlights() {
+			_classCallCheck(this, Highlights);
 
-		render: function () {
-			return React.createElement(
-				App,
-				{ user: this.props.user },
-				React.createElement(TopBar, { title: 'Highlights' }),
-				React.createElement(GalleryList, {
-					withList: true,
-					highlighted: true })
-			);
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Highlights).apply(this, arguments));
 		}
 
-	});
+		_createClass(Highlights, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					_app2.default,
+					{ user: this.props.user },
+					_react2.default.createElement(_topbar2.default, { title: 'Highlights' }),
+					_react2.default.createElement(_galleryList2.default, {
+						withList: true,
+						highlighted: true })
+				);
+			}
+		}]);
 
-	if (isNode) module.exports = Highlights;else ReactDOM.render(React.createElement(Highlights, { user: window.__initialProps__.user }), document.getElementById('app'));
+		return Highlights;
+	})(_react2.default.Component);
 
 /***/ },
-/* 1 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {module.exports = false;
-
-	// Only Node.JS has a process variable that is of [[Class]] process
-	try {
-	 module.exports = Object.prototype.toString.call(global.process) === '[object process]' 
-	} catch(e) {}
-
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
+/* 1 */,
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -19680,6 +19696,8 @@
 /* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(159);
 
@@ -19697,13 +19715,13 @@
 
 		displayName: 'SuggestionList',
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				stories: []
 			};
 		},
 
-		componentDidMount: function () {
+		componentDidMount: function componentDidMount() {
 
 			self = this;
 
@@ -19714,7 +19732,7 @@
 					limit: 3
 				},
 				dataType: 'json',
-				success: function (response, status, xhr) {
+				success: function success(response, status, xhr) {
 
 					//Do nothing, because of bad response
 					if (!response.data || response.err) return;
@@ -19724,13 +19742,13 @@
 						stories: response.data
 					});
 				},
-				error: function (xhr, status, error) {
-					$.snackbar({ content: resolveError(error) });
+				error: function error(xhr, status, _error) {
+					$.snackbar({ content: resolveError(_error) });
 				}
 			});
 		},
 
-		render: function () {
+		render: function render() {
 
 			return React.createElement(
 				'div',
@@ -19768,6 +19786,8 @@
 /* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
 	    Dropdown = __webpack_require__(166);
@@ -19782,13 +19802,13 @@
 
 		displayName: 'TopBar',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				title: ''
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var edit = '';
 
@@ -19846,7 +19866,7 @@
 		},
 
 		//Called when the user selectes a time format
-		timeToggleSelected: function (selected) {
+		timeToggleSelected: function timeToggleSelected(selected) {
 			if (selected == 'Absolute') {
 				setTimeDisplayType('absolute');
 			} else if (selected == 'Relative') {
@@ -19855,12 +19875,12 @@
 		},
 
 		//Called when the user selectes a time format
-		verifiedToggleSelected: function (selected) {},
+		verifiedToggleSelected: function verifiedToggleSelected(selected) {},
 
 		//Called when the user selectes a time format
-		chronToggleSelected: function (selected) {},
+		chronToggleSelected: function chronToggleSelected(selected) {},
 
-		toggleEdit: function () {
+		toggleEdit: function toggleEdit() {
 
 			$(".toggle-gedit").toggleClass("toggled");
 		}
@@ -19872,6 +19892,8 @@
 /***/ },
 /* 166 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159);
@@ -19885,21 +19907,21 @@
 
 		displayName: 'Dropdown',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				options: ['Relative', 'Absolute'],
 				inList: false
 			};
 		},
 
-		getInitialState: function () {
+		getInitialState: function getInitialState() {
 			return {
 				selected: this.props.selected
 			};
 		},
 
 		//Called whenever the master button is clicked
-		clicked: function (event) {
+		clicked: function clicked(event) {
 
 			var drop = $(this.refs.toggle_button).siblings(".drop-menu");
 
@@ -19917,7 +19939,7 @@
 		},
 
 		//Called whenever an option is selected from the dropdown
-		optionClicked: function (event) {
+		optionClicked: function optionClicked(event) {
 
 			var selected = event.currentTarget.innerHTML;
 
@@ -19939,7 +19961,7 @@
 		},
 
 		//Hides the dropdown menu and removes the whole-screen dim
-		hideDropdown: function () {
+		hideDropdown: function hideDropdown() {
 
 			this.refs.drop.classList.remove('toggled');
 
@@ -19950,7 +19972,7 @@
 			}
 		},
 
-		render: function () {
+		render: function render() {
 
 			var options = this.props.options.map(function (option) {
 
@@ -20027,45 +20049,70 @@
 /* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isNode = __webpack_require__(1),
-	    React = __webpack_require__(2),
-	    ReactDOM = __webpack_require__(159),
-	    Sidebar = __webpack_require__(168);
+	'use strict';
 
-	/**
-	 * Gallery Detail Parent Object
-	 */
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var App = React.createClass({
-
-		displayName: 'App',
-
-		render: function () {
-
-			return React.createElement(
-				'div',
-				null,
-				React.createElement('div', { className: 'dim toggle-drawer toggler' }),
-				React.createElement(
-					'div',
-					{ className: 'container-fluid' },
-					React.createElement(Sidebar, { user: this.props.user }),
-					React.createElement(
-						'div',
-						{ className: 'col-md-12 col-lg-10' },
-						this.props.children
-					)
-				)
-			);
-		}
-
+	Object.defineProperty(exports, "__esModule", {
+		value: true
 	});
 
-	module.exports = App;
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _sidebar = __webpack_require__(168);
+
+	var _sidebar2 = _interopRequireDefault(_sidebar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var App = (function (_React$Component) {
+		_inherits(App, _React$Component);
+
+		function App() {
+			_classCallCheck(this, App);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
+		}
+
+		_createClass(App, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement('div', { className: 'dim toggle-drawer toggler' }),
+					_react2.default.createElement(
+						'div',
+						{ className: 'container-fluid' },
+						_react2.default.createElement(_sidebar2.default, { user: this.props.user }),
+						_react2.default.createElement(
+							'div',
+							{ className: 'col-md-12 col-lg-10' },
+							this.props.children
+						)
+					)
+				);
+			}
+		}]);
+
+		return App;
+	})(_react2.default.Component);
+
+	exports.default = App;
 
 /***/ },
 /* 168 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
@@ -20079,7 +20126,7 @@
 
 		displayName: 'Sidebar',
 
-		render: function () {
+		render: function render() {
 
 			var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 
@@ -20141,7 +20188,7 @@
 	var SideBarListItems = React.createClass({
 		displayName: 'SideBarListItems',
 
-		render: function () {
+		render: function render() {
 
 			if (!this.props.user) return;
 
@@ -20228,7 +20275,7 @@
 				purchases
 			);
 		},
-		itemClicked: function (event) {
+		itemClicked: function itemClicked(event) {
 
 			console.log(event);
 
@@ -20245,6 +20292,8 @@
 /***/ },
 /* 169 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	var config = {
 	  STATIC_CDN: 'https://d1dw1p6sgigznj.cloudfront.net/',
@@ -20307,14 +20356,14 @@
 
 	  DASH_HOME: '/highlights',
 
-	  formatImg: function (img, size) {
+	  formatImg: function formatImg(img, size) {
 	    if (!size || size == 'original') return img;
 	    if (img.indexOf('d2j1l98c0ybckw.cloudfront.net') == -1) return img;
 
 	    return img.replace('images/', 'images/' + size + '/');
 	  },
 
-	  resolveError: function (err, _default) {
+	  resolveError: function resolveError(err, _default) {
 	    switch (err) {
 	      case 'ERR_OUTLET_UNVERIFIED':
 	        return 'This outlet is in demo mode. Purchases and downloads are currently disabled.';
@@ -20329,7 +20378,7 @@
 	    }
 	  },
 
-	  getTimeAgo: function (timestamp) {
+	  getTimeAgo: function getTimeAgo(timestamp) {
 	    var intervals = {
 	      year: 31556926,
 	      month: 2629744,
@@ -20378,6 +20427,20 @@
 /* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(159), SuggestionList = __webpack_require__(161), GalleryCell = __webpack_require__(171);
 
@@ -20391,140 +20454,162 @@
 	 * Gallery List Parent Object 
 	 */
 
-	var GalleryList = React.createClass({
+	var GalleryList = (function (_React$Component) {
+		_inherits(GalleryList, _React$Component);
 
-		displayName: 'GalleryList',
+		function GalleryList(props) {
+			_classCallCheck(this, GalleryList);
 
-		getInitialState: function () {
-			return {
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GalleryList).call(this, props));
+
+			_this.state = {
 				galleries: [],
 				offset: 0,
 				loading: false,
 				tags: []
 			};
-		},
-		componentDidMount: function () {
+			_this.loadGalleries = _this.loadGalleries.bind(_this);
+			_this.scroll = _this.scroll.bind(_this);
+			return _this;
+		}
 
-			var self = this;
+		_createClass(GalleryList, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				var _this2 = this;
 
-			this.loadGalleries(0, function (galleries) {
+				this.loadGalleries(0, function (galleries) {
 
-				var offset = galleries ? galleries.length : 0;
-
-				//Set galleries from successful response
-				self.setState({
-					galleries: galleries,
-					offset: offset
-				});
-			});
-		},
-		//Returns array of galleries with offset and callback
-		loadGalleries: function (passedOffset, callback) {
-
-			var endpoint,
-			    params = {
-				limit: 14,
-				offset: passedOffset
-			};
-
-			if (this.props.highlighted) {
-
-				endpoint = '/v1/gallery/highlights';
-
-				params.invalidate = 1;
-			} else {
-
-				endpoint = '/v1/gallery/list';
-				params.verified = true;
-				params.tags = this.state.tags.join(',');
-			}
-
-			$.ajax({
-				url: API_URL + endpoint,
-				type: 'GET',
-				data: params,
-				dataType: 'json',
-				success: function (response, status, xhr) {
-
-					//Do nothing, because of bad response
-					if (!response.data || response.err) callback([]);else callback(response.data);
-				},
-				error: function (xhr, status, error) {
-					$.snackbar({ content: resolveError(error) });
-				}
-
-			});
-		},
-		//Scroll listener for main window
-		scroll: function () {
-
-			var grid = this.refs.grid;
-
-			if (!this.state.loading && grid.scrollTop === grid.scrollHeight - grid.offsetHeight) {
-
-				var self = this;
-
-				self.setState({ loading: true });
-
-				this.loadGalleries(this.state.offset, function (galleries) {
-
-					if (!galleries) return;
-
-					var offset = self.state.galleries.length + galleries.length;
+					var offset = galleries ? galleries.length : 0;
 
 					//Set galleries from successful response
-					self.setState({
-						galleries: self.state.galleries.concat(galleries),
-						offset: offset,
-						loading: false
+					_this2.setState({
+						galleries: galleries,
+						offset: offset
 					});
 				});
 			}
-		},
-		render: function () {
 
-			var half = !this.props.withList;
+			//Returns array of galleries with offset and callback
 
-			//Save all the galleries
-			var galleries = React.createElement(
-				'div',
-				{ className: 'row tiles' },
-				this.state.galleries.map(function (gallery, i) {
-					return React.createElement(GalleryCell, { gallery: gallery, half: half, key: i });
-				})
-			);
+		}, {
+			key: 'loadGalleries',
+			value: function loadGalleries(passedOffset, callback) {
 
-			//Check if a list is needed
-			if (this.props.withList) {
+				var endpoint,
+				    params = {
+					limit: 14,
+					offset: passedOffset
+				};
 
-				return React.createElement(
-					'div',
-					{ className: 'container-fluid grid', onScroll: this.scroll, ref: 'grid' },
-					React.createElement(
-						'div',
-						{ className: 'col-md-8' },
-						galleries
-					),
-					React.createElement(SuggestionList, null)
-				);
+				if (this.props.highlighted) {
+
+					endpoint = '/v1/gallery/highlights';
+
+					params.invalidate = 1;
+				} else {
+
+					endpoint = '/v1/gallery/list';
+					params.verified = true;
+					params.tags = this.state.tags.join(',');
+				}
+
+				$.ajax({
+					url: API_URL + endpoint,
+					type: 'GET',
+					data: params,
+					dataType: 'json',
+					success: function success(response, status, xhr) {
+
+						//Do nothing, because of bad response
+						if (!response.data || response.err) callback([]);else callback(response.data);
+					},
+					error: function error(xhr, status, _error) {
+						$.snackbar({ content: resolveError(_error) });
+					}
+
+				});
 			}
-			//No list needed
-			else {
+
+			//Scroll listener for main window
+
+		}, {
+			key: 'scroll',
+			value: function scroll() {
+				var _this3 = this;
+
+				var grid = this.refs.grid;
+
+				if (!this.state.loading && grid.scrollTop === grid.scrollHeight - grid.offsetHeight) {
+
+					this.setState({ loading: true });
+
+					this.loadGalleries(this.state.offset, function (galleries) {
+
+						if (!galleries) return;
+
+						var offset = _this3.state.galleries.length + galleries.length;
+
+						//Set galleries from successful response
+						_this3.setState({
+							galleries: _this3.state.galleries.concat(galleries),
+							offset: offset,
+							loading: false
+						});
+					});
+				}
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+
+				var half = !this.props.withList;
+
+				//Save all the galleries
+				var galleries = React.createElement(
+					'div',
+					{ className: 'row tiles' },
+					this.state.galleries.map(function (gallery, i) {
+						return React.createElement(GalleryCell, { gallery: gallery, half: half, key: i });
+					})
+				);
+
+				//Check if a list is needed
+				if (this.props.withList) {
 
 					return React.createElement(
 						'div',
 						{ className: 'container-fluid grid', onScroll: this.scroll, ref: 'grid' },
-						galleries
+						React.createElement(
+							'div',
+							{ className: 'col-md-8' },
+							galleries
+						),
+						React.createElement(SuggestionList, null)
 					);
 				}
-		}
-	});
+				//No list needed
+				else {
 
-	module.exports = GalleryList;
+						return React.createElement(
+							'div',
+							{ className: 'container-fluid grid', onScroll: this.scroll, ref: 'grid' },
+							galleries
+						);
+					}
+			}
+		}]);
+
+		return GalleryList;
+	})(React.Component);
+
+	exports.default = GalleryList;
 
 /***/ },
 /* 171 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var React = __webpack_require__(2);
 	ReactDOM = __webpack_require__(159);
@@ -20537,14 +20622,14 @@
 
 		displayName: 'GalleryCell',
 
-		getDefaultProps: function () {
+		getDefaultProps: function getDefaultProps() {
 			return {
 				//Size of the cell
 				half: false
 			};
 		},
 
-		render: function () {
+		render: function render() {
 
 			var timestamp = this.props.gallery.time_created;
 			var timeString = formatTime(this.props.gallery.time_created);
@@ -20623,7 +20708,7 @@
 
 		displayName: "GalleryCellStories",
 
-		render: function () {
+		render: function render() {
 
 			var stories = this.props.stories.map(function (story, i) {
 				return React.createElement(
@@ -20654,7 +20739,7 @@
 
 		displayName: "GalleryCellImages",
 
-		render: function () {
+		render: function render() {
 
 			if (!this.props.posts || this.props.posts.length == 0) {
 
@@ -20736,7 +20821,7 @@
 
 		displayName: 'GalleryCellImage',
 
-		render: function () {
+		render: function render() {
 			return React.createElement(
 				'div',
 				{ className: 'img' },
