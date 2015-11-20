@@ -25,12 +25,12 @@ var express = require('express'),
 router.get('/', function(req, res, next) {
 
   var title = 'All content'; 
+      purchases = mapPurchases(req.session),
       props = {
         user : req.session.user,
         purchases : purchases,
         title:title
       },
-      purchases = mapPurchases(req.session),
       elm = React.createElement(content, props, null),
       react = ReactDOMServer.renderToString(elm);
 
@@ -40,7 +40,7 @@ router.get('/', function(req, res, next) {
     page : 'content',
     config: config,
     alerts: req.alerts,
-    react : reactString,
+    react : react,
     props : JSON.stringify(props)
   });
 
