@@ -1,5 +1,5 @@
-/node_modules/*
-/sessions/*
-/public/vendor/*
-/public/javascript/pages/*
-/app/server/*
+node_modules/
+sessions/
+public/vendor/
+public/javascript/pages/
+app/server/

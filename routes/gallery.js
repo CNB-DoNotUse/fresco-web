@@ -1,11 +1,8 @@
 var express = require('express'),
     config = require('../lib/config'),
     router = express.Router(),
-<<<<<<< HEAD
     request = require('request')
-=======
-    request = require('request');
->>>>>>> 20c1f33910a609075b9407a1fddd4b04ccbafcbc
+
 
 /** //
 
@@ -48,23 +45,7 @@ router.get('/:id', function(req, res, next) {
     //User is logged in, show full gallery page
     if (req.session && req.session.user) {
 
-      var purchases = config.mapPurchases();
 
-<<<<<<< HEAD
-      if (req.session.user.outlet && req.session.user.outlet.verified) {
-        purchases = req.session.user.outlet.purchases || [];
-        purchases = purchases.map(function(purchase) {
-          return purchase.post;
-        });
-      }
-
-      var props = {
-        user: req.session.user,
-        purchases: purchases,
-        gallery: gallery,
-        title: title
-      };
-=======
       var purchases = config.mapPurchases(),
           props = {
             user: req.session.user,
@@ -72,7 +53,6 @@ router.get('/:id', function(req, res, next) {
             gallery: gallery,
             title: title
           };
->>>>>>> 20c1f33910a609075b9407a1fddd4b04ccbafcbc
 
       res.render('app', {
         title: title,

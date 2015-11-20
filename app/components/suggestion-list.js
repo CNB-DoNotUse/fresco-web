@@ -66,6 +66,4 @@ export default class SuggestionList extends React.Component {
 
 		);
 	}
-});
-
-module.exports = SuggestionList;
+}
