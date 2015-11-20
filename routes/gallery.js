@@ -69,7 +69,7 @@ router.get('/:id', function(req, res, next) {
 
       // var reactString = ReactDOMServer.renderToString(element);
 
-      res.render('gallery', {
+      res.render('app', {
         title: title,
         alerts: req.alerts,
         react : '',
