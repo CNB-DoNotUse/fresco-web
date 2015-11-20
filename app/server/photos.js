@@ -1079,6 +1079,7 @@ module.exports =
 	});
 
 	var SideBarListItems = React.createClass({
+		displayName: 'SideBarListItems',
 
 		render: function () {
 

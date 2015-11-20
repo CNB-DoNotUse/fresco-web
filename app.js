@@ -2,6 +2,7 @@ var config = require('./lib/config'),
     express = require('express'),
     path = require('path'),
     favicon = require('serve-favicon'),
+    morgan = require('morgan'),
     session = require('express-session'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
@@ -18,6 +19,9 @@ app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.ico'));
+
+app.use(morgan('dev'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({dest : './uploads/',

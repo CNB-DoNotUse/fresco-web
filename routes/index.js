@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
       highlights = body.data;
 
 
-    res.render('app', {
+    res.render('index', {
       user: req.session ? req.session.user : null,
       highlights: highlights,
       config: config,
@@ -82,7 +82,7 @@ router.get('/highlights', function(req, res, next) {
   var title = 'Highlights',
       props = {
         user : req.session.user,
-        title:title
+        title: title
       },
       elm = React.createElement(highlights, props, null),
       react = ReactDOMServer.renderToString(elm);
