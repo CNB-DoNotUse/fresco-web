@@ -1,10 +1,12 @@
 var express = require('express'),
-  config = require('../lib/config'),
-  request = require('request'),
-  router = express.Router();
+    config = require('../lib/config'),
+    request = require('request'),
+    router = express.Router();
 
 /** //
+
 	Description : Story Specific Routes ~ prefix /story/endpoint
+
 // **/
 
 router.get('/:id', function(req, res, next) {

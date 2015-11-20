@@ -20977,7 +20977,7 @@
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
 	    GalleryEditBody = __webpack_require__(174),
-	    GalleryEditFoot = __webpack_require__(181);
+	    GalleryEditFoot = __webpack_require__(180);
 
 	/** //
 
@@ -22104,8 +22104,7 @@
 	module.exports = GalleryEditByline;
 
 /***/ },
-/* 180 */,
-/* 181 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),

@@ -48,7 +48,7 @@
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(159),
 	    TopBar = __webpack_require__(165),
-	    StoryList = __webpack_require__(185);
+	    StoryList = __webpack_require__(184);
 	App = __webpack_require__(167);
 
 	/**
@@ -20342,12 +20342,11 @@
 /* 181 */,
 /* 182 */,
 /* 183 */,
-/* 184 */,
-/* 185 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	ReactDOM = __webpack_require__(159), StoryCell = __webpack_require__(186);
+	ReactDOM = __webpack_require__(159), StoryCell = __webpack_require__(185);
 
 	/** //
 
@@ -20450,7 +20449,7 @@
 	module.exports = StoryList;
 
 /***/ },
-/* 186 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);

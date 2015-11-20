@@ -49,7 +49,7 @@ module.exports =
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
 	    TopBar = __webpack_require__(9),
-	    StoryList = __webpack_require__(29);
+	    StoryList = __webpack_require__(28);
 	App = __webpack_require__(11);
 
 	/**
@@ -764,12 +764,11 @@ module.exports =
 /* 25 */,
 /* 26 */,
 /* 27 */,
-/* 28 */,
-/* 29 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	ReactDOM = __webpack_require__(3), StoryCell = __webpack_require__(30);
+	ReactDOM = __webpack_require__(3), StoryCell = __webpack_require__(29);
 
 	/** //
 
@@ -872,7 +871,7 @@ module.exports =
 	module.exports = StoryList;
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);

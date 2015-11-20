@@ -50,8 +50,8 @@ module.exports =
 	    ReactDOM = __webpack_require__(3),
 	    TopBar = __webpack_require__(9),
 	    PostList = __webpack_require__(4),
-	    StorySidebar = __webpack_require__(31),
-	    StoryEdit = __webpack_require__(32),
+	    StorySidebar = __webpack_require__(30),
+	    StoryEdit = __webpack_require__(31),
 	    App = __webpack_require__(11);
 
 	/**
@@ -1310,8 +1310,7 @@ module.exports =
 /* 27 */,
 /* 28 */,
 /* 29 */,
-/* 30 */,
-/* 31 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -1408,7 +1407,7 @@ module.exports =
 	module.exports = StorySidebar;
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports) {
 
 	

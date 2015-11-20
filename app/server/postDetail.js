@@ -49,9 +49,9 @@ module.exports =
 	    React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
 	    TopBar = __webpack_require__(9),
-	    PostInfo = __webpack_require__(26),
-	    PostRelated = __webpack_require__(27),
-	    PostDetailImage = __webpack_require__(28),
+	    PostInfo = __webpack_require__(25),
+	    PostRelated = __webpack_require__(26),
+	    PostDetailImage = __webpack_require__(27),
 	    GalleryEdit = __webpack_require__(17),
 	    App = __webpack_require__(11);
 
@@ -886,7 +886,7 @@ module.exports =
 	var React = __webpack_require__(2),
 	    ReactDOM = __webpack_require__(3),
 	    GalleryEditBody = __webpack_require__(18),
-	    GalleryEditFoot = __webpack_require__(25);
+	    GalleryEditFoot = __webpack_require__(24);
 
 	/** //
 
@@ -2013,8 +2013,7 @@ module.exports =
 	module.exports = GalleryEditByline;
 
 /***/ },
-/* 24 */,
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
@@ -2182,7 +2181,7 @@ module.exports =
 	module.exports = GalleryEditFoot;
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -2319,7 +2318,7 @@ module.exports =
 	module.exports = PostInfo;
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
@@ -2382,7 +2381,7 @@ module.exports =
 	module.exports = PostRelated;
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);

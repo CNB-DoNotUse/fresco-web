@@ -24,25 +24,17 @@ var express = require('express'),
 
 router.get('/', function(req, res, next) {
 
-
   var purchases = mapPurchases(req.session),
-     title = 'All Content';
+      elm = React.createElement(content, props, null),
+      react = ReactDOMServer.renderToString(elm),
+      title = 'All content',
+      props = {
+        user : req.session.user,
+        purchases : purchases,
+        title:title
+      };
 
-  var reactString = ReactDOMServer.renderToString(
-                      React.createElement(
-                        content, 
-                        props, 
-                        null
-                      )
-                    );
-
-  var props = {
-    user : req.session.user,
-    purchases : purchases,
-    title:title
-  };
-
-  res.render('content', {
+  res.render('app', {
     title: title,
     user: req.session.user,
     page : 'content',
@@ -66,17 +58,20 @@ router.get('/galleries', function(req, res, next) {
         title: title
       };
 
-  var element = React.createElement(galleries, props, null);
+  var props = {
+        user : req.session.user
+      },
+      elm = React.createElement(galleries, props, null),
+      react = ReactDOMServer.renderToString(elm),
+      title = 'Stories';
 
-  var reactString = ReactDOMServer.renderToString(element);
-
-  res.render('galleries', {
+  res.render('app', {
     user: req.session.user,
     title: title,
     config: config,
     alerts: req.alerts,
     page: 'galleries',
-    react: reactString,
+    react: react,
     props : JSON.stringify(props)
   });
 
@@ -95,7 +90,7 @@ router.get('/stories', function(req, res, next) {
       react = ReactDOMServer.renderToString(elm),
       title = 'Stories';
 
-  res.render('stories', {
+  res.render('app', {
     user: req.session.user,
     title: title,
     config: config,
@@ -146,10 +141,10 @@ router.get('/:filter', function(req, res, next) {
 
   }
 
-  res.render('photos', {
+  res.render('app', {
     title: title,
     user: req.session.user,
-    page : 'photos',
+    page : req.params.filter,
     config: config,
     alerts: req.alerts,
     react : react,

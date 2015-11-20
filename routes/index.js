@@ -23,7 +23,7 @@ router.get('/', function(req, res, next) {
       highlights = body.data;
 
 
-    res.render('index', {
+    res.render('app', {
       user: req.session ? req.session.user : null,
       highlights: highlights,
       config: config,
