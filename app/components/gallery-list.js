@@ -94,7 +94,9 @@ export default class GalleryList extends React.Component {
 
 		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight)){
 
-			this.setState({ loading : true })
+			this.setState({ 
+				loading : true 
+			})
 
 			this.loadGalleries(this.state.offset, (galleries) => {
 

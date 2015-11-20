@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDom from 'react-dom'
 import App from './app.js'
 import GalleryList from './../components/gallery-list.js'
 import TopBar from './../components/topbar.js'
@@ -20,3 +21,8 @@ class Highlights extends React.Component {
 		);
 	}
 }
+
+ReactDom.render(
+	<Highlights user={window.__initialProps__.user} />,
+	document.getElementById('app')
+)
