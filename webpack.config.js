@@ -7,7 +7,8 @@ var views = {
   stories: './app/views/stories.js',
   storyDetail: './app/views/storyDetail.js',
   galleryDetail: './app/views/galleryDetail.js',
-  postDetail: './app/views/postDetail.js'
+  postDetail: './app/views/postDetail.js',
+  storyDetail: './app/views/storyDetail.js'
 }
 
 module.exports = [
@@ -24,7 +25,7 @@ module.exports = [
         exclude: /node_modules/,
         loader: ["babel-loader"],
         query:{
-          presets:['react', 'es2015']
+          presets:['react']
         }
       }],
     },

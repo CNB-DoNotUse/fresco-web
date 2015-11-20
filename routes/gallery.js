@@ -1,10 +1,7 @@
 var express = require('express'),
     config = require('../lib/config'),
     router = express.Router(),
-    request = require('request'),
-    React = require('react'),
-    ReactDOMServer = require('react-dom/server'),
-    galleryDetail = require('../app/server/galleryDetail');
+    request = require('request');
 
 /** //
 
@@ -47,32 +44,19 @@ router.get('/:id', function(req, res, next) {
     //User is logged in, show full gallery page
     if (req.session && req.session.user) {
 
-      var purchases = null;
+      var purchases = config.mapPurchases();
 
-      if (req.session.user.outlet && req.session.user.outlet.verified) {
-        purchases = req.session.user.outlet.purchases || [];
-        purchases = purchases.map(function(purchase) {
-          return purchase.post;
-        });
-      }
-
-      var props = {
-        user: req.session.user,
-        purchases: purchases,
-        gallery: gallery,
-        title: title
-      };
-
-      // console.log(props);
-
-      // var element = React.createElement(galleryDetail, props
-
-      // var reactString = ReactDOMServer.renderToString(element);
+      var purchases = config.mapPurchases(),
+          props = {
+            user: req.session.user,
+            purchases: purchases,
+            gallery: gallery,
+            title: title
+          };
 
       res.render('app', {
         title: title,
         alerts: req.alerts,
-        react : '',
         page: 'galleryDetail',
         props: JSON.stringify(props)
       });

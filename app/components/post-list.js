@@ -34,8 +34,8 @@ var PostList = React.createClass({
 
 	componentDidMount: function(){
 
-		//Check if list is initialzied with posts
-		if(this.props.posts) return;
+		//Check if list is initialzied with posts or the `loadPosts` prop is not defined
+		if(this.props.posts || !this.props.loadPosts) return;
 
 		var self = this;
 

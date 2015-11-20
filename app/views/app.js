@@ -1,6 +1,7 @@
 var isNode = require('detect-node'),
 	React = require('react'),
 	ReactDOM = require('react-dom'),
+	global = require('../../lib/global'),
     Sidebar = require('../components/sidebar.js');
 
 

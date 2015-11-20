@@ -1,5 +1,6 @@
 var express = require('express'),
     config = require('../lib/config'),
+    global = require('../lib/global'),
     request = require('request-json'),
     router = express.Router(),
     api = request.createClient(config.API_URL),
@@ -25,7 +26,7 @@ var express = require('express'),
 router.get('/', function(req, res, next) {
 
   var title = 'All content'; 
-      purchases = mapPurchases(req.session),
+      purchases = config.mapPurchases(req.session),
       props = {
         user : req.session.user,
         purchases : purchases,
@@ -116,7 +117,7 @@ router.get('/:filter', function(req, res, next) {
 
   var props = {
     user : req.session.user,
-    purchases : mapPurchases(req.session)
+    purchases : config.mapPurchases(req.session)
   };
 
   //Load photos page
@@ -149,22 +150,5 @@ router.get('/:filter', function(req, res, next) {
 
 });
 
-function mapPurchases(session){
-
-  var purchases = [];
-
-  if (session && session.user && session.user.outlet && session.user.outlet.verified) {
-
-    purchases = session.user.outlet.purchases || [];
-
-    purchases = purchases.map(function(purchase) {
-      return purchase.post;
-    });
-
-  }
-
-  return purchases;
-
-}
 
 module.exports = router;
