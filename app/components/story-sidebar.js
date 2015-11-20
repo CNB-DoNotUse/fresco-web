@@ -15,14 +15,14 @@ var StorySidebar = React.createClass({
 
 	displayName: 'StorySidebar',
 
-	render: function() {
+	render: function() {	
 
 		return (
 			<div className="col-sm-4 profile hidden-xs">
 				<div className="container-fluid fat">
 					<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
 						<div className="meta">
-							<div className="meta-description" id="story-description">{this.props.story.caption}</div>
+							<div className="meta-description" id="story-description">{this.props.story.caption || ''}</div>
 							<StoryStats story={this.props.story} />
 						</div>
 					</div>

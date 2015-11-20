@@ -1,5 +1,24 @@
+<<<<<<< HEAD
 import React from 'react'
 import Sidebar from '../components/sidebar'
+=======
+var isNode = require('detect-node'),
+	React = require('react'),
+	ReactDOM = require('react-dom'),
+	global = require('../../lib/global'),
+    Sidebar = require('../components/sidebar.js');
+
+
+/**
+ * Gallery Detail Parent Object
+ */
+
+var App = React.createClass({
+
+	displayName: 'App',
+
+	render: function(){
+>>>>>>> 20c1f33910a609075b9407a1fddd4b04ccbafcbc
 
 export default class App extends React.Component {
 	render() {
