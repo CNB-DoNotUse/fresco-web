@@ -79,13 +79,13 @@ router.get('/promo', function(req, res, next) {
 
 router.get('/highlights', function(req, res, next) {
 
-  var  props = {
+  var title = 'Highlights',
+      props = {
         user : req.session.user,
         title:title
       },
       elm = React.createElement(highlights, props, null),
-      react = ReactDOMServer.renderToString(elm),
-      title = 'Highlights';
+      react = ReactDOMServer.renderToString(elm);
 
   res.render('app', {
     user: req.session ? req.session.user : null,
