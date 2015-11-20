@@ -1,7 +1,6 @@
-var React = require('react');
-	ReactDOM = require('react-dom'),
-	PurchaseAction = require('./actions/purchase-action'),
-	DownloadAction = require('./actions/download-action');
+import React from 'react'
+import PurchaseAction from './actions/purchase-action.js'
+import DownloadAction from './actions/purchase-action.js'
 
 /** //
 
@@ -13,13 +12,9 @@ Description : Image of the PostDetail page, contains byline and actions
  * PostDetailImage parent object
  */
 
-var PostDetailImage = React.createClass({
+export default class PostDetailImage extends React.Component {
 
-	displayName: 'PostDetailImage',
-
-	render: function() {
-
-		console.log(this.props);
+	render() {
 
 		var actions = [],
 			postMedia = ''
@@ -89,7 +84,4 @@ var PostDetailImage = React.createClass({
 
 	}
 
-});
-
-
-module.exports = PostDetailImage;
+}

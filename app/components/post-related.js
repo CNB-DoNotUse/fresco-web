@@ -1,5 +1,4 @@
-var React = require('react'),
-	ReactDOM = require('react-dom');
+import React from 'react'
 
 /** //
 
@@ -12,22 +11,20 @@ Description : Related posts at the bottom of the PostDetail view
  * @description Contains set of all other posts in the parent gallery
  */
 
-var PostRelated = React.createClass({
+export default class PostRelated extends React.Component {
 
-	displayName: 'PostRelated',
-
-	render: function() {
+	render() {
 
 		if (this.props.gallery.posts && this.props.gallery.posts.length > 1){
 
-			var posts = this.props.gallery.posts.map(function(post, i){
+			var posts = this.props.gallery.posts.map((post, i) => {
 
 				return <img 
 							className="img-link" 
 							src={formatImg(post.image, 'small')} 
 							key={i} />
 
-			});
+			})
 
 			return (
 				<div className="row related hidden-xs">
@@ -46,7 +43,4 @@ var PostRelated = React.createClass({
 
 	}
 
-});
-
-
-module.exports = PostRelated;
+}

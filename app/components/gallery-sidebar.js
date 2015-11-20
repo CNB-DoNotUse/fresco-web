@@ -1,5 +1,4 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
 
 /** //
 
@@ -11,11 +10,9 @@ Description : Column on the left of the posts grid on the gallery detail page
  * Gallery sidebar parent object
  */
 
-var GallerySidebar = React.createClass({
+export default class GallerySidebar extends React.Component {
 
-	displayName: 'GallerySidebar',
-
-	render: function() {
+	render() {
 
 		return (
 			<div className="col-sm-4 profile hidden-xs">
@@ -32,18 +29,16 @@ var GallerySidebar = React.createClass({
 		);
 	}
 
-});
+}
 
 
 /**
  * Gallery stats inside the sidebar
  */
 
-var GalleryStats = React.createClass({
+class GalleryStats extends React.Component {
 
-	displayName : 'GalleryStats',
-
-	render: function(){
+	render (){
 
 		if(!this.props.gallery.stats) return;
 
@@ -74,6 +69,4 @@ var GalleryStats = React.createClass({
 			
 		)
 	}
-});
-
-module.exports = GallerySidebar;
+}

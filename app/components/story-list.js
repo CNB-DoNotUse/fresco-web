@@ -1,6 +1,5 @@
-var React = require('react');
-	ReactDOM = require('react-dom'),
-	StoryCell = require('./story-cell.js');
+import React from 'react'
+import StoryCell from './story-cell.js'
 
 /** //
 
@@ -12,35 +11,33 @@ Description : List for a set of stories used across the site (/videos, /photos, 
  * Story List Parent Object 
  */
 
-var StoryList = React.createClass({
+export default class StoryList extends React.Component {
 
-	displayName : 'StoryList',
 
-	getInitialState: function(){
-		return {
-			stories: [],
+	constructor(props) {
+		super(props);
+		this.state = {
+			stories: []
 		}
-	},
+	}
 
-	componentDidMount: function(){
-
-		self = this;
+	componentDidMount() {
 
 		//Access parent var load method
-		this.props.loadStories(0, function(stories){
+		this.props.loadStories(0, (stories) => {
 			
 			var offset = stories ? stories.length : 0;
 
 			//Set stories from successful response
-			self.setState({
+			this.setState({
 				stories: stories,
 			});
 
-		}, this);
-	},
+		});
+	}
 
 	//Scroll listener for main window
-	scroll: function(){
+	scroll() {
 
 		var grid = this.refs.grid;
 
@@ -69,9 +66,9 @@ var StoryList = React.createClass({
 
 			}, this);
 		}
-	},
+	}
 	
-	render : function(){
+	render() {
 
 		//Check if list was initialzied with stories
 		stories = this.state.stories;
@@ -80,7 +77,7 @@ var StoryList = React.createClass({
 			rank = this.props.rank;
 
 		//Map all the stories into cells
-		var stories = stories.map(function (story, i) {
+		var stories = stories.map((story, i) => {
 
 			var purchased = purchases ? purchases.indexOf(story._id) != -1 : null;
 
@@ -92,7 +89,7 @@ var StoryList = React.createClass({
 	        		
 	      	)
 
-  		}, this);
+  		})
 
 		return (
 
@@ -103,6 +100,4 @@ var StoryList = React.createClass({
 		)		
 	}
 
-});
-
-module.exports = StoryList;
+}

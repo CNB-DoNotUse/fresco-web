@@ -24,17 +24,13 @@ router.get('/', function(req, res, next) {
         user : req.session.user,
         purchases : purchases,
         title:title
-      },
-      elm = React.createElement(content, props, null),
-      react = ReactDOMServer.renderToString(elm);
+      };
 
   res.render('app', {
     title: title,
-    user: req.session.user,
     page : 'content',
     config: config,
     alerts: req.alerts,
-    react : react,
     props : JSON.stringify(props)
   });
 
@@ -75,7 +71,6 @@ router.get('/stories', function(req, res, next) {
       };
 
   res.render('app', {
-    user: req.session.user,
     title: title,
     config: config,
     alerts: req.alerts,

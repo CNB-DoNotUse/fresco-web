@@ -1,7 +1,6 @@
-var React = require('react');
-	ReactDOM = require('react-dom'),
-	SuggestionList = require('./suggestion-list.js');
-	PostCell = require('./post-cell.js');
+import React from 'react'
+import SuggestionList from './suggestion-list.js'
+import PostCell from './post-cell.js'
 
 /** //
 
@@ -13,48 +12,39 @@ Description : List for a set of posts used across the site (/videos, /photos, /g
  * Post List Parent Object 
  */
 
-var PostList = React.createClass({
+export default class PostList extends React.Component {
 
-	displayName : 'Post List',
-
-	getInitialState: function(){
-		return {
+	constructor(props){
+		super(props);
+		this.state = {
 			offset: 0,
 			posts: [],
 			loading: false,
 		}
-	},
+	}
 
-	getDefaultProps: function(){
-		return {
-			size : 'small',
-			editable: true
-		}
-	},
-
-	componentDidMount: function(){
+	componentDidMount() {
 
 		//Check if list is initialzied with posts or the `loadPosts` prop is not defined
 		if(this.props.posts || !this.props.loadPosts) return;
 
-		var self = this;
-
 		//Access parent var load method
-		this.props.loadPosts(0, function(posts){
+		this.props.loadPosts(0, (posts) => {
 			
 			var offset = posts ? posts.length : 0;
 
 			//Set posts from successful response
-			self.setState({
+			this.setState({
 				posts: posts,
 				offset : offset
 			});
 
 		});
-	},
+
+	}
 
 	//Scroll listener for main window
-	scroll: function(){
+	scroll() {
 
 		var grid = this.refs.grid;
 
@@ -62,31 +52,28 @@ var PostList = React.createClass({
 		//and that we have a parent bind to load  more posts
 		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight) && this.props.loadPosts){
 
-			self = this;
-
 			//Set that we're loading
 			this.setState({ loading : true });
 
 			//Run load on parent call
-			this.props.loadPosts(this.state.offset, function(posts){
+			this.props.loadPosts(this.state.offset, (posts) =>{
 
 				if(!posts) return;
-
-				console.log(self.state);
 
 				var offset = self.state.posts.length + posts.length;
 
 				//Set galleries from successful response, and unset loading
-				self.setState({
-					posts: self.state.posts.concat(posts),
+				this.setState({
+					posts: this.state.posts.concat(posts),
 					offset : offset,
 					loading : false
 				});
 
 			});
 		}
-	},
-	render : function(){
+	}
+
+	render() {
 
 		//Check if list was initialzied with posts
 		if(this.props.posts != null)
@@ -99,7 +86,7 @@ var PostList = React.createClass({
 			rank = this.props.rank;
 
 		//Map all the posts into cells
-		var posts = posts.map(function (post, i) {
+		var posts = posts.map((post, i)  => {
 
 			var purchased = purchases ? purchases.indexOf(post._id) != -1 : null;
 
@@ -115,7 +102,7 @@ var PostList = React.createClass({
 	        		
 	      	)
 
-  		}, this);
+  		});
 
 		return (
 
@@ -126,6 +113,9 @@ var PostList = React.createClass({
 		)		
 	}
 
-});
+}
 
-module.exports = PostList;
+PostList.defaultProps = {
+	size : 'small',
+	editable: true
+}

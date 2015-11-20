@@ -1,26 +1,18 @@
-var React = require('react');
-	ReactDOM = require('react-dom'),
-	PurchaseAction = require('./actions/purchase-action.js'),
-	DownloadAction = require('./actions/download-action.js');
+import React from 'react'
+import PurchaseAction from './actions/purchase-action.js';
+import DownloadAction from './actions/purchase-action.js';
 
 /**
  * Single Post Cell, child of PostList
  */
 
-var PostCell = React.createClass({
+export default class PostCell extends React.Component {
 
-	displayName: 'PostCell',
+	constructor(props) {
+		super(props)
+	}
 
-	getDefaultProps: function() {
-		return {
-			sizes: {
-				large: 'col-xs-12 col-sm-6 col-lg-4',
-				small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
-			}
-		};
-	},
-
-	render : function(){
+	render() {
 
 		var timestamp = this.props.post.time_created;
 		var timeString = formatTime(this.props.post.time_created);
@@ -67,7 +59,15 @@ var PostCell = React.createClass({
 
 		)
 	}
-});
+
+};
+
+PostCell.defaultProps = {
+	sizes: {
+		large: 'col-xs-12 col-sm-6 col-lg-4',
+		small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
+	}
+}
 
 // <span className="mdi mdi-library-plus icon pull-right"></span>
 // <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
@@ -76,27 +76,23 @@ var PostCell = React.createClass({
  * Gallery Cell Stories List
  */
 
-var PostCellStories = React.createClass({
+class PostCellStories extends React.Component {
 
-	displayName : 'Post Cell Stories',
+	render() {
 
-	render : function(){
-
-		var stores = ''
+		var stories = ''
 
 		if(this.props.stories){
 
-			var stories = this.props.stories.map(function (story, i) {
+			var stories = this.props.stories.map((stories, i) => {
+		      	return (
 
-		      return (
+			        <li key={i}>
+			        	<a href={"/story/" + story._id}>{story.title}</a>
+			        </li>
 
-		        <li key={i}>
-		        	<a href={"/story/" + story._id}>{story.title}</a>
-		        </li>
-
-		      )
-
-		    });
+			    )
+	  		});
 
 		}
 
@@ -105,18 +101,16 @@ var PostCellStories = React.createClass({
 		);
 	}
 
-});
+}
 
 /**
  * Post Cell Actions
  * Description : Set of icons on the the post cell's hover
  */
 
-var PostCellActions = React.createClass({
+class PostCellActions extends React.Component {
 
-	displayName: 'Post Cell Actions',
-
-	render : function(){
+	render() {
 
 		var actions = [],
 			key = 0;
@@ -168,29 +162,6 @@ var PostCellActions = React.createClass({
 			</div>
 		);
 
-	},
-	edit: function(){
-
-		// $.ajax({
-		// 	url: '/scripts/post/gallery',
-		// 	type: 'GET',
-		// 	data: {id: post._id},
-		// 	success: function(result, status, xhr){
-		// 		if (result.err)
-		// 			return this.error(null, null, result.err);
-
-		// 		GALLERY_EDIT = result.data;
-		// 		galleryEditUpdate();
-		// 		$(".toggle-gedit").toggleClass("toggled");
-		// 	},
-		// 	error: function(xhr, status, error){
-		// 		$.snackbar({content:resolveError(error)});
-		// 	}
-		// })
-
 	}
 
-});
-
-
-module.exports = PostCell;
+}

@@ -1,5 +1,4 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react'
 
 /** //
 
@@ -11,11 +10,9 @@ Description : Column on the right of the detail post showing all the post's info
  * PostInfo parent object
  */
 
-var PostInfo = React.createClass({
+export default class PostInfo extends React.Component {
 
-	displayName: 'PostInfo',
-
-	render: function() {
+	render() {
 
 		//Init needed vars to make list
 		var post = this.props.post,
@@ -97,7 +94,4 @@ var PostInfo = React.createClass({
 		);
 	}
 
-});
-
-
-module.exports = PostInfo;
+}

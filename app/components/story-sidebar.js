@@ -1,5 +1,4 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react'
 
 /** //
 
@@ -11,11 +10,9 @@ Description : Column on the left of the posts grid on the story detail page
  * Story sidebar parent object
  */
 
-var StorySidebar = React.createClass({
+export default class StorySidebar extends React.Component {
 
-	displayName: 'StorySidebar',
-
-	render: function() {	
+	render() {	
 
 		return (
 			<div className="col-sm-4 profile hidden-xs">
@@ -32,18 +29,16 @@ var StorySidebar = React.createClass({
 		);
 	}
 
-});
+}
 
 
 /**
  * Story stats inside the sidebar
  */
 
-var StoryStats = React.createClass({
+export default class StoryStats extends React.Component {
 
-	displayName : 'StoryStats',
-
-	render: function(){
+	render() {
 
 		if(!this.props.story.stats) return;
 
@@ -74,6 +69,7 @@ var StoryStats = React.createClass({
 			
 		)
 	}
-});
+
+}
 
 module.exports = StorySidebar;

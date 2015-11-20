@@ -1,6 +1,5 @@
-var React = require('react'),
-	ReactDOM = require('react-dom'),
-	Dropdown = require('./global/dropdown');
+import React from 'react'
+import Dropdown from './global/dropdown'
 
 /** //
 
@@ -8,17 +7,9 @@ Description : Top for pages of the site
 
 // **/
 
-var TopBar = React.createClass({
+export default class TopBar extends React.Component {
 
-	displayName: 'TopBar',
-
-	getDefaultProps: function() {
-		return {
-			title: ''
-		};
-	},
-
-	render: function(){
+	render() {
 
 		var edit = '';
 
@@ -78,35 +69,36 @@ var TopBar = React.createClass({
 				{topbarItems}
 			</nav>
 		);
-	},
+	}
 
 	//Called when the user selectes a time format
-	timeToggleSelected: function(selected){
+	timeToggleSelected(selected) {
 		if (selected == 'Absolute') {
 			setTimeDisplayType('absolute');
 		}
 		else if (selected == 'Relative') {
 			setTimeDisplayType('relative');
 		}
-	},
+	}
 
 	//Called when the user selectes a time format
-	verifiedToggleSelected: function(selected){
+	verifiedToggleSelected(selected) {
 		
-	},
+	}
 
 	//Called when the user selectes a time format
-	chronToggleSelected: function(selected){
+	chronToggleSelected(selected) {
 		
-	},
+	}
 
-	toggleEdit: function(){
+	toggleEdit() {
 
 		$(".toggle-gedit").toggleClass("toggled");
 
 	}
 
-});
+}
 
-
-module.exports = TopBar;
+TopBar.defaultProps = {
+	title: ''
+}

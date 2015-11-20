@@ -1,17 +1,15 @@
-var React = require('react'),
-	ReactDOM = require('react-dom'),
-	config = require('../../lib/config');
+import React from 'react'
+
 
 /**
- * Side bar object
+ * Side bar object found across the site; inside of the top level App class
  */
-
 	
-var Sidebar = React.createClass({
+export default class Sidebar extends React.Component {
 
-	displayName: 'Sidebar',
+	render() {
 
-	render: function(){
+		console.log('Test');
 
 		var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 		
@@ -49,16 +47,15 @@ var Sidebar = React.createClass({
 		)
 	}
 
-});
+}
 
+class SideBarListItems extends React.Component {
 
-var SideBarListItems = React.createClass({
-
-	render: function(){
+	render() {
 
 		if(!this.props.user) return;
 
-		if (this.props.user.outlet || this.props.user.rank >= config.RANKS.CONTENT_MANAGER){
+		if (this.props.user.outlet || this.props.user.rank >= 1){ //CONTENT_MANAGER
 			var dispatch = <li className="sidebar-tab" onClick={this.itemClicked} data-link="/dispatch">
 								<span className="mdi mdi-map icon"></span>Dispatch
 							</li>;
@@ -111,8 +108,9 @@ var SideBarListItems = React.createClass({
 			</ul>
 			
 		)
-	},
-	itemClicked: function(event){
+	}
+
+	itemClicked(event) {
 
 		console.log(event);
 
@@ -123,6 +121,4 @@ var SideBarListItems = React.createClass({
 
 	}
 
-});
-
-module.exports = Sidebar;
+}

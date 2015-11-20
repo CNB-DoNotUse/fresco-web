@@ -4,18 +4,14 @@ import React from 'react';
  * Single Gallery Cell, child of GalleryList
  */
 
-var GalleryCell = React.createClass({
 
-	displayName : 'GalleryCell',
+export default class GalleryCell extends React.Component {
 
-	getDefaultProps: function() {
-		return {
-			//Size of the cell
-			half: false
-		};
-	},
+	constructor(props) {
+		super(props);
+	}
 
-	render : function(){
+	render() {
 
 		var timestamp = this.props.gallery.time_created;
 		var timeString = formatTime(this.props.gallery.time_created);
@@ -30,6 +26,7 @@ var GalleryCell = React.createClass({
 		}
 
 		return (
+			
 			<div className={size + " tile story"}>
 				<div className="frame"></div>
 				<div className="tile-body">
@@ -51,9 +48,18 @@ var GalleryCell = React.createClass({
 					</div>
 				</div>
 			</div>
+
 		);
+
 	}
-});
+
+}
+
+GalleryCell.defaultProps = {
+	//Size of the cell
+	half: false
+}
+
 
 // <span className="mdi mdi-library-plus icon pull-right"></span>
 // <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
@@ -62,36 +68,32 @@ var GalleryCell = React.createClass({
  * Gallery Cell Stories List
  */
 
-var GalleryCellStories = React.createClass({
+class GalleryCellStories extends React.Component {
 
-	displayName : "GalleryCellStories",
+	render (){
 
-	render : function(){
-
-		var stories = this.props.stories.map(function (story, i) {
-	      return (
-	        <li key={i}>
-	        	<a href={"/story/" + story._id}>{story.title}</a>
-	        </li>
-	      )
-	    });
+		var stories = this.props.stories.map((story, i) => {
+	      	return (
+	        	<li key={i}>
+		        	<a href={"/story/" + story._id}>{story.title}</a>
+		        </li>
+	      	)
+  		})
 
 		return (
 			<ul className="md-type-body2 story-list">{stories}</ul>
 		);
 	}
 
-});
+}
 
 /**
  * Gallery Cell Images
  */
 
-var GalleryCellImages = React.createClass({
+class GalleryCellImages extends React.Component {
 
-	displayName : "GalleryCellImages",
-
-	render : function(){
+	render (){
 
 		if (!this.props.posts || this.props.posts.length == 0){
 
@@ -159,17 +161,15 @@ var GalleryCellImages = React.createClass({
 		}
 	}
 
-});
+}
 
 /**
  * Single Gallery Cell Image Item
  */
 
-var GalleryCellImage = React.createClass({
+class GalleryCellImage extends React.Component {
 
-	displayName : 'GalleryCellImage',
-
-	render : function(){
+	render (){
 		return (
 			<div className="img">
 				<img className="img-cover"
@@ -178,6 +178,4 @@ var GalleryCellImage = React.createClass({
 			</div>
 		)
 	}
-});
-
-module.exports = GalleryCell;
+}

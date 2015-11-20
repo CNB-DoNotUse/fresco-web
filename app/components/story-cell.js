@@ -1,15 +1,12 @@
-var React = require('react');
-	ReactDOM = require('react-dom');
+import React from 'react'
 
 /**
  * Single Story Cell, child of StoryList
  */
 
-var StoryCell = React.createClass({
+export default class StoryCell extends React.Component {
 
-	displayName : 'StoryCell',
-
-	render : function(){
+	render() {
 
 		// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 
@@ -42,18 +39,16 @@ var StoryCell = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
 
 /**
  * Post Cell Images
  */
 
-var StoryCellImages = React.createClass({
+class StoryCellImages extends React.Component {
 
-	displayName : "StoryCellImages",
-
-	render : function(){
+	render() {
 
 		if (!this.props.thumbnails || this.props.thumbnails.length == 0){
 			return (
@@ -118,17 +113,15 @@ var StoryCellImages = React.createClass({
 		}
 	}
 
-});
+}
 
 /**
  * Single Post Cell Image Item
  */
 
-var StoryCellImage = React.createClass({
+class StoryCellImage extends React.Component {
 
-	displayName : 'StoryCellImage',
-
-	render : function(){
+	render() {
 		return (
 			<div className="img">
 				<img className="img-cover"
@@ -137,6 +130,5 @@ var StoryCellImage = React.createClass({
 			</div>
 		)
 	}
-});
 
-module.exports = StoryCell;
+}
