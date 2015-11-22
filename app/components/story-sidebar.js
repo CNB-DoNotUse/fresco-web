@@ -47,12 +47,12 @@ class StoryStats extends React.Component {
 		
 		photos = <li>
 					<span className="mdi mdi-file-image-box icon"></span>
-					<span>{this.props.story.stats.photos + ' photos'}</span>
+					<span>{this.props.story.stats.photos} {this.props.story.stats.photos > 1 ? 'photos' : 'photo'}</span>
 				</li>
 		
 		videos = <li>
 					<span className="mdi mdi-movie icon"></span>
-					<span>{this.props.story.stats.videos + ' videos'}</span>
+					<span>{this.props.story.stats.videos} {this.props.story.stats.videos > 1 ? 'videos' : 'video'}</span>
 				</li>
 		
 
