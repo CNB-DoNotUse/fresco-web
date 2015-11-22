@@ -46,7 +46,7 @@ class StoryDetail extends React.Component {
 
 
  	//Returns array of posts with offset and callback, used in child PostList
- 	loadPosts (passedOffset, callback) {
+ 	loadPosts(passedOffset, callback) {
 
  		var endpoint = '/v1/story/posts',
  				params = {
