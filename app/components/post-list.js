@@ -21,6 +21,7 @@ export default class PostList extends React.Component {
 			posts: [],
 			loading: false,
 		}
+		this.scroll = this.scroll.bind(this);
 	}
 
 	componentDidMount() {
@@ -60,7 +61,7 @@ export default class PostList extends React.Component {
 
 				if(!posts) return;
 
-				var offset = self.state.posts.length + posts.length;
+				var offset = this.state.posts.length + posts.length;
 
 				//Set galleries from successful response, and unset loading
 				this.setState({
@@ -69,7 +70,7 @@ export default class PostList extends React.Component {
 					loading : false
 				});
 
-			});
+			}, this);
 		}
 	}
 
@@ -106,8 +107,13 @@ export default class PostList extends React.Component {
 
 		return (
 
-			<div className="container-fluid fat grid" ref='grid' onScroll={this.props.scrollable ? this.scroll : null}>
-				<div className="row tiles" id="posts">{posts}</div>
+			<div 
+				className="container-fluid fat grid" 
+				ref='grid' 
+				onScroll={this.props.scrollable ? this.scroll : null} >
+
+					<div className="row tiles" id="posts">{posts}</div>
+
 			</div>
 
 		)		

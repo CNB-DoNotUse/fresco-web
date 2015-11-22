@@ -27,8 +27,6 @@ class Content extends React.Component {
 
 	render() {
 
-		console.log('Test');
-
 		return (
 			<App user={this.props.user}>
 				<TopBar 
@@ -41,7 +39,7 @@ class Content extends React.Component {
 					rank={this.props.user.rank}
 					purchases={this.props.purchases}
 					size='small'
-					scrollabe={true} />
+					scrollable={true} />
 			</App>
 		);
 
