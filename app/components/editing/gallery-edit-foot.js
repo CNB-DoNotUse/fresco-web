@@ -64,7 +64,7 @@ export default class GalleryEditFoot extends React.Component {
 
 	clear() {
 
-		gallery = this.state.gallery;
+		var gallery = this.state.gallery;
 
 		gallery.caption = '';
 		gallery.tags = [];

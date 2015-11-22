@@ -21,6 +21,7 @@
     "formidable": "^1.0.17",
     "history": "^1.13.1",
     "jquery": "^2.1.4",
+    "lodash": "^3.10.1",
     "mdi": "~1.0.62-beta",
     "moment": "~2.10.3",
     "morgan": "^1.6.1",

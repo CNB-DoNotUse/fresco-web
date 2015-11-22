@@ -17,7 +17,7 @@ export default class TopBar extends React.Component {
 		
 		if (this.props.editable) {
 			topbarItems.push(
-				<a className="mdi mdi-pencil icon pull-right hidden-xs toggle-gedit toggler"
+				<a className="mdi mdi-pencil icon pull-right hidden-xs toggle-edit toggler"
 					key="edit"
 					onClick={this.toggleEdit}></a>
 			);
@@ -93,7 +93,7 @@ export default class TopBar extends React.Component {
 
 	toggleEdit() {
 
-		$(".toggle-gedit").toggleClass("toggled");
+		$(".toggle-edit").toggleClass("toggled");
 
 	}
 

@@ -49,7 +49,6 @@ export default class PostList extends React.Component {
 	//Scroll listener for main window
 	scroll() {
 
-		console.log('test');
 
 		var grid = this.refs.grid;
 
@@ -88,8 +87,6 @@ export default class PostList extends React.Component {
 	}
 
 	render() {
-
-		console.log(this.props);
 
 		var purchases = this.props.purchases,
 			rank = this.props.rank;

@@ -20,7 +20,7 @@ export default class StoryCell extends React.Component {
 					<div className="hover">
 						<p className="md-type-body1">{this.props.story.caption}</p>
 						<ul className="md-type-body2">
-							<li>{this.props.story.gallery_count + ' gallery' + (this.props.story.gallery_count == 1 ? 's' : '')}</li>
+							<li>{this.props.story.gallery_count + ' ' + (this.props.story.gallery_count == 1 ? 'gallery' : 'galleries')}</li>
 						</ul>
 					</div>
 					<StoryCellImages thumbnails={this.props.story.thumbnails} />

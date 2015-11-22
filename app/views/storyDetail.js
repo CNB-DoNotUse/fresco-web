@@ -23,6 +23,7 @@ class StoryDetail extends React.Component {
  			<App user={this.props.user}>
  				<TopBar 
  					title={this.props.story.title}
+					editable={true}
  					timeToggle={true}
  					chronToggle={true} />
  				<StorySidebar story={this.props.story} />
@@ -35,9 +36,9 @@ class StoryDetail extends React.Component {
 	 					editable={false}
 	 					size='large' />
 				</div>
-				{/*<StoryEdit 
-					Story={this.props.Story}
-					user={this.props.user}	/> */}
+				<StoryEdit 
+					story={this.props.story}
+					user={this.props.user}	/>
  			</App>
  		);
 

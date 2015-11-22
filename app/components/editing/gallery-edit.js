@@ -36,9 +36,9 @@ export default class GalleryEdit extends React.Component {
 
  		return (
  			<div>
-	 			<div className="dim toggle-gedit">
+	 			<div className="dim toggle-edit">
 	 			</div>
-	 			<div className="edit panel panel-default toggle-gedit gedit">
+	 			<div className="edit panel panel-default toggle-edit gedit">
 	 				<div className="col-xs-12 col-lg-12 edit-new dialog">
 	 					<GalleryEditHead />
 	 					<GalleryEditFoot 
@@ -177,13 +177,13 @@ class GalleryEditHead extends React.Component {
 		return (
 			<div className="dialog-head">
 				<span className="md-type-title">Edit Gallery</span>
-				<span className="mdi mdi-close pull-right icon toggle-gedit toggler" onClick={this.hide}></span>
+				<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
 			</div>
 		);
 	}
 
 	hide() {
-		$(".toggle-gedit").toggleClass("toggled");
+		$(".toggle-edit").toggleClass("toggled");
 	}
 
 }
