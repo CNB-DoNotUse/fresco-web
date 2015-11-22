@@ -46,7 +46,7 @@ router.get('/galleries', function(req, res, next) {
       props = {
         user : req.session.user,
         title: title
-      }
+      };
 
   res.render('app', {
     user: req.session.user,

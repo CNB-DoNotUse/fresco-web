@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import App from './app.js'
 import PostList from './../components/post-list.js'
 import TopBar from './../components/topbar.js'
-import App from './app.js'
 
 /** //
 
-Description : View page for content
+Description : View page for all content
 
 // **/
 
@@ -14,12 +14,11 @@ Description : View page for content
  * Content Parent Object (composed of PostList and Navbar)
  */
 
-
 class Content extends React.Component {
 
 	constructor(props) {
 		super(props);
-		return {
+		this.state = {
 			purchases : []
 		}
 
@@ -27,6 +26,8 @@ class Content extends React.Component {
 	}
 
 	render() {
+
+		console.log('Test');
 
 		return (
 			<App user={this.props.user}>

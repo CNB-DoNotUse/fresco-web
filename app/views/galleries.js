@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import App from './app.js'
 import GalleryList from './../components/gallery-list.js'
 import TopBar from './../components/topbar.js'
-import App from './app.js'
 
 /**
  * Galleries Parent Object (composed of GalleryList and Navbar) 
@@ -14,7 +14,9 @@ import App from './app.js'
 	render() {
 		return (
 			<App user={this.props.user}>
-				<TopBar title="Galleries" />
+				<TopBar 
+					title="Galleries"
+					timeToggle={true} />
 				<GalleryList 
 					withList={false}
 					highlighted={false} />
@@ -25,6 +27,7 @@ import App from './app.js'
 }
 
 ReactDOM.render(
-  <Galleries user={window.__initialProps__.user}/>,
+  <Galleries 
+  	user={window.__initialProps__.user} />,
   document.getElementById('app')
 );
