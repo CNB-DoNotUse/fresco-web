@@ -51,7 +51,7 @@ class GalleryStats extends React.Component {
 		if(this.props.gallery.stats.photos){
 			photos = <li>
 						<span className="mdi mdi-file-image-box icon"></span>
-						{this.props.gallery.stats.photos}photos
+						<span>{this.props.gallery.stats.photos} {this.props.gallery.stats.photos > 1 ? 'photos' : 'photo'}</span>
 					</li>
 		}
 		if(this.props.gallery.stats.videos){
