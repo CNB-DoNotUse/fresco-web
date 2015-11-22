@@ -36,13 +36,13 @@ export default class StorySidebar extends React.Component {
  * Story stats inside the sidebar
  */
 
-export default class StoryStats extends React.Component {
+class StoryStats extends React.Component {
 
 	render() {
 
 		if(!this.props.story.stats) return;
 
-		var photos = ''
+		var photos = '',
 			videos = '';
 
 		if(this.props.story.stats.photos){
@@ -71,5 +71,3 @@ export default class StoryStats extends React.Component {
 	}
 
 }
-
-module.exports = StorySidebar;

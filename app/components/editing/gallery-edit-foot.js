@@ -28,7 +28,7 @@ export default class GalleryEditFoot extends React.Component {
 		if(this.state.gallery.imported) 
 			addMore = <button id="gallery-add-more-button" type="button" onClick={this.addMore} className="btn btn-flat">Add More</button>
 
-		inputStyle = {
+		var inputStyle = {
 			display: 'none'
 		};
 
