@@ -9,8 +9,6 @@ export default class Sidebar extends React.Component {
 
 	render() {
 
-		console.log('Test');
-
 		var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 		
 		return (
@@ -123,15 +121,5 @@ class SideBarListItems extends React.Component {
 		window.location.assign(link);
 	}
 
-	itemClicked(event) {
-
-		console.log(event);
-
-		var link = event.target.dataset.link;
-
-		if(link && typeof window !== 'undefined')
-			window.location.assign(link);
-
-	}
 
 }
