@@ -24,6 +24,10 @@ export default class GalleryEditBody extends React.Component {
 		this.updatedLocation = this.updatedLocation.bind(this);
 	}
 
+	componentDidMount() {
+	    $.material.init();
+	}
+
 	render() {
 
 		var highlightCheckbox = '';

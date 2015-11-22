@@ -27,7 +27,11 @@ export default class TopBarAdmin extends React.Component {
 	 	if(this.props.activeTab != nextProps.activeTab) {
 	 		$('.tab, .tab-admin').removeClass('toggled');
 	 		$('[data-tab="' + nextProps.activeTab + '"]').addClass('toggled');
-	 	}     
+	 	}
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+	 	$.material.init();
 	}
 
 	render() {
