@@ -1,4 +1,5 @@
 var views = {
+  admin: './app/views/admin.js',
   highlights: './app/views/highlights.js',
   galleries: './app/views/galleries.js',
   photos: './app/views/photos.js',

@@ -13,12 +13,20 @@ router.get('/', function(req, res, next) {
       error_message: config.ERR_PAGE_MESSAGES[403]
     });
 
-  res.render('admin', {
+  var title = 'Admin',
+    props = {
+    user : req.session.user,
+    title: title
+  };
+
+  res.render('app', {
     user: req.session.user,
-    title: 'Admin',
+    title: title,
     config: config,
     alerts: req.alerts,
-		page : 'admin'
+		page: 'admin',
+    props: JSON.stringify(props)
+
   });
 
 });
