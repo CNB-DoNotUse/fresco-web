@@ -14,8 +14,9 @@ router.get('/:id', function(req, res, next) {
   request({
       url: config.API_URL + '/v1/story/get?id=' + req.params.id,
       json: true
-    },
-    function(err, response, body) {
+    }, function(err, response, body) {
+
+      console.log(body.data)
 			
       if (err || !body || body.err){
         
@@ -27,15 +28,13 @@ router.get('/:id', function(req, res, next) {
 
 			}
 
-      console.log(body.data);
-
 			var story = body.data,
           purchases = config.mapPurchases();
           props = {
             story: body.data,
             purchases: config.mapPurchases(),
             user: req.session.user
-          }
+          };
 
 			res.render('app', {
         props: JSON.stringify(props),

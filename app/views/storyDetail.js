@@ -14,6 +14,7 @@ class StoryDetail extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.loadPosts = this.loadPosts.bind(this);
 	}
 
  	render() {
@@ -29,16 +30,49 @@ class StoryDetail extends React.Component {
 	 				<PostList
 	 					rank={this.props.user.rank}
 	 					purchases={this.props.purchases}
-	 					posts={this.props.story.posts}
-	 					scrollable={false}
+	 					loadPosts={this.loadPosts}
+	 					scrollable={true}
 	 					editable={false}
-	 					size='small' />
+	 					size='large' />
 				</div>
 				{/*<StoryEdit 
 					Story={this.props.Story}
 					user={this.props.user}	/> */}
  			</App>
  		);
+
+ 	}
+
+
+ 	//Returns array of posts with offset and callback, used in child PostList
+ 	loadPosts (passedOffset, callback) {
+
+ 		var endpoint = '/v1/story/posts',
+ 				params = {
+ 					id: this.props.story._id,
+ 					limit: 10,
+ 					offset: passedOffset,
+ 				};
+
+ 		$.ajax({
+ 			url:  API_URL + endpoint,
+ 			type: 'GET',
+ 			data: params,
+ 			dataType: 'json',
+ 			success: (response, status, xhr) => {
+
+ 				//Do nothing, because of bad response
+ 				if(!response.data || response.err)
+ 					callback([]);
+ 				else
+ 					callback(response.data);
+
+ 			},
+ 			error: (xhr, status, error) => {
+ 				$.snackbar({content: resolveError(error)});
+ 			}
+
+ 		});
 
  	}
 

@@ -274,7 +274,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
     user-select: text; }
   .meta .meta-list > ul {
     margin-bottom: 0;
-    padding: 0;
+    padding: 0 24px;
     list-style-type: none; }
     .meta .meta-list > ul > li {
       padding: 8px 0;
@@ -327,9 +327,11 @@ div.chips ul.suggestions {
   z-index: 19;
   background: white;
   list-style: none;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16); }
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
+  padding: 0; }
   div.chips ul.suggestions li {
-    padding: 0 0 0 3px; }
+    padding: 5px;
+    font-size: 16px; }
 div.chips ul.chips {
   padding: 8px 0 0; }
   div.chips ul.chips > li.chip {
@@ -569,18 +571,18 @@ div.list {
       padding: 0; }
     .sidebar > div:first-child > ul > ul > li {
       padding-left: 60px; }
-    .sidebar > div:first-child > ul li a {
+    .sidebar > div:first-child > ul li {
       margin: 0 -20px;
       padding: 8px 20px;
       line-height: 22px;
       cursor: pointer; }
-      .sidebar > div:first-child > ul li a > span {
+      .sidebar > div:first-child > ul li > span {
         margin-right: 20px; }
-    .sidebar > div:first-child > ul li a:hover {
+    .sidebar > div:first-child > ul li:hover {
       background-color: #f5f5f5; }
-    .sidebar > div:first-child > ul li a.active {
+    .sidebar > div:first-child > ul li.active {
       font-weight: 500; }
-      .sidebar > div:first-child > ul li a.active > span {
+      .sidebar > div:first-child > ul li.active > span {
         color: #0047bb; }
   .sidebar > div:last-child {
     position: absolute;

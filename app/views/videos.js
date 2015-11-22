@@ -65,7 +65,7 @@ class Videos extends React.Component {
 			}
 
 		});
-d
+
 	}
 
 }

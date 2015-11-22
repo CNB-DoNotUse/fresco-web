@@ -19,7 +19,7 @@ export default class StorySidebar extends React.Component {
 				<div className="container-fluid fat">
 					<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
 						<div className="meta">
-							<div className="meta-description" id="story-description">{this.props.story.caption || ''}</div>
+							<div className="meta-description" id="story-description">{this.props.story.caption || 'No Description'}</div>
 							<StoryStats story={this.props.story} />
 						</div>
 					</div>
@@ -44,19 +44,17 @@ class StoryStats extends React.Component {
 
 		var photos = '',
 			videos = '';
-
-		if(this.props.story.stats.photos){
-			photos = <li>
-						<span className="mdi mdi-file-image-box icon"></span>
-						{this.props.story.stats.photos}photos
-					</li>
-		}
-		if(this.props.story.stats.videos){
-			videos = <li>
-						<span className="mdi mdi-movie icon"></span>
-						{this.props.story.stats.videos + ' video'}
-					</li>
-		}
+		
+		photos = <li>
+					<span className="mdi mdi-file-image-box icon"></span>
+					<span>{this.props.story.stats.photos + ' photos'}</span>
+				</li>
+		
+		videos = <li>
+					<span className="mdi mdi-movie icon"></span>
+					<span>{this.props.story.stats.videos + ' videos'}</span>
+				</li>
+		
 
 		return (
 

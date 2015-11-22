@@ -18,8 +18,9 @@ export default class PostList extends React.Component {
 		super(props);
 		this.state = {
 			offset: 0,
-			posts: [],
+			posts: this.props.posts || [],
 			loading: false,
+			scrollable: this.props.scrollable || false
 		}
 		this.scroll = this.scroll.bind(this);
 	}
@@ -32,9 +33,10 @@ export default class PostList extends React.Component {
 		//Access parent var load method
 		this.props.loadPosts(0, (posts) => {
 			
+			//Update offset based on psts from callaback
 			var offset = posts ? posts.length : 0;
 
-			//Set posts from successful response
+			//Set posts & callback from successful response
 			this.setState({
 				posts: posts,
 				offset : offset
@@ -46,6 +48,8 @@ export default class PostList extends React.Component {
 
 	//Scroll listener for main window
 	scroll() {
+
+		console.log('test');
 
 		var grid = this.refs.grid;
 
@@ -59,7 +63,16 @@ export default class PostList extends React.Component {
 			//Run load on parent call
 			this.props.loadPosts(this.state.offset, (posts) =>{
 
-				if(!posts) return;
+				//Disables scroll, and returns nil if posts are nill
+				if(!posts || posts.length == 0){ 
+					
+					this.setState({
+						scrollable: false
+					});
+
+					return;
+
+				}
 
 				var offset = this.state.posts.length + posts.length;
 
@@ -76,18 +89,13 @@ export default class PostList extends React.Component {
 
 	render() {
 
-		//Check if list was initialzied with posts
-		if(this.props.posts != null)
-			posts = this.props.posts;
-		//Otherwise use the state posts
-		else
-			posts = this.state.posts;
+		console.log(this.props);
 
 		var purchases = this.props.purchases,
 			rank = this.props.rank;
 
 		//Map all the posts into cells
-		var posts = posts.map((post, i)  => {
+		var posts = this.state.posts.map((post, i)  => {
 
 			var purchased = purchases ? purchases.indexOf(post._id) != -1 : null;
 
@@ -110,7 +118,7 @@ export default class PostList extends React.Component {
 			<div 
 				className="container-fluid fat grid" 
 				ref='grid' 
-				onScroll={this.props.scrollable ? this.scroll : null} >
+				onScroll={this.state.scrollable ? this.scroll : null} >
 
 					<div className="row tiles" id="posts">{posts}</div>
 

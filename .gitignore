@@ -3,3 +3,4 @@ sessions/
 public/vendor/
 public/javascripts/pages/
 app/server/
+*.scssc
