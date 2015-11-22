@@ -48,7 +48,7 @@ class StoryStats extends React.Component {
 		if(this.props.story.stats.photos){
 			photos = <li>
 						<span className="mdi mdi-file-image-box icon"></span>
-						{this.props.story.stats.photos}photos
+						<span>{this.props.story.stats.photos} {this.props.story.stats.photos > 1 ? 'photos' : 'photo'}</span>
 					</li>
 		}
 		if(this.props.story.stats.videos){
