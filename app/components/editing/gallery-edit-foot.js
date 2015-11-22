@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 /**
  * Gallery Edit Foot component
  * @description Contains all the interaction buttons

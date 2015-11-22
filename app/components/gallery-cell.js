@@ -70,7 +70,7 @@ GalleryCell.defaultProps = {
 
 class GalleryCellStories extends React.Component {
 
-	render (){
+	render() {
 
 		var stories = this.props.stories.map((story, i) => {
 	      	return (
@@ -93,7 +93,7 @@ class GalleryCellStories extends React.Component {
 
 class GalleryCellImages extends React.Component {
 
-	render (){
+	render() {
 
 		if (!this.props.posts || this.props.posts.length == 0){
 
@@ -169,7 +169,7 @@ class GalleryCellImages extends React.Component {
 
 class GalleryCellImage extends React.Component {
 
-	render (){
+	render() {
 		return (
 			<div className="img">
 				<img className="img-cover"

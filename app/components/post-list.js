@@ -14,7 +14,7 @@ Description : List for a set of posts used across the site (/videos, /photos, /g
 
 export default class PostList extends React.Component {
 
-	constructor(props){
+	constructor(props) {
 		super(props);
 		this.state = {
 			offset: 0,

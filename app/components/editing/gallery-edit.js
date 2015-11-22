@@ -1,6 +1,5 @@
 import React from 'react'
 import GalleryEditBody from './gallery-edit-body.js'
-import GalleryEditFoot from './gallery-edit-foot.js'
 
 /** //
 
@@ -29,7 +28,7 @@ export default class GalleryEdit extends React.Component {
 
 		if(!this.props.user) return;
 
- 		style = {
+ 		var style = {
  			position: 'absolute',
  			top: '-100px'
  		};
@@ -41,10 +40,6 @@ export default class GalleryEdit extends React.Component {
 	 			<div className="edit panel panel-default toggle-gedit gedit">
 	 				<div className="col-xs-12 col-lg-12 edit-new dialog">
 	 					<GalleryEditHead />
-	 					<GalleryEditFoot 
-	 						updateGallery={this.updateGallery}
-	 						saveGallery={this.saveGallery}
-	 						gallery={this.state.gallery} />
 	 					<GalleryEditBody 
 	 						gallery={this.state.gallery}
 	 						user={this.props.user}

@@ -31,7 +31,7 @@ export default class EditMap extends React.Component {
 		};
 
 		//Instantiate google maps object
-		map = new google.maps.Map(
+		var map = new google.maps.Map(
 			document.getElementById('gallery-map-canvas'), 
 			mapOptions
 		);
@@ -47,7 +47,7 @@ export default class EditMap extends React.Component {
 		};
 
 		//Instantiate polygon
-		polygon = new google.maps.Polygon({
+		var polygon = new google.maps.Polygon({
 					paths: [],
 					strokeColor: "#FFB500",
 					strokeOpacity: 0.8,
@@ -58,7 +58,7 @@ export default class EditMap extends React.Component {
 				});
 
 		//Set default marker to NYC
-		marker = new google.maps.Marker({
+		var marker = new google.maps.Marker({
 			position: new google.maps.LatLng(40.7, -74),
 			map: map,
 			icon: markerImage

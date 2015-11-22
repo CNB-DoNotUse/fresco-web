@@ -12,6 +12,10 @@ Description : Column on the left of the posts grid on the gallery detail page
 
 export default class GallerySidebar extends React.Component {
 
+	constructor(props) {
+		super(props);
+	}
+
 	render() {
 
 		return (
@@ -31,18 +35,17 @@ export default class GallerySidebar extends React.Component {
 
 }
 
-
 /**
  * Gallery stats inside the sidebar
  */
 
 class GalleryStats extends React.Component {
 
-	render (){
+	render() {
 
 		if(!this.props.gallery.stats) return;
 
-		var photos = ''
+		var photos = '',
 			videos = '';
 
 		if(this.props.gallery.stats.photos){

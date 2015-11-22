@@ -1,16 +1,20 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import TopBar from './../components/topbar.js'
-import PostList from './../components/post-list.js'
-import GallerySidebar from './../components/gallery-sidebar.js'
-import GalleryEdit from './../components/editing/gallery-edit.js'
-import App from './app.js'
+import TopBar from './../components/topbar'
+import PostList from './../components/post-list'
+import GallerySidebar from './../components/gallery-sidebar'
+import GalleryEdit from './../components/editing/gallery-edit'
+import App from './app'
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
  */
 
 class GalleryDetail extends React.Component {
+
+	constructor(props) {
+		super(props);
+	}
 
 	render() {
 

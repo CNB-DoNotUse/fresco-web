@@ -5,7 +5,7 @@ import React from 'react'
  * @description Post element that is wrapped inside container slick usually
  */
 
-class EditPostextends extends React.Components {
+export default class EditPost extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -21,7 +21,7 @@ class EditPostextends extends React.Components {
 	render() {
 
 		//Check if we're reading from a file, and we have the file's source
-		if(this.props.file && this.props.source){
+		if(this.props.file && this.props.source) {
 
 			if (this.props.file.type.indexOf('video') !== -1) { //video
 
@@ -47,7 +47,7 @@ class EditPostextends extends React.Components {
 				)
 			}	
 		}
-		else if(this.props.post.video){
+		else if(this.props.post.video) {
 
 			return (
 				<video width="100%" height="100%" data-id={this.props.post._id} controls>
@@ -59,7 +59,7 @@ class EditPostextends extends React.Components {
 			)
 
 		}
-		else{
+		else {
 
 			console.log(this.props);
 			
@@ -75,6 +75,6 @@ class EditPostextends extends React.Components {
 
 }
 
-EditPostextends.defaultProps = {
+EditPost.defaultProps = {
 	post: {}
 }
