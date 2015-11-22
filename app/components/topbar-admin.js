@@ -50,13 +50,13 @@ export default class TopBarAdmin extends React.Component {
 					<input type="text" className="form-control twitter-import" placeholder="Link" />
 				</div>
 				<div className="tab-control">
-					<button className="btn btn-flat tab-admin" data-tab="assignments" onClick={this.setTab}>
+					<button className="btn btn-flat btn-ink tab-admin" data-tab="assignments" onClick={this.setTab}>
 						Assignments
 					</button>
-					<button className="btn btn-flat tab-admin"  data-tab="submissions" onClick={this.setTab}>
+					<button className="btn btn-flat btn-ink tab-admin"  data-tab="submissions" onClick={this.setTab}>
 						Submissions
 					</button>
-					<button className="btn btn-flat tab-admin" data-tab="imports" onClick={this.setTab}>
+					<button className="btn btn-flat btn-ink tab-admin" data-tab="imports" onClick={this.setTab}>
 						Imports
 					</button>
 				</div>
