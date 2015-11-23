@@ -20,11 +20,7 @@ export default class GalleryEditByline extends React.Component {
 		if (post.meta && post.meta.twitter) {
 
 			var isHandleByline = post.byline.indexOf('@') == 0;
-
-			if (isHandleByline)
-				byline = post.meta.twitter.handle;
-			else 
-				byline = post.meta.twitter.user_name;
+			var byline = isHandleByline ? post.meta.twitter.handle : post.meta.twitter.user_name;
 
 			return (
 
