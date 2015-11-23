@@ -13,8 +13,11 @@ export default class AdminBody extends React.Component {
 
 		this.setActiveTab = this.setActiveTab.bind(this);
 		this.setActiveSubmission = this.setActiveSubmission.bind(this);
+		this.spliceCurrentSubmission = this.spliceCurrentSubmission.bind(this);
 
 		this.skip = this.skip.bind(this);
+		this.verify = this.verify.bind(this);
+		this.remove = this.remove.bind(this);
 		
 	}
 
@@ -53,8 +56,48 @@ export default class AdminBody extends React.Component {
 
 	}
 
-	skip(cb) {
+	spliceCurrentSubmission() {
+		var next_index = 0;
+		for (var index in this.props.submissions) {
+			if (this.state.activeSubmission._id == this.props.submissions[index]._id) {
 
+				if (index == (this.props.submissions.length - 1))
+					next_index = index - 1;
+				else
+					next_index = index;
+				
+				if(this.props.submissions.length == 1) {
+					this.props.submissions = []
+				} else {
+					this.props.submissions.splice(index, 1);
+				}
+
+				break;
+			}
+		}
+		this.setActiveSubmission(this.props.submissions[next_index]._id);
+	}
+
+	remove(cb) {
+		$.ajax({
+			url: '/scripts/gallery/remove',
+			method: 'post',
+			contentType: "application/json",
+			data: JSON.stringify({
+				id: this.state.activeSubmission._id
+			}),
+			dataType: 'json',
+			success: (result, status, xhr) => {
+				cb(null, this.state.activeSubmission._id);
+				this.spliceCurrentSubmission();
+			},
+			error: (xhr, status, error) => {
+				cb(error)
+			}
+		});
+	}
+
+	skip(cb) {
 		$.ajax({
 			url: '/scripts/gallery/skip',
 			method: 'post',
@@ -64,27 +107,32 @@ export default class AdminBody extends React.Component {
 			}),
 			dataType: 'json',
 			success: (result, status, xhr) => {
-				var next_index = 0;
-				for (var index in this.props.submissions) {
-					if (this.state.activeSubmission._id == this.props.submissions[index]._id) {
-
-						if (index == (this.props.submissions.length - 1))
-							next_index = index - 1;
-						else
-							next_index = index;
-						
-						this.props.submissions.splice(index, 1);
-
-						break;
-					}
-				}
-				this.setActiveSubmission(this.props.submissions[next_index]._id);
 				cb(null, this.state.activeSubmission._id);
+				this.spliceCurrentSubmission();
 			},
 			error: (xhr, status, error) => {
 				cb(error)
 			}
 		});
+	}
+
+	verify(options, cb) {
+
+		$.ajax({
+			url: '/scripts/gallery/verify',
+			method: 'post',
+			contentType: "application/json",
+			data: JSON.stringify(options),
+			dataType: 'json',
+			success: (result, status, xhr) => {
+				cb(null, options.id);
+				this.spliceCurrentSubmission();
+			},
+			error: (xhr, status, error) => {
+				cb(error)
+			}
+		});
+
 	}
 
 	render() {
@@ -106,7 +154,9 @@ export default class AdminBody extends React.Component {
 						<SubmissionEdit
 						hasActiveSubmission={this.state.hasActiveSubmission}
 						activeSubmission={this.state.activeSubmission}
-						skip={this.skip} />
+						skip={this.skip}
+						verify={this.verify}
+						remove={this.remove} />
 					</div>
 				</div>
 			</div>
