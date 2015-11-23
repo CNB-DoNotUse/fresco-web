@@ -1,4 +1,5 @@
 import React from 'react'
+import StoryEditStats from './story-edit-stats'
 
 export default class StoryEdit extends React.Component {
 
@@ -57,6 +58,10 @@ export default class StoryEdit extends React.Component {
 		this.hide();
 	}
 
+	componentDidMount() {
+		$.material.init();     
+	}
+
 	render() {
 		return (
 			<div>
@@ -64,25 +69,7 @@ export default class StoryEdit extends React.Component {
 				</div>
 				<div className="edit panel panel-default toggle-edit">
 					<div className="col-lg-4 visible-lg edit-current">
-						<div className="meta">
-							<div id="story-edit-caption" className="meta-description"></div>
-							<div className="meta-list">
-								<ul className="md-type-subhead">
-									<li>
-										<span className="mdi mdi-clock icon"></span>
-										<span id="story-edit-date">{timestampToDate(this.props.story.time_created)}</span>
-									</li>
-									<li>
-										<span className="mdi mdi-file-image-box icon"></span>
-										<span id="story-edit-photo-num">{this.props.story.stats.photos} {this.props.story.stats.photos == 1 ? 'photo' : 'photos'}</span>
-									</li>
-									<li>
-										<span className="mdi mdi-movie icon"></span>
-										<span id="story-edit-video-num">{this.props.story.stats.videos} {this.props.story.stats.videos == 1 ? 'video' : 'videos'}</span>
-									</li>
-								</ul>
-							</div>
-						</div>
+						<StoryEditStats story={this.props.story} />
 					</div>
 					<div className="col-xs-12 col-lg-8 edit-new dialog">
 						<div className="dialog-head">
