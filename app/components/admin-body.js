@@ -31,6 +31,9 @@ export default class AdminBody extends React.Component {
 	 	if(this.props.activeTab != prevProps.activeTab) {
 	 		this.setActiveTab(this.props.activeTab);
 	 	}
+	 	if(prevProps.submissions.length == 0 && this.props.submissions.length && !this.state.hasActiveSubmission) {
+	 		this.setActiveSubmission(this.props.submissions[0]._id);
+	 	}
 	}	
 
 	setActiveTab(tab) {

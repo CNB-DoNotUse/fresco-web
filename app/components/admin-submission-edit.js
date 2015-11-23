@@ -1,6 +1,7 @@
 import React from 'react'
 import Slider from 'react-slick'
 import Tag from './editing/tag'
+import EditMap from './editing/edit-map'
 
 export default class AdminSubmissionEdit extends React.Component {
 	constructor(props) {
@@ -195,7 +196,6 @@ export default class AdminSubmissionEdit extends React.Component {
 				.click(() => {
 					window.open('/gallery/' + id);
 				});
-
 		});
 	}
 
@@ -229,6 +229,7 @@ export default class AdminSubmissionEdit extends React.Component {
 			});
 
 		}
+
 
 		return (
 			<div className="dialog">
@@ -287,9 +288,7 @@ export default class AdminSubmissionEdit extends React.Component {
 						<div className="form-group-default">
 							<input type="text" className="form-control floating-label google-autocomplete submission-location" placeholder=" " disabled />
 						</div>
-						<div className="submission-map-container">
-							Just pretend there is a map here ok
-						</div>
+						<EditMap gallery={this.state.activeSubmission} />
 					</div>
 				</div>
 				<div className="dialog-foot">
