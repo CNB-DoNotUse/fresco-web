@@ -1,6 +1,6 @@
 var express = require('express'),
-  config = require('../lib/config');
-var router = express.Router();
+    config = require('../lib/config'),
+    router = express.Router();
 
 /**
  * Master dispatch page
@@ -23,10 +23,16 @@ router.get('/', function(req, res, next) {
 
   }
 
+  var props = {
+    user: req.session.user,
+    title: 'Dispatch'
+  }
+
   //Render dispatch page
-  res.render('dispatch', {
+  res.render('app', {
     title: 'Dispatch',
     user: req.session.user,
+    props: JSON.stringify(props),
     config: config,
     alerts: req.alerts,
     page : 'dispatch'

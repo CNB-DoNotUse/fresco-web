@@ -9,7 +9,8 @@ var views = {
   storyDetail: './app/views/storyDetail.js',
   galleryDetail: './app/views/galleryDetail.js',
   postDetail: './app/views/postDetail.js',
-  storyDetail: './app/views/storyDetail.js'
+  storyDetail: './app/views/storyDetail.js',
+  dispatch: './app/views/dispatch.js'
 }
 
 module.exports = [

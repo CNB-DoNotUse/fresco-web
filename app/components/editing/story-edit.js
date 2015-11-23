@@ -1,5 +1,4 @@
 import React from 'react'
-import _ from 'lodash'
 
 export default class StoryEdit extends React.Component {
 
