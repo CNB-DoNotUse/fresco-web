@@ -483,7 +483,7 @@ var PAGE_Admin = {
 				for (var index in gallery.tags)
 					PAGE_Admin.submissionTags.append(makeTag('#' + gallery.tags[index]));
 
-			if (gallery.posts){
+			if (gallery.posts) {
 				for (var index in gallery.posts){
 					if (gallery.posts[index].video)
 						PAGE_Admin.submissionImages.append('\
