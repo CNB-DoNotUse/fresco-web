@@ -22,7 +22,7 @@ export default class SubmissionListItem extends React.Component {
                             
         for (var i in submission.posts){
             if (submission.posts[i].location.address){
-                location = sub.posts[i].location.address;
+                location = submission.posts[i].location.address;
                 break;
             }
         }

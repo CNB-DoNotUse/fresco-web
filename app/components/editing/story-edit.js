@@ -103,6 +103,7 @@ export default class StoryEdit extends React.Component {
 										type="text"
 										className="form-control floating-label"
 										placeholder="Title"
+										title="Title"
 										ref="editTitle"
 										defaultValue={this.props.story.title} />
 								</div>
@@ -112,6 +113,7 @@ export default class StoryEdit extends React.Component {
 										type="text"
 										className="form-control floating-label"
 										placeholder="Caption"
+										title="Caption"
 										ref="editCaption"
 										defaultValue={this.props.story.caption}/>
 								</div>
