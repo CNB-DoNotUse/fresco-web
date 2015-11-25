@@ -29,12 +29,12 @@ class GalleryDetail extends React.Component {
 			<GallerySidebar gallery={this.props.gallery} />
 			<div className="col-sm-8 tall">
 				<PostList
-				rank={this.props.user.rank}
-				purchases={this.props.purchases}
-				posts={this.props.gallery.posts}
-				scrollable={false}
-				editable={false}
-				size='large' />
+					rank={this.props.user.rank}
+					purchases={this.props.purchases}
+					posts={this.props.gallery.posts}
+					scrollable={false}
+					editable={false}
+					size='large' />
 			</div>
 			<GalleryEdit 
 				gallery={this.props.gallery}

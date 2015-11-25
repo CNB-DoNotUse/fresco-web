@@ -48,6 +48,7 @@ var PAGE_Dispatch = {
 	},
 	
 	findAssignments: function(map, callback){
+		
 		if (!PAGE_Dispatch.enabled) return callback(null, []);
 		
 		var bounds = map.getBounds();
@@ -60,23 +61,23 @@ var PAGE_Dispatch = {
 		
 		var query = "lat=" + center.lat() + "&lon=" + center.lng() + "&radius=" + radius;
 			
-			$.ajax("/scripts/assignment/getAll?" + query, {
-				success: function(result){
-					if(result.err){
-						return callback(result.err, null);
-					}
-					
-					result.data = result.data.map(function(a){
-						a.posts = a.posts.filter(function(b){return b.approvals > 0;});
-						return a;
-					});
-					
-					return callback(null, result.data);
-				},
-				error: function(xhr, status, error){
-					return callback(error, null);
+		$.ajax("/scripts/assignment/getAll?" + query, {
+			success: function(result){
+				if(result.err){
+					return callback(result.err, null);
 				}
-			});
+				
+				result.data = result.data.map(function(a){
+					a.posts = a.posts.filter(function(b){return b.approvals > 0;});
+					return a;
+				});
+				
+				return callback(null, result.data);
+			},
+			error: function(xhr, status, error){
+				return callback(error, null);
+			}
+		});
 	},
 	
 	addAssignment: function(assignment, callback){
@@ -496,11 +497,18 @@ var PAGE_Dispatch = {
 				if (!assignments) return;
 				
 				assignments = assignments.filter(function(assignment) {
-					return assignmentsOnMap.filter(function(assign2){ return assignment._id == assign2._id}).length === 0;
+				
+					return assignmentsOnMap.filter(function(assign2){ 
+						return assignment._id == assign2._id
+					}).length === 0;
+				
 				});
 				
 				assignmentsOnMap = assignmentsOnMap.filter(function(assignment){
-					var toDelete = assignments.filter(function(assign2){ return assignment._id == assign2._id}).length !== 0;
+					
+					var toDelete = assignments.filter(function(assign2){ 
+						return assignment._id == assign2._id
+					}).length !== 0;
 					
 					if (assignment.expiration_time && assignment.expiration_time < Date.now() && !PAGE_Dispatch.showExpired)
 							toDelete = true;
@@ -553,46 +561,7 @@ var PAGE_Dispatch = {
 			});
 		};
 	
-		function makeAssignmentListItem(assignment, callback){
-			var expTimeStr = 'Expires ' + moment(assignment.expiration_time, 'x').fromNow();
-			if (!assignment.expiration_time) {
-				expTimeStr = 'Never Expires';
-			}
-			else {
-				var relative = moment(assignment.expiration_time, 'x').fromNow();
-				if (assignment.expiration_time < Date.now())
-					expTimeStr = "Expired " + relative;
-				else
-					expTimeStr = "Expires " + relative;
-			}
-			var locationStr = assignment.location.googlemaps;
-			if (!assignment.location.googlemaps) {
-				locationStr = "Unknown";
-			}
-	
-			var imageUrl = '/images/placeholder-assignment.png';
-	
-			var elemText = '<div class="list-item">' +
-				'<div>' +
-					'<img class="img-circle" src="' + imageUrl + '">' +
-				'</div>' +
-				'<div class="flexy">' +
-					'<span class="md-type-body2">' + assignment.title + '</span>' +
-					'<span class="md-type-caption md-type-black-secondary">' + locationStr + ' &bull; ' + expTimeStr + '</span>' +
-				'</div>' +
-			'</div>';
-			var elem = $(elemText);
-			elem.data('id', assignment._id);
-			elem.click(function(){
-				// window.location.assign('/assignment/' + assignment._id);
-				PAGE_Dispatch.focusOnAssignment(assignment);
-			});
-			PAGE_Dispatch.getFirstPost(assignment, function(image){
-				elem.find('.img-circle').attr("src", image);
-				if(callback) callback(elem);
-			});
-			return elem;
-		};
+
 		var autocomplete = new google.maps.places.Autocomplete(document.getElementById('navbar-location-input'));
 		
 		google.maps.event.addListener(autocomplete, 'place_changed', function(){

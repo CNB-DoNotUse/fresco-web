@@ -133,6 +133,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 
 // map
 .map-group {
+	height: 100%;
 	> .form-group-default {
 		@include display(flex);
 		@include flex-direction(row);
@@ -148,13 +149,68 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	}
 	> .map-container {
 		width: 100%;
-		height:240px;
+		height:100%;
 		margin-bottom: 8px;
 		background-color: $color-shade-2;
 	}
 	> .map-container.full {
 		padding-top: 64px;
 		margin-bottom: 0;
+	}
+	#map-canvas { 
+		height: 100% 
+	}
+	#add-assignment-map {
+		height: 307px;
+	}
+	.callout {
+		height: 180px;
+		position: relative;
+	}
+	.assignment-callout-img {
+		width: 135px;
+		height: 180px;
+		display: flex;
+		float: left;
+	}
+	.assignment-callout-main {
+		width: 225px;
+		height: 100%;
+		float: right;
+		padding: 16px 8px;
+		position: relative;
+		overflow: hidden;
+		-webkit-user-select: auto;
+		user-select: auto;
+	}
+	.assignment-callout-title {
+		padding-bottom: 8px;
+	}
+	.assignment-callout-caption {
+		padding-bottom: 8px;
+		overflow: hidden;
+		max-height: 100px;
+	}
+	.assignment-callout-icon {
+		padding-right: 6px;
+		line-height: 36px;
+	}
+	.assignment-callout-image-counter {
+		padding-right: 16px;
+		line-height: 36px;
+	}
+	.assignment-callout-video-counter {
+		line-height: 36px;
+	}
+	.assignment-callout-buttons {
+		position: absolute;
+		bottom: 0;
+		width: 209px;
+	}
+	.assignment-callout-button {
+		/*display: inline-block;*/
+		float: right;
+		color: #0047bb !important;
 	}
 }
 
@@ -1124,7 +1180,7 @@ div.admin {
 			margin: 0 -20px;
 			width: calc(100% + 40px);
 			> .tab {
-				height: 50vh;
+				height: 40vh;
 			}
 		}
 		> .form-group-default {

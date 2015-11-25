@@ -52,16 +52,6 @@ router.get('/:id', function(req, res, next){
           purchases = [],
           verifier = '';
      
-      if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified){
-     
-        purchases = req.session.user.outlet.purchases || [];
-     
-        purchases = purchases.map(function(purchase){
-          return purchase.post;
-        });
-     
-      }
-
       //Check if post has approvals in place
       if (post.approvals) {
         
@@ -105,11 +95,11 @@ router.get('/:id', function(req, res, next){
         verifier: verifier,
         config: config,
         title: title,
-        purchases: purchases
+        purchases: config.mapPurchases(req.session)
       };
 
       function render() {
-        res.render('post', {
+        res.render('app', {
           props: JSON.stringify(props),
           title: title,
           config: config,

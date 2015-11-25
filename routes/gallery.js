@@ -37,9 +37,11 @@ router.get('/:id', function(req, res, next) {
  
     var title = '';
 
+    console.log(gallery);
+
     if (gallery.owner)
       title += 'Gallery by ' + gallery.owner.firstname + ' ' + gallery.owner.lastname;
-    else
+    else if(gallery.curator)
       title += 'Imported by ' + gallery.curator.firstname + ' ' + gallery.curator.lastname;
 
     //User is logged in, show full gallery page

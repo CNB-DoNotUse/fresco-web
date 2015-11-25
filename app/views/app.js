@@ -7,7 +7,15 @@ import global from '../../lib/global'
  */
 
 export default class App extends React.Component {
+
+	componentDidMount() {
+
+		$.material.init();
+
+	}
+
 	render() {
+		
 		return (
 			<div>
 				<div className="dim toggle-drawer toggler"></div>
@@ -19,5 +27,6 @@ export default class App extends React.Component {
 				</div>
 			</div>
 		);
+
 	}
 }

@@ -4,7 +4,7 @@ import DownloadAction from './actions/purchase-action.js'
 
 /** //
 
-Description : Image of the PostDetail page, contains byline and actions
+Description : Image of the PostDetail page, contains image/video, byline and actions
 
 // **/
 
@@ -17,7 +17,7 @@ export default class PostDetailImage extends React.Component {
 	render() {
 
 		var actions = [],
-			postMedia = ''
+			postMedia = '',
 			i = 0;
 
 		//Check rank of user, if less than a CM
