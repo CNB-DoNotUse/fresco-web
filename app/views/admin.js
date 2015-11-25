@@ -15,13 +15,20 @@ import AdminBody from './../components/admin-body'
  		super(props);
  		this.state = {
  			activeTab: 'submissions',
- 			submissions: []
+ 			submissions: [],
+ 			imports: []
  		}
 
  		this.setTab = this.setTab.bind(this);
  		this.getSubmissions = this.getSubmissions.bind(this);
+ 		this.getImports = this.getImports.bind(this);
  		window.setInterval(() => {
-			this.getSubmissions();
+ 			switch (this.state.activeTab) {
+ 				case 'submissions':
+ 					this.getSubmissions(); break;
+ 				case 'imports':
+ 					this.getImports(); break;
+ 			}
  		}, 5000);
 	}
 
@@ -33,6 +40,14 @@ import AdminBody from './../components/admin-body'
  		});
 	}
 
+	getImports(cb) {
+		$.get('/scripts/gallery/imports', (imports) => {
+			this.setState({
+				imports: imports.data
+			})
+		});
+	}
+
  	setTab(tab) {
  		if(tab == this.state.activeTab) return;
 
@@ -42,7 +57,8 @@ import AdminBody from './../components/admin-body'
  	}
 
  	componentDidMount() {
- 		this.getSubmissions();  
+ 		this.getSubmissions();
+ 		this.getImports();
  	}
 
 	render() {
@@ -53,7 +69,8 @@ import AdminBody from './../components/admin-body'
 					setTab={this.setTab} />
 				<AdminBody 
 					activeTab={this.state.activeTab}
-					submissions={this.state.submissions} />
+					submissions={this.state.submissions}
+					imports={this.state.imports} />
 			</App>
 		)
 	}

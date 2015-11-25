@@ -1,6 +1,6 @@
 import React from 'react'
 import Dropdown from './global/dropdown'
-
+import moment from 'moment'
 /** //
 
 Description : Top for admin page
@@ -12,6 +12,8 @@ export default class TopBarAdmin extends React.Component {
 	constructor(props) {
 		super(props);
 		this.setTab = this.setTab.bind(this);
+		this.clickImportFileUpload = this.clickImportFileUpload.bind(this);
+		this.importFiles = this.importFiles.bind(this);
 	}
 
 	setTab(e) {
@@ -34,16 +36,50 @@ export default class TopBarAdmin extends React.Component {
 	 	$.material.init();
 	}
 
+	clickImportFileUpload(e) {
+		this.refs.uploadImportFiles.click();
+	}
+
+	importFiles(e) { // Probably shouldn't be happening here, but whatevs.
+
+		var data = new FormData(),
+			files = this.refs.uploadImportFiles.files;
+
+		for (var index in files)
+			data.append(index, files[index]);
+
+		data.append('caption', 'Gallery imported from local system on ' + moment().format('MMMM Do YYYY, h:mm:ss a'));
+
+		$.ajax({
+			url: '/scripts/gallery/import',
+			type: 'POST',
+			data: data,
+    		processData: false,
+    		contentType: false,
+	        cache: false,
+	        dataType: 'json',
+			success: (result, status, xhr) => {
+				$.snackbar({content: 'Gallery Imported!'});
+				this.refs.uploadImportFiles.value = '';
+				this.props.setTab('imports');
+			},
+			error: (xhr, status, error) => {
+				$.snackbar({content: 'Failed to import media'});
+			}
+		});
+
+	}
+
 	render() {
 
 		return (
 			<nav className="navbar navbar-fixed-top navbar-default">
-				<input type="file" className="upload-import-files" style={{position: "absolute", top: "-100px"}} accept="image/*,video/*,video/mp4" multiple />
+				<input type="file" ref="uploadImportFiles" style={{position: "absolute", top: "-100px"}} accept="image/*,video/*,video/mp4" multiple onChange={this.importFiles} />
 				<div className="dim transparent toggle-drop toggler"></div>
 				<button type="button" className="icon-button toggle-drawer toggler hidden-lg">
 					<span className="mdi mdi-menu icon"></span>
 				</button>
-				<button type="button" className="icon-button hidden-xs upload-import">
+				<button type="button" className="icon-button hidden-xs upload-import" onClick={this.clickImportFileUpload}>
 					<span className="mdi mdi-upload icon"></span>
 				</button>
 				<div className="form-group-default">

@@ -22,7 +22,7 @@
     "history": "^1.13.1",
     "jquery": "^2.1.4",
     "mdi": "~1.0.62-beta",
-    "moment": "~2.10.3",
+    "moment": "^2.10.6",
     "morgan": "^1.6.1",
     "multer": "^0.1.8",
     "node-xlsx": "~0.6.0",

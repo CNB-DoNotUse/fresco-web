@@ -1,19 +1,20 @@
 import React from 'react'
-import SubmissionListItem from './admin-submission-list-item'
-import SubmissionEdit from './admin-submission-edit'
+import GalleryListItem from './admin-gallery-list-item'
+import AdminGalleryEdit from './admin-gallery-edit'
 
 export default class AdminBody extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			hasActiveSubmission: false,
-			activeSubmission: {}
+			hasActiveGallery: false,
+			activeGalleryType: '',
+			activeGallery: {}
 		}
 
 		this.setActiveTab = this.setActiveTab.bind(this);
-		this.setActiveSubmission = this.setActiveSubmission.bind(this);
-		this.spliceCurrentSubmission = this.spliceCurrentSubmission.bind(this);
+		this.setActiveGallery = this.setActiveGallery.bind(this);
+		this.spliceCurrentGallery = this.spliceCurrentGallery.bind(this);
 
 		this.skip = this.skip.bind(this);
 		this.verify = this.verify.bind(this);
@@ -22,63 +23,98 @@ export default class AdminBody extends React.Component {
 	}
 
 	componentDidMount() {
-
 		this.setActiveTab(this.props.activeTab);
-
 	}
 
-	componentDidUpdate(prevProps, prevState) {  
-	 	if(this.props.activeTab != prevProps.activeTab) {
+	componentDidUpdate(prevProps, prevState) {
+
+	 	if( this.props.activeTab != prevProps.activeTab ) {
 	 		this.setActiveTab(this.props.activeTab);
+
+	 		if( this.props[this.props.activeTab].length == 0 ) {
+	 			return;
+	 		}
+
+	 		var galleryType = this.props.activeTab.slice(0, -1);
+	 		this.setState({
+	 			hasActiveGallery: true,
+	 			activeGalleryType: galleryType,
+	 			activeGallery: this.props[this.props.activeTab][0]
+	 		});
 	 	}
-	 	if(prevProps.submissions.length == 0 && this.props.submissions.length && !this.state.hasActiveSubmission) {
-	 		this.setActiveSubmission(this.props.submissions[0]._id);
+
+	 	if(
+	 		this.state.activeGalleryType == '' &&
+	 		this.props.submissions.length &&
+	 		this.props.activeTab == 'submissions'
+ 		) {
+	 		this.setActiveGallery(this.props.submissions[0]._id, 'submission');
 	 	}
+
 	}	
 
 	setActiveTab(tab) {
       $('.admin.tabs .tab').removeClass('toggled');
       $('.tab-' + tab).addClass('toggled');
+      this.setState({
+      	hasActiveGallery: false,
+      	activeGalleryType: '',
+      	activeGallery: {}
+      });
 	}
 
-	setActiveSubmission(id) {
-		if(this.state.activeSubmission._id == id) return; 
+	setActiveGallery(id, type) {
+		if( this.state.activeGallery._id == id ) return; 
 
-		var submission = {};
+		var gallery = {};
 
-		for(var i in this.props.submissions) {
-			if(this.props.submissions[i]._id == id) {
-				submission = this.props.submissions[i];
+		if ( type == 'submission' ) {
+			for(var i in this.props.submissions) {
+				if(this.props.submissions[i]._id == id) {
+					gallery = this.props.submissions[i];
+				}
+			}
+		}
+
+		if( type == 'import' ) {
+			var imports = this.props.imports;
+			for( var i in imports ) {
+				if( imports[i]._id == id ) {
+					gallery = imports[i];
+				}
 			}
 		}
 
 		this.setState({
-			hasActiveSubmission: true,
-			activeSubmission: submission
+			hasActiveGallery: true,
+			activeGalleryType: type,
+			activeGallery: gallery
 		});
 
 	}
 
-	spliceCurrentSubmission() {
+	spliceCurrentGallery() {
 		var next_index = 0;
-		for (var index in this.props.submissions) {
-			if (this.state.activeSubmission._id == this.props.submissions[index]._id) {
+		var propGalleryType = this.state.activeGalleryType + 's';
+		for ( var index in this.props[propGalleryType] ) {
+			if ( this.state.activeGallery._id == this.props[propGalleryType][index]._id ) {
 
-				if (index == (this.props.submissions.length - 1))
+				if ( index == ( this.props[ propGalleryType ].length - 1 ) )
 					next_index = index - 1;
 				else
 					next_index = index;
 				
-				if(this.props.submissions.length == 1) {
-					this.props.submissions = []
+				if( this.props[propGalleryType].length == 1 ) {
+					this.props[propGalleryType] = []
 				} else {
-					this.props.submissions.splice(index, 1);
+					this.props[propGalleryType].splice(index, 1);
 				}
 
 				break;
 			}
 		}
-		this.setActiveSubmission(this.props.submissions[next_index]._id);
+
+		this.setActiveGallery( this.props[propGalleryType][next_index]._id, this.state.activeGalleryType );
 	}
 
 	remove(cb) {
@@ -87,12 +123,12 @@ export default class AdminBody extends React.Component {
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
-				id: this.state.activeSubmission._id
+				id: this.state.activeGallery._id
 			}),
 			dataType: 'json',
 			success: (result, status, xhr) => {
-				cb(null, this.state.activeSubmission._id);
-				this.spliceCurrentSubmission();
+				cb(null, this.state.activeGallery._id);
+				this.spliceCurrentGallery();
 			},
 			error: (xhr, status, error) => {
 				cb(error)
@@ -106,12 +142,12 @@ export default class AdminBody extends React.Component {
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
-				id: this.state.activeSubmission._id
+				id: this.state.activeGallery._id
 			}),
 			dataType: 'json',
 			success: (result, status, xhr) => {
-				cb(null, this.state.activeSubmission._id);
-				this.spliceCurrentSubmission();
+				cb(null, this.state.activeGallery._id);
+				this.spliceCurrentGallery();
 			},
 			error: (xhr, status, error) => {
 				cb(error)
@@ -129,7 +165,7 @@ export default class AdminBody extends React.Component {
 			dataType: 'json',
 			success: (result, status, xhr) => {
 				cb(null, options.id);
-				this.spliceCurrentSubmission();
+				this.spliceCurrentGallery();
 			},
 			error: (xhr, status, error) => {
 				cb(error)
@@ -140,11 +176,21 @@ export default class AdminBody extends React.Component {
 
 	render() {
 		var submissionsList = this.props.submissions.map((submission, i) => {
-			return <SubmissionListItem
-						submission={submission}
+			return <GalleryListItem
+						type="submission"
+						gallery={submission}
 						key={i}
-						active={this.state.activeSubmission._id == submission._id}
-						setActiveSubmission={this.setActiveSubmission} />
+						active={this.state.activeGallery._id == submission._id}
+						setActiveGallery={this.setActiveGallery} />
+		});
+
+		var importsList = this.props.imports.map((gallery, i) => {
+			return <GalleryListItem
+						type="import"
+						gallery={gallery}
+						key={i}
+						active={this.state.activeGallery._id == gallery._id}
+						setActiveGallery={this.setActiveGallery} />
 		});
 
 		return (
@@ -154,12 +200,27 @@ export default class AdminBody extends React.Component {
 						{submissionsList}
 					</div>
 					<div className="col-md-6 col-lg-5 form-group-default">
-						<SubmissionEdit
-						hasActiveSubmission={this.state.hasActiveSubmission}
-						activeSubmission={this.state.activeSubmission}
-						skip={this.skip}
-						verify={this.verify}
-						remove={this.remove} />
+						<AdminGalleryEdit
+							hasActiveGallery={this.state.hasActiveGallery}
+							activeGalleryType={this.state.activeGalleryType}
+							gallery={this.state.activeGallery}
+							skip={this.skip}
+							verify={this.verify}
+							remove={this.remove} />
+					</div>
+				</div>
+				<div className="tab tab-imports">
+					<div className="col-md-6 col-lg-7 list">
+						{importsList}
+					</div>
+					<div className="col-md-6 col-lg-5 form-group-default">
+						<AdminGalleryEdit
+							hasActiveGallery={this.state.hasActiveGallery}
+							activeGalleryType={this.state.activeGalleryType}
+							gallery={this.state.activeGallery}
+							skip={this.skip}
+							verify={this.verify}
+							remove={this.remove} />
 					</div>
 				</div>
 			</div>

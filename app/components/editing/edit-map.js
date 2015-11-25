@@ -19,13 +19,12 @@ export default class EditMap extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-	 	if(this.props.gallery._id == prevProps.gallery._id) return;
-	 	this.initializeMap();
+		this.initializeMap();
 	}
 
 	render() {
 
-		return(
+		return (
 			<div id="gallery-map-canvas" className="map-container"></div>
 		);
 		
@@ -116,19 +115,24 @@ export default class EditMap extends React.Component {
 
 
 		//Location is present
-		if (this.props.gallery.location) {
+		if (this.props.location) {
 			
+			var coordinates = [];
+
+			if(!Array.isArray(this.props.location)) {
+				console.log('Location prop is not an array, pushing coordinates to an array.');
+				coordinates.push(this.props.location);
+
+			} else {
+				console.log('Location prop is an array. Setting coordinates var to location prop');
+				coordinates = this.props.location;
+			}
+
+			console.log('Coordinates of map: ', coordinates);
+
 			polygon.setMap(map);
-						
-			polygon.setPath(
-				
-				this.props.gallery.location.coordinates[0].map(function(a){ 
-					return { 
-						lat: a[1], 
-						lng: a[0] 
-					}; 
-				})
-			);
+			
+			polygon.setPath(coordinates);
 			
 			marker.setPosition(this.getCentroid(polygon));
 			map.fitBounds(this.getBounds(polygon));
