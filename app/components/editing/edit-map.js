@@ -11,30 +11,54 @@ export default class EditMap extends React.Component {
 		super(props);
 
 		this.state = {
-			mapID: null
+			mapID: Date.now()
 		}
-
-		this.getCentroid = this.getCentroid.bind(this);
-		this.getBounds = this.getBounds.bind(this);
 		this.initializeMap = this.initializeMap.bind(this);
 	}
 
 	componentDidMount() {
+		//Initialize map once on first mount
 		this.initializeMap();
-		this.setState({
-			mapID: Date.now()
-		})
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(JSON.stringify(prevProps.location) == JSON.stringify(this.props.location)) return;
-		this.initializeMap();
+		
+		//Check if locations are the same from what was previsouly set
+		if(JSON.stringify(prevProps.location) == JSON.stringify(this.props.location)) 
+			return;
+
+		//Location is present
+		if (this.props.location) {
+			
+			//Check if the passed locaiton is a set of points
+			//Then set the polygon  path, and set the marker to center of the polygon
+			if(Array.isArray(this.props.location)) {
+				this.state.polygon.setPath(this.props.location);
+				this.state.marker.setPosition(this.getCentroid(this.state.polygon));
+			} 
+			//Otherwise just set the marker to the passed positio
+			else {
+				this.state.marker.setPosition(this.props.location);
+			}
+
+			this.state.map.fitBounds(this.getBounds(this.state.polygon));
+
+		}
+		//No location is present
+		else {
+			this.state.polygon.setMap(null);
+			this.state.marker.setMap(null);
+		}
+
 	}
 
 	render() {
 
 		return (
-			<div id={"gallery-map-canvas-" + this.state.mapID} className="map-container"></div>
+			<div 
+				id={"gallery-map-canvas-" + this.state.mapID} 
+				className="map-container">
+			</div>
 		);
 		
 	}
@@ -73,7 +97,11 @@ export default class EditMap extends React.Component {
 		return bounds;
 	}
 
+	/**
+	 * Initialize the map with the google maps enginer, and sets the state properties needed
+	 */
 	initializeMap() {
+		
 		var styles = [{"featureType": "all", "elementType":"all", "stylers": [{"gamma":1.54}]},
 			{"featureType":"road.highway","elementType":"all","stylers":[{"gamma":1.54}]},
 			{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#e0e0e0"}]},
@@ -106,14 +134,14 @@ export default class EditMap extends React.Component {
 
 		//Instantiate polygon
 		var polygon = new google.maps.Polygon({
-					paths: [],
-					strokeColor: "#FFB500",
-					strokeOpacity: 0.8,
-					strokeWeight: 0,
-					fillColor: "#FFC600",
-					fillOpacity: 0.35,
-					map: map
-				});
+			paths: [],
+			strokeColor: "#FFB500",
+			strokeOpacity: 0.8,
+			strokeWeight: 0,
+			fillColor: "#FFC600",
+			fillOpacity: 0.35,
+			map: map
+		});
 
 		//Set default marker to NYC
 		var marker = new google.maps.Marker({
@@ -122,28 +150,13 @@ export default class EditMap extends React.Component {
 			icon: markerImage
 		});
 
+		//Set properties to the state so we can access them when the location changes
+		this.setState({
+			marker: marker,
+			polygon: polygon,
+			map: map
+		})
 
-		//Location is present
-		if (this.props.location) {
-			var coordinates = [];
-
-			if(!Array.isArray(this.props.location)) {
-				coordinates.push(this.props.location);
-			} else {
-				coordinates = this.props.location;
-			}
-
-			polygon.setMap(map);
-			polygon.setPath(coordinates);
-			marker.setPosition(coordinates.length == 1 ? coordinates[0] : this.getCentroid(polygon));
-			map.fitBounds(this.getBounds(polygon));
-			map.setZoom(12);
-
-		}
-		//No location is present
-		else {
-			polygon.setMap(null);
-		}
 	}
 
 }
