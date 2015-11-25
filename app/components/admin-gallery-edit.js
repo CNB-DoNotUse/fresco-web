@@ -41,8 +41,6 @@ export default class AdminGalleryEdit extends React.Component {
 		}
 
 		if(prevState.mapLocation != this.state.mapLocation) {
-			console.log()
-			console.log('Should set map coordinates to ', JSON.stringify(this.state.mapLocation));
 		}
 
 		if( this.props.gallery._id != prevProps.gallery._id ) {
@@ -79,12 +77,11 @@ export default class AdminGalleryEdit extends React.Component {
 
 					if(!location.getPlace().geometry) return;
 					var coord = location.getPlace().geometry.location;
-					console.log(coord.lat(),coord.lng());
 					this.setState({
-						mapLocation: [{
+						mapLocation: {
 							lat: coord.lat(),
 							lng: coord.lng()
-						}]
+						}
 					});
 
 				});
@@ -249,7 +246,7 @@ export default class AdminGalleryEdit extends React.Component {
 	render() {
 
 		var activeGallery = this.props.gallery;
-		if(this.props.hasActiveGallery) {
+		if(this.props.hasActiveGallery) { 
 			var galleryImages = activeGallery.posts.map((post, i) => {
 				if(post.video) {
 					return (
@@ -274,6 +271,19 @@ export default class AdminGalleryEdit extends React.Component {
 				return <Tag text={tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />
 			});
 
+		}
+
+		if(this.props.activeGalleryType == 'submission') {
+			if(this.props.gallery.location) {
+				var editMapLocation = this.props.gallery.location.coordinates[0].map((coord) => {
+					return {
+						lat: coord[1],
+						lng: coord[0]
+					}
+				});
+			}
+		} else {
+			var editMapLocation = null;
 		}
 
 		return (
@@ -337,7 +347,7 @@ export default class AdminGalleryEdit extends React.Component {
 									ref="gallery-location"
 									disabled={this.props.activeGalleryType == "submission"} />
 							</div>
-							<EditMap location={this.state.mapLocation}/>
+							<EditMap location={editMapLocation}/>
 						</div>
 					</div>
 				</div>

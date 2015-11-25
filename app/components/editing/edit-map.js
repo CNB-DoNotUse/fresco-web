@@ -15,6 +15,8 @@ export default class EditMap extends React.Component {
 	}
 
 	componentDidMount() {
+		console.log('initializing');
+		console.log(this.props);
 		this.initializeMap();
 	}
 
@@ -116,27 +118,21 @@ export default class EditMap extends React.Component {
 
 		//Location is present
 		if (this.props.location) {
-			
 			var coordinates = [];
 
 			if(!Array.isArray(this.props.location)) {
-				console.log('Location prop is not an array, pushing coordinates to an array.');
+				console.log("single point");
 				coordinates.push(this.props.location);
-
+				console.log(coordinates);
+				polygon.setMap(null);
 			} else {
-				console.log('Location prop is an array. Setting coordinates var to location prop');
 				coordinates = this.props.location;
+				polygon.setMap(map);
+				polygon.setPath(coordinates);
+				marker.setPosition(this.getCentroid(polygon));
+				map.fitBounds(this.getBounds(polygon));
+				map.setZoom(12);
 			}
-
-			console.log('Coordinates of map: ', coordinates);
-
-			polygon.setMap(map);
-			
-			polygon.setPath(coordinates);
-			
-			marker.setPosition(this.getCentroid(polygon));
-			map.fitBounds(this.getBounds(polygon));
-			map.setZoom(12);
 
 		}
 		//No location is present
