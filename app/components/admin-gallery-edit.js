@@ -2,6 +2,8 @@ import React from 'react'
 import Slider from 'react-slick'
 import Tag from './editing/tag'
 import EditMap from './editing/edit-map'
+import EditStories from './editing/gallery-edit-stories'
+import AdminGalleryEditFoot from './admin-gallery-edit-foot'
 
 /**
 
@@ -15,14 +17,18 @@ export default class AdminGalleryEdit extends React.Component {
 		super(props);
 		this.state = {
 			activeGallery: {},
+			editButtonsEnabled: false,
 			newTags: [],
 			stories: [],
 			mapLocation: []
 		}
 		this.editButtonEnabled = this.editButtonEnabled.bind(this);
 		this.handleChangeCaption = this.handleChangeCaption.bind(this);
+
 		this.galleryTagsInputKeyDown = this.galleryTagsInputKeyDown.bind(this);
 		this.removeGalleryTag = this.removeGalleryTag.bind(this);
+
+		this.addStory = this.addStory.bind(this);
 
 		this.revert = this.revert.bind(this);
 		this.skip = this.skip.bind(this);
@@ -36,15 +42,12 @@ export default class AdminGalleryEdit extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 
-		if( !this.props.hasActiveGallery ) {
-			this.editButtonEnabled(false);
-		}
-
 		if( this.props.activeGalleryType == 'import' ) {
 
 			var location = new google.maps.places.Autocomplete(this.refs['gallery-location']);
 
 			google.maps.event.addListener( location, 'place_changed', () => {
+
 				if(!location.getPlace().geometry) return;
 				var coord = location.getPlace().geometry.location;
 				this.setState({
@@ -68,14 +71,13 @@ export default class AdminGalleryEdit extends React.Component {
 				mapLocation: null
 			});
 
-			// Enable editing buttons
-			this.editButtonEnabled(true);
-
-
 			if( this.props.hasActiveGallery ) {
 
 				// Set caption and byline values using prop data.
-				this.refs['gallery-byline'].value = this.props.gallery.posts[0].byline;
+				if( this.props.activeGalleryType == 'submission' ) {
+					this.refs['gallery-byline'].value = this.props.gallery.posts[0].byline;
+
+				}
 				this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
 
 				// If has location, set location input
@@ -87,6 +89,8 @@ export default class AdminGalleryEdit extends React.Component {
 			// Remove materialize empty input class
 			$(this.refs['gallery-byline']).removeClass('empty');
 			$(this.refs['gallery-caption']).removeClass('empty');
+			$(this.refs['gallery-stories-input']).removeClass('empty');
+			$(this.refs['gallery-location']).removeClass('empty');
 
 			// Empty tags input
 			this.refs['tags-input'].value = '';
@@ -153,11 +157,21 @@ export default class AdminGalleryEdit extends React.Component {
 
 	}
 
+	addStory(story) {
+		var stories = [];
+		this.state.stories.map(s => stories.push(s));
+
+		stories.push(story);
+
+		this.setState({
+			stories: stories
+		});
+	}
+
 	editButtonEnabled(is) {
-		this.refs['gallery-revert'].disabled = !is;
-		this.refs['gallery-verify'].disabled = !is;
-		this.refs['gallery-skip'].disabled = !is;
-		this.refs['gallery-delete'].disabled = !is;
+		this.setState({
+			editButtonEnabled: !is
+		});
 	}
 
 	revert() {
@@ -209,18 +223,28 @@ export default class AdminGalleryEdit extends React.Component {
 
 	verify() {
 
-		var allTags = [];
+		var allTags = [], byline = '';
+		
 		this.state.activeGallery.tags.map(t => allTags.push(t));
 		this.state.newTags.map(t => allTags.push(t));
 
+		// Byline
+		byline = (this.props.activeGalleryType == 'submission') ? this.state.activeGallery.posts[0].byline.trim() : (this.refs['gallery-author'].value + ' / ' + this.refs['gallery-affiliation'].value);
+
 		var params = {
 			id: this.state.activeGallery._id,
-			byline: this.state.activeGallery.posts[0].byline.trim(),
+			byline: byline,
 			caption: this.refs['gallery-caption'].value,
 			posts: this.state.activeGallery.posts.map(p => p._id),
 			stories: this.state.stories.map(s => s._id),
 			tags: allTags
 		};
+
+		if(this.props.activeGalleryType == 'import') {
+			params.other_origin_name = this.refs['gallery-author'].value;
+			params.other_origin_affiliation = this.refs['gallery-affiliation'].value;
+			params.address = this.refs['gallery-location'].value;
+		}
 
 		if (!params.posts || params.posts.length == 0)
 			return $.snackbar({content: 'A gallery must have at least one post'});
@@ -259,17 +283,20 @@ export default class AdminGalleryEdit extends React.Component {
 				);
 			});
 
-			var galleryTags = activeGallery.tags.map((tag, i) => {
-				return <Tag text={tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />
+			var allTags = [];
+
+			activeGallery.tags.map((tag, i) => {
+				allTags.push(<Tag text={'#' + tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />);
 			});
 
-			var newTags = this.state.newTags.map((tag, i) => {
-				return <Tag text={tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />
+			this.state.newTags.map((tag, i) => {
+				allTags.push(<Tag text={'#' + tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />);
 			});
 
 		}
 
 		if(this.props.activeGalleryType == 'submission') {
+
 			if(this.props.gallery.location) {
 				var editMapLocation = this.props.gallery.location.coordinates[0].map((coord) => {
 					return {
@@ -278,8 +305,36 @@ export default class AdminGalleryEdit extends React.Component {
 					}
 				});
 			}
+
+			var bylineInput = 
+					<input
+						type="text"
+						className="form-control floating-label gallery-byline"
+						placeholder="Byline"
+						ref="gallery-byline" disabled={this.props.activeGalleryType == 'submission'}  />
+
 		} else {
+
 			var editMapLocation = this.state.mapLocation;
+
+			var nameInput = 
+					<div className="split-cell">
+						<input
+							type="text"
+							className="form-control floating-label gallery-author"
+							placeholder="Name"
+							ref="gallery-author" disabled={this.props.activeGalleryType == 'submission'}  />
+					</div>
+
+			var affiliationInput = 
+					<div className="split-cell">
+						<input
+							type="text"
+							className="form-control floating-label gallery-affiliation"
+							placeholder="Affiliation"
+							ref="gallery-affiliation" disabled={this.props.activeGalleryType == 'submission'}  />
+					</div>
+
 		}
 
 
@@ -292,11 +347,11 @@ export default class AdminGalleryEdit extends React.Component {
 							{galleryImages ? galleryImages : <div></div>}
 						</Slider>
 					</div>
-					<input
-						type="text"
-						className="form-control floating-label gallery-byline"
-						placeholder="Byline"
-						ref="gallery-byline" disabled={this.props.activeGalleryType == 'submission'}  />
+					<div className="split import-other-origin byline-section" style={{marginTop: '42px'}}>
+						{bylineInput}
+						{nameInput}
+						{affiliationInput}
+					</div>
 					<textarea
 						type="text"
 						className="form-control floating-label gallery-caption"
@@ -312,8 +367,7 @@ export default class AdminGalleryEdit extends React.Component {
 								onKeyDown={this.galleryTagsInputKeyDown}
 								ref="tags-input" />
 							<ul className="chips tags gallery-tags">
-								{galleryTags}
-								{newTags}
+								{allTags}
 							</ul>
 						</div>
 						<div className="split-cell">
@@ -322,25 +376,18 @@ export default class AdminGalleryEdit extends React.Component {
 							</ul>
 						</div>
 					</div>
-					<div className="dialog-row split chips">
-						<div className="split-cell">
-							<input type="text" className="form-control floating-label gallery-stories-input" placeholder="Stories" />
-							<ul className="chips gallery-stories">
-								{this.state.stories}
-							</ul>
-						</div>
-						<div className="split-cell">
-							<span className="md-type-body2">Suggested stories</span>
-							<ul className="chips gallery-suggested-stories"></ul>
-						</div>
-					</div>
+					
+					<EditStories ref='stories' 
+						stories={this.state.stories} 
+						addStory={this.addStory} />
+
 					<div style={{height: '309px'}}>
 						<div className="map-group">
 							<div className="form-group-default">
 								<input
 									type="text"
 									className="form-control floating-label google-autocomplete gallery-location"
-									placeholder=" "
+									placeholder="Location"
 									ref="gallery-location"
 									disabled={this.props.activeGalleryType == "submission"} />
 							</div>
@@ -348,12 +395,12 @@ export default class AdminGalleryEdit extends React.Component {
 						</div>
 					</div>
 				</div>
-				<div className="dialog-foot">
-					<button type="button" className="btn btn-flat gallery-revert" ref="gallery-revert" onClick={this.revert}>Revert changes</button>
-					<button type="button" className="btn btn-flat pull-right gallery-verify" ref="gallery-verify" onClick={this.verify}>Verify</button>
-					<button type="button" className="btn btn-flat pull-right gallery-skip" ref="gallery-skip" onClick={this.skip}>Skip</button>
-					<button type="button" className="btn btn-flat pull-right gallery-delete" ref="gallery-delete" onClick={this.remove}>Delete</button>
-				</div>
+				<AdminGalleryEditFoot
+					revert={this.revert}
+					verify={this.verify}
+					skip={this.skip}
+					remove={this.remove}
+					enabled={this.state.editButtonsEnabled} />
 			</div>
 		);
 	}

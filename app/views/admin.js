@@ -14,7 +14,7 @@ import AdminBody from './../components/admin-body'
  	constructor(props) {
  		super(props);
  		this.state = {
- 			activeTab: 'imports',
+ 			activeTab: 'submissions',
  			submissions: [],
  			imports: []
  		}

@@ -1,4 +1,5 @@
 import React from 'react'
+import Tag from './tag'
 import StoriesAutoComplete from './stories-autocomplete.js'
 
 /**
@@ -10,7 +11,6 @@ export default class GalleryEditStories extends React.Component {
 	constructor(props)  {
 		
 		super(props);
-		this.state = { stories: this.props.stories }
 		this.addStory = this.addStory.bind(this);
 
 	}
@@ -21,10 +21,17 @@ export default class GalleryEditStories extends React.Component {
 	
 	}
 
-	//Add's story element
+	//Add's story element, return if story exists in prop stories.
 	addStory(newStory) {
+		var stories = this.props.stories;
 
-		this.props.updateRelatedStories(this.state.stories.concat(newStory));
+		for( var s in stories ) {
+			if(stories[s]._id == newStory._id) {
+				return;
+			}
+		}
+
+		this.props.addStory(newStory);
 
 	}
 
@@ -35,14 +42,13 @@ export default class GalleryEditStories extends React.Component {
 		//Remove from index
 		updatedStories.splice(index, 1);
 
-		this.props.updateRelatedStories(updatedStories);
+		this.props.addStory(updatedStories);
 
 	}
 
 	render() {
 
-		var stories = this.state.stories.map((story, i) => {
-
+		var stories = this.props.stories.map((story, i) => {
 			return (
 
 				<Tag 
@@ -60,7 +66,7 @@ export default class GalleryEditStories extends React.Component {
 			<div className="dialog-row split chips">
 				
 				<div className="split-cell">
-					<StoriesAutoComplete addStory={this.addStory} stories={this.state.stories} />
+					<StoriesAutoComplete addStory={this.addStory} />
 					<ul id="gallery-stories-list" className="chips">
 						{stories}
 					</ul>

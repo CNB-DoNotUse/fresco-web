@@ -45,10 +45,10 @@ export default class AdminBody extends React.Component {
 
 	 	if(
 	 		this.state.activeGalleryType == '' &&
-	 		this.props.imports.length &&
-	 		this.props.activeTab == 'imports'
+	 		this.props.submissions.length &&
+	 		this.props.activeTab == 'submissions'
  		) {
-	 		this.setActiveGallery(this.props.imports[0]._id, 'import');
+	 		this.setActiveGallery(this.props.submissions[0]._id, 'submission');
 	 	}
 
 	}	

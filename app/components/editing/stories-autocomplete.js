@@ -43,51 +43,12 @@ export default class StoriesAutoComplete extends React.Component {
 			}
 		}).on('typeahead:select', (ev, selectedStory) => {
 
-			//Check if the story is not in our existing set of stories by object id
-			var filter = this.props.stories.filter((story) => {
-				return story._id == selectedStory._id;
-			})
-
-			if(filter.length == 0)
-				this.props.addStory(selectedStory);
-			else
-				$.snackbar({content: 'This gallery is already in that story!'});
+			this.props.addStory(selectedStory);
 				
-			$(this).typeahead('val', '');
+			$(this.refs.story_input).typeahead('val', '');
 
-		}).on('keydown', (ev) => {
-			
-			emptyMessage = document.getElementById('story-empty-message');
+		}).on('keydown', (ev, story) => {
 
-			//Check if we're hitting enter and there is a new story option present
-			if (ev.keyCode == 13 && typeof(emptyMessage) !== 'undefined') {
-				
-				//Check if we have a url
-				if($(this).val().indexOf('http://') != -1) {
-					$.snackbar({content: 'No URLs please!'});
-					return;
-				}
-
-				var newStory = {
-					title: $(this).val(),
-					new: true
-				};
-
-				//Check if the story is not in our existing set of stories by title
-				var filter = this.props.stories.filter((story) => {
-					return story.title == newStory.title;
-				})
-
-				if(filter.length > 0){
-					$.snackbar({content: 'This gallery is already in that story!'});
-					return;
-				}
-
-				this.props.addStory(newStory)
-				
-
-				$(this).typeahead('val', '');
-			}
 		});
 
 	}
@@ -99,7 +60,7 @@ export default class StoriesAutoComplete extends React.Component {
 			<input 
 				id="gallery-stories-input" 
 				type="text" 
-				className="form-control floating-label" 
+				className="form-control" 
 				placeholder="Stories"
 				onChange={this.change}
 				ref='story_input' />
