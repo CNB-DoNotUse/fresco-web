@@ -21,7 +21,7 @@ import AdminBody from './../components/admin-body'
  		this.setTab = this.setTab.bind(this);
  		this.getSubmissions = this.getSubmissions.bind(this);
  		window.setInterval(() => {
- 			this.getSubmissions();
+			this.getSubmissions();
  		}, 5000);
 	}
 
