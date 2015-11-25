@@ -40,7 +40,22 @@ export default class AdminGalleryEdit extends React.Component {
 			this.editButtonEnabled(false);
 		}
 
-		if(prevState.mapLocation != this.state.mapLocation) {
+		if( this.props.activeGalleryType == 'import' ) {
+
+			var location = new google.maps.places.Autocomplete(this.refs['gallery-location']);
+
+			google.maps.event.addListener( location, 'place_changed', () => {
+				if(!location.getPlace().geometry) return;
+				var coord = location.getPlace().geometry.location;
+				this.setState({
+					mapLocation: {
+						lat: coord.lat(),
+						lng: coord.lng()
+					}
+				});
+
+			});
+
 		}
 
 		if( this.props.gallery._id != prevProps.gallery._id ) {
@@ -67,25 +82,6 @@ export default class AdminGalleryEdit extends React.Component {
 				if( this.props.gallery.posts[0].location ) {
 					this.refs['gallery-location'].value = this.props.gallery.posts[0].location.address;
 				}
-			}
-
-			if( this.props.activeGalleryType == 'import' ) {
-
-				var location = new google.maps.places.Autocomplete(this.refs['gallery-location']);
-
-				google.maps.event.addListener( location, 'place_changed', () => {
-
-					if(!location.getPlace().geometry) return;
-					var coord = location.getPlace().geometry.location;
-					this.setState({
-						mapLocation: {
-							lat: coord.lat(),
-							lng: coord.lng()
-						}
-					});
-
-				});
-
 			}
 
 			// Remove materialize empty input class
@@ -283,8 +279,9 @@ export default class AdminGalleryEdit extends React.Component {
 				});
 			}
 		} else {
-			var editMapLocation = null;
+			var editMapLocation = this.state.mapLocation;
 		}
+
 
 		return (
 			<div className="dialog">

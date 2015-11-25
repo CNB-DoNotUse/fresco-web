@@ -9,25 +9,32 @@ export default class EditMap extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			mapID: null
+		}
+
 		this.getCentroid = this.getCentroid.bind(this);
 		this.getBounds = this.getBounds.bind(this);
 		this.initializeMap = this.initializeMap.bind(this);
 	}
 
 	componentDidMount() {
-		console.log('initializing');
-		console.log(this.props);
 		this.initializeMap();
+		this.setState({
+			mapID: Date.now()
+		})
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+		if(JSON.stringify(prevProps.location) == JSON.stringify(this.props.location)) return;
 		this.initializeMap();
 	}
 
 	render() {
 
 		return (
-			<div id="gallery-map-canvas" className="map-container"></div>
+			<div id={"gallery-map-canvas-" + this.state.mapID} className="map-container"></div>
 		);
 		
 	}
@@ -84,7 +91,7 @@ export default class EditMap extends React.Component {
 
 		//Instantiate google maps object
 		var map = new google.maps.Map(
-			document.getElementById('gallery-map-canvas'), 
+			document.getElementById('gallery-map-canvas-' + this.state.mapID), 
 			mapOptions
 		);
 
@@ -121,18 +128,16 @@ export default class EditMap extends React.Component {
 			var coordinates = [];
 
 			if(!Array.isArray(this.props.location)) {
-				console.log("single point");
 				coordinates.push(this.props.location);
-				console.log(coordinates);
-				polygon.setMap(null);
 			} else {
 				coordinates = this.props.location;
-				polygon.setMap(map);
-				polygon.setPath(coordinates);
-				marker.setPosition(this.getCentroid(polygon));
-				map.fitBounds(this.getBounds(polygon));
-				map.setZoom(12);
 			}
+
+			polygon.setMap(map);
+			polygon.setPath(coordinates);
+			marker.setPosition(coordinates.length == 1 ? coordinates[0] : this.getCentroid(polygon));
+			map.fitBounds(this.getBounds(polygon));
+			map.setZoom(12);
 
 		}
 		//No location is present
