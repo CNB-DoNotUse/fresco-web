@@ -13,6 +13,7 @@ import AdminGalleryEditFoot from './admin-gallery-edit-foot'
 **/
 
 export default class AdminGalleryEdit extends React.Component {
+	
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -264,7 +265,6 @@ export default class AdminGalleryEdit extends React.Component {
 	}
 
 	render() {
-
 		var activeGallery = this.props.gallery;
 		if(this.props.hasActiveGallery) { 
 			var galleryImages = activeGallery.posts.map((post, i) => {
@@ -400,7 +400,7 @@ export default class AdminGalleryEdit extends React.Component {
 					verify={this.verify}
 					skip={this.skip}
 					remove={this.remove}
-					enabled={this.state.editButtonsEnabled} />
+					enabled={this.props.hasActiveGallery} />
 			</div>
 		);
 	}

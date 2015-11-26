@@ -195,6 +195,12 @@ export default class AdminBody extends React.Component {
 
 		return (
 			<div className="container-fluid admin tabs">
+				<div className="tab tab-assignments">
+					<div className="col-md-6 col-lg-7 list">
+					</div>
+					<div className="col-md-6 col-lg-5 form-group-default">
+					</div>
+				</div>
 				<div className="tab tab-submissions">
 					<div className="col-md-6 col-lg-7 list">
 						{submissionsList}

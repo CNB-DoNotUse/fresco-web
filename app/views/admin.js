@@ -15,21 +15,35 @@ import AdminBody from './../components/admin-body'
  		super(props);
  		this.state = {
  			activeTab: 'submissions',
+ 			assignments: [],
  			submissions: [],
  			imports: []
  		}
 
  		this.setTab = this.setTab.bind(this);
+ 		
+ 		this.getAssignments = this.getAssignments.bind(this);
  		this.getSubmissions = this.getSubmissions.bind(this);
  		this.getImports = this.getImports.bind(this);
+
  		window.setInterval(() => {
  			switch (this.state.activeTab) {
+ 				case 'assignments':
+ 					this.getAssignments(); break;
  				case 'submissions':
  					this.getSubmissions(); break;
  				case 'imports':
  					this.getImports(); break;
  			}
  		}, 5000);
+	}
+
+	getAssignments() {
+		$.get('http://staging.fresconews.com/v1/assignment/pending?limit=9', (assignments) => {
+			this.setState({
+				assignments: assignments.data
+			})
+		});
 	}
 
 	getSubmissions(cb) {
@@ -44,7 +58,7 @@ import AdminBody from './../components/admin-body'
 		$.get('/scripts/gallery/imports', (imports) => {
 			this.setState({
 				imports: imports.data
-			})
+			});
 		});
 	}
 
@@ -57,6 +71,7 @@ import AdminBody from './../components/admin-body'
  	}
 
  	componentDidMount() {
+ 		this.getAssignments();
  		this.getSubmissions();
  		this.getImports();
  	}
