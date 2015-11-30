@@ -59,6 +59,10 @@ export default class TopBarAdmin extends React.Component {
 	        cache: false,
 	        dataType: 'json',
 			success: (result, status, xhr) => {
+				if(result.err) {
+					return $.snackbar({content: 'Failed to import media'});
+				}
+				
 				$.snackbar({content: 'Gallery Imported!'});
 				this.refs.uploadImportFiles.value = '';
 				this.props.setTab('imports');

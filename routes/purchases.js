@@ -1,14 +1,11 @@
 var express = require('express'),
-  config = require('../lib/config');
-var router = express.Router();
-var request = require('request-json');
-var async = require('async');
-var api = request.createClient(config.API_URL);
+  config = require('../lib/config'),
+  request = require('request-json'),
 
-/**
- * Main purchases page
- */
+  router = express.Router(),
+  api = request.createClient(config.API_URL);
 
+/* GET purchases page. */
 router.get('/', function(req, res, next) {
   if (!req.session.user || req.session.user.rank < 1)
     return res.render('error', {
@@ -16,13 +13,22 @@ router.get('/', function(req, res, next) {
       error_message: config.ERR_PAGE_MESSAGES[403]
     });
 
-  res.render('purchases', {
+  var title = 'Purchases',
+    props = {
+    user : req.session.user,
+    title: title
+  };
+
+  res.render('app', {
     user: req.session.user,
-    title: 'Purchases',
+    title: title,
     config: config,
     alerts: req.alerts,
-    page : 'purchases'
+    page: 'purchases',
+    props: JSON.stringify(props)
+
   });
+
 });
 
 module.exports = router;
