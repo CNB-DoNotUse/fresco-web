@@ -43,10 +43,11 @@ export default class AdminGalleryEdit extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 
+		if( this.props.activeGalleryType == 'assignment') { return }
+
 		if( this.props.activeGalleryType == 'import' ) {
 
 			var location = new google.maps.places.Autocomplete(this.refs['gallery-location']);
-
 			google.maps.event.addListener( location, 'place_changed', () => {
 
 				if(!location.getPlace().geometry) return;
@@ -117,6 +118,7 @@ export default class AdminGalleryEdit extends React.Component {
 				let tags = this.state.newTags;
 
 				if(tags.indexOf(text) != -1) return;
+				if(!Array.isArray(activeGallery.tags)) { activeGallery.tags = []; }
 				if(activeGallery.tags.indexOf(text) != -1) return;
 
 				tags.push(text);
@@ -226,6 +228,9 @@ export default class AdminGalleryEdit extends React.Component {
 
 		var allTags = [], byline = '';
 		
+		if(!Array.isArray(this.state.activeGallery.tags)) { this.state.activeGallery.tags = []; }
+		if(!Array.isArray(this.state.activeGallery.posts)) { this.state.activeGallery.posts = []; }
+
 		this.state.activeGallery.tags.map(t => allTags.push(t));
 		this.state.newTags.map(t => allTags.push(t));
 
@@ -265,6 +270,9 @@ export default class AdminGalleryEdit extends React.Component {
 	}
 
 	render() {
+
+		if(this.props.activeGalleryType == 'assignment') { return <div></div> }
+
 		var activeGallery = this.props.gallery;
 		if(this.props.hasActiveGallery) { 
 			var galleryImages = activeGallery.posts.map((post, i) => {

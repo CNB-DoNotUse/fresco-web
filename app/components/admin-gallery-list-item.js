@@ -20,7 +20,7 @@ export default class AdminGalleryListItem extends React.Component {
 
         var location = 'No Location';
                             
-        for (var i in gallery.posts){
+        for (var i in gallery.posts) {
             if (gallery.posts[i].location.address) {
                 location = gallery.posts[i].location.address;
                 break;

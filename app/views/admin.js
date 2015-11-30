@@ -21,7 +21,7 @@ import AdminBody from './../components/admin-body'
  		}
 
  		this.setTab = this.setTab.bind(this);
- 		
+
  		this.getAssignments = this.getAssignments.bind(this);
  		this.getSubmissions = this.getSubmissions.bind(this);
  		this.getImports = this.getImports.bind(this);
@@ -39,10 +39,10 @@ import AdminBody from './../components/admin-body'
 	}
 
 	getAssignments() {
-		$.get('http://staging.fresconews.com/v1/assignment/pending?limit=9', (assignments) => {
+		$.get('http://staging.fresconews.com/v1/assignment/pending?limit=16', (assignments) => {
 			this.setState({
 				assignments: assignments.data
-			})
+			});
 		});
 	}
 
@@ -84,6 +84,7 @@ import AdminBody from './../components/admin-body'
 					setTab={this.setTab} />
 				<AdminBody 
 					activeTab={this.state.activeTab}
+					assignments={this.state.assignments}
 					submissions={this.state.submissions}
 					imports={this.state.imports} />
 			</App>

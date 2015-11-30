@@ -1,6 +1,8 @@
 import React from 'react'
 import GalleryListItem from './admin-gallery-list-item'
+import AssignmentListItem from './admin-assignment-list-item'
 import AdminGalleryEdit from './admin-gallery-edit'
+import AdminAssignmentEdit from './admin-assignment-edit'
 
 export default class AdminBody extends React.Component {
 	constructor(props) {
@@ -9,10 +11,12 @@ export default class AdminBody extends React.Component {
 		this.state = {
 			hasActiveGallery: false,
 			activeGalleryType: '',
-			activeGallery: {}
+			activeGallery: {},
+			activeAssignment: {}
 		}
 
 		this.setActiveTab = this.setActiveTab.bind(this);
+		this.setActiveAssignment = this.setActiveAssignment.bind(this);
 		this.setActiveGallery = this.setActiveGallery.bind(this);
 		this.spliceCurrentGallery = this.spliceCurrentGallery.bind(this);
 
@@ -36,11 +40,25 @@ export default class AdminBody extends React.Component {
 	 		}
 
 	 		var galleryType = this.props.activeTab.slice(0, -1);
-	 		this.setState({
-	 			hasActiveGallery: true,
-	 			activeGalleryType: galleryType,
-	 			activeGallery: this.props[this.props.activeTab][0]
-	 		});
+
+	 		if(galleryType == 'assignment') { // Special case for assignments because they are not a gallery.
+
+	 			this.setState({
+	 				hasActiveGallery: true,
+	 				activeAssignment: this.props.assignments[0],
+	 				activeGalleryType: 'assignment'
+	 			});
+
+	 		} else {
+		 		this.setState({
+		 			hasActiveGallery: true,
+		 			activeGalleryType: galleryType,
+		 			activeGallery: this.props[this.props.activeTab][0],
+		 			activeAssignment: {}
+		 		});
+	 		}
+
+
 	 	}
 
 	 	if(
@@ -63,7 +81,20 @@ export default class AdminBody extends React.Component {
       });
 	}
 
+	setActiveAssignment(id) {
+		for (var a in this.props.assignments) {
+			if(this.props.assignments[a]._id == id) {
+				this.setState({
+					hasActiveGallery: true,
+					activeAssignment: this.props.assignments[a]
+				});
+				break;
+			}
+		}
+	}
+
 	setActiveGallery(id, type) {
+
 		if( this.state.activeGallery._id == id ) return; 
 
 		var gallery = {};
@@ -103,13 +134,9 @@ export default class AdminBody extends React.Component {
 					next_index = index - 1;
 				else
 					next_index = index;
-				
-				if( this.props[propGalleryType].length == 1 ) {
-					this.props[propGalleryType] = []
-				} else {
-					this.props[propGalleryType].splice(index, 1);
-				}
 
+				this.props[propGalleryType].splice(index, 1);
+				
 				break;
 			}
 		}
@@ -175,6 +202,15 @@ export default class AdminBody extends React.Component {
 	}
 
 	render() {
+		var assignmentsList = this.props.assignments.map((assignment, i) => {
+			return <AssignmentListItem
+						type="assignment"
+						assignment={assignment}
+						key={i}
+						active={this.state.activeAssignment._id == assignment._id}
+						setActiveAssignment={this.setActiveAssignment} />
+		});
+
 		var submissionsList = this.props.submissions.map((submission, i) => {
 			return <GalleryListItem
 						type="submission"
@@ -197,8 +233,15 @@ export default class AdminBody extends React.Component {
 			<div className="container-fluid admin tabs">
 				<div className="tab tab-assignments">
 					<div className="col-md-6 col-lg-7 list">
+						{assignmentsList}
 					</div>
 					<div className="col-md-6 col-lg-5 form-group-default">
+						<AdminAssignmentEdit
+							hasActiveGallery={this.state.hasActiveGallery}
+							activeGalleryType={this.state.activeGalleryType}
+							assignment={this.state.activeAssignment}
+							approve={this.approve}
+							reject={this.reject} />
 					</div>
 				</div>
 				<div className="tab tab-submissions">

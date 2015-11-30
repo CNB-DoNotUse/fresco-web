@@ -25,17 +25,16 @@ export default class EditMap extends React.Component {
 	componentDidMount() {
 		this.initializeMap();
 		this.setState({
-			mapID: Date.now()
+			mapID: Date.now() + Math.floor(Math.random() * 100)
 		})
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(JSON.stringify(prevProps.location) == JSON.stringify(this.props.location)) return;
+		if(JSON.stringify(prevProps.location) == JSON.stringify(this.props.location) && prevProps.radius == this.props.radius) return;
 		this.initializeMap();
 	}
 
 	render() {
-
 		return (
 			<div id={"gallery-map-canvas-" + this.state.mapID} className="map-container"></div>
 		);
@@ -139,9 +138,20 @@ export default class EditMap extends React.Component {
 			polygon.setMap(map);
 			polygon.setPath(coordinates);
 			marker.setPosition(coordinates.length == 1 ? coordinates[0] : this.getCentroid(polygon));
+
+			if(this.props.radius) {
+				map.cricle = new google.maps.Circle({
+					map: map,
+					center: new google.maps.LatLng(coordinates[0].lat, coordinates[0].lng),
+					radius: this.props.radius,
+					strokeWeight: 0,
+					fillColor: '#ffc600',
+					fillOpacity: 0.26
+				});
+			}
+
 			map.fitBounds(this.getBounds(polygon));
 			map.setZoom(12);
-
 		}
 		//No location is present
 		else {
