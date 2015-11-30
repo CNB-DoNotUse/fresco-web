@@ -1,6 +1,6 @@
 import React from 'react'
 import PurchaseAction from './actions/purchase-action.js'
-import DownloadAction from './actions/purchase-action.js'
+import DownloadAction from './actions/download-action.js'
 
 /** //
 

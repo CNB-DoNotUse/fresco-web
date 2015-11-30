@@ -49,7 +49,6 @@ export default class PostList extends React.Component {
 	//Scroll listener for main window
 	scroll() {
 
-
 		var grid = this.refs.grid;
 
 		//Check that nothing is loading and that we're at the end of the scroll, 
@@ -102,7 +101,7 @@ export default class PostList extends React.Component {
 	        		size={this.props.size} 
 	        		post={post} 
 	        		rank={rank} 
-	        		purchaed={purchased}
+	        		purchased={purchased}
 	        		key={i}
 	        		editable={this.props.editable} />
 	        		
