@@ -250,7 +250,10 @@ router.post('/gallery/import', function(req, res, next){
       cleanupFiles = [];
 
   function upload(cb){
-    params.posts = JSON.stringify(params.posts);
+    params.posts = JSON.stringify(params.posts); 
+    console.log('Params of gallery/import');
+    console.log(params);
+    console.log('End of params');
     request.post({ url: config.API_URL + '/v1/gallery/assemble', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
       console.log(err, body);for (var index in cleanupFiles)
         fs.unlink(cleanupFiles[index], function(){});

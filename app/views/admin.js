@@ -39,7 +39,7 @@ import AdminBody from './../components/admin-body'
 	}
 
 	getAssignments() {
-		$.get('http://staging.fresconews.com/v1/assignment/pending?limit=16', (assignments) => {
+		$.get(API_URL + '/v1/assignment/pending?limit=16', (assignments) => {
 			if( !assignments.data ) return;
 			this.setState({
 				assignments: assignments.data
@@ -48,7 +48,7 @@ import AdminBody from './../components/admin-body'
 	}
 
 	getSubmissions(cb) {
- 		$.get('http://staging.fresconews.com/v1/gallery/submissions', (submissions) => {
+ 		$.get(API_URL + '/v1/gallery/submissions', (submissions) => {
  			if( !submissions.data ) return;
 
  			this.setState({
