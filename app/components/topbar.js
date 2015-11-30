@@ -58,6 +58,22 @@ export default class TopBar extends React.Component {
 
 		}
 
+		if(this.props.tabs) {
+			var tabContent = [];
+			this.props.tabs.map((tab, i) => {
+				tabContent.push(
+					<button
+						className={"btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (this.props.activeTab == tab ? ' toggled' : '')}
+						onClick={this.props.setActiveTab.bind(null, tab)}
+						key={tab.toLowerCase()}>
+						{tab}
+						<div className="ripple-wrapper"></div>
+					</button>
+				)
+			})
+			var tabs = <div className="tab-control">{tabContent}</div>
+		}
+
 		return (
 			<nav className="navbar navbar-fixed-top navbar-default">
 				<div className="dim transparent toggle-drop toggler"></div>
@@ -66,6 +82,7 @@ export default class TopBar extends React.Component {
 				</button>
 				<div className="spacer"></div>
 				<h1 className="md-type-title">{this.props.title}</h1>
+				{tabs}
 				{topbarItems}
 			</nav>
 		);

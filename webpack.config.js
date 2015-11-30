@@ -8,6 +8,7 @@ var views = {
   stories: './app/views/stories.js',
   storyDetail: './app/views/storyDetail.js',
   galleryDetail: './app/views/galleryDetail.js',
+  outlet: './app/views/outlet.js',
   postDetail: './app/views/postDetail.js',
   purchases: './app/views/purchases.js',
   storyDetail: './app/views/storyDetail.js',

@@ -44,13 +44,20 @@ router = express.Router();
         'This outlet is in demo mode. Purchases and downloads are currently disabled.<div><a>OK</a></div>');
     }
 
-    res.render('outlet', {
+      var title = 'Outlet',
+          props = {
+            title: title,
+            user: req.session.user,
+            outlet: body.data,
+            purchases: purchases
+          }
+
+    res.render('app', {
       user: req.session.user,
-      title: 'Outlet',
-      outlet: body.data,
-      purchases: purchases,
+      title: title,
       config: config,
       alerts: req.alerts,
+      props: JSON.stringify(props),
       page: 'outlet'
     });
 

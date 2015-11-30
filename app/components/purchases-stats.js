@@ -27,7 +27,7 @@ export default class PurchasesStats extends React.Component {
 			var price = video ? 75 : 30;
 			var dayDiff = moment().diff(purchase.timestamp, 'days');
 
-			if(dayDiff == 1) {
+			if(dayDiff <= 1) {
 				pastDay+= price;
 			}
 
