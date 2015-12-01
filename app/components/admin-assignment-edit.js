@@ -1,5 +1,5 @@
 import React from 'react'
-import EditMap from './editing/edit-map'
+import AssignmentEditMap from './editing/assignment-edit-map'
 
 /**
     
@@ -13,26 +13,35 @@ export default class AdminAssignmentEdit extends React.Component {
         super(props);
 
         this.state = {
-            activeAssignment: {},
-            assignmentRadius: 0,
-            mapLocation: null
+            radius: null,
+            location: null
         }
-
-        this.handleRadiusChange = this.handleRadiusChange.bind(this);
+        this.updateLocation = this.updateLocation.bind(this);
         this.approve = this.approve.bind(this);
         this.reject = this.reject.bind(this);
+    }
 
+    /**
+     * Updates state location with passed params
+     * @param  {dictionary} location Location Dictionary object {lat: x, lng: y}
+     * @param  {integer} radius   Radius that has changed
+     */
+    updateLocation(passedLocation, passedRadius) {
+        this.setState({
+            location: passedLocation || null,
+            radius: passedRadius || null
+        })    
     }
 
     approve() {
         $.post('/scripts/assignment/approve',
         {
-            id: this.state.activeAssignment._id,
+            id: this.props.assignment._id,
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
-            radius: this.state.assignmentRadius,
-            lat: this.state.mapLocation.lat,
-            lng: this.state.mapLocation.lng,
+            radius: this.state.radius,
+            lat: this.state.location.lat,
+            lng: this.state.location.lng,
             expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60
         }, (data) => {
             if(data.err) {
@@ -50,7 +59,7 @@ export default class AdminAssignmentEdit extends React.Component {
 
     reject() {
         $.post('/scripts/assignment/deny', {
-            id: this.state.activeAssignment._id
+            id: this.props.assignment._id
         }, (data) => {
             if(data.err) {
                 $.snackbar({
@@ -64,61 +73,26 @@ export default class AdminAssignmentEdit extends React.Component {
         })
     }
 
-    handleRadiusChange(e) {
-        var feetRadius = parseFloat(this.refs['assignment-radius'].value);
-        if(feetRadius == 'NaN') return;
-
-        var milesRadius = feetRadius * 0.000189394;
-        this.setState({
-            assignmentRadius: milesRadius
-        });
-    }
-
+    /**
+     * New assignment is selected from the sidebar list, so componenet is updated
+     */
     componentDidUpdate(prevProps, prevState) {
+
         if(!this.props.assignment._id) return;
 
         if (this.props.assignment._id != prevProps.assignment._id) {
 
             $.material.init();
 
-            this.setState({
-                activeAssignment: this.props.assignment,
-                assignmentRadius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
-                mapLocation: null
-            });
-
             if(this.props.hasActiveGallery) {
 
-                var location = new google.maps.places.Autocomplete(this.refs['assignment-location']);
-
-                google.maps.event.addListener( location, 'place_changed', () => {
-                    if(!location.getPlace().geometry) return;
-                    var coord = location.getPlace().geometry.location;
-                    this.setState({
-                        mapLocation: {
-                            lat: coord.lat(),
-                            lng: coord.lng()
-                        }
-                    });
-                });
-
-                if(this.props.assignment.location) {
-                    this.refs['assignment-location'].value = this.props.assignment.location.googlemaps;
-
-                    this.refs['assignment-radius'].value = Math.round(milesToFeet(this.props.assignment.location.radius));
-                    $(this.refs['assignment-radius']).removeClass('empty');
-
-                    var loc = {
+                this.setState({
+                    radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
+                    location: {
                         lat: this.props.assignment.location.geo.coordinates[1],
-                        lng: this.props.assignment.location.geo.coordinates[0]
-                    };
-
-                    this.setState({
-                        mapLocation: loc,
-                        assignmentRadius: this.props.assignment.location.radius
-                    });
-                }
-
+                        lng: this.props.assignment.location.geo.coordinates[0],
+                    }
+                });
 
                 var expirationDate = new Date(this.props.assignment.expiration_time);
                 var expirationHours = Math.ceil((expirationDate - Date.now()) / 1000 / 60 / 60);
@@ -132,9 +106,7 @@ export default class AdminAssignmentEdit extends React.Component {
                 $(this.refs['assignment-expiration']).removeClass('empty');
 
             }
-
         }
-
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -143,9 +115,13 @@ export default class AdminAssignmentEdit extends React.Component {
     }
 
     render() {
-        var assignment = this.props.assignment;
+        
+        var location = this.state.location,
+            radius = this.state.radius,
+            address = this.props.assignment.location ? this.props.assignment.location.address : '';
 
-        if(this.props.activeGalleryType != 'assignment') return (<div></div>);
+        if(this.props.activeGalleryType != 'assignment') 
+            return (<div></div>);
 
         return (
             <div className="dialog">
@@ -160,25 +136,11 @@ export default class AdminAssignmentEdit extends React.Component {
                         className="form-control floating-label"
                         placeholder="Description"
                         ref="assignment-description"></textarea>
-                    <div style={{height: '309px'}}>
-                        <div className="map-group">
-                            <div className="form-group-default">
-                                <input
-                                    type="text"
-                                    className="form-control floating-label google-autocomplete"
-                                    ref="assignment-location"
-                                    placeholder=" " />
-                                <input
-                                    type="text"
-                                    className="form-control floating-label numbers"
-                                    data-hint="feet"
-                                    placeholder="Radius"
-                                    onChange={this.handleRadiusChange}
-                                    ref="assignment-radius" />
-                            </div>
-                            <EditMap location={this.state.mapLocation} radius={this.state.assignmentRadius ? milesToFeet(this.state.assignmentRadius) : null} />
-                        </div>
-                    </div>
+                    <AssignmentEditMap 
+                        location={location} 
+                        radius={radius}
+                        address={address}
+                        updateLocation={this.updateLocation} />
                     <input
                         type="text"
                         className="form-control floating-label"

@@ -27,7 +27,7 @@ export default class DownloadAction extends React.Component {
 		if(!this.props.post){
 			
 			$.snackbar({
-				content:'There was an error downloading this post', 
+				content:'We couldn\'t find this post!', 
 				timeout:0
 			});
 

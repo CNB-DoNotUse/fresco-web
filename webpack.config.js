@@ -12,6 +12,7 @@ var views = {
   postDetail: './app/views/postDetail.js',
   purchases: './app/views/purchases.js',
   storyDetail: './app/views/storyDetail.js',
+  assignmentDetail: './app/views/assignmentDetail.js',
   dispatch: './app/views/dispatch.js'
 }
 

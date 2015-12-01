@@ -1,5 +1,6 @@
 import React from 'react';
 import EditMap from './editing/edit-map'
+import global from './../../lib/global'
 
 /** //
 
@@ -15,12 +16,66 @@ export default class DispatchSubmit extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.state = {
+			place: null
+		}
+		this.submitForm = this.submitForm.bind(this);
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+
+		var self = this;
+
+		//Update the autocomplete field when the marker is finished dragging on the main map
+		if(this.props.updatePlace && this.props.newAssignment){
+
+			var geocoder = new google.maps.Geocoder();
+
+			geocoder.geocode({'location': {
+				lat: this.props.newAssignment.location.lat,
+				lng: this.props.newAssignment.location.lng
+			}}, function(results, status){
+				
+				if(status === google.maps.GeocoderStatus.OK && results[0]) 
+					self.refs.autocomplete.value = results[0].formatted_address;
+
+			});
+		}
+	}
+
+	componentDidMount() {
+
+		//Set up autocomplete listener
+		var autocomplete = new google.maps.places.Autocomplete(this.refs.autocomplete);
+				
+		google.maps.event.addListener(autocomplete, 'place_changed', () => {
+
+			var place = autocomplete.getPlace(),
+				location = {
+					lat: place.geometry.location.lat(),
+					lng: place.geometry.location.lng()
+				};
+
+			//Update the position to the parent component
+			this.props.updatenewAssignment(location, null);
+
+			this.setState({ 
+				place: autocomplete.getPlace() 
+			});
+
+		});
+	 	
+
 	}
 
 	render() {
 
 		var paymentStatus = '',
-			paymentMessage = '';
+			paymentMessage = '',
+			editMap = '',
+			location = this.props.newAssignment ? this.props.newAssignment.location : null,
+			radius =  this.props.newAssignment ? this.props.newAssignment.radius : null;
+
 
 		if(this.props.user.outlet && this.props.user.outlet.card){
 			paymentStatus = <span className="mdi mdi-check available"></span>;
@@ -33,7 +88,7 @@ export default class DispatchSubmit extends React.Component {
 
 		return (
 
-			<div className="card panel toggle-card toggled" id="dispatch-submit">
+			<div className="card panel toggle-card" id="dispatch-submit">
 				<div className="card-head">
 					<span className="md-type-title">New Assignment</span>
 					<span id="close-assignment-window" className="mdi mdi-close pull-right icon toggle-card toggler"></span>
@@ -43,22 +98,22 @@ export default class DispatchSubmit extends React.Component {
 						id="add-assignment-submit" 
 						type="button" 
 						className="btn btn-flat toggle-card toggler" 
-						onClick={this.submit}
+						onClick={this.submitForm}
 						disabled={this.props.user.outlet && this.props.user.outlet.card}>Submit</button>
 				</div>
 				<div className="card-body">
 					<div className="form-group-default">
-						<input id="add-assignment-title" type="text" className="form-control floating-label" placeholder="Title" />
-						<textarea id="add-assignment-description" type="text" className="form-control floating-label" placeholder="Caption"></textarea>
+						<input ref="title" type="text" className="form-control floating-label" placeholder="Title" />
+						<textarea ref="caption" type="text" className="form-control floating-label" placeholder="Caption"></textarea>
 					</div>
 					<div className="map-group">
 						<div className="form-group-default">
-							<input id="add-assignment-location-input" type="text" className="form-control floating-label google-autocomplete" placeholder="Location" />
-							<input id="add-assignment-radius-input" type="text" className="form-control floating-label integer" data-hint="feet" placeholder="Radius" />
+							<input ref="autocomplete" type="text" className="form-control floating-label" placeholder="Location" />
+							<input ref="radius" type="text" className="form-control floating-label integer" data-hint="feet" placeholder="Radius" />
 						</div>
-						<div className="map-container">
-							<div id="add-assignment-map">MAP</div>
-						</div>
+						<EditMap 
+							location={location} 
+							radius={location} />
 					</div>
 					<div className="form-group-default">
 						<input 
@@ -66,6 +121,7 @@ export default class DispatchSubmit extends React.Component {
 							type="text" 
 							className="form-control floating-label integer" 
 							data-hint="hours from now" 
+							ref="expirationTime"
 							placeholder="Expiration time" />
 					</div>
 					<a className="payment" href="/outlet/settings">
@@ -79,57 +135,77 @@ export default class DispatchSubmit extends React.Component {
 
 	}
 
-	submit() {
+	submitForm() {
 
-		var place = autocomplete.getPlace(),
+		var place = this.state.place || null,     
 			assignment = {
-				title: PAGE_Dispatch.createTitle.val(),
-				caption: PAGE_Dispatch.createCaption.val(),
-				lat: PAGE_Dispatch.assignmentMap.marker.getPosition().lat(),
-				lon: PAGE_Dispatch.assignmentMap.marker.getPosition().lng(),
-				radius: parseInt(PAGE_Dispatch.createRadius.val()),
-				expiration_time: parseInt(PAGE_Dispatch.createExpiration.val()),
-				outlet : (PAGE_Dispatch.outlet ? PAGE_Dispatch.outlet._id : ""),
-				// googlemaps: googlemaps.locality + ", " + googlemaps.administrative_area_level_1,
-				googlemaps: PAGE_Dispatch.createLocation.val(),
-				address: place ? place.formatted_address : null,
-		};
-		
-		if (assignment.title === ''){
-			$.snackbar({content: 'Assignment must have a title'});
-			return false;
+				title: this.refs.title.value,
+				caption: this.refs.caption.value,
+				radius: global.feetToMiles(parseInt(this.refs.radius.value)),
+				expiration_time: parseInt(this.refs.expirationTime.value) * 3600000,
+				address: 'Address',
+				location: {
+					type: 'point',
+					coordinates: [
+						this.props.newAssignment.location.lng,
+						this.props.newAssignment.location.lat
+					]
+				}
+			};
+
+		/* Run Checks */
+
+		if (global.isEmptyString(assignment.title)){
+			$.snackbar({content: 'Your assignment must have a title!'});
+			return;
 		}
-		if (assignment.caption === ''){
-			$.snackbar({content: 'Assignment must have a caption'});
-			return false;
+		if (global.isEmptyString(assignment.caption)){
+			$.snackbar({content: 'Your assignment must have a caption!'});
+			return ;
 		}
-		if (assignment.googlemaps === ''){
-			$.snackbar({content: 'Assignment must have a location'});
-			return false;
+		if (global.isEmptyString(assignment.googlemaps)){
+			$.snackbar({content: 'Your assignment must have a location!'});
+			return;
 		}
 		if (isNaN(assignment.expiration_time) || assignment.expiration_time < 1){
-			$.snackbar({content: 'Expiration time must be at least 1 hour'});
-			e.stopImmediatePropagation();
-			return false;
+			$.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
+			return;
 		}
-		if (isNaN(assignment.radius) || assignment.radius < 250)
-			assignment.radius = 250;
-			
-		assignment.radius = feetToMiles(assignment.radius);
-		assignment.expiration_time *= 3600000;
+		if (!global.isValidRadius(assignment.radius)){ //0.0473485 IS 250 FEET IN MILES
+			$.snackbar({content: 'Please enter a radius greater than 250 feet'});
+			return;
+		}
 		
-		PAGE_Dispatch.addAssignment(assignment, function(err, assignment){
-			if (err)
-				return $.snackbar({content:resolveError(err)});
-			
-			PAGE_Dispatch.map.marker.setMap(null);
-			PAGE_Dispatch.map.circle.setMap(null);
-			
-			PAGE_Dispatch.map.panTo(PAGE_Dispatch.assignmentMap.marker.getPosition());
-			PAGE_Dispatch.map.setZoom(PAGE_Dispatch.assignmentMap.getZoom());
-		});
+		$.ajax({
+			url: "/scripts/assignment/create",
+			contentType: 'application/json',
+			data: JSON.stringify(assignment),
+			method: 'POST',
+			success: function(result){
 
+				// if (result.err) return callback(result.err, null);
+				
+				// result.data.posts.filter(function(a){return a.approvals > 0;});
+				
+				// return callback(null, result.data);
 
+			},
+			error: function(xhr, status, error){
+				// return callback(error, null);
+			}
+		})
+		
+		
+		// PAGE_Dispatch.addAssignment(assignment, function(err, assignment){
+		// 	if (err)
+		// 		return $.snackbar({content:resolveError(err)});
+			
+		// 	PAGE_Dispatch.map.marker.setMap(null);
+		// 	PAGE_Dispatch.map.circle.setMap(null);
+			
+		// 	PAGE_Dispatch.map.panTo(PAGE_Dispatch.assignmentMap.marker.getPosition());
+		// 	PAGE_Dispatch.map.setZoom(PAGE_Dispatch.assignmentMap.getZoom());
+		// });
 
 	}
 

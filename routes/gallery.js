@@ -37,8 +37,6 @@ router.get('/:id', function(req, res, next) {
  
     var title = '';
 
-    console.log(gallery);
-
     if (gallery.owner)
       title += 'Gallery by ' + gallery.owner.firstname + ' ' + gallery.owner.lastname;
     else if(gallery.curator)
@@ -47,11 +45,9 @@ router.get('/:id', function(req, res, next) {
     //User is logged in, show full gallery page
     if (req.session && req.session.user) {
 
-
-      var purchases = config.mapPurchases(),
-          props = {
+      var props = {
             user: req.session.user,
-            purchases: purchases,
+            purchases: config.mapPurchases(),
             gallery: gallery,
             title: title
           };

@@ -188,6 +188,9 @@ router.post('/assignment/update', function(req, res, next){
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
   api.post('/v1/assignment/update', req.body, function(error, response, body){
+
+    console.log(req.body);
+
     if (error)
       return res.json({err: error}).end();
     if (!body)

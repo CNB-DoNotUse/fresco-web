@@ -8,6 +8,7 @@ export default class PurchaseAction extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.purchase = this.purchase.bind(this);
 	}
 
 	render() {

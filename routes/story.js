@@ -15,8 +15,6 @@ router.get('/:id', function(req, res, next) {
       url: config.API_URL + '/v1/story/get?id=' + req.params.id,
       json: true
     }, function(err, response, body) {
-
-      console.log(body.data)
 			
       if (err || !body || body.err){
         

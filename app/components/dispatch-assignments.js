@@ -90,10 +90,12 @@ export default class DispatchAssignments extends React.Component {
 
 		var AssignmentList = this.state.assignments.map((assignment, i)  => {
 
-			return <AssignmentItem 
-				assignment={assignment}
-				setActiveAssignment={this.props.setActiveAssignment}
-				key={i} />
+			return (
+				<AssignmentItem 
+					assignment={assignment}
+					setActiveAssignment={this.props.setActiveAssignment}
+					key={i} />
+			)
 
 		});
 
@@ -114,7 +116,7 @@ export default class DispatchAssignments extends React.Component {
 						id="open-assignment-window" 
 						className="btn btn-flat toggle-card toggler" 
 						disabled={!(this.props.user.outlet && this.props.user.outlet.verified)} 
-						onClick={this.props.toggleSubmission.bind(null, true)}>Post an assignment</button>
+						onClick={this.props.toggleSubmissionCard.bind(null, true)}>Post an assignment</button>
 				</div>
 				<div className="card-body">
 					<div className="tabs full">

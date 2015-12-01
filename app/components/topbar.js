@@ -77,7 +77,7 @@ export default class TopBar extends React.Component {
 			
 				<Dropdown
 					options={['Relative', 'Absolute']}
-					selected='Absolute'
+					selected='Relative'
 					onSelected={this.timeToggleSelected}
 					key="timeToggle"
 					inList={true} />

@@ -17,7 +17,7 @@ export default class PostCell extends React.Component {
 
 		var timestamp = this.props.post.time_created;
 		var timeString = formatTime(this.props.post.time_created);
-		var address = this.props.post.location.address || 'No Location';
+		var address = this.props.post.location.address || 'No Address';
 		var size = this.props.sizes.large;
 
 		//Class name for post tile icon

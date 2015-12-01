@@ -20,17 +20,15 @@ export default class DispatchMap extends React.Component {
 
 		this.state = {
 			assignments: [],
-			activeAssignment: null,
 			activeCallout: null,
-			map: null,
-			viewMode: 'active'
+			map: null
 		}
 
 		this.updateMap = this.updateMap.bind(this);
-		this.findAssignments = this.findAssignments.bind(this);
 		this.updateAssignmentMarkers = this.updateAssignmentMarkers.bind(this);
 		this.updateUserMarkers = this.updateUserMarkers.bind(this);
 		this.focusOnAssignment = this.focusOnAssignment.bind(this);
+		this.addAssignmentToMap = this.addAssignmentToMap.bind(this);
 	}
 
 	componentDidMount() {
@@ -43,19 +41,17 @@ export default class DispatchMap extends React.Component {
 			{"featureType":"poi.park","elementType":"all","stylers":[{"gamma":1.26}]},
 			{"featureType":"poi.park","elementType":"labels.text","stylers":[{"saturation":-54}]}];
 
-		if(!window.sessionStorage.dispatch){
+		if(!window.sessionStorage.dispatch || !window.sessionStorage.dispatch.mapCenter || !window.sessionStorage.dispatch.mapZoom ){
 			window.sessionStorage.dispatch = JSON.stringify({
-				map_center: {lat: 40.7, lng: -74},
-				map_zoom: 12
+				mapCenter: {lat: 40.7, lng: -74},
+				mapZoom: 12
 			});
 		}
 		
-		var savedViewport = JSON.parse(window.sessionStorage.dispatch);
+		var dispatch = JSON.parse(window.sessionStorage.dispatch);
 		
 		var mapOptions = {
-			center: savedViewport.map_center,
-			zoom: savedViewport.map_zoom,
-			styles: styles
+			zoom: 12
 		};
 
 		//Set up the map object
@@ -68,12 +64,15 @@ export default class DispatchMap extends React.Component {
 		google.maps.event.addListener(map, 'idle', this.updateMap);
 		google.maps.event.addListener(map, 'dragend', this.updateMap);
 
-		this.setState({ map: map });		
+		this.setState({ map: map });	
 
 	}
 
 
 	componentDidUpdate(prevProps, prevState) {
+
+		console.log(this.state.map);
+		console.log(this.state.map.getCenter());
 
 		if(prevState.assignments)
 			this.updateAssignmentMarkers(prevState.assignments);
@@ -90,19 +89,58 @@ export default class DispatchMap extends React.Component {
 			});
 		}
 
-	}
+		//Check if there's already a new assignment marker 
+		//Meaning the marker has already been added, and we don't need to add a new one
+		if(this.state.newAssignmentMarker){
 
-	render() {
+			//Both google maps locations
+			//Compare to make sure we don't change the marker unless its position hasn't actually changed
+			if(this.props.newAssignment.location.toString() != prevProps.location){
+				this.state.newAssignmentMarker.setPosition(this.props.updateNewAssignment.location);	
+				this.state.map.setCenter(
+					this.state.newAssignmentMarker.getPosition()
+				);	     
+			}
 
-		return (
+		}
+		//Otherwise make the marker
+		else if(this.props.newAssignment){
 
-			<div className="map-group">
-				<div className="map-container full">
-					 <div id="map-canvas"></div>
-				</div>
-			</div>
+			//Create the marker with a null position
+			var position = null,
+				marker = this.addAssignmentMarker(position, null, null, null, true),
+				location = {
+					lat: marker.getPosition().lat(),
+					lng: marker.getPosition().lng()
+				};		     
 			
-		);
+			//Update the position to the parent component
+			this.props.updateNewAssignment(location, null);
+
+			//Set marker to state of map so we can manage its location
+			this.setState({ newAssignmentMarker: marker })
+
+			//Update the maps center to reflect the new positon of the marker
+			this.state.map.setCenter(
+				marker.getPosition()
+			);	     
+
+			//Add listener on `drag` so the parent can get updates and pass props to the `Submit` card
+			//when location changes
+			google.maps.event.addListener(marker, 'drag', (ev) => {
+
+				//Send up location to the parent
+				this.props.updateNewAssignment({
+					lat: ev.latLng.lat(),
+					lng: ev.latLng.lng()
+				}, this.props);
+
+			});
+
+			google.maps.event.addListener(marker, 'dragend', (ev) => {
+				this.props.updatePlace();
+			});
+		}
 	}
 
 	/**
@@ -110,9 +148,9 @@ export default class DispatchMap extends React.Component {
 	 */
 	updateMap() {
 
-		this.findAssignments((assignments) => {
+		this.props.findAssignments(this.state.map, (assignments) => {
 
-			this.findUsers((users) => {
+			this.props.findUsers(this.state.map, (users) => {
 				
 				this.setState({
 					assignments: assignments,
@@ -125,103 +163,34 @@ export default class DispatchMap extends React.Component {
 	}
 
 	/**
-	 * Data call for retrieving assignments
+	 * Makes a marker with the passed assignment
+	 * @return adds a google maps marker, with the passed geo-location
 	 */
-	findAssignments(callback) {
+	addAssignmentToMap(assignment, draggable) {
 
-		var map = this.state.map;
-
-		var bounds = map.getBounds();
-		var proximitymeter = google.maps.geometry.spherical.computeDistanceBetween (
-			bounds.getSouthWest(), 
-			bounds.getNorthEast()
-		);
-		var proximitymiles = proximitymeter * 0.000621371192;
-		var radius = proximitymiles / 2;
-		var center = map.getCenter();
-		
-		var query = "lat=" + center.lat() + "&lon=" + center.lng() + "&radius=" + radius;
-			
-		$.ajax("/scripts/assignment/getAll?" + query, {
-			success: (response) => {
-
-				//Do nothing, because of bad response
-				if(!response.data || response.err)
-					callback([]);
-				else
-					callback(response.data);
-
-			},
-			error: (xhr, status, error) => {
-				return callback(error, null);
-			}
-		});
-	}
-
-	/**
-	 * Retrieves users from the API
-	 */
-	findUsers(callback) {
-		
-		var map = this.state.map;
-
-		var bounds = map.getBounds();
-		
-		var proximitymeter = google.maps.geometry.spherical.computeDistanceBetween (
-			bounds.getSouthWest(), 
-			bounds.getNorthEast()
-		);
-		var proximitymiles = proximitymeter * 0.000621371192;
-		var radius = proximitymiles / 2;
-		var center = map.getCenter();
-
-		var query = "lat=" + center.lat() + "&lon=" + center.lng() + "&radius=" + radius;
-		
-		//Should be authed
-		$.ajax(API_URL + "/v1/user/findInRadius?" + query, {
-			success: (response) => {
-
-				//Do nothing, because of bad response
-				if(!response.data || response.err)
-					callback([]);
-				else
-					callback(response.data);
-
-			},
-			error: (xhr, status, error) => {
-				return callback(error, null);
-			}
-		});
-		
-	}
-
-	/**
-	 * Makes a marker with the passed conditiations
-	 * @return a google maps marker, with the passed geo-location
-	 */
-	addAssignmentMarker(assignment, draggable) {
-
+		//Lat/Lng will default to center if for a created assignment
 		var map = this.state.map,
-			lng = assignment.location.geo.coordinates[0],
-			lat = assignment.location.geo.coordinates[1],
 			title = assignment.title || 'No title',
 			markerURL,
 			zIndex, 
 			status,
-			position = new google.maps.LatLng(lat, lng);
+			position = new google.maps.LatLng(
+						assignment.location.geo.coordinates[1], 
+						assignment.location.geo.coordinates[0]
+					  ),
+			radius = assignment.location.radius;
 
 		//Check if the assignment is expired
 		if (assignment.expiration_time && assignment.expiration_time < Date.now()){
 			
 			//Then check if we're in the right view mode
-			if(this.state.viewMode == 'expired'){
+			if(this.props.viewMode == 'expired'){
 				status = 'expired';
 				markerURL = '/images/assignment-expired@2x.png';
 				zIndex = 100;
 			}
 			//Otherwise break
-			else
-				return;
+			else return;
 		}
 		//Not expired assignment
 		else{
@@ -241,30 +210,52 @@ export default class DispatchMap extends React.Component {
 
 		}
 
+		//Create the rendered circle
+		var circle = this.addCircle(
+			position, 
+			global.milesToMeters(radius), 
+			status
+		);
+		
+		//Create the marker
+		var marker = this.addAssignmentMarker(
+			position, 
+			title, 
+			markerURL, 
+			zIndex, 
+			draggable
+		);
+
+		//Add event handler to display callout when clicekd
+		google.maps.event.addListener(
+			marker, 
+			'click',  
+			this.focusOnAssignment.bind(null, marker, circle, assignment)
+		);
+
+	}
+
+	addAssignmentMarker(position, title, markerURL, zIndex, draggable) {
+
+		//Create the marker image
 		var image = {
-			url: markerURL,
+			url: markerURL || '/images/assignment-pending@2x.png',
 			size: new google.maps.Size(114, 114),
 			scaledSize: new google.maps.Size(60, 60),
 			origin: new google.maps.Point(0, 0),
 			anchor: new google.maps.Point(30, 30)
 		};
 
-		var circle = this.addCircle(
-			position, 
-			global.milesToMeters(assignment.location.radius), 
-			status
-		);
-		
 		var marker = new google.maps.Marker({
-			position: position,
-			map: map,
-			title: title,
+			position: position || this.state.map.getCenter(),
+			map: this.state.map,
+			title: title || 'No title',
 			icon: image,
-			zIndex: zIndex,
+			zIndex: zIndex || 0,
 			draggable: draggable
 		});
 
-		google.maps.event.addListener(marker, 'click',  this.focusOnAssignment.bind(null, marker, circle, assignment));
+		return marker;
 
 	}
 
@@ -337,7 +328,7 @@ export default class DispatchMap extends React.Component {
 		this.state.assignments.map((assignment) => {
 			var assignmentId = assignment._id.toString();
 			if(prevAssignmentsIds.indexOf(assignmentId) == -1) {
-				this.addAssignmentMarker(assignment, false);
+				this.addAssignmentToMap(assignment, false);
 			}
 		});
 	}
@@ -364,17 +355,22 @@ export default class DispatchMap extends React.Component {
 		});
 	}
 
+	/**
+	 * Focuses on the passed assignment
+	 * @param  {Google Maps Marker} marker     The marker to focus in on
+	 * @param  {Google Maps Circle} circle     The radius of the assignment
+	 */
 	focusOnAssignment(marker, circle, assignment) {
 
+		var map = this.state.map;
+
 		//Check if the active assignment isn't the clicked again
-		if(this.state.activeAssignment && this.state.activeAssignment._id == assignment._id)
+		if(this.props.activeAssignment && this.props.activeAssignment._id == assignment._id)
 			return;
 
 		//Close the active callout if it exists yet
 		if(this.state.activeCallout)
 			this.state.activeCallout.close();
-
-		var map = this.state.map;
 
 		map.panTo(marker.getPosition());
 
@@ -384,8 +380,6 @@ export default class DispatchMap extends React.Component {
 			<DispatchMapCallout assignment={assignment} onClick />
 		);
 
-		console.log(marker.getPosition());
-
 		callout = new google.maps.InfoWindow({
 			content: callout,
 			position: marker.getPosition(),
@@ -394,21 +388,24 @@ export default class DispatchMap extends React.Component {
 		callout.open(map, marker);
 
 		//Update the active assignment and callout
+		this.props.setActiveAssignment(assignment);
+		
 		this.setState({
-			activeAssignment: assignment,
 			activeCallout: callout
-		})
-
-		// var lat = assignment.location.geo.coordinates[1];
-		// var lng = assignment.location.geo.coordinates[0];
+		});
 		
-		// var circle = PAGE_Dispatch.makeCircle(null, new google.maps.LatLng(lat, lng), milesToMeters(assignment.location.radius), status);
-		
-		// this.state.map.fitBounds(circle.getBounds());
-		
-
 	}
 
+	render() {
+
+		return (
+			<div className="map-group">
+				<div className="map-container full dispatch">
+					 <div id="map-canvas"></div>
+				</div>
+			</div>
+		);
+	}
 
 }
 

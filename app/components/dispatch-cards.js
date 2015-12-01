@@ -66,7 +66,7 @@ export default class DispatchCards extends React.Component {
 	 * Toggles Assignment submission window
 	 * @param  {BOOL} show To show or hide the window
 	 */
-	toggleSubmission(show, event) {
+	toggleSubmissionCard(show, event) {
 
 		var dispatchSubmit = document.getElementById('dispatch-submit');
 

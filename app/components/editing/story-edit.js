@@ -5,14 +5,13 @@ export default class StoryEdit extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.hide = this.hide.bind(this);
 
+		this.hide = this.hide.bind(this);
 		this.save = this.save.bind(this);
 		this.revert = this.revert.bind(this);
 		this.cancel = this.cancel.bind(this);
 		this.clear = this.clear.bind(this);
 
-		console.log(this.props.story);
 	}
 
 	hide() {
@@ -65,23 +64,28 @@ export default class StoryEdit extends React.Component {
 	render() {
 		return (
 			<div>
-				<div className="dim toggle-edit">
-				</div>
+
+				<div className="dim toggle-edit"></div>
 				<div className="edit panel panel-default toggle-edit">
+					
 					<div className="col-lg-4 visible-lg edit-current">
 						<StoryEditStats story={this.props.story} />
 					</div>
+					
 					<div className="col-xs-12 col-lg-8 edit-new dialog">
+						
 						<div className="dialog-head">
 							<span className="md-type-title">Edit story</span>
 							<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
 						</div>
+						
 						<div className="dialog-foot">
 							<button id="story-edit-revert" type="button" className="btn btn-flat" onClick={this.revert}>Revert changes</button>
 							<button id="story-edit-clear" type="button" className="btn btn-flat" onClick={this.clear}>Clear all</button>
 							<button id="story-edit-save" type="button" className="btn btn-flat pull-right" onClick={this.save}>Save</button>
 							<button id="story-edit-discard" type="button" className="btn btn-flat pull-right toggle-edit toggler" onClick={this.cancel}>Discard</button>
 						</div>
+						
 						<div className="dialog-body">
 							<div className="dialog-col col-xs-12 form-group-default">
 								<div className="dialog-row">
@@ -102,7 +106,7 @@ export default class StoryEdit extends React.Component {
 										placeholder="Caption"
 										title="Caption"
 										ref="editCaption"
-										defaultValue={this.props.story.caption}/>
+										defaultValue={this.props.story.caption} />
 								</div>
 							</div>
 						</div>
