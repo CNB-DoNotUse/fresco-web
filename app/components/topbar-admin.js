@@ -77,7 +77,7 @@ export default class TopBarAdmin extends React.Component {
 
 	handleTwitterInputKeyDown(e) {
 		if(e.keyCode != 13) return;
-		console.log(this.refs['twitter-import-input'].value);
+		
 		var data = new FormData();
 		data.append('tweet', this.refs['twitter-import-input'].value);
 		$.ajax({
