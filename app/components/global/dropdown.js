@@ -8,6 +8,7 @@ import React from 'react'
 export default class Dropdown extends React.Component {
 
 	constructor(props) {
+		
 		super(props);
 		this.state = {
 			selected: this.props.selected
@@ -15,7 +16,7 @@ export default class Dropdown extends React.Component {
 		this.clicked = this.clicked.bind(this);
 		this.optionClicked = this.optionClicked.bind(this);
 		this.hideDropdown = this.hideDropdown.bind(this);
-		this.render = this.render.bind(this);
+
 	}
 
 	//Called whenever the master button is clicked

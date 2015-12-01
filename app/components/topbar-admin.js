@@ -14,6 +14,7 @@ export default class TopBarAdmin extends React.Component {
 		this.setTab = this.setTab.bind(this);
 		this.clickImportFileUpload = this.clickImportFileUpload.bind(this);
 		this.importFiles = this.importFiles.bind(this);
+		this.handleTwitterInputKeyDown = this.handleTwitterInputKeyDown.bind(this);
 	}
 
 	setTab(e) {
@@ -74,6 +75,34 @@ export default class TopBarAdmin extends React.Component {
 
 	}
 
+	handleTwitterInputKeyDown(e) {
+		if(e.keyCode != 13) return;
+		console.log(this.refs['twitter-import-input'].value);
+		var data = new FormData();
+		data.append('tweet', this.refs['twitter-import-input'].value);
+		$.ajax({
+			url: '/scripts/gallery/import',
+			type: 'POST',
+			data: data,
+    		processData: false,
+    		contentType: false,
+	        cache: false,
+	        dataType: 'json',
+			success: (result, status, xhr) => {
+				if(result.err) {
+					return $.snackbar({content: result.err});
+				}
+				
+				$.snackbar({content: 'Gallery Imported!'});
+				this.refs['twitter-import-input'].value = '';
+				this.props.setTab('imports');
+			},
+			error: (xhr, status, error) => {
+				$.snackbar({content: 'Failed to import media'});
+			}
+		});
+	}
+
 	render() {
 
 		return (
@@ -87,7 +116,7 @@ export default class TopBarAdmin extends React.Component {
 					<span className="mdi mdi-upload icon"></span>
 				</button>
 				<div className="form-group-default">
-					<input type="text" className="form-control twitter-import" placeholder="Link" />
+					<input type="text" className="form-control twitter-import" placeholder="Link" ref="twitter-import-input" onKeyDown={this.handleTwitterInputKeyDown} />
 				</div>
 				<div className="tab-control">
 					<button className="btn btn-flat btn-ink tab-admin" data-tab="assignments" onClick={this.setTab}>

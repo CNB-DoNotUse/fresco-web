@@ -9,6 +9,45 @@ Description : Top for pages of the site
 
 export default class TopBar extends React.Component {
 
+	constructor(props) {
+		super(props);
+		this.timeToggleSelected = this.timeToggleSelected.bind(this);
+		this.verifiedToggleSelected = this.verifiedToggleSelected.bind(this);
+		this.chronToggleSelected = this.chronToggleSelected.bind(this);
+		this.toggleEdit = this.toggleEdit.bind(this);
+		this.outletsFilterSelected = this.outletsFilterSelected.bind(this);
+	}
+
+	//Called when the user selects a time format
+	timeToggleSelected(selected) {
+		if (selected == 'Absolute') {
+			setTimeDisplayType('absolute');
+		}
+		else if (selected == 'Relative') {
+			setTimeDisplayType('relative');
+		}
+	}
+
+	//Called when the user selects a time format
+	verifiedToggleSelected(selected) {
+		
+	}
+
+	//Called when the user selects a time format
+	chronToggleSelected(selected) {
+		
+	}
+
+	toggleEdit() {
+
+		$(".toggle-edit").toggleClass("toggled");
+
+	}
+	// Called when user selects an outlet to filter
+	outletsFilterSelected() {
+
+	}
+
 	render() {
 
 		var edit = '';
@@ -58,6 +97,17 @@ export default class TopBar extends React.Component {
 
 		}
 
+		if (this.props.outletsFilter) {
+			topbarItems.push(
+				<Dropdown
+					options={['A', 'B', 'C']}
+					selected="A"
+					onSelected={this.outletsFilterSelected}
+					key="outletsFilter"
+					inList={true} />
+			)
+		}
+
 		if(this.props.tabs) {
 			var tabContent = [];
 			this.props.tabs.map((tab, i) => {
@@ -86,32 +136,6 @@ export default class TopBar extends React.Component {
 				{topbarItems}
 			</nav>
 		);
-	}
-
-	//Called when the user selectes a time format
-	timeToggleSelected(selected) {
-		if (selected == 'Absolute') {
-			setTimeDisplayType('absolute');
-		}
-		else if (selected == 'Relative') {
-			setTimeDisplayType('relative');
-		}
-	}
-
-	//Called when the user selectes a time format
-	verifiedToggleSelected(selected) {
-		
-	}
-
-	//Called when the user selectes a time format
-	chronToggleSelected(selected) {
-		
-	}
-
-	toggleEdit() {
-
-		$(".toggle-edit").toggleClass("toggled");
-
 	}
 
 }

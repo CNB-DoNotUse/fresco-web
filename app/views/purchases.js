@@ -65,7 +65,8 @@ class Purchases extends React.Component {
 		return (
 			<App user={this.props.user}>
 				<TopBar 
-					title="Purchases" />
+					title="Purchases"
+					outletsFilter={true} />
 				<PurchasesBody
 					purchases={this.state.purchases}
 					getMorePurchases={this.getMorePurchases} />

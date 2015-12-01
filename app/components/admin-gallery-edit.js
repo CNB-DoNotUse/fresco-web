@@ -1,5 +1,6 @@
 import React from 'react'
 import Slider from 'react-slick'
+import Dropdown from './global/dropdown'
 import Tag from './editing/tag'
 import EditMap from './editing/edit-map'
 import EditStories from './editing/gallery-edit-stories'
@@ -24,6 +25,7 @@ export default class AdminGalleryEdit extends React.Component {
 			mapLocation: []
 		}
 		this.editButtonEnabled = this.editButtonEnabled.bind(this);
+		this.handleTwitterBylineChange = this.handleTwitterBylineChange.bind(this);
 		this.handleChangeCaption = this.handleChangeCaption.bind(this);
 
 		this.galleryTagsInputKeyDown = this.galleryTagsInputKeyDown.bind(this);
@@ -46,7 +48,6 @@ export default class AdminGalleryEdit extends React.Component {
 		if( this.props.activeGalleryType == 'assignment') { return }
 
 		if( this.props.activeGalleryType == 'import' ) {
-
 			var location = new google.maps.places.Autocomplete(this.refs['gallery-location']);
 			google.maps.event.addListener( location, 'place_changed', () => {
 
@@ -107,6 +108,10 @@ export default class AdminGalleryEdit extends React.Component {
 
 		this.refs['gallery-caption'].value = e.target.value;
 
+	}
+
+	handleTwitterBylineChange(selected) {
+		this.refs['gallery-author'].value = selected;
 	}
 
 	galleryTagsInputKeyDown(e) {
@@ -271,10 +276,9 @@ export default class AdminGalleryEdit extends React.Component {
 
 	render() {
 
-		if(this.props.activeGalleryType == 'assignment') { return <div></div> }
+		if(!this.props.hasActiveGallery || this.props.activeGalleryType == 'assignment') { return <div></div> }
 
 		var activeGallery = this.props.gallery;
-		if(this.props.hasActiveGallery) { 
 			var galleryImages = activeGallery.posts.map((post, i) => {
 				if(post.video) {
 					return (
@@ -301,8 +305,6 @@ export default class AdminGalleryEdit extends React.Component {
 				allTags.push(<Tag text={'#' + tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />);
 			});
 
-		}
-
 		if(this.props.activeGalleryType == 'submission') {
 
 			if(this.props.gallery.location) {
@@ -321,11 +323,23 @@ export default class AdminGalleryEdit extends React.Component {
 						placeholder="Byline"
 						ref="gallery-byline" disabled={this.props.activeGalleryType == 'submission'}  />
 
-		} else {
+		} else { // Is an import
 
 			var editMapLocation = this.state.mapLocation;
 
-			var nameInput = 
+			if(activeGallery.posts[0].meta.twitter) { // Is a twitter import. Should show dropdown for name.
+				var twitterObj = activeGallery.posts[0].meta.twitter;
+				var nameInput =
+					<div>
+						<Dropdown 
+							options={[twitterObj.handle, twitterObj.user_name]}
+							selected={twitterObj.handle}
+							onSelected={this.handleTwitterBylineChange}/>
+						<input type="hidden" ref="gallery-author" />
+					</div>
+
+			} else {
+				var nameInput = 
 					<div className="split-cell">
 						<input
 							type="text"
@@ -333,6 +347,7 @@ export default class AdminGalleryEdit extends React.Component {
 							placeholder="Name"
 							ref="gallery-author" disabled={this.props.activeGalleryType == 'submission'}  />
 					</div>
+			}
 
 			var affiliationInput = 
 					<div className="split-cell">
