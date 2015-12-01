@@ -24,8 +24,9 @@ export default class PurchasesList extends React.Component {
 		var purchasesListDiv = document.getElementById('purchases-list');
 		var pxToBottom = purchasesListDiv.scrollHeight - (purchasesListDiv.clientHeight + purchasesListDiv.scrollTop);
 		var shouldGetMorePurchases = pxToBottom <= 96;
-
-		if(shouldGetMorePurchases) { // Check if already getting purchases because async
+		
+		// Check if already getting purchases because async
+		if(shouldGetMorePurchases) {
 
 			this.setState({
 				isGettingMorePurchases: true
@@ -33,6 +34,7 @@ export default class PurchasesList extends React.Component {
 
 			// Pass current offset to getMorePurchases
 			this.props.getMorePurchases(this.state.offset, () => {
+
 				// Allow getting more purchases after we've gotten more purchases.
 				// Update offset to new purchases length
 				this.setState({
@@ -50,7 +52,7 @@ export default class PurchasesList extends React.Component {
 
 		// Map purchases JSON to PurchaseListItem
 		purchases.map((purchase, i) => {
-			purchasesListItems.push(<PurchasesListItem item={purchase} key={i} />);
+			purchasesListItems.push(<PurchasesListItem purchase={purchase.purchase} title={purchase.title} key={i} />);
 		})
 
 		return (

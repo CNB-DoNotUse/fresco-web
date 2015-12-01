@@ -8,14 +8,13 @@ export default class PurchasesListItem extends React.Component {
 	}
 
 	goLink() {
-		window.open('/post/' + this.props.item.purchase.post._id, '_blank');
+		window.open('/post/' + (this.props.purchase.post ? this.props.purchase.post._id : this.props.purchase._id), '_blank');
 	}
 	
 	render() {
-		var item = this.props.item;
-		var purchase = item.purchase;
+		var purchase = this.props.purchase;
 		var post = purchase.post;
-		var video = post.video != null;
+		var video = post ? post.video != null : purchase.video != null;
 		var assignmentText = '';
 
 		if(purchase.assignment) {
@@ -31,7 +30,7 @@ export default class PurchasesListItem extends React.Component {
 				<div>
 					<img
 						className="img-circle"
-						src={this.props.item.purchase.post.image}
+						src={post ? post.image : purchase.image}
 						style={{
 							margin: '-2px 0',
 						    width: '40px',
@@ -49,9 +48,14 @@ export default class PurchasesListItem extends React.Component {
 				</div>
 				{assignmentText}
 				<div>
-					<p className="md-type-body2 toggle-aradd toggler">{item.title}</p>
+					<p className="md-type-body2 toggle-aradd toggler">{this.props.showTitle ? this.props.title : ''}</p>
 				</div>
 			</div>
 		);
 	}
+}
+
+PurchasesListItem.defaultProps = {
+	showTitle: true,
+	title: ''
 }
