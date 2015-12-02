@@ -9,10 +9,9 @@ import OutletQuickSupport from '../components/outlet-quick-support'
 import OutletMembers from '../components/outlet-members'
 
 /**
-
 	Outlet members page
-
 */
+
 class OutletSettings extends React.Component {
 	constructor(props) {
 		super(props);

@@ -7,6 +7,18 @@ import React from 'react'
 	
 export default class Sidebar extends React.Component {
 
+	constructor(props) {
+		super(props);
+
+		this.handleSearchKeyDown = this.handleSearchKeyDown.bind(this);
+
+	}
+
+	handleSearchKeyDown(e) {
+		if(e.keyCode != 13) return;
+		window.location ='/search?q=' + encodeURIComponent(this.refs.searchInput.value);
+	}
+
 	render() {
 
 		var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
@@ -22,7 +34,7 @@ export default class Sidebar extends React.Component {
 					</a>
 				
 					<div className="form-group-default">
-						<input className="form-control" id="sidebar-search" placeholder="Search" type="text" />
+						<input className="form-control" id="sidebar-search" placeholder="Search" type="text" ref="searchInput" onKeyDown={this.handleSearchKeyDown} />
 					</div>
 					
 					<SideBarListItems user={this.props.user} />
