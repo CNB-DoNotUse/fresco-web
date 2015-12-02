@@ -43,6 +43,12 @@
 </script>
 <!-- <script type="text/javascript" src="/javascripts/dashboard.js"></script> -->
 
+<% if(typeof scripts !== 'undefined') { 
+  scripts.map((script) => { %>
+    <script type="text/javascript" src="<%= script %>"></script>
+   <% })
+} %>
+
 <!-- Page Specific -->
 <% if(typeof props !== 'undefined'){ %>
 

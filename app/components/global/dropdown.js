@@ -74,7 +74,7 @@ export default class Dropdown extends React.Component {
 
 	render() {
 
-		var options = this.props.options.map((option) => {
+		var options = this.props.options.map((option, i) => {
 			
 			var className = '';
 			
@@ -83,7 +83,7 @@ export default class Dropdown extends React.Component {
 			}
 
 			return ( 
-				<li className={className} key={option} onClick={this.optionClicked}>{option}</li> 
+				<li className={className} key={i} onClick={this.optionClicked}>{option}</li> 
 			);
 
 		});

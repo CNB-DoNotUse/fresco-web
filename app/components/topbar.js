@@ -11,11 +11,16 @@ export default class TopBar extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.goLink = this.goLink.bind(this);
 		this.timeToggleSelected = this.timeToggleSelected.bind(this);
 		this.verifiedToggleSelected = this.verifiedToggleSelected.bind(this);
 		this.chronToggleSelected = this.chronToggleSelected.bind(this);
 		this.toggleEdit = this.toggleEdit.bind(this);
 		this.outletsFilterSelected = this.outletsFilterSelected.bind(this);
+	}
+	// Called when has link prop.
+	goLink() {
+		window.location = this.props.link
 	}
 
 	//Called when the user selects a time format
@@ -61,6 +66,15 @@ export default class TopBar extends React.Component {
 					onClick={this.toggleEdit}></a>
 			);
 		}
+
+		if (this.props.link && (this.props.rank ? this.props.rank >= 2 ? true : false : false)) {
+			topbarItems.push(
+				<a className="mdi mdi-pencil icon pull-right hidden-xs"
+					key="link"
+					onClick={this.goLink} />
+			)
+		}
+
 		if (this.props.chronToggle) {
 			topbarItems.push(
 							<Dropdown

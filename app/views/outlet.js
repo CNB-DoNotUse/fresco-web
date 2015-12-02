@@ -17,7 +17,6 @@ class Outlet extends React.Component {
 	}
 
 	setActiveTab(tab) {
-		console.log(tab);
 		this.setState({
 			activeTab: tab
 		});
@@ -31,6 +30,8 @@ class Outlet extends React.Component {
 			<App user={this.props.user}>
 				<TopBar
 					title={this.props.outlet.title}
+					rank={this.props.user.rank}
+					link="/outlet/settings"
 					activeTab={this.state.activeTab}
 					setActiveTab={this.setActiveTab}
 					tabs={[

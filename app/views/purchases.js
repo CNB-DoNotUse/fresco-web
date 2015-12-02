@@ -8,11 +8,24 @@ class Purchases extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			purchases: []
+			purchases: [],
+			outlets: []
 		}
 
+		this.getOutlets = this.getOutlets.bind(this);
 		this.getPurchases = this.getPurchases.bind(this);
 		this.getMorePurchases = this.getMorePurchases.bind(this);
+	}
+
+	getOutlets() {
+		$.get('/scripts/outlet/list', (outlets) => {
+
+			if(outlets.err) { return $.snackbar({content: outlets.err}); }
+			console.log(outlets.data);
+			this.setState({
+				outlets: outlets.data
+			});
+		})
 	}
 
 	getPurchases() {
@@ -59,6 +72,7 @@ class Purchases extends React.Component {
 
 	componentDidMount() {
 	 	this.getPurchases();
+	 	this.getOutlets();
 	}
 
 	render() {
@@ -66,7 +80,8 @@ class Purchases extends React.Component {
 			<App user={this.props.user}>
 				<TopBar 
 					title="Purchases"
-					outletsFilter={true} />
+					outletsFilter={true}
+					outlets={this.state.outlets.map((outlet) => { return outlet.title })} />
 				<PurchasesBody
 					purchases={this.state.purchases}
 					getMorePurchases={this.getMorePurchases} />

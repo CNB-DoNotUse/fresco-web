@@ -123,13 +123,23 @@ router = express.Router();
         error_message: config.ERR_PAGE_MESSAGES[404]
       });
 
-    res.render('outlet-settings', {
+    var title = 'Outlet Settings',
+        props = {
+          title: title,
+          user: req.session.user,
+          outlet: body.data,
+          stripePublishableKey: config.STRIPE_PUBLISHABLE
+        }
+    res.render('app', {
       user: req.session.user,
       outlet: body.data,
-      title: 'Outlet',
+      title: title,
       config: config,
-      page: 'outlet-settings',
-      alerts: req.alerts
+      page: 'outletSettings',
+      alerts: req.alerts,
+      links: ['/stylesheets/pages/outlet-settings.css'],
+      scripts: ['https://js.stripe.com/v2/'],
+      props: JSON.stringify(props)
     });
   });
 });
