@@ -26,8 +26,17 @@ router.get('/', function(req, res, next) {
       },
       radius: parseFloat(req.query.r)
     };
+    
+    var props = {
+      user: req.session.user,
+      title: query,
+      location: location,
+      purchases: purchases,
+      config: config,
+      query: query
+    }
 
-  res.render('search', {
+  res.render('app', {
     user: req.session.user,
     query: query,
     tags: tags,
@@ -36,6 +45,7 @@ router.get('/', function(req, res, next) {
     purchases: purchases,
     config: config,
     alerts: req.alerts,
+    props: JSON.stringify(props),
 		page : 'search'
   });
 });
