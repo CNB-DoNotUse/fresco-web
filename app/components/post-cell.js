@@ -46,6 +46,7 @@ export default class PostCell extends React.Component {
 					<PostCellActions
 						post={this.props.post}
 						purchased={this.props.purchased}
+						didPurchase={this.props.didPurchase}
 						rank={this.props.rank}
 						editable={this.props.editable} />
 					<div>
@@ -132,7 +133,7 @@ class PostCellActions extends React.Component {
 			if(this.props.purchased === false){
 
 				actions.push(
-					<PurchaseAction post={this.props.post} />
+					<PurchaseAction post={this.props.post} didPurchase={this.props.didPurchase} />
 				);
 
 			}
@@ -150,7 +151,7 @@ class PostCellActions extends React.Component {
 				<span class="mdi mdi-library-plus icon pull-right" key={key++}></span>
 			);
 			actions.push(
-				<PurchaseAction post={this.props.post} />
+				<PurchaseAction post={this.props.post} didPurchase={this.props.didPurchase}/>
 			);
 
 		}

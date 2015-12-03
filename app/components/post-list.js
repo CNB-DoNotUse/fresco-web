@@ -102,6 +102,7 @@ export default class PostList extends React.Component {
 	        		post={post} 
 	        		rank={rank} 
 	        		purchased={purchased}
+	        		didPurchase={this.props.didPurchase}
 	        		key={i}
 	        		editable={this.props.editable} />
 	        		

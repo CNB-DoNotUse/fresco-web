@@ -38,7 +38,7 @@ router.post('/assignment/approve', function(req, res, next) {
     res.json({err: null}).end();
   });
 });
-router.post('/assignment/create', function(req, res, next){console.log(req.body);
+router.post('/assignment/create', function(req, res, next){
   if (!req.session.user || !req.session.user.outlet)
   	return res.status(403).json({err: 'ERR_INVALID_OUTLET'}).end();
 
@@ -189,8 +189,6 @@ router.post('/assignment/update', function(req, res, next){
   api.headers['authtoken'] = req.session.user.token;
   api.post('/v1/assignment/update', req.body, function(error, response, body){
 
-    console.log(req.body);
-
     if (error)
       return res.json({err: error}).end();
     if (!body)
@@ -254,11 +252,8 @@ router.post('/gallery/import', function(req, res, next){
 
   function upload(cb){
     params.posts = JSON.stringify(params.posts); 
-    console.log('Params of gallery/import');
-    console.log(params);
-    console.log('End of params');
     request.post({ url: config.API_URL + '/v1/gallery/assemble', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
-      console.log(err, body);for (var index in cleanupFiles)
+      for (var index in cleanupFiles)
         fs.unlink(cleanupFiles[index], function(){});
 
       try{
@@ -442,8 +437,6 @@ router.post('/outlet/checkout', function(req, res, next){
 
   req.body.outlet = req.session.user.outlet._id;
 
-  console.log('rest');
-
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
   api.post(
@@ -527,7 +520,7 @@ router.post('/outlet/create', function(req, res, next){
             contact_phone: req.body.contact_phone,
             contact_email: authtoken.user.email,
           },
-          function(error, response, outlet_body){console.log(error, outlet_body);
+          function(error, response, outlet_body){
             if (error)
               return cb(error);
             if (!outlet_body)
@@ -755,7 +748,6 @@ router.get('/outlet/purchases', function(req, res, next){
     url += index + '=' + req.query[index] + '&';
 
   api.headers['authtoken'] = req.session.user.token;
-  console.log(url);
   api.get(url, function(err, response, body){
     if (err)
       return res.json({err: err.err}).end();
@@ -837,7 +829,7 @@ router.post('/outlet/update', function(req, res, next){
 
   if (file) params.avatar = fs.createReadStream(file.path);
 
-  request.post({ url: config.API_URL + '/v1/outlet/update', headers: { authtoken: req.session.user.token }, formData: params }, function(error, response, body){console.log(error, body);
+  request.post({ url: config.API_URL + '/v1/outlet/update', headers: { authtoken: req.session.user.token }, formData: params }, function(error, response, body){
     if (error)
       return res.json({err: error}).end();
 
@@ -967,7 +959,6 @@ router.post('/user/login', function(req, res, next) {
     parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
     parse.headers['X-Parse-Revocable-Session'] = "1";
     parse.get('/1/login?username=' + querystring.escape(req.body.email) + '&password=' + querystring.escape(req.body.password), function(err,response,parse_body){
-      console.log(err);
       if(err)
         return res.json({err: err}).end();
       if (response.statusCode == 401)
@@ -1022,7 +1013,7 @@ router.get('/user/logout', function(req, res, next) {
     });
   });
 });
-router.post('/user/register', function(req, res, next) {console.log(req.body);
+router.post('/user/register', function(req, res, next) {
   var password = req.body.password,
       email = req.body.email,
       firstname = req.body.firstname,
@@ -1118,7 +1109,6 @@ router.get('/user/verify/resend', function(req, res, next){
     return res.json({err: 'ERR_UNAUTHORIZED'}).end();
 
   var api = requestJson.createClient(config.API_URL);
-console.log(req.session.user.token);
   api.headers['authtoken'] = req.session.user.token;
   api.post('/v1/user/verify/resend', {}, function(err,response,body){
     if (err){

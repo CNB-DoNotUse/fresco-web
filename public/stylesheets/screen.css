@@ -44,6 +44,9 @@ body > div.wrapper > div > .container-fluid {
     -ms-flex: 1;
     flex: 1; }
 
+.alertify .alert, .alertify .dialog {
+  background: transparent; }
+
 .ie .page {
   opacity: 1; }
 

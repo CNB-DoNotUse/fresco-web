@@ -12,7 +12,27 @@ class Videos extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			purchases: []
+		}
+
 		this.loadPosts = this.loadPosts.bind(this);
+		this.didPurchase = this.didPurchase.bind(this);
+	}
+
+	/** 
+		Called when an item is purchased.
+		Adds purchase ID to current purchases in state.
+		Prop chain: PostList -> PostCell -> PostCellActions -> PostCellAction -> PurchaseAction
+	**/
+	didPurchase(id) {
+		var purchases = [];
+		this.state.purchases.map((purchase) => { purchases.push(purchase); })
+		purchases.push(id);
+		this.setState({
+			purchases: purchases
+		});
 	}
 
 	render() {
@@ -27,7 +47,8 @@ class Videos extends React.Component {
 				<PostList
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}
-					purchases={this.props.purchases}
+					purchases={this.props.purchases.concat(this.state.purchases)}
+					didPurchase={this.didPurchase}
 					size='small'
 					scrollable={true} />
 			</App>

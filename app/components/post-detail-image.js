@@ -35,7 +35,7 @@ export default class PostDetailImage extends React.Component {
 				//Check if the post is licensed 
 				else if (this.props.post.license == 1){
 					actions.push(
-						<PurchaseAction post={this.props.post} key={i++} />
+						<PurchaseAction post={this.props.post} didPurchase={this.props.didPurchase} key={i++} />
 					);
 				}
 			}
@@ -50,7 +50,7 @@ export default class PostDetailImage extends React.Component {
 			if (this.props.purchases && this.props.purchases.indexOf(this.props.post._id) == -1){
 
 				actions.push(
-					<PurchaseAction post={this.props.post} key={i++} />
+					<PurchaseAction post={this.props.post} didPurchase={this.props.didPurchase} key={i++} />
 				);
 			}
 

@@ -34,7 +34,6 @@ export default class PurchaseAction extends React.Component {
 		alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", (e) => {
 
 		    if (e) {
-
 				//Send request for purchase
 				$.ajax({
 					url: '/scripts/outlet/checkout',
@@ -42,18 +41,23 @@ export default class PurchaseAction extends React.Component {
 					method: 'post',
 					contentType: "application/json",
 					data: JSON.stringify({
-						posts: post,
-						assignment:assignment
+						posts: [post],
+						assignment: assignment
 					}),
 					success: (result, status, xhr) => {
 
-						if (result.err)
-							return this.error(null, null, result.err);
+						if (result.err) {
+							return $.snackbar({
+								content: 'There was an error while completing your purchase!'
+							});
+						}
 
 						$.snackbar({
 							content:'Purchase successful! Visit your <a style="color:white;" href="/outlet">outlet page</a> to view your purchased content', 
 							timeout:0
 						});
+
+						this.props.didPurchase(this.props.post._id);
 
 						// var card = thisElem.parents('tile');
 						// thisElem.siblings('.mdi-library-plus').remove();
@@ -76,4 +80,8 @@ export default class PurchaseAction extends React.Component {
 		
 	}
 
+}
+
+PurchaseAction.defaultProps = {
+	didPurchase: function(id) {}
 }
