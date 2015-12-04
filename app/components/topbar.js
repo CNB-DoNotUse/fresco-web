@@ -18,6 +18,29 @@ export default class TopBar extends React.Component {
 		this.toggleEdit = this.toggleEdit.bind(this);
 		this.outletsFilterSelected = this.outletsFilterSelected.bind(this);
 	}
+
+	componentDidMount() {
+		
+		//Set up autocomplete
+		if(this.props.locationInput){
+
+			//Set up autocomplete listener
+			var autocomplete = new google.maps.places.Autocomplete(this.refs.autocomplete);
+					
+			google.maps.event.addListener(autocomplete, 'place_changed', () => {
+
+				var place = autocomplete.getPlace(),
+					location = {
+						lat: place.geometry.location.lat(),
+						lng: place.geometry.location.lng()
+					};
+
+				//Update the position to the parent component
+				this.props.updateMapCenter(location);
+			});
+		}
+	}
+
 	// Called when has link prop.
 	goLink() {
 		window.location = this.props.link
@@ -55,9 +78,19 @@ export default class TopBar extends React.Component {
 
 	render() {
 
-		var edit = '';
+		var edit = '',
+			topbarItems = [],
+			locationInput = '';
 
-		var topbarItems = [];
+		if(this.props.locationInput){
+			locationInput = <div className="form-group-default">
+								<input 
+									type="text" 
+									ref="autocomplete"
+									className="form-control google-autocomplete" 
+									placeholder="Location" />
+							</div>;
+		}
 		
 		if (this.props.editable) {
 			topbarItems.push(
@@ -146,6 +179,7 @@ export default class TopBar extends React.Component {
 				</button>
 				<div className="spacer"></div>
 				<h1 className="md-type-title">{this.props.title}</h1>
+				{locationInput}
 				{tabs}
 				{topbarItems}
 			</nav>

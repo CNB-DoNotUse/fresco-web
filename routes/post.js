@@ -27,14 +27,15 @@ router.get('/:id', function(req, res, next){
       });
     }
 
-    var post = body.data;
+    var post = body.data,
+        title = '';
 
-    var title = 'Post by ';
-    
     if (post.owner)
-      title += post.owner.firstname + ' ' + post.owner.lastname;
+      title += 'Post by ' + post.owner.firstname + ' ' + post.owner.lastname;
     else if(post.curator)
-      title += post.curator.firstname + ' ' + post.curator.lastname;
+      title += 'Imported by ' + post.curator.firstname + ' ' + post.curator.lastname;
+    else
+      title = 'No Owner';
    
     //Make request for gallery
   	api.get('/v1/post/gallery?id='+req.params.id, function(error, response, body){

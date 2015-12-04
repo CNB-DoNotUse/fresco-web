@@ -18,10 +18,12 @@ class Dispatch extends React.Component {
 		this.state = {
 			activeAssignment: null,
 			newAssignment: null,
-			updatePlace: null,
-			viewMode: 'active'
+			shouldUpdatePlace: null,
+			mapCenter: null,
+			viewMode: 'active',
 		}
 		this.updatePlace = this.updatePlace.bind(this);
+		this.updateMapCenter = this.updateMapCenter.bind(this);
 		this.setActiveAssignment = this.setActiveAssignment.bind(this);
 		this.updateNewAssignment = this.updateNewAssignment.bind(this);
 		this.toggleSubmissionCard = this.toggleSubmissionCard.bind(this);
@@ -39,11 +41,12 @@ class Dispatch extends React.Component {
 	 * @param {dictionary} location The new location
 	 * @param {integer} radius The radius to update the new assignment with
 	 */
-	updateNewAssignment(location, radius){
+	updateNewAssignment(location, radius, zoom){
 		this.setState({
 			newAssignment: {
 				location: location,
-				radius: radius
+				radius: radius,
+				zoom: zoom
 			}
 		});
 	}
@@ -51,9 +54,11 @@ class Dispatch extends React.Component {
 	//Tells the componenets to update their `Google Maps Place Autocomplete`
 	//when the marker is finished dragging
 	updatePlace(){
-		this.setState({
-			updatePlace: true
-		})
+		this.setState({ shouldUpdatePlace: true });
+	}
+
+	updateMapCenter(location){
+		this.setState({ mapCenter: location });
 	}
 
 	/**
@@ -84,13 +89,15 @@ class Dispatch extends React.Component {
 
 			},
 			error: (xhr, status, error) => {
-				return callback(error, null);
+				return callback(error);
 			}
 		});
 	}
 
 	/**
 	 * Retrieves users from the API
+	 * @param  {Google Maps object}   map      
+	 * @param  {Function} callback callback with data, error
 	 */
 	findUsers(map, callback) {
 		
@@ -104,6 +111,8 @@ class Dispatch extends React.Component {
 		var radius = proximitymiles / 2;
 		var center = map.getCenter();
 
+		if(!center) return callback(null, 'No center')
+
 		var query = "lat=" + center.lat() + "&lon=" + center.lng() + "&radius=" + radius;
 		
 		//Should be authed
@@ -112,13 +121,13 @@ class Dispatch extends React.Component {
 
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
-					callback([]);
+					callback(null, 'Error');
 				else
-					callback(response.data);
+					callback(response.data, null);
 
 			},
 			error: (xhr, status, error) => {
-				return callback(error, null);
+				return callback(null, error);
 			}
 		});
 		
@@ -131,6 +140,8 @@ class Dispatch extends React.Component {
 	toggleSubmissionCard(show, event) {
 
 		var dispatchSubmit = document.getElementById('dispatch-submit');
+
+		console.log(show);
 
 		if(show && this.state.newAssignment == null){
 
@@ -147,7 +158,7 @@ class Dispatch extends React.Component {
 				newAssignment: null
 			})
 
-			dispatchSubmit.className += 'toggled';
+			dispatchSubmit.className += ' toggled';
 
 		}
 
@@ -174,8 +185,9 @@ class Dispatch extends React.Component {
 				<DispatchSubmit 
 					user={this.props.user} 
 					newAssignment={this.state.newAssignment}
+					toggleSubmissionCard={this.toggleSubmissionCard}
 					updateNewAssignment={this.updateNewAssignment}
-					updatePlace={this.state.updatePlace}
+					shouldUpdatePlace={this.state.shouldUpdatePlace}
 					key={key++} />
 			);
 
@@ -193,9 +205,12 @@ class Dispatch extends React.Component {
 			<App user={this.props.user}>
 				<TopBar 
 					title={this.props.title}
-					location={true} />
+					locationInput={true}
+					updateMapCenter={this.updateMapCenter} />
+				
 				<DispatchMap 
 					user={this.props.user}
+					mapCenter={this.state.mapCenter}
 					setActiveAssignment={this.setActiveAssignment}
 					findAssignments={this.findAssignments}
 					findUsers={this.findUsers}
@@ -203,9 +218,8 @@ class Dispatch extends React.Component {
 					newAssignment={this.state.newAssignment}
 					updatePlace={this.updatePlace}
 					updateNewAssignment={this.updateNewAssignment} />
-				<div className="cards">
-					{cards}
-				</div>
+				
+				<div className="cards">{cards}</div>
 			</App>
 		);
 

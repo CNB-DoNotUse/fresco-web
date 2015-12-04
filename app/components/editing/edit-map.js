@@ -26,9 +26,8 @@ export default class EditMap extends React.Component {
 		this.initializeMap();
 		this.setState({
 			mapID: Date.now() + Math.floor(Math.random() * 100)
-		})
+		});
 	}
-
 
 	componentDidUpdate(prevProps, prevState) {
 
@@ -70,6 +69,7 @@ export default class EditMap extends React.Component {
 			this.state.marker.setPosition(
 				new google.maps.LatLng(this.props.location.lat, this.props.location.lng)
 			);
+			this.state.map.setZoom(this.props.zoom || 16);
 			this.state.map.setCenter(this.state.marker.getPosition());
 		}
 
@@ -124,7 +124,7 @@ export default class EditMap extends React.Component {
 
 		var mapOptions = {
 			center: this.props.location || {lat: 40.7, lng: -74},
-			zoom: 16,
+			zoom: this.props.zoom || 16,
 			mapTypeControl: false,
 			draggable: false,
 			scrollwheel: false,

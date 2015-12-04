@@ -19,6 +19,7 @@ export default class AssignmentEdit extends React.Component {
 
 		this.updateLocation = this.updateLocation.bind(this);
 		this.revert = this.revert.bind(this);
+		this.cancel = this.cancel.bind(this);
 		this.clear = this.clear.bind(this);
 		this.save = this.save.bind(this);
 		this.hide = this.hide.bind(this);
@@ -81,6 +82,8 @@ export default class AssignmentEdit extends React.Component {
 			expiration_time: this.refs.expiration.value * 60 * 60 * 1000 //Convert to milliseconds
 		};
 
+		console.log(params);
+
 		if (global.isEmptyString(params.title)){
 			$.snackbar({content: 'Assignment must have a title!'});
 			return;
@@ -94,7 +97,7 @@ export default class AssignmentEdit extends React.Component {
 			return false;
 		}
 		if (!global.isValidRadius(params.radius)){
-			$.snackbar({content: 'Radius must be at least 150ft!'});
+			$.snackbar({content: 'Radius must be at least 250ft!'});
 			return false;
 		}
 		if (isNaN(params.expiration_time) || params.expiration_time == 0){

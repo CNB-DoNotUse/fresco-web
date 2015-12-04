@@ -21,7 +21,9 @@ export default class DispatchMap extends React.Component {
 		this.state = {
 			assignments: [],
 			activeCallout: null,
-			map: null
+			map: null,
+			newAssignmentMarker: null,
+			newAssignmentCircle: null
 		}
 
 		this.updateMap = this.updateMap.bind(this);
@@ -41,6 +43,7 @@ export default class DispatchMap extends React.Component {
 			{"featureType":"poi.park","elementType":"all","stylers":[{"gamma":1.26}]},
 			{"featureType":"poi.park","elementType":"labels.text","stylers":[{"saturation":-54}]}];
 
+		//Set up session storage for location
 		if(!window.sessionStorage.dispatch || !window.sessionStorage.dispatch.mapCenter || !window.sessionStorage.dispatch.mapZoom ){
 			window.sessionStorage.dispatch = JSON.stringify({
 				mapCenter: {lat: 40.7, lng: -74},
@@ -50,14 +53,14 @@ export default class DispatchMap extends React.Component {
 		
 		var dispatch = JSON.parse(window.sessionStorage.dispatch);
 		
-		var mapOptions = {
-			zoom: 12
-		};
-
 		//Set up the map object
 		var map = new google.maps.Map(
 			document.getElementById('map-canvas'), 
-			mapOptions
+			{
+				zoom: dispatch.mapZoom,
+				center: dispatch.mapCenter,
+				styles: styles
+			}
 		);
 
 		//Add event listeners for map life cycle
@@ -68,11 +71,11 @@ export default class DispatchMap extends React.Component {
 
 	}
 
-
 	componentDidUpdate(prevProps, prevState) {
 
-		console.log(this.state.map);
-		console.log(this.state.map.getCenter());
+		if(JSON.stringify(prevProps.mapCenter) != JSON.stringify(this.props.mapCenter)){
+			this.state.map.setCenter(this.props.mapCenter);
+		}
 
 		if(prevState.assignments)
 			this.updateAssignmentMarkers(prevState.assignments);
@@ -91,15 +94,38 @@ export default class DispatchMap extends React.Component {
 
 		//Check if there's already a new assignment marker 
 		//Meaning the marker has already been added, and we don't need to add a new one
-		if(this.state.newAssignmentMarker){
+		if(this.state.newAssignmentMarker && this.state.newAssignmentCircle){
 
-			//Both google maps locations
-			//Compare to make sure we don't change the marker unless its position hasn't actually changed
-			if(this.props.newAssignment.location.toString() != prevProps.location){
-				this.state.newAssignmentMarker.setPosition(this.props.updateNewAssignment.location);	
-				this.state.map.setCenter(
-					this.state.newAssignmentMarker.getPosition()
-				);	     
+			var marker = this.state.newAssignmentMarker,
+				circle = this.state.newAssignmentCircle,
+				map = this.state.map;
+
+			if(this.props.newAssignment){
+
+				//Compare to make sure we don't change the marker unless its position hasn't actually changed
+				//or there is no location
+				if(!prevProps.newAssignment.location || 
+					JSON.stringify(this.props.newAssignment.location) != JSON.stringify(prevProps.newAssignment.location))
+				{
+					marker.setPosition(this.props.newAssignment.location);	
+					map.setCenter(
+						marker.getPosition()
+					);	     
+					circle.setCenter(this.state.newAssignmentMarker.getPosition());
+				}
+				if(prevProps.newAssignment.radius != this.props.newAssignment.radius){
+					circle.setRadius(this.props.newAssignment.radius);
+				}
+
+			}
+			//Remove markers 
+			else{
+				marker.setMap(null);
+				circle.setMap(null);
+				this.setState({
+					newAssignmentMarker: null,
+					newAssignmentCircle: null
+				});
 			}
 
 		}
@@ -107,40 +133,42 @@ export default class DispatchMap extends React.Component {
 		else if(this.props.newAssignment){
 
 			//Create the marker with a null position
-			var position = null,
-				marker = this.addAssignmentMarker(position, null, null, null, true),
+			var marker = this.addAssignmentMarker(),
+				circle = this.addCircle(null, 0, 'active'),
 				location = {
 					lat: marker.getPosition().lat(),
 					lng: marker.getPosition().lng()
-				};		     
-			
+				};	
+
 			//Update the position to the parent component
-			this.props.updateNewAssignment(location, null);
+			this.props.updateNewAssignment(location, null, null);
 
 			//Set marker to state of map so we can manage its location
-			this.setState({ newAssignmentMarker: marker })
+			this.setState({ 
+				newAssignmentMarker: marker,
+				newAssignmentCircle: circle 
+			});
 
 			//Update the maps center to reflect the new positon of the marker
 			this.state.map.setCenter(
 				marker.getPosition()
 			);	     
 
-			//Add listener on `drag` so the parent can get updates and pass props to the `Submit` card
-			//when location changes
-			google.maps.event.addListener(marker, 'drag', (ev) => {
-
-				//Send up location to the parent
-				this.props.updateNewAssignment({
-					lat: ev.latLng.lat(),
-					lng: ev.latLng.lng()
-				}, this.props);
-
-			});
 
 			google.maps.event.addListener(marker, 'dragend', (ev) => {
 				this.props.updatePlace();
+				//Send up location to the parent
+				this.props.updateNewAssignment(
+					{
+					lat: ev.latLng.lat(),
+					lng: ev.latLng.lng()
+					}, 
+					this.props.newAssignment.radius,
+					this.state.map.getZoom()
+				);	
 			});
 		}
+
 	}
 
 	/**
@@ -150,7 +178,7 @@ export default class DispatchMap extends React.Component {
 
 		this.props.findAssignments(this.state.map, (assignments) => {
 
-			this.props.findUsers(this.state.map, (users) => {
+			this.props.findUsers(this.state.map, (users, error) => {
 				
 				this.setState({
 					assignments: assignments,
@@ -182,7 +210,6 @@ export default class DispatchMap extends React.Component {
 
 		//Check if the assignment is expired
 		if (assignment.expiration_time && assignment.expiration_time < Date.now()){
-			
 			//Then check if we're in the right view mode
 			if(this.props.viewMode == 'expired'){
 				status = 'expired';
@@ -190,7 +217,9 @@ export default class DispatchMap extends React.Component {
 				zIndex = 100;
 			}
 			//Otherwise break
-			else return;
+			else {
+				return;
+			}
 		}
 		//Not expired assignment
 		else{
@@ -201,7 +230,7 @@ export default class DispatchMap extends React.Component {
 				markerURL = '/images/assignment-pending@2x.png';
 				zIndex = 200;
 			}
-			//Assignment has 'active' or uncheced status
+			//Assignment has 'active' or unchecked status
 			else{
 				status = 'active;'
 				zIndex = 300;
@@ -239,20 +268,22 @@ export default class DispatchMap extends React.Component {
 
 		//Create the marker image
 		var image = {
-			url: markerURL || '/images/assignment-pending@2x.png',
+			url: markerURL || '/images/assignment-active@2x.png',
 			size: new google.maps.Size(114, 114),
 			scaledSize: new google.maps.Size(60, 60),
 			origin: new google.maps.Point(0, 0),
 			anchor: new google.maps.Point(30, 30)
 		};
 
+		var position = position || {lat: this.state.map.getCenter().lat(), lng: this.state.map.getCenter().lng()};
+
 		var marker = new google.maps.Marker({
-			position: position || this.state.map.getCenter(),
+			position: position,
 			map: this.state.map,
 			title: title || 'No title',
 			icon: image,
 			zIndex: zIndex || 0,
-			draggable: draggable
+			draggable: draggable !== undefined ? draggable : true
 		});
 
 		return marker;
@@ -261,6 +292,9 @@ export default class DispatchMap extends React.Component {
 
 	/**
 	 * Adds circle to the map given a center and a radius
+	 * @param {dictionary} center Center of the circle
+	 * @param {integer} radius Circle radius in feet
+	 * @param {Assignment status} status active/pending/expired
 	 */
 	addCircle(center, radius, status) {
 		
@@ -275,8 +309,8 @@ export default class DispatchMap extends React.Component {
 		
 		return new google.maps.Circle({
 			map: this.state.map,
-			center: center,
-			radius: radius,
+			center: center || this.state.map.getCenter(),
+			radius: radius || 0,
 			strokeWeight: 0,
 			fillColor: fillColor,
 			fillOpacity: 0.26
