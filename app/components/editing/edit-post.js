@@ -1,4 +1,5 @@
 import React from 'react'
+import global from './../../../lib/global'
 
 /**
  * Single Edit-Post Element
@@ -52,7 +53,7 @@ export default class EditPost extends React.Component {
 			return (
 				<video width="100%" height="100%" data-id={this.props.post._id} controls>
 					<source 
-						src={this.props.post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')}
+						src={global.formatVideo(this.props.post.video)}
 						type="video/mp4" />
 					Your browser does not support the video tag.
 				</video>
@@ -66,7 +67,7 @@ export default class EditPost extends React.Component {
 			return (
 				<img 
 					className='img-responsive'
-					src={formatImg(this.props.post.image, 'medium')}
+					src={global.formatImg(this.props.post.image, 'medium')}
 					data-id={this.props.post._id} />
 			)
 
