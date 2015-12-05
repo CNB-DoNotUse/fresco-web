@@ -1062,12 +1062,12 @@ router.post('/user/unfollow', function(req, res, next) {
 });
 router.post('/user/update', function(req, res, next){
 	var request = require('request'),
-    formData = {
-  	  id: req.body.id,
-  	  firstname: req.body.firstname,
-  	  lastname: req.body.lastname,
-  	  email: req.body.email
-  	};
+      formData = {
+       id: req.body.id,
+       firstname: req.body.firstname,
+       lastname: req.body.lastname,
+       email: req.body.email
+      };
 
 	var file = null;
 
@@ -1079,7 +1079,14 @@ router.post('/user/update', function(req, res, next){
 	if(req.body.password) formData.password = req.body.password;
   if (formData.email == req.session.user.email) delete formData.email;
 
-  request.post({ url: config.API_URL + '/v1/user/update', headers: { authtoken: req.session.user.token }, formData: formData }, function(error, response, body){
+  request.post({ 
+    url: config.API_URL + '/v1/user/update', 
+    headers: { 
+      authtoken: req.session.user.token 
+    }, 
+    formData: formData 
+  }, function(error, response, body){
+    
     body = JSON.parse(body);
 
     for (var index in req.files)
@@ -1102,8 +1109,10 @@ router.post('/user/update', function(req, res, next){
     req.session.save(function(){
       res.json({}).end();
     });
+  
   });
 });
+
 router.get('/user/verify/resend', function(req, res, next){
 	if (!req.session || !req.session.user)
     return res.json({err: 'ERR_UNAUTHORIZED'}).end();

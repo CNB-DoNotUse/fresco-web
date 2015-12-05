@@ -1,4 +1,5 @@
 import React from 'react'
+import Tag from './tag.js'
 
 /**
  * Component for managing added/removed articles

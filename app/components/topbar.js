@@ -80,7 +80,18 @@ export default class TopBar extends React.Component {
 
 		var edit = '',
 			topbarItems = [],
-			locationInput = '';
+			locationInput = '',
+			saveButton = '';
+
+		if(this.props.saveButton){
+
+			saveButton = <a 
+							onClick={this.props.updateSettings} 
+							className="mdi mdi-content-save icon pull-right hidden-xs">
+							<div className="ripple-wrapper"></div>
+						</a>;
+
+		}
 
 		if(this.props.locationInput){
 			locationInput = <div className="form-group-default">
@@ -182,6 +193,7 @@ export default class TopBar extends React.Component {
 				{locationInput}
 				{tabs}
 				{topbarItems}
+				{saveButton}
 			</nav>
 		);
 	}

@@ -15,9 +15,6 @@ export default class GalleryEditBody extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {
-			gallery: this.props.gallery
-		}
 		this.updateRelatedStories = this.updateRelatedStories.bind(this);
 		this.updateArticles = this.updateArticles.bind(this);
 		this.updatedTags = this.updatedTags.bind(this);
@@ -53,7 +50,7 @@ export default class GalleryEditBody extends React.Component {
 
 				<div className="dialog-col col-xs-12 col-md-7 form-group-default">
 
-					<BylineEdit gallery={this.state.gallery} />
+					<BylineEdit gallery={this.props.gallery} />
 					
 					<div className="dialog-row">
 										
@@ -62,28 +59,28 @@ export default class GalleryEditBody extends React.Component {
 								id="gallery-edit-caption" 
 								type="text" 
 								className="form-control" 
-								defaultValue={this.state.gallery.caption} />
+								defaultValue={this.props.gallery.caption} />
 							<div className="floating-label">Caption</div>
 							<span className="material-input"></span>
 						</div>
 
 					</div>
 					
-					<GalleryEditTags ref='tags' tags={this.state.gallery.tags} />
+					<GalleryEditTags ref='tags' tags={this.props.gallery.tags} />
 					
 					<GalleryEditStories ref='stories' 
-						stories={this.state.gallery.related_stories} 
+						stories={this.props.gallery.related_stories} 
 						updateRelatedStories={this.updateRelatedStories} />
 					
-					<GalleryEditArticles ref='articles' articles={this.state.gallery.articles} />
+					<GalleryEditArticles ref='articles' articles={this.props.gallery.articles} />
 					
 					{highlightCheckbox}
 
 				</div>
 				
-				<GalleryEditPosts posts={this.state.gallery.posts} files={this.state.gallery.files} />
+				<GalleryEditPosts posts={this.props.gallery.posts} files={this.props.gallery.files} />
 				
-				<GalleryEditMap gallery={this.state.gallery} />
+				<GalleryEditMap gallery={this.props.gallery} />
 
 			</div>
 
@@ -92,33 +89,33 @@ export default class GalleryEditBody extends React.Component {
 
 	updateRelatedStories(updatedStories) {
 
-		this.state.gallery.related_stories = updatedStories;
+		this.props.gallery.related_stories = updatedStories;
 
-		this.props.updateGallery(this.state.gallery);
+		this.props.updateGallery(this.props.gallery);
 
 	}
 
 	updateArticles(articles) {
 
-		this.state.gallery.articles = articles;
+		this.props.gallery.articles = articles;
 
-		this.props.updateGallery(gallery);
+		this.props.updateGallery(this.props.gallery);
 
 	}
 
 	updatedTags(tags) {
 
-		this.state.gallery.tags = tags;
+		this.props.gallery.tags = tags;
 
-		this.props.updateGallery(gallery);
+		this.props.updateGallery(this.props.gallery);
 
 	}
 
 	updatedLocation(location) {
 
-		this.state.gallery.locations[0] = location;
+		this.props.gallery.locations[0] = location;
 
-		this.props.updateGallery(gallery);
+		this.props.updateGallery(this.props.gallery);
 
 	}
 

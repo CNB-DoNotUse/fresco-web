@@ -29,11 +29,6 @@ export default class GalleryEdit extends React.Component {
 
 		if(!this.props.user) return;
 
- 		var style = {
- 			position: 'absolute',
- 			top: '-100px'
- 		};
-
  		return (
  			<div>
 	 			<div className="dim toggle-edit">
@@ -75,8 +70,6 @@ export default class GalleryEdit extends React.Component {
  		var posts = $('#edit-gallery-images').frick('frickPosts')
 
  		console.log(posts);
-
- 		return;
 
 		if(gallery.posts.length + files.length == 0 )
 			return $.snackbar({content:"Galleries must have at least 1 post"});
@@ -138,27 +131,23 @@ export default class GalleryEdit extends React.Component {
  			}
  		}
 
- 		console.log(params);
-
  		$.ajax("/scripts/gallery/update", {
  			method: 'post',
  			contentType: "application/json",
  			data: JSON.stringify(params),
  			success: (result) => {
 
- 				console.log(result);
- 			
- 				$.snackbar({
- 					content: "Gallery successfully saved!"
- 				});
+ 				if(result.err){
+ 					$.snackbar({
+ 						content: "Gallery successfully saved!"
+ 					});
 
- 			},
- 			error: (xhr, status, error) => {
- 				
- 				$.snackbar({
- 					content: "We ran into an error saving your gallery"
- 				});
-
+ 				}
+ 				else{
+ 					$.snackbar({
+ 						content: "Gallery successfully saved!"
+ 					});
+ 				}
  			}
 
  		});

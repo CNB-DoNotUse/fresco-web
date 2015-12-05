@@ -51,9 +51,7 @@
 
 <!-- Page Specific -->
 <% if(typeof props !== 'undefined'){ %>
-
   <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
-
 <% } 
 
 if(typeof page !== 'undefined'){ %>
@@ -61,10 +59,7 @@ if(typeof page !== 'undefined'){ %>
 
 <% } %>
 
-<!--Alert-->
-<script type="text/javascript">
-	$(document).ready(function(){<%- JSON.stringify(alerts) %>.forEach(function(alert){$.snackbar({content: alert, timeout: 5000, htmlAllowed: true});});});
-</script>
+
 
 <!--GA-->
 <script>

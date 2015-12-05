@@ -1,5 +1,6 @@
 import React from 'react'
 import EditPost from './edit-post.js'
+import Slider from 'react-slick'
 
 /**
  * Component for managing gallery's posts
@@ -17,7 +18,7 @@ export default class GalleryEditPosts extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 
-		this.replaceState({	
+		this.setState({	
 			posts: nextProps.posts,
 			files: nextProps.files ? nextProps.files : []
 		});
@@ -38,7 +39,9 @@ export default class GalleryEditPosts extends React.Component {
 
 		var posts = this.state.posts.map((post) => {
 
-			return <EditPost key={k++} post={post} />
+			return <div key={k++}>
+						<EditPost post={post} />
+					</div>
 
 		});
 
@@ -46,14 +49,24 @@ export default class GalleryEditPosts extends React.Component {
 
 		for (var i = 0; i < this.state.files.length; i++){
 			
-			files.push(<EditPost key={k++} file={this.state.files[i]} source={this.state.files.sources[i]} />);
+			files.push(
+				<div key={k++} >
+					<EditPost 
+						file={this.state.files[i]} 
+						source={this.state.files.sources[i]} />
+				</div>
+			);
 
 		}
 
+		//			<div className="dialog-col col-xs-12 col-md-5">
+
 		return (
-			<div className="dialog-col col-xs-12 col-md-5">
-				<div ref='galleryEditPosts' id="gallery-edit-images">{posts}{files}</div>
-			</div>
+			<Slider 
+				className="dialog-col col-xs-12 col-md-5"
+				dots={true}>
+				{posts}{files}
+			</Slider>
 		);
 
 	}

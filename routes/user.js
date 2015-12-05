@@ -5,7 +5,9 @@ var express = require('express'),
   api = request.createClient(config.API_URL);
 
 /** //
+
 Description : User Specific Routes ~ prefix /user/endpoint
+
 // **/
 
 /**
@@ -13,13 +15,18 @@ Description : User Specific Routes ~ prefix /user/endpoint
  */
 
 router.get('/settings', function(req, res, next) {
-  res.render('user-settings', {
-    user: req.session.user,
-    title: 'Profile Settings',
-    config: config,
-    alerts: req.alerts,
-    page : 'user-settings'
-  });
+
+    var props = {
+        user: req.session.user,
+        title: 'User Settings'
+    }
+
+    res.render('app', {
+        props: JSON.stringify(props),
+        title: props.title,
+        page: 'userSettings'
+    });
+
 });
 
 /**

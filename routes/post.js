@@ -90,7 +90,7 @@ router.get('/:id', function(req, res, next){
         render();
 
       var props = {
-        user : req.session.user,
+        user: req.session.user,
         post: post,
         gallery: gallery,
         verifier: verifier,
@@ -98,6 +98,8 @@ router.get('/:id', function(req, res, next){
         title: title,
         purchases: config.mapPurchases(req.session)
       };
+
+      console.log(props);
 
       function render() {
         res.render('app', {
