@@ -41,22 +41,6 @@ function resetFileElement(e) {
   e.unwrap();
 }
 
-function setTimeDisplayType(timeFormat) {
-	window.timeFormat = timeFormat;
-	$('.timestring').each(function(i, elem) {
-		var timestamp = parseInt($(elem).data('timestamp'));
-		$(elem).text(formatTime(timestamp));
-	});
-}
-
-function formatTime(timestamp) {
-	if (!window.timeFormat || window.timeFormat == 'relative') {
-		return getTimeAgo(Date.now(), timestamp);
-	}
-	else if (window.timeFormat == 'absolute') {
-		return timestampToDate(timestamp);
-	}
-}
 
 function resolveError(err, _default){
 	switch(err){

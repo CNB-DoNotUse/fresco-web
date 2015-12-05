@@ -1,4 +1,5 @@
 import React from 'react'
+import global from './../../lib/global'
 import Dropdown from './global/dropdown'
 
 /** //
@@ -49,10 +50,10 @@ export default class TopBar extends React.Component {
 	//Called when the user selects a time format
 	timeToggleSelected(selected) {
 		if (selected == 'Absolute') {
-			setTimeDisplayType('absolute');
+			global.setTimeDisplayType('absolute');
 		}
 		else if (selected == 'Relative') {
-			setTimeDisplayType('relative');
+			global.setTimeDisplayType('relative');
 		}
 	}
 

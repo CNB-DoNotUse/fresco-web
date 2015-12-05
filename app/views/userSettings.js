@@ -13,7 +13,7 @@ class UserSettings extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			avatar: this.props.user.avatar || global.defaultAvatar
+			avatar: this.props.user.avatar || global.defaultAvatar,
 			user: this.props.user
 		}
 		this.updateSettings = this.updateSettings.bind(this);

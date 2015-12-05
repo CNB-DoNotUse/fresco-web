@@ -13,7 +13,8 @@ class Highlights extends React.Component {
 	render() {
 		return (
 			<App user={this.props.user}>
-				<TopBar title="Highlights" />
+				<TopBar title="Highlights"
+					timeToggle={true} />
 				<GalleryList 
 					withList={true} 
 					highlighted={true} />

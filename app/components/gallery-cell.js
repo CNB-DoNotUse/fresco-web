@@ -1,4 +1,5 @@
 import React from 'react';
+import global from './../../lib/global'
 
 /**
  * Single Gallery Cell, child of GalleryList
@@ -14,7 +15,7 @@ export default class GalleryCell extends React.Component {
 	render() {
 
 		var timestamp = this.props.gallery.time_created;
-		var timeString = formatTime(this.props.gallery.time_created);
+		var timeString = global.formatTime(this.props.gallery.time_created);
 		var size = this.props.half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 		var location = 'No Location';
 
@@ -173,8 +174,8 @@ class GalleryCellImage extends React.Component {
 		return (
 			<div className="img">
 				<img className="img-cover"
-					data-src={formatImg(this.props.post.image, this.props.size)}
-					src={formatImg(this.props.post.image, this.props.size)} />
+					data-src={global.formatImg(this.props.post.image, this.props.size)}
+					src={global.formatImg(this.props.post.image, this.props.size)} />
 			</div>
 		)
 	}

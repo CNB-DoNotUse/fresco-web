@@ -16,7 +16,7 @@ export default class PostCell extends React.Component {
 	render() {
 
 		var timestamp = this.props.post.time_created;
-		var timeString = formatTime(this.props.post.time_created);
+		var timeString = global.formatTime(this.props.post.time_created);
 		var address = this.props.post.location.address || 'No Address';
 		var size = this.props.sizes.large;
 
@@ -39,7 +39,7 @@ export default class PostCell extends React.Component {
 							<PostCellStories stories={this.props.post.stories} />
 						</div>
 					<div className="img">
-						<img className="img-cover" src={formatImg(this.props.post.image, 'small')} />
+						<img className="img-cover" src={global.formatImg(this.props.post.image, 'small')} />
 					</div>
 				</div>
 				<div className="tile-foot">
