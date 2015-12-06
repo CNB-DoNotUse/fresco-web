@@ -30,21 +30,28 @@ export default class GalleryCell extends React.Component {
 			
 			<div className={size + " tile story"}>
 				<div className="frame"></div>
+				
 				<div className="tile-body">
 					<div className="hover">
 						<p className="md-type-body1">{this.props.gallery.caption}</p>
 						<GalleryCellStories stories={this.props.gallery.related_stories} />
 					</div>
+					
 					<GalleryCellImages posts={this.props.gallery.posts} />
 				</div>
+				
 				<div className="tile-foot">
 					<div className="hover">
 						<a href={"/gallery/" + this.props.gallery._id} className="md-type-body2">See all</a>
 					</div>
+					
 					<div>
 						<div className="ellipses">
 							<span className="md-type-body2">{location}</span>
-							<span className="md-type-caption timestring" data-timestamp={this.props.gallery.time_created}>{timeString}</span>
+							
+							<span 
+								className="md-type-caption timestring" 
+								data-timestamp={this.props.gallery.time_created}>{timeString}</span>
 						</div>
 					</div>
 				</div>
@@ -60,10 +67,6 @@ GalleryCell.defaultProps = {
 	//Size of the cell
 	half: false
 }
-
-
-// <span className="mdi mdi-library-plus icon pull-right"></span>
-// <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
 
 /**
  * Gallery Cell Stories List

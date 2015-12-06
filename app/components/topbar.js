@@ -5,6 +5,8 @@ import Dropdown from './global/dropdown'
 /** //
 
 Description : Top for pages of the site
+The component takes optional toggles/pieces as props, and each prop is checked in the render. 
+If the prop exists, then the repsective toggle/dropdown/edit/whatever is added to the navigation bar
 
 // **/
 
@@ -21,7 +23,6 @@ export default class TopBar extends React.Component {
 	}
 
 	componentDidMount() {
-		
 		//Set up autocomplete
 		if(this.props.locationInput){
 
@@ -105,10 +106,20 @@ export default class TopBar extends React.Component {
 		}
 		
 		if (this.props.editable) {
+
+			var onClickFunction;
+
+			//Optional edit parent func.
+			if(this.props.edit)
+				onClickFunction = this.props.edit;
+			//Or default toggle edit window
+			else
+				onClickFunction = this.toggleEdit;
+
 			topbarItems.push(
 				<a className="mdi mdi-pencil icon pull-right hidden-xs toggle-edit toggler"
 					key="edit"
-					onClick={this.toggleEdit}></a>
+					onClick={onClickFunction}></a>
 			);
 		}
 
@@ -122,13 +133,13 @@ export default class TopBar extends React.Component {
 
 		if (this.props.chronToggle) {
 			topbarItems.push(
-							<Dropdown
-								options={['By capture time', 'By upload time']}
-								selected='By capture time'
-								onSelected={this.chronToggleSelected}
-								key="chronToggle"
-								inList={true} />
-						);
+				<Dropdown
+					options={['By capture time', 'By upload time']}
+					selected='By capture time'
+					onSelected={this.chronToggleSelected}
+					key="chronToggle"
+					inList={true} />
+			);
 		}
 		if (this.props.timeToggle) {
 			

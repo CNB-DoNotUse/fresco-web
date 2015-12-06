@@ -16,7 +16,6 @@ class Videos extends React.Component {
 		this.state = {
 			purchases: []
 		}
-
 		this.loadPosts = this.loadPosts.bind(this);
 		this.didPurchase = this.didPurchase.bind(this);
 	}

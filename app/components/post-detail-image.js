@@ -9,7 +9,7 @@ Description : Image of the PostDetail page, contains image/video, byline and act
 // **/
 
 /**
- * PostDetailImage parent object
+ * Post Detail Image parent object
  */
 
 export default class PostDetailImage extends React.Component {

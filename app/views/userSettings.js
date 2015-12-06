@@ -116,6 +116,7 @@ class UserSettings extends React.Component {
  		}
 
  		$.post('/scripts/user/update', params, (response) => {
+ 			
  			if(response.err) {
  				$.snackbar({
  					content: 'Could not save your settings!'

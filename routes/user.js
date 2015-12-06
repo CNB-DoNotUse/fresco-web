@@ -33,71 +33,64 @@ router.get('/settings', function(req, res, next) {
  * Detail page for a user
  */
 
-router.get('/:id', function(req, res, next) {
+router.get('/:id?', function(req, res, next) {
 
-  api.get('/v1/user/profile?id=' + req.params.id, function(error, response, body) {
+  var userId = req.params.id;
 
-    if (error || !body) {
-      req.session.alerts = ['Error connecting to server'];
-      return req.session.save(function() {
-        res.redirect(req.headers.Referer || config.DASH_HOME);
-      });
-    }
-    if (body.err) {
-      req.session.alerts = [config.resolveError(body.err)];
-      return req.session.save(function() {
-        res.redirect(req.headers.Referer || config.DASH_HOME);
-      });
-    }
+  //If the user id is passed
+  if(userId){
 
-    var purchases = null;
+    //Grab profile from API
+    api.get('/v1/user/profile?id=' + req.params.id, function(error, response, body) {
 
-    if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified) {
-      purchases = req.session.user.outlet.purchases || [];
-      purchases = purchases.map(function(purchase) {
-        return purchase.post;
-      });
-    }
+      if (error || !body || body.err) {
 
-    res.render('user', {
-      title: body.data.firstname + ' ' + body.data.lastname,
-      user: req.session.user,
-      page_user: body.data,
-      config: config,
-      purchases: purchases,
-      alerts: req.alerts,
-      page: 'user'
+        return req.session.save(function() {
+          res.redirect(req.headers.Referer || config.DASH_HOME);
+        });
+
+      }
+    
+      //Render page
+      renderUserPage(body.data, res)
+
     });
 
-  });
+  }
+  //Render currently logged in user otherwise
+  else{
 
-});
+    //Check if user is logged in 
+    if (!req.session || !req.session.user)
+      return res.redirect('/');
 
-/**
- * Current user page
- */
+    //Render page
+    renderUserPage(req.session.user, res)
 
-router.get('/', function(req, res, next) {
-  if (!req.session || !req.session.user)
-    return res.redirect('/');
-
-  var purchases = null;
-  if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified) {
-    purchases = req.session.user.outlet.purchases || [];
-    purchases = purchases.map(function(purchase) {
-      return purchase.post;
-    });
   }
 
-  res.render('user', {
-    title: req.session.user.firstname + ' ' + req.session.user.lastname,
-    user: req.session.user,
-    page_user: req.session.user,
-    config: config,
-    purchases: purchases,
-    alerts: req.alerts,
-    page : 'user'
-  });
 });
+
+
+/**
+ * Renders user page
+ * @param  {object} user user to render on page
+ */
+function renderUserPage(user, res){
+
+  var title = user.firstname + ' ' + user.lastname,
+      props = {
+        purchases: config.mapPurchases(user),
+        title: title,
+        user: user
+     };
+
+  res.render('app', {
+    title: title,
+    props: JSON.stringify(props),
+    page: 'userDetail'
+  });
+
+}
 
 module.exports = router;
