@@ -5,6 +5,7 @@ import App from './app'
 import DispatchMap from './../components/dispatch-map'
 import DispatchAssignments from './../components/dispatch-assignments'
 import DispatchSubmit from './../components/dispatch-submit'
+import DispatchRequest from './../components/dispatch-request'
 
 /**
  * Dispatch Parent Component, contains the Dispatch Map, as well as a set of cards

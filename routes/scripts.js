@@ -1061,6 +1061,10 @@ router.post('/user/unfollow', function(req, res, next) {
   });
 });
 router.post('/user/update', function(req, res, next){
+
+  if(!req.body)
+    return;
+
 	var request = require('request'),
       formData = {
        id: req.body.id,

@@ -55,7 +55,7 @@ class UserSettings extends React.Component {
 							<div className="flexy">
 								<input 
 									type="text" 
-									id="first-name" 
+									ref="firstname" 
 									className="form-control floating-label"
 									placeholder="First name"
 									defaultValue={this.state.user.firstname} />
@@ -64,7 +64,7 @@ class UserSettings extends React.Component {
 							<div className="flexy">
 								<input 
 									type="text" 
-									id="last-name" 
+									ref="lastname" 
 									className="form-control floating-label"
 									placeholder="Last name"
 									defaultValue={this.state.user.lastname} />
@@ -75,7 +75,7 @@ class UserSettings extends React.Component {
 					<div className="col-xs-12 col-sm-6 col-md-4 form-group-default">
 						<input 
 							type="text" 
-							id="email" 
+							ref="email" 
 							className="form-control floating-label" 
 							placeholder="Email address"
 							defaultValue={this.state.user.email} />
@@ -111,29 +111,63 @@ class UserSettings extends React.Component {
 	 */
  	updateSettings() {
 
- 		var params = {
+ 		var userData = new FormData(),
+ 			user = this.props.user,
+ 			id = user._id,
+ 			firstname = this.refs.firstname.value,
+ 			lastname = this.refs.lastname.value,
+ 			email =  this.refs.email.value
+ 			self = this;
 
+ 		console.log(user);
+
+ 		if(global.isEmptyString(firstname)){
+ 			$.snackbar({ content: 'You must have a firstname!' });
+ 			return
+ 		}
+ 		else if (global.isEmptyString(lastname)){
+ 			$.snackbar({ content: 'You must have a lastname!' });
+ 			return
+ 		}
+ 		else if(global.isEmptyString(email)){
+ 			$.snackbar({ content: 'You must have an email!' });
+ 			return;
  		}
 
- 		$.post('/scripts/user/update', params, (response) => {
+ 		userData.append('id', id);
+ 		userData.append('firstname', firstname);
+ 		userData.append('lastname', lastname);
+ 		userData.append('email', email);
+ 		userData.append('avatar', this.refs.avatarFileInput.files[0]);
  			
- 			if(response.err) {
- 				$.snackbar({
- 					content: 'Could not save your settings!'
- 				});
- 			} 
- 			else {
+ 		console.log(userData);
 
- 				console.log(response);
+ 		$.ajax({
+ 			url: "/scripts/user/update",
+ 			type: 'POST',
+ 			cache: false,
+ 			processData: false,
+ 			contentType: false,
+ 			data : userData,
+ 			success: function(response, status, xhr){
+ 				if(response.err) {
+	 				
+	 				$.snackbar({
+	 					content: global.resolveError(response.err, 'We couldn\'t save your settings!')
+	 				});
 
- 				// this.setState({
- 				// 	user:
- 				// })
+	 			} 
+	 			else {
+	 				$.snackbar({ content: 'Settings successfuly saved!' });
 
- 				$.snackbar({
- 					content: 'Settings successfuly saved!'
- 				});
+	 				//Update the user
+	 				user.firstname = firstname,
+	 				user.lastname = lastname,
+	 				user.avatar = self.state.avatar;
 
+	 				//Update state, so everything else updates
+	 				self.setState({ user: user });
+	 			}
  			}
  		});
 
