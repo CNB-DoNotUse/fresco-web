@@ -35,7 +35,7 @@ import AdminBody from './../components/admin-body'
  				case 'imports':
  					this.getImports(); break;
  			}
- 		}, 5000);
+ 		}, 5000000);
 	}
 
 	getAssignments() {

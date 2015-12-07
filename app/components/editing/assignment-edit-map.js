@@ -57,7 +57,7 @@ export default class AssignmentEditMap extends React.Component {
 
 	render() {
 
-		var radius = this.props.radius ? Math.ceil(milesToFeet(this.props.radius)) : null,
+		var radius = this.props.radius ? Math.ceil(global.milesToFeet(this.props.radius)) : null,
 			address = this.props.address;
 
 		return ( 

@@ -11,7 +11,7 @@ export default class EditMap extends React.Component {
 		super(props);
 
 		this.state = {
-			mapID: null,
+			mapID: Date.now() + Math.floor(Math.random() * 100),
 			map: null,
 			polygon: null,
 			marker: null
@@ -24,23 +24,20 @@ export default class EditMap extends React.Component {
 
 	componentDidMount() {
 		this.initializeMap();
-		this.setState({
-			mapID: Date.now() + Math.floor(Math.random() * 100)
-		});
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+		console.log(JSON.stringify(this.props.location))
+/*		console.log('-----START----');
 
-		// console.log('-----START----');
+		console.log(prevProps.location);
 
-		// console.log(prevProps.location);
+		console.log(this.props.location);
 
-		// console.log(this.props.location);
-
-		// console.log('----END-----');
+		console.log('----END-----');*/
 
 		//Check if there is a radius, and it is not the same as the previous one
-		if(this.props.radius && prevProps.radius != this.props.radius){
+		if(this.props.radius && prevProps.radius != this.props.radius) {
 			this.state.circle.setRadius(this.props.radius);
 			this.state.map.fitBounds(this.state.circle.getBounds());
 		}
@@ -51,7 +48,7 @@ export default class EditMap extends React.Component {
 		}
 
 		//No location is present
-		if(!this.props.location){
+		if(!this.props.location) {
 			this.state.marker.setMap(null);
 			this.state.polygon.setMap(null);
 			return;
@@ -64,7 +61,7 @@ export default class EditMap extends React.Component {
 			this.state.marker.setPosition(this.getCentroid(this.state.polygon));
 			this.state.map.fitBounds(this.getBounds(this.state.polygon));
 		} 
-		//Otherwise just set the marker to the passed positio
+		//Otherwise just set the marker to the passed position
 		else {
 			this.state.marker.setPosition(
 				new google.maps.LatLng(this.props.location.lat, this.props.location.lng)
@@ -80,20 +77,23 @@ export default class EditMap extends React.Component {
 
 	//Returns centroid for passed polygon
 	getCentroid(polygon) {
-
-		var path = polygon.getPath(),
-			lat = 0,
-			lon = 0;
+		var path, lat = 0, lng = 0;
+		
+		if (Array.isArray(polygon)) {
+			var newPolygon = new google.maps.Polygon({paths: polygon});
+			path = newPolygon.getPath();
+		} else {
+			path = polygon.getPath();
+		}
 
 		for (var i = 0; i < path.getLength() - 1; ++i) {
 			lat += path.getAt(i).lat();
-			lon += path.getAt(i).lng();
+			lng += path.getAt(i).lng();
 		}
 
 		lat /= path.getLength() - 1;
-		lon /= path.getLength() - 1;
-
-		return new google.maps.LatLng(lat, lon);
+		lng /= path.getLength() - 1;
+		return new google.maps.LatLng(lat, lng);
 
 	}
 
@@ -113,17 +113,20 @@ export default class EditMap extends React.Component {
 	}
 
 	initializeMap() {
-
-		var styles = [{"featureType": "all", "elementType":"all", "stylers": [{"gamma":1.54}]},
+		var styles = [
+			{"featureType": "all", "elementType":"all", "stylers": [{"gamma":1.54}]},
 			{"featureType":"road.highway","elementType":"all","stylers":[{"gamma":1.54}]},
 			{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#e0e0e0"}]},
 			{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#bdbdbd"}]},
 			{"featureType":"road.highway","elementType":"labels.text.fill","stylers":[{"color":"#757575"}]},
 			{"featureType":"poi.park","elementType":"all","stylers":[{"gamma":1.26}]},
-			{"featureType":"poi.park","elementType":"labels.text","stylers":[{"saturation":-54}]}];
+			{"featureType":"poi.park","elementType":"labels.text","stylers":[{"saturation":-54}]}
+		];
 
+		// If location, check if is array and get centroid of polygon, or use the point passed. Otherwise use NYC for center.
+		var center = this.props.location ? Array.isArray(this.props.location) ? this.getCentroid(this.props.location) : this.props.location : {lat: 40.7, lng: -74};
 		var mapOptions = {
-			center: this.props.location || {lat: 40.7, lng: -74},
+			center: center,
 			zoom: this.props.zoom || 16,
 			mapTypeControl: false,
 			draggable: false,
@@ -134,7 +137,7 @@ export default class EditMap extends React.Component {
 
 		//Instantiate google maps object
 		var map = new google.maps.Map(
-			document.getElementById('edit-map-canvas'),
+			document.getElementById('edit-map-canvas-' + this.state.mapID),
 			mapOptions
 		);
 
@@ -158,9 +161,10 @@ export default class EditMap extends React.Component {
 			map: map
 		});
 
-		//Set default marker to NYC
+		// Set default marker to NYC if location is not set.
+		// If location is set and it's an array, get the centroid. Otherwise use the point.
 		var marker = new google.maps.Marker({
-			position: this.props.location || map.getCenter(),
+			position: this.props.location ? Array.isArray(this.props.location) ? this.getCentroid(this.props.location) : this.props.location : map.getCenter(),
 			map: map,
 			icon: markerImage
 		});
@@ -184,9 +188,8 @@ export default class EditMap extends React.Component {
 	}
 
 	render() {
-
 		return (
-			<div id="edit-map-canvas" className="map-container"></div>
+			<div id={"edit-map-canvas-" + this.state.mapID} className="map-container"></div>
 		);
 		
 	}

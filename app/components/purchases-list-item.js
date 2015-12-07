@@ -1,4 +1,5 @@
 import React from 'react'
+import global from '../../lib/global'
 
 export default class PurchasesListItem extends React.Component {
 	constructor(props) {
@@ -38,7 +39,7 @@ export default class PurchasesListItem extends React.Component {
 						}}/>
 				</div>
 				<div>
-					<p className="md-type-body1">{getTimeAgo(Date.now(), purchase.timestamp)}</p>
+					<p className="md-type-body1">{global.formatTime(Date.now(), purchase.timestamp)}</p>
 				</div>
 				<div>
 					<p className="md-type-body1">{video ? 'Video' : 'Photo'}</p>

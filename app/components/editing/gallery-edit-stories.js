@@ -35,24 +35,13 @@ export default class GalleryEditStories extends React.Component {
 
 	}
 
-	handleClick(index) {
-
-		var updatedStories = this.state.stories;
-
-		//Remove from index
-		updatedStories.splice(index, 1);
-
-		this.props.addStory(updatedStories);
-
-	}
-
 	render() {
 
 		var stories = this.props.stories.map((story, i) => {
 			return (
 
 				<Tag 
-					onClick={this.handleClick.bind(this, i)} 
+					onClick={this.props.removeStory.bind(null, story.title)} 
 					text={story.title} 
 					plus={false}
 					key={i} />

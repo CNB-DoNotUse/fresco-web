@@ -1,5 +1,5 @@
 import React from 'react'
-
+import global from  '../../lib/global'
 /**
     
     Assignment List Item used in assignment administration page
@@ -46,7 +46,7 @@ export default class AdminAssignmentListItem extends React.Component {
                     <p className="md-type-body1 assignment-location" style={assignment.assignment ? {lineHeight: '18px'} : {}}>{location}</p>
                 </div>
                 <div>
-                    <p className="md-type-body1">{timestampToDate(assignment.time_created)}</p>
+                    <p className="md-type-body1">{global.formatTime(assignment.time_created)}</p>
                 </div>
             </div>
         );
