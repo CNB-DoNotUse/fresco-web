@@ -1,8 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import TopBar from './../components/topbar.js'
+import TopBar from './../components/topbar'
 import App from './app.js'
-import PostCell from './../components/post-cell.js'
+import SearchGalleryList from './../components/search-gallery-list'
+import SearchSide from './../components/search-side'
 
 export class Search extends React.Component {
 
@@ -43,6 +44,7 @@ export class Search extends React.Component {
 		this.getUsers(0);
 	}
 
+	// Query API for assignments
 	getAssignments(offset) {
 		$.get('/scripts/assignment/search', {
 			q: this.props.query,
@@ -58,6 +60,7 @@ export class Search extends React.Component {
 		})
 	}
 
+	// Query API for galleries
 	getGalleries(offset, cb) {
 		if( typeof cb == 'undefined') cb = function() {};
 
@@ -78,6 +81,7 @@ export class Search extends React.Component {
 		});
 	}
 
+	// Query API for users
 	getUsers(offset) {
 		$.get('/scripts/user/search', {
 			q: this.props.query,
@@ -93,6 +97,7 @@ export class Search extends React.Component {
 		});
 	}
 
+	// Query API for stories
 	getStories(offset) {
 		$.get('/scripts/story/search', {
 			q: this.props.query,
@@ -122,6 +127,7 @@ export class Search extends React.Component {
 		});
 	}
 
+	// Called when gallery div scrolls
 	galleryScroll(e) {
 
 		// Get scroll offset and get more purchases if necessary.
@@ -142,6 +148,7 @@ export class Search extends React.Component {
 		}
 	}
 
+	// Called when topbar verifiedToggle changed
 	onVerifiedToggled(toggled) {
 		this.setState({
 			showOnlyVerified: toggled
@@ -175,91 +182,6 @@ export class Search extends React.Component {
 		    	</div>
 			</App>
 		);
-	}
-}
-
-class SearchGalleryList extends React.Component {
-	render() {
-		var galleries = [];
-		var purchases = this.props.purchases;
-
-		for (var g in this.props.galleries) {
-			if(this.props.showOnlyVerified && !this.props.galleries[g].approvals) continue;
-			galleries.push(
-	        	<PostCell 
-	        		size="large" 
-	        		post={this.props.galleries[g]} 
-	        		rank={this.props.rank} 
-	        		purchased={purchases.indexOf(this.props.galleries[g]._id) != -1}
-	        		didPurchase={this.props.didPurchase}
-	        		key={g}
-	        		editable="true" />
-    		);
-		}
-
-		return (
-			<div
-				className="col-md-8 tiles"
-				id="searchGalleryList"
-				ref="searchGalleryList">
-				{galleries}
-			</div>
-		)
-	}
-}
-
-class SearchSide extends React.Component {
-	render() {
-
-		var assignments = [],
-			stories = [],
-			users = [];
-		
-		// Build assignment list item
-		this.props.assignments.map((assignment, i) => {
-			assignments.push(
-				<li key={i}><a href={"/assignment/" + assignment._id}>{assignment.title}</a></li>
-			);
-		});
-
-		// Build story list item
-		this.props.stories.map((story, i) => {
-			stories.push(
-				<li key={i}><a href={"/story/" + story._id}>{story.title}</a></li>
-			);
-		});
-
-		// Build user list item
-		this.props.users.map((user, i) => {
-			users.push(
-				<li className="meta-user" key={i}>
-					<div>
-						<a href="/user/5643aec78a5565ec64df0d71">
-							<img
-								className="img-circle img-responsive"
-								src={user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png'} />
-						</a>
-					</div>
-					<div>
-						<a href="/user/5643aec78a5565ec64df0d71">
-							<span className="md-type-title">{user.firstname} {user.lastname}</span>
-						</a>
-						<span className="md-type-body1">{user.twitter ? '' : 'No Twitter'} • {user.outlet ? <a href={"/outlet/" + user.outlet}>Outlet</a> : 'No Outlet'}</span>
-					</div>
-				</li>
-			);
-		});
-
-		return (
-			<div className="col-md-4">
-				<h3 className="md-type-button md-type-black-secondary">Assignments</h3>
-				<ul id="assignments" className="md-type-subhead">{assignments}</ul>
-				<h3 className="md-type-button md-type-black-secondary">Stories</h3>
-				<ul id="stories" className="md-type-subhead">{stories}</ul>
-				<h3 className="md-type-button md-type-black-secondary">Users</h3>
-				<ul id="users" className="meta">{users}</ul>
-			</div>
-		)
 	}
 }
 
