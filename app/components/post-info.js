@@ -1,4 +1,6 @@
 import React from 'react'
+import global from './../../lib/global'
+
 
 /** //
 
@@ -20,7 +22,7 @@ export default class PostInfo extends React.Component {
 			userIcon = '',
 			twitter = '',
 			curator = '',
-			timeString = formatTime(this.props.post.time_created),
+			timeString = global.formatTime(this.props.post.time_created),
 			verifiedBy = this.props.verifier ? 
 							'Verified by ' + this.props.verifier.firstname + ' ' + this.props.verifier.lastname : 
 							'Not yet verified'
