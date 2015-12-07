@@ -1,4 +1,5 @@
 import React from 'react'
+import global from '../../lib/global'
 
 export default class AdminGalleryListItem extends React.Component {
 
@@ -46,7 +47,7 @@ export default class AdminGalleryListItem extends React.Component {
                         <img
                             className="img-circle"
                             style={{width: '40px', height: '40px'}}
-                            src={formatImg(gallery.posts[0].image, 'small')} />{ /* screen.css got rid of the image style */ }
+                            src={global.formatImg(gallery.posts[0].image, 'small')} />{ /* screen.css got rid of the image style */ }
                     </a>
                 </div>
                 <div className="flexy">
@@ -57,7 +58,7 @@ export default class AdminGalleryListItem extends React.Component {
                 </div>
                     {assignmentText}
                 <div>
-                    <p className="md-type-body1">{timestampToDate(gallery.time_created)}</p>
+                    <p className="md-type-body1">{global.formatTime(gallery.time_created)}</p>
                 </div>
             </div>
         );

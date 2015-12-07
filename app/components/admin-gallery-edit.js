@@ -1,7 +1,9 @@
 import React from 'react'
+import global from '../../lib/global'
 import Slider from 'react-slick'
 import Dropdown from './global/dropdown'
 import Tag from './editing/tag'
+import PlacesAutocomplete from './editing/places-autocomplete'
 import EditMap from './editing/edit-map'
 import EditStories from './editing/gallery-edit-stories'
 import AdminGalleryEditFoot from './admin-gallery-edit-foot'
@@ -32,6 +34,9 @@ export default class AdminGalleryEdit extends React.Component {
 		this.removeGalleryTag = this.removeGalleryTag.bind(this);
 
 		this.addStory = this.addStory.bind(this);
+		this.removeStory = this.removeStory.bind(this);
+
+		this.onPlaceChange = this.onPlaceChange.bind(this);
 
 		this.revert = this.revert.bind(this);
 		this.skip = this.skip.bind(this);
@@ -46,23 +51,6 @@ export default class AdminGalleryEdit extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 
 		if( this.props.activeGalleryType == 'assignment') { return }
-
-		if( this.props.activeGalleryType == 'import' ) {
-			var location = new google.maps.places.Autocomplete(this.refs['gallery-location']);
-			google.maps.event.addListener( location, 'place_changed', () => {
-
-				if(!location.getPlace().geometry) return;
-				var coord = location.getPlace().geometry.location;
-				this.setState({
-					mapLocation: {
-						lat: coord.lat(),
-						lng: coord.lng()
-					}
-				});
-
-			});
-
-		}
 
 		if( this.props.gallery._id != prevProps.gallery._id ) {
 
@@ -85,7 +73,7 @@ export default class AdminGalleryEdit extends React.Component {
 
 				// If has location, set location input
 				if( this.props.gallery.posts[0].location ) {
-					this.refs['gallery-location'].value = this.props.gallery.posts[0].location.address;
+					// this.refs['gallery-location'].value = this.props.gallery.posts[0].location.address;
 				}
 			}
 
@@ -173,6 +161,33 @@ export default class AdminGalleryEdit extends React.Component {
 
 		this.setState({
 			stories: stories
+		});
+	}
+
+	removeStory(story) {
+		var stories = [];
+		this.state.stories.map(s => stories.push(s));
+		var index = -1;
+		for (var s in stories) {
+			if(stories[s].title == story) {
+				index = s;
+				break;
+			}
+		}
+
+		if(index != -1) {
+			stories.splice(index, 1);
+		}
+
+		this.setState({
+			stories: stories
+		});
+
+	}
+
+	onPlaceChange(place) {
+		this.setState({
+			mapLocation: place.location
 		});
 	}
 
@@ -275,47 +290,52 @@ export default class AdminGalleryEdit extends React.Component {
 	}
 
 	render() {
-
+		// If doesn't have active gallery or galleryType is an assignment, don't render anything.
 		if(!this.props.hasActiveGallery || this.props.activeGalleryType == 'assignment') { return <div></div> }
 
 		var activeGallery = this.props.gallery;
-			var galleryImages = activeGallery.posts.map((post, i) => {
-				if(post.video) {
-					return (
-						<div key={i}>
-							<video width="100%" height="100%" data-id={post._id} controls>
-								<source src={post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4" />
-								Your browser does not support the video tag.\
-							</video>
-						</div>
-					)
-				}
-				return (
-					<div key={i}><img className="img-responsive" src={formatImg(post.image, 'medium')} data-id={post._id} /></div>
-				);
-			});
 
-			var allTags = [];
+		// Map gallery posts into slider elements
+		var galleryImages = [];
+		activeGallery.posts.map((post, i) => {
+			if(post.video) {
+				galleryImages.push(
+					<div key={i}>
+						<video width="100%" height="100%" data-id={post._id} controls>
+							<source src={post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4" />
+							Your browser does not support the video tag.
+						</video>
+					</div>
+				)
+			}
+			return (
+				<div key={i}><img className="img-responsive" src={global.formatImg(post.image, 'medium')} data-id={post._id} /></div>
+			);
+		});
 
-			activeGallery.tags.map((tag, i) => {
-				allTags.push(<Tag text={'#' + tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />);
-			});
+		// Map tags to tag componenets
+		var allTags = [];
+		activeGallery.tags.map((tag, i) => {
+			allTags.push(<Tag text={'#' + tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />);
+		});
+		this.state.newTags.map((tag, i) => {
+			allTags.push(<Tag text={'#' + tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />);
+		});
 
-			this.state.newTags.map((tag, i) => {
-				allTags.push(<Tag text={'#' + tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />);
-			});
-
+		// If gallery is a submission, 
 		if(this.props.activeGalleryType == 'submission') {
-
+			// map polygon points to array.
 			if(this.props.gallery.location) {
-				var editMapLocation = this.props.gallery.location.coordinates[0].map((coord) => {
-					return {
+				var editMapLocation = [];
+				this.props.gallery.location.coordinates[0].map((coord) => {
+					editMapLocation.push({
 						lat: coord[1],
 						lng: coord[0]
-					}
+					});
 				});
 			}
 
+			// set byline text
 			var bylineInput = 
 					<input
 						type="text"
@@ -323,11 +343,12 @@ export default class AdminGalleryEdit extends React.Component {
 						placeholder="Byline"
 						ref="gallery-byline" disabled={this.props.activeGalleryType == 'submission'}  />
 
-		} else { // Is an import
-
+		} else { // if an import
+			// set map location to one from state
 			var editMapLocation = this.state.mapLocation;
 
-			if(activeGallery.posts[0].meta.twitter) { // Is a twitter import. Should show dropdown for name.
+			// Is a twitter import. Should show dropdown for handle vs username
+			if(activeGallery.posts[0].meta.twitter) { 
 				var twitterObj = activeGallery.posts[0].meta.twitter;
 				var nameInput =
 					<div>
@@ -339,6 +360,8 @@ export default class AdminGalleryEdit extends React.Component {
 					</div>
 
 			} else {
+
+				// If not a twitter import, just show the author, disabled if not an import
 				var nameInput = 
 					<div className="split-cell">
 						<input
@@ -349,6 +372,7 @@ export default class AdminGalleryEdit extends React.Component {
 					</div>
 			}
 
+			// Affiliation input, disabled if not an import
 			var affiliationInput = 
 					<div className="split-cell">
 						<input
@@ -359,7 +383,6 @@ export default class AdminGalleryEdit extends React.Component {
 					</div>
 
 		}
-
 
 		return (
 			<div className="dialog">
@@ -402,19 +425,18 @@ export default class AdminGalleryEdit extends React.Component {
 					
 					<EditStories ref='stories' 
 						stories={this.state.stories} 
-						addStory={this.addStory} />
+						addStory={this.addStory}
+						removeStory={this.removeStory} />
 
 					<div style={{height: '309px'}}>
 						<div className="map-group">
 							<div className="form-group-default">
-								<input
-									type="text"
-									className="form-control floating-label google-autocomplete gallery-location"
-									placeholder="Location"
-									ref="gallery-location"
-									disabled={this.props.activeGalleryType == "submission"} />
+								<PlacesAutocomplete
+									defaultLocation={activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
+									onPlaceChange={this.onPlaceChange}
+									disabled={this.props.activeGalleryType != 'import'} />
+								<EditMap location={editMapLocation}/>
 							</div>
-							<EditMap location={editMapLocation}/>
 						</div>
 					</div>
 				</div>
