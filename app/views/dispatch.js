@@ -142,8 +142,6 @@ class Dispatch extends React.Component {
 
 		var dispatchSubmit = document.getElementById('dispatch-submit');
 
-		console.log(show);
-
 		if(show && this.state.newAssignment == null){
 
 			this.setState({
@@ -186,6 +184,7 @@ class Dispatch extends React.Component {
 				<DispatchSubmit 
 					user={this.props.user} 
 					newAssignment={this.state.newAssignment}
+					rerender={this.state.newAssignment == 'unset'}
 					toggleSubmissionCard={this.toggleSubmissionCard}
 					updateNewAssignment={this.updateNewAssignment}
 					shouldUpdatePlace={this.state.shouldUpdatePlace}

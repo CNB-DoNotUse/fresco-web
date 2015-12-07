@@ -96,17 +96,29 @@ export default class DispatchMap extends React.Component {
 		//Meaning the marker has already been added, and we don't need to add a new one
 		if(this.state.newAssignmentMarker && this.state.newAssignmentCircle){
 
-			var marker = this.state.newAssignmentMarker,
-				circle = this.state.newAssignmentCircle,
-				map = this.state.map;
-
 			if(this.props.newAssignment){
+
+				var marker = this.state.newAssignmentMarker,
+					circle = this.state.newAssignmentCircle,
+					map = this.state.map,
+					prevLoc = {
+						lat: marker.getPosition().lat(),
+						lng: marker.getPosition().lng()
+					};
 
 				//Compare to make sure we don't change the marker unless its position hasn't actually changed
 				//or there is no location
-				if(!prevProps.newAssignment.location || 
-					JSON.stringify(this.props.newAssignment.location) != JSON.stringify(prevProps.newAssignment.location))
+				if(JSON.stringify(this.props.newAssignment.location) !== JSON.stringify(prevLoc))
 				{
+
+					console.log('-----START----');
+
+					console.log(prevProps.newAssignment.location);
+
+					console.log(this.props.newAssignment.location);
+
+					console.log('----END-----');
+
 					marker.setPosition(this.props.newAssignment.location);	
 					map.setCenter(
 						marker.getPosition()
@@ -155,17 +167,20 @@ export default class DispatchMap extends React.Component {
 			);	     
 
 
-			google.maps.event.addListener(marker, 'dragend', (ev) => {
-				this.props.updatePlace();
+			google.maps.event.addListener(marker, 'drag', (ev) => {
 				//Send up location to the parent
 				this.props.updateNewAssignment(
 					{
-					lat: ev.latLng.lat(),
-					lng: ev.latLng.lng()
+						lat: ev.latLng.lat(),
+						lng: ev.latLng.lng()
 					}, 
 					this.props.newAssignment.radius,
 					this.state.map.getZoom()
 				);	
+			});
+
+			google.maps.event.addListener(marker, 'dragend', (ev) => {
+				this.props.updatePlace();
 			});
 		}
 

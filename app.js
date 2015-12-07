@@ -20,7 +20,7 @@ app.set('view engine', 'ejs');
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

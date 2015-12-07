@@ -28,7 +28,7 @@ export default class DispatchSubmit extends React.Component {
 		var self = this;
 
 		//Update the autocomplete field when the marker is finished dragging on the main map
-		if(this.props.shouldUpdatePlace && this.props.newAssignment){
+		if(this.props.shouldUpdatePlace && this.props.newAssignment && this.props.newAssignment.location){
 
 			var geocoder = new google.maps.Geocoder();
 
@@ -108,9 +108,10 @@ export default class DispatchSubmit extends React.Component {
 
 		return (
 
-			<div className="card panel toggle-card" id="dispatch-submit">
+			<div className="card panel toggle-card toggled" id="dispatch-submit">
 				<div className="card-head">
 					<span className="md-type-title">New Assignment</span>
+					
 					<span 
 						onClick={this.props.toggleSubmissionCard.bind(null, false)} 
 						className="mdi mdi-close pull-right icon toggle-card toggler"></span>
@@ -126,8 +127,10 @@ export default class DispatchSubmit extends React.Component {
 				<div className="card-body">
 					<div className="form-group-default">
 						<input ref="title" type="text" className="form-control floating-label" placeholder="Title" />
+						
 						<textarea ref="caption" type="text" className="form-control floating-label" placeholder="Caption" />
 					</div>
+					
 					<div className="map-group">
 						<div className="form-group-default">
 							<input 
@@ -135,6 +138,7 @@ export default class DispatchSubmit extends React.Component {
 								type="text" 
 								className="form-control floating-label" 
 								placeholder="Location" />
+							
 							<input 
 								ref="radius" 
 								type="text" 
@@ -143,11 +147,14 @@ export default class DispatchSubmit extends React.Component {
 								onKeyUp={this.updateRadius}
 								placeholder="Radius" />
 						</div>
+						
 						<EditMap 
 							location={location} 
 							radius={radius}
-							zoom={zoom} />
+							zoom={zoom}
+							rerender={this.props.rerender} />
 					</div>
+					
 					<div className="form-group-default">
 						<input 
 							type="text" 
@@ -156,6 +163,7 @@ export default class DispatchSubmit extends React.Component {
 							ref="expiration"
 							placeholder="Expiration time" />
 					</div>
+					
 					<a className="payment" href="/outlet/settings">
 						{paymentStatus}
 						{paymentMessage}
@@ -178,13 +186,8 @@ export default class DispatchSubmit extends React.Component {
 				radius: global.feetToMiles(parseInt(this.refs.radius.value)),
 				expiration_time: this.refs.expiration.value * 60 * 60 * 1000, //Convert to milliseconds,
 				address: this.state.place ? this.refs.autocomplete.value : null,
-				location: {
-					type: 'point',
-					coordinates: [
-						this.props.newAssignment.location.lng,
-						this.props.newAssignment.location.lat
-					]
-				}
+				lon: this.props.newAssignment.location.lng, //Should be lng
+				lat: this.props.newAssignment.location.lat
 			};
 
 		/* Run Checks */
@@ -206,16 +209,21 @@ export default class DispatchSubmit extends React.Component {
 			return;
 		}
 		if (!global.isValidRadius(assignment.radius)){ //0.0473485 IS 250 FEET IN MILES
-			$.snackbar({content: 'Please enter a radius greater than 250 feet'});
+			$.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
 			return;
 		}
+
+		console.log(assignment);
+
 		
 		$.ajax({
-			url: "/scripts/assignment/create",
-			contentType: 'application/json',
+			method: 'post',
+			url: '/scripts/assignment/create',
 			data: JSON.stringify(assignment),
-			method: 'POST',
-			success: function(result){
+			contentType: 'application/json',
+			success: (result) =>{
+
+				console.log(result);
 
 				if (result.err){
 					$.snackbar({content: 'There was an error submitting your assignment!'});
@@ -224,12 +232,12 @@ export default class DispatchSubmit extends React.Component {
 				else{
 
 				}
-
 			},
-			error: function(xhr, status, error){
-				// return callback(error, null);
+			error: (error) => {
+				
 			}
-		})
+		});
+		
 		
 		
 		// PAGE_Dispatch.addAssignment(assignment, function(err, assignment){

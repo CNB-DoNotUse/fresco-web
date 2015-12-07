@@ -8,7 +8,7 @@ import GalleryEdit from './../components/editing/gallery-edit.js'
 import App from './app.js'
 
 /**
- * Gallery Detail Parent Object, made of a side column and PostList
+ * Post Detail Parent Object, made of a side column and PostList
  */
 
 class PostDetail extends React.Component {
