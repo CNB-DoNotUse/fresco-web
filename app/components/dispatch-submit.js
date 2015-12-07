@@ -152,6 +152,7 @@ export default class DispatchSubmit extends React.Component {
 							location={location} 
 							radius={radius}
 							zoom={zoom}
+							type='drafted'
 							rerender={this.props.rerender} />
 					</div>
 					
@@ -179,8 +180,7 @@ export default class DispatchSubmit extends React.Component {
 
 		if(!this.props.newAssignment) return;
 
-		var place = this.state.place || null,     
-			assignment = {
+		var assignment = {
 				title: this.refs.title.value,
 				caption: this.refs.caption.value,
 				radius: global.feetToMiles(parseInt(this.refs.radius.value)),
@@ -212,18 +212,13 @@ export default class DispatchSubmit extends React.Component {
 			$.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
 			return;
 		}
-
-		console.log(assignment);
-
 		
 		$.ajax({
 			method: 'post',
 			url: '/scripts/assignment/create',
 			data: JSON.stringify(assignment),
 			contentType: 'application/json',
-			success: (result) =>{
-
-				console.log(result);
+			success: (result) => {
 
 				if (result.err){
 					$.snackbar({content: 'There was an error submitting your assignment!'});
@@ -231,10 +226,20 @@ export default class DispatchSubmit extends React.Component {
 				}
 				else{
 
+					//Hide the assignment card
+					this.props.toggleSubmissionCard(false, null);
+
+					//Tell the main map to update itself, to reflect the new assignment
+					this.props.mapShouldUpdate(true);
+
+					$.snackbar({content: 'Your assignment has been successfully submitted and is awaiting approval!'});
+
+					//Clear all the fields
+					this.refs.title.value = '';
+					this.refs.caption.value = '';
+					this.refs.expiration.value = '';
+					this.refs.autocomplete.value = '';
 				}
-			},
-			error: (error) => {
-				
 			}
 		});
 		

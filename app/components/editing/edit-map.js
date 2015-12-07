@@ -1,4 +1,5 @@
 import React from 'react'
+import global from './../../../lib/global'
 
 /**
  * Single Edit-Map Element
@@ -57,7 +58,7 @@ export default class EditMap extends React.Component {
 			this.state.marker.setMap(null);
 			this.state.polygon.setMap(null);
 			return;
-		} else {
+		} else if(!prevProps.location) {
 			this.state.marker.setMap(this.state.map);
 			this.state.polygon.setMap(this.state.map);
 		}
@@ -151,7 +152,7 @@ export default class EditMap extends React.Component {
 
 		//Marker image
 		var markerImage = {
-			url: "/images/assignment-active@2x.png",
+			url: global.assignmentImage[this.props.type],
 			size: new google.maps.Size(114, 114),
 			scaledSize: new google.maps.Size(60, 60),
 			origin: new google.maps.Point(0, 0),
@@ -182,7 +183,7 @@ export default class EditMap extends React.Component {
 			center: marker.getPosition(),
 			radius: this.props.radius || 0,
 			strokeWeight: 0,
-			fillColor: '#ffc600',
+			fillColor: global.assignmentColor[this.props.type],
 			fillOpacity: 0.26
 		});
 
@@ -205,5 +206,6 @@ export default class EditMap extends React.Component {
 
 EditMap.defaultProps = {
 	radius: null,
-	location: null
+	location: null,
+	type: 'active'
 }

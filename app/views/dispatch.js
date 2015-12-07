@@ -17,17 +17,31 @@ class Dispatch extends React.Component {
 		super(props);
 		
 		this.state = {
+			assignments: [],
+			users: [],
 			activeAssignment: null,
 			newAssignment: null,
-			shouldUpdatePlace: null,
+			shouldUpdatePlace: false,
+			shouldMapUpdate: false,
 			mapCenter: null,
 			viewMode: 'active',
 		}
+		this.mapShouldUpdate = this.mapShouldUpdate.bind(this);
 		this.updatePlace = this.updatePlace.bind(this);
 		this.updateMapCenter = this.updateMapCenter.bind(this);
 		this.setActiveAssignment = this.setActiveAssignment.bind(this);
 		this.updateNewAssignment = this.updateNewAssignment.bind(this);
 		this.toggleSubmissionCard = this.toggleSubmissionCard.bind(this);
+	}
+
+	/**
+	 * Tells the main dispatch map to update
+	 * @param  {BOOL} should Should, or Should not update
+	 */
+	mapShouldUpdate(should) {
+		this.setState({
+			shouldMapUpdate: should
+		});
 	}
 
 	setActiveAssignment(assignment) {
@@ -155,7 +169,7 @@ class Dispatch extends React.Component {
 
 			this.setState({
 				newAssignment: null
-			})
+			});
 
 			dispatchSubmit.className += ' toggled';
 
@@ -185,9 +199,11 @@ class Dispatch extends React.Component {
 					user={this.props.user} 
 					newAssignment={this.state.newAssignment}
 					rerender={this.state.newAssignment == 'unset'}
+					shouldUpdatePlace={this.state.shouldUpdatePlace}
+					
 					toggleSubmissionCard={this.toggleSubmissionCard}
 					updateNewAssignment={this.updateNewAssignment}
-					shouldUpdatePlace={this.state.shouldUpdatePlace}
+					mapShouldUpdate={this.mapShouldUpdate}
 					key={key++} />
 			);
 
@@ -211,11 +227,14 @@ class Dispatch extends React.Component {
 				<DispatchMap 
 					user={this.props.user}
 					mapCenter={this.state.mapCenter}
+					viewMode={this.state.viewMode}
+					newAssignment={this.state.newAssignment}
+					shouldMapUpdate={this.state.shouldMapUpdate}
+
+					mapShouldUpdate={this.mapShouldUpdate}
 					setActiveAssignment={this.setActiveAssignment}
 					findAssignments={this.findAssignments}
 					findUsers={this.findUsers}
-					viewMode={this.state.viewMode}
-					newAssignment={this.state.newAssignment}
 					updatePlace={this.updatePlace}
 					updateNewAssignment={this.updateNewAssignment} />
 				
