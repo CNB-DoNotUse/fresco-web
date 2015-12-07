@@ -17,6 +17,7 @@ export class Search extends React.Component {
 			stories: [],
 			purchases: [],
 			pending: false,
+			showOnlyVerified: false,
 			isResultsEnd: false
 		}
 
@@ -27,6 +28,8 @@ export class Search extends React.Component {
 
 		this.didPurchase = this.didPurchase.bind(this);
 		this.galleryScroll = this.galleryScroll.bind(this);
+
+		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
 	}
 
 	componentDidMount() {
@@ -44,8 +47,7 @@ export class Search extends React.Component {
 		$.get('/scripts/assignment/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 10,
-			verified: true
+			limit: 10
 		}, (assignments) => {
 
 			if(assignments.err || !assignments.data) return;
@@ -62,8 +64,7 @@ export class Search extends React.Component {
 		$.get('/scripts/gallery/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 12,
-			verified: true
+			limit: 12
 		}, (galleries) => {
 
 			if(galleries.err || !galleries.data) return;
@@ -81,8 +82,7 @@ export class Search extends React.Component {
 		$.get('/scripts/user/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 10,
-			verified: true
+			limit: 10
 		}, (users) => {
 
 			if(users.err || !users.data.length) return;
@@ -97,8 +97,7 @@ export class Search extends React.Component {
 		$.get('/scripts/story/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 10,
-			verified: true
+			limit: 10
 		}, (stories) => {
 
 			if(stories.err || !stories.data.length) return;
@@ -143,10 +142,20 @@ export class Search extends React.Component {
 		}
 	}
 
+	onVerifiedToggled(toggled) {
+		this.setState({
+			showOnlyVerified: toggled
+		});
+	}
+
 	render() {
 		return (
 			<App user={this.props.user}>
-				<TopBar title={this.props.title} />
+				<TopBar
+					title={this.props.title}
+					timeToggle={true}
+					verifiedToggle={true}
+					onVerifiedToggled={this.onVerifiedToggled} />
 	    		<div
 	    			id="search-container"
 	    			className="container-fluid grid"
@@ -156,7 +165,8 @@ export class Search extends React.Component {
 	    					rank={this.props.user.rank}
 		    				galleries={this.state.galleries}
 		    				purchases={this.props.purchases.concat(this.state.purchases)} 
-		    				didPurchase={this.didPurchase} />
+		    				didPurchase={this.didPurchase}
+		    				showOnlyVerified={this.state.showOnlyVerified} />
 		    			<SearchSide
 		    				assignments={this.state.assignments}
 		    				stories={this.state.stories}
@@ -172,18 +182,21 @@ class SearchGalleryList extends React.Component {
 	render() {
 		var galleries = [];
 		var purchases = this.props.purchases;
-		this.props.galleries.map((gallery, i) => {
+
+		for (var g in this.props.galleries) {
+			if(this.props.showOnlyVerified && !this.props.galleries[g].approvals) continue;
 			galleries.push(
 	        	<PostCell 
 	        		size="large" 
-	        		post={gallery} 
+	        		post={this.props.galleries[g]} 
 	        		rank={this.props.rank} 
-	        		purchased={purchases.indexOf(gallery._id) != -1}
+	        		purchased={purchases.indexOf(this.props.galleries[g]._id) != -1}
 	        		didPurchase={this.props.didPurchase}
-	        		key={i}
+	        		key={g}
 	        		editable="true" />
     		);
-		})
+		}
+
 		return (
 			<div
 				className="col-md-8 tiles"

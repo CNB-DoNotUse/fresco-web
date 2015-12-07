@@ -60,7 +60,7 @@ export default class TopBar extends React.Component {
 
 	//Called when the user selects a time format
 	verifiedToggleSelected(selected) {
-		
+		this.props.onVerifiedToggled(selected == 'Verified');
 	}
 
 	//Called when the user selects a time format
@@ -95,7 +95,7 @@ export default class TopBar extends React.Component {
 
 		}
 
-		if(this.props.locationInput){
+		if(this.props.locationInput) {
 			locationInput = <div className="form-group-default">
 								<input 
 									type="text" 
@@ -159,7 +159,7 @@ export default class TopBar extends React.Component {
 			topbarItems.push(
 				<Dropdown
 					options={['All content', 'Verified']}
-					selected='Verified'
+					selected='All content'
 					onSelected={this.verifiedToggleSelected}
 					key="verifiedToggle"
 					inList={true} />
@@ -213,5 +213,6 @@ export default class TopBar extends React.Component {
 }
 
 TopBar.defaultProps = {
-	title: ''
+	title: '',
+	onVerifiedToggled: function() {}
 }

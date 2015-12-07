@@ -23,9 +23,6 @@ export default class PlacesAutocomplete extends React.Component {
         // Remove material input empty class
         $('.autocomplete-input').removeClass('empty');
 
-        // Return if autocomplete not editable.
-        if(this.props.disabled) { return; }
-
         //  Bind autocomplete to input
         var location = new google.maps.places.Autocomplete(this.refs['autocomplete-input']);
 
