@@ -27,8 +27,7 @@ export default class EditMap extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		console.log(JSON.stringify(this.props.location))
-/*		console.log('-----START----');
+		/*console.log('-----START----');
 
 		console.log(prevProps.location);
 
@@ -52,6 +51,9 @@ export default class EditMap extends React.Component {
 			this.state.marker.setMap(null);
 			this.state.polygon.setMap(null);
 			return;
+		} else {
+			this.state.marker.setMap(this.state.map);
+			this.state.polygon.setMap(this.state.map);
 		}
 
 		//Check if the passed location is a set of points
@@ -59,15 +61,15 @@ export default class EditMap extends React.Component {
 		if(Array.isArray(this.props.location)) {
 			this.state.polygon.setPath(this.props.location);
 			this.state.marker.setPosition(this.getCentroid(this.state.polygon));
-			this.state.map.fitBounds(this.getBounds(this.state.polygon));
+			this.state.map.panTo(this.getCentroid(this.props.location));
 		} 
 		//Otherwise just set the marker to the passed position
 		else {
 			this.state.marker.setPosition(
 				new google.maps.LatLng(this.props.location.lat, this.props.location.lng)
 			);
-			this.state.map.setZoom(this.props.zoom || 16);
-			this.state.map.setCenter(this.state.marker.getPosition());
+			this.state.map.setZoom(this.props.zoom || 12);
+			this.state.map.panTo(this.state.marker.getPosition());
 		}
 
 		//Update the circles position
@@ -127,7 +129,7 @@ export default class EditMap extends React.Component {
 		var center = this.props.location ? Array.isArray(this.props.location) ? this.getCentroid(this.props.location) : this.props.location : {lat: 40.7, lng: -74};
 		var mapOptions = {
 			center: center,
-			zoom: this.props.zoom || 16,
+			zoom: this.props.zoom || 12,
 			mapTypeControl: false,
 			draggable: false,
 			scrollwheel: false,
@@ -164,7 +166,7 @@ export default class EditMap extends React.Component {
 		// Set default marker to NYC if location is not set.
 		// If location is set and it's an array, get the centroid. Otherwise use the point.
 		var marker = new google.maps.Marker({
-			position: this.props.location ? Array.isArray(this.props.location) ? this.getCentroid(this.props.location) : this.props.location : map.getCenter(),
+			position: center,
 			map: map,
 			icon: markerImage
 		});

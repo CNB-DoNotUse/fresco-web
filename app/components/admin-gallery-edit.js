@@ -430,11 +430,11 @@ export default class AdminGalleryEdit extends React.Component {
 
 					<div style={{height: '309px'}}>
 						<div className="map-group">
+							<PlacesAutocomplete
+								defaultLocation={activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
+								onPlaceChange={this.onPlaceChange}
+								disabled={this.props.activeGalleryType != 'import'} />
 							<div className="form-group-default">
-								<PlacesAutocomplete
-									defaultLocation={activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
-									onPlaceChange={this.onPlaceChange}
-									disabled={this.props.activeGalleryType != 'import'} />
 								<EditMap location={editMapLocation}/>
 							</div>
 						</div>

@@ -152,7 +152,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 
 .map-group {
   height: 100%; }
-  .map-group > .form-group-default {
+  .map-group .form-group-default {
     display: -webkit-box;
     display: -moz-box;
     display: box;
@@ -168,7 +168,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
     flex-direction: row;
     -ms-flex-direction: row;
     margin-bottom: 8px; }
-    .map-group > .form-group-default > .form-control-wrapper {
+    .map-group .form-group-default .form-control-wrapper {
       -webkit-box-flex: 3;
       -moz-box-flex: 3;
       box-flex: 3;
@@ -176,7 +176,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
       -moz-flex: 3;
       -ms-flex: 3;
       flex: 3; }
-      .map-group > .form-group-default > .form-control-wrapper + .form-control-wrapper {
+      .map-group .form-group-default .form-control-wrapper + .form-control-wrapper {
         -webkit-box-flex: 1;
         -moz-box-flex: 1;
         box-flex: 1;
@@ -186,14 +186,14 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
         flex: 1;
         margin-left: 16px;
         margin-bottom: 8px; }
-  .map-group > .map-container {
+  .map-group .map-container {
     width: 100%;
     height: 250px;
     margin-bottom: 8px;
     background-color: #f5f5f5; }
-  .map-group > .map-container.dispatch {
+  .map-group .map-container.dispatch {
     height: 100%; }
-  .map-group > .map-container.full {
+  .map-group .map-container.full {
     padding-top: 64px;
     margin-bottom: 0; }
   .map-group #map-canvas {
@@ -665,6 +665,7 @@ div.list {
     .sidebar > div:last-child > img {
       display: block;
       width: 80px;
+      height: 80px;
       margin: -40px auto 12px; }
     .sidebar > div:last-child > ul {
       padding: 4px 12px 16px; }
@@ -1392,16 +1393,62 @@ nav, .mdi, .sidebar {
   user-select: none; }
 
 /* Google Autocomplete styles */
-.google-autocomplete::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.12) !important; }
-
+/* .google-autocomplete::-webkit-input-placeholder {
+  color: rgba(0,0,0,0.12) !important;
+}
 .google-autocomplete:-moz-placeholder {
-  color: rgba(0, 0, 0, 0.12) !important; }
-
+  color: rgba(0,0,0,0.12) !important;
+}
 .google-autocomplete::-moz-placeholder {
-  color: rgba(0, 0, 0, 0.12) !important; }
-
+  color: rgba(0,0,0,0.12) !important;
+}
 .google-autocomplete::-ms-input-placeholder {
-  color: rgba(0, 0, 0, 0.12) !important; }
+  color: rgba(0,0,0,0.12) !important;
+} */
+.geosuggest__suggests {
+  position: absolute;
+  left: 0;
+  right: 0;
+  max-height: 25em;
+  padding: 0;
+  margin-top: -1px;
+  background: #fff;
+  border: 2px solid #267dc0;
+  border-top-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  list-style: none;
+  z-index: 5;
+  -webkit-transition: max-height 0.2s, border 0.2s;
+  transition: max-height 0.2s, border 0.2s; }
+
+.geosuggest__suggests--hidden {
+  max-height: 0;
+  overflow: hidden;
+  border-width: 0; }
+
+/**
+ * A geosuggest item
+ */
+.geosuggest-item {
+  font-size: 18px;
+  font-size: 1rem;
+  padding: .5em .65em;
+  cursor: pointer; }
+
+.geosuggest-item:hover,
+.geosuggest-item:focus {
+  background: #f5f5f5; }
+
+.geosuggest-item--active {
+  background: #267dc0;
+  color: #fff; }
+
+.geosuggest-item--active:hover,
+.geosuggest-item--active:focus {
+  background: #ccc; }
+
+.twitter-typeahead {
+  width: 100%; }
 
 /*# sourceMappingURL=screen.css.map */

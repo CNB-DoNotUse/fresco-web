@@ -165,11 +165,11 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 // map
 .map-group {
 	height: 100%;
-	> .form-group-default {
+	.form-group-default {
 		@include display(flex);
 		@include flex-direction(row);
 		margin-bottom: 8px;
-		> .form-control-wrapper {
+		.form-control-wrapper {
 			@include flex(3);
 			+ .form-control-wrapper {
 				@include flex(1);
@@ -178,16 +178,16 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 			}
 		}
 	}
-	> .map-container {
+	.map-container {
 		width: 100%;
 		height:250px;
 		margin-bottom: 8px;
 		background-color: $color-shade-2;
 	}
-	> .map-container.dispatch{
+	.map-container.dispatch{
 		height:100%;
 	}
-	> .map-container.full {
+	.map-container.full {
 		padding-top: 64px;
 		margin-bottom: 0;
 	}
