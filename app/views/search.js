@@ -1,8 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import TopBar from './../components/topbar.js'
+import TopBar from './../components/topbar'
 import App from './app.js'
-import PostCell from './../components/post-cell.js'
+import SearchGalleryList from './../components/search-gallery-list'
+import SearchSide from './../components/search-side'
 
 export class Search extends React.Component {
 
@@ -17,6 +18,7 @@ export class Search extends React.Component {
 			stories: [],
 			purchases: [],
 			pending: false,
+			showOnlyVerified: false,
 			isResultsEnd: false
 		}
 
@@ -27,6 +29,8 @@ export class Search extends React.Component {
 
 		this.didPurchase = this.didPurchase.bind(this);
 		this.galleryScroll = this.galleryScroll.bind(this);
+
+		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
 	}
 
 	componentDidMount() {
@@ -40,12 +44,12 @@ export class Search extends React.Component {
 		this.getUsers(0);
 	}
 
+	// Query API for assignments
 	getAssignments(offset) {
 		$.get('/scripts/assignment/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 10,
-			verified: true
+			limit: 10
 		}, (assignments) => {
 
 			if(assignments.err || !assignments.data) return;
@@ -56,14 +60,14 @@ export class Search extends React.Component {
 		})
 	}
 
+	// Query API for galleries
 	getGalleries(offset, cb) {
 		if( typeof cb == 'undefined') cb = function() {};
 
 		$.get('/scripts/gallery/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 12,
-			verified: true
+			limit: 12
 		}, (galleries) => {
 
 			if(galleries.err || !galleries.data) return;
@@ -77,12 +81,12 @@ export class Search extends React.Component {
 		});
 	}
 
+	// Query API for users
 	getUsers(offset) {
 		$.get('/scripts/user/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 10,
-			verified: true
+			limit: 10
 		}, (users) => {
 
 			if(users.err || !users.data.length) return;
@@ -93,12 +97,12 @@ export class Search extends React.Component {
 		});
 	}
 
+	// Query API for stories
 	getStories(offset) {
 		$.get('/scripts/story/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 10,
-			verified: true
+			limit: 10
 		}, (stories) => {
 
 			if(stories.err || !stories.data.length) return;
@@ -123,6 +127,7 @@ export class Search extends React.Component {
 		});
 	}
 
+	// Called when gallery div scrolls
 	galleryScroll(e) {
 
 		// Get scroll offset and get more purchases if necessary.
@@ -143,10 +148,21 @@ export class Search extends React.Component {
 		}
 	}
 
+	// Called when topbar verifiedToggle changed
+	onVerifiedToggled(toggled) {
+		this.setState({
+			showOnlyVerified: toggled
+		});
+	}
+
 	render() {
 		return (
 			<App user={this.props.user}>
-				<TopBar title={this.props.title} />
+				<TopBar
+					title={this.props.title}
+					timeToggle={true}
+					verifiedToggle={true}
+					onVerifiedToggled={this.onVerifiedToggled} />
 	    		<div
 	    			id="search-container"
 	    			className="container-fluid grid"
@@ -156,7 +172,8 @@ export class Search extends React.Component {
 	    					rank={this.props.user.rank}
 		    				galleries={this.state.galleries}
 		    				purchases={this.props.purchases.concat(this.state.purchases)} 
-		    				didPurchase={this.didPurchase} />
+		    				didPurchase={this.didPurchase}
+		    				showOnlyVerified={this.state.showOnlyVerified} />
 		    			<SearchSide
 		    				assignments={this.state.assignments}
 		    				stories={this.state.stories}
@@ -165,88 +182,6 @@ export class Search extends React.Component {
 		    	</div>
 			</App>
 		);
-	}
-}
-
-class SearchGalleryList extends React.Component {
-	render() {
-		var galleries = [];
-		var purchases = this.props.purchases;
-		this.props.galleries.map((gallery, i) => {
-			galleries.push(
-	        	<PostCell 
-	        		size="large" 
-	        		post={gallery} 
-	        		rank={this.props.rank} 
-	        		purchased={purchases.indexOf(gallery._id) != -1}
-	        		didPurchase={this.props.didPurchase}
-	        		key={i}
-	        		editable="true" />
-    		);
-		})
-		return (
-			<div
-				className="col-md-8 tiles"
-				id="searchGalleryList"
-				ref="searchGalleryList">
-				{galleries}
-			</div>
-		)
-	}
-}
-
-class SearchSide extends React.Component {
-	render() {
-
-		var assignments = [],
-			stories = [],
-			users = [];
-		
-		// Build assignment list item
-		this.props.assignments.map((assignment, i) => {
-			assignments.push(
-				<li key={i}><a href={"/assignment/" + assignment._id}>{assignment.title}</a></li>
-			);
-		});
-
-		// Build story list item
-		this.props.stories.map((story, i) => {
-			stories.push(
-				<li key={i}><a href={"/story/" + story._id}>{story.title}</a></li>
-			);
-		});
-
-		// Build user list item
-		this.props.users.map((user, i) => {
-			users.push(
-				<li className="meta-user" key={i}>
-					<div>
-						<a href="/user/5643aec78a5565ec64df0d71">
-							<img
-								className="img-circle img-responsive"
-								src={user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png'} />
-						</a>
-					</div>
-					<div>
-						<a href="/user/5643aec78a5565ec64df0d71">
-							<span className="md-type-title">{user.firstname} {user.lastname}</span>
-						</a>
-						<span className="md-type-body1">{user.twitter ? '' : 'No Twitter'} • {user.outlet ? <a href={"/outlet/" + user.outlet}>Outlet</a> : 'No Outlet'}</span>
-					</div>
-				</li>
-			);
-		});
-
-		return (
-			<div className="col-md-4">
-				<h3 className="md-type-button md-type-black-secondary">Assignments</h3>
-				<ul id="assignments" className="md-type-subhead">{assignments}</ul>
-				<h3 className="md-type-button md-type-black-secondary">Stories</h3>
-				<ul id="stories" className="md-type-subhead">{stories}</ul>
-				<h3 className="md-type-button md-type-black-secondary">Users</h3>
-				<ul id="users" className="meta">{users}</ul>
-			</div>
-		)
 	}
 }
 

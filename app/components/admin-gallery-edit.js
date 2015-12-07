@@ -209,8 +209,8 @@ export default class AdminGalleryEdit extends React.Component {
 		this.refs['gallery-byline'].value = this.props.hasActiveGallery ? this.props.gallery.posts[0].byline : '';
 		this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
 
-		$(this.refs['gallery-byline']).removeClass('empty');
-		$(this.refs['gallery-caption']).removeClass('empty');
+		this.refs['gallery-byline'].className = this.refs['gallery-byline'].className.replace(/\bempty\b/,'');
+		this.refs['gallery-caption'].className = this.refs['gallery-caption'].className.replace(/\bempty\b/,'');
 
 		if(this.props.hasActiveGallery) {
 			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
@@ -435,7 +435,9 @@ export default class AdminGalleryEdit extends React.Component {
 								onPlaceChange={this.onPlaceChange}
 								disabled={this.props.activeGalleryType != 'import'} />
 							<div className="form-group-default">
-								<EditMap location={editMapLocation}/>
+								<EditMap 
+									location={editMapLocation}
+									rerender={true}/>
 							</div>
 						</div>
 					</div>

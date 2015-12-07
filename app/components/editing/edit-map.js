@@ -28,16 +28,7 @@ export default class EditMap extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-
-		/*console.log('-----START----');
-
-		console.log(prevProps.location);
-
-		console.log(this.props.location);
-
-		console.log('----END-----');*/
-
-		if(this.props.rerender){
+		if(this.props.rerender) {
 			google.maps.event.trigger(this.state.map, 'resize');
 		}
 
@@ -52,7 +43,7 @@ export default class EditMap extends React.Component {
 		if(JSON.stringify(prevProps.location) == JSON.stringify(this.props.location)) {
 			return;
 		}
-
+		
 		//No location is present
 		if(!this.props.location) {
 			this.state.marker.setMap(null);
@@ -75,8 +66,7 @@ export default class EditMap extends React.Component {
 			this.state.marker.setPosition(
 				new google.maps.LatLng(this.props.location.lat, this.props.location.lng)
 			);
-			this.state.map.setZoom(this.props.zoom || 12);
-			this.state.map.panTo(this.state.marker.getPosition());
+			this.state.map.panTo(this.state.marker.getPosition(), 12);
 		}
 
 		//Update the circles position
