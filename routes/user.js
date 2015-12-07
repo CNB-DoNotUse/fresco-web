@@ -43,7 +43,7 @@ router.get('/:id?', function(req, res, next) {
     //Grab profile from API
     api.get('/v1/user/profile?id=' + req.params.id, function(error, response, body) {
 
-      if (error || !body || body.err) {
+      if (error || !body.data._id || body.err) {
 
         return req.session.save(function() {
           res.redirect(req.headers.Referer || config.DASH_HOME);
