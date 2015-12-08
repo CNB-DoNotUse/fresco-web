@@ -1,12 +1,12 @@
 import React from 'react'
-import global from '../../lib/global'
 import Slider from 'react-slick'
-import Dropdown from './global/dropdown'
-import Tag from './editing/tag'
-import PlacesAutocomplete from './editing/places-autocomplete'
-import EditMap from './editing/edit-map'
-import EditStories from './editing/gallery-edit-stories'
+import Dropdown from './../global/dropdown'
+import Tag from './../editing/tag'
+import PlacesAutocomplete from './../editing/places-autocomplete'
+import EditMap from './../editing/edit-map'
+import EditStories from './../editing/gallery-edit-stories'
 import AdminGalleryEditFoot from './admin-gallery-edit-foot'
+import global from '../../../lib/global'
 
 /**
 

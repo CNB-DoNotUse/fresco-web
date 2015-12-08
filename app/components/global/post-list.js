@@ -1,5 +1,4 @@
 import React from 'react'
-import SuggestionList from './suggestion-list.js'
 import PostCell from './post-cell.js'
 
 /** //

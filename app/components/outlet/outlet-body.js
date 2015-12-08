@@ -1,7 +1,7 @@
 import React from 'react'
 import moment from 'moment'
-import PostCell from './post-cell'
-import PurchaseListItem from './purchases-list-item'
+import PostCell from '../global/post-cell'
+import PurchaseListItem from '../purchases/purchases-list-item'
 
 
 export default class OutletBody extends React.Component {

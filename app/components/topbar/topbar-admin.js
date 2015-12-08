@@ -1,5 +1,5 @@
 import React from 'react'
-import Dropdown from './global/dropdown'
+import Dropdown from './../global/dropdown'
 import moment from 'moment'
 /** //
 

@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import TopBar from './../components/topbar.js'
-import PostInfo from './../components/post-info.js'
-import PostRelated from './../components/post-related.js'
-import PostDetailImage from './../components/post-detail-image.js'
-import GalleryEdit from './../components/editing/gallery-edit.js'
-import App from './app.js'
+import TopBar from './../components/topbar'
+import App from './app'
+import PostInfo from './../components/postDetail/post-info'
+import PostRelated from './../components/postDetail/post-related'
+import PostDetailImage from './../components/postDetail/post-detail-image'
+import GalleryEdit from './../components/editing/gallery-edit'
 
 /**
  * Post Detail Parent Object, made of a side column and PostList

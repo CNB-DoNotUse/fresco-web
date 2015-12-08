@@ -2,11 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from '../components/topbar'
-import OutletBody from '../components/outlet-body'
-import OutletInfo from '../components/outlet-info'
-import OutletCardInfo from '../components/outlet-card-info'
-import OutletQuickSupport from '../components/outlet-quick-support'
-import OutletMembers from '../components/outlet-members'
+import OutletBody from '../components/outlet/outlet-body'
+import OutletInfo from '../components/outlet/outlet-info'
+import OutletCardInfo from '../components/outlet/outlet-card-info'
+import OutletQuickSupport from '../components/outlet/outlet-quick-support'
+import OutletMembers from '../components/outlet/outlet-members'
 
 /**
 	Outlet members page

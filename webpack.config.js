@@ -6,7 +6,8 @@ var views = {};
 
 var files = fs.readdirSync('./app/views');
 files.map(function(file) {
-  if(exclude.indexOf(file) != -1) return;
+  if(exclude.indexOf(file) != -1 || !/.jsx?$/.test(file)) 
+    return;
   views[file.replace('.js', '')] = './app/views/' + file;
 });
 

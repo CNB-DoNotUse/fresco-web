@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from '../components/topbar'
-import OutletBody from '../components/outlet-body'
+import OutletBody from '../components/outlet/outlet-body'
 
 class Outlet extends React.Component {
 	constructor(props) {

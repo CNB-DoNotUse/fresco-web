@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './app.js'
-import UserSidebar from './../components/user-sidebar'
+import App from './app'
+import UserSidebar from './../components/userDetail/user-sidebar'
 import TopBar from './../components/topbar'
-import PostList from './../components/post-list'
+import PostList from './../components/global/post-list'
 import global from './../../lib/global'
 
 /**

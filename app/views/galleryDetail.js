@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import TopBar from './../components/topbar'
-import PostList from './../components/post-list'
-import GallerySidebar from './../components/gallery-sidebar'
+import PostList from './../components/global/post-list'
+import GallerySidebar from './../components/galleryDetail/gallery-sidebar'
 import GalleryEdit from './../components/editing/gallery-edit'
 import App from './app'
 

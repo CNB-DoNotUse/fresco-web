@@ -1,5 +1,5 @@
 import React from 'react'
-import global from './../../lib/global'
+import global from '../../../lib/global'
 
 
 /** //

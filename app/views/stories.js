@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import TopBar from './../components/topbar.js'
-import StoryList from './../components/story-list.js'
-import App from './app.js'
+import App from './app'
+import TopBar from './../components/topbar'
+import StoryList from './../components/global/story-list'
 
 /**
  * Stories Parent Object, contains StoryList composed of StoryCells

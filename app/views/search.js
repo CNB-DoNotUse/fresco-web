@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import App from './app'
 import TopBar from './../components/topbar'
-import App from './app.js'
-import SearchGalleryList from './../components/search-gallery-list'
-import SearchSide from './../components/search-side'
+import SearchGalleryList from './../components/search/search-gallery-list'
+import SearchSidebar from './../components/search/search-sidebar'
 
 export class Search extends React.Component {
 
@@ -174,7 +174,7 @@ export class Search extends React.Component {
 		    				purchases={this.props.purchases.concat(this.state.purchases)} 
 		    				didPurchase={this.didPurchase}
 		    				showOnlyVerified={this.state.showOnlyVerified} />
-		    			<SearchSide
+		    			<SearchSidebar
 		    				assignments={this.state.assignments}
 		    				stories={this.state.stories}
 		    				users={this.state.users} />

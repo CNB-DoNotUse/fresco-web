@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './app.js'
-import PostList from './../components/post-list.js'
-import TopBar from './../components/topbar.js'
+import App from './app'
+import PostList from './../components/global/post-list.js'
+import TopBar from './../components/topbar'
 
 /** //
 

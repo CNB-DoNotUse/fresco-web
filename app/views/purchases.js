@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from '../components/topbar'
-import PurchasesBody from '../components/purchases-body'
+import PurchasesBody from '../components/purchases/purchases-body'
 
 class Purchases extends React.Component {
 	constructor(props) {

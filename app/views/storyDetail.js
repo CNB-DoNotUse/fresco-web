@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import TopBar from './../components/topbar.js'
-import PostList from './../components/post-list.js'
-import StorySidebar from './../components/story-sidebar.js'
+import App from './app'
+import TopBar from './../components/topbar'
+import PostList from './../components/global/post-list.js'
+import StorySidebar from './../components/storyDetail/story-sidebar'
 import StoryEdit from './../components/editing/story-edit.js'
-import App from './app.js'
 
 /**
  * Story Detail Parent Object, made of a side column and PostList

@@ -1,7 +1,7 @@
 import React from 'react'
-import PurchaseAction from './actions/purchase-action.js';
-import DownloadAction from './actions/download-action.js';
-import global from './../../lib/global'
+import PurchaseAction from './../actions/purchase-action.js';
+import DownloadAction from './../actions/download-action.js';
+import global from './../../../lib/global'
 
 /**
  * Single Post Cell, child of PostList

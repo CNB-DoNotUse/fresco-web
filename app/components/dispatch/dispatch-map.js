@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/server'
-import global from '../../lib/global' 
+import global from '../../../lib/global' 
 import DispatchMapCallout from './dispatch-map-callout'
 
 /** //

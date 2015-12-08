@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
-import TopBar from './../components/topbar-admin'
-import AdminBody from './../components/admin-body'
+import TopBar from './../components/topbar/topbar-admin'
+import AdminBody from './../components/admin/admin-body'
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar) 

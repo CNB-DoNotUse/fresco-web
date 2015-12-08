@@ -1,5 +1,5 @@
 import React from 'react'
-import AssignmentEditMap from './editing/assignment-edit-map'
+import AssignmentEditMap from '../editing/assignment-edit-map'
 
 /**
     

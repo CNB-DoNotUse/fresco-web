@@ -1,5 +1,5 @@
 import React from 'react';
-import SuggestionList from './suggestion-list'
+import SuggestionList from '../highlights/suggestion-list'
 import GalleryCell from './gallery-cell'
 
 /** //

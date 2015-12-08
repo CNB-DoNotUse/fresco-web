@@ -2,10 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import TopBar from './../components/topbar'
 import App from './app'
-import DispatchMap from './../components/dispatch-map'
-import DispatchAssignments from './../components/dispatch-assignments'
-import DispatchSubmit from './../components/dispatch-submit'
-import DispatchRequest from './../components/dispatch-request'
+import DispatchMap from './../components/dispatch/dispatch-map'
+import DispatchAssignments from './../components/dispatch/dispatch-assignments'
+import DispatchSubmit from './../components/dispatch/dispatch-submit'
+import DispatchRequest from './../components/dispatch/dispatch-request'
 
 /**
  * Dispatch Parent Component, contains the Dispatch Map, as well as a set of cards

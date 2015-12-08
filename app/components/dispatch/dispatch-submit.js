@@ -1,6 +1,6 @@
 import React from 'react';
-import EditMap from './editing/edit-map'
-import global from './../../lib/global'
+import EditMap from '../editing/edit-map'
+import global from '../../../lib/global'
 
 /** //
 

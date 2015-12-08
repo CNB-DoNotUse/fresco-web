@@ -1,5 +1,5 @@
 import React from 'react';
-import AssignmentItem from './assignment-list-item'
+import AssignmentListItem from './assignment-list-item'
 
 /** //
 
@@ -91,7 +91,7 @@ export default class DispatchAssignments extends React.Component {
 		var AssignmentList = this.state.assignments.map((assignment, i)  => {
 
 			return (
-				<AssignmentItem 
+				<AssignmentListItem 
 					assignment={assignment}
 					setActiveAssignment={this.props.setActiveAssignment}
 					key={i} />

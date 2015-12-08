@@ -1,5 +1,5 @@
 import React from 'react'
-import PostCell from './post-cell.js'
+import PostCell from './../global/post-cell.js'
 
 export default class SearchGalleryList extends React.Component {
 	render() {

@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app.js'
-import GalleryList from './../components/gallery-list.js'
-import TopBar from './../components/topbar.js'
+import GalleryList from './../components/global/gallery-list.js'
+import TopBar from './../components/topbar'
 
 /**
  * Galleries Parent Object (composed of GalleryList and Navbar) 

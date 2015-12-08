@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import TopBar from './../components/topbar'
-import PostList from './../components/post-list'
-import AssignmentSidebar from './../components/assignment-sidebar'
+import PostList from './../components/global/post-list'
+import AssignmentSidebar from './../components/assignmentDetail/assignment-sidebar'
 import AssignmentEdit from './../components/editing/assignment-edit.js'
 import App from './app'
 
