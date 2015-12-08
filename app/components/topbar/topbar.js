@@ -1,7 +1,7 @@
 import React from 'react'
 import global from './../../../lib/global'
 import Dropdown from './../global/dropdown'
-
+import LocationDropdown from './location-dropdown'
 /** //
 
 Description : Top for pages of the site
@@ -95,15 +95,15 @@ export default class TopBar extends React.Component {
 
 		}
 
-		if(this.props.locationInput) {
-			locationInput = <div className="form-group-default">
-								<input 
-									type="text" 
-									ref="autocomplete"
-									className="form-control google-autocomplete" 
-									placeholder="Location" />
-							</div>;
-		}
+		// if(this.props.locationInput) {
+		// 	locationInput = <div className="form-group-default">
+		// 						<input 
+		// 							type="text" 
+		// 							ref="autocomplete"
+		// 							className="form-control google-autocomplete" 
+		// 							placeholder="Location" />
+		// 					</div>;
+		// }
 		
 		if (this.props.editable) {
 
@@ -165,6 +165,10 @@ export default class TopBar extends React.Component {
 					inList={true} />
 			);
 
+		}
+
+		if (this.props.locationDropdown) {
+			topbarItems.push(<LocationDropdown key="locationDropdown" />);
 		}
 
 		if (this.props.outletsFilter) {

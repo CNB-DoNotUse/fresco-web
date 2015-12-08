@@ -1,4 +1,6 @@
 var fs = require('fs');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
 
 var exclude = ['app.js'];
 
@@ -30,6 +32,6 @@ module.exports = [
           }
         }
       ]
-    },
+    }
   }
 ];

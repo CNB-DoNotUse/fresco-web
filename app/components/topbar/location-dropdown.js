@@ -1,55 +1,38 @@
 import React from 'react'
-import PlacesAutocomplete from '../editing/places-autocomplete'
-import EditMap from '../editing/edit-map'
-export default class AutocompleteMap extends React.Component {
+import AutocompleteMap from '../global/autocomplete-map'
 
+export default class LocationDropdown extends React.Component {
 	constructor(props) {
 		super(props);
+		this.hideDropdown = this.hideDropdown();
+		this.clicked = this.clicked();
+	}
+
+	hideDropdown() {
+
+	}
+
+	clicked() {
+
 	}
 
 	render() {
-
-		var radiusInput = '';
-		if(this.props.radius) {
-			radiusInput = 
-			            <input
-			                type="text"
-			                className="form-control floating-label numbers"
-			                data-hint="feet"
-			                placeholder="Radius"
-			                defaultValue={this.props.radius}
-			                onKeyUp={this.updateRadius}
-			                ref="radius" />
-		}
-
-		return (
-			<div className="map-group">
-				<PlacesAutocomplete
-					defaultLocation={this.props.defaultLocation}
-					onPlaceChange={this.props.onPlaceChange}
-					disabled={this.props.disabled} />
-	            <input
-	                type="text"
-	                className="form-control floating-label numbers"
-	                data-hint="feet"
-	                placeholder="Radius"
-	                defaultValue={this.props.radius}
-	                onKeyUp={this.props.updateRadius}
-	                ref="radius" />
-				<div className="form-group-default">
-					<EditMap 
-						location={this.props.location}
-						rerender={true} />
+		return(
+			<div className="split-cell drop">
+				<button className="toggle-drop md-type-subhead" ref="toggle_button" onClick={this.clicked}>
+					<span>Location</span>
+					<span className="mdi mdi-menu-down icon"></span>
+				</button>
+				<div className="drop-menu panel panel-default" ref="drop" onClick={this.hideDropdown}>
+					<div className="toggle-drop toggler md-type-subhead">
+						<span>Location</span>
+						<span className="mdi mdi-menu-up icon pull-right"></span>
+					</div>
+					<div className="drop-body">
+						<AutocompleteMap />
+					</div>
 				</div>
 			</div>
 		);
 	}
-}
-
-AutocompleteMap.defaultProps = {
-	defaultLocation: '',
-	location: null,
-	radius: null,
-	updateRadius: function() {},
-	onPlaceChange: function() {}
 }

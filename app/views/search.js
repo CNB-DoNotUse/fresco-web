@@ -162,6 +162,7 @@ export class Search extends React.Component {
 					title={this.props.title}
 					timeToggle={true}
 					verifiedToggle={true}
+					locationDropdown={true}
 					onVerifiedToggled={this.onVerifiedToggled} />
 	    		<div
 	    			id="search-container"
