@@ -1,4 +1,5 @@
 import React from 'react'
+import global from '../../../lib/global'
 
 export default class StoryEditStats extends React.Component {
 
@@ -14,7 +15,7 @@ export default class StoryEditStats extends React.Component {
 					<ul className="md-type-subhead">
 						<li>
 							<span className="mdi mdi-clock icon"></span>
-							<span id="story-edit-date">{timestampToDate(this.props.story.time_created)}</span>
+							<span id="story-edit-date">{global.formatTime(this.props.story.time_created)}</span>
 						</li>
 						<li>
 							<span className="mdi mdi-file-image-box icon"></span>

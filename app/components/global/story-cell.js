@@ -1,5 +1,5 @@
 import React from 'react'
-
+import global from '../../../lib/global'
 /**
  * Single Story Cell, child of StoryList
  */
@@ -10,8 +10,8 @@ export default class StoryCell extends React.Component {
 
 		// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 
-		var timestamp = this.props.story.time_created;
-		var timeString = formatTime(this.props.story.time_created);
+		var timestamp = this.props.story.time_created || this.props.story.time_edited;
+		var timeString = global.formatTime(timestamp);
 
 		return(
 			<div className='col-xs-6 col-md-3 tile story'>
@@ -125,8 +125,8 @@ class StoryCellImage extends React.Component {
 		return (
 			<div className="img">
 				<img className="img-cover"
-					data-src={formatImg(this.props.post.image, this.props.size)}
-					src={formatImg(this.props.post.image, this.props.size)} />
+					data-src={global.formatImg(this.props.post.image, this.props.size)}
+					src={global.formatImg(this.props.post.image, this.props.size)} />
 			</div>
 		)
 	}
