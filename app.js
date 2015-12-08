@@ -4,14 +4,19 @@ var config = require('./lib/config'),
     favicon = require('serve-favicon'),
     morgan = require('morgan'),
     session = require('express-session'),
+    redis = require('redis'),
+    RedisStore = require('connect-redis')(session),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     multer  = require('multer'),
     fs  = require('fs'),
     https  = require('https'),
     requestJson = require('request-json'),
-    app = express(),
-    FileStore = require('session-file-store')(session);
+    app = express()
+
+// If in dev mode, use local redis server as session store
+var rClient = config.DEV ? redis.createClient() : redis.createClient(6379, config.REDIS.SESSIONS, {enable_offline_queue: false});
+var redisConnection = { client: rClient };
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,14 +46,12 @@ app.use(cookieParser());
 
 //Session config
 app.use(session({
-  store: new FileStore({
-    path: './sessions'
-  }),
+  store: new RedisStore(redisConnection),
   secret: config.SESSION_SECRET,
   resave: false,
   rolling: true,
   saveUninitialized: false,
-  cookie: { path: '/', httpOnly: true, secure: false, maxAge: null },
+  cookie: { path: '/', httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
   unset: 'destroy'
 }));
 
