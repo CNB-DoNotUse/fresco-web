@@ -19,42 +19,66 @@ class PublicGallery extends React.Component {
 
  	render() {
 
+ 		var gallery = this.props.gallery;
+
+ 		<Slider
+ 			dots={true}>
+ 			{galleryImages ? galleryImages : <div></div>}
+ 		</Slider>
+
+ 		var galleryImages = [];
+ 		gallery.posts.map((post, i) => {
+ 			if(post.video) {
+ 				galleryImages.push(
+ 					<div key={i}>
+ 						<video width="100%" height="100%" data-id={post._id} controls>
+ 							<source src={post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4" />
+ 							Your browser does not support the video tag.
+ 						</video>
+ 					</div>
+ 				)
+ 			}
+ 			return (
+ 				<div key={i}><img className="img-responsive" src={global.formatImg(post.image, 'medium')} data-id={post._id} /></div>
+ 			);
+ 		});
+
  		return (
  			<nav id="gallery-nav">
 				<a id="wordmark" href="/"><img alt="Fresco" src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-nav.png"></a>
 			</nav>
-			<section class="dark nohover" id="highlights">
-				<div class="slick slick_gallery">
+			<section className="dark nohover" id="highlights">
+				<div className="slick slick_gallery">
 					<% for (var index in gallery.posts){ %>
 						<% if (index > 0) { %>
-						<div class="slide hide">
+						<div className="slide hide">
 						<% } else { %>
-						<div class="slide">
+						<div className="slide">
 						<% } %>
 							<div>
 								<% if(index == 0) {%>
-									<img class="carousel" src="<%= config.formatImg(gallery.posts[index].image, 'large') %>">
+									<img className="carousel" src="<%= config.formatImg(gallery.posts[index].image, 'large') %>">
 								<%} else{ %>
-									<img class="carousel" data-lazy="<%= config.formatImg(gallery.posts[index].image, 'large') %>">
+									<img className="carousel" data-lazy="<%= config.formatImg(gallery.posts[index].image, 'large') %>">
 								<% } %>
 							</div>
-							<div class="meta">
+							<div className="meta">
 								<table>
 									<thead>
 										<tr>
-											<th><img class="lazy" src="<%= gallery.posts[index].owner ? gallery.posts[index].owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png' %>" width="36" height="36"></th>
+											<th><img className="lazy" src="<%= gallery.posts[index].owner ? gallery.posts[index].owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png' %>" width="36" height="36"></th>
 											<th><%= gallery.posts[index].byline %></th>
 										</tr>
 									</thead>
 									<tbody>
 										<% if (gallery.posts[index].location.address) { %>
 										<tr>
-											<td><span class="mdi mdi-map-marker"></span></td>
+											<td><span className="mdi mdi-map-marker"></span></td>
 											<td><%= gallery.posts[index].location.address %></td>
 										</tr>
 										<% } %>
 										<tr>
-											<td><span class="mdi mdi-clock"></span></td>
+											<td><span className="mdi mdi-clock"></span></td>
 											<td><%= config.getTimeAgo(gallery.posts[index].time_created) %></td>
 										</tr>
 									</tbody>

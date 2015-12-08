@@ -36,19 +36,15 @@ export default class GalleryEditStories extends React.Component {
 	}
 
 	render() {
-
+		/*onClick={this.props.removeStory.bind(null, story.title) */ 
 		var stories = this.props.stories.map((story, i) => {
 			return (
-
 				<Tag 
-					onClick={this.props.removeStory.bind(null, story.title)} 
 					text={story.title} 
 					plus={false}
 					key={i} />
-
 			)
-
-		});
+		}, this);
 
 		return (
 

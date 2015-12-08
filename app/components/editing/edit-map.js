@@ -112,27 +112,18 @@ export default class EditMap extends React.Component {
 	}
 
 	initializeMap() {
-		var styles = [
-			{"featureType": "all", "elementType":"all", "stylers": [{"gamma":1.54}]},
-			{"featureType":"road.highway","elementType":"all","stylers":[{"gamma":1.54}]},
-			{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#e0e0e0"}]},
-			{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#bdbdbd"}]},
-			{"featureType":"road.highway","elementType":"labels.text.fill","stylers":[{"color":"#757575"}]},
-			{"featureType":"poi.park","elementType":"all","stylers":[{"gamma":1.26}]},
-			{"featureType":"poi.park","elementType":"labels.text","stylers":[{"saturation":-54}]}
-		];
 
 		// If location, check if is array and get centroid of polygon, or use the point passed. Otherwise use NYC for center.
-		var center = this.props.location ? Array.isArray(this.props.location) ? this.getCentroid(this.props.location) : this.props.location : {lat: 40.7, lng: -74};
-		var mapOptions = {
-			center: center,
-			zoom: this.props.zoom || 12,
-			mapTypeControl: false,
-			draggable: false,
-			scrollwheel: false,
-			disableDoubleClickZoom: true,
-			styles: styles
-		};
+		var center = this.props.location ? Array.isArray(this.props.location) ? this.getCentroid(this.props.location) : this.props.location : {lat: 40.7, lng: -74},
+			mapOptions = {
+				center: center,
+				zoom: this.props.zoom || 12,
+				mapTypeControl: false,
+				draggable: false,
+				scrollwheel: false,
+				disableDoubleClickZoom: true,
+				styles: global.mapStyles
+			};
 
 		//Instantiate google maps object
 		var map = new google.maps.Map(

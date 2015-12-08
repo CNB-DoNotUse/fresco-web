@@ -68,7 +68,8 @@ export default class GalleryEditBody extends React.Component {
 					
 					<GalleryEditTags ref='tags' tags={this.props.gallery.tags} />
 					
-					<GalleryEditStories ref='stories' 
+					<GalleryEditStories 
+						ref='stories' 
 						stories={this.props.gallery.related_stories} 
 						updateRelatedStories={this.updateRelatedStories} />
 					
