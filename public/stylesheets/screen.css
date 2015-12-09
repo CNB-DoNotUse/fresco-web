@@ -388,6 +388,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 
 div.chips > div.split-cell + div.split-cell {
   padding-top: 4px; }
+
 div.chips ul.suggestions {
   position: absolute;
   z-index: 19;
@@ -398,6 +399,7 @@ div.chips ul.suggestions {
   div.chips ul.suggestions li {
     padding: 5px;
     font-size: 16px; }
+
 div.chips ul.chips {
   padding: 8px 0 0; }
   div.chips ul.chips > li.chip {
@@ -451,8 +453,10 @@ div.chips ul.chips {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   line-height: 25px;
   color: rgba(0, 0, 0, 0.54) !important; }
+
 .tab-control > button:last-child {
   margin: 0; }
+
 .tab-control > button.toggled {
   border-bottom: 2px solid #0047bb;
   line-height: 25px;
@@ -481,6 +485,7 @@ div.chips ul.chips {
   position: relative; }
   .tabs > .tab > .img-link {
     cursor: pointer; }
+
 .tabs > .tab.toggled {
   display: block;
   height: 100%; }
@@ -1446,5 +1451,3 @@ nav, .mdi, .sidebar {
 
 .twitter-typeahead {
   width: 100%; }
-
-/*# sourceMappingURL=screen.css.map */

@@ -1,36 +1,52 @@
 var fs = require('fs'),
 	gulp = require('gulp'),
-	browserify = require('browserify'),
-	babelify = require('babelify'),
-	source = require('vinyl-source-stream');
+	gutil = require("gulp-util"),
+	webpack = require("webpack"),
+	sass = require('gulp-sass');
 
-var paths = {
-	js: 'app/views/*.js',
-	scss: 'app/sass/**/*.scss'
-}
-
-var pages = [];
 var exclude = ['app.js'];
-var files = fs.readdirSync('./app/views');
 
+var views = {};
+
+var files = fs.readdirSync('./app/views');
 files.map(function(file) {
   if(exclude.indexOf(file) != -1 || !/.jsx?$/.test(file)) 
     return;
-  pages.push(file);
+  views[file.replace('.js', '')] = './app/views/' + file;
 });
 
-gulp.task('js', function() {
-	pages.map(function(page) {
-		browserify('./app/views/' + page)
-		.transform('babelify', {presets: ['es2015', 'react']})
-		.bundle()
-		.pipe(source(page))
-		.pipe(gulp.dest('public/javascripts/pages'));
+gulp.task('css', function () {
+	gulp.src('./app/sass/screen.scss')
+		.pipe(sass().on('error', sass.logError))
+		.pipe(gulp.dest('./public/stylesheets'));
+});
+
+gulp.task('js', function(cb) {
+	webpack({
+		watch: true,
+	    name : 'browser',
+	    entry: views,
+	    output: {
+	      path: 'public/javascripts/pages',
+	      filename: "[name].js"
+	    },
+	    module: {
+	      loaders: [
+	        {
+	          test: /.jsx?$/,
+	          loader: 'babel-loader',
+	          exclude: /node_modules/,
+	          query: {
+	            presets: ['es2015', 'react']
+	          }
+	        }
+	      ]
+	    }
+	}, function (err, stats) {
+		if (err) gutil.PuginError('webpack', err);
+		cb();
 	});
 });
 
-gulp.task('watch', function() {
-	gulp.watch(paths.js, ['js']);
-});
 
-gulp.task('default', ['watch', 'js']);
+gulp.task('default', ['css', 'js']);
