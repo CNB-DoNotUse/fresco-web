@@ -44,9 +44,12 @@ gulp.task('js', function(cb) {
 	    }
 	}, function (err, stats) {
 		if (err) gutil.PuginError('webpack', err);
-		cb();
+		console.log('Webpack Built');
 	});
 });
 
+gulp.task('watch', function() {
+	gulp.watch('./app/sass/**/*.scss', ['css']);
+});
 
-gulp.task('default', ['css', 'js']);
+gulp.task('default', ['watch', 'css', 'js']);
