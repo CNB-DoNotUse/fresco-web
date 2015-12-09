@@ -9,6 +9,7 @@ export class Search extends React.Component {
 
 	constructor(props) {
 		super(props);
+		
 		this.state = {
 			offset: 0,
 			assignments: [],
