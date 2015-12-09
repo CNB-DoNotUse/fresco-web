@@ -19,9 +19,11 @@ export default class PostList extends React.Component {
 			offset: 0,
 			posts: this.props.posts || [],
 			loading: false,
-			scrollable: this.props.scrollable || false
+			scrollable: this.props.scrollable || false,
+			purchases: []
 		}
 		this.scroll = this.scroll.bind(this);
+		this.didPurchase = this.didPurchase.bind(this);
 	}
 
 	componentDidMount() {
@@ -84,9 +86,23 @@ export default class PostList extends React.Component {
 		}
 	}
 
+	/** 
+		Called when an item is purchased.
+		Adds purchase ID to current purchases in state.
+		Prop chain: PostList -> PostCell -> PostCellActions -> PostCellAction -> PurchaseAction
+	**/
+	didPurchase(id) {
+		var purchases = [];
+		this.state.purchases.map((purchase) => { purchases.push(purchase); })
+		purchases.push(id);
+		this.setState({
+			purchases: purchases
+		});
+	}
+
 	render() {
 
-		var purchases = this.props.purchases,
+		var purchases = this.props.purchases.concat(this.state.purchases),
 			rank = this.props.rank;
 
 		//Map all the posts into cells
@@ -101,7 +117,7 @@ export default class PostList extends React.Component {
 	        		post={post} 
 	        		rank={rank} 
 	        		purchased={purchased}
-	        		didPurchase={this.props.didPurchase}
+	        		didPurchase={this.didPurchase}
 	        		key={i}
 	        		editable={this.props.editable} />
 	        		
