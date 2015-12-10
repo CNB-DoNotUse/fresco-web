@@ -3,7 +3,7 @@
 */
 
 // var API_URL = 'https://api.fresconews.com',
-var API_URL = 'http://staging.fresconews.com',
+var API_URL = 'http://dev.api.fresconews.com',
 	FEET_PER_MILE = 5280;
 
 String.prototype.capitalize = function(){

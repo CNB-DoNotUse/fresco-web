@@ -24,7 +24,7 @@ export default class TopBar extends React.Component {
 
 	componentDidMount() {
 		//Set up autocomplete
-		if(this.props.locationInput){
+		if(this.props.locationInput) {
 
 			//Set up autocomplete listener
 			var autocomplete = new google.maps.places.Autocomplete(this.refs.autocomplete);
@@ -168,7 +168,11 @@ export default class TopBar extends React.Component {
 		}
 
 		if (this.props.locationDropdown) {
-			topbarItems.push(<LocationDropdown key="locationDropdown" />);
+			topbarItems.push(<LocationDropdown
+								onPlaceChange={this.props.onPlaceChange}
+								onRadiusChange={this.props.onRadiusChange}
+								key="locationDropdown" />
+							);
 		}
 
 		if (this.props.outletsFilter) {

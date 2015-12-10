@@ -9,6 +9,7 @@ export class Search extends React.Component {
 
 	constructor(props) {
 		super(props);
+		
 		this.state = {
 			offset: 0,
 			assignments: [],
@@ -16,20 +17,28 @@ export class Search extends React.Component {
 			users: [],
 			stories: [],
 			purchases: [],
+			tags: [],
 			pending: false,
 			showOnlyVerified: false,
-			isResultsEnd: false
+			isResultsEnd: false,
+			location: null,
+			radius: null
 		}
 
-		this.getAssignments = this.getAssignments.bind(this);
-		this.getGalleries = this.getGalleries.bind(this);
-		this.getUsers = this.getUsers.bind(this);
-		this.getStories = this.getStories.bind(this);
+		this.getAssignments		= this.getAssignments.bind(this);
+		this.getGalleries		= this.getGalleries.bind(this);
+		this.getUsers			= this.getUsers.bind(this);
+		this.getStories			= this.getStories.bind(this);
 
-		this.didPurchase = this.didPurchase.bind(this);
-		this.galleryScroll = this.galleryScroll.bind(this);
+		this.didPurchase		= this.didPurchase.bind(this);
+		this.galleryScroll		= this.galleryScroll.bind(this);
 
-		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
+		this.onVerifiedToggled	= this.onVerifiedToggled.bind(this);
+
+		this.onLocationChange		= this.onLocationChange.bind(this);
+		this.onRadiusChange			= this.onRadiusChange.bind(this);
+
+		this.refreshData			= this.refreshData.bind(this);
 	}
 
 	componentDidMount() {
@@ -43,19 +52,39 @@ export class Search extends React.Component {
 		this.getUsers(0);
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if(JSON.stringify(prevState.location) != JSON.stringify(this.state.location) || 
+			JSON.stringify(prevState.radius) != JSON.stringify(this.state.radius)) {
+			this.refreshData()
+		}
+	}
+
 	// Query API for assignments
-	getAssignments(offset) {
+	getAssignments(offset, cb) {
 		$.get('/scripts/assignment/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 10
+			limit: 10,
+			verified: this.state.showOnlyVerified,
+			tags: this.state.tags,
+			lat: this.state.location ? this.state.location.lat : undefined,
+			lon: this.state.location ? this.state.location.lng : undefined,
+			radius: this.state.radius ? this.state.radius : undefined
 		}, (assignments) => {
 
 			if(assignments.err || !assignments.data) return;
 
 			this.setState({
 				assignments: this.state.assignments.concat(assignments.data),
-			})
+			});
+			console.log('asdf');
+			window.history.pushState(
+	            {},
+	            null,
+	            '?q=' + encodeURIComponent(this.props.query) +
+	            (this.state.tags.length ? '&tags=' + encodeURIComponent(this.state.tags.join(',')) : '') +
+	            (this.state.location ? '&lat=' + this.state.location.lat + '&lon=' + this.state.location.lng + '&r=' + (this.state.radius || '') : '')
+	        );
 		})
 	}
 
@@ -154,6 +183,23 @@ export class Search extends React.Component {
 		});
 	}
 
+	// Called when LocationDropdown from TopBar returns a location
+	onLocationChange(location) {
+		this.setState({
+			location: location
+		});
+	}
+	// Called when LocationDropdown from TopBar returns a radius
+	onRadiusChange(radius) {
+		this.setState({
+			radius: radius
+		});
+	}
+
+	refreshData() {
+		
+	}
+
 	render() {
 		return (
 			<App user={this.props.user}>
@@ -162,6 +208,8 @@ export class Search extends React.Component {
 					timeToggle={true}
 					verifiedToggle={true}
 					locationDropdown={true}
+					onPlaceChange={this.onLocationChange}
+					onRadiusChange={this.props.onRadiusChange}
 					onVerifiedToggled={this.onVerifiedToggled} />
 	    		<div
 	    			id="search-container"
