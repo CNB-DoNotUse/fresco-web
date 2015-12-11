@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import global from '../../lib/global'
 import App from './app'
 import TopBar from './../components/topbar'
 import SearchGalleryList from './../components/search/search-gallery-list'
@@ -9,7 +10,37 @@ export class Search extends React.Component {
 
 	constructor(props) {
 		super(props);
-		
+			
+		var queryLat = this.getParameterByName('lat');
+		var queryLng = this.getParameterByName('lon');
+		var queryRadius = this.getParameterByName('r');
+		var location = null;
+		var polygon = null;
+
+		if(queryLat && queryLng) {
+			location = {
+				lat: parseFloat(queryLat),
+				lng: parseFloat(queryLng)
+			}
+		}
+
+		if(queryRadius) {
+			var radius = parseFloat(queryRadius);
+			if(radius == 'NaN') { queryRadius = null; return; }
+
+			queryRadius = global.milesToMeters(radius);
+
+			if(location) {
+				var circle = new google.maps.Circle({
+					map: null,
+					center: location,
+					radius: queryRadius
+				})
+				polygon = this.circleToPolygon(circle, 8);
+			}
+
+		}
+
 		this.state = {
 			offset: 0,
 			assignments: [],
@@ -21,22 +52,25 @@ export class Search extends React.Component {
 			pending: false,
 			showOnlyVerified: false,
 			isResultsEnd: false,
-			location: null,
-			radius: null
+			location: location,
+			radius: queryRadius,
+			polygon: polygon
 		}
 
-		this.getAssignments		= this.getAssignments.bind(this);
-		this.getGalleries		= this.getGalleries.bind(this);
-		this.getUsers			= this.getUsers.bind(this);
-		this.getStories			= this.getStories.bind(this);
+		this.getAssignments			= this.getAssignments.bind(this);
+		this.getGalleries			= this.getGalleries.bind(this);
+		this.getUsers				= this.getUsers.bind(this);
+		this.getStories				= this.getStories.bind(this);
 
-		this.didPurchase		= this.didPurchase.bind(this);
-		this.galleryScroll		= this.galleryScroll.bind(this);
+		this.addTag					= this.addTag.bind(this);
+		this.removeTag				= this.removeTag.bind(this);
 
-		this.onVerifiedToggled	= this.onVerifiedToggled.bind(this);
+		this.didPurchase			= this.didPurchase.bind(this);
+		this.galleryScroll			= this.galleryScroll.bind(this);
 
-		this.onLocationChange		= this.onLocationChange.bind(this);
-		this.onRadiusChange			= this.onRadiusChange.bind(this);
+		this.onVerifiedToggled		= this.onVerifiedToggled.bind(this);
+
+		this.onMapDataChange		= this.onMapDataChange.bind(this);
 
 		this.refreshData			= this.refreshData.bind(this);
 	}
@@ -59,8 +93,34 @@ export class Search extends React.Component {
 		}
 	}
 
+	circleToPolygon(circle, numSides){
+		var center = circle.getCenter(),
+			topleft = circle.getBounds().getNorthEast(),
+	  		radiusX = Math.abs(topleft.lat() - center.lat()),
+	  		radiusY = Math.abs(topleft.lng() - center.lng()),
+	  		points = [],
+			degreeStep = Math.PI * 2 / numSides;
+			
+		for(var i = 0; i < numSides; i++){
+			//var gpos = google.maps.geometry.spherical.computeOffset(center, radius, degreeStep * i);
+			points.push([center.lng() + radiusY * Math.sin(i * degreeStep), center.lat() + radiusX * Math.cos(i * degreeStep)]);
+		};
+
+		// Duplicate the last point to close the geojson ring
+		points.push(points[0]);
+
+		return [ points ];
+	}
+
+	getParameterByName(name) {
+	    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	        results = regex.exec(location.search);
+	    return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+
 	// Query API for assignments
-	getAssignments(offset, cb) {
+	getAssignments(offset, force) {
 		$.get('/scripts/assignment/search', {
 			q: this.props.query,
 			offset: offset,
@@ -69,48 +129,58 @@ export class Search extends React.Component {
 			tags: this.state.tags,
 			lat: this.state.location ? this.state.location.lat : undefined,
 			lon: this.state.location ? this.state.location.lng : undefined,
-			radius: this.state.radius ? this.state.radius : undefined
+			radius: this.state.radius ? (this.state.radius / 5280) : undefined
 		}, (assignments) => {
 
 			if(assignments.err || !assignments.data) return;
 
 			this.setState({
-				assignments: this.state.assignments.concat(assignments.data),
+				assignments: force ? assignments.data : this.state.assignments.concat(assignments.data),
 			});
-			console.log('asdf');
-			window.history.pushState(
-	            {},
-	            null,
-	            '?q=' + encodeURIComponent(this.props.query) +
-	            (this.state.tags.length ? '&tags=' + encodeURIComponent(this.state.tags.join(',')) : '') +
-	            (this.state.location ? '&lat=' + this.state.location.lat + '&lon=' + this.state.location.lng + '&r=' + (this.state.radius || '') : '')
-	        );
 		})
 	}
 
 	// Query API for galleries
-	getGalleries(offset, cb) {
-		if( typeof cb == 'undefined') cb = function() {};
+	getGalleries(offset, force) {
+
+		var polygon = null;
+
+		if(this.state.map) {
+			if(this.state.circle) {
+				polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(this.state.circle, 8)));
+			}
+		}
+
+		if(this.state.location && this.state.radius) {
+			var circle = new google.maps.Circle({
+				map: null,
+				center: this.state.location,
+				radius: this.state.radius
+			});
+
+			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
+		}
 
 		$.get('/scripts/gallery/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 12
+			limit: 12,
+			polygon: polygon,
 		}, (galleries) => {
 
 			if(galleries.err || !galleries.data) return;
 			var newGalleries = this.state.galleries.concat(galleries.data);
 
 			this.setState({
-				galleries: newGalleries,
-				offset: newGalleries.length
+				galleries: force ? galleries.data : newGalleries,
+				offset: force ? galleries.data.length : newGalleries.length
 			});
 
 		});
 	}
 
 	// Query API for users
-	getUsers(offset) {
+	getUsers(offset, force) {
 		$.get('/scripts/user/search', {
 			q: this.props.query,
 			offset: offset,
@@ -120,25 +190,69 @@ export class Search extends React.Component {
 			if(users.err || !users.data.length) return;
 
 			this.setState({
-				users: this.state.users.concat(users.data)
+				users: force ? users.data : this.state.users.concat(users.data)
 			});
 		});
 	}
 
 	// Query API for stories
-	getStories(offset) {
+	getStories(offset, force) {
+
+		var polygon = null;
+
+		if(this.state.map) {
+			if(this.state.circle) {
+				polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(this.state.circle, 8)));
+			}
+		}
+
+		if(this.state.location && this.state.radius) {
+			var circle = new google.maps.Circle({
+				map: null,
+				center: this.state.location,
+				radius: this.state.radius
+			});
+			
+			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
+		}
+
 		$.get('/scripts/story/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 10
+			limit: 10,
+			polygon: polygon,
 		}, (stories) => {
 
 			if(stories.err || !stories.data.length) return;
 			
 			this.setState({
-				stories: this.state.stories.concat(stories.data)
+				stories: force ? stories.data : this.state.stories.concat(stories.data)
 			});
 		});
+	}
+
+	addTag(tag) {
+		console.log('Adding', tag)
+		if(this.state.tags.indexOf(tag) != -1) return;
+
+		this.setState({
+			tags: this.state.tags.concat(tag)
+		});
+
+	}
+
+	removeTag(tag) {
+		if(this.state.tags.indexOf(tag) == -1) return; 
+		var tags = [], tagList = this.state.tags;
+		for (var t in tagList) {
+			if(tagList[t] == tag) continue;
+			tags.push(tagList[t]);
+		}
+
+		this.setState({
+			tags: tags
+		});
+
 	}
 
 	/** 
@@ -183,21 +297,30 @@ export class Search extends React.Component {
 		});
 	}
 
-	// Called when LocationDropdown from TopBar returns a location
-	onLocationChange(location) {
+	onMapDataChange(data) {
 		this.setState({
-			location: location
-		});
-	}
-	// Called when LocationDropdown from TopBar returns a radius
-	onRadiusChange(radius) {
-		this.setState({
-			radius: radius
+			location: data.location,
+			radius: global.metersToFeet(data.radius),
+			map: {
+				circle: data.circle
+			}
 		});
 	}
 
 	refreshData() {
-		
+
+		this.getAssignments(0, true);
+		this.getGalleries(0, true);
+		this.getUsers(0, true);
+		this.getStories(0, true);
+
+		window.history.pushState(
+			{},
+			null,
+			'?q=' + encodeURIComponent(this.props.query) +
+			(this.state.tags.length > 0 ? '&tags=' + encodeURIComponent(this.state.tags.join(',')) : '') +
+			(this.state.location ? '&lat=' + this.state.location.lat + '&lon=' + this.state.location.lng + '&r=' + (this.state.radius ? global.feetToMeters(this.state.radius) : '') : '')
+		);
 	}
 
 	render() {
@@ -207,9 +330,12 @@ export class Search extends React.Component {
 					title={this.props.title}
 					timeToggle={true}
 					verifiedToggle={true}
+					tagFilter={true}
+					tagList={this.state.tags}
+					onTagAdd={this.addTag}
+					onTagRemove={this.removeTag}
 					locationDropdown={true}
-					onPlaceChange={this.onLocationChange}
-					onRadiusChange={this.props.onRadiusChange}
+					onMapDataChange={this.onMapDataChange}
 					onVerifiedToggled={this.onVerifiedToggled} />
 	    		<div
 	    			id="search-container"

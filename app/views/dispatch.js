@@ -26,6 +26,7 @@ class Dispatch extends React.Component {
 			mapCenter: null,
 			viewMode: 'active',
 		}
+		
 		this.mapShouldUpdate = this.mapShouldUpdate.bind(this);
 		this.updatePlace = this.updatePlace.bind(this);
 		this.updateMapCenter = this.updateMapCenter.bind(this);

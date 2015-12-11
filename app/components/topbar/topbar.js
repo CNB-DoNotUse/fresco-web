@@ -2,6 +2,7 @@ import React from 'react'
 import global from './../../../lib/global'
 import Dropdown from './../global/dropdown'
 import LocationDropdown from './location-dropdown'
+import TagFilter from './tag-filter'
 /** //
 
 Description : Top for pages of the site
@@ -171,7 +172,17 @@ export default class TopBar extends React.Component {
 			topbarItems.push(<LocationDropdown
 								onPlaceChange={this.props.onPlaceChange}
 								onRadiusChange={this.props.onRadiusChange}
+								onMapDataChange={this.props.onMapDataChange}
 								key="locationDropdown" />
+							);
+		}
+
+		if (this.props.tagFilter) {
+			topbarItems.push(<TagFilter
+								onTagAdd={this.props.onTagAdd}
+								onTagRemove={this.props.onTagRemove}
+								tagList={this.props.tagList}
+								key="tagFilter" />
 							);
 		}
 

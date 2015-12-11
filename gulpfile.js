@@ -27,7 +27,7 @@ viewFiles.map((file) => {
   views[file.replace('.js', '')] = ['./app/views/' + file];
 });
 
-gulp.task('Build',  () => {
+gulp.task('Build Dependencies',  () => {
 
 	var cssTasks = [], jsTasks = [];
 
@@ -85,7 +85,7 @@ gulp.task('Build',  () => {
 	return merge(cssTasks, jsTasks);
 });
 
-gulp.task('js', (cb) => {
+gulp.task('Build JS', (cb) => {
 	return gulp.src('app/views/app.js')
 		.pipe(webpack({
 			watch: true,
@@ -113,4 +113,4 @@ gulp.task('watch', () => {
 	gulp.watch('./app/sass/**/*.scss', ['css']);
 });
 
-gulp.task('default', ['Build']);
+gulp.task('default', ['Build Dependencies', 'Build JS']);

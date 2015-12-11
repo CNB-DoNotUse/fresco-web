@@ -12,10 +12,11 @@ export default class EditMap extends React.Component {
 		super(props);
 
 		this.state = {
-			mapID: Date.now() + Math.floor(Math.random() * 100),
-			map: null,
-			polygon: null,
-			marker: null
+			mapID: 		Date.now() + Math.floor(Math.random() * 100),
+			map: 		null,
+			polygon: 	null,
+			circle: 	null,
+			marker: 	null
 		}
 
 		this.getCentroid = this.getCentroid.bind(this);
@@ -40,7 +41,8 @@ export default class EditMap extends React.Component {
 		}
 
 		//Check if locations are the same from what was previsouly set
-		if(JSON.stringify(prevProps.location) == JSON.stringify(this.props.location)) {
+		if(JSON.stringify(prevProps.location) == JSON.stringify(this.props.location) && 
+			JSON.stringify(prevProps.radius) == JSON.stringify(this.props.radius)) {
 			return;
 		}
 		
@@ -71,6 +73,16 @@ export default class EditMap extends React.Component {
 
 		//Update the circles position
 		this.state.circle.setCenter(this.state.marker.getPosition());
+
+		// Pass data back up
+		this.props.onDataChange({
+			map: this.state.map,
+			polygon: this.state.polygon,
+			circle: this.state.circle,
+			marker: this.state.marker,
+			location: this.props.location,
+			radius: this.props.radius
+		});
 
 	}
 

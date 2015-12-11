@@ -20,9 +20,6 @@ export default class PlacesAutocomplete extends React.Component {
 
     componentDidMount() {
 
-        // Remove material input empty class
-        $('.autocomplete-input').removeClass('empty');
-
         //  Bind autocomplete to input
         var location = new google.maps.places.Autocomplete(this.refs['autocomplete-input']);
 
@@ -36,6 +33,10 @@ export default class PlacesAutocomplete extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+
+        // Remove material input empty class
+        $('.autocomplete-input').removeClass('empty');
+        
         // If prop location changed, update input
         if(prevProps.defaultLocation != this.props.defaultLocation) {
             this.refs['autocomplete-input'].value = this.props.defaultLocation || '';

@@ -20,7 +20,6 @@ export default class AutocompleteMap extends React.Component {
 		this.setState({
 			location: place.location
 		});
-		this.props.onPlaceChange(place.location);
 	}
 
 	updateRadius() {
@@ -29,7 +28,6 @@ export default class AutocompleteMap extends React.Component {
 		this.setState({
 			radius: radius
 		});
-		this.props.onRadiusChange(radius);
 	}
 
 	render() {
@@ -39,8 +37,9 @@ export default class AutocompleteMap extends React.Component {
 			radiusInput = 
 			            <input
 			                type="text"
-			                className="form-control floating-label numbers"
-			                data-hint="feet"
+			                className="form-control floating-label numbers m-t-15 "
+			                style={{marginTop: '15px'}}
+			                data-hint="Meters"
 			                placeholder="Radius"
 			                defaultValue={this.props.radius}
 			                onKeyUp={this.updateRadius}
@@ -54,11 +53,12 @@ export default class AutocompleteMap extends React.Component {
 					onPlaceChange={this.onPlaceChange}
 					disabled={this.props.disabled} />
 	            {radiusInput}
-				<div className="form-group-default">
+				<div className="form-group-default" style={{marginTop: '24px'}}>
 					<EditMap 
 						location={this.state.location}
 						radius={this.state.radius}
-						rerender={this.props.rerender} />
+						rerender={this.props.rerender}
+						onDataChange={this.props.onMapDataChange} />
 				</div>
 			</div>
 		);
