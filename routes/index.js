@@ -2,6 +2,7 @@ var express = require('express'),
   router = express.Router(),
   requestJson = require('request-json'),
   config = require('../lib/config'),
+  head = require('../lib/head'),
   api = requestJson.createClient(config.API_URL)
 
 /** //
@@ -17,45 +18,30 @@ Description : Client Index Routes
 router.get('/', function(req, res, next) {
 
   api.get('/v1/gallery/highlights', function(error, response, body) {
+    
     var highlights = [];
 
     if (!error && body && !body.err)
       highlights = body.data;
 
-
     res.render('index', {
       user: req.session ? req.session.user : null,
       highlights: highlights,
       config: config,
+      head: head,
+      page:'index',
       alerts: req.alerts,
-      partner: false
+      partner: typeof(req.query.partner) != 'undefined'
     });
 
   });
 
 });
 
-/**
- * Partners page, loads on top of landing page
- */
-
 router.get('/partners', function(req, res, next) {
-  api.get('/v1/gallery/highlights', function(error, response, body) {
 
-    var highlights = [];
+  res.redirect('/?partner=true')
 
-    if (!error && body && !body.err)
-      highlights = body.data;
-
-    res.render('index', {
-      user: req.session ? req.session.user : null,
-      highlights: highlights,
-      config: config,
-      alerts: req.alerts,
-      partner: true
-    });
-
-  });
 });
 
 /**
@@ -63,32 +49,12 @@ router.get('/partners', function(req, res, next) {
  */
 
 router.get('/promo', function(req, res, next) {
+  
   res.render('promo', {
     user: req.session ? req.session.user : null,
     config: config,
-    alerts: req.alerts
-  });
-});
-
-/**
- * Main highlights page
- */
-
-router.get('/highlights', function(req, res, next) {
-
-  var title = 'Highlights',
-      props = {
-        user : req.session.user,
-        title: title
-      };
-
-  res.render('app', {
-    user: req.session ? req.session.user : null,
-    config: config,
     alerts: req.alerts,
-    page : 'highlights',
-    title : title,
-    props : JSON.stringify(props)
+    links: ['stylesheets/promo.css']
   });
 
 });

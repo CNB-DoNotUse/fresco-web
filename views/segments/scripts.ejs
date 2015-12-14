@@ -27,38 +27,27 @@
 
 <!--Dependicies-->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places"></script>
-<script type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="/vendor/typeahead.js/dist/typeahead.jquery.min.js"></script>
-<script type="text/javascript" src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/vendor/snackbarjs/dist/snackbar.min.js"></script>
-<script type="text/javascript" src="/vendor/alertify.js/dist/js/alertify.js"></script>
-<script type="text/javascript" src="/vendor/slick-carousel/slick/slick.min.js"></script>
-<script type="text/javascript" src="/vendor/bootstrap-material-design/dist/js/material.min.js"></script>
-<script type="text/javascript" src="/vendor/bootstrap-material-design/dist/js/ripples.min.js"></script>
-<!-- Client Scripts -->
-<script type="text/javascript" src="/javascripts/frick.js"></script>
-<script type="text/javascript" src="/javascripts/fresco.js"></script>
+
+<!-- Props -->
+<% if(typeof props !== 'undefined'){ %>
+  <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
+<% } %>
+
+<!--Global Specifc based on sections-->
+<% if(typeof(section) !== 'undefined'){ %> 
+  <script type="text/javascript" src="/javascripts/<%= section %>.js"></script>
+<% } %>  
+
+<!--Page Specifc based on page-->
+<% if(typeof(page) !== 'undefined'){ %> 
+  <script type="text/javascript" src="/javascripts/pages/<%= page %>.js"></script>
+<% } %> 
+
+
+<!-- Material -->
 <script type="text/javascript">
     $.material.init();
 </script>
-<!-- <script type="text/javascript" src="/javascripts/dashboard.js"></script> -->
-
-<% if(typeof scripts !== 'undefined') { 
-  scripts.map((script) => { %>
-    <script type="text/javascript" src="<%= script %>"></script>
-   <% })
-} %>
-
-<!-- Page Specific -->
-<% if(typeof props !== 'undefined'){ %>
-  <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
-<% } 
-
-if(typeof page !== 'undefined'){ %>
-  <script type="text/javascript" src="/javascripts/pages/<%= page %>.js"></script>
-
-<% } %>
-
 
 
 <!--GA-->
@@ -73,5 +62,8 @@ if(typeof page !== 'undefined'){ %>
   ga('set', 'dimension1', <%- user ? '"TRUE"' : '"FALSE"' %>);
   <% } %>
   ga('send', 'pageview');
-
 </script>
+
+</body>
+
+</html>

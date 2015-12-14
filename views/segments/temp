@@ -1,0 +1,52 @@
+<% if (typeof(type) !== 'undefined') { %>
+  
+    <% if (page == 'post') { %>
+      
+      <meta content="<%= gallery.caption %>" property="og:description">
+      <meta content="http://www.fresconews.com/post/<%= post._id %>" property="og:url">
+      <meta content="Fresco News" property="og:site_name">
+      <meta content="article" property="og:type">
+      <meta content="<%= config.formatImg(post.image, 'large') %>" property="og:image">
+  
+    <% } else if (page == 'gallery') {%>
+      
+      <meta property="og:description" content="<%= gallery.caption %>">
+      <meta property="og:url" content="http://www.fresconews.com/gallery/<%= gallery._id %>">
+      <meta property="og:site_name" content="Fresco News">
+      <meta property="og:type" content="article">
+      <meta property="og:image" content="<%= config.formatImg(gallery.posts[0].image, 'large') %>">
+  
+    <% } else if (page == 'user') {%>
+      
+      <meta property="og:url" content="http://www.fresconews.com/user/<%= page_user._id %>">
+      <meta property="og:site_name" content="Fresco News">
+      <meta property="og:type" content="profile">
+      <meta property="profile:first_name" content="<%= page_user.firstname %>">
+      <meta property="profile:last_name" content="<%= page_user.lastname %>">
+      <meta property="profile:username" content="<%= page_user.username %>">
+      <meta property="og:image" content="<%= page_user.avatar %>">
+
+    <% } else if (page == 'outlet') {%>
+      
+      <meta property="og:url" content="http://www.fresconews.com/outlet/<%= outlet._id %>">
+      <meta property="og:site_name" content="Fresco News">
+      <meta property="og:type" content="article">
+      <meta property="og:image" content="<%= outlet.avatar %>">
+
+    <% } else if (page == 'assignment') {%>
+
+      <meta property="og:description" content="<%= assignment.caption %>">
+      <meta property="og:url" content="http://www.fresconews.com/assignment/<%= assignment._id %>">
+      <meta property="og:site_name" content="Fresco News">
+      <meta property="og:type" content="place">
+      <meta property="place:location:longitude" content="<%= assignment.location.geo.coordinates[0] %>">
+      <meta property="place:location:latitude" content="<%= assignment.location.geo.coordinates[1] %>">
+
+    <% } else if (page == 'story') {%>
+
+      <meta property="og:description" content="<%= story.caption %>">
+      <meta property="og:url" content="http://www.fresconews.com/story/<%= story._id %>">
+      <meta property="og:site_name" content="Fresco News">
+      <meta property="og:type" content="article">
+
+    <% } %>
