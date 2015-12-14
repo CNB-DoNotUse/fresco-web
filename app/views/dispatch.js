@@ -80,34 +80,51 @@ class Dispatch extends React.Component {
 	/**
 	 * Data call for retrieving assignments
 	 */
-	findAssignments(map, callback) {
-
-		var bounds = map.getBounds();
-		if(!bounds) return;
-		var proximitymeter = google.maps.geometry.spherical.computeDistanceBetween (
-			bounds.getSouthWest(), 
-			bounds.getNorthEast()
-		);
-		var proximitymiles = proximitymeter * 0.000621371192;
-		var radius = proximitymiles / 2;
-		var center = map.getCenter();
+	findAssignments(map, params, callback) {
 		
-		var query = "lat=" + center.lat() + "&lon=" + center.lng() + "&radius=" + radius;
-			
-		$.ajax("/scripts/assignment/getAll?" + query, {
-			success: (response) => {
+		//Check if params are set, otherwise default to empy dictionar 
+		var params = params;
+		if(!params){
+			params = {};
+		}
 
+		//Add map params
+		if(map){
+
+			var bounds = map.getBounds();
+			if(!bounds) return;
+			
+			var proximitymeter = google.maps.geometry.spherical.computeDistanceBetween (
+				bounds.getSouthWest(), 
+				bounds.getNorthEast()
+			);
+			var proximitymiles = proximitymeter * 0.000621371192;
+			var radius = proximitymiles / 2;
+			var center = map.getCenter();
+
+			params.lat = center.lat();
+			params.lon =  center.lng();
+			params.radius =	radius;
+		}
+
+		$.ajax({
+			url: "/scripts/assignment/list",
+			type: 'GET',
+			data: params,
+			dataType: 'json',
+			success: (response, status, xhr) => {
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
 					callback([]);
 				else
 					callback(response.data);
-
 			},
 			error: (xhr, status, error) => {
-				return callback(error);
+				$.snackbar({content: resolveError(error)});
 			}
-		});
+
+		});	
+
 	}
 
 	/**
@@ -189,6 +206,7 @@ class Dispatch extends React.Component {
 			cards.push(
 				<DispatchAssignments 
 					user={this.props.user} 
+					setActiveAssignment={this.setActiveAssignment}
 					toggleSubmissionCard={this.toggleSubmissionCard}
 					findAssignments={this.findAssignments}
 					viewMode={this.state.viewMode}
@@ -202,6 +220,7 @@ class Dispatch extends React.Component {
 					rerender={this.state.newAssignment == 'unset'}
 					shouldUpdatePlace={this.state.shouldUpdatePlace}
 					
+					setActiveAssignment={this.setActiveAssignment}
 					toggleSubmissionCard={this.toggleSubmissionCard}
 					updateNewAssignment={this.updateNewAssignment}
 					mapShouldUpdate={this.mapShouldUpdate}
@@ -227,6 +246,7 @@ class Dispatch extends React.Component {
 				
 				<DispatchMap 
 					user={this.props.user}
+					activeAssignment={this.state.activeAssignment}
 					mapCenter={this.state.mapCenter}
 					viewMode={this.state.viewMode}
 					newAssignment={this.state.newAssignment}

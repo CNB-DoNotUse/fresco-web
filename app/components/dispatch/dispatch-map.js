@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/server'
-import global from '../../../lib/global' 
 import DispatchMapCallout from './dispatch-map-callout'
+import _ from 'lodash'
+import global from '../../../lib/global' 
 
 /** //
 
@@ -21,6 +22,8 @@ export default class DispatchMap extends React.Component {
 		this.state = {
 			assignments: [],
 			users: [],
+			markers: [],
+			circles: [],
 			activeCallout: null,
 			map: null,
 			newAssignmentMarker: null,
@@ -31,7 +34,9 @@ export default class DispatchMap extends React.Component {
 		this.updateAssignmentMarkers = this.updateAssignmentMarkers.bind(this);
 		this.updateUserMarkers = this.updateUserMarkers.bind(this);
 		this.focusOnAssignment = this.focusOnAssignment.bind(this);
+		this.addAssignmentsToMap = this.addAssignmentsToMap.bind(this);
 		this.addAssignmentToMap = this.addAssignmentToMap.bind(this);
+		this.addAssignmentMarker = this.addAssignmentMarker.bind(this);
 	}
 
 	componentDidMount() {
@@ -65,6 +70,13 @@ export default class DispatchMap extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+
+		//Check if there is an active assignment and (there no previous assignment or the prev and current active assignmnet are not the same)
+		if(this.props.activeAssignment && (!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)){
+				
+			this.focusOnAssignment(null, null, this.props.activeAssignment);
+
+		}
 
 		if(JSON.stringify(prevProps.mapCenter) != JSON.stringify(this.props.mapCenter)){
 			this.state.map.setCenter(this.props.mapCenter);
@@ -141,7 +153,7 @@ export default class DispatchMap extends React.Component {
 
 			//Create the marker with a null position
 			var marker = this.addAssignmentMarker(),
-				circle = this.addCircle(null, 0, 'drafted'),
+				circle = this.addCircle(null, 0, 'drafted', null),
 				location = {
 					lat: marker.getPosition().lat(),
 					lng: marker.getPosition().lng()
@@ -188,13 +200,35 @@ export default class DispatchMap extends React.Component {
 		//Check if we have map in state
 		if(!this.state.map) return;
 
-		this.props.findAssignments(this.state.map, (assignments) => {
+		this.props.findAssignments(this.state.map, null, (assignments) => {
 			this.props.findUsers(this.state.map, (users, error) => {
 				this.setState({
 					assignments: assignments,
 					users: users
 				});
 			});
+		});
+	}
+
+	/**
+	 * Adds passed array of assignments to the map, 
+	 * then sets state from concatted response from `addAssignmentToMap` on each assignment
+	 */
+	addAssignmentsToMap(assignments){
+		var markers = [],
+			circles = [];
+
+		for (var i = 0; i < assignments.length - 1; i++) {
+			var mapData = this.addAssignmentToMap(assignments[i], false);
+			if(typeof(mapData) === 'undefined') continue;
+			console.log(mapData);
+			markers.push(mapData.marker);
+			circles.push(mapData.circle);
+		};
+
+		this.setState({
+			markers: markers,
+			circles: circles
 		});
 	}
 
@@ -249,7 +283,8 @@ export default class DispatchMap extends React.Component {
 		var circle = this.addCircle(
 			position, 
 			global.milesToMeters(radius), 
-			status
+			status,
+			assignment._id
 		);
 		
 		//Create the marker
@@ -258,7 +293,8 @@ export default class DispatchMap extends React.Component {
 			title,
 			status,
 			zIndex, 
-			draggable
+			draggable,
+			assignment._id
 		);
 
 		//Add event handler to display callout when clicekd
@@ -268,29 +304,33 @@ export default class DispatchMap extends React.Component {
 			this.focusOnAssignment.bind(null, marker, circle, assignment)
 		);
 
+		return {
+			circle: circle,
+			marker: marker
+		}
+
 	}
 
-	addAssignmentMarker(position, title, status, zIndex, draggable) {
+	addAssignmentMarker(position, title, status, zIndex, draggable, assignmentId) {
 
 		//Create the marker image
 		var image = {
-			url: status ? global.assignmentImage[status] : global.assignmentImage.drafted,
-			size: new google.maps.Size(114, 114),
-			scaledSize: new google.maps.Size(60, 60),
-			origin: new google.maps.Point(0, 0),
-			anchor: new google.maps.Point(30, 30)
-		};
-
-		var position = position || {lat: this.state.map.getCenter().lat(), lng: this.state.map.getCenter().lng()};
-
-		var marker = new google.maps.Marker({
-			position: position,
-			map: this.state.map,
-			title: title || 'No title',
-			icon: image,
-			zIndex: zIndex || 0,
-			draggable: draggable !== undefined ? draggable : true
-		});
+				url: status ? global.assignmentImage[status] : global.assignmentImage.drafted,
+				size: new google.maps.Size(114, 114),
+				scaledSize: new google.maps.Size(60, 60),
+				origin: new google.maps.Point(0, 0),
+				anchor: new google.maps.Point(30, 30)
+			},
+			position = position || {lat: this.state.map.getCenter().lat(), lng: this.state.map.getCenter().lng()},
+			marker = new google.maps.Marker({
+				position: position,
+				map: this.state.map,
+				title: title || 'No title',
+				icon: image,
+				zIndex: zIndex || 0,
+				draggable: draggable !== undefined ? draggable : true,
+				assignmentId: assignmentId !== undefined ? assignmentId : true
+			});
 
 		return marker;
 
@@ -302,19 +342,20 @@ export default class DispatchMap extends React.Component {
 	 * @param {integer} radius Circle radius in feet
 	 * @param {Assignment status} status active/pending/expired
 	 */
-	addCircle(center, radius, status) {
+	addCircle(center, radius, status, assignmentId) {
 		
-		var fillColor = global.assignmentColor[status];
+		var fillColor = global.assignmentColor[status],
+			circle =  new google.maps.Circle({
+				map: this.state.map,
+				center: center || this.state.map.getCenter(),
+				radius: radius || 0,
+				strokeWeight: 0,
+				fillColor: fillColor,
+				fillOpacity: 0.26,
+				assignmentId: assignmentId !== undefined ? assignmentId : true
+			});
 
-		return new google.maps.Circle({
-			map: this.state.map,
-			center: center || this.state.map.getCenter(),
-			radius: radius || 0,
-			strokeWeight: 0,
-			fillColor: fillColor,
-			fillOpacity: 0.26
-		});
-
+		return circle;
 	}
 
 	/**
@@ -349,22 +390,27 @@ export default class DispatchMap extends React.Component {
 	 */
 	updateAssignmentMarkers(prevAssignments) {
 
-		var newMarkers = [];
-		var prevAssignmentsIds = [];
+		var newMarkers = [],
+		    prevAssignmentsIds = [],
+		    assignments = [];
 
 		//Map out all of the previous assignmnets
 		prevAssignments.map((assignment) => {
 			prevAssignmentsIds.push(assignment._id.toString());
 		});
 
-		//Map out all the new assignments, and return all of the new ones
-		this.state.assignments.map((assignment) => {
-			var assignmentId = assignment._id.toString();
+		//Loop through and push into assignments array
+		for (var i = 0; i < this.state.assignments.length; i++) {
+			var assignment = this.state.assignments[i],assignmentId = assignment._id.toString();
 			
 			if(prevAssignmentsIds.indexOf(assignmentId) == -1) {
-				this.addAssignmentToMap(assignment, false);
+				assignments.push(assignment);
 			}
-		});
+		};
+
+		if(assignments.length == 0 ) return;
+
+		this.addAssignmentsToMap(assignments);
 	}
 
 	/**
@@ -395,12 +441,34 @@ export default class DispatchMap extends React.Component {
 	 * @param  {Google Maps Circle} circle     The radius of the assignment
 	 */
 	focusOnAssignment(marker, circle, assignment) {
+		console.log(this.state.markers);
 
 		var map = this.state.map;
 
-		//Check if the active assignment isn't the clicked again
-		if(this.props.activeAssignment && this.props.activeAssignment._id == assignment._id)
-			return;
+		if(!marker){
+			var index = _.findIndex(this.state.markers, (marker) => {
+				return marker.assignmentId == assignment._id;
+			});
+			
+			if(index == -1){
+				$.snackbar({content: 'We couldn\'t find this assignment!'});
+				return;
+			}
+
+			marker = this.state.markers[index];
+		}
+		if(!circle){
+			index = _.findIndex(this.state.circles, (circle) => {
+				return circle.assignmentId == assignment._id;
+			});
+
+			if(index == -1){
+				$.snackbar({content: 'We couldn\'t find this assignment!'});
+				return;
+			}
+
+			circle = this.state.circles[index];
+		}
 
 		//Close the active callout if it exists yet
 		if(this.state.activeCallout)

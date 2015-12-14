@@ -60,7 +60,7 @@ export default class DispatchAssignments extends React.Component {
 			this.setState({ loading : true });
 
 			//Run load on parent call
-			this.props.loadAssignments(this.state.offset, type, (assignments) =>{
+			this.loadAssignments(this.state.offset, type, (assignments) =>{
 
 				//Disables scroll, and returns nil if posts are nill
 				if(!assignments || assignments.length == 0){ 
@@ -167,26 +167,18 @@ export default class DispatchAssignments extends React.Component {
 		var params = {
 			expired: type == 'expired',
 			active: type == 'active',
-			pending: type == 'pending',
+			verified: type == 'verified',
 			offset: passedOffset,
 			limit: 10
 		}
-			
-		$.ajax("/scripts/assignment/find", {
-			data: params,
-			success: (response) => {
 
-				//Do nothing, because of bad response
-				if(!response.data || response.err)
-					callback([]);
-				else
-					callback(response.data);
-
-			},
-			error: (xhr, status, error) => {
-				return callback(error, null);
+		this.props.findAssignments(null, params, (response) => {
+			//Do nothing, because of bad response
+			if(!response || response.err)
+				callback([]);
+			else{
+				callback(response);
 			}
 		});
-		
 	}
 }	

@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 
 export default class AssignmentListItem extends React.Component {
 
@@ -10,22 +11,8 @@ export default class AssignmentListItem extends React.Component {
 
         var assignment = this.props.assignment,
             location = assignment.location.googlemaps || 'Unknown',
-            expirationTime;
-
-        if (!assignment.expiration_time) {
-            expirationTime = 'Never Expires';
-        }
-        else {
-            
-            var relative = formatTime(assignment.expiration_time);
-           
-            if (assignment.expiration_time < Date.now())
-                expirationTime = "Expired " + relative;
-            else
-                expirationTime = "Expires " + relative;
-
-        }
-       
+            expirationTime = new Date(this.props.assignment.expiration_time),
+            expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires in') + moment(expirationTime).fromNow();
         
         var imageUrl = '/images/placeholder-assignment.png';
 
@@ -35,17 +22,16 @@ export default class AssignmentListItem extends React.Component {
         // });
 
         return (
-
             <div
                 id={assignment._id}
                 className="list-item"
-                onClick={this.props.setActiveAssignment.bind(null, assignment._id)}>
+                onClick={this.props.setActiveAssignment.bind(null, assignment)}>
                 <div>
                     <img className="img-circle" src={imageUrl} />
                 </div>
                 <div className="flexy">
                     <span className="md-type-body2">{assignment.title}</span>
-                    <span className="md-type-caption md-type-black-secondary">{location + ' &bull; ' + expirationTime}</span>
+                    <span className="md-type-caption md-type-black-secondary">{location + ' &bull; ' + expiredText}</span>
                 </div>
             </div>
         );
