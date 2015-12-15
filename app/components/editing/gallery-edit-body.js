@@ -15,6 +15,8 @@ export default class GalleryEditBody extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.updateCaption = this.updateCaption.bind(this);
 		this.updateRelatedStories = this.updateRelatedStories.bind(this);
 		this.updateArticles = this.updateArticles.bind(this);
 		this.updatedTags = this.updatedTags.bind(this);
@@ -58,18 +60,21 @@ export default class GalleryEditBody extends React.Component {
 							<textarea 
 								id="gallery-edit-caption" 
 								type="text" 
-								className="form-control" 
-								defaultValue={this.props.gallery.caption} />
+								className="form-control"
+								ref="gallery-caption"
+								defaultValue={this.props.gallery.caption}
+								value={this.props.gallery.caption}
+								onChange={this.updateCaption} />
 							<div className="floating-label">Caption</div>
 							<span className="material-input"></span>
 						</div>
 
 					</div>
 					
-					<GalleryEditTags ref='tags' tags={this.props.gallery.tags} />
+					<GalleryEditTags ref='tags' tags={this.props.gallery.tags} updatedTags={this.updatedTags} />
 					
 					<GalleryEditStories 
-						ref='stories' 
+						ref='stories'
 						stories={this.props.gallery.related_stories} 
 						updateRelatedStories={this.updateRelatedStories} />
 					
@@ -88,35 +93,48 @@ export default class GalleryEditBody extends React.Component {
 		);
 	}
 
+	updateCaption() {
+
+		var gallery = _.clone(this.props.gallery, true);
+		gallery.caption = this.refs['gallery-caption'].value;
+
+		this.props.updateGallery(gallery);
+
+	}
+
 	updateRelatedStories(updatedStories) {
 
-		this.props.gallery.related_stories = updatedStories;
+		var gallery = _.clone(this.props.gallery, true);
+		gallery.related_stories = updatedStories;
 
-		this.props.updateGallery(this.props.gallery);
+		this.props.updateGallery(gallery);
 
 	}
 
 	updateArticles(articles) {
 
-		this.props.gallery.articles = articles;
+		var gallery = _.clone(this.props.gallery, true)
+			gallery.articles = articles;
 
-		this.props.updateGallery(this.props.gallery);
+		this.props.updateGallery(gallery);
 
 	}
 
 	updatedTags(tags) {
 
-		this.props.gallery.tags = tags;
+		var gallery = _.clone(this.props.gallery, true)
+			gallery.tags = tags;
 
-		this.props.updateGallery(this.props.gallery);
+		this.props.updateGallery(gallery);
 
 	}
 
 	updatedLocation(location) {
 
-		this.props.gallery.locations[0] = location;
+		var gallery = _.clone(this.props.gallery, true);
+			gallery.locations[0] = location;
 
-		this.props.updateGallery(this.props.gallery);
+		this.props.updateGallery(gallery);
 
 	}
 

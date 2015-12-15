@@ -418,8 +418,7 @@ export default class AdminGalleryEdit extends React.Component {
 						</div>
 						<div className="split-cell">
 							<span className="md-type-body2">Suggested tags</span>
-							<ul className="chips gallery-suggested-tags">
-							</ul>
+							<ul className="chips gallery-suggested-tags"></ul>
 						</div>
 					</div>
 					

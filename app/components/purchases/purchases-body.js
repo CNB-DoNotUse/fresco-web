@@ -18,7 +18,7 @@ export default class PurchasesBody extends React.Component {
 				<PurchasesList
 					purchases={this.props.purchases}
 					getMorePurchases={this.props.getMorePurchases} />
-				<PurchasesStats purchases={this.props.purchases} />
+				<PurchasesStats purchases={this.props.purchases} downloadExports={this.props.downloadExports} />
 			</div>
 		);
 	}

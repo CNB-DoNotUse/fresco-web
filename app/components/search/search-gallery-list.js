@@ -8,6 +8,7 @@ export default class SearchGalleryList extends React.Component {
 
 		for (var g in this.props.galleries) {
 			if(this.props.showOnlyVerified && !this.props.galleries[g].approvals) continue;
+
 			galleries.push(
 	        	<PostCell 
 	        		size="large" 
@@ -29,4 +30,9 @@ export default class SearchGalleryList extends React.Component {
 			</div>
 		)
 	}
+}
+
+SearchGalleryList.defaultProps = {
+	galleries: [],
+	tags: []
 }

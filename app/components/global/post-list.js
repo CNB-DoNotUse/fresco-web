@@ -93,7 +93,9 @@ export default class PostList extends React.Component {
 	**/
 	didPurchase(id) {
 		var purchases = [];
-		this.state.purchases.map((purchase) => { purchases.push(purchase); })
+		this.state.purchases.map((purchase) => { 
+			purchases.push(purchase); 
+		});
 		purchases.push(id);
 		this.setState({
 			purchases: purchases

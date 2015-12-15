@@ -5,14 +5,6 @@ export default class PurchasesStats extends React.Component {
 
 	constructor(props) {
 		super(props);
-
-		this.downloadExports = this.downloadExports.bind(this);
-	}
-
-	downloadExports(format) {
-		var url = "/scripts/outlet/export?format=" + format;
-		
-		window.open(url, '_self');
 	}
 
 	componentDidUpdate(prevProps, prevState) { // Got new purchases
@@ -55,8 +47,8 @@ export default class PurchasesStats extends React.Component {
 					<li><span ref="purchases-past-week"></span><span className="md-type-caption"> last 7 days</span></li>
 					<li><span ref="purchases-past-month"></span><span className="md-type-caption"> last 30 days</span></li>
 				</ul>
-				<button id="export-xlsx" type="button" className="btn" onClick={this.downloadExports.bind(null, 'xlsx')}>Export to .xlsx</button>
-				<button id="export-csv" type="button" className="btn" onClick={this.downloadExports.bind(null, 'csv')}>Export to .csv</button>
+				<button id="export-xlsx" type="button" className="btn" onClick={this.props.downloadExports.bind(null, 'xlsx')}>Export to .xlsx</button>
+				<button id="export-csv" type="button" className="btn" onClick={this.props.downloadExports.bind(null, 'csv')}>Export to .csv</button>
 			</div>
 		);
 	}
