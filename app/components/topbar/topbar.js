@@ -19,7 +19,6 @@ export default class TopBar extends React.Component {
 		this.timeToggleSelected = this.timeToggleSelected.bind(this);
 		this.verifiedToggleSelected = this.verifiedToggleSelected.bind(this);
 		this.chronToggleSelected = this.chronToggleSelected.bind(this);
-		this.toggleEdit = this.toggleEdit.bind(this);
 		this.outletsFilterSelected = this.outletsFilterSelected.bind(this);
 	}
 
@@ -69,11 +68,6 @@ export default class TopBar extends React.Component {
 		
 	}
 
-	toggleEdit() {
-
-		$(".toggle-edit").toggleClass("toggled");
-
-	}
 	// Called when user selects an outlet to filter
 	outletsFilterSelected() {
 
@@ -108,19 +102,10 @@ export default class TopBar extends React.Component {
 		
 		if (this.props.editable) {
 
-			var onClickFunction;
-
-			//Optional edit parent func.
-			if(this.props.edit)
-				onClickFunction = this.props.edit;
-			//Or default toggle edit window
-			else
-				onClickFunction = this.toggleEdit;
-
 			topbarItems.push(
 				<a className="mdi mdi-pencil icon pull-right hidden-xs toggle-edit toggler"
 					key="edit"
-					onClick={onClickFunction}></a>
+					onClick={this.props.edit}></a>
 			);
 		}
 
@@ -241,6 +226,7 @@ export default class TopBar extends React.Component {
 
 TopBar.defaultProps = {
 	title: '',
+	edit: function() {},
 	onVerifiedToggled: function() {},
 	onOutletFilterAdd: function() {},
 	onOutletFilterRemove: function() {}

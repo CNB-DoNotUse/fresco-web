@@ -14,6 +14,24 @@ class GalleryDetail extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.state = {
+			toggled: false
+		}
+
+		this.hide = this.hide.bind(this);
+		this.toggle = this.toggle.bind(this);
+	}
+
+	hide() {
+		this.setState({
+			toggled: false
+		});
+	}
+
+	toggle() {
+		this.setState({
+			toggled: !this.state.toggled
+		});
 	}
 
 	render() {
@@ -23,6 +41,7 @@ class GalleryDetail extends React.Component {
 			<TopBar 
 				title={this.props.title}
 				editable={true}
+				edit={this.toggle}
 				verifiedToggle={false}
 				timeToggle={true}
 				chronToggle={true} />
@@ -37,7 +56,10 @@ class GalleryDetail extends React.Component {
 					size='large' />
 			</div>
 			<GalleryEdit 
-				gallery={this.props.gallery} />
+				gallery={this.props.gallery}
+				toggled={this.state.toggled}
+				toggle={this.toggle}
+				hide={this.hide} />
 		</App>
 		);
 

@@ -16,46 +16,7 @@ export default class GalleryEditFoot extends React.Component {
 		this.clear = this.clear.bind(this);
 		this.addMore = this.addMore.bind(this);
 		this.fileUploaderChanged = this.fileUploaderChanged.bind(this);
-		this.cancel = this.cancel.bind(this);
 		this.delete = this.delete.bind(this);
-	}
-
-	render() {
-
-		var addMore = '';
-
-		//Check if the gallery has been imported, to show the 'Add More' button or not
-		if(this.state.gallery.imported) 
-			addMore = <button id="gallery-add-more-button" type="button" onClick={this.addMore} className="btn btn-flat">Add More</button>
-
-		var inputStyle = {
-			display: 'none'
-		};
-
-		return (
-			
-			<div className="dialog-foot">
-				
-				<input 
-					id="gallery-upload-files" 
-					type="file"  
-					accept="image/*,video/*,video/mp4" 
-					multiple
-					ref='fileUpload'
-					style={inputStyle}
-					onChange={this.fileUploaderChanged} />
-
-				<button id="gallery-revert-button" type="button" onClick={this.props.revert} className="btn btn-flat">Revert changes</button>
-				<button id="gallery-clear-button" type="button" onClick={this.clear} className="btn btn-flat">Clear all</button>
-				{addMore}
-				<button id="gallery-cancel-button" type="button" onClick={this.cancel} className="btn btn-flat pull-right toggle-gedit toggler">Cancel</button>
-				<button id="gallery-delete-button" type="button" onClick={this.delete} className="btn btn-flat pull-right">Delete</button>
-				<button id="gallery-save-button" type="button" onClick={this.props.saveGallery} className="btn btn-flat pull-right">Save</button>
-			
-			</div>
-
-		);
-
 	}
 
 	revert() {
@@ -118,12 +79,6 @@ export default class GalleryEditFoot extends React.Component {
 		}
 	}
 
-	cancel() {
-
-		$(".toggle-gedit").toggleClass("toggled");
-
-	}
-
 	delete() {
 
 		var gallery = this.state.gallery;
@@ -161,6 +116,44 @@ export default class GalleryEditFoot extends React.Component {
 			});
 
 		});
+
+	}
+
+	render() {
+
+		var addMore = '';
+
+		//Check if the gallery has been imported, to show the 'Add More' button or not
+		if(this.state.gallery.imported) 
+			addMore = <button id="gallery-add-more-button" type="button" onClick={this.addMore} className="btn btn-flat">Add More</button>
+
+		var inputStyle = {
+			display: 'none'
+		};
+
+		return (
+			
+			<div className="dialog-foot">
+				
+				<input 
+					id="gallery-upload-files" 
+					type="file"  
+					accept="image/*,video/*,video/mp4" 
+					multiple
+					ref='fileUpload'
+					style={inputStyle}
+					onChange={this.fileUploaderChanged} />
+
+				<button id="gallery-revert-button" type="button" onClick={this.props.revert} className="btn btn-flat">Revert changes</button>
+				<button id="gallery-clear-button" type="button" onClick={this.clear} className="btn btn-flat">Clear all</button>
+				{addMore}
+				<button id="gallery-cancel-button" type="button" onClick={this.props.hide} className="btn btn-flat pull-right toggle-gedit toggler">Cancel</button>
+				<button id="gallery-delete-button" type="button" onClick={this.delete} className="btn btn-flat pull-right">Delete</button>
+				<button id="gallery-save-button" type="button" onClick={this.props.saveGallery} className="btn btn-flat pull-right">Save</button>
+			
+			</div>
+
+		);
 
 	}
 

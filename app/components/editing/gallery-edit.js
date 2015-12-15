@@ -26,33 +26,13 @@ export default class GalleryEdit extends React.Component {
 
 	}
 
-	render() {
-		var GalleryBody = '';
-		if(this.props.gallery) {
-			GalleryBody =
-				<div className="col-xs-12 col-lg-12 edit-new dialog">
- 					<GalleryEditHead hide={this.props.hide} />
- 					<GalleryEditBody 
- 						gallery={this.props.gallery}
- 						updateGallery={this.updateGallery} />
- 					<GalleryEditFoot 
- 						updateGallery={this.updateGallery}
- 						revert={this.revertGallery}
- 						saveGallery={this.saveGallery}
- 						gallery={this.props.gallery} />
- 				</div>
+	componentDidUpdate(prevProps, prevState) {
+		if(JSON.stringify(prevProps.gallery) != JSON.stringify(this.props.gallery)) {
+			this.setState({
+				gallery: this.props.gallery
+			});
 		}
-
- 		return (
- 			<div>
-	 			<div className={'dim toggle-edit' + (this.props.toggled ? ' toggled' : '')}>
-	 			</div>
-	 			<div className={"edit panel panel-default toggle-edit gedit" + (this.props.toggled ? ' toggled' : '')}>
-	 				{GalleryBody}
-	 			</div>
- 			</div>
- 		);
- 	}
+	}
 
  	updateGallery(gallery) {
  		//Update new gallery
@@ -69,7 +49,6 @@ export default class GalleryEdit extends React.Component {
  	}
 
  	saveGallery() {
- 		console.log('save clicked');	
  		var gallery = _.clone(this.state.gallery, true),
  			files = gallery.files ? gallery.files : [],
  			caption = gallery.caption,
@@ -149,9 +128,9 @@ export default class GalleryEdit extends React.Component {
  			data: JSON.stringify(params),
  			success: (result) => {
 
- 				if(result.err){
+ 				if(result.err) {
  					$.snackbar({
- 						content: "Gallery successfully saved!"
+ 						content: "There was an error saving the gallery."
  					});
 
  				}
@@ -159,12 +138,47 @@ export default class GalleryEdit extends React.Component {
  					$.snackbar({
  						content: "Gallery successfully saved!"
  					});
+ 					this.props.hide();
  				}
  			}
 
  		});
  	}
 
+	render() {
+		var GalleryBody = '';
+		if(this.state.gallery) {
+			GalleryBody =
+				<div className="col-xs-12 col-lg-12 edit-new dialog">
+ 					<GalleryEditHead hide={this.props.hide} />
+ 					<GalleryEditBody 
+ 						gallery={this.state.gallery}
+ 						updateGallery={this.updateGallery} />
+ 					<GalleryEditFoot 
+ 						updateGallery={this.updateGallery}
+ 						revert={this.revertGallery}
+ 						saveGallery={this.saveGallery}
+ 						gallery={this.props.gallery}
+ 						hide={this.props.hide} />
+ 				</div>
+		}
+
+ 		return (
+ 			<div>
+	 			<div className={'dim toggle-edit' + (this.props.toggled ? ' toggled' : '')}>
+	 			</div>
+	 			<div className={"edit panel panel-default toggle-edit gedit" + (this.props.toggled ? ' toggled' : '')}>
+	 				{GalleryBody}
+	 			</div>
+ 			</div>
+ 		);
+ 	}
+
+}
+
+GalleryEdit.defaultProps = {
+	hide: function() {},
+	toggle: function() {}
 }
 
 class GalleryEditHead extends React.Component {
@@ -187,5 +201,6 @@ class GalleryEditHead extends React.Component {
 GalleryEdit.defaultProps = {
 	gallery: null,
 	toggled: false,
-	hide: () => {}
+	hide: () => {},
+	toggle: () => {}
 }
