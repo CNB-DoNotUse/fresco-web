@@ -95,8 +95,11 @@ $(document).ready(function() {
 	PAGE_Public_Gallery.gallery.related_stories = PAGE_Public_Gallery.gallery.related_stories.slice(0, 2);
 	
 	PAGE_Public_Gallery.gallery.related_stories.forEach(function(story){
+		
 		var elem = $('<div class="story" id="' + story._id + '"><h2 class="section">More From ' + story.title + '</h2></div>');
+		
 		$('#more-galleries').append(elem);
+		
 		PAGE_Public_Gallery.loadStory(story._id, function(err, story){
 			if(err) {
 				console.log(err);

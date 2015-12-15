@@ -185,7 +185,7 @@ export default class AssignmentEdit extends React.Component {
 										<input 
 											ref="expiration" 
 											type="text" 
-											className="form-control floating-label float" 
+											className="form-control floating-label" 
 											data-hint="hours from now" 
 											placeholder="Expiration time"
 											defaultValue={global.hoursToExpiration(this.props.assignment.expiration_time)} />

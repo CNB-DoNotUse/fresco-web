@@ -1,5 +1,7 @@
 import React from 'react'
+import FrescoImage from './fresco-image'
 import global from '../../../lib/global'
+
 /**
  * Single Story Cell, child of StoryList
  */
@@ -50,6 +52,8 @@ class StoryCellImages extends React.Component {
 
 	render() {
 
+		console.log(this.props.thumbnails);
+
 		if (!this.props.thumbnails || this.props.thumbnails.length == 0){
 			return (
 				<div className="flex-row"></div>
@@ -58,7 +62,7 @@ class StoryCellImages extends React.Component {
 		else if (this.props.thumbnails.length == 1){
 			return(
 				<div className="flex-row">
-					<StoryCellImage post={this.props.thumbnails[0]} size="small" />
+					<FrescoImage post={this.props.thumbnails[0]} size="small" />
 				</div>
 			);
 		}
@@ -66,8 +70,8 @@ class StoryCellImages extends React.Component {
 
 			return(
 				<div className="flex-row">
-					<StoryCellImage post={this.props.thumbnails[0]} size="small" />
-					<StoryCellImage post={this.props.thumbnails[1]} size="small" />
+					<FrescoImage image={this.props.thumbnails[0].image} size="small" />
+					<FrescoImage image={this.props.thumbnails[1].image} size="small" />
 				</div>
 			);
 
@@ -77,16 +81,16 @@ class StoryCellImages extends React.Component {
 
 				<div className="flex-row">
 					<div className="flex-col">
-						<StoryCellImage post={this.props.thumbnails[0]} size="small" />
+						<FrescoImage post={this.props.thumbnails[0]} size="small" />
 					</div>
 					<div className="flex-col">
 						<div className="flex-row">
-							<StoryCellImage post={this.props.thumbnails[0]} size="small" />
-							<StoryCellImage post={this.props.thumbnails[1]} size="small" />
+							<FrescoImage image={this.props.thumbnails[0].image} size="small" />
+							<FrescoImage image={this.props.thumbnails[1].image} size="small" />
 						</div>
 						<div className="flex-row">
-							<StoryCellImage post={this.props.thumbnails[3]} size="small" />
-							<StoryCellImage post={this.props.thumbnails[3]} size="small" />
+							<FrescoImage image={this.props.thumbnails[3].image} size="small" />
+							<FrescoImage image={this.props.thumbnails[3].image} size="small" />
 						</div>
 					</div>
 				</div>
@@ -97,38 +101,20 @@ class StoryCellImages extends React.Component {
 			return(
 				<div className="flex-col">
 					<div className="flex-row">
-						<StoryCellImage post={this.props.thumbnails[0]} size="small" />
-						<StoryCellImage post={this.props.thumbnails[1]} size="small" />
-						<StoryCellImage post={this.props.thumbnails[2]} size="small" />
-						<StoryCellImage post={this.props.thumbnails[3]} size="small" />
+						<FrescoImage image={this.props.thumbnails[0].image} size="small" />
+						<FrescoImage image={this.props.thumbnails[1].image} size="small" />
+						<FrescoImage image={this.props.thumbnails[2].image} size="small" />
+						<FrescoImage image={this.props.thumbnails[3].image} size="small" />
 					</div>
 					<div className="flex-row">
-						<StoryCellImage post={this.props.thumbnails[0]} size="small" />
-						<StoryCellImage post={this.props.thumbnails[2]} size="small" />
-						<StoryCellImage post={this.props.thumbnails[3]} size="small" />
-						<StoryCellImage post={this.props.thumbnails[4]} size="small" />
+						<FrescoImage image={this.props.thumbnails[0].image} size="small" />
+						<FrescoImage image={this.props.thumbnails[2].image} size="small" />
+						<FrescoImage image={this.props.thumbnails[3].image} size="small" />
+						<FrescoImage image={this.props.thumbnails[4].image} size="small" />
 					</div>
 				</div>
 			);
 		}
-	}
-
-}
-
-/**
- * Single Post Cell Image Item
- */
-
-class StoryCellImage extends React.Component {
-
-	render() {
-		return (
-			<div className="img">
-				<img className="img-cover"
-					data-src={global.formatImg(this.props.post.image, this.props.size)}
-					src={global.formatImg(this.props.post.image, this.props.size)} />
-			</div>
-		)
 	}
 
 }

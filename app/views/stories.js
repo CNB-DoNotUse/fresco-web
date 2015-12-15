@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from './../components/topbar'
 import StoryList from './../components/global/story-list'
+import global from '../../lib/global'
 
 /**
  * Stories Parent Object, contains StoryList composed of StoryCells
@@ -43,7 +44,7 @@ class Stories extends React.Component {
 				};
 
 		$.ajax({
-			url:  API_URL + '/v1/story/recent',
+			url:  global.API_URL + '/v1/story/recent',
 			type: 'GET',
 			data: params,
 			dataType: 'json',

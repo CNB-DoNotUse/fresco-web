@@ -1,6 +1,7 @@
 import React from 'react';
 import SuggestionList from '../highlights/suggestion-list'
 import GalleryCell from './gallery-cell'
+import global from '../../../lib/global'
 
 /** //
 
@@ -66,7 +67,7 @@ export default class GalleryList extends React.Component {
 		}
 
 		$.ajax({
-			url:  API_URL + endpoint,
+			url:  global.API_URL + endpoint,
 			type: 'GET',
 			data: params,
 			dataType: 'json',

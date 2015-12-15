@@ -1,4 +1,5 @@
 import React from 'react'
+import global from '../../../lib/global'
 
 /** //
 
@@ -22,7 +23,7 @@ export default class SuggestionList extends React.Component {
 	componentDidMount() {
 
 		$.ajax({
-			url: API_URL + "/v1/story/recent",
+			url: global.API_URL + "/v1/story/recent",
 			type: 'GET',
 			data: {
 				limit: 3

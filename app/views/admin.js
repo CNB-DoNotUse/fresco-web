@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from './../components/topbar/topbar-admin'
 import AdminBody from './../components/admin/admin-body'
+import global from '../../lib/global'
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar) 
@@ -39,7 +40,7 @@ import AdminBody from './../components/admin/admin-body'
 	}
 
 	getAssignments() {
-		$.get(API_URL + '/v1/assignment/pending?limit=16', (assignments) => {
+		$.get(global.API_URL + '/v1/assignment/pending?limit=16', (assignments) => {
 			if( !assignments.data ) return;
 			this.setState({
 				assignments: assignments.data
@@ -48,7 +49,7 @@ import AdminBody from './../components/admin/admin-body'
 	}
 
 	getSubmissions(cb) {
- 		$.get(API_URL + '/v1/gallery/submissions', (submissions) => {
+ 		$.get(global.API_URL + '/v1/gallery/submissions', (submissions) => {
  			if( !submissions.data ) return;
 
  			this.setState({

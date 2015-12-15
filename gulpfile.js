@@ -1,7 +1,8 @@
 var fs 				= require('fs'),
 	gulp 			= require('gulp'),
 	webpack 		= require('webpack-stream'),
-	merge 			= require('merge-stream');
+	merge 			= require('merge-stream'),
+	runSequence = require('run-sequence');
 
 var sass 			= require('gulp-sass'),
 	concat 			= require('gulp-concat'),
@@ -27,24 +28,26 @@ viewFiles.map((file) => {
   views[file.replace('.js', '')] = ['./app/views/' + file];
 });
 
-gulp.task('Build Dependencies',  () => {
+gulp.task('Build Assets',  () => {
 
 	var cssTasks = [], jsTasks = [];
 
 	// Build page specific CSS and JS
 	for (var s in sections) {
+
 		//Define the sections we're in
 		var section = sections[s];
 
-		//Define all the pages in this sections
-		var pages = Object.keys(dependencies[section]);
+		console.log('\nSection: ' + section + '\nDEP\n' , dependencies[section]._global.css);
+
+		console.log('\nGlobal :', dependencies.global.css)
 
 		// Build section _global css
 		cssTasks.push(
 			gulp.src(dependencies.global.css.concat(dependencies[section]._global.css))
 				.pipe(concat(section + '.css'))
 				.pipe(sass().on('error', sass.logError))
-				.pipe(minifyCss())
+				// .pipe(minifyCss())
 				.pipe(gulp.dest('./public/stylesheets'))
 		);
 
@@ -52,9 +55,12 @@ gulp.task('Build Dependencies',  () => {
 		jsTasks.push(
 			gulp.src(dependencies.global.js.concat(dependencies[section]._global.js))
 				.pipe(concat(section + '.js'))
-				.pipe(uglify())
+				// .pipe(uglify())
 				.pipe(gulp.dest('./public/javascripts'))
 		);
+
+		//Define all the pages in this sections
+		var pages = Object.keys(dependencies[section]);
 
 		//Take out the global from the pages
 		//so now we onyl build the page specific stuff
@@ -65,30 +71,35 @@ gulp.task('Build Dependencies',  () => {
 			
 			var pageDependencies = dependencies[section][pages[p]];
 
-			cssTasks.push(
-				gulp.src(dependencies.global.css.concat(pageDependencies.css))
-					.pipe(concat(pages[s] + '.css'))
-					.pipe(sass().on('error', sass.logError))
-					.pipe(minifyCss())
-					.pipe(gulp.dest('./public/stylesheets/page'))
-			);
+			// console.log('PAGE:' , pages[p] + ' Dependencies: ' , pageDependencies);
 
-			jsTasks.push(
-				gulp.src(dependencies.global.js.concat(pageDependencies.js))
-					.pipe(concat(pages[s] + '.js'))
-					.pipe(uglify())
-					.pipe(gulp.dest('./public/javascripts/page'))
-			);
+			if(pageDependencies.css.length) {
+				cssTasks.push(
+					gulp.src(dependencies.global.css.concat(pageDependencies.css))
+						.pipe(concat(pages[s] + '.css'))
+						.pipe(sass().on('error', sass.logError))
+						// .pipe(minifyCss())
+						.pipe(gulp.dest('./public/stylesheets/pages'))
+				);
+			}
+
+			if(pageDependencies.js.length) {
+				jsTasks.push(
+					gulp.src(dependencies.global.js.concat(pageDependencies.js))
+						.pipe(concat(pages[p] + '.js'))
+						// .pipe(uglify())
+						.pipe(gulp.dest('./public/javascripts/pages'))
+				);
+			}			
 		}
 	}
 
 	return merge(cssTasks, jsTasks);
 });
 
-gulp.task('Build JS', (cb) => {
+gulp.task('Build Webpack', (cb) => {
 	return gulp.src('app/views/app.js')
 		.pipe(webpack({
-			watch: true,
 			entry: views,
 		    output: {
 		      filename: "[name].js"
@@ -109,8 +120,17 @@ gulp.task('Build JS', (cb) => {
 		.pipe(gulp.dest('./public/javascripts/pages'));
 });
 
+/**
+ * Sequence build, synchronous
+ */
+
+gulp.task('Master Build', function(callback) {
+  runSequence('Build Assets', 'Build Webpack',
+              callback);
+});
+
 gulp.task('watch', () => {
 	gulp.watch('./app/sass/**/*.scss', ['css']);
 });
 
-gulp.task('default', ['Build Dependencies', 'Build JS']);
+gulp.task('default', ['Master Build']);

@@ -1,12 +1,13 @@
 var express = require('express'),
     config = require('../lib/config'),
+    head = require('../lib/head'),
     router = express.Router(),
-    request = require('request')
-
+    global = require('../lib/global'),
+    request = require('request');
 
 /** //
 
-	Description : Gallery Specific Routes ~ prefix /gallery/~
+	Description : Gallery Specific Routes -- prefix /gallery/~
 
 // **/
 
@@ -25,11 +26,9 @@ router.get('/:id', function(req, res, next) {
     //Check for error, 404 if true
     if (err || !body || body.err) {
 
-      return res.render('error', {
-        user: req.session.user,
-        error_code: 404,
-        error_message: config.ERR_PAGE_MESSAGES[404]
-      });
+      var err = new Error('Gallery not found!');
+      err.status = 404;
+      return next(err);
 
     }
 
@@ -63,14 +62,31 @@ router.get('/:id', function(req, res, next) {
     //User is not logged in, show public gallery page
     else {
 
-      res.render('public_gallery', {
-        gallery: gallery,
-        title: title,
-        config: config,
-        alerts: req.alerts,
-        page: 'public_gallery'
-      });
+      res.locals.fresco.platform = 'public';
+      
+      var props = {
+            gallery: gallery,
+            title: title
+          };
 
+      res.render('app', {
+        title: title,
+        gallery: gallery,
+        footer: true,
+        og: {
+          title: title,      
+          image: global.formatImg(gallery.posts[0].image, 'large'),      
+          url: req.originalUrl,        
+          description: gallery.caption
+        },
+        links: [
+          '/stylesheets/landing.css',
+          '/stylesheets/publicGallery.css'
+        ],
+        page: 'publicGallery',
+        props: JSON.stringify(props)
+      });
+    
     }
 
   });

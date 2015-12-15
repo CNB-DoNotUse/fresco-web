@@ -1,7 +1,8 @@
 import React from 'react'
-import PurchaseAction from './../actions/purchase-action.js';
-import DownloadAction from './../actions/download-action.js';
-import global from './../../../lib/global'
+import FrescoImage from './fresco-image'
+import PurchaseAction from './../actions/purchase-action.js'
+import DownloadAction from './../actions/download-action.js'
+import global from '../../../lib/global'
 
 /**
  * Single Post Cell, child of PostList
@@ -15,45 +16,47 @@ export default class PostCell extends React.Component {
 
 	render() {
 
-		var timestamp = this.props.post.time_created;
-		var timeString = global.formatTime(this.props.post.time_created);
-		var address = this.props.post.location.address || 'No Address';
-		var size = this.props.sizes.large;
-
-		//Class name for post tile icon
-		var statusClass = 'mdi icon pull-right ';
-		statusClass += this.props.post.video == null ? 'mdi-file-image-box ' : 'mdi-movie ';
+		var post = this.props.post,
+			timestamp = post.time_created,
+			timeString = global.formatTime(post.time_created),
+			address = post.location.address || 'No Address',
+			size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small,
+			statusClass = 'mdi icon pull-right '; //Class name for post tile icon
+		
+		statusClass += post.video == null ? 'mdi-file-image-box ' : 'mdi-movie ';
 		statusClass += this.props.purchased ? 'available ' : 'md-type-black-disabled ';
-
-		if(this.props.size == 'small')
-			size = this.props.sizes.small;
 
 		return(
 
 			<div className={size + ' tile'}>
 				<div className="tile-body">
+					
 					<div className="frame"></div>
 						<div className="hover">
-							<p className="md-type-body1">{this.props.post.caption}</p>
-							<span className="md-type-caption">{this.props.post.byline}</span>
-							<PostCellStories stories={this.props.post.stories} />
+							<p className="md-type-body1">{post.caption}</p>
+							<span className="md-type-caption">{post.byline}</span>
+							<PostCellStories stories={post.stories} />
 						</div>
-					<div className="img">
-						<img className="img-cover" src={global.formatImg(this.props.post.image, 'small')} />
-					</div>
+					<FrescoImage 
+						image={this.props.post.image} 
+						size={this.props.size} />
 				</div>
+				
 				<div className="tile-foot">
 					<PostCellActions
-						post={this.props.post}
+						post={post}
 						purchased={this.props.purchased}
 						didPurchase={this.props.didPurchase}
 						rank={this.props.rank}
 						editable={this.props.editable} />
+					
 					<div>
 						<div className="tile-info">
 						  	<span className="md-type-body2">{address}</span>
-							<span className="md-type-caption timestring" data-timestamp={this.props.post.time_created}>{timeString}</span>
+						
+							<span className="md-type-caption timestring" data-timestamp={post.time_created}>{timeString}</span>
 						</div>
+						
 						<span className={statusClass}></span>
 					</div>
 				</div>
@@ -70,6 +73,7 @@ PostCell.defaultProps = {
 		small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
 	}
 }
+
 
 // <span className="mdi mdi-library-plus icon pull-right"></span>
 // <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>

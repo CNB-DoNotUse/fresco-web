@@ -1,4 +1,7 @@
 var config = require('./lib/config'),
+    head = require('./lib/head'),
+    global = require('./lib/global'),
+    routes = require('./lib/routes'),
     express = require('express'),
     path = require('path'),
     favicon = require('serve-favicon'),
@@ -12,7 +15,7 @@ var config = require('./lib/config'),
     fs  = require('fs'),
     https  = require('https'),
     requestJson = require('request-json'),
-    app = express()
+    app = express();
 
 // If in dev mode, use local redis server as session store
 var rClient = config.DEV ? redis.createClient() : redis.createClient(6379, config.REDIS.SESSIONS, {enable_offline_queue: false});
@@ -29,33 +32,44 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({dest : './uploads/',
-                rename : function(fieldname, filename){
-                    return Date.now() + filename.split('.').pop();
-                },
-                onFileUploadStart : function(file){
-                    console.log("Starting upload: " + file.originalname);
-                },
-                onFileUploadComplete : function(file){
-                    console.log("Successful upload: " + file.fieldname + " to " + file.path);
-                    done = true;
-                }}));
-
-//Cookie parser
-app.use(cookieParser());
-
-//Session config
-app.use(session({
-  store: new RedisStore(redisConnection),
-  secret: config.SESSION_SECRET,
-  resave: false,
-  rolling: true,
-  saveUninitialized: false,
-  cookie: { path: '/', httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
-  unset: 'destroy'
+app.use(multer({
+  dest : './uploads/',
+    rename : function(fieldname, filename){
+        return Date.now() + filename.split('.').pop();
+    },
+    onFileUploadStart : function(file){
+        console.log("Starting upload: " + file.originalname);
+    },
+    onFileUploadComplete : function(file){
+        console.log("Successful upload: " + file.fieldname + " to " + file.path);
+        done = true;
+    }
 }));
 
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: 300 }));
+//Cookie parser
+app.use(
+  cookieParser()
+);
+
+//Session config
+app.use(
+  session({
+    store: new RedisStore(redisConnection),
+    secret: config.SESSION_SECRET,
+    resave: false,
+    rolling: true,
+    saveUninitialized: false,
+    cookie: { path: '/', httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
+    unset: 'destroy'
+  })
+);
+
+
+//Set up public direc.
+app.use(
+  express.static(path.join(__dirname, 'public'), { maxAge: 300 })
+);
+
 
 app.use(function(req, res, next){
   req.alerts = [];
@@ -75,6 +89,13 @@ app.use(function(req, res, next){
   req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
   next();
 });
+
+/**
+ * Set up local head and global for all templates
+ */
+
+app.locals.head = head;
+app.locals.global = global
 
 //If user is not logged in, redirect to landing page
 //Also, check if user's data is still valid, updating if not
@@ -154,77 +175,105 @@ app.use(function(req, res, next) {
  * Route config
  */
 
-var routes_admin = require('./routes/admin'),
-routes_index = require('./routes/index'),
-routes_dispatch = require('./routes/dispatch'),
-routes_assignment = require('./routes/assignment'),
-routes_outlet = require('./routes/outlet'),
-routes_story = require('./routes/story'),
-routes_user = require('./routes/user'),
-routes_gallery = require('./routes/gallery'),
-routes_post = require('./routes/post'),
-routes_purchases = require('./routes/purchases'),
-routes_scripts = require('./routes/scripts'),
-routes_content = require('./routes/content'),
-routes_external = require('./routes/external'),
-routes_search = require('./routes/search');
+app.use((req, res, next) => {
 
-app.use('/', routes_index);
-app.use('/admin', routes_admin);
-app.use('/dispatch', routes_dispatch);
-app.use('/outlet', routes_outlet);
-app.use('/assignment', routes_assignment);
-app.use('/gallery', routes_gallery);
-app.use('/post', routes_post);
-app.use('/story', routes_story);
-app.use('/user', routes_user);
-app.use('/scripts', routes_scripts);
-app.use('/content', routes_content);
-app.use('/purchases', routes_purchases);
-app.use('/external', routes_external);
-app.use('/search', routes_search);
+  if(!req.fresco) {
+    req.fresco = {};
+  }
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  res.locals.section = 'public';
+  
+  next();
+
 });
 
-// error handlers
+/*
+Loop through all public routes
+ */
 
-// development error handler
-// will print stacktrace
+for (var i = 0; i < routes.public.length; i++) {
+  
+  var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i] ,
+      route = require('./routes/' + routes.public[i]);
+
+  app.use('/' + routePrefix , route);
+
+};
+
+app.use((req, res, next) => {
+
+  if(!req.fresco) {
+    req.fresco = {};
+  }
+
+  res.locals.section = 'platform';
+
+  next();
+
+});
+
+/*
+Loop through all platform routes
+ */
+
+for (var i = 0; i < routes.platform.length; i++) {
+  
+  var routePrefix = routes.platform[i] ,
+      route = require('./routes/' + routePrefix);
+
+  if(i == 0 ) console.log(routePrefix);
+
+  app.use('/' + routePrefix , route);
+
+};
+/**
+ * Error Handlers
+ */
+
+// Development error handle will print stacktrace
 if (app.get('env') === 'development') {
+
   app.use(function(err, req, res, next) {
 
-    console.log(err);
-    // if (err)
-    //   console.log('Path: ', req.path, 'Session: ', req.session, 'Error: ', err);
+    if (!err)
+      return next();
 
-    res.status(err.status || 500);
-
+    console.log('\n Path: ', req.path, 'Session: ', req.session, 'Error: ', err + '\n');
+    
     res.render('error', {
-      user: req.session ? req.session.user : null,
-      error_message: config.ERR_PAGE_MESSAGES[err.status || 500],
-      error_code: err.status || 500
+      user: req.session && req.session.user ? req.session.user : null,
+      err: {
+        message: config.ERR_PAGE_MESSAGES[err.status || 500],
+        code: err.status || 500
+      },
+      section: 'public',
+      page: 'error'
     });
 
   });
 
 }
+// Production error handler no stacktraces leaked to user
+else{
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  if (err) console.log('Path: ', req.path, 'Session: ', req.session, 'Error: ', err);
-  res.status(err.status || 500);
-  res.render('error', {
-    user: req.session ? req.session.user : null,
-    error_message: config.ERR_PAGE_MESSAGES[err.status || 500],
-    error_code: err.status || 500
+  app.use(function(err, req, res, next) {
+
+    if (!err)
+      return next();
+    
+    res.render('error', {
+      user: req.session && req.session.user ? req.session.user : null,
+      err: {
+        message: config.ERR_PAGE_MESSAGES[err.status || 500],
+        code: err.status || 500
+      },
+      section: 'public',
+      page: 'error'
+    });
+  
   });
-});
+
+}
 
 var params  = {
     key: fs.readFileSync('cert/fresconews_com.key'),

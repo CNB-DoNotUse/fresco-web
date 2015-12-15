@@ -57,7 +57,7 @@ class UserDetail extends React.Component {
 			};
 
  		$.ajax({
- 			url:  API_URL + endpoint,
+ 			url:  global.API_URL + endpoint,
  			type: 'GET',
  			data: params,
  			dataType: 'json',

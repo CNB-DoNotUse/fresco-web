@@ -45,8 +45,6 @@ router.post('/assignment/create', function(req, res, next){
   var api = requestJson.createClient(config.API_URL);
 	req.body.outlet = req.session.user.outlet._id;
 
-  console.log(req.body);
-
   api.headers['authtoken'] = req.session.user.token;
 	api.post('/v1/assignment/create', req.body, function(error, response, body){
 		if (error)

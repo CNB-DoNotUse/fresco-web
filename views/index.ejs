@@ -1,10 +1,10 @@
-<% include segments/public/head %>
+<% include segments/head %>
 
 <nav>
   <a href="/">
     <img alt="Fresco" src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-nav.png">
   </a>
-  <ul>
+  <ul>   
     <li>
       <a href="#about">About</a>
     </li>
@@ -130,29 +130,15 @@
 			%>
 </div>
 <div>
-  <img class="lazy" src="https://d1dw1p6sgigznj.cloudfront.net/images/device-macbook.png">
+  <img class="lazy" src="https://d1dw1p6sgigznj.cloudfront.net/images/device-macbook.png" />
   <div class="slick">
-    <img class="lazy" src="https://d1dw1p6sgigznj.cloudfront.net/images/carousel/dashboard-1.jpg">
-    <img class="lazy" src="https://d1dw1p6sgigznj.cloudfront.net/images/carousel/dashboard-2.jpg">
+    <img class="lazy" src="https://d1dw1p6sgigznj.cloudfront.net/images/carousel/dashboard-1.jpg" />
+    <img class="lazy" src="https://d1dw1p6sgigznj.cloudfront.net/images/carousel/dashboard-2.jpg" />
   </div>
 </div>
 </div>
 </section>
-<!--<section class="dark" id="digest">
-	<div>
-		<div>
-			<img class="lazy" src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-digest.png">
-		</div>
-		<form action="">
-			<span>Top stories by email, every weekday</span>
-			<input type="text" name="name" placeholder="Name" spellcheck="false">
-			<input type="text" name="email" placeholder="Email address" spellcheck="false">
-			<input type="submit" value="Subscribe">
-		</form>
-	</div>
-</section>-->
-<!-- footer -->
-<%- include('segments/footer') %>
+
 <!-- modals -->
 <div class="modal" data-toggle-id="login" data-toggle-role="target" id="login">
 <span class="mdi mdi-close" data-toggle-action="disable" data-toggle-id="login" data-toggle-role="controller"></span>
@@ -292,65 +278,7 @@ if (!user || !user.outlet){
           </div>
         </div>
       <% } %>
-    <script src="/vendor/jquery/dist/jquery.min.js" type="text/javascript"></script>
-    <script src="/vendor/jquery_lazyload/jquery.lazyload.js" type="text/javascript"></script>
-    <script src="/vendor/jquery.transit/jquery.transit.js" type="text/javascript"></script>
-    <script src="/vendor/slick-carousel/slick/slick.min.js" type="text/javascript"></script>
-    <script src="/vendor/snackbarjs/dist/snackbar.min.js" type="text/javascript"></script>
-    <script src="/javascripts/toggle.js" type="text/javascript"></script>
-    <script src="/javascripts/scrollspy.js" type="text/javascript"></script>
-    <script src="/javascripts/fresco.js" type="text/javascript"></script>
-    <script src="/javascripts/handlers/index.js" type="text/javascript"></script>
-    <script type="text/javascript">
-      $(document)
-        .ready(function() {
-          <%- JSON.stringify(alerts) %>
-            .forEach(function(alert) {
-              $.snackbar({content: alert, timeout: 5000, htmlAllowed: true});
-            });
-        });
 
-      <% if(partner) { %>
-      $(document).ready(function() {
-        $('#open-newsroom-modal').click();
-      }) <% } %>
+<% include segments/footer %>
 
-      // 2. This code loads the IFrame Player API code asynchronously.
-      var tag = document.createElement('script');
-
-      tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode
-        .insertBefore(tag, firstScriptTag);
-
-      // 3. This function creates an <iframe> (and YouTube player)
-      //    after the API code downloads.
-      var player;
-
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player('newstools-player', {
-          height: '390',
-          width: '640',
-          videoId: 'I3Dhw6YCT-U',
-          events: {}
-        });
-      }(function(i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        i[r] = i[r] || function() {
-          (i[r].q = i[r].q || []).push(arguments)
-        },
-        i[r].l = 1 * new Date();
-        a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        m.parentNode
-          .insertBefore(a, m)
-      })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-      ga('create', 'UA-58884254-1', 'auto');
-      ga('set', 'dimension1', <%- user ? '"TRUE"' : '"FALSE"' %>);
-      ga('send', 'pageview');
-    </script>
-  </body>
-</html>
+<% include segments/scripts %>

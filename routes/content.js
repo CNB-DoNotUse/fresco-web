@@ -29,7 +29,6 @@ router.get('/', function(req, res, next) {
   res.render('app', {
     title: title,
     page : 'content',
-    config: config,
     alerts: req.alerts,
     props : JSON.stringify(props)
   });
