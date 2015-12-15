@@ -24,10 +24,11 @@ export default class PostList extends React.Component {
 			scrollable: this.props.scrollable,
 			selectedPosts: []
 		}
-		this.togglePost = this.togglePost.bind(this);
-		this.setSelectedPosts = this.setSelectedPosts.bind(this);
-		this.scroll = this.scroll.bind(this);
-		this.didPurchase = this.didPurchase.bind(this);
+		this.togglePost 		= this.togglePost.bind(this);
+		this.setSelectedPosts 	= this.setSelectedPosts.bind(this);
+		this.scroll 			= this.scroll.bind(this);
+		this.didPurchase 		= this.didPurchase.bind(this);
+		this.edit 				= this.edit.bind(this);
 	}
 
 	componentDidMount() {
@@ -141,21 +142,25 @@ export default class PostList extends React.Component {
 			purchases: this.state.purchases.concat(id)
 		});
 	}
+	/**
+	 * Called when PostCellAction's Edit button is clicked
+	 * @param  {Object} post - Has post
+	 */
+	edit(post) {
+		console.log(post);
+		//http://dev.api.fresconews.com/v1/gallery/get
+	}
 
 	render() {
 
 		var purchases = this.state.purchases,
 			rank = this.props.rank;
 
-		console.log('Selected: ', this.state.selectedPosts);
-
 		//Map all the posts into cells
 		var posts = this.state.posts.map((post, i)  => {
 
 			var purchased = purchases ? purchases.indexOf(post._id) != -1 : null,
 				toggled = this.state.selectedPosts.filter((cPost) => cPost._id === post._id).length > 0 ? true : false;
-
-			console.log(toggled);
 
 	      	return (
 	        	
@@ -168,7 +173,8 @@ export default class PostList extends React.Component {
 	        		togglePost={this.togglePost}
 	        		didPurchase={this.didPurchase}
 	        		key={i}
-	        		editable={this.props.editable} />
+	        		editable={this.props.editable}
+	        		edit={this.edit} />
 	        		
 	      	)
 

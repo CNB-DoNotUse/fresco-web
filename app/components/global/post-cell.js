@@ -11,7 +11,8 @@ import global from '../../../lib/global'
 export default class PostCell extends React.Component {
 
 	constructor(props) {
-		super(props)
+		super(props);
+
 		this.postClicked = this.postClicked.bind(this);
 	}
 
@@ -53,7 +54,8 @@ export default class PostCell extends React.Component {
 						purchased={this.props.purchased}
 						didPurchase={this.props.didPurchase}
 						rank={this.props.rank}
-						editable={this.props.editable} />
+						editable={this.props.editable}
+						edit={this.props.edit} />
 					
 					<div>
 						<div className="tile-info">
@@ -89,7 +91,8 @@ PostCell.defaultProps = {
 		large: 'col-xs-12 col-sm-6 col-lg-4',
 		small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
 	},
-	toggled: false
+	toggled: false,
+	edit: function() {}
 }
 
 
@@ -142,10 +145,11 @@ class PostCellActions extends React.Component {
 		//Check if we're CM or greater
 		if(typeof(this.props.rank) !== 'undefined' && this.props.rank >= 1) {
 
-			if(this.props.editable)
+			if(this.props.editable) {
 				actions.push(
-					<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.edit} key={++key}></span>
+					<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.props.edit} key={++key} ></span>
 				);
+			}
 
 			actions.push(
 				<DownloadAction post={this.props.post} key={++key} />
@@ -186,5 +190,4 @@ class PostCellActions extends React.Component {
 		);
 
 	}
-
 }

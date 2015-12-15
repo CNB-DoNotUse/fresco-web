@@ -304,7 +304,7 @@ export class Search extends React.Component {
 			}
 		});
 	}
-
+	
 	refreshData() {
 
 		this.getAssignments(0, true);

@@ -37,8 +37,7 @@ class GalleryDetail extends React.Component {
 					size='large' />
 			</div>
 			<GalleryEdit 
-				gallery={this.props.gallery}
-				user={this.props.user}	/>
+				gallery={this.props.gallery} />
 		</App>
 		);
 

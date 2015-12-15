@@ -29,25 +29,19 @@ export default class GalleryEditBody extends React.Component {
 
 	render() {
 
-		var highlightCheckbox = '';
-
-		//Check if the rank is valid for toggling the highlighted state
-		if(this.props.user.rank && this.props.user.rank >= 1) {
-
-			highlightCheckbox = <div className="dialog-row">
-									<div className="checkbox">
-										<label>
-											<input id="gallery-highlight-input" type="checkbox" />
-											<span className="ripple"></span>
-											<span className="check"></span> Highlighted
-										</label>
-									</div>
-								</div>
-
-		}
+		var highlightCheckbox = (
+			<div className="dialog-row">
+				<div className="checkbox">
+					<label>
+						<input id="gallery-highlight-input" type="checkbox" />
+						<span className="ripple"></span>
+						<span className="check"></span> Highlighted
+					</label>
+				</div>
+			</div>
+		);
 
 		return (
-			
 			<div className="dialog-body">
 
 				<div className="dialog-col col-xs-12 col-md-7 form-group-default">

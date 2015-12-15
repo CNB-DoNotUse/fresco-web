@@ -18,7 +18,7 @@ export default class GalleryEdit extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			gallery: _.assign(this.props.gallery)
+			gallery: _.clone(this.props.gallery, true)
 		}
 
 		this.updateGallery = this.updateGallery.bind(this);
@@ -29,8 +29,6 @@ export default class GalleryEdit extends React.Component {
 
 	render() {
 
-		if(!this.props.user) return;
-
  		return (
  			<div>
 	 			<div className="dim toggle-edit">
@@ -40,7 +38,6 @@ export default class GalleryEdit extends React.Component {
 	 					<GalleryEditHead />
 	 					<GalleryEditBody 
 	 						gallery={this.state.gallery}
-	 						user={this.props.user}
 	 						updateGallery={this.updateGallery} />
 	 					<GalleryEditFoot 
 	 						updateGallery={this.updateGallery}
