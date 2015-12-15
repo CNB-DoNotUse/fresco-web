@@ -12,13 +12,12 @@ Description : Component for adding gallery editing to the current view
 /**
  * Gallery Edit Parent Object
  */
-
 export default class GalleryEdit extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			gallery: _.clone(this.props.gallery, true)
+			gallery: this.props.gallery
 		}
 
 		this.updateGallery = this.updateGallery.bind(this);
@@ -28,23 +27,28 @@ export default class GalleryEdit extends React.Component {
 	}
 
 	render() {
+		var GalleryBody = '';
+		if(this.props.gallery) {
+			GalleryBody =
+				<div className="col-xs-12 col-lg-12 edit-new dialog">
+ 					<GalleryEditHead hide={this.props.hide} />
+ 					<GalleryEditBody 
+ 						gallery={this.props.gallery}
+ 						updateGallery={this.updateGallery} />
+ 					<GalleryEditFoot 
+ 						updateGallery={this.updateGallery}
+ 						revert={this.revertGallery}
+ 						saveGallery={this.saveGallery}
+ 						gallery={this.props.gallery} />
+ 				</div>
+		}
 
  		return (
  			<div>
-	 			<div className="dim toggle-edit">
+	 			<div className={'dim toggle-edit' + (this.props.toggled ? ' toggled' : '')}>
 	 			</div>
-	 			<div className="edit panel panel-default toggle-edit gedit">
-	 				<div className="col-xs-12 col-lg-12 edit-new dialog">
-	 					<GalleryEditHead />
-	 					<GalleryEditBody 
-	 						gallery={this.state.gallery}
-	 						updateGallery={this.updateGallery} />
-	 					<GalleryEditFoot 
-	 						updateGallery={this.updateGallery}
-	 						revert={this.revertGallery}
-	 						saveGallery={this.saveGallery}
-	 						gallery={this.state.gallery} />
-	 				</div>
+	 			<div className={"edit panel panel-default toggle-edit gedit" + (this.props.toggled ? ' toggled' : '')}>
+	 				{GalleryBody}
 	 			</div>
  			</div>
  		);
@@ -65,7 +69,7 @@ export default class GalleryEdit extends React.Component {
  	}
 
  	saveGallery() {
-
+ 		console.log('save clicked');	
  		var gallery = _.clone(this.state.gallery, true),
  			files = gallery.files ? gallery.files : [],
  			caption = gallery.caption,
@@ -167,20 +171,21 @@ class GalleryEditHead extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.hide = this.hide.bind(this);
 	}
 
 	render() {
 		return (
 			<div className="dialog-head">
 				<span className="md-type-title">Edit Gallery</span>
-				<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
+				<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.props.hide}></span>
 			</div>
 		);
 	}
 
-	hide() {
-		$(".toggle-edit").toggleClass("toggled");
-	}
+}
 
+GalleryEdit.defaultProps = {
+	gallery: null,
+	toggled: false,
+	hide: () => {}
 }

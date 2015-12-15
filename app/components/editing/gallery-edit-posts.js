@@ -25,21 +25,13 @@ export default class GalleryEditPosts extends React.Component {
 
 	}
 
-	componentDidMount() {
-		$(this.refs.galleryEditPosts).frick();
-	}
-
-	componentDidUpdate() {
-		$(this.refs.galleryEditPosts).frick();
-	}
-
 	render() {
 
 		var k = 0;
 
 		var posts = this.state.posts.map((post) => {
 
-			return <div key={k++}>
+			return <div key={++k}>
 						<EditPost post={post} />
 					</div>
 
@@ -50,7 +42,7 @@ export default class GalleryEditPosts extends React.Component {
 		for (var i = 0; i < this.state.files.length; i++){
 			
 			files.push(
-				<div key={k++} >
+				<div key={++k} >
 					<EditPost 
 						file={this.state.files[i]} 
 						source={this.state.files.sources[i]} />

@@ -2,7 +2,7 @@ var fs 				= require('fs'),
 	gulp 			= require('gulp'),
 	webpack 		= require('webpack-stream'),
 	merge 			= require('merge-stream'),
-	runSequence = require('run-sequence');
+	runSequence 	= require('run-sequence');
 
 var sass 			= require('gulp-sass'),
 	concat 			= require('gulp-concat'),

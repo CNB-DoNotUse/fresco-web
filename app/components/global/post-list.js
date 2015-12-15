@@ -1,6 +1,8 @@
 import React from 'react'
 import PostCell from './post-cell'
+import GalleryEdit from '../editing/gallery-edit'
 import GalleryEditBulk from '../editing/gallery-edit-bulk'
+import global from '../../../lib/global'
 
 /** //
 
@@ -22,13 +24,16 @@ export default class PostList extends React.Component {
 			posts: this.props.posts,
 			loading: false,
 			scrollable: this.props.scrollable,
-			selectedPosts: []
+			selectedPosts: [],
+			gallery: this.props.gallery,
+			galleryToggled: false
 		}
 		this.togglePost 		= this.togglePost.bind(this);
 		this.setSelectedPosts 	= this.setSelectedPosts.bind(this);
 		this.scroll 			= this.scroll.bind(this);
 		this.didPurchase 		= this.didPurchase.bind(this);
 		this.edit 				= this.edit.bind(this);
+		this.hideGallery 		= this.hideGallery.bind(this);
 	}
 
 	componentDidMount() {
@@ -147,8 +152,19 @@ export default class PostList extends React.Component {
 	 * @param  {Object} post - Has post
 	 */
 	edit(post) {
-		console.log(post);
-		//http://dev.api.fresconews.com/v1/gallery/get
+		$.get(global.API_URL + '/v1/gallery/get', {id: post.parent}, (data) => {
+			if(data.err) return;
+			this.setState({
+				gallery: data.data,
+				galleryToggled: true
+			});
+		});
+	}
+
+	hideGallery() {
+		this.setState({
+			galleryToggled: false
+		});
 	}
 
 	render() {
@@ -189,6 +205,10 @@ export default class PostList extends React.Component {
 				<GalleryEditBulk 
 					posts={this.state.selectedPosts}
 					setSelectedPosts={this.setSelectedPosts} />
+				<GalleryEdit 
+					gallery={this.state.gallery}
+					toggled={this.state.galleryToggled}
+					hide={this.hideGallery} />
 			</div>
 
 		)		
@@ -201,5 +221,6 @@ PostList.defaultProps = {
 	editable: true,
 	purchases: [],
 	posts: [],
+	gallery: null,
 	scrollable: false
 }
