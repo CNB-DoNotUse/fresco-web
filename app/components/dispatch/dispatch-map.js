@@ -200,6 +200,7 @@ export default class DispatchMap extends React.Component {
 	 * Clears all relevant assignment data from the map
 	 */
 	clearMap(){
+
 		for (var i = 0; i < this.state.markers.length; i++) {
 			this.state.markers[i].setMap(null);
 		};
@@ -273,8 +274,8 @@ export default class DispatchMap extends React.Component {
 
 		//Update state
 		this.setState({
-			markers: markers,
-			circles: circles
+			markers: this.state.markers.concat(markers),
+			circles: this.state.circles.concat(circles)
 		});
 	}
 
@@ -405,18 +406,16 @@ export default class DispatchMap extends React.Component {
 	 * @return a google maps marker for a user, with the passed geo-location
 	 */
 	addUserMarker(user) {
-		
 		var map = this.state.map,
 			lng = user.coordinates[0],
-			lat = user.coordinates[1];
-
-		var image = {
-			url: "/images/assignment-user@2x.png",
-			size: new google.maps.Size(70, 70),
-			scaledSize: new google.maps.Size(30, 30),
-			origin: new google.maps.Point(0, 0),
-			anchor: new google.maps.Point(15, 15),
-		};
+			lat = user.coordinates[1],
+			image = {
+				url: "/images/assignment-user@2x.png",
+				size: new google.maps.Size(70, 70),
+				scaledSize: new google.maps.Size(30, 30),
+				origin: new google.maps.Point(0, 0),
+				anchor: new google.maps.Point(15, 15),
+			};
 		
 		return new google.maps.Marker({
 			position: new google.maps.LatLng(lat, lng),
@@ -431,7 +430,6 @@ export default class DispatchMap extends React.Component {
 	 * Updates all assignment markers on the map, using the previously set ones to remove any repeats
 	 */
 	updateAssignmentMarkers(prevAssignments) {
-
 		var assignments = [];
 
 		//Map out all of the previous assignmnets
@@ -457,7 +455,6 @@ export default class DispatchMap extends React.Component {
 	 * Updates all the user markers on the map, using the previously set ones to remove any repeats
 	 */
 	updateUserMarkers(prevUsers) {
-
 		var newMarkers = [];
 		var prevUsersLocs = [];
 
