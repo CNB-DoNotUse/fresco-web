@@ -214,7 +214,6 @@ export default class DispatchMap extends React.Component {
 		});
 
 		this.updateMap();
-
 	}
 
 	/**
@@ -226,11 +225,29 @@ export default class DispatchMap extends React.Component {
 		if(!this.state.map) return;
 
 		this.props.findAssignments(this.state.map, null, (assignments) => {
+			
 			this.props.findUsers(this.state.map, (users, error) => {
-				this.setState({
-					assignments: assignments,
-					users: users
+
+				var changedState = {};
+
+				var newAssignmentIds = assignments.map((assignment) => {
+					return assignment._id;
 				});
+
+				var assignmentIds = this.state.assignments.map((assignment) => {
+					return assignment._id;
+				});
+
+				if(_.difference(newAssignmentIds, assignmentIds).length){
+					changedState.assignments = assignments;
+				}
+
+				if(_.difference(this.state.users, users).length){
+					changedState.users = users;
+				}
+
+				this.setState(changedState);
+
 			});
 		});
 	}
@@ -300,8 +317,6 @@ export default class DispatchMap extends React.Component {
 			}
 
 		}
-
-		console.log(status + ' : ' + this.props.viewMode);
 
 		//Check if the status matches the view mode
 		if(status != this.props.viewMode) return;
@@ -417,30 +432,23 @@ export default class DispatchMap extends React.Component {
 	 */
 	updateAssignmentMarkers(prevAssignments) {
 
-		var newMarkers = [],
-		    prevAssignmentIds = [],
-		    assignments = [];
+		var assignments = [];
 
 		//Map out all of the previous assignmnets
-		for (var i = 0; i < prevAssignments.length; i++) {
-			prevAssignmentIds.push(prevAssignments[i]._id.toString());
-		};
+		var prevAssignmentIds = prevAssignments.map((assignment) =>{
+			return assignment._id.toString();
+		});
 
-		//Loop through and push into assignments array
 		for (var i = 0; i < this.state.assignments.length; i++) {
-			
-			var assignment = this.state.assignments[i];
-
-			//Check if it doesn't exits
-			if(prevAssignmentIds.indexOf(assignment._id.toString()) == -1) {
-				console.log('Pushed');
-				assignments.push(assignment);
+			//Check if it doesn't exist
+			if(prevAssignmentIds.indexOf(this.state.assignments[i]._id.toString()) == -1) {
+				assignments.push(this.state.assignments[i]);
 			}
-		};
+		}
+
+		console.log('Assignments about to be added', assignments);
 
 		if(assignments.length == 0 ) return;
-
-		console.log(assignments);
 
 		this.addAssignmentsToMap(assignments);
 	}

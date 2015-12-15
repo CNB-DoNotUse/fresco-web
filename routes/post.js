@@ -89,19 +89,17 @@ router.get('/:id', function(req, res, next){
       else 
         render();
 
-      var props = {
-        user: req.session.user,
-        post: post,
-        gallery: gallery,
-        verifier: verifier,
-        config: config,
-        title: title,
-        purchases: config.mapPurchases(req.session)
-      };
-
-      console.log(props);
-
       function render() {
+
+        var props = {
+          user: req.session.user,
+          post: post,
+          gallery: gallery,
+          verifier: verifier,
+          title: title,
+          purchases: config.mapPurchases(req.session)
+        };
+
         res.render('app', {
           props: JSON.stringify(props),
           title: title,
