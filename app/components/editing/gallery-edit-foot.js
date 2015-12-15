@@ -10,7 +10,7 @@ export default class GalleryEditFoot extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			gallery: this.props.gallery
+			gallery: _.clone(this.props.gallery, true)
 		}
 		this.revert = this.revert.bind(this);
 		this.clear = this.clear.bind(this);
@@ -45,7 +45,7 @@ export default class GalleryEditFoot extends React.Component {
 					style={inputStyle}
 					onChange={this.fileUploaderChanged} />
 
-				<button id="gallery-revert-button" type="button" onClick={this.revert} className="btn btn-flat">Revert changes</button>
+				<button id="gallery-revert-button" type="button" onClick={this.props.revert} className="btn btn-flat">Revert changes</button>
 				<button id="gallery-clear-button" type="button" onClick={this.clear} className="btn btn-flat">Clear all</button>
 				{addMore}
 				<button id="gallery-cancel-button" type="button" onClick={this.cancel} className="btn btn-flat pull-right toggle-gedit toggler">Cancel</button>

@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import GalleryEditBody from './gallery-edit-body.js'
 import GalleryEditFoot from './gallery-edit-foot.js'
@@ -17,10 +18,11 @@ export default class GalleryEdit extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			gallery: this.props.gallery
+			gallery: _.assign(this.props.gallery)
 		}
 
 		this.updateGallery = this.updateGallery.bind(this);
+		this.revertGallery = this.revertGallery.bind(this);
 		this.saveGallery = this.saveGallery.bind(this);
 
 	}
@@ -36,14 +38,15 @@ export default class GalleryEdit extends React.Component {
 	 			<div className="edit panel panel-default toggle-edit gedit">
 	 				<div className="col-xs-12 col-lg-12 edit-new dialog">
 	 					<GalleryEditHead />
-	 					<GalleryEditFoot 
-	 						updateGallery={this.updateGallery}
-	 						saveGallery={this.saveGallery}
-	 						gallery={this.state.gallery} />
 	 					<GalleryEditBody 
 	 						gallery={this.state.gallery}
 	 						user={this.props.user}
 	 						updateGallery={this.updateGallery} />
+	 					<GalleryEditFoot 
+	 						updateGallery={this.updateGallery}
+	 						revert={this.revertGallery}
+	 						saveGallery={this.saveGallery}
+	 						gallery={this.state.gallery} />
 	 				</div>
 	 			</div>
  			</div>
@@ -57,43 +60,51 @@ export default class GalleryEdit extends React.Component {
  		});
  	}
 
+ 	revertGallery() {
+ 		// Set gallery back to original
+ 		this.setState({
+ 			gallery: _.clone(this.props.gallery, true)
+ 		})
+ 	}
+
  	saveGallery() {
 
- 		var gallery = this.state.gallery,
+ 		var gallery = _.clone(this.state.gallery, true),
  			files = gallery.files ? gallery.files : [],
- 			caption = document.getElementById('gallery-edit-caption').value,
+ 			caption = gallery.caption,
  			tags = gallery.tags;	
 
- 		console.log(files);
-
  		//Generate post ids for update
- 		var posts = $('#edit-gallery-images').frick('frickPosts')
-
- 		console.log(posts);
+ 		var posts = [];
+ 		for(var p in gallery.posts) {
+ 			posts.push(gallery.posts[p]._id);
+ 		}
 
 		if(gallery.posts.length + files.length == 0 )
 			return $.snackbar({content:"Galleries must have at least 1 post"});
 
 
  		//Generate stories for update
- 		var stories = gallery.related_stories.map((story) => {
+ 		var stories = [];
+ 		gallery.related_stories.map((story) => {
 
  			if(story.new){
- 				return 'NEW=' + JSON.stringify(story)
+ 				stories.push('NEW=' + JSON.stringify(story));
  			}
  			else
- 				return story._id
+ 				stories.push(story._id);
 
  		});
 
  		//Generate articles for update
- 		var articles = gallery.articles.map((articles) => {
+ 		var articles = [];
+ 		gallery.articles.map((articles) => {
 
  			if(articles.new){
- 				return 'NEW=' + JSON.stringify(articles)
+ 				articles.push('NEW=' + JSON.stringify(articles));
  			}
  			else
- 				return articles._id
+ 				articles.push(articles._id);
 
  		});	
 

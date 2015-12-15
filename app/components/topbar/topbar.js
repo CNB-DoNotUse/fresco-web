@@ -168,16 +168,6 @@ export default class TopBar extends React.Component {
 
 		}
 
-		if (this.props.locationDropdown) {
-			topbarItems.push(
-				<LocationDropdown
-					onPlaceChange={this.props.onPlaceChange}
-					onRadiusChange={this.props.onRadiusChange}
-					onMapDataChange={this.props.onMapDataChange}
-					key="locationDropdown" />
-			);
-		}
-
 		if (this.props.tagFilter) {
 			topbarItems.push(
 				<TagFilter
@@ -188,14 +178,25 @@ export default class TopBar extends React.Component {
 			);
 		}
 
+		if (this.props.locationDropdown) {
+			topbarItems.push(
+				<LocationDropdown
+					onPlaceChange={this.props.onPlaceChange}
+					onRadiusChange={this.props.onRadiusChange}
+					onMapDataChange={this.props.onMapDataChange}
+					key="locationDropdown" />
+			);
+		}
+
 		if (this.props.outletsFilter) {
 			topbarItems.push(
-				<Dropdown
-					options={['A', 'B', 'C']}
-					selected="A"
-					onSelected={this.outletsFilterSelected}
-					key="outletsFilter"
-					inList={true} />
+				<TagFilter
+					text="Outlets"
+					tagList={this.props.outlets}
+					filterList={this.props.outletFilterList}
+					onTagAdd={this.props.onOutletFilterAdd}
+					onTagRemove={this.props.onOutletFilterRemove}
+					key="outletsFilter" />
 			)
 		}
 
@@ -240,5 +241,7 @@ export default class TopBar extends React.Component {
 
 TopBar.defaultProps = {
 	title: '',
-	onVerifiedToggled: function() {}
+	onVerifiedToggled: function() {},
+	onOutletFilterAdd: function() {},
+	onOutletFilterRemove: function() {}
 }

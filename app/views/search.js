@@ -232,17 +232,16 @@ export class Search extends React.Component {
 	}
 
 	addTag(tag) {
-		console.log('Adding', tag)
 		if(this.state.tags.indexOf(tag) != -1) return;
 
 		this.setState({
 			tags: this.state.tags.concat(tag)
 		});
-
 	}
 
 	removeTag(tag) {
 		if(this.state.tags.indexOf(tag) == -1) return; 
+
 		var tags = [], tagList = this.state.tags;
 		for (var t in tagList) {
 			if(tagList[t] == tag) continue;
@@ -252,7 +251,6 @@ export class Search extends React.Component {
 		this.setState({
 			tags: tags
 		});
-
 	}
 
 	/** 
@@ -300,7 +298,7 @@ export class Search extends React.Component {
 	onMapDataChange(data) {
 		this.setState({
 			location: data.location,
-			radius: global.metersToFeet(data.radius),
+			radius: data.radiusX,
 			map: {
 				circle: data.circle
 			}
@@ -345,6 +343,7 @@ export class Search extends React.Component {
 	    				<SearchGalleryList
 	    					rank={this.props.user.rank}
 		    				galleries={this.state.galleries}
+		    				tags={this.state.tags}
 		    				purchases={this.props.purchases.concat(this.state.purchases)} 
 		    				didPurchase={this.didPurchase}
 		    				showOnlyVerified={this.state.showOnlyVerified} />

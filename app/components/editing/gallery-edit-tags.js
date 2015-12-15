@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import Tag from './tag.js'
 
@@ -13,30 +14,21 @@ export default class GalleryEditTags extends React.Component {
 			tags: this.props.tags
 		}
 
+		this.change = this.change.bind(this);
 		this.handleClick = this.handleClick.bind(this);
-	}
-
-	componentWillReceiveProps(nextProps) {
-		
-		this.setState({
-			tags: nextProps.tags
-		})
-
 	}
 
 	render() {
 
-		var tags = this.state.tags.map((tag, i) => {
+		var tags = _.clone(this.props.tags, true);
+			tags = tags.map((tag, i) => {
 			return (
-
 				<Tag 
-					onClick={this.handleClick.bind(this, i)} 
+					onClick={this.handleClick.bind(null, tag)} 
 					text={'#' + tag} 
 					plus={false}
 					key={i} />
-
-			)
-
+			);
 		});
 
 		return (
@@ -48,31 +40,40 @@ export default class GalleryEditTags extends React.Component {
 						type="text" 
 						className="form-control floating-label" 
 						placeholder="Tags"
-						onChange={this.change} />
+						onKeyUp={this.change} />
 					<ul ref="gallery-tags-list" className="chips">{tags}</ul>
 				</div>
 				<div className="split-cell">
 					<span className="md-type-body2">Suggested tags</span>
-					<ul id="gallery-suggested-tags-list" className="chips"></ul>
-				</div>
+ 				</div>
 			</div>
 
 		);
 
 	}
 
-	handleClick(index) {
+	change(e) {
+		if(e.keyCode != 13) return;
 
-		var updatedTags = this.state.tags;
+		var tag = e.target.value;
 
-		//Remove from index
-		updatedTags.splice(index, 1);
+		e.target.value = '';
+		
+		if(this.props.tags.indexOf(tag) != -1) return;
 
-		//Update state
-		this.setState({
-			tags: updatedTags
-		});
+		var tags = _.clone(this.props.tags, true);
+			tags.push(tag);
+		this.props.updatedTags(tags);
+	}
 
+	handleClick(tag) {
+		var tags = _.clone(this.props.tags, true);
+		var index = tags.indexOf(tag);
+
+		if(index == -1) return;
+
+		tags.splice(index, 1);
+		this.props.updatedTags(tags);
 	}
 
 }

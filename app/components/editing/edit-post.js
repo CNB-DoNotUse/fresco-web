@@ -62,8 +62,6 @@ export default class EditPost extends React.Component {
 		}
 		else {
 
-			console.log(this.props);
-			
 			return (
 				<img 
 					className='img-responsive'

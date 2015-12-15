@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import Tag from './tag'
 import StoriesAutoComplete from './stories-autocomplete.js'
@@ -12,18 +13,12 @@ export default class GalleryEditStories extends React.Component {
 		
 		super(props);
 		this.addStory = this.addStory.bind(this);
-
+		this.removeStory = this.removeStory.bind(this);
 	}
 
-	componentWillReceiveProps(nextProps) {
-		
-		this.setState({ stories: nextProps.stories });
-	
-	}
-
-	//Add's story element, return if story exists in prop stories.
+	//Adds story element, return if story exists in prop stories.
 	addStory(newStory) {
-		var stories = this.props.stories;
+		var stories = _.clone(this.props.stories, true);
 
 		for( var s in stories ) {
 			if(stories[s]._id == newStory._id) {
@@ -31,20 +26,36 @@ export default class GalleryEditStories extends React.Component {
 			}
 		}
 
-		this.props.addStory(newStory);
+		stories.push(newStory);
+		this.props.updateRelatedStories(stories);
+
+	}
+
+	//Removes story
+	removeStory(storyId) {
+		var stories = _.clone(this.props.stories, true);
+		var ids = stories.map(s => s._id);
+		var index = ids.indexOf(storyId);
+		if(index == -1) return;
+
+		stories.splice(index, 1);
+
+		this.props.updateRelatedStories(stories);
 
 	}
 
 	render() {
 		/*onClick={this.props.removeStory.bind(null, story.title) */ 
-		var stories = this.props.stories.map((story, i) => {
+		var stories = _.clone(this.props.stories, true);
+			stories = stories.map((story, i) => {
 			return (
 				<Tag 
 					text={story.title} 
 					plus={false}
+					onClick={this.removeStory.bind(null, story._id)}
 					key={i} />
 			)
-		}, this);
+		});
 
 		return (
 

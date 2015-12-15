@@ -69,27 +69,35 @@ export default class TagFilter extends React.Component {
 		var tagText = this.refs.tagFilterInput.value;
 		if(!tagText.length) return;
 
-		if(this.props.tagList.indexOf(tagText) != -1) return;
-		
+		if(this.props.filterList.indexOf(tagText) != -1) return;
+
 		this.props.onTagAdd(tagText);
 		this.refs.tagFilterInput.value = '';
 	}
 
 	render() {
-		var tags = [], tagList = this.props.tagList;
+		var tags = [],
+			available = [],
+			tagList = _.clone(this.props.tagList, true),
+			filterList = _.clone(this.props.filterList, true);
+
 		for (var t in tagList) {
-			console.log(tagList[t]);
-			tags.push(<Tag onClick={this.props.onTagRemove.bind(null, tagList[t])} text={'#' + tagList[t].replace(/ /g, '')} key={t} />);
+			available.push(<Tag onClick={this.props.onTagAdd.bind(null, tagList[t])} text={tagList[t]} key={t} />)
 		}
+
+		for (var t in filterList) {
+			tags.push(<Tag onClick={this.props.onTagRemove.bind(null, filterList[t])} text={filterList[t]} key={t} />);
+		}
+
 		return (
 			<div className="drop filter-location pull-right hidden-xs">
 				<button className="toggle-drop md-type-subhead" ref="toggle_button" onClick={this.clicked}>
-					<span>{this.props.tagList.length ? 'Filtering ' + this.props.tagList.length : 'Any Tags'}</span>
+					<span>{this.props.filterList.length ? 'Filtering ' + this.props.filterList.length : ('Any ' + this.props.text)}</span>
 					<span className="mdi mdi-menu-down icon"></span>
 				</button>
 				<div className="drop-menu panel panel-default" ref="drop">
 					<div className="toggle-drop toggler md-type-subhead" onClick={this.hideDropdown}>
-						<span>Filter Tags</span>
+						<span>Filter {this.props.text}</span>
 						<span className="mdi mdi-menu-up icon pull-right"></span>
 					</div>
 					<div className="drop-body">
@@ -103,13 +111,15 @@ export default class TagFilter extends React.Component {
 											ref="tagFilterInput"
 											onKeyUp={this.handleTagInput}
 											/>
-										<div className="floating-label">Tags</div>
+										<div className="floating-label">{this.props.text}</div>
 										<span className="material-input"></span>
 									</div>
 								</div>
-								<ul id="tag-filter" className="chips">
-									{tags}
-								</ul>
+								<ul id="tag-filter" className="chips">{tags}</ul>
+							</div>
+							<div className="split-cell">
+								<span className="md-type-body2">Available {this.props.text}</span>
+								<ul id="filter-available" className="chips">{available}</ul>
 							</div>
 						</div>
 					</div>
@@ -120,5 +130,9 @@ export default class TagFilter extends React.Component {
 }
 
 TagFilter.defaultProps = {
-	tagList: []
+	text: 'Tags',
+ 	tagList: [],
+ 	filterList: [],
+ 	onTagAdd: function() {},
+	onTagRemove: function() {}
 }
