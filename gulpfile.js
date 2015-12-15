@@ -38,10 +38,9 @@ gulp.task('Build Assets',  () => {
 		//Define the sections we're in
 		var section = sections[s];
 
-		console.log('Sections: ' + section);
+		console.log('\nSection: ' + section + '\nDEP\n' , dependencies[section]._global.css);
 
-		//Define all the pages in this sections
-		var pages = Object.keys(dependencies[section]);
+		console.log('\nGlobal :', dependencies.global.css)
 
 		// Build section _global css
 		cssTasks.push(
@@ -56,9 +55,12 @@ gulp.task('Build Assets',  () => {
 		jsTasks.push(
 			gulp.src(dependencies.global.js.concat(dependencies[section]._global.js))
 				.pipe(concat(section + '.js'))
-				.pipe(uglify())
+				// .pipe(uglify())
 				.pipe(gulp.dest('./public/javascripts'))
 		);
+
+		//Define all the pages in this sections
+		var pages = Object.keys(dependencies[section]);
 
 		//Take out the global from the pages
 		//so now we onyl build the page specific stuff
@@ -69,7 +71,8 @@ gulp.task('Build Assets',  () => {
 			
 			var pageDependencies = dependencies[section][pages[p]];
 
-			console.log('PAGE:' + pages[p] + ' Dependencies: ' + pageDependencies);
+			// console.log('PAGE:' , pages[p] + ' Dependencies: ' , pageDependencies);
+
 			if(pageDependencies.css.length) {
 				cssTasks.push(
 					gulp.src(dependencies.global.css.concat(pageDependencies.css))

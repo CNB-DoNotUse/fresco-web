@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import App from './app'
 import PostList from './../components/global/post-list.js'
 import TopBar from './../components/topbar'
+import global from '../../lib/global'
 
 /** //
 
@@ -58,7 +59,7 @@ class Photos extends React.Component {
 				};
 
 		$.ajax({
-			url:  API_URL + endpoint,
+			url:  global.API_URL + endpoint,
 			type: 'GET',
 			data: params,
 			dataType: 'json',

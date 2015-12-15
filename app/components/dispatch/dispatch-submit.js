@@ -142,7 +142,7 @@ export default class DispatchSubmit extends React.Component {
 							<input 
 								ref="radius" 
 								type="text" 
-								className="form-control floating-label integer" 
+								className="form-control floating-label" 
 								data-hint="feet" 
 								onKeyUp={this.updateRadius}
 								placeholder="Radius" />
@@ -159,7 +159,7 @@ export default class DispatchSubmit extends React.Component {
 					<div className="form-group-default">
 						<input 
 							type="text" 
-							className="form-control floating-label integer" 
+							className="form-control floating-label" 
 							data-hint="hours from now" 
 							ref="expiration"
 							placeholder="Expiration time" />
@@ -208,7 +208,7 @@ export default class DispatchSubmit extends React.Component {
 			$.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
 			return;
 		}
-		if (!global.isValidRadius(assignment.radius)){ //0.0473485 IS 250 FEET IN MILES
+		if (!global.isValidRadius(assignment.radius)){
 			$.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
 			return;
 		}

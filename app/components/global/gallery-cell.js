@@ -1,4 +1,5 @@
 import React from 'react';
+import FrescoImage from './fresco-image'
 import global from '../../../lib/global'
 
 /**
@@ -110,7 +111,7 @@ class GalleryCellImages extends React.Component {
 
 			return (
 				<div className="flex-row">
-					<GalleryCellImage post={this.props.posts[0]} size="small" />
+					<FrescoImage image={this.props.posts[0].image} size="small" />
 				</div>
 			);
 		}
@@ -118,8 +119,8 @@ class GalleryCellImages extends React.Component {
 
 			return (
 				<div className="flex-row">
-					<GalleryCellImage post={this.props.posts[0]} size="small" />
-					<GalleryCellImage post={this.props.posts[1]} size="small" />
+					<FrescoImage image={this.props.posts[0].image} size="small" />
+					<FrescoImage image={this.props.posts[1].image} size="small" />
 				</div>
 			);
 		}
@@ -128,16 +129,16 @@ class GalleryCellImages extends React.Component {
 			return (
 				<div className="flex-row">
 					<div className="flex-col">
-						<GalleryCellImage post={this.props.posts[0]} size="small" />
+						<FrescoImage image={this.props.posts[0]} size="small" />
 					</div>
 					<div className="flex-col">
 						<div className="flex-row">
-							<GalleryCellImage post={this.props.posts[1]} size="small" />
-							<GalleryCellImage post={this.props.posts[2]} size="small" />
+							<FrescoImage image={this.props.posts[1].image} size="small" />
+							<FrescoImage image={this.props.posts[2].image} size="small" />
 						</div>
 						<div className="flex-row">
-							<GalleryCellImage post={this.props.posts[3]} size="small" />
-							<GalleryCellImage post={this.props.posts[4]} size="small" />
+							<FrescoImage image={this.props.posts[3].image} size="small" />
+							<FrescoImage image={this.props.posts[4].image} size="small" />
 						</div>
 					</div>
 				</div>
@@ -149,37 +150,20 @@ class GalleryCellImages extends React.Component {
 			return (
 				<div className="flex-col">
 					<div className="flex-row">
-						<GalleryCellImage post={this.props.posts[0]} size="small" />
-						<GalleryCellImage post={this.props.posts[1]} size="small" />
-						<GalleryCellImage post={this.props.posts[4]} size="small" />
-						<GalleryCellImage post={this.props.posts[3]}  size="small" />
+						<FrescoImage image={this.props.posts[0].image} size="small" />
+						<FrescoImage image={this.props.posts[1].image} size="small" />
+						<FrescoImage image={this.props.posts[4].image} size="small" />
+						<FrescoImage image={this.props.posts[3].image} size="small" />
 					</div>
 					<div className="flex-row">
-						<GalleryCellImage post={this.props.posts[4]} size="small" />
-						<GalleryCellImage post={this.props.posts[5]} size="small" />
-						<GalleryCellImage post={this.props.posts[6]} size="small" />
-						<GalleryCellImage post={this.props.posts[7]} size="small" />
+						<FrescoImage image={this.props.posts[4].image} size="small" />
+						<FrescoImage image={this.props.posts[5].image} size="small" />
+						<FrescoImage image={this.props.posts[6].image} size="small" />
+						<FrescoImage image={this.props.posts[7].image} size="small" />
 					</div>
 				</div>
 			);
 		}
 	}
 
-}
-
-/**
- * Single Gallery Cell Image Item
- */
-
-class GalleryCellImage extends React.Component {
-
-	render() {
-		return (
-			<div className="img">
-				<img className="img-cover"
-					data-src={global.formatImg(this.props.post.image, this.props.size)}
-					src={global.formatImg(this.props.post.image, this.props.size)} />
-			</div>
-		)
-	}
 }

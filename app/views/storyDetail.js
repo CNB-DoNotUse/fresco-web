@@ -5,6 +5,7 @@ import TopBar from './../components/topbar'
 import PostList from './../components/global/post-list.js'
 import StorySidebar from './../components/storyDetail/story-sidebar'
 import StoryEdit from './../components/editing/story-edit.js'
+import global from '../../lib/global'
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
@@ -56,7 +57,7 @@ class StoryDetail extends React.Component {
  				};
 
  		$.ajax({
- 			url:  API_URL + endpoint,
+ 			url:  global.API_URL + endpoint,
  			type: 'GET',
  			data: params,
  			dataType: 'json',

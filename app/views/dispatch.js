@@ -6,6 +6,7 @@ import DispatchMap from './../components/dispatch/dispatch-map'
 import DispatchAssignments from './../components/dispatch/dispatch-assignments'
 import DispatchSubmit from './../components/dispatch/dispatch-submit'
 import DispatchRequest from './../components/dispatch/dispatch-request'
+import global from '../../lib/global'
 
 /**
  * Dispatch Parent Component, contains the Dispatch Map, as well as a set of cards
@@ -132,7 +133,7 @@ class Dispatch extends React.Component {
 		var query = "lat=" + center.lat() + "&lon=" + center.lng() + "&radius=" + radius;
 		
 		//Should be authed
-		$.ajax(API_URL + "/v1/user/findInRadius?" + query, {
+		$.ajax(global.API_URL + "/v1/user/findInRadius?" + query, {
 			success: (response) => {
 
 				//Do nothing, because of bad response
