@@ -200,5 +200,6 @@ export default class EditMap extends React.Component {
 EditMap.defaultProps = {
 	radius: null,
 	location: null,
+	onDataChange: function(){},
 	type: 'active'
 }

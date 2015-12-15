@@ -96,15 +96,15 @@ export default class TopBar extends React.Component {
 
 		}
 
-		// if(this.props.locationInput) {
-		// 	locationInput = <div className="form-group-default">
-		// 						<input 
-		// 							type="text" 
-		// 							ref="autocomplete"
-		// 							className="form-control google-autocomplete" 
-		// 							placeholder="Location" />
-		// 					</div>;
-		// }
+		if(this.props.locationInput) {
+			locationInput = <div className="form-group-default">
+								<input 
+									type="text" 
+									ref="autocomplete"
+									className="form-control google-autocomplete" 
+									placeholder="Location" />
+							</div>;
+		}
 		
 		if (this.props.editable) {
 
@@ -169,21 +169,23 @@ export default class TopBar extends React.Component {
 		}
 
 		if (this.props.locationDropdown) {
-			topbarItems.push(<LocationDropdown
-								onPlaceChange={this.props.onPlaceChange}
-								onRadiusChange={this.props.onRadiusChange}
-								onMapDataChange={this.props.onMapDataChange}
-								key="locationDropdown" />
-							);
+			topbarItems.push(
+				<LocationDropdown
+					onPlaceChange={this.props.onPlaceChange}
+					onRadiusChange={this.props.onRadiusChange}
+					onMapDataChange={this.props.onMapDataChange}
+					key="locationDropdown" />
+			);
 		}
 
 		if (this.props.tagFilter) {
-			topbarItems.push(<TagFilter
-								onTagAdd={this.props.onTagAdd}
-								onTagRemove={this.props.onTagRemove}
-								tagList={this.props.tagList}
-								key="tagFilter" />
-							);
+			topbarItems.push(
+				<TagFilter
+					onTagAdd={this.props.onTagAdd}
+					onTagRemove={this.props.onTagRemove}
+					tagList={this.props.tagList}
+					key="tagFilter" />
+			);
 		}
 
 		if (this.props.outletsFilter) {
@@ -199,17 +201,22 @@ export default class TopBar extends React.Component {
 
 		if(this.props.tabs) {
 			var tabContent = [];
+			
 			this.props.tabs.map((tab, i) => {
+
+				var buttonClass = "btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (this.props.activeTab == tab ? ' toggled' : '');
+
 				tabContent.push(
 					<button
-						className={"btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (this.props.activeTab == tab ? ' toggled' : '')}
+						className={buttonClass}
 						onClick={this.props.setActiveTab.bind(null, tab)}
 						key={tab.toLowerCase()}>
 						{tab}
 						<div className="ripple-wrapper"></div>
 					</button>
 				)
-			})
+			});
+			
 			var tabs = <div className="tab-control">{tabContent}</div>
 		}
 

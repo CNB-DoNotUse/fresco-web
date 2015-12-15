@@ -19,8 +19,9 @@ export default class GalleryEditByline extends React.Component {
 		//If the post contains twitter info, show twitter byline editor
 		if (post.meta && post.meta.twitter) {
 
-			var isHandleByline = post.byline.indexOf('@') == 0;
-			var byline = isHandleByline ? post.meta.twitter.handle : post.meta.twitter.user_name;
+			var isHandleByline = post.byline.indexOf('@') == 0,
+				byline = isHandleByline ? post.meta.twitter.handle : post.meta.twitter.user_name,
+				affiliation = post.meta.other_origin ? post.meta.other_origin.affiliation : '';
 
 			return (
 
@@ -35,7 +36,7 @@ export default class GalleryEditByline extends React.Component {
 								<input 
 									type="text" 
 									className="form-control" 
-									defaultValue={post.meta.other_origin.affiliation} 
+									defaultValue={affiliation} 
 									id="gallery-edit-affiliation" />
 								<div className="floating-label">Affiliation</div>
 								<span className="material-input"></span>

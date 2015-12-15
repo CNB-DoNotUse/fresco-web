@@ -64,7 +64,7 @@
   <% for (var index in highlights){ %>
     <div class="slide">
       <div>
-        <img src="<%= config.formatImg(highlights[index].posts[0].image, 'large') %>">
+        <img src="<%= global.formatImg(highlights[index].posts[0].image, 'large') %>">
       </div>
       <div>
         <table>
@@ -94,7 +94,7 @@
                 <span class="mdi mdi-clock"></span>
               </td>
               <td>
-                <%= config.getTimeAgo(highlights[index].time_created) %>
+                <%= global.formatTime(highlights[index].time_created) %>
               </td>
             </tr>
           </tbody>
