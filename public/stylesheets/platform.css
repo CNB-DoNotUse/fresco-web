@@ -19081,6 +19081,7 @@ div.list {
       user-select: none; }
       .grid .tiles > .tile .hover {
         position: absolute;
+        overflow-y: hidden;
         z-index: 1;
         width: 100%;
         height: 100%;

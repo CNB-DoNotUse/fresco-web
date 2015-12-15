@@ -1,5 +1,6 @@
 import React from 'react'
-import PostCell from './post-cell.js'
+import PostCell from './post-cell'
+import GalleryEditBulk from '../editing/gallery-edit-bulk'
 
 /** //
 
@@ -17,19 +18,23 @@ export default class PostList extends React.Component {
 		super(props);
 		this.state = {
 			offset: 0,
-			posts: this.props.posts || [],
+			purchases: this.props.purchases,
+			posts: this.props.posts,
 			loading: false,
-			scrollable: this.props.scrollable || false,
-			purchases: []
+			scrollable: this.props.scrollable,
+			selectedPosts: []
 		}
+		this.togglePost = this.togglePost.bind(this);
+		this.setSelectedPosts = this.setSelectedPosts.bind(this);
 		this.scroll = this.scroll.bind(this);
 		this.didPurchase = this.didPurchase.bind(this);
 	}
 
 	componentDidMount() {
 
-		//Check if list is initialzied with posts or the `loadPosts` prop is not defined
-		if(this.props.posts || !this.props.loadPosts) return;
+		//Check if list is initialzied with posts or the `loadPosts` prop is not defined, then don't load anything
+		if(this.state.posts.length || !this.props.loadPosts) 
+			return;
 
 		//Access parent var load method
 		this.props.loadPosts(0, (posts) => {
@@ -86,29 +91,71 @@ export default class PostList extends React.Component {
 		}
 	}
 
-	/** 
-		Called when an item is purchased.
-		Adds purchase ID to current purchases in state.
-		Prop chain: PostList -> PostCell -> PostCellActions -> PostCellAction -> PurchaseAction
-	**/
-	didPurchase(id) {
-		var purchases = [];
-		this.state.purchases.map((purchase) => { purchases.push(purchase); })
-		purchases.push(id);
+	/**
+	 * Sets the `selectedPosts` state property
+	 * @param {array} posts The posts to set the `selectedPosts` to
+	 */
+	setSelectedPosts(posts){
 		this.setState({
-			purchases: purchases
+			selectedPosts: posts
+		});
+	}
+
+	/**
+	 * Toggles posts in stateful selected posts
+	 * @param  {object} passedPost The post to toggle selected or unselected in the post-list and bulk edit
+	 */
+	togglePost(passedPost) {
+
+		//Filter out anything, but ones that equal the passed post
+		var result = this.state.selectedPosts.filter((post) => {
+			return passedPost._id === post._id
+		});
+
+		//Post not found, so add
+		if(result.length == 0){
+
+			this.setState({
+				selectedPosts: this.state.selectedPosts.concat(passedPost)
+			});
+
+		}
+		//No post found
+		else{
+
+			this.setState({
+				selectedPosts: this.state.selectedPosts.filter((post) => post._id !== passedPost._id)
+			});
+
+		}
+
+	}
+
+	/**
+	 * Called when an item is purchased.
+	 * Adds purchase ID to current purchases in state.
+	 * Prop chain: PostList -> PostCell -> PostCellActions -> PostCellAction -> PurchaseAction
+	 */
+	didPurchase(id) {
+		this.setState({
+			purchases: this.state.purchases.concat(id)
 		});
 	}
 
 	render() {
 
-		var purchases = this.props.purchases.concat(this.state.purchases),
+		var purchases = this.state.purchases,
 			rank = this.props.rank;
+
+		console.log('Selected: ', this.state.selectedPosts);
 
 		//Map all the posts into cells
 		var posts = this.state.posts.map((post, i)  => {
 
-			var purchased = purchases ? purchases.indexOf(post._id) != -1 : null;
+			var purchased = purchases ? purchases.indexOf(post._id) != -1 : null,
+				toggled = this.state.selectedPosts.filter((cPost) => cPost._id === post._id).length > 0 ? true : false;
+
+			console.log(toggled);
 
 	      	return (
 	        	
@@ -117,6 +164,8 @@ export default class PostList extends React.Component {
 	        		post={post} 
 	        		rank={rank} 
 	        		purchased={purchased}
+	        		toggled={toggled}
+	        		togglePost={this.togglePost}
 	        		didPurchase={this.didPurchase}
 	        		key={i}
 	        		editable={this.props.editable} />
@@ -127,13 +176,13 @@ export default class PostList extends React.Component {
 
 		return (
 
-			<div 
-				className="container-fluid fat grid" 
-				ref='grid' 
-				onScroll={this.state.scrollable ? this.scroll : null} >
-
+			<div>
+				<div className="container-fluid fat grid" ref='grid' onScroll={this.state.scrollable ? this.scroll : null} >
 					<div className="row tiles" id="posts">{posts}</div>
-
+				</div>
+				<GalleryEditBulk 
+					posts={this.state.selectedPosts}
+					setSelectedPosts={this.setSelectedPosts} />
 			</div>
 
 		)		
@@ -143,5 +192,8 @@ export default class PostList extends React.Component {
 
 PostList.defaultProps = {
 	size : 'small',
-	editable: true
+	editable: true,
+	purchases: [],
+	posts: [],
+	scrollable: false
 }

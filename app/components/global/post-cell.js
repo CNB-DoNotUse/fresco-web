@@ -12,11 +12,13 @@ export default class PostCell extends React.Component {
 
 	constructor(props) {
 		super(props)
+		this.postClicked = this.postClicked.bind(this);
 	}
 
 	render() {
 
 		var post = this.props.post,
+			toggled = this.props.toggled ? 'toggled' : '',
 			timestamp = post.time_created,
 			timeString = global.formatTime(post.time_created),
 			address = post.location.address || 'No Address',
@@ -28,15 +30,18 @@ export default class PostCell extends React.Component {
 
 		return(
 
-			<div className={size + ' tile'}>
+			<div className={size + ' tile ' + toggled} onClick={this.postClicked} >
 				<div className="tile-body">
-					
 					<div className="frame"></div>
-						<div className="hover">
-							<p className="md-type-body1">{post.caption}</p>
-							<span className="md-type-caption">{post.byline}</span>
-							<PostCellStories stories={post.stories} />
-						</div>
+					
+					<div className="hover">
+						<p className="md-type-body1">{post.caption}</p>
+					
+						<span className="md-type-caption">{post.byline}</span>
+					
+						<PostCellStories stories={post.stories} />
+					</div>
+					
 					<FrescoImage 
 						image={this.props.post.image} 
 						size={this.props.size} />
@@ -65,13 +70,26 @@ export default class PostCell extends React.Component {
 		)
 	}
 
+	postClicked(e) {
+
+		//Check if clicked with shift key
+		if(!e.shiftKey) return;
+
+		//Check if the prop function is present
+		if(!this.props.togglePost) return;
+
+		this.props.togglePost(this.props.post)
+
+	}
+
 };
 
 PostCell.defaultProps = {
 	sizes: {
 		large: 'col-xs-12 col-sm-6 col-lg-4',
 		small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
-	}
+	},
+	toggled: false
 }
 
 
