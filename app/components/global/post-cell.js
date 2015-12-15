@@ -147,7 +147,7 @@ class PostCellActions extends React.Component {
 
 			if(this.props.editable) {
 				actions.push(
-					<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.props.edit} key={++key} ></span>
+					<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.props.edit.bind(null, this.props.post)} key={++key} ></span>
 				);
 			}
 
@@ -164,8 +164,9 @@ class PostCellActions extends React.Component {
 
 			}
 		}
+		
 		//Check if the post has been purchased
-		else if (this.props.purhcased === true)
+		else if (this.props.purchased === true)
 			actions.push(
 				<span className="mdi mdi-download icon pull-right" onClick={this.download} key={++key}></span>
 			);
