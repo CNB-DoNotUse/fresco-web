@@ -52,8 +52,6 @@ class StoryCellImages extends React.Component {
 
 	render() {
 
-		console.log(this.props.thumbnails);
-
 		if (!this.props.thumbnails || this.props.thumbnails.length == 0){
 			return (
 				<div className="flex-row"></div>
