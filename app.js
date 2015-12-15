@@ -238,7 +238,7 @@ if (app.get('env') === 'development') {
     if (!err)
       return next();
 
-    console.log('\n Path: ', req.path, 'Session: ', req.session, 'Error: ', err + '\n');
+    console.log('\n Path: ', req.path, 'Error: ', err + '\n');
     
     res.render('error', {
       user: req.session && req.session.user ? req.session.user : null,

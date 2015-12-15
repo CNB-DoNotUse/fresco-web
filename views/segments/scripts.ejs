@@ -25,11 +25,11 @@
 
 </style><!--TEMPPPPPPPP -->
 
-<!--Dependicies-->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places"></script>
 
-<!-- Props -->
 <% if(typeof props !== 'undefined'){ %>
+  <!-- Props -->
+  <% console.log(props) %>
   <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
 <% } %>
 
@@ -38,7 +38,7 @@
   <script type="text/javascript" src="/javascripts/<%= section %>.js"></script>
 <% } %>  
 
-<!--Page Specifc based on page-->
+<!--Page Specifc-->
 <% if(typeof(page) !== 'undefined'){ %> 
   <script type="text/javascript" src="/javascripts/pages/<%= page %>.js"></script>
 <% } %> 

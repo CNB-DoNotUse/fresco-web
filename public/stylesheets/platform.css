@@ -18768,6 +18768,7 @@ div.list {
     display: -ms-flexbox;
     display: flex; }
     div.list > div.list-item > div {
+      cursor: pointer;
       margin-right: 16px;
       padding: 2px 0;
       height: 40px; }

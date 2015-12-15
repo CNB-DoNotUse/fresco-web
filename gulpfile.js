@@ -101,6 +101,7 @@ gulp.task('Build Webpack', (cb) => {
 	return gulp.src('app/views/app.js')
 		.pipe(webpack({
 			entry: views,
+			watch: true,
 		    output: {
 		      filename: "[name].js"
 		    },

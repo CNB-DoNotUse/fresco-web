@@ -157,10 +157,15 @@ router.get('/assignment/get', function(req, res, next){
     res.json(body).end();
   });
 });
-router.get('/assignment/getAll', function(req, res, next){
+router.get('/assignment/list', function(req, res, next){
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
-  api.get('/v1/assignment/getAll', function(error, response, body){
+  
+  var query = querystring.stringify(req.query);
+
+  console.log(query);
+
+  api.get('/v1/assignment/list?' + query, function(error, response, body){
     if (error)
       return res.json({err: error}).end();
     if (!body)

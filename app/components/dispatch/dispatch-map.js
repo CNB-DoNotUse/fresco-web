@@ -31,6 +31,7 @@ export default class DispatchMap extends React.Component {
 		}
 
 		this.updateMap = this.updateMap.bind(this);
+		this.clearMap = this.clearMap.bind(this);
 		this.updateAssignmentMarkers = this.updateAssignmentMarkers.bind(this);
 		this.updateUserMarkers = this.updateUserMarkers.bind(this);
 		this.focusOnAssignment = this.focusOnAssignment.bind(this);
@@ -88,12 +89,15 @@ export default class DispatchMap extends React.Component {
 			this.props.mapShouldUpdate(false);
 		}
 
+		//Check if view mode has changed
+		if(this.props.viewMode !== prevProps.viewMode){
+			console.log('View Mode Changed in map')
+			this.clearMap();
+		}
+
 		//Pass down previous for diff check
-		if(prevState.assignments)
-			this.updateAssignmentMarkers(prevState.assignments);
-		//Pass down previous for diff check
-		if(prevState.users)
-			this.updateUserMarkers(prevState.users);
+		this.updateAssignmentMarkers(prevState.assignments);
+		this.updateUserMarkers(prevState.users);
 
 		/* Event Listeners Needed in the page */
 		var selector = document.getElementById('callout-selector');
@@ -193,6 +197,27 @@ export default class DispatchMap extends React.Component {
 	}
 
 	/**
+	 * Clears all relevant assignment data from the map
+	 */
+	clearMap(){
+		for (var i = 0; i < this.state.markers.length; i++) {
+			this.state.markers[i].setMap(null);
+		};
+		for (var i = 0; i < this.state.circles.length; i++) {
+			this.state.circles[i].setMap(null);
+		};
+
+		this.setState({
+			markers: [],
+			circles: [],
+			assignments: []
+		});
+
+		this.updateMap();
+
+	}
+
+	/**
 	 * Updates the map with new users/assignments
 	 */
 	updateMap() {
@@ -218,14 +243,18 @@ export default class DispatchMap extends React.Component {
 		var markers = [],
 			circles = [];
 
-		for (var i = 0; i < assignments.length - 1; i++) {
+		for (var i = 0; i < assignments.length; i++) {
+			
 			var mapData = this.addAssignmentToMap(assignments[i], false);
+			
 			if(typeof(mapData) === 'undefined') continue;
-			console.log(mapData);
+			
+			//Push into local marker and circles
 			markers.push(mapData.marker);
 			circles.push(mapData.circle);
 		};
 
+		//Update state
 		this.setState({
 			markers: markers,
 			circles: circles
@@ -241,7 +270,6 @@ export default class DispatchMap extends React.Component {
 		//Lat/Lng will default to center if for a created assignment
 		var map = this.state.map,
 			title = assignment.title || 'No title',
-			markerURL,
 			zIndex, 
 			status,
 			position = new google.maps.LatLng(
@@ -252,16 +280,10 @@ export default class DispatchMap extends React.Component {
 
 		//Check if the assignment is expired
 		if (assignment.expiration_time && assignment.expiration_time < Date.now()){
-			//Then check if we're in the right view mode
-			if(this.props.viewMode == 'expired'){
-				status = 'expired';
-				markerURL = '/images/assignment-expired@2x.png';
-				zIndex = 100;
-			}
-			//Otherwise break
-			else {
-				return;
-			}
+			
+			status = 'expired';
+			zIndex = 100;
+
 		}
 		//Not expired assignment
 		else{
@@ -278,6 +300,11 @@ export default class DispatchMap extends React.Component {
 			}
 
 		}
+
+		console.log(status + ' : ' + this.props.viewMode);
+
+		//Check if the status matches the view mode
+		if(status != this.props.viewMode) return;
 
 		//Create the rendered circle
 		var circle = this.addCircle(
@@ -391,24 +418,29 @@ export default class DispatchMap extends React.Component {
 	updateAssignmentMarkers(prevAssignments) {
 
 		var newMarkers = [],
-		    prevAssignmentsIds = [],
+		    prevAssignmentIds = [],
 		    assignments = [];
 
 		//Map out all of the previous assignmnets
-		prevAssignments.map((assignment) => {
-			prevAssignmentsIds.push(assignment._id.toString());
-		});
+		for (var i = 0; i < prevAssignments.length; i++) {
+			prevAssignmentIds.push(prevAssignments[i]._id.toString());
+		};
 
 		//Loop through and push into assignments array
 		for (var i = 0; i < this.state.assignments.length; i++) {
-			var assignment = this.state.assignments[i],assignmentId = assignment._id.toString();
 			
-			if(prevAssignmentsIds.indexOf(assignmentId) == -1) {
+			var assignment = this.state.assignments[i];
+
+			//Check if it doesn't exits
+			if(prevAssignmentIds.indexOf(assignment._id.toString()) == -1) {
+				console.log('Pushed');
 				assignments.push(assignment);
 			}
 		};
 
 		if(assignments.length == 0 ) return;
+
+		console.log(assignments);
 
 		this.addAssignmentsToMap(assignments);
 	}
@@ -441,7 +473,6 @@ export default class DispatchMap extends React.Component {
 	 * @param  {Google Maps Circle} circle     The radius of the assignment
 	 */
 	focusOnAssignment(marker, circle, assignment) {
-		console.log(this.state.markers);
 
 		var map = this.state.map;
 

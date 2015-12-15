@@ -29,8 +29,10 @@ class Dispatch extends React.Component {
 		}
 		
 		this.mapShouldUpdate = this.mapShouldUpdate.bind(this);
+		this.findAssignments = this.findAssignments.bind(this);
 		this.updatePlace = this.updatePlace.bind(this);
 		this.updateMapCenter = this.updateMapCenter.bind(this);
+		this.updateViewMode = this.updateViewMode.bind(this);
 		this.setActiveAssignment = this.setActiveAssignment.bind(this);
 		this.updateNewAssignment = this.updateNewAssignment.bind(this);
 		this.toggleSubmissionCard = this.toggleSubmissionCard.bind(this);
@@ -78,16 +80,27 @@ class Dispatch extends React.Component {
 		this.setState({ mapCenter: location });
 	}
 
+	updateViewMode(viewMode){
+		//Do nothing if the same view mode
+		if(viewMode === this.state.viewMode) return;
+
+		this.setState({ viewMode : viewMode });
+	}
+
 	/**
 	 * Data call for retrieving assignments
 	 */
 	findAssignments(map, params, callback) {
 		
-		//Check if params are set, otherwise default to empy dictionar 
-		var params = params;
-		if(!params){
-			params = {};
-		}
+		//Check if params are set, otherwise default to empty dictionary
+		var params = params || {};
+
+		//Update view mode on params
+		params.expired = this.state.viewMode == 'expired' ? true : false;
+		params.active = this.state.viewMode == 'active' ? true : false;
+		params.verified = this.state.viewMode == 'pending' ? false : true;
+
+		console.log(params);
 
 		//Add map params
 		if(map){
@@ -206,12 +219,14 @@ class Dispatch extends React.Component {
 
 			cards.push(
 				<DispatchAssignments 
+					key={key++}
 					user={this.props.user} 
+					viewMode={this.state.viewMode}
+
+					updateViewMode = {this.updateViewMode}
 					setActiveAssignment={this.setActiveAssignment}
 					toggleSubmissionCard={this.toggleSubmissionCard}
-					findAssignments={this.findAssignments}
-					viewMode={this.state.viewMode}
-					key={key++} />
+					findAssignments={this.findAssignments} />
 			);
 
 			cards.push(

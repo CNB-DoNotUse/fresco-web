@@ -40,6 +40,27 @@ export default class DispatchAssignments extends React.Component {
 	      
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+	    
+		if(prevProps.viewMode !== this.props.viewMode){
+
+			//Access parent var load method
+			this.loadAssignments(0, this.props.viewMode, (assignments) => {
+				
+				//Update offset based on psts from callaback
+				var offset = assignments ? assignments.length : 0;
+
+				//Set posts & callback from successful response
+				this.setState({
+					assignments: assignments,
+					offset : offset
+				});
+
+			});
+		}
+
+	}
+
 	//Scroll listener for main window
 	scroll(type, event) {
 
@@ -105,9 +126,9 @@ export default class DispatchAssignments extends React.Component {
 			<div className="card panel assignments-panel">
 				<div className="card-head small">
 					<div className="tab-control full">
-						<button id="active-button"  className="btn btn-flat toggled" onClick={this.toggleList.bind(null, 'active')}>Active</button>
-						<button id="pending-button" className="btn btn-flat" onClick={this.toggleList.bind(null, 'pending')}>Pending</button>
-						<button id="history-button" className="btn btn-flat" onClick={this.toggleList.bind(null, 'history')}>History</button>
+						<button ref="active-button"  className="btn btn-flat toggled" onClick={this.toggleList.bind(null, 'active')}>Active</button>
+						<button ref="pending-button" className="btn btn-flat" onClick={this.toggleList.bind(null, 'pending')}>Pending</button>
+						<button ref="expired-button" className="btn btn-flat" onClick={this.toggleList.bind(null, 'expired')}>History</button>
 					</div>
 				</div>
 				<div className="card-foot center toggle-card">
@@ -152,7 +173,25 @@ export default class DispatchAssignments extends React.Component {
 	 */
 	toggleList(toggle) {
 
-		console.log(toggle);
+		if(toggle === this.props.viewMode) return;
+
+		var buttons = document.getElementsByClassName('btn-flat'),
+			button = this.refs[toggle + '-button'];
+
+		//Remove toggle from all other buttons
+		for (var i = 0; i < buttons.length; i++) {
+			console.log(buttons[i]);
+			buttons[i].className = buttons[i].className.replace(/\btoggled\b/,'');
+		};
+
+		//Add toggle to clicked button
+		button.className += ' toggled';
+
+		this.setState({
+			assignments: []
+		});
+
+		this.props.updateViewMode(toggle);
 
 	}
 
@@ -165,9 +204,6 @@ export default class DispatchAssignments extends React.Component {
 	loadAssignments(passedOffset, type, callback) {
 
 		var params = {
-			expired: type == 'expired',
-			active: type == 'active',
-			verified: type == 'verified',
 			offset: passedOffset,
 			limit: 10
 		}
