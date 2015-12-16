@@ -31,7 +31,8 @@ export default class GalleryEditStories extends React.Component {
 
 		//Check if story already exists
 		for(var s in stories) {
-			if(stories[s]._id == newStory._id) return;
+			if(stories[s]._id && stories[s]._id == newStory._id)
+				return;
 		}
 		
 		stories.push(newStory);
@@ -54,10 +55,13 @@ export default class GalleryEditStories extends React.Component {
 		//Current fields input
 		var query = this.refs.autocomplete.value;
 
-		//Enter is pressed
-		if(e.keyCode == 13){
+		//Enter is pressed, and query is present
+		if(e.keyCode == 13 && query.length > 0){
 
-			this.addStory(query);
+			this.addStory({
+				title: query,
+				new: true
+			});
 
 		} else{
 
@@ -115,7 +119,7 @@ export default class GalleryEditStories extends React.Component {
 						type="text" 
 						className="form-control" 
 						placeholder="Stories"
-						onChange={this.change}
+						onKeyUp={this.change}
 						ref='autocomplete' />
 					
 					<ul ref="dropdown" className="dropdown">

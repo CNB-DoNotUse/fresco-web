@@ -1,5 +1,6 @@
 import React from 'react'
 import Tag from './tag.js'
+import global from '../../../lib/global'
 
 /**
  * Component for managing added/removed articles
@@ -53,10 +54,19 @@ export default class GalleryEditArticles extends React.Component {
 		//Current fields input
 		var query = this.refs.autocomplete.value;
 
-		//Enter is pressed
-		if(e.keyCode == 13){
+		//Enter is pressed, and query is present
+		if(e.keyCode == 13 && query.length > 0){
 
-			this.addArticle(query);
+			if(global.isValidUrl(query)){
+				this.addArticle({
+					link: query,
+					new: true
+				});
+			}
+			else{
+				return $.snackbar({content: "Please enter a valid url!"});
+			}
+
 
 		} else{
 
@@ -114,7 +124,7 @@ export default class GalleryEditArticles extends React.Component {
 						type="text" 
 						className="form-control" 
 						placeholder="Articles"
-						onChange={this.change}
+						onKeyUp={this.change}
 						ref='autocomplete' />
 					
 					<ul ref="dropdown" className="dropdown">

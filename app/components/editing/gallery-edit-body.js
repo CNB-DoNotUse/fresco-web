@@ -23,23 +23,9 @@ export default class GalleryEditBody extends React.Component {
 		this.updatedLocation = this.updatedLocation.bind(this);
 	}
 
-	componentDidMount() {
-	    $.material.init();
-	}
-
 	render() {
 
-		var highlightCheckbox = (
-			<div className="dialog-row">
-				<div className="checkbox">
-					<label>
-						<input id="gallery-highlight-input" type="checkbox" />
-						<span className="ripple"></span>
-						<span className="check"></span> Highlighted
-					</label>
-				</div>
-			</div>
-		);
+		var visibility = this.props.gallery.visibility;
 
 		return (
 			<div className="dialog-body">
@@ -74,7 +60,17 @@ export default class GalleryEditBody extends React.Component {
 					
 					<GalleryEditArticles ref='articles' articles={this.props.gallery.articles} />
 					
-					{highlightCheckbox}
+					<div className="dialog-row">
+						<div className="checkbox">
+							<label>
+								<input
+									type="checkbox" 
+									checked={this.props.gallery.visibility > 1} />
+								<span className="ripple"></span>
+								<span className="check"></span> Highlighted
+							</label>
+						</div>
+					</div>
 
 				</div>
 				
@@ -85,6 +81,15 @@ export default class GalleryEditBody extends React.Component {
 			</div>
 
 		);
+	}
+
+	updateVisibility(visibility) {
+
+		var gallery = _.clone(this.props.gallery, true);
+		gallery.visibility = visibility;
+
+		this.props.updateGallery(gallery);
+
 	}
 
 	updateCaption() {

@@ -26,15 +26,14 @@ export default class PostList extends React.Component {
 			loading: false,
 			scrollable: this.props.scrollable,
 			selectedPosts: [],
-			gallery: this.props.gallery,
-			galleryToggled: false
+			gallery: null,
+			galleryEditToggled: false
 		}
 		this.togglePost 		= this.togglePost.bind(this);
 		this.setSelectedPosts 	= this.setSelectedPosts.bind(this);
 		this.scroll 			= this.scroll.bind(this);
 		this.didPurchase 		= this.didPurchase.bind(this);
 		this.edit 				= this.edit.bind(this);
-		this.hideGallery 		= this.hideGallery.bind(this);
 	}
 
 	componentDidMount() {
@@ -59,7 +58,9 @@ export default class PostList extends React.Component {
 
 	}
 
-	//Scroll listener for main window
+	/**
+	 * Scroll listener for main window
+	 */
 	scroll() {
 
 		var grid = this.refs.grid;
@@ -113,7 +114,6 @@ export default class PostList extends React.Component {
 	 * @param  {object} passedPost The post to toggle selected or unselected in the post-list and bulk edit
 	 */
 	togglePost(passedPost) {
-
 		//Filter out anything, but ones that equal the passed post
 		var result = this.state.selectedPosts.filter((post) => {
 			return passedPost._id === post._id
@@ -135,7 +135,6 @@ export default class PostList extends React.Component {
 			});
 
 		}
-
 	}
 
 	/**
@@ -148,23 +147,15 @@ export default class PostList extends React.Component {
 			purchases: this.state.purchases.concat(id)
 		});
 	}
+
 	/**
 	 * Called when PostCellAction's Edit button is clicked
 	 * @param  {Object} post - Has post
 	 */
-	edit(post) {
-		$.get(global.API_URL + '/v1/gallery/get', {id: post.parent}, (data) => {
-			if(data.err) return;
-			this.setState({
-				gallery: data.data,
-				galleryToggled: true
-			});
-		});
-	}
-
-	hideGallery() {
+	edit(gallery) {
 		this.setState({
-			galleryToggled: false
+			gallery: gallery,
+			galleryEditToggled: true
 		});
 	}
 
@@ -177,7 +168,8 @@ export default class PostList extends React.Component {
 		var posts = this.state.posts.map((post, i)  => {
 
 			var purchased = purchases ? purchases.indexOf(post._id) != -1 : null,
-				toggled = this.state.selectedPosts.filter((cPost) => cPost._id === post._id).length > 0 ? true : false;
+				filteredPosts = this.state.selectedPosts.filter((currentPost) => currentPost._id === post._id),
+				toggled = filteredPosts.length > 0 ? true : false;
 
 	      	return (
 	        	
@@ -208,8 +200,7 @@ export default class PostList extends React.Component {
 					setSelectedPosts={this.setSelectedPosts} />
 				<GalleryEdit 
 					gallery={this.state.gallery}
-					toggled={this.state.galleryToggled}
-					hide={this.hideGallery} />
+					toggled={this.state.galleryEditToggled} />
 				<GalleryCreate posts={this.state.selectedPosts} />
 			</div>
 

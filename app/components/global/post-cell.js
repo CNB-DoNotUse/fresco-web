@@ -2,6 +2,7 @@ import React from 'react'
 import FrescoImage from './fresco-image'
 import PurchaseAction from './../actions/purchase-action.js'
 import DownloadAction from './../actions/download-action.js'
+import PostEditAction from './../actions/post-edit-action.js'
 import global from '../../../lib/global'
 
 /**
@@ -20,14 +21,13 @@ export default class PostCell extends React.Component {
 
 		var post = this.props.post,
 			toggled = this.props.toggled ? 'toggled' : '',
-			timestamp = post.time_created,
 			timeString = global.formatTime(post.time_created),
 			address = post.location.address || 'No Address',
-			size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small,
-			statusClass = 'mdi icon pull-right '; //Class name for post tile icon
+			size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small;
 		
-		statusClass += post.video == null 	? 'mdi-file-image-box ' : 'mdi-movie ';
-		statusClass += this.props.purchased ? 'available ' : 'md-type-black-disabled ';
+		var statusClass = 'mdi icon pull-right '; //Class name for post tile icon
+			statusClass += post.video == null 	? 'mdi-file-image-box ' : 'mdi-movie ';
+			statusClass += this.props.purchased ? 'available ' : 'md-type-black-disabled ';
 
 		return(
 
@@ -91,8 +91,7 @@ PostCell.defaultProps = {
 		large: 'col-xs-12 col-sm-6 col-lg-4',
 		small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
 	},
-	toggled: false,
-	edit: function() {}
+	toggled: false
 }
 
 
@@ -147,19 +146,27 @@ class PostCellActions extends React.Component {
 
 			if(this.props.editable) {
 				actions.push(
-					<span className="mdi mdi-pencil icon pull-right toggle-gedit toggler" onClick={this.props.edit.bind(null, this.props.post)} key={++key} ></span>
+					<PostEditAction 
+						post={this.props.post} 
+						edit={this.props.edit} 
+						key={++key} />
 				);
 			}
 
 			actions.push(
-				<DownloadAction post={this.props.post} key={++key} />
+				<DownloadAction 
+					post={this.props.post} 
+					key={++key} />
 			);
 
 			//Show the purhcased icon if the post hasn't been purchased                       
 			if(this.props.purchased === false){
 
 				actions.push(
-					<PurchaseAction post={this.props.post} didPurchase={this.props.didPurchase} key={++key}/>
+					<PurchaseAction 
+						post={this.props.post} 
+						didPurchase={this.props.didPurchase} 
+						key={++key}/>
 				);
 
 			}
@@ -168,7 +175,9 @@ class PostCellActions extends React.Component {
 		//Check if the post has been purchased
 		else if (this.props.purchased === true)
 			actions.push(
-				<span className="mdi mdi-download icon pull-right" onClick={this.download} key={++key}></span>
+				<DownloadAction 
+					post={this.props.post} 
+					key={++key} />
 			);
 
 		//Check if the post is not purhcased, and it is purchasble from the license
@@ -177,8 +186,12 @@ class PostCellActions extends React.Component {
 			actions.push(
 				<span class="mdi mdi-library-plus icon pull-right" key={++key}></span>
 			);
+
 			actions.push(
-				<PurchaseAction post={this.props.post} didPurchase={this.props.didPurchase} key={++key} />
+				<PurchaseAction 
+					post={this.props.post} 
+					didPurchase={this.props.didPurchase} 
+					key={++key} />
 			);
 
 		}

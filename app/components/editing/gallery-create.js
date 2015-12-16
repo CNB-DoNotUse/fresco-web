@@ -22,13 +22,15 @@ export default class GalleryCreate extends React.Component {
 		this.state = {
 			tags: [],
 			relatedStories: [],
-			articles: []
+			articles: [],
+			visibility: 0 
 		}
 		this.clear = this.clear.bind(this);
 		this.create = this.create.bind(this);
 		this.updateRelatedStories = this.updateRelatedStories.bind(this);
 		this.updateArticles = this.updateArticles.bind(this);
 		this.updateTags = this.updateTags.bind(this);
+		this.updatedState = this.updateState.bind(this);
 	}
 
  	/**
@@ -54,37 +56,29 @@ export default class GalleryCreate extends React.Component {
 
  	}
 
- 	/**
- 	 * Tag handler for child component
- 	 */
- 	updateTags(tags) {
+ 	updateState(field, value) {
+ 		console.log('Test');
+ 		this.setState({
+ 			fields: value
+ 		})
+ 	}
 
+ 	updateTags(tags) {
  		this.setState({
  			tags: tags
  		});
-
  	}
 
- 	/**
- 	 * Story handler for child component
- 	 */
  	updateRelatedStories(relatedStories) {
-
  		this.setState({
  			relatedStories: relatedStories
  		});
-
  	}
 
- 	/**
- 	 * Article handler for child component
- 	 */
  	updateArticles(articles) {
-
  		this.setState({
  			articles: articles
  		});
-
  	}
 
  	/**
@@ -108,7 +102,7 @@ export default class GalleryCreate extends React.Component {
 			return $.snackbar({content:"Galleries must have at least 1 post"});
 
  		//Generate stories for update
- 		var stories = this.state.stories.map((story) => {
+ 		var stories = this.state.relatedStories.map((story) => {
 
  			if(story.new)
  				return 'NEW=' + JSON.stringify(story);
@@ -137,6 +131,8 @@ export default class GalleryCreate extends React.Component {
  		};
 
  		console.log(params);
+
+ 		return;
 
  		$.ajax("/scripts/gallery/create", {
  			method: 'post',
@@ -224,7 +220,11 @@ export default class GalleryCreate extends React.Component {
 	 							<div className="dialog-row">
 									<div className="checkbox">
 										<label>
-											<input ref="highlight" type="checkbox" /> Highlighted
+											<input 
+												ref="highlight" 
+												type="checkbox" 
+												
+												checked={this.state.visibility > 0} /> Highlighted
 										</label>
 									</div>
 								</div>

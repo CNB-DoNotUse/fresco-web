@@ -57,10 +57,6 @@ export default class StoryEdit extends React.Component {
 		this.hide();
 	}
 
-	componentDidMount() {
-		$.material.init();     
-	}
-
 	render() {
 		return (
 			<div>
