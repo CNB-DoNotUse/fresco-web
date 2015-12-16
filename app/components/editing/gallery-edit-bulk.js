@@ -49,14 +49,15 @@ export default class GalleryEditBulk extends React.Component {
  		);
  	}
 
- 	clear() {
+ 	createGallery() {
 
- 		this.props.setSelectedPosts([]);
+ 		$(".toggle-gcreate").toggleClass("toggled");
 
  	}
 
- 	createGallery() {
+ 	clear() {
 
+ 		this.props.setSelectedPosts([]);
 
  	}
 

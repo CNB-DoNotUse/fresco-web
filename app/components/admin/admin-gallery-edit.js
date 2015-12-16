@@ -393,17 +393,20 @@ export default class AdminGalleryEdit extends React.Component {
 							{galleryImages ? galleryImages : <div></div>}
 						</Slider>
 					</div>
+					
 					<div className="split import-other-origin byline-section" style={{marginTop: '42px'}}>
 						{bylineInput}
 						{nameInput}
 						{affiliationInput}
 					</div>
+					
 					<textarea
 						type="text"
 						className="form-control floating-label gallery-caption"
 						placeholder="Caption"
 						onChange={this.props.handleChangeCaption}
 						ref="gallery-caption"></textarea>
+					
 					<div className="split chips">
 						<div className="split-cell">
 							<input
@@ -412,10 +415,12 @@ export default class AdminGalleryEdit extends React.Component {
 								placeholder="Tags"
 								onKeyDown={this.galleryTagsInputKeyDown}
 								ref="tags-input" />
+							
 							<ul className="chips tags gallery-tags">
 								{allTags}
 							</ul>
 						</div>
+						
 						<div className="split-cell">
 							<span className="md-type-body2">Suggested tags</span>
 							<ul className="chips gallery-suggested-tags"></ul>

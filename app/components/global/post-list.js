@@ -3,6 +3,7 @@ import PostCell from './post-cell'
 import GalleryEdit from '../editing/gallery-edit'
 import GalleryEditBulk from '../editing/gallery-edit-bulk'
 import global from '../../../lib/global'
+import GalleryCreate from '../editing/gallery-create'
 
 /** //
 
@@ -209,6 +210,7 @@ export default class PostList extends React.Component {
 					gallery={this.state.gallery}
 					toggled={this.state.galleryToggled}
 					hide={this.hideGallery} />
+				<GalleryCreate posts={this.state.selectedPosts} />
 			</div>
 
 		)		

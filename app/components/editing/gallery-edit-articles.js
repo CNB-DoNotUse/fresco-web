@@ -15,7 +15,10 @@ export default class GalleryEditArticles extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 
-		this.setState({	articles: nextProps.articles });
+		this.setState({	
+			articles: nextProps.articles 
+		});
+		
 	}
 
 	handleClick(index) {

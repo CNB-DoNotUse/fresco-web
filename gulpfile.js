@@ -118,7 +118,7 @@ gulp.task('Build Webpack', (cb) => {
 		      ]
 		    }
 		}))
-		.pipe(gulp.dest('./public/javascripts/pages'));
+		.pipe(gulp.dest('./public/javascripts/pages'))
 });
 
 /**

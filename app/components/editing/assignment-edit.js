@@ -151,7 +151,6 @@ export default class AssignmentEdit extends React.Component {
 							<button id="story-edit-discard" type="button" className="btn btn-flat pull-right toggle-edit toggler" onClick={this.cancel}>Discard</button>
 						</div>
 						<div className="dialog-body">
-							
 							<div className="dialog-col col-xs-12 col-md-7 form-group-default">
 								<div className="dialog-row">
 									<input
