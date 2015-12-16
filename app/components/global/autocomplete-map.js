@@ -30,6 +30,14 @@ export default class AutocompleteMap extends React.Component {
 		});
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
+			this.setState({
+				location: this.props.location
+			});
+		}
+	}
+
 	render() {
 
 		var radiusInput = '';

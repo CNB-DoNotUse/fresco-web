@@ -63,7 +63,9 @@ export default class GalleryEditTags extends React.Component {
 
 		var tags = _.clone(this.props.tags, true);
 			tags.push(tag);
+
 		this.props.updatedTags(tags);
+		this.props.addTag(tag);
 	}
 
 	handleClick(tag) {
@@ -73,7 +75,16 @@ export default class GalleryEditTags extends React.Component {
 		if(index == -1) return;
 
 		tags.splice(index, 1);
+		
 		this.props.updatedTags(tags);
+		this.props.removeTag(tag);
 	}
 
+}
+
+GalleryEditTags.defaultProps = {
+	tags: [],
+	addTag: () => {},
+	removeTag: () => {},
+	updatedTags: () => {}
 }
