@@ -9,61 +9,126 @@ export default class GalleryEditArticles extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { articles: this.props.articles }
-		this.handleClick = this.handleClick.bind(this);
+		this.state = { 
+			suggestions: []
+		}
+		this.addArticle = this.addArticle.bind(this);
+		this.removeArticle = this.removeArticle.bind(this);
+		this.change = this.change.bind(this);
 	}
 
-	componentWillReceiveProps(nextProps) {
-
-		this.setState({	
-			articles: nextProps.articles 
-		});
-		
-	}
-
-	handleClick(index) {
-
-		var updateArticles = this.state.articles;
-
+	/**
+	 * Removes article at passed index
+	 */
+	removeArticle(index) {
 		//Remove from index
-		updateArticles.splice(index, 1);
+		var articles = this.props.articles.splice(index, 1);
 
 		//Update state
-		this.setState({
-			articles: updateArticles
-		});
+		this.setState({ articles: articles });
+	}
 
+	/**
+	 * Adds article element, returns if article exists in prop stories.
+	 */
+	addArticle(article) {
+		//Clear the input field
+		this.refs.autocomplete.value = ''
+		this.refs.dropdown.style.display = 'none';
+
+		var articles = this.props.articles;
+
+		//Check if article already exists
+		for( var a in articles ) {
+			if(articles[a]._id == article._id) return;
+		}
+		
+		articles.push(article);
+
+		this.props.updateArticles(articles);
+	}
+
+	change(e) {
+
+		//Current fields input
+		var query = this.refs.autocomplete.value;
+
+		//Enter is pressed
+		if(e.keyCode == 13){
+
+			this.addArticle(query);
+
+		} else{
+
+			//Field is empty
+			if(query.length == 0){
+				this.setState({ suggestions: [] });
+				this.refs.dropdown.style.display = 'none';
+			} else{
+
+				this.refs.dropdown.style.display = 'block';
+
+				$.ajax({
+					url: '/scripts/article/search',
+					data: { q: query },
+					success: (result, status, xhr) => {
+
+						if(result.data){
+
+							this.setState({ suggestions: result.data });
+							
+						}	
+					}
+				});
+			}
+
+		}
 	}
 
 	render() {
 
-		var articles = this.state.articles.map((article, i) => {
+		var articles = this.props.articles.map((article, i) => {
 
 			return (
-
 				<Tag 
-					onClick={this.handleClick.bind(this, i)} 
+					onClick={this.removeArticle.bind(null, article._id)}
 					text={article.link} 
 					plus={false}
 					key={i} />
-
 			)
 
+		});
+
+		//Map suggestions for dropdown
+		var suggestions = this.state.suggestions.map((article, i) => {
+		
+			return <li  onClick={this.addArticle.bind(null, article)}
+						key={i}>{article.link}</li>
+		
 		});
 		
 		return (
 			<div className="dialog-row split chips">
 				<div className="split-cell">
 					<input 
-						id="gallery-articles-input" 
 						type="text" 
+						onChange={this.change}
 						className="form-control floating-label" 
+						ref="autocomplete"
 						placeholder="Articles" />
-					<ul id="gallery-articles-list" className="chips">{articles}</ul>
+					<ul ref="dropdown" className="dropdown">
+						{suggestions}
+					</ul>
+					<ul className="chips">{articles}</ul>
 				</div>
 			</div>
 		);
 
 	}
 
+}
+
+GalleryEditArticles.defaultProps = {
+	updateArticles: () => {},
+	articles: []
 }

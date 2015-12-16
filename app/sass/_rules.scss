@@ -86,6 +86,11 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	background-color: #3b5998;
 }
 
+.checkbox input[type=checkbox]:checked~.check:before, .checkbox input[type=checkbox]:checked~.check{
+  color: #0047bb;
+}
+
+
 // icons
 .icon {
 	color: $color-black-2;
@@ -159,6 +164,28 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	.checkbox input[type=checkbox]:checked~.check, .checkbox input[type=checkbox]:checked~.check:before {
 		color: $color-accent-primary;
 	}
+
+	.dropdown{
+		position: absolute;
+		left: 0px;
+		z-index: 100;
+		list-style:none;
+		background:#FFF;
+		padding:0;
+		display: none;
+		box-shadow: 0 3px 10px rgba(0,0,0,.23),0 3px 10px rgba(0,0,0,.16);
+
+		li {
+			padding: 5px;
+			cursor:pointer;
+		    font-size: 16px;
+		}
+		li:hover{
+			background:#DDD;
+		}
+
+	}
+
 }
 
 
@@ -427,6 +454,9 @@ div.chips {
 			border-radius: 2px;
 			background-color: $color-shade-1;
 			box-shadow: $color-black-4 0 1px;
+			.new-story div.chip, .new-story div.icon{
+			  background-color: lightgreen !important;
+			}
 			> div.chip {
 				position: relative;
 				display: inline-block;

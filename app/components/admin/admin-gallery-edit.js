@@ -1,9 +1,8 @@
 import React from 'react'
 import Slider from 'react-slick'
 import Dropdown from './../global/dropdown'
-import Tag from './../editing/tag'
-import PlacesAutocomplete from './../editing/places-autocomplete'
-import EditMap from './../editing/edit-map'
+import AutocompleteMap from '../global/autocomplete-map'
+import EditTags from './../editing/gallery-edit-tags'
 import EditStories from './../editing/gallery-edit-stories'
 import AdminGalleryEditFoot from './admin-gallery-edit-foot'
 import global from '../../../lib/global'
@@ -30,11 +29,10 @@ export default class AdminGalleryEdit extends React.Component {
 		this.handleTwitterBylineChange = this.handleTwitterBylineChange.bind(this);
 		this.handleChangeCaption = this.handleChangeCaption.bind(this);
 
-		this.galleryTagsInputKeyDown = this.galleryTagsInputKeyDown.bind(this);
-		this.removeGalleryTag = this.removeGalleryTag.bind(this);
+		this.addTag = this.addTag.bind(this);
+		this.removeTag = this.removeTag.bind(this);
 
-		this.addStory = this.addStory.bind(this);
-		this.removeStory = this.removeStory.bind(this);
+		this.updateRelatedStories = this.updateRelatedStories.bind(this);
 
 		this.onPlaceChange = this.onPlaceChange.bind(this);
 
@@ -81,14 +79,20 @@ export default class AdminGalleryEdit extends React.Component {
 			$(this.refs['gallery-byline']).removeClass('empty');
 			$(this.refs['gallery-caption']).removeClass('empty');
 			$(this.refs['gallery-stories-input']).removeClass('empty');
-			$(this.refs['gallery-location']).removeClass('empty');
-
-			// Empty tags input
-			this.refs['tags-input'].value = '';
 
 		}
 	}
 
+	/**
+	 * Called when byline input fires keyUp event
+	 */
+	handleTwitterBylineChange(selected) {
+		this.refs['gallery-author'].value = selected;
+	}
+
+	/**
+	 * Called when caption input fires keyUp event
+	 */
 	handleChangeCaption(e) {
 		this.setState({
 			editedCaption: e.target.value
@@ -98,105 +102,65 @@ export default class AdminGalleryEdit extends React.Component {
 
 	}
 
-	handleTwitterBylineChange(selected) {
-		this.refs['gallery-author'].value = selected;
+
+	/**
+	 * Adds tag from state
+	 */
+	addTag(tag) {
+		var tags = this.state.newTags.concat(tag);
+		this.setState({
+			newTags: tags
+		});
 	}
 
-	galleryTagsInputKeyDown(e) {
-		if(e.keyCode == 13) {
-			var text = e.target.value.replace(/[^a-z0-9.]+/i, '');
+	/**
+	 * Removes tag from state
+	 */
+	removeTag(tag) {
+		var tags = _clone(this.state.newTags, true);
+		var index = tags.indexOf(tag);
 
-			if(text.length >= 3) {
-				let activeGallery = this.state.activeGallery;
-				let tags = this.state.newTags;
+		if(index == -1) return;
 
-				if(tags.indexOf(text) != -1) return;
-				if(!Array.isArray(activeGallery.tags)) { activeGallery.tags = []; }
-				if(activeGallery.tags.indexOf(text) != -1) return;
+		tags.splice(index, 1);
 
-				tags.push(text);
-
-				this.setState({
-					newTags: tags
-				});
-
-				e.target.value = '';
-			}
-		}
+		this.setState({
+			newTags: newTags
+		});
 	}
 
-	removeGalleryTag(tag) {
-
-		let tags = this.state.activeGallery.tags;
-
-		if(tags.indexOf(tag) != -1) {
-
-			let activeGallery = this.state.activeGallery;
-
-			activeGallery.tags.splice(tags.indexOf(tag), 1);
-
-			this.setState({
-				activeGallery: activeGallery
-			});
-
-		}
-
-		let newTags = this.state.newTags;
-		if(newTags.indexOf(tag) != -1) {
-
-			newTags.splice(newTags.indexOf(tag), 1);
-
-			this.setState({
-				newTags: newTags
-			});
-		}
-
-	}
-
-	addStory(story) {
-		var stories = [];
-		this.state.stories.map(s => stories.push(s));
-
-		stories.push(story);
+	/**
+	 * Updates state with new stories
+	 */
+	updateRelatedStories(stories) {
 
 		this.setState({
 			stories: stories
 		});
 	}
 
-	removeStory(story) {
-		var stories = [];
-		this.state.stories.map(s => stories.push(s));
-		var index = -1;
-		for (var s in stories) {
-			if(stories[s].title == story) {
-				index = s;
-				break;
-			}
-		}
-
-		if(index != -1) {
-			stories.splice(index, 1);
-		}
-
-		this.setState({
-			stories: stories
-		});
-
-	}
-
+	/**
+	 * Updates state map location when AutocompleteMap gives new location
+	 */
 	onPlaceChange(place) {
 		this.setState({
 			mapLocation: place.location
 		});
 	}
 
+	/**
+	 * Changes whether or not edit buttons are enabled
+	 * @param  {bool} is
+	 */
 	editButtonEnabled(is) {
 		this.setState({
 			editButtonEnabled: !is
 		});
 	}
 
+	/**
+	 * Reverts all changes
+	 */
 	revert() {
 		this.setState({
 				activeGallery: this.props.gallery,
@@ -216,13 +180,11 @@ export default class AdminGalleryEdit extends React.Component {
 			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
 		}
 
-		if(this.props.gallery.posts[0].location) {
-			this.refs['gallery-location'].value = this.props.gallery.posts[0].location.address;
-		}
-
-		this.refs['tags-input'].value = '';
 	}
 
+	/**
+	 * Removes callery
+	 */
 	remove() {
 		this.props.remove((err) => {
 			if (err)
@@ -232,6 +194,9 @@ export default class AdminGalleryEdit extends React.Component {
 		});
 	}
 
+	/**
+	 * Skips gallery
+	 */
 	skip() {
 		this.props.skip((err, id) => {
 			if (err)
@@ -244,15 +209,15 @@ export default class AdminGalleryEdit extends React.Component {
 		});
 	}
 
+	/**
+	 * Gets all form data and verifies gallery.
+	 */
 	verify() {
 
-		var allTags = [], byline = '';
+		var byline = '';
 		
 		if(!Array.isArray(this.state.activeGallery.tags)) { this.state.activeGallery.tags = []; }
 		if(!Array.isArray(this.state.activeGallery.posts)) { this.state.activeGallery.posts = []; }
-
-		this.state.activeGallery.tags.map(t => allTags.push(t));
-		this.state.newTags.map(t => allTags.push(t));
 
 		// Byline
 		byline = (this.props.activeGalleryType == 'submission') ? this.state.activeGallery.posts[0].byline.trim() : (this.refs['gallery-author'].value + ' / ' + this.refs['gallery-affiliation'].value);
@@ -263,7 +228,7 @@ export default class AdminGalleryEdit extends React.Component {
 			caption: this.refs['gallery-caption'].value,
 			posts: this.state.activeGallery.posts.map(p => p._id),
 			stories: this.state.stories.map(s => s._id),
-			tags: allTags
+			tags: this.state.newTags.concat(this.state.activeGallery.tags)
 		};
 
 		if(this.props.activeGalleryType == 'import') {
@@ -279,13 +244,18 @@ export default class AdminGalleryEdit extends React.Component {
 			return $.snackbar({content: 'A gallery must have a caption'});
 
 		this.props.verify(params, (err, id) => {
+			
 			if (err)
 				return $.snackbar({content: 'Unable to verify gallery'});
 
-			$.snackbar({content: 'Gallery verified! Click to open', timeout: 5000})
-				.click(() => {
-					window.open('/gallery/' + id);
-				});
+			$.snackbar({ 
+				content: 'Gallery verified! Click to open', 
+				timeout: 5000 
+			}).click(() => {
+				var win = window.open('/gallery/' + id, '_blank');
+				win.focus();
+			});
+
 		});
 	}
 
@@ -307,31 +277,22 @@ export default class AdminGalleryEdit extends React.Component {
 						</video>
 					</div>
 				)
+			} else {
+				galleryImages.push(
+					<div key={i}><img className="img-responsive" src={global.formatImg(post.image, 'medium')} data-id={post._id} /></div>
+				)
 			}
-			return (
-				<div key={i}><img className="img-responsive" src={global.formatImg(post.image, 'medium')} data-id={post._id} /></div>
-			);
-		});
-
-		// Map tags to tag componenets
-		var allTags = [];
-		activeGallery.tags.map((tag, i) => {
-			allTags.push(<Tag text={'#' + tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />);
-		});
-		this.state.newTags.map((tag, i) => {
-			allTags.push(<Tag text={'#' + tag} onClick={this.removeGalleryTag.bind(null, tag)} key={i} />);
 		});
 
 		// If gallery is a submission, 
 		if(this.props.activeGalleryType == 'submission') {
 			// map polygon points to array.
 			if(this.props.gallery.location) {
-				var editMapLocation = [];
-				this.props.gallery.location.coordinates[0].map((coord) => {
-					editMapLocation.push({
+				var editMapLocation = this.props.gallery.location.coordinates[0].map((coord) => {
+					return {
 						lat: coord[1],
 						lng: coord[0]
-					});
+					}
 				});
 			}
 
@@ -393,57 +354,33 @@ export default class AdminGalleryEdit extends React.Component {
 							{galleryImages ? galleryImages : <div></div>}
 						</Slider>
 					</div>
-					
+
 					<div className="split import-other-origin byline-section" style={{marginTop: '42px'}}>
 						{bylineInput}
 						{nameInput}
 						{affiliationInput}
 					</div>
-					
+
 					<textarea
 						type="text"
 						className="form-control floating-label gallery-caption"
 						placeholder="Caption"
 						onChange={this.props.handleChangeCaption}
 						ref="gallery-caption"></textarea>
-					
-					<div className="split chips">
-						<div className="split-cell">
-							<input
-								type="text"
-								className="form-control floating-label tags-input"
-								placeholder="Tags"
-								onKeyDown={this.galleryTagsInputKeyDown}
-								ref="tags-input" />
-							
-							<ul className="chips tags gallery-tags">
-								{allTags}
-							</ul>
-						</div>
-						
-						<div className="split-cell">
-							<span className="md-type-body2">Suggested tags</span>
-							<ul className="chips gallery-suggested-tags"></ul>
-						</div>
-					</div>
-					
+
+					<EditTags ref='tags' tags={activeGallery.tags.concat(this.state.newTags)} addTag={this.addTag} removeTag={this.removeTag} />
+
 					<EditStories ref='stories' 
 						stories={this.state.stories} 
-						addStory={this.addStory}
-						removeStory={this.removeStory} />
+						updateRelatedStories={this.updateRelatedStories} />
 
 					<div style={{height: '309px'}}>
-						<div className="map-group">
-							<PlacesAutocomplete
-								defaultLocation={activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
-								onPlaceChange={this.onPlaceChange}
-								disabled={this.props.activeGalleryType != 'import'} />
-							<div className="form-group-default">
-								<EditMap 
-									location={editMapLocation}
-									rerender={true}/>
-							</div>
-						</div>
+						<AutocompleteMap
+							defaultLocation={activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
+							location={editMapLocation}
+							onPlaceChange={this.onPlaceChange}
+							disabled={this.props.activeGalleryType != 'import'}
+							rerender={true} />
 					</div>
 				</div>
 				<AdminGalleryEditFoot

@@ -21,12 +21,16 @@ export default class GalleryCreate extends React.Component {
 		super(props);
 		this.state = {
 			tags: [],
-			stories: [],
+			relatedStories: [],
 			articles: []
 		}
 		this.clear = this.clear.bind(this);
 		this.create = this.create.bind(this);
+		this.updateRelatedStories = this.updateRelatedStories.bind(this);
+		this.updateArticles = this.updateArticles.bind(this);
+		this.updateTags = this.updateTags.bind(this);
 	}
+	
  	/**
  	 * Hides the window
  	 */
@@ -57,6 +61,28 @@ export default class GalleryCreate extends React.Component {
 
  		this.setState({
  			tags: tags
+ 		});
+
+ 	}
+
+ 	/**
+ 	 * Story handler for child component
+ 	 */
+ 	updateRelatedStories(relatedStories) {
+
+ 		this.setState({
+ 			relatedStories: relatedStories
+ 		});
+
+ 	}
+
+ 	/**
+ 	 * Article handler for child component
+ 	 */
+ 	updateArticles(articles) {
+
+ 		this.setState({
+ 			articles: articles
  		});
 
  	}
@@ -127,13 +153,16 @@ export default class GalleryCreate extends React.Component {
 
  					this.hide();
 
- 					$.snackbar({
- 						htmlAllowed: true,
- 						content: '<a href="/gallery/' + result.data._id + ' ">Gallery successfully saved! Click here to view it</a>' 
- 					});
+ 					$.snackbar({ 
+ 						content: 'Gallery successfully saved! Click here to view it', 
+ 						timeout: 5000 
+ 					}).click(() => {
+						var win = window.open('/gallery/' + result.data._id, '_blank');
+						win.focus();
+					});
+
  				}
  			}
-
  		});
  	}
 	
@@ -184,9 +213,13 @@ export default class GalleryCreate extends React.Component {
 	 								tags={this.state.tags} 
 	 								updateTags={this.updateTags} />
 	 							
-	 							<GalleryEditStories stories={this.state.stories} />
+	 							<GalleryEditStories 
+	 								relatedStories={this.state.relatedStories}
+	 								updateRelatedStories={this.updateRelatedStories} />
 	 							
-	 							<GalleryEditArticles articles={this.state.articles} />
+	 							<GalleryEditArticles 
+	 								articles={this.state.articles}
+	 								updateArticles={this.updateArticles} />
 	 							
 	 							<div className="dialog-row">
 									<div className="checkbox">

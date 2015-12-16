@@ -13,22 +13,23 @@ export default class GalleryEditTags extends React.Component {
 		this.state = {
 			tags: this.props.tags
 		}
+
 		this.change = this.change.bind(this);
 		this.handleClick = this.handleClick.bind(this);
 	}
 
 	render() {
 
-		var tags = this.props.tags,
+		var tags = _.clone(this.props.tags, true);
 			tags = tags.map((tag, i) => {
-				return (
-					<Tag 
-						onClick={this.handleClick.bind(null, tag)} 
-						text={'#' + tag} 
-						plus={false}
-						key={i} />
-				);
-			});
+			return (
+				<Tag 
+					onClick={this.handleClick.bind(null, tag)} 
+					text={'#' + tag} 
+					plus={false}
+					key={i} />
+			);
+		});
 
 		return (
 			
@@ -51,14 +52,7 @@ export default class GalleryEditTags extends React.Component {
 
 	}
 
-	/**
-	 * Change handler for input field
-	 * @param  {[type]} e [description]
-	 * @return {[type]}   [description]
-	 */
 	change(e) {
-
-		//Check if input is `Enter`
 		if(e.keyCode != 13) return;
 
 		var tag = e.target.value;
@@ -67,26 +61,30 @@ export default class GalleryEditTags extends React.Component {
 		
 		if(this.props.tags.indexOf(tag) != -1) return;
 
-		this.props.updateTags(this.props.tags.concat(tag));
+		var tags = _.clone(this.props.tags, true);
+			tags.push(tag);
+
+		this.props.updatedTags(tags);
+		this.props.addTag(tag);
 	}
 
-	/**
-	 * Click event on a single tag dom element
-	 */
 	handleClick(tag) {
-		
-		var tags = this.props.tags,
-			index = tags.indexOf(tag);
+		var tags = _.clone(this.props.tags, true);
+		var index = tags.indexOf(tag);
 
 		if(index == -1) return;
 
 		tags.splice(index, 1);
-
-		this.props.updateTags(tags);
+		
+		this.props.updatedTags(tags);
+		this.props.removeTag(tag);
 	}
 
 }
 
 GalleryEditTags.defaultProps = {
-	updateTags: ()=>{}
+	tags: [],
+	addTag: () => {},
+	removeTag: () => {},
+	updatedTags: () => {}
 }
