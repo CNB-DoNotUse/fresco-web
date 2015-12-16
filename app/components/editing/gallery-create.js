@@ -30,7 +30,7 @@ export default class GalleryCreate extends React.Component {
 		this.updateArticles = this.updateArticles.bind(this);
 		this.updateTags = this.updateTags.bind(this);
 	}
-	
+
  	/**
  	 * Hides the window
  	 */
@@ -44,11 +44,11 @@ export default class GalleryCreate extends React.Component {
  	 */
  	clear() {
 
- 		this.refs.captions.value = '';
+ 		this.refs.caption.value = '';
 
  		this.setState({
  			tags: [],
- 			stories: [],
+ 			relatedStories: [],
  			articles: []
  		});
 
@@ -230,7 +230,11 @@ export default class GalleryCreate extends React.Component {
 								</div>
 	 						</div>
 
-	 						<Slick className="dialog-col col-xs-12 col-md-5">{posts}</Slick>
+	 						<Slick
+	 							dots={true} 
+	 							className="dialog-col col-xs-12 col-md-5">
+	 							{posts}
+	 						</Slick>
 
 	 					</div>
 

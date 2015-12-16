@@ -112,14 +112,24 @@ export default class GalleryEditArticles extends React.Component {
 				<div className="split-cell">
 					<input 
 						type="text" 
+						className="form-control" 
+						placeholder="Articles"
 						onChange={this.change}
-						className="form-control floating-label" 
-						ref="autocomplete"
-						placeholder="Articles" />
+						ref='autocomplete' />
+					
 					<ul ref="dropdown" className="dropdown">
 						{suggestions}
 					</ul>
-					<ul className="chips">{articles}</ul>
+					
+					<ul className="chips">
+						{articles}
+					</ul>
+				</div>
+				
+				<div className="split-cell">
+					<span className="md-type-body2">Add Articles</span>
+					
+					<ul className="chips"></ul>
 				</div>
 			</div>
 		);

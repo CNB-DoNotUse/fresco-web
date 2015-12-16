@@ -110,7 +110,6 @@ export default class GalleryEditStories extends React.Component {
 		return (
 
 			<div className="dialog-row split chips">
-				
 				<div className="split-cell">
 					<input 
 						type="text" 
@@ -127,12 +126,12 @@ export default class GalleryEditStories extends React.Component {
 						{stories}
 					</ul>
 				</div>
+				
 				<div className="split-cell">
-					<span className="md-type-body2">Suggested stories</span>
+					<span className="md-type-body2">Suggested Stories</span>
 					
 					<ul className="chips"></ul>
 				</div>
-
 			</div>
 
 		);

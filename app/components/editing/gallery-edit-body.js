@@ -19,7 +19,7 @@ export default class GalleryEditBody extends React.Component {
 		this.updateCaption = this.updateCaption.bind(this);
 		this.updateRelatedStories = this.updateRelatedStories.bind(this);
 		this.updateArticles = this.updateArticles.bind(this);
-		this.updatedTags = this.updatedTags.bind(this);
+		this.updateTags = this.updateTags.bind(this);
 		this.updatedLocation = this.updatedLocation.bind(this);
 	}
 
@@ -65,7 +65,7 @@ export default class GalleryEditBody extends React.Component {
 
 					</div>
 					
-					<GalleryEditTags ref='tags' tags={this.props.gallery.tags} updatedTags={this.updatedTags} />
+					<GalleryEditTags ref='tags' tags={this.props.gallery.tags} updateTags={this.updateTags} />
 					
 					<GalleryEditStories 
 						ref='stories'
@@ -114,7 +114,7 @@ export default class GalleryEditBody extends React.Component {
 
 	}
 
-	updatedTags(tags) {
+	updateTags(tags) {
 
 		var gallery = _.clone(this.props.gallery, true)
 			gallery.tags = tags;

@@ -44,7 +44,7 @@ export default class GalleryEditTags extends React.Component {
 					<ul ref="gallery-tags-list" className="chips">{tags}</ul>
 				</div>
 				<div className="split-cell">
-					<span className="md-type-body2">Suggested tags</span>
+					<span className="md-type-body2">Suggested Tags</span>
  				</div>
 			</div>
 
@@ -64,7 +64,7 @@ export default class GalleryEditTags extends React.Component {
 		var tags = _.clone(this.props.tags, true);
 			tags.push(tag);
 
-		this.props.updatedTags(tags);
+		this.props.updateTags(tags);
 		this.props.addTag(tag);
 	}
 
@@ -76,7 +76,7 @@ export default class GalleryEditTags extends React.Component {
 
 		tags.splice(index, 1);
 		
-		this.props.updatedTags(tags);
+		this.props.updateTags(tags);
 		this.props.removeTag(tag);
 	}
 
@@ -86,5 +86,5 @@ GalleryEditTags.defaultProps = {
 	tags: [],
 	addTag: () => {},
 	removeTag: () => {},
-	updatedTags: () => {}
+	updateTags: () => {}
 }
