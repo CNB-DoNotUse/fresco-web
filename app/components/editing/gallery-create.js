@@ -27,6 +27,7 @@ export default class GalleryCreate extends React.Component {
 		}
 		this.clear = this.clear.bind(this);
 		this.create = this.create.bind(this);
+		this.toggleVisibility = this.toggleVisibility.bind(this);
 		this.updateRelatedStories = this.updateRelatedStories.bind(this);
 		this.updateArticles = this.updateArticles.bind(this);
 		this.updateTags = this.updateTags.bind(this);
@@ -54,6 +55,12 @@ export default class GalleryCreate extends React.Component {
  			articles: []
  		});
 
+ 	}
+
+ 	toggleVisibility() {
+ 		this.setState({
+ 			visibility: this.state.visibility == 0 ? 2 : 0
+ 		})
  	}
 
  	updateState(field, value) {
@@ -88,7 +95,7 @@ export default class GalleryCreate extends React.Component {
 
  		var caption = this.refs.caption.value,
  			tags = this.state.tags,
- 			visibility = this.refs.highlight.value;
+ 			visibility = this.state.visibility;
 
  		//Generate post ids for update
  		var posts = this.props.posts.map((post) => {
@@ -129,10 +136,6 @@ export default class GalleryCreate extends React.Component {
  			articles: articles,
  			stories: stories,
  		};
-
- 		console.log(params);
-
- 		return;
 
  		$.ajax("/scripts/gallery/create", {
  			method: 'post',
@@ -223,8 +226,7 @@ export default class GalleryCreate extends React.Component {
 											<input 
 												ref="highlight" 
 												type="checkbox" 
-												
-												checked={this.state.visibility > 0} /> Highlighted
+												onChange={this.toggleVisibility} /> Highlighted
 										</label>
 									</div>
 								</div>

@@ -23,6 +23,63 @@ export default class GalleryEditBody extends React.Component {
 		this.updatedLocation = this.updatedLocation.bind(this);
 	}
 
+
+	updateVisibility(visibility) {
+
+		var gallery = _.clone(this.props.gallery, true);
+			gallery.visibility = visibility;
+
+		this.props.updateGallery(gallery);
+
+	}
+
+	updateCaption() {
+
+		var gallery = _.clone(this.props.gallery, true);
+			gallery.caption = this.refs['gallery-caption'].value;
+
+		this.props.updateGallery(gallery);
+
+	}
+
+	updateRelatedStories(stories) {
+
+		var gallery = _.clone(this.props.gallery, true);
+			gallery.related_stories = stories;
+
+		this.props.updateGallery(gallery);
+
+	}
+
+	updateArticles(articles) {
+
+		var gallery = _.clone(this.props.gallery, true)
+			gallery.articles = articles;
+
+		console.log('Updated Articles', gallery.articles);
+
+		this.props.updateGallery(gallery);
+
+	}
+
+	updateTags(tags) {
+
+		var gallery = _.clone(this.props.gallery, true);
+			gallery.tags = tags;
+
+		this.props.updateGallery(gallery);
+
+	}
+
+	updatedLocation(location) {
+
+		var gallery = _.clone(this.props.gallery, true);
+			gallery.locations[0] = location;
+
+		this.props.updateGallery(gallery);
+
+	}
+
 	render() {
 
 		var visibility = this.props.gallery.visibility;
@@ -51,14 +108,20 @@ export default class GalleryEditBody extends React.Component {
 
 					</div>
 					
-					<GalleryEditTags ref='tags' tags={this.props.gallery.tags} updateTags={this.updateTags} />
+					<GalleryEditTags 
+						ref='tags' 
+						tags={this.props.gallery.tags} 
+						updateTags={this.updateTags} />
 					
 					<GalleryEditStories 
 						ref='stories'
-						stories={this.props.gallery.related_stories} 
+						relatedStories={this.props.gallery.related_stories} 
 						updateRelatedStories={this.updateRelatedStories} />
 					
-					<GalleryEditArticles ref='articles' articles={this.props.gallery.articles} />
+					<GalleryEditArticles 
+						ref='articles' 
+						articles={this.props.gallery.articles}
+						updateArticles={this.updateArticles} />
 					
 					<div className="dialog-row">
 						<div className="checkbox">
@@ -74,67 +137,15 @@ export default class GalleryEditBody extends React.Component {
 
 				</div>
 				
-				<GalleryEditPosts posts={this.props.gallery.posts} files={this.props.gallery.files} />
+				<GalleryEditPosts 
+					posts={this.props.gallery.posts} 
+					files={this.props.gallery.files} />
 				
 				<GalleryEditMap gallery={this.props.gallery} />
 
 			</div>
 
 		);
-	}
-
-	updateVisibility(visibility) {
-
-		var gallery = _.clone(this.props.gallery, true);
-		gallery.visibility = visibility;
-
-		this.props.updateGallery(gallery);
-
-	}
-
-	updateCaption() {
-
-		var gallery = _.clone(this.props.gallery, true);
-		gallery.caption = this.refs['gallery-caption'].value;
-
-		this.props.updateGallery(gallery);
-
-	}
-
-	updateRelatedStories(updatedStories) {
-
-		var gallery = _.clone(this.props.gallery, true);
-		gallery.related_stories = updatedStories;
-
-		this.props.updateGallery(gallery);
-
-	}
-
-	updateArticles(articles) {
-
-		var gallery = _.clone(this.props.gallery, true)
-			gallery.articles = articles;
-
-		this.props.updateGallery(gallery);
-
-	}
-
-	updateTags(tags) {
-
-		var gallery = _.clone(this.props.gallery, true)
-			gallery.tags = tags;
-
-		this.props.updateGallery(gallery);
-
-	}
-
-	updatedLocation(location) {
-
-		var gallery = _.clone(this.props.gallery, true);
-			gallery.locations[0] = location;
-
-		this.props.updateGallery(gallery);
-
 	}
 
 }

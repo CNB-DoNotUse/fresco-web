@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import Tag from './tag'
+import global from '../../../lib/global'
 
 /**
  * Component for managing added/removed stories
@@ -23,6 +24,8 @@ export default class GalleryEditStories extends React.Component {
 	 */
 	addStory(newStory) {
 
+		if(global.isEmptyString(newStory.title)) return;
+
 		//Clear the input field
 		this.refs.autocomplete.value = ''
 		this.refs.dropdown.style.display = 'none';
@@ -44,10 +47,11 @@ export default class GalleryEditStories extends React.Component {
 	 * Removes story and updates to parent
 	 */
 	removeStory(index) {
-		//Remove from index
-		var stores = this.props.relatedStories.splice(index, 1);
-
-		this.props.updateRelatedStories(stories);
+		var relatedStories = this.props.relatedStories;
+			//Remove from index
+			relatedStories.splice(index, 1);
+		
+		this.props.updateRelatedStories(relatedStories);
 	}
 
 	change(e) {
@@ -117,7 +121,7 @@ export default class GalleryEditStories extends React.Component {
 				<div className="split-cell">
 					<input 
 						type="text" 
-						className="form-control" 
+						className="form-control floating-label" 
 						placeholder="Stories"
 						onKeyUp={this.change}
 						ref='autocomplete' />

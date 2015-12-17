@@ -116,9 +116,7 @@ router.get('/:filter', function(req, res, next) {
 
   res.render('app', {
     title: title,
-    user: req.session.user,
     page : req.params.filter,
-    config: config,
     alerts: req.alerts,
     props : JSON.stringify(props)
   });

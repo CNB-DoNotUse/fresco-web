@@ -21,19 +21,14 @@ export default class AdminGalleryEdit extends React.Component {
 		this.state = {
 			activeGallery: {},
 			editButtonsEnabled: false,
-			newTags: [],
+			tags: [],
 			stories: [],
 			mapLocation: []
 		}
 		this.editButtonEnabled = this.editButtonEnabled.bind(this);
 		this.handleTwitterBylineChange = this.handleTwitterBylineChange.bind(this);
 		this.handleChangeCaption = this.handleChangeCaption.bind(this);
-
-		this.addTag = this.addTag.bind(this);
-		this.removeTag = this.removeTag.bind(this);
-
 		this.updateRelatedStories = this.updateRelatedStories.bind(this);
-
 		this.onPlaceChange = this.onPlaceChange.bind(this);
 
 		this.revert = this.revert.bind(this);
@@ -55,7 +50,7 @@ export default class AdminGalleryEdit extends React.Component {
 			// Reset form
 			this.setState({
 				activeGallery: this.props.gallery,
-				newTags: [],
+				tags: [],
 				stories: [],
 				mapLocation: null
 			});
@@ -102,33 +97,6 @@ export default class AdminGalleryEdit extends React.Component {
 
 	}
 
-
-	/**
-	 * Adds tag from state
-	 */
-	addTag(tag) {
-		var tags = this.state.newTags.concat(tag);
-		this.setState({
-			newTags: tags
-		});
-	}
-
-	/**
-	 * Removes tag from state
-	 */
-	removeTag(tag) {
-		var tags = _clone(this.state.newTags, true);
-		var index = tags.indexOf(tag);
-
-		if(index == -1) return;
-
-		tags.splice(index, 1);
-
-		this.setState({
-			newTags: newTags
-		});
-	}
-
 	/**
 	 * Updates state with new stories
 	 */
@@ -162,9 +130,10 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Reverts all changes
 	 */
 	revert() {
+		
 		this.setState({
 				activeGallery: this.props.gallery,
-				newTags: [],
+				tags: this.props.gallery.tags,
 				stories: []
 			});
 
@@ -228,7 +197,7 @@ export default class AdminGalleryEdit extends React.Component {
 			caption: this.refs['gallery-caption'].value,
 			posts: this.state.activeGallery.posts.map(p => p._id),
 			stories: this.state.stories.map(s => s._id),
-			tags: this.state.newTags.concat(this.state.activeGallery.tags)
+			tags: this.state.tags
 		};
 
 		if(this.props.activeGalleryType == 'import') {
@@ -368,10 +337,12 @@ export default class AdminGalleryEdit extends React.Component {
 						onChange={this.props.handleChangeCaption}
 						ref="gallery-caption"></textarea>
 
-					<EditTags ref='tags' tags={activeGallery.tags.concat(this.state.newTags)} addTag={this.addTag} removeTag={this.removeTag} />
+					<EditTags  
+						updateTags={this.updateTags}
+						tags={this.state.tags} />
 
 					<EditStories ref='stories' 
-						stories={this.state.stories} 
+						relatedStories={this.state.stories} 
 						updateRelatedStories={this.updateRelatedStories} />
 
 					<div style={{height: '309px'}}>
