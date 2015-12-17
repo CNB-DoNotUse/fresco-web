@@ -81,7 +81,7 @@ export default class GalleryList extends React.Component {
 				
 			},
 			error: (xhr, status, error) => {
-				$.snackbar({content: resolveError(error)});
+				$.snackbar({content: global.resolveError(error)});
 			}
 
 		});

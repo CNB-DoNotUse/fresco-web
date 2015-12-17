@@ -114,7 +114,7 @@ export default class AssignmentEdit extends React.Component {
 		       $.snackbar({
 		           content: 'Assignment saved!'
 		       });
-   		       this.props.setAssignment(response.data)
+   		       this.props.setAssignment(response.data);
 		       this.hide();
 		   }
 		});

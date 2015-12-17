@@ -23,6 +23,7 @@ export default class AdminGalleryEdit extends React.Component {
 			editButtonsEnabled: false,
 			tags: [],
 			stories: [],
+			address: null,
 			mapLocation: []
 		}
 		this.editButtonEnabled = this.editButtonEnabled.bind(this);
@@ -112,6 +113,7 @@ export default class AdminGalleryEdit extends React.Component {
 	 */
 	onPlaceChange(place) {
 		this.setState({
+			address: place.address,
 			mapLocation: place.location
 		});
 	}
@@ -203,9 +205,8 @@ export default class AdminGalleryEdit extends React.Component {
 		if(this.props.activeGalleryType == 'import') {
 			params.other_origin_name = this.refs['gallery-author'].value;
 			params.other_origin_affiliation = this.refs['gallery-affiliation'].value;
-			params.address = this.refs['gallery-location'].value;
+			params.address = this.state.address;
 		}
-
 		if (!params.posts || params.posts.length == 0)
 			return $.snackbar({content: 'A gallery must have at least one post'});
 

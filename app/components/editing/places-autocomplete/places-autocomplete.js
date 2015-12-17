@@ -37,6 +37,11 @@ export default class PlacesAutocomplete extends React.Component {
         // Remove material input empty class
         $('.autocomplete-input').removeClass('empty');
         
+        // Set initial input text
+        if(this.props.defaultLocation && this.refs['autocomplete-input'].value == '') {
+            this.refs['autocomplete-input'].value = this.props.defaultLocation;
+        }
+
         // If prop location changed, update input
         if(prevProps.defaultLocation != this.props.defaultLocation) {
             this.refs['autocomplete-input'].value = this.props.defaultLocation || '';
@@ -54,7 +59,7 @@ export default class PlacesAutocomplete extends React.Component {
 
         // Pass location back up
         this.props.onPlaceChange({
-            place: place.name,
+            address: place.formatted_address || place.address,
             location: {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng()

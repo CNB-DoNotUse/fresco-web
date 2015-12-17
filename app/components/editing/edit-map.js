@@ -45,7 +45,8 @@ export default class EditMap extends React.Component {
 			JSON.stringify(prevProps.radius) == JSON.stringify(this.props.radius)) {
 			return;
 		}
-		
+
+
 		//No location is present
 		if(!this.props.location) {
 			this.state.marker.setMap(null);
@@ -59,9 +60,17 @@ export default class EditMap extends React.Component {
 		//Check if the passed location is a set of points
 		//Then set the polygon  path, and set the marker to center of the polygon
 		if(Array.isArray(this.props.location)) {
-			this.state.polygon.setPath(this.props.location);
+			if(!this.props.location[0].lat) {
+				var locationArr = this.props.location.map((loc) => {
+					return {
+						lat: loc[1],
+						lng: loc[0]
+					}
+				});
+			} 
+			this.state.polygon.setPath(locationArr || this.props.location);
 			this.state.marker.setPosition(this.getCentroid(this.state.polygon));
-			this.state.map.panTo(this.getCentroid(this.props.location));
+			this.state.map.panTo(this.getCentroid(locationArr || this.props.location));
 		} 
 		//Otherwise just set the marker to the passed position
 		else {
@@ -201,6 +210,5 @@ EditMap.defaultProps = {
 	onDataChange: function() {},
 	radius: null,
 	location: null,
-	onDataChange: function(){},
 	type: 'active'
 }
