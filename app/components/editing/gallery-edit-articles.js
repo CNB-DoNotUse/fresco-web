@@ -22,17 +22,21 @@ export default class GalleryEditArticles extends React.Component {
 	 * Removes article at passed index
 	 */
 	removeArticle(index) {
-		//Remove from index
-		var articles = this.props.articles.splice(index, 1);
+		var articles = this.props.articles;
+			//Remove from index
+			articles.splice(index, 1);
 
 		//Update state
-		this.setState({ articles: articles });
+		this.props.updateArticles({ articles: articles });
 	}
 
 	/**
 	 * Adds article element, returns if article exists in prop stories.
 	 */
 	addArticle(article) {
+
+		if(global.isEmptyString(article.link)) return;
+
 		//Clear the input field
 		this.refs.autocomplete.value = ''
 		this.refs.dropdown.style.display = 'none';

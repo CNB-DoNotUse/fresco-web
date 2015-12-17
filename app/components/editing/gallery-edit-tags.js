@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import Tag from './tag.js'
+import global from '../../../lib/global'
 
 /**
  * Component for managing added/removed tags
@@ -10,21 +11,49 @@ export default class GalleryEditTags extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {
-			tags: this.props.tags
-		}
-
 		this.change = this.change.bind(this);
-		this.handleClick = this.handleClick.bind(this);
+		this.removeTag = this.removeTag.bind(this);
+	}
+
+	change(e) {
+		
+		//Check if enter
+		if(e.keyCode != 13) return;
+
+		var tags = this.props.tags,
+			tag = e.target.value;
+
+		if(global.isEmptyString(tag)) return;
+
+		e.target.value = '';
+		
+		//Check if tag exists
+		if(tags.indexOf(tag) != -1) return;
+
+		tags.push(tag);
+
+		this.props.updateTags(tags);
+
+	}
+
+	/**
+	 * Removes tag at passed index
+	 */
+	removeTag(index) {
+
+		var tags = this.props.tags;
+
+		tags.splice(index, 1);
+		
+		this.props.updateTags(tags);
 	}
 
 	render() {
 
-		var tags = _.clone(this.props.tags, true);
-			tags = tags.map((tag, i) => {
+		var tags = this.props.tags.map((tag, i) => {
 			return (
 				<Tag 
-					onClick={this.handleClick.bind(null, tag)} 
+					onClick={this.removeTag.bind(null, i)} 
 					text={'#' + tag} 
 					plus={false}
 					key={i} />
@@ -36,7 +65,6 @@ export default class GalleryEditTags extends React.Component {
 			<div className="dialog-row split chips">
 				<div className="split-cell">
 					<input 
-						id="gallery-tags-input" 
 						type="text" 
 						className="form-control floating-label" 
 						placeholder="Tags"
@@ -52,39 +80,9 @@ export default class GalleryEditTags extends React.Component {
 
 	}
 
-	change(e) {
-		if(e.keyCode != 13) return;
-
-		var tag = e.target.value;
-
-		e.target.value = '';
-		
-		if(this.props.tags.indexOf(tag) != -1) return;
-
-		var tags = _.clone(this.props.tags, true);
-			tags.push(tag);
-
-		this.props.updateTags(tags);
-		this.props.addTag(tag);
-	}
-
-	handleClick(tag) {
-		var tags = _.clone(this.props.tags, true);
-		var index = tags.indexOf(tag);
-
-		if(index == -1) return;
-
-		tags.splice(index, 1);
-		
-		this.props.updateTags(tags);
-		this.props.removeTag(tag);
-	}
-
 }
 
 GalleryEditTags.defaultProps = {
 	tags: [],
-	addTag: () => {},
-	removeTag: () => {},
 	updateTags: () => {}
 }

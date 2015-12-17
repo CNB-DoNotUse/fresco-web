@@ -23,10 +23,6 @@ router.get('/', function(req, res, next) {
     alerts: req.alerts,
     page : 'highlights',
     title : title,
-    links: [
-      '/vendor/bootstrap/dist/css/bootstrap.min.css',
-      '/stylesheets/screen.css',
-    ],
     props : JSON.stringify(props)
   });
 

@@ -19,7 +19,7 @@ export default class GalleryEdit extends React.Component {
 		super(props);
 		
 		this.state = {
-			gallery: this.props.gallery,
+			gallery: _.clone(this.props.gallery, true),
 			toggled: false
 		}
 
@@ -33,7 +33,8 @@ export default class GalleryEdit extends React.Component {
 	    //Check for optional prop toggle to toggle visiblity of modal
 		if(nextProps.toggled){
 
-			//If next props is sending toggled and the modal is already toggled from the previous props, don't do anything
+			//If next props is sending toggled and the modal is 
+			//already toggled from the previous props, don't do anything
 			if(this.props.toggled && nextProps.toggled) return
 
 			this.setState({
@@ -43,15 +44,15 @@ export default class GalleryEdit extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+		//Compare the ID instead? #nolan
 		if(JSON.stringify(prevProps.gallery) != JSON.stringify(this.props.gallery)) {
 			this.setState({
-				gallery: this.props.gallery
+				gallery: _.clone(this.props.gallery, true)
 			});
 		}
 	}
 
 	hide() {
-		console.log('fuck');
 		this.setState({
 			toggled: false
 		});
@@ -86,7 +87,6 @@ export default class GalleryEdit extends React.Component {
 		if(gallery.posts.length + files.length == 0 )
 			return $.snackbar({content:"Galleries must have at least 1 post"});
 
-
  		//Generate stories for update
  		var stories = [];
  		gallery.related_stories.map((story) => {
@@ -101,13 +101,13 @@ export default class GalleryEdit extends React.Component {
 
  		//Generate articles for update
  		var articles = [];
- 		gallery.articles.map((articles) => {
+ 		gallery.articles.map((article) => {
 
- 			if(articles.new){
- 				articles.push('NEW=' + JSON.stringify(articles));
+ 			if(article.new){
+ 				articles.push('NEW=' + JSON.stringify(article));
  			}
  			else
- 				articles.push(articles._id);
+ 				articles.push(article._id);
 
  		});	
 
@@ -121,6 +121,8 @@ export default class GalleryEdit extends React.Component {
  			stories: stories,
  			articles: articles
  		};
+
+ 		console.log(tags);
 
  		//Configure the byline's other origin
  		//From twitter
@@ -161,7 +163,7 @@ export default class GalleryEdit extends React.Component {
  					$.snackbar({
  						content: "Gallery successfully saved!"
  					});
- 					this.props.hide();
+ 					this.hide();
  				}
  			}
 
@@ -180,18 +182,21 @@ export default class GalleryEdit extends React.Component {
 	 			</div>
 	 			<div className={"edit panel panel-default toggle-edit gedit " + toggled}>
 	 				<div className="col-xs-12 col-lg-12 edit-new dialog">
-	 					<GalleryEditHead 
-	 						hide={this.hide} />
+	 					<div className="dialog-head">
+	 						<span className="md-type-title">Edit Gallery</span>
+	 						<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
+	 					</div>
 	 					
 	 					<GalleryEditBody 
 	 						gallery={this.state.gallery}
 	 						updateGallery={this.updateGallery} />
 	 					
 	 					<GalleryEditFoot 
-	 						updateGallery={this.updateGallery}
+	 						gallery={this.state.gallery}
+	 						
 	 						revert={this.revertGallery}
 	 						saveGallery={this.saveGallery}
-	 						gallery={this.props.gallery}
+	 						updateGallery={this.updateGallery}
 	 						hide={this.hide} />
 	 				</div>
 	 			</div>
@@ -203,21 +208,4 @@ export default class GalleryEdit extends React.Component {
 
 GalleryEdit.defaultProps = {
 	gallery: null
-}
-
-class GalleryEditHead extends React.Component {
-
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		return (
-			<div className="dialog-head">
-				<span className="md-type-title">Edit Gallery</span>
-				<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.props.hide}></span>
-			</div>
-		);
-	}
-
 }

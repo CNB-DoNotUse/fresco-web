@@ -79,10 +79,6 @@ router.get('/:id', function(req, res, next) {
           url: req.originalUrl,        
           description: gallery.caption
         },
-        links: [
-          '/stylesheets/landing.css',
-          '/stylesheets/publicGallery.css'
-        ],
         page: 'publicGallery',
         props: JSON.stringify(props)
       });
