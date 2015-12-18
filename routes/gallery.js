@@ -62,7 +62,7 @@ router.get('/:id', function(req, res, next) {
     //User is not logged in, show public gallery page
     else {
 
-      res.locals.fresco.platform = 'public';
+      res.locals.section = 'public';
       
       var props = {
             gallery: gallery,

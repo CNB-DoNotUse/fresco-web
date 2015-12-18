@@ -38,9 +38,7 @@ gulp.task('Build Assets',  () => {
 		//Define the sections we're in
 		var section = sections[s];
 
-		console.log('\nSection: ' + section + '\nDEP\n' , dependencies[section]._global.css);
-
-		console.log('\nGlobal :', dependencies.global.css)
+		console.log('\nSection: ' + section , dependencies[section]._global.css);
 
 		// Build section _global css
 		cssTasks.push(
@@ -63,20 +61,20 @@ gulp.task('Build Assets',  () => {
 		var pages = Object.keys(dependencies[section]);
 
 		//Take out the global from the pages
-		//so now we onyl build the page specific stuff
+		//so now we only build the page specific stuff
 		pages.splice(pages.indexOf('_global'), 1);
-		
+
 		//Loop through all the pages in the sections, not part of the `_global`
 		for(var p in pages) {
-			
+
 			var pageDependencies = dependencies[section][pages[p]];
 
-			// console.log('PAGE:' , pages[p] + ' Dependencies: ' , pageDependencies);
+			console.log('\nPage:' , pages[p] , pageDependencies);
 
 			if(pageDependencies.css.length) {
 				cssTasks.push(
 					gulp.src(dependencies.global.css.concat(pageDependencies.css))
-						.pipe(concat(pages[s] + '.css'))
+						.pipe(concat(pages[p] + '.css'))
 						.pipe(sass().on('error', sass.logError))
 						// .pipe(minifyCss())
 						.pipe(gulp.dest('./public/stylesheets/pages'))
@@ -131,7 +129,7 @@ gulp.task('Master Build', function(callback) {
 });
 
 gulp.task('watch', () => {
-	gulp.watch('./app/sass/**/*.scss', ['css']);
+	gulp.watch('./app/sass/**/*.scss', ['Build Assets']);
 });
 
-gulp.task('default', ['Master Build']);
+gulp.task('default', ['watch', 'Master Build'])
