@@ -180,7 +180,6 @@ export default class DispatchAssignments extends React.Component {
 
 		//Remove toggle from all other buttons
 		for (var i = 0; i < buttons.length; i++) {
-			console.log(buttons[i]);
 			buttons[i].className = buttons[i].className.replace(/\btoggled\b/,'');
 		};
 

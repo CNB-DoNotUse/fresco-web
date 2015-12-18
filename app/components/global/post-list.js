@@ -154,8 +154,6 @@ export default class PostList extends React.Component {
 	 * @param  {Object} post - Has post
 	 */
 	edit(gallery) {
-		console.log('asdfads');
-		console.log(gallery);
 		this.setState({
 			gallery: gallery,
 			galleryEditToggled: true

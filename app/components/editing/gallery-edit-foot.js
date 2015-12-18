@@ -68,9 +68,7 @@ export default class GalleryEditFoot extends React.Component {
 	            	gallery.files.sources.push(e.target.result);
 
 	            	//When we're at the end of the loop, send the state update to the parent
-		    		console.log(index);
 			    	if(gallery.files.sources.length == files.length) {
-			    		console.log('asd');
 			    		self.props.updateGallery(gallery);
 			    	}
 

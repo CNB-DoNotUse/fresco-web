@@ -64,7 +64,6 @@ export default class GalleryCreate extends React.Component {
  	}
 
  	updateState(field, value) {
- 		console.log('Test');
  		this.setState({
  			fields: value
  		})
@@ -101,9 +100,6 @@ export default class GalleryCreate extends React.Component {
  		var posts = this.props.posts.map((post) => {
  			return post._id
  		});
-
- 		console.log('Posts', posts);
- 		
 
 		if(posts.length == 0) 
 			return $.snackbar({content:"Galleries must have at least 1 post"});

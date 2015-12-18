@@ -82,8 +82,6 @@ export default class AssignmentEdit extends React.Component {
 			expiration_time: this.refs.expiration.value * 60 * 60 * 1000 //Convert to milliseconds
 		};
 
-		console.log(params);
-
 		if (global.isEmptyString(params.title)){
 			$.snackbar({content: 'Assignment must have a title!'});
 			return;

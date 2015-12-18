@@ -69,7 +69,6 @@ class AssignmentDetail extends React.Component {
  		$.post('/scripts/assignment/expire', {
  			id: this.state.assignment._id
  		}, (response) => {
- 			console.log(response);
 
  			// //Do nothing, because of bad response
  			// if(!response.data || response.err)

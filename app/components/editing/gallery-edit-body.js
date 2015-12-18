@@ -56,8 +56,6 @@ export default class GalleryEditBody extends React.Component {
 		var gallery = _.clone(this.props.gallery, true)
 			gallery.articles = articles;
 
-		console.log('Updated Articles', gallery.articles);
-
 		this.props.updateGallery(gallery);
 
 	}
