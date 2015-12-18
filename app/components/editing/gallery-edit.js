@@ -23,6 +23,8 @@ export default class GalleryEdit extends React.Component {
 			toggled: false
 		}
 
+		this.onPlaceChange = this.onPlaceChange.bind(this);
+
 		this.updateGallery = this.updateGallery.bind(this);
 		this.revertGallery = this.revertGallery.bind(this);
 		this.saveGallery = this.saveGallery.bind(this);
@@ -55,6 +57,16 @@ export default class GalleryEdit extends React.Component {
 	hide() {
 		this.setState({
 			toggled: false
+		});
+	}
+
+	onPlaceChange(place) {
+		var gallery = this.state.gallery;
+		gallery.location = place.location;
+		gallery.address = place.address;
+
+		this.setState({
+			gallery: gallery
 		});
 	}
 
@@ -122,8 +134,6 @@ export default class GalleryEdit extends React.Component {
  			articles: articles
  		};
 
- 		console.log(tags);
-
  		//Configure the byline's other origin
  		//From twitter
  		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter) {
@@ -140,10 +150,10 @@ export default class GalleryEdit extends React.Component {
  		}
 
  		if (gallery.imported) {
- 			params.lat = marker.getPosition().lat();
- 			params.lon = marker.getPosition().lng();
- 			if (gallery.location.address) {
- 				params.address = document.getElementById('gallery-location-input').value;
+ 			params.lat = gallery.location.lat;
+ 			params.lon = gallery.location.lng;
+ 			if (gallery.address) {
+ 				params.address = gallery.address;
  			}
  		}
 
@@ -189,11 +199,11 @@ export default class GalleryEdit extends React.Component {
 	 					
 	 					<GalleryEditBody 
 	 						gallery={this.state.gallery}
-	 						updateGallery={this.updateGallery} />
+	 						updateGallery={this.updateGallery}
+	 						onPlaceChange={this.onPlaceChange} />
 	 					
 	 					<GalleryEditFoot 
 	 						gallery={this.state.gallery}
-	 						
 	 						revert={this.revertGallery}
 	 						saveGallery={this.saveGallery}
 	 						updateGallery={this.updateGallery}

@@ -72,8 +72,8 @@ class Photos extends React.Component {
 					callback(response.data);
 
 			},
-			error: (xhr, status, error) =>{
-				$.snackbar({content: resolveError(error)});
+			error: (xhr, status, error) => {
+				$.snackbar({content: global.resolveError(error)});
 			}
 
 		});

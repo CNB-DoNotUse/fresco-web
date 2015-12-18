@@ -2,5 +2,7 @@ node_modules/
 sessions/
 public/vendor/
 public/javascripts/pages/
+public/stylesheets/pages/
 app/server/
+dump.rdb
 *.scssc

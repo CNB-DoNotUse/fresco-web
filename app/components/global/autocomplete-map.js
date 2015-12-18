@@ -17,6 +17,9 @@ export default class AutocompleteMap extends React.Component {
 	}
 
 	onPlaceChange(place) {
+
+		this.props.onPlaceChange(place);
+
 		this.setState({
 			location: place.location
 		});
@@ -31,7 +34,9 @@ export default class AutocompleteMap extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
+
+		if ((JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) || 
+			(JSON.stringify(this.props.location) && this.state.location == null)) {
 			this.setState({
 				location: this.props.location
 			});

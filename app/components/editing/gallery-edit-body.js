@@ -141,11 +141,17 @@ export default class GalleryEditBody extends React.Component {
 					posts={this.props.gallery.posts} 
 					files={this.props.gallery.files} />
 				
-				<GalleryEditMap gallery={this.props.gallery} />
+				<GalleryEditMap
+					gallery={this.props.gallery}
+					onPlaceChange={this.props.onPlaceChange} />
 
 			</div>
 
 		);
 	}
 
+}
+
+GalleryEditBody.defaultProps = {
+	onPlaceChange: function () { console.log('GalleryEditBody missing onPlaceChange prop') }
 }
