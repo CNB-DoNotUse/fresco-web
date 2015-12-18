@@ -163,8 +163,6 @@ router.get('/assignment/list', function(req, res, next){
   
   var query = querystring.stringify(req.query);
 
-  console.log(query);
-
   api.get('/v1/assignment/list?' + query, function(error, response, body){
     if (error)
       return res.json({err: error}).end();
@@ -227,9 +225,9 @@ router.post('/gallery/addpost', function(req, res, next){
 
   var i = 0;
   for (var index in req.files){
+    console.log(req.files[index].path);
     cleanupFiles.push(req.files[index].path);
-    params[i] = fs.createReadStream(req.files[index].path);
-    ++i;
+    params[++i] = fs.createReadStream(req.files[index].path);
   }
 
   upload(function(err, gallery){

@@ -16,6 +16,18 @@ export default class PostCell extends React.Component {
 
 		this.postClicked = this.postClicked.bind(this);
 	}
+	
+	postClicked(e) {
+
+		//Check if clicked with shift key
+		if(!e.shiftKey) return;
+
+		//Check if the prop function is present
+		if(!this.props.togglePost) return;
+
+		this.props.togglePost(this.props.post)
+
+	}
 
 	render() {
 
@@ -70,18 +82,6 @@ export default class PostCell extends React.Component {
 			</div>
 
 		)
-	}
-
-	postClicked(e) {
-
-		//Check if clicked with shift key
-		if(!e.shiftKey) return;
-
-		//Check if the prop function is present
-		if(!this.props.togglePost) return;
-
-		this.props.togglePost(this.props.post)
-
 	}
 
 };

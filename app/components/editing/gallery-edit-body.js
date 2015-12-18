@@ -139,7 +139,9 @@ export default class GalleryEditBody extends React.Component {
 				
 				<GalleryEditPosts 
 					posts={this.props.gallery.posts} 
-					files={this.props.gallery.files} />
+					files={this.props.gallery.files}
+					deletePosts={this.props.deletePosts}
+					toggleDelete={this.props.toggleDeletePost} />
 				
 				<GalleryEditMap
 					gallery={this.props.gallery}
@@ -153,5 +155,7 @@ export default class GalleryEditBody extends React.Component {
 }
 
 GalleryEditBody.defaultProps = {
-	onPlaceChange: function () { console.log('GalleryEditBody missing onPlaceChange prop') }
+	deletePosts: [],
+	onPlaceChange: function () { console.log('GalleryEditBody missing onPlaceChange prop') },
+	toggleDeletePost: function() { console.log('GalleryEditBody missing toggleDeletePost prop') }
 }

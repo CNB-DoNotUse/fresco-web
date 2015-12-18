@@ -20,44 +20,29 @@ export default class GalleryEdit extends React.Component {
 		
 		this.state = {
 			gallery: _.clone(this.props.gallery, true),
-			toggled: false
+			posts: this.props.posts,
+			deletePosts: []
 		}
 
-		this.onPlaceChange = this.onPlaceChange.bind(this);
+		this.onPlaceChange 	= this.onPlaceChange.bind(this);
+		this.toggleDeletePost 	= this.toggleDeletePost.bind(this);
 
-		this.updateGallery = this.updateGallery.bind(this);
-		this.revertGallery = this.revertGallery.bind(this);
-		this.saveGallery = this.saveGallery.bind(this);
-		this.hide = this.hide.bind(this);
-	}
-
-	componentWillReceiveProps(nextProps) {
-	    //Check for optional prop toggle to toggle visiblity of modal
-		if(nextProps.toggled){
-
-			//If next props is sending toggled and the modal is 
-			//already toggled from the previous props, don't do anything
-			if(this.props.toggled && nextProps.toggled) return
-
-			this.setState({
-				toggled: nextProps.toggled
-			});
-		}
+		this.updateGallery 	= this.updateGallery.bind(this);
+		this.revertGallery 	= this.revertGallery.bind(this);
+		this.saveGallery 	= this.saveGallery.bind(this);
+		this.hide		 	= this.hide.bind(this);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		//Compare the ID instead? #nolan
-		if(JSON.stringify(prevProps.gallery) != JSON.stringify(this.props.gallery)) {
-			this.setState({
-				gallery: _.clone(this.props.gallery, true)
-			});
-		}
-	}
 
-	hide() {
-		this.setState({
-			toggled: false
-		});
+		// If props has a gallery, and GalleryEdit does not currently have a gallery or the galleries are not the same
+		if (this.props.gallery &&
+			(!this.state.gallery || (this.state.gallery._id != this.props.gallery._id))) {
+			this.setState({
+				gallery: this.props.gallery,
+				posts: this.props.gallery.posts.map(p => p._id)
+			});	
+		}
 	}
 
 	onPlaceChange(place) {
@@ -70,44 +55,63 @@ export default class GalleryEdit extends React.Component {
 		});
 	}
 
+	toggleDeletePost(post) {
+		var existingPostIDs = _.clone(this.state.posts, true);
+		var index = this.state.deletePosts.indexOf(post);
+
+		if(index == -1) {
+			this.setState({
+				deletePosts: this.state.deletePosts.concat(post)
+			});
+		} else {
+			var posts = _.clone(this.state.deletePosts, true);
+			posts.splice(index, 1);
+			this.setState({
+				deletePosts: posts
+			});
+		}
+	}
+
  	updateGallery(gallery) {
  		//Update new gallery
  		this.setState({ 
- 			gallery: gallery 
+ 			gallery: gallery
  		});
+
  	}
 
  	revertGallery() {
  		// Set gallery back to original
  		this.setState({
- 			gallery: _.clone(this.props.gallery, true)
+ 			gallery: _.clone(this.props.gallery, true),
+ 			posts: this.props.gallery.posts.map(p => p._id),
+ 			deletePosts: []
  		})
  	}
 
  	saveGallery() {
- 		var gallery = _.clone(this.state.gallery, true),
- 			files = gallery.files ? gallery.files : [],
- 			caption = gallery.caption,
- 			tags = gallery.tags;	
+ 		var self 		= this,
+	 		gallery 	= _.clone(this.state.gallery, true),
+ 			files 		= gallery.files ? gallery.files : [],
+ 			caption 	= gallery.caption,
+ 			tags 		= gallery.tags;	
 
  		//Generate post ids for update
- 		var posts = [];
- 		for(var p in gallery.posts) {
- 			posts.push(gallery.posts[p]._id);
- 		}
+ 		var posts = _.difference(this.state.posts, this.state.deletePosts);
 
-		if(gallery.posts.length + files.length == 0 )
+		if(posts.length + files.length == 0 )
 			return $.snackbar({content:"Galleries must have at least 1 post"});
 
  		//Generate stories for update
  		var stories = [];
  		gallery.related_stories.map((story) => {
 
- 			if(story.new){
+ 			if(story.new) {
  				stories.push('NEW=' + JSON.stringify(story));
  			}
- 			else
+ 			else {
  				stories.push(story._id);
+ 			}
 
  		});
 
@@ -115,11 +119,12 @@ export default class GalleryEdit extends React.Component {
  		var articles = [];
  		gallery.articles.map((article) => {
 
- 			if(article.new){
+ 			if(article.new) {
  				articles.push('NEW=' + JSON.stringify(article));
  			}
- 			else
+ 			else {
  				articles.push(article._id);
+ 			}
 
  		});	
 
@@ -149,7 +154,8 @@ export default class GalleryEdit extends React.Component {
 
  		}
 
- 		if (gallery.imported) {
+ 		if (gallery.imported && gallery.location) {
+
  			params.lat = gallery.location.lat;
  			params.lon = gallery.location.lng;
  			if (gallery.address) {
@@ -157,58 +163,113 @@ export default class GalleryEdit extends React.Component {
  			}
  		}
 
- 		$.ajax("/scripts/gallery/update", {
- 			method: 'post',
- 			contentType: "application/json",
- 			data: JSON.stringify(params),
- 			success: (result) => {
+ 		if (files.length) {
+ 			// Upload files then update gallery
+ 			uploadNewFiles();
 
- 				if(result.err) {
- 					$.snackbar({
- 						content: global.resolveError(result.err, "There was an error saving the gallery.")
- 					});
+ 		} else {
+ 			// Or just update gallery if no files present
+ 			updateGallery();
 
- 				}
- 				else{
- 					$.snackbar({
- 						content: "Gallery successfully saved!"
- 					});
- 					this.hide();
- 				}
+ 		}
+
+ 		function uploadNewFiles() {
+			var data 	= new FormData();
+
+ 			for (var i = 0; i < files.length; i++) {
+ 				data.append(i, files[i]);
+ 			}
+			
+			data.append('gallery', gallery._id);
+
+			$.ajax({
+				url: '/scripts/gallery/addpost',
+				type: 'POST',
+				data: data,
+				processData: false,
+				contentType: false,
+				cache: false,
+				dataType: 'json',
+				success: (result, status, xhr) => {
+					updateGallery(result.data);
+				},
+				error: (xhr, status, error) => {
+					$.snackbar({content: global.resolveError(error)});
+				}
+			}); 			
+ 		}
+
+ 		function updateGallery(newPosts) {
+ 			if (typeof newPosts !== 'undefined') {
+				params.posts = _.difference(newPosts.posts, self.state.deletePosts);
  			}
 
+ 			$.ajax("/scripts/gallery/update", {
+	 			method: 'post',
+	 			contentType: "application/json",
+	 			data: JSON.stringify(params),
+	 			success: (result) => {
+
+	 				if(result.err) {
+	 					$.snackbar({
+	 						content: global.resolveError(result.err, "There was an error saving the gallery.")
+	 					});
+
+	 				}
+	 				else {
+	 					$.snackbar({
+	 						content: "Gallery successfully saved!"
+	 					});
+	 					self.props.hide();
+	 				}
+	 			}
+
+	 		});
+ 		}
+ 		
+ 	}
+
+ 	hide() {
+ 		this.setState({
+ 			gallery: null
  		});
+ 		this.props.hide();
  	}
 
 	render() {
 
-		if(!this.state.gallery) return (<div></div>);
+		var editBody = '';
 
-		var toggled = this.state.toggled ? 'toggled' : '';
+		if(this.state.gallery) {
+			editBody = <div className="col-xs-12 col-lg-12 edit-new dialog">
+		 					<div className="dialog-head">
+		 						<span className="md-type-title">Edit Gallery</span>
+		 						<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
+		 					</div>
+		 					<GalleryEditBody 
+		 						gallery={this.state.gallery}
+		 						updateGallery={this.updateGallery}
+		 						onPlaceChange={this.onPlaceChange}
+		 						deletePosts={this.state.deletePosts}
+		 						toggleDeletePost={this.toggleDeletePost} />
+		 					
+		 					<GalleryEditFoot 
+		 						gallery={this.state.gallery}
+		 						revert={this.revertGallery}
+		 						saveGallery={this.saveGallery}
+		 						updateGallery={this.updateGallery}
+		 						hide={this.hide} />
+		 				</div>
+		}
+
+		var toggled = this.props.toggled ? 'toggled' : '';
 
  		return (
  			<div>
 	 			<div className={'dim toggle-edit ' + toggled}>
 	 			</div>
 	 			<div className={"edit panel panel-default toggle-edit gedit " + toggled}>
-	 				<div className="col-xs-12 col-lg-12 edit-new dialog">
-	 					<div className="dialog-head">
-	 						<span className="md-type-title">Edit Gallery</span>
-	 						<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
-	 					</div>
-	 					
-	 					<GalleryEditBody 
-	 						gallery={this.state.gallery}
-	 						updateGallery={this.updateGallery}
-	 						onPlaceChange={this.onPlaceChange} />
-	 					
-	 					<GalleryEditFoot 
-	 						gallery={this.state.gallery}
-	 						revert={this.revertGallery}
-	 						saveGallery={this.saveGallery}
-	 						updateGallery={this.updateGallery}
-	 						hide={this.hide} />
-	 				</div>
+	 				{editBody}
 	 			</div>
  			</div>
  		);
@@ -217,5 +278,6 @@ export default class GalleryEdit extends React.Component {
 }
 
 GalleryEdit.defaultProps = {
-	gallery: null
+	gallery: null,
+	posts: []
 }

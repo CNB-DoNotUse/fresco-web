@@ -6,3 +6,4 @@ public/stylesheets/pages/
 app/server/
 dump.rdb
 *.scssc
+uploads

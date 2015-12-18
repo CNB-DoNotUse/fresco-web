@@ -37,10 +37,16 @@
     text-shadow: 0 4px 4px rgba(0,0,0,0.12);
     opacity: 1;
 }
+
 .frick-frame a * {
     color: inherit;
     opacity: inherit;
 }
+
+.frick-frame a:hover .icon {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
 .frick-frame img, .frick-frame video {
     width: 100%;
     height: auto;
@@ -59,12 +65,17 @@
 .frick-overlay span {
     font-size: 96px;
     color: white;
-    opacity: 0;
     margin: auto;
 }
 .frick-delete > .frick-overlay {
-    opacity: 0.30;
+    opacity: 0.70;
+    background-color: red;
 }
-.frick-delete > .frick-overlay > span {
+.frick-delete > .frick-overlay span {
     opacity: 0.75;
+    text-align: center;
+}
+.frick-delete > .frick-overlay span.mdi-delete {
+    top: -32px;
+    position:relative;
 }

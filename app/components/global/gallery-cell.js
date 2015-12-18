@@ -129,7 +129,7 @@ class GalleryCellImages extends React.Component {
 			return (
 				<div className="flex-row">
 					<div className="flex-col">
-						<FrescoImage image={this.props.posts[0]} size="small" />
+						<FrescoImage image={this.props.posts[0].image} size="small" />
 					</div>
 					<div className="flex-col">
 						<div className="flex-row">

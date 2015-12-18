@@ -34,6 +34,7 @@ export default class PostList extends React.Component {
 		this.scroll 			= this.scroll.bind(this);
 		this.didPurchase 		= this.didPurchase.bind(this);
 		this.edit 				= this.edit.bind(this);
+		this.hideGallery 				= this.hideGallery.bind(this);
 	}
 
 	componentDidMount() {
@@ -153,9 +154,18 @@ export default class PostList extends React.Component {
 	 * @param  {Object} post - Has post
 	 */
 	edit(gallery) {
+		console.log('asdfads');
+		console.log(gallery);
 		this.setState({
 			gallery: gallery,
 			galleryEditToggled: true
+		});
+	}
+
+	hideGallery() {
+		this.setState({
+			gallery: null,
+			galleryEditToggled: false
 		});
 	}
 
@@ -200,7 +210,8 @@ export default class PostList extends React.Component {
 					setSelectedPosts={this.setSelectedPosts} />
 				<GalleryEdit 
 					gallery={this.state.gallery}
-					toggled={this.state.galleryEditToggled} />
+					toggled={this.state.galleryEditToggled}
+					hide={this.hideGallery} />
 				<GalleryCreate posts={this.state.selectedPosts} />
 			</div>
 

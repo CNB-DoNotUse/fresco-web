@@ -33,7 +33,9 @@ router.get('/:id', function(req, res, next) {
     }
 
     var gallery = body.data;
- 
+
+    console.log(gallery.posts.length); 
+
     var title = '';
 
     if (gallery.owner)

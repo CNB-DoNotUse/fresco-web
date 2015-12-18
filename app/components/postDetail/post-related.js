@@ -1,5 +1,5 @@
 import React from 'react'
-
+import global from '../../../lib/global'
 /** //
 
 Description : Related posts at the bottom of the PostDetail view
@@ -21,7 +21,7 @@ export default class PostRelated extends React.Component {
 
 				return <img 
 							className="img-link" 
-							src={formatImg(post.image, 'small')} 
+							src={global.formatImg(post.image, 'small')} 
 							key={i} />
 
 			})

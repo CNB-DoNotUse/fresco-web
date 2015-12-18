@@ -131,7 +131,7 @@ gulp.task('Master Build', function(callback) {
 });
 
 gulp.task('watch', () => {
-	gulp.watch('./app/sass/**/*.scss', ['css']);
+	gulp.watch('./app/sass/**/*.scss', ['Build Assets']);
 });
 
-gulp.task('default', ['Master Build']);
+gulp.task('default', ['watch', 'Master Build']);
