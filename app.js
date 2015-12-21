@@ -38,10 +38,8 @@ app.use(multer({
         return Date.now() + filename.split('.').pop();
     },
     onFileUploadStart : function(file){
-        console.log("Starting upload: " + file.originalname);
     },
     onFileUploadComplete : function(file){
-        console.log("Successful upload: " + file.fieldname + " to " + file.path);
         done = true;
     }
 }));

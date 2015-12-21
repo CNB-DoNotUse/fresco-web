@@ -31892,8 +31892,7 @@
 		}, {
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate(prevProps, prevState) {
-
-				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location) || JSON.stringify(this.props.location) && this.state.location == null) {
+				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
 					this.setState({
 						location: this.props.location
 					});
@@ -33309,8 +33308,6 @@
 				    email = this.refs.email.value;
 				self = this;
 
-				console.log(user);
-
 				if (_global2.default.isEmptyString(firstname)) {
 					$.snackbar({ content: 'You must have a firstname!' });
 					return;
@@ -33327,8 +33324,6 @@
 				userData.append('lastname', lastname);
 				userData.append('email', email);
 				userData.append('avatar', this.refs.avatarFileInput.files[0]);
-
-				console.log(userData);
 
 				$.ajax({
 					url: "/scripts/user/update",

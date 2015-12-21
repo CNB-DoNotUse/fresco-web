@@ -119,8 +119,6 @@ class UserSettings extends React.Component {
  			email =  this.refs.email.value
  			self = this;
 
- 		console.log(user);
-
  		if(global.isEmptyString(firstname)){
  			$.snackbar({ content: 'You must have a firstname!' });
  			return
@@ -140,8 +138,6 @@ class UserSettings extends React.Component {
  		userData.append('email', email);
  		userData.append('avatar', this.refs.avatarFileInput.files[0]);
  			
- 		console.log(userData);
-
  		$.ajax({
  			url: "/scripts/user/update",
  			type: 'POST',

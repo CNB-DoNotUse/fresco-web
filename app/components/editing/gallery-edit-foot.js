@@ -10,7 +10,8 @@ export default class GalleryEditFoot extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			gallery: _.clone(this.props.gallery, true)
+			gallery: _.clone(this.props.gallery, true),
+			newFiles: []
 		}
 		this.revert = this.revert.bind(this);
 		this.clear = this.clear.bind(this);
@@ -67,8 +68,9 @@ export default class GalleryEditFoot extends React.Component {
 	            	gallery.files.sources.push(e.target.result);
 
 	            	//When we're at the end of the loop, send the state update to the parent
-			    	if(index == files.length-1)
+			    	if(gallery.files.sources.length == files.length) {
 			    		self.props.updateGallery(gallery);
+			    	}
 
 	            };
 

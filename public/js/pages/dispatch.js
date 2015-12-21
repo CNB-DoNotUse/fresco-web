@@ -31892,8 +31892,7 @@
 		}, {
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate(prevProps, prevState) {
-
-				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location) || JSON.stringify(this.props.location) && this.state.location == null) {
+				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
 					this.setState({
 						location: this.props.location
 					});
@@ -44794,7 +44793,6 @@
 
 				//Check if view mode has changed
 				if (this.props.viewMode !== prevProps.viewMode) {
-					console.log('View Mode Changed in map');
 					this.clearMap();
 				}
 
@@ -45137,8 +45135,6 @@
 						assignments.push(this.state.assignments[i]);
 					}
 				}
-
-				console.log('Assignments about to be added', assignments);
 
 				if (assignments.length == 0) return;
 
@@ -45606,7 +45602,6 @@
 
 				//Remove toggle from all other buttons
 				for (var i = 0; i < buttons.length; i++) {
-					console.log(buttons[i]);
 					buttons[i].className = buttons[i].className.replace(/\btoggled\b/, '');
 				};
 
@@ -46038,10 +46033,7 @@
 			}
 		}, {
 			key: 'toggleList',
-			value: function toggleList(toggle) {
-
-				console.log(toggle);
-			}
+			value: function toggleList(toggle) {}
 		}]);
 
 		return DispatchSubmit;

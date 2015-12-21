@@ -31892,8 +31892,7 @@
 		}, {
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate(prevProps, prevState) {
-
-				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location) || JSON.stringify(this.props.location) && this.state.location == null) {
+				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
 					this.setState({
 						location: this.props.location
 					});
@@ -33707,7 +33706,7 @@
 						_react2.default.createElement(
 							'div',
 							{ className: 'flex-col' },
-							_react2.default.createElement(_frescoImage2.default, { image: this.props.posts[0], size: 'small' })
+							_react2.default.createElement(_frescoImage2.default, { image: this.props.posts[0].image, size: 'small' })
 						),
 						_react2.default.createElement(
 							'div',

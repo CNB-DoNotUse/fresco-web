@@ -35287,8 +35287,7 @@
 		}, {
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate(prevProps, prevState) {
-
-				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location) || JSON.stringify(this.props.location) && this.state.location == null) {
+				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
 					this.setState({
 						location: this.props.location
 					});
@@ -35779,7 +35778,7 @@
 				//Check if enter
 				if (e.keyCode != 13) return;
 
-				var tags = this.props.tags,
+				var tags = _lodash2.default.clone(this.props.tags, true),
 				    tag = e.target.value;
 
 				if (_global2.default.isEmptyString(tag)) return;
@@ -35802,7 +35801,7 @@
 			key: 'removeTag',
 			value: function removeTag(index) {
 
-				var tags = this.props.tags;
+				var tags = _lodash2.default.clone(this.props.tags, true);
 
 				tags.splice(index, 1);
 

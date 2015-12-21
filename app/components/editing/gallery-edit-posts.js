@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import EditPost from './edit-post.js'
 import Slider from 'react-slick'
@@ -10,56 +11,51 @@ export default class GalleryEditPosts extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {
-			posts: this.props.posts,
-			files: []
-		}
-	}
-
-	componentWillReceiveProps(nextProps) {
-
-		this.setState({	
-			posts: nextProps.posts,
-			files: nextProps.files ? nextProps.files : []
-		});
-
 	}
 
 	render() {
 
 		var k = 0;
 
-		var posts = this.state.posts.map((post) => {
-
-			return <div key={++k}>
+		var posts = this.props.posts.map((post) => {
+			var shouldDelete = this.props.deletePosts.indexOf(post._id) != -1;
+			return <div key={++k} className={"frick-frame" + (shouldDelete ? " frick-delete" : "")}>
 						<EditPost post={post} />
+						<div className="frick-overlay"><span><span className="mdi mdi-delete icon"></span><div className="md-type-caption">This post will be deleted</div></span></div>
+						<a><span className={"mdi mdi-close-circle icon" + (shouldDelete ? ' addback' : '')} onClick={this.props.toggleDelete.bind(null, post._id)}></span></a>
 					</div>
 
 		});
 
 		var files = [];
 
-		for (var i = 0; i < this.state.files.length; i++){
+		for (var i = 0; i < this.props.files.length; i++){
 			
 			files.push(
 				<div key={++k} >
 					<EditPost 
-						file={this.state.files[i]} 
-						source={this.state.files.sources[i]} />
+						file={this.props.files[i]} 
+						source={this.props.files.sources[i]} />
 				</div>
 			);
 
 		}
 
-		//			<div className="dialog-col col-xs-12 col-md-5">
-
 		return (
-			<Slider 
-				className="dialog-col col-xs-12 col-md-5"
-				dots={true}>
-				{posts}{files}
-			</Slider>
+			<div className="dialog-col col-xs-12 col-md-5">
+				<Slider
+					dots={true}>
+					{posts}{files}
+				</Slider>
+			</div>
 		);
 
 	}
+}
+
+GalleryEditPosts.defaultProps = {
+	deletePosts: [],
+	posts: [],
+	files: [],
+	toggleDelete: function() {}
 }

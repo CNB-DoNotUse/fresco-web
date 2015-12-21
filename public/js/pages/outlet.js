@@ -31892,8 +31892,7 @@
 		}, {
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate(prevProps, prevState) {
-
-				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location) || JSON.stringify(this.props.location) && this.state.location == null) {
+				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
 					this.setState({
 						location: this.props.location
 					});
@@ -33129,6 +33128,18 @@
 		}
 
 		_createClass(PostCell, [{
+			key: 'postClicked',
+			value: function postClicked(e) {
+
+				//Check if clicked with shift key
+				if (!e.shiftKey) return;
+
+				//Check if the prop function is present
+				if (!this.props.togglePost) return;
+
+				this.props.togglePost(this.props.post);
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 
@@ -33199,18 +33210,6 @@
 						)
 					)
 				);
-			}
-		}, {
-			key: 'postClicked',
-			value: function postClicked(e) {
-
-				//Check if clicked with shift key
-				if (!e.shiftKey) return;
-
-				//Check if the prop function is present
-				if (!this.props.togglePost) return;
-
-				this.props.togglePost(this.props.post);
 			}
 		}]);
 

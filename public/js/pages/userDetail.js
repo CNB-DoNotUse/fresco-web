@@ -33840,8 +33840,7 @@
 		}, {
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate(prevProps, prevState) {
-
-				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location) || JSON.stringify(this.props.location) && this.state.location == null) {
+				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
 					this.setState({
 						location: this.props.location
 					});
@@ -34332,7 +34331,7 @@
 				//Check if enter
 				if (e.keyCode != 13) return;
 
-				var tags = this.props.tags,
+				var tags = _lodash2.default.clone(this.props.tags, true),
 				    tag = e.target.value;
 
 				if (_global2.default.isEmptyString(tag)) return;
@@ -34355,7 +34354,7 @@
 			key: 'removeTag',
 			value: function removeTag(index) {
 
-				var tags = this.props.tags;
+				var tags = _lodash2.default.clone(this.props.tags, true);
 
 				tags.splice(index, 1);
 
@@ -46687,6 +46686,7 @@
 			_this.scroll = _this.scroll.bind(_this);
 			_this.didPurchase = _this.didPurchase.bind(_this);
 			_this.edit = _this.edit.bind(_this);
+			_this.hideGallery = _this.hideGallery.bind(_this);
 			return _this;
 		}
 
@@ -46827,6 +46827,14 @@
 				});
 			}
 		}, {
+			key: 'hideGallery',
+			value: function hideGallery() {
+				this.setState({
+					gallery: null,
+					galleryEditToggled: false
+				});
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				var _this4 = this;
@@ -46873,7 +46881,8 @@
 						setSelectedPosts: this.setSelectedPosts }),
 					_react2.default.createElement(_galleryEdit2.default, {
 						gallery: this.state.gallery,
-						toggled: this.state.galleryEditToggled }),
+						toggled: this.state.galleryEditToggled,
+						hide: this.hideGallery }),
 					_react2.default.createElement(_galleryCreate2.default, { posts: this.state.selectedPosts })
 				);
 			}
@@ -46954,6 +46963,18 @@
 		}
 
 		_createClass(PostCell, [{
+			key: 'postClicked',
+			value: function postClicked(e) {
+
+				//Check if clicked with shift key
+				if (!e.shiftKey) return;
+
+				//Check if the prop function is present
+				if (!this.props.togglePost) return;
+
+				this.props.togglePost(this.props.post);
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 
@@ -47024,18 +47045,6 @@
 						)
 					)
 				);
-			}
-		}, {
-			key: 'postClicked',
-			value: function postClicked(e) {
-
-				//Check if clicked with shift key
-				if (!e.shiftKey) return;
-
-				//Check if the prop function is present
-				if (!this.props.togglePost) return;
-
-				this.props.togglePost(this.props.post);
 			}
 		}]);
 
@@ -47555,7 +47564,7 @@
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 
 	var _lodash = __webpack_require__(281);
@@ -47597,225 +47606,342 @@
 	 */
 
 	var GalleryEdit = (function (_React$Component) {
-	  _inherits(GalleryEdit, _React$Component);
+		_inherits(GalleryEdit, _React$Component);
 
-	  function GalleryEdit(props) {
-	    _classCallCheck(this, GalleryEdit);
+		function GalleryEdit(props) {
+			_classCallCheck(this, GalleryEdit);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GalleryEdit).call(this, props));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GalleryEdit).call(this, props));
 
-	    _this.state = {
-	      gallery: _lodash2.default.clone(_this.props.gallery, true),
-	      toggled: false
-	    };
+			_this.state = {
+				gallery: null,
+				caption: '',
+				posts: null,
+				deletePosts: []
+			};
 
-	    _this.onPlaceChange = _this.onPlaceChange.bind(_this);
+			_this.onPlaceChange = _this.onPlaceChange.bind(_this);
+			_this.toggleDeletePost = _this.toggleDeletePost.bind(_this);
+			_this.updateCaption = _this.updateCaption.bind(_this);
+			_this.updateRelatedStories = _this.updateRelatedStories.bind(_this);
+			_this.updateArticles = _this.updateArticles.bind(_this);
+			_this.updateTags = _this.updateTags.bind(_this);
 
-	    _this.updateGallery = _this.updateGallery.bind(_this);
-	    _this.revertGallery = _this.revertGallery.bind(_this);
-	    _this.saveGallery = _this.saveGallery.bind(_this);
-	    _this.hide = _this.hide.bind(_this);
-	    return _this;
-	  }
+			_this.updateGallery = _this.updateGallery.bind(_this);
+			_this.revertGallery = _this.revertGallery.bind(_this);
+			_this.saveGallery = _this.saveGallery.bind(_this);
+			_this.hide = _this.hide.bind(_this);
+			return _this;
+		}
 
-	  _createClass(GalleryEdit, [{
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      //Check for optional prop toggle to toggle visiblity of modal
-	      if (nextProps.toggled) {
+		_createClass(GalleryEdit, [{
+			key: 'componentWillReceiveProps',
+			value: function componentWillReceiveProps(nextProps) {
+				// If props has a gallery, and GalleryEdit does not currently have a gallery or the galleries are not the same
+				if (nextProps.gallery && (!this.state.gallery || this.state.gallery._id != nextProps.gallery._id)) {
+					this.setState({
+						gallery: _lodash2.default.clone(nextProps.gallery, true),
+						posts: nextProps.gallery.posts.map(function (p) {
+							return p._id;
+						})
+					});
+				}
+			}
+		}, {
+			key: 'componentDidUpdate',
+			value: function componentDidUpdate(prevProps, prevState) {}
+		}, {
+			key: 'onPlaceChange',
+			value: function onPlaceChange(place) {
 
-	        //If next props is sending toggled and the modal is
-	        //already toggled from the previous props, don't do anything
-	        if (this.props.toggled && nextProps.toggled) return;
+				var gallery = _lodash2.default.clone(this.state.gallery, true);
+				gallery.location = place.location;
+				gallery.address = place.address;
 
-	        this.setState({
-	          toggled: nextProps.toggled
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'componentDidUpdate',
-	    value: function componentDidUpdate(prevProps, prevState) {
-	      //Compare the ID instead? #nolan
-	      if (JSON.stringify(prevProps.gallery) != JSON.stringify(this.props.gallery)) {
-	        this.setState({
-	          gallery: _lodash2.default.clone(this.props.gallery, true)
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'hide',
-	    value: function hide() {
-	      this.setState({
-	        toggled: false
-	      });
-	    }
-	  }, {
-	    key: 'onPlaceChange',
-	    value: function onPlaceChange(place) {
-	      var gallery = this.state.gallery;
-	      gallery.location = place.location;
-	      gallery.address = place.address;
+				this.setState({
+					gallery: gallery
+				});
+			}
+		}, {
+			key: 'updateCaption',
+			value: function updateCaption(e) {
 
-	      this.setState({
-	        gallery: gallery
-	      });
-	    }
-	  }, {
-	    key: 'updateGallery',
-	    value: function updateGallery(gallery) {
-	      //Update new gallery
-	      this.setState({
-	        gallery: gallery
-	      });
-	    }
-	  }, {
-	    key: 'revertGallery',
-	    value: function revertGallery() {
-	      // Set gallery back to original
-	      this.setState({
-	        gallery: _lodash2.default.clone(this.props.gallery, true)
-	      });
-	    }
-	  }, {
-	    key: 'saveGallery',
-	    value: function saveGallery() {
-	      var _this2 = this;
+				var gallery = _lodash2.default.clone(this.state.gallery, true);
+				gallery.caption = e.target.value;
 
-	      var gallery = _lodash2.default.clone(this.state.gallery, true),
-	          files = gallery.files ? gallery.files : [],
-	          caption = gallery.caption,
-	          tags = gallery.tags;
+				this.setState({
+					gallery: gallery
+				});
+			}
+		}, {
+			key: 'updateRelatedStories',
+			value: function updateRelatedStories(stories) {
 
-	      //Generate post ids for update
-	      var posts = [];
-	      for (var p in gallery.posts) {
-	        posts.push(gallery.posts[p]._id);
-	      }
+				var gallery = _lodash2.default.clone(this.state.gallery, true);
+				gallery.related_stories = stories;
 
-	      if (gallery.posts.length + files.length == 0) return $.snackbar({ content: "Galleries must have at least 1 post" });
+				this.setState({
+					gallery: gallery
+				});
+			}
+		}, {
+			key: 'updateArticles',
+			value: function updateArticles(articles) {
 
-	      //Generate stories for update
-	      var stories = [];
-	      gallery.related_stories.map(function (story) {
+				var gallery = _lodash2.default.clone(this.state.gallery, true);
+				gallery.articles = articles;
 
-	        if (story.new) {
-	          stories.push('NEW=' + JSON.stringify(story));
-	        } else stories.push(story._id);
-	      });
+				this.setState({
+					gallery: gallery
+				});
+			}
+		}, {
+			key: 'updateTags',
+			value: function updateTags(tags) {
 
-	      //Generate articles for update
-	      var articles = [];
-	      gallery.articles.map(function (article) {
+				var gallery = _lodash2.default.clone(this.state.gallery, true);
+				gallery.tags = tags;
 
-	        if (article.new) {
-	          articles.push('NEW=' + JSON.stringify(article));
-	        } else articles.push(article._id);
-	      });
+				this.setState({
+					gallery: gallery
+				});
+			}
+		}, {
+			key: 'toggleDeletePost',
+			value: function toggleDeletePost(post) {
+				var existingPostIDs = _lodash2.default.clone(this.state.posts, true);
+				var index = this.state.deletePosts.indexOf(post);
 
-	      //Configure params for the updated gallery
-	      var params = {
-	        id: gallery._id,
-	        caption: caption,
-	        posts: posts,
-	        tags: tags,
-	        visibility: 1,
-	        stories: stories,
-	        articles: articles
-	      };
+				if (index == -1) {
+					this.setState({
+						deletePosts: this.state.deletePosts.concat(post)
+					});
+				} else {
+					var posts = _lodash2.default.clone(this.state.deletePosts, true);
+					posts.splice(index, 1);
+					this.setState({
+						deletePosts: posts
+					});
+				}
+			}
+		}, {
+			key: 'updateGallery',
+			value: function updateGallery(gallery) {
+				//Update new gallery
+				this.setState({
+					gallery: gallery
+				});
+			}
+		}, {
+			key: 'revertGallery',
+			value: function revertGallery() {
+				// Set gallery back to original
+				this.setState({
+					gallery: _lodash2.default.clone(this.props.gallery, true),
+					posts: this.props.gallery.posts.map(function (p) {
+						return p._id;
+					}),
+					deletePosts: []
+				});
+			}
+		}, {
+			key: 'saveGallery',
+			value: function saveGallery() {
+				var self = this,
+				    gallery = _lodash2.default.clone(this.state.gallery, true),
+				    files = gallery.files ? gallery.files : [],
+				    caption = gallery.caption,
+				    tags = gallery.tags;
 
-	      //Configure the byline's other origin
-	      //From twitter
-	      if (gallery.posts[0].meta && gallery.posts[0].meta.twitter) {
+				//Generate post ids for update
+				var posts = _lodash2.default.difference(this.state.posts, this.state.deletePosts);
 
-	        params.other_origin_affiliation = document.getElementById('gallery-edit-affiliation').value;
-	      }
-	      //Imported
-	      else if (!gallery.posts[0].owner && gallery.posts[0].curator) {
+				if (posts.length + files.length == 0) return $.snackbar({ content: "Galleries must have at least 1 post" });
 
-	          params.other_origin_name = document.getElementById('gallery-edit-name').value;
-	          params.other_origin_affiliation = document.getElementById('gallery-edit-affiliation').value;
-	        }
+				//Generate stories for update
+				var stories = [];
+				gallery.related_stories.map(function (story) {
 
-	      if (gallery.imported) {
-	        params.lat = gallery.location.lat;
-	        params.lon = gallery.location.lng;
-	        if (gallery.address) {
-	          params.address = gallery.address;
-	        }
-	      }
+					if (story.new) {
+						stories.push('NEW=' + JSON.stringify(story));
+					} else {
+						stories.push(story._id);
+					}
+				});
 
-	      $.ajax("/scripts/gallery/update", {
-	        method: 'post',
-	        contentType: "application/json",
-	        data: JSON.stringify(params),
-	        success: function success(result) {
+				//Generate articles for update
+				var articles = [];
+				gallery.articles.map(function (article) {
 
-	          if (result.err) {
-	            $.snackbar({
-	              content: _global2.default.resolveError(result.err, "There was an error saving the gallery.")
-	            });
-	          } else {
-	            $.snackbar({
-	              content: "Gallery successfully saved!"
-	            });
-	            _this2.hide();
-	          }
-	        }
+					if (article.new) {
+						articles.push('NEW=' + JSON.stringify(article));
+					} else {
+						articles.push(article._id);
+					}
+				});
 
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
+				//Configure params for the updated gallery
+				var params = {
+					id: gallery._id,
+					caption: caption,
+					posts: posts,
+					tags: tags,
+					visibility: 1,
+					stories: stories,
+					articles: articles
+				};
 
-	      if (!this.state.gallery) return _react2.default.createElement('div', null);
+				//Configure the byline's other origin
+				//From twitter
+				if (gallery.posts[0].meta && gallery.posts[0].meta.twitter) {
 
-	      var toggled = this.state.toggled ? 'toggled' : '';
+					params.other_origin_affiliation = document.getElementById('gallery-edit-affiliation').value;
+				}
+				//Imported
+				else if (!gallery.posts[0].owner && gallery.posts[0].curator) {
 
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement('div', { className: 'dim toggle-edit ' + toggled }),
-	        _react2.default.createElement(
-	          'div',
-	          { className: "edit panel panel-default toggle-edit gedit " + toggled },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'col-xs-12 col-lg-12 edit-new dialog' },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'dialog-head' },
-	              _react2.default.createElement(
-	                'span',
-	                { className: 'md-type-title' },
-	                'Edit Gallery'
-	              ),
-	              _react2.default.createElement('span', { className: 'mdi mdi-close pull-right icon toggle-edit toggler', onClick: this.hide })
-	            ),
-	            _react2.default.createElement(_galleryEditBody2.default, {
-	              gallery: this.state.gallery,
-	              updateGallery: this.updateGallery,
-	              onPlaceChange: this.onPlaceChange }),
-	            _react2.default.createElement(_galleryEditFoot2.default, {
-	              gallery: this.state.gallery,
-	              revert: this.revertGallery,
-	              saveGallery: this.saveGallery,
-	              updateGallery: this.updateGallery,
-	              hide: this.hide })
-	          )
-	        )
-	      );
-	    }
-	  }]);
+						params.other_origin_name = document.getElementById('gallery-edit-name').value;
+						params.other_origin_affiliation = document.getElementById('gallery-edit-affiliation').value;
+					}
 
-	  return GalleryEdit;
+				if (gallery.imported && gallery.location) {
+
+					params.lat = gallery.location.lat;
+					params.lon = gallery.location.lng;
+					if (gallery.address) {
+						params.address = gallery.address;
+					}
+				}
+
+				if (files.length) {
+					// Upload files then update gallery
+					uploadNewFiles();
+				} else {
+					// Or just update gallery if no files present
+					updateGallery();
+				}
+
+				function uploadNewFiles() {
+					var data = new FormData();
+
+					for (var i = 0; i < files.length; i++) {
+						data.append(i, files[i]);
+					}
+
+					data.append('gallery', gallery._id);
+
+					$.ajax({
+						url: '/scripts/gallery/addpost',
+						type: 'POST',
+						data: data,
+						processData: false,
+						contentType: false,
+						cache: false,
+						dataType: 'json',
+						success: function success(result, status, xhr) {
+							updateGallery(result.data);
+						},
+						error: function error(xhr, status, _error) {
+							$.snackbar({ content: _global2.default.resolveError(_error) });
+						}
+					});
+				}
+
+				function updateGallery(newPosts) {
+					if (typeof newPosts !== 'undefined') {
+						params.posts = _lodash2.default.difference(newPosts.posts, self.state.deletePosts);
+					}
+
+					$.ajax("/scripts/gallery/update", {
+						method: 'post',
+						contentType: "application/json",
+						data: JSON.stringify(params),
+						success: function success(result) {
+
+							if (result.err) {
+								$.snackbar({
+									content: _global2.default.resolveError(result.err, "There was an error saving the gallery.")
+								});
+							} else {
+								$.snackbar({
+									content: "Gallery successfully saved!"
+								});
+								self.props.hide();
+							}
+						}
+
+					});
+				}
+			}
+		}, {
+			key: 'hide',
+			value: function hide() {
+				this.setState({
+					gallery: null
+				});
+				this.props.hide();
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+
+				var editBody = '';
+
+				if (this.state.gallery) {
+					editBody = _react2.default.createElement(
+						'div',
+						{ className: 'col-xs-12 col-lg-12 edit-new dialog' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'dialog-head' },
+							_react2.default.createElement(
+								'span',
+								{ className: 'md-type-title' },
+								'Edit Gallery'
+							),
+							_react2.default.createElement('span', { className: 'mdi mdi-close pull-right icon toggle-edit toggler', onClick: this.hide })
+						),
+						_react2.default.createElement(_galleryEditBody2.default, {
+							gallery: this.state.gallery,
+							onPlaceChange: this.onPlaceChange,
+							updateCaption: this.updateCaption,
+							updateRelatedStories: this.updateRelatedStories,
+							updateArticles: this.updateArticles,
+							updateTags: this.updateTags,
+							deletePosts: this.state.deletePosts,
+							toggleDeletePost: this.toggleDeletePost }),
+						_react2.default.createElement(_galleryEditFoot2.default, {
+							gallery: this.state.gallery,
+							revert: this.revertGallery,
+							saveGallery: this.saveGallery,
+							updateGallery: this.updateGallery,
+							hide: this.hide })
+					);
+				}
+
+				var toggled = this.props.toggled ? 'toggled' : '';
+
+				return _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement('div', { className: 'dim toggle-edit ' + toggled }),
+					_react2.default.createElement(
+						'div',
+						{ className: "edit panel panel-default toggle-edit gedit " + toggled },
+						editBody
+					)
+				);
+			}
+		}]);
+
+		return GalleryEdit;
 	})(_react2.default.Component);
 
 	exports.default = GalleryEdit;
 
 	GalleryEdit.defaultProps = {
-	  gallery: null
+		gallery: null,
+		posts: []
 	};
 
 /***/ },
@@ -47877,73 +48003,10 @@
 		function GalleryEditBody(props) {
 			_classCallCheck(this, GalleryEditBody);
 
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GalleryEditBody).call(this, props));
-
-			_this.updateCaption = _this.updateCaption.bind(_this);
-			_this.updateRelatedStories = _this.updateRelatedStories.bind(_this);
-			_this.updateArticles = _this.updateArticles.bind(_this);
-			_this.updateTags = _this.updateTags.bind(_this);
-			_this.updatedLocation = _this.updatedLocation.bind(_this);
-			return _this;
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(GalleryEditBody).call(this, props));
 		}
 
 		_createClass(GalleryEditBody, [{
-			key: 'updateVisibility',
-			value: function updateVisibility(visibility) {
-
-				var gallery = _.clone(this.props.gallery, true);
-				gallery.visibility = visibility;
-
-				this.props.updateGallery(gallery);
-			}
-		}, {
-			key: 'updateCaption',
-			value: function updateCaption() {
-
-				var gallery = _.clone(this.props.gallery, true);
-				gallery.caption = this.refs['gallery-caption'].value;
-
-				this.props.updateGallery(gallery);
-			}
-		}, {
-			key: 'updateRelatedStories',
-			value: function updateRelatedStories(stories) {
-
-				var gallery = _.clone(this.props.gallery, true);
-				gallery.related_stories = stories;
-
-				this.props.updateGallery(gallery);
-			}
-		}, {
-			key: 'updateArticles',
-			value: function updateArticles(articles) {
-
-				var gallery = _.clone(this.props.gallery, true);
-				gallery.articles = articles;
-
-				console.log('Updated Articles', gallery.articles);
-
-				this.props.updateGallery(gallery);
-			}
-		}, {
-			key: 'updateTags',
-			value: function updateTags(tags) {
-
-				var gallery = _.clone(this.props.gallery, true);
-				gallery.tags = tags;
-
-				this.props.updateGallery(gallery);
-			}
-		}, {
-			key: 'updatedLocation',
-			value: function updatedLocation(location) {
-
-				var gallery = _.clone(this.props.gallery, true);
-				gallery.locations[0] = location;
-
-				this.props.updateGallery(gallery);
-			}
-		}, {
 			key: 'render',
 			value: function render() {
 
@@ -47967,9 +48030,8 @@
 									type: 'text',
 									className: 'form-control',
 									ref: 'gallery-caption',
-									defaultValue: this.props.gallery.caption,
 									value: this.props.gallery.caption,
-									onChange: this.updateCaption }),
+									onChange: this.props.updateCaption }),
 								_react2.default.createElement(
 									'div',
 									{ className: 'floating-label' },
@@ -47979,17 +48041,14 @@
 							)
 						),
 						_react2.default.createElement(_galleryEditTags2.default, {
-							ref: 'tags',
 							tags: this.props.gallery.tags,
-							updateTags: this.updateTags }),
+							updateTags: this.props.updateTags }),
 						_react2.default.createElement(_galleryEditStories2.default, {
-							ref: 'stories',
 							relatedStories: this.props.gallery.related_stories,
-							updateRelatedStories: this.updateRelatedStories }),
+							updateRelatedStories: this.props.updateRelatedStories }),
 						_react2.default.createElement(_galleryEditArticles2.default, {
-							ref: 'articles',
 							articles: this.props.gallery.articles,
-							updateArticles: this.updateArticles }),
+							updateArticles: this.props.updateArticles }),
 						_react2.default.createElement(
 							'div',
 							{ className: 'dialog-row' },
@@ -48011,7 +48070,9 @@
 					),
 					_react2.default.createElement(_galleryEditPosts2.default, {
 						posts: this.props.gallery.posts,
-						files: this.props.gallery.files }),
+						files: this.props.gallery.files,
+						deletePosts: this.props.deletePosts,
+						toggleDelete: this.props.toggleDeletePost }),
 					_react2.default.createElement(_galleryEditMap2.default, {
 						gallery: this.props.gallery,
 						onPlaceChange: this.props.onPlaceChange })
@@ -48025,8 +48086,24 @@
 	exports.default = GalleryEditBody;
 
 	GalleryEditBody.defaultProps = {
+		deletePosts: [],
 		onPlaceChange: function onPlaceChange() {
 			console.log('GalleryEditBody missing onPlaceChange prop');
+		},
+		toggleDeletePost: function toggleDeletePost() {
+			console.log('GalleryEditBody missing toggleDeletePost prop');
+		},
+		updateCaption: function updateCaption() {
+			console.log('GalleryEditBody missing updateCaption prop');
+		},
+		updateRelatedStories: function updateRelatedStories() {
+			console.log('GalleryEditBody missing updateRelatedStories prop');
+		},
+		updateArticles: function updateArticles() {
+			console.log('GalleryEditBody missing updateArticles prop');
+		},
+		updateTags: function updateTags() {
+			console.log('GalleryEditBody missing updatedTags prop');
 		}
 	};
 
@@ -48250,6 +48327,10 @@
 		value: true
 	});
 
+	var _lodash = __webpack_require__(281);
+
+	var _lodash2 = _interopRequireDefault(_lodash);
+
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -48280,61 +48361,67 @@
 		function GalleryEditPosts(props) {
 			_classCallCheck(this, GalleryEditPosts);
 
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GalleryEditPosts).call(this, props));
-
-			_this.state = {
-				posts: _this.props.posts,
-				files: []
-			};
-			return _this;
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(GalleryEditPosts).call(this, props));
 		}
 
 		_createClass(GalleryEditPosts, [{
-			key: 'componentWillReceiveProps',
-			value: function componentWillReceiveProps(nextProps) {
-
-				this.setState({
-					posts: nextProps.posts,
-					files: nextProps.files ? nextProps.files : []
-				});
-			}
-		}, {
 			key: 'render',
 			value: function render() {
+				var _this2 = this;
 
 				var k = 0;
 
-				var posts = this.state.posts.map(function (post) {
-
+				var posts = this.props.posts.map(function (post) {
+					var shouldDelete = _this2.props.deletePosts.indexOf(post._id) != -1;
 					return _react2.default.createElement(
 						'div',
-						{ key: ++k },
-						_react2.default.createElement(_editPost2.default, { post: post })
+						{ key: ++k, className: "frick-frame" + (shouldDelete ? " frick-delete" : "") },
+						_react2.default.createElement(_editPost2.default, { post: post }),
+						_react2.default.createElement(
+							'div',
+							{ className: 'frick-overlay' },
+							_react2.default.createElement(
+								'span',
+								null,
+								_react2.default.createElement('span', { className: 'mdi mdi-delete icon' }),
+								_react2.default.createElement(
+									'div',
+									{ className: 'md-type-caption' },
+									'This post will be deleted'
+								)
+							)
+						),
+						_react2.default.createElement(
+							'a',
+							null,
+							_react2.default.createElement('span', { className: "mdi mdi-close-circle icon" + (shouldDelete ? ' addback' : ''), onClick: _this2.props.toggleDelete.bind(null, post._id) })
+						)
 					);
 				});
 
 				var files = [];
 
-				for (var i = 0; i < this.state.files.length; i++) {
+				for (var i = 0; i < this.props.files.length; i++) {
 
 					files.push(_react2.default.createElement(
 						'div',
 						{ key: ++k },
 						_react2.default.createElement(_editPost2.default, {
-							file: this.state.files[i],
-							source: this.state.files.sources[i] })
+							file: this.props.files[i],
+							source: this.props.files.sources[i] })
 					));
 				}
 
-				//			<div className="dialog-col col-xs-12 col-md-5">
-
 				return _react2.default.createElement(
-					_reactSlick2.default,
-					{
-						className: 'dialog-col col-xs-12 col-md-5',
-						dots: true },
-					posts,
-					files
+					'div',
+					{ className: 'dialog-col col-xs-12 col-md-5' },
+					_react2.default.createElement(
+						_reactSlick2.default,
+						{
+							dots: true },
+						posts,
+						files
+					)
 				);
 			}
 		}]);
@@ -48343,6 +48430,13 @@
 	})(_react2.default.Component);
 
 	exports.default = GalleryEditPosts;
+
+	GalleryEditPosts.defaultProps = {
+		deletePosts: [],
+		posts: [],
+		files: [],
+		toggleDelete: function toggleDelete() {}
+	};
 
 /***/ },
 /* 301 */
@@ -48735,7 +48829,8 @@
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GalleryEditFoot).call(this, props));
 
 			_this.state = {
-				gallery: _.clone(_this.props.gallery, true)
+				gallery: _.clone(_this.props.gallery, true),
+				newFiles: []
 			};
 			_this.revert = _this.revert.bind(_this);
 			_this.clear = _this.clear.bind(_this);
@@ -48793,7 +48888,9 @@
 							gallery.files.sources.push(e.target.result);
 
 							//When we're at the end of the loop, send the state update to the parent
-							if (index == files.length - 1) self.props.updateGallery(gallery);
+							if (gallery.files.sources.length == files.length) {
+								self.props.updateGallery(gallery);
+							}
 						};
 					})(i);
 
@@ -49147,7 +49244,6 @@
 	  }, {
 	    key: 'updateState',
 	    value: function updateState(field, value) {
-	      console.log('Test');
 	      this.setState({
 	        fields: value
 	      });
@@ -49191,8 +49287,6 @@
 	      var posts = this.props.posts.map(function (post) {
 	        return post._id;
 	      });
-
-	      console.log('Posts', posts);
 
 	      if (posts.length == 0) return $.snackbar({ content: "Galleries must have at least 1 post" });
 
@@ -49518,8 +49612,6 @@
 	        data: params,
 	        dataType: 'json',
 	        success: function success(response, status, xhr) {
-
-	          console.log(response);
 
 	          //Do nothing, because of bad response
 	          if (!response.data || response.err) {

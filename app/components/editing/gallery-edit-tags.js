@@ -20,7 +20,7 @@ export default class GalleryEditTags extends React.Component {
 		//Check if enter
 		if(e.keyCode != 13) return;
 
-		var tags = this.props.tags,
+		var tags = _.clone(this.props.tags, true),
 			tag = e.target.value;
 
 		if(global.isEmptyString(tag)) return;
@@ -41,7 +41,7 @@ export default class GalleryEditTags extends React.Component {
 	 */
 	removeTag(index) {
 
-		var tags = this.props.tags;
+		var tags = _.clone(this.props.tags, true);
 
 		tags.splice(index, 1);
 		

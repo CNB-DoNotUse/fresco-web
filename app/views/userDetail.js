@@ -63,8 +63,6 @@ class UserDetail extends React.Component {
  			dataType: 'json',
  			success: (response, status, xhr) => {
 
- 				console.log(response);
-
  				//Do nothing, because of bad response
  				if(!response.data || response.err){
  					$.snackbar({content: 'We couldn\'t load this user\'s posts!'});

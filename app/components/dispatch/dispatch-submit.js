@@ -260,8 +260,6 @@ export default class DispatchSubmit extends React.Component {
 
 	toggleList(toggle) {
 
-		console.log(toggle);
-
 	}
 }	
 

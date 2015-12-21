@@ -91,7 +91,6 @@ export default class DispatchMap extends React.Component {
 
 		//Check if view mode has changed
 		if(this.props.viewMode !== prevProps.viewMode){
-			console.log('View Mode Changed in map')
 			this.clearMap();
 		}
 
@@ -443,8 +442,6 @@ export default class DispatchMap extends React.Component {
 				assignments.push(this.state.assignments[i]);
 			}
 		}
-
-		console.log('Assignments about to be added', assignments);
 
 		if(assignments.length == 0 ) return;
 
