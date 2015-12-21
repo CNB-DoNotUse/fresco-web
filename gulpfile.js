@@ -54,7 +54,7 @@ gulp.task('Build Assets',  () => {
 			gulp.src(dependencies.global.js.concat(dependencies[section]._global.js))
 				.pipe(concat(section + '.js'))
 				// .pipe(uglify())
-				.pipe(gulp.dest('./public/javascripts'))
+				.pipe(gulp.dest('./public/js'))
 		);
 
 		//Define all the pages in this sections
@@ -86,7 +86,7 @@ gulp.task('Build Assets',  () => {
 					gulp.src(dependencies.global.js.concat(pageDependencies.js))
 						.pipe(concat(pages[p] + '.js'))
 						// .pipe(uglify())
-						.pipe(gulp.dest('./public/javascripts/pages'))
+						.pipe(gulp.dest('./public/js/pages'))
 				);
 			}			
 		}
@@ -116,7 +116,7 @@ gulp.task('Build Webpack', (cb) => {
 		      ]
 		    }
 		}))
-		.pipe(gulp.dest('./public/javascripts/pages'))
+		.pipe(gulp.dest('./public/js/pages'))
 });
 
 /**

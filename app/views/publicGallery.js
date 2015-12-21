@@ -2,8 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app.js'
 import Slider from 'react-slick'
+import Footer from '../components/global/footer'
 import global from '../../lib/global'
 import moment from 'moment'
+import isNode from 'detect-node'
 
 /**
  * Public Gallery Page
@@ -19,10 +21,12 @@ class PublicGallery extends React.Component {
 
  		var gallery = this.props.gallery;
 
+ 		if(gallery.posts.length == 0) return;
+ 		
  		//Store sliders for slick
  		var galleryImages = [],
  			settings = {
- 			  dots: true,
+ 			  dots: gallery.posts.length > 1 ? true : false,
  			  arrows: true,
  			  infinite: false,
  			  adaptiveHeight: true
@@ -96,6 +100,7 @@ class PublicGallery extends React.Component {
 						</div>
 					</div>
 				</div>
+				<Footer />
 			</div>
  		);
  	}
@@ -251,6 +256,8 @@ class PublicGalleryInfo extends React.Component {
 }
 
 
+
+
 class PublicGalleryInfoSection extends React.Component {
 
 	constructor(props){
@@ -271,9 +278,19 @@ class PublicGalleryInfoSection extends React.Component {
 }
 
 
-ReactDOM.render(
-  <PublicGallery 
-	  gallery={window.__initialProps__.gallery} 
-	  title={window.__initialProps__.title} />,
-  document.getElementById('app')
-);
+if(isNode){
+
+	module.exports = PublicGallery;
+
+}
+
+else{
+	ReactDOM.render(
+	 	<PublicGallery 
+	 		gallery={window.__initialProps__.gallery} />,
+	 	document.getElementById('app')
+	);
+
+}
+
+module.exports = PublicGallery;

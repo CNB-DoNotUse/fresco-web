@@ -1,9 +1,14 @@
-var express = require('express'),
+require('babel-core/register');
+var fs = require('fs'),
+    express = require('express'),
     config = require('../lib/config'),
     head = require('../lib/head'),
     router = express.Router(),
     global = require('../lib/global'),
-    request = require('request');
+    React = require('react'),
+    ReactDOMServer = require('react-dom/server'),
+    request = require('request'),
+    PublicGallery = require('../app/views/publicGallery.js');
 
 /** //
 
@@ -33,7 +38,7 @@ router.get('/:id', function(req, res, next) {
     }
 
     var gallery = body.data;
- 
+
     var title = '';
 
     if (gallery.owner)
@@ -67,12 +72,16 @@ router.get('/:id', function(req, res, next) {
       var props = {
             gallery: gallery,
             title: title
-          };
+          },
+          element = React.createElement(PublicGallery, props),
+          react = ReactDOMServer.renderToString(element);
 
+      console.log(element);
+      
       res.render('app', {
         title: title,
         gallery: gallery,
-        footer: true,
+        react: react,
         og: {
           title: title,      
           image: global.formatImg(gallery.posts[0].image, 'large'),      

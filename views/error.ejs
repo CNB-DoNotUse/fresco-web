@@ -1,21 +1,18 @@
 <% include segments/head %>
 
-<nav>
-	<a href="/">
-		<img alt="Fresco" src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-nav.png">
-	</a>
-	<ul>
-		<% if (typeof(user) !== 'undefined'){ %>
-			<li><a href="/highlights">DASHBOARD</a></li>
-		<% } %>
-	</ul>
-</nav>
-<section class="dark" id="hero" style="height: 60vh;">
-	<div>
-		<h1><%= err.code %></h1><h3><%= err.message %></h3>
-	</div>
-</section>
+<div class="wrapper">
 
-<% include segments/footer %>
+	<% include segments/nav %>
+
+	<div class="error page">
+		<div>
+			<h1><%= err.code %></h1>
+			<h3><%= err.message %></h3>
+		</div>
+	</div>
+
+	<% include segments/footer %>
+	
+</div>
 
 <% include segments/scripts %>

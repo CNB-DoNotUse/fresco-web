@@ -221,7 +221,7 @@ for (var i = 0; i < routes.platform.length; i++) {
   var routePrefix = routes.platform[i] ,
       route = require('./routes/' + routePrefix);
 
-  if(i == 0 ) console.log(routePrefix);
+  // if(i == 0 ) console.log(routePrefix);
 
   app.use('/' + routePrefix , route);
 
@@ -238,12 +238,12 @@ if (app.get('env') === 'development') {
     if (!err)
       return next();
 
-    console.log('\n Path: ', req.path, 'Error: ', err + '\n');
+    console.log('\n Path: ', req.path, '\nError: ', err + '\n');
     
     res.render('error', {
       user: req.session && req.session.user ? req.session.user : null,
       err: {
-        message: config.ERR_PAGE_MESSAGES[err.status || 500],
+        message: err.message || config.ERR_PAGE_MESSAGES[err.status || 500],
         code: err.status || 500
       },
       section: 'public',
@@ -264,7 +264,7 @@ else{
     res.render('error', {
       user: req.session && req.session.user ? req.session.user : null,
       err: {
-        message: config.ERR_PAGE_MESSAGES[err.status || 500],
+        message: err.message || config.ERR_PAGE_MESSAGES[err.status || 500],
         code: err.status || 500
       },
       section: 'public',

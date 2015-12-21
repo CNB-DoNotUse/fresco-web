@@ -3,9 +3,10 @@ import global from './../../../lib/global'
 import Dropdown from './../global/dropdown'
 import LocationDropdown from './location-dropdown'
 import TagFilter from './tag-filter'
+
 /** //
 
-Description : Top for pages of the site
+Description : Top Bar for pages of the site
 The component takes optional toggles/pieces as props, and each prop is checked in the render. 
 If the prop exists, then the repsective toggle/dropdown/edit/whatever is added to the navigation bar
 

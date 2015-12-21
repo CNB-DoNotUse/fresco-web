@@ -1,19 +1,19 @@
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places"></script>
 
-<% if(typeof props !== 'undefined'){ %>
+<% if(typeof(props) !== 'undefined'){ %>
   <!-- Props -->
-  <% console.log(props) %>
+  <% console.log('\n\n\nPROPS' ,props) %>
   <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
 <% } %>
 
 <!--Global Specifc based on sections-->
 <% if(typeof(section) !== 'undefined'){ %> 
-  <script type="text/javascript" src="/javascripts/<%= section %>.js"></script>
+  <script type="text/javascript" src="/js/<%= section %>.js"></script>
 <% } %>  
 
 <!--Page Specifc-->
 <% if(typeof(page) !== 'undefined'){ %> 
-  <script type="text/javascript" src="/javascripts/pages/<%= page %>.js"></script>
+  <script type="text/javascript" src="/js/pages/<%= page %>.js"></script>
 <% } %> 
 
 

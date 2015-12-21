@@ -1,0 +1,21 @@
+@charset "UTF-8";
+
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2015 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+@import "_global";
+@import "../../public/fonts/nota/nota.css";
+
+
+.error{
+	background: url("https://d1dw1p6sgigznj.cloudfront.net/images/bg-hero.jpg") no-repeat center center scroll;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	-webkit-background-size: cover;
+	background-size: cover;
+}

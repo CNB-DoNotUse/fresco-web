@@ -1,8 +1,10 @@
+<% 
+	console.log(react);
+	react = typeof(react) !== 'undefined' ? react : '';
+%>
+
 <% include segments/head %>
 	
-	<div id="app" class="wrapper"></div>
+	<div id="app" class="wrapper"><%- react %></div>
 
-<% if(typeof(footer) !== 'undefined') { %>
-		<% include segments/footer %>
-	<% } %>
 <% include segments/scripts %>

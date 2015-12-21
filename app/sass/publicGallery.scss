@@ -9,33 +9,11 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------*/
 
 @import "_global";
-@import "../../public/fonts/nota/nota.css";
 
-nav{
-	width:100%;
-	height:96px;
-	background:#FAFBF9;
-	position:fixed;
-	z-index:100;
-	
-	a{
-		padding:12px 0;
-		display:block;
-		img{
-			height: 64px;
-			display: block;
-			max-width: 400px;
-			margin: 0 auto;
-		}
-	}
-}
+/**
+ * Slick Wrapper Parent
+ */
 
-.page{
-	padding-top:96px;
-}
-
-
-/* Slick Wrapper Div */
 .gallery-slick-wrap{
 	background:#1E1E1D;
 
@@ -74,13 +52,12 @@ nav{
 	     		     	height:50vh;
 	     	}
 			@include mobile{
-				-webkit-height:40vh;
-				   -moz-height:40vh;
-				    -ms-height:40vh;
-				     -o-height:40vh;
-				     	height:40vh;
+				-webkit-height:250px;
+				   -moz-height:250px;
+				    -ms-height:250px;
+				     -o-height:250px;
+				     	height:250px;
 			}
-			
 
 			.slick-meta{
 				color:#FFF;
@@ -100,9 +77,8 @@ nav{
 						img{
 							width:36px;
 							height:36px;
-							-webkit-box-shadow:0 1px 2px rgb(0,0,0);
-							   -moz-box-shadow:0 1px 2px rgb(0,0,0);
-								    box-shadow:0 1px 2px rgb(0,0,0);
+							@include box-shadow(1px, 1px, 3px, 0, rgb(0, 0, 0));
+							@include box-shadow(1px, 1px, 3px, 0, rgba(0,0,0, .87));    
 							@include border-radius(50px);
 						}
 			  		    span{
@@ -115,11 +91,19 @@ nav{
 					td.meta-text{
 						font-size:16px;
 						font-weight:400;
+
+						@include mobile{
+							font-size:14px;
+						}
 					}
 					td.byline{
 						font-size:24px;
 						font-weight:500;
+						@include mobile{
+							font-size:16px;
+						}
 					}
+
 				}
 				tr.user{
 					margin:10px 0 0 0;
@@ -172,7 +156,7 @@ nav{
 		}
 	}
 
-
+	/* Slick Arrow Styles */
 	.slick-prev{
 	    left: -6%;
 
@@ -201,6 +185,10 @@ nav{
 	}
 
 }
+
+/**
+ * Bottom Half of page, `gallery info`
+ */
 
 .gallery-info-wrap{
 	background:#F2F2ED;
@@ -269,7 +257,6 @@ nav{
 						    color: rgba(0, 0, 0, 0.54);					
 					 	}
 					}
-
 				}
 			}
 		}
