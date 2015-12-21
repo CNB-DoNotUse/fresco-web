@@ -15,67 +15,6 @@ export default class GalleryEditBody extends React.Component {
 
 	constructor(props) {
 		super(props);
-
-		this.updateCaption = this.updateCaption.bind(this);
-		this.updateRelatedStories = this.updateRelatedStories.bind(this);
-		this.updateArticles = this.updateArticles.bind(this);
-		this.updateTags = this.updateTags.bind(this);
-		this.updatedLocation = this.updatedLocation.bind(this);
-	}
-
-
-	updateVisibility(visibility) {
-
-		var gallery = _.clone(this.props.gallery, true);
-			gallery.visibility = visibility;
-
-		this.props.updateGallery(gallery);
-
-	}
-
-	updateCaption() {
-
-		var gallery = _.clone(this.props.gallery, true);
-			gallery.caption = this.refs['gallery-caption'].value;
-
-		this.props.updateGallery(gallery);
-
-	}
-
-	updateRelatedStories(stories) {
-
-		var gallery = _.clone(this.props.gallery, true);
-			gallery.related_stories = stories;
-
-		this.props.updateGallery(gallery);
-
-	}
-
-	updateArticles(articles) {
-
-		var gallery = _.clone(this.props.gallery, true)
-			gallery.articles = articles;
-
-		this.props.updateGallery(gallery);
-
-	}
-
-	updateTags(tags) {
-
-		var gallery = _.clone(this.props.gallery, true);
-			gallery.tags = tags;
-
-		this.props.updateGallery(gallery);
-
-	}
-
-	updatedLocation(location) {
-
-		var gallery = _.clone(this.props.gallery, true);
-			gallery.locations[0] = location;
-
-		this.props.updateGallery(gallery);
-
 	}
 
 	render() {
@@ -97,29 +36,25 @@ export default class GalleryEditBody extends React.Component {
 								type="text" 
 								className="form-control"
 								ref="gallery-caption"
-								defaultValue={this.props.gallery.caption}
 								value={this.props.gallery.caption}
-								onChange={this.updateCaption} />
+								onChange={this.props.updateCaption} />
 							<div className="floating-label">Caption</div>
 							<span className="material-input"></span>
 						</div>
 
 					</div>
 					
-					<GalleryEditTags 
-						ref='tags' 
+					<GalleryEditTags
 						tags={this.props.gallery.tags} 
-						updateTags={this.updateTags} />
+						updateTags={this.props.updateTags} />
 					
 					<GalleryEditStories 
-						ref='stories'
 						relatedStories={this.props.gallery.related_stories} 
-						updateRelatedStories={this.updateRelatedStories} />
+						updateRelatedStories={this.props.updateRelatedStories} />
 					
-					<GalleryEditArticles 
-						ref='articles' 
+					<GalleryEditArticles
 						articles={this.props.gallery.articles}
-						updateArticles={this.updateArticles} />
+						updateArticles={this.props.updateArticles} />
 					
 					<div className="dialog-row">
 						<div className="checkbox">
@@ -153,7 +88,11 @@ export default class GalleryEditBody extends React.Component {
 }
 
 GalleryEditBody.defaultProps = {
-	deletePosts: [],
-	onPlaceChange: function () { console.log('GalleryEditBody missing onPlaceChange prop') },
-	toggleDeletePost: function() { console.log('GalleryEditBody missing toggleDeletePost prop') }
+	deletePosts: 			[],
+	onPlaceChange: 			function 	() { console.log('GalleryEditBody missing onPlaceChange prop') },
+	toggleDeletePost: 		function	() { console.log('GalleryEditBody missing toggleDeletePost prop') },
+	updateCaption: 			function 	() { console.log('GalleryEditBody missing updateCaption prop') },
+	updateRelatedStories: 	function 	() { console.log('GalleryEditBody missing updateRelatedStories prop') },
+	updateArticles: 		function 	() { console.log('GalleryEditBody missing updateArticles prop') },
+	updateTags: 			function	() { console.log('GalleryEditBody missing updatedTags prop') }
 }

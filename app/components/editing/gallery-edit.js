@@ -19,40 +19,93 @@ export default class GalleryEdit extends React.Component {
 		super(props);
 		
 		this.state = {
-			gallery: _.clone(this.props.gallery, true),
-			posts: this.props.posts,
+			gallery: null,
+			caption: '',
+			posts: null,
 			deletePosts: []
 		}
 
-		this.onPlaceChange 	= this.onPlaceChange.bind(this);
-		this.toggleDeletePost 	= this.toggleDeletePost.bind(this);
+		this.onPlaceChange 			= this.onPlaceChange.bind(this);
+		this.toggleDeletePost 		= this.toggleDeletePost.bind(this);
+		this.updateCaption 			= this.updateCaption.bind(this);
+		this.updateRelatedStories 	= this.updateRelatedStories.bind(this);
+		this.updateArticles 		= this.updateArticles.bind(this);
+		this.updateTags 			= this.updateTags.bind(this);
 
-		this.updateGallery 	= this.updateGallery.bind(this);
-		this.revertGallery 	= this.revertGallery.bind(this);
-		this.saveGallery 	= this.saveGallery.bind(this);
-		this.hide		 	= this.hide.bind(this);
+		this.updateGallery 			= this.updateGallery.bind(this);
+		this.revertGallery 			= this.revertGallery.bind(this);
+		this.saveGallery 			= this.saveGallery.bind(this);
+		this.hide		 			= this.hide.bind(this);
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-
+	componentWillReceiveProps(nextProps) {
 		// If props has a gallery, and GalleryEdit does not currently have a gallery or the galleries are not the same
-		if (this.props.gallery &&
-			(!this.state.gallery || (this.state.gallery._id != this.props.gallery._id))) {
+		if (nextProps.gallery &&
+			(!this.state.gallery || (this.state.gallery._id != nextProps.gallery._id))) {
 			this.setState({
-				gallery: this.props.gallery,
-				posts: this.props.gallery.posts.map(p => p._id)
+				gallery: _.clone(nextProps.gallery, true),
+				posts: nextProps.gallery.posts.map(p => p._id)
 			});	
 		}
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+	}
+
 	onPlaceChange(place) {
-		var gallery = this.state.gallery;
-		gallery.location = place.location;
-		gallery.address = place.address;
+
+		var gallery = _.clone(this.state.gallery, true);
+			gallery.location = place.location;
+			gallery.address = place.address;
+
+		this.setState({
+			gallery: gallery
+		})
+
+	}
+
+	updateCaption(e) {
+
+		var gallery = _.clone(this.state.gallery, true);
+			gallery.caption = e.target.value;
 
 		this.setState({
 			gallery: gallery
 		});
+
+	}
+
+	updateRelatedStories(stories) {
+
+		var gallery = _.clone(this.state.gallery, true);
+			gallery.related_stories = stories;
+
+		this.setState({
+			gallery: gallery
+		});
+
+	}
+
+	updateArticles(articles) {
+
+		var gallery = _.clone(this.state.gallery, true);
+			gallery.articles = articles;
+
+		this.setState({
+			gallery: gallery
+		});
+
+	}
+
+	updateTags(tags) {
+
+		var gallery = _.clone(this.state.gallery, true);
+			gallery.tags = tags;
+
+		this.setState({
+			gallery: gallery
+		});
+
 	}
 
 	toggleDeletePost(post) {
@@ -238,6 +291,7 @@ export default class GalleryEdit extends React.Component {
 
 	render() {
 
+
 		var editBody = '';
 
 		if(this.state.gallery) {
@@ -248,8 +302,11 @@ export default class GalleryEdit extends React.Component {
 		 					</div>
 		 					<GalleryEditBody 
 		 						gallery={this.state.gallery}
-		 						updateGallery={this.updateGallery}
 		 						onPlaceChange={this.onPlaceChange}
+		 						updateCaption={this.updateCaption}
+								updateRelatedStories={this.updateRelatedStories}
+								updateArticles={this.updateArticles}
+								updateTags={this.updateTags}
 		 						deletePosts={this.state.deletePosts}
 		 						toggleDeletePost={this.toggleDeletePost} />
 		 					
