@@ -1,14 +1,15 @@
 require('babel-core/register');
-var fs = require('fs'),
-    express = require('express'),
-    config = require('../lib/config'),
-    head = require('../lib/head'),
-    router = express.Router(),
-    global = require('../lib/global'),
-    React = require('react'),
-    ReactDOMServer = require('react-dom/server'),
-    request = require('request'),
-    PublicGallery = require('../app/views/publicGallery.js');
+
+var fs                = require('fs'),
+    express           = require('express'),
+    config            = require('../lib/config'),
+    head              = require('../lib/head'),
+    router            = express.Router(),
+    global            = require('../lib/global'),
+    React             = require('react'),
+    ReactDOMServer    = require('react-dom/server'),
+    request           = require('request'),
+    PublicGallery     = require('../app/views/publicGallery.js');
 
 /** //
 
@@ -21,12 +22,14 @@ var fs = require('fs'),
  * @param Gallery ID
  */
 
-router.get('/:id', function(req, res, next) {
+router.get('/:id', (req, res, next) => {
 
   request({
     url: config.API_URL + "/v1/gallery/get?stories=true&stats=1&id=" + req.params.id,
     json: true
-  }, function(err, response, body) {
+  }, doWithGalleryGetStories);
+
+  function doWithGalleryGetStories(err, response, body) {
 
     //Check for error, 404 if true
     if (err || !body || body.err) {
@@ -76,8 +79,6 @@ router.get('/:id', function(req, res, next) {
           element = React.createElement(PublicGallery, props),
           react = ReactDOMServer.renderToString(element);
 
-      console.log(element);
-      
       res.render('app', {
         title: title,
         gallery: gallery,
@@ -94,7 +95,7 @@ router.get('/:id', function(req, res, next) {
     
     }
 
-  });
+  }
 
 });
 

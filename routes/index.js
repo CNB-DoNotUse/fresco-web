@@ -1,9 +1,9 @@
-var express = require('express'),
-  router = express.Router(),
-  requestJson = require('request-json'),
-  config = require('../lib/config'),
-  head = require('../lib/head'),
-  api = requestJson.createClient(config.API_URL)
+var express       = require('express'),
+    router        = express.Router(),
+    requestJson   = require('request-json'),
+    config        = require('../lib/config'),
+    head          = require('../lib/head'),
+    api           = requestJson.createClient(config.API_URL)
 
 /** //
 
@@ -15,10 +15,11 @@ Description : Client Index Routes
  * Root index for the landing page
  */
 
-router.get('/', function(req, res, next) {
+router.get('/', (req, res, next) => {
 
-  api.get('/v1/gallery/highlights', function(error, response, body) {
-    
+  api.get('/v1/gallery/highlights', doWithHighlights);
+
+  function doWithHighlights(error, response, body) {
     var highlights = [];
 
     if (!error && body && !body.err)
@@ -34,11 +35,11 @@ router.get('/', function(req, res, next) {
       partner: typeof(req.query.partner) != 'undefined'
     });
 
-  });
+  }
 
 });
 
-router.get('/partners', function(req, res, next) {
+router.get('/partners', (req, res, next) => {
 
   res.redirect('/?partner=true')
 
@@ -48,7 +49,7 @@ router.get('/partners', function(req, res, next) {
  * Promo page
  */
 
-router.get('/promo', function(req, res, next) {
+router.get('/promo', (req, res, next) => {
   
   res.render('promo', {
     user: req.session ? req.session.user : null,
@@ -64,23 +65,25 @@ router.get('/promo', function(req, res, next) {
  * Outlet join page
  */
 
-router.get('/join', function(req, res, next) {
+router.get('/join', (req, res, next) => {
 
   if (!req.query.o)
     return res.redirect('/');
 
-  api.get('/v1/outlet/invite/get?token=' + req.query.o, function(error, response, body) {
+  api.get('/v1/outlet/invite/get?token=' + req.query.o, doWithOutletInviteToken);
+
+  function doWithOutletInviteToken(error, response, body) {
 
     if (error || !body) {
       req.session.alerts = ['Error connecting to server'];
-      return req.session.save(function() {
+      return req.session.save(() => {
         res.redirect(req.headers.Referer || '/join');
         res.end();
       });
     }
     if (body.err) {
-      req.session.alerts = [config.resolveError(body.err)];
-      return req.session.save(function() {
+      req.session.alerts = [config.resolveError(body.err)]; /* TODO: Fix this */
+      return req.session.save(() => {
         res.redirect(req.headers.Referer || '/join');
         res.end();
       });
@@ -94,21 +97,22 @@ router.get('/join', function(req, res, next) {
       alerts: req.alerts
     });
 
-  });
+  }
+
 });
 
 /**
  * Email verify page
  */
 
-router.get('/verify', function(req, res, next) {
+router.get('/verify', (req, res, next) => {
 
   //Check if the user is logged in already
   if (req.session && req.session.user && req.session.user.verified) {
 
     req.session.alerts = ['Your email is already verified!'];
 
-    return req.session.save(function() {
+    return req.session.save(() => {
       res.redirect('/');
       res.end();
     });
@@ -118,7 +122,7 @@ router.get('/verify', function(req, res, next) {
   //Check if the verification link query is valid
   if (!req.query.t) {
     req.session.alerts = ['Invalid verification link'];
-    return req.session.save(function() {
+    return req.session.save(() => {
       res.redirect('/');
       res.end();
     });
@@ -126,35 +130,45 @@ router.get('/verify', function(req, res, next) {
 
   api.post('/v1/user/verify', {
     token: req.query.t
-  }, function(error, response, body) {
+  }, doAfterUserVerify);
+
+  function doAfterUserVerify(error, response, body) {
 
     if (error || !body) {
+
       req.session.alerts = ['Error connecting to server'];
-      return req.session.save(function() {
+      
+      return req.session.save(() => {
         res.redirect('/');
         res.end();
       });
+
     }
 
     if (body.err) {
+
       req.session.alerts = [config.resolveError(body.err)];
-      return req.session.save(function() {
+
+      return req.session.save(() => {
         res.redirect('/');
         res.end();
       });
+
     }
 
     req.session.alerts = ['Your email has been verified!'];
+
     if (req.session && req.session.user) {
       var token = req.session.user.token;
       req.session.user = body.data;
       req.session.user.token = token;
     }
-    return req.session.save(function() {
+
+    return req.session.save(() => {
       res.redirect('/');
       res.end();
     });
-  });
+  }
 
 });
 

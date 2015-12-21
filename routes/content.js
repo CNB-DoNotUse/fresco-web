@@ -1,9 +1,9 @@
-var express = require('express'),
-    config = require('../lib/config'),
-    global = require('../lib/global'),
-    request = require('request-json'),
-    router = express.Router(),
-    api = request.createClient(config.API_URL)
+var express     = require('express'),
+    config      = require('../lib/config'),
+    global      = require('../lib/global'),
+    request     = require('request-json'),
+    router      = express.Router(),
+    api         = request.createClient(config.API_URL)
 
 /** //
 
@@ -16,7 +16,7 @@ var express = require('express'),
  * Index Content Page
  */
 
-router.get('/', function(req, res, next) {
+router.get('/', (req, res, next) => {
 
   var title = 'All content'; 
       purchases = config.mapPurchases(req.session),
@@ -39,7 +39,7 @@ router.get('/', function(req, res, next) {
  * Page for all galleries
  */
 
-router.get('/galleries', function(req, res, next) {
+router.get('/galleries', (req, res, next) => {
 
   var title = 'Galleries',
       props = {
@@ -62,7 +62,7 @@ router.get('/galleries', function(req, res, next) {
  * Page for all stories
  */
 
-router.get('/stories', function(req, res, next) {
+router.get('/stories', (req, res, next) => {
 
   var title = 'Stories',
       props = {
@@ -84,7 +84,7 @@ router.get('/stories', function(req, res, next) {
  * @param {string} filter Filter of content type i.e. videos/photos
  */
 
-router.get('/:filter', function(req, res, next) {
+router.get('/:filter', (req, res, next) => {
 
   //Check if the filter is valid first
   if(req.params.filter != 'videos' && req.params.filter != 'photos'){

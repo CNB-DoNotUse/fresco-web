@@ -1,15 +1,15 @@
-var express = require('express'),
-  router = express.Router(),
-  requestJson = require('request-json'),
-  config = require('../lib/config'),
-  head = require('../lib/head'),
-  api = requestJson.createClient(config.API_URL)
+var express         = require('express'),
+  router            = express.Router(),
+  requestJson       = require('request-json'),
+  config            = require('../lib/config'),
+  head              = require('../lib/head'),
+  api               = requestJson.createClient(config.API_URL)
 
 /**
  * Main highlights page
  */
 
-router.get('/', function(req, res, next) {
+router.get('/', (req, res, next) => {
 
   var title = 'Highlights',
       props = {
