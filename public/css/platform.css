@@ -19117,6 +19117,7 @@ div.list {
   .grid .tiles {
     margin: 0; }
     .grid .tiles > .tile {
+      cursor: pointer;
       position: relative;
       padding: 2px;
       -webkit-user-select: none;

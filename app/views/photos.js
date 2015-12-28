@@ -21,30 +21,18 @@ class Photos extends React.Component {
 		super(props);
 
 		this.state = {
-			purchases: []
+			purchases: [],
+			verifiedToggle: true
 		}
 
-		this.loadPosts = this.loadPosts.bind(this);
+		this.loadPosts 			= this.loadPosts.bind(this);
+		this.onVerifiedToggled 	= this.onVerifiedToggled.bind(this);
 	}
 
-	render() {
-		return (
-			<App user={this.props.user}>
-				<TopBar 
-					title="Photos"
-					timeToggle={true}
-					verifiedToggle={true}
-					chronToggle={true} />
-				<PostList
-					loadPosts={this.loadPosts}
-					rank={this.props.user.rank}
-					purchases={this.props.purchases}
-					didPurchase={this.props.didPurchase}
-					size='small'
-					scrollable={true} />
-			</App>
-		);
-
+	onVerifiedToggled(toggled) {
+		this.setState({
+			verifiedToggle: toggled
+		});
 	}
 
 	//Returns array of posts with offset and callback, used in child PostList
@@ -53,7 +41,7 @@ class Photos extends React.Component {
 		var endpoint = '/v1/post/list',
 				params = {
 					limit: 14,
-					verified : true,
+					verified : this.state.verifiedToggle,
 					offset: passedOffset,
 					type: 'photo'
 				};
@@ -77,6 +65,28 @@ class Photos extends React.Component {
 			}
 
 		});
+
+	}
+
+	render() {
+		return (
+			<App user={this.props.user}>
+				<TopBar 
+					title="Photos"
+					timeToggle={true}
+					verifiedToggle={true}
+					chronToggle={true}
+					onVerifiedToggled={this.onVerifiedToggled} />
+				<PostList
+					loadPosts={this.loadPosts}
+					rank={this.props.user.rank}
+					purchases={this.props.purchases}
+					didPurchase={this.props.didPurchase}
+					size='small'
+					scrollable={true}
+					onlyVerified={this.state.verifiedToggle} />
+			</App>
+		);
 
 	}
 

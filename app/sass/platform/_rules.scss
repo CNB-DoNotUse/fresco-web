@@ -935,6 +935,7 @@ div.list {
 	.tiles {
 		margin: 0;
 		> .tile {
+			cursor: pointer;
 			position: relative;
 			padding: 2px;
 			-webkit-user-select: none;

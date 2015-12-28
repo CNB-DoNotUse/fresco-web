@@ -46449,8 +46449,6 @@
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate(prevProps, prevState) {
 
-				console.log('Map Updated');
-
 				if (this.props.rerender) {
 					google.maps.event.trigger(this.state.map, 'resize');
 				}
@@ -47274,9 +47272,29 @@
 		}
 
 		_createClass(PostList, [{
+			key: 'componentDidUpdate',
+			value: function componentDidUpdate(prevProps, prevState) {
+				var _this2 = this;
+
+				if (prevProps.onlyVerified != this.props.onlyVerified) {
+					//Access parent var load method
+					this.props.loadPosts(0, function (posts) {
+
+						//Update offset based on psts from callaback
+						var offset = posts ? posts.length : 0;
+
+						//Set posts & callback from successful response
+						_this2.setState({
+							posts: posts,
+							offset: offset
+						});
+					});
+				}
+			}
+		}, {
 			key: 'componentDidMount',
 			value: function componentDidMount() {
-				var _this2 = this;
+				var _this3 = this;
 
 				//Check if list is initialzied with posts or the `loadPosts` prop is not defined, then don't load anything
 				if (this.state.posts.length || !this.props.loadPosts) return;
@@ -47288,7 +47306,7 @@
 					var offset = posts ? posts.length : 0;
 
 					//Set posts & callback from successful response
-					_this2.setState({
+					_this3.setState({
 						posts: posts,
 						offset: offset
 					});
@@ -47302,7 +47320,7 @@
 		}, {
 			key: 'scroll',
 			value: function scroll() {
-				var _this3 = this;
+				var _this4 = this;
 
 				var grid = this.refs.grid;
 
@@ -47316,21 +47334,21 @@
 					//Run load on parent call
 					this.props.loadPosts(this.state.offset, function (posts) {
 
-						//Disables scroll, and returns nil if posts are nill
+						//Disables scroll, and returns if posts are empty
 						if (!posts || posts.length == 0) {
 
-							_this3.setState({
+							_this4.setState({
 								scrollable: false
 							});
 
 							return;
 						}
 
-						var offset = _this3.state.posts.length + posts.length;
+						var offset = _this4.state.posts.length + posts.length;
 
 						//Set galleries from successful response, and unset loading
-						_this3.setState({
-							posts: _this3.state.posts.concat(posts),
+						_this4.setState({
+							posts: _this4.state.posts.concat(posts),
 							offset: offset,
 							loading: false
 						});
@@ -47420,7 +47438,7 @@
 		}, {
 			key: 'render',
 			value: function render() {
-				var _this4 = this;
+				var _this5 = this;
 
 				var purchases = this.state.purchases,
 				    rank = this.props.rank;
@@ -47429,22 +47447,22 @@
 				var posts = this.state.posts.map(function (post, i) {
 
 					var purchased = purchases ? purchases.indexOf(post._id) != -1 : null,
-					    filteredPosts = _this4.state.selectedPosts.filter(function (currentPost) {
+					    filteredPosts = _this5.state.selectedPosts.filter(function (currentPost) {
 						return currentPost._id === post._id;
 					}),
 					    toggled = filteredPosts.length > 0 ? true : false;
 
 					return _react2.default.createElement(_postCell2.default, {
-						size: _this4.props.size,
+						size: _this5.props.size,
 						post: post,
 						rank: rank,
 						purchased: purchased,
 						toggled: toggled,
-						togglePost: _this4.togglePost,
-						didPurchase: _this4.didPurchase,
+						togglePost: _this5.togglePost,
+						didPurchase: _this5.didPurchase,
 						key: i,
-						editable: _this4.props.editable,
-						edit: _this4.edit });
+						editable: _this5.props.editable,
+						edit: _this5.edit });
 				});
 
 				return _react2.default.createElement(
@@ -47482,7 +47500,8 @@
 		purchases: [],
 		posts: [],
 		gallery: null,
-		scrollable: false
+		scrollable: false,
+		onlyVerified: true
 	};
 
 /***/ },
@@ -47542,6 +47561,7 @@
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PostCell).call(this, props));
 
 			_this.postClicked = _this.postClicked.bind(_this);
+			_this.goToPost = _this.goToPost.bind(_this);
 			return _this;
 		}
 
@@ -47550,12 +47570,17 @@
 			value: function postClicked(e) {
 
 				//Check if clicked with shift key
-				if (!e.shiftKey) return;
+				if (e.shiftKey) {
+					//Check if the prop function is present
+					if (!this.props.togglePost) return;
 
-				//Check if the prop function is present
-				if (!this.props.togglePost) return;
-
-				this.props.togglePost(this.props.post);
+					this.props.togglePost(this.props.post);
+				}
+			}
+		}, {
+			key: 'goToPost',
+			value: function goToPost() {
+				window.location = '/post/' + this.props.post._id;
 			}
 		}, {
 			key: 'render',
@@ -47576,7 +47601,7 @@
 					{ className: size + ' tile ' + toggled, onClick: this.postClicked },
 					_react2.default.createElement(
 						'div',
-						{ className: 'tile-body' },
+						{ className: 'tile-body', onClick: this.goToPost },
 						_react2.default.createElement('div', { className: 'frame' }),
 						_react2.default.createElement(
 							'div',
@@ -50243,7 +50268,7 @@
 
 					topbarItems.push(_react2.default.createElement(_dropdown2.default, {
 						options: ['All content', 'Verified'],
-						selected: 'All content',
+						selected: 'Verified',
 						onSelected: this.verifiedToggleSelected,
 						key: 'verifiedToggle',
 						inList: true }));

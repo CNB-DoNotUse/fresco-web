@@ -44501,8 +44501,6 @@
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate(prevProps, prevState) {
 
-				console.log('Map Updated');
-
 				if (this.props.rerender) {
 					google.maps.event.trigger(this.state.map, 'resize');
 				}
@@ -44981,7 +44979,7 @@
 
 					topbarItems.push(_react2.default.createElement(_dropdown2.default, {
 						options: ['All content', 'Verified'],
-						selected: 'All content',
+						selected: 'Verified',
 						onSelected: this.verifiedToggleSelected,
 						key: 'verifiedToggle',
 						inList: true }));

@@ -30,12 +30,9 @@ export default class EditMap extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 
-		console.log('Map Updated');
-
 		if(this.props.rerender) {
 			google.maps.event.trigger(this.state.map, 'resize');
 		}
-
 
 		//Check if there is a radius, and it is not the same as the previous one
 		if(this.props.radius && prevProps.radius != this.props.radius) {
@@ -48,7 +45,6 @@ export default class EditMap extends React.Component {
 			JSON.stringify(prevProps.radius) == JSON.stringify(this.props.radius)) {
 			return;
 		}
-
 
 		//No location is present
 		if(!this.props.location) {

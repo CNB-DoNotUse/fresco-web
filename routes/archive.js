@@ -86,33 +86,18 @@ router.get('/stories', (req, res, next) => {
 
 router.get('/:filter', (req, res, next) => {
 
-  //Check if the filter is valid first
-  if(req.params.filter != 'videos' && req.params.filter != 'photos'){
+  var filters = ['photos', 'videos'];
 
-    return res.render('error', {
-      error_code: 404,
-      error_message: config.ERR_PAGE_MESSAGES[404]
-    });
-
+  // Check if filter is valid
+  if(filters.indexOf(req.params.filter.toLowerCase()) == -1) {
+    return res.redirect('/');
   }
 
   var props = {
     user : req.session.user,
     purchases : config.mapPurchases(req.session)
-  };
-
-  //Load photos page
-  if (req.params.filter == 'photos') {
-
-    var title = 'Photos';
-
-  }
-  //Load videos page
-  else if(req.params.filter == 'videos'){
-
-    var title = 'Videos';
-
-  }
+  },
+  title = req.params.filter[0].toUpperCase() + req.params.filter.slice(1);
 
   res.render('app', {
     title: title,
@@ -120,7 +105,6 @@ router.get('/:filter', (req, res, next) => {
     alerts: req.alerts,
     props : JSON.stringify(props)
   });
-
 
 });
 

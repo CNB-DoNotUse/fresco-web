@@ -27,6 +27,22 @@ export default class GalleryList extends React.Component {
 		this.scroll = this.scroll.bind(this);
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.onlyVerified != this.props.onlyVerified) {
+			this.loadGalleries(0, (galleries) => {
+
+				var offset = galleries ? galleries.length : 0;
+
+				//Set galleries from successful response
+				this.setState({
+					galleries: galleries,
+					offset : offset
+				});
+
+			});
+		}
+	}
+
 	componentDidMount() {
 
 		this.loadGalleries(0, (galleries) => {
@@ -52,7 +68,7 @@ export default class GalleryList extends React.Component {
 				offset: passedOffset,
 			};
 
-		if(this.props.highlighted){
+		if(this.props.highlighted) {
 			
 			endpoint = 'gallery/highlights';
 
@@ -61,7 +77,7 @@ export default class GalleryList extends React.Component {
 		} else {
 			
 			endpoint ='gallery/list';
-			params.verified = true;
+			params.verified = this.props.onlyVerified;
 			params.tags = this.state.tags.join(',')
 
 		}
@@ -153,4 +169,8 @@ export default class GalleryList extends React.Component {
 		    );
 		}
 	}
+}
+
+GalleryList.defaultProps = {
+	onlyVerified: true
 }

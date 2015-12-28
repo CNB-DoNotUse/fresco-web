@@ -15,18 +15,23 @@ export default class PostCell extends React.Component {
 		super(props);
 
 		this.postClicked = this.postClicked.bind(this);
+		this.goToPost = this.goToPost.bind(this);
 	}
 	
 	postClicked(e) {
 
 		//Check if clicked with shift key
-		if(!e.shiftKey) return;
+		if(e.shiftKey) {
+			//Check if the prop function is present
+			if(!this.props.togglePost) return;
 
-		//Check if the prop function is present
-		if(!this.props.togglePost) return;
+			this.props.togglePost(this.props.post)	
+		}
 
-		this.props.togglePost(this.props.post)
+	}
 
+	goToPost() {
+		window.location = '/post/' + this.props.post._id;
 	}
 
 	render() {
@@ -44,7 +49,7 @@ export default class PostCell extends React.Component {
 		return(
 
 			<div className={size + ' tile ' + toggled} onClick={this.postClicked} >
-				<div className="tile-body">
+				<div className="tile-body" onClick={this.goToPost} >
 					<div className="frame"></div>
 					
 					<div className="hover">

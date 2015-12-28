@@ -37,6 +37,24 @@ export default class PostList extends React.Component {
 		this.hideGallery 				= this.hideGallery.bind(this);
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.onlyVerified != this.props.onlyVerified) {
+			//Access parent var load method
+			this.props.loadPosts(0, (posts) => {
+				
+				//Update offset based on psts from callaback
+				var offset = posts ? posts.length : 0;
+
+				//Set posts & callback from successful response
+				this.setState({
+					posts: posts,
+					offset : offset
+				});
+
+			});
+		}
+	}
+
 	componentDidMount() {
 
 		//Check if list is initialzied with posts or the `loadPosts` prop is not defined, then don't load anything
@@ -74,9 +92,9 @@ export default class PostList extends React.Component {
 			this.setState({ loading : true });
 
 			//Run load on parent call
-			this.props.loadPosts(this.state.offset, (posts) =>{
+			this.props.loadPosts(this.state.offset, (posts) => {
 
-				//Disables scroll, and returns nil if posts are nill
+				//Disables scroll, and returns if posts are empty
 				if(!posts || posts.length == 0){ 
 					
 					this.setState({
@@ -224,5 +242,6 @@ PostList.defaultProps = {
 	purchases: [],
 	posts: [],
 	gallery: null,
-	scrollable: false
+	scrollable: false,
+	onlyVerified: true
 }

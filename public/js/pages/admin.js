@@ -47915,8 +47915,6 @@
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate(prevProps, prevState) {
 
-				console.log('Map Updated');
-
 				if (this.props.rerender) {
 					google.maps.event.trigger(this.state.map, 'resize');
 				}

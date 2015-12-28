@@ -146,7 +146,7 @@ router          = express.Router();
       page: 'outletSettings',
       alerts: req.alerts,
       links: ['/stylesheets/pages/outlet-settings.css'],
-      scripts: ['https://js.stripe.com/v2/'],
+      remoteScripts: ['https://js.stripe.com/v2/'],
       props: JSON.stringify(props)
     });
   }
