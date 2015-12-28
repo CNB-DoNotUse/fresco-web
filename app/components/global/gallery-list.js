@@ -54,20 +54,20 @@ export default class GalleryList extends React.Component {
 
 		if(this.props.highlighted){
 			
-			endpoint = '/v1/gallery/highlights';
+			endpoint = 'gallery/highlights';
 
 			params.invalidate = 1;
 
 		} else {
 			
-			endpoint ='/v1/gallery/list';
+			endpoint ='gallery/list';
 			params.verified = true;
 			params.tags = this.state.tags.join(',')
 
 		}
 
 		$.ajax({
-			url:  global.API_URL + endpoint,
+			url:  '/api/' + endpoint,
 			type: 'GET',
 			data: params,
 			dataType: 'json',

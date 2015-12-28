@@ -80,7 +80,7 @@ export default class PostInfo extends React.Component {
 							</li>
 							<li>
 								<span className="mdi mdi-map-marker icon"></span>
-								{post.location.address || 'No Location'}
+								{post.location ? post.location.address ? post.location.address : 'No Location' : 'No Location'}
 							</li>
 							{twitter}
 							<li>

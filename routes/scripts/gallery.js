@@ -19,11 +19,17 @@ router.post('/gallery/addpost', function(req, res, next){
   
   var cleanupFiles = [];
 
-  function upload(cb){
-    request.post({ url: config.API_URL + '/v1/gallery/addpost', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
-      for (var index in cleanupFiles)
+  function upload(cb) {
+    request.post({ url: config.API_URL + '/v1/gallery/addpost', headers: { authtoken: req.session.user.token }, formData: params }, (err, response, body) => {
+
+      if(err || !body || body.err) {
+        return cb('Error uploading files');
+      }
+
+      for (var index in cleanupFiles) {
         fs.unlink(cleanupFiles[index], function(){});
-        
+      }
+
       body = JSON.parse(body);
 
       cb(err || body.err, body.data);
@@ -46,16 +52,19 @@ router.post('/gallery/bulkupdate', function(req, res, next) {
   var caption = req.body.caption;
   var tags = req.body.tags || [];
   var tags_to_remove = req.body.tags_removed || [];
-  var stories = req.body.stories || [];
+  var stories = [];
   var stories_to_remove = req.body.stories_removed || [];
   
-  var new_stories = stories.filter(function(story) {
-    return story.indexOf('NEW') != -1;
-  });
-  
-  stories = stories.filter(function(story) {
-    return story.indexOf('NEW') == -1;
-  });
+  for(var s in req.body.stories) {
+    var story = req.body.stories[s];
+
+    if (story.indexOf('NEW') != -1) {
+      new_stories.push(story);
+    } else {
+      stories.push(story);
+    }
+
+  }
   
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;

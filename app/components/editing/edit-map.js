@@ -29,6 +29,9 @@ export default class EditMap extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+
+		console.log('Map Updated');
+
 		if(this.props.rerender) {
 			google.maps.event.trigger(this.state.map, 'resize');
 		}
@@ -36,7 +39,7 @@ export default class EditMap extends React.Component {
 
 		//Check if there is a radius, and it is not the same as the previous one
 		if(this.props.radius && prevProps.radius != this.props.radius) {
-			this.state.circle.setRadius(this.props.radius);
+			this.state.circle.setRadius(global.feetToMeters(this.props.radius));
 			this.state.map.fitBounds(this.state.circle.getBounds());
 		}
 

@@ -19,10 +19,12 @@ export default class PostRelated extends React.Component {
 
 			var posts = this.props.gallery.posts.map((post, i) => {
 
-				return <img 
-							className="img-link" 
-							src={global.formatImg(post.image, 'small')} 
-							key={i} />
+				return <a href={"/post/" + post._id}>
+							<img 
+								className="img-link" 
+								src={global.formatImg(post.image, 'small')} 
+								key={i} />
+						</a>
 
 			})
 

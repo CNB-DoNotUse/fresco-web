@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from './../components/topbar/topbar-admin'
 import AdminBody from './../components/admin/admin-body'
-import global from '../../lib/global'
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar) 
@@ -36,11 +35,11 @@ import global from '../../lib/global'
  				case 'imports':
  					this.getImports(); break;
  			}
- 		}, 5000);
+ 		}, 5000000);
 	}
 
 	getAssignments() {
-		$.get(global.API_URL + '/v1/assignment/pending?limit=16', (assignments) => {
+		$.get('/api/assignment/pending', {limit: 16}, (assignments) => {
 			if( !assignments.data ) return;
 			this.setState({
 				assignments: assignments.data
@@ -49,8 +48,10 @@ import global from '../../lib/global'
 	}
 
 	getSubmissions(cb) {
- 		$.get(global.API_URL + '/v1/gallery/submissions', (submissions) => {
- 			if( !submissions.data ) return;
+ 		$.get('/api/gallery/submissions', (submissions) => {
+ 			if( !submissions.data ) {
+ 				return;
+ 			}
 
  			this.setState({
  				submissions: submissions.data
@@ -59,7 +60,7 @@ import global from '../../lib/global'
 	}
 
 	getImports(cb) {
-		$.get('/scripts/gallery/imports', (imports) => {
+		$.get('/api/gallery/imports', (imports) => {
 			if(!imports.data) return;
 
 			this.setState({

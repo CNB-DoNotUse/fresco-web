@@ -120,7 +120,7 @@ class Dispatch extends React.Component {
 		}
 
 		$.ajax({
-			url: "/scripts/assignment/list",
+			url: 'api/assignment/list',
 			type: 'GET',
 			data: params,
 			dataType: 'json',
@@ -161,7 +161,7 @@ class Dispatch extends React.Component {
 		var query = "lat=" + center.lat() + "&lon=" + center.lng() + "&radius=" + radius;
 		
 		//Should be authed
-		$.ajax(global.API_URL + "/v1/user/findInRadius?" + query, {
+		$.ajax('/api/user/findInRadius?' + query, {
 			success: (response) => {
 
 				//Do nothing, because of bad response

@@ -18,7 +18,7 @@ var express     = require('express'),
 
 router.get('/', (req, res, next) => {
 
-  var title = 'All content'; 
+  var title = 'All content',
       purchases = config.mapPurchases(req.session),
       props = {
         user : req.session.user,

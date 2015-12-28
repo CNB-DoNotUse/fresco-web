@@ -34,7 +34,7 @@ export default class PostCell extends React.Component {
 		var post = this.props.post,
 			toggled = this.props.toggled ? 'toggled' : '',
 			timeString = global.formatTime(post.time_created),
-			address = post.location.address || 'No Address',
+			address = post.location ? post.location.address ? post.location.address : 'No Address' : 'No Address',
 			size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small;
 		
 		var statusClass = 'mdi icon pull-right '; //Class name for post tile icon

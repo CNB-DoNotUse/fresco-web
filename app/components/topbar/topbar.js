@@ -170,6 +170,7 @@ export default class TopBar extends React.Component {
 					onPlaceChange={this.props.onPlaceChange}
 					onRadiusChange={this.props.onRadiusChange}
 					onMapDataChange={this.props.onMapDataChange}
+					units="Miles"
 					key="locationDropdown" />
 			);
 		}

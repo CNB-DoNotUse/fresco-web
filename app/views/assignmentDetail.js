@@ -14,43 +14,16 @@ class AssignmentDetail extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			assignment: this.props.assignment,
+			toggled: false
+		}
+
 		this.expireAssignment = this.expireAssignment.bind(this);
 		this.setAssignment = this.setAssignment.bind(this);
-		this.state = {
-			assignment: this.props.assignment
-		}
+		this.toggleEdit = this.toggleEdit.bind(this);
 	}
-
- 	render() {
-
- 		return (
- 			<App user={this.props.user}>
- 				<TopBar 
- 					title={this.state.assignment.title}
- 					timeToggle={true}
- 					chronToggle={true} 
- 					verifiedToggle={true}
- 					editable={true} />
- 				<AssignmentSidebar 
- 					assignment={this.state.assignment}
- 					expireAssignment={this.expireAssignment} />
- 				<div className="col-sm-8 tall">
-	 				<PostList
-	 					rank={this.props.user.rank}
-	 					purchases={this.props.purchases}
-	 					posts={this.props.assignment.posts}
-	 					scrollable={false}
-	 					editable={false}
-	 					size='large' />
-				</div>
-				<AssignmentEdit 
-					assignment={this.state.assignment}
-					setAssignment={this.setAssignment}
-					user={this.props.user}	/>
- 			</App>
- 		);
-
- 	}
 
  	/**
  	 * Sets the stateful assignment
@@ -69,7 +42,7 @@ class AssignmentDetail extends React.Component {
  		$.post('/scripts/assignment/expire', {
  			id: this.state.assignment._id
  		}, (response) => {
-
+ 			location.reload();
  			// //Do nothing, because of bad response
  			// if(!response.data || response.err)
  			// 	callback([]);
@@ -77,6 +50,49 @@ class AssignmentDetail extends React.Component {
  			// 	callback(response.data);
 
  		});
+ 	}
+
+ 	/**
+ 	 * Toggles edit modal with `s` value. If `s` is not provided, negates toggled.
+ 	 */
+ 	 toggleEdit(s) {
+ 	 	this.setState({
+ 	 		toggled: typeof s == 'undefined' ? !this.state.toggled : s
+ 	 	})
+ 	 }
+
+ 	render() {
+
+ 		return (
+ 			<App user={this.props.user}>
+ 				<TopBar 
+ 					title={this.state.assignment.title}
+ 					timeToggle={true}
+ 					chronToggle={true} 
+ 					verifiedToggle={true}
+ 					editable={true}
+ 					edit={this.toggleEdit} />
+ 				<AssignmentSidebar 
+ 					assignment={this.state.assignment}
+ 					expireAssignment={this.expireAssignment} />
+ 				<div className="col-sm-8 tall">
+	 				<PostList
+	 					rank={this.props.user.rank}
+	 					purchases={this.props.purchases}
+	 					posts={this.props.assignment.posts}
+	 					scrollable={false}
+	 					editable={false}
+	 					size='large' />
+				</div>
+				<AssignmentEdit 
+					assignment={this.state.assignment}
+					setAssignment={this.setAssignment}
+					toggled={this.state.toggled}
+					toggle={this.toggleEdit}
+					user={this.props.user}	/>
+ 			</App>
+ 		);
+
  	}
 }
 

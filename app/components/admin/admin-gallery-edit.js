@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react'
 import Slider from 'react-slick'
 import Dropdown from './../global/dropdown'
@@ -29,6 +30,7 @@ export default class AdminGalleryEdit extends React.Component {
 		this.editButtonEnabled = this.editButtonEnabled.bind(this);
 		this.handleTwitterBylineChange = this.handleTwitterBylineChange.bind(this);
 		this.handleChangeCaption = this.handleChangeCaption.bind(this);
+		this.updateTags = this.updateTags.bind(this);
 		this.updateRelatedStories = this.updateRelatedStories.bind(this);
 		this.onPlaceChange = this.onPlaceChange.bind(this);
 
@@ -50,7 +52,7 @@ export default class AdminGalleryEdit extends React.Component {
 
 			// Reset form
 			this.setState({
-				activeGallery: this.props.gallery,
+				activeGallery: _.clone(this.props.gallery, true),
 				tags: [],
 				stories: [],
 				mapLocation: null
@@ -99,6 +101,19 @@ export default class AdminGalleryEdit extends React.Component {
 	}
 
 	/**
+	 * Updates state with new tags
+	 */
+	 updateTags(tags) {
+	 	var gallery = this.state.activeGallery;
+	 		gallery.tags = tags;
+
+	 	this.setState({
+	 		activeGallery: gallery
+	 	});
+
+	 }
+
+	/**
 	 * Updates state with new stories
 	 */
 	updateRelatedStories(stories) {
@@ -134,8 +149,7 @@ export default class AdminGalleryEdit extends React.Component {
 	revert() {
 		
 		this.setState({
-				activeGallery: this.props.gallery,
-				tags: this.props.gallery.tags,
+				activeGallery: _.clone(this.props.gallery, true),
 				stories: []
 			});
 
@@ -199,7 +213,7 @@ export default class AdminGalleryEdit extends React.Component {
 			caption: this.refs['gallery-caption'].value,
 			posts: this.state.activeGallery.posts.map(p => p._id),
 			stories: this.state.stories.map(s => s._id),
-			tags: this.state.tags
+			tags: this.state.activeGallery.tags
 		};
 
 		if(this.props.activeGalleryType == 'import') {
@@ -340,9 +354,9 @@ export default class AdminGalleryEdit extends React.Component {
 
 					<EditTags  
 						updateTags={this.updateTags}
-						tags={this.state.tags} />
+						tags={this.state.activeGallery.tags} />
 
-					<EditStories ref='stories' 
+					<EditStories
 						relatedStories={this.state.stories} 
 						updateRelatedStories={this.updateRelatedStories} />
 

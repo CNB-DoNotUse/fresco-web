@@ -31799,533 +31799,7 @@
 /* 254 */,
 /* 255 */,
 /* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */,
-/* 260 */,
-/* 261 */,
-/* 262 */,
-/* 263 */,
-/* 264 */,
-/* 265 */,
-/* 266 */,
-/* 267 */,
-/* 268 */,
-/* 269 */,
-/* 270 */,
-/* 271 */,
-/* 272 */,
-/* 273 */,
-/* 274 */,
-/* 275 */,
-/* 276 */,
-/* 277 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _placesAutocomplete = __webpack_require__(278);
-
-	var _placesAutocomplete2 = _interopRequireDefault(_placesAutocomplete);
-
-	var _editMap = __webpack_require__(279);
-
-	var _editMap2 = _interopRequireDefault(_editMap);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var AutocompleteMap = (function (_React$Component) {
-		_inherits(AutocompleteMap, _React$Component);
-
-		function AutocompleteMap(props) {
-			_classCallCheck(this, AutocompleteMap);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AutocompleteMap).call(this, props));
-
-			_this.state = {
-				location: null,
-				radius: _this.props.radius
-			};
-
-			_this.onPlaceChange = _this.onPlaceChange.bind(_this);
-			_this.updateRadius = _this.updateRadius.bind(_this);
-			return _this;
-		}
-
-		_createClass(AutocompleteMap, [{
-			key: 'onPlaceChange',
-			value: function onPlaceChange(place) {
-
-				this.props.onPlaceChange(place);
-
-				this.setState({
-					location: place.location
-				});
-			}
-		}, {
-			key: 'updateRadius',
-			value: function updateRadius() {
-				var radius = parseInt(this.refs.radius.value, 10);
-				if (radius == 'NaN') {
-					return;
-				}
-				this.setState({
-					radius: radius
-				});
-			}
-		}, {
-			key: 'componentDidUpdate',
-			value: function componentDidUpdate(prevProps, prevState) {
-				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
-					this.setState({
-						location: this.props.location
-					});
-				}
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-
-				var radiusInput = '';
-				if (this.props.radius) {
-					radiusInput = _react2.default.createElement('input', {
-						type: 'text',
-						className: 'form-control floating-label numbers m-t-15 ',
-						style: { marginTop: '15px' },
-						'data-hint': 'Meters',
-						placeholder: 'Radius',
-						defaultValue: this.props.radius,
-						onKeyUp: this.updateRadius,
-						ref: 'radius' });
-				}
-
-				return _react2.default.createElement(
-					'div',
-					{ className: 'map-group' },
-					_react2.default.createElement(_placesAutocomplete2.default, {
-						defaultLocation: this.props.defaultLocation,
-						onPlaceChange: this.onPlaceChange,
-						disabled: this.props.disabled }),
-					radiusInput,
-					_react2.default.createElement(
-						'div',
-						{ className: 'form-group-default', style: { marginTop: '24px' } },
-						_react2.default.createElement(_editMap2.default, {
-							location: this.state.location,
-							radius: this.state.radius,
-							rerender: this.props.rerender,
-							onDataChange: this.props.onMapDataChange })
-					)
-				);
-			}
-		}]);
-
-		return AutocompleteMap;
-	})(_react2.default.Component);
-
-	exports.default = AutocompleteMap;
-
-	AutocompleteMap.defaultProps = {
-		defaultLocation: null,
-		location: null,
-		radius: null,
-		rerender: true,
-		updateRadius: function updateRadius() {},
-		onPlaceChange: function onPlaceChange() {}
-	};
-
-/***/ },
-/* 278 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	* Reusable Google Maps Places Autocomplete
-	* @prop {function} onPlaceChange - Passes changed location to prop
-	* @prop {string} defaultLocation - Initial location address
-	* @prop {bool} disabled 
-	**/
-
-	var PlacesAutocomplete = (function (_React$Component) {
-	    _inherits(PlacesAutocomplete, _React$Component);
-
-	    function PlacesAutocomplete(props) {
-	        _classCallCheck(this, PlacesAutocomplete);
-
-	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PlacesAutocomplete).call(this, props));
-
-	        _this.state = {
-	            autocomplete: null
-	        };
-
-	        _this.locationChanged = _this.locationChanged.bind(_this);
-
-	        return _this;
-	    }
-
-	    _createClass(PlacesAutocomplete, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-
-	            //  Bind autocomplete to input
-	            var location = new google.maps.places.Autocomplete(this.refs['autocomplete-input']);
-
-	            // Bind place_changed event to locationChanged
-	            google.maps.event.addListener(location, 'place_changed', this.locationChanged);
-
-	            // Add location to state for future use
-	            this.setState({
-	                autocomplete: location
-	            });
-	        }
-	    }, {
-	        key: 'componentDidUpdate',
-	        value: function componentDidUpdate(prevProps, prevState) {
-
-	            // Remove material input empty class
-	            $('.autocomplete-input').removeClass('empty');
-
-	            // Set initial input text
-	            if (this.props.defaultLocation && this.refs['autocomplete-input'].value == '') {
-	                this.refs['autocomplete-input'].value = this.props.defaultLocation;
-	            }
-
-	            // If prop location changed, update input
-	            if (prevProps.defaultLocation != this.props.defaultLocation) {
-	                this.refs['autocomplete-input'].value = this.props.defaultLocation || '';
-	            }
-	        }
-
-	        // Handle when autocomplete place changed
-
-	    }, {
-	        key: 'locationChanged',
-	        value: function locationChanged() {
-
-	            var location = this.state.autocomplete;
-	            if (!location.getPlace().geometry) return;
-
-	            var coord = location.getPlace().geometry.location;
-	            var place = location.getPlace();
-
-	            // Pass location back up
-	            this.props.onPlaceChange({
-	                address: place.formatted_address || place.address,
-	                location: {
-	                    lat: place.geometry.location.lat(),
-	                    lng: place.geometry.location.lng()
-	                },
-	                place_id: place.place_id
-	            });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            return _react2.default.createElement('input', {
-	                type: 'text',
-	                className: 'form-control floating-label google-autocomplete autocomplete-input',
-	                placeholder: 'Location',
-	                ref: 'autocomplete-input',
-	                defaultValue: this.props.defaultLocation,
-	                disabled: this.props.disabled });
-	        }
-	    }]);
-
-	    return PlacesAutocomplete;
-	})(_react2.default.Component);
-
-	exports.default = PlacesAutocomplete;
-
-	PlacesAutocomplete.defaultProps = {
-	    defaultLocation: null,
-	    onPlaceChange: function onPlaceChange() {},
-	    disabled: false
-	};
-
-/***/ },
-/* 279 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _global = __webpack_require__(162);
-
-	var _global2 = _interopRequireDefault(_global);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Single Edit-Map Element
-	 * @description Map element that is found in Gallery Edit, Admin Panel, etc.
-	 */
-
-	var EditMap = (function (_React$Component) {
-		_inherits(EditMap, _React$Component);
-
-		function EditMap(props) {
-			_classCallCheck(this, EditMap);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EditMap).call(this, props));
-
-			_this.state = {
-				mapID: Date.now() + Math.floor(Math.random() * 100),
-				map: null,
-				polygon: null,
-				circle: null,
-				marker: null
-			};
-
-			_this.getCentroid = _this.getCentroid.bind(_this);
-			_this.getBounds = _this.getBounds.bind(_this);
-			_this.initializeMap = _this.initializeMap.bind(_this);
-			return _this;
-		}
-
-		_createClass(EditMap, [{
-			key: 'componentDidMount',
-			value: function componentDidMount() {
-				this.initializeMap();
-			}
-		}, {
-			key: 'componentDidUpdate',
-			value: function componentDidUpdate(prevProps, prevState) {
-				if (this.props.rerender) {
-					google.maps.event.trigger(this.state.map, 'resize');
-				}
-
-				//Check if there is a radius, and it is not the same as the previous one
-				if (this.props.radius && prevProps.radius != this.props.radius) {
-					this.state.circle.setRadius(this.props.radius);
-					this.state.map.fitBounds(this.state.circle.getBounds());
-				}
-
-				//Check if locations are the same from what was previsouly set
-				if (JSON.stringify(prevProps.location) == JSON.stringify(this.props.location) && JSON.stringify(prevProps.radius) == JSON.stringify(this.props.radius)) {
-					return;
-				}
-
-				//No location is present
-				if (!this.props.location) {
-					this.state.marker.setMap(null);
-					this.state.polygon.setMap(null);
-					return;
-				} else if (!prevProps.location) {
-					this.state.marker.setMap(this.state.map);
-					this.state.polygon.setMap(this.state.map);
-				}
-
-				//Check if the passed location is a set of points
-				//Then set the polygon  path, and set the marker to center of the polygon
-				if (Array.isArray(this.props.location)) {
-					if (!this.props.location[0].lat) {
-						var locationArr = this.props.location.map(function (loc) {
-							return {
-								lat: loc[1],
-								lng: loc[0]
-							};
-						});
-					}
-					this.state.polygon.setPath(locationArr || this.props.location);
-					this.state.marker.setPosition(this.getCentroid(this.state.polygon));
-					this.state.map.panTo(this.getCentroid(locationArr || this.props.location));
-				}
-				//Otherwise just set the marker to the passed position
-				else {
-						this.state.marker.setPosition(new google.maps.LatLng(this.props.location.lat, this.props.location.lng));
-						this.state.map.panTo(this.state.marker.getPosition(), 12);
-					}
-
-				//Update the circles position
-				this.state.circle.setCenter(this.state.marker.getPosition());
-
-				// Pass data back up
-				this.props.onDataChange({
-					map: this.state.map,
-					polygon: this.state.polygon,
-					circle: this.state.circle,
-					marker: this.state.marker,
-					location: this.props.location,
-					radius: this.props.radius
-				});
-			}
-
-			//Returns centroid for passed polygon
-
-		}, {
-			key: 'getCentroid',
-			value: function getCentroid(polygon) {
-				var path,
-				    lat = 0,
-				    lng = 0;
-
-				if (Array.isArray(polygon)) {
-					var newPolygon = new google.maps.Polygon({ paths: polygon });
-					path = newPolygon.getPath();
-				} else {
-					path = polygon.getPath();
-				}
-
-				for (var i = 0; i < path.getLength() - 1; ++i) {
-					lat += path.getAt(i).lat();
-					lng += path.getAt(i).lng();
-				}
-
-				lat /= path.getLength() - 1;
-				lng /= path.getLength() - 1;
-				return new google.maps.LatLng(lat, lng);
-			}
-		}, {
-			key: 'getBounds',
-			value: function getBounds(polygon) {
-
-				var bounds = new google.maps.LatLngBounds();
-				var paths = polygon.getPaths();
-				var path;
-
-				for (var i = 0; i < paths.getLength(); i++) {
-					path = paths.getAt(i);
-					for (var ii = 0; ii < path.getLength(); ii++) {
-						bounds.extend(path.getAt(ii));
-					}
-				}
-				return bounds;
-			}
-		}, {
-			key: 'initializeMap',
-			value: function initializeMap() {
-
-				// If location, check if is array and get centroid of polygon, or use the point passed. Otherwise use NYC for center.
-				var center = this.props.location ? Array.isArray(this.props.location) ? this.getCentroid(this.props.location) : this.props.location : { lat: 40.7, lng: -74 },
-				    mapOptions = {
-					center: center,
-					zoom: this.props.zoom || 12,
-					mapTypeControl: false,
-					draggable: false,
-					scrollwheel: false,
-					disableDoubleClickZoom: true,
-					styles: _global2.default.mapStyles
-				};
-
-				//Instantiate google maps object
-				var map = new google.maps.Map(document.getElementById('edit-map-canvas-' + this.state.mapID), mapOptions);
-
-				//Marker image
-				var markerImage = {
-					url: _global2.default.assignmentImage[this.props.type],
-					size: new google.maps.Size(114, 114),
-					scaledSize: new google.maps.Size(60, 60),
-					origin: new google.maps.Point(0, 0),
-					anchor: new google.maps.Point(30, 30)
-				};
-
-				//Instantiate polygon
-				var polygon = new google.maps.Polygon({
-					paths: [],
-					strokeColor: "#FFB500",
-					strokeOpacity: 0.8,
-					strokeWeight: 0,
-					fillColor: "#FFC600",
-					fillOpacity: 0.35,
-					map: map
-				});
-
-				// Set default marker to NYC if location is not set.
-				// If location is set and it's an array, get the centroid. Otherwise use the point.
-				var marker = new google.maps.Marker({
-					position: center,
-					map: map,
-					icon: markerImage
-				});
-
-				var circle = new google.maps.Circle({
-					map: map,
-					center: marker.getPosition(),
-					radius: this.props.radius || 0,
-					strokeWeight: 0,
-					fillColor: _global2.default.assignmentColor[this.props.type],
-					fillOpacity: 0.26
-				});
-
-				this.setState({
-					map: map,
-					circle: circle,
-					polygon: polygon,
-					marker: marker
-				});
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement('div', { id: "edit-map-canvas-" + this.state.mapID, className: 'map-container' });
-			}
-		}]);
-
-		return EditMap;
-	})(_react2.default.Component);
-
-	exports.default = EditMap;
-
-	EditMap.defaultProps = {
-		onDataChange: function onDataChange() {},
-		radius: null,
-		location: null,
-		type: 'active'
-	};
-
-/***/ },
-/* 280 */,
-/* 281 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/**
@@ -44683,6 +44157,537 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(164)(module), (function() { return this; }())))
 
 /***/ },
+/* 258 */,
+/* 259 */,
+/* 260 */,
+/* 261 */,
+/* 262 */,
+/* 263 */,
+/* 264 */,
+/* 265 */,
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */,
+/* 270 */,
+/* 271 */,
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */,
+/* 276 */,
+/* 277 */,
+/* 278 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _placesAutocomplete = __webpack_require__(279);
+
+	var _placesAutocomplete2 = _interopRequireDefault(_placesAutocomplete);
+
+	var _editMap = __webpack_require__(280);
+
+	var _editMap2 = _interopRequireDefault(_editMap);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var AutocompleteMap = (function (_React$Component) {
+		_inherits(AutocompleteMap, _React$Component);
+
+		function AutocompleteMap(props) {
+			_classCallCheck(this, AutocompleteMap);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AutocompleteMap).call(this, props));
+
+			_this.state = {
+				location: null,
+				radius: _this.props.radius
+			};
+
+			_this.onPlaceChange = _this.onPlaceChange.bind(_this);
+			_this.updateRadius = _this.updateRadius.bind(_this);
+			return _this;
+		}
+
+		_createClass(AutocompleteMap, [{
+			key: 'onPlaceChange',
+			value: function onPlaceChange(place) {
+
+				this.props.onPlaceChange(place);
+
+				this.setState({
+					location: place.location
+				});
+			}
+		}, {
+			key: 'updateRadius',
+			value: function updateRadius() {
+				var radius = parseFloat(this.refs.radius.value);
+				if (radius == 'NaN') {
+					return;
+				}
+				this.setState({
+					radius: radius
+				});
+			}
+		}, {
+			key: 'componentDidUpdate',
+			value: function componentDidUpdate(prevProps, prevState) {
+				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
+					this.setState({
+						location: this.props.location,
+						radius: this.props.radius
+					});
+				}
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+
+				var radiusInput = '';
+				if (this.props.radius) {
+					radiusInput = _react2.default.createElement('input', {
+						type: 'text',
+						className: 'form-control floating-label numbers m-t-15 ',
+						style: { marginTop: '15px' },
+						'data-hint': this.props.unit,
+						placeholder: 'Radius',
+						defaultValue: this.props.radius,
+						onKeyUp: this.updateRadius,
+						ref: 'radius' });
+				}
+
+				return _react2.default.createElement(
+					'div',
+					{ className: 'map-group' },
+					_react2.default.createElement(_placesAutocomplete2.default, {
+						defaultLocation: this.props.defaultLocation,
+						onPlaceChange: this.onPlaceChange,
+						disabled: this.props.disabled }),
+					radiusInput,
+					_react2.default.createElement(
+						'div',
+						{ className: 'form-group-default', style: { marginTop: '24px' } },
+						_react2.default.createElement(_editMap2.default, {
+							location: this.state.location,
+							radius: this.state.radius,
+							rerender: this.props.rerender,
+							onDataChange: this.props.onMapDataChange })
+					)
+				);
+			}
+		}]);
+
+		return AutocompleteMap;
+	})(_react2.default.Component);
+
+	exports.default = AutocompleteMap;
+
+	AutocompleteMap.defaultProps = {
+		defaultLocation: null,
+		unit: "Feet",
+		location: null,
+		radius: 250,
+		rerender: false,
+		updateRadius: function updateRadius() {},
+		onPlaceChange: function onPlaceChange() {}
+	};
+
+/***/ },
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	* Reusable Google Maps Places Autocomplete
+	* @prop {function} onPlaceChange - Passes changed location to prop
+	* @prop {string} defaultLocation - Initial location address
+	* @prop {bool} disabled 
+	**/
+
+	var PlacesAutocomplete = (function (_React$Component) {
+	    _inherits(PlacesAutocomplete, _React$Component);
+
+	    function PlacesAutocomplete(props) {
+	        _classCallCheck(this, PlacesAutocomplete);
+
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PlacesAutocomplete).call(this, props));
+
+	        _this.state = {
+	            autocomplete: null
+	        };
+
+	        _this.locationChanged = _this.locationChanged.bind(_this);
+
+	        return _this;
+	    }
+
+	    _createClass(PlacesAutocomplete, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+
+	            //  Bind autocomplete to input
+	            var location = new google.maps.places.Autocomplete(this.refs['autocomplete-input']);
+
+	            // Bind place_changed event to locationChanged
+	            google.maps.event.addListener(location, 'place_changed', this.locationChanged);
+
+	            // Add location to state for future use
+	            this.setState({
+	                autocomplete: location
+	            });
+	        }
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {
+
+	            // Remove material input empty class
+	            $('.autocomplete-input').removeClass('empty');
+
+	            // Set initial input text
+	            if (this.props.defaultLocation && this.refs['autocomplete-input'].value == '') {
+	                this.refs['autocomplete-input'].value = this.props.defaultLocation;
+	            }
+
+	            // If prop location changed, update input
+	            if (prevProps.defaultLocation != this.props.defaultLocation) {
+	                this.refs['autocomplete-input'].value = this.props.defaultLocation || '';
+	            }
+	        }
+
+	        // Handle when autocomplete place changed
+
+	    }, {
+	        key: 'locationChanged',
+	        value: function locationChanged() {
+
+	            var location = this.state.autocomplete;
+	            if (!location.getPlace().geometry) return;
+
+	            var coord = location.getPlace().geometry.location;
+	            var place = location.getPlace();
+
+	            // Pass location back up
+	            this.props.onPlaceChange({
+	                address: place.formatted_address || place.address,
+	                location: {
+	                    lat: place.geometry.location.lat(),
+	                    lng: place.geometry.location.lng()
+	                },
+	                place_id: place.place_id
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement('input', {
+	                type: 'text',
+	                className: 'form-control floating-label google-autocomplete autocomplete-input',
+	                placeholder: 'Location',
+	                ref: 'autocomplete-input',
+	                defaultValue: this.props.defaultLocation,
+	                disabled: this.props.disabled });
+	        }
+	    }]);
+
+	    return PlacesAutocomplete;
+	})(_react2.default.Component);
+
+	exports.default = PlacesAutocomplete;
+
+	PlacesAutocomplete.defaultProps = {
+	    defaultLocation: null,
+	    onPlaceChange: function onPlaceChange() {},
+	    disabled: false
+	};
+
+/***/ },
+/* 280 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _global = __webpack_require__(162);
+
+	var _global2 = _interopRequireDefault(_global);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Single Edit-Map Element
+	 * @description Map element that is found in Gallery Edit, Admin Panel, etc.
+	 */
+
+	var EditMap = (function (_React$Component) {
+		_inherits(EditMap, _React$Component);
+
+		function EditMap(props) {
+			_classCallCheck(this, EditMap);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EditMap).call(this, props));
+
+			_this.state = {
+				mapID: Date.now() + Math.floor(Math.random() * 100),
+				map: null,
+				polygon: null,
+				circle: null,
+				marker: null
+			};
+
+			_this.getCentroid = _this.getCentroid.bind(_this);
+			_this.getBounds = _this.getBounds.bind(_this);
+			_this.initializeMap = _this.initializeMap.bind(_this);
+			return _this;
+		}
+
+		_createClass(EditMap, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				this.initializeMap();
+			}
+		}, {
+			key: 'componentDidUpdate',
+			value: function componentDidUpdate(prevProps, prevState) {
+
+				console.log('Map Updated');
+
+				if (this.props.rerender) {
+					google.maps.event.trigger(this.state.map, 'resize');
+				}
+
+				//Check if there is a radius, and it is not the same as the previous one
+				if (this.props.radius && prevProps.radius != this.props.radius) {
+					this.state.circle.setRadius(_global2.default.feetToMeters(this.props.radius));
+					this.state.map.fitBounds(this.state.circle.getBounds());
+				}
+
+				//Check if locations are the same from what was previsouly set
+				if (JSON.stringify(prevProps.location) == JSON.stringify(this.props.location) && JSON.stringify(prevProps.radius) == JSON.stringify(this.props.radius)) {
+					return;
+				}
+
+				//No location is present
+				if (!this.props.location) {
+					this.state.marker.setMap(null);
+					this.state.polygon.setMap(null);
+					return;
+				} else if (!prevProps.location) {
+					this.state.marker.setMap(this.state.map);
+					this.state.polygon.setMap(this.state.map);
+				}
+
+				//Check if the passed location is a set of points
+				//Then set the polygon  path, and set the marker to center of the polygon
+				if (Array.isArray(this.props.location)) {
+					if (!this.props.location[0].lat) {
+						var locationArr = this.props.location.map(function (loc) {
+							return {
+								lat: loc[1],
+								lng: loc[0]
+							};
+						});
+					}
+					this.state.polygon.setPath(locationArr || this.props.location);
+					this.state.marker.setPosition(this.getCentroid(this.state.polygon));
+					this.state.map.panTo(this.getCentroid(locationArr || this.props.location));
+				}
+				//Otherwise just set the marker to the passed position
+				else {
+						this.state.marker.setPosition(new google.maps.LatLng(this.props.location.lat, this.props.location.lng));
+						this.state.map.panTo(this.state.marker.getPosition(), 12);
+					}
+
+				//Update the circles position
+				this.state.circle.setCenter(this.state.marker.getPosition());
+
+				// Pass data back up
+				this.props.onDataChange({
+					map: this.state.map,
+					polygon: this.state.polygon,
+					circle: this.state.circle,
+					marker: this.state.marker,
+					location: this.props.location,
+					radius: this.props.radius
+				});
+			}
+
+			//Returns centroid for passed polygon
+
+		}, {
+			key: 'getCentroid',
+			value: function getCentroid(polygon) {
+				var path,
+				    lat = 0,
+				    lng = 0;
+
+				if (Array.isArray(polygon)) {
+					var newPolygon = new google.maps.Polygon({ paths: polygon });
+					path = newPolygon.getPath();
+				} else {
+					path = polygon.getPath();
+				}
+
+				for (var i = 0; i < path.getLength() - 1; ++i) {
+					lat += path.getAt(i).lat();
+					lng += path.getAt(i).lng();
+				}
+
+				lat /= path.getLength() - 1;
+				lng /= path.getLength() - 1;
+				return new google.maps.LatLng(lat, lng);
+			}
+		}, {
+			key: 'getBounds',
+			value: function getBounds(polygon) {
+
+				var bounds = new google.maps.LatLngBounds();
+				var paths = polygon.getPaths();
+				var path;
+
+				for (var i = 0; i < paths.getLength(); i++) {
+					path = paths.getAt(i);
+					for (var ii = 0; ii < path.getLength(); ii++) {
+						bounds.extend(path.getAt(ii));
+					}
+				}
+				return bounds;
+			}
+		}, {
+			key: 'initializeMap',
+			value: function initializeMap() {
+
+				// If location, check if is array and get centroid of polygon, or use the point passed. Otherwise use NYC for center.
+				var center = this.props.location ? Array.isArray(this.props.location) ? this.getCentroid(this.props.location) : this.props.location : { lat: 40.7, lng: -74 },
+				    mapOptions = {
+					center: center,
+					zoom: this.props.zoom || 12,
+					mapTypeControl: false,
+					draggable: false,
+					scrollwheel: false,
+					disableDoubleClickZoom: true,
+					styles: _global2.default.mapStyles
+				};
+
+				//Instantiate google maps object
+				var map = new google.maps.Map(document.getElementById('edit-map-canvas-' + this.state.mapID), mapOptions);
+
+				//Marker image
+				var markerImage = {
+					url: _global2.default.assignmentImage[this.props.type],
+					size: new google.maps.Size(114, 114),
+					scaledSize: new google.maps.Size(60, 60),
+					origin: new google.maps.Point(0, 0),
+					anchor: new google.maps.Point(30, 30)
+				};
+
+				//Instantiate polygon
+				var polygon = new google.maps.Polygon({
+					paths: [],
+					strokeColor: "#FFB500",
+					strokeOpacity: 0.8,
+					strokeWeight: 0,
+					fillColor: "#FFC600",
+					fillOpacity: 0.35,
+					map: map
+				});
+
+				// Set default marker to NYC if location is not set.
+				// If location is set and it's an array, get the centroid. Otherwise use the point.
+				var marker = new google.maps.Marker({
+					position: center,
+					map: map,
+					icon: markerImage
+				});
+
+				var circle = new google.maps.Circle({
+					map: map,
+					center: marker.getPosition(),
+					radius: this.props.radius || 0,
+					strokeWeight: 0,
+					fillColor: _global2.default.assignmentColor[this.props.type],
+					fillOpacity: 0.26
+				});
+
+				this.setState({
+					map: map,
+					circle: circle,
+					polygon: polygon,
+					marker: marker
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement('div', { id: "edit-map-canvas-" + this.state.mapID, className: 'map-container' });
+			}
+		}]);
+
+		return EditMap;
+	})(_react2.default.Component);
+
+	exports.default = EditMap;
+
+	EditMap.defaultProps = {
+		onDataChange: function onDataChange() {},
+		radius: null,
+		location: null,
+		type: 'active'
+	};
+
+/***/ },
+/* 281 */,
 /* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -44979,6 +44984,7 @@
 						onPlaceChange: this.props.onPlaceChange,
 						onRadiusChange: this.props.onRadiusChange,
 						onMapDataChange: this.props.onMapDataChange,
+						units: 'Miles',
 						key: 'locationDropdown' }));
 				}
 
@@ -45069,7 +45075,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _autocompleteMap = __webpack_require__(277);
+	var _autocompleteMap = __webpack_require__(278);
 
 	var _autocompleteMap2 = _interopRequireDefault(_autocompleteMap);
 
@@ -45183,7 +45189,8 @@
 							_react2.default.createElement(_autocompleteMap2.default, {
 								rerender: this.state.toggled,
 								onMapDataChange: this.props.onMapDataChange,
-								radius: 250 })
+								radius: this.props.radius,
+								units: 'miles' })
 						)
 					)
 				);
@@ -45623,7 +45630,7 @@
 				}
 
 				$.ajax({
-					url: "/scripts/assignment/list",
+					url: 'api/assignment/list',
 					type: 'GET',
 					data: params,
 					dataType: 'json',
@@ -45660,7 +45667,7 @@
 				var query = "lat=" + center.lat() + "&lon=" + center.lng() + "&radius=" + radius;
 
 				//Should be authed
-				$.ajax(_global2.default.API_URL + "/v1/user/findInRadius?" + query, {
+				$.ajax('/api/user/findInRadius?' + query, {
 					success: function success(response) {
 
 						//Do nothing, because of bad response
@@ -45796,7 +45803,7 @@
 
 	var _dispatchMapCallout2 = _interopRequireDefault(_dispatchMapCallout);
 
-	var _lodash = __webpack_require__(281);
+	var _lodash = __webpack_require__(257);
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
@@ -46857,7 +46864,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _editMap = __webpack_require__(279);
+	var _editMap = __webpack_require__(280);
 
 	var _editMap2 = _interopRequireDefault(_editMap);
 

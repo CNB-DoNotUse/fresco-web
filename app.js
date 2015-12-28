@@ -34,14 +34,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({
   dest : './uploads/',
-    rename: (fieldname, filename) => {
-        return Date.now() + filename.split('.').pop();
-    },
-    onFileUploadStart: (file) => {
-    },
-    onFileUploadComplete: (file) => {
-        done = true;
-    }
+  rename: (fieldname, filename) => {
+      return Date.now() + filename.split('.').pop();
+  },
+  onFileUploadStart: (file) => {
+  },
+  onFileUploadComplete: (file) => {
+      done = true;
+  }
 }));
 
 //Cookie parser
@@ -253,13 +253,13 @@ for (var i = 0; i < routes.platform.length; i++) {
 /**
  * Define scripts routes
  */
-var routes_scripts_articles = require('./routes/scripts/article'),
-    routes_scripts_assignment = require('./routes/scripts/assignment'),
-    routes_scripts_gallery = require('./routes/scripts/gallery'),
-    routes_scripts_outlet = require('./routes/scripts/outlet'),
-    routes_scripts_post = require('./routes/scripts/post'),
-    routes_scripts_story = require('./routes/scripts/story'),
-    routes_scripts_user = require('./routes/scripts/user');
+var routes_scripts_articles     = require('./routes/scripts/article'),
+    routes_scripts_assignment   = require('./routes/scripts/assignment'),
+    routes_scripts_gallery      = require('./routes/scripts/gallery'),
+    routes_scripts_outlet       = require('./routes/scripts/outlet'),
+    routes_scripts_post         = require('./routes/scripts/post'),
+    routes_scripts_story        = require('./routes/scripts/story'),
+    routes_scripts_user         = require('./routes/scripts/user');
 
 app.use('/scripts', routes_scripts_articles);
 app.use('/scripts', routes_scripts_assignment);
@@ -269,6 +269,35 @@ app.use('/scripts', routes_scripts_post);
 app.use('/scripts', routes_scripts_story);
 app.use('/scripts', routes_scripts_user);
 
+var request = require('superagent');
+
+app.use('/api', (req, res, next) => {
+  var token = req.session.user ? req.session.user.token ? req.session.user.token : '' : '';
+  if(req.method == 'GET') {
+
+    return request
+      .get('http://dev.api.fresconews.com/v1' + req.url)
+      .query(req.query)
+      .set('authtoken', token)
+      .end((err, response) => {
+        if(err) {
+          return res.json({err: 'API Error'});
+        }
+
+        var data = '';
+
+        try {
+          data = JSON.parse(response.text);
+        } catch (ex) {
+          return res.send({err: 'API Parse Error'});
+        }
+
+        return res.send(data);
+      });
+
+  }
+  next();
+})
 
 /**
  * Error Handlers

@@ -21,9 +21,10 @@ export default class GalleryCell extends React.Component {
 		var location = 'No Location';
 
 		for (var i = 0; i < this.props.gallery.posts.length; i++) {
-			if (this.props.gallery.posts[i].location.address){
+			if(!this.props.gallery.posts[i].location) continue;
+
+			if (this.props.gallery.posts[i].location.address) {
 				location = this.props.gallery.posts[i].location.address;
-				break;
 			}
 		}
 

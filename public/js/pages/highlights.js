@@ -31819,7 +31819,8 @@
 /* 274 */,
 /* 275 */,
 /* 276 */,
-/* 277 */
+/* 277 */,
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31834,11 +31835,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _placesAutocomplete = __webpack_require__(278);
+	var _placesAutocomplete = __webpack_require__(279);
 
 	var _placesAutocomplete2 = _interopRequireDefault(_placesAutocomplete);
 
-	var _editMap = __webpack_require__(279);
+	var _editMap = __webpack_require__(280);
 
 	var _editMap2 = _interopRequireDefault(_editMap);
 
@@ -31881,7 +31882,7 @@
 		}, {
 			key: 'updateRadius',
 			value: function updateRadius() {
-				var radius = parseInt(this.refs.radius.value, 10);
+				var radius = parseFloat(this.refs.radius.value);
 				if (radius == 'NaN') {
 					return;
 				}
@@ -31894,7 +31895,8 @@
 			value: function componentDidUpdate(prevProps, prevState) {
 				if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
 					this.setState({
-						location: this.props.location
+						location: this.props.location,
+						radius: this.props.radius
 					});
 				}
 			}
@@ -31908,7 +31910,7 @@
 						type: 'text',
 						className: 'form-control floating-label numbers m-t-15 ',
 						style: { marginTop: '15px' },
-						'data-hint': 'Meters',
+						'data-hint': this.props.unit,
 						placeholder: 'Radius',
 						defaultValue: this.props.radius,
 						onKeyUp: this.updateRadius,
@@ -31943,15 +31945,16 @@
 
 	AutocompleteMap.defaultProps = {
 		defaultLocation: null,
+		unit: "Feet",
 		location: null,
-		radius: null,
-		rerender: true,
+		radius: 250,
+		rerender: false,
 		updateRadius: function updateRadius() {},
 		onPlaceChange: function onPlaceChange() {}
 	};
 
 /***/ },
-/* 278 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32078,7 +32081,7 @@
 	};
 
 /***/ },
-/* 279 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32140,13 +32143,16 @@
 		}, {
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate(prevProps, prevState) {
+
+				console.log('Map Updated');
+
 				if (this.props.rerender) {
 					google.maps.event.trigger(this.state.map, 'resize');
 				}
 
 				//Check if there is a radius, and it is not the same as the previous one
 				if (this.props.radius && prevProps.radius != this.props.radius) {
-					this.state.circle.setRadius(this.props.radius);
+					this.state.circle.setRadius(_global2.default.feetToMeters(this.props.radius));
 					this.state.map.fitBounds(this.state.circle.getBounds());
 				}
 
@@ -32324,7 +32330,6 @@
 	};
 
 /***/ },
-/* 280 */,
 /* 281 */,
 /* 282 */
 /***/ function(module, exports, __webpack_require__) {
@@ -32622,6 +32627,7 @@
 						onPlaceChange: this.props.onPlaceChange,
 						onRadiusChange: this.props.onRadiusChange,
 						onMapDataChange: this.props.onMapDataChange,
+						units: 'Miles',
 						key: 'locationDropdown' }));
 				}
 
@@ -32712,7 +32718,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _autocompleteMap = __webpack_require__(277);
+	var _autocompleteMap = __webpack_require__(278);
 
 	var _autocompleteMap2 = _interopRequireDefault(_autocompleteMap);
 
@@ -32826,7 +32832,8 @@
 							_react2.default.createElement(_autocompleteMap2.default, {
 								rerender: this.state.toggled,
 								onMapDataChange: this.props.onMapDataChange,
-								radius: 250 })
+								radius: this.props.radius,
+								units: 'miles' })
 						)
 					)
 				);
@@ -33278,18 +33285,18 @@
 
 				if (this.props.highlighted) {
 
-					endpoint = '/v1/gallery/highlights';
+					endpoint = 'gallery/highlights';
 
 					params.invalidate = 1;
 				} else {
 
-					endpoint = '/v1/gallery/list';
+					endpoint = 'gallery/list';
 					params.verified = true;
 					params.tags = this.state.tags.join(',');
 				}
 
 				$.ajax({
-					url: _global2.default.API_URL + endpoint,
+					url: '/api/' + endpoint,
 					type: 'GET',
 					data: params,
 					dataType: 'json',
@@ -33551,9 +33558,10 @@
 				var location = 'No Location';
 
 				for (var i = 0; i < this.props.gallery.posts.length; i++) {
+					if (!this.props.gallery.posts[i].location) continue;
+
 					if (this.props.gallery.posts[i].location.address) {
 						location = this.props.gallery.posts[i].location.address;
-						break;
 					}
 				}
 

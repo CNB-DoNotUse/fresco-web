@@ -248,6 +248,16 @@ export default class GalleryEdit extends React.Component {
 				},
 				error: (xhr, status, error) => {
 					$.snackbar({content: global.resolveError(error)});
+				},
+				xhr: () => {
+					var xhr = $.ajaxSettings.xhr();
+					xhr.upload.onprogress = function(evt) {
+						console.log('progress', evt.loaded / evt.total);
+					}
+
+					xhr.upload.onload = function() { console.log ('Done upload'); }
+
+					return xhr;
 				}
 			}); 			
  		}
