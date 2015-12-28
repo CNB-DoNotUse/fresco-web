@@ -12,7 +12,7 @@ export default class AssignmentListItem extends React.Component {
         var assignment = this.props.assignment,
             location = assignment.location.googlemaps || 'Unknown',
             expirationTime = new Date(this.props.assignment.expiration_time),
-            expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires in') + moment(expirationTime).fromNow();
+            expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
         
         var imageUrl = '/images/placeholder-assignment.png';
 

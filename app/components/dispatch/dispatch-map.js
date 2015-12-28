@@ -30,6 +30,8 @@ export default class DispatchMap extends React.Component {
 			newAssignmentCircle: null
 		}
 
+		this.isOpeningCallout = false;
+
 		this.updateMap = this.updateMap.bind(this);
 		this.clearMap = this.clearMap.bind(this);
 		this.updateAssignmentMarkers = this.updateAssignmentMarkers.bind(this);
@@ -73,10 +75,9 @@ export default class DispatchMap extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 
 		//Check if there is an active assignment and (there no previous assignment or the prev and current active assignmnet are not the same)
-		if(this.props.activeAssignment && (!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)){
-				
+		if(!this.isOpeningCallout && this.props.activeAssignment && (!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)) {
+			console.log(this.state.activeCallout);
 			this.focusOnAssignment(null, null, this.props.activeAssignment);
-
 		}
 
 		if(JSON.stringify(prevProps.mapCenter) != JSON.stringify(this.props.mapCenter)){
@@ -475,7 +476,7 @@ export default class DispatchMap extends React.Component {
 	 * @param  {Google Maps Circle} circle     The radius of the assignment
 	 */
 	focusOnAssignment(marker, circle, assignment) {
-
+		this.isOpeningCallout = true;
 		var map = this.state.map;
 
 		if(!marker){
@@ -511,16 +512,19 @@ export default class DispatchMap extends React.Component {
 
 		map.fitBounds(circle.getBounds());
 
-		var callout = ReactDOM.renderToString(
+		var calloutContent = ReactDOM.renderToString(
 			<DispatchMapCallout assignment={assignment} onClick />
 		);
 
-		callout = new google.maps.InfoWindow({
-			content: callout,
-			position: marker.getPosition(),
+		var callout = new google.maps.InfoWindow({
+			content: calloutContent,
+			position: {
+				lat: marker.getPosition().lat(),
+				lng: marker.getPosition().lng()
+			}
 		});
 
-		callout.open(map, marker);
+		callout.open(map);
 
 		//Update the active assignment and callout
 		this.props.setActiveAssignment(assignment);
@@ -528,7 +532,8 @@ export default class DispatchMap extends React.Component {
 		this.setState({
 			activeCallout: callout
 		});
-		
+
+		this.isOpeningCallout = false;
 	}
 
 	render() {

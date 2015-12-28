@@ -45846,6 +45846,8 @@
 				newAssignmentCircle: null
 			};
 
+			_this.isOpeningCallout = false;
+
 			_this.updateMap = _this.updateMap.bind(_this);
 			_this.clearMap = _this.clearMap.bind(_this);
 			_this.updateAssignmentMarkers = _this.updateAssignmentMarkers.bind(_this);
@@ -45890,8 +45892,8 @@
 				var _this2 = this;
 
 				//Check if there is an active assignment and (there no previous assignment or the prev and current active assignmnet are not the same)
-				if (this.props.activeAssignment && (!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)) {
-
+				if (!this.isOpeningCallout && this.props.activeAssignment && (!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)) {
+					console.log(this.state.activeCallout);
 					this.focusOnAssignment(null, null, this.props.activeAssignment);
 				}
 
@@ -46290,7 +46292,7 @@
 		}, {
 			key: 'focusOnAssignment',
 			value: function focusOnAssignment(marker, circle, assignment) {
-
+				this.isOpeningCallout = true;
 				var map = this.state.map;
 
 				if (!marker) {
@@ -46325,14 +46327,17 @@
 
 				map.fitBounds(circle.getBounds());
 
-				var callout = _server2.default.renderToString(_react2.default.createElement(_dispatchMapCallout2.default, { assignment: assignment, onClick: true }));
+				var calloutContent = _server2.default.renderToString(_react2.default.createElement(_dispatchMapCallout2.default, { assignment: assignment, onClick: true }));
 
-				callout = new google.maps.InfoWindow({
-					content: callout,
-					position: marker.getPosition()
+				var callout = new google.maps.InfoWindow({
+					content: calloutContent,
+					position: {
+						lat: marker.getPosition().lat(),
+						lng: marker.getPosition().lng()
+					}
 				});
 
-				callout.open(map, marker);
+				callout.open(map);
 
 				//Update the active assignment and callout
 				this.props.setActiveAssignment(assignment);
@@ -46340,6 +46345,8 @@
 				this.setState({
 					activeCallout: callout
 				});
+
+				this.isOpeningCallout = false;
 			}
 		}, {
 			key: 'render',
@@ -46803,7 +46810,7 @@
 	            var assignment = this.props.assignment,
 	                location = assignment.location.googlemaps || 'Unknown',
 	                expirationTime = new Date(this.props.assignment.expiration_time),
-	                expiredText = ((0, _moment2.default)().diff(expirationTime) > 1 ? 'Expired ' : 'Expires in') + (0, _moment2.default)(expirationTime).fromNow();
+	                expiredText = ((0, _moment2.default)().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + (0, _moment2.default)(expirationTime).fromNow();
 
 	            var imageUrl = '/images/placeholder-assignment.png';
 

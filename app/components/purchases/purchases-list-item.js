@@ -39,7 +39,7 @@ export default class PurchasesListItem extends React.Component {
 						}}/>
 				</div>
 				<div>
-					<p className="md-type-body1">{global.formatTime(Date.now(), purchase.timestamp)}</p>
+					<p className="md-type-body1">{global.formatTime(purchase.timestamp)}</p>
 				</div>
 				<div>
 					<p className="md-type-body1">{video ? 'Video' : 'Photo'}</p>
