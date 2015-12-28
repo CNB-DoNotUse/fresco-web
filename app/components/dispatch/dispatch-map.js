@@ -76,7 +76,6 @@ export default class DispatchMap extends React.Component {
 
 		//Check if there is an active assignment and (there no previous assignment or the prev and current active assignmnet are not the same)
 		if(!this.isOpeningCallout && this.props.activeAssignment && (!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)) {
-			console.log(this.state.activeCallout);
 			this.focusOnAssignment(null, null, this.props.activeAssignment);
 		}
 
@@ -486,6 +485,7 @@ export default class DispatchMap extends React.Component {
 			
 			if(index == -1){
 				$.snackbar({content: 'We couldn\'t find this assignment!'});
+				this.isOpeningCallout = false;
 				return;
 			}
 
@@ -498,6 +498,7 @@ export default class DispatchMap extends React.Component {
 
 			if(index == -1){
 				$.snackbar({content: 'We couldn\'t find this assignment!'});
+				this.isOpeningCallout = false;
 				return;
 			}
 
@@ -522,6 +523,15 @@ export default class DispatchMap extends React.Component {
 				lat: marker.getPosition().lat(),
 				lng: marker.getPosition().lng()
 			}
+		});
+
+		google.maps.event.addListener(callout, 'closeclick', () => {
+			this.setState({
+				activeCallout: null
+			});
+
+			this.props.setActiveAssignment(null);
+
 		});
 
 		callout.open(map);

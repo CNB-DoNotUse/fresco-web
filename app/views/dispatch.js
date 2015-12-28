@@ -60,7 +60,7 @@ class Dispatch extends React.Component {
 	 * @param {dictionary} location The new location
 	 * @param {integer} radius The radius to update the new assignment with
 	 */
-	updateNewAssignment(location, radius, zoom){
+	updateNewAssignment(location, radius, zoom) {
 		this.setState({
 			newAssignment: {
 				location: location,
@@ -72,15 +72,15 @@ class Dispatch extends React.Component {
 
 	//Tells the componenets to update their `Google Maps Place Autocomplete`
 	//when the marker is finished dragging
-	updatePlace(){
+	updatePlace() {
 		this.setState({ shouldUpdatePlace: true });
 	}
 
-	updateMapCenter(location){
+	updateMapCenter(location) {
 		this.setState({ mapCenter: location });
 	}
 
-	updateViewMode(viewMode){
+	updateViewMode(viewMode) {
 		//Do nothing if the same view mode
 		if(viewMode === this.state.viewMode) return;
 
@@ -101,7 +101,7 @@ class Dispatch extends React.Component {
 		params.verified = this.state.viewMode == 'pending' ? false : true;
 
 		//Add map params
-		if(map){
+		if(map) {
 
 			var bounds = map.getBounds();
 			if(!bounds) return;
@@ -186,7 +186,7 @@ class Dispatch extends React.Component {
 
 		var dispatchSubmit = document.getElementById('dispatch-submit');
 
-		if(show && this.state.newAssignment == null){
+		if(show && this.state.newAssignment == null) {
 
 			this.setState({
 				newAssignment: 'unset'
@@ -195,7 +195,7 @@ class Dispatch extends React.Component {
 			dispatchSubmit.className = dispatchSubmit.className.replace(/\btoggled\b/,'');
 
 		}
-		else if(!show){
+		else if(!show) {
 
 			this.setState({
 				newAssignment: null

@@ -16,11 +16,6 @@ export default class AssignmentListItem extends React.Component {
         
         var imageUrl = '/images/placeholder-assignment.png';
 
-        // PAGE_Dispatch.getFirstPost(assignment, function(image){
-        //     elem.find('.img-circle').attr("src", image);
-        //     if(callback) callback(elem);
-        // });
-
         return (
             <div
                 id={assignment._id}
