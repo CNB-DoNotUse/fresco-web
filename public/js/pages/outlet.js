@@ -19902,34 +19902,34 @@
 					),
 					_react2.default.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content'), 'data-location': '/content' },
+						{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive'), 'data-location': '/archive' },
 						_react2.default.createElement('span', { className: 'mdi mdi-play-box-outline icon' }),
-						'All content'
+						'Archive'
 					),
 					_react2.default.createElement(
 						'ul',
 						null,
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/photos'), 'data-location': '/content/photos' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/photos'), 'data-location': '/archive/photos' },
 							_react2.default.createElement('span', { className: 'mdi mdi-file-image-box icon' }),
 							'Photos'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/videos'), 'data-location': '/content/videos' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/videos'), 'data-location': '/archive/videos' },
 							_react2.default.createElement('span', { className: 'mdi mdi-movie icon' }),
 							'Videos'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/galleries'), 'data-location': '/content/galleries' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/galleries'), 'data-location': '/archive/galleries' },
 							_react2.default.createElement('span', { className: 'mdi mdi-image-filter icon' }),
 							'Galleries'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/stories'), 'data-location': '/content/stories' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/stories'), 'data-location': '/archive/stories' },
 							_react2.default.createElement('span', { className: 'mdi mdi-newspaper icon' }),
 							'Stories'
 						)
@@ -32414,7 +32414,671 @@
 /* 285 */,
 /* 286 */,
 /* 287 */,
-/* 288 */
+/* 288 */,
+/* 289 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _frescoImage = __webpack_require__(290);
+
+	var _frescoImage2 = _interopRequireDefault(_frescoImage);
+
+	var _purchaseAction = __webpack_require__(291);
+
+	var _purchaseAction2 = _interopRequireDefault(_purchaseAction);
+
+	var _downloadAction = __webpack_require__(292);
+
+	var _downloadAction2 = _interopRequireDefault(_downloadAction);
+
+	var _postEditAction = __webpack_require__(293);
+
+	var _postEditAction2 = _interopRequireDefault(_postEditAction);
+
+	var _global = __webpack_require__(162);
+
+	var _global2 = _interopRequireDefault(_global);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Single Post Cell, child of PostList
+	 */
+
+	var PostCell = (function (_React$Component) {
+		_inherits(PostCell, _React$Component);
+
+		function PostCell(props) {
+			_classCallCheck(this, PostCell);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PostCell).call(this, props));
+
+			_this.postClicked = _this.postClicked.bind(_this);
+			return _this;
+		}
+
+		_createClass(PostCell, [{
+			key: 'postClicked',
+			value: function postClicked(e) {
+
+				//Check if clicked with shift key
+				if (!e.shiftKey) return;
+
+				//Check if the prop function is present
+				if (!this.props.togglePost) return;
+
+				this.props.togglePost(this.props.post);
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+
+				var post = this.props.post,
+				    toggled = this.props.toggled ? 'toggled' : '',
+				    timeString = _global2.default.formatTime(post.time_created),
+				    address = post.location ? post.location.address ? post.location.address : 'No Address' : 'No Address',
+				    size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small;
+
+				var statusClass = 'mdi icon pull-right '; //Class name for post tile icon
+				statusClass += post.video == null ? 'mdi-file-image-box ' : 'mdi-movie ';
+				statusClass += this.props.purchased ? 'available ' : 'md-type-black-disabled ';
+
+				return _react2.default.createElement(
+					'div',
+					{ className: size + ' tile ' + toggled, onClick: this.postClicked },
+					_react2.default.createElement(
+						'div',
+						{ className: 'tile-body' },
+						_react2.default.createElement('div', { className: 'frame' }),
+						_react2.default.createElement(
+							'div',
+							{ className: 'hover' },
+							_react2.default.createElement(
+								'p',
+								{ className: 'md-type-body1' },
+								post.caption
+							),
+							_react2.default.createElement(
+								'span',
+								{ className: 'md-type-caption' },
+								post.byline
+							),
+							_react2.default.createElement(PostCellStories, { stories: post.stories })
+						),
+						_react2.default.createElement(_frescoImage2.default, {
+							image: this.props.post.image,
+							size: this.props.size })
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'tile-foot' },
+						_react2.default.createElement(PostCellActions, {
+							post: post,
+							purchased: this.props.purchased,
+							didPurchase: this.props.didPurchase,
+							rank: this.props.rank,
+							editable: this.props.editable,
+							edit: this.props.edit }),
+						_react2.default.createElement(
+							'div',
+							null,
+							_react2.default.createElement(
+								'div',
+								{ className: 'tile-info' },
+								_react2.default.createElement(
+									'span',
+									{ className: 'md-type-body2' },
+									address
+								),
+								_react2.default.createElement(
+									'span',
+									{ className: 'md-type-caption timestring', 'data-timestamp': post.time_created },
+									timeString
+								)
+							),
+							_react2.default.createElement('span', { className: statusClass })
+						)
+					)
+				);
+			}
+		}]);
+
+		return PostCell;
+	})(_react2.default.Component);
+
+	exports.default = PostCell;
+	;
+
+	PostCell.defaultProps = {
+		sizes: {
+			large: 'col-xs-12 col-sm-6 col-lg-4',
+			small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
+		},
+		toggled: false
+	};
+
+	// <span className="mdi mdi-library-plus icon pull-right"></span>
+	// <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
+
+	/**
+	 * Gallery Cell Stories List
+	 */
+
+	var PostCellStories = (function (_React$Component2) {
+		_inherits(PostCellStories, _React$Component2);
+
+		function PostCellStories() {
+			_classCallCheck(this, PostCellStories);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(PostCellStories).apply(this, arguments));
+		}
+
+		_createClass(PostCellStories, [{
+			key: 'render',
+			value: function render() {
+
+				var stories = '';
+
+				if (this.props.stories) {
+
+					var stories = this.props.stories.map(function (stories, i) {
+						return _react2.default.createElement(
+							'li',
+							{ key: i },
+							_react2.default.createElement(
+								'a',
+								{ href: "/story/" + story._id },
+								story.title
+							)
+						);
+					});
+				}
+
+				return _react2.default.createElement(
+					'ul',
+					{ className: 'md-type-body2' },
+					stories
+				);
+			}
+		}]);
+
+		return PostCellStories;
+	})(_react2.default.Component);
+
+	/**
+	 * Post Cell Actions
+	 * Description : Set of icons on the the post cell's hover
+	 */
+
+	var PostCellActions = (function (_React$Component3) {
+		_inherits(PostCellActions, _React$Component3);
+
+		function PostCellActions() {
+			_classCallCheck(this, PostCellActions);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(PostCellActions).apply(this, arguments));
+		}
+
+		_createClass(PostCellActions, [{
+			key: 'render',
+			value: function render() {
+
+				var actions = [],
+				    key = 0;
+
+				//Check if we're CM or greater
+				if (typeof this.props.rank !== 'undefined' && this.props.rank >= 1) {
+
+					if (this.props.editable) {
+						actions.push(_react2.default.createElement(_postEditAction2.default, {
+							post: this.props.post,
+							edit: this.props.edit,
+							key: ++key }));
+					}
+
+					actions.push(_react2.default.createElement(_downloadAction2.default, {
+						post: this.props.post,
+						key: ++key }));
+
+					//Show the purhcased icon if the post hasn't been purchased                      
+					if (this.props.purchased === false) {
+
+						actions.push(_react2.default.createElement(_purchaseAction2.default, {
+							post: this.props.post,
+							didPurchase: this.props.didPurchase,
+							key: ++key }));
+					}
+				}
+
+				//Check if the post has been purchased
+				else if (this.props.purchased === true) actions.push(_react2.default.createElement(_downloadAction2.default, {
+						post: this.props.post,
+						key: ++key }));
+
+					//Check if the post is not purhcased, and it is purchasble from the license
+					else if (this.props.purchased == false && this.props.post.license == 1) {
+
+							actions.push(_react2.default.createElement('span', { 'class': 'mdi mdi-library-plus icon pull-right', key: ++key }));
+
+							actions.push(_react2.default.createElement(_purchaseAction2.default, {
+								post: this.props.post,
+								didPurchase: this.props.didPurchase,
+								key: ++key }));
+						}
+
+				return _react2.default.createElement(
+					'div',
+					{ className: 'hover' },
+					_react2.default.createElement(
+						'a',
+						{ className: 'md-type-body2 post-link', href: '/post/' + this.props.post._id },
+						'See more'
+					),
+					actions
+				);
+			}
+		}]);
+
+		return PostCellActions;
+	})(_react2.default.Component);
+
+/***/ },
+/* 290 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _global = __webpack_require__(162);
+
+	var _global2 = _interopRequireDefault(_global);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Stateless image that manages an image error handler
+	 */
+
+	var FrescoImage = (function (_React$Component) {
+		_inherits(FrescoImage, _React$Component);
+
+		function FrescoImage(props) {
+			_classCallCheck(this, FrescoImage);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(FrescoImage).call(this, props));
+		}
+
+		_createClass(FrescoImage, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+
+				var size = this.props.size,
+				    img = this.refs.image;
+
+				img.onerror = function () {
+
+					var timeout = parseInt(img.getAttribute('data-t') || 1),
+					    lastTimeout = parseInt(img.getAttribute('data-lt') || 1);
+
+					img.setAttribute('data-lt', timeout);
+					img.setAttribute('data-t', timeout + lastTimeout);
+					img.setAttribute('data-src', img.getAttribute('src'));
+					img.setAttribute('src', 'https://d2j1l98c0ybckw.cloudfront.net/images/' + size + '/missing.png');
+
+					setTimeout(function () {
+
+						img.setAttribute('src', img.getAttribute('data-src'));
+					}, timeout * 1000);
+				};
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'img' },
+					_react2.default.createElement('img', {
+						className: 'img-cover',
+						ref: 'image',
+						'data-src': _global2.default.formatImg(this.props.image, this.props.size),
+						src: _global2.default.formatImg(this.props.image, this.props.size) })
+				);
+			}
+		}]);
+
+		return FrescoImage;
+	})(_react2.default.Component);
+
+	exports.default = FrescoImage;
+
+	FrescoImage.defaultProps = {
+		size: 'small'
+	};
+
+/***/ },
+/* 291 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Global purchase actions
+	 */
+
+	var PurchaseAction = (function (_React$Component) {
+		_inherits(PurchaseAction, _React$Component);
+
+		function PurchaseAction(props) {
+			_classCallCheck(this, PurchaseAction);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PurchaseAction).call(this, props));
+
+			_this.purchase = _this.purchase.bind(_this);
+			return _this;
+		}
+
+		_createClass(PurchaseAction, [{
+			key: "render",
+			value: function render() {
+
+				return _react2.default.createElement("span", { className: "mdi mdi-cash icon pull-right", onClick: this.purchase });
+			}
+
+			//Called whenever the purhcase icon is selected
+
+		}, {
+			key: "purchase",
+			value: function purchase(event) {
+				var _this2 = this;
+
+				//Check if the prop exists first
+				if (!this.props.post) return;
+
+				var post = this.props.post._id,
+				    assignment = this.props.assignment ? this.props.assignment._id : null;
+
+				//Confirm the purchase
+				alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", function (e) {
+
+					if (e) {
+						//Send request for purchase
+						$.ajax({
+							url: '/scripts/outlet/checkout',
+							dataType: 'json',
+							method: 'post',
+							contentType: "application/json",
+							data: JSON.stringify({
+								posts: [post],
+								assignment: assignment
+							}),
+							success: function success(result, status, xhr) {
+
+								if (result.err) {
+									return $.snackbar({
+										content: 'There was an error while completing your purchase!'
+									});
+								}
+
+								$.snackbar({
+									content: 'Purchase successful! Visit your <a style="color:white;" href="/outlet">outlet page</a> to view your purchased content',
+									timeout: 0
+								});
+
+								_this2.props.didPurchase(_this2.props.post._id);
+
+								// var card = thisElem.parents('tile');
+								// thisElem.siblings('.mdi-library-plus').remove();
+								// thisElem.parent().parent().find('.mdi-file-image-box').addClass('available');
+								// thisElem.parent().parent().find('.mdi-movie').addClass('available');
+								// card.removeClass('toggled');
+								// thisElem.remove();
+							},
+							error: function error(xhr, status, _error) {
+								$.snackbar({
+									content: resolveError(_error, 'There was an error while completing your purchase!')
+								});
+							}
+						});
+					} else {
+						// user clicked "cancel"
+					}
+				});
+			}
+		}]);
+
+		return PurchaseAction;
+	})(_react2.default.Component);
+
+	exports.default = PurchaseAction;
+
+	PurchaseAction.defaultProps = {
+		didPurchase: function didPurchase(id) {}
+	};
+
+/***/ },
+/* 292 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Global download action
+	 */
+
+	var DownloadAction = (function (_React$Component) {
+		_inherits(DownloadAction, _React$Component);
+
+		function DownloadAction(props) {
+			_classCallCheck(this, DownloadAction);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DownloadAction).call(this, props));
+
+			_this.download = _this.download.bind(_this);
+			return _this;
+		}
+
+		_createClass(DownloadAction, [{
+			key: 'render',
+			value: function render() {
+
+				return _react2.default.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download });
+			}
+
+			//Called whenever the purhcase icon is selected
+
+		}, {
+			key: 'download',
+			value: function download(event) {
+
+				if (!this.props.post) {
+
+					$.snackbar({
+						content: 'We couldn\'t find this post!',
+						timeout: 0
+					});
+
+					return;
+				}
+
+				var href = this.props.post.video ? this.props.post.video.replace('videos/', 'videos/mp4/').replace('.m3u8', '.mp4') : this.props.post.image;
+
+				var link = document.createElement("a");
+
+				link.download = Date.now() + '.' + href.split('.').pop();
+				link.href = href;
+				link.click();
+			}
+		}]);
+
+		return DownloadAction;
+	})(_react2.default.Component);
+
+	exports.default = DownloadAction;
+
+/***/ },
+/* 293 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _global = __webpack_require__(162);
+
+	var _global2 = _interopRequireDefault(_global);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Global download action
+	 */
+
+	var PostEditAction = (function (_React$Component) {
+		_inherits(PostEditAction, _React$Component);
+
+		function PostEditAction(props) {
+			_classCallCheck(this, PostEditAction);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PostEditAction).call(this, props));
+
+			_this.edit = _this.edit.bind(_this);
+			return _this;
+		}
+
+		_createClass(PostEditAction, [{
+			key: 'render',
+			value: function render() {
+
+				return _react2.default.createElement('span', { className: 'mdi mdi-pencil icon pull-right', onClick: this.edit });
+			}
+
+			/**
+	   * Called when PostCellAction's Edit button is clicked
+	   * @param  {Object} post - Has post
+	   */
+
+		}, {
+			key: 'edit',
+			value: function edit() {
+				var _this2 = this;
+
+				$.get(_global2.default.API_URL + '/v1/gallery/get', { id: this.props.post.parent }, function (response) {
+
+					if (response.err) {
+						$.snackbar({ content: 'We couldn\'t find the gallery attached to this post!' });
+						return;
+					}
+
+					//Send data back up
+					_this2.props.edit(response.data);
+				});
+			}
+		}]);
+
+		return PostEditAction;
+	})(_react2.default.Component);
+
+	exports.default = PostEditAction;
+
+	PostEditAction.defaultProps = {
+		post: {},
+		edit: function edit() {}
+	};
+
+/***/ },
+/* 294 */,
+/* 295 */,
+/* 296 */,
+/* 297 */,
+/* 298 */,
+/* 299 */,
+/* 300 */,
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32437,11 +33101,11 @@
 
 	var _dropdown2 = _interopRequireDefault(_dropdown);
 
-	var _locationDropdown = __webpack_require__(289);
+	var _locationDropdown = __webpack_require__(305);
 
 	var _locationDropdown2 = _interopRequireDefault(_locationDropdown);
 
-	var _tagFilter = __webpack_require__(290);
+	var _tagFilter = __webpack_require__(306);
 
 	var _tagFilter2 = _interopRequireDefault(_tagFilter);
 
@@ -32703,7 +33367,7 @@
 	};
 
 /***/ },
-/* 289 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32850,7 +33514,7 @@
 	};
 
 /***/ },
-/* 290 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33074,670 +33738,6 @@
 	};
 
 /***/ },
-/* 291 */,
-/* 292 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _frescoImage = __webpack_require__(293);
-
-	var _frescoImage2 = _interopRequireDefault(_frescoImage);
-
-	var _purchaseAction = __webpack_require__(294);
-
-	var _purchaseAction2 = _interopRequireDefault(_purchaseAction);
-
-	var _downloadAction = __webpack_require__(295);
-
-	var _downloadAction2 = _interopRequireDefault(_downloadAction);
-
-	var _postEditAction = __webpack_require__(296);
-
-	var _postEditAction2 = _interopRequireDefault(_postEditAction);
-
-	var _global = __webpack_require__(162);
-
-	var _global2 = _interopRequireDefault(_global);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Single Post Cell, child of PostList
-	 */
-
-	var PostCell = (function (_React$Component) {
-		_inherits(PostCell, _React$Component);
-
-		function PostCell(props) {
-			_classCallCheck(this, PostCell);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PostCell).call(this, props));
-
-			_this.postClicked = _this.postClicked.bind(_this);
-			return _this;
-		}
-
-		_createClass(PostCell, [{
-			key: 'postClicked',
-			value: function postClicked(e) {
-
-				//Check if clicked with shift key
-				if (!e.shiftKey) return;
-
-				//Check if the prop function is present
-				if (!this.props.togglePost) return;
-
-				this.props.togglePost(this.props.post);
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-
-				var post = this.props.post,
-				    toggled = this.props.toggled ? 'toggled' : '',
-				    timeString = _global2.default.formatTime(post.time_created),
-				    address = post.location ? post.location.address ? post.location.address : 'No Address' : 'No Address',
-				    size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small;
-
-				var statusClass = 'mdi icon pull-right '; //Class name for post tile icon
-				statusClass += post.video == null ? 'mdi-file-image-box ' : 'mdi-movie ';
-				statusClass += this.props.purchased ? 'available ' : 'md-type-black-disabled ';
-
-				return _react2.default.createElement(
-					'div',
-					{ className: size + ' tile ' + toggled, onClick: this.postClicked },
-					_react2.default.createElement(
-						'div',
-						{ className: 'tile-body' },
-						_react2.default.createElement('div', { className: 'frame' }),
-						_react2.default.createElement(
-							'div',
-							{ className: 'hover' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'md-type-body1' },
-								post.caption
-							),
-							_react2.default.createElement(
-								'span',
-								{ className: 'md-type-caption' },
-								post.byline
-							),
-							_react2.default.createElement(PostCellStories, { stories: post.stories })
-						),
-						_react2.default.createElement(_frescoImage2.default, {
-							image: this.props.post.image,
-							size: this.props.size })
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'tile-foot' },
-						_react2.default.createElement(PostCellActions, {
-							post: post,
-							purchased: this.props.purchased,
-							didPurchase: this.props.didPurchase,
-							rank: this.props.rank,
-							editable: this.props.editable,
-							edit: this.props.edit }),
-						_react2.default.createElement(
-							'div',
-							null,
-							_react2.default.createElement(
-								'div',
-								{ className: 'tile-info' },
-								_react2.default.createElement(
-									'span',
-									{ className: 'md-type-body2' },
-									address
-								),
-								_react2.default.createElement(
-									'span',
-									{ className: 'md-type-caption timestring', 'data-timestamp': post.time_created },
-									timeString
-								)
-							),
-							_react2.default.createElement('span', { className: statusClass })
-						)
-					)
-				);
-			}
-		}]);
-
-		return PostCell;
-	})(_react2.default.Component);
-
-	exports.default = PostCell;
-	;
-
-	PostCell.defaultProps = {
-		sizes: {
-			large: 'col-xs-12 col-sm-6 col-lg-4',
-			small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
-		},
-		toggled: false
-	};
-
-	// <span className="mdi mdi-library-plus icon pull-right"></span>
-	// <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
-
-	/**
-	 * Gallery Cell Stories List
-	 */
-
-	var PostCellStories = (function (_React$Component2) {
-		_inherits(PostCellStories, _React$Component2);
-
-		function PostCellStories() {
-			_classCallCheck(this, PostCellStories);
-
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(PostCellStories).apply(this, arguments));
-		}
-
-		_createClass(PostCellStories, [{
-			key: 'render',
-			value: function render() {
-
-				var stories = '';
-
-				if (this.props.stories) {
-
-					var stories = this.props.stories.map(function (stories, i) {
-						return _react2.default.createElement(
-							'li',
-							{ key: i },
-							_react2.default.createElement(
-								'a',
-								{ href: "/story/" + story._id },
-								story.title
-							)
-						);
-					});
-				}
-
-				return _react2.default.createElement(
-					'ul',
-					{ className: 'md-type-body2' },
-					stories
-				);
-			}
-		}]);
-
-		return PostCellStories;
-	})(_react2.default.Component);
-
-	/**
-	 * Post Cell Actions
-	 * Description : Set of icons on the the post cell's hover
-	 */
-
-	var PostCellActions = (function (_React$Component3) {
-		_inherits(PostCellActions, _React$Component3);
-
-		function PostCellActions() {
-			_classCallCheck(this, PostCellActions);
-
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(PostCellActions).apply(this, arguments));
-		}
-
-		_createClass(PostCellActions, [{
-			key: 'render',
-			value: function render() {
-
-				var actions = [],
-				    key = 0;
-
-				//Check if we're CM or greater
-				if (typeof this.props.rank !== 'undefined' && this.props.rank >= 1) {
-
-					if (this.props.editable) {
-						actions.push(_react2.default.createElement(_postEditAction2.default, {
-							post: this.props.post,
-							edit: this.props.edit,
-							key: ++key }));
-					}
-
-					actions.push(_react2.default.createElement(_downloadAction2.default, {
-						post: this.props.post,
-						key: ++key }));
-
-					//Show the purhcased icon if the post hasn't been purchased                      
-					if (this.props.purchased === false) {
-
-						actions.push(_react2.default.createElement(_purchaseAction2.default, {
-							post: this.props.post,
-							didPurchase: this.props.didPurchase,
-							key: ++key }));
-					}
-				}
-
-				//Check if the post has been purchased
-				else if (this.props.purchased === true) actions.push(_react2.default.createElement(_downloadAction2.default, {
-						post: this.props.post,
-						key: ++key }));
-
-					//Check if the post is not purhcased, and it is purchasble from the license
-					else if (this.props.purchased == false && this.props.post.license == 1) {
-
-							actions.push(_react2.default.createElement('span', { 'class': 'mdi mdi-library-plus icon pull-right', key: ++key }));
-
-							actions.push(_react2.default.createElement(_purchaseAction2.default, {
-								post: this.props.post,
-								didPurchase: this.props.didPurchase,
-								key: ++key }));
-						}
-
-				return _react2.default.createElement(
-					'div',
-					{ className: 'hover' },
-					_react2.default.createElement(
-						'a',
-						{ className: 'md-type-body2 post-link', href: '/post/' + this.props.post._id },
-						'See more'
-					),
-					actions
-				);
-			}
-		}]);
-
-		return PostCellActions;
-	})(_react2.default.Component);
-
-/***/ },
-/* 293 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _global = __webpack_require__(162);
-
-	var _global2 = _interopRequireDefault(_global);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Stateless image that manages an image error handler
-	 */
-
-	var FrescoImage = (function (_React$Component) {
-		_inherits(FrescoImage, _React$Component);
-
-		function FrescoImage(props) {
-			_classCallCheck(this, FrescoImage);
-
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(FrescoImage).call(this, props));
-		}
-
-		_createClass(FrescoImage, [{
-			key: 'componentDidMount',
-			value: function componentDidMount() {
-
-				var size = this.props.size,
-				    img = this.refs.image;
-
-				img.onerror = function () {
-
-					var timeout = parseInt(img.getAttribute('data-t') || 1),
-					    lastTimeout = parseInt(img.getAttribute('data-lt') || 1);
-
-					img.setAttribute('data-lt', timeout);
-					img.setAttribute('data-t', timeout + lastTimeout);
-					img.setAttribute('data-src', img.getAttribute('src'));
-					img.setAttribute('src', 'https://d2j1l98c0ybckw.cloudfront.net/images/' + size + '/missing.png');
-
-					setTimeout(function () {
-
-						img.setAttribute('src', img.getAttribute('data-src'));
-					}, timeout * 1000);
-				};
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(
-					'div',
-					{ className: 'img' },
-					_react2.default.createElement('img', {
-						className: 'img-cover',
-						ref: 'image',
-						'data-src': _global2.default.formatImg(this.props.image, this.props.size),
-						src: _global2.default.formatImg(this.props.image, this.props.size) })
-				);
-			}
-		}]);
-
-		return FrescoImage;
-	})(_react2.default.Component);
-
-	exports.default = FrescoImage;
-
-	FrescoImage.defaultProps = {
-		size: 'small'
-	};
-
-/***/ },
-/* 294 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Global purchase actions
-	 */
-
-	var PurchaseAction = (function (_React$Component) {
-		_inherits(PurchaseAction, _React$Component);
-
-		function PurchaseAction(props) {
-			_classCallCheck(this, PurchaseAction);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PurchaseAction).call(this, props));
-
-			_this.purchase = _this.purchase.bind(_this);
-			return _this;
-		}
-
-		_createClass(PurchaseAction, [{
-			key: "render",
-			value: function render() {
-
-				return _react2.default.createElement("span", { className: "mdi mdi-cash icon pull-right", onClick: this.purchase });
-			}
-
-			//Called whenever the purhcase icon is selected
-
-		}, {
-			key: "purchase",
-			value: function purchase(event) {
-				var _this2 = this;
-
-				//Check if the prop exists first
-				if (!this.props.post) return;
-
-				var post = this.props.post._id,
-				    assignment = this.props.assignment ? this.props.assignment._id : null;
-
-				//Confirm the purchase
-				alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", function (e) {
-
-					if (e) {
-						//Send request for purchase
-						$.ajax({
-							url: '/scripts/outlet/checkout',
-							dataType: 'json',
-							method: 'post',
-							contentType: "application/json",
-							data: JSON.stringify({
-								posts: [post],
-								assignment: assignment
-							}),
-							success: function success(result, status, xhr) {
-
-								if (result.err) {
-									return $.snackbar({
-										content: 'There was an error while completing your purchase!'
-									});
-								}
-
-								$.snackbar({
-									content: 'Purchase successful! Visit your <a style="color:white;" href="/outlet">outlet page</a> to view your purchased content',
-									timeout: 0
-								});
-
-								_this2.props.didPurchase(_this2.props.post._id);
-
-								// var card = thisElem.parents('tile');
-								// thisElem.siblings('.mdi-library-plus').remove();
-								// thisElem.parent().parent().find('.mdi-file-image-box').addClass('available');
-								// thisElem.parent().parent().find('.mdi-movie').addClass('available');
-								// card.removeClass('toggled');
-								// thisElem.remove();
-							},
-							error: function error(xhr, status, _error) {
-								$.snackbar({
-									content: resolveError(_error, 'There was an error while completing your purchase!')
-								});
-							}
-						});
-					} else {
-						// user clicked "cancel"
-					}
-				});
-			}
-		}]);
-
-		return PurchaseAction;
-	})(_react2.default.Component);
-
-	exports.default = PurchaseAction;
-
-	PurchaseAction.defaultProps = {
-		didPurchase: function didPurchase(id) {}
-	};
-
-/***/ },
-/* 295 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Global download action
-	 */
-
-	var DownloadAction = (function (_React$Component) {
-		_inherits(DownloadAction, _React$Component);
-
-		function DownloadAction(props) {
-			_classCallCheck(this, DownloadAction);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DownloadAction).call(this, props));
-
-			_this.download = _this.download.bind(_this);
-			return _this;
-		}
-
-		_createClass(DownloadAction, [{
-			key: 'render',
-			value: function render() {
-
-				return _react2.default.createElement('span', { className: 'mdi mdi-download icon pull-right', onClick: this.download });
-			}
-
-			//Called whenever the purhcase icon is selected
-
-		}, {
-			key: 'download',
-			value: function download(event) {
-
-				if (!this.props.post) {
-
-					$.snackbar({
-						content: 'We couldn\'t find this post!',
-						timeout: 0
-					});
-
-					return;
-				}
-
-				var href = this.props.post.video ? this.props.post.video.replace('videos/', 'videos/mp4/').replace('.m3u8', '.mp4') : this.props.post.image;
-
-				var link = document.createElement("a");
-
-				link.download = Date.now() + '.' + href.split('.').pop();
-				link.href = href;
-				link.click();
-			}
-		}]);
-
-		return DownloadAction;
-	})(_react2.default.Component);
-
-	exports.default = DownloadAction;
-
-/***/ },
-/* 296 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _global = __webpack_require__(162);
-
-	var _global2 = _interopRequireDefault(_global);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Global download action
-	 */
-
-	var PostEditAction = (function (_React$Component) {
-		_inherits(PostEditAction, _React$Component);
-
-		function PostEditAction(props) {
-			_classCallCheck(this, PostEditAction);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PostEditAction).call(this, props));
-
-			_this.edit = _this.edit.bind(_this);
-			return _this;
-		}
-
-		_createClass(PostEditAction, [{
-			key: 'render',
-			value: function render() {
-
-				return _react2.default.createElement('span', { className: 'mdi mdi-pencil icon pull-right', onClick: this.edit });
-			}
-
-			/**
-	   * Called when PostCellAction's Edit button is clicked
-	   * @param  {Object} post - Has post
-	   */
-
-		}, {
-			key: 'edit',
-			value: function edit() {
-				var _this2 = this;
-
-				$.get(_global2.default.API_URL + '/v1/gallery/get', { id: this.props.post.parent }, function (response) {
-
-					if (response.err) {
-						$.snackbar({ content: 'We couldn\'t find the gallery attached to this post!' });
-						return;
-					}
-
-					//Send data back up
-					_this2.props.edit(response.data);
-				});
-			}
-		}]);
-
-		return PostEditAction;
-	})(_react2.default.Component);
-
-	exports.default = PostEditAction;
-
-	PostEditAction.defaultProps = {
-		post: {},
-		edit: function edit() {}
-	};
-
-/***/ },
-/* 297 */,
-/* 298 */,
-/* 299 */,
-/* 300 */,
-/* 301 */,
-/* 302 */,
-/* 303 */,
-/* 304 */,
-/* 305 */,
-/* 306 */,
 /* 307 */,
 /* 308 */,
 /* 309 */,
@@ -33776,7 +33776,7 @@
 
 	var _app2 = _interopRequireDefault(_app);
 
-	var _topbar = __webpack_require__(288);
+	var _topbar = __webpack_require__(304);
 
 	var _topbar2 = _interopRequireDefault(_topbar);
 
@@ -33868,7 +33868,7 @@
 
 	var _moment2 = _interopRequireDefault(_moment);
 
-	var _postCell = __webpack_require__(292);
+	var _postCell = __webpack_require__(289);
 
 	var _postCell2 = _interopRequireDefault(_postCell);
 

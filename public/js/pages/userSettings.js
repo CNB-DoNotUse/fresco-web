@@ -19902,34 +19902,34 @@
 					),
 					_react2.default.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content'), 'data-location': '/content' },
+						{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive'), 'data-location': '/archive' },
 						_react2.default.createElement('span', { className: 'mdi mdi-play-box-outline icon' }),
-						'All content'
+						'Archive'
 					),
 					_react2.default.createElement(
 						'ul',
 						null,
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/photos'), 'data-location': '/content/photos' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/photos'), 'data-location': '/archive/photos' },
 							_react2.default.createElement('span', { className: 'mdi mdi-file-image-box icon' }),
 							'Photos'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/videos'), 'data-location': '/content/videos' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/videos'), 'data-location': '/archive/videos' },
 							_react2.default.createElement('span', { className: 'mdi mdi-movie icon' }),
 							'Videos'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/galleries'), 'data-location': '/content/galleries' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/galleries'), 'data-location': '/archive/galleries' },
 							_react2.default.createElement('span', { className: 'mdi mdi-image-filter icon' }),
 							'Galleries'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/stories'), 'data-location': '/content/stories' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/stories'), 'data-location': '/archive/stories' },
 							_react2.default.createElement('span', { className: 'mdi mdi-newspaper icon' }),
 							'Stories'
 						)
@@ -32414,7 +32414,23 @@
 /* 285 */,
 /* 286 */,
 /* 287 */,
-/* 288 */
+/* 288 */,
+/* 289 */,
+/* 290 */,
+/* 291 */,
+/* 292 */,
+/* 293 */,
+/* 294 */,
+/* 295 */,
+/* 296 */,
+/* 297 */,
+/* 298 */,
+/* 299 */,
+/* 300 */,
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32437,11 +32453,11 @@
 
 	var _dropdown2 = _interopRequireDefault(_dropdown);
 
-	var _locationDropdown = __webpack_require__(289);
+	var _locationDropdown = __webpack_require__(305);
 
 	var _locationDropdown2 = _interopRequireDefault(_locationDropdown);
 
-	var _tagFilter = __webpack_require__(290);
+	var _tagFilter = __webpack_require__(306);
 
 	var _tagFilter2 = _interopRequireDefault(_tagFilter);
 
@@ -32703,7 +32719,7 @@
 	};
 
 /***/ },
-/* 289 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32850,7 +32866,7 @@
 	};
 
 /***/ },
-/* 290 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33074,22 +33090,6 @@
 	};
 
 /***/ },
-/* 291 */,
-/* 292 */,
-/* 293 */,
-/* 294 */,
-/* 295 */,
-/* 296 */,
-/* 297 */,
-/* 298 */,
-/* 299 */,
-/* 300 */,
-/* 301 */,
-/* 302 */,
-/* 303 */,
-/* 304 */,
-/* 305 */,
-/* 306 */,
 /* 307 */,
 /* 308 */,
 /* 309 */,
@@ -33161,7 +33161,7 @@
 
 	var _app2 = _interopRequireDefault(_app);
 
-	var _topbar = __webpack_require__(288);
+	var _topbar = __webpack_require__(304);
 
 	var _topbar2 = _interopRequireDefault(_topbar);
 

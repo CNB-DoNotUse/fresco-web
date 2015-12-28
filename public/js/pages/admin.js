@@ -20056,34 +20056,34 @@
 					),
 					_react2.default.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content'), 'data-location': '/content' },
+						{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive'), 'data-location': '/archive' },
 						_react2.default.createElement('span', { className: 'mdi mdi-play-box-outline icon' }),
-						'All content'
+						'Archive'
 					),
 					_react2.default.createElement(
 						'ul',
 						null,
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/photos'), 'data-location': '/content/photos' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/photos'), 'data-location': '/archive/photos' },
 							_react2.default.createElement('span', { className: 'mdi mdi-file-image-box icon' }),
 							'Photos'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/videos'), 'data-location': '/content/videos' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/videos'), 'data-location': '/archive/videos' },
 							_react2.default.createElement('span', { className: 'mdi mdi-movie icon' }),
 							'Videos'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/galleries'), 'data-location': '/content/galleries' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/galleries'), 'data-location': '/archive/galleries' },
 							_react2.default.createElement('span', { className: 'mdi mdi-image-filter icon' }),
 							'Galleries'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/stories'), 'data-location': '/content/stories' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/stories'), 'data-location': '/archive/stories' },
 							_react2.default.createElement('span', { className: 'mdi mdi-newspaper icon' }),
 							'Stories'
 						)

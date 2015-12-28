@@ -50631,16 +50631,16 @@
 	// **/
 
 	/**
-	 * Content Parent Object (composed of PostList and Navbar)
+	 * Archive Parent Object (composed of PostList and Navbar)
 	 */
 
-	var Content = (function (_React$Component) {
-		_inherits(Content, _React$Component);
+	var Archive = (function (_React$Component) {
+		_inherits(Archive, _React$Component);
 
-		function Content(props) {
-			_classCallCheck(this, Content);
+		function Archive(props) {
+			_classCallCheck(this, Archive);
 
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Content).call(this, props));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Archive).call(this, props));
 
 			_this.state = {
 				purchases: []
@@ -50650,7 +50650,7 @@
 			return _this;
 		}
 
-		_createClass(Content, [{
+		_createClass(Archive, [{
 			key: 'render',
 			value: function render() {
 
@@ -50702,10 +50702,10 @@
 			}
 		}]);
 
-		return Content;
+		return Archive;
 	})(_react2.default.Component);
 
-	_reactDom2.default.render(_react2.default.createElement(Content, {
+	_reactDom2.default.render(_react2.default.createElement(Archive, {
 		user: window.__initialProps__.user,
 		purchases: window.__initialProps__.purchases,
 		title: window.__initialProps__.title }), document.getElementById('app'));

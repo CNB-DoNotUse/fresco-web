@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(287);
+	module.exports = __webpack_require__(307);
 
 
 /***/ },
@@ -19902,34 +19902,34 @@
 					),
 					_react2.default.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content'), 'data-location': '/content' },
+						{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive'), 'data-location': '/archive' },
 						_react2.default.createElement('span', { className: 'mdi mdi-play-box-outline icon' }),
-						'All content'
+						'Archive'
 					),
 					_react2.default.createElement(
 						'ul',
 						null,
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/photos'), 'data-location': '/content/photos' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/photos'), 'data-location': '/archive/photos' },
 							_react2.default.createElement('span', { className: 'mdi mdi-file-image-box icon' }),
 							'Photos'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/videos'), 'data-location': '/content/videos' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/videos'), 'data-location': '/archive/videos' },
 							_react2.default.createElement('span', { className: 'mdi mdi-movie icon' }),
 							'Videos'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/galleries'), 'data-location': '/content/galleries' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/galleries'), 'data-location': '/archive/galleries' },
 							_react2.default.createElement('span', { className: 'mdi mdi-image-filter icon' }),
 							'Galleries'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/stories'), 'data-location': '/content/stories' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/stories'), 'data-location': '/archive/stories' },
 							_react2.default.createElement('span', { className: 'mdi mdi-newspaper icon' }),
 							'Stories'
 						)
@@ -47192,163 +47192,7 @@
 	exports.default = AssignmentEditMap;
 
 /***/ },
-/* 287 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactDom = __webpack_require__(159);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _topbar = __webpack_require__(288);
-
-	var _topbar2 = _interopRequireDefault(_topbar);
-
-	var _postList = __webpack_require__(291);
-
-	var _postList2 = _interopRequireDefault(_postList);
-
-	var _assignmentSidebar = __webpack_require__(307);
-
-	var _assignmentSidebar2 = _interopRequireDefault(_assignmentSidebar);
-
-	var _assignmentEdit = __webpack_require__(308);
-
-	var _assignmentEdit2 = _interopRequireDefault(_assignmentEdit);
-
-	var _app = __webpack_require__(160);
-
-	var _app2 = _interopRequireDefault(_app);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Story Detail Parent Object, made of a side column and PostList
-	 */
-
-	var AssignmentDetail = (function (_React$Component) {
-	  _inherits(AssignmentDetail, _React$Component);
-
-	  function AssignmentDetail(props) {
-	    _classCallCheck(this, AssignmentDetail);
-
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AssignmentDetail).call(this, props));
-
-	    _this.state = {
-	      assignment: _this.props.assignment,
-	      toggled: false
-	    };
-
-	    _this.expireAssignment = _this.expireAssignment.bind(_this);
-	    _this.setAssignment = _this.setAssignment.bind(_this);
-	    _this.toggleEdit = _this.toggleEdit.bind(_this);
-	    return _this;
-	  }
-
-	  /**
-	   * Sets the stateful assignment
-	   * @param {dictionary} assignment Assignment to update to
-	   */
-
-	  _createClass(AssignmentDetail, [{
-	    key: 'setAssignment',
-	    value: function setAssignment(assignment) {
-	      this.setState({ assignment: assignment });
-	    }
-
-	    /**
-	     * Sets the assignment to expire
-	     * @description Invoked from the on-page button `Expire`
-	     */
-
-	  }, {
-	    key: 'expireAssignment',
-	    value: function expireAssignment() {
-
-	      $.post('/scripts/assignment/expire', {
-	        id: this.state.assignment._id
-	      }, function (response) {
-	        location.reload();
-	        // //Do nothing, because of bad response
-	        // if(!response.data || response.err)
-	        // 	callback([]);
-	        // else
-	        // 	callback(response.data);
-	      });
-	    }
-
-	    /**
-	     * Toggles edit modal with `s` value. If `s` is not provided, negates toggled.
-	     */
-
-	  }, {
-	    key: 'toggleEdit',
-	    value: function toggleEdit(s) {
-	      this.setState({
-	        toggled: typeof s == 'undefined' ? !this.state.toggled : s
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-
-	      return _react2.default.createElement(
-	        _app2.default,
-	        { user: this.props.user },
-	        _react2.default.createElement(_topbar2.default, {
-	          title: this.state.assignment.title,
-	          timeToggle: true,
-	          chronToggle: true,
-	          verifiedToggle: true,
-	          editable: true,
-	          edit: this.toggleEdit }),
-	        _react2.default.createElement(_assignmentSidebar2.default, {
-	          assignment: this.state.assignment,
-	          expireAssignment: this.expireAssignment }),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'col-sm-8 tall' },
-	          _react2.default.createElement(_postList2.default, {
-	            rank: this.props.user.rank,
-	            purchases: this.props.purchases,
-	            posts: this.props.assignment.posts,
-	            scrollable: false,
-	            editable: false,
-	            size: 'large' })
-	        ),
-	        _react2.default.createElement(_assignmentEdit2.default, {
-	          assignment: this.state.assignment,
-	          setAssignment: this.setAssignment,
-	          toggled: this.state.toggled,
-	          toggle: this.toggleEdit,
-	          user: this.props.user })
-	      );
-	    }
-	  }]);
-
-	  return AssignmentDetail;
-	})(_react2.default.Component);
-
-	_reactDom2.default.render(_react2.default.createElement(AssignmentDetail, {
-	  user: window.__initialProps__.user,
-	  purchases: window.__initialProps__.purchases,
-	  assignment: window.__initialProps__.assignment,
-	  title: window.__initialProps__.title }), document.getElementById('app'));
-
-/***/ },
+/* 287 */,
 /* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -47364,675 +47208,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _global = __webpack_require__(162);
-
-	var _global2 = _interopRequireDefault(_global);
-
-	var _dropdown = __webpack_require__(252);
-
-	var _dropdown2 = _interopRequireDefault(_dropdown);
-
-	var _locationDropdown = __webpack_require__(289);
-
-	var _locationDropdown2 = _interopRequireDefault(_locationDropdown);
-
-	var _tagFilter = __webpack_require__(290);
-
-	var _tagFilter2 = _interopRequireDefault(_tagFilter);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/** //
-
-	Description : Top Bar for pages of the site
-	The component takes optional toggles/pieces as props, and each prop is checked in the render. 
-	If the prop exists, then the repsective toggle/dropdown/edit/whatever is added to the navigation bar
-
-	// **/
-
-	var TopBar = (function (_React$Component) {
-		_inherits(TopBar, _React$Component);
-
-		function TopBar(props) {
-			_classCallCheck(this, TopBar);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TopBar).call(this, props));
-
-			_this.goLink = _this.goLink.bind(_this);
-			_this.timeToggleSelected = _this.timeToggleSelected.bind(_this);
-			_this.verifiedToggleSelected = _this.verifiedToggleSelected.bind(_this);
-			_this.chronToggleSelected = _this.chronToggleSelected.bind(_this);
-			_this.outletsFilterSelected = _this.outletsFilterSelected.bind(_this);
-			return _this;
-		}
-
-		_createClass(TopBar, [{
-			key: 'componentDidMount',
-			value: function componentDidMount() {
-				var _this2 = this;
-
-				//Set up autocomplete
-				if (this.props.locationInput) {
-
-					//Set up autocomplete listener
-					var autocomplete = new google.maps.places.Autocomplete(this.refs.autocomplete);
-
-					google.maps.event.addListener(autocomplete, 'place_changed', function () {
-
-						var place = autocomplete.getPlace(),
-						    location = {
-							lat: place.geometry.location.lat(),
-							lng: place.geometry.location.lng()
-						};
-
-						//Update the position to the parent component
-						_this2.props.updateMapCenter(location);
-					});
-				}
-			}
-
-			// Called when has link prop.
-
-		}, {
-			key: 'goLink',
-			value: function goLink() {
-				window.location = this.props.link;
-			}
-
-			//Called when the user selects a time format
-
-		}, {
-			key: 'timeToggleSelected',
-			value: function timeToggleSelected(selected) {
-				if (selected == 'Absolute') {
-					_global2.default.setTimeDisplayType('absolute');
-				} else if (selected == 'Relative') {
-					_global2.default.setTimeDisplayType('relative');
-				}
-			}
-
-			//Called when the user selects a time format
-
-		}, {
-			key: 'verifiedToggleSelected',
-			value: function verifiedToggleSelected(selected) {
-				this.props.onVerifiedToggled(selected == 'Verified');
-			}
-
-			//Called when the user selects a time format
-
-		}, {
-			key: 'chronToggleSelected',
-			value: function chronToggleSelected(selected) {}
-
-			// Called when user selects an outlet to filter
-
-		}, {
-			key: 'outletsFilterSelected',
-			value: function outletsFilterSelected() {}
-		}, {
-			key: 'render',
-			value: function render() {
-				var _this3 = this;
-
-				var edit = '',
-				    topbarItems = [],
-				    locationInput = '',
-				    saveButton = '';
-
-				if (this.props.saveButton) {
-
-					saveButton = _react2.default.createElement(
-						'a',
-						{
-							onClick: this.props.updateSettings,
-							className: 'mdi mdi-content-save icon pull-right hidden-xs' },
-						_react2.default.createElement('div', { className: 'ripple-wrapper' })
-					);
-				}
-
-				if (this.props.locationInput) {
-					locationInput = _react2.default.createElement(
-						'div',
-						{ className: 'form-group-default' },
-						_react2.default.createElement('input', {
-							type: 'text',
-							ref: 'autocomplete',
-							className: 'form-control google-autocomplete',
-							placeholder: 'Location' })
-					);
-				}
-
-				if (this.props.editable) {
-
-					topbarItems.push(_react2.default.createElement('a', { className: 'mdi mdi-pencil icon pull-right hidden-xs toggle-edit toggler',
-						key: 'edit',
-						onClick: this.props.edit }));
-				}
-
-				if (this.props.link && (this.props.rank ? this.props.rank >= 2 ? true : false : false)) {
-					topbarItems.push(_react2.default.createElement('a', { className: 'mdi mdi-pencil icon pull-right hidden-xs',
-						key: 'link',
-						onClick: this.goLink }));
-				}
-
-				if (this.props.chronToggle) {
-					topbarItems.push(_react2.default.createElement(_dropdown2.default, {
-						options: ['By capture time', 'By upload time'],
-						selected: 'By capture time',
-						onSelected: this.chronToggleSelected,
-						key: 'chronToggle',
-						inList: true }));
-				}
-				if (this.props.timeToggle) {
-
-					topbarItems.push(_react2.default.createElement(_dropdown2.default, {
-						options: ['Relative', 'Absolute'],
-						selected: 'Relative',
-						onSelected: this.timeToggleSelected,
-						key: 'timeToggle',
-						inList: true }));
-				}
-				if (this.props.verifiedToggle) {
-
-					topbarItems.push(_react2.default.createElement(_dropdown2.default, {
-						options: ['All content', 'Verified'],
-						selected: 'All content',
-						onSelected: this.verifiedToggleSelected,
-						key: 'verifiedToggle',
-						inList: true }));
-				}
-
-				if (this.props.tagFilter) {
-					topbarItems.push(_react2.default.createElement(_tagFilter2.default, {
-						onTagAdd: this.props.onTagAdd,
-						onTagRemove: this.props.onTagRemove,
-						tagList: this.props.tagList,
-						key: 'tagFilter' }));
-				}
-
-				if (this.props.locationDropdown) {
-					topbarItems.push(_react2.default.createElement(_locationDropdown2.default, {
-						onPlaceChange: this.props.onPlaceChange,
-						onRadiusChange: this.props.onRadiusChange,
-						onMapDataChange: this.props.onMapDataChange,
-						units: 'Miles',
-						key: 'locationDropdown' }));
-				}
-
-				if (this.props.outletsFilter) {
-					topbarItems.push(_react2.default.createElement(_tagFilter2.default, {
-						text: 'Outlets',
-						tagList: this.props.outlets,
-						filterList: this.props.outletFilterList,
-						onTagAdd: this.props.onOutletFilterAdd,
-						onTagRemove: this.props.onOutletFilterRemove,
-						key: 'outletsFilter' }));
-				}
-
-				if (this.props.tabs) {
-					var tabContent = [];
-
-					this.props.tabs.map(function (tab, i) {
-
-						var buttonClass = "btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (_this3.props.activeTab == tab ? ' toggled' : '');
-
-						tabContent.push(_react2.default.createElement(
-							'button',
-							{
-								className: buttonClass,
-								onClick: _this3.props.setActiveTab.bind(null, tab),
-								key: tab.toLowerCase() },
-							tab,
-							_react2.default.createElement('div', { className: 'ripple-wrapper' })
-						));
-					});
-
-					var tabs = _react2.default.createElement(
-						'div',
-						{ className: 'tab-control' },
-						tabContent
-					);
-				}
-
-				return _react2.default.createElement(
-					'nav',
-					{ className: 'navbar navbar-fixed-top navbar-default' },
-					_react2.default.createElement('div', { className: 'dim transparent toggle-drop toggler' }),
-					_react2.default.createElement(
-						'button',
-						{ type: 'button', className: 'icon-button toggle-drawer toggler hidden-lg' },
-						_react2.default.createElement('span', { className: 'mdi mdi-menu icon' })
-					),
-					_react2.default.createElement('div', { className: 'spacer' }),
-					_react2.default.createElement(
-						'h1',
-						{ className: 'md-type-title' },
-						this.props.title
-					),
-					locationInput,
-					tabs,
-					topbarItems,
-					saveButton
-				);
-			}
-		}]);
-
-		return TopBar;
-	})(_react2.default.Component);
-
-	exports.default = TopBar;
-
-	TopBar.defaultProps = {
-		title: '',
-		edit: function edit() {},
-		onVerifiedToggled: function onVerifiedToggled() {},
-		onOutletFilterAdd: function onOutletFilterAdd() {},
-		onOutletFilterRemove: function onOutletFilterRemove() {}
-	};
-
-/***/ },
-/* 289 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _autocompleteMap = __webpack_require__(278);
-
-	var _autocompleteMap2 = _interopRequireDefault(_autocompleteMap);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var LocationDropdown = (function (_React$Component) {
-		_inherits(LocationDropdown, _React$Component);
-
-		function LocationDropdown(props) {
-			_classCallCheck(this, LocationDropdown);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(LocationDropdown).call(this, props));
-
-			_this.state = {
-				toggled: false
-			};
-
-			_this.hideDropdown = _this.hideDropdown.bind(_this);
-			_this.clicked = _this.clicked.bind(_this);
-			return _this;
-		}
-
-		//Hides the dropdown menu and removes the whole-screen dim
-
-		_createClass(LocationDropdown, [{
-			key: 'hideDropdown',
-			value: function hideDropdown() {
-
-				this.refs.drop.classList.remove('toggled');
-
-				var toRemoveToggle = document.getElementsByClassName('toggle-drop');
-
-				for (var i = 0; i < toRemoveToggle.length; i++) {
-					toRemoveToggle[i].classList.remove('toggled');
-				}
-
-				this.setState({
-					toggled: false
-				});
-			}
-
-			//Called whenever the master button is clicked
-
-		}, {
-			key: 'clicked',
-			value: function clicked(event) {
-				if (this.state.toggled) return this.hideDropdown();
-
-				var drop = $(this.refs.toggle_button).siblings(".drop-menu");
-
-				drop.toggleClass("toggled");
-
-				if (drop.hasClass("toggled")) {
-
-					this.setState({
-						toggled: true
-					});
-
-					var offset = drop.offset().left;
-					while (offset + drop.outerWidth() > $(window).width() - 7) {
-						drop.css("left", parseInt(drop.css("left")) - 1 + "px");
-						offset = drop.offset().left;
-					}
-				} else {
-
-					this.setState({
-						toggled: false
-					});
-				}
-
-				$(".dim.toggle-drop").toggleClass("toggled");
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(
-					'div',
-					{ className: 'drop filter-location pull-right hidden-xs' },
-					_react2.default.createElement(
-						'button',
-						{ className: 'toggle-drop md-type-subhead', ref: 'toggle_button', onClick: this.clicked },
-						_react2.default.createElement(
-							'span',
-							null,
-							'Location'
-						),
-						_react2.default.createElement('span', { className: 'mdi mdi-menu-down icon' })
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'drop-menu panel panel-default', ref: 'drop' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'toggle-drop toggler md-type-subhead', onClick: this.hideDropdown },
-							_react2.default.createElement(
-								'span',
-								null,
-								'Location'
-							),
-							_react2.default.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'drop-body' },
-							_react2.default.createElement(_autocompleteMap2.default, {
-								rerender: this.state.toggled,
-								onMapDataChange: this.props.onMapDataChange,
-								radius: this.props.radius,
-								units: 'miles' })
-						)
-					)
-				);
-			}
-		}]);
-
-		return LocationDropdown;
-	})(_react2.default.Component);
-
-	exports.default = LocationDropdown;
-
-	LocationDropdown.defaultProps = {
-		onMapDataChange: function onMapDataChange() {}
-	};
-
-/***/ },
-/* 290 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _tag = __webpack_require__(282);
-
-	var _tag2 = _interopRequireDefault(_tag);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var TagFilter = (function (_React$Component) {
-		_inherits(TagFilter, _React$Component);
-
-		function TagFilter(props) {
-			_classCallCheck(this, TagFilter);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TagFilter).call(this, props));
-
-			_this.state = {
-				toggled: false
-			};
-
-			_this.hideDropdown = _this.hideDropdown.bind(_this);
-			_this.clicked = _this.clicked.bind(_this);
-
-			_this.handleTagInput = _this.handleTagInput.bind(_this);
-
-			return _this;
-		}
-
-		//Hides the dropdown menu and removes the whole-screen dim
-
-		_createClass(TagFilter, [{
-			key: 'hideDropdown',
-			value: function hideDropdown() {
-
-				this.refs.drop.classList.remove('toggled');
-
-				var toRemoveToggle = document.getElementsByClassName('toggle-drop');
-
-				for (var i = 0; i < toRemoveToggle.length; i++) {
-					toRemoveToggle[i].classList.remove('toggled');
-				}
-
-				this.setState({
-					toggled: false
-				});
-			}
-
-			//Called whenever the master button is clicked
-
-		}, {
-			key: 'clicked',
-			value: function clicked(event) {
-				if (this.state.toggled) return this.hideDropdown();
-
-				var drop = $(this.refs.toggle_button).siblings(".drop-menu");
-
-				drop.toggleClass("toggled");
-
-				if (drop.hasClass("toggled")) {
-
-					this.setState({
-						toggled: true
-					});
-
-					var offset = drop.offset().left;
-					while (offset + drop.outerWidth() > $(window).width() - 7) {
-						drop.css("left", parseInt(drop.css("left")) - 1 + "px");
-						offset = drop.offset().left;
-					}
-				} else {
-
-					this.setState({
-						toggled: false
-					});
-				}
-
-				$(".dim.toggle-drop").toggleClass("toggled");
-			}
-		}, {
-			key: 'handleTagInput',
-			value: function handleTagInput(e) {
-				if (e.keyCode != 13) return;
-
-				var tagText = this.refs.tagFilterInput.value;
-				if (!tagText.length) return;
-
-				if (this.props.filterList.indexOf(tagText) != -1) return;
-
-				this.props.onTagAdd(tagText);
-				this.refs.tagFilterInput.value = '';
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				var tags = [],
-				    available = [],
-				    tagList = _.clone(this.props.tagList, true),
-				    filterList = _.clone(this.props.filterList, true);
-
-				for (var t in tagList) {
-					available.push(_react2.default.createElement(_tag2.default, { onClick: this.props.onTagAdd.bind(null, tagList[t]), text: tagList[t], key: t }));
-				}
-
-				for (var t in filterList) {
-					tags.push(_react2.default.createElement(_tag2.default, { onClick: this.props.onTagRemove.bind(null, filterList[t]), text: filterList[t], key: t }));
-				}
-
-				return _react2.default.createElement(
-					'div',
-					{ className: 'drop filter-location pull-right hidden-xs' },
-					_react2.default.createElement(
-						'button',
-						{ className: 'toggle-drop md-type-subhead', ref: 'toggle_button', onClick: this.clicked },
-						_react2.default.createElement(
-							'span',
-							null,
-							this.props.filterList.length ? 'Filtering ' + this.props.filterList.length : 'Any ' + this.props.text
-						),
-						_react2.default.createElement('span', { className: 'mdi mdi-menu-down icon' })
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'drop-menu panel panel-default', ref: 'drop' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'toggle-drop toggler md-type-subhead', onClick: this.hideDropdown },
-							_react2.default.createElement(
-								'span',
-								null,
-								'Filter ',
-								this.props.text
-							),
-							_react2.default.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'drop-body' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'chips' },
-								_react2.default.createElement(
-									'div',
-									{ className: 'split-cell' },
-									_react2.default.createElement(
-										'div',
-										{ className: 'form-group-default' },
-										_react2.default.createElement(
-											'div',
-											{ className: 'form-control-wrapper' },
-											_react2.default.createElement('input', {
-												id: 'tag-filter-input',
-												type: 'text', className: 'form-control empty',
-												ref: 'tagFilterInput',
-												onKeyUp: this.handleTagInput
-											}),
-											_react2.default.createElement(
-												'div',
-												{ className: 'floating-label' },
-												this.props.text
-											),
-											_react2.default.createElement('span', { className: 'material-input' })
-										)
-									),
-									_react2.default.createElement(
-										'ul',
-										{ id: 'tag-filter', className: 'chips' },
-										tags
-									)
-								),
-								_react2.default.createElement(
-									'div',
-									{ className: 'split-cell' },
-									_react2.default.createElement(
-										'span',
-										{ className: 'md-type-body2' },
-										'Available ',
-										this.props.text
-									),
-									_react2.default.createElement(
-										'ul',
-										{ id: 'filter-available', className: 'chips' },
-										available
-									)
-								)
-							)
-						)
-					)
-				);
-			}
-		}]);
-
-		return TagFilter;
-	})(_react2.default.Component);
-
-	exports.default = TagFilter;
-
-	TagFilter.defaultProps = {
-		text: 'Tags',
-		tagList: [],
-		filterList: [],
-		onTagAdd: function onTagAdd() {},
-		onTagRemove: function onTagRemove() {}
-	};
-
-/***/ },
-/* 291 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _postCell = __webpack_require__(292);
+	var _postCell = __webpack_require__(289);
 
 	var _postCell2 = _interopRequireDefault(_postCell);
 
-	var _galleryEdit = __webpack_require__(297);
+	var _galleryEdit = __webpack_require__(294);
 
 	var _galleryEdit2 = _interopRequireDefault(_galleryEdit);
 
-	var _galleryEditBulk = __webpack_require__(305);
+	var _galleryEditBulk = __webpack_require__(302);
 
 	var _galleryEditBulk2 = _interopRequireDefault(_galleryEditBulk);
 
@@ -48040,7 +47224,7 @@
 
 	var _global2 = _interopRequireDefault(_global);
 
-	var _galleryCreate = __webpack_require__(306);
+	var _galleryCreate = __webpack_require__(303);
 
 	var _galleryCreate2 = _interopRequireDefault(_galleryCreate);
 
@@ -48302,7 +47486,7 @@
 	};
 
 /***/ },
-/* 292 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48317,19 +47501,19 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _frescoImage = __webpack_require__(293);
+	var _frescoImage = __webpack_require__(290);
 
 	var _frescoImage2 = _interopRequireDefault(_frescoImage);
 
-	var _purchaseAction = __webpack_require__(294);
+	var _purchaseAction = __webpack_require__(291);
 
 	var _purchaseAction2 = _interopRequireDefault(_purchaseAction);
 
-	var _downloadAction = __webpack_require__(295);
+	var _downloadAction = __webpack_require__(292);
 
 	var _downloadAction2 = _interopRequireDefault(_downloadAction);
 
-	var _postEditAction = __webpack_require__(296);
+	var _postEditAction = __webpack_require__(293);
 
 	var _postEditAction2 = _interopRequireDefault(_postEditAction);
 
@@ -48587,7 +47771,7 @@
 	})(_react2.default.Component);
 
 /***/ },
-/* 293 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48675,7 +47859,7 @@
 	};
 
 /***/ },
-/* 294 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -48793,7 +47977,7 @@
 	};
 
 /***/ },
-/* 295 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48871,7 +48055,7 @@
 	exports.default = DownloadAction;
 
 /***/ },
-/* 296 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48955,7 +48139,7 @@
 	};
 
 /***/ },
-/* 297 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48974,11 +48158,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _galleryEditBody = __webpack_require__(298);
+	var _galleryEditBody = __webpack_require__(295);
 
 	var _galleryEditBody2 = _interopRequireDefault(_galleryEditBody);
 
-	var _galleryEditFoot = __webpack_require__(304);
+	var _galleryEditFoot = __webpack_require__(301);
 
 	var _galleryEditFoot2 = _interopRequireDefault(_galleryEditFoot);
 
@@ -49356,7 +48540,7 @@
 	};
 
 /***/ },
-/* 298 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49379,19 +48563,19 @@
 
 	var _galleryEditStories2 = _interopRequireDefault(_galleryEditStories);
 
-	var _galleryEditArticles = __webpack_require__(299);
+	var _galleryEditArticles = __webpack_require__(296);
 
 	var _galleryEditArticles2 = _interopRequireDefault(_galleryEditArticles);
 
-	var _galleryEditPosts = __webpack_require__(300);
+	var _galleryEditPosts = __webpack_require__(297);
 
 	var _galleryEditPosts2 = _interopRequireDefault(_galleryEditPosts);
 
-	var _galleryEditMap = __webpack_require__(302);
+	var _galleryEditMap = __webpack_require__(299);
 
 	var _galleryEditMap2 = _interopRequireDefault(_galleryEditMap);
 
-	var _bylineEdit = __webpack_require__(303);
+	var _bylineEdit = __webpack_require__(300);
 
 	var _bylineEdit2 = _interopRequireDefault(_bylineEdit);
 
@@ -49519,7 +48703,7 @@
 	};
 
 /***/ },
-/* 299 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49727,7 +48911,7 @@
 	};
 
 /***/ },
-/* 300 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49746,7 +48930,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _editPost = __webpack_require__(301);
+	var _editPost = __webpack_require__(298);
 
 	var _editPost2 = _interopRequireDefault(_editPost);
 
@@ -49852,7 +49036,7 @@
 	};
 
 /***/ },
-/* 301 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49959,7 +49143,7 @@
 	};
 
 /***/ },
-/* 302 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50033,7 +49217,7 @@
 	exports.default = GalleryEditMap;
 
 /***/ },
-/* 303 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50205,7 +49389,7 @@
 	exports.default = GalleryEditByline;
 
 /***/ },
-/* 304 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50413,7 +49597,7 @@
 	exports.default = GalleryEditFoot;
 
 /***/ },
-/* 305 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50543,7 +49727,7 @@
 	};
 
 /***/ },
-/* 306 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -50562,7 +49746,7 @@
 
 	var _galleryEditTags2 = _interopRequireDefault(_galleryEditTags);
 
-	var _galleryEditArticles = __webpack_require__(299);
+	var _galleryEditArticles = __webpack_require__(296);
 
 	var _galleryEditArticles2 = _interopRequireDefault(_galleryEditArticles);
 
@@ -50570,7 +49754,7 @@
 
 	var _galleryEditStories2 = _interopRequireDefault(_galleryEditStories);
 
-	var _editPost = __webpack_require__(301);
+	var _editPost = __webpack_require__(298);
 
 	var _editPost2 = _interopRequireDefault(_editPost);
 
@@ -50865,7 +50049,824 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+/* 304 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _global = __webpack_require__(162);
+
+	var _global2 = _interopRequireDefault(_global);
+
+	var _dropdown = __webpack_require__(252);
+
+	var _dropdown2 = _interopRequireDefault(_dropdown);
+
+	var _locationDropdown = __webpack_require__(305);
+
+	var _locationDropdown2 = _interopRequireDefault(_locationDropdown);
+
+	var _tagFilter = __webpack_require__(306);
+
+	var _tagFilter2 = _interopRequireDefault(_tagFilter);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/** //
+
+	Description : Top Bar for pages of the site
+	The component takes optional toggles/pieces as props, and each prop is checked in the render. 
+	If the prop exists, then the repsective toggle/dropdown/edit/whatever is added to the navigation bar
+
+	// **/
+
+	var TopBar = (function (_React$Component) {
+		_inherits(TopBar, _React$Component);
+
+		function TopBar(props) {
+			_classCallCheck(this, TopBar);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TopBar).call(this, props));
+
+			_this.goLink = _this.goLink.bind(_this);
+			_this.timeToggleSelected = _this.timeToggleSelected.bind(_this);
+			_this.verifiedToggleSelected = _this.verifiedToggleSelected.bind(_this);
+			_this.chronToggleSelected = _this.chronToggleSelected.bind(_this);
+			_this.outletsFilterSelected = _this.outletsFilterSelected.bind(_this);
+			return _this;
+		}
+
+		_createClass(TopBar, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				var _this2 = this;
+
+				//Set up autocomplete
+				if (this.props.locationInput) {
+
+					//Set up autocomplete listener
+					var autocomplete = new google.maps.places.Autocomplete(this.refs.autocomplete);
+
+					google.maps.event.addListener(autocomplete, 'place_changed', function () {
+
+						var place = autocomplete.getPlace(),
+						    location = {
+							lat: place.geometry.location.lat(),
+							lng: place.geometry.location.lng()
+						};
+
+						//Update the position to the parent component
+						_this2.props.updateMapCenter(location);
+					});
+				}
+			}
+
+			// Called when has link prop.
+
+		}, {
+			key: 'goLink',
+			value: function goLink() {
+				window.location = this.props.link;
+			}
+
+			//Called when the user selects a time format
+
+		}, {
+			key: 'timeToggleSelected',
+			value: function timeToggleSelected(selected) {
+				if (selected == 'Absolute') {
+					_global2.default.setTimeDisplayType('absolute');
+				} else if (selected == 'Relative') {
+					_global2.default.setTimeDisplayType('relative');
+				}
+			}
+
+			//Called when the user selects a time format
+
+		}, {
+			key: 'verifiedToggleSelected',
+			value: function verifiedToggleSelected(selected) {
+				this.props.onVerifiedToggled(selected == 'Verified');
+			}
+
+			//Called when the user selects a time format
+
+		}, {
+			key: 'chronToggleSelected',
+			value: function chronToggleSelected(selected) {}
+
+			// Called when user selects an outlet to filter
+
+		}, {
+			key: 'outletsFilterSelected',
+			value: function outletsFilterSelected() {}
+		}, {
+			key: 'render',
+			value: function render() {
+				var _this3 = this;
+
+				var edit = '',
+				    topbarItems = [],
+				    locationInput = '',
+				    saveButton = '';
+
+				if (this.props.saveButton) {
+
+					saveButton = _react2.default.createElement(
+						'a',
+						{
+							onClick: this.props.updateSettings,
+							className: 'mdi mdi-content-save icon pull-right hidden-xs' },
+						_react2.default.createElement('div', { className: 'ripple-wrapper' })
+					);
+				}
+
+				if (this.props.locationInput) {
+					locationInput = _react2.default.createElement(
+						'div',
+						{ className: 'form-group-default' },
+						_react2.default.createElement('input', {
+							type: 'text',
+							ref: 'autocomplete',
+							className: 'form-control google-autocomplete',
+							placeholder: 'Location' })
+					);
+				}
+
+				if (this.props.editable) {
+
+					topbarItems.push(_react2.default.createElement('a', { className: 'mdi mdi-pencil icon pull-right hidden-xs toggle-edit toggler',
+						key: 'edit',
+						onClick: this.props.edit }));
+				}
+
+				if (this.props.link && (this.props.rank ? this.props.rank >= 2 ? true : false : false)) {
+					topbarItems.push(_react2.default.createElement('a', { className: 'mdi mdi-pencil icon pull-right hidden-xs',
+						key: 'link',
+						onClick: this.goLink }));
+				}
+
+				if (this.props.chronToggle) {
+					topbarItems.push(_react2.default.createElement(_dropdown2.default, {
+						options: ['By capture time', 'By upload time'],
+						selected: 'By capture time',
+						onSelected: this.chronToggleSelected,
+						key: 'chronToggle',
+						inList: true }));
+				}
+				if (this.props.timeToggle) {
+
+					topbarItems.push(_react2.default.createElement(_dropdown2.default, {
+						options: ['Relative', 'Absolute'],
+						selected: 'Relative',
+						onSelected: this.timeToggleSelected,
+						key: 'timeToggle',
+						inList: true }));
+				}
+				if (this.props.verifiedToggle) {
+
+					topbarItems.push(_react2.default.createElement(_dropdown2.default, {
+						options: ['All content', 'Verified'],
+						selected: 'All content',
+						onSelected: this.verifiedToggleSelected,
+						key: 'verifiedToggle',
+						inList: true }));
+				}
+
+				if (this.props.tagFilter) {
+					topbarItems.push(_react2.default.createElement(_tagFilter2.default, {
+						onTagAdd: this.props.onTagAdd,
+						onTagRemove: this.props.onTagRemove,
+						tagList: this.props.tagList,
+						key: 'tagFilter' }));
+				}
+
+				if (this.props.locationDropdown) {
+					topbarItems.push(_react2.default.createElement(_locationDropdown2.default, {
+						onPlaceChange: this.props.onPlaceChange,
+						onRadiusChange: this.props.onRadiusChange,
+						onMapDataChange: this.props.onMapDataChange,
+						units: 'Miles',
+						key: 'locationDropdown' }));
+				}
+
+				if (this.props.outletsFilter) {
+					topbarItems.push(_react2.default.createElement(_tagFilter2.default, {
+						text: 'Outlets',
+						tagList: this.props.outlets,
+						filterList: this.props.outletFilterList,
+						onTagAdd: this.props.onOutletFilterAdd,
+						onTagRemove: this.props.onOutletFilterRemove,
+						key: 'outletsFilter' }));
+				}
+
+				if (this.props.tabs) {
+					var tabContent = [];
+
+					this.props.tabs.map(function (tab, i) {
+
+						var buttonClass = "btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (_this3.props.activeTab == tab ? ' toggled' : '');
+
+						tabContent.push(_react2.default.createElement(
+							'button',
+							{
+								className: buttonClass,
+								onClick: _this3.props.setActiveTab.bind(null, tab),
+								key: tab.toLowerCase() },
+							tab,
+							_react2.default.createElement('div', { className: 'ripple-wrapper' })
+						));
+					});
+
+					var tabs = _react2.default.createElement(
+						'div',
+						{ className: 'tab-control' },
+						tabContent
+					);
+				}
+
+				return _react2.default.createElement(
+					'nav',
+					{ className: 'navbar navbar-fixed-top navbar-default' },
+					_react2.default.createElement('div', { className: 'dim transparent toggle-drop toggler' }),
+					_react2.default.createElement(
+						'button',
+						{ type: 'button', className: 'icon-button toggle-drawer toggler hidden-lg' },
+						_react2.default.createElement('span', { className: 'mdi mdi-menu icon' })
+					),
+					_react2.default.createElement('div', { className: 'spacer' }),
+					_react2.default.createElement(
+						'h1',
+						{ className: 'md-type-title' },
+						this.props.title
+					),
+					locationInput,
+					tabs,
+					topbarItems,
+					saveButton
+				);
+			}
+		}]);
+
+		return TopBar;
+	})(_react2.default.Component);
+
+	exports.default = TopBar;
+
+	TopBar.defaultProps = {
+		title: '',
+		edit: function edit() {},
+		onVerifiedToggled: function onVerifiedToggled() {},
+		onOutletFilterAdd: function onOutletFilterAdd() {},
+		onOutletFilterRemove: function onOutletFilterRemove() {}
+	};
+
+/***/ },
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _autocompleteMap = __webpack_require__(278);
+
+	var _autocompleteMap2 = _interopRequireDefault(_autocompleteMap);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var LocationDropdown = (function (_React$Component) {
+		_inherits(LocationDropdown, _React$Component);
+
+		function LocationDropdown(props) {
+			_classCallCheck(this, LocationDropdown);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(LocationDropdown).call(this, props));
+
+			_this.state = {
+				toggled: false
+			};
+
+			_this.hideDropdown = _this.hideDropdown.bind(_this);
+			_this.clicked = _this.clicked.bind(_this);
+			return _this;
+		}
+
+		//Hides the dropdown menu and removes the whole-screen dim
+
+		_createClass(LocationDropdown, [{
+			key: 'hideDropdown',
+			value: function hideDropdown() {
+
+				this.refs.drop.classList.remove('toggled');
+
+				var toRemoveToggle = document.getElementsByClassName('toggle-drop');
+
+				for (var i = 0; i < toRemoveToggle.length; i++) {
+					toRemoveToggle[i].classList.remove('toggled');
+				}
+
+				this.setState({
+					toggled: false
+				});
+			}
+
+			//Called whenever the master button is clicked
+
+		}, {
+			key: 'clicked',
+			value: function clicked(event) {
+				if (this.state.toggled) return this.hideDropdown();
+
+				var drop = $(this.refs.toggle_button).siblings(".drop-menu");
+
+				drop.toggleClass("toggled");
+
+				if (drop.hasClass("toggled")) {
+
+					this.setState({
+						toggled: true
+					});
+
+					var offset = drop.offset().left;
+					while (offset + drop.outerWidth() > $(window).width() - 7) {
+						drop.css("left", parseInt(drop.css("left")) - 1 + "px");
+						offset = drop.offset().left;
+					}
+				} else {
+
+					this.setState({
+						toggled: false
+					});
+				}
+
+				$(".dim.toggle-drop").toggleClass("toggled");
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'drop filter-location pull-right hidden-xs' },
+					_react2.default.createElement(
+						'button',
+						{ className: 'toggle-drop md-type-subhead', ref: 'toggle_button', onClick: this.clicked },
+						_react2.default.createElement(
+							'span',
+							null,
+							'Location'
+						),
+						_react2.default.createElement('span', { className: 'mdi mdi-menu-down icon' })
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'drop-menu panel panel-default', ref: 'drop' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'toggle-drop toggler md-type-subhead', onClick: this.hideDropdown },
+							_react2.default.createElement(
+								'span',
+								null,
+								'Location'
+							),
+							_react2.default.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'drop-body' },
+							_react2.default.createElement(_autocompleteMap2.default, {
+								rerender: this.state.toggled,
+								onMapDataChange: this.props.onMapDataChange,
+								radius: this.props.radius,
+								units: 'miles' })
+						)
+					)
+				);
+			}
+		}]);
+
+		return LocationDropdown;
+	})(_react2.default.Component);
+
+	exports.default = LocationDropdown;
+
+	LocationDropdown.defaultProps = {
+		onMapDataChange: function onMapDataChange() {}
+	};
+
+/***/ },
+/* 306 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _tag = __webpack_require__(282);
+
+	var _tag2 = _interopRequireDefault(_tag);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TagFilter = (function (_React$Component) {
+		_inherits(TagFilter, _React$Component);
+
+		function TagFilter(props) {
+			_classCallCheck(this, TagFilter);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TagFilter).call(this, props));
+
+			_this.state = {
+				toggled: false
+			};
+
+			_this.hideDropdown = _this.hideDropdown.bind(_this);
+			_this.clicked = _this.clicked.bind(_this);
+
+			_this.handleTagInput = _this.handleTagInput.bind(_this);
+
+			return _this;
+		}
+
+		//Hides the dropdown menu and removes the whole-screen dim
+
+		_createClass(TagFilter, [{
+			key: 'hideDropdown',
+			value: function hideDropdown() {
+
+				this.refs.drop.classList.remove('toggled');
+
+				var toRemoveToggle = document.getElementsByClassName('toggle-drop');
+
+				for (var i = 0; i < toRemoveToggle.length; i++) {
+					toRemoveToggle[i].classList.remove('toggled');
+				}
+
+				this.setState({
+					toggled: false
+				});
+			}
+
+			//Called whenever the master button is clicked
+
+		}, {
+			key: 'clicked',
+			value: function clicked(event) {
+				if (this.state.toggled) return this.hideDropdown();
+
+				var drop = $(this.refs.toggle_button).siblings(".drop-menu");
+
+				drop.toggleClass("toggled");
+
+				if (drop.hasClass("toggled")) {
+
+					this.setState({
+						toggled: true
+					});
+
+					var offset = drop.offset().left;
+					while (offset + drop.outerWidth() > $(window).width() - 7) {
+						drop.css("left", parseInt(drop.css("left")) - 1 + "px");
+						offset = drop.offset().left;
+					}
+				} else {
+
+					this.setState({
+						toggled: false
+					});
+				}
+
+				$(".dim.toggle-drop").toggleClass("toggled");
+			}
+		}, {
+			key: 'handleTagInput',
+			value: function handleTagInput(e) {
+				if (e.keyCode != 13) return;
+
+				var tagText = this.refs.tagFilterInput.value;
+				if (!tagText.length) return;
+
+				if (this.props.filterList.indexOf(tagText) != -1) return;
+
+				this.props.onTagAdd(tagText);
+				this.refs.tagFilterInput.value = '';
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var tags = [],
+				    available = [],
+				    tagList = _.clone(this.props.tagList, true),
+				    filterList = _.clone(this.props.filterList, true);
+
+				for (var t in tagList) {
+					available.push(_react2.default.createElement(_tag2.default, { onClick: this.props.onTagAdd.bind(null, tagList[t]), text: tagList[t], key: t }));
+				}
+
+				for (var t in filterList) {
+					tags.push(_react2.default.createElement(_tag2.default, { onClick: this.props.onTagRemove.bind(null, filterList[t]), text: filterList[t], key: t }));
+				}
+
+				return _react2.default.createElement(
+					'div',
+					{ className: 'drop filter-location pull-right hidden-xs' },
+					_react2.default.createElement(
+						'button',
+						{ className: 'toggle-drop md-type-subhead', ref: 'toggle_button', onClick: this.clicked },
+						_react2.default.createElement(
+							'span',
+							null,
+							this.props.filterList.length ? 'Filtering ' + this.props.filterList.length : 'Any ' + this.props.text
+						),
+						_react2.default.createElement('span', { className: 'mdi mdi-menu-down icon' })
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'drop-menu panel panel-default', ref: 'drop' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'toggle-drop toggler md-type-subhead', onClick: this.hideDropdown },
+							_react2.default.createElement(
+								'span',
+								null,
+								'Filter ',
+								this.props.text
+							),
+							_react2.default.createElement('span', { className: 'mdi mdi-menu-up icon pull-right' })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'drop-body' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'chips' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'split-cell' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'form-group-default' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'form-control-wrapper' },
+											_react2.default.createElement('input', {
+												id: 'tag-filter-input',
+												type: 'text', className: 'form-control empty',
+												ref: 'tagFilterInput',
+												onKeyUp: this.handleTagInput
+											}),
+											_react2.default.createElement(
+												'div',
+												{ className: 'floating-label' },
+												this.props.text
+											),
+											_react2.default.createElement('span', { className: 'material-input' })
+										)
+									),
+									_react2.default.createElement(
+										'ul',
+										{ id: 'tag-filter', className: 'chips' },
+										tags
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'split-cell' },
+									_react2.default.createElement(
+										'span',
+										{ className: 'md-type-body2' },
+										'Available ',
+										this.props.text
+									),
+									_react2.default.createElement(
+										'ul',
+										{ id: 'filter-available', className: 'chips' },
+										available
+									)
+								)
+							)
+						)
+					)
+				);
+			}
+		}]);
+
+		return TagFilter;
+	})(_react2.default.Component);
+
+	exports.default = TagFilter;
+
+	TagFilter.defaultProps = {
+		text: 'Tags',
+		tagList: [],
+		filterList: [],
+		onTagAdd: function onTagAdd() {},
+		onTagRemove: function onTagRemove() {}
+	};
+
+/***/ },
 /* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(159);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _topbar = __webpack_require__(304);
+
+	var _topbar2 = _interopRequireDefault(_topbar);
+
+	var _postList = __webpack_require__(288);
+
+	var _postList2 = _interopRequireDefault(_postList);
+
+	var _assignmentSidebar = __webpack_require__(308);
+
+	var _assignmentSidebar2 = _interopRequireDefault(_assignmentSidebar);
+
+	var _assignmentEdit = __webpack_require__(309);
+
+	var _assignmentEdit2 = _interopRequireDefault(_assignmentEdit);
+
+	var _app = __webpack_require__(160);
+
+	var _app2 = _interopRequireDefault(_app);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Story Detail Parent Object, made of a side column and PostList
+	 */
+
+	var AssignmentDetail = (function (_React$Component) {
+	  _inherits(AssignmentDetail, _React$Component);
+
+	  function AssignmentDetail(props) {
+	    _classCallCheck(this, AssignmentDetail);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AssignmentDetail).call(this, props));
+
+	    _this.state = {
+	      assignment: _this.props.assignment,
+	      toggled: false
+	    };
+
+	    _this.expireAssignment = _this.expireAssignment.bind(_this);
+	    _this.setAssignment = _this.setAssignment.bind(_this);
+	    _this.toggleEdit = _this.toggleEdit.bind(_this);
+	    return _this;
+	  }
+
+	  /**
+	   * Sets the stateful assignment
+	   * @param {dictionary} assignment Assignment to update to
+	   */
+
+	  _createClass(AssignmentDetail, [{
+	    key: 'setAssignment',
+	    value: function setAssignment(assignment) {
+	      this.setState({ assignment: assignment });
+	    }
+
+	    /**
+	     * Sets the assignment to expire
+	     * @description Invoked from the on-page button `Expire`
+	     */
+
+	  }, {
+	    key: 'expireAssignment',
+	    value: function expireAssignment() {
+
+	      $.post('/scripts/assignment/expire', {
+	        id: this.state.assignment._id
+	      }, function (response) {
+	        location.reload();
+	        // //Do nothing, because of bad response
+	        // if(!response.data || response.err)
+	        // 	callback([]);
+	        // else
+	        // 	callback(response.data);
+	      });
+	    }
+
+	    /**
+	     * Toggles edit modal with `s` value. If `s` is not provided, negates toggled.
+	     */
+
+	  }, {
+	    key: 'toggleEdit',
+	    value: function toggleEdit(s) {
+	      this.setState({
+	        toggled: typeof s == 'undefined' ? !this.state.toggled : s
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+
+	      return _react2.default.createElement(
+	        _app2.default,
+	        { user: this.props.user },
+	        _react2.default.createElement(_topbar2.default, {
+	          title: this.state.assignment.title,
+	          timeToggle: true,
+	          chronToggle: true,
+	          verifiedToggle: true,
+	          editable: true,
+	          edit: this.toggleEdit }),
+	        _react2.default.createElement(_assignmentSidebar2.default, {
+	          assignment: this.state.assignment,
+	          expireAssignment: this.expireAssignment }),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-8 tall' },
+	          _react2.default.createElement(_postList2.default, {
+	            rank: this.props.user.rank,
+	            purchases: this.props.purchases,
+	            posts: this.props.assignment.posts,
+	            scrollable: false,
+	            editable: false,
+	            size: 'large' })
+	        ),
+	        _react2.default.createElement(_assignmentEdit2.default, {
+	          assignment: this.state.assignment,
+	          setAssignment: this.setAssignment,
+	          toggled: this.state.toggled,
+	          toggle: this.toggleEdit,
+	          user: this.props.user })
+	      );
+	    }
+	  }]);
+
+	  return AssignmentDetail;
+	})(_react2.default.Component);
+
+	_reactDom2.default.render(_react2.default.createElement(AssignmentDetail, {
+	  user: window.__initialProps__.user,
+	  purchases: window.__initialProps__.purchases,
+	  assignment: window.__initialProps__.assignment,
+	  title: window.__initialProps__.title }), document.getElementById('app'));
+
+/***/ },
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51043,7 +51044,7 @@
 	})(_react2.default.Component);
 
 /***/ },
-/* 308 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51062,7 +51063,7 @@
 
 	var _global2 = _interopRequireDefault(_global);
 
-	var _assignmentEditStats = __webpack_require__(309);
+	var _assignmentEditStats = __webpack_require__(310);
 
 	var _assignmentEditStats2 = _interopRequireDefault(_assignmentEditStats);
 
@@ -51340,7 +51341,7 @@
 	};
 
 /***/ },
-/* 309 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

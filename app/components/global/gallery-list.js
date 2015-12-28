@@ -133,7 +133,7 @@ export default class GalleryList extends React.Component {
 
 
 		//Check if a list is needed
-		if(this.props.withList) {
+		if(!half) {
 
 			return (
 	    		<div className="container-fluid grid" onScroll={this.scroll} ref="grid" >

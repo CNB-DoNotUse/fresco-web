@@ -1,8 +1,8 @@
 node_modules/
 sessions/
 public/vendor/
-public/javascripts/pages/
-public/stylesheets/pages/
+public/js/pages/
+public/css/pages/
 app/server/
 dump.rdb
 *.scssc

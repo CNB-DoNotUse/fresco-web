@@ -23,10 +23,10 @@ export default class SuggestionList extends React.Component {
 	componentDidMount() {
 
 		$.ajax({
-			url: global.API_URL + "/v1/story/recent",
+			url: '/api/story/recent',
 			type: 'GET',
 			data: {
-				limit: 3
+				limit: 8
 			},
 			dataType: 'json',
 			success: (response, status, xhr) => {
@@ -53,7 +53,7 @@ export default class SuggestionList extends React.Component {
 		return (
 
 			<div className="col-md-4">
-	 			<h3 className="md-type-button md-type-black-secondary">Trending Stories</h3>
+	 			<h3 className="md-type-button md-type-black-secondary">Recently Updated Stories</h3>
 	 			<ul className="md-type-subhead trending-stories">
 	 				{this.state.stories.map((story, i) => {
 				      	return (

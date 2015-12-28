@@ -18,7 +18,7 @@ var express     = require('express'),
 
 router.get('/', (req, res, next) => {
 
-  var title = 'All content',
+  var title = 'Archive',
       purchases = config.mapPurchases(req.session),
       props = {
         user : req.session.user,
@@ -28,7 +28,7 @@ router.get('/', (req, res, next) => {
 
   res.render('app', {
     title: title,
-    page : 'content',
+    page : 'archive',
     alerts: req.alerts,
     props : JSON.stringify(props)
   });

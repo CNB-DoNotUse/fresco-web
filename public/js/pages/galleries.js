@@ -19902,34 +19902,34 @@
 					),
 					_react2.default.createElement(
 						'li',
-						{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content'), 'data-location': '/content' },
+						{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive'), 'data-location': '/archive' },
 						_react2.default.createElement('span', { className: 'mdi mdi-play-box-outline icon' }),
-						'All content'
+						'Archive'
 					),
 					_react2.default.createElement(
 						'ul',
 						null,
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/photos'), 'data-location': '/content/photos' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/photos'), 'data-location': '/archive/photos' },
 							_react2.default.createElement('span', { className: 'mdi mdi-file-image-box icon' }),
 							'Photos'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/videos'), 'data-location': '/content/videos' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/videos'), 'data-location': '/archive/videos' },
 							_react2.default.createElement('span', { className: 'mdi mdi-movie icon' }),
 							'Videos'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/galleries'), 'data-location': '/content/galleries' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/galleries'), 'data-location': '/archive/galleries' },
 							_react2.default.createElement('span', { className: 'mdi mdi-image-filter icon' }),
 							'Galleries'
 						),
 						_react2.default.createElement(
 							'li',
-							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/content/stories'), 'data-location': '/content/stories' },
+							{ className: 'sidebar-tab', onClick: this.goLink.bind(null, '/archive/stories'), 'data-location': '/archive/stories' },
 							_react2.default.createElement('span', { className: 'mdi mdi-newspaper icon' }),
 							'Stories'
 						)
@@ -32414,7 +32414,110 @@
 /* 285 */,
 /* 286 */,
 /* 287 */,
-/* 288 */
+/* 288 */,
+/* 289 */,
+/* 290 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _global = __webpack_require__(162);
+
+	var _global2 = _interopRequireDefault(_global);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Stateless image that manages an image error handler
+	 */
+
+	var FrescoImage = (function (_React$Component) {
+		_inherits(FrescoImage, _React$Component);
+
+		function FrescoImage(props) {
+			_classCallCheck(this, FrescoImage);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(FrescoImage).call(this, props));
+		}
+
+		_createClass(FrescoImage, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+
+				var size = this.props.size,
+				    img = this.refs.image;
+
+				img.onerror = function () {
+
+					var timeout = parseInt(img.getAttribute('data-t') || 1),
+					    lastTimeout = parseInt(img.getAttribute('data-lt') || 1);
+
+					img.setAttribute('data-lt', timeout);
+					img.setAttribute('data-t', timeout + lastTimeout);
+					img.setAttribute('data-src', img.getAttribute('src'));
+					img.setAttribute('src', 'https://d2j1l98c0ybckw.cloudfront.net/images/' + size + '/missing.png');
+
+					setTimeout(function () {
+
+						img.setAttribute('src', img.getAttribute('data-src'));
+					}, timeout * 1000);
+				};
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'img' },
+					_react2.default.createElement('img', {
+						className: 'img-cover',
+						ref: 'image',
+						'data-src': _global2.default.formatImg(this.props.image, this.props.size),
+						src: _global2.default.formatImg(this.props.image, this.props.size) })
+				);
+			}
+		}]);
+
+		return FrescoImage;
+	})(_react2.default.Component);
+
+	exports.default = FrescoImage;
+
+	FrescoImage.defaultProps = {
+		size: 'small'
+	};
+
+/***/ },
+/* 291 */,
+/* 292 */,
+/* 293 */,
+/* 294 */,
+/* 295 */,
+/* 296 */,
+/* 297 */,
+/* 298 */,
+/* 299 */,
+/* 300 */,
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32437,11 +32540,11 @@
 
 	var _dropdown2 = _interopRequireDefault(_dropdown);
 
-	var _locationDropdown = __webpack_require__(289);
+	var _locationDropdown = __webpack_require__(305);
 
 	var _locationDropdown2 = _interopRequireDefault(_locationDropdown);
 
-	var _tagFilter = __webpack_require__(290);
+	var _tagFilter = __webpack_require__(306);
 
 	var _tagFilter2 = _interopRequireDefault(_tagFilter);
 
@@ -32703,7 +32806,7 @@
 	};
 
 /***/ },
-/* 289 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32850,7 +32953,7 @@
 	};
 
 /***/ },
-/* 290 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33074,109 +33177,6 @@
 	};
 
 /***/ },
-/* 291 */,
-/* 292 */,
-/* 293 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _global = __webpack_require__(162);
-
-	var _global2 = _interopRequireDefault(_global);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Stateless image that manages an image error handler
-	 */
-
-	var FrescoImage = (function (_React$Component) {
-		_inherits(FrescoImage, _React$Component);
-
-		function FrescoImage(props) {
-			_classCallCheck(this, FrescoImage);
-
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(FrescoImage).call(this, props));
-		}
-
-		_createClass(FrescoImage, [{
-			key: 'componentDidMount',
-			value: function componentDidMount() {
-
-				var size = this.props.size,
-				    img = this.refs.image;
-
-				img.onerror = function () {
-
-					var timeout = parseInt(img.getAttribute('data-t') || 1),
-					    lastTimeout = parseInt(img.getAttribute('data-lt') || 1);
-
-					img.setAttribute('data-lt', timeout);
-					img.setAttribute('data-t', timeout + lastTimeout);
-					img.setAttribute('data-src', img.getAttribute('src'));
-					img.setAttribute('src', 'https://d2j1l98c0ybckw.cloudfront.net/images/' + size + '/missing.png');
-
-					setTimeout(function () {
-
-						img.setAttribute('src', img.getAttribute('data-src'));
-					}, timeout * 1000);
-				};
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(
-					'div',
-					{ className: 'img' },
-					_react2.default.createElement('img', {
-						className: 'img-cover',
-						ref: 'image',
-						'data-src': _global2.default.formatImg(this.props.image, this.props.size),
-						src: _global2.default.formatImg(this.props.image, this.props.size) })
-				);
-			}
-		}]);
-
-		return FrescoImage;
-	})(_react2.default.Component);
-
-	exports.default = FrescoImage;
-
-	FrescoImage.defaultProps = {
-		size: 'small'
-	};
-
-/***/ },
-/* 294 */,
-/* 295 */,
-/* 296 */,
-/* 297 */,
-/* 298 */,
-/* 299 */,
-/* 300 */,
-/* 301 */,
-/* 302 */,
-/* 303 */,
-/* 304 */,
-/* 305 */,
-/* 306 */,
 /* 307 */,
 /* 308 */,
 /* 309 */,
@@ -33212,7 +33212,7 @@
 
 	var _galleryList2 = _interopRequireDefault(_galleryList);
 
-	var _topbar = __webpack_require__(288);
+	var _topbar = __webpack_require__(304);
 
 	var _topbar2 = _interopRequireDefault(_topbar);
 
@@ -33429,7 +33429,7 @@
 				);
 
 				//Check if a list is needed
-				if (this.props.withList) {
+				if (!half) {
 
 					return _react2.default.createElement(
 						'div',
@@ -33517,10 +33517,10 @@
 				var _this2 = this;
 
 				$.ajax({
-					url: _global2.default.API_URL + "/v1/story/recent",
+					url: '/api/story/recent',
 					type: 'GET',
 					data: {
-						limit: 3
+						limit: 8
 					},
 					dataType: 'json',
 					success: function success(response, status, xhr) {
@@ -33548,7 +33548,7 @@
 					_react2.default.createElement(
 						'h3',
 						{ className: 'md-type-button md-type-black-secondary' },
-						'Trending Stories'
+						'Recently Updated Stories'
 					),
 					_react2.default.createElement(
 						'ul',
@@ -33590,7 +33590,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _frescoImage = __webpack_require__(293);
+	var _frescoImage = __webpack_require__(290);
 
 	var _frescoImage2 = _interopRequireDefault(_frescoImage);
 
