@@ -46,7 +46,7 @@ gulp.task('Build Assets',  () => {
 				.pipe(concat(section + '.css'))
 				.pipe(sass().on('error', sass.logError))
 				// .pipe(minifyCss())
-				.pipe(gulp.dest('./public/stylesheets'))
+				.pipe(gulp.dest('./public/css'))
 		);
 
 		// Build section _global JS
@@ -77,7 +77,7 @@ gulp.task('Build Assets',  () => {
 						.pipe(concat(pages[p] + '.css'))
 						.pipe(sass().on('error', sass.logError))
 						// .pipe(minifyCss())
-						.pipe(gulp.dest('./public/stylesheets/pages'))
+						.pipe(gulp.dest('./public/css/pages'))
 				);
 			}
 
