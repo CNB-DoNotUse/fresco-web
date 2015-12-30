@@ -11,7 +11,6 @@ var sass 			= require('gulp-sass'),
 	source			= require('vinyl-source-stream'),
 	colors 			= require('colors');
 
-
 var dependencies 	= require('./lib/dependencies'),
 	exclude 		= ['app.js', 'extra.js'];
 
@@ -27,6 +26,10 @@ viewFiles.map((file) => {
   if(exclude.indexOf(file) != -1 || !/.jsx?$/.test(file)) return;
   views[file.replace('.js', '')] = ['./app/views/' + file];
 });
+
+/**
+ * Assets task, based on `dependecies.js`
+ */
 
 gulp.task('Build Assets',  () => {
 
@@ -46,7 +49,7 @@ gulp.task('Build Assets',  () => {
 				.pipe(concat(section + '.css'))
 				.pipe(sass().on('error', sass.logError))
 				// .pipe(minifyCss())
-				.pipe(gulp.dest('./public/stylesheets'))
+				.pipe(gulp.dest('./public/css'))
 		);
 
 		// Build section _global JS
@@ -77,7 +80,7 @@ gulp.task('Build Assets',  () => {
 						.pipe(concat(pages[p] + '.css'))
 						.pipe(sass().on('error', sass.logError))
 						// .pipe(minifyCss())
-						.pipe(gulp.dest('./public/stylesheets/pages'))
+						.pipe(gulp.dest('./public/css/pages'))
 				);
 			}
 
@@ -94,6 +97,10 @@ gulp.task('Build Assets',  () => {
 
 	return merge(cssTasks, jsTasks);
 });
+
+/**
+ * Webpack task
+ */
 
 gulp.task('Build Webpack', (cb) => {
 	return gulp.src('app/views/app.js')
@@ -119,17 +126,28 @@ gulp.task('Build Webpack', (cb) => {
 		.pipe(gulp.dest('./public/js/pages'))
 });
 
+
+/**
+ * Watch on hanlders on sass files
+ */
+
+gulp.task('watch', () => {
+	gulp.watch('./public/js/components/**/*.js', ['Build Assets']);
+	gulp.watch('./public/js/handlers/**/*.js', ['Build Assets']);
+	gulp.watch('./app/sass/**/**/*.scss', ['Build Assets']);
+});
+
 /**
  * Sequence build, synchronous
  */
 
 gulp.task('Master Build', function(callback) {
-  runSequence('Build Assets', 'Build Webpack',
+  runSequence('Build Assets',
               callback);
 });
 
-gulp.task('watch', () => {
-	gulp.watch('./app/sass/**/*.scss', ['Build Assets']);
-});
+/**
+ * Watch on Master Build
+ */
 
 gulp.task('default', ['watch', 'Master Build'])

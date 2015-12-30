@@ -393,7 +393,7 @@ export default class DispatchMap extends React.Component {
 				radius: radius || 0,
 				strokeWeight: 0,
 				fillColor: fillColor,
-				fillOpacity: 0.26,
+				fillOpacity: 0.3,
 				assignmentId: assignmentId !== undefined ? assignmentId : true
 			});
 

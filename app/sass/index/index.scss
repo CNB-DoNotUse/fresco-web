@@ -1,0 +1,530 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2015 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+@import "../global/_global";
+@import "../global/fresco-slick";
+@import "modals";
+
+/**
+ * Overriden navigation styles
+ */
+
+.nav{
+
+	@include box-shadow(0 4px 4px 0 rgba(0, 0, 0, 0.05), 0 6px 6px 0 rgba(0, 0, 0, 0.15));
+	top:-102px;
+
+	@include mobile{
+		opacity:1;
+		height:56px;
+		text-align:center;
+	}
+
+	a{
+		display:inline-block;
+		float:left;
+		font-size: 66px;
+		color: #ffc600;
+		padding:15px 0 0 17px;
+
+		@include mobile{
+			font-size:33px;
+			float:none;
+			padding:10px 0;
+		}
+	}
+
+	ul {
+		float:right;
+		padding:42px 48px 0 0;
+
+		@include mobile{
+			display:none;
+		}
+
+		#landing-action{
+			display:none;
+		}
+
+		li{
+			cursor:pointer;
+			font-weight:700;
+			font-size:24px;
+			display:inline-block;
+			margin-left:24px;
+		}
+	}
+}
+
+/*
+	Transparent styling for nav bar
+ */
+
+.transparent{
+	background:none;
+	position:relative;
+	margin-bottom:30px;
+	@include box-shadow(none !important);
+	text-shadow:0 2px 2px #000;
+	text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+	color:#FFF;
+	top:0;
+	-webkit-transform:none !important;
+	   -moz-transform:none !important;
+	    -ms-transform:none !important;
+	     -o-transform:none !important;
+
+	transform:none !important;
+
+	a{
+		color:#FFF;
+		text-shadow:0 2px 2px #000;
+		text-shadow:0 2px 2px rgba(0, 0, 0, .15); 
+	}
+}
+
+
+/**
+ *  Master Hero Background
+ */
+
+$heroHeight: 180px;
+
+ @keyframes animateBackground {
+ 	from { 
+	    -webkit-transform: scale(2, 2) translate(0px, 46px); /* Safari */
+		    -ms-transform: scale(2, 2) translate(0px, 46px); /* IE 9 */
+			    transform: scale(2, 2) translate(0px, 46px);
+ 	}
+ 	to   { 
+	    -webkit-transform: scale(1,1) translate(0px, 0px); /* Safari */
+		    -ms-transform: scale(1,1) translate(0px, 0px); /* IE 9 */
+			    transform: scale(1,1) translate(0px, 0px);
+ 	}
+}
+
+.hero-bg{
+	height:100%;
+	width:100%;
+	z-index:-1;
+	overflow:hidden;
+	position:fixed;
+	left:0; right:0; top:0; bottom:0;
+
+	div{
+		position:absolute;
+		left:0; right:0; top:0; bottom:0;
+		background: #ffc600 url("/images/index/map.png");
+		background-repeat: no-repeat;
+		background-position:50%;
+	    background-size:cover;
+		left:0; right:0; top:0; bottom:0;
+		animation: animateBackground 30s linear;
+	}
+
+}
+
+/**
+ * Landing Wrapper
+ */
+
+#landing{
+	height:100%;
+}
+
+.nonactive{
+	display:none;
+}
+
+/**
+ * Hero Wrapper, contains the top part of the landing page
+ */
+
+.hero-wrap{
+	overflow:hidden;
+	position:relative;
+	height:100%;
+
+	.hero{
+		// /**/ display:none;
+		position:absolute;
+		left:0; right:0; bottom:0; top:0;
+		margin:auto;
+		height:35%;
+		height:$heroHeight;
+		text-align:center;
+		color:#FFF;
+
+		.tagline{
+			margin:0 auto 48px;
+			max-width:98%;
+
+			h1{
+				font-weight:700;
+				font-size:48px;
+				text-shadow:0 2px 2px #F5F5F5;
+				text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+			}
+			
+			h3{
+				font-weight:300;
+				font-size:26px;
+				text-shadow:0 2px 2px #F5F5F5;
+				text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+			}
+		}
+
+		.download{
+
+			a{
+				margin:0 5px;
+				img{
+					width:145px;
+				}	
+			}
+
+		}
+
+	}
+
+	.mdi-arrow-down-bold{
+		cursor:pointer;
+		color:#FFF;
+		position:absolute;
+		display:inline-block;
+		max-width:48px;
+		bottom:20px;
+		left:0;
+		right:0;
+		margin:0 auto;
+		font-size:48px;
+		text-shadow:0 3px 2px rgb(0, 0, 0);
+		text-shadow:0 3px 2px rgba(0, 0, 0, 0.15);
+
+		@include mobile{
+			display:none;
+		}
+	}
+	
+}
+
+/**
+ * Sections below hero
+ */
+
+.bottom-wrap{
+
+	position:relative;
+	background:$fresco-bg;
+	height:calc(839px - 50% + 180px);
+
+	@include tablet{
+		height:calc(820px - 50% + 35%);
+	}
+
+	@include mobile{
+		height:calc(865px - 50% + 35%);
+	}
+
+	/**
+	 * Shared style for each card
+	 */
+	.card{
+		@include box-shadow(0 2px 2px 0 rgb(0, 0, 0), 0 3px 2px 0 rgb(0, 0, 0));
+		@include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 3px 2px 0 rgba(0, 0, 0, 0.10));
+		background:#FFF;
+		max-width:736px;
+		margin:20px auto;
+
+		@include mobile{
+			margin:60px auto 12px;
+			max-width:100%;
+		}
+	}
+
+	.bottom{
+		position:absolute;
+		left:0;
+		right:0;
+		margin:0 auto;
+		padding:20px 0;
+		z-index:10;
+
+		@include mobile{
+			padding:0 0 20px;
+		}
+	}
+}
+
+/**
+ * About Section
+ */
+
+.about{
+	text-align:center;
+
+	.timeline{
+		padding: 44px 5% 24px;
+		height:auto;
+
+		@include mobile{
+			white-space: nowrap;
+			overflow: scroll;
+			margin: 0 auto;
+			position: relative;
+		}
+
+		li{
+			height:216px;
+			position:relative;
+			display:inline-block;
+			text-align:center;
+			z-index:5;
+
+			@include mobile{
+				width:100% !important;
+			}
+
+			img{
+				vertical-align:middle;
+				margin:0 auto;
+				max-height:100%;
+				max-width:100%;
+			}
+		}
+		
+		li.third{
+			.callout{
+				z-index:100;
+				top:-20px;
+				width:72px;
+				height:72px;
+				position:absolute;
+				top: -60px;
+				right: 0px
+			}
+		}
+		
+		li.second{
+			width:42%;
+			margin:0 4%;
+		}
+		
+
+		li.first, li.third{
+			width:24%;
+		}
+		
+	}
+
+	.progress{
+		width:100%;
+		height:4px;
+		background:rgba(0, 0, 0, 0.12);
+		position:relative;
+		margin:0 auto 50px;
+		$circleBorder:4px;
+
+		li{
+			position:absolute;
+			top:-200%;
+			text-align:center;
+			margin:0 auto;
+			margin:-$circleBorder 0;
+
+			.circle{
+				width:24px;
+				height:24px;
+				position:absolute;
+				left:0;
+				right:0;
+				margin:0 auto 20px;
+				background:$fresco-yellow;
+				border:$circleBorder solid #FFF;
+				@include border-radius(50px);
+			}
+
+			p{
+				color:#000;
+				font-weight:700;
+				font-size:24px;
+				margin-top:40px;
+			}
+		}
+
+		li.first{
+			left:9%;
+		}
+		
+		li.second{
+			left: 0;
+			right: 0;
+		}
+		
+		li.third{
+			right:9%;
+		}
+
+	}
+
+	.info{
+		font-family:Roboto;
+		max-width:90%;
+		font-size:14px;
+		margin:0 auto;
+		color:rgb(0, 0, 0);
+		color:rgba(0, 0, 0, .54);
+		padding:20px 40px;
+		font-weight:500;
+	}
+
+}
+
+
+/**
+ * Highlights Section, double slick
+ */
+
+.highlights-wrap{
+	margin:0 auto;
+	height:384px;
+	overflow:auto;
+
+	> div{
+		display:inline-block;
+		float:left;
+		height:100%;
+	}
+
+	.slick-slide{
+		height:384px;
+	}
+
+	.arrow{
+		text-align:center;
+		position:relative;
+		font-size:34px;
+		cursor:pointer;
+		width:7%;
+		width:calc(7% + 1px);
+		@include rgba(color, 0, 0, 0, .54);
+
+		span{
+			margin:0 -5px;
+			position:absolute;
+			top:45%;
+			bottom:0;
+		}
+	}
+
+	#arrow-left{
+		border-right:1px solid;
+		@include rgba(border-color, 0, 0, 0, 0.12);
+	}
+
+	#arrow-right{
+		border-left:1px solid;
+		@include rgba(border-color, 0, 0, 0, 0.12);
+	}
+
+	.highlights{
+		width:85%;
+		height:100%;
+		margin:0 auto;
+		width:calc(86% - 4px);
+
+		.slide{
+			width:100%;
+			overflow:hidden;
+
+			.posts{
+				width:55%;
+				height:100%;
+				margin:0 auto;
+				float:left;
+
+				.post-slide{
+					position:relative;
+					background-repeat:no-repeat;
+					background-position:center;
+					background-size: cover;
+					overflow:hidden;
+				}
+			}
+
+			.gallery-info{
+				float:left;
+				width:45%;
+				height:100%;
+				overflow:hidden;
+				font-family:Roboto;
+				position:relative;
+
+				p{
+					height:80%;
+					overflow:hidden;
+					font-size:14px;
+					max-width:95%;
+					padding:10px 15px;
+					margin:0 auto;
+					@include rgba(color, 0, 0, 0, 0.87);
+
+				}
+
+				.interaction{
+					position: absolute;
+					height:14%;
+					width: 100%;
+					overflow:hidden;
+					bottom: 0;
+					border-top:1px solid rgb(0, 0, 0);
+					border-top:1px solid rgba(0, 0, 0, 0.12);
+
+					span{
+						font-size:22px;
+					}
+
+					.link{
+					    position: relative;
+					    top:10px;
+					    left:10px;
+
+						span.mdi-link-variant{
+							position: relative;
+							top: 3px;
+							font-size: 24px;
+						}
+						
+						span{
+							cursor:pointer;
+							@include rgba(color, 0, 0, 0, 0.54);
+							font-size:14px;
+						}
+					}
+
+					.social{
+						float:right;
+					    position: relative;
+					    bottom:10px;
+					    right:10px;
+
+						span.mdi-facebook-box{
+							color:#3b5998;
+							padding-left:15px;
+						}
+
+						span.mdi-twitter{
+							color:#55acee;
+						}
+					}
+				}
+			}
+		}
+	}
+
+}

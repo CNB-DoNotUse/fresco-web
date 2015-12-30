@@ -62,7 +62,6 @@ app.use(
   })
 );
 
-
 //Set up public direc.
 app.use(
   express.static(path.join(__dirname, 'public'), { maxAge: 300 })
@@ -95,78 +94,74 @@ app.use(function(req, res, next){
 app.locals.head = head;
 app.locals.global = global
 
-//If user is not logged in, redirect to landing page
-//Also, check if user's data is still valid, updating if not
-app.use(function(req, res, next) {
-      // if (!req.secure)
-      //   return res.redirect('https://' + req.headers.host + req.url);
+/**
+ * Route session check
+ */
 
-      if (req.method.toUpperCase() != 'GET')
+app.use(function(req, res, next) {
+
+    var path = req.path.substring(1, req.path.length);
+
+    path = path.substring(0, path.indexOf('/'));
+
+    //Check if a platform route
+    if(routes.platform.indexOf(path) == -1) return next();
+
+    console.log('PASSED');
+
+    //Check if there is no session
+    if (!req.session &&  !req.session.user)  return res.redirect('/');
+
+    var now = Date.now();
+
+    //Check if the session has expired
+    if (req.session.user.TTL && req.session.user.TTL - now > 0)
         return next();
 
-      if (req.path != '/' &&
-        req.path.indexOf('/join') == -1 &&
-        req.path.indexOf('/partners') == -1 &&
-        req.path.indexOf('/scripts') == -1 &&
-        req.path.indexOf('/verify') == -1 &&
-        req.path.indexOf('/external') == -1 &&
-        req.path.indexOf('/promo') == -1 &&
-        req.path.indexOf('/gallery')) {
+    //Create client
+    var api = requestJson.createClient(config.API_URL);
 
-        if (req.session && req.session.user) {
+    //Send request for user profile
+    api.get('/v1/user/profile?id=' + req.session.user._id, function(err, response, body) {
 
-          var now = Date.now();
+        //Check request
+        if (err || !body) return next();
 
-          //Check if the session has expired
-          if (!req.session.user.TTL || req.session.user.TTL - now < 0) {
-
-            //Create client
-            var api = requestJson.createClient(config.API_URL);
-
-            //Send request for user profile
-            api.get('/v1/user/profile?id=' + req.session.user._id, function(err, response, body) {
-
-              //Check for request
-              if (err || !body)
-                return next();
-
-              //Check for error on api payload
-              if (body.err) {
-                req.session.alerts = [config.resolveError(body.err)];
-                delete req.session.user;
-                return req.session.save(function() {
-                  res.redirect('/');
-                });
-              }
-
-              //Configure new session config for user
-              var token = req.session.user ? req.session.user.token : null;
-              req.session.user = body.data;
-              req.session.user.token = token;
-              req.session.user.TTL = now + config.SESSION_REFRESH_MS;
-
-              if (!req.session.user.outlet){
-                return req.session.save(function() {
-                  next();
-                });
-              }
-
-              api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(err, response, body) {
-
-                if (!err && body && !body.err)
-                  req.session.user.outlet.purchases = body.data;
-
-                req.session.save(function() {
-                  next();
-                });
-              });
+        //Check for error on api payload
+        if (body.err) {
+            
+            req.session.alerts = [config.resolveError(body.err)];
+            
+            delete req.session.user;
+            
+            return req.session.save(function() {
+                res.redirect('/');
             });
-          }
-          else next();
         }
-        else return res.redirect('/');
-      }
-      else next();
+
+        //Configure new session config for user
+        var token = req.session.user ? req.session.user.token : null;
+        req.session.user = body.data;
+        req.session.user.token = token;
+        req.session.user.TTL = now + config.SESSION_REFRESH_MS;
+
+        if (!req.session.user.outlet){
+            return req.session.save(function() {
+                next();
+            });
+        }
+
+        //Grab purchases
+        api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(err, response, body) {
+
+            if (!err && body && !body.err)
+                req.session.user.outlet.purchases = body.data;
+
+            req.session.save(function() {
+                next();
+            });
+        });
+    });
 });
 
 /**
@@ -185,8 +180,8 @@ app.use((req, res, next) => {
 
 });
 
-/*
-Loop through all public routes
+/**
+ * Loop through all public routes
  */
 
 for (var i = 0; i < routes.public.length; i++) {
@@ -210,8 +205,9 @@ app.use((req, res, next) => {
 
 });
 
-/*
-Loop through all platform routes
+
+/**
+ * Loop through all platform routes
  */
 
 for (var i = 0; i < routes.platform.length; i++) {
@@ -219,11 +215,10 @@ for (var i = 0; i < routes.platform.length; i++) {
   var routePrefix = routes.platform[i] ,
       route = require('./routes/' + routePrefix);
 
-  // if(i == 0 ) console.log(routePrefix);
-
   app.use('/' + routePrefix , route);
 
 };
+
 /**
  * Error Handlers
  */
@@ -232,9 +227,6 @@ for (var i = 0; i < routes.platform.length; i++) {
 if (app.get('env') === 'development') {
 
   app.use(function(err, req, res, next) {
-
-    if (!err)
-      return next();
 
     console.log('\n Path: ', req.path, '\nError: ', err + '\n');
     
@@ -255,9 +247,6 @@ if (app.get('env') === 'development') {
 else{
 
   app.use(function(err, req, res, next) {
-
-    if (!err)
-      return next();
     
     res.render('error', {
       user: req.session && req.session.user ? req.session.user : null,

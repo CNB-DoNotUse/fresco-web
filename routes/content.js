@@ -26,6 +26,8 @@ router.get('/', function(req, res, next) {
         title:title
       };
 
+  console.log(purchases);
+
   res.render('app', {
     title: title,
     page : 'content',

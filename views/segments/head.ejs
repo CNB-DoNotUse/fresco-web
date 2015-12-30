@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<!--[if lte IE 9]> <html lang='en' class="ie"> <![endif]-->
+<!--[if !IE ]> <html lang='en'> <![endif]-->
 <head>
   <% 
     meta = typeof(meta) !== 'undefined' ? meta : {};
@@ -64,12 +65,12 @@
 
   <!--Global Specifc based on sections-->
   <% if(typeof(section) !== 'undefined'){ %> 
-    <link rel="stylesheet" type="text/css" href="/stylesheets/<%= section %>.css">
+    <link rel="stylesheet" type="text/css" href="/css/<%= section %>.css">
   <% } %>  
 
   <!--Page Specifc based on page-->
   <% if(typeof(page) !== 'undefined'){ %> 
-    <link rel="stylesheet" type="text/css" href="/stylesheets/pages/<%= page %>.css">
+    <link rel="stylesheet" type="text/css" href="/css/pages/<%= page %>.css">
   <% } %> 
 
 </head>

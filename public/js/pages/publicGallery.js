@@ -19976,7 +19976,7 @@
 	        drafted: '#0047bb',
 	        active: '#ffc600',
 	        expired: '#d0021b',
-	        pending: '#d8d8d8'
+	        pending: '#b3b3b3`'
 	    },
 
 	    assignmentImage: {

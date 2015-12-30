@@ -19976,7 +19976,7 @@
 	        drafted: '#0047bb',
 	        active: '#ffc600',
 	        expired: '#d0021b',
-	        pending: '#d8d8d8'
+	        pending: '#b3b3b3`'
 	    },
 
 	    assignmentImage: {
@@ -46902,9 +46902,6 @@
 				}
 			}
 		}, {
-			key: 'componentDidUpdate',
-			value: function componentDidUpdate(prevProps, prevState) {}
-		}, {
 			key: 'onPlaceChange',
 			value: function onPlaceChange(place) {
 
@@ -47133,7 +47130,8 @@
 				this.setState({
 					gallery: null
 				});
-				this.props.hide();
+				console.log(this.props);
+				this.props.toggle();
 			}
 		}, {
 			key: 'render',
@@ -47195,7 +47193,8 @@
 
 	GalleryEdit.defaultProps = {
 		gallery: null,
-		posts: []
+		posts: [],
+		toggled: false
 	};
 
 /***/ },
@@ -47627,6 +47626,7 @@
 
 				var posts = this.props.posts.map(function (post) {
 					var shouldDelete = _this2.props.deletePosts.indexOf(post._id) != -1;
+
 					return _react2.default.createElement(
 						'div',
 						{ key: ++k, className: "frick-frame" + (shouldDelete ? " frick-delete" : "") },
@@ -47648,7 +47648,9 @@
 						_react2.default.createElement(
 							'a',
 							null,
-							_react2.default.createElement('span', { className: "mdi mdi-close-circle icon" + (shouldDelete ? ' addback' : ''), onClick: _this2.props.toggleDelete.bind(null, post._id) })
+							_react2.default.createElement('span', {
+								className: "mdi mdi-close-circle icon" + (shouldDelete ? ' addback' : ''),
+								onClick: _this2.props.toggleDelete.bind(null, post._id) })
 						)
 					);
 				});

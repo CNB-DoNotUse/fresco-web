@@ -38,7 +38,9 @@ export default class GalleryEditBody extends React.Component {
 								ref="gallery-caption"
 								value={this.props.gallery.caption}
 								onChange={this.props.updateCaption} />
+							
 							<div className="floating-label">Caption</div>
+							
 							<span className="material-input"></span>
 						</div>
 

@@ -1,0 +1,98 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2015 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+.slick-meta{
+	color:#FFF;
+	bottom:8px;
+	left:7px;
+	position:absolute;
+	
+	tr{
+		margin:5px 0 0 5px;
+		width:100%;
+		display:block;
+		
+		td{
+			padding-right:5px;
+			text-shadow:0 1px 0 rgb(0,0,0);
+			text-shadow:0 1px 0 rgba(0,0,0,0.87);
+
+			img{
+				width:36px;
+				height:36px;
+				@include box-shadow(1px 1px 3px 0 rgb(0, 0, 0));
+				@include box-shadow(1px 1px 3px 0 rgba(0,0,0, .5));    
+				@include border-radius(50px);
+			}
+  		    span{
+				width:36px;
+				margin:0 auto;
+				display:block;
+				font-size:1.4em;
+			}
+		}
+		td.meta-text{
+			font-size:16px;
+			font-weight:400;
+			max-width:80%;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
+			@include mobile{
+				font-size:14px;
+			}
+		}
+		td.byline{
+			font-size:24px;
+			font-weight:500;
+			@include mobile{
+				font-size:16px;
+			}
+		}
+
+	}
+	tr.user{
+		margin:10px 0 0 0;
+	}
+
+}
+
+
+.slick-dots{
+    position: absolute;
+    bottom:5px;
+    right:5px;
+    list-style: none;
+    text-align: right;
+
+	li{
+		position: relative;
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		margin: 0 5px;
+		padding: 0;
+		cursor: pointer;
+
+		button:before {
+		    font-size:30px;
+		    color:#FFF;
+		    opacity:.7;
+		}
+	}
+
+
+	li.slick-active{
+		button:before{
+			color:#FFF;
+			opacity:1;
+		}
+	}
+
+}

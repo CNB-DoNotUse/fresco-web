@@ -34,7 +34,6 @@ export default class PostList extends React.Component {
 		this.scroll 			= this.scroll.bind(this);
 		this.didPurchase 		= this.didPurchase.bind(this);
 		this.edit 				= this.edit.bind(this);
-		this.hideGallery 				= this.hideGallery.bind(this);
 	}
 
 	componentDidMount() {
@@ -160,13 +159,6 @@ export default class PostList extends React.Component {
 		});
 	}
 
-	hideGallery() {
-		this.setState({
-			gallery: null,
-			galleryEditToggled: false
-		});
-	}
-
 	render() {
 
 		var purchases = this.state.purchases,
@@ -208,8 +200,7 @@ export default class PostList extends React.Component {
 					setSelectedPosts={this.setSelectedPosts} />
 				<GalleryEdit 
 					gallery={this.state.gallery}
-					toggled={this.state.galleryEditToggled}
-					hide={this.hideGallery} />
+					toggled={this.state.galleryEditToggled} />
 				<GalleryCreate posts={this.state.selectedPosts} />
 			</div>
 

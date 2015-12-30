@@ -1,0 +1,49 @@
+@charset "UTF-8";
+
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2015 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+@import "../global/_global";
+@import "../../public/fonts/nota/nota.css";
+
+
+.error{
+	background: url("https://d1dw1p6sgigznj.cloudfront.net/images/bg-hero.jpg") $fresco-yellow no-repeat center center scroll;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	-webkit-background-size: cover;
+	background-size: cover;
+
+	color:#FFF;
+
+	height:80%;
+
+	div{
+
+		padding:80px 10%;
+		text-shadow:0 1px 0 rgb(0,0,0);
+		text-shadow:0 1px 0 rgba(0,0,0,0.5);
+
+		h1{
+			font-size:5em;
+			font-weight:100;
+			font-style:oblique;
+			display:inline-block;
+			margin:0 4% 40px 0;
+			min-width:200px;
+		}
+
+		h3{
+			font-size:1.8em;
+			font-weight:bold;
+			display:inline-block;
+			text-transform:uppercase;
+		}
+
+	}
+}

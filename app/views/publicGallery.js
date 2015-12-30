@@ -45,7 +45,6 @@ class PublicGallery extends React.Component {
 
  			galleryImages.push(
  				<div className="slick-slide" key={i} style={style}>
-
  					<table className="slick-meta">
 						<tbody>
 							<tr className="user">

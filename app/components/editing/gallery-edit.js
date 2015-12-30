@@ -49,9 +49,6 @@ export default class GalleryEdit extends React.Component {
 		}
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-	}
-
 	onPlaceChange(place) {
 
 		var gallery = _.clone(this.state.gallery, true);
@@ -143,11 +140,11 @@ export default class GalleryEdit extends React.Component {
  	}
 
  	saveGallery() {
- 		var self 		= this,
-	 		gallery 	= _.clone(this.state.gallery, true),
- 			files 		= gallery.files ? gallery.files : [],
- 			caption 	= gallery.caption,
- 			tags 		= gallery.tags;	
+ 		var self 	= this,
+	 		gallery = _.clone(this.state.gallery, true),
+ 			files 	= gallery.files ? gallery.files : [],
+ 			caption = gallery.caption,
+ 			tags 	= gallery.tags;	
 
  		//Generate post ids for update
  		var posts = _.difference(this.state.posts, this.state.deletePosts);
@@ -286,7 +283,8 @@ export default class GalleryEdit extends React.Component {
  		this.setState({
  			gallery: null
  		});
- 		this.props.hide();
+ 		console.log(this.props);
+ 		this.props.toggle();
  	}
 
 	render() {
@@ -336,5 +334,6 @@ export default class GalleryEdit extends React.Component {
 
 GalleryEdit.defaultProps = {
 	gallery: null,
-	posts: []
+	posts: [],
+	toggled: false
 }

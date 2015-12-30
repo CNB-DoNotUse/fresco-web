@@ -1,10 +1,14 @@
-<div class="footer dark">
+<div class="footer<%- nonactive %>" id="_footer">
 	<div class="middle">
-		<span>&copy;2015 Fresco News Inc.</span>
+		<ul>
+			<li>&copy;2015 Fresco News Inc</li>
+			<li><a href="/terms">&bull; Terms of Service</a></li>
+			<li><a href="/privacy">&bull; Privacy Policy</a></li>
+		</ul>
 	</div>
 
 	<div class="left">
-		<img class="lazy" src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-foot.png">
+		<span class="icon-fresco"></span>
 		<p>
 			Fresco News Inc.<br>
 			85 Broad St #17.134<br>
@@ -14,14 +18,16 @@
 	
 	<div class="right">
 		<ul>
-			<li><a class="mdi mdi-twitter" href="http://twitter.com/fresconews/" target="_blank"></a></li>
-			<li><a class="mdi mdi-facebook-box" href="http://facebook.com/fresconews/" target="_blank"></a></li>
-			<li><a class="mdi mdi-instagram" href="http://instagram.com/fresconews/" target="_blank"></a></li>
+			<li><a class="mdi mdi-twitter twitter" href="http://twitter.com/fresconews/" target="_blank"></a></li>
+			<li><a class="mdi mdi-facebook-box facebook" href="http://facebook.com/fresconews/" target="_blank"></a></li>
+			<li><a class="mdi mdi-instagram instagram" href="http://instagram.com/fresconews/" target="_blank"></a></li>
+			<li><a class="mdi mdi-tumblr tumblr" href="http://instagram.com/fresconews/" target="_blank"></a></li>
 		</ul>
-		<ul>
-			<li data-toggle-id="team" data-toggle-role="controller" data-toggle-action="enable">TEAM</li>
-			<li><a href="https://d1dw1p6sgigznj.cloudfront.net/pdf/press.pdf" target="_blank">PRESS KIT</a></li>
+		<ul class="links" id="footer-actions">
+			<li data-event="modal" data-modal="team">TEAM</li>
+			<li data-event="modal" data-modal="careers">CAREERS</li>
+			<li data-event="modal" data-modal="press">PRESS</li>
+			<li data-event="modal" data-modal="contact">CONTACT</li>
 		</ul>
 	</div>
 </div>
-<%- include team %>

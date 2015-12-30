@@ -1,0 +1,33 @@
+<div class="modal contact <%- active %>" id="_contact">
+	<div class="header">
+		<h2>Get in Touch</h2>
+		
+		<span data-event="landing" class="mdi mdi-close modal-action"></span>
+	</div>
+	
+	<div class="body">
+		<div class="form-wrap">
+			<form id="_contact-form">
+				<input id="name" placeholder="Name" type="text" />
+				
+				<input id="email" placeholder="Email" type="text" />
+				
+				<div class="dropdown">
+					<div>
+						<p>Type of inquiry</p>
+						<span class="mdi mdi-unfold-more"></span>
+					</div>
+					
+					<ul>
+						<li>Phone</li>
+						<li>Fax</li>
+					</ul>
+				</div>
+				
+				<textarea placeholder="Message"  maxlength="350"></textarea>
+				
+				<input class="button" id="login_submit" type="submit" action="/q/login" value="SEND MY MESSAGE" />
+			</form>
+		</div>
+	</div>
+</div>

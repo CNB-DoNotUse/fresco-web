@@ -15,52 +15,46 @@ class GalleryDetail extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			toggled: false
+			galleryEditToggled: false
 		}
 
-		this.hide = this.hide.bind(this);
-		this.toggle = this.toggle.bind(this);
+		this.toggleGalleryEdit = this.toggleGalleryEdit.bind(this);
 	}
 
-	hide() {
+	toggleGalleryEdit() {
 		this.setState({
-			toggled: false
-		});
-	}
-
-	toggle() {
-		this.setState({
-			toggled: !this.state.toggled
+			galleryEditToggled: !this.state.galleryEditToggled
 		});
 	}
 
 	render() {
 
+		console.log(this.state.galleryEditToggled);
+
 		return (
-		<App user={this.props.user}>
-			<TopBar 
-				title={this.props.title}
-				editable={true}
-				edit={this.toggle}
-				verifiedToggle={false}
-				timeToggle={true}
-				chronToggle={true} />
-			<GallerySidebar gallery={this.props.gallery} />
-			<div className="col-sm-8 tall">
-				<PostList
-					rank={this.props.user.rank}
-					purchases={this.props.purchases}
-					posts={this.props.gallery.posts}
-					scrollable={false}
-					editable={false}
-					size='large' />
-			</div>
-			<GalleryEdit 
-				gallery={this.props.gallery}
-				toggled={this.state.toggled}
-				toggle={this.toggle}
-				hide={this.hide} />
-		</App>
+			<App user={this.props.user}>
+				<TopBar 
+					title={this.props.title}
+					editable={true}
+					edit={this.toggleGalleryEdit}
+					verifiedToggle={false}
+					timeToggle={true}
+					chronToggle={true} />
+				<GallerySidebar gallery={this.props.gallery} />
+				<div className="col-sm-8 tall">
+					<PostList
+						rank={this.props.user.rank}
+						purchases={this.props.purchases}
+						posts={this.props.gallery.posts}
+						scrollable={false}
+						editable={false}
+						size='large' />
+				</div>
+				<GalleryEdit 
+					gallery={this.props.gallery}
+					toggle={this.toggleGalleryEdit}
+					toggled={this.state.galleryEditToggled} />
+			</App>
 		);
 
 	}

@@ -1,0 +1,48 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+/**
+ * Legal Modal
+ */
+
+.legal{
+	@extend .modal_window;
+
+	max-width:736px;
+
+	.header{
+
+		text-align:center;
+		margin:0 auto;
+
+		.tab{
+			cursor:pointer;
+			font-weight:700;
+			font-size:20px;
+			text-transform: uppercase;
+			display:inline-block;
+			margin:23px 10% 0;
+			@include rgbaWithHex(color, 0, 0, 0, 0.87, #2C2C2C);
+		}
+		.tab:hover{
+			@include rgbaWithHex(color, 0, 0, 0, 0.87, #2C2C2C);
+		}
+		.inactive{
+			@include rgbaWithHex(color, 0, 0, 0, 0.54, #757575);
+		}
+	}
+
+	.body{
+		div{
+			padding:16px;
+		}
+		div.privacy{
+			display:none;
+		}
+	}
+}

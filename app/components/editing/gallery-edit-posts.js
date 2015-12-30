@@ -19,6 +19,7 @@ export default class GalleryEditPosts extends React.Component {
 
 		var posts = this.props.posts.map((post) => {
 			var shouldDelete = this.props.deletePosts.indexOf(post._id) != -1;
+			
 			return <div key={++k} className={"frick-frame" + (shouldDelete ? " frick-delete" : "")}>
 						<EditPost post={post} />
 						<div className="frick-overlay">

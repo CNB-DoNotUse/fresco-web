@@ -1,0 +1,51 @@
+/* Sass Document */
+
+/*-----------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+/**
+ * Border Radius
+ * @param  {[type]} $radius Radius to set to 
+ */
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+
+/**
+ * Shadow
+ * @param  {[type]} $radius Radius to set to 
+ */
+
+ @mixin box-shadow($shadow1, $shadow2:false, $shadow3:false, $shadow4:false, $shadow5:false) {
+  $params: $shadow1;
+   @if $shadow2 
+     { $params: $shadow1, $shadow2; }
+     @if $shadow3 != false
+       { $params: $shadow1, $shadow2, $shadow3; }
+       @if $shadow4 != false
+         { $params: $shadow1, $shadow2, $shadow3, $shadow4; }
+         @if $shadow5 != false
+           { $params: $shadow1, $shadow2, $shadow3, $shadow4, $shadow5; }
+
+   -webkit-box-shadow: $params;
+      -moz-box-shadow: $params;
+           box-shadow: $params;
+
+ }
+
+@mixin rgba($property, $r, $g, $b, $opacity:1) {
+    #{$property}: rgb($r, $g, $b);
+    #{$property}: rgba($r, $g, $b, $opacity);
+}
+
+@mixin rgbaWithHex($property, $r, $g, $b, $opacity, $hex) {
+    #{$property}:$hex;
+    #{$property}: rgba($r, $g, $b, $opacity);
+}
