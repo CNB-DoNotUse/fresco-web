@@ -116,16 +116,16 @@ var processSignup = function() {
 		}
 	];
 
-	// //Check all the fields
-	// for (var i = 0; i < params.length; i++) {
-	// 	value = params[i].value;
-	// 	if(!/\S/.test(value) || typeof(value) == 'undefined'){
-	// 		$.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
-	// 		return;
-	// 	}
-	// }
-	// 
-	// 
+	//Check all the fields
+	for (var i = 0; i < params.length; i++) {
+		value = params[i].value;
+		if(!/\S/.test(value) || typeof(value) == 'undefined'){
+			$.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
+			return;
+		}
+	}
+	
+	
 	var newParams = {};
 
 	for (var i = 0; i < params.length; i++) {

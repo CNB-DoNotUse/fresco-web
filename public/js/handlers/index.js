@@ -39,7 +39,13 @@ var ticking = false,
 	translate3dSupported = animation.has3d(),
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
 
-console.log(translate3dSupported);
+window.addEventListener('resize', function() {
+
+	//Reset the initial diff when the window is resized
+	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
+
+});
+
 
 window.addEventListener('scroll', function(e) {
 
@@ -69,7 +75,7 @@ window.addEventListener('scroll', function(e) {
 		if(bottomValue < initialDiff)
 			bottomValue = initialDiff;
 
-		animation.translateY3d(hero,   heroValue);
+		if(bottomValue > initialDiff) animation.translateY3d(hero,   heroValue);
 		animation.translateY3d(bottom, bottomValue);
 
 		ticking = false;

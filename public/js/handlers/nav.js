@@ -29,7 +29,7 @@ function handleClick(e) {
 		var element = document.getElementById(item.dataset.element);
 
 		//Scroll to element
-		$("html").velocity("scroll", { offset: $(element).offset().top - 150, mobileHA: false,  duration: 750 });
+		$("html").velocity("scroll", { offset: $(element).offset().top - 150, mobileHA: false,  duration: 1400 });
 
 	}
 	//Modal Transition
