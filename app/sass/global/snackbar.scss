@@ -1,3 +1,12 @@
+/* Sass Document */
+
+/*-----------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+
 #snackbar-container{
     position: fixed;
     left:40%;
@@ -29,7 +38,8 @@
     margin-top:5px;
     span{
         font-weight:400;
-        font-family:Nota, sans-serif;
+        color:#FFF;
+        font-family:Roboto, sans-serif;
         margin:15px 24px;
         display:block;
     }

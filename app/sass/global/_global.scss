@@ -74,7 +74,16 @@ ul{
     z-index:100;
     
     a{
-        float:none;
+        display:block;
+        font-size: 66px;
+        color: #ffc600;
+        padding:15px 0 0 17px;
+
+        @include mobile{
+            font-size:33px;
+            float:none !important;
+            padding:15px 0;
+        }
     }
 }
 

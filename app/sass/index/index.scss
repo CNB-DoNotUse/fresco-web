@@ -11,6 +11,15 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 @import "modals";
 
 /**
+ * Generic hidden class for server-side conditioning
+ */
+
+.hidden{
+	display:none;
+}
+
+
+/**
  * Overriden navigation styles
  */
 
@@ -28,15 +37,6 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 	a{
 		display:inline-block;
 		float:left;
-		font-size: 66px;
-		color: #ffc600;
-		padding:15px 0 0 17px;
-
-		@include mobile{
-			font-size:33px;
-			float:none;
-			padding:15px 0;
-		}
 	}
 
 	ul {
@@ -127,18 +127,6 @@ $heroHeight: 180px;
 		animation: animateBackground 30s linear;
 	}
 
-}
-
-/**
- * Landing Wrapper
- */
-
-#landing{
-	height:100%;
-}
-
-.nonactive{
-	display:none;
 }
 
 /**
