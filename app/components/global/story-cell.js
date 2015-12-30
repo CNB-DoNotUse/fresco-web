@@ -8,6 +8,16 @@ import global from '../../../lib/global'
 
 export default class StoryCell extends React.Component {
 
+	constructor(props) {
+		super(props);
+
+		this.onClick = this.onClick.bind(this);
+	}
+
+	onClick() {
+		window.location = '/story/' + this.props.story._id;
+	}
+
 	render() {
 
 		// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
@@ -16,7 +26,7 @@ export default class StoryCell extends React.Component {
 		var timeString = global.formatTime(timestamp);
 
 		return(
-			<div className='col-xs-6 col-md-3 tile story'>
+			<div className='col-xs-6 col-md-3 tile story' onClick={this.onClick}>
 				<div className="tile-body">
 					<div className="frame"></div>
 					<div className="hover">

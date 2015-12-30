@@ -76,7 +76,8 @@ export default class LocationDropdown extends React.Component {
 						<AutocompleteMap
 							rerender={this.state.toggled}
 							onMapDataChange={this.props.onMapDataChange}
-							radius={250} />
+							radius={this.props.radius}
+							units="miles" />
 					</div>
 				</div>
 			</div>

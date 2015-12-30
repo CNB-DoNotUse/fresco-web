@@ -11,15 +11,36 @@ import TopBar from './../components/topbar'
 
  class Galleries extends React.Component {
 
+ 	constructor(props) {
+ 		super(props);
+
+ 		this.state = {
+ 			verifiedToggle: true
+ 		}
+
+ 		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
+
+ 	}
+
+ 	onVerifiedToggled(toggle) {
+ 		this.setState({
+ 			verifiedToggle: toggle
+ 		});
+ 	}
+
 	render() {
 		return (
 			<App user={this.props.user}>
 				<TopBar 
 					title="Galleries"
-					timeToggle={true} />
+					timeToggle={true}
+					verifiedToggle={true}
+					chronToggle={true}
+					onVerifiedToggled={this.onVerifiedToggled} />
 				<GalleryList 
 					withList={false}
-					highlighted={false} />
+					highlighted={false}
+					onlyVerified={this.state.verifiedToggle} />
 			</App>
 		)
 	}

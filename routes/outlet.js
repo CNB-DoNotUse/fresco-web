@@ -1,10 +1,10 @@
-var express = require('express'),
-config = require('../lib/config'),
-outer = express.Router(),
-request = require('request-json'),
-config = require('../lib/config'),
-client = request.createClient(config.API_URL),
-router = express.Router();
+var express     = require('express'),
+config          = require('../lib/config'),
+outer           = express.Router(),
+request         = require('request-json'),
+config          = require('../lib/config'),
+client          = request.createClient(config.API_URL),
+router          = express.Router();
 
 /** //
 
@@ -16,14 +16,17 @@ router = express.Router();
  * Outlet page for currently logged in user
  */
 
- router.get('/', function(req, res, next) {
+ router.get('/', (req, res, next) => {
 
   //Check if we're logged n
   if (!req.session || !req.session.user || !req.session.user.outlet)
     return res.redirect(config.DASH_HOME);
 
   //Retrieve outlet object from api
-  client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, function(error, response, body) {
+  client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
+
+  function doWithOutletInfo(error, response, body) {
+
     if (error || !body || body.err)
       return res.status(404).render('error', {
         user: req.session.user,
@@ -35,7 +38,7 @@ router = express.Router();
 
     if (req.session.user.outlet.verified) {
       purchases = req.session.user.outlet.purchases || [];
-      purchases = purchases.map(function(purchase) {
+      purchases = purchases.map((purchase) => {
         return purchase.post;
       });
     } else {
@@ -61,7 +64,7 @@ router = express.Router();
       page: 'outlet'
     });
 
-  });
+  }
 
 });
 
@@ -69,9 +72,11 @@ router = express.Router();
  * Displays galleries for a specified outlet
  */
 
- router.get('/:id/galleries', function(req, res, next) {
+ router.get('/:id/galleries', (req, res, next) => {
 
-  client.get('/v1/outlet/get?id=' + req.params.id, function(error, response, body) {
+  client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);
+
+  function doWithOutletInfo(error, response, body) {
 
     if (error || !body || body.err)
       return res.status(404).render('error', {
@@ -84,7 +89,7 @@ router = express.Router();
 
     if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified) {
       purchases = req.session.user.outlet.purchases || [];
-      purchases = purchases.map(function(purchase) {
+      purchases = purchases.map((purchase) => {
         return purchase.post;
       });
     }
@@ -99,14 +104,15 @@ router = express.Router();
       page: 'outlet-galleries'
     });
   
-  });
+  }
+
 });
 
 /**
  *  Outlet settings page for current logged in user
  */
 
- router.get('/settings', function(req, res, next) {
+ router.get('/settings', (req, res, next) => {
   if (!req.session.user.outlet)
     return res.render('error', {
       user: req.session.user,
@@ -114,7 +120,9 @@ router = express.Router();
       error_message: config.ERR_PAGE_MESSAGES[404]
     });
 
-  client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, function(error, response, body) {
+  client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
+  
+  function doWithOutletInfo(error, response, body) {
 
     if (error || !body || body.err || body.data.owner._id != req.session.user._id)
       return res.status(404).render('error', {
@@ -138,21 +146,24 @@ router = express.Router();
       page: 'outletSettings',
       alerts: req.alerts,
       links: ['/stylesheets/pages/outlet-settings.css'],
-      scripts: ['https://js.stripe.com/v2/'],
+      remoteScripts: ['https://js.stripe.com/v2/'],
       props: JSON.stringify(props)
     });
-  });
+  }
+
 });
 
 /**
  *  Outlet page for specified outlet
  */
 
- router.get('/:id', function(req, res, next) {
+ router.get('/:id', (req, res, next) => {
   if (!req.session || !req.session.user || req.session.user.rank < config.RANKS.CONTENT_MANAGER)
     return res.redirect('/outlet');
 
-  client.get('/v1/outlet/get?id=' + req.params.id, function(error, response, body) {
+  client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);
+
+  function doWithOutletInfo(error, response, body) {
     if (error || !body || body.err)
       return res.status(404).render('error', {
         user: req.session.user,
@@ -163,7 +174,7 @@ router = express.Router();
     var purchases = null;
     if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified) {
       purchases = req.session.user.outlet.purchases || [];
-      purchases = purchases.map(function(purchase) {
+      purchases = purchases.map((purchase) => {
         return purchase.post;
       });
     }
@@ -177,7 +188,7 @@ router = express.Router();
       alerts: req.alerts
     });
   
-  });
+  }
 
 });
 

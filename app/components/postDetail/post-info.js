@@ -40,7 +40,7 @@ export default class PostInfo extends React.Component {
 		if (post.meta.twitter && post.meta.twitter.url){
 			var twitter = 	<li>
 								<span className="mdi mdi-twitter icon"></span>
-								<a href="<%=post.meta.twitter.url%>" target="_blank">See original</a>
+								<a href={ post.meta.twitter.url } target="_blank">See original</a>
 							</li>
 		}
 
@@ -80,7 +80,7 @@ export default class PostInfo extends React.Component {
 							</li>
 							<li>
 								<span className="mdi mdi-map-marker icon"></span>
-								{post.location.address || 'No Location'}
+								{post.location ? post.location.address ? post.location.address : 'No Location' : 'No Location'}
 							</li>
 							{twitter}
 							<li>

@@ -12,14 +12,9 @@ export default class AssignmentListItem extends React.Component {
         var assignment = this.props.assignment,
             location = assignment.location.googlemaps || 'Unknown',
             expirationTime = new Date(this.props.assignment.expiration_time),
-            expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires in') + moment(expirationTime).fromNow();
+            expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
         
         var imageUrl = '/images/placeholder-assignment.png';
-
-        // PAGE_Dispatch.getFirstPost(assignment, function(image){
-        //     elem.find('.img-circle').attr("src", image);
-        //     if(callback) callback(elem);
-        // });
 
         return (
             <div
@@ -31,7 +26,7 @@ export default class AssignmentListItem extends React.Component {
                 </div>
                 <div className="flexy">
                     <span className="md-type-body2">{assignment.title}</span>
-                    <span className="md-type-caption md-type-black-secondary">{location + ' &bull; ' + expiredText}</span>
+                    <span className="md-type-caption md-type-black-secondary">{location + ' • ' + expiredText}</span>
                 </div>
             </div>
         );

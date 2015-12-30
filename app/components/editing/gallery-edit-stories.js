@@ -110,7 +110,7 @@ export default class GalleryEditStories extends React.Component {
 		//Map suggestions for dropdown
 		var suggestions = this.state.suggestions.map((story, i) => {
 		
-			return <li  onClick={this.addStory.bind(null, story)}
+			return <li onClick={this.addStory.bind(null, story)}
 						key={i}>{story.title}</li>
 		
 		});

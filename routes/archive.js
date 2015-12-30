@@ -1,9 +1,9 @@
-var express = require('express'),
-    config = require('../lib/config'),
-    global = require('../lib/global'),
-    request = require('request-json'),
-    router = express.Router(),
-    api = request.createClient(config.API_URL)
+var express     = require('express'),
+    config      = require('../lib/config'),
+    global      = require('../lib/global'),
+    request     = require('request-json'),
+    router      = express.Router(),
+    api         = request.createClient(config.API_URL)
 
 /** //
 
@@ -16,9 +16,9 @@ var express = require('express'),
  * Index Content Page
  */
 
-router.get('/', function(req, res, next) {
+router.get('/', (req, res, next) => {
 
-  var title = 'All content'; 
+  var title = 'Archive',
       purchases = config.mapPurchases(req.session),
       props = {
         user : req.session.user,
@@ -30,7 +30,7 @@ router.get('/', function(req, res, next) {
 
   res.render('app', {
     title: title,
-    page : 'content',
+    page : 'archive',
     alerts: req.alerts,
     props : JSON.stringify(props)
   });
@@ -41,7 +41,7 @@ router.get('/', function(req, res, next) {
  * Page for all galleries
  */
 
-router.get('/galleries', function(req, res, next) {
+router.get('/galleries', (req, res, next) => {
 
   var title = 'Galleries',
       props = {
@@ -64,7 +64,7 @@ router.get('/galleries', function(req, res, next) {
  * Page for all stories
  */
 
-router.get('/stories', function(req, res, next) {
+router.get('/stories', (req, res, next) => {
 
   var title = 'Stories',
       props = {
@@ -86,35 +86,20 @@ router.get('/stories', function(req, res, next) {
  * @param {string} filter Filter of content type i.e. videos/photos
  */
 
-router.get('/:filter', function(req, res, next) {
+router.get('/:filter', (req, res, next) => {
 
-  //Check if the filter is valid first
-  if(req.params.filter != 'videos' && req.params.filter != 'photos'){
+  var filters = ['photos', 'videos'];
 
-    return res.render('error', {
-      error_code: 404,
-      error_message: config.ERR_PAGE_MESSAGES[404]
-    });
-
+  // Check if filter is valid
+  if(filters.indexOf(req.params.filter.toLowerCase()) == -1) {
+    return res.redirect('/');
   }
 
   var props = {
     user : req.session.user,
     purchases : config.mapPurchases(req.session)
-  };
-
-  //Load photos page
-  if (req.params.filter == 'photos') {
-
-    var title = 'Photos';
-
-  }
-  //Load videos page
-  else if(req.params.filter == 'videos'){
-
-    var title = 'Videos';
-
-  }
+  },
+  title = req.params.filter[0].toUpperCase() + req.params.filter.slice(1);
 
   res.render('app', {
     title: title,
@@ -122,7 +107,6 @@ router.get('/:filter', function(req, res, next) {
     alerts: req.alerts,
     props : JSON.stringify(props)
   });
-
 
 });
 

@@ -1,7 +1,7 @@
 import _ from 'lodash'
+import global from '../../lib/global'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import global from '../../lib/global'
 import App from './app'
 import TopBar from './../components/topbar'
 import SearchGalleryList from './../components/search/search-gallery-list'
@@ -14,9 +14,11 @@ export class Search extends React.Component {
 			
 		var queryLat = this.getParameterByName('lat');
 		var queryLng = this.getParameterByName('lon');
-		var queryRadius = this.getParameterByName('r');
+		var queryRadius = parseFloat(this.getParameterByName('r'));
 		var location = null;
 		var polygon = null;
+
+		if(queryRadius == 'NaN') queryRadius = 0;
 
 		if(queryLat && queryLng) {
 			location = {
@@ -26,36 +28,31 @@ export class Search extends React.Component {
 		}
 
 		if(queryRadius) {
-			var radius = parseFloat(queryRadius);
-			if(radius == 'NaN') { queryRadius = null; return; }
-
-			queryRadius = global.milesToMeters(radius);
 
 			if(location) {
 				var circle = new google.maps.Circle({
-					map: null,
 					center: location,
+					map: null,
 					radius: queryRadius
 				})
 				polygon = this.circleToPolygon(circle, 8);
 			}
-
 		}
 
 		this.state = {
-			offset: 0,
 			assignments: [],
 			galleries: [],
-			users: [],
-			stories: [],
-			purchases: [],
-			tags: [],
-			pending: false,
-			showOnlyVerified: false,
 			isResultsEnd: false,
 			location: location,
+			offset: 0,
+			pending: false,
+			polygon: polygon,
+			purchases: [],
 			radius: queryRadius,
-			polygon: polygon
+			showOnlyVerified: false,
+			stories: [],
+			tags: [],
+			users: []
 		}
 
 		this.getAssignments			= this.getAssignments.bind(this);
@@ -93,7 +90,7 @@ export class Search extends React.Component {
 			this.refreshData()
 		}
 	}
-
+	
 	circleToPolygon(circle, numSides){
 		var center = circle.getCenter(),
 			topleft = circle.getBounds().getNorthEast(),
@@ -130,7 +127,7 @@ export class Search extends React.Component {
 			tags: this.state.tags,
 			lat: this.state.location ? this.state.location.lat : undefined,
 			lon: this.state.location ? this.state.location.lng : undefined,
-			radius: this.state.radius ? (this.state.radius / 5280) : undefined
+			radius: this.state.radius ? this.state.radius : undefined
 		}, (assignments) => {
 
 			if(assignments.err || !assignments.data) return;
@@ -296,16 +293,25 @@ export class Search extends React.Component {
 		});
 	}
 
+	/**
+	 * Called when AutocompleteMap data changes
+	 * Returns a location coordinate,
+	 * Google Maps Circle,
+	 * Radius
+	 */
 	onMapDataChange(data) {
 		this.setState({
 			location: data.location,
-			radius: data.radiusX,
+			radius: data.radius,
 			map: {
 				circle: data.circle
 			}
 		});
 	}
 	
+	/**
+	 * Gets new search data
+	 */
 	refreshData() {
 
 		this.getAssignments(0, true);
@@ -318,7 +324,7 @@ export class Search extends React.Component {
 			null,
 			'?q=' + encodeURIComponent(this.props.query) +
 			(this.state.tags.length > 0 ? '&tags=' + encodeURIComponent(this.state.tags.join(',')) : '') +
-			(this.state.location ? '&lat=' + this.state.location.lat + '&lon=' + this.state.location.lng + '&r=' + (this.state.radius ? global.feetToMeters(this.state.radius) : '') : '')
+			(this.state.location ? '&lat=' + this.state.location.lat + '&lon=' + this.state.location.lng + '&r=' + (this.state.radius ? global.feetToMiles(this.state.radius) : '') : '')
 		);
 	}
 

@@ -11,6 +11,12 @@ export default class GalleryCell extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.onClick = this.onClick.bind(this);
+	}
+
+	onClick() {
+		window.location = '/gallery/' + this.props.gallery._id;
 	}
 
 	render() {
@@ -21,15 +27,16 @@ export default class GalleryCell extends React.Component {
 		var location = 'No Location';
 
 		for (var i = 0; i < this.props.gallery.posts.length; i++) {
-			if (this.props.gallery.posts[i].location.address){
+			if(!this.props.gallery.posts[i].location) continue;
+
+			if (this.props.gallery.posts[i].location.address) {
 				location = this.props.gallery.posts[i].location.address;
-				break;
 			}
 		}
 
 		return (
 			
-			<div className={size + " tile story"}>
+			<div className={size + " tile story"} onClick={this.onClick}>
 				<div className="frame"></div>
 				
 				<div className="tile-body">

@@ -115,20 +115,20 @@ class SideBarListItems extends React.Component {
 				<li className="sidebar-tab" onClick={this.goLink.bind(null, '/highlights')} data-location="/highlights">
 					<span className="mdi mdi-star icon"></span>Highlights
 				</li>
-				<li className="sidebar-tab" onClick={this.goLink.bind(null, '/content')} data-location="/content">
-					<span className="mdi mdi-play-box-outline icon"></span>All content
+				<li className="sidebar-tab" onClick={this.goLink.bind(null, '/archive')} data-location="/archive">
+					<span className="mdi mdi-play-box-outline icon"></span>Archive
 				</li>
 				<ul>
-					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/content/photos')} data-location="/content/photos">
+					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/archive/photos')} data-location="/archive/photos">
 						<span className="mdi mdi-file-image-box icon"></span>Photos
 					</li>
-					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/content/videos')} data-location="/content/videos">
+					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/archive/videos')} data-location="/archive/videos">
 						<span className="mdi mdi-movie icon"></span>Videos
 					</li>
-					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/content/galleries')} data-location="/content/galleries">
+					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/archive/galleries')} data-location="/archive/galleries">
 						<span className="mdi mdi-image-filter icon"></span>Galleries
 					</li>
-					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/content/stories')} data-location="/content/stories">
+					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/archive/stories')} data-location="/archive/stories">
 						<span className="mdi mdi-newspaper icon"></span>Stories
 					</li>
 				</ul>

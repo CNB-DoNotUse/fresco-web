@@ -48,18 +48,14 @@ var animation = {
 					list.style.display = 'block';
 			};
 
-		console.log(dropdowns.length);
-
-		for (var i = 0; i < dropdowns.length; i++) {
-
-			console.log(i);
+		for (var i = 0; i < 3; i++) {
 
 			var dropdown = dropdowns[i],
 				selector = dropdown.children[0];
 				items = dropdown.getElementsByTagName('li');
 
-			for (var i = 0; i < items.length; i++) {
-				items[i].addEventListener('click', optionClicked);
+			for (var j = 0; j < items.length; j++) {
+				items[j].addEventListener('click', optionClicked);
 			};
 
 			selector.addEventListener('click', selectorClicked);

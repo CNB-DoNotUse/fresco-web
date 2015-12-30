@@ -146,7 +146,7 @@ export default class TopBar extends React.Component {
 			topbarItems.push(
 				<Dropdown
 					options={['All content', 'Verified']}
-					selected='All content'
+					selected='Verified'
 					onSelected={this.verifiedToggleSelected}
 					key="verifiedToggle"
 					inList={true} />
@@ -170,6 +170,7 @@ export default class TopBar extends React.Component {
 					onPlaceChange={this.props.onPlaceChange}
 					onRadiusChange={this.props.onRadiusChange}
 					onMapDataChange={this.props.onMapDataChange}
+					units="Miles"
 					key="locationDropdown" />
 			);
 		}

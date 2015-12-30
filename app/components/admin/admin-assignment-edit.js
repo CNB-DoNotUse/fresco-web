@@ -1,3 +1,4 @@
+import global from '../../../lib/global'
 import React from 'react'
 import AssignmentEditMap from '../editing/assignment-edit-map'
 

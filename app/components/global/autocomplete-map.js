@@ -26,7 +26,7 @@ export default class AutocompleteMap extends React.Component {
 	}
 
 	updateRadius() {
-		var radius = parseInt(this.refs.radius.value, 10);
+		var radius = parseFloat(this.refs.radius.value);
 		if(radius == 'NaN') { return }
 		this.setState({
 			radius: radius
@@ -36,7 +36,8 @@ export default class AutocompleteMap extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
 			this.setState({
-				location: this.props.location
+				location: this.props.location,
+				radius: this.props.radius
 			});
 		}
 	}
@@ -50,7 +51,7 @@ export default class AutocompleteMap extends React.Component {
 			                type="text"
 			                className="form-control floating-label numbers m-t-15 "
 			                style={{marginTop: '15px'}}
-			                data-hint="Meters"
+			                data-hint={this.props.unit}
 			                placeholder="Radius"
 			                defaultValue={this.props.radius}
 			                onKeyUp={this.updateRadius}
@@ -78,9 +79,10 @@ export default class AutocompleteMap extends React.Component {
 
 AutocompleteMap.defaultProps = {
 	defaultLocation: null,
+	unit: "Feet",
 	location: null,
-	radius: null,
-	rerender: true,
+	radius: 250,
+	rerender: false,
 	updateRadius: function() {},
 	onPlaceChange: function() {}
 }

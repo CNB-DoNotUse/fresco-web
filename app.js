@@ -1,21 +1,21 @@
-var config = require('./lib/config'),
-    head = require('./lib/head'),
-    global = require('./lib/global'),
-    routes = require('./lib/routes'),
-    express = require('express'),
-    path = require('path'),
-    favicon = require('serve-favicon'),
-    morgan = require('morgan'),
-    session = require('express-session'),
-    redis = require('redis'),
-    RedisStore = require('connect-redis')(session),
-    cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser'),
-    multer  = require('multer'),
-    fs  = require('fs'),
-    https  = require('https'),
-    requestJson = require('request-json'),
-    app = express();
+var config        = require('./lib/config'),
+    head          = require('./lib/head'),
+    global        = require('./lib/global'),
+    routes        = require('./lib/routes'),
+    express       = require('express'),
+    path          = require('path'),
+    favicon       = require('serve-favicon'),
+    morgan        = require('morgan'),
+    session       = require('express-session'),
+    redis         = require('redis'),
+    RedisStore    = require('connect-redis')(session),
+    cookieParser  = require('cookie-parser'),
+    bodyParser    = require('body-parser'),
+    multer        = require('multer'),
+    fs            = require('fs'),
+    https         = require('https'),
+    requestJson   = require('request-json'),
+    app           = express();
 
 // If in dev mode, use local redis server as session store
 var rClient = config.DEV ? redis.createClient() : redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
@@ -34,14 +34,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({
   dest : './uploads/',
-    rename : function(fieldname, filename){
-        return Date.now() + filename.split('.').pop();
-    },
-    onFileUploadStart : function(file){
-    },
-    onFileUploadComplete : function(file){
-        done = true;
-    }
+  rename: (fieldname, filename) => {
+      return Date.now() + filename.split('.').pop();
+  },
+  onFileUploadStart: (file) => {
+  },
+  onFileUploadComplete: (file) => {
+      done = true;
+  }
 }));
 
 //Cookie parser
@@ -68,7 +68,7 @@ app.use(
 );
 
 
-app.use(function(req, res, next){
+app.use((req, res, next)=> {
   req.alerts = [];
 
   if (req.session && req.session.user && !req.session.user.verified)
@@ -78,7 +78,7 @@ app.use(function(req, res, next){
     req.alerts = req.alerts.concat(req.session.alerts);
     req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
     delete req.session.alerts;
-    return req.session.save(function(){
+    return req.session.save(()=> {
       next();
     });
   }
@@ -92,7 +92,7 @@ app.use(function(req, res, next){
  */
 
 app.locals.head = head;
-app.locals.global = global
+app.locals.global = global;
 
 /**
  * Route session check
@@ -100,29 +100,27 @@ app.locals.global = global
 
 app.use(function(req, res, next) {
 
-    var path = req.path.substring(1, req.path.length);
-
-    path = path.substring(0, path.indexOf('/'));
+    var path = req.path.slice(1).split('/')[0];
 
     //Check if a platform route
-    if(routes.platform.indexOf(path) == -1) return next();
-
-    console.log('PASSED');
+    if(routes.platform.indexOf(path) == -1) 
+        return next();
 
     //Check if there is no session
-    if (!req.session &&  !req.session.user)  return res.redirect('/');
+    if (!req.session.user) 
+        return next();
 
     var now = Date.now();
 
     //Check if the session has expired
-    if (req.session.user.TTL && req.session.user.TTL - now > 0)
+    if (req.session.user.TTL && req.session.user.TTL - now < 0)
         return next();
 
     //Create client
     var api = requestJson.createClient(config.API_URL);
 
     //Send request for user profile
-    api.get('/v1/user/profile?id=' + req.session.user._id, function(err, response, body) {
+    api.get('/v1/user/profile?id=' + req.session.user._id, (err, response, body) => {
 
         //Check request
         if (err || !body) return next();
@@ -220,47 +218,94 @@ for (var i = 0; i < routes.platform.length; i++) {
 };
 
 /**
- * Error Handlers
+ * Define scripts routes
+ */
+var routes_scripts_articles     = require('./routes/scripts/article'),
+    routes_scripts_assignment   = require('./routes/scripts/assignment'),
+    routes_scripts_gallery      = require('./routes/scripts/gallery'),
+    routes_scripts_outlet       = require('./routes/scripts/outlet'),
+    routes_scripts_post         = require('./routes/scripts/post'),
+    routes_scripts_story        = require('./routes/scripts/story'),
+    routes_scripts_user         = require('./routes/scripts/user');
+
+app.use('/scripts', routes_scripts_articles);
+app.use('/scripts', routes_scripts_assignment);
+app.use('/scripts', routes_scripts_gallery);
+app.use('/scripts', routes_scripts_outlet);
+app.use('/scripts', routes_scripts_post);
+app.use('/scripts', routes_scripts_story);
+app.use('/scripts', routes_scripts_user);
+
+var request = require('superagent');
+
+app.use('/api', (req, res, next) => {
+  var token = req.session.user ? req.session.user.token ? req.session.user.token : '' : '';
+  if(req.method == 'GET') {
+
+    return request
+      .get('http://dev.api.fresconews.com/v1' + req.url)
+      .query(req.query)
+      .set('authtoken', token)
+      .end((err, response) => {
+        if(err) {
+          return res.json({err: 'API Error'});
+        }
+
+        var data = '';
+
+        try {
+          data = JSON.parse(response.text);
+        } catch (ex) {
+          return res.send({err: 'API Parse Error'});
+        }
+
+        return res.send(data);
+      });
+
+  }
+  next();
+})
+
+/**
+ * Error Midleware
  */
 
-// Development error handle will print stacktrace
-if (app.get('env') === 'development') {
+app.use((err, req, res, next) => {
 
-  app.use(function(err, req, res, next) {
+    // Development error handle will print stacktrace
+    if (app.get('env') === 'development') {
+        console.log('\n Path: ', req.path, '\nError: ', err + '\n');
+    }
 
-    console.log('\n Path: ', req.path, '\nError: ', err + '\n');
-    
     res.render('error', {
-      user: req.session && req.session.user ? req.session.user : null,
-      err: {
-        message: err.message || config.ERR_PAGE_MESSAGES[err.status || 500],
-        code: err.status || 500
-      },
-      section: 'public',
-      page: 'error'
+        user: req.session && req.session.user ? req.session.user : null,
+        err: {
+         message: err.message || config.ERR_PAGE_MESSAGES[err.status || 500],
+         code: err.status || 500
+        },
+        section: 'public',
+        page: 'error'
     });
 
-  });
+});
 
-}
-// Production error handler no stacktraces leaked to user
-else{
+/**
+ * 404 Handler
+ */
 
-  app.use(function(err, req, res, next) {
-    
-    res.render('error', {
-      user: req.session && req.session.user ? req.session.user : null,
-      err: {
-        message: err.message || config.ERR_PAGE_MESSAGES[err.status || 500],
-        code: err.status || 500
-      },
-      section: 'public',
-      page: 'error'
-    });
-  
-  });
+ app.use((req, res, next) => {
 
-}
+     res.render('error', {
+         err: {
+          message: 'Page not found!',
+          code: 404
+         },
+         section: 'public',
+         page: 'error'
+     });
+
+ });
+
 
 var params  = {
     key: fs.readFileSync('cert/fresconews_com.key'),

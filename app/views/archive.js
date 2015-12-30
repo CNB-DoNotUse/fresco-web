@@ -12,10 +12,10 @@ Description : View page for all content
 // **/
 
 /**
- * Content Parent Object (composed of PostList and Navbar)
+ * Archive Parent Object (composed of PostList and Navbar)
  */
 
-class Content extends React.Component {
+class Archive extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -81,7 +81,7 @@ class Content extends React.Component {
 }
 
 ReactDOM.render(
- 	<Content 
+ 	<Archive 
  		user={window.__initialProps__.user} 
  		purchases={window.__initialProps__.purchases}
  		title={window.__initialProps__.title} />,

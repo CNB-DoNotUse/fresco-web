@@ -11,6 +11,13 @@
 <% } %>  
 
 <!--Page Specifc-->
+
+<% if(typeof remoteScripts !== 'undefined') { %>
+    <% for(var i in remoteScripts) { %>
+    <script type="text/javascript" src="<%= remoteScripts[i] %>"></script>
+    <% } %>
+<% } %>
+
 <% if(typeof(page) !== 'undefined'){ %> 
   <script type="text/javascript" src="/js/pages/<%= page %>.js"></script>
 <% } %> 

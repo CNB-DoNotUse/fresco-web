@@ -1,44 +1,58 @@
-var express = require('express'),
-    requestJson = require('request-json'),
-    request = require('request'),
-    config = require('../lib/config'),
-    async = require('async'),
-    Request = require('request'),
-    querystring = require('querystring'),
-    fs = require('fs'),
-    xlsx = require('node-xlsx'),
-    User = require('../lib/user'),
-    router = express.Router();
+var express         = require('express'),
+    requestJson     = require('request-json'),
+    request         = require('request'),
+    config          = require('../lib/config'),
+    async           = require('async'),
+    Request         = require('request'),
+    querystring     = require('querystring'),
+    fs              = require('fs'),
+    xlsx            = require('node-xlsx'),
+    User            = require('../lib/user'),
+    router          = express.Router();
 
 //---------------------------vvv-ARTICLE-ENDPOINTS-vvv---------------------------//
-router.get('/article/search', function(req, res, next){
+router.get('/article/search', (req, res, next) => {
   var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
+      api.headers['authtoken'] = req.session.user.token;
 
-  api.get('/v1/article/search?q=' + req.query.q, function(err, response, body){
+  api.get('/v1/article/search?q=' + req.query.q, doWithArticleSearchResults);
+
+  function doWithArticleSearchResults(err, response, body){
     res.json(body).end();
-  });
+  }
+
 });
 //---------------------------^^^-ARTICLE-ENDPOINTS-^^^---------------------------//
 
 //---------------------------vvv-ASSIGNMENT-ENDPOINTS-vvv---------------------------//
-router.post('/assignment/approve', function(req, res, next) {
+router.post('/assignment/approve', (req, res, next) => {
   var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/assignment/approve', req.body, function(err,response,body){
-    if(err)
+      api.headers['authtoken'] = req.session.user.token;
+
+  api.post('/v1/assignment/approve', req.body, doAfterAssignmentApprove);
+
+  function doAfterAssignmentApprove(err,response,body) {
+    if(err) {
       return res.json({err: err}).end();
-    if (response.statusCode == 401)
+    }
+
+    if (response.statusCode == 401) {
       return res.status(401).json({err: 'ERR_UNAUTHORIZED'}).end();
-    if (!body)
+    }
+
+    if (!body) {
       return res.json({err: 'ERR_EMPTY_BODY'}).end();
-    if (!body.data)
+    }
+
+    if (!body.data) {
       return res.json({err: 'ERR_EMPTY_RESPONSE'}).end();
+    }
 
     res.json({err: null}).end();
-  });
+  }
 });
-router.post('/assignment/create', function(req, res, next){
+
+router.post('/assignment/create', (req, res, next) => {
   if (!req.session.user || !req.session.user.outlet)
   	return res.status(403).json({err: 'ERR_INVALID_OUTLET'}).end();
 
@@ -46,7 +60,9 @@ router.post('/assignment/create', function(req, res, next){
 	req.body.outlet = req.session.user.outlet._id;
 
   api.headers['authtoken'] = req.session.user.token;
-	api.post('/v1/assignment/create', req.body, function(error, response, body){
+	api.post('/v1/assignment/create', req.body, doAfterAssignmentCreate);
+
+  function doAfterAssignmentCreate(error, response, body) {
 		if (error)
 			return res.json({err: error}).end();
 		if (!body)
@@ -55,12 +71,17 @@ router.post('/assignment/create', function(req, res, next){
 			return res.json({err: body.err}).end();
 
 		res.json(body).end();
-	});
+	}
+
 });
-router.post('/assignment/deny', function(req, res, next) {
+
+router.post('/assignment/deny', (req, res, next) => {
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/assignment/deny', req.body, function(err,response,body){
+
+  api.post('/v1/assignment/deny', req.body, doAfterAssignmentDeny);
+
+  function doAfterAssignmentDeny(err,response,body){
     if(err)
       return res.json({err: err}).end();
     if (response.statusCode == 401)
@@ -71,12 +92,16 @@ router.post('/assignment/deny', function(req, res, next) {
       return res.json({err: 'ERR_EMPTY_RESPONSE'}).end();
 
     res.json({err: null}).end();
-  });
+  }
+
 });
-router.post('/assignment/expire', function(req, res, next) {
+router.post('/assignment/expire', (req, res, next) => {
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/assignment/expire', req.body, function(err,response,body){
+
+  api.post('/v1/assignment/expire', req.body, doAfterAssignmentExpire);
+
+  function doAfterAssignmentExpire(err,response,body) {
     if(err)
       return res.json({err: err}).end();
     if (response.statusCode == 401)
@@ -87,11 +112,13 @@ router.post('/assignment/expire', function(req, res, next) {
       return res.json({err: 'ERR_EMPTY_RESPONSE'}).end();
 
     res.json({err: null}).end();
-  });
+  }
+
 });
-router.get('/assignment/expired', function(req, res, next){
-  if (!req.session.user)
+router.get('/assignment/expired', (req, res, next) => {
+  if (!req.session.user) {
     return res.status(401).json({err: 'ERR_UNAUTHORIZED'}).end();
+  }
 
   var api = requestJson.createClient(config.API_URL);
   if (req.session.user.outlet) req.body.outlet = req.session.user.outlet._id;
@@ -107,7 +134,9 @@ router.get('/assignment/expired', function(req, res, next){
 		options.skip = parseInt(req.query.offset);
 
   api.headers['authtoken'] = req.session.user.token;
-  api.get('/v1/assignment/expired?limit=' + options.limit + '&offset=' + options.skip, function(error, response, body){
+  api.get('/v1/assignment/expired?limit=' + options.limit + '&offset=' + options.skip, doAfterAssignmentExpired);
+
+  function doAfterAssignmentExpired(error, response, body){
     if (error)
       return res.json({err: error, data: []}).end();
     if (!body)
@@ -116,14 +145,17 @@ router.get('/assignment/expired', function(req, res, next){
       return res.json({err: body.err, data: []}).end();
 
     res.json(body).end();
-  });
-});
-router.get('/assignment/find', function(req, res, next){
-  var api = requestJson.createClient(config.API_URL);
+  }
 
+});
+
+router.get('/assignment/find', (req, res, next) => {
+  var api = requestJson.createClient(config.API_URL);
   var query = 'lat=' + req.query.lat + "&lon=" + req.query.lon + "&radius=" + req.query.radius;
 
-  api.get('/v1/assignment/find?' + query, req.body, function(error, response, body){
+  api.get('/v1/assignment/find?' + query, req.body, doAfterassignmentFind);
+
+  function doAfterassignmentFind(error, response, body) {
     if (error)
       return res.json({err: error}).end();
     if (!body)
@@ -136,61 +168,79 @@ router.get('/assignment/find', function(req, res, next){
 
     var assignments = [];
 
-    for (var index in body.data)
-      if (req.session.user.rank == 2 || (req.session.user.outlet && req.session.user.outlet._id == body.data[index].outlet))
+    for (var index in body.data) {
+      if (req.session.user.rank == 2 || (req.session.user.outlet && req.session.user.outlet._id == body.data[index].outlet)) {
         assignments.push(body.data[index]);
+      }
+    }
 
     res.json({err: null, data: assignments}).end();
-  });
+  }
 });
-router.get('/assignment/get', function(req, res, next){
+
+router.get('/assignment/get', (req, res, next) => {
   var api = requestJson.createClient(config.API_URL);
   var query = 'id=' + req.query.id;
+
   api.headers['authtoken'] = req.session.user.token;
-  api.get('/v1/assignment/get?' + query, function(error, response, body){
+  api.get('/v1/assignment/get?' + query, doAfterAssignmentGet);
+
+  function doAfterAssignmentGet(error, response, body) {
     if (error)
       return res.json({err: error}).end();
     if (!body)
       return res.json({err: 'ERR_EMPTY_BODY'}).end();
     if (body.err)
       return res.json({err: body.err}).end();
+
     res.json(body).end();
-  });
+  }
 });
-router.get('/assignment/list', function(req, res, next){
+
+router.get('/assignment/list', (req, res, next) => {
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
   
   var query = querystring.stringify(req.query);
 
-  api.get('/v1/assignment/list?' + query, function(error, response, body){
+  api.get('/v1/assignment/list?' + query, doAfterAssignmentList);
+
+  function doAfterAssignmentList(error, response, body) {
     if (error)
       return res.json({err: error}).end();
     if (!body)
       return res.json({err: 'ERR_EMPTY_BODY'}).end();
     if (body.err)
       return res.json({err: body.err}).end();
+
     res.json(body).end();
-  });
+  }
 });
-router.get('/assignment/search', function(req, res, next){
+
+router.get('/assignment/search', (req, res, next) => {
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
-  var params = Object.keys(req.query).map(function(key){
+
+  var params = Object.keys(req.query).map((key) => {
     return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
   }).join('&');
 
-  api.get('/v1/assignment/search?' + params, function(err, response, body){
+  api.get('/v1/assignment/search?' + params, doAfterAssignmentSearch);
+
+  function doAfterAssignmentSearch(err, response, body) {
     res.json(body).end();
-  });
+  }
 });
-router.post('/assignment/update', function(req, res, next){
-  if (!req.session.user || (!req.session.user.outlet && req.session.user.rank < config.RANKS.CONTENT_MANAGER))
+router.post('/assignment/update', (req, res, next) => {
+  if (!req.session.user || (!req.session.user.outlet && req.session.user.rank < config.RANKS.CONTENT_MANAGER)) {
     return res.status(403).json({err: 'ERR_UNAUTHORIZED'}).end();
+  }
 
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/assignment/update', req.body, function(error, response, body){
+  api.post('/v1/assignment/update', req.body, doAfterAssignmentUpdate);
+
+  function doAfterAssignmentUpdate(error, response, body) {
 
     if (error)
       return res.json({err: error}).end();
@@ -200,40 +250,43 @@ router.post('/assignment/update', function(req, res, next){
       return res.json({err: body.err}).end();
 
     res.json(body).end();
-  });
+  }
 });
 //---------------------------^^^-ASSIGNMENT-ENDPOINTS-^^^---------------------------//
 
 //---------------------------vvv-GALLERY-ENDPOINTS-vvv---------------------------//
-router.post('/gallery/addpost', function(req, res, next){
+router.post('/gallery/addpost', (req, res, next) => {
   var params = {
     gallery: req.body.gallery
   };
 
   var cleanupFiles = [];
 
-  function upload(cb){
-    request.post({ url: config.API_URL + '/v1/gallery/addpost', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
+  function upload(cb) {
+    request.post({ url: config.API_URL + '/v1/gallery/addpost', headers: { authtoken: req.session.user.token }, formData: params }, doAfterGalleryAddPost);
+
+    function doAfterGalleryAddPost(err, response, body){
       for (var index in cleanupFiles)
         fs.unlink(cleanupFiles[index], function(){});
 
       body = JSON.parse(body);
 
       cb(err || body.err, body.data);
-    });
+    }
+
   }
 
   var i = 0;
-  for (var index in req.files){
-    console.log(req.files[index].path);
+  for (var index in req.files) {
     cleanupFiles.push(req.files[index].path);
     params[++i] = fs.createReadStream(req.files[index].path);
   }
 
-  upload(function(err, gallery){
+  upload((err, gallery) => {
     res.json({err: err, data: gallery}).end();
   });
 });
+
 router.post('/gallery/create', function(req, res, next){
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
@@ -243,6 +296,7 @@ router.post('/gallery/create', function(req, res, next){
       res.json(body).end();
     });
 });
+
 router.post('/gallery/import', function(req, res, next){
   var request = require('request'),
       params = {

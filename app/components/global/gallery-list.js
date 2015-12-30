@@ -27,6 +27,22 @@ export default class GalleryList extends React.Component {
 		this.scroll = this.scroll.bind(this);
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.onlyVerified != this.props.onlyVerified) {
+			this.loadGalleries(0, (galleries) => {
+
+				var offset = galleries ? galleries.length : 0;
+
+				//Set galleries from successful response
+				this.setState({
+					galleries: galleries,
+					offset : offset
+				});
+
+			});
+		}
+	}
+
 	componentDidMount() {
 
 		this.loadGalleries(0, (galleries) => {
@@ -52,22 +68,22 @@ export default class GalleryList extends React.Component {
 				offset: passedOffset,
 			};
 
-		if(this.props.highlighted){
+		if(this.props.highlighted) {
 			
-			endpoint = '/v1/gallery/highlights';
+			endpoint = 'gallery/highlights';
 
 			params.invalidate = 1;
 
 		} else {
 			
-			endpoint ='/v1/gallery/list';
-			params.verified = true;
+			endpoint ='gallery/list';
+			params.verified = this.props.onlyVerified;
 			params.tags = this.state.tags.join(',')
 
 		}
 
 		$.ajax({
-			url:  global.API_URL + endpoint,
+			url:  '/api/' + endpoint,
 			type: 'GET',
 			data: params,
 			dataType: 'json',
@@ -133,7 +149,7 @@ export default class GalleryList extends React.Component {
 
 
 		//Check if a list is needed
-		if(this.props.withList) {
+		if(!half) {
 
 			return (
 	    		<div className="container-fluid grid" onScroll={this.scroll} ref="grid" >
@@ -153,4 +169,8 @@ export default class GalleryList extends React.Component {
 		    );
 		}
 	}
+}
+
+GalleryList.defaultProps = {
+	onlyVerified: true
 }

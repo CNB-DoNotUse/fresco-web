@@ -29,14 +29,14 @@ export default class EditMap extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+
 		if(this.props.rerender) {
 			google.maps.event.trigger(this.state.map, 'resize');
 		}
 
-
 		//Check if there is a radius, and it is not the same as the previous one
 		if(this.props.radius && prevProps.radius != this.props.radius) {
-			this.state.circle.setRadius(this.props.radius);
+			this.state.circle.setRadius(global.feetToMeters(this.props.radius));
 			this.state.map.fitBounds(this.state.circle.getBounds());
 		}
 
@@ -45,7 +45,6 @@ export default class EditMap extends React.Component {
 			JSON.stringify(prevProps.radius) == JSON.stringify(this.props.radius)) {
 			return;
 		}
-
 
 		//No location is present
 		if(!this.props.location) {

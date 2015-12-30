@@ -1,12 +1,12 @@
-var express = require('express'),
-    config = require('../lib/config'),
-    router = express.Router();
+var express   = require('express'),
+    config    = require('../lib/config'),
+    router    = express.Router();
 
 /**
  * Master dispatch page
  */
 
-router.get('/', function(req, res, next) {
+router.get('/', (req, res, next) => {
 
   //Check if logged in
   if (!req.session.user)

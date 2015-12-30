@@ -1,9 +1,9 @@
-node_modules/
 sessions/
+uploads/
+node_modules/
 public/vendor/
-public/javascripts/pages/
-public/stylesheets/pages/
+public/js/pages/
+public/css/pages/
 app/server/
 dump.rdb
 *.scssc
-uploads

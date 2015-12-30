@@ -113,7 +113,7 @@ export default class AssignmentEdit extends React.Component {
 		           content: 'Assignment saved!'
 		       });
    		       this.props.setAssignment(response.data);
-		       this.hide();
+		       this.props.toggle();
 		   }
 		});
 
@@ -124,23 +124,25 @@ export default class AssignmentEdit extends React.Component {
 	 */
 	cancel() {
 		this.revert();
-		this.hide();
+		this.props.toggle();
 	}
 
 	render() {
 		
+		var toggledText = this.props.toggled ? ' toggled' : '';
+
 		return (
 			
 			<div>
-				<div className="dim toggle-edit"></div>
-				<div className="edit panel panel-default toggle-edit">
+				<div className={"dim toggle-edit " + toggledText}></div>
+				<div className={"edit panel panel-default toggle-edit" + toggledText}>
 					
 					<AssignmentEditStats assignment={this.props.assignment} />
 					
 					<div className="col-xs-12 col-lg-9 edit-new dialog">
 						<div className="dialog-head">
 							<span className="md-type-title">Edit assignment</span>
-							<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
+							<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.cancel}></span>
 						</div>
 						<div className="dialog-foot">
 							<button id="story-edit-revert" type="button" className="btn btn-flat" onClick={this.revert}>Revert changes</button>
@@ -195,4 +197,8 @@ export default class AssignmentEdit extends React.Component {
 			</div>
 		);
 	}
+}
+
+AssignmentEdit.defaultProps = {
+	toggled: false
 }

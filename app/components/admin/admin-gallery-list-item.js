@@ -22,9 +22,11 @@ export default class AdminGalleryListItem extends React.Component {
         var location = 'No Location';
                             
         for (var i in gallery.posts) {
-            if (gallery.posts[i].location.address) {
-                location = gallery.posts[i].location.address;
-                break;
+            if(gallery.posts[i].location) {
+                if (gallery.posts[i].location.address) {
+                    location = gallery.posts[i].location.address;
+                    break;
+                }
             }
         }
         var assignmentLink = <div></div>;

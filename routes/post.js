@@ -1,8 +1,8 @@
-var express = require('express'),
-    config = require('../lib/config'),
-    request = require('request-json'),
-    router = express.Router(),
-    api = request.createClient(config.API_URL);
+var express    = require('express'),
+    config     = require('../lib/config'),
+    request    = require('request-json'),
+    router     = express.Router(),
+    api        = request.createClient(config.API_URL);
 
 /** //
 
@@ -15,103 +15,120 @@ var express = require('express'),
  * @param Post ID
  */
 
-router.get('/:id', function(req, res, next){
+router.get('/:id', (req, res, next) => {
+
+  var post = {},
+      title = '',
+      gallery = {},
+      purchases = [],
+      verifier = '';
 	 
   //Make request for post
-  api.get('/v1/post/get?id=' + req.params.id, function(error, response, body){
+  api.get('/v1/post/get?id=' + req.params.id, doWithPostInfo);
+
+  function doWithPostInfo(error, response, body) {
    
     if (error || !body || body.err){
       req.session.alerts = ['Error connecting to server'];
-      return req.session.save(function(){
+      return req.session.save(() => {
         res.redirect(req.headers.Referer || config.DASH_HOME);
       });
     }
 
-    var post = body.data,
-        title = '';
+    post = body.data;
 
-    if (post.owner)
+    if (post.owner) {
       title += 'Post by ' + post.owner.firstname + ' ' + post.owner.lastname;
-    else if(post.curator)
+    }
+    else if(post.curator) {
       title += 'Imported by ' + post.curator.firstname + ' ' + post.curator.lastname;
-    else
+    }
+    else {
       title = 'No Owner';
+    }
    
     //Make request for gallery
-  	api.get('/v1/post/gallery?id='+req.params.id, function(error, response, body){
-  	  
-      //return res.render('error', {user: req.session.user, error_code: 404, error_message: config.ERR_PAGE_MESSAGES[404]});
-      if (error || !body || body.err){
-          return res.render('error', {
-             user: req.session.user,
-             error_code: 404,
-             error_message: config.ERR_PAGE_MESSAGES[404]
-           });
-      }
+    api.get('/v1/post/gallery?id='+req.params.id, doWithGallery);
 
-      var gallery = body.data,
-          purchases = [],
-          verifier = '';
-     
-      //Check if post has approvals in place
-      if (post.approvals) {
-        
-        var verifierId = null;
-        
-        //Loop through edits to find edit for visibility change of `1` i.e. verified
-        for (var i in gallery.edits) {
-          
-          var edit = gallery.edits[i];
-          
-          //Check if the edit is setting visibility to 1
-          if (edit.changes.visibility == 1) {
-            verifierId = edit.editor;
-            break;
-          }
+  }
 
-        }
-        if (verifierId) {
-          
-          //Retrieve profile in order to get verifier
-          api.get('/v1/user/profile?id=' + verifierId, function(error, response, body) {
-          
-            if (!error && body && !body.err) {
-              verifier = body.data;
-              render();
-            }
-          
+  function doWithGallery (error, response, body) {
+    
+    //return res.render('error', {user: req.session.user, error_code: 404, error_message: config.ERR_PAGE_MESSAGES[404]});
+    if (error || !body || body.err) {
+        return res.render('error', 
+          {
+            user: req.session.user,
+            error_code: 404,
+            error_message: config.ERR_PAGE_MESSAGES[404]
           });
+    }
 
+    gallery = body.data;
+   
+    //Check if post has approvals in place
+    if (post.approvals) {
+      
+      var verifierId = null;
+      
+      //Loop through edits to find edit for visibility change of `1` i.e. verified
+      for (var i in gallery.edits) {
+        
+        var edit = gallery.edits[i];
+        
+        //Check if the edit is setting visibility to 1
+        if (edit.changes.visibility == 1) {
+          verifierId = edit.editor;
+          break;
         }
-        else 
-          render();
+
       }
-      else 
+
+      if (verifierId) {
+        
+        //Retrieve profile in order to get verifier
+        api.get('/v1/user/profile?id=' + verifierId, doWithUserProfile);
+
+      }
+      else {
         render();
-
-      function render() {
-
-        var props = {
-          user: req.session.user,
-          post: post,
-          gallery: gallery,
-          verifier: verifier,
-          title: title,
-          purchases: config.mapPurchases(req.session)
-        };
-
-        res.render('app', {
-          props: JSON.stringify(props),
-          title: title,
-          config: config,
-          alerts: req.alerts,
-          page: 'postDetail',
-        });
       }
 
-    });
+    }
+    else {
+      render();
+    }
 
-  });
+  }
+
+  function doWithUserProfile(error, response, body) {
+    
+    if (!error && body && !body.err) {
+      verifier = body.data;
+      render();
+    }
+  
+  }
+
+  function render() {
+
+    var props = {
+      user: req.session.user,
+      post: post,
+      gallery: gallery,
+      verifier: verifier,
+      title: title,
+      purchases: config.mapPurchases(req.session)
+    };
+
+    res.render('app', {
+      props: JSON.stringify(props),
+      title: title,
+      config: config,
+      alerts: req.alerts,
+      page: 'postDetail',
+    });
+  }
 
 });
 
