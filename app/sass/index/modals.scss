@@ -67,6 +67,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			ul{
 				display:none;
 				position: absolute;
+				max-height:250px;
+				overflow:scroll;
 				width: 100%;
 				z-index: 10;
 				background: #FFF;

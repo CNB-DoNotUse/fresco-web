@@ -41,7 +41,7 @@ signUpFormHeader.addEventListener('click', function() {
 
 loginFormHeader.addEventListener('click', function() {
 
-	if(loginForm.style.display === 'none'){
+	if(loginForm.style.display === 'none') {
 		//Slide down login form
 		$(loginForm).velocity("slideDown", { duration: 500 });
 		//Bring back top margin
@@ -58,7 +58,6 @@ loginFormHeader.addEventListener('click', function() {
 	else
 		processLogin();
 	
-
 });
 
 
@@ -68,25 +67,91 @@ loginFormHeader.addEventListener('click', function() {
 
 var processSignup = function() {
 
+	//Set up fields
+	var params = [
+		{
+			value: document.getElementById('outlet-name').value,
+			name: 'Title',
+			key: 'title'
+		},
+		{
+			value: document.getElementById('outlet-url').value,
+			name: 'URL',
+			key: 'link'
+		},
+		{
+			value: document.getElementById('outlet-medium').dataset.option,
+			name: 'medium of communcation',
+			key: 'medium'
+		},
+		{
+			value: document.getElementById('outlet-state').dataset.option,
+			name: 'State',
+			key: 'state'
+		},
+		{
+			value: document.getElementById('outlet-member-name').value,
+			name: 'first name',
+			key: 'contact_firstname'
+		},
+		{
+			value: document.getElementById('outlet-member-name').value,
+			name: 'last name',
+			key: 'contact_lastname'
+		},
+		{
+			value: document.getElementById('outlet-phone').value,
+			name: 'phone number',
+			key: 'contact_phone'
+		},
+		{
+			value: document.getElementById('outlet-email').value,
+			name: 'email',
+			key: 'contact_email'
+		},
+		{
+			value: document.getElementById('outlet-password').value,
+			name: 'password',
+			key: 'contact_password'
+		}
+	];
+
+	// //Check all the fields
+	// for (var i = 0; i < params.length; i++) {
+	// 	value = params[i].value;
+	// 	if(!/\S/.test(value) || typeof(value) == 'undefined'){
+	// 		$.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
+	// 		return;
+	// 	}
+	// }
+	// 
+	// 
+	var newParams = {};
+
+	for (var i = 0; i < params.length; i++) {
+		newParams[params[i].key] = params[i].value;
+ 	};
+
 	$.ajax({
 		url: "/scripts/outlet/create",
 		method: 'post',
 		contentType: "application/json",
-		data: JSON.stringify(params),
+		data: JSON.stringify(newParams),
 		dataType: 'json',
-		success: function(result, status, xhr){
-			if (result.err)
-				return this.error(null, null, result.err);
+		success: function(response, status, xhr){
+
+
+			if (response.err){
+
+				return $.snackbar({content: resolveError(response.err)});
+
+			}
+			else{
+
+				window.location.replace('/content');
+
+			}
 			
-			window.location.replace('/content');
-		},
-		error: function(xhr, status, error){
-			console.log(error);
-			
-		},
-		complete: function(){
-			$(_this).attr('disabled', '');
-			$(_this).html('Submit');
 		}
 	});
 
@@ -131,6 +196,16 @@ var processLogin = function() {
 		}
 	});
 
+}
+
+function resolveError(err){
+
+	switch(err){
+	    case 'ERR_TITLE_TAKEN':
+	        return 'This outlet title is taken!';
+	    default:
+	        return 'Seems like we ran into an error registering your outlet'    
+	}
 }
 
 

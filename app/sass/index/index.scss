@@ -6,8 +6,8 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
-@import "./../global/_global";
-@import "./../global/fresco-slick";
+@import "../global/_global";
+@import "../global/fresco-slick";
 @import "modals";
 
 /**
@@ -35,7 +35,7 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 		@include mobile{
 			font-size:33px;
 			float:none;
-			padding:10px 0;
+			padding:15px 0;
 		}
 	}
 

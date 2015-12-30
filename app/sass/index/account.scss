@@ -42,16 +42,16 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 
 	.form-wrap.login{
-		margin:13% 0 12px $marginLeftFallback;
-		margin:13% 0 12px $marginLeft;
+		margin:10% 0 12px $marginLeftFallback;
+		margin:10% 0 12px $marginLeft;
 		@include tablet{
 			margin:0 auto !important;
 		}
 	}
 
 	.form-wrap.signup{
-		margin:12px 0 12px $marginLeftFallback;
-		margin:12px 0 12px $marginLeft;
+		margin:12px 0 10% $marginLeftFallback;
+		margin:12px 0 10% $marginLeft;
 		@include mobileAndTablet{
 			margin:10px auto 60px;
 		}

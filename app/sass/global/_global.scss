@@ -9,6 +9,8 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 @import "media-queries";
 @import "colors";
 @import "mixins";
+@import "snackbar";
+@import "./public/vendor/mdi/scss/materialdesignicons.scss";
 @import "./public/fonts/nota/nota";
 @import "./public/fonts/icomoon/style";
 
@@ -72,16 +74,7 @@ ul{
     z-index:100;
     
     a{
-        display:inline-block;
-        font-size: 66px;
-        color: #ffc600;
-        padding:15px 0 0 17px;
-
-        @include mobile{
-            font-size:33px;
-            float:none;
-            padding:10px 0;
-        }
+        float:none;
     }
 }
 
@@ -96,7 +89,7 @@ ul{
 .footer{
     
     $padding:2%;
-    $mobilePadding:30px 0 30px 30px;
+    $mobilePadding:30px 0 100px 30px;
 
     background:#FFF;
     overflow:hidden;
@@ -159,9 +152,9 @@ ul{
         }
 
         @include mobile {
-           text-align:left;
-           left:12%;
-           bottom:8%;
+            text-align: left;
+            left: 30px;
+            bottom:20px;
         }
 
         span{

@@ -32,6 +32,7 @@ var animation = {
 
 				//Set the field
 				field.innerHTML = option.innerHTML;
+				field.style.color = 'black';
 				//Set the dropdown dataset
 				dropdown.dataset.option = option.innerHTML;
 				//Hide the list
@@ -120,6 +121,7 @@ var animation = {
 		elm.style['-moz-transform'] = translate;
 		elm.style['-ms-transform'] = translate;
 		elm.style['-o-transform'] = translate;
+		elm.style['transform'] = translate;
 	},
 
 }

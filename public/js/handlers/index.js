@@ -39,15 +39,15 @@ var ticking = false,
 	translate3dSupported = animation.has3d(),
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
 
+console.log(translate3dSupported);
 
 window.addEventListener('scroll', function(e) {
 
 	//Check if we're not in modal mode
 	if(nav.className.indexOf('transparent') > -1) return;
 
-	//Check if translate3dSupported is suppored or Check if not animating 
+	//Check if translate3dSupported is suppored or if not animating 
 	if(!translate3dSupported || ticking) return;
-
 
 	window.requestAnimFrame(function(){
 
@@ -65,12 +65,12 @@ window.addEventListener('scroll', function(e) {
 
 		animation.translateY3d(nav, navValue);
 
+		//Check to make sure the bottom value doesn't exceed the inital diff
 		if(bottomValue < initialDiff)
 			bottomValue = initialDiff;
 
 		animation.translateY3d(hero,   heroValue);
 		animation.translateY3d(bottom, bottomValue);
-
 
 		ticking = false;
 
