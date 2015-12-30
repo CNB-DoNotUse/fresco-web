@@ -18,8 +18,6 @@ Description : Client Index Routes
 
 router.get('/:modal?', (req, res, next) => {
 
-    console.log(req.session.user);
-
     var modal;
 
     if(req.params.modal){

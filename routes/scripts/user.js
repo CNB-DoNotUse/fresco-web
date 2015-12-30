@@ -93,7 +93,7 @@ router.get('/user/logout', function(req, res, next) {
   });
 
 });
-router.post('/user/register', function(req, res, next) {console.log(req.body);
+router.post('/user/register', function(req, res, next) {
   var password = req.body.password,
       email = req.body.email,
       firstname = req.body.firstname,
@@ -190,7 +190,7 @@ router.get('/user/verify/resend', function(req, res, next){
     return res.json({err: 'ERR_UNAUTHORIZED'}).end();
 
   var api = requestJson.createClient(config.API_URL);
-console.log(req.session.user.token);
+
   api.headers['authtoken'] = req.session.user.token;
   api.post('/v1/user/verify/resend', {}, function(err,response,body){
     if (err){

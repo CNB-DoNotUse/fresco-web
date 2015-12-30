@@ -761,7 +761,7 @@ div.list {
 				margin: 0;
 			}
 			> li:after {
-				content: " â€¢ ";
+				content: " • ";
 			}
 			> li:last-child:after {
 				content: none;
