@@ -31,6 +31,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		input, textarea, .dropdown{
 			border-top:1px solid #F4F4F4;
 		}
+		textarea:focus, input:focus{
+		    outline: 0;
+		}
 		input, textarea{
 			display:block;
 			width:90%;
@@ -40,6 +43,11 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			background:none;
 			font-weight:400;
 			font-family:$roboto;
+		}
+		input[type='submit']{
+			padding:16px 0;
+			width:100%;
+			font-weight:700;
 		}
 		textarea{
 			height:180px;

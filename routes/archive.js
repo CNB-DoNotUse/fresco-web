@@ -26,8 +26,6 @@ router.get('/', (req, res, next) => {
         title:title
       };
 
-  console.log(purchases);
-
   res.render('app', {
     title: title,
     page : 'archive',

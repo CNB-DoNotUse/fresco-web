@@ -100,21 +100,27 @@ app.locals.global = global;
 
 app.use(function(req, res, next) {
 
-    var path = req.path.slice(1).split('/')[0];
+    var path = req.path.slice(1).split('/')[0],
+        err = new Error('Page not found!');
+    err.status = 404;
 
     //Check if a platform route
     if(routes.platform.indexOf(path) == -1) 
         return next();
 
-    //Check if there is no session
+    //Check if there is no sessioned user
     if (!req.session.user) 
-        return next();
+        return next(err);
+
+    console.log(req.session.user);
 
     var now = Date.now();
 
     //Check if the session has expired
-    if (req.session.user.TTL && req.session.user.TTL - now < 0)
-        return next();
+    if (req.session.user.TTL && req.session.user.TTL - now > 0)
+        return next(err);
+
+    console.log('Old User');
 
     //Create client
     var api = requestJson.createClient(config.API_URL);
@@ -145,7 +151,7 @@ app.use(function(req, res, next) {
 
         if (!req.session.user.outlet){
             return req.session.save(function() {
-                next();
+                return next(err);
             });
         }
 
@@ -156,7 +162,7 @@ app.use(function(req, res, next) {
                 req.session.user.outlet.purchases = body.data;
 
             req.session.save(function() {
-                next();
+                return next(err);
             });
         });
     });

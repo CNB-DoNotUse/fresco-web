@@ -2,20 +2,26 @@
 
 <% 
     navClass = typeof(modal) !== 'undefined' ? 'nav transparent' : 'nav',
-    nonactive = typeof(modal) !== 'undefined' ? ' nonactive' : '';
+    hidden = typeof(modal) !== 'undefined' ? ' hidden' : '';
+    show = typeof(modal) !== 'undefined' ? ' show' : '';
+    loggedIn = typeof(loggedIn) == 'undefined' || !loggedIn ? false : true;
 %>
 
 <div class="wrapper">
     <div id="_nav" class="<%- navClass %>">
-        <a href="/">
+        <a class="logo" href="/">
             <span class="icon-fresco"></span>
         </a>
 
         <ul>
-            <li class="<%- nonactive %>" data-event="scroll" data-element="_hero">ABOUT</li>
-            <li class="<%- nonactive %>" data-event="scroll" data-element="_highlights">HIGHLIGHTS</li>
-            <li data-event="landing" id="landing-action">HOME</li>
-            <li data-event="modal" data-modal="account">NEWS DASHBOARD</li>
+            <li class="<%- hidden %>" data-event="scroll" data-element="_hero">ABOUT</li>
+            <li class="<%- hidden %>" data-event="scroll" data-element="_highlights">HIGHLIGHTS</li>
+            <li class="<%- show %>" data-event="landing" id="landing-action">HOME</li>
+            <% if(loggedIn){ %>
+                <li><a href="/archive">NEWS DASHBOARD</a></li>
+            <% } else { %>
+                <li data-event="modal" data-modal="account">NEWS DASHBOARD</li>
+            <% } %> 
         </ul>
     </div>
 
@@ -23,7 +29,7 @@
         <div></div>
     </div>
 
-    <div class="hero-wrap landing<%- nonactive %>">
+    <div class="hero-wrap landing<%- hidden %>">
         <div id="_hero" class="hero">
             <div class="tagline">
                 <h1>THE WORLD NEEDS YOUR CAMERA.</h1>
@@ -41,7 +47,7 @@
         <span class="mdi mdi-arrow-down-bold hover" data-set="#0047BB" data-return="#FFF" id="navigator"></span>
     </div>
 
-    <div class="bottom-wrap landing<%- nonactive %>" id="_bottom-wrap">
+    <div class="bottom-wrap landing<%- hidden %>" id="_bottom-wrap">
         <div id="_bottom" class="bottom">
             <div id="_about" class="about card">
                 <ul class="timeline">
@@ -102,7 +108,7 @@
         <%- include('modals/' + currentModal, {active: active}) %>
     <% }); %>
 
-    <%- include('segments/footer', {active: nonactive}) %>
+    <%- include('segments/footer', {hidden: hidden}) %>
 
 </div>
 

@@ -34,9 +34,9 @@ router.get('/:modal?', (req, res, next) => {
     }
 
     res.render('index', {
-        user: req.session ? req.session.user : null,
         head: head,
         page: 'index',
+        loggedIn: req.session.user ? true : false,
         modal: modal,
         modals: routes.modals,
         alerts: req.alerts
