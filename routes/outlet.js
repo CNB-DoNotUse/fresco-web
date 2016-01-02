@@ -10,7 +10,7 @@ router          = express.Router();
 
 	Description : Outlet Specific Routes ~ prefix /outlet/endpoint
 
-  // **/
+// **/
 
 /**
  * Outlet page for currently logged in user
@@ -37,10 +37,9 @@ router          = express.Router();
     var purchases = null;
 
     if (req.session.user.outlet.verified) {
-      purchases = req.session.user.outlet.purchases || [];
-      purchases = purchases.map((purchase) => {
-        return purchase.post;
-      });
+      
+      purchases = config.mapPurhcases();
+
     } else {
       req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?
         'This outlet is in demo mode. We’ll be in touch shortly to verify your account.<div><a>OK</a></div>' :

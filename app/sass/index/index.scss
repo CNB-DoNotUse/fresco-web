@@ -23,7 +23,6 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 }
 
 
-
 /**
  * Overriden navigation styles
  */
@@ -90,7 +89,7 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 	transform:none !important;
 
 	a{
-		color:#FFF;
+		color:#FFF !important;
 		text-shadow:0 2px 2px #000;
 		text-shadow:0 2px 2px rgba(0, 0, 0, .15); 
 	}

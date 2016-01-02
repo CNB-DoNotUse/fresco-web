@@ -46,7 +46,6 @@ window.addEventListener('resize', function() {
 
 });
 
-
 window.addEventListener('scroll', function(e) {
 
 	//Check if we're not in modal mode

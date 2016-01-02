@@ -1,22 +1,30 @@
-var modalTransitionLength = 300;
+var modalTransitionLength = 300,
+	nav = document.getElementById('_nav'),
+	navList = nav.getElementsByTagName('ul')[0].children,
+	modals = document.getElementsByClassName('modal'),
+	footerList = document.getElementById('footer-actions').children;
 
-var nav = document.getElementById('_nav'),
-	navList = nav.children[1],
-	modalActions = document.getElementsByClassName('modal-action'),
-	navActions = nav.getElementsByTagName('li'),
-	footerActions = document.getElementById('footer-actions').children;
-
-for (var i = 0; i < navActions.length; i++) {
-	navActions[i].addEventListener('click', handleClick);
+//Set the active modal if it exists
+for (var i = 0; i < modals.length; i++) {
+	if(modals[i].className.indexOf('active') > -1){
+		window.modal = modals[i];
+		loadScript('/js/handlers/modals/' + window.modal.id.slice(1) + '.js');
+		break;
+	}
 };
 
-for (var i = 0; i < footerActions.length; i++) {
-	footerActions[i].addEventListener('click', handleClick);
+for (var i = 0; i < navList.length; i++) {
+	navList[i].addEventListener('click', handleClick);
 };
 
-for (var i = 0; i < modalActions.length; i++) {
-	modalActions[i].addEventListener('click', handleClick);
+for (var i = 0; i < footerList.length; i++) {
+	footerList[i].addEventListener('click', handleClick);
 };
+
+
+/**
+ * Click listener for navigaitona actions
+ */
 
 function handleClick(e) {
 
@@ -35,35 +43,45 @@ function handleClick(e) {
 	//Modal Transition
 	else if(event == 'modal'){
 
-		showModal(item.dataset.modal);
+		loadModal(item.dataset.modal);
 
 	}
 	//Back to landing page transition
 	else if(event == 'landing'){
 
-		returnToIndex();
+		returnToLanding();
 	}
 }
 
-function returnToIndex() {
+/**
+ * Sends back to the landing page
+ */
+function returnToLanding() {
 
 	//Update window history state
 	window.history.replaceState({home: 'landing'}, "home", '');
 
-	$('#_nav, .modal').velocity('fadeOut', { 
+	$(window.modal).velocity({ translateY : '150%' }, { duration: 450, easing: 'ease-out'});
+
+	$('#_nav').velocity('fadeOut', { 
 		duration: modalTransitionLength, 
 		complete: function(){
 
-			navList.children[0].style.display = 'inline-block';
-			navList.children[1].style.display = 'inline-block';
-			navList.children[2].style.display = 'none';
+			//Hide the modal after the animation
+			window.modal.style.display = 'none';
+
+			//Adjust nav menu list items to reflect the page
+			navList[0].style.display = 'inline-block';
+			navList[1].style.display = 'inline-block';
+			navList[3].style.display = 'inline-block';
+			navList[2].style.display = 'none';
 			nav.className = nav.className.replace(/\btransparent\b/,'');
 
 			$('#_nav, .landing, .footer').velocity('fadeIn', { duration: modalTransitionLength} );
 
 		}
-	}); 
 
+	});
 }
 
 
@@ -71,23 +89,25 @@ function returnToIndex() {
  * Presents a modal
  * @param  {string} modal Modal's unique identifier
  */
-function showModal(modalId) {
+
+function loadModal(modalId) {
 
 	var modal = document.getElementById('_' + modalId),
 		stateObj = {modal : modalId};
 
-		console.log('Modaling');
-
-	console.log(modal);
+	//Save modal to winodw
+	window.modal = modal;
 
 	//Update window history state
 	window.history.pushState(stateObj, "modal", modalId);
 
+	loadScript('/js/handlers/modals/' + modalId + '.js');
+
 	//Coming from landing page
 	if($('.hero-wrap').css('display') == 'block'){
 
-		console.log('From landing');
 
+		//Fade out landing page elements
 		$('.landing, #_nav, .footer').velocity('fadeOut', { 
 			duration: modalTransitionLength, 
 			complete: function(){
@@ -97,9 +117,10 @@ function showModal(modalId) {
 					delay: 500,
 					complete: function(){
 
-						navList.children[0].style.display = 'none';
-						navList.children[1].style.display = 'none';
-						navList.children[2].style.display = 'inline-block';
+						//Adjust nav menu list items to reflec tthe pag 
+						navList[0].style.display = 'none';
+						navList[1].style.display = 'none';
+						navList[2].style.display = 'inline-block';
 						nav.className += ' transparent';
 						modal.style.display = 'block';
 						modal.style.opacity = 1;
@@ -136,17 +157,34 @@ function showModal(modalId) {
 	}
 }
 
+/**
+ * Adds script to dom
+ * @param {string} src Source of the script to load
+ */
+
+function loadScript(src){
+	//Add script to dom
+	var s = document.createElement('script');
+		s.type = 'text/javascript';
+		s.async = true;
+		s.src = src;
+		var x = document.getElementsByTagName('script')[0];
+		x.parentNode.insertBefore(s, x);
+}
 
 window.onpopstate = function(event) {
 
+	console.log(event);
+
 	if(event.state && event.state.modal){
 
-		showModal(event.state.modal);
+		loadModal(event.state.modal);
 
 	}
 	else{
+		console.log('Test');
 
-		returnToIndex();
+		returnToLanding();
 
 	}
 }
