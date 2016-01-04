@@ -61,11 +61,6 @@ var slick = {
 			$('#slick-highlights').slick('slickPrev');
 		});
 
-		// $('.carousel').hover(function() {
-		// 	$('.meta-data').velocity('fadeOut', { duration: 200 });
-		// }, function() {
-		// 	$('.meta-data').velocity('fadeIn', { duration: 200 });
-		// });
 	},
 
 	/**
@@ -80,7 +75,7 @@ var slick = {
 			var defaultAvatar = 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png';
 				avatar = post.owner ? post.owner.avatar ? post.owner.avatar : defaultAvatar :defaultAvatar,
 				address = post.location.address != null ? post.location.address : 'No location',
-				timestampText = '4:20pm';
+				timestampText = moment(post.timestamp).format('h:mm:ss a, MMM Do YYYY');
 
 			return '<div class="post-slide" style="background-image:url('+ post.image +')">\
 			            <table class="slick-meta">\
@@ -107,7 +102,7 @@ var slick = {
 
 		});
 
-		return '<div class="slide">\
+		return '<div class="gallery-slide">\
 				    <div class="posts" id="slick-posts">' + posts.join(" ") + '</div>\
 				    \
 				    <div class="gallery-info">\

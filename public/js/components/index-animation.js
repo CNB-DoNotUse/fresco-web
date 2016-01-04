@@ -61,10 +61,12 @@ var animation = {
 
 			selector.addEventListener('click', selectorClicked);
 		}
-
-
 	},
 
+	/**
+	 * Check if `translate3d` is supported
+	 * @return {BOOL} true if supported, false if not
+	 */
 	has3d: function() {
 	    if (!window.getComputedStyle) {
 	        return false;

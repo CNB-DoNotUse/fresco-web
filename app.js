@@ -15,6 +15,7 @@ var config        = require('./lib/config'),
     fs            = require('fs'),
     https         = require('https'),
     requestJson   = require('request-json'),
+    request       = require('superagent');
     app           = express();
 
 // If in dev mode, use local redis server as session store
@@ -93,6 +94,7 @@ app.use((req, res, next)=> {
 
 app.locals.head = head;
 app.locals.global = global;
+app.locals.alerts = [];
 
 /**
  * Route session check
@@ -101,7 +103,9 @@ app.locals.global = global;
 app.use(function(req, res, next) {
 
     var path = req.path.slice(1).split('/')[0],
-        err = new Error('Page not found!');
+        err = new Error('Page not found!'),
+        now = Date.now(),
+        api = requestJson.createClient(config.API_URL);
     err.status = 404;
 
     //Check if a platform route
@@ -112,18 +116,9 @@ app.use(function(req, res, next) {
     if (!req.session.user) 
         return next(err);
 
-    console.log(req.session.user);
-
-    var now = Date.now();
-
     //Check if the session has expired
     if (req.session.user.TTL && req.session.user.TTL - now > 0)
         return next(err);
-
-    console.log('Old User');
-
-    //Create client
-    var api = requestJson.createClient(config.API_URL);
 
     //Send request for user profile
     api.get('/v1/user/profile?id=' + req.session.user._id, (err, response, body) => {
@@ -169,17 +164,15 @@ app.use(function(req, res, next) {
 });
 
 /**
- * Route config
+ * Route config for public facing pages
  */
 
 app.use((req, res, next) => {
 
-  if(!req.fresco) {
+  if(!req.fresco) 
     req.fresco = {};
-  }
 
   res.locals.section = 'public';
-  
   next();
 
 });
@@ -197,14 +190,16 @@ for (var i = 0; i < routes.public.length; i++) {
 
 };
 
+/**
+ * Route config for private (platform) facing pages
+ */
+
 app.use((req, res, next) => {
 
-  if(!req.fresco) {
+  if(!req.fresco)
     req.fresco = {};
-  }
 
   res.locals.section = 'platform';
-
   next();
 
 });
@@ -224,25 +219,21 @@ for (var i = 0; i < routes.platform.length; i++) {
 };
 
 /**
- * Define scripts routes
+ * Loop through all script routes
  */
-var routes_scripts_articles     = require('./routes/scripts/article'),
-    routes_scripts_assignment   = require('./routes/scripts/assignment'),
-    routes_scripts_gallery      = require('./routes/scripts/gallery'),
-    routes_scripts_outlet       = require('./routes/scripts/outlet'),
-    routes_scripts_post         = require('./routes/scripts/post'),
-    routes_scripts_story        = require('./routes/scripts/story'),
-    routes_scripts_user         = require('./routes/scripts/user');
 
-app.use('/scripts', routes_scripts_articles);
-app.use('/scripts', routes_scripts_assignment);
-app.use('/scripts', routes_scripts_gallery);
-app.use('/scripts', routes_scripts_outlet);
-app.use('/scripts', routes_scripts_post);
-app.use('/scripts', routes_scripts_story);
-app.use('/scripts', routes_scripts_user);
+for (var i = 0; i < routes.scripts.length; i++) {
+  
+  var routePrefix = routes.scripts[i] ,
+      route = require('./routes/scripts/' + routePrefix);
 
-var request = require('superagent');
+  app.use('/scripts' + routePrefix , route);
+
+};
+
+/**
+ * Webservery proxy for forwarding to the api
+ */
 
 app.use('/api', (req, res, next) => {
   var token = req.session.user ? req.session.user.token ? req.session.user.token : '' : '';
@@ -302,12 +293,17 @@ app.use((err, req, res, next) => {
  app.use((req, res, next) => {
 
      res.render('error', {
-         err: {
-          message: 'Page not found!',
-          code: 404
-         },
-         section: 'public',
-         page: 'error'
+        err: {
+            message: 'Page not found!',
+            code: 404
+        },
+        section: 'public',
+        page: 'error',
+        alerts:[
+            {
+                alert: 'Hello'
+            }
+        ]
      });
 
  });
@@ -318,7 +314,5 @@ var params  = {
     cert: fs.readFileSync('cert/fresconews_com.crt'),
     ca: [fs.readFileSync('cert/DigiCertCA.crt')]
 };
-
-// https.createServer(params, app).listen(4430);
 
 module.exports = app;

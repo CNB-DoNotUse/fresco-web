@@ -59,7 +59,7 @@ function handleClick(e) {
 function returnToLanding() {
 
 	//Update window history state
-	window.history.replaceState({home: 'landing'}, "home", '');
+	window.history.replaceState({home: 'landing'}, null, '/');
 
 	$(window.modal).velocity({ translateY : '150%' }, { duration: 450, easing: 'ease-out'});
 
@@ -182,8 +182,6 @@ window.onpopstate = function(event) {
 
 	}
 	else{
-		console.log('Test');
-
 		returnToLanding();
 
 	}

@@ -1,12 +1,11 @@
+<!-- Props -->
 <% if(typeof(props) !== 'undefined'){ %>
-  <!-- Props -->
   <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
 <% } %>
 
 <!--Global Specifc based on sections-->
 <% if(typeof(section) !== 'undefined'){ %> 
   <% if(section == 'platform'){ %>
-    <!-- Material -->
     <script type="text/javascript">
         $.material.init();
     </script>
@@ -16,18 +15,29 @@
   <script type="text/javascript" src="/js/<%= section %>.js"></script>
 <% } %>  
 
-<!--Page Specifc-->
-
+<!--Remote Scripts-->
 <% if(typeof remoteScripts !== 'undefined') { %>
     <% for(var i in remoteScripts) { %>
-    <script type="text/javascript" src="<%= remoteScripts[i] %>"></script>
+      <script type="text/javascript" src="<%= remoteScripts[i] %>"></script>
     <% } %>
 <% } %>
 
+<!--Page Specifc-->
 <% if(typeof(page) !== 'undefined'){ %> 
   <script type="text/javascript" src="/js/pages/<%= page %>.js"></script>
 <% } %> 
 
+<!--Alerts-->
+<script type="text/javascript">
+    <% for(var i=0; i < alerts.length; i++) {%>
+        <% console.log(alerts[i]); %>
+        $.snackbar({ 
+            content: <%- alerts[i].alert %> , 
+            timeout: 5000, 
+            htmlAllowed: true
+        });
+    <% } %>
+</script>
 
 <!--GA-->
 <script>

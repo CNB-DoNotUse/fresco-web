@@ -10,18 +10,6 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 @import "../global/fresco-slick";
 @import "modals";
 
-/**
- * Generic hidden class for server-side conditioning
- */
-
-.hidden{
-	display:none !important;
-}
-
-.show{
-	display:inline-block !important;
-}
-
 
 /**
  * Overriden navigation styles
@@ -146,14 +134,17 @@ $heroHeight: 180px;
 	height:100%;
 
 	.hero{
-		// /**/ display:none;
 		position:absolute;
 		left:0; right:0; bottom:0; top:0;
 		margin:auto;
-		height:35%;
 		height:$heroHeight;
 		text-align:center;
 		color:#FFF;
+
+		@include mobile{
+			top:-30%;
+
+		}
 
 		.tagline{
 			margin:0 auto 48px;
@@ -200,10 +191,6 @@ $heroHeight: 180px;
 		font-size:48px;
 		text-shadow:0 3px 2px rgb(0, 0, 0);
 		text-shadow:0 3px 2px rgba(0, 0, 0, 0.15);
-
-		@include mobile{
-			display:none;
-		}
 	}
 	
 }
@@ -237,6 +224,7 @@ $heroHeight: 180px;
 		margin:20px auto;
 
 		@include mobile{
+
 			margin:60px auto 12px;
 			max-width:100%;
 		}
@@ -385,10 +373,20 @@ $heroHeight: 180px;
  * Highlights Section, double slick
  */
 
+$postHeight:384px;
+$slideHeight:38px;
+
+$mobilePostHeight:260px;
+$mobileSlideHeight:445px;
+
 .highlights-wrap{
 	margin:0 auto;
-	height:384px;
-	overflow:auto;
+	overflow:hidden;
+	height:$slideHeight;
+
+	@include mobile{
+		height:$mobileSlideHeight;
+	}
 
 	> div{
 		display:inline-block;
@@ -396,59 +394,49 @@ $heroHeight: 180px;
 		height:100%;
 	}
 
-	.slick-slide{
-		height:384px;
-	}
-
-	.arrow{
-		text-align:center;
-		position:relative;
-		font-size:34px;
-		cursor:pointer;
-		width:7%;
-		width:calc(7% + 1px);
-		@include rgba(color, 0, 0, 0, .54);
-
-		span{
-			margin:0 -5px;
-			position:absolute;
-			top:45%;
-			bottom:0;
-		}
-	}
-
-	#arrow-left{
-		border-right:1px solid;
-		@include rgba(border-color, 0, 0, 0, 0.12);
-	}
-
-	#arrow-right{
-		border-left:1px solid;
-		@include rgba(border-color, 0, 0, 0, 0.12);
-	}
-
 	.highlights{
-		width:85%;
 		height:100%;
 		margin:0 auto;
+		width:85%;
 		width:calc(86% - 4px);
 
-		.slide{
+		@include mobile{
+			width:100%;
+		}
+
+		.gallery-slide{
+			height:$slideHeight;
 			width:100%;
 			overflow:hidden;
 
+			@include mobile{
+				height:$mobileSlideHeight;
+				overflow:auto;
+			}
+
 			.posts{
 				width:55%;
-				height:100%;
+				height:$postHeight;
 				margin:0 auto;
 				float:left;
 
+				@include mobile{
+					display:inline-block;
+					height:$mobilePostHeight;
+					width:100%;
+				}
+
 				.post-slide{
+					height:$postHeight;
 					position:relative;
 					background-repeat:no-repeat;
 					background-position:center;
 					background-size: cover;
 					overflow:hidden;
+
+					@include mobile{
+						height:$mobilePostHeight;
+					}
 				}
 			}
 
@@ -460,6 +448,12 @@ $heroHeight: 180px;
 				font-family:Roboto;
 				position:relative;
 
+				@include mobile{
+					float:none;
+					height:auto;
+					width:100%;
+				}
+
 				p{
 					height:80%;
 					overflow:hidden;
@@ -468,6 +462,10 @@ $heroHeight: 180px;
 					padding:10px 15px;
 					margin:0 auto;
 					@include rgba(color, 0, 0, 0, 0.87);
+
+					@include mobile{
+						height:auto;
+					}
 
 				}
 
@@ -479,6 +477,11 @@ $heroHeight: 180px;
 					bottom: 0;
 					border-top:1px solid rgb(0, 0, 0);
 					border-top:1px solid rgba(0, 0, 0, 0.12);
+
+					@include mobile{
+						position:relative;
+						height:auto;
+					}
 
 					span{
 						font-size:22px;
@@ -520,6 +523,37 @@ $heroHeight: 180px;
 				}
 			}
 		}
+	}
+
+	.arrow{
+		text-align:center;
+		position:relative;
+		font-size:34px;
+		cursor:pointer;
+		width:7%;
+		width:calc(7% + 1px);
+		@include rgba(color, 0, 0, 0, .54);
+
+		@include mobile{
+			display:none;
+		}
+
+		span{
+			margin:0 -5px;
+			position:absolute;
+			top:45%;
+			bottom:0;
+		}
+	}
+
+	#arrow-left{
+		border-right:1px solid;
+		@include rgba(border-color, 0, 0, 0, 0.12);
+	}
+
+	#arrow-right{
+		border-left:1px solid;
+		@include rgba(border-color, 0, 0, 0, 0.12);
 	}
 
 }
