@@ -58,7 +58,7 @@ app.use(
     resave: false,
     rolling: true,
     saveUninitialized: false,
-    cookie: { path: '/', httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
+    cookie: { key: 'SID', httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
     unset: 'destroy'
   })
 );
@@ -70,6 +70,7 @@ app.use(
 
 
 app.use((req, res, next)=> {
+
   req.alerts = [];
 
   if (req.session && req.session.user && !req.session.user.verified)
