@@ -37,7 +37,6 @@
     var id = urlParams['id'];
     document.getElementById('form').setAttribute('action', base + '/apps/' + id + '/request_password_reset');
     document.getElementById('username').value = urlParams['username'];
-    document.getElementById('username_label').appendChild(document.createTextNode(urlParams['username']));
 
     document.getElementById('token').value = urlParams['token'];
     if (urlParams['error']) {
