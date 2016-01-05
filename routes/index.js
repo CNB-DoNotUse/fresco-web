@@ -60,6 +60,16 @@ router.get('/parse/reset', (req, res, next) => {
 
 });
 
+router.get('/parse/reset-success', (req, res, next) => {
+
+  res.render('parse/reset-success', {
+      head: head,
+      page: 'index',
+      alerts: req.alerts
+  });
+
+});
+
 /**
  * Outlet join page
  */
