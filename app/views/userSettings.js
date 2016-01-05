@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app.js'
@@ -22,6 +23,9 @@ class UserSettings extends React.Component {
 
  	render() {
 
+ 		var user = this.state.user;
+ 		var removeButton = <button className="btn btn-danger">DELETE ACCOUNT</button>;
+
  		return (
  			<App user={this.state.user}>
  				<TopBar 
@@ -29,56 +33,40 @@ class UserSettings extends React.Component {
 					saveButton={true}
 					updateSettings={this.updateSettings} />
 
-				<div className="settings">
-					<div className="col-xs-12 col-sm-6 col-md-4 col-md-offset-2 form-group-default">
-						<div className="flex-row">
-							<img 
-								id="avatar" 
-								className="img-circle" 
-								src={this.state.avatar} />
-							
-							<div className="flexy">
-								<input
-									type="text" 
-									readOnly={true}
-									className="form-control floating-label" 
-									placeholder="Profile image" />
-								
-								<input 
-									type="file" 
-									onChange={this.fileChanged}
-									ref="avatarFileInput"
-									id="user-profile-file" />
+				<div className="user-settings">
+					<div className="f-col">
+						<div className="f-card">
+							<div className="user-img">
+								<input type="file" ref="avatarFileInput" name="avatarFileInput" style={{display: 'none'}}/>
+								<img src={this.state.avatar} />
 							</div>
+							<div className="f-card-content">
+								<input type="text" className="form-control floating-label heading" ref="name" placeholder="Name" defaultValue={user.firstname + ' ' + user.lastname} />
+								<textarea className="form-control floating-label heading" placeholder="Bio"></textarea>
+								<button className="btn btn-save" onClick={this.updateSettings}>SAVE CHANGES</button>
+							</div>	
 						</div>
-						<div className="flex-row">
-							<div className="flexy">
-								<input 
-									type="text" 
-									ref="firstname" 
-									className="form-control floating-label"
-									placeholder="First name"
-									defaultValue={this.state.user.firstname} />
-							</div>
-							
-							<div className="flexy">
-								<input 
-									type="text" 
-									ref="lastname" 
-									className="form-control floating-label"
-									placeholder="Last name"
-									defaultValue={this.state.user.lastname} />
-							</div>
+						<div className="user-support">
+							<span>Quck Support</span>
+							<ul className="md-type-subhead">
+								<li><span className="mdi mdi-ticket icon"></span> Submit a ticket</li>
+								<li><span className="mdi mdi-email icon"></span> Email us</li>
+							</ul>
 						</div>
 					</div>
-
-					<div className="col-xs-12 col-sm-6 col-md-4 form-group-default">
-						<input 
-							type="text" 
-							ref="email" 
-							className="form-control floating-label" 
-							placeholder="Email address"
-							defaultValue={this.state.user.email} />
+					<div className="f-col">
+						<div className="f-card">
+							<div className="f-card-content full">
+								<div className="header">
+									<span>Account Information</span>
+								</div>
+								<div className="padding">
+									<div style={{width: '100%'}}><input type="text" className="form-control floating-label" ref="email" placeholder="Email address" defaultValue={user.email} /></div>
+									<div style={{width: '100%'}}><input type="text" className="form-control floating-label" ref="phone" placeholder="Phone number" defaultValue={user.phone}  /></div>
+								</div>
+								<button className="btn btn-save" onClick={this.updateSettings}>SAVE CHANGES</button>
+							</div>
+						</div>
 					</div>
 				</div>
  			</App>
@@ -111,12 +99,17 @@ class UserSettings extends React.Component {
 	 */
  	updateSettings() {
 
+ 		if(this.updating) return;
+ 		this.updating = true;
+
  		var userData = new FormData(),
  			user = this.props.user,
  			id = user._id,
- 			firstname = this.refs.firstname.value,
- 			lastname = this.refs.lastname.value,
- 			email =  this.refs.email.value
+ 			name = this.refs.name.value.split(' '),
+ 			firstname = name[0],
+ 			lastname = name.slice(1).join(' '),
+ 			email =  this.refs.email.value,
+ 			phone =  this.refs.phone.value,
  			self = this;
 
  		if(global.isEmptyString(firstname)){
@@ -136,6 +129,7 @@ class UserSettings extends React.Component {
  		userData.append('firstname', firstname);
  		userData.append('lastname', lastname);
  		userData.append('email', email);
+ 		userData.append('phone', phone);
  		userData.append('avatar', this.refs.avatarFileInput.files[0]);
  			
  		$.ajax({
@@ -145,7 +139,10 @@ class UserSettings extends React.Component {
  			processData: false,
  			contentType: false,
  			data : userData,
- 			success: function(response, status, xhr){
+ 			success: function(response, status, xhr) {
+
+ 				self.updating = false
+
  				if(response.err) {
 	 				
 	 				$.snackbar({
@@ -170,6 +167,36 @@ class UserSettings extends React.Component {
  	}
 
 
+}
+
+class ChangePasswordCard extends React.Component {
+	render() {
+		return (
+			<div className="f-card">
+				<div className="f-card-content full">
+					<div className="header">
+						<span>Change Password</span>
+					</div>
+					<div className="padding">
+						<div className="content-info-input">
+							<input type="password" className="form-control floating-label" placeholder="Current password" />
+							<input type="password" className="form-control floating-label" placeholder="New password" />
+						</div>
+						<div className="content-info-box">
+							<span>New passwords must:</span>
+							<ul>
+								<li>• Be at least 12 characters long</li>
+								<li>• Contain at least one number</li>
+								<li>• Contain at least one symbol</li>
+								<li>• Be entered the same twice</li>
+							</ul>
+						</div>
+					</div>
+					<button className="btn btn-save">SAVE CHANGES</button>
+				</div>
+			</div>
+		);
+	}
 }
 
 ReactDOM.render(

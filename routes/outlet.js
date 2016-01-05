@@ -38,7 +38,7 @@ router          = express.Router();
 
     if (req.session.user.outlet.verified) {
       
-      purchases = config.mapPurhcases();
+      purchases = config.mapPurchases();
 
     } else {
       req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?

@@ -1,0 +1,208 @@
+@mixin cf {
+	&:before, &:after {
+		content: ' ';
+		display: table;
+	}
+
+	&:after {
+		clear: both;
+	}
+}
+.f-col {
+	display: block;
+	position: relative;
+	float: left;
+	margin-right: 24px;
+	width: 560px;
+}
+.f-card {
+
+	@include cf;
+
+	background: #ffffff;
+	border-radius: 2px;
+	@include box-shadow(0px, 2px, 2px, 0.24);
+	float: left;
+	margin-bottom: 24px;
+	min-width: 560px;
+	zoom: 1;
+
+}
+
+.f-card-content {
+	float: left;
+	width: 320px;
+
+	&.full {
+		width: 560px;
+
+		.btn-save {
+			border-top: 1px solid #D2D2D2;
+			width: 100%;
+		}
+	}
+
+	input[type="text"], input[type="password"], textarea {
+	  width: 100%;
+
+	  &.heading {
+	  	padding-left: 16px;
+
+	  	& ~ .floating-label {
+	  		top: 4px;
+	  		padding-left: 16px;
+	  	}
+
+	  	&.empty:not(:focus) {
+	  		& ~ .floating-label {
+	  			top: 12px;
+	  		}
+	  	}
+
+	  }
+	}
+
+	input[type="text"] {
+		&.heading {
+		  	height: 49px;
+		}
+	}
+
+	textarea {
+		height: 144px;
+		font-size: 16px;
+		padding: 16px 16px !important;
+		resize: none;
+
+		&:focus, &:not(.empty) {
+			& ~ .floating-label {
+				top: 4px !important;
+			}
+		}
+	}
+
+	.header {
+		color: rgba(0, 0, 0, 0.54);
+		font-size: 14px;
+		font-weight: 600;
+		text-transform: uppercase;
+		padding: 14px 4px 14px 16px;
+		border-bottom: 1px solid #D2D2D2;
+
+		button {
+			background: transparent !important;
+			color: #d0021b !important;
+			font-weight: 600;
+			float: right;
+			position: relative;
+			top: -8px;
+
+			&:hover, &:active {
+				box-shadow: none !important;
+			}
+		}
+	}
+
+	.padding {
+
+		@include cf;
+
+		padding: 16px;
+
+		input {
+			font-size: 16px;
+			margin-bottom: 24px;
+			margin-top: 12px;
+		}
+
+		.content-info-input,
+		.content-info-box {
+			display: block;
+			position: relative;
+			float: left;
+		}
+
+		.content-info-input {
+			width: 295px;
+		}
+
+		.content-info-box {
+			color: rgba(0, 0, 0, 0.54);
+			padding: 12px 12px 12px 24px;
+			width: 233px;
+
+			> span {
+				font-weight: 600;
+			}
+
+			ul {
+				padding-left: 0px;
+				list-style: none;
+
+				li {
+					line-height: 20px;
+					margin: 4px 0px;
+				}
+			}
+		}
+
+	}
+
+	.btn-save {
+		background-color: white;
+		color: rgba(0, 0, 0, 0.26) !important;
+		font-family: "Robo-Medium", sans-serif;
+		font-size: 14px;
+		font-weight: 600;
+		text-align: right;
+		margin: 0;
+		padding: 14px 16px;
+		height: 47px;
+		width: 320px;
+
+		&:hover, &:active {
+			box-shadow: none !important;
+		}
+
+	}
+}
+
+.user-settings {
+	margin-top: 64px;
+	padding-top: 24px;
+	padding-right: 24px;
+	padding-left: 24px;
+
+	.user-img {
+		float: left;
+
+		> img {
+			width: 240px;
+			height: 240px;
+		}
+	}
+
+	.user-support {
+		padding: 16px;
+
+		> span {
+			color: rgba(0, 0, 0, 0.54);
+			font-weight: 600;
+			text-transform: uppercase;
+		}
+
+		ul {
+			list-style: none;
+			padding: 0;
+			li {
+				> span {
+					margin-right: 32px;
+				}
+
+				font-size: 16px;
+				font-weight: 700;
+				padding: 16px 0px;
+			}
+		}
+	}
+}

@@ -34,6 +34,7 @@
     "mdi": "~1.3.41",
     "video.js": "~5.4.5",
     "Waves": "waves#~0.7.4",
-    "velocity": "~1.2.3"
+    "velocity": "~1.2.3",
+    "moment": "~2.11.0"
   }
 }

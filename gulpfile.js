@@ -41,7 +41,7 @@ gulp.task('Build Assets',  () => {
 		//Define the sections we're in
 		var section = sections[s];
 
-		console.log('\nSection: ' + section , dependencies[section]._global.css);
+		// console.log('\nSection: ' + section , dependencies[section]._global.css);
 
 		// Build section _global css
 		cssTasks.push(
@@ -72,7 +72,7 @@ gulp.task('Build Assets',  () => {
 
 			var pageDependencies = dependencies[section][pages[p]];
 
-			console.log('\nPage:' , pages[p] , pageDependencies);
+			// console.log('\nPage:' , pages[p] , pageDependencies);
 
 			if(pageDependencies.css.length) {
 				cssTasks.push(

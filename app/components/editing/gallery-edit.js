@@ -249,10 +249,9 @@ export default class GalleryEdit extends React.Component {
 				xhr: () => {
 					var xhr = $.ajaxSettings.xhr();
 					xhr.upload.onprogress = function(evt) {
-						console.log('progress', evt.loaded / evt.total);
 					}
 
-					xhr.upload.onload = function() { console.log ('Done upload'); }
+					xhr.upload.onload = function() { }
 
 					return xhr;
 				}
@@ -293,7 +292,6 @@ export default class GalleryEdit extends React.Component {
  		this.setState({
  			gallery: null
  		});
- 		console.log(this.props);
  		this.props.toggle();
  	}
 
