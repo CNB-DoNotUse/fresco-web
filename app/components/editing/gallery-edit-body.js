@@ -30,19 +30,14 @@ export default class GalleryEditBody extends React.Component {
 					
 					<div className="dialog-row">
 										
-						<div className="form-control-wrapper">
-							<textarea 
-								id="gallery-edit-caption" 
-								type="text" 
-								className="form-control"
-								ref="gallery-caption"
-								value={this.props.gallery.caption}
-								onChange={this.props.updateCaption} />
-							
-							<div className="floating-label">Caption</div>
-							
-							<span className="material-input"></span>
-						</div>
+						<textarea 
+							id="gallery-edit-caption" 
+							type="text" 
+							className="form-control floating-label"
+							ref="gallery-caption"
+							value={this.props.gallery.caption}
+							placeholder="Caption"
+							onChange={this.props.updateCaption} />
 
 					</div>
 					

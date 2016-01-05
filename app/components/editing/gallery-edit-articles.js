@@ -19,15 +19,25 @@ export default class GalleryEditArticles extends React.Component {
 	}
 
 	/**
-	 * Removes article at passed index
+	 * Removes article with passed id
 	 */
-	removeArticle(index) {
+	removeArticle(id) {
+
+		var index = -1;
+		for (var a in this.props.articles) {
+			if(this.props.articles[a]._id == id) {
+				index = a;
+				break;
+			}
+		}
+		
+		if(index == -1) return;
 		var articles = this.props.articles;
 			//Remove from index
 			articles.splice(index, 1);
 
 		//Update state
-		this.props.updateArticles({ articles: articles });
+		this.props.updateArticles(articles);
 	}
 
 	/**
@@ -47,7 +57,7 @@ export default class GalleryEditArticles extends React.Component {
 		for( var a in articles ) {
 			if(articles[a]._id == article._id) return;
 		}
-		
+
 		articles.push(article);
 
 		this.props.updateArticles(articles);
@@ -101,17 +111,18 @@ export default class GalleryEditArticles extends React.Component {
 
 	render() {
 
-		var articles = this.props.articles.map((article, i) => {
+		var articles = [];
 
-			return (
-				<Tag 
+		for (var a in this.props.articles) {
+			var article = this.props.articles[a];
+			articles.push(
+				<Tag
 					onClick={this.removeArticle.bind(null, article._id)}
-					text={article.link} 
+					text={article.link}
 					plus={false}
-					key={i} />
-			)
-
-		});
+					key={a} />
+			);
+		}
 
 		//Map suggestions for dropdown
 		var suggestions = this.state.suggestions.map((article, i) => {
@@ -126,7 +137,7 @@ export default class GalleryEditArticles extends React.Component {
 				<div className="split-cell">
 					<input 
 						type="text" 
-						className="form-control" 
+						className="form-control floating-label" 
 						placeholder="Articles"
 						onKeyUp={this.change}
 						ref='autocomplete' />

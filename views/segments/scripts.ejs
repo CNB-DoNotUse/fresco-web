@@ -5,14 +5,13 @@
 
 <!--Global Specifc based on sections-->
 <% if(typeof(section) !== 'undefined'){ %> 
+  <script type="text/javascript" src="/js/<%= section %>.js"></script>
   <% if(section == 'platform'){ %>
     <script type="text/javascript">
         $.material.init();
     </script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places"></script>
   <% } %>
-
-  <script type="text/javascript" src="/js/<%= section %>.js"></script>
 <% } %>  
 
 <!--Remote Scripts-->

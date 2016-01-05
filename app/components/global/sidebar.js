@@ -34,7 +34,7 @@ export default class Sidebar extends React.Component {
 					</a>
 				
 					<div className="form-group-default">
-						<input className="form-control" id="sidebar-search" placeholder="Search" type="text" ref="searchInput" onKeyDown={this.handleSearchKeyDown} />
+						<input className="form-control floating-label" id="sidebar-search" placeholder="Search" type="text" ref="searchInput" onKeyDown={this.handleSearchKeyDown} />
 					</div>
 					
 					<SideBarListItems user={this.props.user} />

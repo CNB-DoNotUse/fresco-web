@@ -58,7 +58,7 @@ app.use(
     resave: false,
     rolling: true,
     saveUninitialized: false,
-    cookie: { key: 'SID', httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
+    cookie: { name: 'SID', httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
     unset: 'destroy'
   })
 );
