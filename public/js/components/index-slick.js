@@ -75,7 +75,7 @@ var slick = {
 			var defaultAvatar = 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png';
 				avatar = post.owner ? post.owner.avatar ? post.owner.avatar : defaultAvatar :defaultAvatar,
 				address = post.location.address != null ? post.location.address : 'No location',
-				timestampText = moment(post.timestamp).format('h:mm:ss a, MMM Do YYYY');
+				timestampText = moment(post.timestamp).format('h:mm A');
 
 			return '<div class="post-slide" style="background-image:url('+ post.image +')">\
 			            <table class="slick-meta">\
@@ -121,6 +121,23 @@ var slick = {
 				        </div>\
 				    </div>\
 				</div>';
+
+	},
+
+	updateArrows: function(){
+		var highlights = document.getElementById('_highlights'),
+			slickHighlights = document.getElementById('slick-highlights'),
+			arrowLeft = document.getElementById('arrow-left');
+
+		//Desktop
+		if(window.innerWidth > screen.tablet){
+			highlights.insertBefore(arrowLeft, slickHighlights);
+		}
+		//Mobile
+		else if(window.innerWidth < screen.tablet){
+			highlights.insertBefore(slickHighlights, arrowLeft);
+		}
+
 
 	}
 

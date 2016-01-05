@@ -16,6 +16,12 @@ window.addEventListener('resize', function() {
 
 });
 
+loginForm.addEventListener('submit', processLogin);
+
+signUpForm.addEventListener('submit', function(){
+	processSignup();
+})
+
 signUpFormHeader.addEventListener('click', function() {
 
 	if(signUpForm.style.display == 'none' || signUpForm.style.display == ''){
@@ -162,6 +168,8 @@ var processSignup = function() {
  */
 
 var processLogin = function() {
+
+	console.log('Logging In');
 
 	var email = document.getElementById('login-email').value,
 		password = document.getElementById('login-password').value;

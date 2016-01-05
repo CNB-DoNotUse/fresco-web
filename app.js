@@ -191,6 +191,20 @@ for (var i = 0; i < routes.public.length; i++) {
 };
 
 /**
+ * Loop through all script routes
+ */
+
+for (var i = 0; i < routes.scripts.length; i++) {
+  
+  var routePrefix = routes.scripts[i] ,
+      route = require('./routes/scripts/' + routePrefix);
+
+  app.use('/scripts' , route);
+
+};
+
+
+/**
  * Route config for private (platform) facing pages
  */
 
@@ -215,19 +229,6 @@ for (var i = 0; i < routes.platform.length; i++) {
       route = require('./routes/' + routePrefix);
 
   app.use('/' + routePrefix , route);
-
-};
-
-/**
- * Loop through all script routes
- */
-
-for (var i = 0; i < routes.scripts.length; i++) {
-  
-  var routePrefix = routes.scripts[i] ,
-      route = require('./routes/scripts/' + routePrefix);
-
-  app.use('/scripts' + routePrefix , route);
 
 };
 

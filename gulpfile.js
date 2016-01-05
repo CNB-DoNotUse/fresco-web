@@ -142,7 +142,7 @@ gulp.task('watch', () => {
  */
 
 gulp.task('Master Build', function(callback) {
-  runSequence(['Build Assets', 'Build Webpack'],
+  runSequence(['Build Assets'],
               callback);
 });
 

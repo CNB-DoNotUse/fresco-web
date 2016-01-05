@@ -3,15 +3,59 @@ var express = require('express'),
     request = require('request'),
     config = require('../../lib/config'),
     async = require('async'),
-    Request = require('request'),
+    request  = require('superagent');
     querystring = require('querystring'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
     User = require('../../lib/user'),
-    
     router = express.Router();
 
 //---------------------------vvv-USER-ENDPOINTS-vvv---------------------------//
+
+/**
+ * Reset password endpoint
+ * Takes an email in the body
+ */
+
+router.post('/user/reset', function(req, res, next) {
+
+    var email = req.body.email;
+
+    if(!email){
+        return res.json({
+            err: 'Invalid Data',
+            data: {}
+        }).end();
+    }
+
+    request
+    .post('https://api.parse.com/1/requestPasswordReset')
+    .send({ email: email })
+    .set('X-Parse-Application-Id', config.PARSE_APP_ID)
+    .set('X-Parse-REST-API-Key', config.PARSE_API_KEY)
+    .set('X-Parse-Revocable-Session', "1")
+    .set('Accept', 'application/json')
+    .end(function(err, response){
+
+        console.log(response);
+
+       //No error, return success
+       if(!response.body && !err){
+           return res.json({
+               success: true,
+               err: false
+           });
+       }
+
+       //Return the error
+       return res.json({
+           err: response.body.error
+       });
+
+    });
+
+});
+
 router.post('/user/follow', function(req, res, next) {
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
@@ -93,6 +137,7 @@ router.get('/user/logout', function(req, res, next) {
   });
 
 });
+
 router.post('/user/register', function(req, res, next) {
   var password = req.body.password,
       email = req.body.email,

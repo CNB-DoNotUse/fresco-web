@@ -210,7 +210,7 @@ $heroHeight: 180px;
 	}
 
 	@include mobile{
-		height:calc(865px - 50% + 35%);
+		height:calc(980px - 50% + 35%);
 	}
 
 	/**
@@ -224,8 +224,7 @@ $heroHeight: 180px;
 		margin:20px auto;
 
 		@include mobile{
-
-			margin:60px auto 12px;
+			margin:12px auto 0;
 			max-width:100%;
 		}
 	}
@@ -251,9 +250,7 @@ $heroHeight: 180px;
 .about{
 	text-align:center;
 
-	.timeline{
-		padding: 44px 5% 24px;
-		height:auto;
+	.scroll{
 
 		@include mobile{
 			white-space: nowrap;
@@ -262,99 +259,139 @@ $heroHeight: 180px;
 			position: relative;
 		}
 
-		li{
-			height:216px;
-			position:relative;
-			display:inline-block;
-			text-align:center;
-			z-index:5;
+		.timeline{
+			padding: 44px 5% 24px;
+			height:auto;
 
 			@include mobile{
-				width:100% !important;
+				margin: 0 auto;
+				position: relative;
+				padding:44px 0 24px;
 			}
 
-			img{
-				vertical-align:middle;
+			li{
+				height:216px;
+				position:relative;
+				display:inline-block;
+				text-align:center;
+
+				@include mobile{
+					width:100% !important;
+				}
+
+				img{
+					vertical-align:middle;
+					margin:0 auto;
+					max-height:100%;
+					max-width:100%;
+				}
+			}
+			
+			li.third{
+				.callout{
+					z-index:100;
+					top:-20px;
+					width:72px;
+					height:72px;
+					position:absolute;
+					top: -60px;
+					right: 0px;
+
+					@include mobile{
+						top:-40px;
+						right:inherit;
+
+					}
+				}
+			}
+			
+			li.second{
+				width:42%;
+				margin:0 4%;
+				@include mobile{
+					margin:0 auto;
+				}
+			}
+			
+
+			li.first, li.third{
+				width:24%;
+			}
+			
+		}
+
+		.line{
+			height: 4px;
+			background: rgba(0, 0, 0, 0.12);
+			position: relative;
+			top: 14px;
+			@include mobile{
+				width:302%;
+			}
+		
+		}
+
+		.progress{
+		    position: relative;
+		    height:60px;
+		    margin: 0 auto;
+			$circleBorder:4px;
+
+			@include mobile{
 				margin:0 auto;
-				max-height:100%;
-				max-width:100%;
+				position:relative;
 			}
-		}
-		
-		li.third{
-			.callout{
-				z-index:100;
-				top:-20px;
-				width:72px;
-				height:72px;
+
+			li{
 				position:absolute;
-				top: -60px;
-				right: 0px
-			}
-		}
-		
-		li.second{
-			width:42%;
-			margin:0 4%;
-		}
-		
+				text-align:center;
+				margin:-$circleBorder 0;
 
-		li.first, li.third{
-			width:24%;
-		}
-		
-	}
+				@include mobile{
+					display:inline-block;
+					width:100% !important;
+					position:relative !important;
+					left:0 !important;
+					right:0 !important;
+				}
 
-	.progress{
-		width:100%;
-		height:4px;
-		background:rgba(0, 0, 0, 0.12);
-		position:relative;
-		margin:0 auto 50px;
-		$circleBorder:4px;
+				.circle{
+					width:24px;
+					height:24px;
+					position:absolute;
+					left:0;
+					right:0;
+					margin:0 auto 20px;
+					background:$fresco-yellow;
+					border:$circleBorder solid #FFF;
+					@include border-radius(50px);
+				}
 
-		li{
-			position:absolute;
-			top:-200%;
-			text-align:center;
-			margin:0 auto;
-			margin:-$circleBorder 0;
-
-			.circle{
-				width:24px;
-				height:24px;
-				position:absolute;
-				left:0;
-				right:0;
-				margin:0 auto 20px;
-				background:$fresco-yellow;
-				border:$circleBorder solid #FFF;
-				@include border-radius(50px);
+				p{
+					color:#000;
+					font-weight:700;
+					font-size:24px;
+					margin-top:40px;
+				}
 			}
 
-			p{
-				color:#000;
-				font-weight:700;
-				font-size:24px;
-				margin-top:40px;
+			li.first{
+				left:9%;
 			}
+			
+			li.second{
+				left: 0;
+				right: 0;
+			}
+			
+			li.third{
+				right:9%;
+			}
+
 		}
 
-		li.first{
-			left:9%;
-		}
-		
-		li.second{
-			left: 0;
-			right: 0;
-		}
-		
-		li.third{
-			right:9%;
-		}
 
 	}
-
 	.info{
 		font-family:Roboto;
 		max-width:90%;
@@ -374,10 +411,10 @@ $heroHeight: 180px;
  */
 
 $postHeight:384px;
-$slideHeight:38px;
+$slideHeight:384px;
 
-$mobilePostHeight:260px;
-$mobileSlideHeight:445px;
+$mobilePostHeight:320px;
+$mobileSlideHeight:540px;
 
 .highlights-wrap{
 	margin:0 auto;
@@ -385,23 +422,27 @@ $mobileSlideHeight:445px;
 	height:$slideHeight;
 
 	@include mobile{
-		height:$mobileSlideHeight;
+		overflow:scroll;
+		height:auto;
 	}
 
 	> div{
 		display:inline-block;
 		float:left;
 		height:100%;
+
 	}
 
 	.highlights{
-		height:100%;
 		margin:0 auto;
 		width:85%;
 		width:calc(86% - 4px);
 
 		@include mobile{
 			width:100%;
+			height:$mobileSlideHeight;
+			border-bottom:1px solid;
+			@include rgba(border-color, 0, 0, 0, 0.12);
 		}
 
 		.gallery-slide{
@@ -411,7 +452,6 @@ $mobileSlideHeight:445px;
 
 			@include mobile{
 				height:$mobileSlideHeight;
-				overflow:auto;
 			}
 
 			.posts{
@@ -450,13 +490,13 @@ $mobileSlideHeight:445px;
 
 				@include mobile{
 					float:none;
-					height:auto;
+					height:220px;
 					width:100%;
 				}
 
 				p{
 					height:80%;
-					overflow:hidden;
+					overflow:scroll;
 					font-size:14px;
 					max-width:95%;
 					padding:10px 15px;
@@ -464,7 +504,7 @@ $mobileSlideHeight:445px;
 					@include rgba(color, 0, 0, 0, 0.87);
 
 					@include mobile{
-						height:auto;
+						height:66%;
 					}
 
 				}
@@ -480,16 +520,18 @@ $mobileSlideHeight:445px;
 
 					@include mobile{
 						position:relative;
-						height:auto;
+						height:24%;
 					}
 
 					span{
 						font-size:22px;
+						cursor:pointer;
 					}
 
 					.link{
 					    position: relative;
 					    top:10px;
+					    cursor:pointer;
 					    left:10px;
 
 						span.mdi-link-variant{
@@ -535,7 +577,10 @@ $mobileSlideHeight:445px;
 		@include rgba(color, 0, 0, 0, .54);
 
 		@include mobile{
-			display:none;
+			float:left;
+			width:49%;
+			width:calc(50% - 1px);
+			height:56px;
 		}
 
 		span{
@@ -543,6 +588,12 @@ $mobileSlideHeight:445px;
 			position:absolute;
 			top:45%;
 			bottom:0;
+
+			@include mobile{
+				margin:0 auto;
+				bottom:0;
+				top:20%;
+			}
 		}
 	}
 
@@ -554,6 +605,9 @@ $mobileSlideHeight:445px;
 	#arrow-right{
 		border-left:1px solid;
 		@include rgba(border-color, 0, 0, 0, 0.12);
+		@include mobile{
+			border:none;
+		}
 	}
 
 }

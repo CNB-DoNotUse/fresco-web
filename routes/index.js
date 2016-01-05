@@ -44,6 +44,12 @@ router.get('/:modal?', (req, res, next) => {
 
 });
 
+router.get('/reset', (req, res, next) => {
+
+  res.render('test');
+
+});
+
 /**
  * Outlet join page
  */
