@@ -27,6 +27,7 @@
     "morgan": "^1.6.1",
     "multer": "^0.1.8",
     "node-xlsx": "~0.6.0",
+    "nodemailer": "^1.11.0",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-tools": "^0.13.3",
@@ -38,7 +39,8 @@
     "session-file-store": "~0.0.13",
     "superagent": "^1.6.1",
     "twitter": "~1.2.5",
-    "underscore": "~1.8.3"
+    "underscore": "~1.8.3",
+    "validator": "^4.5.0"
   },
   "devDependencies": {
     "babel-core": "^6.1.2",

@@ -14,6 +14,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 	form{
 		position: relative;
+		border-botttom:1px solid;
+		@include rgbaWithHex(border-color, 0, 0, 0, .12, #F4F4F4);
 
 		::-webkit-input-placeholder {
 			@include rgbaWithHex(color, 0, 0, 0, .26, #BDBDBD);
@@ -29,7 +31,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			color:rgbaWithHex(0, 0, 0, .26, #BDBDBD);
 		}
 		input, textarea, .dropdown{
-			border-top:1px solid #F4F4F4;
+			border-top:1px solid;
+			@include rgbaWithHex(border-color, 0, 0, 0, .12, #F4F4F4);
 		}
 		textarea:focus, input:focus{
 		    outline: 0;

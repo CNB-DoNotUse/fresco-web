@@ -131,7 +131,6 @@ var processSignup = function() {
 		}
 	}
 	
-	
 	var newParams = {};
 
 	for (var i = 0; i < params.length; i++) {
@@ -189,9 +188,9 @@ var processLogin = function() {
 		dataType: 'json',
 		success: function(response, status, xhr){
 
-			console.log(response);
-
 			if(response.err){
+
+				$.snackbar({ content: 'An error occured. Please try again in a bit'});
 
 			}
 			//Redirect
@@ -201,6 +200,11 @@ var processLogin = function() {
 
 			}
 
+		}, 
+		error: function(xhr,status,error){
+			if(error == 'Unauthorized'){
+				$.snackbar({ content: 'Invalid email or password!'});
+			}
 		}
 	});
 

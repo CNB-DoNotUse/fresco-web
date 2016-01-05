@@ -16,7 +16,7 @@ var screen = {
  * Generic Init funciton for page
  */
 function init(){
-	Waves.attach('.button', ['waves-button', 'waves-block', 'waves-classic']);
+	Waves.attach('.button', [ 'waves-block', 'waves-classic']);
 	Waves.init();
 
 	slick.loadHighlights();
@@ -47,9 +47,6 @@ function resizeCall(){
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
 
 	slick.updateArrows();
-
-	updateElements();
-
 }
 
 function updateElements(){

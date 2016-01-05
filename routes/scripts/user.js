@@ -3,7 +3,6 @@ var express = require('express'),
     request = require('request'),
     config = require('../../lib/config'),
     async = require('async'),
-    request  = require('superagent');
     querystring = require('querystring'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
@@ -19,7 +18,8 @@ var express = require('express'),
 
 router.post('/user/reset', function(req, res, next) {
 
-    var email = req.body.email;
+    var request  = require('superagent');
+        email = req.body.email;
 
     if(!email){
         return res.json({

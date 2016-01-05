@@ -108,7 +108,7 @@ app.use(function(req, res, next) {
         api = requestJson.createClient(config.API_URL);
     err.status = 404;
 
-    //Check if a platform route
+    //Check if not a platform route
     if(routes.platform.indexOf(path) == -1) 
         return next();
 
@@ -199,6 +199,8 @@ for (var i = 0; i < routes.scripts.length; i++) {
   var routePrefix = routes.scripts[i] ,
       route = require('./routes/scripts/' + routePrefix);
 
+  if(routePrefix == 'contact') console.log(route);
+
   app.use('/scripts' , route);
 
 };
@@ -275,6 +277,9 @@ app.use((err, req, res, next) => {
         console.log('\n Path: ', req.path, '\nError: ', err + '\n');
     }
 
+    //Respond with code
+    res.status(err.status || 500);
+
     res.render('error', {
         user: req.session && req.session.user ? req.session.user : null,
         err: {
@@ -293,19 +298,31 @@ app.use((err, req, res, next) => {
 
  app.use((req, res, next) => {
 
-     res.render('error', {
-        err: {
-            message: 'Page not found!',
-            code: 404
-        },
-        section: 'public',
-        page: 'error',
-        alerts:[
-            {
-                alert: 'Hello'
-            }
-        ]
-     });
+    //Respond with code
+    res.status(404);
+
+    // respond with html page
+    if (req.accepts('html')) {
+        res.render('error', {
+           err: {
+               message: 'Page not found!',
+               code: 404
+           },
+           section: 'public',
+           page: 'error'
+        });
+        return;
+    }
+
+    // respond with json
+    if (req.accepts('json')) {
+        res.send({ error: 'Page not found!' });
+        return;
+    }
+
+    // default to plain-text. send()
+    res.type('txt').send('Page not found!');
+
 
  });
 
