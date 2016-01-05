@@ -185,29 +185,34 @@ router.post('/user/unfollow', function(req, res, next) {
     });
   });
 });
-router.post('/user/update', function(req, res, next){
+router.post('/user/update', function(req, res, next) {
+
 	var request = require('request'),
     formData = {
   	  id: req.body.id,
   	  firstname: req.body.firstname,
   	  lastname: req.body.lastname,
   	  email: req.body.email,
-      phone: req.body.phone
+      phone: req.body.phone || ''
   	};
 
 	var file = null;
 
-	for(var i in req.files) {
-		file = req.files[i];
-	}
+  if(req.files) {
+    for(var i in req.files) {
+      file = req.files[i];
+    }
+  }
 
-	if (file) formData.avatar = fs.createReadStream(file.path);
-	if(req.body.password) formData.password = req.body.password;
+  if (file) formData.avatar = fs.createReadStream(file.path);
+  if(req.body.password) formData.password = req.body.password;
   if (formData.email == req.session.user.email) delete formData.email;
-
+  console.log(formData);
   request.post({ url: config.API_URL + '/v1/user/update', headers: { authtoken: req.session.user.token }, formData: formData }, function(error, response, body){
-    body = JSON.parse(body);
 
+    console.log('Got response');
+
+    body = JSON.parse(body);
     for (var index in req.files)
       fs.unlink(req.files[index].path, function(){});
 

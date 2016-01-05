@@ -49,9 +49,13 @@ export default class GalleryEdit extends React.Component {
 		}
 	}
 
+	componentDidMount() {
+		$.material.init();
+	}
+
 	onPlaceChange(place) {
 
-		var gallery = _.clone(this.state.gallery, true);
+		var gallery = this.state.gallery;
 			gallery.location = place.location;
 			gallery.address = place.address;
 
@@ -63,7 +67,7 @@ export default class GalleryEdit extends React.Component {
 
 	updateCaption(e) {
 
-		var gallery = _.clone(this.state.gallery, true);
+		var gallery = this.state.gallery;
 			gallery.caption = e.target.value;
 
 		this.setState({
@@ -74,7 +78,7 @@ export default class GalleryEdit extends React.Component {
 
 	updateRelatedStories(stories) {
 
-		var gallery = _.clone(this.state.gallery, true);
+		var gallery = this.state.gallery;
 			gallery.related_stories = stories;
 
 		this.setState({
@@ -84,8 +88,7 @@ export default class GalleryEdit extends React.Component {
 	}
 
 	updateArticles(articles) {
-
-		var gallery = _.clone(this.state.gallery, true);
+		var gallery = this.state.gallery;
 			gallery.articles = articles;
 
 		this.setState({
@@ -96,7 +99,7 @@ export default class GalleryEdit extends React.Component {
 
 	updateTags(tags) {
 
-		var gallery = _.clone(this.state.gallery, true);
+		var gallery = this.state.gallery;
 			gallery.tags = tags;
 
 		this.setState({
@@ -106,7 +109,7 @@ export default class GalleryEdit extends React.Component {
 	}
 
 	toggleDeletePost(post) {
-		var existingPostIDs = _.clone(this.state.posts, true);
+		var existingPostIDs = this.state.posts;
 		var index = this.state.deletePosts.indexOf(post);
 
 		if(index == -1) {
@@ -249,10 +252,9 @@ export default class GalleryEdit extends React.Component {
 				xhr: () => {
 					var xhr = $.ajaxSettings.xhr();
 					xhr.upload.onprogress = function(evt) {
-						console.log('progress', evt.loaded / evt.total);
 					}
 
-					xhr.upload.onload = function() { console.log ('Done upload'); }
+					xhr.upload.onload = function() { }
 
 					return xhr;
 				}
@@ -293,7 +295,6 @@ export default class GalleryEdit extends React.Component {
  		this.setState({
  			gallery: null
  		});
- 		console.log(this.props);
  		this.props.toggle();
  	}
 

@@ -29,8 +29,6 @@ class GalleryDetail extends React.Component {
 
 	render() {
 
-		console.log(this.state.galleryEditToggled);
-
 		return (
 			<App user={this.props.user}>
 				<TopBar 

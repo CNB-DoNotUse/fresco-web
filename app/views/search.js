@@ -39,13 +39,14 @@ export class Search extends React.Component {
 			}
 		}
 
+		this.pending = false;
+
 		this.state = {
 			assignments: [],
 			galleries: [],
 			isResultsEnd: false,
 			location: location,
 			offset: 0,
-			pending: false,
 			polygon: polygon,
 			purchases: [],
 			radius: queryRadius,
@@ -75,10 +76,9 @@ export class Search extends React.Component {
 
 	componentDidMount() {
 		this.getAssignments(0);
+		this.pending = true;
 		this.getGalleries(0, () => {
-			this.setState({
-				pending: false
-			});
+			this.pending = false;
 		});
 		this.getStories(0);
 		this.getUsers(0);
@@ -139,7 +139,10 @@ export class Search extends React.Component {
 	}
 
 	// Query API for galleries
-	getGalleries(offset, force) {
+	getGalleries(offset, force, cb) {
+		if (typeof cb == 'undefined') {
+			var cb = force;
+		}
 
 		var polygon = null;
 
@@ -162,17 +165,20 @@ export class Search extends React.Component {
 		$.get('/scripts/gallery/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 12,
+			limit: 18,
 			polygon: polygon,
 		}, (galleries) => {
 
 			if(galleries.err || !galleries.data) return;
 			var newGalleries = this.state.galleries.concat(galleries.data);
 
+
 			this.setState({
 				galleries: force ? galleries.data : newGalleries,
 				offset: force ? galleries.data.length : newGalleries.length
 			});
+
+			cb();
 
 		});
 	}
@@ -273,13 +279,15 @@ export class Search extends React.Component {
 		var pxToBottom = searchContainer.scrollHeight - (searchContainer.clientHeight + searchContainer.scrollTop);
 		var shouldGetMoreResults = pxToBottom <= 96;
 		// Check if already getting purchases because async
-		if(shouldGetMoreResults && !this.state.pending) {
+		if(shouldGetMoreResults && !this.pending) {
+			this.pending = true;
 			// Pass current offset to getMorePurchases
 			this.getGalleries(this.state.offset, () => {
 				// Allow getting more results after we've gotten more results.
 				// Update offset to new results length
+				// 
+				this.pending = false;
 				this.setState({
-					pending: false,
 					offset: this.state.galleries.length
 				});
 			});

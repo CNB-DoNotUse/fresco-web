@@ -79,8 +79,10 @@ export default class OutletCardInfo extends React.Component {
 		var card = this.props.outlet.card;
 
 		var currentCardText = '';
-		if(card.brand && card.last4 != null) { 
-			var currentCardText = <span className="current-card">USING- { card.brand } - { card.last4 }</span>
+		if(card) {
+			if(card.brand && card.last4 != null) { 
+				var currentCardText = <span className="current-card">USING- { card.brand } - { card.last4 }</span>
+			}	
 		}
 
 		return (
