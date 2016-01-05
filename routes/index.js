@@ -44,9 +44,19 @@ router.get('/:modal?', (req, res, next) => {
 
 });
 
-router.get('/reset', (req, res, next) => {
+router.get('/manage', (req, res, next) => {
 
-  res.render('test');
+  res.render('parse/account');
+
+});
+
+router.get('/parse/reset', (req, res, next) => {
+
+  res.render('parse/reset', {
+      head: head,
+      page: 'index',
+      alerts: req.alerts
+  });
 
 });
 
