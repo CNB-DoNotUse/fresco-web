@@ -46,7 +46,7 @@ router.get('/:modal?', (req, res, next) => {
 
 router.get('/manage', (req, res, next) => {
 
-  res.render('parse/account');
+  res.render('parse/manage');
 
 });
 
