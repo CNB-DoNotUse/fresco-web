@@ -1,0 +1,45 @@
+<% 
+	accountExists =  typeof(user) === 'undefined' ? false : true,
+	user = typeof(user) !== 'undefined' ? user : null;
+	email = typeof(email) !== 'undefined' ? email : null;
+%>
+
+<script type="text/javascript">var token = '<%- token %>'</script>
+
+<div class="modal join <%- active %>" id="_join">
+	<div class="body">
+		<div class="form-wrap">
+			<form id="join-form">
+				<h3>Join <%- title %> on Fresco News</h3>
+
+				<h2>Account type</h2>
+
+				<p class="description">Sign up for a new account, or join this outlet with an existing Fresco account.</p>
+
+				<div class="dropdown" id="join-account-type" data-option="<%- accountExists ? 'Existing Account' : 'New Account' %>">
+					<div>
+						<p style="color:black"><%- accountExists ? 'Existing Account' : 'New Account' %></p>
+						<span class="mdi mdi-unfold-more"></span>
+					</div>
+					
+					<ul>
+						<li>New Account</li>
+						<li>Existing Account</li>
+					</ul>
+				</div>
+
+				<h2>Login info</h2>
+			
+				<input id="join-email" type="text" placeholder="Email" value="<%- accountExists ? user.email : email %>" />
+				<input id="join-password" type="password" placeholder="Password" />
+				
+				<h2><%- accountExists ? 'Update profile' : 'Profile' %></h2>
+				
+				<input id="join-name" type="text" placeholder="Name" />
+				<input id="join-phone" type="text" placeholder="Phone number" />
+
+				<input class="button" id="join_submit" type="submit" value="JOIN" />
+			</form>
+		</div>
+	</div>
+</div>

@@ -49,7 +49,7 @@ var animation = {
 					list.style.display = 'block';
 			};
 
-		for (var i = 0; i < 3; i++) {
+		for (var i = 0; i < dropdowns.length; i++) {
 
 			var dropdown = dropdowns[i],
 				selector = dropdown.children[0];

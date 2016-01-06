@@ -1,8 +1,8 @@
 var express = require('express'),
-  config = require('../lib/config'),
-  request = require('request-json'),
-  router = express.Router(),
-  api = request.createClient(config.API_URL);
+    config = require('../lib/config'),
+    request = require('request-json'),
+    router = express.Router(),
+    api = request.createClient(config.API_URL);
 
 /** //
 

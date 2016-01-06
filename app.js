@@ -200,8 +200,6 @@ for (var i = 0; i < routes.scripts.length; i++) {
   var routePrefix = routes.scripts[i] ,
       route = require('./routes/scripts/' + routePrefix);
 
-  if(routePrefix == 'contact') console.log(route);
-
   app.use('/scripts' , route);
 
 };
@@ -323,7 +321,6 @@ app.use((err, req, res, next) => {
 
     // default to plain-text. send()
     res.type('txt').send('Page not found!');
-
 
  });
 

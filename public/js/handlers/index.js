@@ -6,8 +6,9 @@ var screen = {
 	bottom = document.getElementById('_bottom'),
 	bottomWrap = document.getElementById('_bottom-wrap'),
 	hero = document.getElementById('_hero'),
-	nav = document.getElementById('_nav'),
-	lastScrollY = 0,
+	nav = document.getElementById('_nav');
+
+var lastScrollY = 0,
 	navReached = false,
 	translate3dSupported = animation.has3d(),
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
@@ -75,7 +76,6 @@ function updateElements(){
 	ticking = false;
 
 }
-
 
 //Call init
 init();
