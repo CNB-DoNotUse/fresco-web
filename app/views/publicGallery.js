@@ -64,17 +64,17 @@ class PublicGallery extends React.Component {
 						</tbody>
 					</table>
  				</div>
- 			)
+ 			);
  		}
 
  		return (
 
  			<div>
-	 			<nav>
-					<a className="wordmark" href="/">
-						<img alt="Fresco" src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-nav.png" />
-					</a>
-				</nav>
+	 			<div className="nav">
+	 			    <a className="logo" target="_parent" id="_logo" href="/">
+	 			        <span className="icon-fresco"></span>
+	 			    </a>
+	 			</div>
 
 				<div className="page">
 					<div className="gallery-slick-wrap">

@@ -1,6 +1,6 @@
 var express    = require('express'),
     config     = require('../lib/config'),
-    request    = require('request')
+    request    = require('request'),
     router     = express.Router()
 
 router.get('/:id', (req, res, next) => {

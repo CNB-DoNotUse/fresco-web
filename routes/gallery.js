@@ -52,6 +52,8 @@ router.get('/:id', (req, res, next) => {
     //User is logged in, show full gallery page
     if (req.session && req.session.user) {
 
+      res.locals.section = 'platform';
+
       var props = {
             user: req.session.user,
             purchases: config.mapPurchases(),
@@ -69,8 +71,6 @@ router.get('/:id', (req, res, next) => {
     }
     //User is not logged in, show public gallery page
     else {
-
-      res.locals.section = 'public';
       
       var props = {
             gallery: gallery,
