@@ -51,7 +51,7 @@ class Archive extends React.Component {
 
 		var endpoint = '/v1/post/list',
 				params = {
-					limit: 14,
+					limit: 18,
 					verified : true,
 					offset: passedOffset
 				};

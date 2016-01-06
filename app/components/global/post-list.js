@@ -34,6 +34,7 @@ export default class PostList extends React.Component {
 		this.scroll 			= this.scroll.bind(this);
 		this.didPurchase 		= this.didPurchase.bind(this);
 		this.edit 				= this.edit.bind(this);
+		this.toggle				= this.toggle.bind(this);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -177,6 +178,18 @@ export default class PostList extends React.Component {
 		});
 	}
 
+	/**
+	 * Called when GalleryEdit should be toggled
+	 */
+	 toggle() {
+	 	if(this.state.galleryEditToggled) {
+	 		this.setState({
+	 			gallery: null,
+	 			galleryEditToggled: false
+	 		});
+	 	}
+	 }
+
 	render() {
 
 		var purchases = this.state.purchases,
@@ -218,7 +231,8 @@ export default class PostList extends React.Component {
 					setSelectedPosts={this.setSelectedPosts} />
 				<GalleryEdit 
 					gallery={this.state.gallery}
-					toggled={this.state.galleryEditToggled} />
+					toggled={this.state.galleryEditToggled}
+					toggle={this.toggle} />
 				<GalleryCreate posts={this.state.selectedPosts} />
 			</div>
 

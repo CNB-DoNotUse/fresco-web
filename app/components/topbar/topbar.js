@@ -229,6 +229,7 @@ export default class TopBar extends React.Component {
 TopBar.defaultProps = {
 	title: '',
 	edit: function() {},
+	hide: function () { console.log('Hide function not implemented in TopBar'); },
 	onVerifiedToggled: function() {},
 	onOutletFilterAdd: function() {},
 	onOutletFilterRemove: function() {}
