@@ -1,5 +1,7 @@
 var fs 				= require('fs'),
+	argv			= require('yargs').argv,
 	gulp 			= require('gulp'),
+	gulpif 			= require('gulp-if'),
 	webpack 		= require('webpack-stream'),
 	merge 			= require('merge-stream'),
 	runSequence 	= require('run-sequence');
@@ -21,6 +23,8 @@ var sections			= Object.keys(dependencies),
 
 var views 			= {},
 	viewFiles 		= fs.readdirSync('./app/views');
+
+console.log(argv);
 
 viewFiles.map((file) => {
   if(exclude.indexOf(file) != -1 || !/.jsx?$/.test(file)) return;
@@ -48,7 +52,7 @@ gulp.task('Build Assets',  () => {
 			gulp.src(dependencies.global.css.concat(dependencies[section]._global.css))
 				.pipe(concat(section + '.css'))
 				.pipe(sass().on('error', sass.logError))
-				// .pipe(minifyCss())
+				.pipe(gulpif(argv.production, minifyCss()))
 				.pipe(gulp.dest('./public/css'))
 		);
 
@@ -56,7 +60,7 @@ gulp.task('Build Assets',  () => {
 		jsTasks.push(
 			gulp.src(dependencies.global.js.concat(dependencies[section]._global.js))
 				.pipe(concat(section + '.js'))
-				// .pipe(uglify())
+				.pipe(gulpif(argv.production, uglify()))
 				.pipe(gulp.dest('./public/js'))
 		);
 
@@ -79,7 +83,7 @@ gulp.task('Build Assets',  () => {
 					gulp.src(dependencies.global.css.concat(pageDependencies.css))
 						.pipe(concat(pages[p] + '.css'))
 						.pipe(sass().on('error', sass.logError))
-						// .pipe(minifyCss())
+						.pipe(gulpif(argv.production, minifyCss()))
 						.pipe(gulp.dest('./public/css/pages'))
 				);
 			}
@@ -88,7 +92,7 @@ gulp.task('Build Assets',  () => {
 				jsTasks.push(
 					gulp.src(dependencies.global.js.concat(pageDependencies.js))
 						.pipe(concat(pages[p] + '.js'))
-						// .pipe(uglify())
+						.pipe(gulpif(argv.production, uglify()))
 						.pipe(gulp.dest('./public/js/pages'))
 				);
 			}			
@@ -123,6 +127,7 @@ gulp.task('Build Webpack', (cb) => {
 		      ]
 		    }
 		}))
+		.pipe(gulpif(argv.production, uglify()))
 		.pipe(gulp.dest('./public/js/pages'))
 });
 
