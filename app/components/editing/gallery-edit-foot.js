@@ -160,3 +160,7 @@ export default class GalleryEditFoot extends React.Component {
 	}
 
 }
+
+GalleryEditFoot.defaultProps = {
+	hide: function () { console.log('Hide not implemented in GalleryEdit'); }
+}

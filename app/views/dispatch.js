@@ -125,11 +125,18 @@ class Dispatch extends React.Component {
 			data: params,
 			dataType: 'json',
 			success: (response, status, xhr) => {
+
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
 					callback([]);
-				else
+				else {
+
+					if(!params.verified) {
+						response.data = response.data.filter(assignment => assignment.visibility == 0);
+					}
+
 					callback(response.data);
+				}
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: resolveError(error)});

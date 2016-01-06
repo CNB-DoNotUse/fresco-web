@@ -46,7 +46,7 @@ export default class DispatchAssignments extends React.Component {
 
 			//Access parent var load method
 			this.loadAssignments(0, this.props.viewMode, (assignments) => {
-				
+
 				//Update offset based on psts from callaback
 				var offset = assignments ? assignments.length : 0;
 

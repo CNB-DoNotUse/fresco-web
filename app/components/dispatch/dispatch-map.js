@@ -34,6 +34,7 @@ export default class DispatchMap extends React.Component {
 
 		this.updateMap = this.updateMap.bind(this);
 		this.clearMap = this.clearMap.bind(this);
+		this.clearCallout = this.clearCallout.bind(this);
 		this.updateAssignmentMarkers = this.updateAssignmentMarkers.bind(this);
 		this.updateUserMarkers = this.updateUserMarkers.bind(this);
 		this.focusOnAssignment = this.focusOnAssignment.bind(this);
@@ -76,7 +77,7 @@ export default class DispatchMap extends React.Component {
 
 		//Check if there is an active assignment and (there no previous assignment or the prev and current active assignmnet are not the same)
 		if(!this.isOpeningCallout && this.props.activeAssignment && (!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)) {
-			this.focusOnAssignment(null, null, this.props.activeAssignment);
+			this.focusOnAssignment(this.props.activeAssignment);
 		}
 
 		if(JSON.stringify(prevProps.mapCenter) != JSON.stringify(this.props.mapCenter)){
@@ -92,6 +93,7 @@ export default class DispatchMap extends React.Component {
 		//Check if view mode has changed
 		if(this.props.viewMode !== prevProps.viewMode){
 			this.clearMap();
+			this.clearCallout();
 		}
 
 		//Pass down previous for diff check
@@ -101,7 +103,7 @@ export default class DispatchMap extends React.Component {
 		/* Event Listeners Needed in the page */
 		var selector = document.getElementById('callout-selector');
 
-		if(selector){
+		if(selector) {
 			selector.addEventListener('click', (e)=>{
 				window.location.assign('/assignment/' + selector.dataset.id);
 			});
@@ -216,6 +218,18 @@ export default class DispatchMap extends React.Component {
 		this.updateMap();
 	}
 
+	/** 
+	 * Clears callout if exists
+	 */
+	clearCallout() {
+		if(this.state.activeCallout) {
+			this.state.activeCallout.close();
+			this.setState({
+				activeCallout: null
+			});
+		}
+	}
+
 	/**
 	 * Updates the map with new users/assignments
 	 */
@@ -296,22 +310,22 @@ export default class DispatchMap extends React.Component {
 			radius = assignment.location.radius;
 
 		//Check if the assignment is expired
-		if (assignment.expiration_time && assignment.expiration_time < Date.now()){
+		if (assignment.expiration_time && assignment.expiration_time < Date.now()) {
 			
 			status = 'expired';
 			zIndex = 100;
 
 		}
 		//Not expired assignment
-		else{
+		else {
 
 			//Assignment is pending
-			if(assignment.visibility == 0){
+			if(assignment.visibility == 0) {
 				status = 'pending';
 				zIndex = 200;
 			}
 			//Assignment has 'active' or unchecked status
-			else{
+			else {
 				status = 'active'
 				zIndex = 300;
 			}
@@ -343,7 +357,7 @@ export default class DispatchMap extends React.Component {
 		google.maps.event.addListener(
 			marker, 
 			'click',  
-			this.focusOnAssignment.bind(null, marker, circle, assignment)
+			this.focusOnAssignment.bind(null, assignment)
 		);
 
 		return {
@@ -471,47 +485,23 @@ export default class DispatchMap extends React.Component {
 
 	/**
 	 * Focuses on the passed assignment
-	 * @param  {Google Maps Marker} marker     The marker tfo focus in on
-	 * @param  {Google Maps Circle} circle     The radius of the assignment
+	 * @param  {Object} assignment     Assignment focus on. Assumes assignment has Lat / Lng
 	 */
-	focusOnAssignment(marker, circle, assignment) {
+	focusOnAssignment(assignment) {
+
 		this.isOpeningCallout = true;
-		var map = this.state.map;
-
-		if(!marker){
-			var index = _.findIndex(this.state.markers, (marker) => {
-				return marker.assignmentId == assignment._id;
-			});
-			
-			if(index == -1){
-				$.snackbar({content: 'We couldn\'t find this assignment!'});
-				this.isOpeningCallout = false;
-				return;
-			}
-
-			marker = this.state.markers[index];
-		}
-		if(!circle){
-			index = _.findIndex(this.state.circles, (circle) => {
-				return circle.assignmentId == assignment._id;
-			});
-
-			if(index == -1){
-				$.snackbar({content: 'We couldn\'t find this assignment!'});
-				this.isOpeningCallout = false;
-				return;
-			}
-
-			circle = this.state.circles[index];
-		}
+		var map = this.state.map,
+			lat = assignment.location.geo.coordinates[1],
+			lng = assignment.location.geo.coordinates[0];
 
 		//Close the active callout if it exists yet
 		if(this.state.activeCallout)
-			this.state.activeCallout.close();
+			this.clearCallout();
 
-		map.panTo(marker.getPosition());
-
-		map.fitBounds(circle.getBounds());
+		map.panTo({
+			lat: lat,
+			lng: lng
+		});
 
 		var calloutContent = ReactDOM.renderToString(
 			<DispatchMapCallout assignment={assignment} onClick />
@@ -520,16 +510,14 @@ export default class DispatchMap extends React.Component {
 		var callout = new google.maps.InfoWindow({
 			content: calloutContent,
 			position: {
-				lat: marker.getPosition().lat(),
-				lng: marker.getPosition().lng()
+				lat: lat,
+				lng: lng
 			}
 		});
 
 		google.maps.event.addListener(callout, 'closeclick', () => {
-			this.setState({
-				activeCallout: null
-			});
 
+			this.clearCallout();
 			this.props.setActiveAssignment(null);
 
 		});

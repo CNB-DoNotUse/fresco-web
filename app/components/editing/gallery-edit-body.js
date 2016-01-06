@@ -17,6 +17,10 @@ export default class GalleryEditBody extends React.Component {
 		super(props);
 	}
 
+	componentDidMount() {
+		$.material.init();
+	}
+
 	render() {
 
 		var visibility = this.props.gallery.visibility;

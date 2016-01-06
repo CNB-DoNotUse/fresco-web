@@ -46,6 +46,7 @@ export default class GalleryEdit extends React.Component {
 				gallery: _.clone(nextProps.gallery, true),
 				posts: nextProps.gallery.posts.map(p => p._id)
 			});	
+			$.material.init();
 		}
 	}
 
@@ -282,7 +283,7 @@ export default class GalleryEdit extends React.Component {
 	 					$.snackbar({
 	 						content: "Gallery successfully saved!"
 	 					});
-	 					self.props.hide();
+	 					self.hide();
 	 				}
 	 			}
 
@@ -346,5 +347,6 @@ export default class GalleryEdit extends React.Component {
 GalleryEdit.defaultProps = {
 	gallery: null,
 	posts: [],
-	toggled: false
+	toggled: false,
+	toggle: function () { console.log('GalleryEdit missing toggle implementation'); }
 }
