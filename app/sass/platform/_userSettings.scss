@@ -186,6 +186,27 @@
 			width: 240px;
 			height: 240px;
 		}
+
+		.img-overlay {
+			display: block;
+			cursor: pointer;
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    width: 240px;
+		    height: 240px;
+		    background: rgba(0,0,0,0.54);
+
+		    .mdi {
+	    	    display: block;
+			    color: white;
+			    margin-top: 72px;
+	    	    font-size: 96px;
+	    	    text-align: center;
+			    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+		    }
+
+		}
 	}
 
 	.user-support {
