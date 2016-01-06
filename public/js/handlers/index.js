@@ -6,9 +6,8 @@ var screen = {
 	bottom = document.getElementById('_bottom'),
 	bottomWrap = document.getElementById('_bottom-wrap'),
 	hero = document.getElementById('_hero'),
-	nav = document.getElementById('_nav');
-
-var lastScrollY = 0,
+	nav = document.getElementById('_nav'),
+	lastScrollY = 0,
 	navReached = false,
 	translate3dSupported = animation.has3d(),
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
@@ -26,6 +25,8 @@ function init(){
 	animation.enableDropdown();
 
 	resizeCall();
+
+	updateElements();
 }
 
 // requestAnim shim layer by Paul Irish
@@ -64,21 +65,21 @@ function updateElements(){
 		navReached = true;
 	}
 
-	animation.translateY3d(nav, navValue);
+	animation.translateY3d(nav, navValue, translate3dSupported);
 
 	//Check to make sure the bottom value doesn't exceed the inital diff
 	if(bottomValue < initialDiff)
 		bottomValue = initialDiff;
 
-	if(bottomValue > initialDiff) animation.translateY3d(hero,   heroValue);
-	animation.translateY3d(bottom, bottomValue);
+	if(bottomValue > initialDiff) 
+		animation.translateY3d(hero, heroValue, translate3dSupported);
+	animation.translateY3d(bottom, bottomValue, translate3dSupported);
 
 	ticking = false;
 
 }
 
-//Call init
-init();
+setTimeout(init, 1000);
 
 window.addEventListener('resize', function() {
 	resizeCall();

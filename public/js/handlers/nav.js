@@ -92,14 +92,13 @@ function returnToLanding() {
 
 function loadModal(modalId) {
 
-	var modal = document.getElementById('_' + modalId),
-		stateObj = {modal : modalId};
+	var modal = document.getElementById('_' + modalId);
 
 	//Save modal to winodw
 	window.modal = modal;
 
 	//Update window history state
-	window.history.pushState(stateObj, "modal", modalId);
+	window.history.pushState({modal : modalId}, "modal", modalId);
 
 	loadScript('/js/handlers/modals/' + modalId + '.js');
 
@@ -172,9 +171,12 @@ function loadScript(src){
 		x.parentNode.insertBefore(s, x);
 }
 
+
 window.onpopstate = function(event) {
 
 	console.log(event);
+
+	if(event.state == null) return;
 
 	if(event.state && event.state.modal){
 

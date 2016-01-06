@@ -115,9 +115,15 @@ var animation = {
 	 * @param  {object} elm   Element to translate
 	 * @param  {float} value Amount to translate
 	 */
-	translateY3d: function(elm, value) {	
+	translateY3d: function(elm, value, threeD) {	
+		var translate;
+		
+		if(threeD)
+			translate = 'translate3d(0px,' + value + 'px, 0px)';
+		else
+			translate = 'translate(0px,' + value + 'px)';
 
-		var translate = 'translate3d(0px,' + value + 'px, 0px)';
+		console.log(translate);
 
 		elm.style['-webkit-transform'] = translate;
 		elm.style['-moz-transform'] = translate;
