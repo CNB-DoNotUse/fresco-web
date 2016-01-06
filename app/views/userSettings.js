@@ -19,60 +19,8 @@ class UserSettings extends React.Component {
 		}
 		this.updateSettings = this.updateSettings.bind(this);
 		this.fileChanged = this.fileChanged.bind(this);
+		this.clickProfileImgInput = this.clickProfileImgInput.bind(this);
 	}
-
- 	render() {
-
- 		var user = this.state.user;
- 		var removeButton = <button className="btn btn-danger">DELETE ACCOUNT</button>;
-
- 		return (
- 			<App user={this.state.user}>
- 				<TopBar 
- 					title={this.state.user.firstname + ' ' + this.state.user.lastname}
-					saveButton={true}
-					updateSettings={this.updateSettings} />
-
-				<div className="user-settings">
-					<div className="f-col">
-						<div className="f-card">
-							<div className="user-img">
-								<input type="file" ref="avatarFileInput" name="avatarFileInput" style={{display: 'none'}}/>
-								<img src={this.state.avatar} />
-							</div>
-							<div className="f-card-content">
-								<input type="text" className="form-control floating-label heading" ref="name" placeholder="Name" defaultValue={user.firstname + ' ' + user.lastname} />
-								<textarea className="form-control floating-label heading" placeholder="Bio"></textarea>
-								<button className="btn btn-save" onClick={this.updateSettings}>SAVE CHANGES</button>
-							</div>	
-						</div>
-						<div className="user-support">
-							<span>Quck Support</span>
-							<ul className="md-type-subhead">
-								<li><span className="mdi mdi-ticket icon"></span> Submit a ticket</li>
-								<li><span className="mdi mdi-email icon"></span> Email us</li>
-							</ul>
-						</div>
-					</div>
-					<div className="f-col">
-						<div className="f-card">
-							<div className="f-card-content full">
-								<div className="header">
-									<span>Account Information</span>
-								</div>
-								<div className="padding">
-									<div style={{width: '100%'}}><input type="text" className="form-control floating-label" ref="email" placeholder="Email address" defaultValue={user.email} /></div>
-									<div style={{width: '100%'}}><input type="text" className="form-control floating-label" ref="phone" placeholder="Phone number" defaultValue={user.phone}  /></div>
-								</div>
-								<button className="btn btn-save" onClick={this.updateSettings}>SAVE CHANGES</button>
-							</div>
-						</div>
-					</div>
-				</div>
- 			</App>
- 		);
-
- 	}
 
  	/**
  	 * Change listener for file upload input
@@ -163,10 +111,67 @@ class UserSettings extends React.Component {
 	 			}
  			}
  		});
-
  	}
 
+ 	clickProfileImgInput() {
+ 		this.refs.avatarFileInput.click();
+ 	}
 
+ 	render() {
+
+ 		var user = this.state.user;
+ 		var removeButton = <button className="btn btn-danger">DELETE ACCOUNT</button>;
+
+ 		return (
+ 			<App user={this.state.user}>
+ 				<TopBar 
+ 					title={this.state.user.firstname + ' ' + this.state.user.lastname}
+					saveButton={true}
+					updateSettings={this.updateSettings} />
+
+				<div className="user-settings">
+					<div className="f-col">
+						<div className="f-card">
+							<div className="user-img">
+								<input type="file" ref="avatarFileInput" name="avatarFileInput" style={{display: 'none'}} onChange={this.fileChanged} />
+								<img src={this.state.avatar} />
+								<div className="img-overlay" onClick={this.clickProfileImgInput}>
+									<span className="mdi mdi-upload"></span>
+								</div>
+							</div>
+							<div className="f-card-content">
+								<input type="text" className="form-control floating-label heading" ref="name" placeholder="Name" defaultValue={user.firstname + ' ' + user.lastname} />
+								<textarea className="form-control floating-label heading" placeholder="Bio"></textarea>
+								<button className="btn btn-save" onClick={this.updateSettings}>SAVE CHANGES</button>
+							</div>	
+						</div>
+						<div className="user-support">
+							<span>Quck Support</span>
+							<ul className="md-type-subhead">
+								<li><span className="mdi mdi-ticket icon"></span> Submit a ticket</li>
+								<li><span className="mdi mdi-email icon"></span> Email us</li>
+							</ul>
+						</div>
+					</div>
+					<div className="f-col">
+						<div className="f-card">
+							<div className="f-card-content full">
+								<div className="header">
+									<span>Account Information</span>
+								</div>
+								<div className="padding">
+									<div style={{width: '100%'}}><input type="text" className="form-control floating-label" ref="email" placeholder="Email address" defaultValue={user.email} /></div>
+									<div style={{width: '100%'}}><input type="text" className="form-control floating-label" ref="phone" placeholder="Phone number" defaultValue={user.phone}  /></div>
+								</div>
+								<button className="btn btn-save" onClick={this.updateSettings}>SAVE CHANGES</button>
+							</div>
+						</div>
+					</div>
+				</div>
+ 			</App>
+ 		);
+
+ 	}
 }
 
 class ChangePasswordCard extends React.Component {

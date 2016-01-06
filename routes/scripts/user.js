@@ -38,8 +38,6 @@ router.post('/user/reset', function(req, res, next) {
     .set('Accept', 'application/json')
     .end(function(err, response){
 
-        console.log(response);
-
        //No error, return success
        if(!response.body && !err){
            return res.json({
@@ -220,10 +218,7 @@ router.post('/user/update', function(req, res, next) {
   if (file) formData.avatar = fs.createReadStream(file.path);
   if(req.body.password) formData.password = req.body.password;
   if (formData.email == req.session.user.email) delete formData.email;
-  console.log(formData);
   request.post({ url: config.API_URL + '/v1/user/update', headers: { authtoken: req.session.user.token }, formData: formData }, function(error, response, body){
-
-    console.log('Got response');
 
     body = JSON.parse(body);
     for (var index in req.files)
