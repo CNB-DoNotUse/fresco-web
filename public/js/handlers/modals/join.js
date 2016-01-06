@@ -10,6 +10,10 @@ form.addEventListener('submit', function(e) {
 
 	e.preventDefault();
 
+	if(disabled) return;
+
+	disabled = true;
+
 	if(accountType.dataset.option == 'New Account'){
 		registerUser();
 	} else if(accountType.dataset.option == 'Existing Account'){
@@ -21,21 +25,27 @@ form.addEventListener('submit', function(e) {
 
 function registerUser(){
 
-	console.log('Registering');
+	var name = nameField.value.split(' '),
+		params = {
+			firstname : name[0],
+			lastname  : name.slice(1).join(' '),
+			email     : emailField.value,
+			password  : passwordField.value,
+			phone     : phoneField.value,
+			token	  : token
+		};
 
-	var name = nameField.value.split(' ');
-
-	var params = {
-		firstname : name[0],
-		lastname  : name.slice(1).join(' '),
-		email     : emailField.value,
-		password  : passwordField.value,
-		token: token
-	}
-
+	//Check all fields for input
 	for (var key in params){
 		if(!/\S/.test(params[key])){
-			return $.snackbar({ content: 'Please enter in all fields!' });
+			if(key == 'firstname' || key == 'lastname'){
+				disabled = false;
+				return $.snackbar({ content: 'Please enter in a first and last name!' });
+			}
+			else {
+				disabled = false;
+				return $.snackbar({ content: 'Please enter in all fields!' });
+			}
 		}
 	}
 
@@ -43,25 +53,24 @@ function registerUser(){
 		method: "POST",
 		url: "/scripts/user/register",
 		data: params,
-		success: function(response){
-
-			console.log(response);
-		
+		success: function(response) {
 			if (response.err)
 				return this.error(null, null, response.err);
 			
 			window.location.replace('/archive');
 		},
-		error: function(xhr, status, error){
+		error: function(xhr, status, error) {
 			$.snackbar({content: resolveError(error)});
+		},
+		complete: function(jqXHR, textStatus) {
+
+			disabled = false;
 		}
 	});
 
 }
 
 function acceptInvite(){
-
-	console.log('Accepting');
 
 	var params = {
 			password: passwordField.value,
@@ -73,22 +82,31 @@ function acceptInvite(){
 		data: params,
 		method: "POST",
 		success: function(response){
-
-			console.log(response);
-			
 			if (response.err)
 				return this.error(null, null, response.err);
 			
-			window.location.replace('/highlights');
+			window.location.replace('/archive');
 		},
 		error: function(xhr, status, error){
 			$.snackbar({content: resolveError(error)});
+		},
+		complete: function(jqXHR, textStatus) {
+
+			disabled = false;
 		}
 	});
 	
 }
 
-
-function resolveError() {
-
+function resolveError(err) {
+	switch(err){
+		case 'ERR_EMAIL_TAKEN':
+			return 'This email is taken! Please use another one.'
+		case 'ERR_INVALID_EMAIL':
+			return 'Please enter a valid email!'
+		case 'ERR_INVALID_PHONE':
+			return 'Please enter a valid phone number!'
+	    default:
+	        return 'An error occured! Please try again in a bit.'   
+	}
 }

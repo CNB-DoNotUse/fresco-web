@@ -29,11 +29,15 @@
 <!--Alerts-->
 <script type="text/javascript">
     <% for(var i=0; i < alerts.length; i++) {%>
+        
+      $(document).ready(function(){
         $.snackbar({ 
-            content: "<%- alerts[i].alert %>", 
+            content: "<%- alerts[i] %>", 
             timeout: 5000, 
             htmlAllowed: true
         });
+      });
+
     <% } %>
 </script>
 

@@ -69,12 +69,17 @@ app.use(
 );
 
 
+/**
+ * Verifications check
+ */
 app.use((req, res, next)=> {
 
   req.alerts = [];
 
-  if (req.session && req.session.user && !req.session.user.verified)
+  if (req.session && req.session.user && !req.session.user.verified){
+    console.log(req.session);
     req.alerts.push('<p>Your email hasn\'t been verified.<br>Please click on the link sent to your inbox to verify your email!</p><div><a href="/scripts/user/verify/resend">RESEND EMAIL</a></div>');
+  }
 
   if (req.session && req.session.alerts){
     req.alerts = req.alerts.concat(req.session.alerts);

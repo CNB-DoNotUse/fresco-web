@@ -4,6 +4,7 @@ var express = require('express'),
     config = require('../../lib/config'),
     async = require('async'),
     querystring = require('querystring'),
+    validator = require('validator'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
     User = require('../../lib/user'),
@@ -143,9 +144,21 @@ router.post('/user/register', function(req, res, next) {
       email = req.body.email,
       firstname = req.body.firstname,
       lastname = req.body.lastname,
+      phone = req.body.phone,
       token = req.body.token;
+
+  if(!validator.isEmail(email)){
+    return res.json({
+      err: 'ERR_INVALID_EMAIL'
+    });
+  } 
+  else if(phone != null && !validator.isNumeric(phone)){
+    return res.json({
+      err: 'ERR_INVALID_PHONE'
+    });
+  }
   
-  User.registerUser(email, password, firstname, lastname, token, function(err, user_body, login_body){
+  User.registerUser(email, password, firstname, lastname, phone, token, function(err, user_body, login_body){
     if (err)
       return res.json({err: err, data: {}}).end();
       
