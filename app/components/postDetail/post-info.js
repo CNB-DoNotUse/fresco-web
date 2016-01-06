@@ -23,8 +23,8 @@ export default class PostInfo extends React.Component {
 			twitter = '',
 			curator = '',
 			timeString = global.formatTime(this.props.post.time_created),
-			verifiedBy = this.props.verifier ? 
-							'Verified by ' + this.props.verifier.firstname + ' ' + this.props.verifier.lastname : 
+			verifiedBy = this.props.post.approvals ? 
+							'Verified by ' + this.props.verifier : 
 							'Not yet verified'
 
 		//Check to show user icon
@@ -84,7 +84,7 @@ export default class PostInfo extends React.Component {
 							</li>
 							{twitter}
 							<li>
-								<span className="mdi mdi-alert-circle icon"></span>
+								<span className={this.props.verifier.length ? "mdi icon verified mdi-checkbox-marked-circle" : "mdi mdi-alert-circle icon"}></span>
 								{verifiedBy}
 							</li>
 							{curator}
@@ -96,4 +96,8 @@ export default class PostInfo extends React.Component {
 		);
 	}
 
+}
+
+PostInfo.defaultProps = {
+	verifier: ''
 }
