@@ -6,6 +6,11 @@
 
 var app = require('../app');
 var debug = require('debug')('website:server');
+
+require('pmx').init({
+  http: true
+});
+
 var http = require('http');
 
 /**
