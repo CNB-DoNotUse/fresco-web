@@ -104,7 +104,7 @@ router.get('/:id', (req, res, next) => {
   function doWithUserProfile(error, response, body) {
     
     if (!error && body && !body.err) {
-      verifier = body.data;
+      verifier = body.data.firstname + ' ' + body.data.lastname;
       render();
     }
   

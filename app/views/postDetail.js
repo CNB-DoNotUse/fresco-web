@@ -24,6 +24,7 @@ class PostDetail extends React.Component {
  		this.toggle = this.toggle.bind(this);
  	}
 
+
  	hide() {
  		this.setState({
  			toggled: false
@@ -80,6 +81,7 @@ ReactDOM.render(
 	  user={window.__initialProps__.user} 
 	  purchases={window.__initialProps__.purchases} 
 	  gallery={window.__initialProps__.gallery}
+	  verifier={window.__initialProps__.verifier || ''}
 	  post={window.__initialProps__.post}
 	  title={window.__initialProps__.title} />,
   document.getElementById('app')
