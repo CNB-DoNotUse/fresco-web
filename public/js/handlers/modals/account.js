@@ -31,13 +31,17 @@ signUpFormHeader.addEventListener('click', function() {
 			$(loginForm).velocity("slideUp", { duration: 500 });
 			$(login).velocity({'margin-top' : '10px'}, {duration: 500});
 		}
-		//Swap the title
-		$(signUpFormHeader).find('h3').velocity({opacity : 0}, function(){
-			this[0].innerHTML = 'START MY DEMO';
-			$(this).velocity({opacity : 1});
-		});
 		//Slide downt the sign up form
-		$(signUpForm).velocity("slideDown", { duration: 500 });
+		$(signUpForm).velocity("slideDown", { 
+			duration: 500,
+			complete: function() {
+				//Swap the title
+				$(signUpFormHeader).find('h3').velocity({opacity : 0}, function(){
+					this[0].innerHTML = 'START MY DEMO';
+					$(this).velocity({opacity : 1});
+				});
+			}
+		});
 
 	}
 	else
@@ -52,13 +56,20 @@ loginFormHeader.addEventListener('click', function() {
 		$(loginForm).velocity("slideDown", { duration: 500 });
 		//Bring back top margin
 		$(login).velocity({'margin-top' : '13%'}, {duration: 500});
-		//Swap sign up title back to normal
-		$(signUpFormHeader).find('h3').velocity({opacity : 0}, function(){
-			this[0].innerHTML = 'TRY OUT FRESCO NEWS';
-			$(this).velocity({opacity : 1});
-		});
+
 		//Slide up and hide the `Sign Up` form
-		$(signUpForm).velocity("slideUp", { duration: 500 });
+		$(signUpForm).velocity("slideUp", { 
+			duration: 500,
+			complete: function() {
+
+				//Swap sign up title back to normal
+				$(signUpFormHeader).find('h3').velocity({opacity : 0}, function(){
+					this[0].innerHTML = 'TRY OUT FRESCO NEWS';
+					$(this).velocity({opacity : 1});
+				});
+
+			}
+		});
 	} 
 	//Process Login
 	else

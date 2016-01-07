@@ -28,11 +28,10 @@ function init(){
 
 	resizeCall();
 
-	initialTranslate = window.innerHeight - animation.getPosition(hero).y - hero.offsetHeight;
+	initialTranslate = window.innerHeight - animation.getPosition(hero).y - hero.offsetHeight - 100;
 
 	animation.translateY3d(bottom, initialTranslate, translate3dSupported);
 	bottom.style.opacity = 1;
-
 }
 
 // requestAnim shim layer by Paul Irish

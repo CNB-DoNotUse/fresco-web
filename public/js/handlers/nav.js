@@ -68,26 +68,31 @@ function returnToLanding() {
 	//Update window history state
 	window.history.replaceState({home: 'landing'}, null, '/');
 
-	$(window.modal).velocity({ translateY : '150%' }, { duration: 450, easing: 'ease-out'});
-
-	$('#_nav').velocity('fadeOut', { 
-		duration: modalTransitionLength, 
+	$(window.modal).velocity({ translateY : '150%' }, { 
+		duration: 450, 
+		easing: 'ease-out',
 		complete: function(){
 
-			//Hide the modal after the animation
-			window.modal.style.display = 'none';
+			$('#_nav').velocity('fadeOut', { 
+				duration: modalTransitionLength, 
+				complete: function(){
 
-			//Adjust nav menu list items to reflect the page
-			navList[0].style.display = 'inline-block';
-			navList[1].style.display = 'inline-block';
-			navList[3].style.display = 'inline-block';
-			navList[2].style.display = 'none';
-			nav.className = nav.className.replace(/\btransparent\b/,'');
+					//Hide the modal after the animation
+					window.modal.style.display = 'none';
 
-			$('#_nav, #_landing-wrap, #_bottom-bg, #_footer').velocity('fadeIn', { duration: modalTransitionLength} );
+					//Adjust nav menu list items to reflect the page
+					navList[0].style.display = 'inline-block';
+					navList[1].style.display = 'inline-block';
+					navList[3].style.display = 'inline-block';
+					navList[2].style.display = 'none';
+					nav.className = nav.className.replace(/\btransparent\b/,'');
 
+					$('#_nav, #_landing-wrap, #_bottom-bg, #_footer').velocity('fadeIn', { duration: modalTransitionLength} );
+
+				}
+
+			});
 		}
-
 	});
 }
 
