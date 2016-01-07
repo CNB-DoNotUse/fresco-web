@@ -140,25 +140,53 @@ $heroHeight: 180px;
 }
 
 /**
+ * Sections below hero
+ */
+
+.bottom-bg{
+	display:block;
+	position:relative;
+	width:100%;
+	background:$fresco-bg;
+
+	@include tablet{
+		height:890px;
+	}
+	@include mobile{
+		height:1050px;
+	}
+}
+
+/**
  * Hero Wrapper, contains the top part of the landing page
  */
 
-.hero-wrap{
-	overflow:hidden;
+.landing-wrap{
 	position:relative;
 	height:100%;
+	width:100%;
+
+	.landing{
+		position: absolute;
+	    left: 0;
+	    right: 0;
+	    top: 40%;
+
+	    @include mobile{
+	    	top:20%;
+	    }
+	}
 
 	.hero{
-		position:absolute;
-		left:0; right:0; bottom:0; top:0;
-		margin:auto;
+		position:relative;
+		left:0; right:0; top:30%;
+		margin:0 auto 120px;
 		height:$heroHeight;
 		text-align:center;
 		color:#FFF;
 
 		@include mobile{
 			top:-30%;
-
 		}
 
 		.tagline{
@@ -210,23 +238,15 @@ $heroHeight: 180px;
 	
 }
 
-/**
- * Sections below hero
- */
 
-.bottom-wrap{
-	
+.bottom{
+
 	position:relative;
-	background:$fresco-bg;
-	height:calc(839px - 50% + 180px);
-
-	@include tablet{
-		height:calc(820px - 50% + 35%);
-	}
-
-	@include mobile{
-		height:calc(980px - 50% + 35%);
-	}
+	top:30%;
+	-webkit-transition: opacity .3s linear;
+       -moz-transition: opacity .3s linear;
+   	     -o-transition: opacity .3s linear;
+   	        transition: opacity .3s linear;
 
 	/**
 	 * Shared style for each card
@@ -244,17 +264,12 @@ $heroHeight: 180px;
 		}
 	}
 
-	.bottom{
-		position:absolute;
-		left:0;
-		right:0;
-		margin:0 auto;
-		padding:20px 0;
-		z-index:10;
+	position:relative;
+	padding:0 20px 0;
+	z-index:10;
 
-		@include mobile{
-			padding:0 0 20px;
-		}
+	@include mobile{
+		padding:0 0 20px;
 	}
 }
 

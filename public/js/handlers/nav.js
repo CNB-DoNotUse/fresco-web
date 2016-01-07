@@ -1,7 +1,9 @@
 var modalTransitionLength = 300,
+	landingWrap = document.getElementById('_bottom-bg'),
 	nav = document.getElementById('_nav'),
 	navList = nav.getElementsByTagName('ul')[0].children,
 	modals = document.getElementsByClassName('modal'),
+	modalActions = document.getElementsByClassName('modal-action'),
 	footerList = document.getElementById('footer-actions').children;
 
 //Set the active modal if it exists
@@ -11,6 +13,10 @@ for (var i = 0; i < modals.length; i++) {
 		loadScript('/js/handlers/modals/' + window.modal.id.slice(1) + '.js');
 		break;
 	}
+};
+
+for (var i = 0; i < modalActions.length; i++) {
+	modalActions[i].addEventListener('click', handleClick);
 };
 
 for (var i = 0; i < navList.length; i++) {
@@ -56,6 +62,7 @@ function handleClick(e) {
 /**
  * Sends back to the landing page
  */
+
 function returnToLanding() {
 
 	//Update window history state
@@ -77,7 +84,7 @@ function returnToLanding() {
 			navList[2].style.display = 'none';
 			nav.className = nav.className.replace(/\btransparent\b/,'');
 
-			$('#_nav, .landing, .footer').velocity('fadeIn', { duration: modalTransitionLength} );
+			$('#_nav, #_landing-wrap, #_bottom-bg, #_footer').velocity('fadeIn', { duration: modalTransitionLength} );
 
 		}
 
@@ -103,11 +110,10 @@ function loadModal(modalId) {
 	loadScript('/js/handlers/modals/' + modalId + '.js');
 
 	//Coming from landing page
-	if($('.hero-wrap').css('display') == 'block'){
-
+	if($(landingWrap).css('display') == 'block'){
 
 		//Fade out landing page elements
-		$('.landing, #_nav, .footer').velocity('fadeOut', { 
+		$('#_landing-wrap, #_nav, #_bottom-bg, #_footer').velocity('fadeOut', { 
 			duration: modalTransitionLength, 
 			complete: function(){
 
@@ -119,6 +125,7 @@ function loadModal(modalId) {
 						//Adjust nav menu list items to reflec tthe pag 
 						navList[0].style.display = 'none';
 						navList[1].style.display = 'none';
+						navList[3].style.display = 'none';
 						navList[2].style.display = 'inline-block';
 						nav.className += ' transparent';
 						modal.style.display = 'block';

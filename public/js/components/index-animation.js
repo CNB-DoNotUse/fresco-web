@@ -122,9 +122,7 @@ var animation = {
 			translate = 'translate3d(0px,' + value + 'px, 0px)';
 		else
 			translate = 'translate(0px,' + value + 'px)';
-
-		console.log(translate);
-
+		
 		elm.style['-webkit-transform'] = translate;
 		elm.style['-moz-transform'] = translate;
 		elm.style['-ms-transform'] = translate;

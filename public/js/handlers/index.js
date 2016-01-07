@@ -9,6 +9,8 @@ var screen = {
 	nav = document.getElementById('_nav'),
 	lastScrollY = 0,
 	navReached = false,
+	bottomReached = false,
+	initialTranslate = 0,
 	translate3dSupported = animation.has3d(),
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
 
@@ -26,7 +28,11 @@ function init(){
 
 	resizeCall();
 
-	updateElements();
+	initialTranslate = window.innerHeight - animation.getPosition(hero).y - hero.offsetHeight;
+
+	animation.translateY3d(bottom, initialTranslate, translate3dSupported);
+	bottom.style.opacity = 1;
+
 }
 
 // requestAnim shim layer by Paul Irish
@@ -45,9 +51,6 @@ window.requestAnimFrame = (function(){
  * Updates initial diff between hero and bottom
  */
 function resizeCall(){
-	//Reset the initial diff when the window is resized
-	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
-
 	slick.updateArrows();
 }
 
@@ -56,7 +59,7 @@ function updateElements(){
 	scrollY = window.pageYOffset;
 
 	var heroValue = -scrollY / 6 < 0 ? -scrollY / 6 : 0,
-		bottomValue = -scrollY / .3 < 0 ? -scrollY / .3 : 0,
+		bottomValue = (-scrollY / .3 < 0 ? -scrollY / .3 : 0) + initialTranslate,
 		navValue = -scrollY / .5 < 0 ? scrollY / .5 : 0;
 
 	//Make sure our nav bar stops, and remains at 96px after showing
@@ -67,19 +70,17 @@ function updateElements(){
 
 	animation.translateY3d(nav, navValue, translate3dSupported);
 
-	//Check to make sure the bottom value doesn't exceed the inital diff
-	if(bottomValue < initialDiff)
-		bottomValue = initialDiff;
-
-	if(bottomValue > initialDiff) 
-		animation.translateY3d(hero, heroValue, translate3dSupported);
+	if(bottomValue <= 0 || bottomReached) {
+		bottomValue = 0;
+		bottomReached = true;
+	}
+	
 	animation.translateY3d(bottom, bottomValue, translate3dSupported);
 
 	ticking = false;
-
 }
 
-setTimeout(init, 1000);
+init();
 
 window.addEventListener('resize', function() {
 	resizeCall();

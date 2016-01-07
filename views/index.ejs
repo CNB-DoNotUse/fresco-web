@@ -29,81 +29,81 @@
         <div></div>
     </div>
 
-    <div class="hero-wrap landing" style="display:<%-display%>">
-        <div id="_hero" class="hero">
-            <div class="tagline">
-                <h1>THE WORLD NEEDS YOUR CAMERA.</h1>
+    <div class="landing-wrap" id="_landing-wrap" style="display:<%-display%>">
+        <div class="landing">
+            <div id="_hero" class="hero">
+                <div class="tagline">
+                    <h1>THE WORLD NEEDS YOUR CAMERA.</h1>
 
-                <h3>Be on call with Fresco</h3>
-            </div>
-
-            <div class="download">
-                <a href="https://itunes.apple.com/us/app/fresco-news/id872040692?mt=8"><img src="/images/index/appstore.png" /></a>
-                
-                <a href=""><img src="/images/index/play.png" /></a>
-            </div>
-        </div>
-
-        <span class="mdi mdi-arrow-down-bold hover" data-set="#0047BB" data-return="#FFF" id="navigator"></span>
-    </div>
-
-    <div class="bottom-wrap landing" style="display:<%-display%>" id="_bottom-wrap">
-        <div id="_bottom" class="bottom">
-            <div id="_about" class="about card">
-                <div class="scroll">
-                    <ul class="timeline">
-                        <li class="first">
-                            <img src="/images/index/timeline-1.png" />
-                        </li>
-                        
-                        <li class="second">
-                            <img src="/images/index/timeline-2.png" />
-                        </li>
-                        
-                        <li class="third">
-                            <img src="/images/index/timeline-3.png" />
-                            <img class="callout" src="/images/index/callout.png" />
-                        </li>
-                    </ul>
-                    <div class="line"></div>
-                    <ul class="progress">
-                        <li class="first">
-                            <div class="circle"></div>
-                            
-                            <p>GET CLOSE.</p>
-                        </li>
-                        
-                        <li class="second">
-                            <div class="circle"></div>                
-                            
-                            <p>GET THE SHOT.</p>
-                        </li>
-                        
-                        <li class="third">
-                            <div class="circle"></div>               
-                            
-                            <p>GET PAID.</p>
-                        </li>
-                    </ul>
-               </div>
-
-                <p class="info">Fresco notifies you about nearby breaking news events when news outlets need photos and videos for their coverage. 
-                When a news outlet downloads or uses your photo or video, you get paid instantly!</p>
-            </div>
-
-            <div id="_highlights" class="highlights-wrap card">
-                <div id="arrow-left" class="left arrow">
-                    <span>‹</span>
+                    <h3>Be on call with Fresco</h3>
                 </div>
-                
-                <div class="highlights" id="slick-highlights"></div>
 
-                <div id="arrow-right" class="right arrow">
-                    <span>›</span>
+                <div class="download">
+                    <a href="https://itunes.apple.com/us/app/fresco-news/id872040692?mt=8"><img src="/images/index/appstore.png" /></a>
+                    
+                    <a href=""><img src="/images/index/play.png" /></a>
+                </div>
+            </div>
+
+            <div id="_bottom" class="bottom" style="opacity:0">
+                <div id="_about" class="about card">
+                    <div class="scroll">
+                        <ul class="timeline">
+                            <li class="first">
+                                <img src="/images/index/timeline-1.png" />
+                            </li>
+                            
+                            <li class="second">
+                                <img src="/images/index/timeline-2.png" />
+                            </li>
+                            
+                            <li class="third">
+                                <img src="/images/index/timeline-3.png" />
+                                <img class="callout" src="/images/index/callout.png" />
+                            </li>
+                        </ul>
+                        <div class="line"></div>
+                        <ul class="progress">
+                            <li class="first">
+                                <div class="circle"></div>
+                                
+                                <p>GET CLOSE.</p>
+                            </li>
+                            
+                            <li class="second">
+                                <div class="circle"></div>                
+                                
+                                <p>GET THE SHOT.</p>
+                            </li>
+                            
+                            <li class="third">
+                                <div class="circle"></div>               
+                                
+                                <p>GET PAID.</p>
+                            </li>
+                        </ul>
+                   </div>
+
+                    <p class="info">Fresco notifies you about nearby breaking news events when news outlets need photos and videos for their coverage. 
+                    When a news outlet downloads or uses your photo or video, you get paid instantly!</p>
+                </div>
+
+                <div id="_highlights" class="highlights-wrap card">
+                    <div id="arrow-left" class="left arrow">
+                        <span>‹</span>
+                    </div>
+                    
+                    <div class="highlights" id="slick-highlights"></div>
+
+                    <div id="arrow-right" class="right arrow">
+                        <span>›</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="bottom-bg" id="_bottom-bg" style="display:<%-display%>"></div>
 
     <% modals.forEach(function(currentModal){ %>
         <%  active = currentModal == modal ? 'active' : '' %>
