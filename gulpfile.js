@@ -79,7 +79,7 @@ gulp.task('Build Assets',  () => {
 
 			if(pageDependencies.css.length) {
 				cssTasks.push(
-					gulp.src(dependencies.global.css.concat(pageDependencies.css))
+					gulp.src(pageDependencies.css)
 						.pipe(concat(pages[p] + '.css'))
 						.pipe(sass().on('error', sass.logError))
 						.pipe(gulpif(argv.production, minifyCss()))
@@ -89,7 +89,7 @@ gulp.task('Build Assets',  () => {
 
 			if(pageDependencies.js.length) {
 				jsTasks.push(
-					gulp.src(dependencies.global.js.concat(pageDependencies.js))
+					gulp.src(pageDependencies.js)
 						.pipe(concat(pages[p] + '.js'))
 						.pipe(gulpif(argv.production, uglify()))
 						.pipe(gulp.dest('./public/js/pages'))

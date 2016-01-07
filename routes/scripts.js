@@ -519,11 +519,19 @@ router.post('/outlet/create', function(req, res, next){
   var api = requestJson.createClient(config.API_URL),
       parse = requestJson.createClient(config.PARSE_API);
 
+  var userData = {
+    email: req.body.contact_email,
+    password: req.body.contact_password,
+    firstname: req.body.contact_firstname,
+    lastname: req.body.contact_lastname,
+    null
+  };
+
   async.waterfall(
     [
       //Create/Fetch the user
       function(cb){
-        User.registerUser(req.body.contact_email, req.body.contact_password, req.body.contact_firstname, req.body.contact_lastname, null, function(error, user_body, register_body){
+        User.registerUser(userData, function(error, user_body, register_body) {
           if (error){
             if (error == 'ERR_EMAIL_IN_USE' ||
                 error == 'username ' + req.body.contact_email + ' already taken'){
@@ -1071,13 +1079,15 @@ router.get('/user/logout', function(req, res, next) {
   });
 });
 router.post('/user/register', function(req, res, next) {
-  var password = req.body.password,
-      email = req.body.email,
-      firstname = req.body.firstname,
-      lastname = req.body.lastname,
-      token = req.body.token;
+  var userData = {
+      password: req.body.password,
+      email: req.body.email,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      token: req.body.token
+  }
 
-  User.registerUser(email, password, firstname, lastname, token, function(err, user_body, login_body){
+  User.registerUser(userData, function(err, user_body, login_body){
     if (err)
       return res.json({err: err, data: {}}).end();
 
