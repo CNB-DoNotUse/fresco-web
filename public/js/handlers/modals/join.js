@@ -23,7 +23,7 @@ form.addEventListener('submit', function(e) {
 });
 
 
-function registerUser(){
+function registerUser() {
 
 	var name = nameField.value.split(' '),
 		params = {

@@ -97,8 +97,6 @@ router.get('/join', (req, res, next) => {
 
         var body = response.body;
 
-        console.log(body);
-
         return res.render('index', {
             page: 'index',
             user: body.data.user,

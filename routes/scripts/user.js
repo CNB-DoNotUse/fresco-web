@@ -19,7 +19,7 @@ var express = require('express'),
 
 router.post('/user/reset', function(req, res, next) {
 
-    var request  = require('superagent');
+    var request  = require('superagent'),
         email = req.body.email;
 
     if(!email){
@@ -138,25 +138,27 @@ router.get('/user/logout', function(req, res, next) {
 });
 
 router.post('/user/register', function(req, res, next) {
-  var password = req.body.password,
-      email = req.body.email,
-      firstname = req.body.firstname,
-      lastname = req.body.lastname,
-      phone = req.body.phone,
-      token = req.body.token;
+  var userData = {
+    password: req.body.password,
+    email: req.body.email,
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    phone: req.body.phone,
+    token: req.body.token
+  };
 
-  if(!validator.isEmail(email)){
+  if(!validator.isEmail(userData.email)){
     return res.json({
       err: 'ERR_INVALID_EMAIL'
     });
   } 
-  else if(phone != null && !validator.isNumeric(phone)){
+  else if(userData.phone != null && !validator.isNumeric(userData.phone)){
     return res.json({
       err: 'ERR_INVALID_PHONE'
     });
   }
   
-  User.registerUser(email, password, firstname, lastname, phone, token, function(err, user_body, login_body){
+  User.registerUser(userData, function(err, user_body, login_body){
     if (err)
       return res.json({err: err, data: {}}).end();
       

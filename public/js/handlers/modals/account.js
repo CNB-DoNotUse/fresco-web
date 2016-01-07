@@ -96,12 +96,12 @@ var processSignup = function() {
 			key: 'state'
 		},
 		{
-			value: document.getElementById('outlet-member-name').value,
+			value: document.getElementById('outlet-member-name').value.split(' ')[0],
 			name: 'first name',
 			key: 'contact_firstname'
 		},
 		{
-			value: document.getElementById('outlet-member-name').value,
+			value: document.getElementById('outlet-member-name').value.split(' ').slice(1).join(' '),
 			name: 'last name',
 			key: 'contact_lastname'
 		},
@@ -153,7 +153,7 @@ var processSignup = function() {
 			}
 			else{
 
-				window.location.replace('/content');
+				window.location.replace('/archive');
 
 			}
 			
