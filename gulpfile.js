@@ -2,7 +2,8 @@ var fs 				= require('fs'),
 	argv			= require('yargs').argv,
 	gulp 			= require('gulp'),
 	gulpif 			= require('gulp-if'),
-	webpack 		= require('webpack-stream'),
+	webpack 		= require('webpack'),
+	webpackStream 	= require('webpack-stream'),
 	merge 			= require('merge-stream'),
 	runSequence 	= require('run-sequence');
 
@@ -23,8 +24,6 @@ var sections			= Object.keys(dependencies),
 
 var views 			= {},
 	viewFiles 		= fs.readdirSync('./app/views');
-
-console.log(argv);
 
 viewFiles.map((file) => {
   if(exclude.indexOf(file) != -1 || !/.jsx?$/.test(file)) return;
@@ -108,7 +107,7 @@ gulp.task('Build Assets',  () => {
 
 gulp.task('Build Webpack', (cb) => {
 	return gulp.src('app/views/app.js')
-		.pipe(webpack({
+		.pipe(webpackStream({
 			entry: views,
 			watch: true,
 		    output: {
@@ -125,9 +124,11 @@ gulp.task('Build Webpack', (cb) => {
 		          }
 		        }
 		      ]
-		    }
+		    },
+		    plugins: [
+		    	new webpack.optimize.UglifyJsPlugin({minimize: true})
+			]
 		}))
-		.pipe(gulpif(argv.production, uglify()))
 		.pipe(gulp.dest('./public/js/pages'))
 });
 
