@@ -65,7 +65,7 @@ app.use(
 
 //Set up public direc.
 app.use(
-  express.static(path.join(__dirname, 'public'), { maxAge: 300 })
+  express.static(path.join(__dirname, 'public'), { maxAge: 1000 * 60 * 60 * 24 * 7 })
 );
 
 
