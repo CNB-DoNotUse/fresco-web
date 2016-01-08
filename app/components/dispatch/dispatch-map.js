@@ -4,11 +4,9 @@ import DispatchMapCallout from './dispatch-map-callout'
 import _ from 'lodash'
 import global from '../../../lib/global' 
 
-/** //
-
-Description : The container for the map element in the dispatch page
-
-// **/
+/**
+* Description : The container for the map element in the dispatch page
+**/
 
 /**
  * Dispatch Map component
@@ -256,10 +254,9 @@ export default class DispatchMap extends React.Component {
 					changedState.assignments = assignments;
 				}
 
-				if(_.difference(this.state.users, users).length){
-					changedState.users = users;
+				if(_.difference(users, this.state.users).length){
+					changedState.users = _.difference(users, this.state.users);
 				}
-
 				this.setState(changedState);
 
 			});
