@@ -125,8 +125,9 @@ gulp.task('Build Webpack', (cb) => {
 		        }
 		      ]
 		    },
-		    plugins: [
+		    plugins: argv.production ? [
 		    	new webpack.optimize.UglifyJsPlugin({minimize: true})
+			] : [
 			]
 		}))
 		.pipe(gulp.dest('./public/js/pages'))
