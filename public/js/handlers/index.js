@@ -1,10 +1,9 @@
-var screen = {
+ var screen = {
 		tablet: 1024, 
 		mobile: 720
 	},
 	ticking = false, 
 	bottom = document.getElementById('_bottom'),
-	bottomWrap = document.getElementById('_bottom-wrap'),
 	hero = document.getElementById('_hero'),
 	nav = document.getElementById('_nav'),
 	lastScrollY = 0,
@@ -28,9 +27,7 @@ function init(){
 
 	resizeCall();
 
-	initialTranslate = window.innerHeight - animation.getPosition(hero).y - hero.offsetHeight - 100;
-
-	animation.translateY3d(bottom, initialTranslate, translate3dSupported);
+	bottom.style.height = bottom.clientHeight + initialDiff + 40 + 'px';
 	bottom.style.opacity = 1;
 }
 
@@ -50,6 +47,9 @@ window.requestAnimFrame = (function(){
  * Updates initial diff between hero and bottom
  */
 function resizeCall(){
+
+	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
+
 	slick.updateArrows();
 }
 
@@ -57,24 +57,31 @@ function updateElements(){
 
 	scrollY = window.pageYOffset;
 
-	var heroValue = -scrollY / 6 < 0 ? -scrollY / 6 : 0,
-		bottomValue = (-scrollY / .3 < 0 ? -scrollY / .3 : 0) + initialTranslate,
-		navValue = -scrollY / .5 < 0 ? scrollY / .5 : 0;
+	var heroValue = -scrollY / 8 < 0 ? -scrollY / 8 : 0,
+		bottomValue = -scrollY / 1 < 0 ? -scrollY / 1 : 0,
+		navValue = -scrollY / .1 < 0 ? scrollY / .1 : 0;
 
-	//Make sure our nav bar stops, and remains at 96px after showing
-	if(navValue >= 96 || navReached) {
-		navValue = 96;
+	//Make sure our nav bar stops, and remains at 128px after showing
+	if(navValue >= 128 || navReached) {
+		navValue = 128;
 		navReached = true;
 	}
 
 	animation.translateY3d(nav, navValue, translate3dSupported);
 
-	if(bottomValue <= 0 || bottomReached) {
-		bottomValue = 0;
+	//Check to make sure the bottom value doesn't exceed the inital diff
+	if(bottomValue < initialDiff + 80 && !bottomReached){
+		bottomValue = initialDiff + 80;
 		bottomReached = true;
 	}
-	
+	else if(bottomReached){
+	 	ticking = false;
+		return;
+	}
+
 	animation.translateY3d(bottom, bottomValue, translate3dSupported);
+
+	// animation.translateY3d(hero, heroValue, translate3dSupported);
 
 	ticking = false;
 }

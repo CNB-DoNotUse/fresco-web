@@ -19,12 +19,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	@include mobileAndTablet{
 		height:85%;
 	}
-	@include tablet{
-		max-width:95%;
-	}
-	@include mobile{
-		max-width:100%;
-	}
 
 	$footerHeight:57px;
 
@@ -68,6 +62,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 						margin:0 auto 5px;
 					}
 					.author{
+						font-family:Roboto;
 						font-size:12px;
 						@include rgbaWithHex(color, 0, 0, 0, 0.54, #757575);
 					}

@@ -1,5 +1,5 @@
 var modalTransitionLength = 300,
-	landingWrap = document.getElementById('_bottom-bg'),
+	landingWrap = document.getElementById('_landing-wrap'),
 	nav = document.getElementById('_nav'),
 	navList = nav.getElementsByTagName('ul')[0].children,
 	modals = document.getElementsByClassName('modal'),
@@ -33,6 +33,7 @@ for (var i = 0; i < footerList.length; i++) {
  */
 
 function handleClick(e) {
+
 
 	var item = e.target,
 		event = item.dataset.event;
@@ -87,7 +88,7 @@ function returnToLanding() {
 					navList[2].style.display = 'none';
 					nav.className = nav.className.replace(/\btransparent\b/,'');
 
-					$('#_nav, #_landing-wrap, #_bottom-bg, #_footer').velocity('fadeIn', { duration: modalTransitionLength} );
+					$('#_nav, #_landing-wrap, #_footer').velocity('fadeIn', { duration: modalTransitionLength} );
 
 				}
 
@@ -104,6 +105,8 @@ function returnToLanding() {
 
 function loadModal(modalId) {
 
+	console.log(modalId);
+
 	var modal = document.getElementById('_' + modalId);
 
 	//Save modal to winodw
@@ -118,7 +121,7 @@ function loadModal(modalId) {
 	if($(landingWrap).css('display') == 'block'){
 
 		//Fade out landing page elements
-		$('#_landing-wrap, #_nav, #_bottom-bg, #_footer').velocity('fadeOut', { 
+		$('#_landing-wrap, #_nav, #_footer').velocity('fadeOut', { 
 			duration: modalTransitionLength, 
 			complete: function(){
 

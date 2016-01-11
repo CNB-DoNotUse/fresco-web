@@ -1,3 +1,182 @@
+<% 
+	var team = [
+		{
+			'title' : null,
+			'members' :[
+				{
+					'avatar' : 'john.jpg',
+					'name'   : 'John Meyer',
+					'title'  : 'Chief Exective Officer',
+					'handle' : 'beastmode'
+				},
+				{
+					'avatar' : 'jeremy.jpg',
+					'name'   : 'Jeremy Ogorek',
+					'title'  : 'Chief Financial Officer',
+					'handle' : 'jeremyogo'
+				},
+				{
+					'avatar' : 'kyle.jpg',
+					'name'   : 'Kyle Marimon',
+					'title'  : 'Partner Relations',
+					'handle' : 'KyleMarimon'
+				}
+			]
+		},
+		{
+			'title' : 'Design',
+			'members' :[
+				{
+					'avatar' : 'imogen.jpg',
+					'name'   : 'Imogen Olsen',
+					'title'  : 'Chief Design Officer',
+					'handle' : 'imogenic'
+				},
+				{
+					'avatar' : 'erik.jpg',
+					'name'   : 'Erik Washington',
+					'title'  : 'Graphic Designer',
+					'handle' : '_ErikWashington'
+				}
+			]
+		},
+		{
+			'title' : 'The Devs',
+			'members' : [
+				{
+					'avatar' : 'elmir.jpg',
+					'name'   : 'Elmir Kouliev',
+					'title'  : 'CTO',
+					'handle' : 'elmirkouliev'
+				},
+				{
+					'avatar' : 'mike.jpg',
+					'name'   : 'Mike Terpak',
+					'title'  : 'Snr. Web Engineer',
+					'handle' : 'miketerpak'
+				},
+				{
+					'name'   : 'Nolan Leung',
+					'title'  : 'Web Engineer',
+					'handle' : 'nolanleung'
+				},
+				{
+					'name'   : 'Dan Sun',
+					'title'  : 'Snr. iOS Engineer',
+					'handle' : 'dansun'
+				},
+				{
+					'avatar' : 'omar.jpg',
+					'name'   : 'Omar Elfanek',
+					'title'  : 'iOS Engineer',
+					'handle' : 'elfanek'
+				},
+				{
+					'name'   : 'Tim Reynolds',
+					'title'  : 'Android Engineer',
+					'handle' : 'tmrdev'
+				}
+			]
+		},
+		{
+			'title' : 'Content',
+			'members' : [
+				{
+					'avatar' : 'morgan.jpg',
+					'name'   : 'Morgan Boyer',
+					'title'  : 'Head of Content',
+					'handle' : '_bookofmorgan_'
+				},
+				{
+					'avatar' : 'grace.jpg',
+					'name'   : 'Grace Philal',
+					'title'  : 'Content Manager',
+					'handle' : 'gdilla_'
+				},
+				{
+					'avatar' : 'sean.jpg',
+					'name'   : 'Sean McCready',
+					'title'  : 'Software Engineer',
+					'handle' : 'seanmcready'
+				},
+				{
+					'avatar' : 'bryn.jpg',
+					'name'   : 'Bryn Gelbart',
+					'title'  : 'Lead Content Manager',
+					'handle' : 'bryngelbart'
+				},
+				{
+					'name'   : 'Ashley Meyer',
+					'title'  : 'Content Manager',
+					'handle' : 'ashleykm3'
+				},
+				{
+					'name'   : 'Francesca Dunacn',
+					'title'  : 'Content Manager',
+					'handle' : 'ohhhfrancesca'
+				},
+				{
+					'name'   : 'Willow Frederick',
+					'title'  : 'Content Manager',
+				},
+				{
+					'avatar' : 'tosi.jpg',
+					'name'   : 'Tosi Soloman',
+					'title'  : 'Content Manager',
+				},
+				{
+					'name'   : 'Christina Williams',
+					'title'  : 'Content Manager',
+				},
+				{
+					'avatar' : 'christina.jpg',
+					'name'   : 'Christina Williams',
+					'title'  : 'Content Manager',
+				},
+				{
+					'name'   : 'Aziz Adib',
+					'title'  : 'Content Manager',
+				},
+				{
+					'name'   : 'Rakeesha Wrigley',
+					'title'  : 'Content Manager',
+				},
+				{
+					'avatar' : 'katie.jpg',
+					'name'   : 'Katie Schulz',
+					'title'  : 'Content Manager',
+				},
+				{
+					'avatar' : 'goldie.jpg',
+					'name'   : 'Goldie Poll',
+					'title'  : 'Content Manager',
+				},
+				{
+					'name'   : 'Nicolette Acosta',
+					'title'  : 'Content Manager',
+				},
+				{
+					'avatar' : 'trushaa.jpg',
+					'name'   : 'Trushaa Castelino',
+					'title'  : 'Content Manager',
+				},
+				{
+					'name'   : 'Scott Mullen',
+					'title'  : 'Content Manager',
+				},
+				{
+					'name'   : 'Nicole Couscous',
+					'title'  : 'Content Manager',
+				},
+				{
+					'name'   : 'Alberto Zamora',
+					'title'  : 'Video Editor',
+				}
+			]
+		}
+	];
+%>
+
 <div class="modal team <%- active %>" id="_team">
 	<div class="header">
 		<h2>Team</h2>
@@ -11,78 +190,40 @@
 		</div>
 
 		<div class="team-rows">
-			<div class="row">
-				<ul>
-					<li>
-						<div class="avatar">
-							<img />
-						</div>
-						<div class="meta">
-							<p class="name">John Meyer</p>
-							<p class="title">Chief Exective Officer</p>
-							<p class="handler">@beastmode</p>
-						</div>
-					</li>
-					<li>
-						<div class="avatar">
-							<img />
-						</div>
-						<div class="meta">
-							<p class="name">Jeremy Ogorek</p>
-							<p class="title">Chief Exective Officer</p>
-							<p class="handler">@beastmode</p>
-						</div>
-					</li>
-					<li>
-						<div class="avatar">
-							<img />
-						</div>
-						<div class="meta">
-							<p class="name">Kyle Marimon</p>
-							<p class="title">Chief Exective Officer</p>
-							<p class="handler">@beastmode</p>
-						</div>
-					</li>
-				</ul>
-			</div>
-			
-			<div class="row">
-				<h3>Content</h3>
-				
-				<ul>
-					<li>
-						<div class="avatar">
-							<img />
-						</div>
-						
-						<div class="meta">
-							<p class="name">John Meyer</p>
-							<p class="title">Chief Exective Officer</p>
-							<p class="handler">@beastmode</p>
-						</div>
-					</li>
-					<li>
-						<div class="avatar">
-							<img />
-						</div>
-						<div class="meta">
-							<p class="name">Jeremy Ogorek</p>
-							<p class="title">Chief Exective Officer</p>
-							<p class="handler">@beastmode</p>
-						</div>
-					</li>
-					<li>
-						<div class="avatar">
-							<img />
-						</div>
-						<div class="meta">
-							<p class="name">Kyle Marimon</p>
-							<p class="title">Chief Exective Officer</p>
-							<p class="handler">@beastmode</p>
-						</div>
-					</li>
-				</ul>
-			</div>
+			<% for(var i=0; i <team.length; i++) { %>
+				<div class="row">
+					<% if(typeof(team[i]['title']) != 'undefined'){ %>
+						<h3><%= team[i]['title'] %></h3>
+					<% } %>	
+
+					<ul>
+						<% for(var k=0; k < team[i]['members'].length; k++) { %>
+
+							<% member = team[i]['members'][k] %>
+
+							<li>
+								<% if(typeof(member['avatar']) != 'undefined'){ %>
+									<div class="avatar">
+										<img src="http://cdn.static.fresconews.com/index/team/<%= member['avatar'] %>" />
+									</div>
+								<% } else { %>
+									<div class="avatar border"></div>
+								<% } %>
+								<div class="meta">
+									<p class="name"><%- member['name'] %></p>
+									<p class="title"><%- member['title'] %></p>
+									<% if(typeof(member['handle']) != 'undefined'){ %>
+										<a target="_blank" href="https://twitter.com/<%= member['handle'] %>">
+											<p class="handle">@<%= member['handle'] %></p>
+										</a>
+									<% } %>
+								</div>
+							</li>
+						<% } %>
+					</ul>
+				</div>
+
+		    <% } %>
 		</div>
 	</div>
 </div>

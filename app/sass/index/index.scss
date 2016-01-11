@@ -10,6 +10,11 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 @import "../global/fresco-slick";
 @import "modals";
 
+.wrapper{
+	height:auto;
+	overflow:hidden;
+}
+
 .text-banner{
 	text-shadow:0 2px 2px #000;
 	text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
@@ -32,7 +37,7 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 .nav{
 
 	@include box-shadow(0 4px 4px 0 rgba(0, 0, 0, 0.05), 0 6px 6px 0 rgba(0, 0, 0, 0.15));
-	top:-102px;
+	top:-128px;
 
 	@include mobile{
 		opacity:1;
@@ -46,8 +51,8 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 	}
 
 	ul {
-		float:right;
-		padding:42px 48px 0 0;
+		float: right;
+	    padding: 68px 48px 0 0;
 
 		@include mobile{
 			display:none;
@@ -68,6 +73,11 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 			margin-left:24px;
 		}
 	}
+}
+
+.footer{
+	position:relative;
+	// top:85%;
 }
 
 /*
@@ -140,110 +150,86 @@ $heroHeight: 180px;
 }
 
 /**
- * Sections below hero
- */
-
-.bottom-bg{
-	display:block;
-	position:relative;
-	width:100%;
-	background:$fresco-bg;
-	height:800px;
-
-	@include tablet{
-		height:890px;
-	}
-	@include mobile{
-		height:1050px;
-	}
-}
-
-/**
  * Hero Wrapper, contains the top part of the landing page
  */
 
 .landing-wrap{
-	position:relative;
 	height:100%;
-	width:100%;
-
-	.landing{
-		position: absolute;
-	    left: 0;
-	    right: 0;
-	    top: 40%;
-
-	    @include mobile{
-	    	top:20%;
-	    }
-	}
-
-	.hero{
-		position:relative;
-		left:0; right:0; top:30%;
-		margin:0 auto 120px;
-		height:$heroHeight;
-		text-align:center;
-		color:#FFF;
-
-		@include mobile{
-			top:-30%;
-		}
-
-		.tagline{
-			margin:0 auto 48px;
-			max-width:98%;
-
-			h1{
-				font-weight:700;
-				font-size:48px;
-				text-shadow:0 2px 2px #F5F5F5;
-				text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
-			}
-			
-			h3{
-				font-weight:400;
-				font-size:26px;
-				text-shadow:0 2px 2px #F5F5F5;
-				text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
-			}
-		}
-
-		.download{
-
-			a{
-				margin:0 5px;
-				img{
-					width:145px;
-				}	
-			}
-
-		}
-
-	}
-
-	.mdi-arrow-down-bold{
-		cursor:pointer;
-		color:#FFF;
-		position:absolute;
-		display:inline-block;
-		max-width:48px;
-		bottom:20px;
-		left:0;
-		right:0;
-		margin:0 auto;
-		font-size:48px;
-		text-shadow:0 3px 2px rgb(0, 0, 0);
-		text-shadow:0 3px 2px rgba(0, 0, 0, 0.15);
-	}
-	
 }
+
+.hero-wrap{
+	-webkit-height:100vh;
+	   -moz-height:100vh;
+	    -ms-height:100vh;
+	     -o-height:100vh;
+	        height:100vh;  /* The Fallback */
+}
+
+.hero{
+
+	height:$heroHeight;
+	margin:0 auto 100px;
+	text-align:center;
+	position:relative;
+	color:#FFF;
+	top:45%;
+
+	@include mobile{
+		top:25%;
+	}
+
+	.tagline{
+		margin:0 auto 48px;
+		max-width:98%;
+
+		h1{
+			font-weight:700;
+			font-size:48px;
+			text-shadow:0 2px 2px #F5F5F5;
+			text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+		}
+		
+		h3{
+			font-weight:400;
+			font-size:26px;
+			text-shadow:0 2px 2px #F5F5F5;
+			text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+		}
+	}
+
+	.download{
+
+		a{
+			margin:0 5px;
+			img{
+				width:145px;
+			}	
+		}
+
+	}
+}
+
+
+.mdi-arrow-down-bold{
+	cursor:pointer;
+	color:#FFF;
+	position:absolute;
+	display:inline-block;
+	max-width:48px;
+	bottom:20px;
+	left:0;
+	right:0;
+	margin:0 auto;
+	font-size:48px;
+	text-shadow:0 3px 2px rgb(0, 0, 0);
+	text-shadow:0 3px 2px rgba(0, 0, 0, 0.15);
+}
+	
 
 
 .bottom{
 
 	position:relative;
-	top:30%;
 	-webkit-transition: opacity .3s linear;
        -moz-transition: opacity .3s linear;
    	     -o-transition: opacity .3s linear;
@@ -255,6 +241,7 @@ $heroHeight: 180px;
 	.card{
 		@include box-shadow(0 2px 2px 0 rgb(0, 0, 0), 0 3px 2px 0 rgb(0, 0, 0));
 		@include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 3px 2px 0 rgba(0, 0, 0, 0.10));
+		@include border-radius(2px);
 		background:#FFF;
 		max-width:736px;
 		margin:20px auto;
@@ -486,7 +473,7 @@ $mobileSlideHeight:540px;
 			}
 
 			.posts{
-				width:55%;
+				width:61%;
 				height:$postHeight;
 				margin:0 auto;
 				float:left;
@@ -513,7 +500,7 @@ $mobileSlideHeight:540px;
 
 			.gallery-info{
 				float:left;
-				width:45%;
+				width:39%;
 				height:100%;
 				overflow:hidden;
 				font-family:Roboto;
@@ -561,7 +548,7 @@ $mobileSlideHeight:540px;
 
 					.link{
 					    position: relative;
-					    top:10px;
+					    top:12px;
 					    cursor:pointer;
 					    left:10px;
 
@@ -581,7 +568,7 @@ $mobileSlideHeight:540px;
 					.social{
 						float:right;
 					    position: relative;
-					    bottom:10px;
+					    bottom:8px;
 					    right:10px;
 
 						span.mdi-facebook-box{

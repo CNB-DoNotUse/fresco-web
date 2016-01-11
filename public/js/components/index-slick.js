@@ -51,7 +51,22 @@ var slick = {
 		});
 
 		var arrowRight = document.getElementById('arrow-right'),
-			arrowLeft =  document.getElementById('arrow-left');
+			arrowLeft =  document.getElementById('arrow-left'),
+			links = document.getElementsByClassName('copy-link'),
+			facebook = document.getElementsByClassName('facebook-link'),
+			twitter = document.getElementsByClassName('twitter-link');
+
+		console.log(facebook);
+
+		for (var i = 0; i < links.length; i++) {
+			links[i].addEventListener('click', this.copyClicked);
+		};
+		for (var i = 0; i < facebook.length; i++) {
+			facebook[i].addEventListener('click', this.facebookClicked);
+		};
+		for (var i = 0; i < twitter.length; i++) {
+			twitter[i].addEventListener('click', this.twitterClicked);
+		};
 
 		arrowRight.addEventListener('click', function(){
 			$('#slick-highlights').slick('slickNext');
@@ -60,7 +75,6 @@ var slick = {
 		arrowLeft.addEventListener('click', function(){
 			$('#slick-highlights').slick('slickPrev');
 		});
-
 	},
 
 	/**
@@ -75,7 +89,9 @@ var slick = {
 			var defaultAvatar = 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png';
 				avatar = post.owner ? post.owner.avatar ? post.owner.avatar : defaultAvatar :defaultAvatar,
 				address = post.location.address != null ? post.location.address : 'No location',
-				timestampText = moment(post.timestamp).format('h:mm A');
+				timestampText = moment(post.timestamp).format('h:mm A'),
+				byline = post.byline.replace('via Fresco News', ''),
+				link = 'https://fresconews.com/gallery/' + gallery._id;
 
 			return '<div class="post-slide" style="background-image:url('+ post.image +')">\
 			            <table class="slick-meta">\
@@ -84,7 +100,7 @@ var slick = {
 			                        <td>\
 			                            <img src="https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png" />\
 			                        </td>\
-			                        <td class="meta-text byline">' + post.byline + '</td>\
+			                        <td class="meta-text byline">' + byline + '</td>\
 			                    </tr>\
 			                    \
 			                    <tr>\
@@ -111,16 +127,45 @@ var slick = {
 				        <div class="interaction">\
 				            <div class="link">\
 				                <span class="mdi mdi-link-variant"></span>\
-				                <span>Copy Link</span>\
+				                <span class="copy-link" data-link="' + link + '">Copy Link</span>\
 				            </div>\
 				           \
 				            <div class="social">\
-				                <a><span class="mdi mdi-twitter"></span></a>\
-				                <a><span class="mdi mdi-facebook-box"></span></a>\
+				                <a href="https://twitter.com/intent/tweet?text='+ encodeURIComponent(link) +'" target="_blank">\
+				                	<span class="mdi mdi-twitter twitter-link"></span>\
+				                </a>\
+				                <a><span class="mdi mdi-facebook-box facebook-link"  data-link="' + link + '"></span></a>\
 				            </div>\
 				        </div>\
 				    </div>\
 				</div>';
+
+	},
+
+	facebookClicked: function(e){
+
+		var link = encodeURIComponent(e.target.dataset.link),
+			facebook = 'https://www.facebook.com/dialog/share?app_id=267157383448416&display=popup&href='+ link +'&redirect_uri=' + encodeURIComponent('https://fresconews.com');
+
+		var win = window.open(facebook, '_blank');
+
+		if(win){
+		    //Browser has allowed it to be opened
+		    win.focus();
+		}else{
+		    //Broswer has blocked it
+		    alert('Please allow popups for this site');
+		}
+
+	},
+
+	twitterClicked: function() {
+		console.log('twitter');
+	},
+
+	copyClicked: function() {
+
+		console.log('copy');
 
 	},
 
@@ -130,11 +175,12 @@ var slick = {
 			arrowLeft = document.getElementById('arrow-left');
 
 		//Desktop
-		if(window.innerWidth > screen.tablet){
+		if(window.innerWidth > screen.mobile){
 			highlights.insertBefore(arrowLeft, slickHighlights);
 		}
 		//Mobile
-		else if(window.innerWidth < screen.tablet){
+		else if(window.innerWidth < screen.mobile){
+			console.log('Fuck');
 			highlights.insertBefore(slickHighlights, arrowLeft);
 		}
 
