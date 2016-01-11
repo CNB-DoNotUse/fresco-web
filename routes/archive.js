@@ -23,7 +23,7 @@ router.get('/', (req, res, next) => {
       props = {
         user : req.session.user,
         purchases : purchases,
-        title:title
+        title: title
       };
 
   res.render('app', {

@@ -26,9 +26,7 @@ router.get('/:id', function(req, res, next) {
 
 			}
 
-			var story = body.data,
-          purchases = config.mapPurchases();
-          props = {
+			var props = {
             story: body.data,
             purchases: config.mapPurchases(),
             user: req.session.user

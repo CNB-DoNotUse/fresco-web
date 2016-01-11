@@ -59,7 +59,7 @@ gulp.task('Build Assets',  () => {
 		jsTasks.push(
 			gulp.src(dependencies.global.js.concat(dependencies[section]._global.js))
 				.pipe(concat(section + '.js'))
-				.pipe(gulpif(argv.production, uglify()))
+				// .pipe(gulpif(argv.production, uglify()))
 				.pipe(gulp.dest('./public/js'))
 		);
 
@@ -91,7 +91,7 @@ gulp.task('Build Assets',  () => {
 				jsTasks.push(
 					gulp.src(pageDependencies.js)
 						.pipe(concat(pages[p] + '.js'))
-						.pipe(gulpif(argv.production, uglify()))
+						// .pipe(gulpif(argv.production, uglify()))
 						.pipe(gulp.dest('./public/js/pages'))
 				);
 			}			
@@ -106,6 +106,25 @@ gulp.task('Build Assets',  () => {
  */
 
 gulp.task('Build Webpack', (cb) => {
+
+	var plugins = [
+		new webpack.optimize.CommonsChunkPlugin({
+			name: "commons",
+			filename: "fresco.js"
+		})
+	];
+
+	if(argv.production) {
+		plugins.push(
+	    	new webpack.optimize.UglifyJsPlugin({
+	    		compress: {
+	    			warnings: false
+				},
+	    		minimize: true
+			})
+		)
+	}
+
 	return gulp.src('app/views/app.js')
 		.pipe(webpackStream({
 			entry: views,
@@ -125,9 +144,7 @@ gulp.task('Build Webpack', (cb) => {
 		        }
 		      ]
 		    },
-		    plugins: [
-		    	new webpack.optimize.UglifyJsPlugin({minimize: true})
-			]
+		    plugins: plugins
 		}))
 		.pipe(gulp.dest('./public/js/pages'))
 });

@@ -38,16 +38,15 @@ class Photos extends React.Component {
 	//Returns array of posts with offset and callback, used in child PostList
 	loadPosts (passedOffset, callback) {
 
-		var endpoint = '/v1/post/list',
-				params = {
-					limit: 18,
-					verified : this.state.verifiedToggle,
-					offset: passedOffset,
-					type: 'photo'
-				};
+		var params = {
+				limit: 18,
+				verified : this.state.verifiedToggle,
+				offset: passedOffset,
+				type: 'photo'
+			};
 
 		$.ajax({
-			url:  global.API_URL + endpoint,
+			url:  '/api/post/list',
 			type: 'GET',
 			data: params,
 			dataType: 'json',

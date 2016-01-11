@@ -71,15 +71,14 @@ export class Search extends React.Component {
 
 		this.onMapDataChange		= this.onMapDataChange.bind(this);
 
+		this.resetGalleries			= this.resetGalleries.bind(this);
 		this.refreshData			= this.refreshData.bind(this);
 	}
 
 	componentDidMount() {
 		this.getAssignments(0);
 		this.pending = true;
-		this.getGalleries(0, () => {
-			this.pending = false;
-		});
+		this.resetGalleries();
 		this.getStories(0);
 		this.getUsers(0);
 	}
@@ -87,11 +86,11 @@ export class Search extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if(JSON.stringify(prevState.location) != JSON.stringify(this.state.location) || 
 			JSON.stringify(prevState.radius) != JSON.stringify(this.state.radius)) {
-			this.refreshData()
+			this.refreshData();
 		}
 	}
 	
-	circleToPolygon(circle, numSides){
+	circleToPolygon(circle, numSides) {
 		var center = circle.getCenter(),
 			topleft = circle.getBounds().getNorthEast(),
 	  		radiusX = Math.abs(topleft.lat() - center.lat()),
@@ -139,7 +138,7 @@ export class Search extends React.Component {
 	}
 
 	// Query API for galleries
-	getGalleries(offset, force, cb) {
+	getGalleries(offset, cb) {
 		if (typeof cb == 'undefined') {
 			var cb = force;
 		}
@@ -169,16 +168,9 @@ export class Search extends React.Component {
 			polygon: polygon,
 		}, (galleries) => {
 
-			if(galleries.err || !galleries.data) return;
-			var newGalleries = this.state.galleries.concat(galleries.data);
+			if(galleries.err || !galleries.data) return cb([]);
 
-
-			this.setState({
-				galleries: force ? galleries.data : newGalleries,
-				offset: force ? galleries.data.length : newGalleries.length
-			});
-
-			cb();
+			cb(galleries.data);
 
 		});
 	}
@@ -280,15 +272,18 @@ export class Search extends React.Component {
 		var shouldGetMoreResults = pxToBottom <= 96;
 		// Check if already getting purchases because async
 		if(shouldGetMoreResults && !this.pending) {
+
+
 			this.pending = true;
 			// Pass current offset to getMorePurchases
-			this.getGalleries(this.state.offset, () => {
+			this.getGalleries(this.state.offset, (galleries) => {
 				// Allow getting more results after we've gotten more results.
 				// Update offset to new results length
-				// 
+				
 				this.pending = false;
 				this.setState({
-					offset: this.state.galleries.length
+					galleries: this.state.galleries.concat(galleries),
+					offset: this.state.galleries.length + galleries.length
 				});
 			});
 		}
@@ -318,12 +313,25 @@ export class Search extends React.Component {
 	}
 	
 	/**
+	 * 
+	 */
+	resetGalleries() {
+		this.getGalleries(0, (galleries) => {
+			this.setState({
+				galleries: galleries,
+				offset: galleries.length
+			});
+			this.pending = false;
+		});
+	}
+
+	/**
 	 * Gets new search data
 	 */
 	refreshData() {
 
 		this.getAssignments(0, true);
-		this.getGalleries(0, true);
+		this.resetGalleries();
 		this.getUsers(0, true);
 		this.getStories(0, true);
 

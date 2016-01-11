@@ -65,7 +65,7 @@ app.use(
 
 //Set up public direc.
 app.use(
-  express.static(path.join(__dirname, 'public'), { maxAge: 300 })
+  express.static(path.join(__dirname, 'public'), { maxAge: 1000 * 60 * 60 * 24 * 7 })
 );
 
 
@@ -77,7 +77,6 @@ app.use((req, res, next)=> {
   req.alerts = [];
 
   if (req.session && req.session.user && !req.session.user.verified){
-    console.log(req.session);
     req.alerts.push('<p>Your email hasn\'t been verified.<br>Please click on the link sent to your inbox to verify your email!</p><div><a href="/scripts/user/verify/resend">RESEND EMAIL</a></div>');
   }
 
@@ -112,19 +111,26 @@ app.use(function(req, res, next) {
         err = new Error('Page not found!'),
         now = Date.now(),
         api = requestJson.createClient(config.API_URL);
-    err.status = 404;
+        err.status = 404;
 
     //Check if not a platform route
-    if(routes.platform.indexOf(path) == -1) 
-        return next();
+    if(routes.platform.indexOf(path) == -1) {
+      console.log('Path: ' + path + '\nError: Not a platform route');
+      return next();
+    }
 
     //Check if there is no sessioned user
-    if (!req.session.user) 
-        return next(err);
+    if (!req.session.user) {
+      console.log('No user session');
+      return next(err);
+    }
 
     //Check if the session has expired
-    if (req.session.user.TTL && req.session.user.TTL - now > 0)
-        return next(err);
+    if (req.session.user.TTL && req.session.user.TTL - now <= 0) {
+      console.log('Session expired');
+      delete req.session.user;
+      return next(err);
+    }
 
     //Send request for user profile
     api.get('/v1/user/profile?id=' + req.session.user._id, (err, response, body) => {
@@ -134,7 +140,6 @@ app.use(function(req, res, next) {
 
         //Check for error on api payload
         if (body.err) {
-            
             req.session.alerts = [config.resolveError(body.err)];
             
             delete req.session.user;
@@ -150,8 +155,9 @@ app.use(function(req, res, next) {
         req.session.user.token = token;
         req.session.user.TTL = now + config.SESSION_REFRESH_MS;
 
-        if (!req.session.user.outlet){
+        if (!req.session.user.outlet) {
             return req.session.save(function() {
+                console.log('No outlet');
                 return next(err);
             });
         }
@@ -163,7 +169,7 @@ app.use(function(req, res, next) {
                 req.session.user.outlet.purchases = body.data;
 
             req.session.save(function() {
-                return next(err);
+                return next();
             });
         });
     });
@@ -247,7 +253,7 @@ app.use('/api', (req, res, next) => {
   if(req.method == 'GET') {
 
     return request
-      .get('http://dev.api.fresconews.com/v1' + req.url)
+      .get(config.API_URL + '/' + config.API_VERSION + req.url)
       .query(req.query)
       .set('authtoken', token)
       .end((err, response) => {
@@ -275,10 +281,9 @@ app.use('/api', (req, res, next) => {
  */
 
 app.use((err, req, res, next) => {
-
     // Development error handle will print stacktrace
     if (app.get('env') === 'development') {
-        console.log('\n Path: ', req.path, '\nError: ', err + '\n');
+        console.log('\nPath: ', req.path, '\nError: ', err + '\n');
     }
 
     //Respond with code

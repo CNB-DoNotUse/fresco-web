@@ -134,7 +134,7 @@ class PublicGalleryInfo extends React.Component {
 	 */
 	loadRelatedGalleries(){
 		$.ajax({
-			url:  '/scripts/gallery/list',
+			url:  '/api/gallery/list',
 			type: 'GET',
 			data: {
 				limit: 10,
@@ -162,7 +162,7 @@ class PublicGalleryInfo extends React.Component {
 		var story = this.props.gallery.related_stories[0];
 
 		$.ajax({
-			url:  global.API_URL + '/v1/story/galleries',
+			url:  '/api/story/galleries',
 			type: 'GET',
 			data: {
 				id: story._id
