@@ -27,7 +27,6 @@ function init(){
 
 	resizeCall();
 
-	bottom.style.height = bottom.clientHeight + initialDiff + 40 + 'px';
 	bottom.style.opacity = 1;
 }
 
@@ -52,46 +51,34 @@ function resizeCall(){
 	slick.updateArrows();
 }
 
-function updateElements(){
+function updateElements() {
+	var val = (window.pageYOffset) - 256;
 
-	scrollY = window.pageYOffset;
+	// Don't move up too much.
+	val = val < -128 ? -128 : val;
+	// Don't move down too much.
+	val = val > 0 ? 0 : val;
 
-	var heroValue = -scrollY / 8 < 0 ? -scrollY / 8 : 0,
-		bottomValue = -scrollY / 1 < 0 ? -scrollY / 1 : 0,
-		navValue = -scrollY / .1 < 0 ? scrollY / .1 : 0;
-
-	//Make sure our nav bar stops, and remains at 128px after showing
-	if(navValue >= 128 || navReached) {
-		navValue = 128;
-		navReached = true;
-	}
-
-	animation.translateY3d(nav, navValue, translate3dSupported);
-
-	//Check to make sure the bottom value doesn't exceed the inital diff
-	if(bottomValue < initialDiff + 80 && !bottomReached){
-		bottomValue = initialDiff + 80;
-		bottomReached = true;
-	}
-	else if(bottomReached){
-	 	ticking = false;
-		return;
-	}
-
-	animation.translateY3d(bottom, bottomValue, translate3dSupported);
-
-	// animation.translateY3d(hero, heroValue, translate3dSupported);
+	animation.translateY3d(nav, val, translate3dSupported);
 
 	ticking = false;
 }
 
 init();
+x();
 
+function x() {
+	console.log($('.bottom').offset().top);
+	animation.translateY3d(bottom, window.pageYOffset, true);
+}
 window.addEventListener('resize', function() {
+	x();
 	resizeCall();
 });
 
 window.addEventListener('scroll', function(e) {
+
+	x();
 
 	//Check if we're not in modal mode
 	if(nav.className.indexOf('transparent') > -1) return;
