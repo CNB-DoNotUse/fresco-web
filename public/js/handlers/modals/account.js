@@ -162,7 +162,7 @@ var processSignup = function() {
 				return $.snackbar({content: resolveError(response.err)});
 
 			}
-			else{
+			else {
 
 				window.location.replace('/archive');
 
@@ -199,13 +199,15 @@ var processLogin = function() {
 		dataType: 'json',
 		success: function(response, status, xhr){
 
+			// return console.log (response);
+
 			if(response.err){
 
 				$.snackbar({ content: 'An error occured. Please try again in a bit'});
 
 			}
 			//Redirect
-			else{
+			else {
 
 				window.location.replace('/archive');
 

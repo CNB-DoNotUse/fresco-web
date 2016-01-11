@@ -49,15 +49,14 @@ class StoryDetail extends React.Component {
  	//Returns array of posts with offset and callback, used in child PostList
  	loadPosts(passedOffset, callback) {
 
- 		var endpoint = '/v1/story/posts',
- 				params = {
- 					id: this.props.story._id,
- 					limit: 10,
- 					offset: passedOffset,
- 				};
+ 		var params = {
+				id: this.props.story._id,
+				limit: 10,
+				offset: passedOffset,
+			};
 
  		$.ajax({
- 			url:  global.API_URL + endpoint,
+ 			url:  '/api/story/posts',
  			type: 'GET',
  			data: params,
  			dataType: 'json',

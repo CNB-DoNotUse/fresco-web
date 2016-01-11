@@ -29,7 +29,7 @@ export default class PostEditAction extends React.Component {
 	 */
 	edit() {
 		
-		$.get(global.API_URL + '/v1/gallery/get', { id: this.props.post.parent }, (response) => {
+		$.get('/api/gallery/get', { id: this.props.post.parent }, (response) => {
 			
 			if(response.err) {
 				$.snackbar({ content: 'We couldn\'t find the gallery attached to this post!'});

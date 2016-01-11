@@ -49,15 +49,14 @@ class UserDetail extends React.Component {
  	//with offset and callback, used in child PostList
  	loadPosts(passedOffset, callback) {
 
- 		var endpoint = '/v1/user/posts',
-			params = {
-				id: this.props.user._id,
-				limit: 15,
-				offset: passedOffset,
-			};
+		var params = {
+			id: this.props.user._id,
+			limit: 15,
+			offset: passedOffset,
+		};
 
  		$.ajax({
- 			url:  global.API_URL + endpoint,
+ 			url:  '/api/user/posts',
  			type: 'GET',
  			data: params,
  			dataType: 'json',

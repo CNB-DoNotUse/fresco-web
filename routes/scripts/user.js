@@ -79,16 +79,23 @@ router.post('/user/login', function(req, res, next) {
     parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
     parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
     parse.headers['X-Parse-Revocable-Session'] = "1";
-    parse.get('/1/login?username=' + querystring.escape(req.body.email) + '&password=' + querystring.escape(req.body.password), function(err,response,parse_body){
-      if(err)
+
+    parse.get('/1/login?username=' + 'nolan@fresconews.com' + '&password=' + 'nolanl', function(err,response,parse_body) {
+      if(err) {
+        console.log(err);
         return res.json({err: err}).end();
-      if (response.statusCode == 401)
-        return res.status(401).json({err: 'ERR_UNAUTHORIZED'}).end();
-      if (!parse_body)
+      }
+      if (response.statusCode == 401) {
+        return res.status(401).send({err: 'ERR_UNAUTHORIZED'});
+      }
+      if (!parse_body) {
         return res.json({err: 'ERR_EMPTY_BODY'}).end();
+      }
+
 
       var api = requestJson.createClient(config.API_URL);
-      api.post('/v1/auth/loginparse', {parseSession: parse_body.sessionToken}, function(err,response,login_body){
+      api.post('/v1/auth/loginparse', { parseSession: parse_body.sessionToken }, function(err, response, login_body) {
+
         if (err)
           return res.json({err: err.err}).end();
         if (response.statusCode == 401)
@@ -98,18 +105,23 @@ router.post('/user/login', function(req, res, next) {
         if (login_body.err)
           return res.json({err: login_body.err}).end();
 
+
+
         req.session.user = login_body.data.user;
         req.session.user.token = login_body.data.token;
         req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
 
-        if (!req.session.user.outlet)
+        if (!req.session.user.outlet) {
           return  req.session.save(function(){
-                    res.json({err: null, data: login_body.data.user}).end();
-                  });
+            res.json({err: null, data: login_body.data.user}).end();
+          });
+        }
 
 	      api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(purchase_err,purchase_response,purchase_body){
-          if (!purchase_err && purchase_body && !purchase_body.err)
+          if (!purchase_err && purchase_body && !purchase_body.err) {
             req.session.user.outlet.purchases = purchase_body.data;
+          }
+
           req.session.save(function(){
             res.json({err: null, data: login_body.data.user}).end();
           });
