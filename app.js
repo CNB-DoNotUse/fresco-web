@@ -133,13 +133,11 @@ app.use(function(req, res, next) {
 
     //Send request for user profile
     api.get('/v1/user/profile?id=' + req.session.user._id, (err, response, body) => {
-
         //Check request
         if (err || !body) return next();
 
         //Check for error on api payload
-        if (body.err) {
-            req.session.alerts = [config.resolveError(body.err)];
+        if (body.err || !body.data._id) {
             
             delete req.session.user;
             

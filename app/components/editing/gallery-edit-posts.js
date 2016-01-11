@@ -19,21 +19,27 @@ export default class GalleryEditPosts extends React.Component {
 
 		var posts = this.props.posts.map((post) => {
 			var shouldDelete = this.props.deletePosts.indexOf(post._id) != -1;
-			
-			return <div key={++k} className={"frick-frame" + (shouldDelete ? " frick-delete" : "")}>
-						<EditPost post={post} />
-						<div className="frick-overlay">
-							<span>
-								<span className="mdi mdi-delete icon" />
-								<div className="md-type-caption">This post will be deleted</div>
-							</span>
-						</div>
-						<a>
-							<span
-								className={"mdi mdi-close-circle icon" + (shouldDelete ? ' addback' : '')}
-								onClick={this.props.toggleDelete.bind(null, post._id)} />
-						</a>
+			var deleteText = '';
+			if(this.props.posts.length > 1) {
+				deleteText =
+					<a>
+						<span
+							className={"mdi mdi-close-circle icon" + (shouldDelete ? ' addback' : '')}
+							onClick={this.props.toggleDelete.bind(null, post._id)} />
+					</a>
+			}
+			return (
+				<div key={++k} className={"frick-frame" + (shouldDelete ? " frick-delete" : "")}>
+					<EditPost post={post} />
+					<div className="frick-overlay">
+						<span>
+							<span className="mdi mdi-delete icon" />
+							<div className="md-type-caption">This post will be deleted</div>
+						</span>
 					</div>
+					{deleteText}
+				</div>
+			);
 
 		});
 
