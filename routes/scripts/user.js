@@ -79,8 +79,8 @@ router.post('/user/login', function(req, res, next) {
     parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
     parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
     parse.headers['X-Parse-Revocable-Session'] = "1";
-
-    parse.get('/1/login?username=' + req.body.username + '&password=' + req.body.password, function(err,response,parse_body) {
+    
+    parse.get('/1/login?username=' + req.body.email + '&password=' + req.body.password, function(err,response,parse_body) {
       if(err) {
         return res.json({err: err}).end();
       }
