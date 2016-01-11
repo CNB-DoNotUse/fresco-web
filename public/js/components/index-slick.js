@@ -86,10 +86,10 @@ var slick = {
 			var defaultAvatar = 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png';
 				avatar = post.owner ? post.owner.avatar ? post.owner.avatar : defaultAvatar :defaultAvatar,
 				address = post.location.address != null ? post.location.address : 'No location',
-				timestampText = moment(post.timestamp).format('h:mm A'),
+				timestampText = moment(post.time_created).format('h:mm A'),
 				byline = post.byline.replace('via Fresco News', ''),
 				link = 'https://fresconews.com/gallery/' + gallery._id;
-
+				
 			return '<div class="post-slide" style="background-image:url('+ post.image +')">\
 			            <table class="slick-meta">\
 			                <tbody>\
