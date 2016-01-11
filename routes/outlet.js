@@ -42,8 +42,8 @@ router          = express.Router();
 
     } else {
       req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?
-        'This outlet is in demo mode. We’ll be in touch shortly to verify your account.<div><a>OK</a></div>' :
-        'This outlet is in demo mode. Purchases and downloads are currently disabled.<div><a>OK</a></div>');
+        'This outlet is in demo mode. We’ll be in touch shortly to verify your account.' :
+        'This outlet is in demo mode. Purchases and downloads are currently disabled.');
     }
 
       var title = 'Outlet',

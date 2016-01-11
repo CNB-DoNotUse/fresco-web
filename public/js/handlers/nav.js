@@ -34,7 +34,6 @@ for (var i = 0; i < footerList.length; i++) {
 
 function handleClick(e) {
 
-
 	var item = e.target,
 		event = item.dataset.event;
 
@@ -78,6 +77,9 @@ function returnToLanding() {
 				duration: modalTransitionLength, 
 				complete: function(){
 
+					//Reset the wrapper height
+					// $('.wrapper').css('height', 'auto');
+
 					//Hide the modal after the animation
 					window.modal.style.display = 'none';
 
@@ -105,8 +107,6 @@ function returnToLanding() {
 
 function loadModal(modalId) {
 
-	console.log(modalId);
-
 	var modal = document.getElementById('_' + modalId);
 
 	//Save modal to winodw
@@ -125,15 +125,18 @@ function loadModal(modalId) {
 			duration: modalTransitionLength, 
 			complete: function(){
 
+				//Reset the wrapper height
+				// $('.wrapper').css('height', '100%');
+
 				$(modal).velocity({ translateY : '100%' }, {
 					duration: 0, 
-					delay: 500,
+					delay: 0,
 					complete: function(){
 
 						//Adjust nav menu list items to reflec tthe pag 
 						navList[0].style.display = 'none';
 						navList[1].style.display = 'none';
-						navList[3].style.display = 'none';
+						navList[3].style.display = 'inlie-block';
 						navList[2].style.display = 'inline-block';
 						nav.className += ' transparent';
 						modal.style.display = 'block';
