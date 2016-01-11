@@ -1,7 +1,6 @@
 <% 
 	var team = [
 		{
-			'title' : null,
 			'members' :[
 				{
 					'avatar' : 'john.jpg',
@@ -19,6 +18,12 @@
 					'avatar' : 'kyle.jpg',
 					'name'   : 'Kyle Marimon',
 					'title'  : 'VP, Partner Relations',
+					'handle' : 'KyleMarimon'
+				},
+				{
+					'avatar' : 'canon.jpg',
+					'name'   : 'Johnathan Hamiter',
+					'title'  : 'Sales',
 					'handle' : 'KyleMarimon'
 				}
 			]
@@ -52,18 +57,17 @@
 				{
 					'avatar' : 'mike.jpg',
 					'name'   : 'Mike Terpak',
-					'title'  : 'Software Engineer - Backend',
-					'handle' : 'miketerpak'
+					'title'  : 'Software Engineer - Backend'
 				},
 				{
+					'avatar' : 'nolan.jpg',
 					'name'   : 'Nolan Leung',
-					'title'  : 'Software Engineer - Full Stack',
-					'handle' : 'nolanleung'
+					'title'  : 'Software Engineer - Full Stack'
 				},
 				{
+					'avatar' : 'dan.jpg',
 					'name'   : 'Dan Sun',
-					'title'  : 'Sr. iOS Engineer',
-					'handle' : 'dansun'
+					'title'  : 'Sr. iOS Engineer'
 				},
 				{
 					'avatar' : 'omar.jpg',
@@ -72,9 +76,9 @@
 					'handle' : 'elfanek'
 				},
 				{
+					'avatar' : 'tim.jpg',
 					'name'   : 'Tim Reynolds',
-					'title'  : 'Android Engineer',
-					'handle' : 'tmrdev'
+					'title'  : 'Android Engineer'
 				}
 			]
 		},
@@ -96,14 +100,12 @@
 				{
 					'avatar' : 'sean.jpg',
 					'name'   : 'Sean McCready',
-					'title'  : 'Software Engineer',
-					'handle' : 'seanmcready'
+					'title'  : 'Content Manager',
 				},
 				{
 					'avatar' : 'bryn.jpg',
 					'name'   : 'Bryn Gelbart',
 					'title'  : 'Lead Content Manager',
-					'handle' : 'bryngelbart'
 				},
 				{
 					'name'   : 'Ashley Meyer',
@@ -122,10 +124,6 @@
 				{
 					'avatar' : 'tosi.jpg',
 					'name'   : 'Tosi Soloman',
-					'title'  : 'Content Manager',
-				},
-				{
-					'name'   : 'Christina Williams',
 					'title'  : 'Content Manager',
 				},
 				{
@@ -169,6 +167,7 @@
 					'title'  : 'Content Manager',
 				},
 				{
+					'avatar' : 'alberto.jpg',
 					'name'   : 'Alberto Zamora',
 					'title'  : 'Video Editor',
 				}
@@ -192,6 +191,7 @@
 		<div class="team-rows">
 			<% for(var i=0; i <team.length; i++) { %>
 				<div class="row">
+					
 					<% if(typeof(team[i]['title']) != 'undefined'){ %>
 						<h3><%= team[i]['title'] %></h3>
 					<% } %>	
