@@ -112,23 +112,24 @@ router          = express.Router();
  */
 
  router.get('/settings', (req, res, next) => {
-  if (!req.session.user.outlet)
-    return res.render('error', {
-      user: req.session.user,
-      error_code: 404,
-      error_message: config.ERR_PAGE_MESSAGES[404]
-    });
+  
+  if (!req.session.user.outlet){
+
+    var err = new Error('No outlet found!');
+    err.status = 500;
+    return next(err);
+
+  }
 
   client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
   
   function doWithOutletInfo(error, response, body) {
 
-    if (error || !body || body.err || body.data.owner._id != req.session.user._id)
-      return res.status(404).render('error', {
-        user: req.session.user,
-        error_code: 404,
-        error_message: config.ERR_PAGE_MESSAGES[404]
-      });
+    if (error || !body || body.err || body.data.owner._id != req.session.user._id){
+      var err = new Error('Unauthorized');
+      err.status = 403;
+      return next(err);
+    }
 
     var title = 'Outlet Settings',
         props = {
