@@ -115,7 +115,6 @@ app.use(function(req, res, next) {
 
     //Check if not a platform route
     if(routes.platform.indexOf(path) == -1) {
-      console.log('Path: ' + path + '\nError: Not a platform route');
       return next();
     }
 
