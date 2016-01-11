@@ -18,9 +18,7 @@ window.addEventListener('resize', function() {
 
 loginForm.addEventListener('submit', processLogin);
 
-signUpForm.addEventListener('submit', function(){
-	processSignup();
-})
+signUpForm.addEventListener('submit', processSignup);
 
 signUpFormHeader.addEventListener('click', function() {
 
@@ -156,6 +154,7 @@ var processSignup = function() {
 		dataType: 'json',
 		success: function(response, status, xhr){
 
+			console.log(response);
 
 			if (response.err){
 
@@ -179,8 +178,6 @@ var processSignup = function() {
 
 var processLogin = function() {
 
-	console.log('Logging In');
-
 	var email = document.getElementById('login-email').value,
 		password = document.getElementById('login-password').value;
 
@@ -198,8 +195,6 @@ var processLogin = function() {
 		}),
 		dataType: 'json',
 		success: function(response, status, xhr){
-
-			// return console.log (response);
 
 			if(response.err){
 
@@ -228,8 +223,10 @@ function resolveError(err){
 	switch(err){
 	    case 'ERR_TITLE_TAKEN':
 	        return 'This outlet title is taken!';
+	    case 'ERR_EMAIL_TAKEN':
+	    	return 'It seems like there\'s an account with this email already, please try a different one.'
 	    default:
-	        return 'Seems like we ran into an error registering your outlet'    
+	        return 'Seems like we ran into an error registering your outlet!'    
 	}
 }
 
