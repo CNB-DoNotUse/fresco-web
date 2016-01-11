@@ -13,9 +13,7 @@ export default class PostCell extends React.Component {
 
 	constructor(props) {
 		super(props);
-
 		this.postClicked = this.postClicked.bind(this);
-		this.goToPost = this.goToPost.bind(this);
 	}
 	
 	postClicked(e) {
@@ -28,10 +26,6 @@ export default class PostCell extends React.Component {
 			this.props.togglePost(this.props.post)	
 		}
 
-	}
-
-	goToPost() {
-		window.location = '/post/' + this.props.post._id;
 	}
 
 	render() {
@@ -49,22 +43,24 @@ export default class PostCell extends React.Component {
 		return(
 
 			<div className={size + ' tile ' + toggled} onClick={this.postClicked} >
-				<div className="tile-body" onClick={this.goToPost} >
-					<div className="frame"></div>
-					
-					<div className="hover">
-						<p className="md-type-body1">{post.caption}</p>
-					
-						<span className="md-type-caption">{post.byline}</span>
-					
-						<PostCellStories stories={post.stories} />
+				<a href={"/post/" + this.props.post._id}>
+					<div className="tile-body" >
+						<div className="frame"></div>
+						
+						<div className="hover">
+							<p className="md-type-body1">{post.caption}</p>
+						
+							<span className="md-type-caption">{post.byline}</span>
+						
+							<PostCellStories stories={post.stories} />
+						</div>
+						
+						<FrescoImage 
+							image={this.props.post.image} 
+							size={this.props.size} />
 					</div>
+				</a>
 					
-					<FrescoImage 
-						image={this.props.post.image} 
-						size={this.props.size} />
-				</div>
-				
 				<div className="tile-foot">
 					<PostCellActions
 						post={post}
