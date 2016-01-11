@@ -278,18 +278,11 @@ class PublicGalleryInfoSection extends React.Component {
 
 
 if(isNode){
-
 	module.exports = PublicGallery;
-
-}
-
-else{
+} else{
 	ReactDOM.render(
 	 	<PublicGallery 
 	 		gallery={window.__initialProps__.gallery} />,
 	 	document.getElementById('app')
 	);
-
 }
-
-module.exports = PublicGallery;
