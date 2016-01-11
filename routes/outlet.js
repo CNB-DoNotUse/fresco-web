@@ -77,12 +77,11 @@ router          = express.Router();
 
   function doWithOutletInfo(error, response, body) {
 
-    if (error || !body || body.err)
-      return res.status(404).render('error', {
-        user: req.session.user,
-        error_code: 404,
-        error_message: config.ERR_PAGE_MESSAGES[404]
-      });
+    if (error || !body || body.err){
+      var err = new Error(config.ERR_PAGE_MESSAGES[404]);
+      err.status = 403;
+      return next(err);
+    }
 
     var purchases = null;
 
@@ -138,17 +137,17 @@ router          = express.Router();
           outlet: body.data,
           stripePublishableKey: config.STRIPE_PUBLISHABLE
         }
+
     res.render('app', {
       user: req.session.user,
       outlet: body.data,
       title: title,
-      config: config,
       page: 'outletSettings',
       alerts: req.alerts,
-      links: ['/stylesheets/pages/outlet-settings.css'],
       remoteScripts: ['https://js.stripe.com/v2/'],
       props: JSON.stringify(props)
     });
+
   }
 
 });

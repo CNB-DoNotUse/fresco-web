@@ -120,7 +120,7 @@ class Dispatch extends React.Component {
 		}
 
 		$.ajax({
-			url: 'api/assignment/list',
+			url: '/api/assignment/list',
 			type: 'GET',
 			data: params,
 			dataType: 'json',
@@ -241,6 +241,7 @@ class Dispatch extends React.Component {
 					rerender={this.state.newAssignment == 'unset'}
 					shouldUpdatePlace={this.state.shouldUpdatePlace}
 					
+					updateViewMode = {this.updateViewMode}
 					setActiveAssignment={this.setActiveAssignment}
 					toggleSubmissionCard={this.toggleSubmissionCard}
 					updateNewAssignment={this.updateNewAssignment}

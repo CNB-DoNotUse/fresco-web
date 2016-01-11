@@ -44,7 +44,7 @@ router.get('/:id', (req, res, next) => {
       title += 'Imported by ' + post.curator.firstname + ' ' + post.curator.lastname;
     }
     else {
-      title = 'No Owner';
+      title = post.byline;
     }
    
     //Make request for gallery

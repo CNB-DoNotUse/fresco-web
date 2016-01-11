@@ -27,15 +27,16 @@ class Outlet extends React.Component {
 		var link = null;
 
 		//Check if user is the owner
-		if(this.props.outlet.owner._id != this.props.user._id)
+		if(this.props.outlet.owner._id === this.props.user._id){
 			link = "/outlet/settings";
+		}
 
 		return (
 			<App user={this.props.user}>
 				<TopBar
 					title={this.props.outlet.title}
 					rank={this.props.user.rank}
-					link={null}
+					link={link}
 					activeTab={this.state.activeTab}
 					setActiveTab={this.setActiveTab}
 					tabs={[

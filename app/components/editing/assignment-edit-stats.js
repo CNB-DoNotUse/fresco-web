@@ -11,7 +11,7 @@ export default class AssignmentEditStats extends React.Component {
 	render() {
 
 		var assignment = this.props.assignment,
-			address = assignment.location && assignment.location.googlemaps ? assignment.location.googlemaps : '',
+			address = assignment.location && assignment.location.address ? assignment.location.address : 'No Address',
 			timeCreated = moment(new Date(assignment.time_created)).format('MMM Do YYYY, h:mm:ss a'),
 			expirationTime = new Date(this.props.assignment.expiration_time),
 			expiresText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();

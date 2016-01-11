@@ -229,6 +229,8 @@ export default class DispatchSubmit extends React.Component {
 					//Hide the assignment card
 					this.props.toggleSubmissionCard(false, null);
 
+					this.props.updateViewMode('pending');
+
 					//Tell the main map to update itself, to reflect the new assignment
 					this.props.mapShouldUpdate(true);
 
