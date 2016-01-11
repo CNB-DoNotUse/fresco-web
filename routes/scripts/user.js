@@ -80,9 +80,8 @@ router.post('/user/login', function(req, res, next) {
     parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
     parse.headers['X-Parse-Revocable-Session'] = "1";
 
-    parse.get('/1/login?username=' + 'nolan@fresconews.com' + '&password=' + 'nolanl', function(err,response,parse_body) {
+    parse.get('/1/login?username=' + req.body.username + '&password=' + req.body.password, function(err,response,parse_body) {
       if(err) {
-        console.log(err);
         return res.json({err: err}).end();
       }
       if (response.statusCode == 401) {
@@ -95,7 +94,6 @@ router.post('/user/login', function(req, res, next) {
 
       var api = requestJson.createClient(config.API_URL);
       api.post('/v1/auth/loginparse', { parseSession: parse_body.sessionToken }, function(err, response, login_body) {
-
         if (err)
           return res.json({err: err.err}).end();
         if (response.statusCode == 401)
@@ -104,8 +102,6 @@ router.post('/user/login', function(req, res, next) {
           return res.json({err: 'ERR_EMPTY_BODY'}).end();
         if (login_body.err)
           return res.json({err: login_body.err}).end();
-
-
 
         req.session.user = login_body.data.user;
         req.session.user.token = login_body.data.token;

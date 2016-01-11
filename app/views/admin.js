@@ -6,8 +6,7 @@ import AdminBody from './../components/admin/admin-body'
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar) 
- * 
- */
+*/
 
  class Admin extends React.Component {
 
