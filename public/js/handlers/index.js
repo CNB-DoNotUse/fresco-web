@@ -49,7 +49,6 @@ window.requestAnimFrame = (function(){
 function resizeCall(){
 
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
-
 	slick.updateArrows();
 }
 

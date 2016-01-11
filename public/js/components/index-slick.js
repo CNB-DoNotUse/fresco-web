@@ -4,7 +4,6 @@ var slick = {
 	 * Loads highlights and intiailizes slick
 	 */
 	loadHighlights: function(){
-		var self = this;
 		
 		$.ajax({
 			url: "https://api.fresconews.com/v1/gallery/highlights",
@@ -22,7 +21,7 @@ var slick = {
 
 				};
 
-				self.initSlick();
+				slick.initSlick();
 
 			},
 			error: function(xhr, status, err) {
@@ -44,7 +43,7 @@ var slick = {
 			swipe: false,
 		});
 
-		$('#slick-posts').slick({	// inner carousel (images)
+		$('.highlight-inner-posts').slick({	// inner carousel (images)
 			arrows: false,
 			autoplay: false,
 			dots: true
@@ -55,8 +54,6 @@ var slick = {
 			links = document.getElementsByClassName('copy-link'),
 			facebook = document.getElementsByClassName('facebook-link'),
 			twitter = document.getElementsByClassName('twitter-link');
-
-		console.log(facebook);
 
 		for (var i = 0; i < links.length; i++) {
 			links[i].addEventListener('click', this.copyClicked);
@@ -119,7 +116,7 @@ var slick = {
 		});
 
 		return '<div class="gallery-slide">\
-				    <div class="posts" id="slick-posts">' + posts.join(" ") + '</div>\
+				    <div class="highlight-inner-posts posts" id="slick-posts">' + posts.join(" ") + '</div>\
 				    \
 				    <div class="gallery-info">\
 				        <p>' + gallery.caption + '</p>\
@@ -180,7 +177,6 @@ var slick = {
 		}
 		//Mobile
 		else if(window.innerWidth < screen.mobile){
-			console.log('Fuck');
 			highlights.insertBefore(slickHighlights, arrowLeft);
 		}
 

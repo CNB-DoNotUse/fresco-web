@@ -476,6 +476,7 @@ $mobileSlideHeight:540px;
 				width:61%;
 				height:$postHeight;
 				margin:0 auto;
+				overflow: hidden;
 				float:left;
 
 				@include mobile{
