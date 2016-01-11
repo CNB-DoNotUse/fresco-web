@@ -22,9 +22,6 @@ class Outlet extends React.Component {
 		});
 	}
 
-	componentDidMount() {
-	}
-
 	render() {
 
 		var link = null;
