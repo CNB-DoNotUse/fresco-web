@@ -91,7 +91,7 @@ function returnToLanding() {
 					nav.className = nav.className.replace(/\btransparent\b/,'');
 
 					$('#_nav, #_landing-wrap, #_footer').velocity('fadeIn', { duration: modalTransitionLength} );
-
+					init();
 				}
 
 			});
