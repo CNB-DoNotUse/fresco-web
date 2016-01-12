@@ -100,6 +100,9 @@ class Dispatch extends React.Component {
 		params.active = this.state.viewMode == 'active' ? true : false;
 		params.verified = this.state.viewMode == 'pending' ? false : true;
 
+		if(this.props.user.rank < 2)
+			params.outlet = this.props.user.outlet._id;
+
 		//Add map params
 		if(map) {
 
