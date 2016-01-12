@@ -30,9 +30,7 @@ router.get('/', (req, res, next) => {
   //Render dispatch page
   res.render('app', {
     title: 'Dispatch',
-    user: req.session.user,
     props: JSON.stringify(props),
-    config: config,
     alerts: req.alerts,
     page : 'dispatch'
   });
