@@ -13,6 +13,10 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 .wrapper{
 	height:auto;
 	overflow:hidden;
+
+	&.full {
+		height: 100%;
+	}
 }
 
 .text-banner {
@@ -291,7 +295,7 @@ $heroHeight: 180px;
 		}
 
 		.timeline{
-			padding: 44px 5% 24px;
+			padding: 44px 5% 0px;
 			height:auto;
 
 			@include mobile{
@@ -339,6 +343,7 @@ $heroHeight: 180px;
 			li.second{
 				width:42%;
 				margin:0 4%;
+				margin-bottom: -28px;
 				@include mobile{
 					margin:0 auto;
 				}
@@ -424,14 +429,14 @@ $heroHeight: 180px;
 
 	}
 	.info{
-		font-family:Roboto;
+		font-family: Roboto;
 		max-width:90%;
 		font-size:14px;
 		margin:0 auto;
 		color:rgb(0, 0, 0);
 		color:rgba(0, 0, 0, .54);
 		padding:20px 40px;
-		font-weight:500;
+		font-weight:400;
 	}
 
 }
