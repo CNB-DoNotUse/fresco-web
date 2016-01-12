@@ -43,8 +43,10 @@ export default class DispatchMap extends React.Component {
 
 	componentDidMount() {
 
+		console.log(window.sessionStorage.dispatch);
+
 		//Set up session storage for location
-		if(!window.sessionStorage.dispatch || !window.sessionStorage.dispatch.mapCenter || !window.sessionStorage.dispatch.mapZoom ){
+		if(!window.sessionStorage.dispatch){
 			window.sessionStorage.dispatch = JSON.stringify({
 				mapCenter: {lat: 40.7, lng: -74},
 				mapZoom: 12
@@ -82,7 +84,20 @@ export default class DispatchMap extends React.Component {
 		}
 
 		if(JSON.stringify(prevProps.mapCenter) != JSON.stringify(this.props.mapCenter)){
-			this.state.map.setCenter(this.props.mapCenter);
+
+			if(this.props.mapCenter.viewport){
+				this.state.map.fitBounds(this.props.mapCenter.viewport);
+			}
+			else{
+				this.state.map.panTo(this.props.mapCenter.location);
+				this.state.map.setZoom(18);
+			}
+
+			window.sessionStorage.dispatch = JSON.stringify({
+				mapCenter: this.state.map.getCenter(),
+				mapZoom: this.state.map.getZoom()
+			});
+
 		}
 
 		//Check if the map should update

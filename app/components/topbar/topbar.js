@@ -33,13 +33,18 @@ export default class TopBar extends React.Component {
 			google.maps.event.addListener(autocomplete, 'place_changed', () => {
 
 				var place = autocomplete.getPlace(),
-					location = {
-						lat: place.geometry.location.lat(),
-						lng: place.geometry.location.lng()
+					center = {
+						location: {
+							lat: place.geometry.location.lat(),
+							lng: place.geometry.location.lng()
+						}
 					};
 
+				if(place.geometry.viewport){} 
+					center.viewport = place.geometry.viewport;
+
 				//Update the position to the parent component
-				this.props.updateMapCenter(location);
+				this.props.updateMapCenter(center);
 			});
 		}
 	}
