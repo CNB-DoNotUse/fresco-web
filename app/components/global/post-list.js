@@ -143,7 +143,7 @@ export default class PostList extends React.Component {
 	togglePost(passedPost) {
 
 		//Check if CM
-		if(this.props.user.rank < 2) return;
+		if(this.props.rank < 2) return;
 
 		//Filter out anything, but ones that equal the passed post
 		var result = this.state.selectedPosts.filter((post) => {

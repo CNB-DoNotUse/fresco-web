@@ -165,8 +165,6 @@ class PostCellActions extends React.Component {
 					key={++key} />
 			);
 
-			console.log(this.props.purchased);
-
 			//Show the purhcased icon if the post hasn't been purchased                       
 			if(this.props.purchased === false){
 
