@@ -43,7 +43,9 @@ class GalleryStats extends React.Component {
 
 	render() {
 
-		if(!this.props.gallery.stats) return;
+		if(!this.props.gallery.stats) return(
+			<div className="meta-list"></div>
+		);
 
 		var photos = '',
 			videos = '';

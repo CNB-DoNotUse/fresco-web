@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import PostCell from '../global/post-cell'
+import PostList from '../global/post-list'
 import PurchaseListItem from '../purchases/purchases-list-item'
 
 
@@ -10,7 +11,7 @@ export default class OutletBody extends React.Component {
 		super(props);
 
 		this.state = {
-			purchases: []
+			posts: []
 		}
 
 		this.getPurchases = this.getPurchases.bind(this);
@@ -61,7 +62,7 @@ export default class OutletBody extends React.Component {
 			this.refs['purchases-past-month'].innerHTML = '$' + pastMonth.toFixed(2);
 
 			this.setState({
-				purchases: purchases.data.map((purchase) => {
+				posts: purchases.data.map((purchase) => {
 					return purchase.post
 				})
 			})
@@ -88,14 +89,9 @@ export default class OutletBody extends React.Component {
 	render() {
 
 		var outlet = this.props.outlet;
-		var posts = [];
-
-		this.state.purchases.map((purchase, i) => {
-			posts.push(<PostCell post={purchase} purchased="1" rank={this.props.user.rank} key={i} />);
-		});
 
 		var outletPurchases = [];
-		this.state.purchases.map((purchase, i) => {
+		this.state.posts.map((purchase, i) => {
 			outletPurchases.push(<PurchaseListItem purchase={purchase} showTitle={false} key={i} />)
 		});
 
@@ -123,11 +119,13 @@ export default class OutletBody extends React.Component {
 							</div>
 						</div>
 						<div className="col-sm-8 tall">
-							<div className="grid">
-								<div className="row tiles" id="posts">
-									{posts}
-								</div>
-							</div>
+							<PostList
+								rank={this.props.user.rank}
+								posts={this.state.posts}
+								allPurchased={true}
+								scrollable={false}
+								editable={false}
+								size='large' />
 						</div>
 					</div>
 				</div>

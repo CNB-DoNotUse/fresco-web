@@ -206,6 +206,7 @@ router.get('/assignment/list', (req, res, next) => {
   api.get('/v1/assignment/list?' + query, doAfterAssignmentList);
 
   function doAfterAssignmentList(error, response, body) {
+    console.log(response);
     if (error)
       return res.json({err: error}).end();
     if (!body)

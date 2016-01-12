@@ -131,7 +131,6 @@ export default class GalleryEdit extends React.Component {
  		this.setState({ 
  			gallery: gallery
  		});
-
  	}
 
  	revertGallery() {
@@ -272,17 +271,15 @@ export default class GalleryEdit extends React.Component {
 	 			contentType: "application/json",
 	 			data: JSON.stringify(params),
 	 			success: (result) => {
-
 	 				if(result.err) {
 	 					$.snackbar({
 	 						content: global.resolveError(result.err, "There was an error saving the gallery.")
 	 					});
-
 	 				}
 	 				else {
-	 					$.snackbar({
-	 						content: "Gallery successfully saved!"
-	 					});
+	 					
+	 					$.snackbar({ content: "Gallery successfully saved!" });
+	 					self.props.updateGallery(result.data);
 	 					self.hide();
 	 				}
 	 			}

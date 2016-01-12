@@ -27,12 +27,16 @@ router          = express.Router();
 
   function doWithOutletInfo(error, response, body) {
 
-    if (error || !body || body.err)
-      return res.status(404).render('error', {
-        user: req.session.user,
-        error_code: 404,
-        error_message: config.ERR_PAGE_MESSAGES[404]
-      });
+    console.log(response);
+
+    if (error || !body || body.err){
+
+        var error = new Error(config.ERR_PAGE_MESSAGES[404]);
+        error.status = 404;
+
+        return next(error);
+
+    }
 
     var purchases = null;
 

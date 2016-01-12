@@ -74,7 +74,10 @@ export default class DispatchMap extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 
 		//Check if there is an active assignment and (there no previous assignment or the prev and current active assignmnet are not the same)
-		if(!this.isOpeningCallout && this.props.activeAssignment && (!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)) {
+		if(!this.isOpeningCallout && 
+			this.props.activeAssignment && 
+			(!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)) 
+		{
 			this.focusOnAssignment(this.props.activeAssignment);
 		}
 
@@ -84,13 +87,16 @@ export default class DispatchMap extends React.Component {
 
 		//Check if the map should update
 		if(this.props.shouldMapUpdate){
+			console.log('Map Should Update')
 			this.updateMap();
 			this.props.mapShouldUpdate(false);
 		}
 
 		//Check if view mode has changed
 		if(this.props.viewMode !== prevProps.viewMode){
+			//Clear assignmetns
 			this.clearMap();
+			//Close callout
 			this.clearCallout();
 		}
 
@@ -137,7 +143,9 @@ export default class DispatchMap extends React.Component {
 
 				//Check if circle radius has changed
 				if(prevProps.newAssignment.radius != this.props.newAssignment.radius){
-					circle.setRadius(this.props.newAssignment.radius);
+					circle.setRadius(
+						global.milesToMeters(this.props.newAssignment.radius)
+					);
 				}
 			}
 			//Remove marker, and radius on the new assignment
@@ -240,26 +248,87 @@ export default class DispatchMap extends React.Component {
 			
 			this.props.findUsers(this.state.map, (users, error) => {
 
-				var changedState = {};
+				var changedState = {},
+					currentAssignments = _.clone(this.state.assignments);
 
+				//Map out passed assignment IDs
 				var newAssignmentIds = assignments.map((assignment) => {
 					return assignment._id;
 				});
 
-				var assignmentIds = this.state.assignments.map((assignment) => {
+				//Map out current assignment IDs
+				var currentAssignmentIds = currentAssignments.map((assignment) => {
 					return assignment._id;
 				});
 
-				if(_.difference(newAssignmentIds, assignmentIds).length){
-					changedState.assignments = assignments;
+				//Check if there's a difference
+				if(_.difference(newAssignmentIds, currentAssignmentIds).length){
+					
+					//Loop through new assignmt ids to push into current list of assignment Ids
+					for (var i = 0; i < newAssignmentIds.length; i++) {
+						//Check if the current assignments has this new assignment
+						if(currentAssignmentIds.indexOf(newAssignmentIds[i]) == -1){
+							//If not, push into current assignments list
+							currentAssignments.push(assignments[i]);
+						}
+					}
 				}
+
+				//Check if there are any new assignments by comparing length
+				if(currentAssignments.length > this.state.assignments.length)
+					changedState.assignments = currentAssignments;
 
 				if(_.difference(users, this.state.users).length){
 					changedState.users = _.difference(users, this.state.users);
 				}
+
 				this.setState(changedState);
 
 			});
+		});
+	}
+
+	/**
+	 * Updates all assignment markers on the map, using the previously set ones to remove any repeats
+	 */
+	updateAssignmentMarkers(prevAssignments) {
+		var assignments = [];
+
+		//Map out all of the previous assignmnets
+		var prevAssignmentIds = prevAssignments.map((assignment) => {
+			return assignment._id.toString();
+		});
+
+		for (var i = 0; i < this.state.assignments.length; i++) {
+			//Check if it doesn't exist
+			if(prevAssignmentIds.indexOf(this.state.assignments[i]._id.toString()) == -1) {
+				assignments.push(this.state.assignments[i]);
+			}
+		}
+
+		if(assignments.length == 0 ) return;
+
+		this.addAssignmentsToMap(assignments);
+	}
+
+	/**
+	 * Updates all the user markers on the map, using the previously set ones to remove any repeats
+	 */
+	updateUserMarkers(prevUsers) {
+		var newMarkers = [];
+		var prevUsersLocs = [];
+
+		//Map out all of the previous assignmnets
+		prevUsers.map((user) => {
+			prevUsersLocs.push(user.coordinates.toString());
+		})
+
+		//Map out all the new assignments, and return all of the new ones
+		this.state.users.map((user) => {
+			var userLoc = user.coordinates.toString();
+			if(prevUsersLocs.indexOf(userLoc) == -1) {
+				this.addUserMarker(user);
+			}
 		});
 	}
 
@@ -330,7 +399,8 @@ export default class DispatchMap extends React.Component {
 		}
 
 		//Check if the status matches the view mode
-		if(status != this.props.viewMode) return;
+		if(status != this.props.viewMode) 
+			return;
 
 		//Create the rendered circle
 		var circle = this.addCircle(
@@ -374,7 +444,9 @@ export default class DispatchMap extends React.Component {
 				origin: new google.maps.Point(0, 0),
 				anchor: new google.maps.Point(30, 30)
 			},
+			
 			position = position || {lat: this.state.map.getCenter().lat(), lng: this.state.map.getCenter().lng()},
+			
 			marker = new google.maps.Marker({
 				position: position,
 				map: this.state.map,
@@ -392,7 +464,7 @@ export default class DispatchMap extends React.Component {
 	/**
 	 * Adds circle to the map given a center and a radius
 	 * @param {dictionary} center Center of the circle
-	 * @param {integer} radius Circle radius in feet
+	 * @param {integer} radius Circle radius in meters
 	 * @param {Assignment status} status active/pending/expired
 	 */
 	addCircle(center, radius, status, assignmentId) {
@@ -437,50 +509,6 @@ export default class DispatchMap extends React.Component {
 	}
 
 	/**
-	 * Updates all assignment markers on the map, using the previously set ones to remove any repeats
-	 */
-	updateAssignmentMarkers(prevAssignments) {
-		var assignments = [];
-
-		//Map out all of the previous assignmnets
-		var prevAssignmentIds = prevAssignments.map((assignment) =>{
-			return assignment._id.toString();
-		});
-
-		for (var i = 0; i < this.state.assignments.length; i++) {
-			//Check if it doesn't exist
-			if(prevAssignmentIds.indexOf(this.state.assignments[i]._id.toString()) == -1) {
-				assignments.push(this.state.assignments[i]);
-			}
-		}
-
-		if(assignments.length == 0 ) return;
-
-		this.addAssignmentsToMap(assignments);
-	}
-
-	/**
-	 * Updates all the user markers on the map, using the previously set ones to remove any repeats
-	 */
-	updateUserMarkers(prevUsers) {
-		var newMarkers = [];
-		var prevUsersLocs = [];
-
-		//Map out all of the previous assignmnets
-		prevUsers.map((user) => {
-			prevUsersLocs.push(user.coordinates.toString());
-		})
-
-		//Map out all the new assignments, and return all of the new ones
-		this.state.users.map((user) => {
-			var userLoc = user.coordinates.toString();
-			if(prevUsersLocs.indexOf(userLoc) == -1) {
-				this.addUserMarker(user);
-			}
-		});
-	}
-
-	/**
 	 * Focuses on the passed assignment
 	 * @param  {Object} assignment     Assignment focus on. Assumes assignment has Lat / Lng
 	 */
@@ -500,6 +528,8 @@ export default class DispatchMap extends React.Component {
 			lng: lng
 		});
 
+		console.log(assignment);
+
 		var calloutContent = ReactDOM.renderToString(
 			<DispatchMapCallout assignment={assignment} onClick />
 		);
@@ -515,14 +545,10 @@ export default class DispatchMap extends React.Component {
 		google.maps.event.addListener(callout, 'closeclick', () => {
 
 			this.clearCallout();
-			this.props.setActiveAssignment(null);
 
 		});
 
 		callout.open(map);
-
-		//Update the active assignment and callout
-		this.props.setActiveAssignment(assignment);
 		
 		this.setState({
 			activeCallout: callout

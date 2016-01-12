@@ -89,6 +89,11 @@ router.get('/:id', (req, res, next) => {
           url: req.originalUrl,        
           description: gallery.caption
         },
+        twitter:{
+          title: title,
+          description: gallery.caption,
+          image: global.formatImg(gallery.posts[0].image, 'large')
+        },
         page: 'publicGallery',
         props: JSON.stringify(props)
       });
