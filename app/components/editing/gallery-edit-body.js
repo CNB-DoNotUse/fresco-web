@@ -15,10 +15,22 @@ export default class GalleryEditBody extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.toggleHighlight = this.toggleHighlight.bind(this);
 	}
 
 	componentDidMount() {
 		$.material.init();
+	}
+
+	toggleHighlight(e) {
+		var gallery = this.props.gallery;
+		if(e.target.checked) {
+			gallery.visibility = 2;
+		} else {
+			gallery.visibility = 1;
+		}
+		this.props.updateGallery(gallery);
 	}
 
 	render() {
@@ -62,7 +74,8 @@ export default class GalleryEditBody extends React.Component {
 							<label>
 								<input
 									type="checkbox" 
-									checked={this.props.gallery.visibility > 1} />
+									checked={this.props.gallery.visibility == 2}
+									onChange={this.toggleHighlight} />
 								<span className="ripple"></span>
 								<span className="check"></span> Highlighted
 							</label>

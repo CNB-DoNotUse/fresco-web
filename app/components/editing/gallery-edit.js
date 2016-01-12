@@ -213,7 +213,7 @@ export default class GalleryEdit extends React.Component {
  			caption: caption,
  			posts: posts,
  			tags: tags,
- 			visibility: 1,
+ 			visibility: gallery.visibility,
  			stories: stories,
  			articles: articles
  		};
@@ -353,6 +353,7 @@ export default class GalleryEdit extends React.Component {
 								updateRelatedStories={this.updateRelatedStories}
 								updateArticles={this.updateArticles}
 								updateTags={this.updateTags}
+								updateGallery={this.updateGallery}
 		 						deletePosts={this.state.deletePosts}
 		 						toggleDeletePost={this.toggleDeletePost} />
 		 					
