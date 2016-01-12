@@ -12,7 +12,19 @@
 	initialTranslate = 0,
 	initialBottomOffsetTop = $('.bottom').offset().top - 20,
 	translate3dSupported = animation.has3d(),
-	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
+	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top,
+	initialBottomOffset = $(window).height() - initialBottomOffsetTop;
+
+	var dH = $(document).height();
+	var wH = $(window).height();
+	var pxToScroll = dH - wH;
+	if(initialBottomOffset > pxToScroll) {
+		var pxToAdd = initialBottomOffset - pxToScroll;
+			pxToAdd *= 0.5;
+			// pxToAdd = pxToAdd >= 150 ? 150 : pxToAdd;
+		var newHeight = $('.bottom').height() + pxToAdd;
+		$('.bottom').height(newHeight);
+	}
 
 /**
  * Generic Init funciton for page
@@ -56,23 +68,20 @@ function resizeCall(){
 
 function updateElements() {
 
-	var bottomOffset = $(window).height() - initialBottomOffsetTop - window.pageYOffset;
+	var bottomOffset = initialBottomOffset - window.pageYOffset;
 		bottomOffset = bottomOffset < 0 ? 0 : bottomOffset;
 
-	var heroOffset = window.pageYOffset * 0.4,
+	var heroOffset = window.pageYOffset * 0.75,
 		offsetDif = bottomOffset - heroOffset;
 
 	if (offsetDif <= 0) {
 		heroOffset += offsetDif;
 	}
 
-	var navOffset = 128 - bottomOffset;
-		navOffset = navOffset >= 0 ? 0 : navOffset; 
-
-	console.log();
+	var navOffset = -offsetDif;
+		navOffset = navOffset >= 0 ? 0 : navOffset;
 
 	animation.translateY3d(nav, navOffset, translate3dSupported);
-
 	animation.translateY3d(bottom, bottomOffset, true);
 	animation.translateY3d(hero, heroOffset, true);
 
