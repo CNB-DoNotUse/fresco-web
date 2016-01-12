@@ -10,6 +10,7 @@
 	navReached = false,
 	bottomReached = false,
 	initialTranslate = 0,
+	initialBottomOffsetTop = $('.bottom').offset().top - 20,
 	translate3dSupported = animation.has3d(),
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
 
@@ -20,13 +21,15 @@ function init(){
 	Waves.attach('.button', [ 'waves-block', 'waves-classic']);
 	Waves.init();
 
+	initialBottomOffsetTop = $('.bottom').offset().top - 20;
+
 	slick.loadHighlights();
 
 	animation.enableHover();
 	animation.enableDropdown();
 
 	resizeCall();
-
+	updateElements();
 	bottom.style.opacity = 1;
 }
 
@@ -52,33 +55,36 @@ function resizeCall(){
 }
 
 function updateElements() {
-	var val = (window.pageYOffset) - 256;
 
-	// Don't move up too much.
-	val = val < -128 ? -128 : val;
-	// Don't move down too much.
-	val = val > 0 ? 0 : val;
+	var bottomOffset = $(window).height() - initialBottomOffsetTop - window.pageYOffset;
+		bottomOffset = bottomOffset < 0 ? 0 : bottomOffset;
 
-	animation.translateY3d(nav, val, translate3dSupported);
+	var heroOffset = window.pageYOffset * 0.4,
+		offsetDif = bottomOffset - heroOffset;
+
+	if (offsetDif <= 0) {
+		heroOffset += offsetDif;
+	}
+
+	var navOffset = 128 - bottomOffset;
+		navOffset = navOffset >= 0 ? 0 : navOffset; 
+
+	console.log();
+
+	animation.translateY3d(nav, navOffset, translate3dSupported);
+
+	animation.translateY3d(bottom, bottomOffset, true);
+	animation.translateY3d(hero, heroOffset, true);
 
 	ticking = false;
 }
 
 init();
-x();
-
-function x() {
-	console.log($('.bottom').offset().top);
-	animation.translateY3d(bottom, window.pageYOffset, true);
-}
 window.addEventListener('resize', function() {
-	x();
 	resizeCall();
 });
 
 window.addEventListener('scroll', function(e) {
-
-	x();
 
 	//Check if we're not in modal mode
 	if(nav.className.indexOf('transparent') > -1) return;

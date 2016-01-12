@@ -200,7 +200,7 @@ $heroHeight: 180px;
 .hero{
 
 	height:$heroHeight;
-	margin:0 auto 100px;
+	margin:0 auto 168px;
 	text-align:center;
 	position:relative;
 	color:#FFF;
@@ -261,21 +261,15 @@ $heroHeight: 180px;
 
 .bottom{
 
+	opacity: 0;
 	position:relative;
-	-webkit-transition: opacity .3s linear;
-       -moz-transition: opacity .3s linear;
-   	     -o-transition: opacity .3s linear;
-   	        transition: opacity .3s linear;
 
-   	 // transform: translate3d(0, 500px, 0);
 
    	margin-bottom: -72px;
 
    	@media screen and (max-width: 720px) {
    		margin-bottom: 12px;
    	}
-
-   	// transform: translate3d(0, 400px, 0);
 
 	/**
 	 * Shared style for each card
