@@ -76,14 +76,14 @@ export default class DispatchSubmit extends React.Component {
 	 */
 	updateRadius(e) {
 	 
-	    var feetRadius = parseFloat(this.refs['radius'].value);
-	    
-	    if(feetRadius == 'NaN') 
+	    var radiusInMiles= global.feetToMiles(parseFloat(this.refs['radius'].value));
+
+	    if(radiusInMiles == 'NaN') 
 	    	return;
 
 	    this.props.updateNewAssignment(
 	    	this.props.newAssignment.location,
-			feetRadius,
+			radiusInMiles,
 			this.props.newAssignment.zoom
 	    );
 	}	
@@ -150,7 +150,7 @@ export default class DispatchSubmit extends React.Component {
 						
 						<EditMap 
 							location={location} 
-							radius={radius}
+							radius={global.milesToFeet(radius)}
 							zoom={zoom}
 							type='drafted'
 							rerender={this.props.rerender} />
@@ -234,7 +234,10 @@ export default class DispatchSubmit extends React.Component {
 					//Tell the main map to update itself, to reflect the new assignment
 					this.props.mapShouldUpdate(true);
 
-					$.snackbar({content: 'Your assignment has been successfully submitted and is awaiting approval!'});
+					$.snackbar({
+						content: 'Your assignment has been successfully submitted and is awaiting approval!',
+						timeout: 5000
+					});
 
 					//Clear all the fields
 					this.refs.title.value = '';
@@ -244,19 +247,7 @@ export default class DispatchSubmit extends React.Component {
 				}
 			}
 		});
-		
-		
-		
-		// PAGE_Dispatch.addAssignment(assignment, function(err, assignment){
-		// 	if (err)
-		// 		return $.snackbar({content:resolveError(err)});
-			
-		// 	PAGE_Dispatch.map.marker.setMap(null);
-		// 	PAGE_Dispatch.map.circle.setMap(null);
-			
-		// 	PAGE_Dispatch.map.panTo(PAGE_Dispatch.assignmentMap.marker.getPosition());
-		// 	PAGE_Dispatch.map.setZoom(PAGE_Dispatch.assignmentMap.getZoom());
-		// });
+	
 
 	}
 

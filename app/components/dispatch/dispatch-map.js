@@ -137,7 +137,9 @@ export default class DispatchMap extends React.Component {
 
 				//Check if circle radius has changed
 				if(prevProps.newAssignment.radius != this.props.newAssignment.radius){
-					circle.setRadius(this.props.newAssignment.radius);
+					circle.setRadius(
+						global.milesToMeters(this.props.newAssignment.radius)
+					);
 				}
 			}
 			//Remove marker, and radius on the new assignment
@@ -392,7 +394,7 @@ export default class DispatchMap extends React.Component {
 	/**
 	 * Adds circle to the map given a center and a radius
 	 * @param {dictionary} center Center of the circle
-	 * @param {integer} radius Circle radius in feet
+	 * @param {integer} radius Circle radius in meters
 	 * @param {Assignment status} status active/pending/expired
 	 */
 	addCircle(center, radius, status, assignmentId) {
