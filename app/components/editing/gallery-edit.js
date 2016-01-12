@@ -345,5 +345,6 @@ GalleryEdit.defaultProps = {
 	gallery: null,
 	posts: [],
 	toggled: false,
+	updateGallery: function(){},
 	toggle: function () { console.log('GalleryEdit missing toggle implementation'); }
 }
