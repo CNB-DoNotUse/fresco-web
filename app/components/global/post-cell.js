@@ -191,9 +191,7 @@ class PostCellActions extends React.Component {
 			// actions.push(
 			// 	<span className="mdi mdi-library-plus icon pull-right" key={++key}></span>
 			// );
-
-			console.log('test');
-
+			// 
 			actions.push(
 				<PurchaseAction 
 					post={this.props.post} 

@@ -22,7 +22,7 @@ export default class PostInfo extends React.Component {
 			userIcon = '',
 			twitter = '',
 			curator = '',
-			timeString = global.formatTime(this.props.post.time_created),
+			timeString = global.formatTime(this.props.post.time_created, true),
 			verifiedBy = this.props.post.approvals ? 
 							'Verified by ' + this.props.verifier : 
 							'Not yet verified'
@@ -60,14 +60,7 @@ export default class PostInfo extends React.Component {
 						<div className="meta-user">
 							{userIcon}
 							<div>
-								<span className="md-type-title">
-									{post.meta.twitter ? 
-										post.meta.twitter.user_name 
-										: 
-										(post.owner ? post.owner.firstname + ' ' + post.owner.lastname : '')
-									}
-								</span>
-								<span className="md-type-body1">{this.props.post.affiliation}</span>
+								
 							</div>
 						</div>
 						<div className="meta-description">{this.props.gallery.caption}</div>
