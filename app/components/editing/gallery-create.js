@@ -4,6 +4,7 @@ import GalleryEditArticles from './gallery-edit-articles'
 import GalleryEditStories from './gallery-edit-stories'
 import EditPost from './edit-post.js'
 import Slick from 'react-slick'
+import global from '../../../lib/global'
 
 /** //
 

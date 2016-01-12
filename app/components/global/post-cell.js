@@ -22,7 +22,9 @@ export default class PostCell extends React.Component {
 		if(e.shiftKey) {
 
 			this.props.togglePost(this.props.post)	
-		} else{
+		} 
+		//Open normally
+		else{
 
 			var win=window.open('/post/' + this.props.post._id, '_blank');
 

@@ -110,7 +110,7 @@ export default class TopBar extends React.Component {
 			);
 		}
 
-		if (this.props.link && (this.props.rank ? this.props.rank >= 2 ? true : false : false)) {
+		if (this.props.link) {
 			topbarItems.push(
 				<a className="mdi mdi-pencil icon pull-right hidden-xs"
 					key="link"

@@ -47,11 +47,13 @@ class PostDetail extends React.Component {
 
  	render() {
 
+ 		var editable = this.props.user.rank >= 2;
+
  		return (
  			<App user={this.props.user}>
  				<TopBar 
  					title={this.props.title}
- 					editable={true}
+ 					editable={editable}
  					edit={this.toggle}
 				/>
  				<div className="content">

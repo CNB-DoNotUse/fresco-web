@@ -141,6 +141,10 @@ export default class PostList extends React.Component {
 	 * @param  {object} passedPost The post to toggle selected or unselected in the post-list and bulk edit
 	 */
 	togglePost(passedPost) {
+
+		//Check if CM
+		if(this.props.user.rank < 2) return;
+
 		//Filter out anything, but ones that equal the passed post
 		var result = this.state.selectedPosts.filter((post) => {
 			return passedPost._id === post._id
