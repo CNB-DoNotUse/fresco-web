@@ -15,15 +15,26 @@ class GalleryDetail extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			galleryEditToggled: false
+			galleryEditToggled: false,
+			gallery: this.props.gallery
 		}
 
 		this.toggleGalleryEdit = this.toggleGalleryEdit.bind(this);
+		this.updateGallery = this.updateGallery.bind(this);
 	}
 
 	toggleGalleryEdit() {
 		this.setState({
 			galleryEditToggled: !this.state.galleryEditToggled
+		});
+	}
+
+	/**
+	 * Updates gallery in state
+	 */
+	updateGallery(gallery){
+		this.setState({
+			gallery: gallery
 		});
 	}
 
@@ -38,19 +49,24 @@ class GalleryDetail extends React.Component {
 					verifiedToggle={false}
 					timeToggle={true}
 					chronToggle={true} />
-				<GallerySidebar gallery={this.props.gallery} />
+				
+				<GallerySidebar gallery={this.state.gallery} />
+				
 				<div className="col-sm-8 tall">
 					<PostList
 						rank={this.props.user.rank}
 						purchases={this.props.purchases}
-						posts={this.props.gallery.posts}
+						posts={this.state.gallery.posts}
 						scrollable={false}
 						editable={false}
 						size='large' />
 				</div>
+				
 				<GalleryEdit 
-					gallery={this.props.gallery}
+					updateGallery={this.updateGallery}
 					toggle={this.toggleGalleryEdit}
+
+					gallery={this.state.gallery}
 					toggled={this.state.galleryEditToggled} />
 			</App>
 		);

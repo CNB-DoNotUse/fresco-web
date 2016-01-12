@@ -37,6 +37,14 @@ export default class PostList extends React.Component {
 		this.toggle				= this.toggle.bind(this);
 	}
 
+	componentWillReceiveProps(nextProps) {
+	    if(nextProps.posts){
+	    	this.setState({
+	    		posts: nextProps.posts
+	    	});
+	    }  
+	}
+
 	componentDidUpdate(prevProps, prevState) {
 		if(prevProps.onlyVerified != this.props.onlyVerified) {
 			//Access parent var load method
@@ -198,12 +206,11 @@ export default class PostList extends React.Component {
 		//Map all the posts into cells
 		var posts = this.state.posts.map((post, i)  => {
 
-			var purchased = purchases ? purchases.indexOf(post._id) != -1 : null,
+			var purchased = purchases.indexOf(post._id) > -1 || this.props.allPurchased,
 				filteredPosts = this.state.selectedPosts.filter((currentPost) => currentPost._id === post._id),
 				toggled = filteredPosts.length > 0 ? true : false;
 
 	      	return (
-	        	
 	        	<PostCell 
 	        		size={this.props.size} 
 	        		post={post} 
@@ -214,8 +221,7 @@ export default class PostList extends React.Component {
 	        		didPurchase={this.didPurchase}
 	        		key={i}
 	        		editable={this.props.editable}
-	        		edit={this.edit} />
-	        		
+	        		edit={this.edit} />	
 	      	)
 
   		});

@@ -77,7 +77,8 @@ ul{
         font-size: 65px;
         color: #ffc600;
         height: 65px;
-        padding: 31px 0 31px 17px;
+        position: relative;
+        top: 33px;
 
         @include mobile{
             font-size:33px;
