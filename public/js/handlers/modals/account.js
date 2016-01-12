@@ -4,8 +4,9 @@ var accountModal = document.getElementById('_account'),
 	signup = document.getElementById('_signup'),
 	signUpFormHeader = document.getElementById('_signup-form-header'),
 	loginFormHeader = document.getElementById('_login-form-header'),
-	signUpForm = signup.getElementsByTagName('form')[0],
-	loginForm = login.getElementsByTagName('form')[0];
+	signUpForm = document.querySelector('#signupForm');
+	loginForm = document.querySelector('#loginForm'),
+	loginButton = document.querySelector('#login-password');
 
 //Run on load
 updatePosition(window.innerWidth);
@@ -17,7 +18,11 @@ window.addEventListener('resize', function() {
 });
 
 loginForm.addEventListener('submit', processLogin);
-
+loginButton.addEventListener('keydown', function (e) {
+	if(e.keyCode == 13) {
+		processLogin();
+	}
+});
 signUpForm.addEventListener('submit', processSignup);
 
 signUpFormHeader.addEventListener('click', function() {
@@ -154,8 +159,6 @@ var processSignup = function() {
 		dataType: 'json',
 		success: function(response, status, xhr){
 
-			console.log(response);
-
 			if (response.err){
 
 				return $.snackbar({content: resolveError(response.err)});
@@ -177,7 +180,6 @@ var processSignup = function() {
  */
 
 var processLogin = function() {
-
 	var email = document.getElementById('login-email').value,
 		password = document.getElementById('login-password').value;
 

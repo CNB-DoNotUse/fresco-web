@@ -50,6 +50,10 @@ export default class GalleryEdit extends React.Component {
 		}
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		$('.form-control').removeClass('empty');
+	}
+
 	componentDidMount() {
 		$.material.init();
 	}
@@ -142,6 +146,28 @@ export default class GalleryEdit extends React.Component {
  		})
  	}
 
+	//Returns centroid for passed polygon
+	getCentroid(polygon) {
+		var path, lat = 0, lng = 0;
+		
+		if (Array.isArray(polygon)) {
+			var newPolygon = new google.maps.Polygon({paths: polygon});
+			path = newPolygon.getPath();
+		} else {
+			path = polygon.getPath();
+		}
+
+		for (var i = 0; i < path.getLength() - 1; ++i) {
+			lat += path.getAt(i).lat();
+			lng += path.getAt(i).lng();
+		}
+
+		lat /= path.getLength() - 1;
+		lng /= path.getLength() - 1;
+		return new google.maps.LatLng(lat, lng);
+
+	}
+
  	saveGallery() {
  		var self 	= this,
 	 		gallery = _.clone(this.state.gallery, true),
@@ -211,6 +237,17 @@ export default class GalleryEdit extends React.Component {
  			if(gallery.location.lat && gallery.location.lng) {
 	 			params.lat = gallery.location.lat;
 	 			params.lon = gallery.location.lng;
+ 			} else {
+ 				var coord = this.getCentroid(gallery.location.coordinates[0].map((coord) => {
+			 					return {
+			 						lat: coord[1],
+			 						lng: coord[0]
+			 					}
+			 				})),
+					lat = coord.lat(),
+					lon = coord.lng();
+				params.lat = lat;
+				params.lon = lon;
  			}
  			if (gallery.address) {
  				params.address = gallery.address;
