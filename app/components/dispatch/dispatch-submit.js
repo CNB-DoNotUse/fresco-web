@@ -185,7 +185,8 @@ export default class DispatchSubmit extends React.Component {
 				caption: this.refs.caption.value,
 				radius: global.feetToMiles(parseInt(this.refs.radius.value)),
 				expiration_time: this.refs.expiration.value * 60 * 60 * 1000, //Convert to milliseconds,
-				address: this.state.place ? this.refs.autocomplete.value : null,
+				address: this.refs.autocomplete.value,
+				googlemaps: this.refs.autocomplete.value,
 				lon: this.props.newAssignment.location.lng, //Should be lng
 				lat: this.props.newAssignment.location.lat
 			};
