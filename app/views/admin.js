@@ -59,7 +59,7 @@ import AdminBody from './../components/admin/admin-body'
 	}
 
 	getImports(cb) {
-		$.get('/api/gallery/imports', (imports) => {
+		$.get('/api/gallery/imports?rated=0', (imports) => {
 			if(!imports.data) return;
 
 			this.setState({

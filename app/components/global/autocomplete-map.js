@@ -45,7 +45,7 @@ export default class AutocompleteMap extends React.Component {
 	render() {
 
 		var radiusInput = '';
-		if(this.props.radius) {
+		if(this.props.radius && this.props.hasRadius) {
 			radiusInput = 
 			            <input
 			                type="text"
@@ -82,6 +82,7 @@ AutocompleteMap.defaultProps = {
 	unit: "Feet",
 	location: null,
 	radius: 250,
+	hasRadius: true,
 	rerender: false,
 	updateRadius: function() {},
 	onPlaceChange: function() {}

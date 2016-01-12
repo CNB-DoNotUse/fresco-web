@@ -285,13 +285,13 @@ export default class AdminGalleryEdit extends React.Component {
 					<input
 						type="text"
 						className="form-control floating-label gallery-byline"
+						style={{width: '100%'}}
 						placeholder="Byline"
 						ref="gallery-byline" disabled={this.props.activeGalleryType == 'submission'}  />
 
 		} else { // if an import
 			// set map location to one from state
 			var editMapLocation = this.state.mapLocation;
-
 			// Is a twitter import. Should show dropdown for handle vs username
 			if(activeGallery.posts[0].meta.twitter) { 
 				var twitterObj = activeGallery.posts[0].meta.twitter;
@@ -339,7 +339,7 @@ export default class AdminGalleryEdit extends React.Component {
 						</Slider>
 					</div>
 
-					<div className="split import-other-origin byline-section" style={{marginTop: '42px'}}>
+					<div className="split import-other-origin byline-section" style={{marginTop: '42px', width: '100%'}}>
 						{bylineInput}
 						{nameInput}
 						{affiliationInput}
@@ -366,6 +366,7 @@ export default class AdminGalleryEdit extends React.Component {
 							location={editMapLocation}
 							onPlaceChange={this.onPlaceChange}
 							disabled={this.props.activeGalleryType != 'import'}
+							hasRadius={false}
 							rerender={true} />
 					</div>
 				</div>

@@ -178,6 +178,12 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		height: 47px;
 		width: 320px;
 
+		transition: color 0.2s ease;
+
+		&.changed {
+			color: #0047bb !important;
+		}
+
 		&:hover, &:active {
 			box-shadow: none !important;
 		}
