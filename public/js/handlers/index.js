@@ -12,7 +12,7 @@
 	bottomReached = false,
 	fromModal = false,
 	initialTranslate = 0,
-	initialBottomOffsetTop = $('.bottom').offset().top - 20,
+	initialBottomOffsetTop = $('.bottom').offset().top - 100,
 	translate3dSupported = animation.has3d(),
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top,
 	initialBottomOffset = 500;
@@ -35,7 +35,7 @@ function init(){
 
 function indexInit() {
 
-	initialBottomOffsetTop = $('.bottom').offset().top - 20;
+	initialBottomOffsetTop = $('.bottom').offset().top - 100;
 	initialBottomOffset = $(window).height() - initialBottomOffsetTop;
 
 	if(!highlightsLoaded) {
