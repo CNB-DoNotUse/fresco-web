@@ -19,6 +19,7 @@ export default class StoryList extends React.Component {
 		this.state = {
 			stories: []
 		}
+		this.scroll = this.scroll.bind(this);
 	}
 
 	componentDidMount() {

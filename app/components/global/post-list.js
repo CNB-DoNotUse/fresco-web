@@ -141,6 +141,10 @@ export default class PostList extends React.Component {
 	 * @param  {object} passedPost The post to toggle selected or unselected in the post-list and bulk edit
 	 */
 	togglePost(passedPost) {
+
+		//Check if CM
+		if(this.props.user.rank < 2) return;
+
 		//Filter out anything, but ones that equal the passed post
 		var result = this.state.selectedPosts.filter((post) => {
 			return passedPost._id === post._id
@@ -206,8 +210,10 @@ export default class PostList extends React.Component {
 		//Map all the posts into cells
 		var posts = this.state.posts.map((post, i)  => {
 
-			var purchased = purchases.indexOf(post._id) > -1 || this.props.allPurchased,
+			var purchased = purchases.indexOf(post._id) > -1 || this.props.allPurchased ? true : false,
+				//Filter out this posts from the currently selected posts
 				filteredPosts = this.state.selectedPosts.filter((currentPost) => currentPost._id === post._id),
+				//Pass down toggled if this post is inside the filtered posts
 				toggled = filteredPosts.length > 0 ? true : false;
 
 	      	return (
@@ -217,10 +223,11 @@ export default class PostList extends React.Component {
 	        		rank={rank} 
 	        		purchased={purchased}
 	        		toggled={toggled}
-	        		togglePost={this.togglePost}
-	        		didPurchase={this.didPurchase}
 	        		key={i}
 	        		editable={this.props.editable}
+	        		
+	        		togglePost={this.togglePost}
+	        		didPurchase={this.didPurchase}
 	        		edit={this.edit} />	
 	      	)
 
