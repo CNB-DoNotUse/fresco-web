@@ -26,7 +26,6 @@ class PostDetail extends React.Component {
  		this.updateGallery = this.updateGallery.bind(this);
  	}
 
-
  	hide() {
  		this.setState({
  			toggled: false
