@@ -13,18 +13,7 @@
 	initialBottomOffsetTop = $('.bottom').offset().top - 20,
 	translate3dSupported = animation.has3d(),
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top,
-	initialBottomOffset = $(window).height() - initialBottomOffsetTop;
-
-	var dH = $(document).height();
-	var wH = $(window).height();
-	var pxToScroll = dH - wH;
-	if(initialBottomOffset > pxToScroll) {
-		var pxToAdd = initialBottomOffset - pxToScroll;
-			pxToAdd *= 0.5;
-			// pxToAdd = pxToAdd >= 150 ? 150 : pxToAdd;
-		var newHeight = $('.bottom').height() + pxToAdd;
-		$('.bottom').height(newHeight);
-	}
+	initialBottomOffset = 500;
 
 /**
  * Generic Init funciton for page
@@ -62,7 +51,19 @@ window.requestAnimFrame = (function(){
  */
 function resizeCall(){
 
-	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top;
+	initialBottomOffset = $(window).height() - initialBottomOffsetTop;
+
+	var dH = $(document).height();
+	var wH = $(window).height();
+	var pxToScroll = dH - wH;
+	if(initialBottomOffset > pxToScroll) {
+		var pxToAdd = initialBottomOffset - pxToScroll;
+			pxToAdd *= 0.5;
+			// pxToAdd = pxToAdd >= 150 ? 150 : pxToAdd;
+		var newHeight = $('.bottom').height() + pxToAdd;
+		$('.bottom').height(newHeight);
+	}
+
 	slick.updateArrows();
 }
 
@@ -90,6 +91,7 @@ function updateElements() {
 
 init();
 window.addEventListener('resize', function() {
+	window.scrollTo(0,0);
 	resizeCall();
 });
 
