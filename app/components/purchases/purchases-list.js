@@ -52,7 +52,9 @@ export default class PurchasesList extends React.Component {
 
 		// Map purchases JSON to PurchaseListItem
 		purchases.map((purchase, i) => {
-			purchasesListItems.push(<PurchasesListItem purchase={purchase.purchase} title={purchase.title} key={i} />);
+			purchasesListItems.push(
+				<PurchasesListItem purchase={purchase.purchase} title={purchase.title} key={i} />
+			);
 		})
 
 		return (
