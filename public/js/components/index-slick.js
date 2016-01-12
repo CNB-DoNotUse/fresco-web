@@ -6,7 +6,7 @@ var slick = {
 	loadHighlights: function(){
 		
 		$.ajax({
-			url: "https://api.fresconews.com/v1/gallery/highlights",
+			url: "/api/gallery/highlights",
 			dataType: "JSON",
 			type: "GET",
 			success: function(response) {
@@ -19,10 +19,10 @@ var slick = {
 					
 					slickHighlights.innerHTML += slick.createGalleryView(highlights[i]);
 
-				};
+				}
 
 				slick.initSlick();
-
+				highlightsLoaded = true;
 			},
 			error: function(xhr, status, err) {
 				console.error(status, err.toString());

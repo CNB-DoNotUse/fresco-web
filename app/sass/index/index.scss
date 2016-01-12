@@ -79,7 +79,7 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 	bottom: 0px;
 	width: 100%;
 	padding: 0 !important;
-	z-index: -1;
+	z-index: 0;
 	// transform: translate3d(0, 212px, 0);
 	// transition: transform 0.3s ease;
 	
@@ -170,9 +170,6 @@ $heroHeight: 180px;
 .landing-wrap{
 	height:100%;
 	margin-top: 40vh;
-	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;
 }
 
 .hero-wrap{

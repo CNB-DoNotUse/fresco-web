@@ -2,6 +2,7 @@
 		tablet: 1024, 
 		mobile: 720
 	},
+	highlightsLoaded = false,
 	ticking = false, 
 	bottom = document.getElementById('_bottom'),
 	hero = document.getElementById('_hero'),
@@ -9,8 +10,9 @@
 	lastScrollY = 0,
 	navReached = false,
 	bottomReached = false,
+	fromModal = false,
 	initialTranslate = 0,
-	initialBottomOffsetTop = $('.bottom').offset().top - 20,
+	initialBottomOffsetTop = $('.bottom').offset().top - 100,
 	translate3dSupported = animation.has3d(),
 	initialDiff = $(hero).offset().top + hero.clientHeight - $(bottom).offset().top,
 	initialBottomOffset = 500;
@@ -22,15 +24,26 @@ function init(){
 	Waves.attach('.button', [ 'waves-block', 'waves-classic']);
 	Waves.init();
 
-	initialBottomOffsetTop = $('.bottom').offset().top - 20;
-
-	slick.loadHighlights();
-
 	animation.enableHover();
 	animation.enableDropdown();
 
 	resizeCall();
+
+	if(window.location.pathname == '/') { indexInit(); }
+
+}
+
+function indexInit() {
+
+	initialBottomOffsetTop = $('.bottom').offset().top - 100;
+	initialBottomOffset = $(window).height() - initialBottomOffsetTop;
+
+	if(!highlightsLoaded) {
+		slick.loadHighlights();
+	}
+
 	updateElements();
+
 	bottom.style.opacity = 1;
 }
 
@@ -51,12 +64,16 @@ window.requestAnimFrame = (function(){
  */
 function resizeCall(){
 
+	slick.updateArrows();
+
+	if(window.location.pathname != '/') return;
+
 	initialBottomOffset = $(window).height() - initialBottomOffsetTop;
 
 	var dH = $(document).height();
 	var wH = $(window).height();
 	var pxToScroll = dH - wH;
-	if(initialBottomOffset > pxToScroll) {
+	if(initialBottomOffset > pxToScroll && !fromModal) {
 		var pxToAdd = initialBottomOffset - pxToScroll;
 			pxToAdd *= 0.5;
 			// pxToAdd = pxToAdd >= 150 ? 150 : pxToAdd;
@@ -64,10 +81,11 @@ function resizeCall(){
 		$('.bottom').height(newHeight);
 	}
 
-	slick.updateArrows();
 }
 
 function updateElements() {
+
+	if(window.location.pathname != '/') return;
 
 	var bottomOffset = initialBottomOffset - window.pageYOffset;
 		bottomOffset = bottomOffset < 0 ? 0 : bottomOffset;
@@ -86,16 +104,20 @@ function updateElements() {
 	animation.translateY3d(bottom, bottomOffset, true);
 	animation.translateY3d(hero, heroOffset, true);
 
+	scrolled = true;
 	ticking = false;
 }
 
 init();
+
 window.addEventListener('resize', function() {
 	window.scrollTo(0,0);
 	resizeCall();
 });
 
 window.addEventListener('scroll', function(e) {
+
+	if(window.location.pathname != '/') return;
 
 	//Check if we're not in modal mode
 	if(nav.className.indexOf('transparent') > -1) return;
@@ -104,9 +126,7 @@ window.addEventListener('scroll', function(e) {
 	if(!translate3dSupported || ticking) return;
 
 	window.requestAnimFrame(function(){
-
 		updateElements();
-
 	});
 
 	ticking = true;

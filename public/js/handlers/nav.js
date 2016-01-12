@@ -64,7 +64,7 @@ function handleClick(e) {
  */
 
 function returnToLanding() {
-
+	fromModal = true;
 	//Update window history state
 	window.history.replaceState({home: 'landing'}, null, '/');
 
@@ -72,7 +72,7 @@ function returnToLanding() {
 		duration: 450, 
 		easing: 'ease-out',
 		complete: function(){
-
+			$(window.modal).css('display', 'none');
 			$('#_nav').velocity('fadeOut', { 
 				duration: modalTransitionLength, 
 				complete: function(){
@@ -90,8 +90,9 @@ function returnToLanding() {
 					navList[2].style.display = 'none';
 					nav.className = nav.className.replace(/\btransparent\b/,'');
 
-					$('#_nav, #_landing-wrap, #_footer').velocity('fadeIn', { duration: modalTransitionLength} );
-					init();
+					$('#_nav, #_landing-wrap, #_footer').velocity('fadeIn', { duration: modalTransitionLength, complete: function () {
+						init();
+					}});
 				}
 
 			});
@@ -191,8 +192,6 @@ function loadScript(src){
 
 
 window.onpopstate = function(event) {
-
-	console.log(event);
 
 	if(event.state == null) return;
 
