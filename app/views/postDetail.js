@@ -17,11 +17,13 @@ class PostDetail extends React.Component {
  		super(props);
 
  		this.state = {
- 			toggled: false
+ 			toggled: false,
+ 			gallery: this.props.gallery
  		}
 
  		this.hide = this.hide.bind(this);
  		this.toggle = this.toggle.bind(this);
+ 		this.updateGallery = this.updateGallery.bind(this);
  	}
 
 
@@ -35,6 +37,12 @@ class PostDetail extends React.Component {
  		this.setState({
  			toggled: !this.state.toggled
  		});
+ 	}
+
+ 	updateGallery(gallery) {
+ 		this.setState({
+ 			gallery: gallery
+ 		})
  	}
 
  	render() {
@@ -55,16 +63,17 @@ class PostDetail extends React.Component {
  								purchases={this.props.purchases} />
  							<PostInfo 
  								post={this.props.post}
- 								gallery={this.props.gallery}
+ 								gallery={this.state.gallery}
  								verifier={this.props.verifier} />
  						</div>
  					</div>
- 					<PostRelated gallery={this.props.gallery} />
+ 					<PostRelated gallery={this.state.gallery} />
  				</div>
  				<GalleryEdit 
- 					gallery={this.props.gallery} 
+ 					gallery={this.state.gallery} 
  					toggled={this.state.toggled}
  					toggle={this.toggle}
+ 					updateGallery={this.updateGallery}
  					hide={this.hide} />
  			</App>
  		);

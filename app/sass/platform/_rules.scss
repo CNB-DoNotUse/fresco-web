@@ -321,7 +321,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 
 // related
 .related > div.tabs > div.tab {
-	height: 144px;
+	height: auto;
 	width: 100%;
 	background-color: $color-shade-2;
 	white-space: nowrap;
@@ -925,8 +925,8 @@ div.list {
 	position: absolute;
 	height: 100%;
 	overflow-y:auto;
-	margin-top: 64px;
-	padding: 0;
+	margin: 64px 0 0;
+    padding:0 0 64px;
 	.frame {
 		position: absolute;
 		z-index: $z-tile-body-frame;
