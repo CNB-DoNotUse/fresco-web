@@ -206,7 +206,7 @@ export default class PostList extends React.Component {
 		//Map all the posts into cells
 		var posts = this.state.posts.map((post, i)  => {
 
-			var purchased = purchases.indexOf(post._id) > -1 || this.props.allPurchased,
+			var purchased = purchases.indexOf(post._id) > -1 || this.props.allPurchased ? true : false,
 				filteredPosts = this.state.selectedPosts.filter((currentPost) => currentPost._id === post._id),
 				toggled = filteredPosts.length > 0 ? true : false;
 
