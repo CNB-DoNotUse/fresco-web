@@ -185,8 +185,8 @@ class UserSettings extends React.Component {
 						<div className="user-support">
 							<span>Quck Support</span>
 							<ul className="md-type-subhead">
-								<li><span className="mdi mdi-ticket icon"></span> Submit a ticket</li>
-								<li><span className="mdi mdi-email icon"></span> Email us</li>
+								{/*<li><a href=""><span className="mdi mdi-ticket icon"></span> Submit a ticket</a></li>*/}
+								<li><a href="mailto:support@fresconews.com"><span className="mdi mdi-email icon"></span> Email us</a></li>
 							</ul>
 						</div>
 					</div>

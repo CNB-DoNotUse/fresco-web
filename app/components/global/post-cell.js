@@ -24,6 +24,11 @@ export default class PostCell extends React.Component {
 			if(!this.props.togglePost) return;
 
 			this.props.togglePost(this.props.post)	
+		} else{
+
+
+			window.open('/post/' + this.props.post._id, '_blank');
+
 		}
 
 	}
@@ -43,24 +48,22 @@ export default class PostCell extends React.Component {
 		return(
 
 			<div className={size + ' tile ' + toggled} onClick={this.postClicked} >
-				<a href={"/post/" + this.props.post._id}>
-					<div className="tile-body" >
-						<div className="frame"></div>
-						
-						<div className="hover">
-							<p className="md-type-body1">{post.caption}</p>
-						
-							<span className="md-type-caption">{post.byline}</span>
-						
-							<PostCellStories stories={post.stories} />
-						</div>
-						
-						<FrescoImage 
-							image={this.props.post.image} 
-							size={this.props.size} />
-					</div>
-				</a>
+				<div className="tile-body" >
+					<div className="frame"></div>
 					
+					<div className="hover">
+						<p className="md-type-body1">{post.caption}</p>
+					
+						<span className="md-type-caption">{post.byline}</span>
+					
+						<PostCellStories stories={post.stories} />
+					</div>
+					
+					<FrescoImage 
+						image={this.props.post.image} 
+						size={this.props.size} />
+				</div>
+
 				<div className="tile-foot">
 					<PostCellActions
 						post={post}
