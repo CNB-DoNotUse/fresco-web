@@ -14,24 +14,21 @@ export default class PostCell extends React.Component {
 	constructor(props) {
 		super(props);
 		this.postClicked = this.postClicked.bind(this);
-		this.openPost = this.openPost.bind(this);
 	}
 	
 	postClicked(e) {
 
 		//Check if clicked with shift key
 		if(e.shiftKey) {
-			//Check if the prop function is present
-			if(!this.props.togglePost) return;
 
 			this.props.togglePost(this.props.post)	
+		} else{
+
+			var win=window.open('/post/' + this.props.post._id, '_blank');
+
+			win.focus;
+
 		}
-
-	}
-
-	openPost(e) {
-
-		window.open('/post/' + this.props.post._id, '_blank');
 
 	}
 
@@ -49,11 +46,11 @@ export default class PostCell extends React.Component {
 
 		return(
 
-			<div className={size + ' tile ' + toggled} onClick={this.postClicked} >
-				<div className="tile-body" onClick={this.openPost}>
+			<div className={size + ' tile ' + toggled} >
+				<div className="tile-body">
 					<div className="frame"></div>
 					
-					<div className="hover">
+					<div className="hover"  onClick={this.postClicked}>
 						<p className="md-type-body1">{post.caption}</p>
 					
 						<span className="md-type-caption">{post.byline}</span>
@@ -97,6 +94,7 @@ PostCell.defaultProps = {
 		large: 'col-xs-12 col-sm-6 col-lg-4',
 		small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
 	},
+	togglePost: ()=>{},
 	toggled: false
 }
 
@@ -165,6 +163,8 @@ class PostCellActions extends React.Component {
 					key={++key} />
 			);
 
+			console.log(this.props.purchased);
+
 			//Show the purhcased icon if the post hasn't been purchased                       
 			if(this.props.purchased === false){
 
@@ -177,7 +177,6 @@ class PostCellActions extends React.Component {
 
 			}
 		}
-
 		//Check if the post has been purchased
 		else if (this.props.purchased === true)
 			actions.push(
@@ -192,6 +191,8 @@ class PostCellActions extends React.Component {
 			actions.push(
 				<span class="mdi mdi-library-plus icon pull-right" key={++key}></span>
 			);
+
+			console.log('test');
 
 			actions.push(
 				<PurchaseAction 
