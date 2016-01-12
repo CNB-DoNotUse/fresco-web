@@ -14,6 +14,7 @@ export default class PostCell extends React.Component {
 	constructor(props) {
 		super(props);
 		this.postClicked = this.postClicked.bind(this);
+		this.openPost = this.openPost.bind(this);
 	}
 	
 	postClicked(e) {
@@ -24,12 +25,13 @@ export default class PostCell extends React.Component {
 			if(!this.props.togglePost) return;
 
 			this.props.togglePost(this.props.post)	
-		} else{
-
-
-			window.open('/post/' + this.props.post._id, '_blank');
-
 		}
+
+	}
+
+	openPost(e) {
+
+		window.open('/post/' + this.props.post._id, '_blank');
 
 	}
 
@@ -48,7 +50,7 @@ export default class PostCell extends React.Component {
 		return(
 
 			<div className={size + ' tile ' + toggled} onClick={this.postClicked} >
-				<div className="tile-body" >
+				<div className="tile-body" onClick={this.openPost}>
 					<div className="frame"></div>
 					
 					<div className="hover">
