@@ -208,9 +208,10 @@ export default class GalleryEdit extends React.Component {
  		}
 
  		if (gallery.imported && gallery.location) {
-
- 			params.lat = gallery.location.lat;
- 			params.lon = gallery.location.lng;
+ 			if(gallery.location.lat && gallery.location.lng) {
+	 			params.lat = gallery.location.lat;
+	 			params.lon = gallery.location.lng;
+ 			}
  			if (gallery.address) {
  				params.address = gallery.address;
  			}
@@ -262,6 +263,7 @@ export default class GalleryEdit extends React.Component {
  		}
 
  		function updateGallery(newPosts) {
+
  			if (typeof newPosts !== 'undefined') {
 				params.posts = _.difference(newPosts.posts, self.state.deletePosts);
  			}

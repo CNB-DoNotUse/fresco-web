@@ -29,6 +29,7 @@ export default class GalleryEditMap extends React.Component {
 			<div className="dialog-col col-xs-12 col-md-5 pull-right">
 				<AutocompleteMap
 					defaultLocation={this.props.gallery.posts[0].location ? this.props.gallery.posts[0].location.address : null}
+					hasRadius={false}
 					location={location}
 					onPlaceChange={this.props.onPlaceChange}
 					rerender={true} />

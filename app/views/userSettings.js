@@ -20,6 +20,41 @@ class UserSettings extends React.Component {
 		this.updateSettings = this.updateSettings.bind(this);
 		this.fileChanged = this.fileChanged.bind(this);
 		this.clickProfileImgInput = this.clickProfileImgInput.bind(this);
+		this.handleInputChange = this.handleInputChange.bind(this);
+
+		window.addEventListener('keyup', this.handleInputChange);
+	}
+
+	handleInputChange() {
+
+		var newName = this.refs.name.value != (this.props.user.firstname + ' ' + this.props.user.lastname),
+			// newBio = this.refs.bio.value != this.props.user.bio,
+			newAvatar = this.refs.avatarFileInput.files.length > 0,
+			newEmail = this.refs.email.value != this.props.user.email,
+			newPhone = this.refs.phone.value != this.props.user.phone;
+
+		var profileSaveBtn = this.refs.profileSaveBtn,
+			accountSaveBtn = this.refs.accountSaveBtn;
+		if(newName /*|| newBio*/ || newAvatar) {
+			if(profileSaveBtn.className.indexOf(' changed ') == -1) {
+				profileSaveBtn.className += ' changed ';
+			}
+		} else {
+			if(profileSaveBtn.className.indexOf(' changed ') != -1) {
+				profileSaveBtn.className = profileSaveBtn.className.replace(' changed ', '');
+			}
+		}
+
+		if(newEmail || newPhone) {
+			if(accountSaveBtn.className.indexOf(' changed ') == -1) {
+				accountSaveBtn.className += ' changed ';
+			}
+		} else {
+			if(accountSaveBtn.className.indexOf(' changed ') != -1) {
+				console.log('replacing');
+				accountSaveBtn.className = accountSaveBtn.className.replace(' changed ', '');
+			}
+		}
 	}
 
  	/**
@@ -56,6 +91,7 @@ class UserSettings extends React.Component {
  			name = this.refs.name.value.split(' '),
  			firstname = name[0],
  			lastname = name.slice(1).join(' '),
+ 			bio = this.refs.bio.value,
  			email =  this.refs.email.value,
  			phone =  this.refs.phone.value,
  			self = this;
@@ -76,6 +112,7 @@ class UserSettings extends React.Component {
  		userData.append('id', id);
  		userData.append('firstname', firstname);
  		userData.append('lastname', lastname);
+ 		userData.append('bio', bio);
  		userData.append('email', email);
  		userData.append('phone', phone);
  		userData.append('avatar', this.refs.avatarFileInput.files[0]);
@@ -141,8 +178,8 @@ class UserSettings extends React.Component {
 							</div>
 							<div className="f-card-content">
 								<input type="text" className="form-control floating-label heading" ref="name" placeholder="Name" defaultValue={user.firstname + ' ' + user.lastname} />
-								<textarea className="form-control floating-label heading" placeholder="Bio"></textarea>
-								<button className="btn btn-save" onClick={this.updateSettings}>SAVE CHANGES</button>
+								<textarea className="form-control floating-label heading" ref="bio" placeholder="Bio"></textarea>
+								<button className="btn btn-save" onClick={this.updateSettings} ref="profileSaveBtn">SAVE CHANGES</button>
 							</div>	
 						</div>
 						<div className="user-support">
@@ -163,7 +200,7 @@ class UserSettings extends React.Component {
 									<div style={{width: '100%'}}><input type="text" className="form-control floating-label" ref="email" placeholder="Email address" defaultValue={user.email} /></div>
 									<div style={{width: '100%'}}><input type="text" className="form-control floating-label" ref="phone" placeholder="Phone number" defaultValue={user.phone}  /></div>
 								</div>
-								<button className="btn btn-save" onClick={this.updateSettings}>SAVE CHANGES</button>
+								<button className="btn btn-save" onClick={this.updateSettings} ref="accountSaveBtn">SAVE CHANGES</button>
 							</div>
 						</div>
 					</div>

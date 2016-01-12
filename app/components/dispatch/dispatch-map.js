@@ -87,7 +87,6 @@ export default class DispatchMap extends React.Component {
 
 		//Check if the map should update
 		if(this.props.shouldMapUpdate){
-			console.log('Map Should Update')
 			this.updateMap();
 			this.props.mapShouldUpdate(false);
 		}
@@ -527,8 +526,6 @@ export default class DispatchMap extends React.Component {
 			lat: lat,
 			lng: lng
 		});
-
-		console.log(assignment);
 
 		var calloutContent = ReactDOM.renderToString(
 			<DispatchMapCallout assignment={assignment} onClick />
