@@ -190,9 +190,9 @@ class PostCellActions extends React.Component {
 		//Check if the post is not purhcased, and it is purchasble from the license
 		else if (this.props.purchased == false && this.props.post.license == 1) {
 
-			actions.push(
-				<span class="mdi mdi-library-plus icon pull-right" key={++key}></span>
-			);
+			// actions.push(
+			// 	<span className="mdi mdi-library-plus icon pull-right" key={++key}></span>
+			// );
 
 			console.log('test');
 

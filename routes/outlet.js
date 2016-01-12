@@ -27,8 +27,6 @@ router          = express.Router();
 
   function doWithOutletInfo(error, response, body) {
 
-    console.log(response);
-
     if (error || !body || body.err){
 
         var error = new Error(config.ERR_PAGE_MESSAGES[404]);
@@ -59,7 +57,6 @@ router          = express.Router();
           }
 
     res.render('app', {
-      user: req.session.user,
       title: title,
       config: config,
       alerts: req.alerts,
