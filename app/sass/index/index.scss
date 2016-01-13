@@ -540,66 +540,68 @@ $mobileSlideHeight:540px;
 					@include rgba(color, 0, 0, 0, 0.87);
 
 					@include mobile{
-						height: auto;
+						height: 180px;
 					}
 
 				}
-
+				
 				.interaction{
-					position: absolute;
-					height:14%;
-					width: 100%;
-					overflow:hidden;
-					bottom: 0;
-					border-top:1px solid rgb(0, 0, 0);
-					border-top:1px solid rgba(0, 0, 0, 0.12);
+				position: absolute;
+				height:14%;
+				width: 100%;
+				overflow:hidden;
+				bottom: 0;
+				border-top:1px solid rgb(0, 0, 0);
+				border-top:1px solid rgba(0, 0, 0, 0.12);
 
-					@include mobile{
-						position:relative;
-						height:24%;
+				@include mobile{
+					position:relative;
+					height:24%;
+				}
+
+				span{
+					font-size:22px;
+					cursor:pointer;
+				}
+
+				.link{
+				    position: relative;
+				    top:12px;
+				    cursor:pointer;
+				    left:10px;
+
+					span.mdi-link-variant{
+						position: relative;
+						top: 3px;
+						font-size: 24px;
 					}
-
+					
 					span{
-						font-size:22px;
 						cursor:pointer;
+						@include rgba(color, 0, 0, 0, 0.54);
+						font-size:14px;
+					}
+				}
+
+				.social{
+					float:right;
+				    position: relative;
+				    bottom:8px;
+				    right:18px;
+
+					span.mdi-facebook-box{
+						color:#3b5998;
+						padding-left:15px;
 					}
 
-					.link{
-					    position: relative;
-					    top:12px;
-					    cursor:pointer;
-					    left:10px;
-
-						span.mdi-link-variant{
-							position: relative;
-							top: 3px;
-							font-size: 24px;
-						}
-						
-						span{
-							cursor:pointer;
-							@include rgba(color, 0, 0, 0, 0.54);
-							font-size:14px;
-						}
-					}
-
-					.social{
-						float:right;
-					    position: relative;
-					    bottom:8px;
-					    right:18px;
-
-						span.mdi-facebook-box{
-							color:#3b5998;
-							padding-left:15px;
-						}
-
-						span.mdi-twitter{
-							color:#55acee;
-						}
+					span.mdi-twitter{
+						color:#55acee;
 					}
 				}
 			}
+
+			}
+
 		}
 	}
 
