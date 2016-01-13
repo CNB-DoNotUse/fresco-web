@@ -316,10 +316,7 @@ export default class GalleryEdit extends React.Component {
 	 					});
 	 				}
 	 				else {
-	 					
-	 					$.snackbar({ content: "Gallery successfully saved!" });
-	 					self.props.updateGallery(result.data);
-	 					self.hide();
+	 					location.reload();
 	 				}
 	 			}
 
