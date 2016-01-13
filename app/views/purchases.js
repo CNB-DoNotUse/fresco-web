@@ -9,19 +9,14 @@ class Purchases extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			purchases: [],
 			outlets: [],
 			filterOutlets: []
 		}
 
 		this.getOutlets = this.getOutlets.bind(this);
-
 		this.filterAdd = this.filterAdd.bind(this);
 		this.filterRemove = this.filterRemove.bind(this);
-
-		this.getPurchases = this.getPurchases.bind(this);
-		this.getMorePurchases = this.getMorePurchases.bind(this);
-
+		this.loadPurchases = this.loadPurchases.bind(this);
 		this.downloadExports = this.downloadExports.bind(this);
 	}
 
@@ -74,46 +69,39 @@ class Purchases extends React.Component {
 
 	}
 
-	getPurchases() {
+	/**
+	 * Requests purchases from server
+	 * @return {[type]} [description]
+	 */
+	loadPurchases(passedOffset, cb) {
 		$.get('/scripts/outlet/purchases/list', {
 			limit: 20,
-			offset: 0,
+			offset: passedOffset,
 			details: true,
 			outlets: this.state.filterOutlets.map(p => p._id)
-		}, (purchases) => {
-			if(purchases.err) {
+		}, (response) => {
+			
+			if(response.err || !response.data) {
 				return $.snackbar({
-					content: purchases.err
+					content: 'There was an error receiving the purchases'
 				});
 			}
 
-			if(!purchases.data) return;
+			var purchases = response.data.map((purchaseParent) => {
 
-			this.setState({
-				purchases: purchases.data
+				var purchase = purchaseParent.purchase;
+					purchase.title = purchaseParent.title;
+
+				return purchase;
+
 			});
-		});
-	}
 
-	getMorePurchases(offset, cb) {
-		$.get('/scripts/outlet/purchases/list', {
-			limit: 20,
-			offset: offset,
-			outlet: this.state.filterOutlets.map((outlet) => { return 'outlet[]='+ outlet._id }).join('&')
-		}, (purchases) => {
-			var currentPurchases = [];
-			this.state.purchases.map(purchase => currentPurchases.push(purchase));
-			purchases.data.map(purchase => currentPurchases.push(purchase));
+			if(cb) cb(purchases);
 
-			this.setState({
-				purchases: currentPurchases
-			});
-			cb();
 		});
 	}
 
 	downloadExports(format) {
-
 		var filterOutletText = this.state.filterOutlets.map((outlet) => {
 			return 'outlet[]='+ outlet._id
 		}).join('&');
@@ -124,7 +112,6 @@ class Purchases extends React.Component {
 	}
 
 	componentDidMount() {
-	 	this.getPurchases();
 	 	this.getOutlets();
 	}
 
@@ -161,7 +148,7 @@ class Purchases extends React.Component {
 				<PurchasesBody
 					purchases={this.state.purchases}
 					downloadExports={this.downloadExports}
-					getMorePurchases={this.getMorePurchases} />
+					loadPurchases={this.loadPurchases} />
 			</App>
 		)
 	}
