@@ -235,6 +235,7 @@ export default class AdminBody extends React.Component {
 					<div className="col-md-6 col-lg-7 list">
 						{assignmentsList}
 					</div>
+					
 					<div className="col-md-6 col-lg-5 form-group-default">
 						<AdminAssignmentEdit
 							hasActiveGallery={this.state.hasActiveGallery}
@@ -244,10 +245,12 @@ export default class AdminBody extends React.Component {
 							reject={this.reject} />
 					</div>
 				</div>
+				
 				<div className="tab tab-submissions">
 					<div className="col-md-6 col-lg-7 list">
 						{submissionsList}
 					</div>
+					
 					<div className="col-md-6 col-lg-5 form-group-default">
 						<AdminGalleryEdit
 							hasActiveGallery={this.state.hasActiveGallery}
@@ -258,10 +261,12 @@ export default class AdminBody extends React.Component {
 							remove={this.remove} />
 					</div>
 				</div>
+				
 				<div className="tab tab-imports">
 					<div className="col-md-6 col-lg-7 list">
 						{importsList}
 					</div>
+					
 					<div className="col-md-6 col-lg-5 form-group-default">
 						<AdminGalleryEdit
 							hasActiveGallery={this.state.hasActiveGallery}
