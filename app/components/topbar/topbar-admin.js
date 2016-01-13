@@ -11,6 +11,9 @@ export default class TopBarAdmin extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.state = {
+			importRunning: false
+		}
 		this.setTab = this.setTab.bind(this);
 		this.clickImportFileUpload = this.clickImportFileUpload.bind(this);
 		this.importFiles = this.importFiles.bind(this);
@@ -31,10 +34,6 @@ export default class TopBarAdmin extends React.Component {
 	 		$('.tab, .tab-admin').removeClass('toggled');
 	 		$('[data-tab="' + nextProps.activeTab + '"]').addClass('toggled');
 	 	}
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-	 	$.material.init();
 	}
 
 	clickImportFileUpload(e) {
@@ -76,10 +75,13 @@ export default class TopBarAdmin extends React.Component {
 	}
 
 	handleTwitterInputKeyDown(e) {
-		if(e.keyCode != 13) return;
+		if(e.keyCode != 13 || this.importRunning) return;
+
+		this.importRunning = true;
 		
 		var data = new FormData();
 		data.append('tweet', this.refs['twitter-import-input'].value);
+
 		$.ajax({
 			url: '/scripts/gallery/import',
 			type: 'POST',
@@ -99,6 +101,9 @@ export default class TopBarAdmin extends React.Component {
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: 'Failed to import media'});
+			},
+			complete: (exhr, status, error) => {
+				this.importRunning = false;
 			}
 		});
 	}
@@ -107,34 +112,55 @@ export default class TopBarAdmin extends React.Component {
 
 		return (
 			<nav className="navbar navbar-fixed-top navbar-default">
-				<input type="file" ref="uploadImportFiles" style={{position: "absolute", top: "-100px"}} accept="image/*,video/*,video/mp4" multiple onChange={this.importFiles} />
+				<input 
+					type="file" 
+					ref="uploadImportFiles" 
+					style={{position: "absolute", top: "-100px"}} 
+					accept="image/*,video/*,video/mp4" 
+					multiple 
+					onChange={this.importFiles} />
+				
 				<div className="dim transparent toggle-drop toggler"></div>
+				
 				<button type="button" className="icon-button toggle-drawer toggler hidden-lg">
 					<span className="mdi mdi-menu icon"></span>
 				</button>
+				
 				<button type="button" className="icon-button hidden-xs upload-import" onClick={this.clickImportFileUpload}>
 					<span className="mdi mdi-upload icon"></span>
 				</button>
+				
 				<div className="form-group-default">
-					<input type="text" className="form-control twitter-import" placeholder="Link" ref="twitter-import-input" onKeyDown={this.handleTwitterInputKeyDown} />
+					<input 
+						type="text" 
+						className="form-control twitter-import" 
+						placeholder="Link" 
+						ref="twitter-import-input" 
+						onKeyDown={this.handleTwitterInputKeyDown} />
 				</div>
+				
 				<div className="tab-control">
 					<button className="btn btn-flat btn-ink tab-admin" data-tab="assignments" onClick={this.setTab}>
 						Assignments
 					</button>
+					
 					<button className="btn btn-flat btn-ink tab-admin"  data-tab="submissions" onClick={this.setTab}>
 						Submissions
 					</button>
+					
 					<button className="btn btn-flat btn-ink tab-admin" data-tab="imports" onClick={this.setTab}>
 						Imports
 					</button>
 				</div>
+				
 				<li className="drop no-border pull-right hidden-xs" style={{opacity: 0}}>
 					<button className="toggle-drop md-type-subhead">
 						<span className="mdi mdi-settings icon"></span><span className="mdi mdi-menu-down icon"></span>
 					</button>
+					
 					<div className="drop-menu panel panel-default">
 						<div className="toggle-drop toggler md-type-subhead">Settings<span className="mdi mdi-menu-up icon pull-right"></span></div>
+						
 						<div className="drop-body">
 							<ul className="md-type-subhead">
 								<li>Import alternate</li>

@@ -58,7 +58,7 @@ loginFormHeader.addEventListener('click', function() {
 		//Slide down login form
 		$(loginForm).velocity("slideDown", { duration: 500 });
 		//Bring back top margin
-		$(login).velocity({'margin-top' : '15%'}, {duration: 500});
+		$(login).velocity({'margin-top' : '12%'}, {duration: 500});
 
 		//Slide up and hide the `Sign Up` form
 		$(signUpForm).velocity("slideUp", { 

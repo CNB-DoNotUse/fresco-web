@@ -63,6 +63,8 @@ window.requestAnimFrame = (function(){
  */
 function resizeCall(){
 
+	console.log('rezieCall');
+
 	slick.updateArrows();
 
 	if(window.location.pathname != '/') return;
@@ -100,8 +102,8 @@ function updateElements() {
 		navOffset = navOffset >= 0 ? 0 : navOffset;
 
 	animation.translateY3d(nav, navOffset, translate3dSupported);
-	animation.translateY3d(bottom, bottomOffset, true);
-	animation.translateY3d(hero, heroOffset, true);
+	animation.translateY3d(bottom, bottomOffset, translate3dSupported);
+	animation.translateY3d(hero, heroOffset, translate3dSupported );
 
 	scrolled = true;
 	ticking = false;

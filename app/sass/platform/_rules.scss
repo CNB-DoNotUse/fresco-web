@@ -404,6 +404,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 .split {
 	@include display(flex);
 	@include flex-direction(row);
+    position: relative;
 	> .split-cell {
 		@include flex(1);
 	}
