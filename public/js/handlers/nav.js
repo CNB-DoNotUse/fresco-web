@@ -27,9 +27,8 @@ for (var i = 0; i < footerList.length; i++) {
 	footerList[i].addEventListener('click', handleClick);
 };
 
-
 /**
- * Click listener for navigaitona actions
+ * Click listener for navigaiton actions
  */
 
 function handleClick(e) {
@@ -66,22 +65,25 @@ function handleClick(e) {
 
 function returnToLanding() {
 	fromModal = true;
+	
 	//Update window history state
 	window.history.replaceState({home: 'landing'}, null, '/');
+	
 	$(window.modal).velocity({ translateY : '150%' }, { 
 		duration: 450, 
 		easing: 'ease-out',
 		complete: function(){
-			$(window.modal).css('display', 'none');
+
+			//Hide the modal after the animation
+			window.modal.style.display = 'none';
+			$(window.modal).removeClass('active-modal');
+			
 			$('#_nav').velocity('fadeOut', { 
 				duration: modalTransitionLength, 
 				complete: function(){
 
 					//Reset the wrapper height
 					$('.wrapper').removeClass('full');
-
-					//Hide the modal after the animation
-					window.modal.style.display = 'none';
 
 					//Adjust nav menu list items to reflect the page
 					navList[0].style.display = 'inline-block';
@@ -90,9 +92,13 @@ function returnToLanding() {
 					navList[2].style.display = 'none';
 					nav.className = nav.className.replace(/\btransparent\b/,'');
 
-					$('#_nav, #_landing-wrap, #_footer').velocity('fadeIn', { duration: modalTransitionLength, complete: function () {
-						init();
-					}});
+					$('#_nav, #_landing-wrap, #_footer').velocity('fadeIn', { 
+						duration: modalTransitionLength, 
+						complete: function () {
+							init();
+							resizeCall();
+						}
+					});
 				}
 
 			});
@@ -126,9 +132,6 @@ function loadModal(modalId) {
 			duration: modalTransitionLength, 
 			complete: function(){
 
-				//Reset the wrapper height
-				// $('.wrapper').css('height', '100%');
-
 				$(modal).velocity({ translateY : '100%' }, {
 					duration: 0, 
 					delay: 0,
@@ -145,6 +148,8 @@ function loadModal(modalId) {
 
 						$(nav).velocity({ opacity: 1 }, { display: "block" });
 						$(modal).velocity({ translateY : '0'}, { duration: modalTransitionLength, easing: 'ease-out' });
+
+						resizeCall();
 
 					}
 				});
@@ -168,6 +173,8 @@ function loadModal(modalId) {
 
 						$(modal).velocity({ translateY : '0'}, { duration: modalTransitionLength, easing: 'ease-out' });
 
+						resizeCall();
+
 					}
 				});
 			}
@@ -180,7 +187,7 @@ function loadModal(modalId) {
  * @param {string} src Source of the script to load
  */
 
-function loadScript(src){
+function loadScript(src) {
 	$('.wrapper').addClass('full');
 	//Add script to dom
 	var s = document.createElement('script');
@@ -190,6 +197,25 @@ function loadScript(src){
 		var x = document.getElementsByTagName('script')[0];
 		x.parentNode.insertBefore(s, x);
 }
+
+function resizeCall(width) {
+
+	var modal = document.getElementsByClassName('active-modal')[0];
+
+	if(modal && modal.className.indexOf('xs') > -1){
+		if(window.innerWidth < screen.mobile){
+			nav.style.display = 'none';
+		}
+		else
+			nav.style.display = 'block';
+	} else{
+		nav.style.display = 'block';
+	}
+}
+
+window.addEventListener('resize', function() {
+	resizeCall(window.innerWidth);
+});
 
 
 window.onpopstate = function(event) {

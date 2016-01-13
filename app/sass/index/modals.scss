@@ -155,7 +155,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 	.header{
 		padding:0 16px;
-		height:63px;
+		height:64px;
 		border-bottom:1px solid #E6E6E6;
 		border-bottom:1px solid rgba(0,0,0,0.10);
 
@@ -179,7 +179,20 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 }
 
-.active{
+.xs{
+
+	@include mobile{
+
+
+		height:100vh !important;
+		margin:0 auto !important;
+
+
+	}
+
+}
+
+.active-modal{
 	display:block;
 	opacity:1;
 }
