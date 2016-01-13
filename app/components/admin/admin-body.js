@@ -20,6 +20,8 @@ export default class AdminBody extends React.Component {
 		this.setActiveGallery = this.setActiveGallery.bind(this);
 		this.spliceCurrentGallery = this.spliceCurrentGallery.bind(this);
 
+		this.updateAssignment = this.updateAssignment.bind(this);
+
 		this.skip = this.skip.bind(this);
 		this.verify = this.verify.bind(this);
 		this.remove = this.remove.bind(this);
@@ -82,6 +84,16 @@ export default class AdminBody extends React.Component {
 	}
 
 	setActiveAssignment(id) {
+
+		if(id == null) {
+			this.setState({
+				hasActiveGallery: false,
+				activeAssignment: false
+			});
+
+			return;
+		}
+
 		for (var a in this.props.assignments) {
 			if(this.props.assignments[a]._id == id) {
 				this.setState({
@@ -142,6 +154,23 @@ export default class AdminBody extends React.Component {
 		}
 
 		this.setActiveGallery( this.props[propGalleryType][next_index]._id, this.state.activeGalleryType );
+	}
+
+	updateAssignment(id) {
+		var next_index = 0;
+		var propGalleryType = this.state.activeGalleryType + 's';
+		var assignments = this.props[propGalleryType];
+		for (var a in assignments) {
+			if(id == assignments[a]._id) {
+				if (a == (assignments.length - 1))
+					next_index = a - 1;
+				else
+					next_index = a;
+				assignments.splice(a, 1);
+			}
+		}
+
+		this.setActiveAssignment(assignments ? assignments[next_index] ? assignments[next_index]._id : null : null);
 	}
 
 	remove(cb) {
@@ -240,8 +269,7 @@ export default class AdminBody extends React.Component {
 							hasActiveGallery={this.state.hasActiveGallery}
 							activeGalleryType={this.state.activeGalleryType}
 							assignment={this.state.activeAssignment}
-							approve={this.approve}
-							reject={this.reject} />
+							updateAssignment={this.updateAssignment} />
 					</div>
 				</div>
 				<div className="tab tab-submissions">

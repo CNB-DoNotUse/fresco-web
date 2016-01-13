@@ -245,28 +245,30 @@ export default class AdminGalleryEdit extends React.Component {
 
 	render() {
 		// If doesn't have active gallery or galleryType is an assignment, don't render anything.
-		if(!this.props.hasActiveGallery || this.props.activeGalleryType == 'assignment') { return <div></div> }
+		if(!this.props.hasActiveGallery || this.props.activeGalleryType == 'assignment' || !this.props.gallery || !this.props.gallery.posts) { return <div></div> }
 
 		var activeGallery = this.props.gallery;
 
 		// Map gallery posts into slider elements
 		var galleryImages = [];
-		activeGallery.posts.map((post, i) => {
-			if(post.video) {
-				galleryImages.push(
-					<div key={i}>
-						<video width="100%" height="100%" data-id={post._id} controls>
-							<source src={post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4" />
-							Your browser does not support the video tag.
-						</video>
-					</div>
-				)
-			} else {
-				galleryImages.push(
-					<div key={i}><img className="img-responsive" src={global.formatImg(post.image, 'medium')} data-id={post._id} /></div>
-				)
-			}
-		});
+		if(activeGallery.posts) {
+			activeGallery.posts.map((post, i) => {
+				if(post.video) {
+					galleryImages.push(
+						<div key={i}>
+							<video width="100%" height="100%" data-id={post._id} controls>
+								<source src={post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4" />
+								Your browser does not support the video tag.
+							</video>
+						</div>
+					)
+				} else {
+					galleryImages.push(
+						<div key={i}><img className="img-responsive" src={global.formatImg(post.image, 'medium')} data-id={post._id} /></div>
+					)
+				}
+			});
+		}
 
 		// If gallery is a submission, 
 		if(this.props.activeGalleryType == 'submission') {
@@ -290,10 +292,11 @@ export default class AdminGalleryEdit extends React.Component {
 						ref="gallery-byline" disabled={this.props.activeGalleryType == 'submission'}  />
 
 		} else { // if an import
+
 			// set map location to one from state
 			var editMapLocation = this.state.mapLocation;
 			// Is a twitter import. Should show dropdown for handle vs username
-			if(activeGallery.posts[0].meta.twitter) { 
+			if(activeGallery.posts && activeGallery.posts[0].meta.twitter) { 
 				var twitterObj = activeGallery.posts[0].meta.twitter;
 				var nameInput =
 					<div>

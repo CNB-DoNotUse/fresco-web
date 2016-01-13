@@ -1,6 +1,6 @@
 import global from '../../../lib/global'
 import React from 'react'
-import AssignmentEditMap from '../editing/assignment-edit-map'
+import AutocompleteMap from '../global/autocomplete-map'
 
 /**
     
@@ -14,27 +14,29 @@ export default class AdminAssignmentEdit extends React.Component {
         super(props);
 
         this.state = {
+            address: null,
             radius: null,
             location: null
         }
-        this.updateLocation = this.updateLocation.bind(this);
+        this.pending = false;
+        this.onPlaceChange = this.onPlaceChange.bind(this);
         this.approve = this.approve.bind(this);
         this.reject = this.reject.bind(this);
     }
 
     /**
-     * Updates state location with passed params
-     * @param  {dictionary} location Location Dictionary object {lat: x, lng: y}
-     * @param  {integer} radius   Radius that has changed
+     * Updates state map location when AutocompleteMap gives new location
      */
-    updateLocation(passedLocation, passedRadius) {
+    onPlaceChange(place) {
         this.setState({
-            location: passedLocation || null,
-            radius: passedRadius || null
-        })    
+            address: place.address,
+            location: place.location
+        });
     }
 
     approve() {
+        this.pending = true;
+
         $.post('/scripts/assignment/approve',
         {
             id: this.props.assignment._id,
@@ -45,6 +47,8 @@ export default class AdminAssignmentEdit extends React.Component {
             lng: this.state.location.lng,
             expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60
         }, (data) => {
+            this.pending = false;
+            this.props.updateAssignment(this.props.assignment._id);
             if(data.err) {
                 $.snackbar({
                     content: 'Could not approve assignment!'
@@ -59,9 +63,12 @@ export default class AdminAssignmentEdit extends React.Component {
     }
 
     reject() {
+        this.pending = true;
         $.post('/scripts/assignment/deny', {
             id: this.props.assignment._id
         }, (data) => {
+            this.pending = false;
+            this.props.updateAssignment(this.props.assignment._id);
             if(data.err) {
                 $.snackbar({
                     content: 'Could not reject assignment!'
@@ -118,11 +125,11 @@ export default class AdminAssignmentEdit extends React.Component {
     render() {
         
         var location = this.state.location,
-            radius = this.state.radius,
+            radius = Math.round(global.milesToFeet(this.state.radius)),
             address = this.props.assignment.location ? this.props.assignment.location.address : '';
 
-        if(this.props.activeGalleryType != 'assignment') 
-            return (<div></div>);
+/*        if(this.props.activeGalleryType != 'assignment' || !this.props.hasActiveGallery) 
+            return (<div></div>);*/
 
         return (
             <div className="dialog">
@@ -137,11 +144,12 @@ export default class AdminAssignmentEdit extends React.Component {
                         className="form-control floating-label"
                         placeholder="Description"
                         ref="assignment-description"></textarea>
-                    <AssignmentEditMap 
-                        location={location} 
+                    <AutocompleteMap
+                        defaultLocation={address}
+                        location={location}
                         radius={radius}
-                        address={address}
-                        updateLocation={this.updateLocation} />
+                        onPlaceChange={this.onPlaceChange}
+                        rerender={true} />
                     <input
                         type="text"
                         className="form-control floating-label"
@@ -151,8 +159,8 @@ export default class AdminAssignmentEdit extends React.Component {
                         style={{marginTop: '64px'}} /> {/*Styles need fixing*/}
                 </div>
                 <div className="dialog-foot">
-                    <button type="button" className="btn btn-flat assignment-approve pull-right" onClick={this.approve}>Approve</button>
-                    <button type="button" className="btn btn-flat assignment-deny pull-right" onClick={this.reject}>Reject</button>
+                    <button type="button" className="btn btn-flat assignment-approve pull-right" onClick={this.approve} disabled={this.isPending}>Approve</button>
+                    <button type="button" className="btn btn-flat assignment-deny pull-right" onClick={this.reject} disabled={this.isPending}>Reject</button>
                 </div>
             </div>
         );
