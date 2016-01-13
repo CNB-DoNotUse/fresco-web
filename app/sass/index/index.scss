@@ -476,7 +476,7 @@ $mobileSlideHeight:540px;
 
 		@include mobile{
 			width:100%;
-			height:$mobileSlideHeight;
+			height: auto;
 			border-bottom:1px solid;
 			@include rgba(border-color, 0, 0, 0, 0.12);
 		}
@@ -487,7 +487,7 @@ $mobileSlideHeight:540px;
 			overflow:hidden;
 
 			@include mobile{
-				height:$mobileSlideHeight;
+				height: auto;
 			}
 
 			.posts{
@@ -499,7 +499,7 @@ $mobileSlideHeight:540px;
 
 				@include mobile{
 					display:inline-block;
-					height:$mobilePostHeight;
+					height: mobilePostHeight;
 					width:100%;
 				}
 
@@ -523,7 +523,7 @@ $mobileSlideHeight:540px;
 					overflow:hidden;
 
 					@include mobile{
-						height:$mobilePostHeight;
+						height: mobilePostHeight;
 					}
 				}
 			}
@@ -538,7 +538,7 @@ $mobileSlideHeight:540px;
 
 				@include mobile{
 					float:none;
-					height:220px;
+					height: auto;
 					width:100%;
 				}
 
@@ -552,7 +552,7 @@ $mobileSlideHeight:540px;
 					@include rgba(color, 0, 0, 0, 0.87);
 
 					@include mobile{
-						height:66%;
+						height: auto;
 					}
 
 				}
