@@ -108,7 +108,7 @@ gulp.task('Build Webpack', (cb) => {
 	var plugins = [
 		new webpack.optimize.CommonsChunkPlugin({
 			name: "commons",
-			filename: "fresco.js"
+			filename: "common.js"
 		})
 	];
 
