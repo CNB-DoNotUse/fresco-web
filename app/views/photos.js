@@ -52,7 +52,7 @@ class Photos extends React.Component {
 			dataType: 'json',
 			success: (response, status, xhr) => {
 
-				//Do nothing, because of bad response
+				//Send empty array, because of bad response
 				if(!response.data || response.err)
 					callback([]);
 				else
