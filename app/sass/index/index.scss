@@ -13,6 +13,10 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 .wrapper{
 	height:auto;
 	overflow:hidden;
+
+	&.full {
+		height: 100%;
+	}
 }
 
 .text-banner {
@@ -286,7 +290,7 @@ $heroHeight: 180px;
 		}
 
 		.timeline{
-			padding: 44px 5% 24px;
+			padding: 44px 5% 0px;
 			height:auto;
 
 			@include mobile{
@@ -302,7 +306,7 @@ $heroHeight: 180px;
 				text-align:center;
 
 				@include mobile{
-					width:100% !important;
+					width:70% !important;
 				}
 
 				img{
@@ -334,6 +338,7 @@ $heroHeight: 180px;
 			li.second{
 				width:42%;
 				margin:0 4%;
+				margin-bottom: -28px;
 				@include mobile{
 					margin:0 auto;
 				}
@@ -352,7 +357,7 @@ $heroHeight: 180px;
 			position: relative;
 			top: 14px;
 			@include mobile{
-				width:302%;
+				width:212%;
 			}
 		
 		}
@@ -375,7 +380,7 @@ $heroHeight: 180px;
 
 				@include mobile{
 					display:inline-block;
-					width:100% !important;
+					width:70% !important;
 					position:relative !important;
 					left:0 !important;
 					right:0 !important;
@@ -419,14 +424,14 @@ $heroHeight: 180px;
 
 	}
 	.info{
-		font-family:Roboto;
+		font-family: Roboto;
 		max-width:90%;
 		font-size:14px;
 		margin:0 auto;
 		color:rgb(0, 0, 0);
 		color:rgba(0, 0, 0, .54);
 		padding:20px 40px;
-		font-weight:500;
+		font-weight:400;
 	}
 
 }
@@ -466,7 +471,7 @@ $mobileSlideHeight:540px;
 
 		@include mobile{
 			width:100%;
-			height:$mobileSlideHeight;
+			height: auto;
 			border-bottom:1px solid;
 			@include rgba(border-color, 0, 0, 0, 0.12);
 		}
@@ -477,7 +482,7 @@ $mobileSlideHeight:540px;
 			overflow:hidden;
 
 			@include mobile{
-				height:$mobileSlideHeight;
+				height: auto;
 			}
 
 			.posts{
@@ -489,7 +494,7 @@ $mobileSlideHeight:540px;
 
 				@include mobile{
 					display:inline-block;
-					height:$mobilePostHeight;
+					height: mobilePostHeight;
 					width:100%;
 				}
 
@@ -513,7 +518,7 @@ $mobileSlideHeight:540px;
 					overflow:hidden;
 
 					@include mobile{
-						height:$mobilePostHeight;
+						height: mobilePostHeight;
 					}
 				}
 			}
@@ -528,7 +533,7 @@ $mobileSlideHeight:540px;
 
 				@include mobile{
 					float:none;
-					height:220px;
+					height: auto;
 					width:100%;
 				}
 
@@ -542,7 +547,7 @@ $mobileSlideHeight:540px;
 					@include rgba(color, 0, 0, 0, 0.87);
 
 					@include mobile{
-						height:66%;
+						height: auto;
 					}
 
 				}

@@ -51,10 +51,11 @@ function handleClick(e) {
 
 		loadModal(item.dataset.modal);
 
+		$('.wrapper').addClass('full');
+
 	}
 	//Back to landing page transition
-	else if(event == 'landing'){
-
+	else if(event == 'landing') {
 		returnToLanding();
 	}
 }
@@ -67,7 +68,6 @@ function returnToLanding() {
 	fromModal = true;
 	//Update window history state
 	window.history.replaceState({home: 'landing'}, null, '/');
-
 	$(window.modal).velocity({ translateY : '150%' }, { 
 		duration: 450, 
 		easing: 'ease-out',
@@ -78,7 +78,7 @@ function returnToLanding() {
 				complete: function(){
 
 					//Reset the wrapper height
-					// $('.wrapper').css('height', 'auto');
+					$('.wrapper').removeClass('full');
 
 					//Hide the modal after the animation
 					window.modal.style.display = 'none';
@@ -181,6 +181,7 @@ function loadModal(modalId) {
  */
 
 function loadScript(src){
+	$('.wrapper').addClass('full');
 	//Add script to dom
 	var s = document.createElement('script');
 		s.type = 'text/javascript';
