@@ -105,7 +105,7 @@ function updateElements() {
 	animation.translateY3d(hero, heroOffset, translate3dSupported);
 
 	if(navOffset >= 0) {
-		navReached = true;
+		// navReached = true;
 	}
 
 	scrolled = true;
