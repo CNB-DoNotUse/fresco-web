@@ -14,6 +14,7 @@ export default class GalleryEditMap extends React.Component {
 	render() {
 
 		var location = this.props.gallery.location ? this.props.gallery.location.coordinates ? this.props.gallery.location.coordinates[0] : this.props.gallery.location : null;
+		
 		if(Array.isArray(location)) {
 			if(!location[0].lat) {
 				location = location.map((loc) => {
@@ -32,6 +33,7 @@ export default class GalleryEditMap extends React.Component {
 					hasRadius={false}
 					location={location}
 					onPlaceChange={this.props.onPlaceChange}
+					disabled={this.props.gallery.owner}
 					rerender={true} />
 			</div>
 		);

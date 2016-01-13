@@ -74,7 +74,7 @@ export default class GalleryEditBody extends React.Component {
 							<label>
 								<input
 									type="checkbox" 
-									defaulChecked={this.props.gallery.visibility == 2}
+									checked={this.props.gallery.visibility == 2}
 									onChange={this.toggleHighlight} />
 								<span className="ripple"></span>
 								<span className="check"></span> Highlighted

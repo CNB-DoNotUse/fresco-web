@@ -8,7 +8,7 @@ export default class AutocompleteMap extends React.Component {
 		super(props);
 
 		this.state = {
-			location: null,
+			location: this.props.location,
 			radius: this.props.radius
 		}
 
@@ -16,8 +16,11 @@ export default class AutocompleteMap extends React.Component {
 		this.updateRadius = this.updateRadius.bind(this);
 	}
 
+	/**
+	 * Listener for when autocomplete is changed
+	 * @param  {dictionary} place Google Map's Place
+	 */
 	onPlaceChange(place) {
-
 		this.props.onPlaceChange(place);
 
 		this.setState({
@@ -27,13 +30,17 @@ export default class AutocompleteMap extends React.Component {
 
 	updateRadius() {
 		var radius = parseFloat(this.refs.radius.value);
-		if(radius == 'NaN') { return }
-		this.setState({
-			radius: radius
-		});
+		
+		//Check if a number
+		if(!isNaN(radius)){
+			this.setState({
+				radius: radius
+			});
+		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+		//Check if equal
 		if (JSON.stringify(prevProps.location) != JSON.stringify(this.props.location)) {
 			this.setState({
 				location: this.props.location,

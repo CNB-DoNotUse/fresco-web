@@ -23,9 +23,18 @@ export default class PostInfo extends React.Component {
 			twitter = '',
 			curator = '',
 			timeString = global.formatTime(this.props.post.time_created, true),
-			verifiedBy = this.props.post.approvals ? 
-							'Verified by ' + this.props.verifier : 
-							'Not yet verified'
+			verifiedBy = '',
+			userName = '';
+
+		if(this.props.post.approvals) 
+			verifiedBy = 'Verified by ' + this.props.verifier;
+		else
+			verifiedBy = 'Not yet verified';
+
+		if(post.meta.twitter)
+	 		userName = post.meta.twitter.user_name;
+	 	else if(post.owner)
+	 		userName = post.owner.firstname + ' ' + post.owner.lastname;
 
 		//Check to show user icon
 		if(this.props.post.owner){
@@ -60,7 +69,8 @@ export default class PostInfo extends React.Component {
 						<div className="meta-user">
 							{userIcon}
 							<div>
-								
+								<span className="md-type-title">{userName}</span>
+								<span className="md-type-body1">{this.props.post.affiliation}</span>
 							</div>
 						</div>
 						<div className="meta-description">{this.props.gallery.caption}</div>

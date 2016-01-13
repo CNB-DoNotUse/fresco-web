@@ -6,6 +6,7 @@ import AutocompleteMap from '../global/autocomplete-map'
 import EditTags from './../editing/gallery-edit-tags'
 import EditStories from './../editing/gallery-edit-stories'
 import AdminGalleryEditFoot from './admin-gallery-edit-foot'
+import BylineEdit from '../editing/byline-edit'
 import global from '../../../lib/global'
 
 /**
@@ -60,11 +61,6 @@ export default class AdminGalleryEdit extends React.Component {
 
 			if( this.props.hasActiveGallery ) {
 
-				// Set caption and byline values using prop data.
-				if( this.props.activeGalleryType == 'submission' ) {
-					this.refs['gallery-byline'].value = this.props.gallery.posts[0].byline;
-
-				}
 				this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
 
 				// If has location, set location input
@@ -149,9 +145,9 @@ export default class AdminGalleryEdit extends React.Component {
 	revert() {
 		
 		this.setState({
-				activeGallery: _.clone(this.props.gallery, true),
-				stories: []
-			});
+			activeGallery: _.clone(this.props.gallery, true),
+			stories: []
+		});
 
 		this.editButtonEnabled(true);
 
@@ -201,8 +197,12 @@ export default class AdminGalleryEdit extends React.Component {
 
 		var byline = '';
 		
-		if(!Array.isArray(this.state.activeGallery.tags)) { this.state.activeGallery.tags = []; }
-		if(!Array.isArray(this.state.activeGallery.posts)) { this.state.activeGallery.posts = []; }
+		if(!Array.isArray(this.state.activeGallery.tags)) { 
+			this.state.activeGallery.tags = []; 
+		}
+		if(!Array.isArray(this.state.activeGallery.posts)) { 
+			this.state.activeGallery.posts = []; 
+		}
 
 		// Byline
 		byline = (this.props.activeGalleryType == 'submission') ? this.state.activeGallery.posts[0].byline.trim() : (this.refs['gallery-author'].value + ' / ' + this.refs['gallery-affiliation'].value);
@@ -342,11 +342,7 @@ export default class AdminGalleryEdit extends React.Component {
 						</Slider>
 					</div>
 
-					<div className="split import-other-origin byline-section" style={{marginTop: '42px', width: '100%'}}>
-						{bylineInput}
-						{nameInput}
-						{affiliationInput}
-					</div>
+					<BylineEdit ref="byline" gallery={this.props.gallery} />
 
 					<textarea
 						type="text"

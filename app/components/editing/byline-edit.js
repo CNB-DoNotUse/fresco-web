@@ -31,14 +31,18 @@ export default class GalleryEditByline extends React.Component {
 							options={[post.meta.twitter.handle, post.meta.twitter.user_name]}
 							selected={byline}
 							onSelected={this.bylineSelected} />
+						
 						<div className="split-cell">
 							<div className="form-control-wrapper">
 								<input 
 									type="text" 
 									className="form-control" 
 									defaultValue={affiliation} 
+									ref="affiliation"
 									id="gallery-edit-affiliation" />
+								
 								<div className="floating-label">Affiliation</div>
+								
 								<span className="material-input"></span>
 							</div>
 						</div>
@@ -63,15 +67,30 @@ export default class GalleryEditByline extends React.Component {
 					<div className="split byline-section" id="gallery-byline-other-origin">
 						<div className="split-cell" id="gallery-name-span">
 							<div className="form-control-wrapper">
-								<input type="text" className="form-control empty" defaultValue={name} id="gallery-edit-name" />
+								<input 
+									type="text" 
+									className="form-control empty" 
+									defaultValue={name} 
+									ref="name"
+									id="gallery-edit-name" />
+								
 								<div className="floating-label">Name</div>
+								
 								<span className="material-input"></span>
 							</div>
 						</div>
+						
 						<div className="split-cell">
 							<div className="form-control-wrapper">
-								<input type="text" className="form-control empty" defaultValue={affiliation} id="gallery-edit-affiliation" />
+								<input 
+									type="text" 
+									className="form-control empty" 
+									defaultValue={affiliation} 
+									ref="affiliation"
+									id="gallery-edit-affiliation" />
+								
 								<div className="floating-label">Affiliation</div>
+								
 								<span className="material-input"></span>
 							</div>
 						</div>
@@ -87,8 +106,15 @@ export default class GalleryEditByline extends React.Component {
 				<div className="dialog-row">
 					<span className="byline-section" id="gallery-byline-span">
 						<div className="form-control-wrapper">
-							<input id="gallery-byline-input" defaultValue={post.byline} type="text" className="form-control" disabled={true} />
+							<input 
+								id="gallery-byline-input" 
+								ref="byline"
+								defaultValue={post.byline} 
+								type="text" 
+								className="form-control" disabled={true} />
+							
 							<div className="floating-label">Byline</div>
+							
 							<span className="material-input"></span>
 						</div>
 					</span>
