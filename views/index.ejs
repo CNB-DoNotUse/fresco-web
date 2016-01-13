@@ -103,7 +103,7 @@
         </div>
     </div>
     <% modals.forEach(function(currentModal){ %>
-        <%  active = currentModal == modal ? 'active' : '' %>
+        <%  active = currentModal == modal ? 'active-modal' : '' %>
         <%- include('modals/' + currentModal, {active: active}) %>
     <% }); %>
 
