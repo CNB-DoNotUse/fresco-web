@@ -2,7 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import PostCell from '../global/post-cell'
 import PostList from '../global/post-list'
-import PurchaseListItem from '../purchases/purchases-list-item'
+import PurhcaseList from '../global/purchases-list'
 
 
 export default class OutletBody extends React.Component {
@@ -11,7 +11,8 @@ export default class OutletBody extends React.Component {
 		super(props);
 
 		this.state = {
-			posts: []
+			posts: [],
+			purchases: []
 		}
 
 		this.getPurchases = this.getPurchases.bind(this);
@@ -30,14 +31,17 @@ export default class OutletBody extends React.Component {
 	}
 
 	getPurchases() {
-		$.get('/scripts/outlet/purchases?id=' + this.props.outlet._id + '&details=true', (purchases) => {
-			if(purchases.err) return;
+		$.get('/scripts/outlet/purchases?id=' + this.props.outlet._id + '&details=true', (response) => {
+			
+			if(response.err) return;
 
 			var pastDay = 0,
 				pastWeek = 0,
-				pastMonth = 0;
+				pastMonth = 0,
+				purchases = response.data;
 
-			purchases.data.map((purchase) => {
+			var posts = purchases.map((purchase) => {
+
 				var post = purchase.post;
 				var video = post.video != null;
 				var price = video ? 75 : 30;
@@ -55,6 +59,8 @@ export default class OutletBody extends React.Component {
 					pastMonth += price;
 				}
 
+				return purchase.post;
+
 			});
 
 			this.refs['purchases-past-day'].innerHTML = '$' + pastDay.toFixed(2);
@@ -62,9 +68,8 @@ export default class OutletBody extends React.Component {
 			this.refs['purchases-past-month'].innerHTML = '$' + pastMonth.toFixed(2);
 
 			this.setState({
-				posts: purchases.data.map((purchase) => {
-					return purchase.post
-				})
+				posts: posts,
+				purchases: purchases
 			})
 		})
 	}
@@ -88,20 +93,15 @@ export default class OutletBody extends React.Component {
 
 	render() {
 
-		var outlet = this.props.outlet;
+		var outlet = this.props.outlet,
+			updatedText = moment().format('L');
 
-		var outletPurchases = [];
-		this.state.posts.map((purchase, i) => {
-			outletPurchases.push(<PurchaseListItem purchase={purchase} showTitle={false} key={i} />)
-		});
-
-		var updatedText = moment().format('L');
 		return (
 			<div className="container-fluid tabs">
 				<div className="tab tab-vault toggled">
 					<div className="container-fluid fat grid">
-						<div className="profile visible-xs">
-						</div>
+						<div className="profile visible-xs"></div>
+						
 						<div className="col-sm-4 profile hidden-xs">
 							<div className="container-fluid fat">
 								<div className="col-sm-12 col-md-9 col-sm-offset-1 col-md-offset-2">
@@ -118,6 +118,7 @@ export default class OutletBody extends React.Component {
 								</div>
 							</div>
 						</div>
+						
 						<div className="col-sm-8 tall">
 							<PostList
 								rank={this.props.user.rank}
@@ -131,15 +132,25 @@ export default class OutletBody extends React.Component {
 				</div>
 				<div className="tab tab-purchases">
 					<div className="container-fluid fat grid">
-						<div id="purchase-list" className="col-md-8 col-xs-12 list">{outletPurchases}</div>
+						<PurhcaseList 
+							purchases={this.state.purchases} />
+						
 						<div className="col-md-4">
 							<h3 className="md-type-button md-type-black-secondary">Total purchases</h3>
+							
 							<ul className="md-type-subhead">
 								<li><span ref="purchases-past-day"></span><span className="md-type-caption"> last 24 hours</span></li>
 								<li><span ref="purchases-past-week"></span><span className="md-type-caption"> last 7 days</span></li>
 								<li><span ref="purchases-past-month"></span><span className="md-type-caption"> last 30 days</span></li>
 							</ul>
-							<button id="email-statement-button" type="button" className="btn" onClick={this.emailStatement}>Email my statement</button><span className="md-type-caption">Updated {updatedText}</span>
+							
+							<button 
+								id="email-statement-button" 
+								type="button" 
+								className="btn" 
+								onClick={this.emailStatement}>Email my statement</button>
+
+								<span className="md-type-caption">Updated {updatedText}</span>
 						</div>
 					</div>
 				</div>

@@ -12,12 +12,11 @@ export default class PurchasesStats extends React.Component {
 			pastWeek = 0,
 			pastMonth = 0;
 
-		this.props.purchases.map((item) => {
-			var purchase = item.purchase;
-			var post = purchase.post;
-			var video = post.video != null;
-			var price = video ? 75 : 30;
-			var dayDiff = moment().diff(purchase.timestamp, 'days');
+		this.props.purchases.map((purchase) => {
+			var post = purchase.post,
+				video = post.video != null,
+				price = video ? 75 : 30,
+				dayDiff = moment().diff(purchase.timestamp, 'days');
 
 			if(dayDiff <= 1) {
 				pastDay+= price;
@@ -30,7 +29,6 @@ export default class PurchasesStats extends React.Component {
 			if(dayDiff <= 30) {
 				pastMonth += price;
 			}
-
 		});
 
 		this.refs['purchases-past-day'].innerHTML = '$' + pastDay.toFixed(2);
