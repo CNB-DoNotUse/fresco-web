@@ -205,7 +205,11 @@ export default class AdminGalleryEdit extends React.Component {
 		}
 
 		// Byline
-		byline = (this.props.activeGalleryType == 'submission') ? this.state.activeGallery.posts[0].byline.trim() : (this.refs['gallery-author'].value + ' / ' + this.refs['gallery-affiliation'].value);
+		if(this.refs.byline.refs.byline) {
+			byline = this.refs.byline.refs.byline.value;
+		} else {
+			byline = this.refs.byline.refs.name.value + ' / ' + this.refs.byline.refs.affiliation.value;
+		}
 
 		var params = {
 			id: this.state.activeGallery._id,
@@ -217,8 +221,8 @@ export default class AdminGalleryEdit extends React.Component {
 		};
 
 		if(this.props.activeGalleryType == 'import') {
-			params.other_origin_name = this.refs['gallery-author'].value;
-			params.other_origin_affiliation = this.refs['gallery-affiliation'].value;
+			params.other_origin_name = this.refs.byline.refs.name.value;
+			params.other_origin_affiliation = this.refs.byline.refs.affiliation.value;
 			params.address = this.state.address;
 		}
 		if (!params.posts || params.posts.length == 0)

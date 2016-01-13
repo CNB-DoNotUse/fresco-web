@@ -1184,6 +1184,19 @@ div.admin {
 	}
 }
 
+.admin-edit-pane {
+	.dialog {
+		height: 100%;
+
+		.dialog-row {
+			margin-top: 24px;
+		}
+	}
+	.form-control-wrapper {
+		margin-bottom: 16px;
+	}
+}
+
 
 // cards
 .cards {

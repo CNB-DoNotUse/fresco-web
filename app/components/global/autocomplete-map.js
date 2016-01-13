@@ -56,7 +56,7 @@ export default class AutocompleteMap extends React.Component {
 			radiusInput = 
 			            <input
 			                type="text"
-			                className="form-control floating-label numbers m-t-15 "
+			                className="form-control floating-label numbers"
 			                style={{marginTop: '15px'}}
 			                data-hint={this.props.unit}
 			                placeholder="Radius"

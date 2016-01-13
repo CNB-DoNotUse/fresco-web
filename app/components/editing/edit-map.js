@@ -59,6 +59,15 @@ export default class EditMap extends React.Component {
 		//Check if the passed location is a set of points
 		//Then set the polygon  path, and set the marker to center of the polygon
 		if(Array.isArray(this.props.location)) {
+
+			// If location array doesn't have any points, set to default location.
+			if(!this.props.location.length) {
+				return this.state.map.panTo({
+					lat: -73.9,
+					lng: 40
+				})
+			}
+
 			if(!this.props.location[0].lat) {
 				var locationArr = this.props.location.map((loc) => {
 					return {
@@ -67,6 +76,7 @@ export default class EditMap extends React.Component {
 					}
 				});
 			} 
+			console.log(locationArr, this.props.location);
 			this.state.polygon.setPath(locationArr || this.props.location);
 			this.state.marker.setPosition(this.getCentroid(this.state.polygon));
 			this.state.map.panTo(this.getCentroid(locationArr || this.props.location));
@@ -96,6 +106,11 @@ export default class EditMap extends React.Component {
 
 	//Returns centroid for passed polygon
 	getCentroid(polygon) {
+
+		if(!polygon.length) {
+			return new google.maps.LatLng(-73.9, 40);
+		}
+
 		var path, lat = 0, lng = 0;
 		
 		if (Array.isArray(polygon)) {
