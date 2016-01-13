@@ -7,6 +7,7 @@
 <% if(typeof(section) !== 'undefined'){ %> 
   <script type="text/javascript" src="/js/<%= section %>.js"></script>
   <% if(section == 'platform'){ %>
+    <script type="text/javascript" src="/js/pages/common.js"></script>
     <script type="text/javascript">
         $.material.init();
     </script>
@@ -23,7 +24,6 @@
 
 <!--Page Specifc-->
 <% if(typeof(page) !== 'undefined'){ %> 
-  <script type="text/javascript" src="/js/pages/fresco.js"></script>
   <script type="text/javascript" src="/js/pages/<%= page %>.js"></script>
 <% } %> 
 
