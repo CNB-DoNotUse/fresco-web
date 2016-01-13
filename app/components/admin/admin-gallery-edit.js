@@ -201,8 +201,12 @@ export default class AdminGalleryEdit extends React.Component {
 
 		var byline = '';
 		
-		if(!Array.isArray(this.state.activeGallery.tags)) { this.state.activeGallery.tags = []; }
-		if(!Array.isArray(this.state.activeGallery.posts)) { this.state.activeGallery.posts = []; }
+		if(!Array.isArray(this.state.activeGallery.tags)) { 
+			this.state.activeGallery.tags = []; 
+		}
+		if(!Array.isArray(this.state.activeGallery.posts)) { 
+			this.state.activeGallery.posts = []; 
+		}
 
 		// Byline
 		byline = (this.props.activeGalleryType == 'submission') ? this.state.activeGallery.posts[0].byline.trim() : (this.refs['gallery-author'].value + ' / ' + this.refs['gallery-affiliation'].value);
