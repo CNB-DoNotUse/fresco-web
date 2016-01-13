@@ -30,7 +30,6 @@ function init(){
 	resizeCall();
 
 	if(window.location.pathname == '/') { indexInit(); }
-
 }
 
 function indexInit() {
