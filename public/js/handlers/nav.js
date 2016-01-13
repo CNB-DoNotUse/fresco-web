@@ -96,7 +96,7 @@ function returnToLanding() {
 						duration: modalTransitionLength, 
 						complete: function () {
 							init();
-							resizeCall();
+							navResize();
 						}
 					});
 				}
@@ -149,7 +149,7 @@ function loadModal(modalId) {
 						$(nav).velocity({ opacity: 1 }, { display: "block" });
 						$(modal).velocity({ translateY : '0'}, { duration: modalTransitionLength, easing: 'ease-out' });
 
-						resizeCall();
+						navResize();
 
 					}
 				});
@@ -173,7 +173,7 @@ function loadModal(modalId) {
 
 						$(modal).velocity({ translateY : '0'}, { duration: modalTransitionLength, easing: 'ease-out' });
 
-						resizeCall();
+						navResize();
 
 					}
 				});
@@ -198,7 +198,7 @@ function loadScript(src) {
 		x.parentNode.insertBefore(s, x);
 }
 
-function resizeCall(width) {
+function navResize(width) {
 
 	var modal = document.getElementsByClassName('active-modal')[0];
 
@@ -214,7 +214,7 @@ function resizeCall(width) {
 }
 
 window.addEventListener('resize', function() {
-	resizeCall(window.innerWidth);
+	navResize(window.innerWidth);
 });
 
 
