@@ -342,7 +342,10 @@ var params  = {
 };
 
 if(!config.DEV) {
-  http.createServer(function (req, res) { res.redirect(config.WEB_ROOT); }).listen(3000);
+  http.createServer(function (req, res) {
+	res.writeHead(302, { 'Location': config.WEB_ROOT });
+        res.end();
+  }).listen(3000);
   https.createServer(params, app).listen(4430);
 }
 
