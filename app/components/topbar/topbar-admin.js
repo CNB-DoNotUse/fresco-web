@@ -1,3 +1,4 @@
+import global from '../../../lib/global'
 import React from 'react'
 import Dropdown from './../global/dropdown'
 import moment from 'moment'
@@ -92,7 +93,7 @@ export default class TopBarAdmin extends React.Component {
 	        dataType: 'json',
 			success: (result, status, xhr) => {
 				if(result.err) {
-					return $.snackbar({content: result.err});
+					return $.snackbar({content: global.resolveError(result.err)});
 				}
 				
 				$.snackbar({content: 'Gallery Imported!'});
