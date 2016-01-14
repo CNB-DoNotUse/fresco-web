@@ -3,6 +3,7 @@ var config        = require('./lib/config'),
     global        = require('./lib/global'),
     routes        = require('./lib/routes'),
     express       = require('express'),
+    compression   = require('compression'),
     path          = require('path'),
     favicon       = require('serve-favicon'),
     morgan        = require('morgan'),
@@ -13,7 +14,7 @@ var config        = require('./lib/config'),
     bodyParser    = require('body-parser'),
     multer        = require('multer'),
     fs            = require('fs'),
-    http	  = require('http'),
+    http	       =  require('http'),
     https         = require('https'),
     requestJson   = require('request-json'),
     request       = require('superagent');
@@ -32,6 +33,7 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // app.use(morgan('dev'));
 
+app.use(compression())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({
@@ -54,12 +56,13 @@ app.use(
 //Session config
 app.use(
   session({
+    name: 'FRSSID', 
     store: new RedisStore(redisConnection),
     secret: config.SESSION_SECRET,
     resave: false,
     rolling: true,
     saveUninitialized: false,
-    cookie: { name: 'SID', httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
+    cookie: { httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
     unset: 'destroy'
   })
 );
