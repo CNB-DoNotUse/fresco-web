@@ -29,6 +29,7 @@ function init(){
 
 	resizeCall();
 
+
 	if(window.location.pathname == '/') { indexInit(); }
 }
 
@@ -64,6 +65,8 @@ window.requestAnimFrame = (function(){
 function resizeCall(){
 
 	slick.updateArrows();
+
+	navResize();
 
 	if(window.location.pathname != '/') return;
 
