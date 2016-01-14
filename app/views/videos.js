@@ -29,7 +29,7 @@ class Videos extends React.Component {
 	}
 
 	//Returns array of posts with offset and callback, used in child PostList
-	loadPosts (passedOffset, callback) {
+	loadPosts(passedOffset, callback) {
 
 		var params = {
 			limit: 18,

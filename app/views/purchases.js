@@ -10,6 +10,7 @@ class Purchases extends React.Component {
 		super(props);
 		this.state = {
 			outlets: [],
+			updatePurchases: false,
 			filterOutlets: []
 		}
 
@@ -31,9 +32,8 @@ class Purchases extends React.Component {
 	}
 
 	filterAdd(outlet) {
-
-		var filterOutlets = _.clone(this.state.filterOutlets, true);
-		var outlets = _.clone(this.state.outlets, true);
+		var filterOutlets = _.clone(this.state.filterOutlets, true),
+			outlets = _.clone(this.state.outlets, true);
 
 		for (var o in outlets) {
 			if(outlets[o].title == outlet) {
@@ -74,26 +74,34 @@ class Purchases extends React.Component {
 	 * @return {[type]} [description]
 	 */
 	loadPurchases(passedOffset, cb) {
+
+		//Update state for purchase list if needed so it doesn't loop
+		if(this.state.updatePurchases){
+			this.setState({
+				updatePurchases: false
+			});
+		}
+
 		$.get('/scripts/outlet/purchases/list', {
 			limit: 20,
 			offset: passedOffset,
 			details: true,
 			outlets: this.state.filterOutlets.map(p => p._id)
 		}, (response) => {
-			
-			if(response.err || !response.data) {
+			console.log(response);
+			if(response.err) {
 				return $.snackbar({
 					content: 'There was an error receiving the purchases'
 				});
+			} else if(!response.data){
+				return;
 			}
 
 			var purchases = response.data.map((purchaseParent) => {
-
 				var purchase = purchaseParent.purchase;
 					purchase.title = purchaseParent.title;
 
 				return purchase;
-
 			});
 
 			if(cb) cb(purchases);
@@ -116,8 +124,11 @@ class Purchases extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+		//Check if outlets are the same
 		if (JSON.stringify(prevState.filterOutlets) != JSON.stringify(this.state.filterOutlets)) {
-			this.getPurchases();
+			this.setState({
+				updatePurchases: true
+			});
 		}
 	}
 
@@ -146,7 +157,7 @@ class Purchases extends React.Component {
 					onOutletFilterAdd={this.filterAdd}
 					onOutletFilterRemove={this.filterRemove} />
 				<PurchasesBody
-					purchases={this.state.purchases}
+					updatePurchases={this.state.updatePurchases}
 					downloadExports={this.downloadExports}
 					loadPurchases={this.loadPurchases} />
 			</App>

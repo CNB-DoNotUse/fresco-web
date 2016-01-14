@@ -37,6 +37,39 @@ export default class PurchasesStats extends React.Component {
 	}
 
 	render() {
+
+		var buttons = [];
+
+		if(this.props.xlsx){
+			buttons.push(
+				<button 
+					id="export-xlsx"
+					type="button" 
+					className="btn" 
+					onClick={this.props.downloadExports.bind(null, 'xlsx')}>Export to .xlsx</button>
+			);
+		};
+
+		if(this.props.csv){
+			buttons.push(
+				<button 
+					id="export-csv" 
+					type="button" 
+					className="btn" 
+					onClick={this.props.downloadExports.bind(null, 'csv')}>Export to .csv</button>
+			);
+		}
+
+		if(this.props.email){
+			buttons.push(
+				<button 
+					id="email-statement-button" 
+					type="button" 
+					className="btn" 
+					onClick={this.emailStatement}>Email my statement</button>
+			)
+		}
+
 		return (
 			<div className="col-md-4">
 				<h3 className="md-type-button md-type-black-secondary">Total purchases</h3>
@@ -45,8 +78,7 @@ export default class PurchasesStats extends React.Component {
 					<li><span ref="purchases-past-week"></span><span className="md-type-caption"> last 7 days</span></li>
 					<li><span ref="purchases-past-month"></span><span className="md-type-caption"> last 30 days</span></li>
 				</ul>
-				<button id="export-xlsx" type="button" className="btn" onClick={this.props.downloadExports.bind(null, 'xlsx')}>Export to .xlsx</button>
-				<button id="export-csv" type="button" className="btn" onClick={this.props.downloadExports.bind(null, 'csv')}>Export to .csv</button>
+				{buttons}
 			</div>
 		);
 	}

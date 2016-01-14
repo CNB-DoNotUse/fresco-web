@@ -28,6 +28,7 @@ export default class PurchasesBody extends React.Component {
 			<div className="container-fluid fat grid">
 				<PurchasesList
 					scrollable={true}
+					updatePurchases={this.props.updatePurchases}
 					purchasesAdded={this.purchasesAdded}
 					loadPurchases={this.props.loadPurchases} />
 				<PurchasesStats 
@@ -39,5 +40,6 @@ export default class PurchasesBody extends React.Component {
 }
 
 PurchasesBody.defaultProps = {
-	purchases: []
+	purchases: [],
+	updatePurchases: false
 }

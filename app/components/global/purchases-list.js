@@ -12,37 +12,51 @@ export default class PurchasesList extends React.Component {
 			purchases: this.props.purchases
 		}
 
+		this.loadInitialPurchases = this.loadInitialPurchases.bind(this);
 		this.scroll = this.scroll.bind(this);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+
 	 	//Check if the function exists and there are new purchases
 	 	if(this.props.purchasesAdded && this.state.purchases.length > prevState.purchases.length)
 		 	this.props.purchasesAdded(this.state.purchases);
 
+		if(this.props.updatePurchases) {
+			this.loadInitialPurchases();
+		}
 	}
 
 	componentDidMount() {
+		this.loadInitialPurchases();
+	}
 
-		console.log(this.props);
+	/**
+	 * Loads initial set of purchases
+	 */
+	loadInitialPurchases() {
+		//Access parent var load method
+		this.props.loadPurchases(0, (purchases) => {
+			
+			//Update offset based on purchases from callaback
+			var offset = purchases ? purchases.length : 0;
+
+			//Set posts & callback from successful response
+			this.setState({
+				purchases: purchases,
+				offset : offset
+			});
+
+		});  
+	}
+
+	componentDidMount() {
 
 	    //Check if list is initialzied with posts or the `loadPurchases` prop is not defined, then don't load anything
 	    if(this.state.purchases.length > 0 || !this.props.loadPurchases) 
 	    	return;
 
-	    //Access parent var load method
-	    this.props.loadPurchases(0, (purchases) => {
-	    	
-	    	//Update offset based on psts from callaback
-	    	var offset = purchases ? purchases.length : 0;
-
-	    	//Set posts & callback from successful response
-	    	this.setState({
-	    		purchases: purchases,
-	    		offset : offset
-	    	});
-
-	    });  
+	    this.loadInitialPurchases();
 	}
 
 	// Handle purchases div scrollß
@@ -74,7 +88,6 @@ export default class PurchasesList extends React.Component {
 				}
 
 				var offset = this.state.purchases.length + purchases.length;
-				console.log(offset);
 
 				// Allow getting more purchases after we've gotten more purchases.
 				// Update offset to new purchases length
