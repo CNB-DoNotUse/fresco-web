@@ -56,12 +56,13 @@ app.use(
 //Session config
 app.use(
   session({
+    name: 'FRSSID', 
     store: new RedisStore(redisConnection),
     secret: config.SESSION_SECRET,
     resave: false,
     rolling: true,
     saveUninitialized: false,
-    cookie: { name: 'SID', httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
+    cookie: { httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
     unset: 'destroy'
   })
 );
