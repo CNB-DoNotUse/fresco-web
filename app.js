@@ -331,11 +331,14 @@ app.use((err, req, res, next) => {
 
  });
 
-
 var params  = {
     key: fs.readFileSync('cert/fresconews_com.key'),
     cert: fs.readFileSync('cert/fresconews_com.crt'),
     ca: [fs.readFileSync('cert/DigiCertCA.crt')]
 };
+
+if(!config.DEV) {
+  https.createServer(params, app).listen(4430);
+}
 
 module.exports = app;
