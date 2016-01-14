@@ -13,6 +13,7 @@ var config        = require('./lib/config'),
     bodyParser    = require('body-parser'),
     multer        = require('multer'),
     fs            = require('fs'),
+    http	  = require('http'),
     https         = require('https'),
     requestJson   = require('request-json'),
     request       = require('superagent');
@@ -338,6 +339,7 @@ var params  = {
 };
 
 if(!config.DEV) {
+  http.createServer(function (req, res) { res.redirect(config.WEB_ROOT); });
   https.createServer(params, app).listen(4430);
 }
 
