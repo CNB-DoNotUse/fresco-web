@@ -66,7 +66,7 @@ export default class PurchasesStats extends React.Component {
 					id="email-statement-button" 
 					type="button" 
 					className="btn" 
-					onClick={this.emailStatement}>Email my statement</button>
+					onClick={this.props.emailStatement}>Email my statement</button>
 			)
 		}
 
