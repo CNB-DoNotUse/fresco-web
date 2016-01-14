@@ -82,7 +82,7 @@ class Purchases extends React.Component {
 			});
 		}
 
-		$.get('/scripts/outlet/purchases/list', {
+		$.get('/api/outlet/purchases/list', {
 			limit: 20,
 			offset: passedOffset,
 			details: true,

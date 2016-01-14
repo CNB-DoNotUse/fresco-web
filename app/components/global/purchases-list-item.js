@@ -6,6 +6,18 @@ export default class PurchasesListItem extends React.Component {
 		super(props);
 
 		this.openPurchase = this.openPurchase.bind(this);
+		this.openAssignment = this.openAssignment.bind(this);
+	}
+
+	/**
+	 * Opens assignment on click
+	 */
+	openAssignment() {
+
+		if(!this.props.purchase.assignment) return;
+
+		window.open('/assignment/' + this.props.purchase.assignment._id, '_blank');
+
 	}
 
 	/**
@@ -29,7 +41,7 @@ export default class PurchasesListItem extends React.Component {
 
 		if(purchase.assignment) {
 			assignmentText = 
-				<div>
+				<div onClick={this.openAssignment}>
 					<p className="md-type-body2" style={{lineHeight: '16px'}}>
 						{purchase.assignment.title}
 					</p>
