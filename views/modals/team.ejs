@@ -194,19 +194,22 @@
 						<h3><%= team[i]['title'] %></h3>
 					<% } %>	
 
-					<ul>
+					<ul id="team-list-<%-i%>">
 						<% for(var k=0; k < team[i]['members'].length; k++) { %>
 
 							<% member = team[i]['members'][k] %>
 
-							<li>
+							<li class="team-member">
 								<% if(typeof(member['avatar']) != 'undefined'){ %>
+								
 									<div class="avatar">
-										<img src="http://cdn.static.fresconews.com/index/team/<%= member['avatar'] %>" />
+										<img src="" />
 									</div>
+								
 								<% } else { %>
 									<div class="avatar border"></div>
 								<% } %>
+								
 								<div class="meta">
 									<p class="name"><%- member['name'] %></p>
 									<p class="title"><%- member['title'] %></p>
@@ -225,3 +228,22 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+
+	var team = <%- JSON.stringify(team) %>
+
+	for(var i=0; i <team.length; i++) {
+
+		var list = document.getElementById('team-list-' + i),
+			members = list.getElementsByTagName('li');
+
+		for(var k=0; k < team[i]['members'].length; k++) { 
+
+			var member = team[i]['members'][k];
+			
+			members[k].getElementsByTagName('img')[0].src = 'http://cdn.static.fresconews.com/index/team/' + member.avatar;
+		}
+	}
+
+</script>
