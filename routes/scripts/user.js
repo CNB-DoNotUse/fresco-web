@@ -160,12 +160,7 @@ router.post('/user/register', function(req, res, next) {
       err: 'ERR_INVALID_EMAIL'
     });
   } 
-  else if(userData.phone != null && !validator.isNumeric(userData.phone)){
-    return res.json({
-      err: 'ERR_INVALID_PHONE'
-    });
-  }
-  
+
   User.registerUser(userData, function(err, user_body, login_body){
     if (err)
       return res.json({err: err, data: {}}).end();

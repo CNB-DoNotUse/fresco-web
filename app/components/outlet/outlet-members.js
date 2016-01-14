@@ -10,22 +10,27 @@ export default class OutletMembers extends React.Component {
 	}
 
 	removeMember(id) {
-		$.ajax({
-			url: "/scripts/outlet/user/remove",
-			method: 'post',
-			data: {
-				user: id
-			},
-			success: (result, status, xhr) => {
-				if (result.err)
-					return this.error(null, null, result.err);
-				location.reload();
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({content: resolveError(error)});
-			},
-			complete: () => {
-				_this.prop('disabled', false);
+		//Confirm the purchase
+		alertify.confirm("Are you sure you want remove this user from your outlet?", (e) => {
+			if(e) {
+				$.ajax({
+					url: "/scripts/outlet/user/remove",
+					method: 'post',
+					data: {
+						user: id
+					},
+					success: (result, status, xhr) => {
+						if (result.err)
+							return this.error(null, null, result.err);
+						location.reload();
+					},
+					error: (xhr, status, error) => {
+						$.snackbar({content: resolveError(error)});
+					},
+					complete: () => {
+						_this.prop('disabled', false);
+					}
+				});
 			}
 		});
 	}

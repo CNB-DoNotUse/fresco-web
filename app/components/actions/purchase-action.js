@@ -1,4 +1,5 @@
 import React from 'react'
+import global from '../../../lib/global'
 
 /**
  * Global purchase actions
@@ -14,9 +15,7 @@ export default class PurchaseAction extends React.Component {
 	render() {
 
 		return(
-
 			<span className="mdi mdi-cash icon pull-right" onClick={this.purchase}></span>
-
 		);
 		
 	}
@@ -33,6 +32,7 @@ export default class PurchaseAction extends React.Component {
 		//Confirm the purchase
 		alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", (e) => {
 
+			//Clicked 'Yes'
 		    if (e) {
 				//Send request for purchase
 				$.ajax({
@@ -48,7 +48,7 @@ export default class PurchaseAction extends React.Component {
 
 						if (result.err) {
 							return $.snackbar({
-								content: 'There was an error while completing your purchase!'
+								content: global.resolveError(result.err, 'There was an error while completing your purchase!')
 							});
 						}
 
@@ -72,8 +72,6 @@ export default class PurchaseAction extends React.Component {
 						});
 					}
 				});
-		    } else {
-		        // user clicked "cancel"
 		    }
 
 		});

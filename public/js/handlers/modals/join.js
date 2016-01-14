@@ -71,10 +71,10 @@ function registerUser() {
 }
 
 function acceptInvite(){
-
 	var params = {
 			password: passwordField.value,
-			token: token
+			token: token,
+			email: emailField.value
 		};
 		
 	$.ajax({
@@ -95,7 +95,6 @@ function acceptInvite(){
 			disabled = false;
 		}
 	});
-	
 }
 
 function resolveError(err) {

@@ -50,10 +50,13 @@ export default class OutletBody extends React.Component {
 			id: this.props.outlet._id
 		}, (response) => {
 
+
 			if(response.err) {
-				return $.snackbar({
-					content: 'There was an error receiving your purchases'
-				});
+				if(response.err != 'ERR_UNAUTHORIZED'){
+					return $.snackbar({
+						content: 'There was an error receiving your purchases'
+					});
+				}
 				cb([]);
 			} 
 			else if(!response.data){

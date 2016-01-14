@@ -26,10 +26,15 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	.presentation{
 		float:left;
 		overflow:hidden;
-		height:60vh;
-		margin:4% 0 20px 0;
+		height:369px;
+		margin:9% 0 20px 0;
 		width:$fallBackWidth;
 		width:$width;
+
+		@include desktop-large{
+			margin:4% 0 20px 0;
+			height:603px;
+		}
 
 		@include border-radius(2px);
 		@include box-shadow(0 2px 2px 0 rgb(0, 0, 0), 0 3px 2px 0 rgb(0, 0, 0));
