@@ -4,9 +4,7 @@ The Fresco Webserver
 
 The webserver runs off of node
 
-The site uses `webpack`, `gulp`, and `bower` to compile assets.
-
-The platform is built in `react` as the front-end framework.
+The site uses `webpack`, `gulp`, and `bower` to compile assets, and the platform is built in `react` as the front-end framework.
 
 Steps to get running - 
 
