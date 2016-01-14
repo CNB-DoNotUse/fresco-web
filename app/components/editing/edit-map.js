@@ -76,7 +76,7 @@ export default class EditMap extends React.Component {
 					}
 				});
 			} 
-			console.log(locationArr, this.props.location);
+
 			this.state.polygon.setPath(locationArr || this.props.location);
 			this.state.marker.setPosition(this.getCentroid(this.state.polygon));
 			this.state.map.panTo(this.getCentroid(locationArr || this.props.location));

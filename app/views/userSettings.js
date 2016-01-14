@@ -51,7 +51,6 @@ class UserSettings extends React.Component {
 			}
 		} else {
 			if(accountSaveBtn.className.indexOf(' changed ') != -1) {
-				console.log('replacing');
 				accountSaveBtn.className = accountSaveBtn.className.replace(' changed ', '');
 			}
 		}

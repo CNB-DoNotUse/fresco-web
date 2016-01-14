@@ -97,7 +97,6 @@ export default class OutletBody extends React.Component {
 
 		var outlet = this.props.outlet,
 			updatedText = moment().format('L');
-
 		return (
 			<div className="container-fluid tabs">
 				<div className="tab tab-vault toggled">

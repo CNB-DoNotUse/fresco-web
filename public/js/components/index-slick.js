@@ -157,13 +157,9 @@ var slick = {
 	},
 
 	twitterClicked: function() {
-		console.log('twitter');
 	},
 
 	copyClicked: function() {
-
-		console.log('copy');
-
 	},
 
 	updateArrows: function(){

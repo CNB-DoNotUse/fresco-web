@@ -88,7 +88,6 @@ class Purchases extends React.Component {
 			details: true,
 			outlets: this.state.filterOutlets.map(p => p._id)
 		}, (response) => {
-			console.log(response);
 			if(response.err) {
 				return $.snackbar({
 					content: 'There was an error receiving the purchases'

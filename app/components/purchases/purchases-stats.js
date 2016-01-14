@@ -39,13 +39,14 @@ export default class PurchasesStats extends React.Component {
 	render() {
 
 		var buttons = [];
-
+		var key = 0;
 		if(this.props.downloadExports){
 			buttons.push(
 				<button 
 					id="export-xlsx"
 					type="button" 
-					className="btn" 
+					className="btn"
+					key={++key}
 					onClick={this.props.downloadExports.bind(null, 'xlsx')}>Export to .xlsx</button>
 			);
 		};
@@ -56,6 +57,7 @@ export default class PurchasesStats extends React.Component {
 					id="export-csv" 
 					type="button" 
 					className="btn" 
+					key={++key}
 					onClick={this.props.downloadExports.bind(null, 'csv')}>Export to .csv</button>
 			);
 		}
@@ -66,6 +68,7 @@ export default class PurchasesStats extends React.Component {
 					id="email-statement-button" 
 					type="button" 
 					className="btn" 
+					key={++key}
 					onClick={this.props.emailStatement}>Email my statement</button>
 			)
 		}

@@ -38,7 +38,9 @@ export default class PostList extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-	    if(nextProps.posts){
+
+		// If got new posts in props while having none previously
+	    if(nextProps.posts && !this.props.posts) {
 	    	this.setState({
 	    		posts: nextProps.posts
 	    	});
@@ -65,8 +67,8 @@ export default class PostList extends React.Component {
 
 	componentDidMount() {
 
-		//Check if list is initialzied with posts or the `loadPosts` prop is not defined, then don't load anything
-		if(this.state.posts.length || !this.props.loadPosts) 
+		//Check if list is initialzied with posts, then don't load anything
+		if(this.state.posts.length) 
 			return;
 
 		//Access parent var load method
@@ -261,5 +263,6 @@ PostList.defaultProps = {
 	posts: [],
 	gallery: null,
 	scrollable: false,
-	onlyVerified: true
+	onlyVerified: true,
+	loadPosts: function() {}
 }
