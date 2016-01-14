@@ -33,6 +33,7 @@ export default class PurchasesBody extends React.Component {
 					loadPurchases={this.props.loadPurchases} />
 				<PurchasesStats 
 					purchases={this.state.purchases} 
+					emailStatement={this.props.emailStatement}
 					downloadExports={this.props.downloadExports} />
 			</div>
 		);

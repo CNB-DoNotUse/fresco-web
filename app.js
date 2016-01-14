@@ -289,8 +289,8 @@ app.use((err, req, res, next) => {
     res.render('error', {
         user: req.session && req.session.user ? req.session.user : null,
         err: {
-         message: err.message || config.ERR_PAGE_MESSAGES[err.status || 500],
-         code: err.status || 500
+            message: err.message || config.ERR_PAGE_MESSAGES[err.status || 500],
+            code: err.status || 500
         },
         section: 'public',
         page: 'error'
@@ -299,7 +299,7 @@ app.use((err, req, res, next) => {
 });
 
 /**
- * 404 Handler
+ * 404 Handler Catch
  */
 
  app.use((req, res, next) => {

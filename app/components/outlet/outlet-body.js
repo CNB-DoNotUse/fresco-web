@@ -50,14 +50,13 @@ export default class OutletBody extends React.Component {
 			id: this.props.outlet._id
 		}, (response) => {
 
-
 			if(response.err) {
 				if(response.err != 'ERR_UNAUTHORIZED'){
 					return $.snackbar({
 						content: 'There was an error receiving your purchases'
 					});
 				}
-				cb([]);
+				return cb([]);
 			} 
 			else if(!response.data){
 				return cb([]);
@@ -86,7 +85,7 @@ export default class OutletBody extends React.Component {
 				if (result.err) {
 					return $.snackbar({content: resolveError(result.err)});
 				}
-				$.snackbar({content: 'Email Sent'});
+				$.snackbar({content: 'Account statement successfully sent! Please check your email.'});
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: resolveError(error)});
@@ -137,7 +136,7 @@ export default class OutletBody extends React.Component {
 				<div className="tab tab-purchases">
 					<PurchasesBody
 						purchases={this.state.purchases}
-						downloadExports={this.downloadExports}
+						emailStatement={this.emailStatement}
 						loadPurchases={this.loadPurchases} />
 				</div>
 			</div>
