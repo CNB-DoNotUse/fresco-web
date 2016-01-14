@@ -74,13 +74,6 @@ export default class AdminBody extends React.Component {
 	}	
 
 	setActiveTab(tab) {
-      $('.admin.tabs .tab').removeClass('toggled');
-      $('.tab-' + tab).addClass('toggled');
-      this.setState({
-      	hasActiveGallery: false,
-      	activeGalleryType: '',
-      	activeGallery: {}
-      });
 	}
 
 	setActiveAssignment(id) {
@@ -231,79 +224,78 @@ export default class AdminBody extends React.Component {
 	}
 
 	render() {
-		var assignmentsList = this.props.assignments.map((assignment, i) => {
-			return <AssignmentListItem
-						type="assignment"
-						assignment={assignment}
-						key={i}
-						active={this.state.activeAssignment._id == assignment._id}
-						setActiveAssignment={this.setActiveAssignment} />
-		});
 
-		var submissionsList = this.props.submissions.map((submission, i) => {
-			return <GalleryListItem
-						type="submission"
-						gallery={submission}
-						key={i}
-						active={this.state.activeGallery._id == submission._id}
-						setActiveGallery={this.setActiveGallery} />
-		});
+		var listItems = [], editPane = '';
+		
+		switch(this.props.activeTab) {
 
-		var importsList = this.props.imports.map((gallery, i) => {
-			return <GalleryListItem
-						type="import"
-						gallery={gallery}
-						key={i}
-						active={this.state.activeGallery._id == gallery._id}
-						setActiveGallery={this.setActiveGallery} />
-		});
+			case 'assignments':
+				listItems = this.props.assignments.map((assignment, i) => {
+								return <AssignmentListItem
+											type="assignment"
+											assignment={assignment}
+											key={i}
+											active={this.state.activeAssignment._id == assignment._id}
+											setActiveAssignment={this.setActiveAssignment} />
+							});
+
+				if(this.state.activeAssignment && this.state.activeAssignment._id) {
+					editPane = <AdminAssignmentEdit
+									hasActiveGallery={this.state.hasActiveGallery}
+									activeGalleryType={this.state.activeGalleryType}
+									assignment={this.state.activeAssignment}
+									updateAssignment={this.updateAssignment} />
+				}
+
+			break;
+
+			case 'submissions':
+				listItems = this.props.submissions.map((submission, i) => {
+								return <GalleryListItem
+											type="submission"
+											gallery={submission}
+											key={i}
+											active={this.state.activeGallery._id == submission._id}
+											setActiveGallery={this.setActiveGallery} />
+							});
+
+				editPane = <AdminGalleryEdit
+								hasActiveGallery={this.state.hasActiveGallery}
+								activeGalleryType={this.state.activeGalleryType}
+								gallery={this.state.activeGallery}
+								skip={this.skip}
+								verify={this.verify}
+								remove={this.remove} />
+			break;
+
+			case 'imports':
+				listItems = this.props.imports.map((gallery, i) => {
+								return <GalleryListItem
+											type="import"
+											gallery={gallery}
+											key={i}
+											active={this.state.activeGallery._id == gallery._id}
+											setActiveGallery={this.setActiveGallery} />
+							});
+
+				editPane = <AdminGalleryEdit
+								hasActiveGallery={this.state.hasActiveGallery}
+								activeGalleryType={this.state.activeGalleryType}
+								gallery={this.state.activeGallery}
+								skip={this.skip}
+								verify={this.verify}
+								remove={this.remove} />
+			break;
+
+		}
 
 		return (
-			<div className="container-fluid admin tabs">
-				<div className="tab tab-assignments">
-					<div className="col-md-6 col-lg-7 list">
-						{assignmentsList}
-					</div>
-					
-					<div className="col-md-6 col-lg-5 form-group-default">
-						<AdminAssignmentEdit
-							hasActiveGallery={this.state.hasActiveGallery}
-							activeGalleryType={this.state.activeGalleryType}
-							assignment={this.state.activeAssignment}
-							updateAssignment={this.updateAssignment} />
-					</div>
+			<div className="container-fluid admin">
+				<div className="col-md-6 col-lg-7 list">
+					{listItems}
 				</div>
-				
-				<div className="tab tab-submissions">
-					<div className="col-md-6 col-lg-7 list">
-						{submissionsList}
-					</div>
-					
-					<div className="col-md-6 col-lg-5 form-group-default">
-						<AdminGalleryEdit
-							hasActiveGallery={this.state.hasActiveGallery}
-							activeGalleryType={this.state.activeGalleryType}
-							gallery={this.state.activeGallery}
-							skip={this.skip}
-							verify={this.verify}
-							remove={this.remove} />
-					</div>
-				</div>
-				
-				<div className="tab tab-imports">
-					<div className="col-md-6 col-lg-7 list">
-						{importsList}
-					</div>
-					
-					<div className="col-md-6 col-lg-5 form-group-default">
-						<AdminGalleryEdit
-							hasActiveGallery={this.state.hasActiveGallery}
-							activeGalleryType={this.state.activeGalleryType}
-							gallery={this.state.activeGallery}
-							skip={this.skip}
-							verify={this.verify}
-							remove={this.remove} />
-					</div>
+				<div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">
+					{editPane}
 				</div>
 			</div>
 		);
