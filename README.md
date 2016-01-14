@@ -10,14 +10,11 @@ The platform is built in `react` as the front-end framework.
 
 Steps to get running - 
 
-<ol>
 
-  <li>`npm install` to set up all npm dependencies</li>
+1. `npm install` to set up all npm dependencies
 
-  <li>Run a `bower install`, assets will be placed in `public/vendor`</li>
+2. Run a `bower install`, assets will be placed in `public/vendor`
 
-  <li>Run `gulp` to complie site assets; `gulp --production` will minify all assets for a production build</li>
-  
-  <li>`npm start` on the root footer, or any node service to run the server</li>
-  
-</ol>
+3. Run `gulp` to complie site assets; `gulp --production` will minify all assets for a production build
+
+4. `npm start` on the root footer, or any node service to run the server
