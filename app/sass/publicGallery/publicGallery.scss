@@ -41,7 +41,9 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 			   -moz-height:65vh;
 			    -ms-height:65vh;
 			     -o-height:65vh;
+			     	height:768px;
 			     	height:65vh;
+			     	min-height:650px;
 
 	     	@include tablet{
 	     		-webkit-height:50vh;
@@ -166,6 +168,7 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 						}
 						
 						a{
+							line-height: 34px;
 						    text-decoration: none;
 						    color: rgb(0, 0, 0);
 						    color: rgba(0, 0, 0, 0.54);					

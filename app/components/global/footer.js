@@ -20,8 +20,6 @@ export default class Footer extends React.Component {
 					<div className="middle">
 						<ul>
 							<li>&copy;2015 Fresco News Inc</li>
-							<li><a href="/legal">&bull; Terms of Service</a></li>
-							<li><a href="/legal">&bull; Privacy Policy</a></li>
 						</ul>
 					</div>
 

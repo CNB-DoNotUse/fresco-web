@@ -12,8 +12,10 @@
         $.material.init();
     </script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places"></script>
-  <% } %>
-<% } %>  
+  <% } else if(typeof(page) !== 'undefined' && page == 'publicGallery'){ %>  
+    <script type="text/javascript" src="/js/pages/common.js"></script>
+  <% } %> %>
+<% } %>
 
 <!--Remote Scripts-->
 <% if(typeof remoteScripts !== 'undefined') { %>
