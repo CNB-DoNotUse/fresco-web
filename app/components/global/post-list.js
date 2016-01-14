@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import PostCell from './post-cell'
 import GalleryEdit from '../editing/gallery-edit'
@@ -41,17 +42,21 @@ export default class PostList extends React.Component {
 	componentWillReceiveProps(nextProps) {
 
 		// If got new posts in props while having none previously
-	    if(nextProps.posts.length != this.props.posts.length) {
+		
+		var currentPostIds  = this.state.posts.map(p => p._id),
+			newPostIds 		= nextProps.posts.map(p => p._id),
+			diffIds 		= _.difference(newPostIds, currentPostIds);
+
+	    if(nextProps.posts.length != this.props.posts.length || diffIds.length) {
 	    	this.setState({
 	    		posts: nextProps.posts
 	    	});
-	    }  
+	    }
 	}
 
 	loadInitialPosts() {
 		//Access parent var load method
 		this.props.loadPosts(0, (posts) => {
-			
 			//Update offset based on psts from callaback
 			var offset = posts ? posts.length : 0;
 
