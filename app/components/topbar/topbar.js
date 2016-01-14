@@ -71,7 +71,14 @@ export default class TopBar extends React.Component {
 
 	//Called when the user selects a time format
 	chronToggleSelected(selected) {
+		selected = selected.toLowerCase();
 		
+		if (selected == 'by capture time') {
+			this.props.updateSort('capture');
+		}
+		else if (selected == 'by upload time') {
+			this.props.updateSort('upload');
+		}
 	}
 
 	// Called when user selects an outlet to filter

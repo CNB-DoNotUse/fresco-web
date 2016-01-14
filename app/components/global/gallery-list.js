@@ -24,27 +24,12 @@ export default class GalleryList extends React.Component {
 			tags :[]
 		}
 		this.loadGalleries = this.loadGalleries.bind(this);
+		this.loadInitalGalleries = this.loadInitalGalleries.bind(this);
 		this.scroll = this.scroll.bind(this);
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.onlyVerified != this.props.onlyVerified) {
-			this.loadGalleries(0, (galleries) => {
-
-				var offset = galleries ? galleries.length : 0;
-
-				//Set galleries from successful response
-				this.setState({
-					galleries: galleries,
-					offset : offset
-				});
-
-			});
-		}
-	}
-
-	componentDidMount() {
-
+	loadInitalGalleries() {
+		console.log(this.props.sort);
 		this.loadGalleries(0, (galleries) => {
 
 			var offset = galleries ? galleries.length : 0;
@@ -56,6 +41,17 @@ export default class GalleryList extends React.Component {
 			});
 
 		});
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.onlyVerified != this.props.onlyVerified) {
+			this.loadInitalGalleries();
+		}
+	}
+
+	componentDidMount() {
+
+		this.loadInitalGalleries();
 
 	}
 
@@ -66,6 +62,7 @@ export default class GalleryList extends React.Component {
 			params = {
 				limit: 14,
 				offset: passedOffset,
+				sort: this.props.sort
 			};
 
 		if(this.props.highlighted) {

@@ -22,16 +22,24 @@ class Photos extends React.Component {
 
 		this.state = {
 			purchases: [],
-			verifiedToggle: true
+			verifiedToggle: true,
+			sort: 'capture'
 		}
 
 		this.loadPosts 			= this.loadPosts.bind(this);
+		this.updateSort 		= this.updateSort.bind(this);
 		this.onVerifiedToggled 	= this.onVerifiedToggled.bind(this);
 	}
 
 	onVerifiedToggled(toggled) {
 		this.setState({
 			verifiedToggle: toggled
+		});
+	}
+
+	updateSort(sort) {
+		this.setState({
+			sort: sort
 		});
 	}
 
@@ -42,7 +50,8 @@ class Photos extends React.Component {
 				limit: 18,
 				verified : this.state.verifiedToggle,
 				offset: passedOffset,
-				type: 'photo'
+				type: 'photo',
+				sort: this.state.sort
 			};
 
 		$.ajax({
@@ -75,15 +84,18 @@ class Photos extends React.Component {
 					timeToggle={true}
 					verifiedToggle={true}
 					chronToggle={true}
+
+					updateSort={this.updateSort}
 					onVerifiedToggled={this.onVerifiedToggled} />
 				<PostList
-					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}
 					purchases={this.props.purchases}
-					didPurchase={this.props.didPurchase}
 					size='small'
 					scrollable={true}
-					onlyVerified={this.state.verifiedToggle} />
+					sort={this.state.sort}
+					onlyVerified={this.state.verifiedToggle}
+
+					loadPosts={this.loadPosts} />
 			</App>
 		);
 

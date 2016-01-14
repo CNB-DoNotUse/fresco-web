@@ -15,11 +15,9 @@ import TopBar from './../components/topbar'
  		super(props);
 
  		this.state = {
- 			verifiedToggle: true
+ 			verifiedToggle: true,
  		}
-
  		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
-
  	}
 
  	onVerifiedToggled(toggle) {
@@ -35,7 +33,7 @@ import TopBar from './../components/topbar'
 					title="Galleries"
 					timeToggle={true}
 					verifiedToggle={true}
-					chronToggle={true}
+					updateSort={this.updateSort}
 					onVerifiedToggled={this.onVerifiedToggled} />
 				<GalleryList 
 					withList={false}

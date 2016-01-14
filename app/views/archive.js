@@ -20,10 +20,12 @@ class Archive extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			purchases : []
+			purchases : [],
+			sort: 'capture'
 		}
 
 		this.loadPosts = this.loadPosts.bind(this);
+		this.updateSort = this.updateSort.bind(this);
 	}
 
 	render() {
@@ -32,12 +34,14 @@ class Archive extends React.Component {
 			<App user={this.props.user}>
 				<TopBar 
 					title={this.props.title}
+					updateSort={this.updateSort}
 					timeToggle={true}
 					verifiedToggle={true}
 					chronToggle={true} />
 				<PostList
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}
+					sort={this.state.sort}
 					purchases={this.props.purchases}
 					size='small'
 					scrollable={true} />
@@ -46,13 +50,20 @@ class Archive extends React.Component {
 
 	}
 
+	updateSort(sort) {
+		this.setState({
+			sort: sort
+		})
+	}
+
 	//Returns array of posts with offset and callback, used in child PostList
 	loadPosts (passedOffset, callback) {
 
 		var params = {
 			limit: 18,
 			verified : true,
-			offset: passedOffset
+			offset: passedOffset,
+			sort: this.state.sort
 		};
 
 		$.ajax({

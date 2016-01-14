@@ -35,6 +35,7 @@ export default class PostList extends React.Component {
 		this.didPurchase 		= this.didPurchase.bind(this);
 		this.edit 				= this.edit.bind(this);
 		this.toggle				= this.toggle.bind(this);
+		this.loadInitialPosts	= this.loadInitialPosts.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -47,30 +48,7 @@ export default class PostList extends React.Component {
 	    }  
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.onlyVerified != this.props.onlyVerified) {
-			//Access parent var load method
-			this.props.loadPosts(0, (posts) => {
-				
-				//Update offset based on psts from callaback
-				var offset = posts ? posts.length : 0;
-
-				//Set posts & callback from successful response
-				this.setState({
-					posts: posts,
-					offset : offset
-				});
-
-			});
-		}
-	}
-
-	componentDidMount() {
-
-		//Check if list is initialzied with posts, then don't load anything
-		if(this.state.posts.length) 
-			return;
-
+	loadInitialPosts() {
 		//Access parent var load method
 		this.props.loadPosts(0, (posts) => {
 			
@@ -84,6 +62,21 @@ export default class PostList extends React.Component {
 			});
 
 		});
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.onlyVerified != this.props.onlyVerified || prevProps.sort != this.props.sort ) {
+			this.loadInitialPosts();
+		}
+	}
+
+	componentDidMount() {
+
+		//Check if list is initialzied with posts, then don't load anything
+		if(this.state.posts.length) 
+			return;
+
+		this.loadInitialPosts();
 
 	}
 

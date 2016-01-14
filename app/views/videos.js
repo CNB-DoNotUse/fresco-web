@@ -15,9 +15,11 @@ class Videos extends React.Component {
 		super(props);
 		
 		this.state = {
-			verifiedToggle: true
+			verifiedToggle: true,
+			sort: 'capture'
 		}
 
+		this.updateSort			= this.updateSort.bind(this);
 		this.loadPosts 			= this.loadPosts.bind(this);
 		this.onVerifiedToggled 	= this.onVerifiedToggled.bind(this);
 	}
@@ -28,6 +30,12 @@ class Videos extends React.Component {
 		});
 	}
 
+	updateSort(sort) {
+		this.setState({
+			sort: sort
+		});
+	}
+
 	//Returns array of posts with offset and callback, used in child PostList
 	loadPosts(passedOffset, callback) {
 
@@ -35,7 +43,8 @@ class Videos extends React.Component {
 			limit: 18,
 			verified : this.state.verifiedToggle,
 			offset: passedOffset,
-			type: 'video'
+			type: 'video',
+			sort: this.state.sort
 		};
 
 		$.ajax({
@@ -62,21 +71,24 @@ class Videos extends React.Component {
 
 	render() {
 
+		console.log(this.state.sort);
+
 		return (
 			<App user={this.props.user}>
 				<TopBar 
 					title="Videos"
 					timeToggle={true}
 					verifiedToggle={true}
+					updateSort={this.updateSort}
 					chronToggle={true}
 					onVerifiedToggled={this.onVerifiedToggled} />
 				<PostList
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}
 					purchases={this.props.purchases}
-					didPurchase={this.props.didPurchase}
 					size='small'
 					scrollable={true}
+					sort={this.state.sort}
 					onlyVerified={this.state.verifiedToggle} />
 			</App>
 		);
