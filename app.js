@@ -339,7 +339,7 @@ var params  = {
 };
 
 if(!config.DEV) {
-  http.createServer(function (req, res) { res.redirect(config.WEB_ROOT); });
+  http.createServer(function (req, res) { res.redirect(config.WEB_ROOT); }).listen(3000);
   https.createServer(params, app).listen(4430);
 }
 
