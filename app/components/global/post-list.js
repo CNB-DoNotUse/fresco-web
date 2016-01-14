@@ -40,7 +40,7 @@ export default class PostList extends React.Component {
 	componentWillReceiveProps(nextProps) {
 
 		// If got new posts in props while having none previously
-	    if(nextProps.posts && !this.props.posts) {
+	    if(nextProps.posts.length != this.props.posts.length) {
 	    	this.setState({
 	    		posts: nextProps.posts
 	    	});
