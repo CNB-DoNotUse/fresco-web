@@ -43,7 +43,7 @@ export default class OutletBody extends React.Component {
 	 * @return {[type]} [description]
 	 */
 	loadPurchases(passedOffset, cb) {
-		$.get('/scripts/outlet/purchases/list', {
+		$.get('/api/outlet/purchases', {
 			limit: 20,
 			offset: passedOffset,
 			details: true,
@@ -64,6 +64,8 @@ export default class OutletBody extends React.Component {
 			}
 
 			var purchases = response.data.map((purchaseParent) => {
+				if(!purchaseParent.purchase) return purchaseParent;
+				
 				var purchase = purchaseParent.purchase;
 					purchase.title = purchaseParent.title;
 
