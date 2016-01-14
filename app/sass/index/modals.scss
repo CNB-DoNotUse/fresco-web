@@ -183,8 +183,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 	@include mobile{
 
-
-		height:100vh !important;
 		margin:0 auto !important;
 
 
@@ -201,8 +199,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 @import "account";
 @import "press";
 @import "contact";
-@import "legal";
-@import "hsa";
+@import "faq";
 @import "forgot";
 @import "join";
 @import "reset";

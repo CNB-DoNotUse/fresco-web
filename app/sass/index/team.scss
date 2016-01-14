@@ -14,6 +14,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	@extend .modal_window;
 	max-width:736px;
 
+	@include mobile{
+		height:100%;
+	}
+
 	.body{
 		width:100%;
 	    height: 550px;
@@ -32,11 +36,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 		}	
 
-		.team-rows{
-			@include mobile{
-				margin-bottom:40px;
-			}
-		}
 
 		.row{
 			padding:10px 0 0;

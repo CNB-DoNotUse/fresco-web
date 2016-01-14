@@ -1,0 +1,135 @@
+<% 
+	var faqs = [
+		{
+			q: "What is Fresco News?",
+			a: "Fresco News is a next generation news company, connecting every person using the app with the powerful news organizations of the world.  Browse news reported by real people from the scene, or report news to Fresco to sell your captured footage"
+		},
+
+		{
+			q: "What are assignments?",
+			a: "Assignments are requests to capture content from the scene of an event.  Every assignment is a REAL NEWS EVENT submitted by one of our many partners.  The faster you get to the scene and upload footage, the better chance you have to sell your footage!"
+		},
+
+		{
+			q: "What are stories?",
+			a: "Stories in the app show photos and videos from trending events around the world, curated and organized by our 24/7 news team.  "
+		},
+
+		{
+			q: "How long do payments take before they’re deposited in my account?",
+			a: "Please allow 3 business days for the payment to post. Holidays and weekends have been known to add delays.  (We’re working to reduce the amount of time it takes payments to get to your account!)"
+		},
+
+		{
+			q: "I took a photo/video of something that I believe is newsworthy. What happens if I upload it?",
+			a: "Uploading to Fresco instantly places your content in our archive marketplace.  Every time a news organization downloads your content, you get paid $50 per video and $20 per photo.  (50 video downloads = $2500!)"
+		},
+
+		{
+			q: "Am I guaranteed payment?",
+			a: "Every time your uploaded content is purchased by a station, you will be guaranteed payment. You will receive a notification if a purchase has been made.  If your uploaded content was not purchased, you will not be guaranteed payment. "
+		},
+
+		{
+			q: "I got notified that someone bought my content. What does this mean?",
+			a: "Well done!  When you receive this notification, it means that you’re content was downloaded for use by one of our many partners.  Payment will arrive within 3 business days."
+		},
+
+		{
+			q: "Am I giving away ownership of my photos / videos?",
+			a: "You will maintain ownership of the content, but we require that you do not sell to others any content that was purchased for at least 48 hours."
+		},
+
+		{
+			q: "Am I responsible for taking on every assignment?",
+			a: "Not at all!  Respond when you can, make sure to adjust your notification radius to make your notifications more meaningful to you (profile -> settings)."
+		},
+
+		{
+			q: "I want to take on an assignment. How do I know what to capture?",
+			a: "Every assignment comes with a basic description of what the news organization is looking for. Try to follow it as best you can to have the best chance of making a sale."
+		},
+
+		{
+			q: "Any tips?",
+			a: "- Try to avoid commentary in the footage (no talking over the video)<br />- Hold your camera steady and don’t pan too much! It’s better to take many short clips of different areas of activity or pan very very slowly across a small shot.<br />Videos pay better than photos and are more useful to our partners! Take a mix both photos and videos, though, to ensure that your content is purchased. <br />- Videos should be at least 20 seconds long.<br />- Record photos and videos in landscape. Using zoom lowers the quality of the photos and videos, which is why we did not include it in the app.<br />- Avoid using zoom unless it’s physically impossible to approach the subject. "
+		},
+		{
+			q: "Am I credited when a news outlet uses my capture?",
+			a: "Always! It’ll look like this when they use it:  “Jane Doe via Fresco News”"
+		},
+
+		{
+			q: "The app wants to know my location even when I’m not using it. Why? Doesn’t this drain my battery?",
+			a: "Fresco uses your location anonymously to deliver you notifications that pertain to your surroundings.  Battery draining is a myth; your phone likely returns a location already for other apps, Fresco is just accessing the data that is already there."
+		},
+
+		{
+			q: "I just uploaded something, what now?",
+			a: "Sit back and wait, or go capture more content!  Your content will remain in the archive forever so it can be bought at any moment"
+		},
+
+		{
+			q: "What kind of content are you looking for?",
+			a: "Anything newsworthy, interesting, or has a potential story will help you sell your content.  But we want you to upload anything you want us (or our many partners) to be aware of in the world! Share what matters. "
+		},
+
+		{
+			q: "Before uploading my photo/video, I’m asked to write a caption. What should I write?",
+			a: "You are the news organization’s eyes on the scene.  Try to tell them exactly what is going on in the video as well as the scene itself. You could supply key details to help tell the story! "
+		},
+
+		{
+			q: "Don’t I need to fill out some sort of tax form for this?",
+			a: "As you approach $600 in income for any given calendar year, we will have to send you a 1099 contractor form to fill out, but we can do this all through the app! We will notify you if and when the time comes."
+		},
+
+		{
+			q: "Am I allowed to take a picture with someone else’s face in it?",
+			a: "Yes, our purpose is newsgathering, so if it is part of the scene, it is perfectly fine. Legally, people do not have to give permission to use pictures of their faces in public. However, some news organizations may prefer not to show any minors on their broadcasts, which is something to keep in mind when taking a shot."
+		},
+
+		{
+			q: "What am I not allowed to do when responding to an assignment?",
+			a: "DO NOT PUT YOURSELF IN HARMS WAY TO GET A BETTER SHOT.  Great photos and videos are fantastic, but stay safe and use caution approaching any scene. It’s also important to not break any laws in attempt to gather Fresco content."
+		},
+
+		{
+			q: "When approached by law enforcement, what should I do/say?",
+			a: "Feel free to let them know you are reporting for Fresco, which is perfectly legal, but always obey what law enforcement tells you. "
+		},
+
+		{
+			q: "I want to remove a photo/video I uploaded to Fresco. Who should I contact?",
+			a: "Send an email to info@fresconews, and we’ll take it down right away!"
+		},
+
+		{
+			q: "What kind of rights do I have to my content?",
+			a: "You will maintain ownership of your content forever."
+		},
+
+		{
+			q: "What kind of rights do publishers have with my content?",
+			a: "Once, purchased the outlet can use your content on any of their mediums (broadcast, web, print, social media) while also having the ability to edit your videos and photos to fit their needs.  You will always maintain proper accreditation. "
+		}
+	];
+%>
+
+<div class="modal faq xs <%- active %>" id="_faq">
+	<div class="header">
+		<h2>Frequently Asked Questions</h2>
+		
+		<span data-event="landing" class="mdi mdi-close modal-action"></span>
+	</div>
+	
+	<div class="body">
+			<% for(var i=0; i <faqs.length; i++) { %>
+				<div class="faq-child">
+					<h2 class="question"><%-faqs[i].q %></h2>
+
+					<p class="answer"><%- faqs[i].a %></p>
+				</div>
+			<% } %>
+	</div>
+</div>
