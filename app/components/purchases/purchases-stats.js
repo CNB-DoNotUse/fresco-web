@@ -40,7 +40,7 @@ export default class PurchasesStats extends React.Component {
 
 		var buttons = [];
 
-		if(this.props.xlsx){
+		if(this.props.downloadExports){
 			buttons.push(
 				<button 
 					id="export-xlsx"
@@ -50,7 +50,7 @@ export default class PurchasesStats extends React.Component {
 			);
 		};
 
-		if(this.props.csv){
+		if(this.props.downloadExports){
 			buttons.push(
 				<button 
 					id="export-csv" 
@@ -60,7 +60,7 @@ export default class PurchasesStats extends React.Component {
 			);
 		}
 
-		if(this.props.email){
+		if(this.props.emailStatement){
 			buttons.push(
 				<button 
 					id="email-statement-button" 

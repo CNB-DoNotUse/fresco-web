@@ -164,26 +164,19 @@ router          = express.Router();
   client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);
 
   function doWithOutletInfo(error, response, body) {
-    if (error || !body || body.err)
-      return res.status(404).render('error', {
-        user: req.session.user,
-        error_code: 404,
-        error_message: config.ERR_PAGE_MESSAGES[404]
-      });
+    if (error || !body || body.err){
 
-    var purchases = null;
-    if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified) {
-      purchases = req.session.user.outlet.purchases || [];
-      purchases = purchases.map((purchase) => {
-        return purchase.post;
-      });
+      var err = new Error(config.ERR_PAGE_MESSAGES[404]);
+      err.status = 404;
+      return next(err);
+
     }
-
+ 
     res.render('outlet', {
       user: req.session.user,
       title: 'Outlet',
       outlet: body.data,
-      purchases: purchases,
+      purchases:  config.mapPurchases(),
       config: config,
       alerts: req.alerts
     });
