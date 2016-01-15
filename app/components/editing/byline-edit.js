@@ -8,16 +8,79 @@ import Dropdown from './../global/dropdown.js'
 
 export default class GalleryEditByline extends React.Component {
 
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			name: this.isTwitterImport() ? this.props.gallery.posts[0].meta.twitter.handle : ''
+		}
+
+		this.isTwitterImport = this.isTwitterImport.bind(this);
+		this.handleSelected = this.handleSelected.bind(this);
+	}
+
+	isTwitterImport() {
+		var post = this.props.gallery.posts[0];
+		if(post.meta && post.meta.twitter) {
+			return true;
+		}
+		return false;
+	}
+
+	handleSelected(selected) {
+		this.setState({
+			name: selected
+		});
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if(this.props.gallery._id != prevProps.gallery._id) {
+			if(this.isTwitterImport()) {
+				this.setState({
+					name: post.meta.twitter.handle
+				});
+			}
+		}
+	}
+
 	/**
 	 * Renders byline field
 	 * @description Three types of instances for the byline
 	 */
 	render() {
 
-		var post = this.props.gallery.posts[0];
+
+		var gallery = this.props.gallery,
+			post 	= gallery.posts[0],
+			shouldBeHidden = false;
+
+		var postIdOccurances = {};
+
+		// Loop through gallery posts
+		for(var p in gallery.posts) {
+
+			// If ID already exist, break and hide;
+			if(typeof postIdOccurances[gallery.posts[p].parent] != 'undefined') {
+				shouldBeHidden = true;
+				break;
+			}
+
+			// Assign each parent as key in object.
+			postIdOccurances[gallery.posts[p].parent] = 1;
+
+			// If there is more than one parent, hide.
+			if(Object.keys(postIdOccurances).length > 1) {
+				shouldBeHidden = true;
+				break;
+			}
+		}
+
+		if(shouldBeHidden) {
+			return <div></div>;
+		}
 
 		//If the post contains twitter info, show twitter byline editor
-		if (post.meta && post.meta.twitter) {
+		if (this.isTwitterImport()) {
 
 			var isHandleByline = post.byline.indexOf('@') == 0,
 				byline = isHandleByline ? post.meta.twitter.handle : post.meta.twitter.user_name,
@@ -30,8 +93,8 @@ export default class GalleryEditByline extends React.Component {
 						<Dropdown
 							options={[post.meta.twitter.handle, post.meta.twitter.user_name]}
 							selected={byline}
-							onSelected={this.bylineSelected} />
-						
+							onSelected={this.handleSelected} />
+						<input type="hidden" ref="name" value={this.state.name} />
 						<div className="split-cell">
 							<div className="form-control-wrapper">
 								<input 
@@ -53,7 +116,6 @@ export default class GalleryEditByline extends React.Component {
 		}
 		//If the post doesn't have an owner, but has a curator i.e. manually imported
 		else if(!post.owner && post.curator) {
-
 			var name = '',
 				affiliation = '';
 
@@ -111,7 +173,8 @@ export default class GalleryEditByline extends React.Component {
 								ref="byline"
 								defaultValue={post.byline} 
 								type="text" 
-								className="form-control" disabled={true} />
+								className="form-control" 
+								disabled={true} />
 							
 							<div className="floating-label">Byline</div>
 							
@@ -121,6 +184,8 @@ export default class GalleryEditByline extends React.Component {
 				</div>
 			);
 		}
+
+
 	}
 
 }

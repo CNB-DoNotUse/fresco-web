@@ -72,7 +72,6 @@ app.use(
   express.static(path.join(__dirname, 'public'), { maxAge: 1000 * 60 * 60 * 24 * 7 })
 );
 
-
 /**
  * Verifications check
  */
@@ -284,7 +283,10 @@ app.use('/api', (req, res, next) => {
 app.use((err, req, res, next) => {
     // Development error handle will print stacktrace
     if (app.get('env') === 'development') {
-        console.log('\nPath: ', req.path, '\nError: ', err + '\n');
+        console.log('Method:', req.method, 
+                  '\nPath:', req.path,
+                  '\nBody', req.body,
+                  '\nError: ', err + '\n');
     }
 
     //Respond with code

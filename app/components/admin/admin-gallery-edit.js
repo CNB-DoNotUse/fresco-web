@@ -205,9 +205,9 @@ export default class AdminGalleryEdit extends React.Component {
 		}
 
 		// Byline
-		if(this.refs.byline.refs.byline) {
+		if(this.refs.byline.refs.byline) { // Organic
 			byline = this.refs.byline.refs.byline.value;
-		} else {
+		} else { // File import
 			byline = this.refs.byline.refs.name.value + ' / ' + this.refs.byline.refs.affiliation.value;
 		}
 

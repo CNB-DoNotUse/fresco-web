@@ -93,13 +93,14 @@ export default class GalleryEditFoot extends React.Component {
 			var params = {
 				id: gallery._id
 			}
-			
+
 			//Send delete request
 			$.ajax({
+
 				url: "/scripts/gallery/remove",
 				method: 'post',
 				contentType: "application/json",
-				data: params,
+				data: JSON.stringify(params),
 				dataType: 'json',
 				success: (result) => {
 					
