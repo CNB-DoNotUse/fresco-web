@@ -39,9 +39,9 @@ export default class GalleryEditBulk extends React.Component {
  						<span id="post-count"> ({count}) </span>
  					</button>
  					
- 					<button onClick={this.purchase} type="button" className="btn btn-flat pull-right">Purchase</button>
+ 					{/*<button onClick={this.purchase} type="button" className="btn btn-flat pull-right">Purchase</button>*/}
  					
- 					<button onClick={this.edit} type="button" className="btn btn-flat pull-right toggle-edit toggler">Edit</button>
+ 					{/*<button onClick={this.edit} type="button" className="btn btn-flat pull-right toggle-edit toggler">Edit</button>*/}
  					
  					<button onClick={this.createGallery} type="button" className="btn btn-flat pull-right toggle-gcreate toggler">Create gallery</button>
  				</div>
