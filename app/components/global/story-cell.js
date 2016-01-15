@@ -70,7 +70,7 @@ class StoryCellImages extends React.Component {
 		else if (this.props.thumbnails.length == 1){
 			return(
 				<div className="flex-row">
-					<FrescoImage post={this.props.thumbnails[0]} size="small" />
+					<FrescoImage image={this.props.thumbnails[0].image} size="small" />
 				</div>
 			);
 		}
