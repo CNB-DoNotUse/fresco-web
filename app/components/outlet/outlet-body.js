@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import global from '../../lib/global'
 import PostCell from '../global/post-cell'
 import PurchasesBody from '../purchases/purchases-body'
 import PostList from '../global/post-list'

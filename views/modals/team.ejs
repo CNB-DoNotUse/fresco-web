@@ -230,19 +230,22 @@
 </div>
 
 <script type="text/javascript">
-
 	var team = <%- JSON.stringify(team) %>
 
+	//Sets all the team member image sources
 	for(var i=0; i <team.length; i++) {
 
 		var list = document.getElementById('team-list-' + i),
 			members = list.getElementsByTagName('li');
 
-		for(var k=0; k < team[i]['members'].length; k++) { 
+		for(var k=0; k < team[i]['members'].length -1; k++) { 
 
 			var member = team[i]['members'][k];
-			members[k].getElementsByTagName('img')[0].src = '<%= global.CDN %>/index/team/' + member.avatar;
+
+			var image = members[k].getElementsByTagName('img')[0];
+
+			if(typeof(image) !== 'undefined')
+				image.src = '<%= global.CDN %>/index/team/' + member.avatar;
 		}
 	}
-
 </script>
