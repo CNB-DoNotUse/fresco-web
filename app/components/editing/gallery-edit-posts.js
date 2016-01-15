@@ -60,7 +60,8 @@ export default class GalleryEditPosts extends React.Component {
 		return (
 			<div className="dialog-col col-xs-12 col-md-5">
 				<Slider
-					dots={true}>
+					dots={true}
+					infinite={posts.length + files.length > 1}>
 					{posts}{files}
 				</Slider>
 			</div>

@@ -234,21 +234,22 @@ export default class PostList extends React.Component {
   		});
 
 		return (
-
 			<div>
 				<div className="container-fluid fat grid" ref='grid' onScroll={this.state.scrollable ? this.scroll : null} >
 					<div className="row tiles" id="posts">{posts}</div>
 				</div>
+				
 				<GalleryEditBulk 
 					posts={this.state.selectedPosts}
 					setSelectedPosts={this.setSelectedPosts} />
+				
 				<GalleryEdit 
 					gallery={this.state.gallery}
 					toggled={this.state.galleryEditToggled}
 					toggle={this.toggle} />
+				
 				<GalleryCreate posts={this.state.selectedPosts} />
 			</div>
-
 		)		
 	}
 
