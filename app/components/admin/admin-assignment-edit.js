@@ -24,10 +24,60 @@ export default class AdminAssignmentEdit extends React.Component {
         this.reject = this.reject.bind(this);
     }
 
+    componentDidMount() {
+        $.material.init();
+        this.setState({
+            radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
+            location: {
+                lat: this.props.assignment.location.geo.coordinates[1],
+                lng: this.props.assignment.location.geo.coordinates[0],
+            }
+        });
+    }
+
+    /**
+     * New assignment is selected from the sidebar list, so componenet is updated
+     */
+    componentDidUpdate(prevProps, prevState) {
+        if(!this.props.assignment._id) return;
+        $.material.init();
+
+        if (this.props.assignment._id != prevProps.assignment._id) {
+            console.log('Data changed for assignment');
+            if(this.props.hasActiveGallery) {
+
+                this.setState({
+                    radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
+                    location: {
+                        lat: this.props.assignment.location.geo.coordinates[1],
+                        lng: this.props.assignment.location.geo.coordinates[0],
+                    }
+                });
+
+                var expirationDate = new Date(this.props.assignment.expiration_time);
+                var expirationHours = Math.ceil((expirationDate - Date.now()) / 1000 / 60 / 60);
+
+                this.refs['assignment-title'].value = this.props.assignment.title;
+                this.refs['assignment-description'].value = this.props.assignment.caption;
+                this.refs['assignment-expiration'].value = expirationHours;
+                $(this.refs['assignment-title']).removeClass('empty');
+                $(this.refs['assignment-description']).removeClass('empty');
+                $(this.refs['assignment-expiration']).removeClass('empty');
+
+            }
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return true;
+        // return this.props.assignment._id != nextProps.assignment._id;
+    }
+
     /**
      * Updates state map location when AutocompleteMap gives new location
      */
     onPlaceChange(place) {
+        console.log(place);
         this.setState({
             address: place.address,
             location: place.location
@@ -79,47 +129,6 @@ export default class AdminAssignmentEdit extends React.Component {
                 });
             }
         })
-    }
-
-    componentDidMount() {
-        $.material.init();
-    }
-
-    /**
-     * New assignment is selected from the sidebar list, so componenet is updated
-     */
-    componentDidUpdate(prevProps, prevState) {
-        if(!this.props.assignment._id) return;
-        $.material.init();
-
-        if (this.props.assignment._id != prevProps.assignment._id) {
-            if(this.props.hasActiveGallery) {
-
-                this.setState({
-                    radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
-                    location: {
-                        lat: this.props.assignment.location.geo.coordinates[1],
-                        lng: this.props.assignment.location.geo.coordinates[0],
-                    }
-                });
-
-                var expirationDate = new Date(this.props.assignment.expiration_time);
-                var expirationHours = Math.ceil((expirationDate - Date.now()) / 1000 / 60 / 60);
-
-                this.refs['assignment-title'].value = this.props.assignment.title;
-                this.refs['assignment-description'].value = this.props.assignment.caption;
-                this.refs['assignment-expiration'].value = expirationHours;
-                $(this.refs['assignment-title']).removeClass('empty');
-                $(this.refs['assignment-description']).removeClass('empty');
-                $(this.refs['assignment-expiration']).removeClass('empty');
-
-            }
-        }
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
-        // return this.props.assignment._id != nextProps.assignment._id;
     }
 
     render() {
