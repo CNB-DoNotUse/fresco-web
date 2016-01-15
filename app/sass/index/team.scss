@@ -60,7 +60,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 					display:inline-block;
 					margin:0 8px 7px;
 					width:224px;
-					height:90px;
+					min-height: 90px;
 					float:left;
 
 					@include mobile{
@@ -89,6 +89,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 					.meta{
 						line-height:24px;
 						text-align:left;
+						margin-left:70px;
+
 						.name{
 							font-weight:700;
 							font-size:20px;

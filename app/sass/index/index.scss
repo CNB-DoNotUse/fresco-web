@@ -165,7 +165,6 @@ $heroHeight: 180px;
 		animation: animateBackground 30s linear;
 		overflow:hidden;
 	}
-
 }
 
 /**
@@ -175,6 +174,10 @@ $heroHeight: 180px;
 .landing-wrap{
 	height:100%;
 	margin-top: 40vh;
+
+	@include mobile{
+		margin-top:20vh;
+	}
 }
 
 
@@ -262,7 +265,6 @@ $heroHeight: 180px;
 	}
 
 	position:relative;
-	// padding:0 20px 0;
 	z-index:10;
 }
 
@@ -272,6 +274,9 @@ $heroHeight: 180px;
 
 .about{
 	text-align:center;
+
+	$mobileWidth:90%;
+	$mobileLineWidth:$mobileWidth * 3 + 2%;
 
 	.scroll{
 
@@ -299,7 +304,7 @@ $heroHeight: 180px;
 				text-align:center;
 
 				@include mobile{
-					width:70% !important;
+					width:$mobileWidth !important;
 				}
 
 				img{
@@ -350,7 +355,7 @@ $heroHeight: 180px;
 			position: relative;
 			top: 14px;
 			@include mobile{
-				width:212%;
+				width:$mobileLineWidth;
 			}
 		
 		}
@@ -373,7 +378,7 @@ $heroHeight: 180px;
 
 				@include mobile{
 					display:inline-block;
-					width:70% !important;
+					width:$mobileWidth !important;
 					position:relative !important;
 					left:0 !important;
 					right:0 !important;
@@ -425,6 +430,10 @@ $heroHeight: 180px;
 		color:rgba(0, 0, 0, .54);
 		padding:20px 40px;
 		font-weight:400;
+
+		@include mobile{
+			padding:20px 20px;
+		}
 	}
 
 }
@@ -454,13 +463,11 @@ $mobileSlideHeight:540px;
 		display:inline-block;
 		float:left;
 		height:100%;
-
 	}
 
 	.highlights{
 		margin:0 auto;
 		width:85%;
-		// width:calc(86% - 4px);
 
 		@include mobile{
 			width:100%;
