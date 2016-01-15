@@ -208,7 +208,12 @@ export default class AdminGalleryEdit extends React.Component {
 		if(this.refs.byline.refs.byline) { // Organic
 			byline = this.refs.byline.refs.byline.value;
 		} else { // File import
-			byline = this.refs.byline.refs.name.value + ' / ' + this.refs.byline.refs.affiliation.value;
+			byline = this.refs.byline.refs.name.value;
+			if(this.refs.byline.refs.affiliation.value.length === 0) {
+				byline += ' via Fresco News';
+			} else {
+				byline += ' / ' + this.refs.byline.refs.affiliation.value;
+			}
 		}
 
 		var params = {

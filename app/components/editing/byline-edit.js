@@ -36,6 +36,7 @@ export default class GalleryEditByline extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if(this.props.gallery._id != prevProps.gallery._id) {
 			if(this.isTwitterImport()) {
+				var post = this.props.gallery.posts[0];
 				this.setState({
 					name: post.meta.twitter.handle
 				});

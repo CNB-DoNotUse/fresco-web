@@ -26,6 +26,7 @@ export default class DispatchSubmit extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 
 		var self = this;
+		this.refs.autocomplete.className = this.refs.autocomplete.className.replace(/\bempty\b/, '');
 
 		//Update the autocomplete field when the marker is finished dragging on the main map
 		if(this.props.shouldUpdatePlace && this.props.newAssignment && this.props.newAssignment.location){

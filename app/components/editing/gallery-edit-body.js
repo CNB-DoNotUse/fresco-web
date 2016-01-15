@@ -42,7 +42,7 @@ export default class GalleryEditBody extends React.Component {
 
 				<div className="dialog-col col-xs-12 col-md-7 form-group-default">
 
-					<BylineEdit gallery={this.props.gallery} />
+					<BylineEdit ref="byline" gallery={this.props.gallery} />
 					
 					<div className="dialog-row">
 										

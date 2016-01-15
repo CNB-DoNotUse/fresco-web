@@ -221,16 +221,24 @@ export default class GalleryEdit extends React.Component {
  		//Configure the byline's other origin
  		//From twitter
  		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter) {
+ 			var bylineComponent = this.refs.galleryEditBody.refs.byline,
+	 			name 			= bylineComponent.refs.name.value,
+ 				affiliation 		= bylineComponent.refs.affiliation.value.trim();
 
- 			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value;
+ 			if(affiliation.length === 0) {
+ 				params.byline = name + ' via Fresco News';
+ 			} else {
+ 				params.byline = name + ' via ' + affiliation;
+ 			}
+
+			params.other_origin_name = name;
+			params.other_origin_affiliation = affiliation;
 
  		}
  		//Imported
  		else if(!gallery.posts[0].owner && gallery.posts[0].curator) {
-
  			params.other_origin_name = document.getElementById('gallery-edit-name').value;
  			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value;
-
  		}
 
  		if (gallery.imported && gallery.location) {
@@ -261,9 +269,7 @@ export default class GalleryEdit extends React.Component {
  		} else {
  			// Or just update gallery if no files present
  			updateGallery();
-
  		}
-
  		function uploadNewFiles() {
 			var data 	= new FormData();
 
@@ -344,6 +350,7 @@ export default class GalleryEdit extends React.Component {
 		 						<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
 		 					</div>
 		 					<GalleryEditBody 
+			 					ref="galleryEditBody"
 		 						gallery={this.state.gallery}
 		 						onPlaceChange={this.onPlaceChange}
 		 						updateCaption={this.updateCaption}

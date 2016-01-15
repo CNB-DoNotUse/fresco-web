@@ -43,7 +43,6 @@ export default class AdminAssignmentEdit extends React.Component {
         $.material.init();
 
         if (this.props.assignment._id != prevProps.assignment._id) {
-            console.log('Data changed for assignment');
             if(this.props.hasActiveGallery) {
 
                 this.setState({
@@ -77,7 +76,6 @@ export default class AdminAssignmentEdit extends React.Component {
      * Updates state map location when AutocompleteMap gives new location
      */
     onPlaceChange(place) {
-        console.log(place);
         this.setState({
             address: place.address,
             location: place.location
