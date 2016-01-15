@@ -52,7 +52,7 @@ router.get('/:id?', function(req, res, next) {
       }
     
       //Render page
-      renderUserPage(body.data, res)
+      renderUserPage(body.data, req, res)
 
     });
 
@@ -65,7 +65,7 @@ router.get('/:id?', function(req, res, next) {
       return res.redirect('/');
 
     //Render page
-    renderUserPage(req.session.user, res)
+    renderUserPage(req.session.user, req, res)
 
   }
 
@@ -76,13 +76,17 @@ router.get('/:id?', function(req, res, next) {
  * Renders user page
  * @param  {object} user user to render on page
  */
-function renderUserPage(user, res){
+function renderUserPage(user, req, res){
+
+  console.log(req.session.user);
 
   var title = user.firstname + ' ' + user.lastname,
       props = {
         purchases: config.mapPurchases(user),
         title: title,
-        user: user
+        user: req.session.user,
+        detailUser: user,
+        editable: req.session.user._id == user._id
      };
 
   res.render('app', {
