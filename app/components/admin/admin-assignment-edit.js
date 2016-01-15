@@ -26,6 +26,7 @@ export default class AdminAssignmentEdit extends React.Component {
 
     componentDidMount() {
         $.material.init();
+
         this.setState({
             radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
             location: {
@@ -39,8 +40,9 @@ export default class AdminAssignmentEdit extends React.Component {
      * New assignment is selected from the sidebar list, so componenet is updated
      */
     componentDidUpdate(prevProps, prevState) {
-        if(!this.props.assignment._id) return;
         $.material.init();
+        
+        if(!this.props.assignment._id) return;
 
         if (this.props.assignment._id != prevProps.assignment._id) {
             if(this.props.hasActiveGallery) {
@@ -56,13 +58,9 @@ export default class AdminAssignmentEdit extends React.Component {
                 var expirationDate = new Date(this.props.assignment.expiration_time);
                 var expirationHours = Math.ceil((expirationDate - Date.now()) / 1000 / 60 / 60);
 
-                this.refs['assignment-title'].value = this.props.assignment.title;
-                this.refs['assignment-description'].value = this.props.assignment.caption;
-                this.refs['assignment-expiration'].value = expirationHours;
                 $(this.refs['assignment-title']).removeClass('empty');
                 $(this.refs['assignment-description']).removeClass('empty');
                 $(this.refs['assignment-expiration']).removeClass('empty');
-
             }
         }
     }
