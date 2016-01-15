@@ -21,14 +21,18 @@ class UserDetail extends React.Component {
 
  	render() {
 
+ 		console.log(this.props);
+
  		return (
  			<App user={this.props.user}>
  				<TopBar 
- 					title={this.props.user.firstname + ' ' + this.props.user.lastname}
-					editable={true}
+ 					title={this.props.detailUser.firstname + ' ' + this.props.detailUser.lastname}
+					editable={this.props.editable}
 					edit={this.edit} />
+				
 				<UserSidebar 
-					user={this.props.user} />
+					user={this.props.detailUser} />
+				
 				<div className="col-sm-8 tall">
 					<PostList 
 						loadPosts={this.loadPosts}
@@ -84,6 +88,8 @@ class UserDetail extends React.Component {
 ReactDOM.render(
   	<UserDetail 
   		user={window.__initialProps__.user} 
+  		detailUser={window.__initialProps__.detailUser} 
+  		editable={window.__initialProps__.editable}
   		purchases={window.__initialProps__.purchases} 
   		title={window.__initialProps__.title} />,
   	document.getElementById('app')

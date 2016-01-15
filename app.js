@@ -33,6 +33,7 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // app.use(morgan('dev'));
 
+//GZIP
 app.use(compression())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -116,20 +117,18 @@ app.use(function(req, res, next) {
         api = requestJson.createClient(config.API_URL);
         err.status = 404;
 
-    //Check if not a platform route
+    //Check if not a platform route, then send onwwards
     if(routes.platform.indexOf(path) == -1) {
       return next();
     }
 
     //Check if there is no sessioned user
     if (!req.session.user) {
-      console.log('No user session');
       return next(err);
     }
 
     //Check if the session has expired
     if (req.session.user.TTL && req.session.user.TTL - now <= 0) {
-      console.log('Session expired');
       delete req.session.user;
       return next(err);
     }
@@ -137,7 +136,7 @@ app.use(function(req, res, next) {
     //Send request for user profile
     api.get('/v1/user/profile?id=' + req.session.user._id, (err, response, body) => {
         //Check request
-        if (err || !body) return next();
+        if (err || !body) return next(err);
 
         //Check for error on api payload
         if (body.err || body.error || !body.data._id) {
@@ -155,14 +154,14 @@ app.use(function(req, res, next) {
         req.session.user.token = token;
         req.session.user.TTL = now + config.SESSION_REFRESH_MS;
 
+        //Check if the user has an outlet, otherwise save session and move onward
         if (!req.session.user.outlet) {
             return req.session.save(function() {
-                console.log('No outlet');
-                return next(err);
+                return next();
             });
         }
 
-        //Grab purchases
+        //Grab purchases because user does have an outlet, then move onward
         api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(err, response, body) {
 
             if (!err && body && !body.err)
