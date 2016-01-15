@@ -48,6 +48,7 @@ export default class AdminBody extends React.Component {
 	 			this.setState({
 	 				hasActiveGallery: true,
 	 				activeAssignment: this.props.assignments[0],
+	 				activeGallery: null,
 	 				activeGalleryType: 'assignment'
 	 			});
 
@@ -56,7 +57,7 @@ export default class AdminBody extends React.Component {
 		 			hasActiveGallery: true,
 		 			activeGalleryType: galleryType,
 		 			activeGallery: this.props[this.props.activeTab][0],
-		 			activeAssignment: {}
+		 			activeAssignment: null
 		 		});
 	 		}
 
@@ -225,7 +226,7 @@ export default class AdminBody extends React.Component {
 
 	render() {
 
-		var listItems = [], editPane = '';
+		var listItems = [];
 		
 		switch(this.props.activeTab) {
 
@@ -240,7 +241,7 @@ export default class AdminBody extends React.Component {
 							});
 
 				if(this.state.activeAssignment && this.state.activeAssignment._id) {
-					editPane = <AdminAssignmentEdit
+					var editPane = <AdminAssignmentEdit
 									hasActiveGallery={this.state.hasActiveGallery}
 									activeGalleryType={this.state.activeGalleryType}
 									assignment={this.state.activeAssignment}
@@ -259,7 +260,7 @@ export default class AdminBody extends React.Component {
 											setActiveGallery={this.setActiveGallery} />
 							});
 
-				editPane = <AdminGalleryEdit
+				var editPane = <AdminGalleryEdit
 								hasActiveGallery={this.state.hasActiveGallery}
 								activeGalleryType={this.state.activeGalleryType}
 								gallery={this.state.activeGallery}
@@ -278,7 +279,7 @@ export default class AdminBody extends React.Component {
 											setActiveGallery={this.setActiveGallery} />
 							});
 
-				editPane = <AdminGalleryEdit
+				var editPane = <AdminGalleryEdit
 								hasActiveGallery={this.state.hasActiveGallery}
 								activeGalleryType={this.state.activeGalleryType}
 								gallery={this.state.activeGallery}
