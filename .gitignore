@@ -4,7 +4,8 @@ node_modules
 app/server
 uploads
 sessions
-cert
+cert/*
+cert/DigiCertCA.crt
 public/vendor
 public/js/pages
 public/css/page
