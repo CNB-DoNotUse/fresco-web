@@ -22,8 +22,10 @@ class UserSettings extends React.Component {
 		this.fileChanged = this.fileChanged.bind(this);
 		this.clickProfileImgInput = this.clickProfileImgInput.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
+	}
 
-		window.addEventListener('keyup', this.handleInputChange);
+	componentDidMount() {
+		$('input, textarea').on('keyup', this.handleInputChange);
 	}
 
 	handleInputChange() {
@@ -187,13 +189,13 @@ class UserSettings extends React.Component {
 							<div className="f-card-content">
 								<input 
 									type="text" 
-									className="form-control floating-label heading" 
+									className="form-control heading" 
 									ref="name" 
 									placeholder="Name" 
 									defaultValue={user.firstname + ' ' + user.lastname} />
 								
 								<textarea 
-									className="form-control floating-label heading" 
+									className="form-control heading" 
 									disabled={true} 
 									ref="bio" 
 									placeholder="Bio"></textarea>

@@ -46,6 +46,8 @@ export default class DispatchSubmit extends React.Component {
 
 	componentDidMount() {
 
+		this.refs.autocomplete.className = this.refs.autocomplete.className.replace(/\bempty\b/, ''); 
+
 		//Set up autocomplete listener
 		var autocomplete = new google.maps.places.Autocomplete(this.refs.autocomplete);
 				

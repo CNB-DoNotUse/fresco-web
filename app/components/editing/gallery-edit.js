@@ -51,7 +51,6 @@ export default class GalleryEdit extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		$('.form-control').removeClass('empty');
 	}
 
 	componentDidMount() {
@@ -228,7 +227,7 @@ export default class GalleryEdit extends React.Component {
  			if(affiliation.length === 0) {
  				params.byline = name + ' via Fresco News';
  			} else {
- 				params.byline = name + ' via ' + affiliation;
+ 				params.byline = name + ' / ' + affiliation;
  			}
 
 			params.other_origin_name = name;

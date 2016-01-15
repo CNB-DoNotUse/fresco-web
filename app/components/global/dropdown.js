@@ -19,6 +19,14 @@ export default class Dropdown extends React.Component {
 
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.selected != this.props.selected) {
+			this.setState({
+				selected: this.props.selected
+			});
+		}
+	}
+
 	//Called whenever the master button is clicked
 	clicked(event) {
 
