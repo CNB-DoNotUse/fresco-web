@@ -58,13 +58,6 @@ export default class GalleryEditByline extends React.Component {
 
 		// Loop through gallery posts
 		for(var p in gallery.posts) {
-
-			// If ID already exist, break and hide;
-			if(typeof postIdOccurances[gallery.posts[p].parent] != 'undefined') {
-				shouldBeHidden = true;
-				break;
-			}
-
 			// Assign each parent as key in object.
 			postIdOccurances[gallery.posts[p].parent] = 1;
 
