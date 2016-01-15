@@ -975,7 +975,10 @@ div.list {
 					@include flex-direction(column);
 					background-color: $color-black-2;
 					color: $color-white-1;
-					> p {
+					> a {
+						color:#FFF;
+					}
+					p {
 						@include flex(1);
 						width: 100%;
 						margin-bottom: 0;

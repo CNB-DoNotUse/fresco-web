@@ -29,7 +29,6 @@ export default class GalleryList extends React.Component {
 	}
 
 	loadInitalGalleries() {
-		console.log(this.props.sort);
 		this.loadGalleries(0, (galleries) => {
 
 			var offset = galleries ? galleries.length : 0;
