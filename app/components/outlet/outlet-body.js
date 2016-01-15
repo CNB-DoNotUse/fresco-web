@@ -46,6 +46,7 @@ export default class OutletBody extends React.Component {
 		$.get('/api/outlet/purchases', {
 			limit: 20,
 			offset: passedOffset,
+			sort: true,
 			details: true,
 			id: this.props.outlet._id
 		}, (response) => {

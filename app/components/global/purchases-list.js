@@ -22,13 +22,10 @@ export default class PurchasesList extends React.Component {
 	 	if(this.props.purchasesAdded && this.state.purchases.length > prevState.purchases.length)
 		 	this.props.purchasesAdded(this.state.purchases);
 
+		 //Tell the component to update it's purchases
 		if(this.props.updatePurchases) {
 			this.loadInitialPurchases();
 		}
-	}
-
-	componentDidMount() {
-		this.loadInitialPurchases();
 	}
 
 	/**
@@ -55,11 +52,11 @@ export default class PurchasesList extends React.Component {
 	    //Check if list is initialzied with posts or the `loadPurchases` prop is not defined, then don't load anything
 	    if(this.state.purchases.length > 0 || !this.props.loadPurchases) 
 	    	return;
-
+	    //Load purchases when component first mounts
 	    this.loadInitialPurchases();
 	}
 
-	// Handle purchases div scrollß
+	// Handle purchases div scroll
 	scroll(e) {
 
 		if(this.state.loading) return;
