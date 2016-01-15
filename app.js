@@ -140,7 +140,7 @@ app.use(function(req, res, next) {
         if (err || !body) return next();
 
         //Check for error on api payload
-        if (body.err || !body.data._id) {
+        if (body.err || body.error || !body.data._id) {
             
             delete req.session.user;
             

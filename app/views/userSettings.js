@@ -194,7 +194,8 @@ class UserSettings extends React.Component {
 								
 								<textarea 
 									className="form-control floating-label heading" 
-									disabled={true} ref="bio" 
+									disabled={true} 
+									ref="bio" 
 									placeholder="Bio"></textarea>
 								
 								<button 
