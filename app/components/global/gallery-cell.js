@@ -15,10 +15,12 @@ export default class GalleryCell extends React.Component {
 
 	render() {
 
-		var timestamp = this.props.gallery.time_created;
-		var timeString = global.formatTime(this.props.gallery.time_created);
-		var size = this.props.half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
-		var location = 'No Location';
+		var timestamp = this.props.gallery.time_created,
+			timeString = global.formatTime(this.props.gallery.time_created),
+			size = this.props.half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6',
+			location = 'No Location',
+			stories = this.props.gallery.related_stories,
+			galleryCellStories = stories.length > 0 ? <GalleryCellStories stories={stories} /> : '';
 
 		for (var i = 0; i < this.props.gallery.posts.length; i++) {
 			if(!this.props.gallery.posts[i].location) continue;
@@ -29,7 +31,6 @@ export default class GalleryCell extends React.Component {
 		}
 
 		return (
-			
 			<div className={size + " tile story"}>
 				<div className="frame"></div>
 				
@@ -38,7 +39,7 @@ export default class GalleryCell extends React.Component {
 						<a href={"/gallery/" + this.props.gallery._id}>
 							<p className="md-type-body1">{this.props.gallery.caption}</p>
 						</a>
-						<GalleryCellStories stories={this.props.gallery.related_stories} />
+						{galleryCellStories}
 					</div>
 					
 					<GalleryCellImages posts={this.props.gallery.posts} />

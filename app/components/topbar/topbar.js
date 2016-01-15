@@ -16,11 +16,12 @@ export default class TopBar extends React.Component {
 
 	constructor(props) {
 		super(props);
+		
 		this.goLink = this.goLink.bind(this);
+		this.toggleDrawer = this.toggleDrawer.bind(this);
 		this.timeToggleSelected = this.timeToggleSelected.bind(this);
 		this.verifiedToggleSelected = this.verifiedToggleSelected.bind(this);
 		this.chronToggleSelected = this.chronToggleSelected.bind(this);
-		this.outletsFilterSelected = this.outletsFilterSelected.bind(this);
 	}
 
 	componentDidMount() {
@@ -46,6 +47,24 @@ export default class TopBar extends React.Component {
 				//Update the position to the parent component
 				this.props.updateMapCenter(center);
 			});
+		}
+	}
+
+	/**
+	 * Toggles the sidebar from hidden to showing
+	 */
+	toggleDrawer() {
+		var sidebar = document.getElementById('_sidebar'),
+			toggler = document.getElementById('_toggler');
+
+		if(sidebar.className.indexOf('toggled') > -1){
+			//Remove toggled class
+			toggler.className.replace(/\btoggled\b/,'');
+			sidebar.className.replace(/\btoggled\b/,'');
+		} else {
+			//Add toggled class
+			sidebar.className += ' toggled';
+			toggler.className += ' toggled';
 		}
 	}
 
@@ -79,11 +98,6 @@ export default class TopBar extends React.Component {
 		else if (selected == 'by upload time') {
 			this.props.updateSort('upload');
 		}
-	}
-
-	// Called when user selects an outlet to filter
-	outletsFilterSelected() {
-
 	}
 
 	render() {
@@ -223,7 +237,7 @@ export default class TopBar extends React.Component {
 		return (
 			<nav className="navbar navbar-fixed-top navbar-default">
 				<div className="dim transparent toggle-drop toggler"></div>
-				<button type="button" className="icon-button toggle-drawer toggler hidden-lg">
+				<button type="button" className="icon-button toggle-drawer toggler hidden-lg" onClick={this.toggleDrawer}>
 					<span className="mdi mdi-menu icon"></span>
 				</button>
 				<div className="spacer"></div>

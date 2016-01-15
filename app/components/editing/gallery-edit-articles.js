@@ -44,7 +44,6 @@ export default class GalleryEditArticles extends React.Component {
 	 * Adds article element, returns if article exists in prop stories.
 	 */
 	addArticle(article) {
-
 		if(global.isEmptyString(article.link)) return;
 
 		//Clear the input field
@@ -55,7 +54,7 @@ export default class GalleryEditArticles extends React.Component {
 
 		//Check if article already exists
 		for( var a in articles ) {
-			if(articles[a]._id == article._id) return;
+			if(articles[a].link == article.link) return;
 		}
 
 		articles.push(article);
