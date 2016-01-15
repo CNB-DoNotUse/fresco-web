@@ -47,7 +47,8 @@ export default class AdminGalleryEdit extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 
-		if( this.props.activeGalleryType == 'assignment') { return }
+		if( this.props.activeGalleryType == 'assignment' || 
+			!this.props.gallery ) { return }
 
 		if( this.props.gallery._id != prevProps.gallery._id ) {
 
@@ -256,6 +257,7 @@ export default class AdminGalleryEdit extends React.Component {
 		// If doesn't have active gallery or galleryType is an assignment, don't render anything.
 		if(!this.props.hasActiveGallery || 
 			this.props.activeGalleryType == 'assignment' || 
+			!this.props.activeGalleryType.length ||
 			!this.props.gallery || 
 			!this.props.gallery.posts) { 
 			return <div></div> 
