@@ -18,7 +18,7 @@ export default class App extends React.Component {
 		
 		return (
 			<div>
-				<div className="dim toggle-drawer toggler"></div>
+				<div className="dim toggle-drawer toggler" id="_toggler"></div>
 				<div className="container-fluid">
 					<Sidebar user={this.props.user} />
 					<div className="col-md-12 col-lg-10">

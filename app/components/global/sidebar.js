@@ -24,34 +24,35 @@ export default class Sidebar extends React.Component {
 		var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 		
 		return (
-		
-			<div className="col-lg-2 sidebar toggle-drawer">
-
+			<div className="col-lg-2 sidebar toggle-drawer" id="_sidebar">
 				<div>
-			
 					<a href="/highlights">
 						<img src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-news.png" />
 					</a>
 				
 					<div className="form-group-default">
-						<input className="form-control floating-label" id="sidebar-search" placeholder="Search" type="text" ref="searchInput" onKeyDown={this.handleSearchKeyDown} />
+						<input 
+							className="form-control floating-label" 
+							id="sidebar-search" 
+							placeholder="Search" 
+							type="text" 
+							ref="searchInput" 
+							onKeyDown={this.handleSearchKeyDown} />
 					</div>
 					
 					<SideBarListItems user={this.props.user} />
-
 				</div>
 		   	 	<div>
-		      
 			    	<img className="img-circle" id="side-bar-avatar" src={avatar} />
 			      
 					<a className="md-type-title user-name-view" href="/user">
 						{this.props.user.firstname + ' ' + this.props.user.lastname}
 					</a>
+
 			    	<ul>	
 						<li><a href="/user/settings">Settings</a></li>
 				        <li><a href="/scripts/user/logout">Log out</a></li>
 			     	</ul>
-
 		    	</div>
 			</div>
 		)
