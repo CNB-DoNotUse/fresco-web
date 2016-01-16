@@ -82,7 +82,7 @@ export default class GalleryEditByline extends React.Component {
 
 			return (
 
-				<div className="dialog-row">
+				<div className="dialog-row" ref="byline-parent" id="byline-edit">
 					<div className="split byline-section" id="gallery-byline-twitter">
 						<Dropdown
 							options={[post.meta.twitter.handle, post.meta.twitter.user_name]}

@@ -172,7 +172,8 @@ export default class GalleryEdit extends React.Component {
 	 		gallery = _.clone(this.state.gallery, true),
  			files 	= gallery.files ? gallery.files : [],
  			caption = gallery.caption,
- 			tags 	= gallery.tags;	
+ 			tags 	= gallery.tags, 
+ 			bylineExists = document.getElementById('byline-edit') !== null;
 
  		//Generate post ids for update
  		var posts = _.difference(this.state.posts, this.state.deletePosts);
@@ -219,7 +220,7 @@ export default class GalleryEdit extends React.Component {
 
  		//Configure the byline's other origin
  		//From twitter
- 		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter) {
+ 		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter && bylineExists) {
  			var bylineComponent = this.refs.galleryEditBody.refs.byline,
 	 			name 			= bylineComponent.refs.name.value,
  				affiliation 		= bylineComponent.refs.affiliation.value.trim();
@@ -235,11 +236,12 @@ export default class GalleryEdit extends React.Component {
 
  		}
  		//Imported
- 		else if(!gallery.posts[0].owner && gallery.posts[0].curator) {
+ 		else if(!gallery.posts[0].owner && gallery.posts[0].curator && bylineExists) {
  			params.other_origin_name = document.getElementById('gallery-edit-name').value;
  			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value;
  		}
 
+ 		//Check if imported and there is a location to add a location to the save request
  		if (gallery.imported && gallery.location) {
  			if(gallery.location.lat && gallery.location.lng) {
 	 			params.lat = gallery.location.lat;
