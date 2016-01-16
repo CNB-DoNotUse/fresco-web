@@ -20,9 +20,6 @@ class UserDetail extends React.Component {
 	}
 
  	render() {
-
- 		console.log(this.props);
-
  		return (
  			<App user={this.props.user}>
  				<TopBar 
@@ -54,7 +51,7 @@ class UserDetail extends React.Component {
  	loadPosts(passedOffset, callback) {
 
 		var params = {
-			id: this.props.user._id,
+			id: this.props.detailUser._id,
 			limit: 15,
 			offset: passedOffset,
 		};
