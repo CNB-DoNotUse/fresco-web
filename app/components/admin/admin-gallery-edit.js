@@ -241,8 +241,6 @@ export default class AdminGalleryEdit extends React.Component {
 		if(this.refs['gallery-caption'].length == 0)
 			return $.snackbar({content: 'A gallery must have a caption'});
 
-		return console.log(params);
-
 		this.props.verify(params, (err, id) => {
 			
 			if (err)
