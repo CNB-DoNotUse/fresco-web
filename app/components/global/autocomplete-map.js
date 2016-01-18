@@ -71,6 +71,7 @@ export default class AutocompleteMap extends React.Component {
 			<div className="map-group">
 				<PlacesAutocomplete
 					defaultLocation={this.props.defaultLocation}
+					currentLocation={this.state.location}
 					onPlaceChange={this.onPlaceChange}
 					disabled={this.props.disabled} />
 	            {radiusInput}

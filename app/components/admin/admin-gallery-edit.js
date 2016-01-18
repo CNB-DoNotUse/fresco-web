@@ -230,12 +230,18 @@ export default class AdminGalleryEdit extends React.Component {
 			params.other_origin_name = this.refs.byline.refs.name.value;
 			params.other_origin_affiliation = this.refs.byline.refs.affiliation.value;
 			params.address = this.state.address;
+			if(this.state.mapLocation) {
+				params.lat = this.state.mapLocation.lat;
+				params.lon = this.state.mapLocation.lng;
+			}
 		}
 		if (!params.posts || params.posts.length == 0)
 			return $.snackbar({content: 'A gallery must have at least one post'});
 
 		if(this.refs['gallery-caption'].length == 0)
 			return $.snackbar({content: 'A gallery must have a caption'});
+
+		return console.log(params);
 
 		this.props.verify(params, (err, id) => {
 			

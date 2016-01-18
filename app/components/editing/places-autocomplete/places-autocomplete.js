@@ -30,9 +30,15 @@ export default class PlacesAutocomplete extends React.Component {
         this.setState({
             autocomplete: location
         });
+
     }
 
     componentDidUpdate(prevProps, prevState) {
+
+        // If location updated and location is null, remove text from autocomplete.
+        if(JSON.stringify(prevProps.currentLocation) != JSON.stringify(this.props.currentLocation) && this.props.currentLocation == null) {
+            this.refs['autocomplete-input'].value = '';
+        }
 
         // Remove material input empty class
         $('.autocomplete-input').removeClass('empty');
@@ -83,6 +89,7 @@ export default class PlacesAutocomplete extends React.Component {
 
 PlacesAutocomplete.defaultProps = {
     defaultLocation: null,
+    currentLocation: null,
     onPlaceChange: function() {},
     disabled: false
 }
