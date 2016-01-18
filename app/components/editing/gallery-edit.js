@@ -34,6 +34,7 @@ export default class GalleryEdit extends React.Component {
 		this.updateTags 			= this.updateTags.bind(this);
 		this.updateVisibility 		= this.updateVisibility.bind(this);
 
+		this.updateGallery 			= this.updateGallery.bind(this);
 		this.revertGallery 			= this.revertGallery.bind(this);
 		this.saveGallery 			= this.saveGallery.bind(this);
 		this.hide		 			= this.hide.bind(this);
@@ -128,6 +129,16 @@ export default class GalleryEdit extends React.Component {
  		this.setState({ 
  			gallery: gallery,
  			visibilityChanged: true
+ 		});
+ 	}
+
+ 	/**
+ 	 * Updates GalleryEdit Gallery
+ 	 * Used by GalelryEditFoot's Add Files
+ 	 */
+ 	updateGallery(gallery) {
+ 		this.setState({
+ 			gallery: gallery
  		});
  	}
 
