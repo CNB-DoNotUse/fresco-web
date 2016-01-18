@@ -36,6 +36,8 @@ export default class AutocompleteMap extends React.Component {
 			this.setState({
 				radius: radius
 			});
+
+			this.props.onRadiusUpdate(radius);
 		}
 	}
 
@@ -92,5 +94,6 @@ AutocompleteMap.defaultProps = {
 	hasRadius: true,
 	rerender: false,
 	updateRadius: function() {},
-	onPlaceChange: function() {}
+	onPlaceChange: function() {},
+	onRadiusUpdate: function() {}
 }

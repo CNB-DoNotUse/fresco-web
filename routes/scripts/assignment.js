@@ -28,7 +28,7 @@ router.post('/assignment/approve', function(req, res, next) {
     res.json({err: null}).end();
   });
 });
-router.post('/assignment/create', function(req, res, next){console.log(req.body);
+router.post('/assignment/create', function(req, res, next) {
   if (!req.session.user || !req.session.user.outlet)
   	return res.status(403).json({err: 'ERR_INVALID_OUTLET'}).end();
 

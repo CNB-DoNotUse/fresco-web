@@ -20,6 +20,7 @@ export default class AdminAssignmentEdit extends React.Component {
         }
         this.pending = false;
         this.onPlaceChange = this.onPlaceChange.bind(this);
+        this.onRadiusUpdate = this.onRadiusUpdate.bind(this);
         this.approve = this.approve.bind(this);
         this.reject = this.reject.bind(this);
     }
@@ -48,6 +49,7 @@ export default class AdminAssignmentEdit extends React.Component {
             if(this.props.hasActiveGallery) {
 
                 this.setState({
+                    address: null,
                     radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
                     location: {
                         lat: this.props.assignment.location.geo.coordinates[1],
@@ -80,6 +82,16 @@ export default class AdminAssignmentEdit extends React.Component {
         });
     }
 
+    /**
+     * Called when AutocompleteMap's radius changes.
+     * @param  {int} radius Radius in feet
+     */
+    onRadiusUpdate(radius) {
+        this.setState({
+            radius: global.feetToMiles(radius)
+        });
+    }
+
     approve() {
         this.pending = true;
 
@@ -88,9 +100,10 @@ export default class AdminAssignmentEdit extends React.Component {
             id: this.props.assignment._id,
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
+            googlemaps: this.state.address || undefined,
             radius: this.state.radius,
             lat: this.state.location.lat,
-            lng: this.state.location.lng,
+            lon: this.state.location.lng,
             expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60
         }, (data) => {
             this.pending = false;
@@ -104,7 +117,7 @@ export default class AdminAssignmentEdit extends React.Component {
                     content: 'Assignment Approved!'
                 });
             }
-        })
+        });
 
     }
 
@@ -159,6 +172,7 @@ export default class AdminAssignmentEdit extends React.Component {
                         location={location}
                         radius={radius}
                         onPlaceChange={this.onPlaceChange}
+                        onRadiusUpdate={this.onRadiusUpdate}
                         rerender={true} />
                     <input
                         type="text"
