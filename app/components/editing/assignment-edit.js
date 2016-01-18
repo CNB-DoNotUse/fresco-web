@@ -90,7 +90,7 @@ export default class AssignmentEdit extends React.Component {
 			$.snackbar({content: 'Assignment must have a caption!'});
 			return;
 		}
-		if (params.googlemaps === ''){
+		if (params.address === ''){
 			$.snackbar({content: 'Assignment must have a location1'});
 			return false;
 		}

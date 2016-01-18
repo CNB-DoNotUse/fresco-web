@@ -100,6 +100,7 @@ export default class AdminAssignmentEdit extends React.Component {
             id: this.props.assignment._id,
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
+            address: this.state.address || undefined,
             googlemaps: this.state.address || undefined,
             radius: this.state.radius,
             lat: this.state.location.lat,
