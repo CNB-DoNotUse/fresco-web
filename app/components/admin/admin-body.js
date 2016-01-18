@@ -226,7 +226,7 @@ export default class AdminBody extends React.Component {
 
 			case 'assignments':
 
-				if (!this.state.hasActiveGallery) break;
+				if (!this.state.activeAssignment || !this.state.hasActiveGallery || !this.props.assignments.length) break;
 
 				listItems = this.props.assignments.map((assignment, i) => {
 								return <AssignmentListItem
@@ -249,7 +249,7 @@ export default class AdminBody extends React.Component {
 
 			case 'submissions':
 
-				if (!this.state.hasActiveGallery) break;
+				if (!this.state.activeGallery|| !this.state.hasActiveGallery || !this.props.submissions.length) break;
 
 				listItems = this.props.submissions.map((submission, i) => {
 								return <GalleryListItem
@@ -271,7 +271,7 @@ export default class AdminBody extends React.Component {
 
 			case 'imports':
 
-				if (!this.state.hasActiveGallery) break;
+				if (!this.state.activeGallery || !this.state.hasActiveGallery || !this.props.imports.length) break;
 
 				listItems = this.props.imports.map((gallery, i) => {
 								return <GalleryListItem
