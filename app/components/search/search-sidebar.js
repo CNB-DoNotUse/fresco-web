@@ -32,7 +32,9 @@ export default class SearchSide extends React.Component {
 						<a href={"/user/" + user._id}>
 							<span className="md-type-title">{user.firstname} {user.lastname}</span>
 						</a>
-						<span className="md-type-body1">{user.twitter ? '' : 'No Twitter'} • {user.outlet ? <a href={"/outlet/" + user.outlet}>Outlet</a> : 'No Outlet'}</span>
+						<span className="md-type-body1">{user.twitter ? '' : 'No Twitter'} • {user.outlet ? 
+							<a href={"/outlet/" + user.outlet}>Outlet</a> : 'No Outlet'}
+						</span>
 					</div>
 				</li>
 			);
