@@ -2,41 +2,39 @@ import React from 'react'
 
 export default class SearchSide extends React.Component {
 	render() {
-
-		var assignments = [],
-			stories = [],
-			users = [];
 		
 		// Build assignment list item
-		this.props.assignments.map((assignment, i) => {
-			assignments.push(
+		var assignments = this.props.assignments.map((assignment, i) => {
+			return(
 				<li key={i}><a href={"/assignment/" + assignment._id}>{assignment.title}</a></li>
 			);
 		});
 
 		// Build story list item
-		this.props.stories.map((story, i) => {
-			stories.push(
+		var stories = this.props.stories.map((story, i) => {
+			return (
 				<li key={i}><a href={"/story/" + story._id}>{story.title}</a></li>
 			);
 		});
 
 		// Build user list item
-		this.props.users.map((user, i) => {
-			users.push(
+		var users = this.props.users.map((user, i) => {
+			return (
 				<li className="meta-user" key={i}>
 					<div>
-						<a href="/user/5643aec78a5565ec64df0d71">
+						<a href={"/user/" + user._id}>
 							<img
 								className="img-circle img-responsive"
 								src={user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png'} />
 						</a>
 					</div>
 					<div>
-						<a href="/user/5643aec78a5565ec64df0d71">
+						<a href={"/user/" + user._id}>
 							<span className="md-type-title">{user.firstname} {user.lastname}</span>
 						</a>
-						<span className="md-type-body1">{user.twitter ? '' : 'No Twitter'} • {user.outlet ? <a href={"/outlet/" + user.outlet}>Outlet</a> : 'No Outlet'}</span>
+						<span className="md-type-body1">{user.twitter ? '' : 'No Twitter'} • {user.outlet ? 
+							<a href={"/outlet/" + user.outlet}>Outlet</a> : 'No Outlet'}
+						</span>
 					</div>
 				</li>
 			);

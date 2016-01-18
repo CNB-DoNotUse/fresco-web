@@ -22,6 +22,7 @@ export default class GalleryEdit extends React.Component {
 			gallery: null,
 			caption: '',
 			posts: null,
+			visibilityChanged: false,
 			deletePosts: []
 		}
 
@@ -31,8 +32,8 @@ export default class GalleryEdit extends React.Component {
 		this.updateRelatedStories 	= this.updateRelatedStories.bind(this);
 		this.updateArticles 		= this.updateArticles.bind(this);
 		this.updateTags 			= this.updateTags.bind(this);
+		this.updateVisibility 		= this.updateVisibility.bind(this);
 
-		this.updateGallery 			= this.updateGallery.bind(this);
 		this.revertGallery 			= this.revertGallery.bind(this);
 		this.saveGallery 			= this.saveGallery.bind(this);
 		this.hide		 			= this.hide.bind(this);
@@ -50,27 +51,21 @@ export default class GalleryEdit extends React.Component {
 		}
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-	}
-
 	componentDidMount() {
 		$.material.init();
 	}
 
 	onPlaceChange(place) {
-
 		var gallery = this.state.gallery;
 			gallery.location = place.location;
 			gallery.address = place.address;
 
 		this.setState({
 			gallery: gallery
-		})
-
+		});
 	}
 
 	updateCaption(e) {
-
 		var gallery = this.state.gallery;
 			gallery.caption = e.target.value;
 
@@ -81,14 +76,12 @@ export default class GalleryEdit extends React.Component {
 	}
 
 	updateRelatedStories(stories) {
-
 		var gallery = this.state.gallery;
 			gallery.related_stories = stories;
 
 		this.setState({
 			gallery: gallery
 		});
-
 	}
 
 	updateArticles(articles) {
@@ -98,11 +91,9 @@ export default class GalleryEdit extends React.Component {
 		this.setState({
 			gallery: gallery
 		});
-
 	}
 
 	updateTags(tags) {
-
 		var gallery = this.state.gallery;
 			gallery.tags = tags;
 
@@ -129,10 +120,14 @@ export default class GalleryEdit extends React.Component {
 		}
 	}
 
- 	updateGallery(gallery) {
+ 	updateVisibility(visibility) {
+ 		var gallery = this.state.gallery;
+ 			gallery.visibility = visibility;
+
  		//Update new gallery
  		this.setState({ 
- 			gallery: gallery
+ 			gallery: gallery,
+ 			visibilityChanged: true
  		});
  	}
 
@@ -172,7 +167,8 @@ export default class GalleryEdit extends React.Component {
 	 		gallery = _.clone(this.state.gallery, true),
  			files 	= gallery.files ? gallery.files : [],
  			caption = gallery.caption,
- 			tags 	= gallery.tags;	
+ 			tags 	= gallery.tags, 
+ 			bylineExists = document.getElementById('byline-edit') !== null;
 
  		//Generate post ids for update
  		var posts = _.difference(this.state.posts, this.state.deletePosts);
@@ -212,14 +208,18 @@ export default class GalleryEdit extends React.Component {
  			caption: caption,
  			posts: posts,
  			tags: tags,
- 			visibility: gallery.visibility,
  			stories: stories,
  			articles: articles
  		};
 
+ 		//Check state var to see if the visibility has changed
+ 		if(this.state.visibilityChanged){
+ 			params.visibility = gallery.visibility;
+ 		}
+
  		//Configure the byline's other origin
  		//From twitter
- 		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter) {
+ 		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter && bylineExists) {
  			var bylineComponent = this.refs.galleryEditBody.refs.byline,
 	 			name 			= bylineComponent.refs.name.value,
  				affiliation 		= bylineComponent.refs.affiliation.value.trim();
@@ -235,11 +235,12 @@ export default class GalleryEdit extends React.Component {
 
  		}
  		//Imported
- 		else if(!gallery.posts[0].owner && gallery.posts[0].curator) {
+ 		else if(!gallery.posts[0].owner && gallery.posts[0].curator && bylineExists) {
  			params.other_origin_name = document.getElementById('gallery-edit-name').value;
  			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value;
  		}
 
+ 		//Check if imported and there is a location to add a location to the save request
  		if (gallery.imported && gallery.location) {
  			if(gallery.location.lat && gallery.location.lng) {
 	 			params.lat = gallery.location.lat;
@@ -338,8 +339,6 @@ export default class GalleryEdit extends React.Component {
  	}
 
 	render() {
-
-
 		var editBody = '';
 
 		if(this.state.gallery) {
@@ -348,12 +347,15 @@ export default class GalleryEdit extends React.Component {
 		 						<span className="md-type-title">Edit Gallery</span>
 		 						<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
 		 					</div>
+		 					
 		 					<GalleryEditBody 
 			 					ref="galleryEditBody"
 		 						gallery={this.state.gallery}
+		 						
 		 						onPlaceChange={this.onPlaceChange}
 		 						updateCaption={this.updateCaption}
 								updateRelatedStories={this.updateRelatedStories}
+								updateVisibility={this.updateVisibility}
 								updateArticles={this.updateArticles}
 								updateTags={this.updateTags}
 								updateGallery={this.updateGallery}

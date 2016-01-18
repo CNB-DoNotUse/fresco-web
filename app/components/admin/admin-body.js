@@ -15,7 +15,6 @@ export default class AdminBody extends React.Component {
 			activeAssignment: {}
 		}
 
-		this.setActiveTab = this.setActiveTab.bind(this);
 		this.setActiveAssignment = this.setActiveAssignment.bind(this);
 		this.setActiveGallery = this.setActiveGallery.bind(this);
 		this.spliceCurrentGallery = this.spliceCurrentGallery.bind(this);
@@ -29,15 +28,19 @@ export default class AdminBody extends React.Component {
 	}
 
 	componentDidMount() {
-		this.setActiveTab(this.props.activeTab);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
 
 	 	if( this.props.activeTab != prevProps.activeTab ) {
-	 		this.setActiveTab(this.props.activeTab);
 
-	 		if( this.props[this.props.activeTab].length == 0 ) {
+	 		if( this.props[this.props.activeTab] && this.props[this.props.activeTab].length == 0 ) {
+	 			this.setState({
+	 				hasActiveGallery: false,
+	 				activeAssignment: null,
+	 				activeGallery: null,
+	 				activeGalleryType: ''
+	 			});
 	 			return;
 	 		}
 
@@ -53,6 +56,9 @@ export default class AdminBody extends React.Component {
 	 			});
 
 	 		} else {
+	 			
+	 			if(!this.props[this.props.activeTab]) return;
+
 		 		this.setState({
 		 			hasActiveGallery: true,
 		 			activeGalleryType: galleryType,
@@ -61,20 +67,8 @@ export default class AdminBody extends React.Component {
 		 		});
 	 		}
 
-
 	 	}
 
-	 	if(
-	 		this.state.activeGalleryType == '' &&
-	 		this.props.submissions.length &&
-	 		this.props.activeTab == 'submissions'
- 		) {
-	 		this.setActiveGallery(this.props.submissions[0]._id, 'submission');
-	 	}
-
-	}	
-
-	setActiveTab(tab) {
 	}
 
 	setActiveAssignment(id) {
@@ -231,6 +225,9 @@ export default class AdminBody extends React.Component {
 		switch(this.props.activeTab) {
 
 			case 'assignments':
+
+				if (!this.state.activeAssignment || !this.state.hasActiveGallery || !this.props.assignments.length) break;
+
 				listItems = this.props.assignments.map((assignment, i) => {
 								return <AssignmentListItem
 											type="assignment"
@@ -251,6 +248,9 @@ export default class AdminBody extends React.Component {
 			break;
 
 			case 'submissions':
+
+				if (!this.state.activeGallery|| !this.state.hasActiveGallery || !this.props.submissions.length) break;
+
 				listItems = this.props.submissions.map((submission, i) => {
 								return <GalleryListItem
 											type="submission"
@@ -270,6 +270,9 @@ export default class AdminBody extends React.Component {
 			break;
 
 			case 'imports':
+
+				if (!this.state.activeGallery || !this.state.hasActiveGallery || !this.props.imports.length) break;
+
 				listItems = this.props.imports.map((gallery, i) => {
 								return <GalleryListItem
 											type="import"

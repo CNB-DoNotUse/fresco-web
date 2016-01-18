@@ -13,7 +13,7 @@ import AdminBody from './../components/admin/admin-body'
  	constructor(props) {
  		super(props);
  		this.state = {
- 			activeTab: 'submissions',
+ 			activeTab: '',
  			assignments: [],
  			submissions: [],
  			imports: []
@@ -40,31 +40,45 @@ import AdminBody from './../components/admin/admin-body'
 	getAssignments() {
 		$.get('/api/assignment/pending', {limit: 16}, (assignments) => {
 			if( !assignments.data ) return;
-			this.setState({
+
+			var changedState = {
 				assignments: assignments.data
-			});
+			};
+
+			if(assignments.data.length)
+				changedState.activeTab = 'assignments';
+
+			this.setState(changedState);
 		});
 	}
 
 	getSubmissions(cb) {
  		$.get('/api/gallery/submissions', (submissions) => {
- 			if( !submissions.data ) {
- 				return;
- 			}
+ 			if( !submissions.data ) return;
 
- 			this.setState({
- 				submissions: submissions.data
- 			});
+			var changedState = {
+				submissions: submissions.data
+			};
+
+			if(submissions.data.length)
+				changedState.activeTab = 'submissions';
+
+			this.setState(changedState);
  		});
 	}
 
 	getImports(cb) {
 		$.get('/api/gallery/imports?rated=0', (imports) => {
-			if(!imports.data) return;
+ 			if( !imports.data ) return;
 
-			this.setState({
+			var changedState = {
 				imports: imports.data
-			});
+			};
+
+			if(imports.data.length)
+				changedState.activeTab = 'imports';
+
+			this.setState(changedState);
 		});
 	}
 

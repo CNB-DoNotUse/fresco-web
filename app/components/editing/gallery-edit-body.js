@@ -24,13 +24,7 @@ export default class GalleryEditBody extends React.Component {
 	}
 
 	toggleHighlight(e) {
-		var gallery = this.props.gallery;
-		if(e.target.checked) {
-			gallery.visibility = 2;
-		} else {
-			gallery.visibility = 1;
-		}
-		this.props.updateGallery(gallery);
+		this.props.updateVisibility(e.target.checked ? 2 : 1);
 	}
 
 	render() {
