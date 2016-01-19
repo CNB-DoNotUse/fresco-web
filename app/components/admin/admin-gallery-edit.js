@@ -199,8 +199,6 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Gets all form data and verifies gallery.
 	 */
 	verify() {
-
-		var byline = '';
 		
 		if(!Array.isArray(this.state.activeGallery.tags)) { 
 			this.state.activeGallery.tags = []; 
@@ -209,10 +207,6 @@ export default class AdminGalleryEdit extends React.Component {
 			this.state.activeGallery.posts = []; 
 		}
 
-		// Byline
- 		var byline = global.getBylineFromComponent(this.state.activeGallery, this.refs.galleryEditBody.refs.byline);
- 		_.extend(params, byline);
-
 		var params = {
 			id: this.state.activeGallery._id,
 			caption: this.refs['gallery-caption'].value,
@@ -220,6 +214,10 @@ export default class AdminGalleryEdit extends React.Component {
 			stories: this.state.stories.map(s => s._id),
 			tags: this.state.activeGallery.tags
 		};
+
+		// Byline
+ 		var byline = global.getBylineFromComponent(this.state.activeGallery, this.refs.byline);
+ 		_.extend(params, byline);
 
 		if(this.props.activeGalleryType == 'import') {
 			params.address = this.state.address;
