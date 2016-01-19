@@ -47,7 +47,7 @@ class Photos extends React.Component {
 	loadPosts (passedOffset, callback) {
 
 		var params = {
-				limit: 18,
+				limit: global.postCount,
 				verified : this.state.verifiedToggle,
 				offset: passedOffset,
 				type: 'photo',

@@ -60,7 +60,7 @@ class Archive extends React.Component {
 	loadPosts (passedOffset, callback) {
 
 		var params = {
-			limit: 18,
+			limit: global.postCount,
 			verified : true,
 			offset: passedOffset,
 			sort: this.state.sort
