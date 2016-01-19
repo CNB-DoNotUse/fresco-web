@@ -386,8 +386,7 @@ export default class GalleryEdit extends React.Component {
 
  		return (
  			<div>
-	 			<div className={'dim toggle-edit ' + toggled}>
-	 			</div>
+	 			<div className={'dim toggle-edit ' + toggled}></div>
 	 			<div className={"edit panel panel-default toggle-edit gedit " + toggled}>
 	 				{editBody}
 	 			</div>

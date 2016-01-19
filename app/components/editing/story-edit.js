@@ -15,7 +15,7 @@ export default class StoryEdit extends React.Component {
 	}
 
 	hide() {
-		$(".toggle-edit").toggleClass("toggled");
+		this.props.toggle();
 	}
 
 	revert() {
@@ -30,21 +30,29 @@ export default class StoryEdit extends React.Component {
 
 	save() {
 
-		var params = {
-			id: this.props.story._id,
-			title: this.refs.editTitle.value,
-			caption: this.refs.editCaption.value
-		}
+		var self = this,
+			params = {
+				id: this.props.story._id,
+				title: this.refs.editTitle.value,
+				caption: this.refs.editCaption.value
+			}
 
 		$.ajax("/scripts/story/update", {
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify(params),
-			success: (result) => {
+			success: function(result){
 				if(result.err)
 					return this.error(null, null, result.err);
+				if(!self.props.updateStory){
+					location.reload();
+				} else{
+					console.log(result);
+					//Update parent story
+					self.hide();
+					self.props.updateStory(result.data);
+				}
 					
-				window.location.reload();
 			},
 			error: (xhr, status, error) =>{
 				$.snackbar({content: resolveError(error)});
@@ -54,15 +62,18 @@ export default class StoryEdit extends React.Component {
 
 	cancel() {
 		this.revert();
-		this.hide();
+		this.props.toggle();
 	}
 
 	render() {
+
+		var toggled = this.props.toggled ? 'toggled' : '';
+
 		return (
 			<div>
 
-				<div className="dim toggle-edit"></div>
-				<div className="edit panel panel-default toggle-edit">
+				<div className={"dim toggle-edit " + toggled}></div>
+				<div className={"edit panel panel-default toggle-edit " + toggled}>
 					
 					<div className="col-lg-4 visible-lg edit-current">
 						<StoryEditStats story={this.props.story} />
@@ -111,4 +122,9 @@ export default class StoryEdit extends React.Component {
 			</div>
 		);
 	}
+}
+
+StoryEdit.defaultProps = {
+	toggled: false,
+	toggle: function () { console.log('StoryEdit missing toggle implementation'); }
 }

@@ -15,7 +15,26 @@ class StoryDetail extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.state = {
+			storyEditToggled: false,
+			story: this.props.story
+		}
+		this.toggleStoryEdit = this.toggleStoryEdit.bind(this);
 		this.loadPosts = this.loadPosts.bind(this);
+		this.updateStory = this.updateStory.bind(this);
+	}
+
+	updateStory(story) {
+		console.log(story);
+		this.setState({
+			story: story
+		});
+	}
+
+	toggleStoryEdit() {
+		this.setState({
+			storyEditToggled: !this.state.storyEditToggled
+		});
 	}
 
  	render() {
@@ -23,11 +42,14 @@ class StoryDetail extends React.Component {
  		return (
  			<App user={this.props.user}>
  				<TopBar 
- 					title={this.props.story.title}
+ 					title={this.state.story.title}
+ 					edit={this.toggleStoryEdit}
 					editable={true}
  					timeToggle={true}
  					chronToggle={true} />
- 				<StorySidebar story={this.props.story} />
+ 				
+ 				<StorySidebar story={this.state.story} />
+ 				
  				<div className="col-sm-8 tall">
 	 				<PostList
 	 					rank={this.props.user.rank}
@@ -38,8 +60,11 @@ class StoryDetail extends React.Component {
 	 					size='large' />
 				</div>
 				<StoryEdit 
-					story={this.props.story}
-					user={this.props.user}	/>
+					toggle={this.toggleStoryEdit}
+					story={this.state.story}
+					user={this.props.user}
+					toggled={this.state.storyEditToggled} 
+					updateStory={this.updateStory} />
  			</App>
  		);
 
