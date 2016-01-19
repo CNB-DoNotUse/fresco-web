@@ -1,0 +1,159 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+@import "./../global/_global";
+@import "landing";
+
+
+.landing-wrap{
+
+	padding:320px 0 0;
+
+	.hero{
+
+		height:auto;
+		margin:0 auto 144px;
+
+	}
+
+	.signup{
+		margin:12px auto;
+
+		h3{
+			font-size:24px;
+			font-weight:700;
+			text-align:center;
+			padding:22px 0 0;
+
+		}
+
+		.body{
+			overflow:auto;
+			padding:16px;
+
+			@include mobile{
+				padding:16px 0 0;
+			}
+
+			.info, form, .form-completion{
+				float:left;
+
+				@include mobile{
+					float:none;
+				}
+			}
+
+			.info {
+				font-family:$roboto;
+				margin:0 auto;
+				max-width:368px;
+				padding-right:16px;
+
+				@include mobile{
+					padding:0 0 22px;
+					max-width:90%;
+				}
+
+				p{
+					font-weight:500;
+					font-size:14px;
+					line-height:20px;
+					margin-bottom:12px;
+					@include rgba(color, 0, 0, 0, 0.54);
+				}
+			}
+
+			form{
+				width:320px;
+				@include border-radius(2px);
+				@include box-shadow(0 0 0 0.5px rgba(0, 0, 0, 0.12));
+
+				@include mobile{
+					width:100%;
+				}
+
+				input{
+					display:block;
+					background:#FFF;
+					border:none;
+					font-size:16px;
+					height:56px;
+				}
+
+				input[type="text"] {
+					width:90%;
+					padding:0 16px;
+					border-bottom:1px solid #F5F5F5;
+				}
+
+				input[type="submit"] {
+					cursor:pointer;
+					width:100%;
+					font-size:20px;
+					font-weight:700;
+					text-align:center;
+					margin:0 auto;
+				}
+			}
+
+			.form-completion{
+				display:none;
+				width:320px;
+				background:#4cd764;
+				color:#FFF;
+				text-align:center;
+
+				@include mobile{
+					width:100%;
+				}
+
+				.mdi-check{
+					display:block;
+					margin:12px auto 0;
+					font-size:72px;
+					width:72px;
+					height:72px;
+
+					@include mobile{
+						margin:0 auto;
+					}
+				}
+
+				h3{
+					padding:0 0 12px;
+				}
+
+				p{
+					line-height:20px;
+					font-size:14px;
+					font-family:$roboto;
+					font-weight:500;
+					margin:0 0 6px;
+					text-align:left;
+					padding:0 16px;
+				}
+
+				ol{
+					text-align:left;
+					margin-left:16px;
+					padding:0 20px 20px;
+
+					li{
+						margin:0 0 6px;
+						line-height:20px;
+						font-size:14px;
+						font-family:$roboto;
+						font-weight:500;
+					}
+				}
+			}
+		}
+
+
+	}
+}

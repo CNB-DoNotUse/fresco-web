@@ -46,7 +46,11 @@ html, body {
 }
 
 input, select{
-  font-family:Nota, sans-serif;
+  font-family:$roboto;
+}
+
+textarea:focus, input:focus{
+    outline: 0;
 }
 
 a:link, a:visited, a:active {

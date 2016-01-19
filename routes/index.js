@@ -46,6 +46,19 @@ router.get('/:modal?', (req, res, next) => {
 });
 
 /**
+ * Pro User Page
+ */
+router.get('/pro', (req, res, next) => {
+
+    res.render('pro', {
+        head: head,
+        page: 'pro',
+        alerts: req.alerts
+    });
+
+});
+
+/**
  * Parse Account Management iFrame
  */
 

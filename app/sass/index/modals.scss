@@ -40,9 +40,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				@include rgbaWithHex(border-color, 0, 0, 0, .12, #F4F4F4);
 			}
 		}
-		textarea:focus, input:focus{
-		    outline: 0;
-		}
 		input, textarea{
 			display:block;
 			width:90%;

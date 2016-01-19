@@ -1,0 +1,89 @@
+<% include segments/head %>
+
+<div class="wrapper">
+    <div id="_nav" class="nav">
+        <a class="logo" href="/">
+            <span class="icon-fresco"></span>
+        </a>
+
+        <ul>
+            <li class="modal-action" data-event="scroll" data-element="_about">ABOUT</li>
+            <li class="modal-action" data-event="scroll" data-element="_signup">SIGN UP</li>
+            <li><a href="/">HOME</a></li>
+        </ul>
+    </div>
+
+    <div class="hero-bg">
+        <div></div>
+    </div>
+
+    <div class="landing-wrap" id="_landing-wrap">
+        <div class="hero-wrap">
+            <div id="_hero" class="hero">
+                <div class="tagline">
+                    <h1>FRESCO PILOT PROGRAM</h1>
+
+                    <h3>Get paid to test Fresco in your area</h3>
+                </div>
+            </div>
+        </div>
+
+        <div id="_bottom" class="bottom" style="">
+            <% include segments/about %>
+
+            <div id="_signup" class="signup card">
+                    
+                <h3>Be a Pro User</h3>
+
+                <div class="body">
+                    
+                    <div class="info">
+                        <p>Using only an iPhone, you can be a part of the news revolution with Fresco!  In the same way Uber has provided a much more efficient way to get a ride, Fresco is helping news organizations get raw content from the scenes of various events.</p>
+
+                        <p>While anyone with our app can respond to a request or submit news organically, we are enlisting the help of Fresco Pro Users in order to ensure everything goes smoothly.  Thats where you come in!</p>
+
+                        <p>You would be responsible for one of two shifts:
+                        <br />11am-5pm or
+                        <br />5pm-11pm
+                        </p>
+                        <p>Each shift guarantees a $50 payout whether you leave your house or not!  Any time you do respond to a news request, you will be paid ANOTHER $50 per video and $20 per photo</p>
+
+                    </div>
+
+                    <form>
+                        <input type="text" placeholder="Name" />
+                        
+                        <input type="text" placeholder="ZIP" />
+                        
+                        <input type="text" placeholder="Phone Number" />
+                        
+                        <input type="text" placeholder="Best time to call" />
+
+                        <input type="submit" value="SIGN UP">
+                    </form>
+
+                    <div class="form-completion">
+                        <span class="mdi mdi-check"></span>
+
+                        <h3>You’re signed up!</h3>
+
+                        <p>We’ll call you soon to get started. For now, download Fresco and do the following:</p>
+
+                        <ol>
+                            <li>Sign up and link Twitter and/or Facebook.</li>
+                            <li>Add payment info in your profile settings.</li>
+                            <li>Double check that location services are on and Fresco has permission in Settings.</li>
+                        </ol>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <%- include('segments/footer', {display: ''}) %>
+
+</div>
+
+<% include segments/scripts %>

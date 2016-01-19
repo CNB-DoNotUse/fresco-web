@@ -2,14 +2,14 @@
 
 /*------------------------------------------------------------------------------------
 
-Copyright 2015 Fresco News, Inc. All Rights Reserved.
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
 @import "./../global/_global";
 @import "./../global/fresco-slick";
+@import "landing";
 @import "modals";
-
 
 .wrapper{
 	height:auto;
@@ -18,6 +18,10 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 	&.full {
 		min-height: 100%;
 	}
+}
+
+.nav{
+	transform: translate3d(0, -128px, 0);
 }
 
 .text-banner {
@@ -33,50 +37,6 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 	position:absolute;
 	top:40%;
 	left:0; right:0;
-}
-
-/**
- * Overriden navigation styles
- */
-
-.nav{
-
-	@include box-shadow(0 4px 4px 0 rgba(0, 0, 0, 0.05), 0 6px 6px 0 rgba(0, 0, 0, 0.15));
-	transform: translate3d(0, -128px, 0);
-
-	.logo{
-		float:left;
-		position:static;
-		padding: 31px 0 31px 36px;
-
-		@include mobile{
-	        padding:0;
-		}
-	}
-
-	ul {
-		float: right;
-	    padding: 68px 48px 0 0;
-
-		@include mobile{
-			display:none;
-		}
-
-		#landing-action{
-			display:none;
-		}
-
-		li{
-			cursor:pointer;
-			font-weight:700;
-			a{
-				font-weight:700;
-			}
-			font-size:24px;
-			display:inline-block;
-			margin-left:24px;
-		}
-	}
 }
 
 .footer {
@@ -128,46 +88,6 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 
 
 /**
- *  Master Hero Background
- */
-
-$heroHeight: 180px;
-
- @keyframes animateBackground {
- 	from { 
-	    -webkit-transform: scale(2, 2) translate(0px, 46px); /* Safari */
-		    -ms-transform: scale(2, 2) translate(0px, 46px); /* IE 9 */
-			    transform: scale(2, 2) translate(0px, 46px);
- 	}
- 	to   { 
-	    -webkit-transform: scale(1,1) translate(0px, 0px); /* Safari */
-		    -ms-transform: scale(1,1) translate(0px, 0px); /* IE 9 */
-			    transform: scale(1,1) translate(0px, 0px);
- 	}
-}
-
-.hero-bg{
-	height:100%;
-	width:100%;
-	z-index:-1;
-	overflow:hidden;
-	position:fixed;
-	left:0; right:0; top:0; bottom:0;
-
-	div{
-		position:absolute;
-		left:0; right:0; top:0; bottom:0;
-		background: #ffc600 url("https://d1dw1p6sgigznj.cloudfront.net/index/map.png");
-		background-repeat: no-repeat;
-		background-position:50%;
-	    background-size:cover;
-		left:0; right:0; top:0; bottom:0;
-		animation: animateBackground 30s linear;
-		overflow:hidden;
-	}
-}
-
-/**
  * Hero Wrapper, contains the top part of the landing page
  */
 
@@ -177,46 +97,6 @@ $heroHeight: 180px;
 
 	@include mobile{
 		margin-top:20vh;
-	}
-}
-
-
-.hero{
-
-	height:$heroHeight;
-	margin:0 auto 168px;
-	text-align:center;
-	position:relative;
-	color:#FFF;
-
-	.tagline{
-		margin:0 auto 48px;
-		max-width:98%;
-
-		h1{
-			font-weight:700;
-			font-size:48px;
-			text-shadow:0 2px 2px #F5F5F5;
-			text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
-		}
-		
-		h3{
-			font-weight:400;
-			font-size:26px;
-			text-shadow:0 2px 2px #F5F5F5;
-			text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
-		}
-	}
-
-	.download{
-
-		a{
-			margin:0 5px;
-			img{
-				width:145px;
-			}	
-		}
-
 	}
 }
 
@@ -238,7 +118,6 @@ $heroHeight: 180px;
 	
 
 .bottom{
-
 	opacity: 0;
 	position:relative;
    	margin-bottom: -72px;
@@ -251,197 +130,10 @@ $heroHeight: 180px;
    		margin-bottom:20px;
    	}
 
-	/**
-	 * Shared style for each card
-	 */
-	.card{
-		@include box-shadow(0 2px 2px 0 rgb(0, 0, 0), 0 3px 2px 0 rgb(0, 0, 0));
-		@include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 3px 2px 0 rgba(0, 0, 0, 0.10));
-		@include border-radius(2px);
-		background:#FFF;
-		max-width:736px;
-		margin:20px auto;
-
-		@include mobile{
-			margin:12px auto 0;
-			max-width:100%;
-		}
-	}
 
 	position:relative;
 	z-index:10;
 }
-
-/**
- * About Section
- */
-
-.about{
-	text-align:center;
-
-	$mobileWidth:90%;
-	$mobileLineWidth:$mobileWidth * 3 + 2%;
-
-	.scroll{
-
-		@include mobile{
-			white-space: nowrap;
-			overflow: scroll;
-			margin: 0 auto;
-			position: relative;
-		}
-
-		.timeline{
-			padding: 44px 5% 0px;
-			height:auto;
-
-			@include mobile{
-				margin: 0 auto;
-				position: relative;
-				padding:44px 0 24px;
-			}
-
-			li{
-				height:216px;
-				position:relative;
-				display:inline-block;
-				text-align:center;
-
-				@include mobile{
-					width:$mobileWidth !important;
-				}
-
-				img{
-					vertical-align:middle;
-					margin:0 auto;
-					max-height:100%;
-					max-width:100%;
-				}
-			}
-			
-			li.third{
-				.callout{
-					z-index:100;
-					top:-20px;
-					width:72px;
-					height:72px;
-					position:absolute;
-					top: -60px;
-					right: 0px;
-
-					@include mobile{
-						top:-40px;
-						right:inherit;
-
-					}
-				}
-			}
-			
-			li.second{
-				width:42%;
-				margin:0 4%;
-				margin-bottom: -28px;
-				@include mobile{
-					margin:0 auto;
-				}
-			}
-			
-
-			li.first, li.third{
-				width:24%;
-			}
-			
-		}
-
-		.line{
-			height: 4px;
-			background: rgba(0, 0, 0, 0.12);
-			position: relative;
-			top: 14px;
-			@include mobile{
-				width:$mobileLineWidth;
-			}
-		
-		}
-
-		.progress{
-		    position: relative;
-		    height:60px;
-		    margin: 0 auto;
-			$circleBorder:4px;
-
-			@include mobile{
-				margin:0 auto;
-				position:relative;
-			}
-
-			li{
-				position:absolute;
-				text-align:center;
-				margin:-$circleBorder 0;
-
-				@include mobile{
-					display:inline-block;
-					width:$mobileWidth !important;
-					position:relative !important;
-					left:0 !important;
-					right:0 !important;
-				}
-
-				.circle{
-					width:24px;
-					height:24px;
-					position:absolute;
-					left:0;
-					right:0;
-					margin:0 auto 20px;
-					background:$fresco-yellow;
-					border:$circleBorder solid #FFF;
-					@include border-radius(50px);
-				}
-
-				p{
-					color:#000;
-					font-weight:700;
-					font-size:24px;
-					margin-top:40px;
-				}
-			}
-
-			li.first{
-				left:9%;
-			}
-			
-			li.second{
-				left: 0;
-				right: 0;
-			}
-			
-			li.third{
-				right:9%;
-			}
-
-		}
-
-
-	}
-	.info{
-		font-family: Roboto;
-		max-width:90%;
-		font-size:14px;
-		margin:0 auto;
-		color:rgb(0, 0, 0);
-		color:rgba(0, 0, 0, .54);
-		padding:20px 40px;
-		font-weight:400;
-
-		@include mobile{
-			padding:20px 20px;
-		}
-	}
-
-}
-
 
 /**
  * Highlights Section, double slick
