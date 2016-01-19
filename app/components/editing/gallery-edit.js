@@ -218,27 +218,8 @@ export default class GalleryEdit extends React.Component {
  		}
 
  		//Configure the byline's other origin
- 		//From twitter
- 		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter && bylineExists) {
- 			var bylineComponent = this.refs.galleryEditBody.refs.byline,
-	 			name 			= bylineComponent.refs.name.value,
- 				affiliation 		= bylineComponent.refs.affiliation.value.trim();
-
- 			if(affiliation.length === 0) {
- 				params.byline = name + ' via Fresco News';
- 			} else {
- 				params.byline = name + ' / ' + affiliation;
- 			}
-
-			params.other_origin_name = name;
-			params.other_origin_affiliation = affiliation;
-
- 		}
- 		//Imported
- 		else if(!gallery.posts[0].owner && gallery.posts[0].curator && bylineExists) {
- 			params.other_origin_name = document.getElementById('gallery-edit-name').value;
- 			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value;
- 		}
+ 		var byline = global.getBylineFromComponent(gallery, this.refs.galleryEditBody.refs.byline);
+ 		_.extend(params, byline);
 
  		//Check if imported and there is a location to add a location to the save request
  		if (gallery.imported && gallery.location) {
