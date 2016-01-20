@@ -48,8 +48,9 @@ export default class GalleryEditStories extends React.Component {
 	 */
 	removeStory(index) {
 		var relatedStories = this.props.relatedStories;
-			//Remove from index
-			relatedStories.splice(index, 1);
+		
+		//Remove from index
+		relatedStories.splice(index, 1);
 		
 		this.props.updateRelatedStories(relatedStories);
 	}

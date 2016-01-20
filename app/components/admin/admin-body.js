@@ -142,7 +142,7 @@ export default class AdminBody extends React.Component {
 				break;
 			}
 		}
-		console.log('Trying to splice', next_index);
+		
 		this.setActiveGallery( this.props[propGalleryType][next_index]._id, this.state.activeGalleryType );
 	}
 
