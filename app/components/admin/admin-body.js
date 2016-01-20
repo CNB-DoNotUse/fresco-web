@@ -100,9 +100,10 @@ export default class AdminBody extends React.Component {
 		var gallery = {};
 
 		if ( type == 'submission' ) {
-			for(var i in this.props.submissions) {
-				if(this.props.submissions[i]._id == id) {
-					gallery = this.props.submissions[i];
+			var submissions = this.props.submissions;
+			for(var i in submissions) {
+				if(submissions[i]._id == id) {
+					gallery = submissions[i];
 				}
 			}
 		}
@@ -116,11 +117,12 @@ export default class AdminBody extends React.Component {
 			}
 		}
 
-		this.setState({
-			hasActiveGallery: true,
-			activeGalleryType: type,
-			activeGallery: gallery
-		});
+ 		this.setState({
+ 			hasActiveGallery: true,
+ 			activeGalleryType: type,
+ 			activeGallery: gallery,
+ 			activeAssignment: null
+ 		});
 
 	}
 
@@ -140,7 +142,7 @@ export default class AdminBody extends React.Component {
 				break;
 			}
 		}
-
+		
 		this.setActiveGallery( this.props[propGalleryType][next_index]._id, this.state.activeGalleryType );
 	}
 
@@ -208,8 +210,8 @@ export default class AdminBody extends React.Component {
 			data: JSON.stringify(options),
 			dataType: 'json',
 			success: (result, status, xhr) => {
-				cb(null, options.id);
 				this.spliceCurrentGallery();
+				cb(null, options.id);
 			},
 			error: (xhr, status, error) => {
 				cb(error)

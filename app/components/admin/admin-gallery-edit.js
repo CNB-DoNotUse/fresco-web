@@ -28,6 +28,9 @@ export default class AdminGalleryEdit extends React.Component {
 			address: null,
 			mapLocation: []
 		}
+
+		this.resetState = this.resetState.bind(this);
+
 		this.editButtonEnabled = this.editButtonEnabled.bind(this);
 		this.handleTwitterBylineChange = this.handleTwitterBylineChange.bind(this);
 		this.handleChangeCaption = this.handleChangeCaption.bind(this);
@@ -43,6 +46,7 @@ export default class AdminGalleryEdit extends React.Component {
 
 	componentDidMount() {
 		this.editButtonEnabled(false);
+		this.resetState();
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -52,6 +56,15 @@ export default class AdminGalleryEdit extends React.Component {
 
 		if( this.props.gallery._id != prevProps.gallery._id ) {
 
+			this.resetState();
+
+		}
+	}
+
+	/**
+	 * Update state gallery to props gallery
+	 */
+	resetState() {
 			// Reset form
 			this.setState({
 				activeGallery: _.clone(this.props.gallery, true),
@@ -60,22 +73,13 @@ export default class AdminGalleryEdit extends React.Component {
 				mapLocation: null
 			});
 
-			if( this.props.hasActiveGallery ) {
-
+			if( this.props.hasActiveGallery )
 				this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
-
-				// If has location, set location input
-				if( this.props.gallery.posts[0].location ) {
-					// this.refs['gallery-location'].value = this.props.gallery.posts[0].location.address;
-				}
-			}
 
 			// Remove materialize empty input class
 			$(this.refs['gallery-byline']).removeClass('empty');
 			$(this.refs['gallery-caption']).removeClass('empty');
 			$(this.refs['gallery-stories-input']).removeClass('empty');
-
-		}
 	}
 
 	/**
@@ -114,7 +118,6 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Updates state with new stories
 	 */
 	updateRelatedStories(stories) {
-
 		this.setState({
 			stories: stories
 		});
@@ -195,8 +198,6 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Gets all form data and verifies gallery.
 	 */
 	verify() {
-
-		var byline = '';
 		
 		if(!Array.isArray(this.state.activeGallery.tags)) { 
 			this.state.activeGallery.tags = []; 
@@ -205,30 +206,26 @@ export default class AdminGalleryEdit extends React.Component {
 			this.state.activeGallery.posts = []; 
 		}
 
-		// Byline
-		if(this.refs.byline.refs.byline) { // Organic
-			byline = this.refs.byline.refs.byline.value;
-		} else { // File import
-			byline = this.refs.byline.refs.name.value;
-			if(this.refs.byline.refs.affiliation.value.length === 0) {
-				byline += ' via Fresco News';
-			} else {
-				byline += ' / ' + this.refs.byline.refs.affiliation.value;
-			}
-		}
+		var stories = this.state.stories.map((story) => {
+ 			if(story.new)
+ 				return 'NEW=' + JSON.stringify(story);
+ 			else
+ 				return story._id;
+		});
 
 		var params = {
 			id: this.state.activeGallery._id,
-			byline: byline,
 			caption: this.refs['gallery-caption'].value,
 			posts: this.state.activeGallery.posts.map(p => p._id),
-			stories: this.state.stories.map(s => s._id),
+			stories: stories,
 			tags: this.state.activeGallery.tags
 		};
 
+		// Byline
+ 		var byline = global.getBylineFromComponent(this.state.activeGallery, this.refs.byline);
+ 		_.extend(params, byline);
+
 		if(this.props.activeGalleryType == 'import') {
-			params.other_origin_name = this.refs.byline.refs.name.value;
-			params.other_origin_affiliation = this.refs.byline.refs.affiliation.value;
 			params.address = this.state.address;
 			if(this.state.mapLocation) {
 				params.lat = this.state.mapLocation.lat;
