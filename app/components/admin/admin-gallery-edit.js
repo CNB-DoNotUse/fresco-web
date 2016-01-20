@@ -118,7 +118,6 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Updates state with new stories
 	 */
 	updateRelatedStories(stories) {
-
 		this.setState({
 			stories: stories
 		});
@@ -207,11 +206,18 @@ export default class AdminGalleryEdit extends React.Component {
 			this.state.activeGallery.posts = []; 
 		}
 
+		var stories = this.state.stories.map((story) => {
+ 			if(story.new)
+ 				return 'NEW=' + JSON.stringify(story);
+ 			else
+ 				return story._id;
+		});
+
 		var params = {
 			id: this.state.activeGallery._id,
 			caption: this.refs['gallery-caption'].value,
 			posts: this.state.activeGallery.posts.map(p => p._id),
-			stories: this.state.stories.map(s => s._id),
+			stories: stories,
 			tags: this.state.activeGallery.tags
 		};
 
