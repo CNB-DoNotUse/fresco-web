@@ -345,7 +345,7 @@ if(!config.DEV) {
   };
 
   http.createServer(function (req, res) {
-	res.writeHead(302, { 'Location': config.WEB_ROOT + '/' + req.url });
+	res.writeHead(302, { 'Location': config.WEB_ROOT + req.url });
         res.end();
   }).listen(3000);
 
