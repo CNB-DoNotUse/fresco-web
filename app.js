@@ -70,7 +70,7 @@ app.use(
 
 //Set up public direc.
 app.use(
-  express.static(path.join(__dirname, 'public'), { maxAge: 1000 * 60 * 60 * 24 * 7 })
+  express.static(path.join(__dirname, 'public'), { maxAge: 1000 * 60 * 60 * 2 }) // 2 hour cache
 );
 
 /**
@@ -336,18 +336,23 @@ app.use((err, req, res, next) => {
 
  });
 
-var params  = {
-    key: fs.readFileSync('cert/fresconews_com.key'),
-    cert: fs.readFileSync('cert/fresconews_com.crt'),
-    ca: [fs.readFileSync('cert/DigiCertCA.crt')]
-};
-
 if(!config.DEV) {
+
+  var params  = {
+      key: fs.readFileSync('cert/fresconews_com.key'),
+      cert: fs.readFileSync('cert/fresconews_com.crt'),
+      ca: [fs.readFileSync('cert/DigiCertCA.crt')]
+  };
+
   http.createServer(function (req, res) {
-	res.writeHead(302, { 'Location': config.WEB_ROOT });
+	res.writeHead(302, { 'Location': config.WEB_ROOT + req.url });
         res.end();
   }).listen(3000);
+
   https.createServer(params, app).listen(4430);
+  console.log('Listening on port 3000 (http) and port 4430 (https)');
+
+} else {
+  module.exports = app;
 }
 
-module.exports = app;

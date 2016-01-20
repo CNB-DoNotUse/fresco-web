@@ -34,6 +34,7 @@ export default class GalleryEdit extends React.Component {
 		this.updateTags 			= this.updateTags.bind(this);
 		this.updateVisibility 		= this.updateVisibility.bind(this);
 
+		this.updateGallery 			= this.updateGallery.bind(this);
 		this.revertGallery 			= this.revertGallery.bind(this);
 		this.saveGallery 			= this.saveGallery.bind(this);
 		this.hide		 			= this.hide.bind(this);
@@ -131,6 +132,16 @@ export default class GalleryEdit extends React.Component {
  		});
  	}
 
+ 	/**
+ 	 * Updates GalleryEdit Gallery
+ 	 * Used by GalelryEditFoot's Add Files
+ 	 */
+ 	updateGallery(gallery) {
+ 		this.setState({
+ 			gallery: gallery
+ 		});
+ 	}
+
  	revertGallery() {
  		// Set gallery back to original
  		this.setState({
@@ -177,28 +188,22 @@ export default class GalleryEdit extends React.Component {
 			return $.snackbar({content:"Galleries must have at least 1 post"});
 
  		//Generate stories for update
- 		var stories = [];
- 		gallery.related_stories.map((story) => {
+ 		var stories = gallery.related_stories.map((story) => {
 
- 			if(story.new) {
- 				stories.push('NEW=' + JSON.stringify(story));
- 			}
- 			else {
- 				stories.push(story._id);
- 			}
+ 			if(story.new)
+ 				return 'NEW=' + JSON.stringify(story);
+ 			else
+ 				return story._id;
 
  		});
 
  		//Generate articles for update
- 		var articles = [];
- 		gallery.articles.map((article) => {
+ 		var articles = gallery.articles.map((article) => {
 
- 			if(article.new) {
- 				articles.push('NEW=' + JSON.stringify(article));
- 			}
- 			else {
- 				articles.push(article._id);
- 			}
+ 			if(article.new)
+ 				return 'NEW=' + JSON.stringify(article);
+ 			else
+ 				return article._id;
 
  		});	
 
@@ -218,27 +223,8 @@ export default class GalleryEdit extends React.Component {
  		}
 
  		//Configure the byline's other origin
- 		//From twitter
- 		if(gallery.posts[0].meta && gallery.posts[0].meta.twitter && bylineExists) {
- 			var bylineComponent = this.refs.galleryEditBody.refs.byline,
-	 			name 			= bylineComponent.refs.name.value,
- 				affiliation 		= bylineComponent.refs.affiliation.value.trim();
-
- 			if(affiliation.length === 0) {
- 				params.byline = name + ' via Fresco News';
- 			} else {
- 				params.byline = name + ' / ' + affiliation;
- 			}
-
-			params.other_origin_name = name;
-			params.other_origin_affiliation = affiliation;
-
- 		}
- 		//Imported
- 		else if(!gallery.posts[0].owner && gallery.posts[0].curator && bylineExists) {
- 			params.other_origin_name = document.getElementById('gallery-edit-name').value;
- 			params.other_origin_affiliation =  document.getElementById('gallery-edit-affiliation').value;
- 		}
+ 		var byline = global.getBylineFromComponent(gallery, this.refs.galleryEditBody.refs.byline);
+ 		_.extend(params, byline);
 
  		//Check if imported and there is a location to add a location to the save request
  		if (gallery.imported && gallery.location) {

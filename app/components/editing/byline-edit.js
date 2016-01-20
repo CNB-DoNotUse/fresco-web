@@ -119,7 +119,7 @@ export default class GalleryEditByline extends React.Component {
 			}
 			
 			return (
-				<div className="dialog-row">
+				<div className="dialog-row" id="byline-edit">
 					<div className="split byline-section" id="gallery-byline-other-origin">
 						<div className="split-cell" id="gallery-name-span">
 							<div className="form-control-wrapper">
@@ -159,7 +159,7 @@ export default class GalleryEditByline extends React.Component {
 		//If organically submitted content i.e. user submitted the gallery, can't change the byline
 		else {
 			return (
-				<div className="dialog-row">
+				<div className="dialog-row" id="byline-edit">
 					<span className="byline-section" id="gallery-byline-span">
 						<div className="form-control-wrapper">
 							<input 
