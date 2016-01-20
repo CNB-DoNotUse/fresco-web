@@ -24,6 +24,8 @@ class UserDetail extends React.Component {
  			<App user={this.props.user}>
  				<TopBar 
  					title={this.props.detailUser.firstname + ' ' + this.props.detailUser.lastname}
+ 					timeToggle={true}
+ 					chronToggle={true}
 					editable={this.props.editable}
 					edit={this.edit} />
 				

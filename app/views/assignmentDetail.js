@@ -53,7 +53,7 @@ class AssignmentDetail extends React.Component {
  	}
 
  	/**
- 	 * Toggles edit modal with `s` value. If `s` is not provided, negates toggled.
+ 	 * Toggles edit modal with `s` (state) value. If `s` is not provided, negates toggled.
  	 */
  	 toggleEdit(s) {
  	 	this.setState({
@@ -69,7 +69,7 @@ class AssignmentDetail extends React.Component {
  					title={this.state.assignment.title}
  					timeToggle={true}
  					chronToggle={true} 
- 					verifiedToggle={true}
+ 					verifiedToggle={this.props.user.rank >= 2} {/* Based on user rank to see verified content */}
  					editable={true}
  					edit={this.toggleEdit} />
  				<AssignmentSidebar 
