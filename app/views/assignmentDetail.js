@@ -69,7 +69,7 @@ class AssignmentDetail extends React.Component {
  					title={this.state.assignment.title}
  					timeToggle={true}
  					chronToggle={true} 
- 					verifiedToggle={this.props.user.rank >= 2} {/* Based on user rank to see verified content */}
+ 					verifiedToggle={this.props.user.rank >= 2} /* Based on user rank to see verified content */
  					editable={true}
  					edit={this.toggleEdit} />
  				<AssignmentSidebar 
