@@ -57,14 +57,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
  @keyframes animateBackground {
  	from { 
-	    -webkit-transform: scale(2, 2) translate(0px, 46px); /* Safari */
-		    -ms-transform: scale(2, 2) translate(0px, 46px); /* IE 9 */
-			    transform: scale(2, 2) translate(0px, 46px);
+ 		@include transform(scale(2, 2) translate(0px, 46px));
  	}
  	to   { 
-	    -webkit-transform: scale(1,1) translate(0px, 0px); /* Safari */
-		    -ms-transform: scale(1,1) translate(0px, 0px); /* IE 9 */
-			    transform: scale(1,1) translate(0px, 0px);
+ 		@include transform( scale(1,1) translate(0px, 0px));
  	}
 }
 
@@ -110,6 +106,7 @@ $heroHeight: 180px;
 		}
 		
 		h3{
+			margin:4px 0 0 ;
 			font-weight:400;
 			font-size:26px;
 			text-shadow:0 2px 2px #F5F5F5;
@@ -130,6 +127,26 @@ $heroHeight: 180px;
 }
 
 /**
+ * Card Container below the hero
+ */
+
+.bottom{
+	position:relative;
+   	margin-bottom: -72px;
+
+	@include mobile{
+   		margin-bottom:12px;		
+	}
+
+	@media screen and (max-width: 1280px) {
+   		margin-bottom:40px;
+   	}
+
+	position:relative;
+	z-index:10;
+}
+
+/**
  * Shared style for each card
  */
 
@@ -142,7 +159,7 @@ $heroHeight: 180px;
 	margin:20px auto;
 
 	@include mobile{
-		margin:12px auto 0;
+		margin:12px auto 0 !important;
 		max-width:100%;
 	}
 }
@@ -195,7 +212,7 @@ $heroHeight: 180px;
 			
 			li.third{
 				.callout{
-					z-index:100;
+					z-index:50;
 					top:-20px;
 					width:72px;
 					height:72px;

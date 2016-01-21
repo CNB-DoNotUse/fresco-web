@@ -6,9 +6,11 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
+$width:250px;
+
 #snackbar-container{
     position: fixed;
-    width: 300px;
+    width:$width;
     left: 0;
     right: 0;
     margin: auto;
@@ -23,6 +25,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     opacity: 0;
     bottom: 0;
     cursor:pointer;
+    width:$width;
     background-color: #323232;
     color: rgba(255, 255, 255, 0.84);
     font-size: 14px;

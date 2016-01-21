@@ -45,8 +45,12 @@ html, body {
     height:100%;
 }
 
-input, select{
+input[type="text"], select{
   font-family:$roboto;
+}
+
+input[type="submit"]{
+    font-family:$nota;
 }
 
 textarea:focus, input:focus{

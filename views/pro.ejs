@@ -21,9 +21,9 @@
         <div class="hero-wrap">
             <div id="_hero" class="hero">
                 <div class="tagline">
-                    <h1>FRESCO PILOT PROGRAM</h1>
+                    <h1>BECOME A PRO USER</h1>
 
-                    <h3>Get paid to test Fresco in your area</h3>
+                    <h3>Get paid to take photos and videos with your smartphone.</h3>
                 </div>
             </div>
         </div>
@@ -32,8 +32,7 @@
             <% include segments/about %>
 
             <div id="_signup" class="signup card">
-                    
-                <h3>Be a Pro User</h3>
+                <h3>Apply to be a Pro User</h3>
 
                 <div class="body">
                     
@@ -46,38 +45,52 @@
                         <br />11am-5pm or
                         <br />5pm-11pm
                         </p>
-                        <p>Each shift guarantees a $50 payout whether you leave your house or not!  Any time you do respond to a news request, you will be paid ANOTHER $50 per video and $20 per photo</p>
+                        <p>Each shift guarantees a $50 payout whether you leave your house or not! Any time you do respond to a news request, you will be paid ANOTHER $50 per video and $20 per photo</p>
 
                     </div>
 
-                    <form>
-                        <input type="text" placeholder="Name" />
-                        
-                        <input type="text" placeholder="ZIP" />
-                        
-                        <input type="text" placeholder="Phone Number" />
-                        
-                        <input type="text" placeholder="Best time to call" />
+                    <div class="form-wrap" id="_form-wrap">
+                        <form id="pro-form">
+                            <input type="text" placeholder="Name" id="pro-name" />
+                            
+                            <input type="text" placeholder="ZIP" maxlength="5" id="pro-zip" />
 
-                        <input type="submit" value="SIGN UP">
-                    </form>
+                            <input type="text" placeholder="Email" id="pro-email" />
+                            
+                            <input type="text" placeholder="Phone Number" id="pro-phone" />
+                            
+                            <input type="text" placeholder="Best time to call" id="pro-time" />
 
-                    <div class="form-completion">
-                        <span class="mdi mdi-check"></span>
+                            <input type="submit" class="button" value="SIGN UP" id="pro-submit">
 
-                        <h3>You’re signed up!</h3>
+                            <div class="showbox" id="pro-loader">
+                              <div class="loader">
+                                <svg class="circular" viewBox="25 25 50 50">
+                                  <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                                </svg>
+                              </div>
+                            </div>
+                        </form>
 
-                        <p>We’ll call you soon to get started. For now, download Fresco and do the following:</p>
+                        <div id="_circle" class="circle"></div>
 
-                        <ol>
-                            <li>Sign up and link Twitter and/or Facebook.</li>
-                            <li>Add payment info in your profile settings.</li>
-                            <li>Double check that location services are on and Fresco has permission in Settings.</li>
-                        </ol>
+                        <div class="form-completion" id="_form-completion">
+                            <div class="inner">
+                                <span class="mdi mdi-check"></span>
+
+                                <h3>You’re signed up!</h3>
+
+                                <p>We’ll call you soon to get started. For now, download Fresco and do the following:</p>
+
+                                <ol>
+                                    <li>Sign up and link Twitter and/or Facebook.</li>
+                                    <li>Add payment info in your profile settings.</li>
+                                    <li>Double check that location services are on and Fresco has permission in Settings.</li>
+                                </ol>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>

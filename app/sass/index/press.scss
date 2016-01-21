@@ -35,7 +35,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			margin-bottom:36px;
 
 			@include mobile{
-				margin-bottom:125px;
+				margin-bottom:135px;
 			}
 
 			li{
@@ -102,7 +102,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		ul{
 			float:right;
 			position: relative;
-			 @include vertical-align();
+			@include vertical-align();
 
 			@include mobile{
 				margin:0 auto;
