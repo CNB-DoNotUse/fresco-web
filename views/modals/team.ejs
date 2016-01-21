@@ -247,11 +247,7 @@
 
 			var member = members[k];
 
-			console.log(member);
-
 			var image = listItems[k].getElementsByTagName('img')[0];
-
-			console.log(member.avatar);
 
 			if(typeof(image) !== 'undefined')
 				image.src = '<%= global.CDN %>/index/team/' + member.avatar;
