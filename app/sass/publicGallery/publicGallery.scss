@@ -13,8 +13,15 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
  * Slick Wrapper Parent
  */
 
+$mobileHeight:240px;
+
 .gallery-slick-wrap{
 	background:#1E1E1D;
+	overflow:hidden;
+
+	@include mobile{
+		height:$mobileHeight;
+	}
 
 	/* Slick Component */
 	.slick{
@@ -30,12 +37,16 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 			width:100%;
 		}
 
+		@include mobile{
+			height:$mobileHeight;
+		}
+
 		/* Individual Slick Slide */
 		.slick-slide{
 			position: relative;
 			background-repeat:no-repeat;
 			background-position:center;
-			background-size: cover;
+			background-size:100%;
 			overflow:hidden;
 			-webkit-height:65vh;
 			   -moz-height:65vh;
@@ -53,11 +64,13 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 	     		     	height:50vh;
 	     	}
 			@include mobile{
-				-webkit-height:250px;
-				   -moz-height:250px;
-				    -ms-height:250px;
-				     -o-height:250px;
-				     	height:250px;
+				background-position:initial;
+				min-height:initial;
+				-webkit-height:$mobileHeight;
+				   -moz-height:$mobileHeight;
+				    -ms-height:$mobileHeight;
+				     -o-height:$mobileHeight;
+				     	height:$mobileHeight;
 			}
 		}
 	}
