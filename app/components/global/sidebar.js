@@ -74,7 +74,7 @@ class SideBarListItems extends React.Component {
 		for (var i = 0; i < sidebarTabs.length; i++) {
 			var tab = sidebarTabs[i],
 				anchor = tab.getElementsByTagName('a')[0];
-				
+
 			if(anchor.pathname == window.location.pathname){
 				tab.className += ' active';
 			}
@@ -106,7 +106,8 @@ class SideBarListItems extends React.Component {
 				<li className="sidebar-tab">
 					<a href="/admin"><span className="mdi mdi-dots-horizontal icon"></span>Admin</a>
 				</li>;
-			
+		} 
+		if(this.props.user.rank === global.RANKS.ADMIN) { 
 			var purchases =  
 				<li className="sidebar-tab">
 					<a href="/purchases"><span className="mdi mdi-currency-usd icon"></span>Purchases</a>

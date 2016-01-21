@@ -1,16 +1,21 @@
 var express   = require('express'),
-  config      = require('../lib/config'),
-  request     = require('request-json'),
-  router      = express.Router(),
-  api         = request.createClient(config.API_URL);
+    config      = require('../lib/config'),
+    global      = require('../lib/global'),
+    request     = require('request-json'),
+    router      = express.Router(),
+    api         = request.createClient(config.API_URL);
 
-/* GET purchases page. */
+/**
+ * Root purcahses page
+ */
+
 router.get('/', (req, res, next) => {
-  if (!req.session.user || req.session.user.rank < 1) {
-    return res.render('error', {
-      error_code: 403,
-      error_message: config.ERR_PAGE_MESSAGES[403]
-    });
+  
+  //Check if an Admin
+  if (req.session.user.rank < global.RANKS.ADMIN) {
+      var error = new Error(config.ERR_PAGE_MESSAGES[403]);
+      error.status = 403;
+      return next(error);
   }
 
   var title = 'Purchases',
