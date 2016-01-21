@@ -719,15 +719,15 @@ div.list {
 			padding: 0;
 		}
 		> ul {
-			> ul > li {
+			> ul > li > a {
 				padding-left: 60px;
 			}
 			li {
 				margin: 0 -20px;
-				line-height: 22px;
-				cursor: pointer;
 				a {
-					padding: 8px 20px;
+					display:block;
+					line-height: 22px;
+					padding:8px 20px;
 					text-decoration:none;
 					font-weight:inherit;
 				    color: rgb(0, 0, 0);
@@ -742,7 +742,7 @@ div.list {
 			}
 			li.active {
 				font-weight: 500;
-				> span {
+				a > span {
 					color: $color-accent-primary;
 				}
 			}

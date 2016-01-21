@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 /**
  * Side bar object found across the site; inside of the top level App class
  */
@@ -68,14 +67,17 @@ class SideBarListItems extends React.Component {
 	}
 
 	componentDidMount(prevProps, prevState) {
-		var sidebarTabs = $('.sidebar-tab');
+		var sidebarTabs = document.getElementsByClassName('sidebar-tab');
 
-	 	sidebarTabs.each((i) => {
-	 		var tab = $(sidebarTabs[i]);
-	 		if(tab.attr('data-location') == window.location.pathname) {
-	 			$(tab).addClass('active');
-	 		}
-	 	}); 
+		//Set the current page's list item to the active state
+		for (var i = 0; i < sidebarTabs.length; i++) {
+			var tab = sidebarTabs[i],
+				anchor = tab.getElementsByTagName('a')[0];
+				console.log(anchor.pathname);
+			if(anchor.pathname == window.location.pathname){
+				tab.className += ' active';
+			}
+		}
 	}
 
 	render() {
@@ -114,23 +116,23 @@ class SideBarListItems extends React.Component {
 	
 			<ul className="md-type-body1">
 				<li className="sidebar-tab">
-					<a href="/"><span className="mdi mdi-star icon"></span>Highlights</a>
+					<a href="/highlights"><span className="mdi mdi-star icon"></span>Highlights</a>
 				</li>
 				<li className="sidebar-tab">
 					<a href="/archive"><span className="mdi mdi-play-box-outline icon"></span>Archive</a>
 				</li>
 				<ul>
 					<li className="sidebar-tab">
-						<a href="/photos"><span className="mdi mdi-file-image-box icon"></span>Photos</a>
+						<a href="/archive/photos"><span className="mdi mdi-file-image-box icon"></span>Photos</a>
 					</li>
 					<li className="sidebar-tab">
-						<a href="/videos"><span className="mdi mdi-movie icon"></span>Videos</a>
+						<a href="/archive/videos"><span className="mdi mdi-movie icon"></span>Videos</a>
 					</li>
 					<li className="sidebar-tab">
-						<a href="/galleries"><span className="mdi mdi-image-filter icon"></span>Galleries</a>
+						<a href="/archive/galleries"><span className="mdi mdi-image-filter icon"></span>Galleries</a>
 					</li>
 					<li className="sidebar-tab">
-						<a href="/stories"><span className="mdi mdi-newspaper icon"></span>Stories</a>
+						<a href="/archive/stories"><span className="mdi mdi-newspaper icon"></span>Stories</a>
 					</li>
 				</ul>
 				{dispatch}
