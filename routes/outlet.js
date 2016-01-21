@@ -1,10 +1,11 @@
 var express     = require('express'),
-config          = require('../lib/config'),
-outer           = express.Router(),
-request         = require('request-json'),
-config          = require('../lib/config'),
-client          = request.createClient(config.API_URL),
-router          = express.Router();
+    config      = require('../lib/config'),
+    global      = require('../lib/global'),
+    outer       = express.Router(),
+    request     = require('request-json'),
+    config      = require('../lib/config'),
+    client      = request.createClient(config.API_URL),
+    router      = express.Router();
 
 /** //
 
@@ -158,7 +159,7 @@ router          = express.Router();
  */
 
  router.get('/:id', (req, res, next) => {
-  if (!req.session || !req.session.user || req.session.user.rank < config.RANKS.CONTENT_MANAGER)
+  if (!req.session || !req.session.user || req.session.user.rank < global.RANKS.CONTENT_MANAGER)
     return res.redirect('/outlet');
 
   client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);

@@ -5,6 +5,7 @@ import PostList from './../components/global/post-list'
 import AssignmentSidebar from './../components/assignmentDetail/assignment-sidebar'
 import AssignmentEdit from './../components/editing/assignment-edit.js'
 import App from './app'
+import global from '../../lib/global'
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
@@ -69,8 +70,8 @@ class AssignmentDetail extends React.Component {
  					title={this.state.assignment.title}
  					timeToggle={true}
  					chronToggle={true} 
- 					verifiedToggle={this.props.user.rank >= 2} /* Based on user rank to see verified content */
- 					editable={true}
+ 					verifiedToggle={this.props.user.rank >= global.RANKS.CONTENT_MANAGER} /* Based on user rank to see verified content */
+ 					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
  					edit={this.toggleEdit} />
  				<AssignmentSidebar 
  					assignment={this.state.assignment}

@@ -148,7 +148,7 @@ class PostCellActions extends React.Component {
 			key = 0;
 
 		//Check if we're CM or greater
-		if(typeof(this.props.rank) !== 'undefined' && this.props.rank >= 1) {
+		if(typeof(this.props.rank) !== 'undefined' && this.props.rank >= global.RANKS.CONTENT_MANAGER) {
 
 			if(this.props.editable) {
 				actions.push(

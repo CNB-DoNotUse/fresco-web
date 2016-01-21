@@ -8,18 +8,12 @@ var express   = require('express'),
 
 router.get('/', (req, res, next) => {
 
-  //Check if logged in
-  if (!req.session.user)
-    return res.redirect('/');
-
-  //Check if the user is part of an outlet or they are at least an admin
-  if (!(req.session.user.outlet || req.session.user.rank >= config.RANKS.CONTENT_MANAGER)){
-
+  //Check if the user is part of an outlet or they are at least aa CM
+  if (!(req.session.user.outlet || req.session.user.rank >= global.RANKS.CONTENT_MANAGER)){
       var error = error(config.ERR_PAGE_MESSAGES[401]);
       error.status = 401;
 
       return next(error);
-
   }
 
   var props = {

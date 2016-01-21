@@ -5,6 +5,7 @@ import PostList from './../components/global/post-list'
 import GallerySidebar from './../components/galleryDetail/gallery-sidebar'
 import GalleryEdit from './../components/editing/gallery-edit'
 import App from './app'
+import global from '../../lib/global'
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
@@ -44,7 +45,7 @@ class GalleryDetail extends React.Component {
 			<App user={this.props.user}>
 				<TopBar 
 					title={this.props.title}
-					editable={true}
+					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
 					edit={this.toggleGalleryEdit}
 					verifiedToggle={false}
 					timeToggle={true}

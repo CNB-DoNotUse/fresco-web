@@ -1,7 +1,8 @@
 var express    = require('express'),
     config     = require('../lib/config'),
     request    = require('request'),
-    router     = express.Router()
+    router     = express.Router(),
+    global     = require('../lib/global');
 
 router.get('/:id', (req, res, next) => {
 
@@ -11,15 +12,18 @@ router.get('/:id', (req, res, next) => {
     }, doWithGetAssignments);
   
   function doWithGetAssignments(err, response, body) {
-    
-    if (err || !body || body.err){
-      
-      return res.render('error', {
-        user: req.session.user,
-        error_code: 404,
-        error_message: config.ERR_PAGE_MESSAGES[404]
-      });
 
+    var error = new Error(config.ERR_PAGE_MESSAGES[404]);
+    error.status = 404;
+
+    if (err || !body || body.err){
+
+      return next(error);
+
+    } 
+    //Check if the assignment is the user's and they're not a CM or Admin
+    else if(body.data.outlet._id !== req.session.user.outlet._id && req.session.user.rank < global.RANKS.CONTENT_MANAGER){
+      return next(error);
     }
 
     var assignment = body.data,

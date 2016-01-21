@@ -233,7 +233,7 @@ router.get('/assignment/search', (req, res, next) => {
   }
 });
 router.post('/assignment/update', (req, res, next) => {
-  if (!req.session.user || (!req.session.user.outlet && req.session.user.rank < config.RANKS.CONTENT_MANAGER)) {
+  if (!req.session.user || (!req.session.user.outlet && req.session.user.rank < global.RANKS.CONTENT_MANAGER)) {
     return res.status(403).json({err: 'ERR_UNAUTHORIZED'}).end();
   }
 

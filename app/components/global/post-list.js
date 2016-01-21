@@ -42,7 +42,6 @@ export default class PostList extends React.Component {
 	componentWillReceiveProps(nextProps) {
 
 		// If got new posts in props while having none previously
-		
 		var currentPostIds  = this.state.posts.map(p => p._id),
 			newPostIds 		= nextProps.posts.map(p => p._id),
 			diffIds 		= _.difference(newPostIds, currentPostIds);
@@ -143,7 +142,7 @@ export default class PostList extends React.Component {
 	togglePost(passedPost) {
 
 		//Check if CM
-		if(this.props.rank < 2) return;
+		if(this.props.rank < global.RANKS.CONTENT_MANAGER) return;
 
 		//Filter out anything, but ones that equal the passed post
 		var result = this.state.selectedPosts.filter((post) => {
