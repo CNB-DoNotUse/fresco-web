@@ -91,6 +91,11 @@
 					'handle' : '_bookofmorgan_'
 				},
 				{
+					'avatar' : 'bryn.jpg',
+					'name'   : 'Bryn Gelbart',
+					'title'  : 'Lead Content Manager',
+				},
+				{
 					'avatar' : 'grace.jpg',
 					'name'   : 'Grace Philal',
 					'title'  : 'Content Manager',
@@ -102,72 +107,71 @@
 					'title'  : 'Content Manager',
 				},
 				{
-					'avatar' : 'bryn.jpg',
-					'name'   : 'Bryn Gelbart',
-					'title'  : 'Lead Content Manager',
-				},
-				{
+					'avatar' : 'ash.jpg',
 					'name'   : 'Ashley Meyer',
 					'title'  : 'Content Manager',
 					'handle' : 'ashleykm3'
 				},
 				{
+					'avatar' : 'francesca.jpg',
 					'name'   : 'Francesca Dunacn',
 					'title'  : 'Content Manager'
 				},
 				{
+					'avatar' : 'willow.jpg',
 					'name'   : 'Willow Frederick',
-					'title'  : 'Content Manager',
+					'title'  : 'Content Manager'
 				},
 				{
 					'avatar' : 'tosi.jpg',
 					'name'   : 'Tosi Soloman',
-					'title'  : 'Content Manager',
+					'title'  : 'Content Manager'
 				},
 				{
 					'avatar' : 'christina.jpg',
 					'name'   : 'Christina Williams',
-					'title'  : 'Content Manager',
-				},
-				{
-					'name'   : 'Aziz Adib',
-					'title'  : 'Content Manager',
-				},
-				{
-					'name'   : 'Rakeesha Wrigley',
-					'title'  : 'Content Manager',
+					'title'  : 'Content Manager'
 				},
 				{
 					'avatar' : 'katie.jpg',
 					'name'   : 'Katie Schulz',
-					'title'  : 'Content Manager',
+					'title'  : 'Content Manager'
 				},
 				{
 					'avatar' : 'goldie.jpg',
 					'name'   : 'Goldie Poll',
-					'title'  : 'Content Manager',
-				},
-				{
-					'name'   : 'Nicolette Acosta',
-					'title'  : 'Content Manager',
+					'title'  : 'Content Manager'
 				},
 				{
 					'avatar' : 'trushaa.jpg',
 					'name'   : 'Trushaa Castelino',
-					'title'  : 'Content Manager',
+					'title'  : 'Content Manager'
+				},
+				{
+					'avatar' : 'nicole.jpg',
+					'name'   : 'Nicole Couscous',
+					'title'  : 'Content Manager'
+				},
+				{
+					'name'   : 'Aziz Adib',
+					'title'  : 'Content Manager'
+				},
+				{
+					'name'   : 'Rakeesha Wrigley',
+					'title'  : 'Content Manager'
+				},
+				{
+					'name'   : 'Nicolette Acosta',
+					'title'  : 'Content Manager'
 				},
 				{
 					'name'   : 'Scott Mullen',
-					'title'  : 'Content Manager',
-				},
-				{
-					'name'   : 'Nicole Couscous',
-					'title'  : 'Content Manager',
+					'title'  : 'Content Manager'
 				},
 				{
 					'avatar' : 'alberto.jpg',
 					'name'   : 'Alberto Zamora',
-					'title'  : 'Video Editor',
+					'title'  : 'Video Editor'
 				}
 			]
 		}
@@ -236,13 +240,18 @@
 	for(var i=0; i <team.length; i++) {
 
 		var list = document.getElementById('team-list-' + i),
-			members = list.getElementsByTagName('li');
+		 	members = team[i]['members'],
+			listItems = list.getElementsByTagName('li');
 
-		for(var k=0; k < team[i]['members'].length -1; k++) { 
+		for(var k=0; k < members.length; k++) { 
 
-			var member = team[i]['members'][k];
+			var member = members[k];
 
-			var image = members[k].getElementsByTagName('img')[0];
+			console.log(member);
+
+			var image = listItems[k].getElementsByTagName('img')[0];
+
+			console.log(member.avatar);
 
 			if(typeof(image) !== 'undefined')
 				image.src = '<%= global.CDN %>/index/team/' + member.avatar;
