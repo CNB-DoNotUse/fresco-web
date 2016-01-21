@@ -13,13 +13,10 @@ router.get('/:id', (req, res, next) => {
   function doWithGetAssignments(err, response, body) {
     
     if (err || !body || body.err){
-      
-      return res.render('error', {
-        user: req.session.user,
-        error_code: 404,
-        error_message: config.ERR_PAGE_MESSAGES[404]
-      });
+      var error = new Error(config.ERR_PAGE_MESSAGES[404]);
+      error.status = 404;
 
+      return next(error);
     }
 
     var assignment = body.data,
@@ -39,7 +36,6 @@ router.get('/:id', (req, res, next) => {
       title : title
     });
   }
-
 });
 
 module.exports = router;

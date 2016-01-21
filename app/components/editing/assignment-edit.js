@@ -116,7 +116,6 @@ export default class AssignmentEdit extends React.Component {
 		       this.props.toggle();
 		   }
 		});
-
 	}
 
 	/**

@@ -200,8 +200,8 @@ var processLogin = function() {
 
 			if(response.err){
 
-				$.snackbar({ content: 'An error occured. Please try again in a bit'});
-
+				$.snackbar({ content: 'Invalid email or password!'});
+				
 			}
 			//Redirect
 			else {

@@ -43,8 +43,6 @@ export default class DispatchMap extends React.Component {
 
 	componentDidMount() {
 
-		console.log(window.sessionStorage.dispatch);
-
 		//Set up session storage for location
 		if(!window.sessionStorage.dispatch){
 			window.sessionStorage.dispatch = JSON.stringify({
