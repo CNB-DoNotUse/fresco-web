@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 /**
  * Side bar object found across the site; inside of the top level App class
  */
@@ -68,14 +67,17 @@ class SideBarListItems extends React.Component {
 	}
 
 	componentDidMount(prevProps, prevState) {
-		var sidebarTabs = $('.sidebar-tab');
+		var sidebarTabs = document.getElementsByClassName('sidebar-tab');
 
-	 	sidebarTabs.each((i) => {
-	 		var tab = $(sidebarTabs[i]);
-	 		if(tab.attr('data-location') == window.location.pathname) {
-	 			$(tab).addClass('active');
-	 		}
-	 	}); 
+		//Set the current page's list item to the active state
+		for (var i = 0; i < sidebarTabs.length; i++) {
+			var tab = sidebarTabs[i],
+				anchor = tab.getElementsByTagName('a')[0];
+				console.log(anchor.pathname);
+			if(anchor.pathname == window.location.pathname){
+				tab.className += ' active';
+			}
+		}
 	}
 
 	render() {
@@ -84,53 +86,53 @@ class SideBarListItems extends React.Component {
 
 		if (this.props.user.outlet || this.props.user.rank >= 1){ //CONTENT_MANAGER
 			var dispatch = 
-				<li className="sidebar-tab" onClick={this.goLink.bind(null, '/dispatch')} data-location="/dispatch">
-					<span className="mdi mdi-map icon"></span>Dispatch
+				<li className="sidebar-tab">
+					<a href="/dispatch"><span className="mdi mdi-map icon"></span>Dispatch</a>
 				</li>;
 		}
 
 		if (this.props.user.outlet != null){
 		
 			var outlet = 
-				<li className="sidebar-tab" onClick={this.goLink.bind(null, '/outlet')} data-location="/outlet">
-					<span className="mdi mdi-account-multiple icon"></span>{this.props.user.outlet.title}
+				<li className="sidebar-tab">
+					<a href="/outlet"><span className="mdi mdi-account-multiple icon"></span>{this.props.user.outlet.title}</a>
 				</li>;
 		
 		}
 		if(this.props.user.rank >= 2) { 
 			
 			var admin = 
-				<li className="sidebar-tab" onClick={this.goLink.bind(null, '/admin')} data-location="/admin">
-					<span className="mdi mdi-dots-horizontal icon"></span>Admin
+				<li className="sidebar-tab">
+					<a href="/admin"><span className="mdi mdi-dots-horizontal icon"></span>Admin</a>
 				</li>;
 			
 			var purchases =  
-				<li className="sidebar-tab" onClick={this.goLink.bind(null, '/purchases')} data-location="/purchases">
-					<span className="mdi mdi-currency-usd icon"></span>Purchases
+				<li className="sidebar-tab">
+					<a href="/purchases"><span className="mdi mdi-currency-usd icon"></span>Purchases</a>
 				</li>;
 		}
 
 		return (
 	
 			<ul className="md-type-body1">
-				<li className="sidebar-tab" onClick={this.goLink.bind(null, '/highlights')} data-location="/highlights">
-					<span className="mdi mdi-star icon"></span>Highlights
+				<li className="sidebar-tab">
+					<a href="/highlights"><span className="mdi mdi-star icon"></span>Highlights</a>
 				</li>
-				<li className="sidebar-tab" onClick={this.goLink.bind(null, '/archive')} data-location="/archive">
-					<span className="mdi mdi-play-box-outline icon"></span>Archive
+				<li className="sidebar-tab">
+					<a href="/archive"><span className="mdi mdi-play-box-outline icon"></span>Archive</a>
 				</li>
 				<ul>
-					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/archive/photos')} data-location="/archive/photos">
-						<span className="mdi mdi-file-image-box icon"></span>Photos
+					<li className="sidebar-tab">
+						<a href="/archive/photos"><span className="mdi mdi-file-image-box icon"></span>Photos</a>
 					</li>
-					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/archive/videos')} data-location="/archive/videos">
-						<span className="mdi mdi-movie icon"></span>Videos
+					<li className="sidebar-tab">
+						<a href="/archive/videos"><span className="mdi mdi-movie icon"></span>Videos</a>
 					</li>
-					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/archive/galleries')} data-location="/archive/galleries">
-						<span className="mdi mdi-image-filter icon"></span>Galleries
+					<li className="sidebar-tab">
+						<a href="/archive/galleries"><span className="mdi mdi-image-filter icon"></span>Galleries</a>
 					</li>
-					<li className="sidebar-tab" onClick={this.goLink.bind(null, '/archive/stories')} data-location="/archive/stories">
-						<span className="mdi mdi-newspaper icon"></span>Stories
+					<li className="sidebar-tab">
+						<a href="/archive/stories"><span className="mdi mdi-newspaper icon"></span>Stories</a>
 					</li>
 				</ul>
 				{dispatch}
