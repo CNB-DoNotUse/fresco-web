@@ -15,6 +15,14 @@ class PublicGallery extends React.Component {
 
  	constructor(props) {
  		super(props);
+
+ 		this.toggleVideo = this.toggleVideo.bind(this);
+ 	}
+
+ 	toggleVideo(e) {
+ 		var video = e.currentTarget;
+
+ 		video.paused ? video.play() : video.pause();
  	}
 
  	render() {
@@ -26,10 +34,26 @@ class PublicGallery extends React.Component {
  		//Store sliders for slick
  		var galleryImages = [],
  			settings = {
- 			  dots: gallery.posts.length > 1 ? true : false,
- 			  arrows: true,
- 			  infinite: false,
- 			  adaptiveHeight: true
+				dots: gallery.posts.length > 1 ? true : false,
+				arrows: true,
+				infinite: false,
+				afterChange: function(index) {
+					//First pause all videos
+					var videos = document.getElementsByTagName('video');
+					for (var i = 0; i < videos.length; i++) {
+						videos[i].pause();
+					};
+
+					//Now start playing the video of the slide we're on
+					var slide = document.getElementsByClassName('slick-slide')[index],
+						video = slide.getElementsByTagName('video')[0];
+
+					if(video){
+
+						video.paused ? video.play() : video.pause();
+
+					}
+				}
  			};
  		
  		for (var i = 0; i < gallery.posts.length; i++) {
@@ -37,14 +61,26 @@ class PublicGallery extends React.Component {
  			var galleryMedia,
  				post = gallery.posts[i],
  				avatar = post.owner ? post.owner.avatar ? post.owner.avatar : global.defaultAvatar : global.defaultAvatar,
- 				address = post.location.address != null ? post.location.address : 'No location',
-				timestampText = moment(post.timestamp).format('MMM Do YYYY, h:mm:ss a'),
+ 				address = post.location ? post.location.address != null ? post.location.address : 'No location' : 'No location',
+				timestampText = moment(post.time_created).format('MMM Do YYYY, h:mm:ss a'),
+				image = global.formatImg(post.image, 'medium'),
 				style = {
-					backgroundImage: 'url(' + global.formatImg(post.image, 'medium') + ')'
-				}
+					backgroundImage: 'url(' + image + ')'
+				},
+				video = '';
+
+			if(post.video){
+				var autoPlay = i == 0;
+				video =  <video width="100%" height="100%" autoPlay={autoPlay} onClick={this.toggleVideo}>
+								<source src={global.formatVideo(post.video)} type="video/mp4" />
+								Your browser does not support the video tag.
+							</video>
+				style = '';
+			}
 
  			galleryImages.push(
  				<div className="slick-slide" key={i} style={style}>
+ 					{video}
  					<table className="slick-meta">
 						<tbody>
 							<tr className="user">
