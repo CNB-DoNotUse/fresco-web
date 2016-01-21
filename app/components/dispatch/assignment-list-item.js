@@ -10,7 +10,7 @@ export default class AssignmentListItem extends React.Component {
     render() {
 
         var assignment = this.props.assignment,
-            location = assignment.location.googlemaps || 'Unknown',
+            location = assignment.location.address || 'Unknown',
             expirationTime = new Date(this.props.assignment.expiration_time),
             expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
         
