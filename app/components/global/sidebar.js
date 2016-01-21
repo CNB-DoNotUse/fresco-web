@@ -74,7 +74,7 @@ class SideBarListItems extends React.Component {
 		for (var i = 0; i < sidebarTabs.length; i++) {
 			var tab = sidebarTabs[i],
 				anchor = tab.getElementsByTagName('a')[0];
-				console.log(anchor.pathname);
+				
 			if(anchor.pathname == window.location.pathname){
 				tab.className += ' active';
 			}
