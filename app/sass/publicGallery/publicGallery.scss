@@ -6,8 +6,8 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
-@import "./../global/_global";
-@import "./../global/fresco-slick";
+@import "./../global/_global.scss";
+@import "./../global/fresco-slick.scss";
 
 /**
  * Slick Wrapper Parent
@@ -166,12 +166,12 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 						    vertical-align:middle;
 						    margin-right:10px;
 						}
-						
+
 						a{
 							line-height: 34px;
 						    text-decoration: none;
 						    color: rgb(0, 0, 0);
-						    color: rgba(0, 0, 0, 0.54);					
+						    color: rgba(0, 0, 0, 0.54);
 					 	}
 					}
 				}
@@ -179,4 +179,3 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 		}
 	}
 }
-
