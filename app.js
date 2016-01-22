@@ -253,7 +253,6 @@ app.use('/api', (req, res, next) => {
 
     return request
       .get(config.API_URL + '/' + config.API_VERSION + req.url)
-      .query(req.query)
       .set('authtoken', token)
       .end((err, response) => {
         if(err) {
