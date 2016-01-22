@@ -10,7 +10,7 @@ export default class GalleryEditArticles extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { 
+		this.state = {
 			suggestions: []
 		}
 		this.addArticle = this.addArticle.bind(this);
@@ -30,7 +30,7 @@ export default class GalleryEditArticles extends React.Component {
 				break;
 			}
 		}
-		
+
 		if(index == -1) return;
 		var articles = this.props.articles;
 			//Remove from index
@@ -92,15 +92,15 @@ export default class GalleryEditArticles extends React.Component {
 				this.refs.dropdown.style.display = 'block';
 
 				$.ajax({
-					url: '/scripts/article/search',
+					url: '/api/article/search',
 					data: { q: query },
 					success: (result, status, xhr) => {
 
 						if(result.data){
 
 							this.setState({ suggestions: result.data });
-							
-						}	
+
+						}
 					}
 				});
 			}
@@ -125,34 +125,34 @@ export default class GalleryEditArticles extends React.Component {
 
 		//Map suggestions for dropdown
 		var suggestions = this.state.suggestions.map((article, i) => {
-		
+
 			return <li  onClick={this.addArticle.bind(null, article)}
 						key={i}>{article.link}</li>
-		
+
 		});
-		
+
 		return (
 			<div className="dialog-row split chips">
 				<div className="split-cell">
-					<input 
-						type="text" 
-						className="form-control floating-label" 
+					<input
+						type="text"
+						className="form-control floating-label"
 						placeholder="Articles"
 						onKeyUp={this.change}
 						ref='autocomplete' />
-					
+
 					<ul ref="dropdown" className="dropdown">
 						{suggestions}
 					</ul>
-					
+
 					<ul className="chips">
 						{articles}
 					</ul>
 				</div>
-				
+
 				<div className="split-cell">
 					<span className="md-type-body2">Add Articles</span>
-					
+
 					<ul className="chips"></ul>
 				</div>
 			</div>

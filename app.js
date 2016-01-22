@@ -57,7 +57,7 @@ app.use(
 //Session config
 app.use(
   session({
-    name: 'FRSSID', 
+    name: 'FRSSID',
     store: new RedisStore(redisConnection),
     secret: config.SESSION_SECRET,
     resave: false,
@@ -140,9 +140,9 @@ app.use(function(req, res, next) {
 
         //Check for error on api payload
         if (body.err || body.error || !body.data._id) {
-            
+
             delete req.session.user;
-            
+
             return req.session.save(function() {
                 res.redirect('/');
             });
@@ -180,7 +180,7 @@ app.use(function(req, res, next) {
 
 app.use((req, res, next) => {
 
-  if(!req.fresco) 
+  if(!req.fresco)
     req.fresco = {};
 
   res.locals.section = 'public';
@@ -193,7 +193,7 @@ app.use((req, res, next) => {
  */
 
 for (var i = 0; i < routes.public.length; i++) {
-  
+
   var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i] ,
       route = require('./routes/' + routes.public[i]);
 
@@ -206,7 +206,7 @@ for (var i = 0; i < routes.public.length; i++) {
  */
 
 for (var i = 0; i < routes.scripts.length; i++) {
-  
+
   var routePrefix = routes.scripts[i] ,
       route = require('./routes/scripts/' + routePrefix);
 
@@ -235,7 +235,7 @@ app.use((req, res, next) => {
  */
 
 for (var i = 0; i < routes.platform.length; i++) {
-  
+
   var routePrefix = routes.platform[i] ,
       route = require('./routes/' + routePrefix);
 
@@ -282,7 +282,7 @@ app.use('/api', (req, res, next) => {
 app.use((err, req, res, next) => {
     // Development error handle will print stacktrace
     if (app.get('env') === 'development') {
-        console.log('Method:', req.method, 
+        console.log('Method:', req.method,
                   '\nPath:', req.path,
                   '\nBody', req.body,
                   '\nError: ', err + '\n');
@@ -355,4 +355,3 @@ if(!config.DEV) {
 } else {
   module.exports = app;
 }
-
