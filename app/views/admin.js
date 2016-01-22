@@ -21,6 +21,8 @@ import AdminBody from './../components/admin/admin-body'
 
  		this.setTab = this.setTab.bind(this);
 
+ 		this.hasChangedData = this.hasChangedData.bind(this);
+
  		this.getAssignments = this.getAssignments.bind(this);
  		this.getSubmissions = this.getSubmissions.bind(this);
  		this.getImports = this.getImports.bind(this);
@@ -37,9 +39,27 @@ import AdminBody from './../components/admin/admin-body'
  		}, 5000);
 	}
 
+ 	setTab(tab) {
+ 		if(tab == this.state.activeTab) return;
+
+ 		this.setState({
+ 			activeTab: tab
+ 		});
+ 	}
+
+ 	hasChangedData(newGalleries, currentGalleries) {
+ 		var newIDs = newGalleries.map(n => n._id),
+ 			curIDs = currentGalleries.map(c => c._id);
+
+ 		return _.difference(newIDs, curIDs).length > 0;
+ 		
+ 	}
+
 	getAssignments() {
 		$.get('/api/assignment/pending', {limit: 16}, (assignments) => {
 			if( !assignments.data ) return;
+
+			if(!this.hasChangedData(assignments.data, this.state.assignments)) return;
 
 			var changedState = {
 				assignments: assignments.data
@@ -56,6 +76,8 @@ import AdminBody from './../components/admin/admin-body'
  		$.get('/api/gallery/submissions', (submissions) => {
  			if( !submissions.data ) return;
 
+ 			if(!this.hasChangedData(submissions.data, this.state.submissions)) return;
+
 			var changedState = {
 				submissions: submissions.data
 			};
@@ -71,6 +93,8 @@ import AdminBody from './../components/admin/admin-body'
 		$.get('/api/gallery/imports?rated=0', (imports) => {
  			if( !imports.data ) return;
 
+ 			if(!this.hasChangedData(imports.data, this.state.imports)) return;
+
 			var changedState = {
 				imports: imports.data
 			};
@@ -81,14 +105,6 @@ import AdminBody from './../components/admin/admin-body'
 			this.setState(changedState);
 		});
 	}
-
- 	setTab(tab) {
- 		if(tab == this.state.activeTab) return;
-
- 		this.setState({
- 			activeTab: tab
- 		});
- 	}
 
  	componentDidMount() {
  		this.getAssignments();

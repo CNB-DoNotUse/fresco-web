@@ -20,11 +20,11 @@ export default class GalleryEditByline extends React.Component {
 	}
 
 	isTwitterImport() {
+
 		var post = this.props.gallery.posts[0];
-		if(post.meta && post.meta.twitter) {
-			return true;
-		}
-		return false;
+
+		return post.imported && post.meta && post.meta.twitter;
+		
 	}
 
 	handleSelected(selected) {
@@ -35,10 +35,19 @@ export default class GalleryEditByline extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if(this.props.gallery._id != prevProps.gallery._id) {
+			var post = this.props.gallery.posts[0];
+
 			if(this.isTwitterImport()) {
-				var post = this.props.gallery.posts[0];
 				this.setState({
 					name: post.meta.twitter.handle
+				});
+			} else {
+
+				if(this.refs.byline)
+					this.refs.byline.value = post.byline;
+
+				this.setState({
+					name: ''
 				});
 			}
 		}
@@ -110,6 +119,7 @@ export default class GalleryEditByline extends React.Component {
 		}
 		//If the post doesn't have an owner, but has a curator i.e. manually imported
 		else if(!post.owner && post.curator) {
+
 			var name = '',
 				affiliation = '';
 
@@ -152,12 +162,12 @@ export default class GalleryEditByline extends React.Component {
 						</div>
 					</div>
 				</div>
-
 			);
 
 		}
 		//If organically submitted content i.e. user submitted the gallery, can't change the byline
 		else {
+
 			return (
 				<div className="dialog-row" id="byline-edit">
 					<span className="byline-section" id="gallery-byline-span">
@@ -178,7 +188,6 @@ export default class GalleryEditByline extends React.Component {
 				</div>
 			);
 		}
-
 
 	}
 

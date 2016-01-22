@@ -46,8 +46,9 @@ export default class TopBarAdmin extends React.Component {
 		var data = new FormData(),
 			files = this.refs.uploadImportFiles.files;
 
-		for (var index in files)
-			data.append(index, files[index]);
+		for (var i = files.length - 1; i >= 0; i--) {
+			data.append(i, files[i]);
+		}
 
 		data.append('caption', 'Gallery imported from local system on ' + moment().format('MMMM Do YYYY, h:mm:ss a'));
 

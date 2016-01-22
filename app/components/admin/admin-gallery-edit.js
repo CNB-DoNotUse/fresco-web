@@ -155,10 +155,8 @@ export default class AdminGalleryEdit extends React.Component {
 
 		this.editButtonEnabled(true);
 
-		this.refs['gallery-byline'].value = this.props.hasActiveGallery ? this.props.gallery.posts[0].byline : '';
 		this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
 
-		this.refs['gallery-byline'].className = this.refs['gallery-byline'].className.replace(/\bempty\b/,'');
 		this.refs['gallery-caption'].className = this.refs['gallery-caption'].className.replace(/\bempty\b/,'');
 
 		if(this.props.hasActiveGallery) {
