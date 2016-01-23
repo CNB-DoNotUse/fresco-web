@@ -249,29 +249,25 @@ for (var i = 0; i < routes.platform.length; i++) {
 
 app.use('/api', (req, res, next) => {
   var token = req.session.user ? req.session.user.token ? req.session.user.token : '' : '';
-  if(req.method == 'GET') {
 
-    return request
-      .get(config.API_URL + '/' + config.API_VERSION + req.url)
-      .set('authtoken', token)
-      .end((err, response) => {
-        if(err) {
-          return res.json({err: 'API Error'});
-        }
+  return request(req.method, config.API_URL + '/' + config.API_VERSION + req.url)
+    .set('authtoken', token)
+    .send(req.body)
+    .end((err, response) => {
+      if(err) {
+        return res.json({err: 'API Error'});
+      }
 
-        var data = '';
+      var data = '';
 
-        try {
-          data = JSON.parse(response.text);
-        } catch (ex) {
-          return res.send({err: 'API Parse Error'});
-        }
+      try {
+        data = JSON.parse(response.text);
+      } catch (ex) {
+        return res.send({err: 'API Parse Error'});
+      }
 
-        return res.send(data);
-      });
-
-  }
-  next();
+      return res.send(data);
+    });
 })
 
 /**
