@@ -60,6 +60,10 @@ export default class AdminAssignmentEdit extends React.Component {
                 var expirationDate = new Date(this.props.assignment.expiration_time);
                 var expirationHours = Math.ceil((expirationDate - Date.now()) / 1000 / 60 / 60);
 
+                this.refs['assignment-title'].value = this.props.assignment.title;
+                this.refs['assignment-description'].value = this.props.assignment.caption;
+                this.refs['assignment-expiration'].value = this.props.assignment ? global.hoursToExpiration(this.props.assignment.expiration_time) : null;
+
                 $(this.refs['assignment-title']).removeClass('empty');
                 $(this.refs['assignment-description']).removeClass('empty');
                 $(this.refs['assignment-expiration']).removeClass('empty');
@@ -146,8 +150,7 @@ export default class AdminAssignmentEdit extends React.Component {
         var location = this.state.location,
             radius = Math.round(global.milesToFeet(this.state.radius)),
             address = this.props.assignment.location ? this.props.assignment.location.address : '',
-            expirationDate = new Date(this.props.assignment.expiration_time),
-            expirationHours = Math.ceil((expirationDate - Date.now()) / 1000 / 60 / 60);
+            expiration_time = this.props.assignment ? global.hoursToExpiration(this.props.assignment.expiration_time) : null;
 
         if(this.props.activeGalleryType != 'assignment' || !this.props.hasActiveGallery) 
             return (<div></div>);
@@ -167,7 +170,8 @@ export default class AdminAssignmentEdit extends React.Component {
                         type="text"
                         className="form-control floating-label"
                         placeholder="Description"
-                        ref="assignment-description">{this.props.assignment.caption}</textarea>
+                        ref="assignment-description"
+                        defaultValue={this.props.assignment.caption}></textarea>
                     <AutocompleteMap
                         defaultLocation={address}
                         location={location}
@@ -182,7 +186,7 @@ export default class AdminAssignmentEdit extends React.Component {
                         data-hint="hours from now"
                         ref="assignment-expiration"
                         style={{marginTop: '64px'}}
-                        defaultValue={expirationHours} /> {/*Styles need fixing*/}
+                        defaultValue={expiration_time} />
                 </div>
                 <div className="dialog-foot">
                     <button type="button" className="btn btn-flat assignment-approve pull-right" onClick={this.approve} disabled={this.isPending}>Approve</button>
