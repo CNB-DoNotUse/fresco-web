@@ -48,29 +48,23 @@ $mobileHeight:240px;
 			background-position:center;
 			background-size:100%;
 			overflow:hidden;
-			-webkit-height:65vh;
-			   -moz-height:65vh;
-			    -ms-height:65vh;
-			     -o-height:65vh;
-			     	height:768px;
-			     	height:65vh;
-			     	min-height:650px;
-
+	     	height:768px;
+	     	min-height:650px;
 	     	@include tablet{
-	     		-webkit-height:50vh;
-	     		   -moz-height:50vh;
-	     		    -ms-height:50vh;
-	     		     -o-height:50vh;
-	     		     	height:50vh;
+	     		height:576px;
 	     	}
 			@include mobile{
 				background-position:initial;
 				min-height:initial;
-				-webkit-height:$mobileHeight;
-				   -moz-height:$mobileHeight;
-				    -ms-height:$mobileHeight;
-				     -o-height:$mobileHeight;
-				     	height:$mobileHeight;
+		     	height:$mobileHeight;
+			}
+
+			video{
+				height:100%;
+
+				@include mobile{
+					width:100%;
+				}
 			}
 		}
 	}
@@ -141,10 +135,10 @@ $mobileHeight:240px;
 			}
 
 			.caption{
-				font-size:16px;
-				color:#292929;
-				line-height:16px;
-				margin-right:10px;
+				font-size:14px;
+				font-family:$roboto;
+				margin-right:20px;
+				@include rgbaWithHex(color, 0, 0, 0, 0.87, #292929);
 			}
 
 			.gallery-info-section{
