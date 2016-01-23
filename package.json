@@ -23,6 +23,7 @@
     "express-session": "~1.11.3",
     "formidable": "^1.0.17",
     "jquery": "^2.1.4",
+    "mandrill-api": "^1.0.45",
     "mdi": "~1.0.62-beta",
     "merge-stream": "^1.0.0",
     "moment": "^2.10.6",
@@ -42,7 +43,8 @@
     "superagent": "^1.6.1",
     "twitter": "~1.2.5",
     "underscore": "~1.8.3",
-    "validator": "^4.5.0"
+    "validator": "^4.5.0",
+    "xml2js": "^0.4.16"
   },
   "devDependencies": {
     "babel-core": "^6.1.2",

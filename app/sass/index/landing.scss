@@ -1,0 +1,363 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+
+/**
+ * Overriden navigation styles
+ */
+
+.nav{
+
+	@include box-shadow(0 4px 4px 0 rgba(0, 0, 0, 0.05), 0 6px 6px 0 rgba(0, 0, 0, 0.15));
+
+	.logo{
+		float:left;
+		position:static;
+		padding: 31px 0 31px 36px;
+
+		@include mobile{
+	        padding:0;
+		}
+	}
+
+	ul {
+		float: right;
+	    padding: 68px 48px 0 0;
+
+		@include mobile{
+			display:none;
+		}
+
+		#landing-action{
+			display:none;
+		}
+
+		li{
+			cursor:pointer;
+			font-weight:700;
+			a{
+				font-weight:700;
+			}
+			font-size:24px;
+			display:inline-block;
+			margin-left:24px;
+		}
+	}
+
+	/*
+		Transparent styling for nav bar
+	 */
+
+	&.transparent{
+		background:none;
+		position:relative;
+		margin-bottom:30px;
+		@include box-shadow(none !important);
+		text-shadow:0 2px 2px #000;
+		text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+		color:#FFF;
+		top:0;
+		-webkit-transform:none !important;
+		   -moz-transform:none !important;
+		    -ms-transform:none !important;
+		     -o-transform:none !important;
+
+		transform:none !important;
+
+		a{
+			color:#FFF !important;
+			text-shadow:0 2px 2px #000;
+			text-shadow:0 2px 2px rgba(0, 0, 0, .15); 
+		}
+	}
+}
+
+
+
+/**
+ *  Master Hero Background
+ */
+
+
+ @keyframes animateBackground {
+ 	from { 
+ 		@include transform(scale(2, 2) translate(0px, 46px));
+ 	}
+ 	to   { 
+ 		@include transform( scale(1,1) translate(0px, 0px));
+ 	}
+}
+
+.hero-bg{
+	height:100%;
+	width:100%;
+	z-index:-1;
+	overflow:hidden;
+	position:fixed;
+	left:0; right:0; top:0; bottom:0;
+
+	div{
+		position:absolute;
+		left:0; right:0; top:0; bottom:0;
+		background: #ffc600 url("https://d1dw1p6sgigznj.cloudfront.net/index/map.png");
+		background-repeat: no-repeat;
+		background-position:50%;
+	    background-size:cover;
+		left:0; right:0; top:0; bottom:0;
+		animation: animateBackground 30s linear;
+		overflow:hidden;
+	}
+}
+
+$heroHeight: 180px;
+
+.hero{
+	height:$heroHeight;
+	margin:0 auto 168px;
+	text-align:center;
+	position:relative;
+	color:#FFF;
+
+	.tagline{
+		margin:0 auto 48px;
+		max-width:98%;
+
+		h1{
+			font-weight:700;
+			font-size:48px;
+			text-shadow:0 2px 2px #F5F5F5;
+			text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+		}
+		
+		h3{
+			margin:4px 0 0 ;
+			font-weight:400;
+			font-size:26px;
+			text-shadow:0 2px 2px #F5F5F5;
+			text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+		}
+	}
+
+	.download{
+
+		a{
+			margin:0 5px;
+			img{
+				width:145px;
+			}	
+		}
+
+	}
+}
+
+/**
+ * Card Container below the hero
+ */
+
+.bottom{
+	position:relative;
+   	margin-bottom: -72px;
+
+	@include mobile{
+   		margin-bottom:12px;		
+	}
+
+	@media screen and (max-width: 1280px) {
+   		margin-bottom:40px;
+   	}
+
+	position:relative;
+	z-index:10;
+}
+
+/**
+ * Shared style for each card
+ */
+
+.card{
+	@include box-shadow(0 2px 2px 0 rgb(0, 0, 0), 0 3px 2px 0 rgb(0, 0, 0));
+	@include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 3px 2px 0 rgba(0, 0, 0, 0.10));
+	@include border-radius(2px);
+	background:#FFF;
+	max-width:736px;
+	margin:20px auto;
+
+	@include mobile{
+		margin:12px auto 0 !important;
+		max-width:100%;
+	}
+}
+
+/**
+ * About Section
+ */
+
+.about{
+	text-align:center;
+	$mobileWidth:90%;
+	$mobileLineWidth:$mobileWidth * 3 + 2%;
+
+	.scroll{
+
+		@include mobile{
+			white-space: nowrap;
+			overflow: scroll;
+			margin: 0 auto;
+			position: relative;
+		}
+
+		.timeline{
+			padding: 44px 5% 0px;
+			height:auto;
+
+			@include mobile{
+				margin: 0 auto;
+				position: relative;
+				padding:44px 0 24px;
+			}
+
+			li{
+				height:216px;
+				position:relative;
+				display:inline-block;
+				text-align:center;
+
+				@include mobile{
+					width:$mobileWidth !important;
+				}
+
+				img{
+					vertical-align:middle;
+					margin:0 auto;
+					max-height:100%;
+					max-width:100%;
+				}
+			}
+			
+			li.third{
+				.callout{
+					z-index:50;
+					top:-20px;
+					width:72px;
+					height:72px;
+					position:absolute;
+					top: -60px;
+					right: 0px;
+
+					@include mobile{
+						top:-40px;
+						right:inherit;
+
+					}
+				}
+			}
+			
+			li.second{
+				width:42%;
+				margin:0 4%;
+				margin-bottom: -28px;
+				@include mobile{
+					margin:0 auto;
+				}
+			}
+			
+
+			li.first, li.third{
+				width:24%;
+			}
+			
+		}
+
+		.line{
+			height: 4px;
+			background: rgba(0, 0, 0, 0.12);
+			position: relative;
+			top: 14px;
+			@include mobile{
+				width:$mobileLineWidth;
+			}
+		
+		}
+
+		.progress{
+		    position: relative;
+		    height:60px;
+		    margin: 0 auto;
+			$circleBorder:4px;
+
+			@include mobile{
+				margin:0 auto;
+				position:relative;
+			}
+
+			li{
+				position:absolute;
+				text-align:center;
+				margin:-$circleBorder 0;
+
+				@include mobile{
+					display:inline-block;
+					width:$mobileWidth !important;
+					position:relative !important;
+					left:0 !important;
+					right:0 !important;
+				}
+
+				.circle{
+					width:24px;
+					height:24px;
+					position:absolute;
+					left:0;
+					right:0;
+					margin:0 auto 20px;
+					background:$fresco-yellow;
+					border:$circleBorder solid #FFF;
+					@include border-radius(50px);
+				}
+
+				p{
+					color:#000;
+					font-weight:700;
+					font-size:24px;
+					margin-top:40px;
+				}
+			}
+
+			li.first{
+				left:9%;
+			}
+			
+			li.second{
+				left: 0;
+				right: 0;
+			}
+			
+			li.third{
+				right:9%;
+			}
+
+		}
+
+
+	}
+	.info{
+		font-family: Roboto;
+		max-width:90%;
+		font-size:14px;
+		margin:0 auto;
+		color:rgb(0, 0, 0);
+		color:rgba(0, 0, 0, .54);
+		padding:20px 40px;
+		font-weight:500;
+
+		@include mobile{
+			padding:20px 20px;
+		}
+	}
+
+}

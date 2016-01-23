@@ -6,12 +6,19 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
+/**
+ * Master modal class
+ */
+
 .modal{
 	display:none;
 	opacity:0;
 	position:relative;
 	margin:0 auto;
 
+	/*
+		Form Styles for all modals
+	 */
 	form{
 		position: relative;
 		border-botttom:1px solid;
@@ -40,9 +47,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				@include rgbaWithHex(border-color, 0, 0, 0, .12, #F4F4F4);
 			}
 		}
-		textarea:focus, input:focus{
-		    outline: 0;
-		}
 		input, textarea{
 			display:block;
 			width:90%;
@@ -62,46 +66,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		textarea{
 			height:180px;
 			resize:none;
-		}
-		.dropdown{
-			cursor:pointer;
-		
-			div{
-				padding:16px 0 16px 16px;
-				p{
-					display:inline-block;
-					font-size:16px;
-					@include rgbaWithHex(color, 0, 0, 0, .26, #BDBDBD);
-				}
-				span{
-					float:right;
-					margin-right:10px;
-					font-size:20px;
-					@include rgbaWithHex(color, 0, 0, 0, 0.54, #757575);
-				}
-			}
-			ul{
-				display:none;
-				position: absolute;
-				max-height:250px;
-				overflow:scroll;
-				width: 100%;
-				z-index: 10;
-				background: #FFF;
-				border-top:1px solid #F3F3F3;
-				border-top:1px solid rgba(0, 0, 0, 0.05);
-				@include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 3px 3px 0 rgba(0, 0, 0, 0.10));
-
-				li{
-					font-family:$roboto;
-				    height: 20px;
-				    display: block;
-				    padding: 14px 16px;
-				}
-				li:hover{
-					background:#DDD;
-				}
-			}
 		}
 		h3{
 			font-weight: 700;
@@ -133,8 +97,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 
 /**
- * Window styling for modal, child of `.modal`
+ * Window type styling for modal, child of `.modal`
  */
+
+$headerHeight:64px;
 
 .modal_window{
 	@extend .modal;
@@ -155,15 +121,16 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 	.header{
 		padding:0 16px;
-		height:64px;
+		min-height:$headerHeight;
 		border-bottom:1px solid #E6E6E6;
 		border-bottom:1px solid rgba(0,0,0,0.10);
 
 		h2{
-			display:inline-block;
+			display:block;
 			font-size:24px;
 			font-weight:700;
-			margin:22px auto 0;
+		    padding: 22px 0 12px;
+		    max-width: 95%;
 		}
 
 		.mdi-close{
@@ -179,27 +146,27 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 }
 
+/**
+ * XS Modal - takes up the entire screen on mobile screen size
+ */
+
 .xs{
-
 	@include mobile{
-
 		margin:0 auto !important;
+		height:100%;
 
-
+		.body {
+			overflow:scroll;
+			height:100% !important;
+		}
 	}
-
 }
+
+/**
+ * Active Class for modals 
+ */
 
 .active-modal{
 	display:block;
 	opacity:1;
 }
-
-@import "team";
-@import "account";
-@import "press";
-@import "contact";
-@import "faq";
-@import "forgot";
-@import "join";
-@import "reset";

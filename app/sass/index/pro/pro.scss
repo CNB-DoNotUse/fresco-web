@@ -1,0 +1,276 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+@import "../../global/_global";
+@import "../landing";
+@import "../modals";
+@import "pro-schedule";
+
+.landing-wrap{
+	padding:320px 0 0;
+	
+	@include mobile{
+		padding:35% 0 0;
+	}
+	.hero{
+
+		height:auto;
+		margin:0 auto 144px;
+
+	}
+
+	.signup, .update{
+		margin:12px auto -20px !important;
+
+		@include mobileAndTablet{
+			margin:12px auto;
+		}
+
+		h3{
+			font-size:24px;
+			font-weight:700;
+			text-align:center;
+			padding:22px 0 0;
+
+		}
+
+		.body{
+			overflow:auto;
+			position:relative;
+			padding:16px;
+
+			@include mobile{
+				padding:16px 0 0;
+			}
+
+			.info, form, .form-completion{
+				float:left;
+
+				@include mobile{
+					float:none;
+				}
+			}
+
+			.info {
+				font-family:$roboto;
+				margin:0 auto;
+				max-width:368px;
+				padding-right:16px;
+
+				@include mobile{
+					padding:0 0 22px;
+					max-width:90%;
+				}
+
+				p{
+					font-weight:500;
+					font-size:14px;
+					line-height:20px;
+					margin-bottom:12px;
+					@include rgba(color, 0, 0, 0, 0.54);
+				}
+			}
+
+			$formWidth:316px;
+			$formHeight:341px;
+
+			.form-wrap{
+				overflow:hidden;
+				height:auto;
+				position:relative;
+				width:$formWidth;
+				max-height:$formHeight;
+			    border: 1px solid #F4F4F4;
+				@include border-radius(2px);
+				@include mobile{
+					width:100%;
+				}
+
+				form{
+					width:$formWidth;
+					z-index:4;
+					@include mobile{
+						width:100%;
+					}
+
+					input{
+						display:block;
+						background:#FFF;
+						border:none;
+						font-size:16px;
+						height:56px;
+					}
+
+					input[type="text"], .dropdown {
+						width:90%;
+						padding:0 16px;
+						border-bottom:1px solid #F4F4F4;
+					}
+
+					input[type="submit"] {
+						cursor:pointer;
+						width:100%;
+						font-size:20px;
+						font-weight:700;
+						text-align:center;
+						margin:0 auto;
+					}
+				}
+				
+				.form-completion{
+					width:320px;
+					height:$formHeight + 3px;
+					color:#FFF;
+					background: #4cd764;
+					display:none;
+					opacity:0;
+					z-index:5;
+					position:relative;
+					text-align:center;
+
+					.inner{
+						position: absolute;
+						height:266px;
+						top: 50%;
+						margin-top:-133px;
+					}
+
+					@include transition(opacity .3s ease-in-out);
+
+					@include mobile{
+						width:100%;
+					}
+
+					.mdi-check{
+						display:block;
+						margin:0 auto;
+						font-size:72px;
+						width:72px;
+						height:72px;
+
+						@include mobile{
+							margin:0 auto;
+						}
+					}
+
+					h3{
+						padding:0 0 12px;
+					}
+
+					p{
+						line-height:20px;
+						font-size:14px;
+						font-family:$roboto;
+						font-weight:500;
+						margin:0 0 6px;
+						text-align:left;
+						padding:0 16px;
+					}
+
+					ol{
+						text-align:left;
+						margin-left:16px;
+						padding:0 20px;
+
+						li{
+							margin:0 0 6px;
+							line-height:20px;
+							font-size:14px;
+							font-family:$roboto;
+							font-weight:500;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/*
+	Filling Circle Class
+ */
+
+.circle{
+	background:#4cd764;
+	height:40px;
+	bottom:0;
+	width:40px;
+	z-index:3;
+	position:absolute;
+	display:none;
+
+	@include transition(width .4s cubic-bezier(0.645, 0.045, 0.355, 1));
+	@include transition(margin-left .4s cubic-bezier(0.645, 0.045, 0.355, 1));
+	@include transition(margin-top .4s cubic-bezier(0.645, 0.045, 0.355, 1));
+	@include border-radius(50%);
+}
+
+/*
+	Material Circle Animation SVG
+ */
+// scaling... any units
+$width:30px;
+
+.showbox {
+  position: absolute;
+  display:none;
+  bottom: -5px; 
+  left: 0; right: 0;
+  padding: 5%;
+
+	.loader {
+	  position: relative;
+	  margin: 0px auto;
+	  width: $width;
+	  &:before {
+	    content:'';
+	    display: block;
+	    padding-top: 100%;
+	  }
+
+	  .circular {
+	    animation: rotate 2s linear infinite;
+	    height: 100%;
+	    transform-origin: center center;
+	    width: 100%;
+	    position: absolute;
+	    top: 0; bottom: 0; left: 0; right: 0;
+	    margin: auto;
+	  }
+
+	  .path {
+	  	stroke:$fresco-blue;
+	    stroke-dasharray: 1,200;
+	    stroke-dashoffset: 0;
+	    animation: 
+	     dash 1.5s ease-in-out infinite
+	    ;
+	    stroke-linecap: round;
+	  }
+
+	  @keyframes rotate{
+	   100%{
+	    transform: rotate(360deg);
+	   }
+	  }
+	  @keyframes dash{
+	   0%{
+	    stroke-dasharray: 1,200;
+	    stroke-dashoffset: 0;
+	   }
+	   50%{
+	    stroke-dasharray: 89,200;
+	    stroke-dashoffset: -35px;
+	   }
+	   100%{
+	    stroke-dasharray: 89,200;
+	    stroke-dashoffset: -124px;
+	   }
+	  }
+	}
+}

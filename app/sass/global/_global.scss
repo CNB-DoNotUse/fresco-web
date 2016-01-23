@@ -45,8 +45,57 @@ html, body {
     height:100%;
 }
 
-input, select{
-  font-family:Nota, sans-serif;
+input[type="text"], select{
+  font-family:$roboto;
+}
+
+input[type="submit"]{
+    font-family:$nota;
+}
+
+textarea:focus, input:focus{
+    outline: 0;
+}
+
+.dropdown{
+    cursor:pointer;
+
+    div{
+        padding:16px 0 16px 16px;
+        p{
+            display:inline-block;
+            font-size:16px;
+            @include rgbaWithHex(color, 0, 0, 0, .26, #BDBDBD);
+        }
+        span{
+            float:right;
+            margin-right:10px;
+            font-size:20px;
+            @include rgbaWithHex(color, 0, 0, 0, 0.54, #757575);
+        }
+    }
+    ul{
+        display:none;
+        position: absolute;
+        max-height:250px;
+        overflow:scroll;
+        width: 100%;
+        z-index: 10;
+        background: #FFF;
+        border-top:1px solid #F3F3F3;
+        border-top:1px solid rgba(0, 0, 0, 0.05);
+        @include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 3px 3px 0 rgba(0, 0, 0, 0.10));
+
+        li{
+            font-family:$roboto;
+            height: 20px;
+            display: block;
+            padding: 14px 16px;
+        }
+        li:hover{
+            background:#DDD;
+        }
+    }
 }
 
 a:link, a:visited, a:active {

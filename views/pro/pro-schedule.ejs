@@ -1,0 +1,58 @@
+<% 
+    var days = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday'
+    ],
+    activeMorning = '',
+    activeEvening = '';
+%>
+
+<div class="modal pro-schedule xs <%- active %>" id="_pro-schedule">
+    <div class="header">
+        <h2>Set your availability - <%-name%></h2>
+
+        <a href="/"><span class="mdi mdi-close"></span></a>
+    </div>
+    
+    <div class="body">
+        <div class="schedule">
+            <ul class="days" id="_days">
+                <% for(var i=0; i < days.length; i++) { %>
+
+                    <% activeMorning = dayValues[days[i]] ? dayValues[days[i]].morning ? 'active' : '' : '' %>
+
+                    <% activeEvening = dayValues[days[i]] ? dayValues[days[i]].evening ? 'active' : '' : ''%>
+
+                    <li class="day">
+                        <p><%- days[i] %></p>
+
+                        <div class="block first morning <%- activeMorning %>">
+                            <div class="time">
+                                <span>11 AM –</span>
+                                <span>5 PM</span>
+                            </div>
+                            <span class="check mdi mdi-check"></span>
+                        </div>
+                       
+                        <div class="block evening <%- activeEvening %>">
+                            <div class="time">
+                                <span>5 PM –</span>
+                                <span>11 PM</span>
+                            </div>
+                            <span class="check mdi mdi-check"></span>
+                        </div>
+                    </li>       
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var proId = "<%- proId %>"
+</script>

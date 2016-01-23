@@ -37,7 +37,29 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
    -webkit-box-shadow: $params;
       -moz-box-shadow: $params;
            box-shadow: $params;
+}
 
+
+/**
+ * CSS3 Transition
+ */
+
+@mixin transition($transition) {
+  -webkit-transition:$transition;
+     -moz-transition:$transition;
+       -o-transition:$transition;
+          transition:$transition;
+}
+
+/**
+ * CSS3 Transform
+ */
+
+ @mixin transform($transform) {
+   -webkit-transform:$transform;
+      -moz-transform:$transform;
+        -o-transform:$transform;
+           transform:$transform;
  }
 
 @mixin rgba($property, $r, $g, $b, $opacity:1) {

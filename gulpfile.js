@@ -100,7 +100,7 @@ gulp.task('Build Assets',  () => {
 });
 
 /**
- * Webpack task
+ * Webpack task - reads file system folder in /app/views/*.js
  */
 
 gulp.task('Build Webpack', (cb) => {
