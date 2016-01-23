@@ -20,10 +20,9 @@ export default class GalleryEditByline extends React.Component {
 	}
 
 	isTwitterImport() {
-
 		var post = this.props.gallery.posts[0];
 
-		return post.imported && post.meta && post.meta.twitter;
+		return this.props.gallery.imported && post.meta && post.meta.twitter;
 		
 	}
 
@@ -45,6 +44,12 @@ export default class GalleryEditByline extends React.Component {
 
 				if(this.refs.byline)
 					this.refs.byline.value = post.byline;
+
+				if(this.refs.name)
+					this.refs.name.value = '';
+
+				if(this.refs.affiliation)
+					this.refs.affiliation.value = '';
 
 				this.setState({
 					name: ''
