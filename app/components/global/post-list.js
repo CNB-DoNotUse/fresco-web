@@ -204,10 +204,16 @@ export default class PostList extends React.Component {
 	render() {
 
 		var purchases = this.state.purchases,
-			rank = this.props.rank;
+			rank = this.props.rank,
+			posts = [];
 
-		//Map all the posts into cells
-		var posts = this.state.posts.map((post, i)  => {
+		for (var i = 0; i < this.state.posts.length; i++) {
+			
+			var post = this.state.posts[i];
+
+			if(this.props.onlyVerified && post.approvals == 0){
+				continue;
+			}
 
 			var purchased = purchases.indexOf(post._id) > -1 || this.props.allPurchased ? true : false,
 				//Filter out this posts from the currently selected posts
@@ -215,7 +221,7 @@ export default class PostList extends React.Component {
 				//Pass down toggled if this post is inside the filtered posts
 				toggled = filteredPosts.length > 0 ? true : false;
 
-	      	return (
+	      	posts.push(
 	        	<PostCell 
 	        		size={this.props.size} 
 	        		post={post} 
@@ -228,9 +234,8 @@ export default class PostList extends React.Component {
 	        		togglePost={this.togglePost}
 	        		didPurchase={this.didPurchase}
 	        		edit={this.edit} />	
-	      	)
-
-  		});
+	      	);
+		}
 
 		return (
 			<div>
