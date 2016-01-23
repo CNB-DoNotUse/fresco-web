@@ -1,0 +1,109 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+/**
+ * Pro Schedule Modal
+ */
+
+.pro-schedule{
+	@extend .modal_window;
+	max-width:736px;
+	overflow:hidden;
+
+	.schedule{
+		width:100%;
+
+		@include mobile{
+			padding-bottom:68px;
+		}
+
+		.days{
+			font-size:0;
+			margin:16px 10px 12px;
+
+			li{
+				width:94px;
+				margin:0 4px;
+				display:inline-block;
+
+				@include mobile{
+					display:block;
+					width:100%;
+					margin:0 4px 16px;
+				}
+
+				p{
+					color:#7C7C89;
+					height:24px;
+					font-size:14px;
+					font-weight:700;
+				}
+
+
+				.block{
+					@include box-shadow(0 0 0 1px rgba(0, 0, 0, 0.12));
+					@include border-radius(2px);
+					cursor:pointer;
+					margin:8px 0 0;
+					height:120px;
+					background:#FFF;
+					position:relative;
+					overflow:hidden;
+
+					@include mobile{
+						display:inline-block;
+						width: 48.5%;
+						width: calc(50% - 8px);
+						height:96px;
+
+						&.first{
+							margin-right:8px;
+						}
+					}
+					.time{
+						margin:16px 8px;
+						z-index:5;
+						position:relative;
+
+						span{
+							display:block;
+							font-weight:500;
+							font-size:14px;
+							line-height:24px;
+							@include rgba(color, 0, 0, 0, 0.54);
+							@include mobile{
+								display:inline-block;
+							}
+						}
+					}
+					.check{
+						position:absolute;
+						display:none;
+						z-index:5;
+						font-size:24px;
+						right:10px;
+						bottom:14px;
+						float:right;
+					}
+				}
+
+				.active{
+					background:#0047BB;
+					color:#FFF !important;
+
+					.time span{
+						color:#FFF;
+					}
+					.check{
+						display:block;
+					}
+				}
+			}
+		}
+	}
+}

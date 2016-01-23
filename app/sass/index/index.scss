@@ -10,6 +10,14 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 @import "./../global/fresco-slick";
 @import "landing";
 @import "modals";
+@import "team";
+@import "account";
+@import "press";
+@import "contact";
+@import "faq";
+@import "forgot";
+@import "join";
+@import "reset";
 
 .wrapper{
 	height:auto;
@@ -37,34 +45,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	position:absolute;
 	top:40%;
 	left:0; right:0;
-}
-
-
-/*
-	Transparent styling for nav bar
- */
-
-.transparent{
-	background:none;
-	position:relative;
-	margin-bottom:30px;
-	@include box-shadow(none !important);
-	text-shadow:0 2px 2px #000;
-	text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
-	color:#FFF;
-	top:0;
-	-webkit-transform:none !important;
-	   -moz-transform:none !important;
-	    -ms-transform:none !important;
-	     -o-transform:none !important;
-
-	transform:none !important;
-
-	a{
-		color:#FFF !important;
-		text-shadow:0 2px 2px #000;
-		text-shadow:0 2px 2px rgba(0, 0, 0, .15); 
-	}
 }
 
 

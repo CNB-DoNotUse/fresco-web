@@ -46,19 +46,6 @@ router.get('/:modal?', (req, res, next) => {
 });
 
 /**
- * Pro User Page
- */
-router.get('/pro', (req, res, next) => {
-
-    res.render('pro', {
-        head: head,
-        page: 'pro',
-        alerts: req.alerts
-    });
-
-});
-
-/**
  * Parse Account Management iFrame
  */
 
@@ -124,7 +111,6 @@ router.get('/join', (req, res, next) => {
             modal: 'join',
             modals: routes.modals.concat('join'),
         });
-
     });
 });
 
@@ -134,26 +120,26 @@ router.get('/join', (req, res, next) => {
 
 router.get('/verify', (req, res, next) => {
 
-    //Check if the user is logged in already
-    if (req.session && req.session.user && req.session.user.verified) {
+  //Check if the user is logged in already
+  if (req.session && req.session.user && req.session.user.verified) {
 
-        req.session.alerts = ['Your email is already verified!'];
+      req.session.alerts = ['Your email is already verified!'];
 
-        return req.session.save(() => {
-          res.redirect('/');
-          res.end();
-        });
+      return req.session.save(() => {
+        res.redirect('/');
+        res.end();
+      });
 
-    }
+  }
 
-    //Check if the verification link query is valid
-    if (!req.query.t) {
-        req.session.alerts = ['Invalid verification link'];
-        return req.session.save(() => {
-          res.redirect('/');
-          res.end();
-        });
-    }
+  //Check if the verification link query is valid
+  if (!req.query.t) {
+      req.session.alerts = ['Invalid verification link'];
+      return req.session.save(() => {
+        res.redirect('/');
+        res.end();
+      });
+  }
 
   api.post('/v1/user/verify', {
     token: req.query.t

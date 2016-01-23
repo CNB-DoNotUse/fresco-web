@@ -6,9 +6,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
-@import "./../global/_global";
-@import "landing";
-
+@import "../../global/_global";
+@import "../landing";
+@import "../modals";
+@import "pro-schedule";
 
 .landing-wrap{
 	padding:320px 0 0;
@@ -23,7 +24,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 	}
 
-	.signup{
+	.signup, .update{
 		margin:12px auto -20px !important;
 
 		@include mobileAndTablet{
@@ -90,21 +91,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 					width:100%;
 				}
 
-				.circle{
-					background:#4cd764;
-					height:40px;
-					bottom:0;
-					width:40px;
-					z-index:3;
-					position:absolute;
-					display:none;
-
-					@include transition(width .4s cubic-bezier(0.645, 0.045, 0.355, 1));
-					@include transition(margin-left .4s cubic-bezier(0.645, 0.045, 0.355, 1));
-					@include transition(margin-top .4s cubic-bezier(0.645, 0.045, 0.355, 1));
-					@include border-radius(50%);
-				}
-
 				form{
 					width:$formWidth;
 					z-index:4;
@@ -120,7 +106,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 						height:56px;
 					}
 
-					input[type="text"] {
+					input[type="text"], .dropdown {
 						width:90%;
 						padding:0 16px;
 						border-bottom:1px solid #F4F4F4;
@@ -205,12 +191,28 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 }
 
-$green: #008744;
-$blue: #0057e7;
-$red: #d62d20;
-$yellow: #ffa700;
-$white: #eee;
+/*
+	Filling Circle Class
+ */
 
+.circle{
+	background:#4cd764;
+	height:40px;
+	bottom:0;
+	width:40px;
+	z-index:3;
+	position:absolute;
+	display:none;
+
+	@include transition(width .4s cubic-bezier(0.645, 0.045, 0.355, 1));
+	@include transition(margin-left .4s cubic-bezier(0.645, 0.045, 0.355, 1));
+	@include transition(margin-top .4s cubic-bezier(0.645, 0.045, 0.355, 1));
+	@include border-radius(50%);
+}
+
+/*
+	Material Circle Animation SVG
+ */
 // scaling... any units
 $width:30px;
 

@@ -1,12 +1,11 @@
 var express = require('express'),
     requestJson = require('request-json'),
-    request = require('superagent'),
+    superagent = require('superagent'),
     config = require('../../lib/config'),
     validator = require('validator'),
     router = express.Router(),
     mandrill = require('mandrill-api/mandrill'),
     mandrill_client = new mandrill.Mandrill(config.MANDRILL);
-
 
 /**
  * Adds a pro user as a lead into zoho
@@ -62,8 +61,8 @@ router.post('/pro/signup', (req, res, next) => {
         '</CustomModule1>';
 
     //Send request to ZOHO
-    request
-    .get(config.ZOHO.CREATE_LEAD + '&xmlData=' + proUser)
+    superagent
+    .post(config.ZOHO.CREATE_LEAD + '&xmlData=' + proUser)
     .end((err, response) => {
         //Response comes back as XML, we `indexOf` for the success message inside
         if(err || response.text.indexOf('Record(s) added successfully') == -1) {
@@ -73,7 +72,6 @@ router.post('/pro/signup', (req, res, next) => {
             }).end();
         } else{
             sendEmail(params, (success) => {
-                console.log('SendEmail', success);
                 if(success){
                     return res.json({
                         err: null,
@@ -127,7 +125,6 @@ function sendEmail(params, callback) {
             }]
         }
     }, (response) => {
-
         var response = response[0];
 
         //Callback for success or failure
@@ -135,8 +132,64 @@ function sendEmail(params, callback) {
             callback(true)
         else
             callback(false);
-
     });
 }
+
+/**
+ * Updates a pro user on zoho
+ */
+
+router.post('/pro/update', (req, res, next) => { 
+    var params = {
+            day     : req.body.day,
+            morning : req.body.morning == 'true', //BOOL gets converted to a string afterwards :(
+            evening : req.body.evening == 'true',
+            id      : req.body.id,
+            time    : ''
+        };
+
+    if(params.morning && params.evening)
+        params.time = config.PRO.MORNING + ' and ' + config.PRO.EVENING;
+    else if(params.morning)
+        params.time = config.PRO.MORNING
+    else if(params.evening)
+        params.time = config.PRO.EVENING
+    else 
+        params.time = 'None';
+
+    if(!params.day || !params.time || !params.id){
+        return res.json({
+            err: 'ERR_INVALID_PARAMETERS',
+            success: false
+        }).end();
+    }
+
+    //Make the XML Data
+    var proUser = 
+        '<CustomModule1>' +
+            '<row no="1">' +
+                '<FL val="'+ params.day +'">' + params.time + '</FL>' +
+            '</row>' +
+        '</CustomModule1>';
+
+    //Send request to ZOHO
+    superagent
+    .post(config.ZOHO.UPDATE_LEAD + '&id=' + params.id + '&xmlData=' + proUser)
+    .end((err, response) => {
+        //Response comes back as XML, we `indexOf` for the success message inside
+        if(err || response.text.indexOf('Record(s) updated successfully') == -1) {
+             return res.json({
+                err: 'ERR_FAILED',
+                success: false
+            }).end();
+        } else{
+            return res.json({
+                err: null,
+                success: true
+            }).end();
+        }
+    });
+
+});
 
 module.exports = router;

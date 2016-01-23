@@ -1,4 +1,8 @@
-var modalTransitionLength = 300,
+var screen = {
+		tablet: 1024, 
+		mobile: 720
+	},
+	modalTransitionLength = 300,
 	landingWrap = document.getElementById('_landing-wrap'),
 	nav = document.getElementById('_nav'),
 	navList = nav.getElementsByTagName('ul')[0].children,
@@ -13,19 +17,19 @@ for (var i = 0; i < modals.length; i++) {
 		loadScript('/js/handlers/modals/' + window.modal.id.slice(1) + '.js');
 		break;
 	}
-};
+}
 
 for (var i = 0; i < modalActions.length; i++) {
 	modalActions[i].addEventListener('click', handleClick);
-};
+}
 
 for (var i = 0; i < navList.length; i++) {
 	navList[i].addEventListener('click', handleClick);
-};
+}
 
 for (var i = 0; i < footerList.length; i++) {
 	footerList[i].addEventListener('click', handleClick);
-};
+}
 
 /**
  * Click listener for navigaiton actions
@@ -203,6 +207,7 @@ function navResize(width) {
 	var modal = document.getElementsByClassName('active-modal')[0];
 
 	if(modal && modal.className.indexOf('xs') > -1){
+		console.log(screen.mobile);
 		if(window.innerWidth < screen.mobile){
 			nav.style.display = 'none';
 		}

@@ -1,0 +1,57 @@
+<% 
+    proIdPage = typeof(proId) !== 'undefined' ? true : false;
+    navClass = proIdPage ? 'nav transparent' : 'nav';
+    display = typeof(proId) !== 'undefined' ? 'none' : '';
+%>
+
+<% include ../segments/head %>
+
+<div class="wrapper">
+    <div id="_nav" class="<%- navClass %>">
+        <a class="logo" href="/">
+            <span class="icon-fresco"></span>
+        </a>
+
+        <ul> 
+            <% if(!proIdPage){ %>
+                <li class="modal-action" data-event="scroll" data-element="_about">ABOUT</li>
+                <li class="modal-action" data-event="scroll" data-element="_signup">SIGN UP</li>
+            <% } %>
+            <li><a href="/">HOME</a></li>
+        </ul>
+    </div>
+
+    <div class="hero-bg">
+        <div></div>
+    </div>
+
+    <% if(typeof(proId) !== 'undefined') { %>
+
+        <%- include('pro-schedule', {active: 'active-modal'}) %>
+
+    <% } else{ %>
+
+       <div class="landing-wrap" id="_landing-wrap">
+              <div class="hero-wrap">
+                  <div id="_hero" class="hero">
+                      <div class="tagline">
+                          <h1>BECOME A PRO USER</h1>
+
+                          <h3>Get paid to take photos and videos with your smartphone.</h3>
+                      </div>
+                  </div>
+              </div>
+
+              <div id="_bottom" class="bottom" style="">
+                  <% include ../segments/about %>
+
+                  <% include pro-signup %>
+              </div>
+          </div>
+    <% } %>
+
+    <%- include('../segments/footer', {display: display}) %>
+
+</div>
+
+<% include ../segments/scripts %>
