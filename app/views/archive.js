@@ -21,14 +21,24 @@ class Archive extends React.Component {
 		super(props);
 		this.state = {
 			purchases : [],
+			verifiedToggle: true,
 			sort: 'capture'
 		}
 
 		this.loadPosts = this.loadPosts.bind(this);
 		this.updateSort = this.updateSort.bind(this);
+		this.onVerifiedToggled 	= this.onVerifiedToggled.bind(this);
+	}
+
+	onVerifiedToggled(toggled) {
+		this.setState({
+			verifiedToggle: toggled
+		});
 	}
 
 	render() {
+
+		console.log(this.state.verifiedToggle);
 
 		return (
 			<App user={this.props.user}>
@@ -37,6 +47,7 @@ class Archive extends React.Component {
 					updateSort={this.updateSort}
 					timeToggle={true}
 					verifiedToggle={true}
+					onVerifiedToggled={this.onVerifiedToggled}
 					chronToggle={true} />
 				<PostList
 					loadPosts={this.loadPosts}
@@ -44,6 +55,7 @@ class Archive extends React.Component {
 					sort={this.state.sort}
 					purchases={this.props.purchases}
 					size='small'
+					onlyVerified={this.state.verifiedToggle}
 					scrollable={true} />
 			</App>
 		);
@@ -61,7 +73,7 @@ class Archive extends React.Component {
 
 		var params = {
 			limit: global.postCount,
-			verified : true,
+			verified : this.state.verifiedToggle,
 			offset: passedOffset,
 			sort: this.state.sort
 		};
