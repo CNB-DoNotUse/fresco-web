@@ -221,8 +221,6 @@ export default class AdminBody extends React.Component {
 	}
 
 	render() {
-
-		var listItems = [];
 		
 		switch(this.props.activeTab) {
 
@@ -230,7 +228,7 @@ export default class AdminBody extends React.Component {
 
 				if (!this.state.activeAssignment || !this.state.hasActiveGallery || !this.props.assignments.length) break;
 
-				listItems = this.props.assignments.map((assignment, i) => {
+				var listItems = this.props.assignments.map((assignment, i) => {
 								return <AssignmentListItem
 											type="assignment"
 											assignment={assignment}
@@ -253,7 +251,7 @@ export default class AdminBody extends React.Component {
 
 				if (!this.state.activeGallery|| !this.state.hasActiveGallery || !this.props.submissions.length) break;
 
-				listItems = this.props.submissions.map((submission, i) => {
+				var listItems = this.props.submissions.map((submission, i) => {
 								return <GalleryListItem
 											type="submission"
 											gallery={submission}
@@ -275,7 +273,7 @@ export default class AdminBody extends React.Component {
 
 				if (!this.state.activeGallery || !this.state.hasActiveGallery || !this.props.imports.length) break;
 
-				listItems = this.props.imports.map((gallery, i) => {
+				var listItems = this.props.imports.map((gallery, i) => {
 								return <GalleryListItem
 											type="import"
 											gallery={gallery}
