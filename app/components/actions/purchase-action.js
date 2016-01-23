@@ -48,7 +48,7 @@ export default class PurchaseAction extends React.Component {
 
 						if (result.err) {
 							return $.snackbar({
-								content: global.resolveError(result.err, 'There was an error while completing your purchase!')
+								content: global.resolveError(result.err, 'There was an error while completing your purchase! Please double check your payment info.')
 							});
 						}
 
