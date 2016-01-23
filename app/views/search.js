@@ -177,7 +177,7 @@ export class Search extends React.Component {
 
 	// Query API for users
 	getUsers(offset, force) {
-		$.get('/scripts/user/search', {
+		$.get('/api/user/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10

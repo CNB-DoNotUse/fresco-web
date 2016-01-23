@@ -55,23 +55,6 @@ router.post('/user/reset', function(req, res, next) {
 
 });
 
-router.post('/user/follow', function(req, res, next) {
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/user/follow', req.body, function(err,response,body){
-    if (err)
-      return res.json({err: err, data: {}}).end();
-    if (!body)
-      return res.json({err: 'ERR_EMPTY_BODY', data: {}}).end();
-    if (body.err)
-      return res.json({err: body.err, data: {}}).end();
-
-    req.session.user.following = body.data;
-    req.session.save(function(){
-      return res.json({err: null, data: body.data}).end();
-    });
-  });
-});
 router.post('/user/login', function(req, res, next) {
   if(req.body.email && req.body.password){
     var parse = requestJson.createClient(config.PARSE_API);
@@ -79,7 +62,7 @@ router.post('/user/login', function(req, res, next) {
     parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
     parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
     parse.headers['X-Parse-Revocable-Session'] = "1";
-    
+
     parse.get('/1/login?username=' + req.body.email + '&password=' + req.body.password, function(err,response,parse_body) {
       if(err) {
         return res.json({err: err}).end();
@@ -132,15 +115,15 @@ router.get('/user/logout', function(req, res, next) {
       return req.session.destroy(function(){
         res.redirect('/');
       });
-  
+
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
   api.post('/v1/auth/logout', { }, function(err,response,body){
-  
+
     req.session.destroy(function(){
       res.redirect('/');
     });
-  
+
   });
 
 });
@@ -159,12 +142,12 @@ router.post('/user/register', function(req, res, next) {
     return res.json({
       err: 'ERR_INVALID_EMAIL'
     });
-  } 
+  }
 
   User.registerUser(userData, function(err, user_body, login_body){
     if (err)
       return res.json({err: err, data: {}}).end();
-      
+
     req.session.user = user_body.data;
     req.session.user.token = login_body.data.token;
     req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
@@ -173,34 +156,7 @@ router.post('/user/register', function(req, res, next) {
     });
   });
 });
-router.get('/user/search', function(req, res, next){
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  var params = Object.keys(req.query).map(function(key){
-    return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
-  }).join('&');
 
-  api.get('/v1/user/search?' + params, function(err, response, body){
-    res.json(body).end();
-  });
-});
-router.post('/user/unfollow', function(req, res, next) {
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/user/unfollow', req.body, function(err,response,body){
-    if (err)
-      return res.json({err: err, data: {}}).end();
-    if (!body)
-      return res.json({err: 'ERR_EMPTY_BODY', data: {}}).end();
-    if (body.err)
-      return res.json({err: body.err, data: {}}).end();
-
-    req.session.user.following = body.data;
-    req.session.save(function(){
-      return res.json({err: null, data: body.data}).end();
-    });
-  });
-});
 router.post('/user/update', function(req, res, next) {
 
 	var request = require('request'),
@@ -270,7 +226,7 @@ router.get('/user/verify/resend', function(req, res, next){
         res.end();
       });
     }
-    
+
       req.session.alerts = ['A comfirmation email has been sent to your email.  Please click the link within it in order to verify your email address.'];
       return req.session.save(function(){
         res.redirect(req.headers['Referer'] || config.DASH_HOME);
