@@ -118,7 +118,7 @@ export class Search extends React.Component {
 
 	// Query API for assignments
 	getAssignments(offset, force) {
-		$.get('/scripts/assignment/search', {
+		$.get('/api/assignment/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10,

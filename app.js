@@ -247,6 +247,13 @@ for (var i = 0; i < routes.platform.length; i++) {
  * Webservery proxy for forwarding to the api
  */
 
+// Special case for assignment create
+// TODO: Remove this
+app.post('/api/assignment/create', (req, res, next) => {
+  req.body.outlet = req.session.user ? req.session.user.outlet ? req.session.user.outlet._id : undefined : undefined;
+  next();
+});
+
 app.use('/api', (req, res, next) => {
   var token = req.session.user ? req.session.user.token ? req.session.user.token : '' : '';
 
@@ -268,7 +275,7 @@ app.use('/api', (req, res, next) => {
 
       return res.send(data);
     });
-})
+});
 
 /**
  * Error Midleware

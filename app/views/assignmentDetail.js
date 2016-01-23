@@ -40,7 +40,7 @@ class AssignmentDetail extends React.Component {
  	 */
  	expireAssignment() {
 
- 		$.post('/scripts/assignment/expire', {
+ 		$.post('/api/assignment/expire', {
  			id: this.state.assignment._id
  		}, (response) => {
  			location.reload();
@@ -66,14 +66,14 @@ class AssignmentDetail extends React.Component {
 
  		return (
  			<App user={this.props.user}>
- 				<TopBar 
+ 				<TopBar
  					title={this.state.assignment.title}
  					timeToggle={true}
- 					chronToggle={true} 
+ 					chronToggle={true}
  					verifiedToggle={this.props.user.rank >= global.RANKS.CONTENT_MANAGER} /* Based on user rank to see verified content */
  					editable={true}
  					edit={this.toggleEdit} />
- 				<AssignmentSidebar 
+ 				<AssignmentSidebar
  					assignment={this.state.assignment}
  					expireAssignment={this.expireAssignment} />
  				<div className="col-sm-8 tall">
@@ -85,7 +85,7 @@ class AssignmentDetail extends React.Component {
 	 					editable={false}
 	 					size='large' />
 				</div>
-				<AssignmentEdit 
+				<AssignmentEdit
 					assignment={this.state.assignment}
 					setAssignment={this.setAssignment}
 					toggled={this.state.toggled}
@@ -98,9 +98,9 @@ class AssignmentDetail extends React.Component {
 }
 
 ReactDOM.render(
-  	<AssignmentDetail 
-  		user={window.__initialProps__.user} 
-  		purchases={window.__initialProps__.purchases} 
+  	<AssignmentDetail
+  		user={window.__initialProps__.user}
+  		purchases={window.__initialProps__.purchases}
   		assignment={window.__initialProps__.assignment}
   		title={window.__initialProps__.title} />,
   	document.getElementById('app')

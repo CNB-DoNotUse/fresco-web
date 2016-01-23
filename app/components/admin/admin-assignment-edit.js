@@ -3,13 +3,13 @@ import React from 'react'
 import AutocompleteMap from '../global/autocomplete-map'
 
 /**
-    
+
     Assignment Edit Sidebar used in assignment administration page
 
 **/
 
 export default class AdminAssignmentEdit extends React.Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -42,7 +42,7 @@ export default class AdminAssignmentEdit extends React.Component {
      */
     componentDidUpdate(prevProps, prevState) {
         $.material.init();
-        
+
         if(!this.props.assignment._id) return;
 
         if (this.props.assignment._id != prevProps.assignment._id) {
@@ -95,7 +95,7 @@ export default class AdminAssignmentEdit extends React.Component {
     approve() {
         this.pending = true;
 
-        $.post('/scripts/assignment/approve',
+        $.post('/api/assignment/approve',
         {
             id: this.props.assignment._id,
             title: this.refs['assignment-title'].value,
@@ -124,7 +124,7 @@ export default class AdminAssignmentEdit extends React.Component {
 
     reject() {
         this.pending = true;
-        $.post('/scripts/assignment/deny', {
+        $.post('/api/assignment/deny', {
             id: this.props.assignment._id
         }, (data) => {
             this.pending = false;
@@ -142,14 +142,14 @@ export default class AdminAssignmentEdit extends React.Component {
     }
 
     render() {
-        
+
         var location = this.state.location,
             radius = Math.round(global.milesToFeet(this.state.radius)),
             address = this.props.assignment.location ? this.props.assignment.location.address : '',
             expirationDate = new Date(this.props.assignment.expiration_time),
             expirationHours = Math.ceil((expirationDate - Date.now()) / 1000 / 60 / 60);
 
-        if(this.props.activeGalleryType != 'assignment' || !this.props.hasActiveGallery) 
+        if(this.props.activeGalleryType != 'assignment' || !this.props.hasActiveGallery)
             return (<div></div>);
 
 
