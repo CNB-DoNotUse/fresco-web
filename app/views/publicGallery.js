@@ -71,7 +71,7 @@ class PublicGallery extends React.Component {
 
 			if(post.video){
 				var autoPlay = i == 0;
-				video =  <video width="100%" height="100%" autoPlay={autoPlay} onClick={this.toggleVideo}>
+				video =  <video autoPlay={autoPlay} onClick={this.toggleVideo}>
 								<source src={global.formatVideo(post.video)} type="video/mp4" />
 								Your browser does not support the video tag.
 							</video>
