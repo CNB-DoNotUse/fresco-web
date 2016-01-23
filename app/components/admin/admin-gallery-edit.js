@@ -271,7 +271,14 @@ export default class AdminGalleryEdit extends React.Component {
 				if(post.video) {
 					galleryImages.push(
 						<div key={i}>
-							<video width="100%" height="100%" data-id={post._id} controls>
+							<video 
+								data-id={post._id}
+								className="admin-video"
+								preload="none"
+								poster={post.video.replace('/videos', '/images/small').replace('.m3u8', '-thumb00001.jpg')}
+								width="100%"
+								height="100%"
+								controls >
 								<source src={post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4" />
 								Your browser does not support the video tag.
 							</video>
