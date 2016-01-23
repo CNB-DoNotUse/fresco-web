@@ -8,15 +8,15 @@ var express = require('express'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
     User = require('../../lib/user'),
-    
+
     router = express.Router();
-	
+
 //---------------------------vvv-GALLERY-ENDPOINTS-vvv---------------------------//
 router.post('/gallery/addpost', function(req, res, next){
   var params = {
     gallery: req.body.gallery
   };
-  
+
   var cleanupFiles = [];
 
   function upload(cb) {
@@ -35,7 +35,7 @@ router.post('/gallery/addpost', function(req, res, next){
       cb(err || body.err, body.data);
     });
   }
-  
+
   var i = 0;
   for (var index in req.files){
     cleanupFiles.push(req.files[index].path);
@@ -46,120 +46,6 @@ router.post('/gallery/addpost', function(req, res, next){
   upload(function(err, gallery){
     res.json({err: err, data: gallery}).end();
   });
-});
-router.post('/gallery/bulkupdate', function(req, res, next) {
-  var galleries = req.body.galleries;
-  var caption = req.body.caption;
-  var tags = req.body.tags || [];
-  var tags_to_remove = req.body.tags_removed || [];
-  var stories = [];
-  var stories_to_remove = req.body.stories_removed || [];
-  
-  for(var s in req.body.stories) {
-    var story = req.body.stories[s];
-
-    if (story.indexOf('NEW') != -1) {
-      new_stories.push(story);
-    } else {
-      stories.push(story);
-    }
-
-  }
-  
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.headers['Content-Type'] = 'application/json';
-  
-  async.series([
-    makeStories,
-    updateGalleries
-  ],
-  function() {
-    res.json({}).end();
-  });
-  
-  function makeStories(cb) {
-    async.each(new_stories, function(new_story, cb2) {
-      var title = JSON.parse(new_story.split('NEW=')[1]).title;
-      var story_params = {
-        title: title,
-        caption: ''
-      }
-      
-      api.post('/v1/story/create', story_params, function(err, response, body) {
-        if (err || body.err) {
-          console.log(err || body.err);
-          return cb();
-        }
-        
-        stories.push(body.data._id);
-        cb();
-      });
-    }, function(err) {
-      cb();
-    })
-  }
-  
-  function updateGalleries(cb) {
-    async.each(galleries, function(gallery_id, cb2) {
-      api.get('/v1/gallery/get?id=' + gallery_id, function(err, response, body) {
-        if (err || body.err) {
-          console.log("Error: " + err || body.err);
-          return cb2(); //Ignore errors, continue processing other galleries
-        }
-        var gallery = body.data;
-        
-        var gallery_story_ids = [];
-        gallery.related_stories.forEach(function(story) {
-          gallery_story_ids.push(story._id);
-        });
-        
-        var params = {
-          id: gallery_id,
-          caption: caption,
-          tags: removeAddArray(gallery.tags, tags, tags_to_remove),
-          stories: removeAddArray(gallery_story_ids, stories, stories_to_remove),
-        }
-        
-        api.post("/v1/gallery/update", params, function (err, response, body){
-          cb2();
-        });
-        
-      });
-    }, function(err) {
-      cb();
-    });
-  }
-  
-  function removeAddArray(items, toAdd, toRemove) {
-    toRemove.forEach(function(item) {
-      var pos = items.indexOf(item);
-      if (pos !== -1) {
-        items.splice(pos, 1);
-      }
-    });
-    
-    return unionArrays(items, toAdd);
-  }
-  
-  function unionArrays(array1, array2) {
-    array2.forEach(function(item) {
-      if (array1.indexOf(item) == -1) {
-        array1.push(item);
-      }
-    });
-    
-    return array1;
-  }
-});
-router.post('/gallery/create', function(req, res, next){
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.post("/v1/gallery/create/",
-    req.body,
-    function (err, response, body){
-      res.json(body).end();
-    });
 });
 router.post('/gallery/import', function(req, res, next){
   var request = require('request'),
@@ -176,7 +62,7 @@ router.post('/gallery/import', function(req, res, next){
     request.post({ url: config.API_URL + '/v1/gallery/assemble', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
       for (var index in cleanupFiles)
         fs.unlink(cleanupFiles[index], function(){});
-      
+
       try{
         body = JSON.parse(body);
       }catch(e){
@@ -232,7 +118,7 @@ router.post('/gallery/import', function(req, res, next){
             tempName += '.png';
           else
             tempName += '.jpeg';
-          
+
           var file = fs.createWriteStream(tempName);
           cleanupFiles.push(tempName);
           params.posts[i] = {
@@ -273,59 +159,6 @@ router.post('/gallery/import', function(req, res, next){
       res.json({err: err, data: gallery}).end();
     });
   }
-});
-router.get('/gallery/imports', function(req, res, next){
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.get("/v1/gallery/imports?rated=0",
-    req.query,
-    function (err, response, body){
-      res.json(body).end();
-    });
-});
-router.get('/gallery/list', function(req, res, next){
-  var api = requestJson.createClient(config.API_URL);
-  // api.headers['authtoken'] = req.session.user.token;
-
-  var params = Object.keys(req.query).map(function(key){
-    return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
-  }).join('&');
-
-  api.get('/v1/gallery/list?' + params, function(err, response, body){
-    res.json(body).end();
-  });
-});
-router.get('/gallery/resolve', function(req, res, next){
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-
-  var params = req.query.galleries.map(function(gallery) {
-    return 'galleries[]=' + gallery;
-  }).join('&');
-
-  api.get('/v1/gallery/resolve?' + params, function(err, response, body){
-    res.json(body).end();
-  });
-});
-router.post('/gallery/remove', function(req, res, next){
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.post("/v1/gallery/remove",
-    { id: req.body.id },
-    function (err, response, body){
-      res.json(body).end();
-    });
-});
-router.get('/gallery/search', function(req, res, next){
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  var params = Object.keys(req.query).map(function(key){
-    return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
-  }).join('&');
-  
-  api.get('/v1/gallery/search?' + params, function(err, response, body){
-    res.json(body).end();
-  });
 });
 router.post('/gallery/skip', function(req, res, next){
   req.body.visibility = config.VISIBILITY.PENDING;

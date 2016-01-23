@@ -161,7 +161,7 @@ export class Search extends React.Component {
 			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
 		}
 
-		$.get('/scripts/gallery/search', {
+		$.get('/api/gallery/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 18,
