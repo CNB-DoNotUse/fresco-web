@@ -48,6 +48,10 @@ export default class AutocompleteMap extends React.Component {
 				location: this.props.location,
 				radius: this.props.radius
 			});
+
+			if(this.props.radius && this.props.hasRadius) {
+				this.refs.radius.value = this.props.radius;
+			}
 		}
 	}
 
