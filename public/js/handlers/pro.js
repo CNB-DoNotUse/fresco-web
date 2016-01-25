@@ -11,18 +11,25 @@ var formWrap = document.getElementById('_form-wrap'),
 	finishedState = document.getElementById('_form-completion');
 	disabled = false;
 
-Waves.attach('.button', [ 'waves-block', 'waves-classic']);
-Waves.init();
+init();
 
-submit.addEventListener('click', function(e) {
-	e.preventDefault();
+function init() {
 
-	if(disabled) return;
+	Waves.attach('.button', [ 'waves-block', 'waves-classic']);
+	Waves.init();
 
-	disabled = true;
+	if(!submit) return;
 
-	signup(e);
-}, false);
+	submit.addEventListener('click', function(e) {
+		e.preventDefault();
+
+		if(disabled) return;
+
+		disabled = true;
+
+		signup(e);
+	}, false);
+}
 
 function signup(e) {
 	submit.value = '';
