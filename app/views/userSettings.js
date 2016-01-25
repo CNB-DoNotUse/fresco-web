@@ -29,16 +29,16 @@ class UserSettings extends React.Component {
 	}
 
 	handleInputChange() {
-
 		var newName = this.refs.name.value != (this.props.user.firstname + ' ' + this.props.user.lastname),
-			// newBio = this.refs.bio.value != this.props.user.bio,
+			newBio = !global.compareMultiline(this.refs.bio.value, this.props.user.bio),
 			newAvatar = this.refs.avatarFileInput.files.length > 0,
 			newEmail = this.refs.email.value != this.props.user.email,
 			newPhone = this.refs.phone.value != this.props.user.phone;
 
 		var profileSaveBtn = this.refs.profileSaveBtn,
 			accountSaveBtn = this.refs.accountSaveBtn;
-		if(newName /*|| newBio*/ || newAvatar) {
+
+		if(newName || newBio || newAvatar) {
 			if(profileSaveBtn.className.indexOf(' changed ') == -1) {
 				profileSaveBtn.className += ' changed ';
 			}
@@ -48,13 +48,13 @@ class UserSettings extends React.Component {
 			}
 		}
 
-		if(newEmail || newPhone) {
+		if(newEmail || (newPhone && this.refs.phone.value != '')) {
 			if(accountSaveBtn.className.indexOf(' changed ') == -1) {
 				accountSaveBtn.className += ' changed ';
 			}
 		} else {
 			if(accountSaveBtn.className.indexOf(' changed ') != -1) {
-				accountSaveBtn.className = accountSaveBtn.className.replace(' changed ', '');
+				accountSaveBtn.className = accountSaveBtn.className.replace(' changed', '');
 			}
 		}
 	}
@@ -118,7 +118,7 @@ class UserSettings extends React.Component {
  		userData.append('email', email);
  		userData.append('phone', phone);
  		userData.append('avatar', this.refs.avatarFileInput.files[0]);
- 			
+
  		$.ajax({
  			url: "/scripts/user/update",
  			type: 'POST',
@@ -161,7 +161,7 @@ class UserSettings extends React.Component {
  		var user = this.state.user;
  		var removeButton = <button className="btn btn-danger">DELETE ACCOUNT</button>;
 
- 		return (
+ 		return ( 
  			<App user={this.state.user}>
  				<TopBar 
  					title={this.state.user.firstname + ' ' + this.state.user.lastname}
@@ -196,8 +196,8 @@ class UserSettings extends React.Component {
 								
 								<textarea 
 									className="form-control heading" 
-									disabled={true} 
 									ref="bio" 
+									defaultValue={user.bio}
 									placeholder="Bio"></textarea>
 								
 								<button 

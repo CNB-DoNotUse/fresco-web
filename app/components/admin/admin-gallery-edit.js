@@ -359,7 +359,8 @@ export default class AdminGalleryEdit extends React.Component {
 				<div className="dialog-body" style={{visibility: this.props.hasActiveGallery ? 'visible' : 'hidden'}}>
 					<div className="gallery-images">
 						<Slider
-							dots={true}>
+							dots={true}
+							infinite={false}>
 							{galleryImages ? galleryImages : <div></div>}
 						</Slider>
 					</div>
