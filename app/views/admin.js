@@ -117,6 +117,7 @@ import AdminBody from './../components/admin/admin-body'
 			<App user={this.props.user}>
 				<TopBar 
 					activeTab={this.state.activeTab}
+					getImports={this.getImports}
 					setTab={this.setTab} />
 				<AdminBody 
 					activeTab={this.state.activeTab}

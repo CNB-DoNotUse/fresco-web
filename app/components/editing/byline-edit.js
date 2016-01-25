@@ -22,8 +22,7 @@ export default class GalleryEditByline extends React.Component {
 	isTwitterImport() {
 		var post = this.props.gallery.posts[0];
 
-		return this.props.gallery.imported && post.meta && post.meta.twitter;
-		
+		return this.props.gallery.imported && post.meta && post.meta.twitter;	
 	}
 
 	handleSelected(selected) {
