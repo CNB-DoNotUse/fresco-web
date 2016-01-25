@@ -208,7 +208,16 @@ router.post('/gallery/import', function(req, res, next){
 
       params.source = 'Twitter';
       params.caption = tweet.text;
-      params.time_captured = new Date(Date.parse(tweet.created_at)).getTime()
+      params.time_captured = new Date(Date.parse(tweet.created_at)).getTime();
+
+      /**
+       * Dev API has a new twitter structure.
+      params.twitter_id = tweet.id_str;
+      params.twitter_url = req.body.tweet;
+      params.twitter_handle = handle;
+      params.twitter_user_name = tweet.user.name;
+       */
+
       params.twitter = JSON.stringify({
         id: tweet.id_str,
         url: req.body.tweet,

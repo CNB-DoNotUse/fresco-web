@@ -453,10 +453,10 @@ export default class DispatchMap extends React.Component {
 		//Create the marker image
 		var image = {
 				url: status ? global.assignmentImage[status] : global.assignmentImage.drafted,
-				size: new google.maps.Size(114, 114),
-				scaledSize: new google.maps.Size(60, 60),
+				size: new google.maps.Size(108, 114),
+				scaledSize: new google.maps.Size(36, 38),
 				origin: new google.maps.Point(0, 0),
-				anchor: new google.maps.Point(30, 30)
+				anchor: new google.maps.Point(18, 19)
 			},
 			
 			position = position || {lat: this.state.map.getCenter().lat(), lng: this.state.map.getCenter().lng()},
