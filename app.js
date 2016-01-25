@@ -109,8 +109,7 @@ app.locals.alerts = [];
  * Route session check
  */
 
-app.use(function(req, res, next) {
-
+app.use((req, res, next) => {
     var path = req.path.slice(1).split('/')[0],
         err = new Error('Page not found!'),
         now = Date.now(),
@@ -119,18 +118,17 @@ app.use(function(req, res, next) {
 
     //Check if not a platform route, then send onwwards
     if(routes.platform.indexOf(path) == -1) {
-      return next();
+        return next();
     }
 
     //Check if there is no sessioned user
     if (!req.session.user) {
-      return next(err);
+        return next(err);
     }
 
-    //Check if the session has expired
-    if (req.session.user.TTL && req.session.user.TTL - now <= 0) {
-      delete req.session.user;
-      return next(err);
+    //Check if the session hasn't expired
+    if (req.session.user.TTL && req.session.user.TTL - now > 0) {
+      return next();
     }
 
     //Send request for user profile
@@ -143,7 +141,7 @@ app.use(function(req, res, next) {
             
             delete req.session.user;
             
-            return req.session.save(function() {
+            return req.session.save(() => {
                 res.redirect('/');
             });
         }
@@ -156,18 +154,18 @@ app.use(function(req, res, next) {
 
         //Check if the user has an outlet, otherwise save session and move onward
         if (!req.session.user.outlet) {
-            return req.session.save(function() {
+            return req.session.save(() => {
                 return next();
             });
         }
 
         //Grab purchases because user does have an outlet, then move onward
-        api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(err, response, body) {
+        api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, (err, response, body) => {
 
             if (!err && body && !body.err)
                 req.session.user.outlet.purchases = body.data;
 
-            req.session.save(function() {
+            req.session.save(() => {
                 return next();
             });
         });
@@ -199,7 +197,7 @@ for (var i = 0; i < routes.public.length; i++) {
 
   app.use('/' + routePrefix , route);
 
-};
+}
 
 /**
  * Loop through all script routes
@@ -212,7 +210,7 @@ for (var i = 0; i < routes.scripts.length; i++) {
 
   app.use('/scripts' , route);
 
-};
+}
 
 
 /**
@@ -241,7 +239,7 @@ for (var i = 0; i < routes.platform.length; i++) {
 
   app.use('/' + routePrefix , route);
 
-};
+}
 
 /**
  * Webservery proxy for forwarding to the api
@@ -257,7 +255,11 @@ app.use('/api', (req, res, next) => {
       .set('authtoken', token)
       .end((err, response) => {
         if(err) {
-          return res.json({err: 'API Error'});
+          return res.json({
+            err: {
+              status: err.status
+            }
+          });
         }
 
         var data = '';

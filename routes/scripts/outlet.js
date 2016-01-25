@@ -8,7 +8,6 @@ var express = require('express'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
     User = require('../../lib/user'),
-    
     router = express.Router();
 	
 //---------------------------vvv-OUTLET-ENDPOINTS-vvv---------------------------//
@@ -344,6 +343,75 @@ router.get('/outlet/list', function(req, res, next){
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
   api.get('/v1/outlet/list', function(err,response,body){
+    if (err)
+      return res.json({err: err.err}).end();
+    if (!body)
+      return res.json({err: 'ERR_EMPTY_BODY'}).end();
+    if (body.err)
+      return res.json({err: body.err}).end();
+
+    res.json(body).end();
+  });
+});
+
+router.post('/outlet/location/create', function(req, res, next){
+  if (!req.session.user || !req.session.user.outlet)
+    return res.json({err: 'ERR_INVALID_OUTLET'}).end();
+
+  var api = requestJson.createClient(config.API_URL);
+  api.headers['authtoken'] = req.session.user.token;
+  api.post('/v1/outlet/location/create', req.body, function(err,response,body){
+    if (err)
+      return res.json({err: err.err}).end();
+    if (!body)
+      return res.json({err: 'ERR_EMPTY_BODY'}).end();
+    if (body.err)
+      return res.json({err: body.err}).end();
+
+    res.json(body).end();
+  });
+});
+router.post('/outlet/location/remove', function(req, res, next){
+  if (!req.session.user || !req.session.user.outlet)
+    return res.json({err: 'ERR_INVALID_OUTLET'}).end();
+
+  var api = requestJson.createClient(config.API_URL);
+  api.headers['authtoken'] = req.session.user.token;
+  api.post('/v1/outlet/location/remove', req.body, function(err,response,body){
+    if (err)
+      return res.json({err: err.err}).end();
+    if (!body)
+      return res.json({err: 'ERR_EMPTY_BODY'}).end();
+    if (body.err)
+      return res.json({err: body.err}).end();
+
+    res.json(body).end();
+  });
+});
+router.get('/outlet/location/stats', function(req, res, next){
+  if (!req.session.user || !req.session.user.outlet)
+    return res.json({err: 'ERR_INVALID_OUTLET'}).end();
+
+  var api = requestJson.createClient(config.API_URL);
+  api.headers['authtoken'] = req.session.user.token;
+  api.get('/v1/outlet/location/posts?since=' + (req.query.since || Date.now()), function(err,response,body){
+    if (err)
+      return res.json({err: err.err}).end();
+    if (!body)
+      return res.json({err: 'ERR_EMPTY_BODY'}).end();
+    if (body.err)
+      return res.json({err: body.err}).end();
+
+    res.json(body).end();
+  });
+});
+router.post('/outlet/location/update', function(req, res, next){
+  if (!req.session.user || !req.session.user.outlet)
+    return res.json({err: 'ERR_INVALID_OUTLET'}).end();
+
+  var api = requestJson.createClient(config.API_URL);
+  api.headers['authtoken'] = req.session.user.token;
+  api.post('/v1/outlet/location/update', req.body, function(err,response,body){
     if (err)
       return res.json({err: err.err}).end();
     if (!body)

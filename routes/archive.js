@@ -19,10 +19,9 @@ var express     = require('express'),
 router.get('/', (req, res, next) => {
 
   var title = 'Archive',
-      purchases = config.mapPurchases(req.session),
       props = {
         user : req.session.user,
-        purchases : purchases,
+        purchases : config.mapPurchases(req.session),
         title: title
       };
 

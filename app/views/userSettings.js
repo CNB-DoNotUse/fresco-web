@@ -225,7 +225,7 @@ class UserSettings extends React.Component {
 								</div>
 								
 								<div className="padding">
-									<div style={{width: '100%'}}>
+									<div>
 										<input 
 											type="text" 
 											className="form-control floating-label" 
@@ -233,7 +233,7 @@ class UserSettings extends React.Component {
 											defaultValue={user.email} />
 									</div>
 									
-									<div style={{width: '100%'}}>
+									<div>
 										<input 
 											type="text" 
 											className="form-control floating-label" 
@@ -260,7 +260,7 @@ class UserSettings extends React.Component {
 class ChangePasswordCard extends React.Component {
 	render() {
 		return (
-			<div className="f-card">
+			<div className="card">
 				<div className="f-card-content full">
 					<div className="header">
 						<span>Change Password</span>

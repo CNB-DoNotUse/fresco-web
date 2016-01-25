@@ -236,15 +236,19 @@ export default class TopBar extends React.Component {
 
 		return (
 			<nav className="navbar navbar-fixed-top navbar-default">
-				<div className="dim transparent toggle-drop toggler"></div>
+				<div className="dim transparent toggle-drop toggler" id="platform-dim"></div>
+				
 				<button type="button" className="icon-button toggle-drawer toggler hidden-lg" onClick={this.toggleDrawer}>
 					<span className="mdi mdi-menu icon"></span>
 				</button>
+				
 				<div className="spacer"></div>
+				
 				<h1 className="md-type-title">{this.props.title}</h1>
 				{locationInput}
 				{tabs}
 				{topbarItems}
+				{this.props.children}
 				{saveButton}
 			</nav>
 		);

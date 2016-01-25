@@ -103,6 +103,8 @@ router.post('/user/login', function(req, res, next) {
         if (login_body.err)
           return res.json({err: login_body.err}).end();
 
+        console.log(login_body.data);
+
         req.session.user = login_body.data.user;
         req.session.user.token = login_body.data.token;
         req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
@@ -157,7 +159,7 @@ router.post('/user/register', function(req, res, next) {
 
   if(!validator.isEmail(userData.email)){
     return res.json({
-      err: 'ERR_INVALID_EMAIL'
+      err: 'ERR_INVALID_EMAIL' 
     });
   } 
 

@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import TopBar from './../components/topbar'
 import App from './app'
-import DispatchMap from './../components/dispatch/dispatch-map'
-import DispatchAssignments from './../components/dispatch/dispatch-assignments'
-import DispatchSubmit from './../components/dispatch/dispatch-submit'
-import DispatchRequest from './../components/dispatch/dispatch-request'
+import DispatchMap from '../components/dispatch/dispatch-map'
+import DispatchAssignments from '../components/dispatch/dispatch-assignments'
+import DispatchSubmit from '../components/dispatch/dispatch-submit'
+import DispatchRequest from '../components/dispatch/dispatch-request'
+import TopBar from '../components/topbar'
+import LocationDropdown from '../components/global/location-dropdown';
 import global from '../../lib/global'
 
 /**
@@ -267,7 +268,11 @@ class Dispatch extends React.Component {
 				<TopBar 
 					title={this.props.title}
 					locationInput={true}
-					updateMapCenter={this.updateMapCenter} />
+					updateMapCenter={this.updateMapCenter} >
+
+					<LocationDropdown 
+						currentLocation={this.state.currentLocation} />
+				</TopBar>
 				
 				<DispatchMap 
 					user={this.props.user}
@@ -277,6 +282,7 @@ class Dispatch extends React.Component {
 					newAssignment={this.state.newAssignment}
 					shouldMapUpdate={this.state.shouldMapUpdate}
 
+					updateMapCenter={this.updateMapCenter}
 					mapShouldUpdate={this.mapShouldUpdate}
 					setActiveAssignment={this.setActiveAssignment}
 					findAssignments={this.findAssignments}

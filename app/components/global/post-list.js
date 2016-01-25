@@ -40,9 +40,7 @@ export default class PostList extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-
-		// If got new posts in props while having none previously
-		
+		//If we receive new posts in props while having none previously
 		var currentPostIds  = this.state.posts.map(p => p._id),
 			newPostIds 		= nextProps.posts.map(p => p._id),
 			diffIds 		= _.difference(newPostIds, currentPostIds);
@@ -54,6 +52,9 @@ export default class PostList extends React.Component {
 	    }
 	}
 
+	/**
+	 * Initial call to populate posts
+	 */
 	loadInitialPosts() {
 		//Access parent var load method
 		this.props.loadPosts(0, (posts) => {
@@ -65,24 +66,24 @@ export default class PostList extends React.Component {
 				posts: posts,
 				offset : offset
 			});
-
 		});
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.onlyVerified != this.props.onlyVerified || prevProps.sort != this.props.sort ) {
+		//Checks if the verified prop is changed
+		//`or` Checks if the sort prop is changed
+		if(prevProps.onlyVerified != this.props.onlyVerified 
+			|| prevProps.sort != this.props.sort ) {
 			this.loadInitialPosts();
 		}
 	}
 
 	componentDidMount() {
-
 		//Check if list is initialzied with posts, then don't load anything
 		if(this.state.posts.length) 
 			return;
 
 		this.loadInitialPosts();
-
 	}
 
 	/**
@@ -203,7 +204,6 @@ export default class PostList extends React.Component {
 	 }
 
 	render() {
-
 		var purchases = this.state.purchases,
 			rank = this.props.rank;
 

@@ -8,15 +8,13 @@ import React from 'react'
 export default class Dropdown extends React.Component {
 
 	constructor(props) {
-		
 		super(props);
 		this.state = {
 			selected: this.props.selected
 		}
-		this.clicked = this.clicked.bind(this);
-		this.optionClicked = this.optionClicked.bind(this);
-		this.hideDropdown = this.hideDropdown.bind(this);
 
+		this.toggle = this.toggle.bind(this);
+		this.optionClicked = this.optionClicked.bind(this);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -27,29 +25,29 @@ export default class Dropdown extends React.Component {
 		}
 	}
 
-	//Called whenever the master button is clicked
-	clicked(event) {
-
-		var drop =  $(this.refs.toggle_button).siblings(".drop-menu");
+	/**
+	 * Called whenever the master button is clicked
+	 */
+	toggle() {
+		var drop = this.refs.drop,
+			dim = document.getElementById('platform-dim');
 			
-		drop.toggleClass("toggled");
-		
-		if (drop.hasClass("toggled")) {
-			var offset = drop.offset().left;
-			while (offset + drop.outerWidth() > $(window).width() - 7) {
-				drop.css("left", parseInt(drop.css("left")) - 1 + "px");
-				offset = drop.offset().left;
-			}
+		if(drop.className.indexOf('active') == -1) {
+			drop.className += ' active';
+			dim.className += ' toggled';
+		} else{
+			drop.className = drop.className.replace(/\bactive\b/,'');
+			dim.className = dim.className.replace(/\btoggled\b/,'');
 		}
-		
-		$(".dim.toggle-drop").toggleClass("toggled");
-
 	}
 
-	//Called whenever an option is selected from the dropdown
-	optionClicked(event) {
+	/**
+	 * Called whenever an option is selected from the dropdown
+	 */
+	optionClicked(e) {
 
-		var selected = event.currentTarget.innerHTML;
+		//Get the span tag from the list item
+		var selected = e.currentTarget.getElementsByTagName('span')[0].innerHTML;
 
 		//If the user chose the already selected option, don't do anything
 		if (this.state.selected == selected) {
@@ -61,22 +59,10 @@ export default class Dropdown extends React.Component {
 			selected: selected
 		});
 
-		this.hideDropdown();
+		this.toggle();
 
 		if(this.props.onSelected) {
 			this.props.onSelected(selected);
-		}
-	}
-
-	//Hides the dropdown menu and removes the whole-screen dim
-	hideDropdown() {
-		
-		this.refs.drop.classList.remove('toggled');
-		
-		var toRemoveToggle = document.getElementsByClassName('toggle-drop');
-		
-		for (var i = 0; i < toRemoveToggle.length; i++) {
-			toRemoveToggle[i].classList.remove('toggled');
 		}
 	}
 
@@ -86,45 +72,38 @@ export default class Dropdown extends React.Component {
 			
 			var className = '';
 			
-			if(option === this.state.selected) { //Highlight the current selection
+			if(option === this.state.selected) { //Highlight the current selection if it's the selected one
 				className += ' active';
 			}
 
 			return ( 
-				<li className={className} key={i} onClick={this.optionClicked}>{option}</li> 
+				<li className={className} key={i} onClick={this.optionClicked}>
+					<span>{option}</span>
+				</li> 
 			);
 
 		});
 
-		var dropdownButton = <button className="toggle-drop md-type-subhead" ref="toggle_button" onClick={this.clicked}>
+		var dropdownButton = <div className="toggle" ref="toggle_button" onClick={this.toggle}>
 								<span>{this.state.selected}</span>
-								<span className="mdi mdi-menu-down icon"></span>
-							</button>
+								<span className="mdi mdi-menu-down"></span>
+							</div>
 
-		var dropdownList = <div className="drop-menu panel panel-default" ref="drop" onClick={this.hideDropdown}>
-								<div className="toggle-drop toggler md-type-subhead">
-									<span>{this.state.selected}</span>
-									<span className="mdi mdi-menu-up icon pull-right"></span>
-								</div>
-								<div className="drop-body">
-									<ul className="md-type-subhead">
-										{options}
-									</ul>
-								</div>
-							</div>;
+		var dropdownList = <ul className="list">
+								{options}
+							</ul>
 					
-
 		if(this.props.inList) {
 			return (
-				<li className="drop pull-right hidden-xs">
+				<div className="nav-dropdown pull-right" ref="drop">
 					{dropdownButton}
 					{dropdownList}
-				</li>
+				</div>
 			);
 		}
 		else {
 			return (
-				<div className="split-cell drop">
+				<div className="nav-dropdown" ref="drop">
 					{dropdownButton}
 					{dropdownList}
 				</div>

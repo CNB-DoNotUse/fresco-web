@@ -72,9 +72,11 @@ class AssignmentDetail extends React.Component {
  					verifiedToggle={this.props.user.rank >= 2} /* Based on user rank to see verified content */
  					editable={true}
  					edit={this.toggleEdit} />
+ 				
  				<AssignmentSidebar 
  					assignment={this.state.assignment}
  					expireAssignment={this.expireAssignment} />
+ 				
  				<div className="col-sm-8 tall">
 	 				<PostList
 	 					rank={this.props.user.rank}
@@ -84,6 +86,7 @@ class AssignmentDetail extends React.Component {
 	 					editable={false}
 	 					size='large' />
 				</div>
+
 				<AssignmentEdit 
 					assignment={this.state.assignment}
 					setAssignment={this.setAssignment}

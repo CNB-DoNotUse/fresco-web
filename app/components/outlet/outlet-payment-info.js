@@ -1,10 +1,9 @@
 import React from 'react'
 
-export default class OutletCardInfo extends React.Component {
+export default class OutletPaymentInfo extends React.Component {
 
 	constructor(props) {
 		super(props);
-
 		this.save = this.save.bind(this);
 	}
 
@@ -12,8 +11,12 @@ export default class OutletCardInfo extends React.Component {
 		Stripe.setPublishableKey(window.__initialProps__.stripePublishableKey);
 	}
 
+	/**
+	 * Save funciton for the card
+	 */
 	save() {
 		var exp_times = this.refs['payment-exp'].value.split('/'),
+			self = this,
 			params = {
 				"number": this.refs['payment-ccn'].value,
 				"cvv": this.refs['payment-cvv'].value,
@@ -22,7 +25,7 @@ export default class OutletCardInfo extends React.Component {
 				"address_zip": this.refs['payment-zip'].value,
 				"name": this.refs['payment-name'].value,
 				"currency": "usd"
-			}
+			};
 
 		if (!Stripe.card.validateCardNumber(params.number))
 			return $.snackbar({content:'Invalid credit card number'});
@@ -31,14 +34,13 @@ export default class OutletCardInfo extends React.Component {
 		if (!Stripe.card.validateCVC(params.cvv))
 			return $.snackbar({content:'Invalid CVV number'});
 
-
 		var saveBtn = this.refs['outlet-card-save'];
 
 		saveBtn.setAttribute('disabled', true);
 
 		var stripeResponseHandler = (status, response)  => {
 			if (response.error){
-				_this.prop('disabled', false);
+				saveBtn.prop('disabled', false);
 				return $.snackbar({content: response.error.message});
 			}
 
@@ -50,17 +52,14 @@ export default class OutletCardInfo extends React.Component {
 				},
 				success: (result, status, xhr) => {
 					if (result.err)
-						return this.error(null, null, result.err);
+						return self.error(null, null, result.err);
 
-					//window.location.assign('/outlet');
 					window.location.reload();
 				},
 				error: (xhr, status, error) => {
 					$.snackbar({content:resolveError(error)});
-				},
-				complete: () => {
-					_this.prop('disabled', false);
 				}
+
 			});
 		};
 		
@@ -70,43 +69,79 @@ export default class OutletCardInfo extends React.Component {
 			form.append('<input type="hidden" data-stripe="' + index + '" value="' + params[index] + '">');
 
 		Stripe.card.createToken(form, stripeResponseHandler);
-
 	}
-
 
 	render() {
 
 		var card = this.props.outlet.card;
 
 		var currentCardText = '';
+
 		if(card) {
 			if(card.brand && card.last4 != null) { 
-				var currentCardText = <span className="current-card">USING- { card.brand } - { card.last4 }</span>
+				card = 'USING ' + card.brand + ' - ' + card.last4;
+				currentCardText = <span className="last4">{card}</span>
 			}	
 		}
 
 		return (
-			<div className="card panel card-outlet-card">
+			<div className="card outlet-payment">
 				<div className="header">
 					<span className="title">PAYMENT INFORMATION</span>
-					{currentCardText}
-				</div>
-				<div className="payment-content">
 					<div>
-						<div>
-							<input className="form-control floating-label payment-ccn integer" placeholder="Card number" maxLength="16" tabIndex="1" ref="payment-ccn" />
-						</div>
-						<input className="form-control floating-label payment-name" placeholder="Name on card" tabIndex="4" ref="payment-name" />
-					</div>
-					<div>
-						<div>
-							<input className="form-control floating-label payment-exp" placeholder="00 / 00" maxLength="5" tabIndex="2" ref="payment-exp" />
-							<input className="form-control floating-label payment-cvv integer" placeholder="CVV" maxLength="4" tabIndex="3" ref="payment-cvv" />
-						</div>
-						<input className="form-control floating-label payment-zip" placeholder="ZIP" maxLength="5" tabIndex="5" ref="payment-zip" />
+						{currentCardText}
+						<a href="/outlet">PURCHASE HISTORY</a>
 					</div>
 				</div>
-				<button className="btn btn-flat outlet-card-save" ref="outlet-card-save" tabIndex="6" onClick={this.save}>SAVE CHANGES</button>
+				
+				<div className="card-form">
+					<div className="inputs">
+						<div className="left">
+							<input 
+								type="text"
+								className="form-control" 
+								placeholder="Card number"
+								maxLength="16" 
+							 	tabIndex="1" 
+								ref="payment-ccn" />
+							<input 
+								type="text"
+								className="form-control name" 
+								placeholder="Name on card" 
+								tabIndex="4" 
+								ref="payment-name" />
+						</div>
+						<div className="right">
+							<input 
+								type="text"
+								className="form-control date" 
+								placeholder="00 / 00" 
+								maxLength="5" 
+								tabIndex="2" 
+								ref="payment-exp" />
+							<input 
+								type="text"
+								className="form-control ccv" 
+								placeholder="CVV" 
+								maxLength="4" 
+								tabIndex="3" 
+								ref="payment-cvv" />
+							<input 
+								type="text"
+								className="form-control zip" 
+								placeholder="ZIP" 
+								maxLength="5" 
+								tabIndex="5" 
+								ref="payment-zip" />
+						</div>
+					</div>
+
+					<button 
+						className="btn btn-flat outlet-card-save" 
+						ref="outlet-card-save" 
+						tabIndex="6" 
+						onClick={this.save}>SAVE CHANGES</button>
+				</div>
 			</div>
 		);
 	}
