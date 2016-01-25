@@ -44,7 +44,7 @@ class AssignmentDetail extends React.Component {
 
  		/*$.post('/scripts/assignment/update', {
  			id: this.state.assignment._id,
- 			expire_time: Date.now()
+ 			expiration_time: Date.now()
  		}, (response) => {
  			location.reload();
  		});
