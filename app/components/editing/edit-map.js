@@ -169,10 +169,10 @@ export default class EditMap extends React.Component {
 		//Marker image
 		var markerImage = {
 			url: global.assignmentImage[this.props.type],
-			size: new google.maps.Size(114, 114),
-			scaledSize: new google.maps.Size(60, 60),
+			size: new google.maps.Size(108, 114),
+			scaledSize: new google.maps.Size(36, 38),
 			origin: new google.maps.Point(0, 0),
-			anchor: new google.maps.Point(30, 30)
+			anchor: new google.maps.Point(18, 19)
 		};
 
 		//Instantiate polygon
