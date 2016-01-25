@@ -207,7 +207,6 @@ function navResize(width) {
 	var modal = document.getElementsByClassName('active-modal')[0];
 
 	if(modal && modal.className.indexOf('xs') > -1){
-		console.log(screen.mobile);
 		if(window.innerWidth < screen.mobile){
 			nav.style.display = 'none';
 		}

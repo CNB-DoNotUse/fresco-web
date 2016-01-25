@@ -6,16 +6,16 @@ navResize();
  * Click handler for schedule block element
  */
 
-$('.block').click(function() {
+$('.block').click(function(e) {
 	var block = this;
+
 	//Check if the cell is active already
 	if(this.className.indexOf('active') > -1){
-
-		animateBlock(this, false, function() {
+		animateBlock(this, false, e, function() {
 			updateSchedule(block);
 		});
 	} else {
-		animateBlock(this, true, function() {
+		animateBlock(this, true, e, function() {
 			updateSchedule(block);
 		});
 	}
@@ -26,26 +26,27 @@ $('.block').click(function() {
  * @param {BOOL} filled To fill, or not to fill
  */
 
-function animateBlock(block, fill, callback) {
+function animateBlock(block, fill, e, callback) {
 	var children = block.children,
 		circle;
 
 	circle = document.createElement('div');
-	circle.className = 'circle';
+	circle.className = 'form-circle';
 	block.appendChild(circle);
+
+	var parentPosition = animation.getPosition(block),
+		xPosition = e.clientX - parentPosition.x - (circle.clientWidth / 2),
+		yPosition = e.clientY - parentPosition.y - (circle.clientHeight / 2);
+     
+    circle.style.left = xPosition + "px";
+    circle.style.top = yPosition + "px";
+	circle.style.display = 'block';
 
 	if(fill){
 		circle.style.background = '#0047bb';
 	} else{
 		circle.style.background = '#FFFFFF';
 	}
-
-    var xPosition = block.clientWidth/2 - circle.clientWidth/2;
-    var yPosition = block.clientHeight - 5;
-
-	circle.style.left = xPosition + "px";
-	circle.style.top = yPosition + "px";
-	circle.style.display = 'block';
 
 	width = $(block).width();
 	height = $(block).height();
@@ -83,9 +84,6 @@ function updateSchedule(block) {
 
 	if(morningBlock.className.indexOf('active') > -1)
 		morning = true;
-
-	console.log('Morning', morning);
-	console.log('Evening', evening);
 
 	var params = {
 		day: day, 
