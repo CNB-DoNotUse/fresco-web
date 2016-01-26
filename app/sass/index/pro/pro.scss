@@ -25,10 +25,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		padding:35% 0 0;
 	}
 	.hero{
-
 		height:auto;
 		margin:0 auto 144px;
-
 	}
 
 	.signup, .update{
@@ -100,6 +98,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				@include mobile{
 					width:100%;
 					border:none;
+					border-top:1px solid #F4F4F4;
 				}
 
 				form{
