@@ -56,6 +56,12 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		@include tablet{
 			margin:0 auto !important;
 		}
+
+		input[type="password"] {
+			/* So the password field doesn't hit the help icon */
+			padding-right: 40px;
+		    width: 264px; /* 1px margin because of the border */
+		}
 	}
 
 	.form-wrap.signup{
