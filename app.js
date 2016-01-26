@@ -347,7 +347,9 @@ if(!config.DEV) {
 
     //  Can be refactored and be applied to more subdomains by creating middleware to handle list of subdomains and their destinations.
     if(/^pro/.test(req.headers.host)) {
-      return res.redirect(config.WEB_ROOT + '/pro');
+      res.writeHead(302, { 'Location': config.WEB_ROOT + '/pro' });
+      res.end();
+      return;
     }
   
   	res.writeHead(302, { 'Location': config.WEB_ROOT + req.url });
