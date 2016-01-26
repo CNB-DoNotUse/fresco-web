@@ -100,8 +100,8 @@ var animation = {
 	getPosition: function(element) {
 	    var xPosition = 0;
 	    var yPosition = 0;
-	  
-	    while(element) {
+	      
+	    while (element) {
 	        xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
 	        yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
 	        element = element.offsetParent;

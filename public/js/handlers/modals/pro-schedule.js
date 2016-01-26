@@ -100,7 +100,17 @@ function updateSchedule(block) {
 			if (response.err || !response.success)
 				return this.error(null, null, response.err);
 			else{
-				$.snackbar({ content: 'Schedule updated!' });
+				var snackbars = document.getElementById('snackbar-container').children,
+					opened = false;
+
+				//Check if there are any opened
+				for (var i = 0; i < snackbars.length; i++) {
+					if(snackbars[i].className.indexOf('snackbar-opened') > -1)
+						opened = true;
+				}
+				//Only show if none are opened
+				if(!opened)
+					$.snackbar({ content: 'Schedule updated!'});
 			}
 		},
 		error: function(xhr, status, error) {
