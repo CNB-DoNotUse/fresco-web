@@ -83,6 +83,8 @@ router.post('/pro/signup', (req, res, next) => {
                 if(field['$']['val'] == 'Id'){
                     rowId = field['_'];
                 }
+               
+                sendEmail(params, null);
 
                 //Respond with row id after parsing
                 return res.json({
@@ -90,12 +92,7 @@ router.post('/pro/signup', (req, res, next) => {
                     success: true,
                     rowId: rowId
                 }).end();
-
-                sendEmail(params, (success) => {
-
-                });
             });
-
         }
     });
 });
@@ -141,9 +138,9 @@ function sendEmail(params, callback) {
 
         //Callback for success or failure
         if(response.status === 'sent')
-            callback(true)
+            if(callback) callback(true)
         else
-            callback(false);
+            if(callback) callback(false);
     });
 }
 
