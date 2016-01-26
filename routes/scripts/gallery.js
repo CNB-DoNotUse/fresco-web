@@ -8,7 +8,7 @@ var express = require('express'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
     User = require('../../lib/user'),
-
+    API = require('../../lib/api'),
     router = express.Router();
 
 //---------------------------vvv-GALLERY-ENDPOINTS-vvv---------------------------//
@@ -160,39 +160,15 @@ router.post('/gallery/import', function(req, res, next){
     });
   }
 });
-router.post('/gallery/skip', function(req, res, next){
+router.post('/gallery/skip', (req, res, next) => {
   req.body.visibility = config.VISIBILITY.PENDING;
   req.body.rated = '1';
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.headers['Content-Type'] = 'application/json';
-  api.post("/v1/gallery/update",
-    req.body,
-    function (err, response, body){
-      res.json(body).end();
-    });
+  API.proxy(req, res);
 });
-router.post('/gallery/update', function(req, res, next){
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.headers['Content-Type'] = 'application/json';
-  api.post("/v1/gallery/update",
-    req.body,
-    function (err, response, body){
-      res.json(body).end();
-    });
-});
-router.post('/gallery/verify', function(req, res, next){
-  req.body.visibility = config.VISIBILITY.VERIFIED;
+router.post('/gallery/verify', (req, res, next) => {
+  req.body.visibility = config.VISIBILITY.VERIFIED,
   req.body.rated = '1';
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.headers['Content-Type'] = 'application/json';
-  api.post("/v1/gallery/update",
-    req.body,
-    function (err, response, body){
-      res.json(body).end();
-    });
+  API.proxy(req, res);
 });
 //---------------------------^^^-GALLERY-ENDPOINTS-^^^---------------------------//
 
