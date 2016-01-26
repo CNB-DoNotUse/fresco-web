@@ -385,7 +385,7 @@ ReactDOM.render(
  	<Search 
  		title={"Results for \"" + window.__initialProps__.title + "\""}
  		user={window.__initialProps__.user} 
- 		purchases={window.__initialProps__.purchases}
+ 		purchases={window.__initialProps__.purchases || []}
  		query={window.__initialProps__.query} />,
  	document.getElementById('app')
 );

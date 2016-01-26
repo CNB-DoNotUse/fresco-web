@@ -29,6 +29,7 @@ class UserSettings extends React.Component {
 	}
 
 	handleInputChange() {
+
 		var newName = this.refs.name.value != (this.props.user.firstname + ' ' + this.props.user.lastname),
 			newBio = !global.compareMultiline(this.refs.bio.value, this.props.user.bio),
 			newAvatar = this.refs.avatarFileInput.files.length > 0,
@@ -63,7 +64,12 @@ class UserSettings extends React.Component {
  	 * Change listener for file upload input
  	 */
  	fileChanged(e) {
-	
+		var profileSaveBtn = this.refs.profileSaveBtn;
+		
+		if(profileSaveBtn.className.indexOf(' changed ') == -1) {
+			profileSaveBtn.className += ' changed ';
+		}
+
 		var file = this.refs.avatarFileInput.files[0],
 			self = this;
 

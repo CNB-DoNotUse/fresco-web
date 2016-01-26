@@ -42,7 +42,7 @@ router.post('/outlet/checkout', function(req, res, next){
   );
 });
 
-router.post('/outlet/create', function(req, res, next){
+router.post('/outlet/create', function(req, res, next) {
   var api = requestJson.createClient(config.API_URL),
       parse = requestJson.createClient(config.PARSE_API);
   
