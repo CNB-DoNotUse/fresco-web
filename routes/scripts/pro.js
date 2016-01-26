@@ -91,8 +91,9 @@ router.post('/pro/signup', (req, res, next) => {
                     rowId: rowId
                 }).end();
 
-                //Send out email
-                sendEmail(params, null);
+                sendEmail(params, (success) => {
+
+                });
             });
 
         }
