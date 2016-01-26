@@ -44,11 +44,22 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
  * CSS3 Transition
  */
 
-@mixin transition($transition) {
-  -webkit-transition:$transition;
-     -moz-transition:$transition;
-       -o-transition:$transition;
-          transition:$transition;
+@mixin transition($transition1, $transition2, $transition3, $transition4, $transition5) {
+
+  $params: $transition1;
+   @if $transition2 
+     { $params: $transition1, $transition2; }
+     @if $transition3 != false
+       { $params: $transition1, $transition2, $transition3; }
+       @if $transition4 != false
+         { $params: $transition1, $transition2, $transition3, $transition4; }
+         @if $transition5 != false
+           { $params: $transition1, $transition2, $transition3, $transition4, $transition5; }
+
+  -webkit-transition:$params;
+     -moz-transition:$params;
+       -o-transition:$params;
+          transition:$params;
 }
 
 /**

@@ -150,7 +150,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 						margin-top:-133px;
 					}
 
-					@include transition(opacity .3s ease-in-out);
+					@include transition(opacity .3s ease-in-out, false, false, false, false);
 
 					@include mobile{
 						width:100%;
@@ -218,11 +218,13 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	width:40px;
 	z-index:3;
 	position:absolute;
-	display:none;
+	// display:none;
 
-	@include transition(width .4s cubic-bezier(0.645, 0.045, 0.355, 1));
-	@include transition(margin-left .4s cubic-bezier(0.645, 0.045, 0.355, 1));
-	@include transition(margin-top .4s cubic-bezier(0.645, 0.045, 0.355, 1));
+	@include transition(width .4s cubic-bezier(0.645, 0.045, 0.355, 1), 
+						margin-left .4s cubic-bezier(0.645, 0.045, 0.355, 1), 
+						margin-top .4s cubic-bezier(0.645, 0.045, 0.355, 1),
+						false,
+						false);
 	@include border-radius(50%);
 }
 
