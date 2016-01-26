@@ -351,6 +351,6 @@ if(!config.DEV) {
   https.createServer(params, app).listen(4430);
   console.log('Listening on port 3000 (http) and port 4430 (https)');
 
-} else {
-  module.exports = app;
 }
+
+module.exports = app;
