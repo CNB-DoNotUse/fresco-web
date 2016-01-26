@@ -172,7 +172,7 @@ export default class TopBar extends React.Component {
 			topbarItems.push(
 				<Dropdown
 					options={['All content', 'Verified']}
-					selected='Verified'
+					selected={this.props.defalutVerified == 'all' ? 'All content' : 'Verified'}
 					onSelected={this.verifiedToggleSelected}
 					key="verifiedToggle"
 					inList={true} />

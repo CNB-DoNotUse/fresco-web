@@ -15,18 +15,34 @@ class GalleryDetail extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		var verifiedCount = 0;
+
+		// Check if every post in gallery is not verified and show all content
+		for(var p in this.props.gallery.posts) {
+			verifiedCount += this.props.gallery.posts[p].approvals;
+		}
+
 		this.state = {
 			galleryEditToggled: false,
-			gallery: this.props.gallery
+			gallery: this.props.gallery,
+			onlyVerified: verifiedCount > 0
 		}
 
 		this.toggleGalleryEdit = this.toggleGalleryEdit.bind(this);
+		this.verifiedToggled = this.verifiedToggled.bind(this);
 		this.updateGallery = this.updateGallery.bind(this);
 	}
 
 	toggleGalleryEdit() {
 		this.setState({
 			galleryEditToggled: !this.state.galleryEditToggled
+		});
+	}
+
+	verifiedToggled(onlyVerified) {
+		this.setState({
+			onlyVerified: onlyVerified
 		});
 	}
 
@@ -47,7 +63,9 @@ class GalleryDetail extends React.Component {
 					title={this.props.title}
 					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
 					edit={this.toggleGalleryEdit}
-					verifiedToggle={false}
+					verifiedToggle={true}
+					onVerifiedToggled={this.verifiedToggled}
+					defalutVerified={this.state.onlyVerified ? null : 'all'}
 					timeToggle={true}
 					chronToggle={true} />
 				
@@ -58,6 +76,7 @@ class GalleryDetail extends React.Component {
 						rank={this.props.user.rank}
 						purchases={this.props.purchases}
 						posts={this.state.gallery.posts}
+						onlyVerified={this.state.onlyVerified}
 						scrollable={false}
 						editable={false}
 						size='large' />
