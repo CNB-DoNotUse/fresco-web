@@ -127,14 +127,14 @@ app.use(function(req, res, next) {
       return next(err);
     }
 
-    //Check if the session has expired
-    if (req.session.user.TTL && req.session.user.TTL - now <= 0) {
-      delete req.session.user;
-      return next(err);
+    //Check if the session hasn't expired
+    if (!req.session.user.TTL || req.session.user.TTL - now > 0){
+        return next();
     }
 
     //Send request for user profile
     api.get('/v1/user/profile?id=' + req.session.user._id, (err, response, body) => {
+
         //Check request
         if (err || !body) return next(err);
 

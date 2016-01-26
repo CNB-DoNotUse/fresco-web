@@ -218,7 +218,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	width:40px;
 	z-index:3;
 	position:absolute;
-	// display:none;
+	display:none;
 
 	@include transition(width .4s cubic-bezier(0.645, 0.045, 0.355, 1), 
 						margin-left .4s cubic-bezier(0.645, 0.045, 0.355, 1), 
