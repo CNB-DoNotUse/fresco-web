@@ -206,7 +206,8 @@ var processLogin = function() {
 			//Redirect
 			else {
 
-				window.location.replace('/archive');
+				var next = getParameterByName('next');
+				window.location.replace(next.length ? next : '/archive');
 
 			}
 
@@ -218,6 +219,13 @@ var processLogin = function() {
 		}
 	});
 
+}
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
 function resolveError(err){

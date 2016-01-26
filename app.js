@@ -124,7 +124,7 @@ app.use(function(req, res, next) {
 
     //Check if there is no sessioned user
     if (!req.session.user) {
-      return next(err);
+      return res.redirect('/account?next=' + req.url);
     }
 
     //Check if the session hasn't expired
