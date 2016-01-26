@@ -266,7 +266,7 @@ export default class GalleryEdit extends React.Component {
 			data.append('gallery', gallery._id);
 
 			$.ajax({
-				url: '/scripts/gallery/addpost',
+				url: '/api/gallery/addpost',
 				type: 'POST',
 				data: data,
 				processData: false,

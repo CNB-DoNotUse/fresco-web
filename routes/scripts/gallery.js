@@ -1,52 +1,12 @@
 var express = require('express'),
-    requestJson = require('request-json'),
     request = require('request'),
     config = require('../../lib/config'),
     async = require('async'),
-    Request = require('request'),
-    querystring = require('querystring'),
     fs = require('fs'),
-    xlsx = require('node-xlsx'),
-    User = require('../../lib/user'),
     API = require('../../lib/api'),
     router = express.Router();
 
 //---------------------------vvv-GALLERY-ENDPOINTS-vvv---------------------------//
-router.post('/gallery/addpost', function(req, res, next){
-  var params = {
-    gallery: req.body.gallery
-  };
-
-  var cleanupFiles = [];
-
-  function upload(cb) {
-    request.post({ url: config.API_URL + '/v1/gallery/addpost', headers: { authtoken: req.session.user.token }, formData: params }, (err, response, body) => {
-
-      if(err || !body || body.err) {
-        return cb('Error uploading files');
-      }
-
-      for (var index in cleanupFiles) {
-        fs.unlink(cleanupFiles[index], function(){});
-      }
-
-      body = JSON.parse(body);
-
-      cb(err || body.err, body.data);
-    });
-  }
-
-  var i = 0;
-  for (var index in req.files){
-    cleanupFiles.push(req.files[index].path);
-    params[i] = fs.createReadStream(req.files[index].path);
-    ++i;
-  }
-
-  upload(function(err, gallery){
-    res.json({err: err, data: gallery}).end();
-  });
-});
 router.post('/gallery/import', function(req, res, next){
   var request = require('request'),
       params = {
@@ -160,14 +120,24 @@ router.post('/gallery/import', function(req, res, next){
     });
   }
 });
+
+/**
+ * Skip verifiying a gallery
+ */
 router.post('/gallery/skip', (req, res, next) => {
   req.body.visibility = config.VISIBILITY.PENDING;
   req.body.rated = '1';
+  req.url = '/gallery/update';
   API.proxy(req, res);
 });
+
+/**
+ * Verify a gallery
+ */
 router.post('/gallery/verify', (req, res, next) => {
   req.body.visibility = config.VISIBILITY.VERIFIED,
   req.body.rated = '1';
+  req.url= '/gallery/update';
   API.proxy(req, res);
 });
 //---------------------------^^^-GALLERY-ENDPOINTS-^^^---------------------------//
