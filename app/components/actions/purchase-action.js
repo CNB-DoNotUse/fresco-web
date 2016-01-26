@@ -53,8 +53,9 @@ export default class PurchaseAction extends React.Component {
 						}
 
 						$.snackbar({
-							content:'Purchase successful! Visit your <a style="color:white;" href="/outlet">outlet page</a> to view your purchased content', 
-							timeout:0
+							content:'Purchase successful! Visit your outlet page or click to view your purchased content'
+						}).click(() => {
+							window.location = '/outlet';
 						});
 
 						this.props.didPurchase(this.props.post._id);

@@ -78,11 +78,6 @@ app.use(
  */
 app.use((req, res, next)=> {
 
-  //  Can be refactored and be applied to more subdomains by creating middleware to handle list of subdomains and their destinations.
-  if(/^pro/.test(req.headers.host)) {
-    return res.redirect(config.WEB_ROOT + '/pro');
-  }
-
   req.alerts = [];
 
   if (req.session && req.session.user && !req.session.user.verified){
@@ -349,8 +344,14 @@ if(!config.DEV) {
   };
 
   http.createServer(function (req, res) {
-	res.writeHead(302, { 'Location': config.WEB_ROOT + req.url });
-        res.end();
+
+    //  Can be refactored and be applied to more subdomains by creating middleware to handle list of subdomains and their destinations.
+    if(/^pro/.test(req.headers.host)) {
+      return res.redirect(config.WEB_ROOT + '/pro');
+    }
+  
+  	res.writeHead(302, { 'Location': config.WEB_ROOT + req.url });
+    res.end();
   }).listen(3000);
 
   https.createServer(params, app).listen(4430);
