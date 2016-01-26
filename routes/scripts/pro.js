@@ -83,6 +83,8 @@ router.post('/pro/signup', (req, res, next) => {
                 if(field['$']['val'] == 'Id'){
                     rowId = field['_'];
                 }
+
+                params.proId = rowId;
                
                 sendEmail(params, null);
 
@@ -107,23 +109,27 @@ function sendEmail(params, callback) {
         template_content: [
             {
                 name: 'name',
-                content: params.firstname + ' ' + params.lastname
+                content: 'Name - ' + params.firstname + ' ' + params.lastname
             },
             {
                 name: 'zip',
-                content: params.zip
+                content: 'Zip Code - ' + params.zip
             },
             {
                 name: 'email',
-                content: params.email
+                content: 'Email - ' + params.email
             },
             {
                 name: 'phone',
-                content: params.zip
+                content: 'Phone Number - ' + params.zip
             },
             {
                 name: 'time',
-                content: params.time
+                content: 'Best Time to Call - ' + params.time
+            },
+            {
+                name: 'link',
+                content: '<a href="'+ config.WEB_ROOT +'/pro/' + params.proId + '">Click here</a>'
             }
         ],
         message: {
