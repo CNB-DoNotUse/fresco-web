@@ -71,7 +71,9 @@ function signup(e) {
 				var link = document.getElementById("availability-link");
 
 				link.href = "/pro/" + response.rowId;
-
+				//Pixel track
+				fbq('track', 'CompleteRegistration');
+				//Complete the signup with the animation
 				animateCompletion(e);
 			}
 		},
