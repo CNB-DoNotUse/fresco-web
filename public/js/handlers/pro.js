@@ -67,6 +67,11 @@ function signup(e) {
 			if (response.err || !response.success)
 				return this.error(null, null, response.err);
 			else{
+				//Set the link on the form completion
+				var link = document.getElementById("availability-link");
+
+				link.href = "/pro/" + response.rowId;
+
 				animateCompletion(e);
 			}
 		},

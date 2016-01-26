@@ -1,10 +1,11 @@
-var express = require('express'),
-    requestJson = require('request-json'),
-    superagent = require('superagent'),
-    config = require('../../lib/config'),
-    validator = require('validator'),
-    router = express.Router(),
-    mandrill = require('mandrill-api/mandrill'),
+var express         = require('express'),
+    requestJson     = require('request-json'),
+    superagent      = require('superagent'),
+    config          = require('../../lib/config'),
+    validator       = require('validator'),
+    router          = express.Router(),
+    xml2js          = require("xml2js").parseString,
+    mandrill        = require('mandrill-api/mandrill'),
     mandrill_client = new mandrill.Mandrill(config.MANDRILL);
 
 /**
@@ -64,6 +65,7 @@ router.post('/pro/signup', (req, res, next) => {
     superagent
     .post(config.ZOHO.CREATE_LEAD + '&xmlData=' + proUser)
     .end((err, response) => {
+
         //Response comes back as XML, we `indexOf` for the success message inside
         if(err || response.text.indexOf('Record(s) added successfully') == -1) {
              return res.json({
@@ -71,19 +73,28 @@ router.post('/pro/signup', (req, res, next) => {
                 success: false
             }).end();
         } else{
-            sendEmail(params, (success) => {
-                if(success){
-                    return res.json({
-                        err: null,
-                        success: true
-                    }).end();
-                } else {
-                    return res.json({
-                        err: 'ERR_EMAIL_FAIL',
-                        success: true
-                    }).end();
+
+            var rowId;
+
+            xml2js(response.text, function (err, result) {
+                var field = result.response.result[0].recorddetail[0]['FL'][0];
+                
+                //Check if field key is correct
+                if(field['$']['val'] == 'Id'){
+                    rowId = field['_'];
                 }
+
+                //Respond with row id after parsing
+                return res.json({
+                    err: null,
+                    success: true,
+                    rowId: rowId
+                }).end();
+
+                //Send out email
+                sendEmail(params, null);
             });
+
         }
     });
 });

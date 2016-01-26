@@ -9,28 +9,44 @@ var express       = require('express'),
 /**
  * Pro User Page
  */
-router.get('/', (req, res, next) => {
 
-    //Check if Zoho record exists
-    if(req.query.id) {
+router.get('/', (req, res, next) => {
+   
+    res.render('pro/pro', {
+        head: head,
+        page: 'pro'
+    });
+
+});
+
+/**
+ * Pro User schedule page
+ */
+
+router.get('/:id', (req, res, next) => {
+
+    //Check if Zoho record id is passed exists
+    if(req.params.id) {
 
         //Assemble corresponding value for each day
-        var dayValues = {
-            'Sunday' : null,
-            'Monday' : null,
-            'Tuesday' : null,
-            'Wednesday' : null,
-            'Thursday' : null,
-            'Friday' : null,
-            'Saturday' : null
-        },
-        firstname = '',
-        lastname = '';
+        var proId = req.params.id,
+            dayValues = {
+                'Sunday' : null,
+                'Monday' : null,
+                'Tuesday' : null,
+                'Wednesday' : null,
+                'Thursday' : null,
+                'Friday' : null,
+                'Saturday' : null
+            },
+            firstname = '',
+            lastname = '';
 
         //Send request to ZOHO
         superagent
-        .post(config.ZOHO.FETCH_LEAD + '&id=' + req.query.id)
+        .post(config.ZOHO.FETCH_LEAD + '&id=' + proId)
         .end((err, response) => {
+           
             xml2js(response.text, function (err, result) {
                 //Redirect because there's an error in the xml
                 if(result.response.error || !result.response.result) {
@@ -64,21 +80,13 @@ router.get('/', (req, res, next) => {
                     head: head,
                     page: 'pro',
                     dayValues: dayValues,
-                    proId: req.query.id,
+                    proId: proId,
                     name : firstname + ' ' + lastname,
                     alerts: req.alerts
                 });
             });
         });
-    } else {
-        res.render('pro/pro', {
-            head: head,
-            page: 'pro',
-            proId: req.query.id,
-            alerts: req.alerts
-        });
     }
-
 });
 
 module.exports = router;
