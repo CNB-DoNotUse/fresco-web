@@ -42,6 +42,9 @@ export default class Dropdown extends React.Component {
 			drop.className = drop.className.replace(/\bactive\b/,'');
 			dim.className = dim.className.replace(/\btoggled\b/,'');
 		}
+
+		this.props.onToggled();
+		
 	}
 
 	/**
@@ -137,5 +140,6 @@ class DropdownButton extends React.Component {
 }
 
 Dropdown.defaultProps = {
-	inList: false
+	inList: false,
+	onToggled: function() {}
 }

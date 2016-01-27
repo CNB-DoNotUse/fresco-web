@@ -11,18 +11,27 @@ export default class LocationDropdown extends React.Component {
 			toggled: false
 		}
 
+		this.onToggled = this.onToggled.bind(this);
+
+	}
+
+	onToggled() {
+		this.setState({
+			toggled: !this.state.toggled
+		});
 	}
 
 	render() {
 		var dropdownBody = <AutocompleteMap
-								rerender={true}
+								rerender={this.state.toggled}
 								onMapDataChange={this.props.onMapDataChange}
+								defaultLocation={this.props.defaultLocation}
 								location={this.props.location}
 								radius={this.props.radius}
 								units="miles" />
 
 		return (
-			<Dropdown inList={true} title="Location" dropdownClass={"location-search-dropdown"}>
+			<Dropdown inList={true} title="Location" onToggled={this.onToggled} dropdownClass={"location-search-dropdown"}>
 				{dropdownBody}
 			</Dropdown>
 		);

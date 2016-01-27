@@ -79,7 +79,7 @@ textarea:focus, input:focus{
         display:none;
         position: absolute;
         max-height:250px;
-        overflow:scroll;
+        overflow:auto;
         width: 100%;
         z-index: 10;
         background: #FFF;

@@ -14,11 +14,12 @@ export class Search extends React.Component {
 	constructor(props) {
 		super(props);
 			
-		var queryLat = this.getParameterByName('lat');
-		var queryLng = this.getParameterByName('lon');
-		var queryRadius = parseFloat(this.getParameterByName('r'));
-		var location = null;
-		var polygon = null;
+		var queryLat = this.getParameterByName('lat'),
+			queryLng = this.getParameterByName('lon'),
+			queryRadius = parseFloat(this.getParameterByName('r')),
+			address = null,
+			location = null,
+			polygon = null;
 
 		if(queryRadius == 'NaN') queryRadius = 0;
 
@@ -35,7 +36,7 @@ export class Search extends React.Component {
 				var circle = new google.maps.Circle({
 					center: location,
 					map: null,
-					radius: queryRadius
+					radius: global.milesToMeters(queryRadius)
 				})
 				polygon = this.circleToPolygon(circle, 8);
 			}
@@ -47,11 +48,12 @@ export class Search extends React.Component {
 			assignments: [],
 			galleries: [],
 			isResultsEnd: false,
+			address: address,
 			location: location,
 			offset: 0,
 			polygon: polygon,
 			purchases: [],
-			radius: queryRadius,
+			radius: Math.floor(global.milesToFeet(queryRadius)),
 			verifiedToggle: true,
 			stories: [],
 			tags: [],
@@ -65,6 +67,8 @@ export class Search extends React.Component {
 
 		this.addTag					= this.addTag.bind(this);
 		this.removeTag				= this.removeTag.bind(this);
+
+		this.didPurchase			= this.didPurchase.bind(this);
 
 		this.galleryScroll			= this.galleryScroll.bind(this);
 
@@ -82,6 +86,17 @@ export class Search extends React.Component {
 		this.resetGalleries();
 		this.getStories(0);
 		this.getUsers(0);
+
+		// If has location in state, get address from LatLng. Location dropdown will use this as it's defaultLocation
+		if(this.state.location) {
+
+			var geocoder = new google.maps.Geocoder();
+
+			geocoder.geocode({'location': this.state.location}, (results, status) => {
+				if(status === google.maps.GeocoderStatus.OK && results[0]) 
+					this.setState({ address: results[0].formatted_address });
+			});
+		}		
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -162,7 +177,7 @@ export class Search extends React.Component {
 			var circle = new google.maps.Circle({
 				map: null,
 				center: this.state.location,
-				radius: global.milesToFeet(this.state.radius)
+				radius: this.state.radius
 			});
 			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)));
 		}
@@ -257,6 +272,12 @@ export class Search extends React.Component {
 		});
 	}
 
+	didPurchase(id) {
+		this.setState({
+			purchases: this.state.purchases.concat(id)
+		});
+	}
+
 	// Called when gallery div scrolls
 	galleryScroll(e) {
 
@@ -297,7 +318,6 @@ export class Search extends React.Component {
 	 * Radius
 	 */
 	onMapDataChange(data) {
-
 		this.setState({
 			location: data.location,
 			radius: data.radius,
@@ -339,7 +359,9 @@ export class Search extends React.Component {
 		);
 	}
 
+
 	render() {
+
 		return (
 			<App user={this.props.user}>
 				<TopBar
@@ -354,18 +376,20 @@ export class Search extends React.Component {
 							key="tagFilter" />
 						
 						<LocationDropdown
+							location={this.state.location}
+							radius={this.state.radius}
+							units="Miles"
+							key="locationDropdown"
 							onPlaceChange={this.onPlaceChange}
 							onRadiusChange={this.onRadiusChange}
 							onMapDataChange={this.onMapDataChange}
-							location={this.state.location}
-							units="Miles"
-							key="locationDropdown" />
+							defaultLocation={this.state.address} />
 				</TopBar>
 	    		<div
 	    			id="search-container"
 	    			className="container-fluid grid"
 		    		onScroll={this.galleryScroll}>
-	    			<div className="row">
+	    			<div>
 	    				<SearchGalleryList
 	    					rank={this.props.user.rank}
 		    				galleries={this.state.galleries}

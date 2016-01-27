@@ -251,7 +251,6 @@ for (var i = 0; i < routes.platform.length; i++) {
 app.use('/api', (req, res, next) => {
   var token = req.session.user ? req.session.user.token ? req.session.user.token : '' : '';
 
-  console.log(token);
   if(req.method == 'GET') {
 
     return request

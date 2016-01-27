@@ -16,8 +16,7 @@ export default class SearchGalleryList extends React.Component {
 	        		rank={this.props.rank} 
 	        		purchased={purchases.indexOf(this.props.galleries[g]._id) != -1}
 	        		didPurchase={this.props.didPurchase}
-	        		key={g}
-	        		editable="true" />
+	        		key={g} />
     		);
 		}
 

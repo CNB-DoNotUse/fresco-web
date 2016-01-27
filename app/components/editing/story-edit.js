@@ -47,7 +47,6 @@ export default class StoryEdit extends React.Component {
 				if(!self.props.updateStory){
 					location.reload();
 				} else{
-					console.log(result);
 					//Update parent story
 					self.hide();
 					self.props.updateStory(result.data);
