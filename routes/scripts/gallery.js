@@ -1,75 +1,69 @@
 var express = require('express'),
     request = require('request'),
+    Twitter = require('twitter'),
     config = require('../../lib/config'),
     async = require('async'),
     fs = require('fs'),
+    http = require('http'),
     API = require('../../lib/api'),
     router = express.Router();
 
 //---------------------------vvv-GALLERY-ENDPOINTS-vvv---------------------------//
-router.post('/gallery/import', function(req, res, next){
-  var request = require('request'),
-      params = {
-        caption: req.body.caption,
-        visibility: req.body.visibility || 0,
-        imported: '1',
-        posts: {}
-      },
-      cleanupFiles = [];
 
-  function upload(cb){
-    params.posts = JSON.stringify(params.posts);
-    request.post({ url: config.API_URL + '/v1/gallery/assemble', headers: { authtoken: req.session.user.token }, formData: params }, function(err, response, body){
-      for (var index in cleanupFiles)
-        fs.unlink(cleanupFiles[index], function(){});
+router.post('/gallery/import', (req, res) => {
+  req.body.visibility = req.body.visibility || 0;
+  req.body.imported = '1';
+  req.body.posts = {};
 
-      try{
-        body = JSON.parse(body);
-      }catch(e){
-        return cb('INVALID_JSON');
-      }
+  req.url = "/gallery/assemble";
 
-      cb(err || body.err, body.data);
-    });
+  var upload = () => {
+    req.body.posts = JSON.stringify(req.body.posts);
+    API.proxy(req, res);
   }
 
-  if (req.body.tweet){
-    var Twitter = require('twitter'),
-        tClient = new Twitter({
-          consumer_key: config.TWITTER.CONSUMER_KEY,
-          consumer_secret: config.TWITTER.CONSUMER_SECRET,
-          access_token_key: config.TWITTER.ACCESS_TOKEN_KEY,
-          access_token_secret: config.TWITTER.ACCESS_TOKEN_SECRET
-        }),
-        twitterId = req.body.tweet.split('/').pop();
+  if (!req.body.tweet) {
+    for (var index in req.files) {
+      req.body.posts[req.files[index].fieldname] = {};
+    }
+    return upload();
+  }
+  else { //Twitter import
+    var tClient = new Twitter({
+      consumer_key: config.TWITTER.CONSUMER_KEY,
+      consumer_secret: config.TWITTER.CONSUMER_SECRET,
+      access_token_key: config.TWITTER.ACCESS_TOKEN_KEY,
+      access_token_secret: config.TWITTER.ACCESS_TOKEN_SECRET
+    });
+    var twitterId = req.body.tweet.split('/').pop();
 
-    tClient.get('/statuses/show/' + twitterId + '.json', function(error, tweet, response){
-      if (error)
+    tClient.get('/statuses/show/' + twitterId + '.json', (error, tweet, response) => {
+      if (error) {
         return res.json({err: 'ERR_TWITTER', data: {}}).end();
+      }
 
-      var async = require('async'),
-          http = require('http'),
-          media = tweet.extended_entities ? tweet.extended_entities.media : [],
-          handle = '@' + tweet.user.screen_name;
+      var media = tweet.extended_entities ? tweet.extended_entities.media : [];
+      var handle = '@' + tweet.user.screen_name;
 
-      params.source = 'Twitter';
-      params.caption = tweet.text;
-      params.time_captured = new Date(Date.parse(tweet.created_at)).getTime()
-      params.twitter = JSON.stringify({
+      req.body.source = 'Twitter';
+      req.body.caption = tweet.text;
+      req.body.time_captured = new Date(Date.parse(tweet.created_at)).getTime()
+      req.body.twitter = JSON.stringify({
         id: tweet.id_str,
         url: req.body.tweet,
         handle: handle,
         user_name: tweet.user.name
       });
       if (tweet.coordinates){
-        params.lon = tweet.coordinates.coordinates[0];
-        params.lat = tweet.coordinates.coordinates[1];
+        req.body.lon = tweet.coordinates.coordinates[0];
+        req.body.lat = tweet.coordinates.coordinates[1];
       }
 
       if (media.length == 0)
         return res.json({err: 'ERR_NO_MEDIA'}).end();
 
       var i = 0;
+      var files = {};
       async.eachSeries(
         media,
         function(m,cb){
@@ -80,8 +74,7 @@ router.post('/gallery/import', function(req, res, next){
             tempName += '.jpeg';
 
           var file = fs.createWriteStream(tempName);
-          cleanupFiles.push(tempName);
-          params.posts[i] = {
+          req.body.posts[i] = {
             external_url: req.body.tweet
           };
 
@@ -89,7 +82,7 @@ router.post('/gallery/import', function(req, res, next){
             response.pipe(file);
             file.on('finish', function(){
               file.close(function(){
-                params[i] = fs.createReadStream(tempName);
+                files[i] = {fieldname: i, path: tempName};
                 ++i;
                 cb();
               });
@@ -97,26 +90,14 @@ router.post('/gallery/import', function(req, res, next){
           });
         },
         function(err){
-          if (err)
+          if (err) {
             return res.json({err: err, data: {}}).end();
+          }
 
-          upload(function(err, gallery){
-             res.json({err: err, data: gallery}).end();
-          });
+          req.files = files;
+          upload();
         }
       );
-    });
-  }else{
-    var i = 0;
-    for (var index in req.files){
-      cleanupFiles.push(req.files[index].path);
-      params[i] = fs.createReadStream(req.files[index].path);
-      params.posts[i] = {};
-      ++i;
-    }
-
-    upload(function(err, gallery){
-      res.json({err: err, data: gallery}).end();
     });
   }
 });
