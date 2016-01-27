@@ -10,6 +10,10 @@ export default class AdminGalleryListItem extends React.Component {
     render() {
         var gallery = this.props.gallery;
 
+        if(!gallery.posts.length) {
+            return <div></div>
+        }
+
         if(gallery.owner) {
             var galleryOwnerText =
                 <p className="md-type-body2">
@@ -40,7 +44,6 @@ export default class AdminGalleryListItem extends React.Component {
                 {assignmentLink}
                 <p className="md-type-body1 assignment-location" style={gallery.assignment ? {lineHeight: '18px'} : {}}>{location}</p>
             </div>
-
 
         return (
             <div className={"list-item" + (this.props.active ? ' active' : '')} onClick={this.props.setActiveGallery.bind(null, gallery._id, this.props.type)}>
