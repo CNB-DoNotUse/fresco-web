@@ -33,6 +33,10 @@ router.get('/:modal?', (req, res, next) => {
             return next();
         }
     }
+    //Redirect to dashboard home if the user is already logged in, instead of the landing page 
+    else if(req.session.user) {
+        res.redirect(config.DASH_HOME);
+    }
 
     res.render('index', {
         head: head,

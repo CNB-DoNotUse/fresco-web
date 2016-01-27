@@ -18,8 +18,6 @@ router.get('/', (req, res, next) => {
       };
 
   res.render('app', {
-    user: req.session ? req.session.user : null,
-    config: config,
     alerts: req.alerts,
     page : 'highlights',
     title : title,
