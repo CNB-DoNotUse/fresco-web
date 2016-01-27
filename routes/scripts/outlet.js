@@ -8,36 +8,32 @@ var express = require('express'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
     User = require('../../lib/user'),
+    API = require('../../lib/api'),
 
     router = express.Router();
 
 //---------------------------vvv-OUTLET-ENDPOINTS-vvv---------------------------//
-router.post('/outlet/checkout', function(req, res, next){
-  if (!req.session.user || !req.session.user.outlet)
-    return res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
+router.post('/outlet/checkout', (req, res) => {
+  if (!checkOutlet(req, res)) return;
 
   req.body.outlet = req.session.user.outlet._id;
+  API.proxyRaw(req, res, (data) => {
+    var options = {
+      req,
+      url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id,
+      method: 'GET'
+    };
 
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.post(
-    '/v1/outlet/checkout',
-    req.body,
-    function(error, response, checkout_body){
-      if (error)
-        return res.json({err: error, data: []}).end();
-      if (!checkout_body)
-        return res.json({err: 'ERR_MISSING_BODY', data: []}).end();
-
-      api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(purchase_err,purchase_response,purchase_body){
-        if (!purchase_err && purchase_body && !purchase_body.err)
-          req.session.user.outlet.purchases = purchase_body.data;
-        req.session.save(function(){
-          res.json(checkout_body).end();
-        });
-      });
-    }
-  );
+    API.request(options, (err, response) => {
+      if (!err) {
+        var purchases = JSON.parse(response.text);
+        req.session.user.outlet.purchases = purchases.data;
+      }
+      req.session.save(() => {
+        res.json(data).end();
+      })
+    });
+  });
 });
 
 router.post('/outlet/create', function(req, res, next){
@@ -141,30 +137,10 @@ router.post('/outlet/create', function(req, res, next){
   );
 });
 
-router.get('/outlet/export', function(req, res, next){
-  if (!req.session.user || !req.session.user.outlet)
-    return res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
+router.get('/outlet/export', (req, res) => {
+  if (!checkOutlet(req, res)) return;
 
-  req.body.outlet = req.session.user.outlet._id;
-
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-
-  var url = '/v1/outlet/export?'
-  if(req.query.outlets){
-    req.query.outlets.forEach(function(outlet){
-      url += 'outlets[]=' + outlet + '&';
-    });
-  }
-
-  api.get(url, function(err, response, body){
-    if (err)
-      return res.json({err: err.err}).end();
-    if (!body)
-      return res.json({err: 'ERR_EMPTY_BODY'}).end();
-    if (body.err)
-      return res.json({err: body.err}).end();
-
+  API.proxyRaw(req, res, (body) => {
     var lines = body.data;
     if(req.query.format == 'xlsx'){
       var data = [['time', 'type', 'price', 'assignment', 'outlet']];
@@ -191,24 +167,11 @@ router.get('/outlet/export', function(req, res, next){
   });
 });
 
-router.get('/outlet/export/email', function(req, res, next){
-  if (!req.session.user || !req.session.user.outlet)
-    return res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
+router.get('/outlet/export/email', (req, res) => {
+  if (!checkOutlet(req, res)) return;
 
-  var id = req.session.user.outlet._id;
-
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.get(
-    '/v1/outlet/export/email?id=' + id,
-    function(error, response, body){
-      if (error)
-        return res.json({err: error, data: []}).end();
-      if (!body)
-        return res.json({err: 'ERR_MISSING_BODY', data: []}).end();
-      return res.json(body).end();
-    }
-  );
+  req.url = '/outlet/export/email?id=' + req.session.user.outlet._id;
+  API.proxy(req, res);
 });
 
 router.post('/outlet/invite/accept', function(req, res, next) {
@@ -303,48 +266,12 @@ router.post('/outlet/invite/accept', function(req, res, next) {
 
 });
 
-router.post('/outlet/update', function(req, res, next){
-  if (!req.session.user || !req.session.user.outlet)
-    return res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
+router.post('/outlet/update', (req, res) => {
+  if (!checkOutlet(req, res)) return;
 
-  var fs = require('fs'),
-      request = require('request'),
-      params = {
-        id: req.session.user.outlet._id
-      };
+  req.body.id = req.session.user.outlet._id;
 
-  if (req.body.title) params.title = req.body.title;
-  if (req.body.bio) params.bio = req.body.bio;
-  if (req.body.link) params.link = req.body.link;
-  if (req.body.stripe_token) params.stripe_token = req.body.stripe_token;
-
-  var file = null;
-
-  for (var index in req.files)
-    file = req.files[index];
-
-  if (file) params.avatar = fs.createReadStream(file.path);
-
-  request.post({ url: config.API_URL + '/v1/outlet/update', headers: { authtoken: req.session.user.token }, formData: params }, function(error, response, body){
-    if (error)
-      return res.json({err: error}).end();
-
-    try{
-      body = JSON.parse(body);
-    }catch(e){
-      return res.json({err: e.msg}).end();
-    }
-
-    for (var index in req.files)
-      fs.unlink(req.files[index].path, function(){});
-
-    if (error)
-      return res.json({err: error}).end();
-    if (!body)
-      return res.json({err: 'ERR_MISSING_BODY'}).end();
-    if (body.err)
-      return res.json({err: body.err}).end();
-
+  API.proxyRaw(req, res, (body) => {
     req.session.user.outlet = body.data;
     req.session.save(function(){
       res.json({}).end();
@@ -352,5 +279,19 @@ router.post('/outlet/update', function(req, res, next){
   });
 });
 //---------------------------^^^-OUTLET-ENDPOINTS-^^^---------------------------//
+
+/**
+ * Make sure a user is signed in and is part of an outlet
+ * @param  {Request}  req Express request object
+ * @param  {Response} res Express response object
+ * @return {boolean}      True if everything is kosher, false if not
+ */
+function checkOutlet(req, res) {
+  if (!req.session.user || !req.session.user.outlet) {
+    res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
+    return false;
+  }
+  return true;
+}
 
 module.exports = router;
