@@ -29,7 +29,6 @@ export default class Dropdown extends React.Component {
 	 * Called whenever the master button is clicked
 	 */
 	toggle() {
-		console.log('Toggled');
 		var drop = this.refs.drop,
 			dim = document.getElementById('platform-dim'),
 			menuIcon = this.refs['button'].refs['menu-icon'];

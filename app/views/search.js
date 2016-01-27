@@ -162,10 +162,9 @@ export class Search extends React.Component {
 			var circle = new google.maps.Circle({
 				map: null,
 				center: this.state.location,
-				radius: this.state.radius
+				radius: global.milesToFeet(this.state.radius)
 			});
-
-			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
+			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)));
 		}
 
 		$.get('/scripts/gallery/search', {
@@ -236,8 +235,6 @@ export class Search extends React.Component {
 
 	addTag(tag) {
 
-		console.log(tag);
-
 		if(this.state.tags.indexOf(tag) != -1) return;
 
 		this.setState({
@@ -246,8 +243,6 @@ export class Search extends React.Component {
 	}
 
 	removeTag(tag) {
-
-		console.log(tag);
 
 		if(this.state.tags.indexOf(tag) == -1) return; 
 
@@ -303,8 +298,6 @@ export class Search extends React.Component {
 	 */
 	onMapDataChange(data) {
 
-		console.log(data);
-		
 		this.setState({
 			location: data.location,
 			radius: data.radius,
@@ -364,6 +357,7 @@ export class Search extends React.Component {
 							onPlaceChange={this.onPlaceChange}
 							onRadiusChange={this.onRadiusChange}
 							onMapDataChange={this.onMapDataChange}
+							location={this.state.location}
 							units="Miles"
 							key="locationDropdown" />
 				</TopBar>
