@@ -76,7 +76,6 @@ export default class TopBar extends React.Component {
 
 	//Called when the user selects a time format
 	verifiedToggleSelected(selected) {
-		console.log('Toggled Top Bar');
 		this.props.onVerifiedToggled(selected == 'Verified');
 	}
 

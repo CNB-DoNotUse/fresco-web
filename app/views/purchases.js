@@ -157,7 +157,7 @@ class Purchases extends React.Component {
 						tagList={outlets}
 						filterList={filterNames}
 						onTagAdd={this.filterAdd}
-						onTagRemove={this.filterRemovee}
+						onTagRemove={this.filterRemove}
 						key="outletsFilter" />
 				</TopBar>
 				<PurchasesBody

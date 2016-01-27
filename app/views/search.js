@@ -17,9 +17,11 @@ export class Search extends React.Component {
 		var queryLat = this.getParameterByName('lat'),
 			queryLng = this.getParameterByName('lon'),
 			queryRadius = parseFloat(this.getParameterByName('r')),
+			queryTags = this.getParameterByName('tags'),
 			address = null,
 			location = null,
-			polygon = null;
+			polygon = null,
+			tags = [];
 
 		if(queryRadius == 'NaN') queryRadius = 0;
 
@@ -42,6 +44,10 @@ export class Search extends React.Component {
 			}
 		}
 
+		if(queryTags) {
+			tags = queryTags.split(',');
+		}
+
 		this.pending = false;
 
 		this.state = {
@@ -53,10 +59,10 @@ export class Search extends React.Component {
 			offset: 0,
 			polygon: polygon,
 			purchases: [],
-			radius: Math.floor(global.milesToFeet(queryRadius)),
+			radius: Math.floor(global.milesToFeet(queryRadius)) || 250,
 			verifiedToggle: true,
 			stories: [],
-			tags: [],
+			tags: tags,
 			users: []
 		}
 
@@ -78,6 +84,8 @@ export class Search extends React.Component {
 
 		this.resetGalleries			= this.resetGalleries.bind(this);
 		this.refreshData			= this.refreshData.bind(this);
+
+		this.pushState				= this.pushState.bind(this);
 	}
 
 	componentDidMount() {
@@ -101,7 +109,8 @@ export class Search extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if(JSON.stringify(prevState.location) != JSON.stringify(this.state.location) || 
-			JSON.stringify(prevState.radius) != JSON.stringify(this.state.radius)) {
+			JSON.stringify(prevState.radius) != JSON.stringify(this.state.radius) || 
+			prevState.tags.length != this.state.tags.length) {
 			this.refreshData();
 		}
 	}
@@ -187,6 +196,7 @@ export class Search extends React.Component {
 			offset: offset,
 			limit: 18,
 			polygon: polygon,
+			tags: this.state.tags.join(',')
 		}, (galleries) => {
 
 			if(galleries.err || !galleries.data) return cb([]);
@@ -258,14 +268,17 @@ export class Search extends React.Component {
 	}
 
 	removeTag(tag) {
+		var index = this.state.tags.indexOf(tag);
+		if(index == -1) return; 
 
-		if(this.state.tags.indexOf(tag) == -1) return; 
+		var tags = [], currentTags = this.state.tags;
 
-		var tags = [], tagList = this.state.tags;
-		for (var t in tagList) {
-			if(tagList[t] == tag) continue;
-			tags.push(tagList[t]);
+		for(var x = 0; x < currentTags.length; x++) {
+			if(currentTags[x] != tag) {
+				tags.push(currentTags[x]);
+			}
 		}
+
 
 		this.setState({
 			tags: tags
@@ -302,13 +315,6 @@ export class Search extends React.Component {
 				});
 			});
 		}
-	}
-
-	// Called when topbar verifiedToggle changed
-	onVerifiedToggled(toggled) {
-		this.setState({
-			showOnlyVerified: toggled
-		});
 	}
 
 	/**
@@ -349,7 +355,10 @@ export class Search extends React.Component {
 		this.resetGalleries();
 		this.getUsers(0, true);
 		this.getStories(0, true);
+		this.pushState();
+	}
 
+	pushState() {
 		window.history.pushState(
 			{},
 			null,
@@ -358,7 +367,6 @@ export class Search extends React.Component {
 			(this.state.location ? '&lat=' + this.state.location.lat + '&lon=' + this.state.location.lng + '&r=' + (this.state.radius ? global.feetToMiles(this.state.radius) : '') : '')
 		);
 	}
-
 
 	render() {
 
@@ -371,8 +379,8 @@ export class Search extends React.Component {
 					onVerifiedToggled={this.onVerifiedToggled}>
 						<TagFilter
 							onTagAdd={this.addTag}
-							onTagRemove={this.removeTage}
-							tagList={this.state.tags}
+							onTagRemove={this.removeTag}
+							filterList={this.state.tags}
 							key="tagFilter" />
 						
 						<LocationDropdown

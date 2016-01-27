@@ -55,32 +55,35 @@ export default class TagFilter extends React.Component {
 								<span className="mdi mdi-menu-down" ref="menu-icon"></span>
 							</div>;
 
-		var dropdownBody = <div className="chips">
-								<div className="split-cell">
-									<div className="form-group-default">
-										<div className="form-control-wrapper">
-											<input
-												id="tag-filter-input"
-												type="text" className="form-control empty"
-												ref="tagFilterInput"
-												onKeyUp={this.handleTagInput}
-												/>
-											<div className="floating-label">{this.props.text}</div>
-											<span className="material-input"></span>
-										</div>
-									</div>
-									<ul id="tag-filter" className="chips">{tags}</ul>
-								</div>
-								
-								<div className="split-cell">
-									<span className="md-type-body2">Available {this.props.text}</span>
-									<ul id="filter-available" className="chips">{available}</ul>
-								</div>
-							</div>
+		var availableBody = '';
+		if(available.length) {
+			availableBody = <div className="split-cell">
+				<span className="md-type-body2">Available {this.props.text}</span>
+				<ul id="filter-available" className="chips">{available}</ul>
+			</div>
+		}
 
 		return (
 			<Dropdown inList={true} title={dropdownLabel} dropdownClass={"tags-dropdown"}>
-				{dropdownBody}
+				<div className="chips">
+					<div className="split-cell">
+						<div className="form-group-default">
+							<div className="form-control-wrapper">
+								<input
+									id="tag-filter-input"
+									type="text" className="form-control empty"
+									ref="tagFilterInput"
+									onKeyUp={this.handleTagInput}
+									/>
+								<div className="floating-label">{this.props.text}</div>
+								<span className="material-input"></span>
+							</div>
+						</div>
+						<ul id="tag-filter" className="chips">{tags}</ul>
+					</div>
+					
+					{availableBody}
+				</div>
 			</Dropdown>
 		);
 	}
