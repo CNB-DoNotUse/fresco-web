@@ -4,16 +4,16 @@ var express    = require('express'),
     router     = express.Router()
 
 router.get('/:id', (req, res, next) => {
-
-    console.log(req.session.user.token);
     superagent
     .get(config.API_URL + '/v1/outlet/location/get?id=' + req.params.id)
     .set('authtoken', req.session.user.token)
     .set('Accept', 'application/json')
     .end((err, response) => {
-      
+
+      console.log(response.body);
+
         //Check if the response checks
-        if (err || !response || response.err || !response.body.data){
+        if (err || response.body.err || !response.body.data || typeof(response.body.data) === 'undefined'){
             var error = new Error(config.ERR_PAGE_MESSAGES[404]);
             error.status = 404;
 
@@ -29,7 +29,6 @@ router.get('/:id', (req, res, next) => {
               location: location
             };
 
-
         res.render('app', {
           props: JSON.stringify(props),
           config: config,
@@ -37,7 +36,6 @@ router.get('/:id', (req, res, next) => {
           page: 'locationDetail',
           title : title
         });
-
     });
 });
 

@@ -24,3 +24,14 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 }
 
+.settings-user-account{
+
+	.card-form{
+		input{
+			width:100%;
+			border-bottom:1px solid;
+			@include rgba(border-color, 0, 0, 0, 0.12);
+		}
+	}
+}
+

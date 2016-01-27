@@ -17,8 +17,7 @@ class LocationDetail extends React.Component {
 		super(props);
 		
 		this.state = {
-			onlyVerified: true,
-			sort: 'capture'
+			initialPostsLoaded: false
 		}
 
 		this.updateSort			= this.updateSort.bind(this);
@@ -31,17 +30,43 @@ class LocationDetail extends React.Component {
 		});
 	}
 
+
+	componentWillMount() {
+		//Set up session storage for sinceList as empty object
+		if(typeof(window.sessionStorage.sinceList) !== 'object'){
+			window.sessionStorage.sinceList = JSON.stringify( {} );
+		} 
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		//Check if we've loaded the initial set of posts
+		if(this.state.initialPostsLoaded) {
+			var sinceList = JSON.parse(window.sessionStorage.sinceList);
+
+			//Update the last seen time to now after posts have been loaded
+			sinceList[this.props.location._id] = Date.now();
+
+			window.sessionStorage.sinceList = JSON.stringify(sinceList);
+		}
+	}
+
 	/**
 	 * Returns array of posts with offset and callback, used in child PostList
 	 */
 	loadPosts(passedOffset, callback) {
+
+		var location = this.props.location,	
+			sinceList = JSON.parse(window.sessionStorage.sinceList);
+
+		//Update the field if it's not set
+		if(!sinceList[location._id]) {
+			sinceList[location._id] = Date.now();
+			window.sessionStorage.sinceList = JSON.stringify(sinceList);
+		}
+
 		var params = {
-			id: '56a6bf81c6112e2162a0f717',
-			limit: global.postCount,
-			verified : this.state.onlyVerified,
-			offset: passedOffset,
-			sort: this.state.sort,
-			since: 1453242738065
+			id: location._id,
+			limit: global.postCount
 		}
 
 		$.ajax({
@@ -51,14 +76,18 @@ class LocationDetail extends React.Component {
 			dataType: 'json',
 			success: (response, status, xhr) => {
 
-				console.log(response);
-
 				//Send empty array, because of bad response
 				if(!response.data || response.err)
 					callback([]);
 				else
 					callback(response.data);
 
+				//Tells component to now update the since time
+				if(!this.state.initialPostsLoaded){
+					this.setState({
+						initialPostsLoaded: true
+					});
+				}
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: global.resolveError(error)});
@@ -68,15 +97,14 @@ class LocationDetail extends React.Component {
 
 	render() {
 
+		console.log(this.props.location);
+
 		return (
 			<App user={this.props.user}>
 				<TopBar 
 					title={this.props.location.title}
 					timeToggle={true}
-					verifiedToggle={true}
-					updateSort={this.updateSort}
-					chronToggle={true}
-					onVerifiedToggled={this.onVerifiedToggled}>
+					chronToggle={true} >
 
 					<LocationDropdown
 						addLocationButton={false} />
@@ -87,9 +115,7 @@ class LocationDetail extends React.Component {
 					rank={this.props.user.rank}
 					purchases={this.props.purchases}
 					size='small'
-					scrollable={true}
-					sort={this.state.sort}
-					onlyVerified={this.state.onlyVerified} />
+					scrollable={true} />
 			</App>
 		);
 

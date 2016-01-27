@@ -267,6 +267,6 @@ PostList.defaultProps = {
 	posts: [],
 	gallery: null,
 	scrollable: false,
-	onlyVerified: true,
+	onlyVerified: false,
 	loadPosts: function() {}
 }
