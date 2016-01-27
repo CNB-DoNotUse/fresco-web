@@ -76,7 +76,7 @@ export default class OutletInfo extends React.Component {
 		var outlet = this.props.outlet;
 
 		return (
-			<div className="card outlet-info">
+			<div className="card settings-info">
 				
 				<div className="outlet-avatar" ref="outlet-avatar-image" style={{backgroundImage: 'url(' + outlet.avatar + ')'}} >
 					<div className="overlay" onClick={this.clickProfileImgInput}>

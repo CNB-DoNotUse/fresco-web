@@ -148,7 +148,7 @@ class PostCellActions extends React.Component {
 			key = 0;
 
 		//Check if we're CM or greater
-		if(typeof(this.props.rank) !== 'undefined' && this.props.rank >= 1) {
+		if(typeof(this.props.rank) !== 'undefined' && this.props.rank >= global.RANKS.CONTENT_MANAGER) {
 
 			if(this.props.editable) {
 				actions.push(
@@ -159,23 +159,21 @@ class PostCellActions extends React.Component {
 				);
 			}
 
-			actions.push(
-				<DownloadAction 
-					post={this.props.post} 
-					key={++key} />
-			);
-
 			//Show the purhcased icon if the post hasn't been purchased                       
 			if(this.props.purchased === false){
-
 				actions.push(
 					<PurchaseAction 
 						post={this.props.post} 
 						didPurchase={this.props.didPurchase} 
 						key={++key}/>
 				);
-
 			}
+
+			actions.push(
+				<DownloadAction 
+					post={this.props.post} 
+					key={++key} />
+			);
 		}
 		//Check if the post has been purchased
 		else if (this.props.purchased === true)

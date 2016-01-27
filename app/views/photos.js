@@ -22,8 +22,6 @@ class Photos extends React.Component {
 
 		this.state = {
 			purchases: [],
-			verifiedToggle: true,
-			sort: 'capture'
 		}
 
 		this.loadPosts 			= this.loadPosts.bind(this);
@@ -73,7 +71,6 @@ class Photos extends React.Component {
 			}
 
 		});
-
 	}
 
 	render() {
@@ -86,14 +83,14 @@ class Photos extends React.Component {
 					chronToggle={true}
 
 					updateSort={this.updateSort}
-					onVerifiedToggled={this.onVerifiedToggled} />
+					onVerifiedToggled={this.props.onVerifiedToggled} />
 				<PostList
 					rank={this.props.user.rank}
 					purchases={this.props.purchases}
 					size='small'
 					scrollable={true}
 					sort={this.state.sort}
-					onlyVerified={this.state.verifiedToggle}
+					onlyVerified={this.props.verifiedToggle}
 
 					loadPosts={this.loadPosts} />
 			</App>

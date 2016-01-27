@@ -66,7 +66,6 @@ export default class DispatchMap extends React.Component {
 		//Add event listeners for map life cycle
 		google.maps.event.addListener(map, 'idle', this.updateMap);
 		google.maps.event.addListener(map, 'dragend', ()=>{
-			this.updateMapBounds(this.state.map.getBounds());
 			this.updateMap();
 		});
 
@@ -85,13 +84,16 @@ export default class DispatchMap extends React.Component {
 		}
 
 		//The map center has changed on the prop, telling the map to reposition
-		if(JSON.stringify(prevProps.mapCenter) != JSON.stringify(this.props.mapCenter)){
+		if(JSON.stringify(prevProps.mapPlace) != JSON.stringify(this.props.mapPlace)){
 
-			if(this.props.mapCenter.viewport){
-				this.state.map.fitBounds(this.props.mapCenter.viewport);
+			var place = this.props.mapPlace;
+
+			//Check if the place has a viewport, then use that, otherwsie use the location and a regular zoom
+			if(place.geometry.viewport){
+				this.state.map.fitBounds(place.geometry.viewport);
 			}
 			else{
-				this.state.map.panTo(this.props.mapCenter.location);
+				this.state.map.panTo(place.geometry.location);
 				this.state.map.setZoom(18);
 			}
 
@@ -213,7 +215,7 @@ export default class DispatchMap extends React.Component {
 			});
 
 			google.maps.event.addListener(marker, 'dragend', (ev) => {
-				this.props.updatePlace();
+				this.props.updateAssignmentPlace();
 			});
 		}
 	}

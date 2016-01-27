@@ -38,6 +38,7 @@ class Archive extends React.Component {
 					timeToggle={true}
 					verifiedToggle={true}
 					chronToggle={true} />
+				
 				<PostList
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}

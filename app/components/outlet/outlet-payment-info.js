@@ -85,7 +85,7 @@ export default class OutletPaymentInfo extends React.Component {
 		}
 
 		return (
-			<div className="card outlet-payment">
+			<div className="card settings-outlet-payment">
 				<div className="header">
 					<span className="title">PAYMENT INFORMATION</span>
 					<div>

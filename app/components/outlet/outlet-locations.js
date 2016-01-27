@@ -30,7 +30,7 @@ export default class OutletLocations extends React.Component {
         google.maps.event.addListener(autocomplete, 'place_changed', ()=> {
 
         	this.addLocation(autocomplete.getPlace())
-
+ 
         });
 	}
 
@@ -39,38 +39,25 @@ export default class OutletLocations extends React.Component {
 	 * @param {object} place Google Autocomplete place
 	 */
 	addLocation(place) {
-		//Error message we'll use if the area doesn't have a bounds
-		var unsupportedLocation = 'We can\'t support this location at the moment. Please enter a broader area',
-			autocomplete = this.refs['outlet-location-input'],
+		var autocomplete = this.refs['outlet-location-input'],
 			self = this;
 
 		//Run checks on place and title
 		if (!place || !place.geometry || !place.geometry.viewport){
-			return $.snackbar({content: unsupportedLocation});
+			return $.snackbar({content: global.resolveError('ERR_UNSUPPORTED_LOCATION')});
 		} else if(!autocomplete.value){
 			$.snackbar({content: 'Please enter a valid location title'});
 		}
 		
 		var bounds = place.geometry.viewport,
 			params = {
-				title: this.refs['outlet-location-input'].value,
+				title: autocomplete.value,
 				notify_fresco: this.refs['location-fresco-check'].checked,
 				notify_email: this.refs['location-email-check'].checked,
 				notify_sms: this.refs['location-sms-check'].checked,
-				polygon: []
+				polygon: global.generatePolygonFromBounds(bounds)
 			};
 		
-		//Generate the polygon from the google maps bounds
-		params.polygon.push(
-			[
-				[bounds.getNorthEast().lng(), bounds.getNorthEast().lat()],
-				[bounds.getNorthEast().lng(), bounds.getSouthWest().lat()],
-				[bounds.getSouthWest().lng(), bounds.getSouthWest().lat()],
-				[bounds.getSouthWest().lng(), bounds.getNorthEast().lat()],
-				[bounds.getNorthEast().lng(), bounds.getNorthEast().lat()]
-			]
-		);
-
 		$.ajax({
 			url: '/scripts/outlet/location/create',
 			method: 'post',
@@ -84,10 +71,9 @@ export default class OutletLocations extends React.Component {
 				//Clear field
 				autocomplete.value = '';
 
-				//Update state
-				self.setState({ 
-					locations: self.state.locations.concat(response.data),
-				});
+				//Update locations
+				self.loadLocations();
+
 			},
 			error: (xhr, status, error)=> {
 				$.snackbar({ content: global.resolveError(error) });
@@ -122,7 +108,6 @@ export default class OutletLocations extends React.Component {
 				self.setState({
 					locations: locations
 				});
-				
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: global.resolveError(error)});
@@ -141,11 +126,9 @@ export default class OutletLocations extends React.Component {
 			since = window.sessionStorage.location_since ? JSON.parse(window.sessionStorage.location_since) : {};
 
 		$.ajax({
-			url: '/api/outlet/location/list?since=' + encodeURIComponent(JSON.stringify(since)),
+			url: '/api/outlet/location/list',
 			method: 'GET',
 			success: function(response){
-
-				console.log(response);
 
 				if (response.err || !response.data)
 					return this.error(null, null, response.err);
@@ -155,6 +138,8 @@ export default class OutletLocations extends React.Component {
 					if (!since[location._id])
 						since[location._id] = Date.now();
 				});
+
+				console.log(response.data);
 
 				//Update state
 				self.setState({ locations: response.data });
@@ -171,8 +156,9 @@ export default class OutletLocations extends React.Component {
 	updateLocationNotifications(locationId, notifType, e) {
 		var self = this,
 			params = {
-			id: locationId
-		}
+				id: locationId
+			};
+		
 		//Set the passed notif type to true
 		params[notifType] = e.target.checked;
 
@@ -195,7 +181,7 @@ export default class OutletLocations extends React.Component {
 				
 	render () {
 		return (
-			<div className="card outlet-locations">
+			<div className="card settings-outlet-locations">
 				<div className="header">
 					<span className="title">SAVED LOCATIONS</span>
 

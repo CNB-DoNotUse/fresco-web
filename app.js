@@ -31,7 +31,7 @@ app.set('view engine', 'ejs');
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
-// app.use(morgan('dev'));
+app.use(morgan('dev'));
 
 //GZIP
 app.use(compression())
@@ -70,7 +70,9 @@ app.use(
 
 //Set up public direc.
 app.use(
-  express.static(path.join(__dirname, 'public'), { maxAge: 1000 * 60 * 60 * 2 }) // 2 hour cache
+  express.static(path.join(__dirname, 'public'), { 
+    maxAge: 1000 * 60 * 60 * 2 
+  }) // 2 hour cache
 );
 
 /**
@@ -247,6 +249,8 @@ for (var i = 0; i < routes.platform.length; i++) {
 
 app.use('/api', (req, res, next) => {
   var token = req.session.user ? req.session.user.token ? req.session.user.token : '' : '';
+
+  console.log(token);
   if(req.method == 'GET') {
 
     return request

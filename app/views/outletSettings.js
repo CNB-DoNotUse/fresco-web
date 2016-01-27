@@ -5,7 +5,7 @@ import TopBar from '../components/topbar'
 import OutletBody from '../components/outlet/outlet-body'
 import OutletInfo from '../components/outlet/outlet-info'
 import OutletPaymentInfo from '../components/outlet/outlet-payment-info'
-import OutletQuickSupport from '../components/outlet/outlet-quick-support'
+import QuickSupport from '../components/global/quick-support'
 import OutletMembers from '../components/outlet/outlet-members'
 import OutletLocations from '../components/outlet/outlet-locations'
 
@@ -36,20 +36,21 @@ class OutletSettings extends React.Component {
 					title={this.props.user.outlet.title} />
 				
 				<div className="outlet-settings">
-
-					<div className="outlet-settings-cards">
+					<div className="left">
 						<OutletInfo outlet={this.props.user.outlet} />
 
+						<OutletPaymentInfo outlet={this.props.user.outlet} />
+						
+					</div>
+					<div className="right">
 						<OutletLocations outlet={this.props.user.outlet} />	
 						
-						<OutletPaymentInfo outlet={this.props.user.outlet} />
-
 						<OutletMembers 
 							updateMembers={this.updateMembers}
 							members={this.state.members} />
 					</div>
-					
-					<OutletQuickSupport />
+
+					<QuickSupport />
 				</div>
 			</App>
 		)

@@ -4,6 +4,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from './../components/topbar'
+import LocationDropdown from '../components/topbar/location-dropdown'
+import TagFilter from '../components/topbar/tag-filter'
 import SearchGalleryList from './../components/search/search-gallery-list'
 import SearchSidebar from './../components/search/search-sidebar'
 
@@ -50,7 +52,7 @@ export class Search extends React.Component {
 			polygon: polygon,
 			purchases: [],
 			radius: queryRadius,
-			showOnlyVerified: false,
+			verifiedToggle: true,
 			stories: [],
 			tags: [],
 			users: []
@@ -64,7 +66,6 @@ export class Search extends React.Component {
 		this.addTag					= this.addTag.bind(this);
 		this.removeTag				= this.removeTag.bind(this);
 
-		this.didPurchase			= this.didPurchase.bind(this);
 		this.galleryScroll			= this.galleryScroll.bind(this);
 
 		this.onVerifiedToggled		= this.onVerifiedToggled.bind(this);
@@ -89,7 +90,13 @@ export class Search extends React.Component {
 			this.refreshData();
 		}
 	}
-	
+
+	onVerifiedToggled(toggled) {
+		this.setState({
+			verifiedToggle: toggled
+		});
+	}
+
 	circleToPolygon(circle, numSides) {
 		var center = circle.getCenter(),
 			topleft = circle.getBounds().getNorthEast(),
@@ -122,7 +129,7 @@ export class Search extends React.Component {
 			q: this.props.query,
 			offset: offset,
 			limit: 10,
-			verified: this.state.showOnlyVerified,
+			verified: this.state.verifiedToggle,
 			tags: this.state.tags,
 			lat: this.state.location ? this.state.location.lat : undefined,
 			lon: this.state.location ? this.state.location.lng : undefined,
@@ -228,6 +235,9 @@ export class Search extends React.Component {
 	}
 
 	addTag(tag) {
+
+		console.log(tag);
+
 		if(this.state.tags.indexOf(tag) != -1) return;
 
 		this.setState({
@@ -236,6 +246,9 @@ export class Search extends React.Component {
 	}
 
 	removeTag(tag) {
+
+		console.log(tag);
+
 		if(this.state.tags.indexOf(tag) == -1) return; 
 
 		var tags = [], tagList = this.state.tags;
@@ -246,20 +259,6 @@ export class Search extends React.Component {
 
 		this.setState({
 			tags: tags
-		});
-	}
-
-	/** 
-		Called when an item is purchased.
-		Adds purchase ID to current purchases in state.
-		Prop chain: PostList -> PostCell -> PostCellActions -> PostCellAction -> PurchaseAction
-	**/
-	didPurchase(id) {
-		var purchases = [];
-		this.state.purchases.map((purchase) => { purchases.push(purchase); })
-		purchases.push(id);
-		this.setState({
-			purchases: purchases
 		});
 	}
 
@@ -303,6 +302,9 @@ export class Search extends React.Component {
 	 * Radius
 	 */
 	onMapDataChange(data) {
+
+		console.log(data);
+		
 		this.setState({
 			location: data.location,
 			radius: data.radius,
@@ -351,13 +353,20 @@ export class Search extends React.Component {
 					title={this.props.title}
 					timeToggle={true}
 					verifiedToggle={true}
-					tagFilter={true}
-					tagList={this.state.tags}
-					onTagAdd={this.addTag}
-					onTagRemove={this.removeTag}
-					locationDropdown={true}
-					onMapDataChange={this.onMapDataChange}
-					onVerifiedToggled={this.onVerifiedToggled} />
+					onVerifiedToggled={this.onVerifiedToggled}>
+						<TagFilter
+							onTagAdd={this.addTag}
+							onTagRemove={this.removeTage}
+							tagList={this.state.tags}
+							key="tagFilter" />
+						
+						<LocationDropdown
+							onPlaceChange={this.onPlaceChange}
+							onRadiusChange={this.onRadiusChange}
+							onMapDataChange={this.onMapDataChange}
+							units="Miles"
+							key="locationDropdown" />
+				</TopBar>
 	    		<div
 	    			id="search-container"
 	    			className="container-fluid grid"
@@ -369,7 +378,8 @@ export class Search extends React.Component {
 		    				tags={this.state.tags}
 		    				purchases={this.props.purchases.concat(this.state.purchases)} 
 		    				didPurchase={this.didPurchase}
-		    				showOnlyVerified={this.state.showOnlyVerified} />
+		    				onlyVerified={this.state.verifiedToggle}  />
+		    			
 		    			<SearchSidebar
 		    				assignments={this.state.assignments}
 		    				stories={this.state.stories}

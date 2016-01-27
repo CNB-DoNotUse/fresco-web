@@ -1,12 +1,12 @@
 import React from 'react'
 import global from '../../../lib/global'
+import Dropdown from './dropdown'
 
 /**
- * Generic Dropdown Element
- * @param  {function} onSelected A function called wtih the user's selection
+ * Location Dropdown for saved locations
  */
 
-export default class Dropdown extends React.Component {
+export default class LocationDropdown extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -15,7 +15,6 @@ export default class Dropdown extends React.Component {
 			locations: []
 		}
 
-		this.toggle = this.toggle.bind(this);
 		this.addLocation = this.addLocation.bind(this);
 	}
 
@@ -28,27 +27,52 @@ export default class Dropdown extends React.Component {
 	 * Adds the curret prop location to the outlet locations
 	 */
 	addLocation() {
-		console.log('Test');
-	}
-
-	/**
-	 * Called whenever the master button is clicked
-	 */
-	toggle(e) {
-		//Make sure it's the toggle and not one of the icons
-		if(e.target.className === 'mdi mdi-playlist-plus') return;
-
-		var drop = this.refs.drop,
-			dim = document.getElementById('platform-dim');
+		if(this.props.mapPlace){
 			
-		if(drop.className.indexOf('active') == -1) {
-			drop.className += ' active';
-			dim.className += ' toggled';
+			var autocomplete = document.getElementById('dispatch-location-input'),
+				place = this.props.mapPlace,
+				self = this;
+
+			//Run checks on place and title
+			if (!place || !place.geometry || !place.geometry.viewport){
+				return $.snackbar({content: global.resolveError('ERR_UNSUPPORTED_LOCATION')});
+			} else if(!autocomplete.value){
+				$.snackbar({content: 'Please enter a valid location title'});
+			}
+			
+			var bounds = place.geometry.viewport,
+				params = {
+					title: autocomplete.value,
+					polygon: global.generatePolygonFromBounds(bounds)
+				};
+			
+			$.ajax({
+				url: '/scripts/outlet/location/create',
+				method: 'post',
+				contentType: 'application/json',
+				data: JSON.stringify(params),
+				success: function(response){
+
+					if (response.err) 
+						return this.error(null, null, response.err);
+
+					$.snackbar({ content : params.title + ' has been successfully added to your saved locations.'})
+
+					//Update locations
+					self.loadLocations();
+
+				},
+				error: (xhr, status, error)=> {
+					$.snackbar({ content: global.resolveError(error) });
+				}
+			});
+			
+
 		} else{
-			drop.className = drop.className.replace(/\bactive\b/,'');
-			dim.className = dim.className.replace(/\btoggled\b/,'');
+			$.snackbar({ content: 'Please enter a location in the input field on the left to add it your saved locations'})
 		}
 	}
+
 	
 	/**
 	 * Loads locations for the outlet
@@ -61,7 +85,7 @@ export default class Dropdown extends React.Component {
 			since = window.sessionStorage.location_since ? JSON.parse(window.sessionStorage.location_since) : {};
 
 		$.ajax({
-			url: '/api/outlet/location/list?since=' + encodeURIComponent(JSON.stringify(since)),
+			url: '/api/outlet/location/list',
 			method: 'GET',
 			success: function(response){
 
@@ -78,12 +102,11 @@ export default class Dropdown extends React.Component {
 				self.setState({ locations: response.data });
 			},
 			error: (xhr, status, error) => {
-				$.snackbar({content: global.resolveError(error)});
+				// $.snackbar({content: global.resolveError(error), ''});
 			}
 		});
 	}
 	
-
 	render() {
 
 		var locations = this.state.locations.map((location, i) => {
@@ -103,31 +126,47 @@ export default class Dropdown extends React.Component {
 
 		});
 
-		var dropdownButton = <div className="toggle" ref="toggle_button" onClick={this.toggle}>
-								<span>SAVED</span>
-								
-								<span className="mdi mdi-menu-down"></span>
-								
-								<a href="/outlet/settings">
-									<span className="mdi mdi-settings"></span>
-								</a>
+		var addLocationButton;
 
-								<span className="mdi mdi-playlist-plus" onClick={this.addLocation}></span>
-							</div>
+		if(this.props.addLocationButton){
+			addLocationButton = <span className="mdi mdi-playlist-plus" onClick={this.addLocation}></span>
+		} 
 
-		var dropdownList = <ul className="list">
-								{locations}
-							</ul>
-					
+		var dropdownActions = [
+			<a href="/outlet/settings">
+				<span className="mdi mdi-settings"></span>
+			</a>,
+			addLocationButton
+		];
+							
+		if(locations.length == 0){
+
+			var dropdownBody = <div className="dropdown-body">
+							   		<h3 className="empty-title">There are currently no saved locations for your outlet!</h3>
+							   	</div>
+			
+		} else{
+			var dropdownBody = <div className="dropdown-body">
+									<ul className="list">
+										{locations}
+									</ul>
+								</div>
+		}
+
 		return (
-			<div className="nav-dropdown location-dropdown pull-right" ref="drop">
-				{dropdownButton}
-				{dropdownList}
-			</div>
+			<Dropdown 
+				inList={true} 
+				title={"SAVED"} 
+				dropdownClass={"location-dropdown"} 
+				dropdownActions={dropdownActions}>
+				{dropdownBody}
+			</Dropdown>
 		);
+					
 	}
 }
 
 Dropdown.defaultProps = {
-	inList: false
+	inList: false,
+	addLocationButton: false
 }

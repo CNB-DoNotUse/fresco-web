@@ -11,7 +11,22 @@ export default class App extends React.Component {
 	componentDidMount() {
 
 		$.material.init();
+		this.state = {
+			verifiedToggle: true,
+			sort: 'capture'
+		}
+	}
 
+	onVerifiedToggled(toggled) {
+		this.setState({
+			verifiedToggle: toggled
+		});
+	}
+
+	updateSort(sort) {
+		this.setState({
+			sort: sort
+		});
 	}
 
 	render() {

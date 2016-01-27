@@ -1,8 +1,6 @@
 import React from 'react'
 import global from './../../../lib/global'
 import Dropdown from './../global/dropdown'
-import LocationDropdown from './location-dropdown'
-import TagFilter from './tag-filter'
 
 /** //
 
@@ -33,19 +31,12 @@ export default class TopBar extends React.Component {
 					
 			google.maps.event.addListener(autocomplete, 'place_changed', () => {
 
-				var place = autocomplete.getPlace(),
-					center = {
-						location: {
-							lat: place.geometry.location.lat(),
-							lng: place.geometry.location.lng()
-						}
-					};
+				var place = autocomplete.getPlace();
 
-				if(place.geometry.viewport){} 
-					center.viewport = place.geometry.viewport;
+				if(!place) return;
 
 				//Update the position to the parent component
-				this.props.updateMapCenter(center);
+				this.props.updateMapPlace(place);
 			});
 		}
 	}
@@ -122,6 +113,7 @@ export default class TopBar extends React.Component {
 								<input 
 									type="text" 
 									ref="autocomplete"
+									id="dispatch-location-input"
 									className="form-control google-autocomplete" 
 									placeholder="Location" />
 							</div>;
@@ -178,39 +170,6 @@ export default class TopBar extends React.Component {
 					inList={true} />
 			);
 
-		}
-
-		if (this.props.tagFilter) {
-			topbarItems.push(
-				<TagFilter
-					onTagAdd={this.props.onTagAdd}
-					onTagRemove={this.props.onTagRemove}
-					tagList={this.props.tagList}
-					key="tagFilter" />
-			);
-		}
-
-		if (this.props.locationDropdown) {
-			topbarItems.push(
-				<LocationDropdown
-					onPlaceChange={this.props.onPlaceChange}
-					onRadiusChange={this.props.onRadiusChange}
-					onMapDataChange={this.props.onMapDataChange}
-					units="Miles"
-					key="locationDropdown" />
-			);
-		}
-
-		if (this.props.outletsFilter) {
-			topbarItems.push(
-				<TagFilter
-					text="Outlets"
-					tagList={this.props.outlets}
-					filterList={this.props.outletFilterList}
-					onTagAdd={this.props.onOutletFilterAdd}
-					onTagRemove={this.props.onOutletFilterRemove}
-					key="outletsFilter" />
-			)
 		}
 
 		if(this.props.tabs) {

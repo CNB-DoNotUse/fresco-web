@@ -64,8 +64,6 @@ export default class OutletMembers extends React.Component {
 			return false;
 		}
 
-		console.log(addresses);
-
 		$.ajax({
 			url: "/scripts/outlet/invite",
 			method: 'post',
@@ -94,7 +92,7 @@ export default class OutletMembers extends React.Component {
 
 	render () {
 		return (
-			<div className="card outlet-members">
+			<div className="card settings-outlet-members">
 				<div className="header">
 					<span className="title">USERS</span>
 				</div>
@@ -117,8 +115,8 @@ export default class OutletMembers extends React.Component {
 
 class OutletMemberList extends React.Component {
 	render () {
+		
 		var members = this.props.members.map((member, i) => {
-			
 			var phone = member.phone ? ' • ' + member.phone : ''; 
 
 			return(

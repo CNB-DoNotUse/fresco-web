@@ -25,14 +25,14 @@ class Dispatch extends React.Component {
 			newAssignment: null,
 			shouldUpdatePlace: false,
 			shouldMapUpdate: false,
-			mapCenter: null,
+			currentPlace: null,
 			viewMode: 'active',
 		}
 		
 		this.mapShouldUpdate = this.mapShouldUpdate.bind(this);
 		this.findAssignments = this.findAssignments.bind(this);
-		this.updatePlace = this.updatePlace.bind(this);
-		this.updateMapCenter = this.updateMapCenter.bind(this);
+		this.updateAssignmentPlace = this.updateAssignmentPlace.bind(this);
+		this.updateMapPlace = this.updateMapPlace.bind(this);
 		this.updateViewMode = this.updateViewMode.bind(this);
 		this.setActiveAssignment = this.setActiveAssignment.bind(this);
 		this.updateNewAssignment = this.updateNewAssignment.bind(this);
@@ -73,12 +73,15 @@ class Dispatch extends React.Component {
 
 	//Tells the componenets to update their `Google Maps Place Autocomplete`
 	//when the marker is finished dragging
-	updatePlace() {
+	updateAssignmentPlace() {
 		this.setState({ shouldUpdatePlace: true });
 	}
 
-	updateMapCenter(location) {
-		this.setState({ mapCenter: location });
+	/**
+	 * Takes a google maps place
+	 */
+	updateMapPlace(place) {
+		this.setState({ mapPlace: place });
 	}
 
 	updateViewMode(viewMode) {
@@ -145,9 +148,7 @@ class Dispatch extends React.Component {
 			error: (xhr, status, error) => {
 				$.snackbar({content: resolveError(error)});
 			}
-
 		});	
-
 	}
 
 	/**
@@ -186,7 +187,6 @@ class Dispatch extends React.Component {
 				return callback(null, error);
 			}
 		});
-		
 	}
 
 	/**
@@ -252,8 +252,6 @@ class Dispatch extends React.Component {
 					mapShouldUpdate={this.mapShouldUpdate}
 					key={key++} />
 			);
-
-
 		}
 		else{
 
@@ -268,26 +266,26 @@ class Dispatch extends React.Component {
 				<TopBar 
 					title={this.props.title}
 					locationInput={true}
-					updateMapCenter={this.updateMapCenter} >
+					updateMapPlace={this.updateMapPlace} >
 
 					<LocationDropdown 
-						currentLocation={this.state.currentLocation} />
+						addLocationButton={true}
+						mapPlace={this.state.mapPlace} />
 				</TopBar>
 				
 				<DispatchMap 
 					user={this.props.user}
 					activeAssignment={this.state.activeAssignment}
-					mapCenter={this.state.mapCenter}
+					mapPlace={this.state.mapPlace}
 					viewMode={this.state.viewMode}
 					newAssignment={this.state.newAssignment}
 					shouldMapUpdate={this.state.shouldMapUpdate}
 
-					updateMapCenter={this.updateMapCenter}
 					mapShouldUpdate={this.mapShouldUpdate}
 					setActiveAssignment={this.setActiveAssignment}
 					findAssignments={this.findAssignments}
 					findUsers={this.findUsers}
-					updatePlace={this.updatePlace}
+					updateAssignmentPlace={this.updateAssignmentPlace}
 					updateNewAssignment={this.updateNewAssignment} />
 				
 				<div className="cards">{cards}</div>

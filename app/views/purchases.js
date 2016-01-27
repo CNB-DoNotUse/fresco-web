@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from '../components/topbar'
 import PurchasesBody from '../components/purchases/purchases-body'
+import TagFilter from '../components/topbar/tag-filter'
 
 class Purchases extends React.Component {
 	constructor(props) {
@@ -149,12 +150,16 @@ class Purchases extends React.Component {
 		return (
 			<App user={this.props.user}>
 				<TopBar 
-					title="Purchases"
-					outletsFilter={true}
-					outlets={outlets}
-					outletFilterList={filterNames}
-					onOutletFilterAdd={this.filterAdd}
-					onOutletFilterRemove={this.filterRemove} />
+					title="Purchases">
+
+					<TagFilter
+						text="Outlets"
+						tagList={outlets}
+						filterList={filterNames}
+						onTagAdd={this.filterAdd}
+						onTagRemove={this.filterRemovee}
+						key="outletsFilter" />
+				</TopBar>
 				<PurchasesBody
 					updatePurchases={this.state.updatePurchases}
 					downloadExports={this.downloadExports}

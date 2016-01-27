@@ -29,13 +29,17 @@ export default class Dropdown extends React.Component {
 	 * Called whenever the master button is clicked
 	 */
 	toggle() {
+		console.log('Toggled');
 		var drop = this.refs.drop,
-			dim = document.getElementById('platform-dim');
+			dim = document.getElementById('platform-dim'),
+			menuIcon = this.refs['button'].refs['menu-icon'];
 			
 		if(drop.className.indexOf('active') == -1) {
+			menuIcon.className = 'mdi mdi-menu-up';
 			drop.className += ' active';
 			dim.className += ' toggled';
 		} else{
+			menuIcon.className = 'mdi mdi-menu-down';
 			drop.className = drop.className.replace(/\bactive\b/,'');
 			dim.className = dim.className.replace(/\btoggled\b/,'');
 		}
@@ -68,51 +72,71 @@ export default class Dropdown extends React.Component {
 
 	render() {
 
-		var options = this.props.options.map((option, i) => {
-			
-			var className = '';
-			
-			if(option === this.state.selected) { //Highlight the current selection if it's the selected one
-				className += ' active';
-			}
+		var list,
+			body,
+			dropdownButton;
 
-			return ( 
-				<li className={className} key={i} onClick={this.optionClicked}>
-					<span>{option}</span>
-				</li> 
-			);
+		//If options are passed, use those
+		if(this.props.options){
+			var options = this.props.options.map((option, i) => {
+				return ( 
+					<li 
+						className={option === this.state.selected ? 'active' : ''} 
+						key={i} 
+						onClick={this.optionClicked}>
+						<span>{option}</span>
+					</li> 
+				);
+			});
 
-		});
-
-		var dropdownButton = <div className="toggle" ref="toggle_button" onClick={this.toggle}>
-								<span>{this.state.selected}</span>
-								<span className="mdi mdi-menu-down"></span>
-							</div>
-
-		var dropdownList = <ul className="list">
-								{options}
-							</ul>
-					
-		if(this.props.inList) {
-			return (
-				<div className="nav-dropdown pull-right" ref="drop">
-					{dropdownButton}
-					{dropdownList}
-				</div>
-			);
+			list = <ul className="list">
+						{options}
+					</ul>
 		}
-		else {
-			return (
-				<div className="nav-dropdown" ref="drop">
-					{dropdownButton}
-					{dropdownList}
+
+		dropdownButton = <DropdownButton 
+							ref="button"
+							toggle={this.toggle}
+							selected={this.props.title || this.state.selected}>
+							{this.props.dropdownActions}
+						</DropdownButton>
+
+
+		var className = this.props.inList ? 'nav-dropdown pull-right' : 'nav-dropdown';
+
+		if(this.props.dropdownClass)
+			className += ' ' + this.props.dropdownClass;
+
+		return (
+			<div className={className} ref="drop">
+				{dropdownButton}
+				<div className="dropdown-body">
+					{list}
+					{this.props.children}
 				</div>
-			);
-		}
+			</div>
+		);
 	}
 }
 
+class DropdownButton extends React.Component {
+
+	constructor(props) {
+		super(props)
+	}
+
+	render() {
+		return(
+			<div className="toggle" onClick={this.props.toggle}>
+				<span>{this.props.selected}</span>
+				<span className="mdi mdi-menu-down" ref="menu-icon"></span>
+				{this.props.children}
+			</div>
+		);
+	}
+
+}
+
 Dropdown.defaultProps = {
-	options: ['Relative', 'Absolute'],
 	inList: false
 }

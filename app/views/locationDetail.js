@@ -36,13 +36,13 @@ class LocationDetail extends React.Component {
 	 */
 	loadPosts(passedOffset, callback) {
 		var params = {
-			id: this.props.location._id,
+			id: '56a6bf81c6112e2162a0f717',
 			limit: global.postCount,
 			verified : this.state.onlyVerified,
 			offset: passedOffset,
-			type: 'video',
-			sort: this.state.sort
-		};
+			sort: this.state.sort,
+			since: 1453242738065
+		}
 
 		$.ajax({
 			url:  '/api/outlet/location/posts',
@@ -50,6 +50,8 @@ class LocationDetail extends React.Component {
 			data: params,
 			dataType: 'json',
 			success: (response, status, xhr) => {
+
+				console.log(response);
 
 				//Send empty array, because of bad response
 				if(!response.data || response.err)
@@ -76,7 +78,8 @@ class LocationDetail extends React.Component {
 					chronToggle={true}
 					onVerifiedToggled={this.onVerifiedToggled}>
 
-					<LocationDropdown />
+					<LocationDropdown
+						addLocationButton={false} />
 				</TopBar>
 				
 				<PostList

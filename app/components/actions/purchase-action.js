@@ -50,6 +50,10 @@ export default class PurchaseAction extends React.Component {
 							return $.snackbar({
 								content: global.resolveError(result.err, 'There was an error while completing your purchase!')
 							});
+						} else if(result.data.length == 0){
+							return $.snackbar({
+								content: 'There was an error while completing your purchase!'
+							});
 						}
 
 						$.snackbar({
@@ -59,12 +63,6 @@ export default class PurchaseAction extends React.Component {
 
 						this.props.didPurchase(this.props.post._id);
 
-						// var card = thisElem.parents('tile');
-						// thisElem.siblings('.mdi-library-plus').remove();
-						// thisElem.parent().parent().find('.mdi-file-image-box').addClass('available');
-						// thisElem.parent().parent().find('.mdi-movie').addClass('available');
-						// card.removeClass('toggled');
-						// thisElem.remove();
 					},
 					error: (xhr, status, error) => {
 						$.snackbar({

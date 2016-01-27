@@ -3,6 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app.js'
 import TopBar from './../components/topbar'
+import QuickSupport from './../components/global/quick-support'
 import global from './../../lib/global'
 
 /**
@@ -158,8 +159,8 @@ class UserSettings extends React.Component {
 
  	render() {
 
- 		var user = this.state.user;
- 		var removeButton = <button className="btn btn-danger">DELETE ACCOUNT</button>;
+ 		var user = this.state.user,
+ 			removeButton = <button className="btn btn-danger">DELETE ACCOUNT</button>;
 
  		return (
  			<App user={this.state.user}>
@@ -169,87 +170,68 @@ class UserSettings extends React.Component {
 					updateSettings={this.updateSettings} />
 
 				<div className="user-settings">
-					<div className="f-col">
-						<div className="f-card">
-							<div className="user-img">
-								<input 
-									type="file" 
-									ref="avatarFileInput" 
-									name="avatarFileInput"
-								    style={{display: 'none'}} 
-								    onChange={this.fileChanged} />
-								
-								<img src={this.state.avatar} />
-								
-								<div className="img-overlay" onClick={this.clickProfileImgInput}>
-									<span className="mdi mdi-upload"></span>
-								</div>
+					<div className="card settings-info">
+						<div className="outlet-avatar" ref="outlet-avatar-image" style={{backgroundImage: 'url(' + this.state.avater + ')'}} >
+							<div className="overlay" onClick={this.clickProfileImgInput}>
+								<span className="mdi mdi-upload"></span>
 							</div>
-							
-							<div className="f-card-content">
-								<input 
-									type="text" 
-									className="form-control heading" 
-									ref="name" 
-									placeholder="Name" 
-									defaultValue={user.firstname + ' ' + user.lastname} />
-								
-								<textarea 
-									className="form-control heading" 
-									disabled={true} 
-									ref="bio" 
-									placeholder="Bio"></textarea>
-								
-								<button 
-									className="btn btn-save" 
-									onClick={this.updateSettings} 
-									ref="profileSaveBtn">SAVE CHANGES</button>
-							</div>	
 						</div>
-						<div className="user-support">
-							<span>Quck Support</span>
+						
+						<div className="card-form">
+							<input 
+								type="file" 
+								className="outlet-avatar-input" 
+								ref="outlet-avatar"  
+								accept="image/png,image/jpeg" 
+								onChange={this.avatarInputChange} 
+								multiple />
+
+							<input 
+								type="text" 
+								className="outlet-name" 
+								ref="outlet-name" 
+								placeholder="Name" 
+								defaultValue={user.firstname + ' ' + user.lastname} />
 							
-							<ul className="md-type-subhead">
-								{/*<li><a href=""><span className="mdi mdi-ticket icon"></span> Submit a ticket</a></li>*/}
-								<li>
-									<a href="mailto:support@fresconews.com"><span className="mdi mdi-email icon"></span> Email us</a>
-								</li>
-							</ul>
+							<textarea 
+								className="outlet-bio" 
+								ref="outlet-bio" 
+								rows="2"
+								placeholder="Bio" 
+								defaultValue={user.bio}></textarea>
+							
+							<button className="btn btn-flat" onClick={this.save}>SAVE CHANGES</button>
 						</div>
 					</div>
-					<div className="f-col">
-						<div className="f-card">
-							<div className="f-card-content full">
-								<div className="header">
-									<span>Account Information</span>
-								</div>
-								
-								<div className="padding">
-									<div>
-										<input 
-											type="text" 
-											className="form-control floating-label" 
-											ref="email" placeholder="Email address" 
-											defaultValue={user.email} />
-									</div>
-									
-									<div>
-										<input 
-											type="text" 
-											className="form-control floating-label" 
-											ref="phone" 
-											placeholder="Phone number" 
-											defaultValue={user.phone} />
-									</div>
-								</div>
-								
+
+					<div className="card">
+							<div className="header">
+								<span>Account Information</span>
+							</div>
+							
+							<div className="card-form">
+								<input 
+									type="text" 
+									className="" 
+									ref="email" placeholder="Email address" 
+									defaultValue={user.email} />
+
+								<input 
+									type="text" 
+									className="" 
+									ref="phone" 
+									placeholder="Phone number" 
+									defaultValue={user.phone} />
+			
 								<button 
 									className="btn btn-save" 
 									onClick={this.updateSettings} 
 									ref="accountSaveBtn">SAVE CHANGES</button>
 							</div>
-						</div>
+							
 					</div>
+
+					<QuickSupport />
 				</div>
  			</App>
  		);
