@@ -47,7 +47,6 @@ export default class GalleryEditByline extends React.Component {
 				}
 
 				if(this.refs.name) {
-					console.log('removing class');
 					this.refs.name.value = '';
 					$(this.refs.name).removeClass('empty');
 				}
