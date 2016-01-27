@@ -65,6 +65,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		.title{
 			font-weight:500;
 			text-align:left;
+			text-transform:uppercase;
 			@include rgba(color, 0, 0, 0, .54);
 		}
 	}
@@ -93,6 +94,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 		input[type="file"] {
 			display: none;
+		}
+
+		.changed{
+			color:#0047BB;
 		}
 	}
 
@@ -152,7 +157,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		width:320px;
 	}
 
-	.outlet-avatar{
+	.avatar{
 		float:left;
 		width:240px;
 		height:240px;

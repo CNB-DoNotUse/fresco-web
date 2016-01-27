@@ -18,7 +18,7 @@ export default class LocationDropdown extends React.Component {
 		this.addLocation = this.addLocation.bind(this);
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		//Load intial locations
 	    this.loadLocations();  
 	}
@@ -69,40 +69,33 @@ export default class LocationDropdown extends React.Component {
 			
 
 		} else{
-			$.snackbar({ content: 'Please enter a location in the input field on the left to add it your saved locations'})
+			$.snackbar({ 
+				content: 'Please enter a location in the input field on the left to add it your saved locations' 
+			});
 		}
 	}
 
-	
 	/**
 	 * Loads locations for the outlet
 	 */
 	loadLocations(){
-
-		//`since` is the last time they've seen the locations page,
-		//eitehr grabbed from location storage, or defaults to the current timestamp
-		var self = this,
-			since = window.sessionStorage.location_since ? JSON.parse(window.sessionStorage.location_since) : {};
+		var self = this;
 
 		$.ajax({
-			url: '/api/outlet/location/list',
+			url: '/api/outlet/location/stats',
 			method: 'GET',
 			success: function(response){
-
+				console.log(response);
 				if (response.err || !response.data)
 					return this.error(null, null, response.err);
 				
-				//Loop through and add all the `since` data from the response
-				response.data.forEach(function(location){
-					if (!since[location._id])
-						since[location._id] = Date.now();
-				});
-
 				//Update state
 				self.setState({ locations: response.data });
 			},
 			error: (xhr, status, error) => {
-				// $.snackbar({content: global.resolveError(error), ''});
+				$.snackbar({
+					content: global.resolveError(error, 'We\'re unable to load your locations at the moment! Please try again in a bit.') 
+				});
 			}
 		});
 	}
@@ -129,11 +122,11 @@ export default class LocationDropdown extends React.Component {
 		var addLocationButton;
 
 		if(this.props.addLocationButton){
-			addLocationButton = <span className="mdi mdi-playlist-plus" onClick={this.addLocation}></span>
+			addLocationButton = <span className="mdi mdi-playlist-plus" onClick={this.addLocation} key={1}></span>
 		} 
 
 		var dropdownActions = [
-			<a href="/outlet/settings">
+			<a href="/outlet/settings" key={2}>
 				<span className="mdi mdi-settings"></span>
 			</a>,
 			addLocationButton

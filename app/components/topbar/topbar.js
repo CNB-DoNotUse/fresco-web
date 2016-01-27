@@ -76,6 +76,7 @@ export default class TopBar extends React.Component {
 
 	//Called when the user selects a time format
 	verifiedToggleSelected(selected) {
+		console.log('Toggled Top Bar');
 		this.props.onVerifiedToggled(selected == 'Verified');
 	}
 
@@ -121,19 +122,18 @@ export default class TopBar extends React.Component {
 		
 		if (this.props.editable) {
 
+			var className = "mdi icon pull-right hidden-xs toggle-edit toggler";
+			
+			if(this.props.editIcon)
+				className += " " + this.props.editIcon;
+			else
+				className += " mdi-pencil";
+
 			topbarItems.push(
-				<a className="mdi mdi-pencil icon pull-right hidden-xs toggle-edit toggler"
+				<a className={className}
 					key="edit"
 					onClick={this.props.edit}></a>
 			);
-		}
-
-		if (this.props.link) {
-			topbarItems.push(
-				<a className="mdi mdi-pencil icon pull-right hidden-xs"
-					key="link"
-					onClick={this.goLink} />
-			)
 		}
 
 		if (this.props.chronToggle) {

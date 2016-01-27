@@ -22,13 +22,17 @@ class Outlet extends React.Component {
 		});
 	}
 
+	edit() {
+		window.location.href = "/outlet/settings";
+	}
+
 	render() {
 
-		var link = null;
+		var editable = false;
 
 		//Check if user is the owner
 		if(this.props.outlet.owner._id === this.props.user._id){
-			link = "/outlet/settings";
+			editable = true;
 		}
 
 		return (
@@ -36,7 +40,9 @@ class Outlet extends React.Component {
 				<TopBar
 					title={this.props.outlet.title}
 					rank={this.props.user.rank}
-					link={link}
+					editable={editable}
+					edit={this.edit}
+					editIcon={"mdi-settings"}
 					activeTab={this.state.activeTab}
 					setActiveTab={this.setActiveTab}
 					tabs={[

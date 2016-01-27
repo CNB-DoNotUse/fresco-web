@@ -25,7 +25,7 @@ class UserDetail extends React.Component {
  				<TopBar 
  					title={this.props.detailUser.firstname + ' ' + this.props.detailUser.lastname}
  					timeToggle={true}
- 					chronToggle={true}
+ 					editIcon={"mdi-settings"}
 					editable={this.props.editable}
 					edit={this.edit} />
 				
@@ -64,7 +64,6 @@ class UserDetail extends React.Component {
  			data: params,
  			dataType: 'json',
  			success: (response, status, xhr) => {
-
  				//Do nothing, because of bad response
  				if(!response.data || response.err){
  					$.snackbar({content: 'We couldn\'t load this user\'s posts!'});

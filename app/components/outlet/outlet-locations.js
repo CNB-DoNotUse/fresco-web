@@ -122,8 +122,7 @@ export default class OutletLocations extends React.Component {
 
 		//`since` is the last time they've seen the locations page,
 		//eitehr grabbed from location storage, or defaults to the current timestamp
-		var self = this,
-			since = window.sessionStorage.location_since ? JSON.parse(window.sessionStorage.location_since) : {};
+		var self = this;
 
 		$.ajax({
 			url: '/api/outlet/location/list',
@@ -133,19 +132,14 @@ export default class OutletLocations extends React.Component {
 				if (response.err || !response.data)
 					return this.error(null, null, response.err);
 				
-				//Loop through and add all the `since` data from the response
-				response.data.forEach(function(location){
-					if (!since[location._id])
-						since[location._id] = Date.now();
-				});
-
-				console.log(response.data);
-
 				//Update state
 				self.setState({ locations: response.data });
 			},
 			error: (xhr, status, error) => {
-				$.snackbar({content: global.resolveError(error)});
+				console.log(error);
+				$.snackbar({
+					content: global.resolveError(error,  'We\'re unable to load your locations at the moment! Please try again in a bit.')
+				});
 			}
 		});
 	}

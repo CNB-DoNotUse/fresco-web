@@ -20,7 +20,7 @@ class UserSettings extends React.Component {
 		}
 		
 		this.updateSettings = this.updateSettings.bind(this);
-		this.fileChanged = this.fileChanged.bind(this);
+		this.avatarInputChange = this.avatarInputChange.bind(this);
 		this.clickProfileImgInput = this.clickProfileImgInput.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
 	}
@@ -43,20 +43,24 @@ class UserSettings extends React.Component {
 		if(newName || newBio || newAvatar) {
 			if(profileSaveBtn.className.indexOf(' changed ') == -1) {
 				profileSaveBtn.className += ' changed ';
+				profileSaveBtn.disabled = false;
 			}
 		} else {
 			if(profileSaveBtn.className.indexOf(' changed ') != -1) {
-				profileSaveBtn.className = profileSaveBtn.className.replace(' changed ', '');
+				profileSaveBtn.className = profileSaveBtn.className.replace(/\bchanged\b/,'');
+				profileSaveBtn.disabled = true;
 			}
 		}
 
 		if(newEmail || (newPhone && this.refs.phone.value != '')) {
 			if(accountSaveBtn.className.indexOf(' changed ') == -1) {
 				accountSaveBtn.className += ' changed ';
+				accountSaveBtn.disabled = false;
 			}
 		} else {
 			if(accountSaveBtn.className.indexOf(' changed ') != -1) {
-				accountSaveBtn.className = accountSaveBtn.className.replace(' changed', '');
+				accountSaveBtn.className = accountSaveBtn.className.replace(/\bchanged\b/,'');
+				accountSaveBtn.disabled = true;
 			}
 		}
 	}
@@ -64,7 +68,7 @@ class UserSettings extends React.Component {
  	/**
  	 * Change listener for file upload input
  	 */
- 	fileChanged(e) {
+	avatarInputChange(e) {
 		var profileSaveBtn = this.refs.profileSaveBtn;
 		
 		if(profileSaveBtn.className.indexOf(' changed ') == -1) {
@@ -83,7 +87,6 @@ class UserSettings extends React.Component {
 		}
 
 		reader.readAsDataURL(file);
-
 	}
 
 	/**
@@ -134,7 +137,6 @@ class UserSettings extends React.Component {
  			contentType: false,
  			data : userData,
  			success: function(response, status, xhr) {
-
  				self.updating = false
 
  				if(response.err) {
@@ -177,74 +179,57 @@ class UserSettings extends React.Component {
 
 				<div className="user-settings">
 					<div className="card settings-info">
-						<div className="outlet-avatar" ref="outlet-avatar-image" style={{backgroundImage: 'url(' + this.state.avater + ')'}} >
+						
+						<div className="avatar" ref="outlet-avatar-image" style={{backgroundImage: 'url(' + this.state.avatar + ')'}} >
 							<div className="overlay" onClick={this.clickProfileImgInput}>
 								<span className="mdi mdi-upload"></span>
 							</div>
-			
-							<div className="f-card-content">
-								<input 
-									type="text" 
-									className="form-control heading" 
-									ref="name" 
-									placeholder="Name" 
-									defaultValue={user.firstname + ' ' + user.lastname} />
-								
-								<textarea 
-									className="form-control heading" 
-									ref="bio" 
-									defaultValue={user.bio}
-									placeholder="Bio"></textarea>
-								
-								<button 
-									className="btn btn-save" 
-									onClick={this.updateSettings} 
-									ref="profileSaveBtn">SAVE CHANGES</button>
-							</div>	
 						</div>
-						
+
 						<div className="card-form">
 							<input 
 								type="file" 
 								className="outlet-avatar-input" 
-								ref="outlet-avatar"  
+								ref="avatarFileInput"  
 								accept="image/png,image/jpeg" 
 								onChange={this.avatarInputChange} 
 								multiple />
 
 							<input 
 								type="text" 
-								className="outlet-name" 
-								ref="outlet-name" 
+								className="floating-label" 
+								ref="name" 
 								placeholder="Name" 
 								defaultValue={user.firstname + ' ' + user.lastname} />
 							
 							<textarea 
-								className="outlet-bio" 
-								ref="outlet-bio" 
+								className="floating-label" 
+								ref="bio" 
 								rows="2"
 								placeholder="Bio" 
 								defaultValue={user.bio}></textarea>
 							
-							<button className="btn btn-flat" onClick={this.save}>SAVE CHANGES</button>
+							<button 
+								className="btn btn-flat" 
+								ref="profileSaveBtn" 
+								onClick={this.updateSettings}
+								disabled={true}>SAVE CHANGES</button>
 						</div>
 					</div>
 
-					<div className="card">
+					<div className="card settings-user-account">
 							<div className="header">
-								<span>Account Information</span>
+								<span className="title">Account Information</span>
 							</div>
 							
 							<div className="card-form">
 								<input 
 									type="text" 
-									className="" 
 									ref="email" placeholder="Email address" 
 									defaultValue={user.email} />
 
 								<input 
 									type="text" 
-									className="" 
 									ref="phone" 
 									placeholder="Phone number" 
 									defaultValue={user.phone} />

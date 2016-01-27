@@ -8,14 +8,14 @@ export default class OutletInfo extends React.Component {
 
 		this.clickProfileImgInput = this.clickProfileImgInput.bind(this);
 		this.avatarInputChange = this.avatarInputChange.bind(this);
-		this.save = this.save.bind(this);
+		this.updateSettings = this.updateSettings.bind(this);
 	}
 
 	/**
 	 * Click event for avater 
 	 */
 	clickProfileImgInput() {
-		this.refs['outlet-avatar'].click();
+		this.refs['avatarFileInput'].click();
 	}
 
 	/**
@@ -39,17 +39,17 @@ export default class OutletInfo extends React.Component {
 	/**
 	 * Saves outlet's info
 	 */
-	save() {
-		var avatarFiles = this.refs['outlet-avatar'].files,
+	updateSettings() {
+		var avatarFiles = this.refs['avatarFileInput'].files,
 			params = new FormData();
 		
 		//Check if there are files
 		if (avatarFiles && avatarFiles.length > 0) 
 			params.append('avatar', avatarFiles[0]);
 
-		params.append('bio', this.refs['outlet-bio'].value);
+		params.append('bio', this.refs['bio'].value);
 		params.append('link', this.refs['outlet-website'].value);
-		params.append('title', this.refs['outlet-name'].value);
+		params.append('title', this.refs['name'].value);
 
 		$.ajax({
 			url: "/scripts/outlet/update",
@@ -78,7 +78,7 @@ export default class OutletInfo extends React.Component {
 		return (
 			<div className="card settings-info">
 				
-				<div className="outlet-avatar" ref="outlet-avatar-image" style={{backgroundImage: 'url(' + outlet.avatar + ')'}} >
+				<div className="avatar" ref="outlet-avatar-image" style={{backgroundImage: 'url(' + outlet.avatar + ')'}} >
 					<div className="overlay" onClick={this.clickProfileImgInput}>
 						<span className="mdi mdi-upload"></span>
 					</div>
@@ -88,7 +88,7 @@ export default class OutletInfo extends React.Component {
 					<input 
 						type="file" 
 						className="outlet-avatar-input" 
-						ref="outlet-avatar"  
+						ref="avatarFileInput"  
 						accept="image/png,image/jpeg" 
 						onChange={this.avatarInputChange} 
 						multiple />
@@ -96,7 +96,7 @@ export default class OutletInfo extends React.Component {
 					<input 
 						type="text" 
 						className="outlet-name" 
-						ref="outlet-name" 
+						ref="name" 
 						placeholder="Outlet name" 
 						defaultValue={outlet.title} />
 					
@@ -109,12 +109,12 @@ export default class OutletInfo extends React.Component {
 					
 					<textarea 
 						className="outlet-bio" 
-						ref="outlet-bio" 
+						ref="bio" 
 						rows="2"
 						placeholder="Bio" 
 						defaultValue={outlet.bio}></textarea>
 					
-					<button className="btn btn-flat" onClick={this.save}>SAVE CHANGES</button>
+					<button className="btn btn-flat" onClick={this.updateSettings}>SAVE CHANGES</button>
 				</div>
 			</div>
 		);

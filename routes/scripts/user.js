@@ -206,14 +206,14 @@ router.post('/user/unfollow', function(req, res, next) {
 router.post('/user/update', function(req, res, next) {
 
 	var request = require('request'),
-    formData = {
-      id: req.body.id,
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-  	  bio: req.body.bio,
-  	  email: req.body.email,
-      phone: req.body.phone || ''
-  	};
+      formData = {
+        id: req.body.id,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+    	  bio: req.body.bio,
+    	  email: req.body.email,
+        phone: req.body.phone || ''
+    	};
 
 	var file = null;
 
