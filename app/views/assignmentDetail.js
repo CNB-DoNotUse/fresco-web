@@ -5,6 +5,7 @@ import PostList from './../components/global/post-list'
 import AssignmentSidebar from './../components/assignmentDetail/assignment-sidebar'
 import AssignmentEdit from './../components/editing/assignment-edit.js'
 import App from './app'
+import global from '../../lib/global'
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
@@ -17,12 +18,14 @@ class AssignmentDetail extends React.Component {
 
 		this.state = {
 			assignment: this.props.assignment,
-			toggled: false
+			toggled: false,
+			verifiedToggle: true
 		}
 
 		this.expireAssignment = this.expireAssignment.bind(this);
 		this.setAssignment = this.setAssignment.bind(this);
 		this.toggleEdit = this.toggleEdit.bind(this);
+		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
 	}
 
  	/**
@@ -39,19 +42,27 @@ class AssignmentDetail extends React.Component {
  	 */
  	expireAssignment() {
 
+ 		/*$.post('/scripts/assignment/update', {
+ 			id: this.state.assignment._id,
+ 			expiration_time: Date.now()
+ 		}, (response) => {
+ 			location.reload();
+ 		});
+ 		*/
+ 	
  		$.post('/scripts/assignment/expire', {
  			id: this.state.assignment._id
  		}, (response) => {
  			location.reload();
- 			// //Do nothing, because of bad response
- 			// if(!response.data || response.err)
- 			// 	callback([]);
- 			// else
- 			// 	callback(response.data);
-
  		});
  	}
 
+ 	onVerifiedToggled(toggled) {
+ 		this.setState({
+ 			verifiedToggle: toggled
+ 		});
+ 	}
+ 	
  	/**
  	 * Toggles edit modal with `s` (state) value. If `s` is not provided, negates toggled.
  	 */
@@ -69,7 +80,8 @@ class AssignmentDetail extends React.Component {
  					title={this.state.assignment.title}
  					timeToggle={true}
  					chronToggle={true} 
- 					verifiedToggle={this.props.user.rank >= 2} /* Based on user rank to see verified content */
+ 					onVerifiedToggled={this.onVerifiedToggled}
+ 					verifiedToggle={this.props.user.rank >= global.RANKS.CONTENT_MANAGER} /* Based on user rank to see verified content */
  					editable={true}
  					edit={this.toggleEdit} />
  				
@@ -82,6 +94,7 @@ class AssignmentDetail extends React.Component {
 	 					rank={this.props.user.rank}
 	 					purchases={this.props.purchases}
 	 					posts={this.props.assignment.posts}
+	 					onlyVerified={this.state.verifiedToggle}
 	 					scrollable={false}
 	 					editable={false}
 	 					size='large' />

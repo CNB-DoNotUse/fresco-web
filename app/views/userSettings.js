@@ -32,14 +32,15 @@ class UserSettings extends React.Component {
 	handleInputChange() {
 
 		var newName = this.refs.name.value != (this.props.user.firstname + ' ' + this.props.user.lastname),
-			// newBio = this.refs.bio.value != this.props.user.bio,
+			newBio = !global.compareMultiline(this.refs.bio.value, this.props.user.bio),
 			newAvatar = this.refs.avatarFileInput.files.length > 0,
 			newEmail = this.refs.email.value != this.props.user.email,
 			newPhone = this.refs.phone.value != this.props.user.phone;
 
 		var profileSaveBtn = this.refs.profileSaveBtn,
 			accountSaveBtn = this.refs.accountSaveBtn;
-		if(newName /*|| newBio*/ || newAvatar) {
+
+		if(newName || newBio || newAvatar) {
 			if(profileSaveBtn.className.indexOf(' changed ') == -1) {
 				profileSaveBtn.className += ' changed ';
 			}
@@ -49,13 +50,13 @@ class UserSettings extends React.Component {
 			}
 		}
 
-		if(newEmail || newPhone) {
+		if(newEmail || (newPhone && this.refs.phone.value != '')) {
 			if(accountSaveBtn.className.indexOf(' changed ') == -1) {
 				accountSaveBtn.className += ' changed ';
 			}
 		} else {
 			if(accountSaveBtn.className.indexOf(' changed ') != -1) {
-				accountSaveBtn.className = accountSaveBtn.className.replace(' changed ', '');
+				accountSaveBtn.className = accountSaveBtn.className.replace(' changed', '');
 			}
 		}
 	}
@@ -64,7 +65,12 @@ class UserSettings extends React.Component {
  	 * Change listener for file upload input
  	 */
  	fileChanged(e) {
-	
+		var profileSaveBtn = this.refs.profileSaveBtn;
+		
+		if(profileSaveBtn.className.indexOf(' changed ') == -1) {
+			profileSaveBtn.className += ' changed ';
+		}
+
 		var file = this.refs.avatarFileInput.files[0],
 			self = this;
 
@@ -119,7 +125,7 @@ class UserSettings extends React.Component {
  		userData.append('email', email);
  		userData.append('phone', phone);
  		userData.append('avatar', this.refs.avatarFileInput.files[0]);
- 			
+
  		$.ajax({
  			url: "/scripts/user/update",
  			type: 'POST',
@@ -162,7 +168,7 @@ class UserSettings extends React.Component {
  		var user = this.state.user,
  			removeButton = <button className="btn btn-danger">DELETE ACCOUNT</button>;
 
- 		return (
+ 		return ( 
  			<App user={this.state.user}>
  				<TopBar 
  					title={this.state.user.firstname + ' ' + this.state.user.lastname}
@@ -175,6 +181,26 @@ class UserSettings extends React.Component {
 							<div className="overlay" onClick={this.clickProfileImgInput}>
 								<span className="mdi mdi-upload"></span>
 							</div>
+			
+							<div className="f-card-content">
+								<input 
+									type="text" 
+									className="form-control heading" 
+									ref="name" 
+									placeholder="Name" 
+									defaultValue={user.firstname + ' ' + user.lastname} />
+								
+								<textarea 
+									className="form-control heading" 
+									ref="bio" 
+									defaultValue={user.bio}
+									placeholder="Bio"></textarea>
+								
+								<button 
+									className="btn btn-save" 
+									onClick={this.updateSettings} 
+									ref="profileSaveBtn">SAVE CHANGES</button>
+							</div>	
 						</div>
 						
 						<div className="card-form">

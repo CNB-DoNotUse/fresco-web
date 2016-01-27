@@ -104,7 +104,8 @@ class Dispatch extends React.Component {
 		params.active = this.state.viewMode == 'active' ? true : false;
 		params.verified = this.state.viewMode == 'pending' ? false : true;
 
-		if(this.props.user.rank < 2)
+		//Check if the user is not a CM or Greater
+		if(this.props.user.rank < global.RANKS.CONTENT_MANAGER)
 			params.outlet = this.props.user.outlet._id;
 
 		//Add map params

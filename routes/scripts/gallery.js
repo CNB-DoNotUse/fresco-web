@@ -208,18 +208,30 @@ router.post('/gallery/import', function(req, res, next){
 
       params.source = 'Twitter';
       params.caption = tweet.text;
-      params.time_captured = new Date(Date.parse(tweet.created_at)).getTime()
+      params.time_captured = new Date(Date.parse(tweet.created_at)).getTime();
+
+      /**
+       * Dev API has a new twitter structure.
+      */
+      params.twitter_id = tweet.id_str;
+      params.twitter_user_id = tweet.user.id_str;
+      params.twitter_url = req.body.tweet;
+      params.twitter_handle = handle;
+      params.twitter_name = tweet.user.name;
+
+      // DEPRECATED
       params.twitter = JSON.stringify({
         id: tweet.id_str,
         url: req.body.tweet,
         handle: handle,
         user_name: tweet.user.name
       });
+
       if (tweet.coordinates){
         params.lon = tweet.coordinates.coordinates[0];
         params.lat = tweet.coordinates.coordinates[1];
       }
-
+      
       if (media.length == 0)
         return res.json({err: 'ERR_NO_MEDIA'}).end();
 
@@ -346,6 +358,9 @@ router.post('/gallery/update', function(req, res, next){
   api.post("/v1/gallery/update",
     req.body,
     function (err, response, body){
+      if(err)
+        console.log(err);
+
       res.json(body).end();
     });
 });

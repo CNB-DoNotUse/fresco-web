@@ -1,4 +1,5 @@
 import React from 'react'
+import global from '../../../lib/global'
 
 /**
  * Side bar object found across the site; inside of the top level App class
@@ -73,7 +74,7 @@ class SideBarListItems extends React.Component {
 		for (var i = 0; i < sidebarTabs.length; i++) {
 			var tab = sidebarTabs[i],
 				anchor = tab.getElementsByTagName('a')[0];
-				
+
 			if(anchor.pathname == window.location.pathname){
 				tab.className += ' active';
 			}
@@ -84,7 +85,7 @@ class SideBarListItems extends React.Component {
 
 		if(!this.props.user) return;
 
-		if (this.props.user.outlet || this.props.user.rank >= 1){ //CONTENT_MANAGER
+		if (this.props.user.outlet || this.props.user.rank >= global.RANKS.CONTENT_MANAGER){ //CONTENT_MANAGER
 			var dispatch = 
 				<li className="sidebar-tab">
 					<a href="/dispatch"><span className="mdi mdi-map icon"></span>Dispatch</a>
@@ -99,13 +100,14 @@ class SideBarListItems extends React.Component {
 				</li>;
 		
 		}
-		if(this.props.user.rank >= 2) { 
+		if(this.props.user.rank >= global.RANKS.CONTENT_MANAGER) { 
 			
 			var admin = 
 				<li className="sidebar-tab">
 					<a href="/admin"><span className="mdi mdi-dots-horizontal icon"></span>Admin</a>
 				</li>;
-			
+		} 
+		if(this.props.user.rank === global.RANKS.ADMIN) { 
 			var purchases =  
 				<li className="sidebar-tab">
 					<a href="/purchases"><span className="mdi mdi-currency-usd icon"></span>Purchases</a>

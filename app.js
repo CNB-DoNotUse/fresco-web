@@ -57,7 +57,7 @@ app.use(
 //Session config
 app.use(
   session({
-    name: 'FRSSID', 
+    name: 'FRSSID',
     store: new RedisStore(redisConnection),
     secret: config.SESSION_SECRET,
     resave: false,
@@ -125,24 +125,25 @@ app.use((req, res, next) => {
 
     //Check if there is no sessioned user
     if (!req.session.user) {
-        return next(err);
+      return res.redirect('/account?next=' + req.url);
     }
 
     //Check if the session hasn't expired
-    if (req.session.user.TTL && req.session.user.TTL - now > 0) {
-      return next();
+    if (!req.session.user.TTL || req.session.user.TTL - now > 0){
+        return next();
     }
 
     //Send request for user profile
     api.get('/v1/user/profile?id=' + req.session.user._id, (err, response, body) => {
+
         //Check request
         if (err || !body) return next(err);
 
         //Check for error on api payload
         if (body.err || body.error || !body.data._id) {
-            
+
             delete req.session.user;
-            
+
             return req.session.save(() => {
                 res.redirect('/');
             });
@@ -180,7 +181,7 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
 
-  if(!req.fresco) 
+  if(!req.fresco)
     req.fresco = {};
 
   res.locals.section = 'public';
@@ -193,7 +194,7 @@ app.use((req, res, next) => {
  */
 
 for (var i = 0; i < routes.public.length; i++) {
-  
+
   var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i] ,
       route = require('./routes/' + routes.public[i]);
 
@@ -206,7 +207,7 @@ for (var i = 0; i < routes.public.length; i++) {
  */
 
 for (var i = 0; i < routes.scripts.length; i++) {
-  
+
   var routePrefix = routes.scripts[i] ,
       route = require('./routes/scripts/' + routePrefix);
 
@@ -235,7 +236,7 @@ app.use((req, res, next) => {
  */
 
 for (var i = 0; i < routes.platform.length; i++) {
-  
+
   var routePrefix = routes.platform[i] ,
       route = require('./routes/' + routePrefix);
 
@@ -255,7 +256,6 @@ app.use('/api', (req, res, next) => {
 
     return request
       .get(config.API_URL + '/' + config.API_VERSION + req.url)
-      .query(req.query)
       .set('authtoken', token)
       .end((err, response) => {
         if(err) {
@@ -288,7 +288,7 @@ app.use('/api', (req, res, next) => {
 app.use((err, req, res, next) => {
     // Development error handle will print stacktrace
     if (app.get('env') === 'development') {
-        console.log('Method:', req.method, 
+        console.log('Method:', req.method,
                   '\nPath:', req.path,
                   '\nBody', req.body,
                   '\nError: ', err + '\n');
@@ -351,8 +351,16 @@ if(!config.DEV) {
   };
 
   http.createServer(function (req, res) {
-	res.writeHead(302, { 'Location': config.WEB_ROOT + req.url });
-        res.end();
+
+    //  Can be refactored and be applied to more subdomains by creating middleware to handle list of subdomains and their destinations.
+    if(/^pro/.test(req.headers.host)) {
+      res.writeHead(302, { 'Location': config.WEB_ROOT + '/pro' });
+      res.end();
+      return;
+    }
+  
+  	res.writeHead(302, { 'Location': config.WEB_ROOT + req.url });
+    res.end();
   }).listen(3000);
 
   https.createServer(params, app).listen(4430);
@@ -361,4 +369,3 @@ if(!config.DEV) {
 } else {
   module.exports = app;
 }
-

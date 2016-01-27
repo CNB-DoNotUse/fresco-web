@@ -21,10 +21,8 @@ export default class GalleryEditByline extends React.Component {
 
 	isTwitterImport() {
 		var post = this.props.gallery.posts[0];
-		if(post.meta && post.meta.twitter) {
-			return true;
-		}
-		return false;
+
+		return this.props.gallery.imported && post.meta && post.meta.twitter;	
 	}
 
 	handleSelected(selected) {
@@ -35,10 +33,31 @@ export default class GalleryEditByline extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if(this.props.gallery._id != prevProps.gallery._id) {
+			var post = this.props.gallery.posts[0];
+
 			if(this.isTwitterImport()) {
-				var post = this.props.gallery.posts[0];
 				this.setState({
 					name: post.meta.twitter.handle
+				});
+			} else {
+
+				if(this.refs.byline) {
+					this.refs.byline.value = post.byline;
+					$(this.refs.byline).removeClass('empty');
+				}
+
+				if(this.refs.name) {
+					this.refs.name.value = '';
+					$(this.refs.name).removeClass('empty');
+				}
+
+				if(this.refs.affiliation) {
+					this.refs.affiliation.value = '';
+					$(this.refs.affiliation).removeClass('empty');
+				}
+
+				this.setState({
+					name: ''
 				});
 			}
 		}
@@ -90,18 +109,12 @@ export default class GalleryEditByline extends React.Component {
 							onSelected={this.handleSelected} />
 						<input type="hidden" ref="name" value={this.state.name} />
 						<div className="split-cell">
-							<div className="form-control-wrapper">
-								<input 
-									type="text" 
-									className="form-control" 
-									defaultValue={affiliation} 
-									ref="affiliation"
-									id="gallery-edit-affiliation" />
-								
-								<div className="floating-label">Affiliation</div>
-								
-								<span className="material-input"></span>
-							</div>
+							<input 
+								type="text" 
+								className="form-control" 
+								defaultValue={affiliation} 
+								ref="affiliation"
+								id="gallery-edit-affiliation" />
 						</div>
 					</div>
 				</div>
@@ -110,6 +123,7 @@ export default class GalleryEditByline extends React.Component {
 		}
 		//If the post doesn't have an owner, but has a curator i.e. manually imported
 		else if(!post.owner && post.curator) {
+
 			var name = '',
 				affiliation = '';
 
@@ -122,63 +136,47 @@ export default class GalleryEditByline extends React.Component {
 				<div className="dialog-row" id="byline-edit">
 					<div className="split byline-section" id="gallery-byline-other-origin">
 						<div className="split-cell" id="gallery-name-span">
-							<div className="form-control-wrapper">
-								<input 
-									type="text" 
-									className="form-control empty" 
-									defaultValue={name} 
-									ref="name"
-									id="gallery-edit-name" />
-								
-								<div className="floating-label">Name</div>
-								
-								<span className="material-input"></span>
-							</div>
+							<input 
+								type="text" 
+								className="form-control floating-label" 
+								defaultValue={name} 
+								ref="name"
+								placeholder="Name"
+								id="gallery-edit-name" />
 						</div>
 						
 						<div className="split-cell">
-							<div className="form-control-wrapper">
-								<input 
-									type="text" 
-									className="form-control empty" 
-									defaultValue={affiliation} 
-									ref="affiliation"
-									id="gallery-edit-affiliation" />
-								
-								<div className="floating-label">Affiliation</div>
-								
-								<span className="material-input"></span>
-							</div>
+							<input 
+								type="text" 
+								className="form-control floating-label" 
+								defaultValue={affiliation} 
+								ref="affiliation"
+								placeholder="Affiliation"
+								id="gallery-edit-affiliation" />
 						</div>
 					</div>
 				</div>
-
 			);
 
 		}
 		//If organically submitted content i.e. user submitted the gallery, can't change the byline
 		else {
+
 			return (
 				<div className="dialog-row" id="byline-edit">
 					<span className="byline-section" id="gallery-byline-span">
-						<div className="form-control-wrapper">
-							<input 
-								id="gallery-byline-input" 
-								ref="byline"
-								defaultValue={post.byline} 
-								type="text" 
-								className="form-control" 
-								disabled={true} />
-							
-							<div className="floating-label">Byline</div>
-							
-							<span className="material-input"></span>
-						</div>
+						<input 
+							id="gallery-byline-input" 
+							className="form-control"
+							placeholder="Byline"
+							ref="byline"
+							defaultValue={post.byline} 
+							type="text" 
+							disabled={true} />
 					</span>
 				</div>
 			);
 		}
-
 
 	}
 

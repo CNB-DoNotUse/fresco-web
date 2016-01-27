@@ -6,6 +6,7 @@ import PostInfo from './../components/postDetail/post-info'
 import PostRelated from './../components/postDetail/post-related'
 import PostDetailImage from './../components/postDetail/post-detail-image'
 import GalleryEdit from './../components/editing/gallery-edit'
+import global from '../../lib/global'
 
 /**
  * Post Detail Parent Object, made of a side column and PostList
@@ -46,7 +47,7 @@ class PostDetail extends React.Component {
 
  	render() {
 
- 		var editable = this.props.user.rank >= 2;
+ 		var editable = this.props.user.rank >= global.RANKS.CONTENT_MANAGER;
 
  		return (
  			<App user={this.props.user}>

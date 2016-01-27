@@ -46,8 +46,9 @@ export default class TopBarAdmin extends React.Component {
 		var data = new FormData(),
 			files = this.refs.uploadImportFiles.files;
 
-		for (var index in files)
-			data.append(index, files[index]);
+		for (var i = files.length - 1; i >= 0; i--) {
+			data.append(i, files[i]);
+		}
 
 		data.append('caption', 'Gallery imported from local system on ' + moment().format('MMMM Do YYYY, h:mm:ss a'));
 
@@ -67,6 +68,7 @@ export default class TopBarAdmin extends React.Component {
 				$.snackbar({content: 'Gallery Imported!'});
 				this.refs.uploadImportFiles.value = '';
 				this.props.setTab('imports');
+				this.props.getImports();
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: 'Failed to import media'});
@@ -99,6 +101,7 @@ export default class TopBarAdmin extends React.Component {
 				$.snackbar({content: 'Gallery Imported!'});
 				this.refs['twitter-import-input'].value = '';
 				this.props.setTab('imports');
+				this.props.getImports();
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: 'Failed to import media'});

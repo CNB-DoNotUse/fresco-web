@@ -65,7 +65,7 @@ export default class PlacesAutocomplete extends React.Component {
 
         // Pass location back up
         this.props.onPlaceChange({
-            address: place.formatted_address || place.address,
+            address: this.refs['autocomplete-input'].value,
             location: {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng()

@@ -37,18 +37,15 @@ router.get('/:id', (req, res, next) => {
 
     post = body.data;
 
-    if (post.owner) {
+    if (post.owner)
       title += 'Post by ' + post.owner.firstname + ' ' + post.owner.lastname;
-    }
-    else if(post.curator) {
+    else if(post.curator)
       title += 'Imported by ' + post.curator.firstname + ' ' + post.curator.lastname;
-    }
-    else {
+    else
       title = post.byline;
-    }
-   
+
     //Make request for gallery
-    api.get('/v1/post/gallery?id='+req.params.id, doWithGallery);
+    api.get('/v1/post/gallery?id=' + req.params.id, doWithGallery);
 
   }
 
@@ -56,12 +53,7 @@ router.get('/:id', (req, res, next) => {
     
     //return res.render('error', {user: req.session.user, error_code: 404, error_message: config.ERR_PAGE_MESSAGES[404]});
     if (error || !body || body.err) {
-        return res.render('error', 
-          {
-            user: req.session.user,
-            error_code: 404,
-            error_message: config.ERR_PAGE_MESSAGES[404]
-          });
+      return next(error || body.err);
     }
 
     gallery = body.data;

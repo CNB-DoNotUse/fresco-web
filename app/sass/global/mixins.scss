@@ -37,7 +37,40 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
    -webkit-box-shadow: $params;
       -moz-box-shadow: $params;
            box-shadow: $params;
+}
 
+
+/**
+ * CSS3 Transition
+ */
+
+@mixin transition($transition1, $transition2, $transition3, $transition4, $transition5) {
+
+  $params: $transition1;
+   @if $transition2 
+     { $params: $transition1, $transition2; }
+     @if $transition3 != false
+       { $params: $transition1, $transition2, $transition3; }
+       @if $transition4 != false
+         { $params: $transition1, $transition2, $transition3, $transition4; }
+         @if $transition5 != false
+           { $params: $transition1, $transition2, $transition3, $transition4, $transition5; }
+
+  -webkit-transition:$params;
+     -moz-transition:$params;
+       -o-transition:$params;
+          transition:$params;
+}
+
+/**
+ * CSS3 Transform
+ */
+
+ @mixin transform($transform) {
+   -webkit-transform:$transform;
+      -moz-transform:$transform;
+        -o-transform:$transform;
+           transform:$transform;
  }
 
 @mixin rgba($property, $r, $g, $b, $opacity:1) {

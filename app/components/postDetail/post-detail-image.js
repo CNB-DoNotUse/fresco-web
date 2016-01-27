@@ -22,7 +22,7 @@ export default class PostDetailImage extends React.Component {
 			i = 0;
 
 		//Check rank of user, if less than a CM
-		if(this.props.user.rank < 1){//config.RANKS_CONTENT_MANAGER
+		if(this.props.user.rank < global.RANKS.CONTENT_MANAGER){
 
 			//Check to make sure the user has an outlet
 			if(this.props.user.outlet){

@@ -2,13 +2,13 @@ var express = require('express'),
     requestJson = require('request-json'),
     request = require('request'),
     config = require('../../lib/config'),
+    global = require('../../lib/global'),
     async = require('async'),
     Request = require('request'),
     querystring = require('querystring'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
     User = require('../../lib/user'),
-    
     router = express.Router();
 	
 //---------------------------vvv-ASSIGNMENT-ENDPOINTS-vvv---------------------------//
@@ -172,7 +172,7 @@ router.get('/assignment/search', function(req, res, next){
   });
 });
 router.post('/assignment/update', function(req, res, next){
-  if (!req.session.user || (!req.session.user.outlet && req.session.user.rank < config.RANKS.CONTENT_MANAGER))
+  if (!req.session.user || (!req.session.user.outlet && req.session.user.rank < global.RANKS.CONTENT_MANAGER))
     return res.status(403).json({err: 'ERR_UNAUTHORIZED'}).end();
 
   var api = requestJson.createClient(config.API_URL);

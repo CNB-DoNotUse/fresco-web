@@ -207,9 +207,10 @@ router.post('/user/update', function(req, res, next) {
 
 	var request = require('request'),
     formData = {
-  	  id: req.body.id,
-  	  firstname: req.body.firstname,
-  	  lastname: req.body.lastname,
+      id: req.body.id,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+  	  bio: req.body.bio,
   	  email: req.body.email,
       phone: req.body.phone || ''
   	};
@@ -225,6 +226,7 @@ router.post('/user/update', function(req, res, next) {
   if (file) formData.avatar = fs.createReadStream(file.path);
   if(req.body.password) formData.password = req.body.password;
   if (formData.email == req.session.user.email) delete formData.email;
+
   request.post({ url: config.API_URL + '/v1/user/update', headers: { authtoken: req.session.user.token }, formData: formData }, function(error, response, body){
 
     body = JSON.parse(body);
@@ -242,7 +244,9 @@ router.post('/user/update', function(req, res, next) {
 
 		req.session.user.firstname = user.firstname;
 		req.session.user.lastname = user.lastname;
+    req.session.user.bio = user.bio;
 		req.session.user.email = user.email;
+    req.session.user.phone = user.phone;
 		req.session.user.avatar = user.avatar;
 
     req.session.save(function(){

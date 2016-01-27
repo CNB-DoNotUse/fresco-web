@@ -31,15 +31,17 @@ router.post('/outlet/checkout', function(req, res, next){
       api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(purchase_err,purchase_response,purchase_body){
         if (!purchase_err && purchase_body && !purchase_body.err)
           req.session.user.outlet.purchases = purchase_body.data;
-        req.session.save(function(){
-          res.json(checkout_body).end();
+
+        req.session.save(function(err) {
+            res.json(checkout_body).end();
         });
+
       });
     }
   );
 });
 
-router.post('/outlet/create', function(req, res, next){
+router.post('/outlet/create', function(req, res, next) {
   var api = requestJson.createClient(config.API_URL),
       parse = requestJson.createClient(config.PARSE_API);
   
