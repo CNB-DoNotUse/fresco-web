@@ -19,7 +19,6 @@ router.post('/outlet/checkout', (req, res) => {
   req.body.outlet = req.session.user.outlet._id;
   API.proxyRaw(req, res, (data) => {
     var options = {
-      req,
       url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id,
       method: 'GET'
     };
