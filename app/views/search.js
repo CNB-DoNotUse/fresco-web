@@ -108,9 +108,10 @@ export class Search extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(JSON.stringify(prevState.location) != JSON.stringify(this.state.location) || 
-			JSON.stringify(prevState.radius) != JSON.stringify(this.state.radius) || 
-			prevState.tags.length != this.state.tags.length) {
+		if(JSON.stringify(prevState.location) !== JSON.stringify(this.state.location) || 
+			JSON.stringify(prevState.radius) !== JSON.stringify(this.state.radius) || 
+			prevState.tags.length !== this.state.tags.length ||
+			prevState.verifiedToggle !== this.state.verifiedToggle) {
 			this.refreshData();
 		}
 	}
@@ -191,11 +192,14 @@ export class Search extends React.Component {
 			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)));
 		}
 
+		console.log(this.state.verifiedToggle);
+
 		$.get('/scripts/gallery/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 18,
 			polygon: polygon,
+			verified: this.state.verifiedToggle,
 			tags: this.state.tags.join(',')
 		}, (galleries) => {
 
@@ -350,7 +354,6 @@ export class Search extends React.Component {
 	 * Gets new search data
 	 */
 	refreshData() {
-
 		this.getAssignments(0, true);
 		this.resetGalleries();
 		this.getUsers(0, true);
@@ -393,6 +396,7 @@ export class Search extends React.Component {
 							onMapDataChange={this.onMapDataChange}
 							defaultLocation={this.state.address} />
 				</TopBar>
+	    		
 	    		<div
 	    			id="search-container"
 	    			className="container-fluid grid"

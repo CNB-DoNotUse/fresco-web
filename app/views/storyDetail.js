@@ -25,7 +25,6 @@ class StoryDetail extends React.Component {
 	}
 
 	updateStory(story) {
-		console.log(story);
 		this.setState({
 			story: story
 		});
