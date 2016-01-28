@@ -82,7 +82,7 @@ function signup(e) {
 		}
 	}
 	//Set ad id for body
-	params.aid = QueryString.aid;
+	params.adid = QueryString.adid;
 
 	$.ajax({
 		method: "POST",
