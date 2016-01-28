@@ -41,19 +41,18 @@ class AssignmentDetail extends React.Component {
  	 * @description Invoked from the on-page button `Expire`
  	 */
  	expireAssignment() {
-
- 		/*$.post('/scripts/assignment/update', {
- 			id: this.state.assignment._id,
- 			expiration_time: Date.now()
- 		}, (response) => {
- 			location.reload();
- 		});
- 		*/
  	
- 		$.post('/scripts/assignment/expire', {
+ 		$.post('/scripts/assignment/update', {
+ 			expiration_time: Date.now(),
  			id: this.state.assignment._id
  		}, (response) => {
- 			location.reload();
+ 			if(response.err || !response.data){
+ 				$.snackbar({ content : global.resolveError(response.err, 'There was an error expiring this assignment!') });
+ 			} else{
+				this.setState({
+					assignment: response.data
+				});
+ 			}
  		});
  	}
 

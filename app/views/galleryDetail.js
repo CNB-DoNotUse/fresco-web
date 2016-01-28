@@ -26,7 +26,7 @@ class GalleryDetail extends React.Component {
 		this.state = {
 			galleryEditToggled: false,
 			gallery: this.props.gallery,
-			onlyVerified: verifiedCount > 0
+			verifiedToggle: verifiedCount > 0
 		}
 
 		this.toggleGalleryEdit = this.toggleGalleryEdit.bind(this);
@@ -40,9 +40,9 @@ class GalleryDetail extends React.Component {
 		});
 	}
 
-	verifiedToggled(onlyVerified) {
+	verifiedToggled(verifiedToggle) {
 		this.setState({
-			onlyVerified: onlyVerified
+			verifiedToggle: verifiedToggle
 		});
 	}
 
@@ -65,7 +65,7 @@ class GalleryDetail extends React.Component {
 					edit={this.toggleGalleryEdit}
 					verifiedToggle={true}
 					onVerifiedToggled={this.verifiedToggled}
-					defalutVerified={this.state.onlyVerified ? null : 'all'}
+					defaultVerified={this.state.onlyVerified ? null : 'all'}
 					timeToggle={true}
 					chronToggle={true} />
 				
@@ -76,7 +76,7 @@ class GalleryDetail extends React.Component {
 						rank={this.props.user.rank}
 						purchases={this.props.purchases}
 						posts={this.state.gallery.posts}
-						onlyVerified={this.state.onlyVerified}
+						onlyVerified={this.state.verifiedToggle}
 						scrollable={false}
 						editable={false}
 						size='large' />

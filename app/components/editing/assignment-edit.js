@@ -79,7 +79,7 @@ export default class AssignmentEdit extends React.Component {
 			lat: this.state.location.lat,
 			lon: this.state.location.lng, //should be `lng:`
 			address: this.state.address,
-			expiration_time: this.refs.expiration.value * 60 * 60 * 1000 //Convert to milliseconds
+			expiration_time: this.refs.expiration.value * 60 * 60 * 1000 + Date.now() //Convert to milliseconds
 		};
 
 		if (global.isEmptyString(params.title)){
@@ -143,12 +143,30 @@ export default class AssignmentEdit extends React.Component {
 							<span className="md-type-title">Edit assignment</span>
 							<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.cancel}></span>
 						</div>
+						
 						<div className="dialog-foot">
-							<button id="story-edit-revert" type="button" className="btn btn-flat" onClick={this.revert}>Revert changes</button>
-							<button id="story-edit-clear" type="button" className="btn btn-flat" onClick={this.clear}>Clear all</button>
-							<button id="story-edit-save" type="button" className="btn btn-flat pull-right" onClick={this.save}>Save</button>
-							<button id="story-edit-discard" type="button" className="btn btn-flat pull-right toggle-edit toggler" onClick={this.cancel}>Discard</button>
+							<button 
+								id="story-edit-revert" 
+								type="button" 
+								className="btn btn-flat" 
+								onClick={this.revert}>Revert changes</button>
+							<button 
+								id="story-edit-clear" 
+								type="button" 
+								className="btn btn-flat" 
+								onClick={this.clear}>Clear all</button>
+							<button 
+								id="story-edit-save" 
+								type="button" 
+								className="btn btn-flat pull-right" 
+								onClick={this.save}>Save</button>
+							<button 
+								id="story-edit-discard" 
+								type="button" 
+								className="btn btn-flat pull-right toggle-edit toggler" 
+								onClick={this.cancel}>Discard</button>
 						</div>
+						
 						<div className="dialog-body">
 							<div className="dialog-col col-xs-12 col-md-7 form-group-default">
 								<div className="dialog-row">
@@ -160,6 +178,7 @@ export default class AssignmentEdit extends React.Component {
 										ref="title"
 										defaultValue={this.props.assignment.title} />
 								</div>
+								
 								<div className="dialog-row">
 									<textarea
 										type="text"
@@ -178,6 +197,7 @@ export default class AssignmentEdit extends React.Component {
 									    address={this.state.address}
 									    updateLocation={this.updateLocation} />
 								</div>
+								
 								<div className="dialog-row">
 									<div className="form-group-default">
 										<input 

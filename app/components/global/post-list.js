@@ -100,8 +100,11 @@ export default class PostList extends React.Component {
 			//Set that we're loading
 			this.setState({ loading : true });
 
+			//This is here for the new post-list structure, so we check to send an id or an offset integer
+			var offset = this.props.idOffset ? this.state.posts[this.state.offset - 1]._id : this.state.offset;
+
 			//Run load on parent call
-			this.props.loadPosts(this.state.offset, (posts) => {
+			this.props.loadPosts(offset, (posts) => {
 
 				//Disables scroll, and returns if posts are empty
 				if(!posts || posts.length == 0){ 

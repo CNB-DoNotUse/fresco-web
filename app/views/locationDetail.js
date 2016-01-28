@@ -20,8 +20,8 @@ class LocationDetail extends React.Component {
 			initialPostsLoaded: false
 		}
 
-		this.updateSort			= this.updateSort.bind(this);
-		this.loadPosts 			= this.loadPosts.bind(this);
+		this.updateSort	= this.updateSort.bind(this);
+		this.loadPosts 	= this.loadPosts.bind(this);
 	}
 
 	updateSort(sort) {
@@ -53,20 +53,12 @@ class LocationDetail extends React.Component {
 	/**
 	 * Returns array of posts with offset and callback, used in child PostList
 	 */
-	loadPosts(passedOffset, callback) {
-
-		var location = this.props.location,	
-			sinceList = JSON.parse(window.sessionStorage.sinceList);
-
-		//Update the field if it's not set
-		if(!sinceList[location._id]) {
-			sinceList[location._id] = Date.now();
-			window.sessionStorage.sinceList = JSON.stringify(sinceList);
-		}
+	loadPosts(passedId, callback) {
 
 		var params = {
-			id: location._id,
-			limit: global.postCount
+			id    : this.props.location._id,
+			limit : global.postCount,
+			last  : passedId == 0 || passedId == null ? null : passedId
 		}
 
 		$.ajax({
@@ -75,19 +67,11 @@ class LocationDetail extends React.Component {
 			data: params,
 			dataType: 'json',
 			success: (response, status, xhr) => {
-
 				//Send empty array, because of bad response
 				if(!response.data || response.err)
 					callback([]);
 				else
 					callback(response.data);
-
-				//Tells component to now update the since time
-				if(!this.state.initialPostsLoaded){
-					this.setState({
-						initialPostsLoaded: true
-					});
-				}
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: global.resolveError(error)});
@@ -96,8 +80,6 @@ class LocationDetail extends React.Component {
 	}
 
 	render() {
-
-		console.log(this.props.location);
 
 		return (
 			<App user={this.props.user}>
@@ -115,6 +97,7 @@ class LocationDetail extends React.Component {
 					rank={this.props.user.rank}
 					purchases={this.props.purchases}
 					size='small'
+					idOffset={true}
 					scrollable={true} />
 			</App>
 		);
