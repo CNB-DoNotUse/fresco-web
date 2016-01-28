@@ -20,7 +20,7 @@ router.post('/pro/signup', (req, res, next) => {
             phone     : req.body.phone,
             email     : req.body.email,
             time      : req.body.time,
-            aid       : req.body.aid
+            adid      : req.body.adid
         };
 
     /*
@@ -59,7 +59,7 @@ router.post('/pro/signup', (req, res, next) => {
                 '<FL val="Zip Code">' + params.zip + '</FL>' +
                 '<FL val="Phone Number">' + params.phone + '</FL>' +
                 '<FL val="Best Time To Call">' + params.time + '</FL>' +
-                '<FL val="Facebook Ad ID">' + params.aid + '</FL>' +
+                '<FL val="Facebook Ad ID">' + params.adid + '</FL>' +
             '</row>' +
         '</CustomModule1>';
 

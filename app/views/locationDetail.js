@@ -96,7 +96,7 @@ class LocationDetail extends React.Component {
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}
 					purchases={this.props.purchases}
-					size='small'
+					size='large'
 					idOffset={true}
 					scrollable={true} />
 			</App>

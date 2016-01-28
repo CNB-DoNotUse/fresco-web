@@ -5,6 +5,7 @@ var express = require('express'),
     async = require('async'),
     Request = require('request'),
     querystring = require('querystring'),
+    validator = require('validator'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
     User = require('../../lib/user'),
@@ -581,9 +582,20 @@ router.post('/outlet/update', function(req, res, next){
         id: req.session.user.outlet._id
       };
 
+     //Check if link is valid
+     if(req.body.link){
+          if(!validator.isURL(req.body.link)){
+               return res.json({
+                 err: 'ERR_INVALID_URL'
+          });
+          } else{
+               params.link = req.body.link
+          }
+     }
+
+
   if (req.body.title) params.title = req.body.title;
   if (req.body.bio) params.bio = req.body.bio;
-  if (req.body.link) params.link = req.body.link;
   if (req.body.stripe_token) params.stripe_token = req.body.stripe_token;
 
   var file = null;

@@ -67,7 +67,8 @@ export default class OutletInfo extends React.Component {
 				}
 			},
 			error: (xhr, status, error) => {
-				$.snackbar({ content: global.resolveError(error) });
+				console.log(error);
+				$.snackbar({ content: global.resolveError(error, 'There was an error updating your settings!') });
 			}
 		});
 	}

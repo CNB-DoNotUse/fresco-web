@@ -814,6 +814,11 @@ div.list {
 	}
 	> h1 {
 		display: inline-block;
+		display: inline-block;
+		max-width: 50%;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
 	}
 	> .icon {
 		margin: 20px 12px;
