@@ -13,10 +13,9 @@ export default class FrescoImage extends React.Component {
 
 	componentDidMount() {
 		var size = this.props.size,
-			img = this.refs.image,
-			self = this;
+			img = this.refs.image;
 
-		img.onerror = function(){
+		img.onerror = () => {
 		    
 		    var timeout = parseInt(img.getAttribute('data-t') || 1),
 		        lastTimeout = parseInt(img.getAttribute('data-lt') || 1),
@@ -27,18 +26,17 @@ export default class FrescoImage extends React.Component {
 		    img.setAttribute('data-src', img.getAttribute('src'));
 		    img.setAttribute('src',  'https://d2j1l98c0ybckw.cloudfront.net/images/'+ size +'/missing.png');
 
-		    setTimeout(function(){
+		    setTimeout(() => {
 
 		        img.setAttribute('src', img.getAttribute('data-src'));
 
 		    }, timeout * 1000);
 
-		    self.props.updateImage(image);
+		    if(this.props.updateImage) this.props.updateImage(image);
 		}
 	}
 
 	render() {
-		console.log(this.props)
 		return (
 			<div className="img">
 				<img 
