@@ -75,12 +75,10 @@ router.post('/user/login', (req, res) => {
     var options = {
       url: '/auth/loginparse',
       body: {parseSession: parse_body.sessionToken},
-      method: 'POST'
+      method: 'POST',
+      res
     }
-    API.request(options, (err, response) => {
-      if (err) return res.status(401).json({err: 'ERR_UNAUTHORIZED'}).end();
-      var login_body = JSON.parse(response.text);
-
+    API.request(options, (login_body) => {
       req.session.user = login_body.data.user;
       req.session.user.token = login_body.data.token;
       req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
@@ -103,7 +101,7 @@ router.post('/user/login', (req, res) => {
         }
         req.session.save(() => {
           res.json({err: null, data: login_body.data.user}).end();
-        })
+        });
       });
     })
   });
