@@ -19,6 +19,7 @@ class Archive extends React.Component {
 
 	constructor(props) {
 		super(props);
+		
 		this.state = {
 			purchases : [],
 			verifiedToggle: true,

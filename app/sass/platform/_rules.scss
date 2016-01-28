@@ -1019,11 +1019,18 @@ div.list {
 						@include flex(1);
 						padding-bottom: 50%;
 					}
+					> .frs-background-image {
+						@include flex(1);
+						padding-bottom: 50%;
+					}
 				}
 				.flex-col {
 					@include flex-direction(column);
 				}
 				> .flex-col > .flex-row > .img {
+					padding-bottom: 25%;
+				}
+				> .flex-col > .flex-row > .frs-background-image {
 					padding-bottom: 25%;
 				}
 				.img {
@@ -1036,6 +1043,20 @@ div.list {
 						min-width: 100%;
 						position: absolute;
 						z-index: 0;
+					}
+				}
+				.frs-background-image{
+					position: relative;
+					margin: 0;
+					padding-bottom: 100%;
+					overflow: hidden;
+					background-repeat: no-repeat;
+					background-size:cover;
+					background-position:center;
+					width:100%;
+
+					.img{
+						display:none;
 					}
 				}
 			}

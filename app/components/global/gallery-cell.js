@@ -1,5 +1,5 @@
 import React from 'react';
-import FrescoImage from './fresco-image'
+import FrescoBackgroundImage from './fresco-background-image'
 import global from '../../../lib/global'
 
 /**
@@ -115,7 +115,7 @@ class GalleryCellImages extends React.Component {
 
 			return (
 				<div className="flex-row">
-					<FrescoImage image={this.props.posts[0].image} size="small" />
+					<FrescoBackgroundImage image={this.props.posts[0].image} size="medium" />
 				</div>
 			);
 		}
@@ -123,8 +123,8 @@ class GalleryCellImages extends React.Component {
 
 			return (
 				<div className="flex-row">
-					<FrescoImage image={this.props.posts[0].image} size="small" />
-					<FrescoImage image={this.props.posts[1].image} size="small" />
+					<FrescoBackgroundImage image={this.props.posts[0].image} size="small" />
+					<FrescoBackgroundImage image={this.props.posts[1].image} size="small" />
 				</div>
 			);
 		}
@@ -133,16 +133,16 @@ class GalleryCellImages extends React.Component {
 			return (
 				<div className="flex-row">
 					<div className="flex-col">
-						<FrescoImage image={this.props.posts[0].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[0].image} size="small" />
 					</div>
 					<div className="flex-col">
 						<div className="flex-row">
-							<FrescoImage image={this.props.posts[1].image} size="small" />
-							<FrescoImage image={this.props.posts[2].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[1].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[2].image} size="small" />
 						</div>
 						<div className="flex-row">
-							<FrescoImage image={this.props.posts[3].image} size="small" />
-							<FrescoImage image={this.props.posts[4].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[3].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[4].image} size="small" />
 						</div>
 					</div>
 				</div>
@@ -154,16 +154,16 @@ class GalleryCellImages extends React.Component {
 			return (
 				<div className="flex-col">
 					<div className="flex-row">
-						<FrescoImage image={this.props.posts[0].image} size="small" />
-						<FrescoImage image={this.props.posts[1].image} size="small" />
-						<FrescoImage image={this.props.posts[4].image} size="small" />
-						<FrescoImage image={this.props.posts[3].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[0].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[1].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[4].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[3].image} size="small" />
 					</div>
 					<div className="flex-row">
-						<FrescoImage image={this.props.posts[4].image} size="small" />
-						<FrescoImage image={this.props.posts[5].image} size="small" />
-						<FrescoImage image={this.props.posts[6].image} size="small" />
-						<FrescoImage image={this.props.posts[7].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[4].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[5].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[6].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[7].image} size="small" />
 					</div>
 				</div>
 			);

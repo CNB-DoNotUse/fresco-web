@@ -155,11 +155,15 @@ router.post('/gallery/bulkupdate', function(req, res, next) {
 router.post('/gallery/create', function(req, res, next){
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
-  api.post("/v1/gallery/create/",
-    req.body,
-    function (err, response, body){
+
+  console.log(req.body);
+  
+  api.post("/v1/gallery/create/", req.body, function (err, response, body){
+
+      console.log(body);
+
       res.json(body).end();
-    });
+  });
 });
 router.post('/gallery/import', function(req, res, next){
   var request = require('request'),
