@@ -149,7 +149,7 @@ export class Search extends React.Component {
 
 	// Query API for assignments
 	getAssignments(offset, force) {
-		$.get('/scripts/assignment/search', {
+		$.get('/api/assignment/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10,
@@ -191,7 +191,7 @@ export class Search extends React.Component {
 			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)));
 		}
 
-		$.get('/scripts/gallery/search', {
+		$.get('/api/gallery/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 18,
@@ -208,7 +208,7 @@ export class Search extends React.Component {
 
 	// Query API for users
 	getUsers(offset, force) {
-		$.get('/scripts/user/search', {
+		$.get('/api/user/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10
@@ -243,7 +243,7 @@ export class Search extends React.Component {
 			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
 		}
 
-		$.get('/scripts/story/search', {
+		$.get('/api/story/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10,
