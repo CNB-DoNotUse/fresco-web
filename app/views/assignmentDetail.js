@@ -41,9 +41,9 @@ class AssignmentDetail extends React.Component {
  	 * @description Invoked from the on-page button `Expire`
  	 */
  	expireAssignment() {
- 	
  		$.post('/scripts/assignment/update', {
  			expiration_time: Date.now(),
+ 			now: Date.now(),
  			id: this.state.assignment._id
  		}, (response) => {
  			if(response.err || !response.data){

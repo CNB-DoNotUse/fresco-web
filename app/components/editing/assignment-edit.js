@@ -79,6 +79,7 @@ export default class AssignmentEdit extends React.Component {
 			lat: this.state.location.lat,
 			lon: this.state.location.lng, //should be `lng:`
 			address: this.state.address,
+			now: Date.now(),
 			expiration_time: this.refs.expiration.value * 60 * 60 * 1000 + Date.now() //Convert to milliseconds
 		};
 

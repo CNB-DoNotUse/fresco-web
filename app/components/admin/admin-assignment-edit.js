@@ -103,6 +103,7 @@ export default class AdminAssignmentEdit extends React.Component {
         $.post('/scripts/assignment/approve',
         {
             id: this.props.assignment._id,
+            now: Date.now(),
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
             address: this.state.address || undefined,

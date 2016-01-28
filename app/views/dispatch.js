@@ -103,6 +103,7 @@ class Dispatch extends React.Component {
 		params.expired = this.state.viewMode == 'expired' ? true : false;
 		params.active = this.state.viewMode == 'active' ? true : false;
 		params.verified = this.state.viewMode == 'pending' ? false : true;
+		params.now = Date.now();
 
 		//Check if the user is not a CM or Greater
 		if(this.props.user.rank < global.RANKS.CONTENT_MANAGER)

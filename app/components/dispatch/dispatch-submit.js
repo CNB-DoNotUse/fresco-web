@@ -78,7 +78,6 @@ export default class DispatchSubmit extends React.Component {
 	 * Updates the state radius from the input event
 	 */
 	updateRadius(e) {
-	 
 	    var radiusInMiles= global.feetToMiles(parseFloat(this.refs['radius'].value));
 
 	    if(radiusInMiles == 'NaN') 
@@ -188,7 +187,8 @@ export default class DispatchSubmit extends React.Component {
 				address: this.refs.autocomplete.value,
 				googlemaps: this.refs.autocomplete.value,
 				lon: this.props.newAssignment.location.lng, //Should be lng
-				lat: this.props.newAssignment.location.lat
+				lat: this.props.newAssignment.location.lat,
+				now: Date.now()
 			};
 
 		/* Run Checks */
@@ -249,10 +249,6 @@ export default class DispatchSubmit extends React.Component {
 			}
 		});
 	
-
-	}
-
-	toggleList(toggle) {
 
 	}
 }	
