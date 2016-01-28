@@ -56,7 +56,7 @@ router.get('/:id', (req, res, next) => {
 
       var props = {
             user: req.session.user,
-            purchases: config.mapPurchases(),
+            purchases: config.mapPurchases(req.session),
             gallery: gallery,
             title: title
           };
