@@ -10,8 +10,6 @@ router.get('/:id', (req, res, next) => {
     .set('Accept', 'application/json')
     .end((err, response) => {
 
-      console.log(response.body);
-
         //Check if the response checks
         if (err || response.body.err || !response.body.data || typeof(response.body.data) === 'undefined'){
             var error = new Error(config.ERR_PAGE_MESSAGES[404]);

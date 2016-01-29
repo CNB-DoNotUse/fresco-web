@@ -509,11 +509,11 @@ export default class DispatchMap extends React.Component {
 			lng = user.coordinates[0],
 			lat = user.coordinates[1],
 			image = {
-				url: "/images/assignment-user@2x.png",
-				size: new google.maps.Size(70, 70),
-				scaledSize: new google.maps.Size(30, 30),
+				url: "/images/assignment-user@3x.png",
+				size: new google.maps.Size(30, 33),
+				scaledSize: new google.maps.Size(10, 11),
 				origin: new google.maps.Point(0, 0),
-				anchor: new google.maps.Point(15, 15),
+				anchor: new google.maps.Point(5, 5.5),
 			};
 		
 		return new google.maps.Marker({
