@@ -124,15 +124,5 @@ router.post('/gallery/skip', (req, res, next) => {
   API.proxy(req, res);
 });
 
-/**
- * Verify a gallery
- */
-router.post('/gallery/verify', (req, res, next) => {
-  req.body.visibility = config.VISIBILITY.VERIFIED,
-  req.body.rated = '1';
-  req.url= '/gallery/update';
-  API.proxy(req, res);
-});
-//---------------------------^^^-GALLERY-ENDPOINTS-^^^---------------------------//
 
 module.exports = router;

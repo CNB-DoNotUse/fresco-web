@@ -91,7 +91,6 @@ export default class GalleryEditStories extends React.Component {
 					}
 				});
 			}
-
 		}
 	}
 
@@ -134,12 +133,6 @@ export default class GalleryEditStories extends React.Component {
 					<ul className="chips">
 						{stories}
 					</ul>
-				</div>
-
-				<div className="split-cell">
-					<span className="md-type-body2">Suggested Stories</span>
-
-					<ul className="chips"></ul>
 				</div>
 			</div>
 

@@ -77,7 +77,6 @@ export default class GalleryEditFoot extends React.Component {
 	        })(i);
 
 			reader.readAsDataURL(file);
-
 		}
 	}
 

@@ -5,6 +5,7 @@ import Dropdown from './../global/dropdown'
 import AutocompleteMap from '../global/autocomplete-map'
 import EditTags from './../editing/gallery-edit-tags'
 import EditStories from './../editing/gallery-edit-stories'
+import GalleryEditAssignment from './../editing/gallery-edit-assignment'
 import AdminGalleryEditFoot from './admin-gallery-edit-foot'
 import BylineEdit from '../editing/byline-edit'
 import global from '../../../lib/global'
@@ -36,7 +37,9 @@ export default class AdminGalleryEdit extends React.Component {
 		this.handleChangeCaption = this.handleChangeCaption.bind(this);
 		this.updateTags = this.updateTags.bind(this);
 		this.updateRelatedStories = this.updateRelatedStories.bind(this);
+		this.updateAssignment = this.updateAssignment.bind(this);
 		this.onPlaceChange = this.onPlaceChange.bind(this);
+		this.updateGallery = this.updateGallery.bind(this);
 
 		this.revert = this.revert.bind(this);
 		this.skip = this.skip.bind(this);
@@ -50,14 +53,11 @@ export default class AdminGalleryEdit extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-
-		if( this.props.activeGalleryType == 'assignment' || 
-			!this.props.gallery ) { return }
-
+		if( this.props.activeGalleryType == 'assignment' ||  !this.props.gallery ) { 
+			return 
+		}
 		if( this.props.gallery._id != prevProps.gallery._id ) {
-
 			this.resetState();
-
 		}
 	}
 
@@ -70,6 +70,7 @@ export default class AdminGalleryEdit extends React.Component {
 				activeGallery: _.clone(this.props.gallery, true),
 				tags: [],
 				stories: [],
+				assignment: this.props.gallery.assignment,
 				mapLocation: null
 			});
 
@@ -102,9 +103,20 @@ export default class AdminGalleryEdit extends React.Component {
 	}
 
 	/**
+	 * Updates specific field of gallery
+	 */
+	updateGallery(key, value) {
+		var gallery = this.state.activeGallery;
+		gallery[key] = value;
+		this.setState({
+			activeGallery: gallery
+		});
+	}
+
+	/**
 	 * Updates state with new tags
 	 */
-	 updateTags(tags) {
+	updateTags(tags) {
 	 	var gallery = this.state.activeGallery;
 	 		gallery.tags = tags;
 
@@ -112,7 +124,18 @@ export default class AdminGalleryEdit extends React.Component {
 	 		activeGallery: gallery
 	 	});
 
-	 }
+	}
+
+	/**
+	 * Updates assignment in state
+	 */
+	
+	updateAssignment(assignment) {
+		console.log('Update', assignment);
+		this.setState({
+			assignment: assignment
+		})
+	}
 
 	/**
 	 * Updates state with new stories
@@ -147,7 +170,6 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Reverts all changes
 	 */
 	revert() {
-		
 		this.setState({
 			activeGallery: _.clone(this.props.gallery, true),
 			stories: []
@@ -162,7 +184,6 @@ export default class AdminGalleryEdit extends React.Component {
 		if(this.props.hasActiveGallery) {
 			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
 		}
-
 	}
 
 	/**
@@ -196,14 +217,12 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Gets all form data and verifies gallery.
 	 */
 	verify() {
-		
-		if(!Array.isArray(this.state.activeGallery.tags)) { 
-			this.state.activeGallery.tags = []; 
-		}
-		if(!Array.isArray(this.state.activeGallery.posts)) { 
-			this.state.activeGallery.posts = []; 
-		}
 
+		var gallery = this.state.activeGallery,
+			tags = !Array.isArray(gallery.tags) ? [] : gallery.tags,
+			assignment = gallery.assignment ? gallery.assignment._id : null,
+			posts = gallery.posts.map(p => p._id);
+		
 		var stories = this.state.stories.map((story) => {
  			if(story.new)
  				return 'NEW=' + JSON.stringify(story);
@@ -212,15 +231,17 @@ export default class AdminGalleryEdit extends React.Component {
 		});
 
 		var params = {
-			id: this.state.activeGallery._id,
+			id: gallery._id,
 			caption: this.refs['gallery-caption'].value,
-			posts: this.state.activeGallery.posts.map(p => p._id),
+			posts: posts,
 			stories: stories,
-			tags: this.state.activeGallery.tags
+			tags: tags,
+			assignment: assignment,
+			rated: 1
 		};
 
 		// Byline
- 		var byline = global.getBylineFromComponent(this.state.activeGallery, this.refs.byline);
+ 		var byline = global.getBylineFromComponent(gallery, this.refs.byline);
  		_.extend(params, byline);
 
 		if(this.props.activeGalleryType == 'import') {
@@ -304,54 +325,15 @@ export default class AdminGalleryEdit extends React.Component {
 				});
 			}
 
-			// set byline text
-			var bylineInput = 
-					<input
-						type="text"
-						className="form-control floating-label gallery-byline"
-						style={{width: '100%'}}
-						placeholder="Byline"
-						ref="gallery-byline" disabled={this.props.activeGalleryType == 'submission'}  />
+			var assignmentEdit = <GalleryEditAssignment 
+									assignment={this.state.activeGallery.assignment}
+									updateGalleryField={this.updateGallery} />
 
 		} else { // if an import
 
 			// set map location to one from state
 			var editMapLocation = this.state.mapLocation;
-			// Is a twitter import. Should show dropdown for handle vs username
-			if(activeGallery.posts && activeGallery.posts[0].meta.twitter) { 
-				var twitterObj = activeGallery.posts[0].meta.twitter;
-				var nameInput =
-					<div>
-						<Dropdown 
-							options={[twitterObj.handle, twitterObj.user_name]}
-							selected={twitterObj.handle}
-							onSelected={this.handleTwitterBylineChange}/>
-						<input type="hidden" ref="gallery-author" />
-					</div>
-
-			} else {
-
-				// If not a twitter import, just show the author, disabled if not an import
-				var nameInput = 
-					<div className="split-cell">
-						<input
-							type="text"
-							className="form-control floating-label gallery-author"
-							placeholder="Name"
-							ref="gallery-author" disabled={this.props.activeGalleryType == 'submission'}  />
-					</div>
-			}
-
-			// Affiliation input, disabled if not an import
-			var affiliationInput = 
-					<div className="split-cell">
-						<input
-							type="text"
-							className="form-control floating-label gallery-affiliation"
-							placeholder="Affiliation"
-							ref="gallery-affiliation" disabled={this.props.activeGalleryType == 'submission'}  />
-					</div>
-
+			
 		}
 
 		return (
@@ -373,6 +355,8 @@ export default class AdminGalleryEdit extends React.Component {
 						placeholder="Caption"
 						onChange={this.props.handleChangeCaption}
 						ref="gallery-caption"></textarea>
+
+					{assignmentEdit}
 
 					<EditTags  
 						updateTags={this.updateTags}

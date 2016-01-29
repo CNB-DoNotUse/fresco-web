@@ -27,9 +27,6 @@ export default class AdminBody extends React.Component {
 
 	}
 
-	componentDidMount() {
-	}
-
 	componentDidUpdate(prevProps, prevState) {
 
 	 	if( this.props.activeTab != prevProps.activeTab ) {
@@ -184,7 +181,7 @@ export default class AdminBody extends React.Component {
 
 	skip(cb) {
 		$.ajax({
-			url: '/scripts/gallery/skip',
+			url: '/api/gallery/skip',
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
@@ -204,7 +201,7 @@ export default class AdminBody extends React.Component {
 	verify(options, cb) {
 
 		$.ajax({
-			url: '/scripts/gallery/verify',
+			url: '/api/gallery/verify',
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify(options),

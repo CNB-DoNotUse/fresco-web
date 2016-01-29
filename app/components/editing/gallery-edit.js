@@ -32,8 +32,10 @@ export default class GalleryEdit extends React.Component {
 		this.updateRelatedStories 	= this.updateRelatedStories.bind(this);
 		this.updateArticles 		= this.updateArticles.bind(this);
 		this.updateTags 			= this.updateTags.bind(this);
+		this.updateAssignment 	    = this.updateAssignment.bind(this);
 		this.updateVisibility 		= this.updateVisibility.bind(this);
 
+		this.updateGalleryField     = this.updateGalleryField.bind(this);
 		this.updateGallery 			= this.updateGallery.bind(this);
 		this.revertGallery 			= this.revertGallery.bind(this);
 		this.saveGallery 			= this.saveGallery.bind(this);
@@ -73,7 +75,14 @@ export default class GalleryEdit extends React.Component {
 		this.setState({
 			gallery: gallery
 		});
+	}
 
+	updateGalleryField(key, value) {
+		var gallery = this.state.gallery;
+		gallery[key] = value;
+		this.setState({
+			gallery: gallery
+		})
 	}
 
 	updateRelatedStories(stories) {
@@ -101,7 +110,14 @@ export default class GalleryEdit extends React.Component {
 		this.setState({
 			gallery: gallery
 		});
+	}
 
+	updateAssignment(assignment) {
+		var gallery = this.state.gallery;
+			gallery.assignment = assignment;
+		this.setState({
+			gallery: gallery
+		});
 	}
 
 	toggleDeletePost(post) {
@@ -175,10 +191,11 @@ export default class GalleryEdit extends React.Component {
 
  	saveGallery() {
  		var self 	= this,
-	 		gallery = _.clone(this.state.gallery, true),
- 			files 	= gallery.files ? gallery.files : [],
- 			caption = gallery.caption,
- 			tags 	= gallery.tags,
+	 		gallery    = _.clone(this.state.gallery, true),
+ 			files 	   = gallery.files ? gallery.files : [],
+ 			caption    = gallery.caption,
+ 			tags 	   = gallery.tags,
+ 			assignment = 
  			bylineExists = document.getElementById('byline-edit') !== null;
 
  		//Generate post ids for update
@@ -189,22 +206,18 @@ export default class GalleryEdit extends React.Component {
 
  		//Generate stories for update
  		var stories = gallery.related_stories.map((story) => {
-
  			if(story.new)
  				return 'NEW=' + JSON.stringify(story);
  			else
  				return story._id;
-
  		});
 
  		//Generate articles for update
  		var articles = gallery.articles.map((article) => {
-
  			if(article.new)
  				return 'NEW=' + JSON.stringify(article);
  			else
  				return article._id;
-
  		});
 
  		//Configure params for the updated gallery
@@ -249,7 +262,7 @@ export default class GalleryEdit extends React.Component {
  		}
 
  		if (files.length) {
- 			// Upload files then update gallery
+ 			// Upload files then update gallery in callback
  			uploadNewFiles();
 
  		} else {
@@ -304,14 +317,13 @@ export default class GalleryEdit extends React.Component {
 	 			success: (result) => {
 	 				if(result.err) {
 	 					$.snackbar({
-	 						content: global.resolveError(result.err, "There was an error saving the gallery.")
+	 						content: global.resolveError(result.err, "There was an error saving the gallery!")
 	 					});
 	 				}
 	 				else {
 	 					location.reload();
 	 				}
 	 			}
-
 	 		});
  		}
 
@@ -345,6 +357,7 @@ export default class GalleryEdit extends React.Component {
 								updateArticles={this.updateArticles}
 								updateTags={this.updateTags}
 								updateGallery={this.updateGallery}
+								updateGalleryField={this.updateGalleryField}
 		 						deletePosts={this.state.deletePosts}
 		 						toggleDeletePost={this.toggleDeletePost} />
 
