@@ -22,7 +22,7 @@ class Purchases extends React.Component {
 	}
 
 	getOutlets() {
-		$.get('/api/outlet/list', (outlets) => {
+		$.get('/scripts/outlet/list', (outlets) => {
 
 			if(outlets.err) { return $.snackbar({content: outlets.err}); }
 			this.setState({
@@ -148,7 +148,7 @@ class Purchases extends React.Component {
 
 		return (
 			<App user={this.props.user}>
-				<TopBar
+				<TopBar 
 					title="Purchases"
 					outletsFilter={true}
 					outlets={outlets}

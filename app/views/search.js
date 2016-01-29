@@ -11,7 +11,7 @@ export class Search extends React.Component {
 
 	constructor(props) {
 		super(props);
-
+			
 		var queryLat = this.getParameterByName('lat');
 		var queryLng = this.getParameterByName('lon');
 		var queryRadius = parseFloat(this.getParameterByName('r'));
@@ -84,12 +84,12 @@ export class Search extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(JSON.stringify(prevState.location) != JSON.stringify(this.state.location) ||
+		if(JSON.stringify(prevState.location) != JSON.stringify(this.state.location) || 
 			JSON.stringify(prevState.radius) != JSON.stringify(this.state.radius)) {
 			this.refreshData();
 		}
 	}
-
+	
 	circleToPolygon(circle, numSides) {
 		var center = circle.getCenter(),
 			topleft = circle.getBounds().getNorthEast(),
@@ -97,7 +97,7 @@ export class Search extends React.Component {
 	  		radiusY = Math.abs(topleft.lng() - center.lng()),
 	  		points = [],
 			degreeStep = Math.PI * 2 / numSides;
-
+			
 		for(var i = 0; i < numSides; i++){
 			//var gpos = google.maps.geometry.spherical.computeOffset(center, radius, degreeStep * i);
 			points.push([center.lng() + radiusY * Math.sin(i * degreeStep), center.lat() + radiusX * Math.cos(i * degreeStep)]);
@@ -118,7 +118,7 @@ export class Search extends React.Component {
 
 	// Query API for assignments
 	getAssignments(offset, force) {
-		$.get('/api/assignment/search', {
+		$.get('/scripts/assignment/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10,
@@ -161,7 +161,7 @@ export class Search extends React.Component {
 			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
 		}
 
-		$.get('/api/gallery/search', {
+		$.get('/scripts/gallery/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 18,
@@ -177,7 +177,7 @@ export class Search extends React.Component {
 
 	// Query API for users
 	getUsers(offset, force) {
-		$.get('/api/user/search', {
+		$.get('/scripts/user/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10
@@ -208,11 +208,11 @@ export class Search extends React.Component {
 				center: this.state.location,
 				radius: this.state.radius
 			});
-
+			
 			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
 		}
 
-		$.get('/api/story/search', {
+		$.get('/scripts/story/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10,
@@ -220,7 +220,7 @@ export class Search extends React.Component {
 		}, (stories) => {
 
 			if(stories.err || !stories.data.length) return;
-
+			
 			this.setState({
 				stories: force ? stories.data : this.state.stories.concat(stories.data)
 			});
@@ -236,7 +236,7 @@ export class Search extends React.Component {
 	}
 
 	removeTag(tag) {
-		if(this.state.tags.indexOf(tag) == -1) return;
+		if(this.state.tags.indexOf(tag) == -1) return; 
 
 		var tags = [], tagList = this.state.tags;
 		for (var t in tagList) {
@@ -249,7 +249,7 @@ export class Search extends React.Component {
 		});
 	}
 
-	/**
+	/** 
 		Called when an item is purchased.
 		Adds purchase ID to current purchases in state.
 		Prop chain: PostList -> PostCell -> PostCellActions -> PostCellAction -> PurchaseAction
@@ -279,7 +279,7 @@ export class Search extends React.Component {
 			this.getGalleries(this.state.offset, (galleries) => {
 				// Allow getting more results after we've gotten more results.
 				// Update offset to new results length
-
+				
 				this.pending = false;
 				this.setState({
 					galleries: this.state.galleries.concat(galleries),
@@ -311,9 +311,9 @@ export class Search extends React.Component {
 			}
 		});
 	}
-
+	
 	/**
-	 *
+	 * 
 	 */
 	resetGalleries() {
 		this.getGalleries(0, (galleries) => {
@@ -367,7 +367,7 @@ export class Search extends React.Component {
 	    					rank={this.props.user.rank}
 		    				galleries={this.state.galleries}
 		    				tags={this.state.tags}
-		    				purchases={this.props.purchases.concat(this.state.purchases)}
+		    				purchases={this.props.purchases.concat(this.state.purchases)} 
 		    				didPurchase={this.didPurchase}
 		    				showOnlyVerified={this.state.showOnlyVerified} />
 		    			<SearchSidebar
@@ -382,7 +382,7 @@ export class Search extends React.Component {
 }
 
 ReactDOM.render(
- 	<Search
+ 	<Search 
  		title={"Results for \"" + window.__initialProps__.title + "\""}
  		user={window.__initialProps__.user} 
  		purchases={window.__initialProps__.purchases || []}

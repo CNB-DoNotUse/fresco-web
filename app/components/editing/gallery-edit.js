@@ -17,7 +17,7 @@ export default class GalleryEdit extends React.Component {
 
 	constructor(props) {
 		super(props);
-
+		
 		this.state = {
 			gallery: null,
 			caption: '',
@@ -47,7 +47,7 @@ export default class GalleryEdit extends React.Component {
 			this.setState({
 				gallery: _.clone(nextProps.gallery, true),
 				posts: nextProps.gallery.posts.map(p => p._id)
-			});
+			});	
 			$.material.init();
 		}
 	}
@@ -126,7 +126,7 @@ export default class GalleryEdit extends React.Component {
  			gallery.visibility = visibility;
 
  		//Update new gallery
- 		this.setState({
+ 		this.setState({ 
  			gallery: gallery,
  			visibilityChanged: true
  		});
@@ -154,7 +154,7 @@ export default class GalleryEdit extends React.Component {
 	//Returns centroid for passed polygon
 	getCentroid(polygon) {
 		var path, lat = 0, lng = 0;
-
+		
 		if (Array.isArray(polygon)) {
 			var newPolygon = new google.maps.Polygon({paths: polygon});
 			path = newPolygon.getPath();
@@ -178,7 +178,7 @@ export default class GalleryEdit extends React.Component {
 	 		gallery = _.clone(this.state.gallery, true),
  			files 	= gallery.files ? gallery.files : [],
  			caption = gallery.caption,
- 			tags 	= gallery.tags,
+ 			tags 	= gallery.tags, 
  			bylineExists = document.getElementById('byline-edit') !== null;
 
  		//Generate post ids for update
@@ -205,7 +205,7 @@ export default class GalleryEdit extends React.Component {
  			else
  				return article._id;
 
- 		});
+ 		});	
 
  		//Configure params for the updated gallery
  		var params = {
@@ -262,11 +262,11 @@ export default class GalleryEdit extends React.Component {
  			for (var i = 0; i < files.length; i++) {
  				data.append(i, files[i]);
  			}
-
+			
 			data.append('gallery', gallery._id);
 
 			$.ajax({
-				url: '/api/gallery/addpost',
+				url: '/scripts/gallery/addpost',
 				type: 'POST',
 				data: data,
 				processData: false,
@@ -288,7 +288,7 @@ export default class GalleryEdit extends React.Component {
 
 					return xhr;
 				}
-			});
+			}); 			
  		}
 
  		function updateGallery(newPosts) {
@@ -297,7 +297,7 @@ export default class GalleryEdit extends React.Component {
 				params.posts = _.difference(newPosts.posts, self.state.deletePosts);
  			}
 
- 			$.ajax("/api/gallery/update", {
+ 			$.ajax("/scripts/gallery/update", {
 	 			method: 'post',
 	 			contentType: "application/json",
 	 			data: JSON.stringify(params),
@@ -314,7 +314,7 @@ export default class GalleryEdit extends React.Component {
 
 	 		});
  		}
-
+ 		
  	}
 
  	hide() {
@@ -333,11 +333,11 @@ export default class GalleryEdit extends React.Component {
 		 						<span className="md-type-title">Edit Gallery</span>
 		 						<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
 		 					</div>
-
-		 					<GalleryEditBody
+		 					
+		 					<GalleryEditBody 
 			 					ref="galleryEditBody"
 		 						gallery={this.state.gallery}
-
+		 						
 		 						onPlaceChange={this.onPlaceChange}
 		 						updateCaption={this.updateCaption}
 								updateRelatedStories={this.updateRelatedStories}
@@ -347,8 +347,8 @@ export default class GalleryEdit extends React.Component {
 								updateGallery={this.updateGallery}
 		 						deletePosts={this.state.deletePosts}
 		 						toggleDeletePost={this.toggleDeletePost} />
-
-		 					<GalleryEditFoot
+		 					
+		 					<GalleryEditFoot 
 		 						gallery={this.state.gallery}
 		 						revert={this.revertGallery}
 		 						saveGallery={this.saveGallery}

@@ -103,7 +103,7 @@ export default class AssignmentEdit extends React.Component {
 			return false;
 		}
 
-		$.post('/api/assignment/update', params, (response) => {
+		$.post('/scripts/assignment/update', params, (response) => {
 		   if(response.err) {
 		       $.snackbar({
 		           content: 'Could not save assignment!'
@@ -128,17 +128,17 @@ export default class AssignmentEdit extends React.Component {
 	}
 
 	render() {
-
+		
 		var toggledText = this.props.toggled ? ' toggled' : '';
 
 		return (
-
+			
 			<div>
 				<div className={"dim toggle-edit " + toggledText}></div>
 				<div className={"edit panel panel-default toggle-edit" + toggledText}>
-
+					
 					<AssignmentEditStats assignment={this.props.assignment} />
-
+					
 					<div className="col-xs-12 col-lg-9 edit-new dialog">
 						<div className="dialog-head">
 							<span className="md-type-title">Edit assignment</span>
@@ -173,19 +173,19 @@ export default class AssignmentEdit extends React.Component {
 							</div>
 							<div className="dialog-col col-xs-12 col-md-5">
 								<div className="dialog-row map-group">
-									<AssignmentEditMap
-									    location={this.state.location}
+									<AssignmentEditMap 
+									    location={this.state.location} 
 									    radius={this.state.radius}
 									    address={this.state.address}
 									    updateLocation={this.updateLocation} />
 								</div>
 								<div className="dialog-row">
 									<div className="form-group-default">
-										<input
-											ref="expiration"
-											type="text"
-											className="form-control floating-label"
-											data-hint="hours from now"
+										<input 
+											ref="expiration" 
+											type="text" 
+											className="form-control floating-label" 
+											data-hint="hours from now" 
 											placeholder="Expiration time"
 											defaultValue={global.hoursToExpiration(this.props.assignment.expiration_time)} />
 									</div>

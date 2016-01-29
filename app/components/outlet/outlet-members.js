@@ -14,7 +14,7 @@ export default class OutletMembers extends React.Component {
 		alertify.confirm("Are you sure you want remove this user from your outlet?", (e) => {
 			if(e) {
 				$.ajax({
-					url: "/api/outlet/user/remove",
+					url: "/scripts/outlet/user/remove",
 					method: 'post',
 					data: {
 						user: id
@@ -46,7 +46,7 @@ export default class OutletMembers extends React.Component {
 		}
 
 		$.ajax({
-			url: "/api/outlet/invite",
+			url: "/scripts/outlet/invite",
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
@@ -75,7 +75,7 @@ export default class OutletMembers extends React.Component {
 			members.push(
 				<OutletMemberListItem member={member} remove={this.removeMember} key={i} />
 			);
-		});
+		});	
 
 		return (
 			<div className="card panel card-outlet-members">
@@ -92,7 +92,7 @@ export default class OutletMembers extends React.Component {
 					style={{width: '100%'}}
 					className="outlet-invite"
 					ref="outlet-invite"
-					placeholder="Invite users by email"
+					placeholder="Invite users by email" 
 					onKeyDown={this.handleInviteInputKeyDown} />
 				</div>
 			</div>
