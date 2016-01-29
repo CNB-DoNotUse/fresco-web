@@ -37,7 +37,7 @@ export default class StoryEdit extends React.Component {
 				caption: this.refs.editCaption.value
 			}
 
-		$.ajax("/scripts/story/update", {
+		$.ajax("/api/story/update", {
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify(params),
@@ -51,7 +51,7 @@ export default class StoryEdit extends React.Component {
 					self.hide();
 					self.props.updateStory(result.data);
 				}
-					
+
 			},
 			error: (xhr, status, error) =>{
 				$.snackbar({content: resolveError(error)});
@@ -73,25 +73,25 @@ export default class StoryEdit extends React.Component {
 
 				<div className={"dim toggle-edit " + toggled}></div>
 				<div className={"edit panel panel-default toggle-edit " + toggled}>
-					
+
 					<div className="col-lg-4 visible-lg edit-current">
 						<StoryEditStats story={this.props.story} />
 					</div>
-					
+
 					<div className="col-xs-12 col-lg-8 edit-new dialog">
-						
+
 						<div className="dialog-head">
 							<span className="md-type-title">Edit story</span>
 							<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
 						</div>
-						
+
 						<div className="dialog-foot">
 							<button id="story-edit-revert" type="button" className="btn btn-flat" onClick={this.revert}>Revert changes</button>
 							<button id="story-edit-clear" type="button" className="btn btn-flat" onClick={this.clear}>Clear all</button>
 							<button id="story-edit-save" type="button" className="btn btn-flat pull-right" onClick={this.save}>Save</button>
 							<button id="story-edit-discard" type="button" className="btn btn-flat pull-right toggle-edit toggler" onClick={this.cancel}>Discard</button>
 						</div>
-						
+
 						<div className="dialog-body">
 							<div className="dialog-col col-xs-12 form-group-default">
 								<div className="dialog-row">

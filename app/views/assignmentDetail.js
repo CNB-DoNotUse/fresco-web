@@ -41,9 +41,9 @@ class AssignmentDetail extends React.Component {
  	 * @description Invoked from the on-page button `Expire`
  	 */
  	expireAssignment() {
- 		$.post('/scripts/assignment/update', {
- 			expiration_time: Date.now(),
- 			now: Date.now(),
+
+ 		$.post('/api/assignment/expire', {
+			expiration_time: Date.now(),
  			id: this.state.assignment._id
  		}, (response) => {
  			if(response.err || !response.data){
@@ -61,7 +61,7 @@ class AssignmentDetail extends React.Component {
  			verifiedToggle: toggled
  		});
  	}
- 	
+
  	/**
  	 * Toggles edit modal with `s` (state) value. If `s` is not provided, negates toggled.
  	 */
@@ -75,19 +75,19 @@ class AssignmentDetail extends React.Component {
 
  		return (
  			<App user={this.props.user}>
- 				<TopBar 
+ 				<TopBar
  					title={this.state.assignment.title}
  					timeToggle={true}
- 					chronToggle={true} 
+ 					chronToggle={true}
  					onVerifiedToggled={this.onVerifiedToggled}
  					verifiedToggle={this.props.user.rank >= global.RANKS.CONTENT_MANAGER} /* Based on user rank to see verified content */
  					editable={true}
  					edit={this.toggleEdit} />
- 				
- 				<AssignmentSidebar 
+
+ 				<AssignmentSidebar
  					assignment={this.state.assignment}
  					expireAssignment={this.expireAssignment} />
- 				
+
  				<div className="col-sm-8 tall">
 	 				<PostList
 	 					rank={this.props.user.rank}
@@ -99,7 +99,7 @@ class AssignmentDetail extends React.Component {
 	 					size='large' />
 				</div>
 
-				<AssignmentEdit 
+				<AssignmentEdit
 					assignment={this.state.assignment}
 					setAssignment={this.setAssignment}
 					toggled={this.state.toggled}
@@ -112,9 +112,9 @@ class AssignmentDetail extends React.Component {
 }
 
 ReactDOM.render(
-  	<AssignmentDetail 
-  		user={window.__initialProps__.user} 
-  		purchases={window.__initialProps__.purchases} 
+  	<AssignmentDetail
+  		user={window.__initialProps__.user}
+  		purchases={window.__initialProps__.purchases}
   		assignment={window.__initialProps__.assignment}
   		title={window.__initialProps__.title} />,
   	document.getElementById('app')

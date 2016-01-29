@@ -20,10 +20,10 @@ export default class OutletMembers extends React.Component {
 
 		//Confirm the purchase
 		alertify.confirm("Are you sure you want remove this user from your outlet?", (e) => {
-			
+
 			if(e) {
 				$.ajax({
-					url: "/scripts/outlet/user/remove",
+					url: "/api/outlet/user/remove",
 					method: 'post',
 					data: {
 						user: id
@@ -31,7 +31,7 @@ export default class OutletMembers extends React.Component {
 					success: function(result, status, xhr){
 						if (result.err)
 							return this.error(null, null, result.err);
-							
+
 						var members = self.props.members.filter((member) => {
 							return member._id !== id;
 						});
@@ -50,9 +50,9 @@ export default class OutletMembers extends React.Component {
 	 * Event lister for email invite field
 	 */
 	inviteKeyDown(e) {
-		if(e.keyCode != 13) 
+		if(e.keyCode != 13)
 			return;
-		
+
 		var addresses = this.refs['outlet-invite'].value.split(' '),
 			self = this;
 
@@ -65,7 +65,7 @@ export default class OutletMembers extends React.Component {
 		}
 
 		$.ajax({
-			url: "/scripts/outlet/invite",
+			url: "/api/outlet/invite",
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
@@ -96,8 +96,8 @@ export default class OutletMembers extends React.Component {
 				<div className="header">
 					<span className="title">USERS</span>
 				</div>
-				
-				<OutletMemberList 
+
+				<OutletMemberList
 					members={this.props.members}
 					removeMember={this.removeMember} />
 
@@ -105,7 +105,7 @@ export default class OutletMembers extends React.Component {
 					<input type="text"
 						className="outlet-invite"
 						ref="outlet-invite"
-						placeholder="Invite users by email" 
+						placeholder="Invite users by email"
 						onKeyDown={this.inviteKeyDown} />
 				</div>
 			</div>
@@ -115,9 +115,9 @@ export default class OutletMembers extends React.Component {
 
 class OutletMemberList extends React.Component {
 	render () {
-		
+
 		var members = this.props.members.map((member, i) => {
-			var phone = member.phone ? ' • ' + member.phone : ''; 
+			var phone = member.phone ? ' • ' + member.phone : '';
 
 			return(
 				<li className="member" key={i}>
@@ -127,12 +127,12 @@ class OutletMemberList extends React.Component {
 						<span className="phone">{phone}</span>
 					</div>
 
-					<span 
-						onClick={this.props.removeMember.bind(null, member._id)} 
+					<span
+						onClick={this.props.removeMember.bind(null, member._id)}
 						className="delete-member mdi mdi-delete"></span>
 				</li>
 			);
-		});	
+		});
 
 		if(members.length == 0){
 			return (
@@ -141,7 +141,7 @@ class OutletMemberList extends React.Component {
 				</div>
 			)
 		}
-		
+
 		return (
 			<div className="outlet-members-container">
 				<ul className="outlet-members">

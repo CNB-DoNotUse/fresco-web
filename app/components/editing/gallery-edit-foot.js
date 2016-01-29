@@ -46,7 +46,7 @@ export default class GalleryEditFoot extends React.Component {
 	}
 
 	fileUploaderChanged() {
-			
+
 		var gallery = this.state.gallery,
 			files = this.refs.fileUpload.files,
 			self = this;
@@ -84,9 +84,9 @@ export default class GalleryEditFoot extends React.Component {
 	delete() {
 
 		var gallery = this.state.gallery;
-		
+
 		alertify.confirm("Are you sure you want to delete this gallery?", (confirmed) => {
-			
+
 			if (!confirmed) return;
 
 			//Consturct params with gallery id
@@ -97,17 +97,17 @@ export default class GalleryEditFoot extends React.Component {
 			//Send delete request
 			$.ajax({
 
-				url: "/scripts/gallery/remove",
+				url: "/api/gallery/remove",
 				method: 'post',
 				contentType: "application/json",
 				data: JSON.stringify(params),
 				dataType: 'json',
 				success: (result) => {
-					
+
 					if(result.err){
 						return this.error(null, null, result.err);
 					};
-		
+
 					location.href = document.referrer || '/highlights';
 
 				},
@@ -127,7 +127,7 @@ export default class GalleryEditFoot extends React.Component {
 		var addMore = '';
 
 		//Check if the gallery has been imported, to show the 'Add More' button or not
-		if(this.state.gallery.imported) 
+		if(this.state.gallery.imported)
 			addMore = <button id="gallery-add-more-button" type="button" onClick={this.addMore} className="btn btn-flat">Add More</button>
 
 		var inputStyle = {
@@ -135,13 +135,13 @@ export default class GalleryEditFoot extends React.Component {
 		};
 
 		return (
-			
+
 			<div className="dialog-foot">
-				
-				<input 
-					id="gallery-upload-files" 
-					type="file"  
-					accept="image/*,video/*,video/mp4" 
+
+				<input
+					id="gallery-upload-files"
+					type="file"
+					accept="image/*,video/*,video/mp4"
 					multiple
 					ref='fileUpload'
 					style={inputStyle}
@@ -153,7 +153,7 @@ export default class GalleryEditFoot extends React.Component {
 				<button id="gallery-cancel-button" type="button" onClick={this.props.hide} className="btn btn-flat pull-right toggle-gedit toggler">Cancel</button>
 				<button id="gallery-delete-button" type="button" onClick={this.delete} className="btn btn-flat pull-right">Delete</button>
 				<button id="gallery-save-button" type="button" onClick={this.props.saveGallery} className="btn btn-flat pull-right">Save</button>
-			
+
 			</div>
 
 		);

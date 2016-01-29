@@ -23,7 +23,7 @@ class Purchases extends React.Component {
 	}
 
 	getOutlets() {
-		$.get('/scripts/outlet/list', (outlets) => {
+		$.get('/api/outlet/list', (outlets) => {
 
 			if(outlets.err) { return $.snackbar({content: outlets.err}); }
 			this.setState({

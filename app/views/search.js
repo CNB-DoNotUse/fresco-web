@@ -101,15 +101,15 @@ export class Search extends React.Component {
 			var geocoder = new google.maps.Geocoder();
 
 			geocoder.geocode({'location': this.state.location}, (results, status) => {
-				if(status === google.maps.GeocoderStatus.OK && results[0]) 
+				if(status === google.maps.GeocoderStatus.OK && results[0])
 					this.setState({ address: results[0].formatted_address });
 			});
-		}		
+		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(JSON.stringify(prevState.location) !== JSON.stringify(this.state.location) || 
-			JSON.stringify(prevState.radius) !== JSON.stringify(this.state.radius) || 
+		if(JSON.stringify(prevState.location) !== JSON.stringify(this.state.location) ||
+			JSON.stringify(prevState.radius) !== JSON.stringify(this.state.radius) ||
 			prevState.tags.length !== this.state.tags.length ||
 			prevState.verifiedToggle !== this.state.verifiedToggle) {
 			this.refreshData();
@@ -129,7 +129,7 @@ export class Search extends React.Component {
 	  		radiusY = Math.abs(topleft.lng() - center.lng()),
 	  		points = [],
 			degreeStep = Math.PI * 2 / numSides;
-			
+
 		for(var i = 0; i < numSides; i++){
 			//var gpos = google.maps.geometry.spherical.computeOffset(center, radius, degreeStep * i);
 			points.push([center.lng() + radiusY * Math.sin(i * degreeStep), center.lat() + radiusX * Math.cos(i * degreeStep)]);
@@ -241,7 +241,7 @@ export class Search extends React.Component {
 				center: this.state.location,
 				radius: this.state.radius
 			});
-			
+
 			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
 		}
 
@@ -253,7 +253,7 @@ export class Search extends React.Component {
 		}, (stories) => {
 
 			if(stories.err || !stories.data.length) return;
-			
+
 			this.setState({
 				stories: force ? stories.data : this.state.stories.concat(stories.data)
 			});
@@ -271,7 +271,7 @@ export class Search extends React.Component {
 
 	removeTag(tag) {
 		var index = this.state.tags.indexOf(tag);
-		if(index == -1) return; 
+		if(index == -1) return;
 
 		var tags = [], currentTags = this.state.tags;
 
@@ -309,7 +309,7 @@ export class Search extends React.Component {
 			this.getGalleries(this.state.offset, (galleries) => {
 				// Allow getting more results after we've gotten more results.
 				// Update offset to new results length
-				
+
 				this.pending = false;
 				this.setState({
 					galleries: this.state.galleries.concat(galleries),
@@ -334,9 +334,9 @@ export class Search extends React.Component {
 			}
 		});
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	resetGalleries() {
 		this.getGalleries(0, (galleries) => {
@@ -383,7 +383,7 @@ export class Search extends React.Component {
 							onTagRemove={this.removeTag}
 							filterList={this.state.tags}
 							key="tagFilter" />
-						
+
 						<LocationDropdown
 							location={this.state.location}
 							radius={this.state.radius}
@@ -394,7 +394,7 @@ export class Search extends React.Component {
 							onMapDataChange={this.onMapDataChange}
 							defaultLocation={this.state.address} />
 				</TopBar>
-	    		
+
 	    		<div
 	    			id="search-container"
 	    			className="container-fluid grid"
@@ -404,10 +404,10 @@ export class Search extends React.Component {
 	    					rank={this.props.user.rank}
 		    				galleries={this.state.galleries}
 		    				tags={this.state.tags}
-		    				purchases={this.props.purchases.concat(this.state.purchases)} 
+		    				purchases={this.props.purchases.concat(this.state.purchases)}
 		    				didPurchase={this.didPurchase}
 		    				onlyVerified={this.state.verifiedToggle}  />
-		    			
+
 		    			<SearchSidebar
 		    				assignments={this.state.assignments}
 		    				stories={this.state.stories}
@@ -420,9 +420,9 @@ export class Search extends React.Component {
 }
 
 ReactDOM.render(
- 	<Search 
+ 	<Search
  		title={"Results for \"" + window.__initialProps__.title + "\""}
- 		user={window.__initialProps__.user} 
+ 		user={window.__initialProps__.user}
  		purchases={window.__initialProps__.purchases || []}
  		query={window.__initialProps__.query} />,
  	document.getElementById('app')
