@@ -252,7 +252,7 @@ for (var i = 0; i < routes.platform.length; i++) {
 // Special case for assignment create
 // TODO: Remove this
 app.post('/api/assignment/create', (req, res, next) => {
-  req.body.outlet = req.session.user ? req.session.user.outlet ? req.session.user.outlet._id : undefined : undefined;
+  req.body.outlet = req.session.user && req.session.user.outlet ? req.session.user.outlet._id : undefined;
   next();
 });
 
