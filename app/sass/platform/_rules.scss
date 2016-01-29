@@ -247,7 +247,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	.assignment-callout-caption {
 		padding-bottom: 8px;
 		overflow: hidden;
-		max-height: 168px;
+		max-height: 120px;
 	}
 	.assignment-callout-icon {
 		padding-right: 6px;
@@ -337,6 +337,12 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	}
 }
 
+.toggle-edit {
+	.meta-description {
+		max-height: 300px;
+		overflow: auto;
+	}
+}
 
 // meta
 .meta {
@@ -371,7 +377,6 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	.meta-description {
 		display: block;
 		margin-bottom: 16px;
-
 	}
 	.meta-list > ul {
 		margin-bottom: 0;
@@ -443,6 +448,7 @@ div.chips {
 			position: relative;
 			top: 0px;
 			margin-bottom: 4px;
+			margin-right: 4px;
 			border: 1px solid $color-black-4;
 			border-radius: 2px;
 			background-color: $color-shade-1;
@@ -795,6 +801,8 @@ div.list {
 	border-bottom: 1px solid $color-black-4;
 	.icon-button {
 		margin: 20px 24px;
+		// top: -15px;
+		position: relative;
 	}
 	.spacer {
 		display: inline-block;
@@ -818,7 +826,6 @@ div.list {
 		max-width: 50%;
 		white-space: nowrap;
 		text-overflow: ellipsis;
-		overflow: hidden;
 	}
 	> .icon {
 		margin: 20px 12px;
@@ -1135,7 +1142,11 @@ div.list {
 
 // profile
 .profile.hidden-xs {
-	padding: 64px 24px 0;
+	margin-top: 64px;
+	padding-left: 24px;
+	padding-right: 24px;
+	padding-bottom: 0px;
+
 	height: 100%;
 	overflow-y: auto;
 	img {

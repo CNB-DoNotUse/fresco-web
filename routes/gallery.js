@@ -42,12 +42,11 @@ router.get('/:id', (req, res, next) => {
 
     var gallery = body.data;
 
-    var title = '';
+    var title = 'Gallery';
 
-    if (gallery.owner)
-      title += 'Gallery by ' + gallery.owner.firstname + ' ' + gallery.owner.lastname;
-    else if(gallery.curator)
-      title += 'Imported by ' + gallery.curator.firstname + ' ' + gallery.curator.lastname;
+    if(gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
+      title += ' from ' + gallery.posts[0].location.address;
+    }
 
     //User is logged in, show full gallery page
     if (req.session && req.session.user) {

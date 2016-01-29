@@ -11,8 +11,6 @@ var express         = require('express'),
 
 router.get('/', (req, res, next) => {
 
-  console.log('Highlights');
-
   var title = 'Highlights',
       props = {
         user : req.session.user,

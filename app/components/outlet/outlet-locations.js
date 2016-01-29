@@ -157,7 +157,7 @@ export default class OutletLocations extends React.Component {
 		params[notifType] = e.target.checked;
 
 		$.ajax({
-			url: '/scripts/outlet/location/update',
+			url: '/api/outlet/location/update',
 			method: 'post',
 			data: params,
 			success: function(response){

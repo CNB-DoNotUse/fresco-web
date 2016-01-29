@@ -30,17 +30,14 @@ export default class Dropdown extends React.Component {
 	 */
 	toggle() {
 		var drop = this.refs.drop,
-			dim = document.getElementById('platform-dim'),
 			menuIcon = this.refs['button'].refs['menu-icon'];
 			
 		if(drop.className.indexOf('active') == -1) {
 			menuIcon.className = 'mdi mdi-menu-up';
 			drop.className += ' active';
-			dim.className += ' toggled';
 		} else{
 			menuIcon.className = 'mdi mdi-menu-down';
 			drop.className = drop.className.replace(/\bactive\b/,'');
-			dim.className = dim.className.replace(/\btoggled\b/,'');
 		}
 
 		this.props.onToggled();

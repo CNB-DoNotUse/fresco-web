@@ -42,13 +42,14 @@ class AssignmentDetail extends React.Component {
  	 */
  	expireAssignment() {
 
- 		$.post('/api/assignment/expire', {
+ 		$.post('/api/assignment/update', {
 			expiration_time: Date.now(),
  			id: this.state.assignment._id
  		}, (response) => {
  			if(response.err || !response.data){
  				$.snackbar({ content : global.resolveError(response.err, 'There was an error expiring this assignment!') });
  			} else{
+ 				$.snackbar({ content : 'Assignment expired' });
 				this.setState({
 					assignment: response.data
 				});

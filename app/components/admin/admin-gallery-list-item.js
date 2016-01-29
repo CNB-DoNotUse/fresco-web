@@ -8,8 +8,12 @@ export default class AdminGalleryListItem extends React.Component {
     }
 
     render() {
-        var gallery = this.props.gallery;
+        var gallery = this.props.gallery,
+            CHAR_NUM = 80;
 
+        if(gallery.imported) {
+            CHAR_NUM = 115;
+        }
         if(!gallery.posts.length) {
             return <div></div>
         }
@@ -56,7 +60,7 @@ export default class AdminGalleryListItem extends React.Component {
                     </a>
                 </div>
                 <div className="flexy">
-                    <p className="md-type-body1">{gallery.caption || ''}</p>
+                    <p className="md-type-body1">{gallery.caption.substr(0, CHAR_NUM) || ''}{gallery.caption.length > CHAR_NUM ? '...' : ''}</p>
                 </div>
                 <div>
                     {galleryOwnerText}

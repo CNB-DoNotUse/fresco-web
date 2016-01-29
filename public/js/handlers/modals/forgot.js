@@ -2,8 +2,6 @@ var form = document.getElementById('forgot-form'),
 	emailField = document.getElementById('forgot-email'),
 	disabled = false;
 
-console.log(emailField);
-
 form.addEventListener('submit', function(e) {
 
 	e.preventDefault();

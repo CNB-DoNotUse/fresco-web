@@ -38,7 +38,7 @@ export default class AdminAssignmentListItem extends React.Component {
                 <div className="flexy">
                     <p className="md-type-body1">
                         <a href={"/assignment/" + assignment._id} target="_blank">
-                            {assignment.title}
+                            {assignment.title.substr(0, 80) + (assignment.title.length > 80 ? '...' : '')}
                         </a>
                     </p>
                 </div>

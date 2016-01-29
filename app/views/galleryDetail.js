@@ -20,7 +20,7 @@ class GalleryDetail extends React.Component {
 
 		// Check if every post in gallery is not verified and show all content
 		for(var p in this.props.gallery.posts) {
-			verifiedCount += this.props.gallery.posts[p].approvals;
+			verifiedCount += parseInt(this.props.gallery.posts[p].approvals, 10);
 		}
 
 		this.state = {
@@ -64,7 +64,7 @@ class GalleryDetail extends React.Component {
 					title={this.props.title}
 					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
 					edit={this.toggleGalleryEdit}
-					verifiedToggle={this.state.verifiedToggled}
+					verifiedToggle={this.state.verifiedToggle}
 					onVerifiedToggled={this.onVerifiedToggled}
 					timeToggle={true}
 					chronToggle={true} />

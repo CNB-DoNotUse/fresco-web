@@ -50,8 +50,9 @@ export default class TopBar extends React.Component {
 
 		if(sidebar.className.indexOf('toggled') > -1){
 			//Remove toggled class
-			toggler.className.replace(/\btoggled\b/,'');
-			sidebar.className.replace(/\btoggled\b/,'');
+			$(sidebar).removeClass('toggled');
+			$(toggler).removeClass('toggled');
+
 		} else {
 			//Add toggled class
 			sidebar.className += ' toggled';
@@ -194,7 +195,7 @@ export default class TopBar extends React.Component {
 
 		return (
 			<nav className="navbar navbar-fixed-top navbar-default">
-				<div className="dim transparent toggle-drop toggler" id="platform-dim"></div>
+				<div className="dim toggle-drop toggler" id="_toggler" onClick={this.toggleDrawer}></div>
 				
 				<button type="button" className="icon-button toggle-drawer toggler hidden-lg" onClick={this.toggleDrawer}>
 					<span className="mdi mdi-menu icon"></span>
