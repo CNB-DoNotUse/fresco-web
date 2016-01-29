@@ -83,6 +83,10 @@ function signup(e) {
 	}
 	//Set ad id for body
 	params.adid = QueryString.adid;
+	//Set referral for body
+	params.ref = QueryString.ref;
+
+	console.log(params);
 
 	$.ajax({
 		method: "POST",

@@ -20,7 +20,8 @@ router.post('/pro/signup', (req, res, next) => {
             phone     : req.body.phone,
             email     : req.body.email,
             time      : req.body.time,
-            adid      : req.body.adid
+            adid      : typeof(req.body.adid) === 'undefined' ? '' : req.body.adid,
+            referral  : typeof(req.body.ref) === 'undefined' ?  '' : req.body.ref
         };
 
     /*
@@ -60,6 +61,7 @@ router.post('/pro/signup', (req, res, next) => {
                 '<FL val="Phone Number">' + params.phone + '</FL>' +
                 '<FL val="Best Time To Call">' + params.time + '</FL>' +
                 '<FL val="Facebook Ad ID">' + params.adid + '</FL>' +
+                '<FL val="Content Manager">' + params.referral + '</FL>' +
             '</row>' +
         '</CustomModule1>';
 
