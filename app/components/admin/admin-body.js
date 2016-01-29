@@ -24,7 +24,7 @@ export default class AdminBody extends React.Component {
 		this.skip = this.skip.bind(this);
 		this.verify = this.verify.bind(this);
 		this.remove = this.remove.bind(this);
-		
+
 	}
 
 	componentDidMount() {
@@ -56,7 +56,7 @@ export default class AdminBody extends React.Component {
 	 			});
 
 	 		} else {
-	 			
+
 	 			if(!this.props[this.props.activeTab]) return;
 
 		 		this.setState({
@@ -95,7 +95,7 @@ export default class AdminBody extends React.Component {
 
 	setActiveGallery(id, type) {
 
-		if( this.state.activeGallery._id == id ) return; 
+		if( this.state.activeGallery._id == id ) return;
 
 		var gallery = {};
 
@@ -138,11 +138,11 @@ export default class AdminBody extends React.Component {
 					next_index = index;
 
 				this.props[propGalleryType].splice(index, 1);
-				
+
 				break;
 			}
 		}
-		
+
 		this.setActiveGallery( this.props[propGalleryType][next_index]._id, this.state.activeGalleryType );
 	}
 
@@ -165,7 +165,7 @@ export default class AdminBody extends React.Component {
 
 	remove(cb) {
 		$.ajax({
-			url: '/scripts/gallery/remove',
+			url: '/api/gallery/remove',
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({

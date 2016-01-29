@@ -2,6 +2,7 @@ var config        = require('./lib/config'),
     head          = require('./lib/head'),
     global        = require('./lib/global'),
     routes        = require('./lib/routes'),
+    API           = require('./lib/api'),
     express       = require('express'),
     compression   = require('compression'),
     path          = require('path'),
@@ -14,7 +15,7 @@ var config        = require('./lib/config'),
     bodyParser    = require('body-parser'),
     multer        = require('multer'),
     fs            = require('fs'),
-    http	       =  require('http'),
+    http	        = require('http'),
     https         = require('https'),
     requestJson   = require('request-json'),
     request       = require('superagent');
@@ -247,32 +248,14 @@ for (var i = 0; i < routes.platform.length; i++) {
  * Webservery proxy for forwarding to the api
  */
 
-app.use('/api', (req, res, next) => {
-  var token = req.session.user ? req.session.user.token ? req.session.user.token : '' : '';
-  if(req.method == 'GET') {
-
-    return request
-      .get(config.API_URL + '/' + config.API_VERSION + req.url)
-      .set('authtoken', token)
-      .end((err, response) => {
-        if(err) {
-          return res.json({err: 'API Error'});
-        }
-
-        var data = '';
-
-        try {
-          data = JSON.parse(response.text);
-        } catch (ex) {
-          return res.send({err: 'API Parse Error'});
-        }
-
-        return res.send(data);
-      });
-
-  }
+// Special case for assignment create
+// TODO: Remove this
+app.post('/api/assignment/create', (req, res, next) => {
+  req.body.outlet = req.session.user ? req.session.user.outlet ? req.session.user.outlet._id : undefined : undefined;
   next();
-})
+});
+
+app.use('/api', API.proxy);
 
 /**
  * Error Midleware
