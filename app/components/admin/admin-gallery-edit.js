@@ -23,8 +23,6 @@ export default class AdminGalleryEdit extends React.Component {
 		this.state = {
 			activeGallery: {},
 			editButtonsEnabled: false,
-			tags: [],
-			stories: [],
 			address: null,
 			mapLocation: []
 		}
@@ -73,7 +71,7 @@ export default class AdminGalleryEdit extends React.Component {
 				mapLocation: null
 			});
 
-			if( this.props.hasActiveGallery )
+			if( this.props.hasActiveGallery && this.props.gallery.posts && this.refs['gallery-caption'] )
 				this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
 
 			// Remove materialize empty input class
@@ -106,7 +104,7 @@ export default class AdminGalleryEdit extends React.Component {
 	 */
 	 updateTags(tags) {
 	 	var gallery = this.state.activeGallery;
-	 		gallery.tags = tags;
+ 		gallery.tags = tags;
 
 	 	this.setState({
 	 		activeGallery: gallery
@@ -118,8 +116,11 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Updates state with new stories
 	 */
 	updateRelatedStories(stories) {
+		var gallery = this.state.activeGallery;
+		gallery.stories = stories;
+
 		this.setState({
-			stories: stories
+			activeGallery: gallery
 		});
 	}
 
@@ -149,8 +150,7 @@ export default class AdminGalleryEdit extends React.Component {
 	revert() {
 		
 		this.setState({
-			activeGallery: _.clone(this.props.gallery, true),
-			stories: []
+			activeGallery: _.clone(this.props.gallery, true)
 		});
 
 		this.editButtonEnabled(true);
@@ -204,11 +204,8 @@ export default class AdminGalleryEdit extends React.Component {
 			this.state.activeGallery.posts = []; 
 		}
 
-		var stories = this.state.stories.map((story) => {
- 			if(story.new)
- 				return 'NEW=' + JSON.stringify(story);
- 			else
- 				return story._id;
+		var stories = this.state.activeGallery.stories.map((story) => {
+			return story.new ? 'NEW=' + JSON.stringify(story) : story._id;
 		});
 
 		var params = {
@@ -254,22 +251,23 @@ export default class AdminGalleryEdit extends React.Component {
 
 	render() {
 		// If doesn't have active gallery or galleryType is an assignment, don't render anything.
-		if(!this.props.hasActiveGallery || 
+		if(
+			!this.props.hasActiveGallery || 
 			this.props.activeGalleryType == 'assignment' || 
 			!this.props.activeGalleryType.length ||
-			!this.props.gallery || 
-			!this.props.gallery.posts) { 
+			!this.state.activeGallery || 
+			!this.state.activeGallery.posts) { 
 			return <div></div> 
 		}
 
-		var activeGallery = this.props.gallery;
+		var activeGallery = this.state.activeGallery;
 
 		// Map gallery posts into slider elements
 		var galleryImages = [];
 		if(activeGallery.posts) {
-			activeGallery.posts.map((post, i) => {
+			galleryImages = activeGallery.posts.map((post, i) => {
 				if(post.video) {
-					galleryImages.push(
+					return (
 						<div key={i}>
 							<video 
 								data-id={post._id}
@@ -285,7 +283,7 @@ export default class AdminGalleryEdit extends React.Component {
 						</div>
 					)
 				} else {
-					galleryImages.push(
+					return (
 						<div key={i}><img className="img-responsive" src={global.formatImg(post.image, 'medium')} data-id={post._id} /></div>
 					)
 				}
@@ -295,8 +293,8 @@ export default class AdminGalleryEdit extends React.Component {
 		// If gallery is a submission, 
 		if(this.props.activeGalleryType == 'submission') {
 			// map polygon points to array.
-			if(this.props.gallery.location) {
-				var editMapLocation = this.props.gallery.location.coordinates[0].map((coord) => {
+			if(activeGallery.location) {
+				var editMapLocation = activeGallery.location.coordinates[0].map((coord) => {
 					return {
 						lat: coord[1],
 						lng: coord[0]
@@ -365,7 +363,7 @@ export default class AdminGalleryEdit extends React.Component {
 						</Slider>
 					</div>
 
-					<BylineEdit ref="byline" gallery={this.props.gallery} />
+					<BylineEdit ref="byline" gallery={activeGallery} />
 
 					<textarea
 						type="text"
@@ -379,12 +377,12 @@ export default class AdminGalleryEdit extends React.Component {
 						tags={this.state.activeGallery.tags} />
 
 					<EditStories
-						relatedStories={this.state.stories} 
+						relatedStories={activeGallery.stories} 
 						updateRelatedStories={this.updateRelatedStories} />
 
 					<div style={{height: '309px'}}>
 						<AutocompleteMap
-							defaultLocation={activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
+							defaultLocation={activeGallery.posts && activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
 							location={editMapLocation}
 							onPlaceChange={this.onPlaceChange}
 							disabled={this.props.activeGalleryType != 'import'}
