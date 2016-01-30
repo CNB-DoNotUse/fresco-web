@@ -201,12 +201,16 @@ export default class AdminBody extends React.Component {
 	verify(options, cb) {
 
 		$.ajax({
-			url: '/api/gallery/verify',
+			url: '/api/gallery/update',
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify(options),
 			dataType: 'json',
 			success: (result, status, xhr) => {
+				if(result.err) {
+					return cb(result.err);
+				}
+
 				this.spliceCurrentGallery();
 				cb(null, options.id);
 			},

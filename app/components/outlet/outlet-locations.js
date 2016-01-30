@@ -136,7 +136,6 @@ export default class OutletLocations extends React.Component {
 				self.setState({ locations: response.data });
 			},
 			error: (xhr, status, error) => {
-				console.log(error);
 				$.snackbar({
 					content: global.resolveError(error,  'We\'re unable to load your locations at the moment! Please try again in a bit.')
 				});

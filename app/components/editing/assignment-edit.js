@@ -71,6 +71,8 @@ export default class AssignmentEdit extends React.Component {
 	 */
 	save() {
 
+		var outletID = this.refs.outlet.dataset.outletid != this.props.assignment.outlet._id ? this.refs.outlet.dataset.outletid : undefined;
+
 		var params = {
 			id: this.props.assignment._id,
 			title: this.refs.title.value,
@@ -79,6 +81,7 @@ export default class AssignmentEdit extends React.Component {
 			lat: this.state.location.lat,
 			lon: this.state.location.lng, //should be `lng:`
 			address: this.state.address,
+			outlet: outletID,
 			now: Date.now(),
 			expiration_time: this.refs.expiration.value * 60 * 60 * 1000 + Date.now() //Convert to milliseconds
 		};
@@ -188,6 +191,17 @@ export default class AssignmentEdit extends React.Component {
 										title="Caption"
 										ref="caption"
 										defaultValue={this.props.assignment.caption} />
+								</div>
+
+								<div className="dialog-row">
+									<input
+										type="text"
+										className="form-control floating-label"
+										placeholder="Outlet"
+										title="Outlet"
+										ref="outlet"
+										defaultValue={this.props.assignment.outlet.title}
+										data-outletid={this.props.assignment.outlet._id} />
 								</div>
 							</div>
 							<div className="dialog-col col-xs-12 col-md-5">

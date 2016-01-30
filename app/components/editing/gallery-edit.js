@@ -195,7 +195,7 @@ export default class GalleryEdit extends React.Component {
  			files 	   = gallery.files ? gallery.files : [],
  			caption    = gallery.caption,
  			tags 	   = gallery.tags,
- 			assignment = 
+ 			assignment = gallery.assignment ? gallery.assignment._id : undefined, 
  			bylineExists = document.getElementById('byline-edit') !== null;
 
  		//Generate post ids for update
@@ -225,6 +225,7 @@ export default class GalleryEdit extends React.Component {
  			id: gallery._id,
  			caption: caption,
  			posts: posts,
+ 			assignment: assignment,
  			tags: tags,
  			stories: stories,
  			articles: articles
