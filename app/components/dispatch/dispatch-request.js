@@ -56,7 +56,7 @@ export default class DispatchRequest extends React.Component {
 		return (
 			<div className="card panel toggle-card" ref="request-card">
 				<div className="card-head">
-					<span className="md-type-title">Request Access</span>
+					<span className="md-type-title">Request access to Dispatch</span>
 					<span id="close-request-access-window" className="mdi mdi-close pull-right icon toggle-card toggler"></span>
 				</div>
 				
