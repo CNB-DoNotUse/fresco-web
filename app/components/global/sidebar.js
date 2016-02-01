@@ -11,7 +11,6 @@ export default class Sidebar extends React.Component {
 		super(props);
 
 		this.handleSearchKeyDown = this.handleSearchKeyDown.bind(this);
-
 	}
 
 	handleSearchKeyDown(e) {
@@ -85,7 +84,7 @@ class SideBarListItems extends React.Component {
 
 		if(!this.props.user) return;
 
-		if (this.props.user.outlet || this.props.user.rank >= global.RANKS.CONTENT_MANAGER){ //CONTENT_MANAGER
+		if (this.props.user.outlet || this.props.user.rank >= global.RANKS.CONTENT_MANAGER){
 			var dispatch = 
 				<li className="sidebar-tab">
 					<a href="/dispatch"><span className="mdi mdi-map icon"></span>Dispatch</a>
@@ -93,21 +92,18 @@ class SideBarListItems extends React.Component {
 		}
 
 		if (this.props.user.outlet != null){
-		
 			var outlet = 
 				<li className="sidebar-tab">
 					<a href="/outlet"><span className="mdi mdi-account-multiple icon"></span>{this.props.user.outlet.title}</a>
 				</li>;
-		
 		}
 		if(this.props.user.rank >= global.RANKS.CONTENT_MANAGER) { 
-			
 			var admin = 
 				<li className="sidebar-tab">
 					<a href="/admin"><span className="mdi mdi-dots-horizontal icon"></span>Admin</a>
 				</li>;
 		} 
-		if(this.props.user.rank === global.RANKS.ADMIN) { 
+		if(this.props.user.rank == global.RANKS.ADMIN) { 
 			var purchases =  
 				<li className="sidebar-tab">
 					<a href="/purchases"><span className="mdi mdi-currency-usd icon"></span>Purchases</a>
