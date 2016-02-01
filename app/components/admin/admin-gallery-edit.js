@@ -24,7 +24,8 @@ export default class AdminGalleryEdit extends React.Component {
 			activeGallery: {},
 			editButtonsEnabled: false,
 			address: null,
-			mapLocation: []
+			mapLocation: [],
+			waiting: false
 		}
 
 		this.resetState = this.resetState.bind(this);
@@ -169,7 +170,18 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Removes callery
 	 */
 	remove() {
+		if(this.state.waiting) return;
+
+		this.setState({
+			waiting: true
+		});
+
 		this.props.remove((err) => {
+
+			this.setState({
+				waiting: false
+			});
+
 			if (err)
 				return $.snackbar({content: 'Unable to delete gallery'});
 
@@ -181,7 +193,19 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Skips gallery
 	 */
 	skip() {
+
+		if(this.state.waiting) return;
+
+		this.setState({
+			waiting: true
+		});
+
 		this.props.skip((err, id) => {
+			
+			this.setState({
+				waiting: false
+			});
+
 			if (err)
 				return $.snackbar({content: 'Unable to skip gallery'});
 
@@ -196,13 +220,21 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Gets all form data and verifies gallery.
 	 */
 	verify() {
-		
+
+		if(this.state.waiting) return;
+
+		this.setState({
+			waiting: true
+		});
+
 		if(!Array.isArray(this.state.activeGallery.tags)) { 
 			this.state.activeGallery.tags = []; 
 		}
 		if(!Array.isArray(this.state.activeGallery.posts)) { 
 			this.state.activeGallery.posts = []; 
 		}
+
+		if(!this.state.activeGallery.stories) this.state.activeGallery.stories = [];
 
 		var stories = this.state.activeGallery.stories.map((story) => {
 			return story.new ? 'NEW=' + JSON.stringify(story) : story._id;
@@ -227,14 +259,28 @@ export default class AdminGalleryEdit extends React.Component {
 				params.lon = this.state.mapLocation.lng;
 			}
 		}
-		if (!params.posts || params.posts.length == 0)
-			return $.snackbar({content: 'A gallery must have at least one post'});
+		if (!params.posts || params.posts.length == 0) {
+			this.setState({
+				waiting: false
+			});
 
-		if(this.refs['gallery-caption'].length == 0)
+			return $.snackbar({content: 'A gallery must have at least one post'});
+		}
+
+		if(this.refs['gallery-caption'].length == 0) {
+			this.setState({
+				waiting: false
+			});
+
 			return $.snackbar({content: 'A gallery must have a caption'});
+		}
 
 		this.props.verify(params, (err, id) => {
 			
+			this.setState({
+				waiting: false
+			});
+
 			if (err)
 				return $.snackbar({content: 'Unable to verify gallery'});
 
@@ -395,7 +441,7 @@ export default class AdminGalleryEdit extends React.Component {
 					verify={this.verify}
 					skip={this.skip}
 					remove={this.remove}
-					enabled={this.props.hasActiveGallery} />
+					enabled={!this.state.waiting} />
 			</div>
 		);
 	}
