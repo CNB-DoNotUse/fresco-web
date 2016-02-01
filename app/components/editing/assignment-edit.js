@@ -2,6 +2,7 @@ import React from 'react'
 import global from './../../../lib/global'
 import AssignmentEditStats from './assignment-edit-stats'
 import AssignmentEditMap from './assignment-edit-map'
+import AssignmentEditOutlet from './assignment-edit-outlet'
 
 export default class AssignmentEdit extends React.Component {
 
@@ -14,10 +15,13 @@ export default class AssignmentEdit extends React.Component {
 				lng: this.props.assignment.location.geo.coordinates[0]
 			},
 			radius: this.props.assignment.location.radius,
-			address: this.props.assignment.location.address
+			address: this.props.assignment.location.address,
+			outlet: this.props.assignment.outlet
 		}
 
 		this.updateLocation = this.updateLocation.bind(this);
+		this.updateOutlet = this.updateOutlet.bind(this);
+
 		this.revert = this.revert.bind(this);
 		this.cancel = this.cancel.bind(this);
 		this.clear = this.clear.bind(this);
@@ -52,6 +56,12 @@ export default class AssignmentEdit extends React.Component {
 		});
 	}
 
+	updateOutlet(outletId) {
+		this.setState({
+			outlet: outletId
+		});
+	}
+
 	/**
 	 * Updates state location with passed params
 	 * @param  {dictionary} location Location Dictionary object {lat: x, lng: y}
@@ -71,8 +81,6 @@ export default class AssignmentEdit extends React.Component {
 	 */
 	save() {
 
-		var outletID = this.refs.outlet.dataset.outletid != this.props.assignment.outlet._id ? this.refs.outlet.dataset.outletid : undefined;
-
 		var params = {
 			id: this.props.assignment._id,
 			title: this.refs.title.value,
@@ -81,33 +89,32 @@ export default class AssignmentEdit extends React.Component {
 			lat: this.state.location.lat,
 			lon: this.state.location.lng, //should be `lng:`
 			address: this.state.address,
-			outlet: outletID,
+			outlet: this.state.outlet ? this.state.outlet._id : null,
 			now: Date.now(),
 			expiration_time: this.refs.expiration.value * 60 * 60 * 1000 + Date.now() //Convert to milliseconds
 		};
 
+		if(!params.outlet) {
+			return $.snackbar({content: 'An assignment must have an owner!'});
+		}
 		if (global.isEmptyString(params.title)){
-			$.snackbar({content: 'Assignment must have a title!'});
-			return;
+			return $.snackbar({content: 'An assignment must have a title!'});
 		}
 		if (global.isEmptyString(params.caption)){
-			$.snackbar({content: 'Assignment must have a caption!'});
-			return;
+			return $.snackbar({content: 'An assignment must have a caption!'});
 		}
 		if (params.address === ''){
-			$.snackbar({content: 'Assignment must have a location1'});
-			return false;
+			return $.snackbar({content: 'An assignment must have a location1'});
 		}
 		if (!global.isValidRadius(params.radius)){
-			$.snackbar({content: 'Radius must be at least 250ft!'});
-			return false;
+			return $.snackbar({content: 'Radius must be at least 250ft!'});
 		}
 		if (isNaN(params.expiration_time) || params.expiration_time == 0){
-			$.snackbar({content: 'Expiration time must be a number greater than 0!'});
-			return false;
+			return $.snackbar({content: 'Expiration time must be a number greater than 0!'});
 		}
 
 		$.post('/api/assignment/update', params, (response) => {
+			console.log(response);
 		   if(response.err) {
 		       $.snackbar({
 		           content: 'Could not save assignment!'
@@ -192,6 +199,11 @@ export default class AssignmentEdit extends React.Component {
 										ref="caption"
 										defaultValue={this.props.assignment.caption} />
 								</div>
+
+								<AssignmentEditOutlet 
+									outlet={this.state.outlet}
+									updateOutlet={this.updateOutlet}
+									/>
 
 								<div className="dialog-row">
 									<input

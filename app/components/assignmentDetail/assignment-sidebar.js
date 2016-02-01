@@ -34,9 +34,11 @@ export default class AssignmentSidebar extends React.Component {
 							<div className="meta-description" id="story-description">
 								{this.props.assignment.caption || 'No Description'}
 							</div>
+							
 							<div className="meta-user">
 								{expireButton}
 							</div>
+							
 							<AssignmentStats assignment={this.props.assignment} />
 						</div>
 					</div>
@@ -58,33 +60,37 @@ class AssignmentStats extends React.Component {
 	render() {
 
 		var assignment = this.props.assignment,
-			location = '',
-			expiration = '',
-			photos = '',
-			videos = '',
 			expirationTime = new Date(this.props.assignment.expiration_time),
 			expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
 
-		location = <li>
+		var location = <li>
 						<span className="mdi mdi-map-marker icon"></span>
 						<span>{assignment.location && assignment.location.address || 'No Address'}</span>
 					</li>
 		
-		expiration = <li>
+		var expiration = <li>
 						<span className="mdi mdi-clock icon"></span>
 						<span>{expiredText}</span>
 					</li>
+
+				console.log(assignment);
 		
-		// photos = <li>
-		// 			<span className="mdi mdi-file-image-box icon"></span>
-		// 			<span>{this.props.assignment.photos.length} {this.props.assignment.stats.photos > 1 ? 'photos' : 'photo'}</span>
-		// 		</li>
+		var photos = <li>
+					<span className="mdi mdi-file-image-box icon"></span>
+					<span>{assignment.stats.photos + ' photo' + (global.isPlural(assignment.stats.photos) ? 's' : '')}</span>
+				</li>
 		
-		// videos = <li>
-		// 			<span className="mdi mdi-movie icon"></span>
-		// 			<span>{this.props.assignment.videos.length} {this.props.assignment.posts.leng > 1 ? 'videos' : 'video'}</span>
-		// 		</li>
-		
+		var videos = <li>
+					<span className="mdi mdi-movie icon"></span>
+					<span>{assignment.stats.photos + ' video' + (global.isPlural(assignment.stats.photos) ? 's' : '')}</span>
+				</li>
+
+
+		var outlet = <li>
+					<span className="mdi mdi-account icon"></span>
+					<span>{assignment.outlet.title}</span>
+				</li>
+			
 
 		return (
 
@@ -92,6 +98,7 @@ class AssignmentStats extends React.Component {
 				<ul className="md-type-subhead">
 					{location}
 					{expiration}
+					{outlet}
 					{photos}
 					{videos}
 				</ul>

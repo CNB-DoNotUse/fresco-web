@@ -85,8 +85,11 @@ export default class LocationDropdown extends React.Component {
 			url: '/api/outlet/location/stats',
 			method: 'GET',
 			success: function(response){
-				if (response.err || !response.data)
+				if (response.err !== 'ERR_LOCATION_NOT_FOUND'){
 					return this.error(null, null, response.err);
+				} else{
+					return;
+				}
 				
 				//Update state
 				self.setState({ locations: response.data });
@@ -118,18 +121,21 @@ export default class LocationDropdown extends React.Component {
 
 		});
 
-		var addLocationButton;
+		var dropdownActions = [];
 
 		if(this.props.addLocationButton){
-			addLocationButton = <span className="mdi mdi-playlist-plus" onClick={this.addLocation} key={1}></span>
+			dropdownActions.push(
+				<span className="mdi mdi-playlist-plus" onClick={this.addLocation} key={1}></span>
+			);
 		} 
 
-		var dropdownActions = [
-			<a href="/outlet/settings" key={2}>
-				<span className="mdi mdi-settings"></span>
-			</a>,
-			addLocationButton
-		];
+		if(this.props.outlet.owner === this.props.user._id){
+			dropdownActions.push(
+				<a href="/outlet/settings" key={2}>
+					<span className="mdi mdi-settings"></span>
+				</a>
+			);
+		}
 							
 		if(locations.length == 0){
 

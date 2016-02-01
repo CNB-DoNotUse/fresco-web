@@ -18,6 +18,7 @@ router.get('/', (req, res, next) => {
 
   var props = {
     user: req.session.user,
+    outlet : req.session.user.outlet,
     title: 'Dispatch'
   }
 

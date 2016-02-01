@@ -15,20 +15,24 @@ var express = require('express'),
 
 //---------------------------vvv-OUTLET-ENDPOINTS-vvv---------------------------//
 router.post('/outlet/checkout', (req, res) => {
-  if (!checkOutlet(req, res)) return;
+  if (!checkOutlet(req, res)) 
+    return;
 
   req.body.outlet = req.session.user.outlet._id;
+  
   API.proxyRaw(req, res, (data) => {
+
     var options = {
       url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id,
       method: 'GET'
     };
 
     API.request(options, (err, response) => {
+      console.log(response);
       if (!err) {
-        var purchases = JSON.parse(response.text);
-        req.session.user.outlet.purchases = purchases.data;
+        req.session.user.outlet.purchases = response.body.data;
       }
+
       req.session.save(() => {
         res.json(data).end();
       })

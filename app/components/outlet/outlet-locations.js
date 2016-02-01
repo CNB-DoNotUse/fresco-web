@@ -119,7 +119,6 @@ export default class OutletLocations extends React.Component {
 	 * Loads locations for the outlet
 	 */
 	loadLocations(){
-
 		//`since` is the last time they've seen the locations page,
 		//eitehr grabbed from location storage, or defaults to the current timestamp
 		var self = this;
@@ -128,7 +127,6 @@ export default class OutletLocations extends React.Component {
 			url: '/api/outlet/location/list',
 			method: 'GET',
 			success: function(response){
-
 				if (response.err || !response.data)
 					return this.error(null, null, response.err);
 				

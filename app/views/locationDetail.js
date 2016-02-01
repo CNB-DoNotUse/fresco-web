@@ -89,6 +89,8 @@ class LocationDetail extends React.Component {
 					chronToggle={true} >
 
 					<LocationDropdown
+						user={this.props.user}
+						outlet={this.props.outlet}
 						addLocationButton={false} />
 				</TopBar>
 				
@@ -114,6 +116,7 @@ ReactDOM.render(
  	<LocationDetail
  		location={window.__initialProps__.location} 
  		user={window.__initialProps__.user} 
+ 		outlet={window.__initialProps__.outlet} 
  		purchases={window.__initialProps__.purchases} />,
  	document.getElementById('app')
 );

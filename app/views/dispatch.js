@@ -215,9 +215,7 @@ class Dispatch extends React.Component {
 			});
 
 			dispatchSubmit.className += ' toggled';
-
 		}
-
 	}
 
 	render() {
@@ -263,6 +261,8 @@ class Dispatch extends React.Component {
 
 		}
 
+		console.log(this.props.outlet);
+		
 		return (
 			<App user={this.props.user}>
 				<TopBar 
@@ -271,6 +271,8 @@ class Dispatch extends React.Component {
 					updateMapPlace={this.updateMapPlace} >
 
 					<LocationDropdown 
+						user={this.props.user}
+						outlet={this.props.outlet}
 						addLocationButton={true}
 						mapPlace={this.state.mapPlace} />
 				</TopBar>
@@ -302,6 +304,7 @@ class Dispatch extends React.Component {
 ReactDOM.render(
 	<Dispatch 
 		user={window.__initialProps__.user} 
+		outlet={window.__initialProps__.outlet}
 		title={window.__initialProps__.title} />,
 	document.getElementById('app')
 );

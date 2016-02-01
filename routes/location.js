@@ -22,6 +22,7 @@ router.get('/:id', (req, res, next) => {
             title = location.title,
             props = {
               user: req.session.user,
+              outlet : req.session.user.outlet,
               purchases: config.mapPurchases(),
               title: title,
               location: location

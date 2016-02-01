@@ -248,7 +248,5 @@ export default class DispatchSubmit extends React.Component {
 				}
 			}
 		});
-
-
 	}
 }

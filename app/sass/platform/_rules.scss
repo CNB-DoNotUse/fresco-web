@@ -172,6 +172,8 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		background:#FFF;
 		padding:0;
 		display: none;
+		max-height:250px;
+		overflow-y:scroll;
 		box-shadow: 0 3px 10px rgba(0,0,0,.23),0 3px 10px rgba(0,0,0,.16);
 
 		li {
