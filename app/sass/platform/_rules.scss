@@ -1379,14 +1379,13 @@ div.admin {
 	> .thumbs {
 		width: 640px;
 		height: 144px;
-		padding-left: 3px;
 		border-radius: 2px 2px 0 0;
 		overflow-x: auto;
 		overflow-y: hidden;
 		white-space: nowrap;
 		> .thumb {
 			display: inline-block;
-			margin-left: -3px;
+			margin-right:1px;
 			height: 144px;
 			> .img-responsive {
 				max-height: 100%;
