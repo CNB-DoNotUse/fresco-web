@@ -41,41 +41,26 @@ class StoryStats extends React.Component {
 	render() {
 
 		if(!this.props.story.stats) return;
-
-		var galleries = '',
-			photos = '',
-			videos = '';
 		
-		galleries =
-			<li>
-				<span className="mdi mdi-image-filter icon story-galleries"></span>
-				<span>{this.props.story.stats.photos} {this.props.story.stats.photos > 1 ? 'galleries' : 'gallery'}</span>
-			</li>
-
-		photos = 
-			<li>
-				<span className="mdi mdi-file-image-box icon"></span>
-				<span>{this.props.story.stats.photos} {this.props.story.stats.photos > 1 ? 'photos' : 'photo'}</span>
-			</li>
-		
-		videos = 
-		<li>
-			<span className="mdi mdi-movie icon"></span>
-			<span>{this.props.story.stats.videos} {this.props.story.stats.videos > 1 ? 'videos' : 'video'}</span>
-		</li>
-		
-
 		return (
 
 			<div className="meta-list">
 				<ul className="md-type-subhead">
-				{galleries}
-				{photos}
-				{videos}
+					<li>
+						<span className="mdi mdi-image-filter icon story-galleries"></span>
+						<span>{this.props.story.stats.galleries} {this.props.story.stats.galleries > 1 ? 'galleries' : 'gallery'}</span>
+					</li>
+					<li>
+						<span className="mdi mdi-file-image-box icon"></span>
+						<span>{this.props.story.stats.photos} {this.props.story.stats.photos > 1 ? 'photos' : 'photo'}</span>
+					</li>
+					<li>
+						<span className="mdi mdi-movie icon"></span>
+						<span>{this.props.story.stats.videos} {this.props.story.stats.videos > 1 ? 'videos' : 'video'}</span>
+					</li>
 				</ul>
 			</div>
 			
 		)
 	}
-
 }

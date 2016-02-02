@@ -23,8 +23,8 @@ export default class GalleryEditStories extends React.Component {
 	 * Adds story element, return if story exists in prop stories.
 	 */
 	addStory(newStory) {
-
-		if(global.isEmptyString(newStory.title)) return;
+		if(global.isEmptyString(newStory.title)) 
+			return;
 
 		//Clear the input field
 		this.refs.autocomplete.value = ''
@@ -56,20 +56,32 @@ export default class GalleryEditStories extends React.Component {
 	}
 
 	change(e) {
-
 		//Current fields input
 		var query = this.refs.autocomplete.value;
 
 		//Enter is pressed, and query is present
 		if(e.keyCode == 13 && query.length > 0){
 
-			this.addStory({
-				title: query,
-				new: true
-			});
+			var matched = -1;
 
+			//Checking if what the user entered is in the suggestions
+			for (var i = 0; i < this.state.suggestions.length; i++) {
+				if(this.state.suggestions[i].title == query){
+					matched = i;
+					break;
+				}
+			}
+
+
+			if(matched > 0){  //If there is a match, add the existing
+				this.addStory(this.state.suggestions[matched]);
+			} else{ //Not a match, add a brand new story
+				this.addStory({
+					title: query,
+					new: true
+				});
+			}
 		} else{
-
 			//Field is empty
 			if(query.length == 0){
 				this.setState({ suggestions: [] });
@@ -82,11 +94,8 @@ export default class GalleryEditStories extends React.Component {
 					url: '/api/story/autocomplete',
 					data: { q: query },
 					success: (result, status, xhr) => {
-
 						if(result.data){
-
 							this.setState({ suggestions: result.data });
-
 						}
 					}
 				});
