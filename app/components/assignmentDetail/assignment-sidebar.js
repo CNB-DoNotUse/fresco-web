@@ -39,7 +39,9 @@ export default class AssignmentSidebar extends React.Component {
 								{expireButton}
 							</div>
 							
-							<AssignmentStats assignment={this.props.assignment} />
+							<AssignmentStats 
+								stats={this.props.stats}
+								assignment={this.props.assignment} />
 						</div>
 					</div>
 				</div>
@@ -61,50 +63,36 @@ class AssignmentStats extends React.Component {
 
 		var assignment = this.props.assignment,
 			expirationTime = new Date(this.props.assignment.expiration_time),
-			expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
-
-		var location = <li>
-						<span className="mdi mdi-map-marker icon"></span>
-						<span>{assignment.location && assignment.location.address || 'No Address'}</span>
-					</li>
-		
-		var expiration = <li>
-						<span className="mdi mdi-clock icon"></span>
-						<span>{expiredText}</span>
-					</li>
-
-				console.log(assignment);
-		
-		var photos = <li>
-					<span className="mdi mdi-file-image-box icon"></span>
-					<span>{assignment.stats.photos + ' photo' + (global.isPlural(assignment.stats.photos) ? 's' : '')}</span>
-				</li>
-		
-		var videos = <li>
-					<span className="mdi mdi-movie icon"></span>
-					<span>{assignment.stats.photos + ' video' + (global.isPlural(assignment.stats.photos) ? 's' : '')}</span>
-				</li>
-
-
-		var outlet = <li>
-					<span className="mdi mdi-account icon"></span>
-					<span>{assignment.outlet.title}</span>
-				</li>
-			
+			expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow(),
+			stats = this.props.stats;
 
 		return (
 
 			<div className="meta-list">
 				<ul className="md-type-subhead">
-					{location}
-					{expiration}
-					{outlet}
-					{photos}
-					{videos}
+					<li>
+						<span className="mdi mdi-map-marker icon"></span>
+						<span>{assignment.location && assignment.location.address || 'No Address'}</span>
+					</li>
+					<li>
+						<span className="mdi mdi-clock icon"></span>
+						<span>{expiredText}</span>
+					</li>
+					<li>
+						<span className="mdi mdi-account icon"></span>
+						<span>{assignment.outlet.title}</span>
+					</li>
+					<li>
+						<span className="mdi mdi-file-image-box icon"></span>
+						<span>{stats.photos + ' photo' + (global.isPlural(stats.photos) ? 's' : '')}</span>
+					</li>
+					<li>
+						<span className="mdi mdi-movie icon"></span>
+						<span>{stats.photos + ' video' + (global.isPlural(stats.photos) ? 's' : '')}</span>
+					</li>
 				</ul>
 			</div>
 			
 		)
 	}
-
 }

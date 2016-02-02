@@ -147,7 +147,9 @@ export default class AssignmentEdit extends React.Component {
 				<div className={"dim toggle-edit " + toggledText}></div>
 				<div className={"edit panel panel-default toggle-edit" + toggledText}>
 
-					<AssignmentEditStats assignment={this.props.assignment} />
+					<AssignmentEditStats 
+						stats={this.props.stats}
+						assignment={this.props.assignment} />
 
 					<div className="col-xs-12 col-lg-9 edit-new dialog">
 						<div className="dialog-head">

@@ -18,6 +18,7 @@ class AssignmentDetail extends React.Component {
 
 		this.state = {
 			assignment: this.props.assignment,
+			stats: this.props.assignment.stats,
 			toggled: false,
 			verifiedToggle: true
 		}
@@ -69,7 +70,7 @@ class AssignmentDetail extends React.Component {
  	 toggleEdit(s) {
  	 	this.setState({
  	 		toggled: typeof s == 'undefined' ? !this.state.toggled : s
- 	 	})
+ 	 	});
  	 }
 
  	render() {
@@ -87,6 +88,7 @@ class AssignmentDetail extends React.Component {
 
  				<AssignmentSidebar
  					assignment={this.state.assignment}
+ 					stats={this.state.stats}
  					expireAssignment={this.expireAssignment} />
 
  				<div className="col-sm-8 tall">
@@ -102,6 +104,7 @@ class AssignmentDetail extends React.Component {
 
 				<AssignmentEdit
 					assignment={this.state.assignment}
+					stats={this.state.stats}
 					setAssignment={this.setAssignment}
 					toggled={this.state.toggled}
 					toggle={this.toggleEdit}
