@@ -19,7 +19,7 @@ export default class AssignmentListItem extends React.Component {
         return (
             <div
                 id={assignment._id}
-                className="list-item"
+                className="list-item assignment-list-item"
                 onClick={this.props.setActiveAssignment.bind(null, assignment)}>
                 <div>
                     <img className="img-circle" src={imageUrl} />

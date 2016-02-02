@@ -39,6 +39,12 @@ import AdminBody from './../components/admin/admin-body'
  		}, 5000);
 	}
 
+ 	componentDidMount() {
+ 		this.getAssignments();
+ 		this.getSubmissions();
+ 		this.getImports();
+ 	}
+
  	setTab(tab) {
  		if(tab == this.state.activeTab) return;
 
@@ -105,12 +111,6 @@ import AdminBody from './../components/admin/admin-body'
 			this.setState(changedState);
 		});
 	}
-
- 	componentDidMount() {
- 		this.getAssignments();
- 		this.getSubmissions();
- 		this.getImports();
- 	}
 
 	render() {
 		return (
