@@ -17,7 +17,6 @@ export default class PostCell extends React.Component {
 	}
 	
 	postClicked(e) {
-
 		//Check if clicked with shift key
 		if(e.shiftKey) {
 
@@ -31,7 +30,6 @@ export default class PostCell extends React.Component {
 			win.focus;
 
 		}
-
 	}
 
 	render() {

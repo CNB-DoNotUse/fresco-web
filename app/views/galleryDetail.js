@@ -27,7 +27,8 @@ class GalleryDetail extends React.Component {
 			galleryEditToggled: false,
 			gallery: this.props.gallery,
 			verifiedToggle: verifiedCount > 0,
-			sort: 'capture'
+			sort: 'capture',
+			title: this.props.title
 		}
 
 		this.toggleGalleryEdit = this.toggleGalleryEdit.bind(this);
@@ -51,17 +52,24 @@ class GalleryDetail extends React.Component {
 	 * Updates gallery in state
 	 */
 	updateGallery(gallery){
+		var title = 'Gallery';
+
+		if(gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
+		  title += ' from ' + gallery.posts[0].location.address;
+		}
+
 		this.setState({
-			gallery: gallery
+			gallery: gallery,
+			title: title,
+			updatePosts: true
 		});
 	}
 
 	render() {
-
 		return (
 			<App user={this.props.user}>
 				<TopBar 
-					title={this.props.title}
+					title={this.state.title}
 					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
 					edit={this.toggleGalleryEdit}
 					verifiedToggle={this.state.verifiedToggle}
@@ -77,6 +85,7 @@ class GalleryDetail extends React.Component {
 						purchases={this.props.purchases}
 						posts={this.state.gallery.posts}
 						onlyVerified={this.state.verifiedToggle}
+						updatePosts={this.state.updatePosts}
 						scrollable={false}
 						sort={this.state.sort}
 						editable={false}
