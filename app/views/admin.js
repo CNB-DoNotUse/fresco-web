@@ -193,6 +193,13 @@ import AdminBody from './../components/admin/admin-body'
 				}
 
 				if(unshift) {
+
+					// Filter posts newer than newest
+					for (var i = 0; i < newData.length; i++) {
+						if(newData[i].time_created < stateData[0].time_created) {
+							newData.splice(i, 1);
+						}
+					};
 					stateData.unshift(...newData);
 				}
 
