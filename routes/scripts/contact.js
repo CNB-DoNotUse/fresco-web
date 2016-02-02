@@ -87,7 +87,7 @@ function sendMessage(ip, req, res){
             to: 'info@fresconews.com',
             from: from + ' <info@fresconews.com>',
             subject: subject,
-            text: 'Message: ' + message
+            text: 'Message: ' + message + ' \nFrom: ' + from
         };
 
     //Send out email to `info@fresconews.com`
