@@ -27,9 +27,9 @@ router.get('/:id', (req, res, next) => {
   request({
     url: config.API_URL + "/v1/gallery/get?stories=true&stats=1&id=" + req.params.id,
     json: true
-  }, doWithGalleryGetStories);
+  }, doWithGalleryGet);
 
-  function doWithGalleryGetStories(err, response, body) {
+  function doWithGalleryGet(err, response, body) {
 
     //Check for error, 404 if true
     if (err || !body || body.err) {

@@ -108,17 +108,22 @@ router.post('/user/login', (req, res) => {
 });
 
 router.get('/user/logout', (req, res) => {
-  var end = () => {
-    req.session.destroy(() => { res.redirect('/') });
-  }
+    var end = () => {
+        req.session.destroy(() => { 
+            res.redirect('/') 
+        });
+    }
 
-  if (!req.session.user) {
+    if (!req.session.user) {
+        return end();
+    }
+
+    req.url = '/auth/logout';
+    req.method = 'POST';
+
+    API.proxyRaw(req, res, null);
+
     return end();
-  }
-
-  req.url = '/auth/logout';
-  req.method = 'POST';
-  API.proxyRaw(req, res, end);
 });
 
 router.post('/user/register', function(req, res, next) {
@@ -151,23 +156,23 @@ router.post('/user/register', function(req, res, next) {
 });
 
 router.post('/user/update', (req, res) => {
-  // When no picture is uploaded, avatar gets set, which confuses the API
-  if (req.body.avatar) delete req.body.avatar;
+    // When no picture is uploaded, avatar gets set, which confuses the API
+    if (req.body.avatar) delete req.body.avatar;
 
-  API.proxyRaw(req, res, (body) => {
-    var user = body.data;
+    API.proxyRaw(req, res, (body) => {
+        var user = body.data;
 
-		req.session.user.firstname = user.firstname;
-		req.session.user.lastname = user.lastname;
-    req.session.user.bio = user.bio;
-		req.session.user.email = user.email;
-    req.session.user.phone = user.phone;
-		req.session.user.avatar = user.avatar;
+    	req.session.user.firstname = user.firstname;
+    	req.session.user.lastname = user.lastname;
+        req.session.user.bio = user.bio;
+    	req.session.user.email = user.email;
+        req.session.user.phone = user.phone;
+    	req.session.user.avatar = user.avatar;
 
-    req.session.save(() => {
-      res.json({}).end();
+        req.session.save(() => {
+            res.json({}).end();
+        });
     });
-  });
 });
 
 router.get('/user/verify/resend', (req, res) => {

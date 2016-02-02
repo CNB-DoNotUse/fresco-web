@@ -37,6 +37,7 @@ export default class GalleryEdit extends React.Component {
 
 		this.updateGalleryField     = this.updateGalleryField.bind(this);
 		this.updateGallery 			= this.updateGallery.bind(this);
+		this.uploadNewFiles 		= this.uploadNewFiles.bind(this);
 		this.revertGallery 			= this.revertGallery.bind(this);
 		this.saveGallery 			= this.saveGallery.bind(this);
 		this.hide		 			= this.hide.bind(this);
@@ -190,7 +191,7 @@ export default class GalleryEdit extends React.Component {
 	}
 
  	saveGallery() {
- 		var self 	= this,
+ 		var self 	   = this,
 	 		gallery    = _.clone(this.state.gallery, true),
  			files 	   = gallery.files ? gallery.files : [],
  			caption    = gallery.caption,
@@ -264,49 +265,15 @@ export default class GalleryEdit extends React.Component {
 
  		if (files.length) {
  			// Upload files then update gallery in callback
- 			uploadNewFiles();
-
+ 			this.uploadNewFiles(gallery, files, (newPosts) => {
+ 				updateGallery(newPosts);
+ 			});
  		} else {
  			// Or just update gallery if no files present
  			updateGallery();
  		}
- 		function uploadNewFiles() {
-			var data 	= new FormData();
 
- 			for (var i = 0; i < files.length; i++) {
- 				data.append(i, files[i]);
- 			}
-
-			data.append('gallery', gallery._id);
-
-			$.ajax({
-				url: '/api/gallery/addpost',
-				type: 'POST',
-				data: data,
-				processData: false,
-				contentType: false,
-				cache: false,
-				dataType: 'json',
-				success: (result, status, xhr) => {
-					updateGallery(result.data);
-				},
-				error: (xhr, status, error) => {
-					$.snackbar({content: global.resolveError(error)});
-				},
-				xhr: () => {
-					var xhr = $.ajaxSettings.xhr();
-					xhr.upload.onprogress = function(evt) {
-					}
-
-					xhr.upload.onload = function() { }
-
-					return xhr;
-				}
-			});
- 		}
-
- 		function updateGallery(newPosts) {
-
+ 		function updateGallery(newPosts){
  			if (typeof newPosts !== 'undefined') {
 				params.posts = _.difference(newPosts.posts, self.state.deletePosts);
  			}
@@ -315,20 +282,57 @@ export default class GalleryEdit extends React.Component {
 	 			method: 'post',
 	 			contentType: "application/json",
 	 			data: JSON.stringify(params),
-	 			success: (result) => {
-	 				if(result.err) {
+	 			success: (response) => {
+	 				if(response.err || !response.data) {
 	 					$.snackbar({
-	 						content: global.resolveError(result.err, "There was an error saving the gallery!")
+	 						content: global.resolveError(response.err, "There was an error saving the gallery!")
 	 					});
 	 				}
 	 				else {
-	 					location.reload();
+	 					//Update parent gallery
+	 					self.props.updateGallery(response.data);
+	 					//Hide the modal
+	 					self.hide();
 	 				}
 	 			}
 	 		});
  		}
-
  	}
+
+ 	uploadNewFiles(gallery, files, callback) {
+		var data = new FormData();
+
+		for (var i = 0; i < files.length; i++) {
+			data.append(i, files[i]);
+		}
+
+		data.append('gallery', gallery._id);
+
+		$.ajax({
+			url: '/api/gallery/addpost',
+			type: 'POST',
+			data: data,
+			processData: false,
+			contentType: false,
+			cache: false,
+			dataType: 'json',
+			success: (result, status, xhr) => {
+				callback(result.data);
+			},
+			error: (xhr, status, error) => {
+				$.snackbar({content: global.resolveError(error)});
+			},
+			xhr: () => {
+				var xhr = $.ajaxSettings.xhr();
+				xhr.upload.onprogress = function(evt) {
+				}
+
+				xhr.upload.onload = function() { }
+
+				return xhr;
+			}
+		});
+	}
 
  	hide() {
  		this.setState({

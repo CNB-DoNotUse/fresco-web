@@ -243,18 +243,16 @@ export default class AdminGalleryEdit extends React.Component {
 
 		if(this.state.waiting) return;
 
+		var gallery = this.state.activeGallery,
+			tags = !Array.isArray(gallery.tags) ? [] : gallery.tags,
+			assignment = gallery.assignment ? gallery.assignment._id : null,
+			posts = gallery.posts.map(p => p._id);
+
 		this.setState({
 			waiting: true
 		});
 
-		if(!Array.isArray(this.state.activeGallery.tags)) { 
-			this.state.activeGallery.tags = []; 
-		}
-		if(!Array.isArray(this.state.activeGallery.posts)) { 
-			this.state.activeGallery.posts = []; 
-		}
-
-		if(!this.state.activeGallery.stories) this.state.activeGallery.stories = [];
+		if(!gallery.stories) gallery.stories = [];
 
 		var stories = this.state.activeGallery.stories.map((story) => {
 			return story.new ? 'NEW=' + JSON.stringify({title: story.title}) : story._id;
