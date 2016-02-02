@@ -126,7 +126,7 @@ app.use((req, res, next) => {
 
     //Check if there is no sessioned user
     if (!req.session.user) {
-      return res.redirect('/account?next=' + req.url);
+        return res.redirect('/account?next=' + req.url);
     }
 
     //Check if the session hasn't expired
@@ -271,9 +271,6 @@ app.use((err, req, res, next) => {
                   '\nError: ', err + '\n');
     }
 
-    //Respond with code
-    res.status(err.status || 500);
-
     res.render('error', {
         user: req.session && req.session.user ? req.session.user : null,
         err: {
@@ -283,7 +280,6 @@ app.use((err, req, res, next) => {
         section: 'public',
         page: 'error'
     });
-
 });
 
 /**

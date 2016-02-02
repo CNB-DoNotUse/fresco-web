@@ -16,7 +16,8 @@ export default class DispatchAssignments extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			assignments: []
+			assignments: [],
+			loading: false
 		}
 		this.toggleList = this.toggleList.bind(this);
 		this.scroll = this.scroll.bind(this);
@@ -41,7 +42,6 @@ export default class DispatchAssignments extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-	    
 		if(prevProps.viewMode !== this.props.viewMode){
 
 			//Access parent var load method
@@ -58,7 +58,6 @@ export default class DispatchAssignments extends React.Component {
 
 			});
 		}
-
 	}
 
 	//Scroll listener for main window
@@ -75,26 +74,18 @@ export default class DispatchAssignments extends React.Component {
 
 		//Check that nothing is loading and that we're at the end of the scroll, 
 		//and that we have a parent bind to load  more posts
-		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight) && this.props.loadPosts){
+		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight) && this.props.loadAssignments){
 
 			//Set that we're loading
 			this.setState({ loading : true });
 
-			//Run load on parent call
-			this.loadAssignments(this.state.offset, type, (assignments) =>{
+			var params = {
+				offset: this.state.offset
+			};
 
-				//Disables scroll, and returns nil if posts are nill
-				if(!assignments || assignments.length == 0){ 
-					
-					this.setState({
-						scrollable: false
-					});
-
-					return;
-
-				}
-
-				var offset = this.state.assignments.length + posts.length;
+			//Access parent var load method
+			this.loadAssignments(0, this.props.viewMode, (assignments) => {
+				var offset = this.state.assignments.length + assignments.length;
 
 				//Set galleries from successful response, and unset loading
 				this.setState({
@@ -102,8 +93,7 @@ export default class DispatchAssignments extends React.Component {
 					offset : offset,
 					loading : false
 				});
-
-			}, this);
+			});
 		}
 	}
 
