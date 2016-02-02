@@ -94,10 +94,7 @@ class UserSettings extends React.Component {
 	 */
  	updateSettings() {
 
- 		console.log('test yo');
-
  		if(this.updating) return;
- 		
  		this.updating = true;
 
  		var userData = new FormData(),
