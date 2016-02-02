@@ -153,11 +153,27 @@ export default class OutletLocations extends React.Component {
 		//Set the passed notif type to true
 		params[notifType] = e.target.checked;
 
+		var stateLocations = this.state.locations;
+
+		// Update notification setting in state, if update fails, loadLocations will revert the check
+		for(var x in stateLocations) {
+			var location = stateLocations[x];
+			if(location._id == locationId) {
+				location.notifications[notifType.split('_')[1]] = e.target.checked;
+
+				this.setState({
+					locations: stateLocations
+				});
+
+				break; // Break ya legs
+			}
+		}
+
 		$.ajax({
 			url: '/api/outlet/location/update',
 			method: 'post',
 			data: params,
-			success: function(response){
+			success: function(response) {
 				if (response.err)
 					return this.error(null, null, response.err);
 
@@ -283,7 +299,7 @@ class OutletLocationsList extends React.Component {
 			);
 		});	
 
-		if(locations.length == 0){
+		if(locations.length == 0) {
 			return (
 				<div className="outlet-locations-container">
 					<h3 className="empty-title">There are currently no saved locations for your outlet!</h3>
