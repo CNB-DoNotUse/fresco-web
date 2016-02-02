@@ -554,6 +554,13 @@ div.list {
 	> div.list-item {
 		padding: 16px;
 		@include display(flex);
+
+		&.assignment-list-item {
+			max-width: 368px;
+			overflow: hidden;
+		}
+
+
 		> div {
 			cursor:pointer;
 			margin-right: 16px;

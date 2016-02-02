@@ -17,7 +17,8 @@ export default class DispatchAssignments extends React.Component {
 		super(props);
 		this.state = {
 			assignments: [],
-			loading: false
+			loading: false,
+			offset: 0
 		}
 		this.toggleList = this.toggleList.bind(this);
 		this.scroll = this.scroll.bind(this);
@@ -74,7 +75,7 @@ export default class DispatchAssignments extends React.Component {
 
 		//Check that nothing is loading and that we're at the end of the scroll, 
 		//and that we have a parent bind to load  more posts
-		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight) && this.props.loadAssignments){
+		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight)){
 
 			//Set that we're loading
 			this.setState({ loading : true });
@@ -84,7 +85,7 @@ export default class DispatchAssignments extends React.Component {
 			};
 
 			//Access parent var load method
-			this.loadAssignments(0, this.props.viewMode, (assignments) => {
+			this.loadAssignments(this.state.offset, this.props.viewMode, (assignments) => {
 				var offset = this.state.assignments.length + assignments.length;
 
 				//Set galleries from successful response, and unset loading
