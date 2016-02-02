@@ -140,7 +140,9 @@ export default class AdminBody extends React.Component {
 			}
 		}
 
-		this.setActiveGallery( this.props[propGalleryType][next_index]._id, this.state.activeGalleryType );
+		if(this.props[propGalleryType].length) {
+			this.setActiveGallery( this.props[propGalleryType][next_index]._id, this.state.activeGalleryType );
+		}
 	}
 
 	updateAssignment(id) {
