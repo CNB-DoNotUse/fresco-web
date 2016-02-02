@@ -159,7 +159,7 @@ export default class AdminAssignmentEdit extends React.Component {
 
         return (
             <div className="dialog">
-                <div className="dialog-body" style={{visibility: this.props.hasActiveGallery ? 'visible' : 'hidden'}}>
+                <div className="dialog-body admin-assignment-edit" style={{visibility: this.props.hasActiveGallery ? 'visible' : 'hidden'}}>
                     <input
                         type="text"
                         className="form-control floating-label"

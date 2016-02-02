@@ -25,12 +25,26 @@ export default class AdminBody extends React.Component {
 		this.verify = this.verify.bind(this);
 		this.remove = this.remove.bind(this);
 
+		this.scroll = this.scroll.bind(this);
+
+		this.refreshInterval = null;
+
+	}
+
+	componentDidMount() {
+		this.refreshInterval = setInterval(() => {
+			if(this.props.activeTab != '') {
+				this.props.refresh();
+			}
+		}, 5000);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
 
+		// If tab changed
 	 	if( this.props.activeTab != prevProps.activeTab ) {
 
+	 		// If activeTab has submissions / assignments object, but no actual submissions / assignments, then hide admin panes.
 	 		if( this.props[this.props.activeTab] && this.props[this.props.activeTab].length == 0 ) {
 	 			this.setState({
 	 				hasActiveGallery: false,
@@ -223,6 +237,16 @@ export default class AdminBody extends React.Component {
 
 	}
 
+	scroll(e) {
+		var target = e.target;
+		if(target.scrollTop == target.scrollHeight - target.offsetHeight) {
+			var items = this.props[this.props.activeTab];
+			if(!items) return;
+
+			this.props.getData(items[items.length - 1]._id, {concat: true, tab: this.state.activeGalleryType + 's'}, (data) => {});
+		}
+	}
+
 	render() {
 		
 		switch(this.props.activeTab) {
@@ -298,7 +322,7 @@ export default class AdminBody extends React.Component {
 
 		return (
 			<div className="container-fluid admin">
-				<div className="col-md-6 col-lg-7 list">
+				<div className="col-md-6 col-lg-7 list" onScroll={this.scroll}>
 					{listItems}
 				</div>
 				<div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">
