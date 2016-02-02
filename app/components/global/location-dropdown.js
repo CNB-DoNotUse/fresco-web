@@ -85,14 +85,12 @@ export default class LocationDropdown extends React.Component {
 			url: '/api/outlet/location/stats',
 			method: 'GET',
 			success: function(response){
-				if (response.err !== 'ERR_LOCATION_NOT_FOUND'){
+				if (response.err){
 					return this.error(null, null, response.err);
 				} else{
-					return;
+					//Update state
+					self.setState({ locations: response.data });
 				}
-				
-				//Update state
-				self.setState({ locations: response.data });
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({
