@@ -96,6 +96,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				font-weight:400;
 				@include rgba(color, 0, 0, 0, 0.87);
 
+				&:hover, &.active{
+					background:#f5f5f5;
+				}
+
 				&.location-item{
 					padding:14px 16px;
 					height:72px;
@@ -112,13 +116,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 					}
 					.count{
 						font-size:13px;
+						font-weight:400;
 						line-height:20px;
 						@include rgba(color, 0, 0, 0 , 0.54);
 					}
-				}
-
-				&:hover, &.active{
-					background:#f5f5f5;
 				}
 			}
 		}

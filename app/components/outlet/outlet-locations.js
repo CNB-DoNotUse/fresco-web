@@ -301,9 +301,7 @@ class OutletLocationsList extends React.Component {
 
 		if(locations.length == 0) {
 			return (
-				<div className="outlet-locations-container">
-					<h3 className="empty-title">There are currently no saved locations for your outlet!</h3>
-				</div>
+				<div className="outlet-locations-container"></div>
 			)
 		}
 		

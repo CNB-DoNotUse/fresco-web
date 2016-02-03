@@ -28,8 +28,8 @@ router.post('/outlet/checkout', (req, res) => {
     };
 
     API.request(options, (err, response) => {
-      console.log(response);
-      if (!err) {
+      console.log(response.body);
+      if (!err && response.body) {
         req.session.user.outlet.purchases = response.body.data;
       }
 

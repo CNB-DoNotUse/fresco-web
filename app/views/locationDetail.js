@@ -86,10 +86,11 @@ class LocationDetail extends React.Component {
 				<TopBar 
 					title={this.props.location.title}
 					timeToggle={true}
-					chronToggle={true} >
+					chronToggle={true}>
 
 					<LocationDropdown
 						user={this.props.user}
+						inList={true}
 						outlet={this.props.outlet}
 						addLocationButton={false} />
 				</TopBar>

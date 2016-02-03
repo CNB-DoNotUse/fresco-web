@@ -90,6 +90,78 @@ export default class DispatchSubmit extends React.Component {
 	    );
 	}
 
+	submitForm() {
+		var assignment = {
+				title: this.refs.title.value,
+				caption: this.refs.caption.value,
+				radius: global.feetToMiles(parseInt(this.refs.radius.value)),
+				expiration_time: this.refs.expiration.value ? this.refs.expiration.value  * 60 * 60 * 1000 + Date.now() : null, //Convert to milliseconds and add current time
+				address: this.refs.autocomplete.value,
+				googlemaps: this.refs.autocomplete.value,
+				lon: this.props.newAssignment.location.lng, //Should be lng
+				lat: this.props.newAssignment.location.lat,
+				now: Date.now()
+			};
+
+		/* Run Checks */
+
+		if (global.isEmptyString(assignment.title)){
+			$.snackbar({content: 'Your assignment must have a title!'});
+			return;
+		}
+		if (global.isEmptyString(assignment.caption)){
+			$.snackbar({content: 'Your assignment must have a caption!'});
+			return ;
+		}
+		if (global.isEmptyString(assignment.googlemaps)){
+			$.snackbar({content: 'Your assignment must have a location!'});
+			return;
+		}
+		if (isNaN(assignment.expiration_time) || assignment.expiration_time < 1){
+			$.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
+			return;
+		}
+		if (!global.isValidRadius(assignment.radius)){
+			$.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
+			return;
+		}
+
+		$.ajax({
+			method: 'post',
+			url: '/api/assignment/create',
+			data: JSON.stringify(assignment),
+			contentType: 'application/json',
+			success: (result) => {
+
+				if (result.err){
+					$.snackbar({content: 'There was an error submitting your assignment!'});
+					return;
+				}
+				else{
+
+					//Hide the assignment card
+					this.props.toggleSubmissionCard(false, null);
+
+					this.props.updateViewMode('pending');
+
+					//Tell the main map to update itself, to reflect the new assignment
+					this.props.mapShouldUpdate(true);
+
+					$.snackbar({
+						content: 'Your assignment has been successfully submitted and is awaiting approval!',
+						timeout: 5000
+					});
+
+					//Clear all the fields
+					this.refs.title.value = '';
+					this.refs.caption.value = '';
+					this.refs.expiration.value = '';
+					this.refs.autocomplete.value = '';
+				}
+			}
+		});
+	}
+
 	render() {
 
 		var paymentStatus = '',
@@ -176,77 +248,5 @@ export default class DispatchSubmit extends React.Component {
 
 		);
 
-	}
-
-	submitForm() {
-		var assignment = {
-				title: this.refs.title.value,
-				caption: this.refs.caption.value,
-				radius: global.feetToMiles(parseInt(this.refs.radius.value)),
-				expiration_time: this.refs.expiration.value * 60 * 60 * 1000 + Date.now(), //Convert to milliseconds and add current time,
-				address: this.refs.autocomplete.value,
-				googlemaps: this.refs.autocomplete.value,
-				lon: this.props.newAssignment.location.lng, //Should be lng
-				lat: this.props.newAssignment.location.lat,
-				now: Date.now()
-			};
-
-		/* Run Checks */
-
-		if (global.isEmptyString(assignment.title)){
-			$.snackbar({content: 'Your assignment must have a title!'});
-			return;
-		}
-		if (global.isEmptyString(assignment.caption)){
-			$.snackbar({content: 'Your assignment must have a caption!'});
-			return ;
-		}
-		if (global.isEmptyString(assignment.googlemaps)){
-			$.snackbar({content: 'Your assignment must have a location!'});
-			return;
-		}
-		if (isNaN(assignment.expiration_time) || assignment.expiration_time < 1){
-			$.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
-			return;
-		}
-		if (!global.isValidRadius(assignment.radius)){
-			$.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
-			return;
-		}
-
-		$.ajax({
-			method: 'post',
-			url: '/api/assignment/create',
-			data: JSON.stringify(assignment),
-			contentType: 'application/json',
-			success: (result) => {
-
-				if (result.err){
-					$.snackbar({content: 'There was an error submitting your assignment!'});
-					return;
-				}
-				else{
-
-					//Hide the assignment card
-					this.props.toggleSubmissionCard(false, null);
-
-					this.props.updateViewMode('pending');
-
-					//Tell the main map to update itself, to reflect the new assignment
-					this.props.mapShouldUpdate(true);
-
-					$.snackbar({
-						content: 'Your assignment has been successfully submitted and is awaiting approval!',
-						timeout: 5000
-					});
-
-					//Clear all the fields
-					this.refs.title.value = '';
-					this.refs.caption.value = '';
-					this.refs.expiration.value = '';
-					this.refs.autocomplete.value = '';
-				}
-			}
-		});
 	}
 }

@@ -136,9 +136,7 @@ class OutletMemberList extends React.Component {
 
 		if(members.length == 0){
 			return (
-				<div className="outlet-members-container">
-					<h3 className="empty-title">There are currently no members in your outlet!</h3>
-				</div>
+				<div className="outlet-members-container"></div>
 			)
 		}
 
