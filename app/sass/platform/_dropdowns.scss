@@ -168,6 +168,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		.dropdown-body{
 			width: 280px;
 		    padding:10px 24px 8px;
+		    max-height:500px;
+		    overflow:auto;
 		}
 	}
 }

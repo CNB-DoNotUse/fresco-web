@@ -15,6 +15,22 @@ Description : Image of the PostDetail page, contains image/video, byline and act
 
 export default class PostDetailImage extends React.Component {
 
+	constructor(props) {
+		super(props);
+		
+		this.state = {
+			purchased: this.props.purchases && this.props.purchases.indexOf(this.props.post._id) >= 0
+		}
+
+		this.didPurchase = this.didPurchase.bind(this);
+	}
+
+	didPurchase() {
+		this.setState({
+			purchased: true
+		});
+	}
+
 	render() {
 
 		var actions = [],
@@ -28,7 +44,7 @@ export default class PostDetailImage extends React.Component {
 			if(this.props.user.outlet){
 
 				//Check if the post has been purchased
-				if (this.props.purchases && this.props.purchases.indexOf(this.props.post._id) >= 0){
+				if (this.state.purchased){
 					actions.push(
 						<DownloadAction post={this.props.post} key={i++} />
 					);
@@ -48,10 +64,12 @@ export default class PostDetailImage extends React.Component {
 				<DownloadAction post={this.props.post} key={i++} />
 			);
 
-			if (this.props.purchases && this.props.purchases.indexOf(this.props.post._id) == -1){
+			if (!this.state.purchased){
 
 				actions.push(
-					<PurchaseAction post={this.props.post} didPurchase={this.props.didPurchase} key={i++} />
+					<PurchaseAction 
+						post={this.props.post} 
+						didPurchase={this.didPurchase} key={i++} />
 				);
 			}
 

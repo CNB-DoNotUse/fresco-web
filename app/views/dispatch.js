@@ -100,13 +100,9 @@ class Dispatch extends React.Component {
 		var params = params || {};
 
 		//Update view mode on params
-		params.expired = this.state.viewMode == 'expired' ? true : false;
-		params.active = this.state.viewMode == 'active' ? true : false;
-		params.verified = this.state.viewMode == 'pending' ? false : true;
-
-		//Check if the user is not a CM or Greater
-		if(this.props.user.rank < global.RANKS.CONTENT_MANAGER)
-			params.outlet = this.props.user.outlet._id;
+		params.expired = this.state.viewMode == 'expired';
+		params.active = this.state.viewMode == 'active';
+		params.pending = this.state.viewMode == 'pending';
 
 		//Add map params
 		if(map) {
@@ -133,15 +129,11 @@ class Dispatch extends React.Component {
 			data: params,
 			dataType: 'json',
 			success: (response, status, xhr) => {
+				console.log(response.data);
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
-					callback([]);
+					$.snackbar({content: global.resolveError(error)});
 				else {
-
-					if(!params.verified) {
-						response.data = response.data.filter(assignment => assignment.visibility == 0);
-					}
-
 					callback(response.data);
 				}
 			},

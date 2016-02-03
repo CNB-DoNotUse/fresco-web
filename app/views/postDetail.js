@@ -56,6 +56,7 @@ class PostDetail extends React.Component {
  					editable={editable}
  					edit={this.toggle}
 				/>
+				
  				<div className="content">
  					<div className="row">
  						<div className="main">
