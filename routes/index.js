@@ -176,9 +176,9 @@ router.get('/verify', (req, res, next) => {
     req.session.alerts = ['Your email has been verified!'];
 
     if (req.session && req.session.user) {
-      var token = req.session.user.token;
+
       req.session.user = body.data;
-      req.session.user.token = token;
+      
     }
 
     return req.session.save(() => {

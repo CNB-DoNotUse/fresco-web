@@ -69,7 +69,8 @@ export default class OutletMembers extends React.Component {
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
-				emails: addresses
+				emails: addresses,
+				id: this.props.outlet._id
 			}),
 			dataType: 'json',
 			success: function(result, status, xhr){

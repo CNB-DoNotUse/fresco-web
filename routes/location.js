@@ -6,7 +6,7 @@ var express    = require('express'),
 router.get('/:id', (req, res, next) => {
     superagent
     .get(config.API_URL + '/v1/outlet/location/get?id=' + req.params.id)
-    .set('authtoken', req.session.user.token)
+    .set('authtoken', req.session.token)
     .set('Accept', 'application/json')
     .end((err, response) => {
 

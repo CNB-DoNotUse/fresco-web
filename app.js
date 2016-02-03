@@ -151,9 +151,11 @@ app.use((req, res, next) => {
         }
 
         //Configure new session config for user
-        var token = req.session.user ? req.session.user.token : null;
+        var token = req.session.user && req.session.token ? req.session.token : null;
+
+        req.session.token = token;
+        
         req.session.user = body.data;
-        req.session.user.token = token;
         req.session.user.TTL = now + config.SESSION_REFRESH_MS;
 
         //Check if the user has an outlet, otherwise save session and move onward

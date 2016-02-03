@@ -28,7 +28,6 @@ router.post('/outlet/checkout', (req, res) => {
     };
 
     API.request(options, (err, response) => {
-      console.log(response);
       if (!err) {
         req.session.user.outlet.purchases = response.body.data;
       }
@@ -131,8 +130,10 @@ router.post('/outlet/create', function(req, res, next) {
         return res.json({err: err, data: {}}).end();
 
       req.session.alerts = ['Your outlet request has been submitted. We will be in touch with you shortly!'];
+
+      req.session.token = authtoken.token;
+
       req.session.user = authtoken.user;
-      req.session.user.token = authtoken.token;
       req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
       req.session.save(function(){
         res.json({err: err}).end();
@@ -243,8 +244,8 @@ router.post('/outlet/invite/accept', function(req, res, next) {
     if (accept_body.err)
       return res.send({err: accept_body.err});
 
+    req.session.token = apiLoginToken;
     req.session.user = accept_body.data;
-    req.session.user.token = apiLoginToken;
     req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
 
     if (!req.session.user.outlet) {
@@ -291,6 +292,7 @@ router.post('/outlet/update', (req, res) => {
  * @return {boolean}      True if everything is kosher, false if not
  */
 function checkOutlet(req, res) {
+  console.log(req.session.user);
   if (!req.session.user || !req.session.user.outlet) {
     res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
     return false;

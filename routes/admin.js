@@ -6,9 +6,9 @@ var express   = require('express'),
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
-  
+
   if (!req.session.user || req.session.user.rank < 1){
-    next({
+    return next({
       message: config.ERR_PAGE_MESSAGES[403],
       status: 403
     })

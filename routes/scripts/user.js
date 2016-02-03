@@ -1,5 +1,6 @@
 var express = require('express'),
     requestJson = require('request-json'),
+    validator = require('validator'),
     config = require('../../lib/config'),
     User = require('../../lib/user'),
     API = require('../../lib/api'),
@@ -79,8 +80,10 @@ router.post('/user/login', (req, res) => {
       res
     }
     API.request(options, (login_body) => {
+      
+      req.session.token = login_body.data.token;
+
       req.session.user = login_body.data.user;
-      req.session.user.token = login_body.data.token;
       req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
 
       if (!req.session.user.outlet) {
@@ -121,7 +124,7 @@ router.get('/user/logout', (req, res) => {
     API.request({
       method: 'POST',
       url: '/auth/logout',
-      token: req.session.user.token
+      token: req.session.token
     }, () => {
       end();
     });
@@ -148,8 +151,9 @@ router.post('/user/register', function(req, res, next) {
     if (err)
       return res.json({err: err, data: {}}).end();
 
+    req.session.token = login_body.data.token;
+
     req.session.user = user_body.data;
-    req.session.user.token = login_body.data.token;
     req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
     req.session.save(function(){
       res.json(login_body).end();
