@@ -19,8 +19,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	vertical-align:middle;
 	position:relative;
 
-	-webkit-transition: width 2s; /* Safari */
-		    transition: width 2s;
 	@include border-radius(2px);
 
 	&.active{

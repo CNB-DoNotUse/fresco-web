@@ -47,7 +47,7 @@ export default class LocationDropdown extends React.Component {
 				};
 			
 			$.ajax({
-				url: '/scripts/outlet/location/create',
+				url: '/api/outlet/location/create',
 				method: 'post',
 				contentType: 'application/json',
 				data: JSON.stringify(params),
