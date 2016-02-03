@@ -38,13 +38,13 @@ export default class StoryList extends React.Component {
 	}
 
 	//Scroll listener for main window
-	scroll() {
+	scroll(e) {
 
-		var grid = this.refs.grid;
+		var grid = e.target;
 
 		//Check that nothing is loading and that we're at the end of the scroll, 
 		//and that we have a parent bind to load  more stories
-		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight) && this.props.loadStories){
+		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400) && this.props.loadStories){
 
 			self = this;
 

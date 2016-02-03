@@ -90,13 +90,13 @@ export default class PostList extends React.Component {
 	/**
 	 * Scroll listener for main window
 	 */
-	scroll() {
+	scroll(e) {
 
-		var grid = this.refs.grid;
+		var grid = e.target;
 
 		//Check that nothing is loading and that we're at the end of the scroll, 
 		//and that we have a parent bind to load  more posts
-		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight) && this.props.loadPosts){
+		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400) && this.props.loadPosts){
 
 			//Set that we're loading
 			this.setState({ loading : true });
