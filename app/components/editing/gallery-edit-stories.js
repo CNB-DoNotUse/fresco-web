@@ -66,14 +66,13 @@ export default class GalleryEditStories extends React.Component {
 
 			//Checking if what the user entered is in the suggestions
 			for (var i = 0; i < this.state.suggestions.length; i++) {
-				if(this.state.suggestions[i].title == query){
+				if(this.state.suggestions[i].title.toLowerCase() == query.toLowerCase()){ //Conver to lowercase for better check
 					matched = i;
 					break;
 				}
 			}
 
-
-			if(matched > 0){  //If there is a match, add the existing
+			if(matched >= 0){  //If there is a match, add the existing
 				this.addStory(this.state.suggestions[matched]);
 			} else{ //Not a match, add a brand new story
 				this.addStory({
