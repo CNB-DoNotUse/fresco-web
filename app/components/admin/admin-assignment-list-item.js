@@ -35,10 +35,10 @@ export default class AdminAssignmentListItem extends React.Component {
                             src="https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png" />{ /* screen.css got rid of the image style */ }
                     </a>
                 </div>
-                <div className="flexy">
+                <div className="flexy list-item-caption">
                     <p className="md-type-body1">
                         <a href={"/assignment/" + assignment._id} target="_blank">
-                            {assignment.title.substr(0, 80) + (assignment.title.length > 80 ? '...' : '')}
+                            {assignment.title}
                         </a>
                     </p>
                 </div>
