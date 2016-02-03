@@ -59,7 +59,7 @@ export default class OutletLocations extends React.Component {
 			};
 		
 		$.ajax({
-			url: '/scripts/outlet/location/create',
+			url: '/api/outlet/location/create',
 			method: 'post',
 			contentType: 'application/json',
 			data: JSON.stringify(params),
@@ -89,7 +89,7 @@ export default class OutletLocations extends React.Component {
 		var self = this;
 
 		$.ajax({
-			url: '/scripts/outlet/location/remove',
+			url: '/api/outlet/location/remove',
 			method: 'post',
 			data: {
 				id: locationId

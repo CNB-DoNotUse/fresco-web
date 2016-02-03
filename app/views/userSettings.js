@@ -109,16 +109,13 @@ class UserSettings extends React.Component {
  			self = this;
 
  		if(global.isEmptyString(firstname)){
- 			$.snackbar({ content: 'You must have a firstname!' });
- 			return
+ 			return $.snackbar({ content: 'You must have a firstname!' });
  		}
  		else if (global.isEmptyString(lastname)){
- 			$.snackbar({ content: 'You must have a lastname!' });
- 			return
+ 			return $.snackbar({ content: 'You must have a lastname!' });
  		}
  		else if(global.isEmptyString(email)){
- 			$.snackbar({ content: 'You must have an email!' });
- 			return;
+ 			return $.snackbar({ content: 'You must have an email!' });
  		}
 
  		userData.append('id', id);
@@ -130,7 +127,7 @@ class UserSettings extends React.Component {
  		userData.append('avatar', this.refs.avatarFileInput.files[0]);
 
  		$.ajax({
- 			url: "/scripts/user/update",
+ 			url: "/api/user/update",
  			type: 'POST',
  			cache: false,
  			processData: false,
@@ -210,10 +207,10 @@ class UserSettings extends React.Component {
 								defaultValue={user.bio}></textarea>
 							
 							<button 
-								className="btn btn-flat" 
+								className="btn btn-save" 
 								ref="profileSaveBtn" 
 								onClick={this.updateSettings}
-								disabled={true}>SAVE CHANGES</button>
+								>SAVE CHANGES</button>
 						</div>
 					</div>
 
