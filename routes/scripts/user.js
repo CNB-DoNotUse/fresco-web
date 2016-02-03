@@ -162,18 +162,18 @@ router.post('/user/update', (req, res) => {
     if (req.body.avatar) delete req.body.avatar;
 
     API.proxyRaw(req, res, (body) => {
-        var user = body.data;
+      var user = body.data;
 
-    	req.session.user.firstname = user.firstname;
-    	req.session.user.lastname = user.lastname;
-        req.session.user.bio = user.bio;
-    	req.session.user.email = user.email;
-        req.session.user.phone = user.phone;
-    	req.session.user.avatar = user.avatar;
+      req.session.user.firstname = user.firstname;
+      req.session.user.lastname = user.lastname;
+      req.session.user.bio = user.bio;
+      req.session.user.email = user.email;
+      req.session.user.phone = user.phone;
+      req.session.user.avatar = user.avatar;
 
-        req.session.save(() => {
-            res.json({}).end();
-        });
+      req.session.save(() => {
+          res.json({}).end();
+      });
     });
 });
 
