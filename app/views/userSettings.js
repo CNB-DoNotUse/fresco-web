@@ -127,7 +127,7 @@ class UserSettings extends React.Component {
  		userData.append('avatar', this.refs.avatarFileInput.files[0]);
 
  		$.ajax({
- 			url: "/api/user/update",
+ 			url: "/scripts/user/update",
  			type: 'POST',
  			cache: false,
  			processData: false,
