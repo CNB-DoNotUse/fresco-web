@@ -204,7 +204,7 @@ import AdminBody from './../components/admin/admin-body'
 				}
 
 				newState[tab] = stateData;
-				console.log(newState);
+
 				this.setState(newState);
 
 			}

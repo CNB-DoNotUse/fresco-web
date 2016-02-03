@@ -110,7 +110,7 @@ router.post('/user/login', (req, res) => {
 router.get('/user/logout', (req, res) => {
     var end = () => {
         req.session.destroy(() => { 
-            res.redirect('/') 
+            res.redirect('/');
         });
     }
 
@@ -118,12 +118,14 @@ router.get('/user/logout', (req, res) => {
         return end();
     }
 
-    req.url = '/auth/logout';
-    req.method = 'POST';
+    API.request({
+      method: 'POST',
+      url: '/auth/logout',
+      token: req.session.user.token
+    }, () => {
+      end();
+    });
 
-    API.proxyRaw(req, res, null);
-
-    return end();
 });
 
 router.post('/user/register', function(req, res, next) {
