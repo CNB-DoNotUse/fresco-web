@@ -100,7 +100,7 @@ export default class Dropdown extends React.Component {
 							{this.props.dropdownActions}
 						</DropdownButton>
 
-
+						
 		var className = this.props.inList ? 'nav-dropdown pull-right' : 'nav-dropdown';
 
 		if(this.props.dropdownClass)

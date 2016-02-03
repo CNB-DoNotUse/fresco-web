@@ -115,6 +115,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	font-weight: 500;
 }
 .form-group-default {
+
 	display: inline-block;
 	font-weight: 400;
 	input.form-control,
@@ -800,7 +801,6 @@ div.list {
 	}
 }
 
-
 //.
 .navbar {
 	position: absolute;
@@ -809,6 +809,7 @@ div.list {
 	z-index: $z-navbar;
 	box-sizing: border-box;
 	border-bottom: 1px solid $color-black-4;
+
 	.icon-button {
 		margin: 20px 24px;
 		// top: -15px;
@@ -829,6 +830,9 @@ div.list {
 	}
 	> .form-group-default {
 		margin: 18px 0 0 10px;
+	}
+	.location-input{
+		margin: 18px 0 0 25px;
 	}
 	> h1 {
 		display: inline-block;

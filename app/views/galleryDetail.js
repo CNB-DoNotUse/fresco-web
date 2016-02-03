@@ -16,17 +16,18 @@ class GalleryDetail extends React.Component {
 	constructor(props) {
 		super(props);
 
-		var verifiedCount = 0;
+		var unverifiedPosts = false
 
 		// Check if every post in gallery is not verified and show all content
 		for(var p in this.props.gallery.posts) {
-			verifiedCount += parseInt(this.props.gallery.posts[p].approvals, 10);
+			if(this.props.gallery.posts[p].approvals == 0)
+				unverifiedPosts = true;
 		}
 
 		this.state = {
 			galleryEditToggled: false,
 			gallery: this.props.gallery,
-			verifiedToggle: verifiedCount > 0,
+			verifiedToggle: unverifiedPosts,
 			sort: 'capture',
 			title: this.props.title
 		}
@@ -55,7 +56,7 @@ class GalleryDetail extends React.Component {
 		var title = 'Gallery';
 
 		if(gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
-		  title += ' from ' + gallery.posts[0].location.address;
+			title += ' from ' + gallery.posts[0].location.address;
 		}
 
 		this.setState({
@@ -66,6 +67,7 @@ class GalleryDetail extends React.Component {
 	}
 
 	render() {
+
 		return (
 			<App user={this.props.user}>
 				<TopBar 

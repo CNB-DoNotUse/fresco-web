@@ -14,10 +14,11 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 .nav-dropdown{
 	background:#FFF;
 	height:48px;
-	margin:12px 8px 0 0;
+	margin:8px 8px 0 0;
 	cursor:pointer;
 	vertical-align:middle;
 	position:relative;
+	display:inline-block;
 
 	@include border-radius(2px);
 
@@ -36,7 +37,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 
 	.toggle{
-		padding:12px 16px 0;
+		padding:13px 16px 0;
 		height:48px;
 		
 		span{

@@ -97,10 +97,14 @@ export default class TopBar extends React.Component {
 		var edit = '',
 			topbarItems = [],
 			locationInput = '',
-			saveButton = '';
+			saveButton = '',
+			title = '';
+
+		if(this.props.title){
+			title = <h1 className="md-type-title">{this.props.title}</h1>
+		}
 
 		if(this.props.saveButton){
-
 			saveButton = <a 
 							onClick={this.props.updateSettings} 
 							className="mdi mdi-content-save icon pull-right hidden-xs">
@@ -110,7 +114,7 @@ export default class TopBar extends React.Component {
 		}
 
 		if(this.props.locationInput) {
-			locationInput = <div className="form-group-default">
+			locationInput = <div className="form-group-default pull-left location-input">
 								<input 
 									type="text" 
 									ref="autocomplete"
@@ -149,7 +153,6 @@ export default class TopBar extends React.Component {
 		if (this.props.timeToggle) {
 			
 			topbarItems.push(
-			
 				<Dropdown
 					options={['Relative', 'Absolute']}
 					selected='Relative'
@@ -203,7 +206,7 @@ export default class TopBar extends React.Component {
 				
 				<div className="spacer"></div>
 				
-				<h1 className="md-type-title">{this.props.title}</h1>
+				{title}
 				{locationInput}
 				{tabs}
 				{topbarItems}

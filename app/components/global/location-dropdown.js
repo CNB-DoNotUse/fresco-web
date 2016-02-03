@@ -102,6 +102,9 @@ export default class LocationDropdown extends React.Component {
 	
 	render() {
 
+		var dropdownActions = [],
+			dropdownBody;
+
 		var locations = this.state.locations.map((location, i) => {
 
 			var unseenCount = location.unseen_count || 0;
@@ -119,8 +122,6 @@ export default class LocationDropdown extends React.Component {
 
 		});
 
-		var dropdownActions = [];
-
 		if(this.props.addLocationButton){
 			dropdownActions.push(
 				<span className="mdi mdi-playlist-plus" onClick={this.addLocation} key={1}></span>
@@ -136,26 +137,26 @@ export default class LocationDropdown extends React.Component {
 		}
 							
 		if(locations.length == 0){
-
-			var dropdownBody = <div className="dropdown-body">
-							   		<h3 className="empty-title">There are currently no saved locations for your outlet!</h3>
-							   	</div>
+			dropdownBody = <div className="dropdown-body">
+						   		<h3 className="empty-title">There are currently no saved locations for your outlet!</h3>
+						   	</div>
 			
 		} else{
-			var dropdownBody = <div className="dropdown-body">
-									<ul className="list">
-										{locations}
-									</ul>
-								</div>
+			dropdownBody = <div className="dropdown-body">
+								<ul className="list">
+									{locations}
+								</ul>
+							</div>
 		}
 
 		return (
 			<Dropdown 
-				inList={true} 
+				inList={false} 
 				title={"SAVED"} 
+				float={false}
 				dropdownClass={"location-dropdown"} 
 				dropdownActions={dropdownActions}>
-				{dropdownBody}
+					{dropdownBody}
 			</Dropdown>
 		);
 					

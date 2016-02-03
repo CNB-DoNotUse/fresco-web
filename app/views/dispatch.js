@@ -262,7 +262,6 @@ class Dispatch extends React.Component {
 		return (
 			<App user={this.props.user}>
 				<TopBar 
-					title={this.props.title}
 					locationInput={true}
 					updateMapPlace={this.updateMapPlace} >
 

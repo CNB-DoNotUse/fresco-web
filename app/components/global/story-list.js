@@ -89,8 +89,8 @@ export default class StoryList extends React.Component {
 	        		key={i} />
 	        		
 	      	)
-
-  		})
+                             
+  		});
 
 		return (
 
