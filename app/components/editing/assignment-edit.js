@@ -114,7 +114,6 @@ export default class AssignmentEdit extends React.Component {
 		}
 
 		$.post('/api/assignment/update', params, (response) => {
-			console.log(response);
 		   if(response.err) {
 		       $.snackbar({
 		           content: 'Could not save assignment!'
@@ -204,19 +203,7 @@ export default class AssignmentEdit extends React.Component {
 
 								<AssignmentEditOutlet 
 									outlet={this.state.outlet}
-									updateOutlet={this.updateOutlet}
-									/>
-
-								<div className="dialog-row">
-									<input
-										type="text"
-										className="form-control floating-label"
-										placeholder="Outlet"
-										title="Outlet"
-										ref="outlet"
-										defaultValue={this.props.assignment.outlet.title}
-										data-outletid={this.props.assignment.outlet._id} />
-								</div>
+									updateOutlet={this.updateOutlet} />
 							</div>
 							<div className="dialog-col col-xs-12 col-md-5">
 								<div className="dialog-row map-group">

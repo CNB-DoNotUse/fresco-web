@@ -133,7 +133,6 @@ class Dispatch extends React.Component {
 			data: params,
 			dataType: 'json',
 			success: (response, status, xhr) => {
-				console.log(response);
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
 					callback([]);
@@ -260,8 +259,6 @@ class Dispatch extends React.Component {
 
 		}
 
-		console.log(this.props.outlet);
-		
 		return (
 			<App user={this.props.user}>
 				<TopBar 
