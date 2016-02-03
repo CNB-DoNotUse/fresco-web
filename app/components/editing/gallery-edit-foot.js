@@ -34,6 +34,7 @@ export default class GalleryEditFoot extends React.Component {
 		gallery.articles = [];
 		gallery.location = {};
 		gallery.files = [];
+		gallery.assignment = null;
 
 		this.props.updateGallery(gallery);
 
