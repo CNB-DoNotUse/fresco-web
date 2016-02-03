@@ -50,7 +50,8 @@ export default class AdminGalleryListItem extends React.Component {
             </div>
 
         return (
-            <div className={"list-item" + (this.props.active ? ' active' : '')} onClick={this.props.setActiveGallery.bind(null, gallery._id, this.props.type)}>
+            <div className={"list-item" + (this.props.active ? ' active' : '')} 
+                    onClick={this.props.setActiveGallery.bind(null, gallery._id, this.props.type)}>
                 <div>
                     <a href={"/gallery/" + gallery._id} target="_blank">
                         <img

@@ -39,9 +39,9 @@ export default class PostInfo extends React.Component {
 		//Check to show user icon
 		if(this.props.post.owner){
 			userIcon = <div>
-						<img 
-							className="img-circle img-responsive" 
-							src={post.owner && post.owner.avatar ? post.owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'} />
+							<img 
+								className="img-circle img-responsive" 
+								src={post.owner && post.owner.avatar ? post.owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'} />
 						</div>
 		}
 
@@ -69,7 +69,9 @@ export default class PostInfo extends React.Component {
 						<div className="meta-user">
 							{userIcon}
 							<div>
-								<span className="md-type-title">{userName}</span>
+								<a href={"/user/" + post.owner._id}>
+									<span className="md-type-title">{userName}</span>
+								</a>
 								<span className="md-type-body1">{this.props.post.affiliation}</span>
 							</div>
 						</div>
