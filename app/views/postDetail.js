@@ -63,14 +63,18 @@ class PostDetail extends React.Component {
  								post={this.props.post} 
  								user={this.props.user}
  								purchases={this.props.purchases} />
+ 							
  							<PostInfo 
  								post={this.props.post}
  								gallery={this.state.gallery}
  								verifier={this.props.verifier} />
  						</div>
  					</div>
- 					<PostRelated gallery={this.state.gallery} />
+
+ 					<PostRelated 
+ 						gallery={this.state.gallery} />
  				</div>
+
  				<GalleryEdit 
  					gallery={this.state.gallery} 
  					toggled={this.state.toggled}
