@@ -3,7 +3,7 @@ import global from '../../../lib/global'
 
 /** //
 
-Description : Component for bulk selecting posts 
+Description : Component for bulk selecting posts
 
 // **/
 
@@ -33,16 +33,16 @@ export default class GalleryEditBulk extends React.Component {
  		return (
  			<div className={'well hover bulk ' + toggled} id="bulk-edit">
  				<div id="bulk-thumbs" className="thumbs">{thumbnails}</div>
- 				
+
  				<div className="row md-type-button">
- 					<button onClick={this.clear} type="button" className="btn btn-flat">Clear selection 
+ 					<button onClick={this.clear} type="button" className="btn btn-flat">Clear selection
  						<span id="post-count"> ({count}) </span>
  					</button>
- 					
+
  					{/*<button onClick={this.purchase} type="button" className="btn btn-flat pull-right">Purchase</button>*/}
- 					
- 					{/*<button onClick={this.edit} type="button" className="btn btn-flat pull-right toggle-edit toggler">Edit</button>*/}
- 					
+
+ 					<button onClick={this.edit} type="button" className="btn btn-flat pull-right toggle-edit toggler">Edit</button>
+
  					<button onClick={this.createGallery} type="button" className="btn btn-flat pull-right toggle-gcreate toggler">Create gallery</button>
  				</div>
  			</div>
@@ -55,6 +55,10 @@ export default class GalleryEditBulk extends React.Component {
 
  	}
 
+	edit() {
+		$('.toggle-bedit').toggleClass('toggled');
+	}
+
  	clear() {
 
  		this.props.setSelectedPosts([]);
@@ -63,6 +67,6 @@ export default class GalleryEditBulk extends React.Component {
 
 }
 
-GalleryEditBulk.defaultProps = { 
+GalleryEditBulk.defaultProps = {
 	posts: []
 }
