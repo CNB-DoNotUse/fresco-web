@@ -81,6 +81,10 @@ router.post('/user/login', (req, res) => {
     }
     API.request(options, (login_body) => {
       
+      if(!login_body.data) {
+        return res.send({err: 'Login API Error'});
+      }
+
       req.session.token = login_body.data.token;
 
       req.session.user = login_body.data.user;

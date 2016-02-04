@@ -1,4 +1,5 @@
 import React from 'react'
+import global from '../../../lib/global'
 
 export default class OutletPaymentInfo extends React.Component {
 
@@ -50,14 +51,17 @@ export default class OutletPaymentInfo extends React.Component {
 				data: {
 					stripe_token: response.id
 				},
-				success: (result, status, xhr) => {
-					if (result.err)
-						return self.error(null, null, result.err);
+				success: function(result, status, xhr) {
+					saveBtn.removeAttribute('disabled');
 
-					window.location.reload();
+					if (result.err) {
+						return this.error(null, null, result.err);
+					}
+
+					$.snackbar({content: 'Payment information updated!'});
 				},
 				error: (xhr, status, error) => {
-					$.snackbar({content:resolveError(error)});
+					$.snackbar({content: global.resolveError(error)});
 				}
 
 			});

@@ -842,7 +842,8 @@ div.list {
 		text-overflow: ellipsis;
 	}
 	> .icon {
-		margin: 20px 12px;
+		margin: 10px;
+		padding: 10px;
 	}
 	> .dim {
 		z-index: $z-dim;

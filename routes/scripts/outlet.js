@@ -273,14 +273,20 @@ router.post('/outlet/invite/accept', function(req, res, next) {
 });
 
 router.post('/outlet/update', (req, res) => {
+
   if (!checkOutlet(req, res)) return;
+
+  var end = (err) => { res.json(err ? err : {}).end(); };
 
   req.body.id = req.session.user.outlet._id;
 
   API.proxyRaw(req, res, (body) => {
+
+    if(body.err) { return end({err: body.err}); }
+
     req.session.user.outlet = body.data;
     req.session.save(function(){
-      res.json({}).end();
+      end();
     });
   });
 });
