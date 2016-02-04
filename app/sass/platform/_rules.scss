@@ -736,7 +736,7 @@ div.list {
 					line-height: 22px;
 					padding:8px 20px;
 					text-decoration:none;
-					font-weight:inherit;
+					font-weight: 500;
 				    color: rgb(0, 0, 0);
 					color: rgba(0, 0, 0, 0.87);
 					span {
@@ -748,7 +748,6 @@ div.list {
 				background-color: $color-shade-2;
 			}
 			li.active {
-				font-weight: 500;
 				a > span {
 					color: $color-accent-primary;
 				}

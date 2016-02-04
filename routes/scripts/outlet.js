@@ -301,7 +301,6 @@ router.post('/outlet/update', (req, res) => {
  * @return {boolean}      True if everything is kosher, false if not
  */
 function checkOutlet(req, res) {
-  console.log(req.session.user);
   if (!req.session.user || !req.session.user.outlet) {
     res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
     return false;

@@ -199,6 +199,11 @@ export default class GalleryEdit extends React.Component {
  			assignment = gallery.assignment ? gallery.assignment._id : undefined, 
  			bylineExists = document.getElementById('byline-edit') !== null;
 
+ 		// If assignment was removed, send -1 instead of undefined.
+ 		if(this.props.gallery.assignment && this.props.gallery.assignment._id && !assignment) {
+ 			assignment = -1;
+ 		}
+
  		//Generate post ids for update
  		var posts = _.difference(this.state.posts, this.state.deletePosts);
 
