@@ -196,7 +196,9 @@ var processLogin = function() {
 		password = document.getElementById('login-password').value;
 
 	if(!/\S/.test(email) || !/\S/.test(password)){
+		
 		loginProcessing = false;
+
 		return $.snackbar({ content: 'Please enter in all fields!' });
 	}
 
