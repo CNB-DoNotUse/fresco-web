@@ -264,9 +264,7 @@ export default class PostList extends React.Component {
 					setSelectedPosts={this.setSelectedPosts}
 					posts={this.state.selectedPosts} />
 
-				<BulkEdit
-					posts={this.state.selectedPosts}
-					setSelectedPosts={this.setSelectedPosts} />
+				
 			</div>
 		)
 	}

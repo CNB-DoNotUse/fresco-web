@@ -1,4 +1,5 @@
 import React from 'react'
+import BulkEdit from './bulk-edit'
 import global from '../../../lib/global'
 
 /** //
@@ -16,6 +17,7 @@ export default class GalleryEditBulk extends React.Component {
 	constructor(props) {
 		super(props);
 		this.clear = this.clear.bind(this);
+		this.edit = this.edit.bind(this);
 		this.createGallery = this.createGallery.bind(this);
 	}
 
@@ -45,6 +47,11 @@ export default class GalleryEditBulk extends React.Component {
 
  					<button onClick={this.createGallery} type="button" className="btn btn-flat pull-right toggle-gcreate toggler">Create gallery</button>
  				</div>
+
+				<BulkEdit
+					ref='bulkedit'
+					posts={this.props.posts}
+					setSelectedPosts={this.props.setSelectedPosts} />
  			</div>
  		);
  	}
@@ -56,7 +63,8 @@ export default class GalleryEditBulk extends React.Component {
  	}
 
 	edit() {
-		$('.toggle-bedit').toggleClass('toggled');
+		this.refs.bulkedit.show();
+
 	}
 
  	clear() {
