@@ -19,7 +19,7 @@ export default class GalleryCell extends React.Component {
 			timeString = global.formatTime(this.props.gallery.time_created),
 			size = this.props.half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6',
 			location = 'No Location',
-			stories = this.props.gallery.related_stories,
+			stories = this.props.gallery.related_stories.slice(0, 2),
 			galleryCellStories = stories.length > 0 ? <GalleryCellStories stories={stories} /> : '';
 
 		for (var i = 0; i < this.props.gallery.posts.length; i++) {
@@ -48,6 +48,7 @@ export default class GalleryCell extends React.Component {
 				<div className="tile-foot">
 					<div className="hover">
 						<a href={"/gallery/" + this.props.gallery._id} className="md-type-body2">See all</a>
+						<GalleryCellStats stats={this.props.gallery.stats} />
 					</div>
 					
 					<div>
@@ -170,4 +171,12 @@ class GalleryCellImages extends React.Component {
 		}
 	}
 
+}
+
+class GalleryCellStats extends React.Component {
+	render() {
+
+		var stats = this.props.stats;
+		return <span className="right-info">{stats.photos} Photo{stats.photos == 1 ? '' : 's'}, {stats.videos} Video{stats.videos == 1 ? '' : 's'}</span>;
+	}
 }

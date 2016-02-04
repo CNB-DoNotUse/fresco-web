@@ -20,6 +20,15 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 }
 
 /*
+	Card Overrides
+*/
+.card {
+	.header {
+		padding: 14px 16px;
+	}
+}
+
+/*
 	Payment Card
  */
 
@@ -27,6 +36,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	height:228px;
 
 	.header{
+
+		text-transform: uppercase;
 
 		div{
 			float:right;
@@ -46,7 +57,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	.card-form{
 
 		.inputs{
-			padding:12px 18px;
+			padding: 12px 18px 8px 18px;
 			overflow:auto;
 			margin:0 auto 10px;
 	
@@ -67,7 +78,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				}
 
 				padding-right:18px;
-				width:330px;
+				width:342px;
 			}
 
 			.right{

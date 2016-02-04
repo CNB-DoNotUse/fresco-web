@@ -83,7 +83,7 @@ export default class OutletPaymentInfo extends React.Component {
 
 		if(card) {
 			if(card.brand && card.last4 != null) { 
-				card = 'USING ' + card.brand + ' - ' + card.last4;
+				card = 'USING ' + card.brand + '-' + card.last4;
 				currentCardText = <span className="last4">{card}</span>
 			}	
 		}

@@ -27,8 +27,20 @@ body > div.wrapper > div > .container-fluid {
 	}
 }
 
-.alertify .alert, .alertify .dialog {
-	background: transparent;
+.alertify {
+	.dialog, .alert {
+		background: transparent;
+	}
+
+	> .dialog > div {
+		border-radius: 2px;
+	}
+
+	button {
+		border: 0 !important;
+		font-weight: 500;
+	}
+
 }
 
 .ie .page {
@@ -83,6 +95,10 @@ div.settings > div.form-group-default > button.btn.btn-twitter {
 div.settings > div.form-group-default > button.btn.btn-facebook {
 	color: #fff;
 	background-color: #3b5998;
+}
+
+.checkbox .check, .checkbox .check:before {
+	color: rgba(0, 0, 0, 0.54);
 }
 
 .checkbox input[type=checkbox]:checked~.check:before, .checkbox input[type=checkbox]:checked~.check{
@@ -963,6 +979,13 @@ div.list {
 			position: relative;
 			padding: 2px;
 
+			.right-info {
+				position: absolute;
+				font-size: 12px;
+				color: rgba(0, 0, 0, 54);
+				right: 0px;
+			}
+
 			.hover {
 				position: absolute;
 				overflow-y:hidden;
@@ -976,6 +999,8 @@ div.list {
 			}
 			.tile-body {
 				position: relative;
+				border: 1px solid $color-black-4;
+
 				> .frame {
 					position: absolute;
 					width: 100%;
@@ -994,6 +1019,7 @@ div.list {
 					color: $color-white-1;
 					> a {
 						color:#FFF;
+						margin-bottom: 8px;
 					}
 					p {
 						@include flex(1);
@@ -1083,9 +1109,12 @@ div.list {
 			> .tile-foot {
 				position: relative;
 				height: 64px;
-				border: 1px solid $color-black-4;
 				background-color: $color-shade-0;
+				border: 1px solid $color-black-4;
+				border-top: 0;
+				
 				> .hover {
+
 					background-color: $color-shade-0;
 					> a {
 						margin: 0 12px;
@@ -1129,7 +1158,6 @@ div.list {
 			}
 			> .tile-foot {
 				background-color: $color-accent-faded;
-				border: 1px solid $color-accent-light;
 				> .hover {
 					background-color: $color-accent-faded;
 				}
