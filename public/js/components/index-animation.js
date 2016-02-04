@@ -35,13 +35,17 @@ var animation = {
 				field.style.color = 'black';
 				//Set the dropdown dataset
 				dropdown.dataset.option = option.innerHTML;
-				//Hide the list
-				list.style.display = 'none';
 			},
 			selectorClicked = function(e) {
 				//Toggle the list
 				var dropdown = e.target.parentElement,
 					list = dropdown.children[1];
+
+				for (var i = 0; i < dropdowns.length; i++) {
+					//Hide all the lists
+					if(dropdowns[i].children[1] !== list)
+						dropdowns[i].children[1].style.display = 'none';
+				}
 
 				if(list.style.display == 'block')
 					list.style.display = 'none';
