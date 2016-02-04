@@ -184,7 +184,7 @@ var processLogin = function() {
 		password = document.getElementById('login-password').value;
 
 	if(!/\S/.test(email) || !/\S/.test(password)){
-		$.snackbar({ content: 'Please enter in all fields!' });
+		return $.snackbar({ content: 'Please enter in all fields!' });
 	}
 
 	$.ajax({
