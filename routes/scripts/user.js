@@ -80,14 +80,18 @@ router.post('/user/login', (req, res) => {
       res
     }
     API.request(options, (login_body) => {
-      
-      req.session.token = login_body.data.token;
+      if(!login_body) {
+            return res.json({
+                "err" : "ERR_LOGIN"
+            }).end();
+      }
 
+      req.session.token = login_body.data.token;
       req.session.user = login_body.data.user;
       req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
 
       if (!req.session.user.outlet) {
-        return  req.session.save(function(){
+        return req.session.save(function(){
           res.json({err: null, data: login_body.data.user}).end();
         });
       }
