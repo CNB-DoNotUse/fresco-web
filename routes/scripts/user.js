@@ -1,10 +1,10 @@
-var express = require('express'),
+var express     = require('express'),
     requestJson = require('request-json'),
-    validator = require('validator'),
-    config = require('../../lib/config'),
-    User = require('../../lib/user'),
-    API = require('../../lib/api'),
-    router = express.Router();
+    validator   = require('validator'),
+    config      = require('../../lib/config'),
+    User        = require('../../lib/user'),
+    API         = require('../../lib/api'),
+    router      = express.Router();
 
 //---------------------------vvv-USER-ENDPOINTS-vvv---------------------------//
 
@@ -13,7 +13,7 @@ var express = require('express'),
  * Takes an email in the body
  */
 
-router.post('/user/reset', function(req, res, next) {
+router.post('/user/reset', (req, res, next) => {
 
     var request  = require('superagent'),
         email = req.body.email;
@@ -46,9 +46,7 @@ router.post('/user/reset', function(req, res, next) {
        return res.json({
            err: response.body.error
        });
-
     });
-
 });
 
 router.post('/user/login', (req, res) => {
@@ -130,55 +128,72 @@ router.get('/user/logout', (req, res) => {
     }, () => {
       end();
     });
-
 });
 
-router.post('/user/register', function(req, res, next) {
-  var userData = {
-    password: req.body.password,
-    email: req.body.email,
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    phone: req.body.phone,
-    token: req.body.token
-  };
+router.post('/user/register', (req, res, next) => {
+    var userData = {
+        password: req.body.password,
+        email: req.body.email,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        phone: req.body.phone,
+        token: req.body.token
+    };
 
-  if(!validator.isEmail(userData.email)){
-    return res.json({
-      err: 'ERR_INVALID_EMAIL'
+    if(!validator.isEmail(userData.email)){
+        return res.json({
+          err: 'ERR_INVALID_EMAIL'
+        });
+    }
+
+    User.registerUser(userData, (err, user_body, login_body) => {
+        if (err)
+            return res.json({err: err, data: {}}).end();
+
+        req.session.token = login_body.data.token;
+        req.session.user = user_body.data;
+        req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
+        req.session.save(() => {
+            res.json(login_body).end();
+        });
     });
-  }
+});
 
-  User.registerUser(userData, function(err, user_body, login_body){
-    if (err)
-      return res.json({err: err, data: {}}).end();
+router.get('/user/refresh', (req, res, next) => {
 
-    req.session.token = login_body.data.token;
-    req.session.user = user_body.data;
-    req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
-    req.session.save(function(){
-      res.json(login_body).end();
+    User.refresh(req, res, (err) => {
+        if(err)
+            return res.json({
+                err: 'ERR_REFRESH_FAIL',
+                data: null
+            });     
+        else
+            return res.json({
+                data: req.session.user,
+                err: null
+            });
     });
-  });
 });
 
 router.post('/user/update', (req, res) => {
     // When no picture is uploaded, avatar gets set, which confuses the API
-    if (req.body.avatar) delete req.body.avatar;
+    if (req.body.avatar) 
+        delete req.body.avatar;
 
     API.proxyRaw(req, res, (body) => {
-      var user = body.data;
+        var user = body.data;
 
-      req.session.user.firstname = user.firstname;
-      req.session.user.lastname = user.lastname;
-      req.session.user.bio = user.bio;
-      req.session.user.email = user.email;
-      req.session.user.phone = user.phone;
-      req.session.user.avatar = user.avatar;
+        //Update all fields
+        req.session.user.firstname = user.firstname;
+        req.session.user.lastname = user.lastname;
+        req.session.user.bio = user.bio;
+        req.session.user.email = user.email;
+        req.session.user.phone = user.phone;
+        req.session.user.avatar = user.avatar;
 
-      req.session.save(() => {
-          res.json({}).end();
-      });
+        req.session.save(() => {
+            res.json({}).end();
+        });
     });
 });
 

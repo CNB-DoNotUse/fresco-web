@@ -3,6 +3,7 @@ var config        = require('./lib/config'),
     global        = require('./lib/global'),
     routes        = require('./lib/routes'),
     API           = require('./lib/api'),
+    User          = require('./lib/user'),
     express       = require('express'),
     compression   = require('compression'),
     path          = require('path'),
@@ -17,8 +18,6 @@ var config        = require('./lib/config'),
     fs            = require('fs'),
     http	        = require('http'),
     https         = require('https'),
-    requestJson   = require('request-json'),
-    request       = require('superagent');
     app           = express();
 
 // If in dev mode, use local redis server as session store
@@ -88,15 +87,16 @@ app.use((req, res, next)=> {
   }
 
   if (req.session && req.session.alerts){
-    req.alerts = req.alerts.concat(req.session.alerts);
-    req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
-    delete req.session.alerts;
-    return req.session.save(()=> {
-      next();
-    });
+      req.alerts = req.alerts.concat(req.session.alerts);
+      req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
+      delete req.session.alerts;
+      return req.session.save(()=> {
+          next();
+      });
   }
 
   req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
+  
   next();
 });
 
@@ -114,10 +114,7 @@ app.locals.alerts = [];
 
 app.use((req, res, next) => {
     var path = req.path.slice(1).split('/')[0],
-        err = new Error('Page not found!'),
-        now = Date.now(),
-        api = requestJson.createClient(config.API_URL);
-        err.status = 404;
+        now = Date.now();
 
     //Check if not a platform route, then send onwwards
     if(routes.platform.indexOf(path) == -1) {
@@ -134,48 +131,9 @@ app.use((req, res, next) => {
         return next();
     }
 
-    //Send request for user profile
-    api.get('/v1/user/profile?id=' + req.session.user._id, (err, response, body) => {
+    console.log('User Refreshing called in APP.JS');
 
-        //Check request
-        if (err || !body) return next(err);
-
-        //Check for error on api payload
-        if (body.err || body.error || !body.data._id) {
-
-            delete req.session.user;
-
-            return req.session.save(() => {
-                res.redirect('/');
-            });
-        }
-
-        //Configure new session config for user
-        var token = req.session.user && req.session.token ? req.session.token : null;
-
-        req.session.token = token;
-        
-        req.session.user = body.data;
-        req.session.user.TTL = now + config.SESSION_REFRESH_MS;
-
-        //Check if the user has an outlet, otherwise save session and move onward
-        if (!req.session.user.outlet) {
-            return req.session.save(() => {
-                return next();
-            });
-        }
-
-        //Grab purchases because user does have an outlet, then move onward
-        api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, (err, response, body) => {
-
-            if (!err && body && !body.err)
-                req.session.user.outlet.purchases = body.data;
-
-            req.session.save(() => {
-                return next();
-            });
-        });
-    });
+    User.refresh(req, res, next);
 });
 
 /**
@@ -264,21 +222,27 @@ app.use('/api', API.proxy);
  * Error Midleware
  */
 
-app.use((err, req, res, next) => {
+app.use((error, req, res, next) => {
+    var err = {};
+    err.status = typeof(error.status) === 'undefined' ? 500 : err.status;
+
     // Development error handle will print stacktrace
-    if (app.get('env') === 'development') {
+    if (config.DEV) {
         console.log('Method:', req.method,
-                  '\nPath:', req.path,
-                  '\nBody', req.body,
-                  '\nError: ', err + '\n');
+                    '\nPath:', req.path,
+                    '\nBody', req.body,
+                    '\nError: ', error.message + '\n');
+
+        err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
+    } else {
+        err.message = err.message;
     }
 
+    //Respond with code
+    res.status(err.status);
+
     res.render('error', {
-        user: req.session && req.session.user ? req.session.user : null,
-        err: {
-            message: err.message || config.ERR_PAGE_MESSAGES[err.status || 500],
-            code: err.status || 500
-        },
+        err: err,
         section: 'public',
         page: 'error'
     });
@@ -289,7 +253,6 @@ app.use((err, req, res, next) => {
  */
 
  app.use((req, res, next) => {
-
     //Respond with code
     res.status(404);
 

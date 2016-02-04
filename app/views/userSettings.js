@@ -52,7 +52,7 @@ class UserSettings extends React.Component {
 			}
 		}
 
-		if(newEmail || (newPhone && this.refs.phone.value != '')) {
+		if(newEmail || newPhone) {
 			if(accountSaveBtn.className.indexOf(' changed ') == -1) {
 				accountSaveBtn.className += ' changed ';
 				accountSaveBtn.disabled = false;
@@ -222,12 +222,14 @@ class UserSettings extends React.Component {
 							<div className="card-form">
 								<input 
 									type="text" 
-									ref="email" placeholder="Email address" 
+									ref="email" 
+									placeholder="Email address" 
 									defaultValue={user.email} />
 
 								<input 
 									type="text" 
 									ref="phone" 
+									maxLength={15}
 									placeholder="Phone number" 
 									defaultValue={user.phone} />
 			

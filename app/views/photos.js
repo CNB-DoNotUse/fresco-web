@@ -101,9 +101,6 @@ class Photos extends React.Component {
 
 }
 
-Photos.defaultProps = {
-	purchases : []
-}
 
 ReactDOM.render(
  	<Photos 

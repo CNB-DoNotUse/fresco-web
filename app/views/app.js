@@ -9,25 +9,13 @@ import global from '../../lib/global'
 export default class App extends React.Component {
 
 	componentDidMount() {
-
 		$.material.init();
-		this.state = {
-			verifiedToggle: true,
-			sort: 'capture'
-		}
 
-	}
 
-	onVerifiedToggled(toggled) {
-		this.setState({
-			verifiedToggle: toggled
-		});
-	}
+		setTimeout(()=> {
 
-	updateSort(sort) {
-		this.setState({
-			sort: sort
-		});
+		}, 30000)
+
 	}
 
 	render() {
@@ -36,12 +24,14 @@ export default class App extends React.Component {
 			<div>
 				<div className="container-fluid">
 					<Sidebar user={this.props.user} />
+
 					<div className="col-md-12 col-lg-10">
 						{this.props.children}
 					</div>
 				</div>
 			</div>
 		);
-
 	}
+
+
 }

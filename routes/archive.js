@@ -39,7 +39,6 @@ router.get('/', (req, res, next) => {
  */
 
 router.get('/galleries', (req, res, next) => {
-
   var title = 'Galleries',
       props = {
         user : req.session.user,
@@ -62,7 +61,6 @@ router.get('/galleries', (req, res, next) => {
  */
 
 router.get('/stories', (req, res, next) => {
-
   var title = 'Stories',
       props = {
         user : req.session.user
@@ -84,7 +82,6 @@ router.get('/stories', (req, res, next) => {
  */
 
 router.get('/:filter', (req, res, next) => {
-
   var filters = ['photos', 'videos'];
 
   // Check if filter is valid

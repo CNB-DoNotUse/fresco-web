@@ -3,18 +3,17 @@ var express = require('express'),
     request = require('request'),
     config = require('../../lib/config'),
     async = require('async'),
-    Request = require('request'),
     querystring = require('querystring'),
     validator = require('validator'),
     fs = require('fs'),
     xlsx = require('node-xlsx'),
     User = require('../../lib/user'),
     API = require('../../lib/api'),
-
     router = express.Router();
 
 //---------------------------vvv-OUTLET-ENDPOINTS-vvv---------------------------//
 router.post('/outlet/checkout', (req, res) => {
+
   if (!checkOutlet(req, res)) 
     return;
 

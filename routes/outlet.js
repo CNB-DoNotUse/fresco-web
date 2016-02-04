@@ -18,49 +18,48 @@ var express     = require('express'),
 
  router.get('/', (req, res, next) => {
 
-  //Check if we're logged n
-  if (!req.session || !req.session.user || !req.session.user.outlet)
+  //Check if the user has an outlet
+  if (!req.session.user.outlet)
     return res.redirect(config.DASH_HOME);
 
   //Retrieve outlet object from api
   client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
 
-  function doWithOutletInfo(error, response, body) {
+    function doWithOutletInfo(error, response, body) {
+        if (error || !body || body.err){
+            var error = new Error(config.ERR_PAGE_MESSAGES[404]);
+            error.status = 404;
 
-    if (error || !body || body.err){
-        var error = new Error(config.ERR_PAGE_MESSAGES[404]);
-        error.status = 404;
+            return next(error);
+        }
 
-        return next(error);
-    }
+        var purchases = null;
 
-    var purchases = null;
+        if (req.session.user.outlet.verified) {
+          
+          purchases = config.mapPurchases();
 
-    if (req.session.user.outlet.verified) {
-      
-      purchases = config.mapPurchases();
+        } else {
+          req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?
+            'This outlet is in demo mode. We’ll be in touch shortly to verify your account.' :
+            'This outlet is in demo mode. Purchases and downloads are currently disabled.');
+        }
 
-    } else {
-      req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?
-        'This outlet is in demo mode. We’ll be in touch shortly to verify your account.' :
-        'This outlet is in demo mode. Purchases and downloads are currently disabled.');
-    }
+        var title = 'Outlet',
+            props = {
+              title: title,
+              user: req.session.user,
+              outlet: body.data,
+              purchases: purchases
+            };
 
-    var title = 'Outlet',
-        props = {
+        res.render('app', {
           title: title,
-          user: req.session.user,
-          outlet: body.data,
-          purchases: purchases
-        };
-
-    res.render('app', {
-      title: title,
-      alerts: req.alerts,
-      props: JSON.stringify(props),
-      page: 'outlet'
-    });
-  }
+          alerts: req.alerts,
+          props: JSON.stringify(props),
+          page: 'outlet'
+        });
+    }
 });
 
 // /**
