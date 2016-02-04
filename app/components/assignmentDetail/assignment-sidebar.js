@@ -88,7 +88,7 @@ class AssignmentStats extends React.Component {
 					</li>
 					<li>
 						<span className="mdi mdi-movie icon"></span>
-						<span>{stats.photos + ' video' + (global.isPlural(stats.photos) ? 's' : '')}</span>
+						<span>{stats.videos + ' video' + (global.isPlural(stats.videos) ? 's' : '')}</span>
 					</li>
 				</ul>
 			</div>

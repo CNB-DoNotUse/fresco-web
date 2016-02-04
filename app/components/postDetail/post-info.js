@@ -13,7 +13,7 @@ Description : Column on the right of the detail post showing all the post's info
  */
 
 export default class PostInfo extends React.Component {
-
+	
 	render() {
 
 		//Init needed vars to make list
@@ -72,6 +72,7 @@ export default class PostInfo extends React.Component {
 								<a href={ post.owner ? "/user/" + post.owner._id : ""}>
 									<span className="md-type-title">{userName}</span>
 								</a>
+								
 								<span className="md-type-body1">{this.props.post.affiliation}</span>
 							</div>
 						</div>
@@ -83,15 +84,19 @@ export default class PostInfo extends React.Component {
 								<span className="mdi mdi-clock icon"></span>
 								{timeString}
 							</li>
+							
 							<li>
 								<span className="mdi mdi-map-marker icon"></span>
 								{post.location ? post.location.address ? post.location.address : 'No Location' : 'No Location'}
 							</li>
+							
 							{twitter}
+							
 							<li>
 								<span className={this.props.verifier.length ? "mdi icon verified mdi-checkbox-marked-circle" : "mdi mdi-alert-circle icon"}></span>
 								{verifiedBy}
 							</li>
+
 							{curator}
 						</ul>
 					</div>

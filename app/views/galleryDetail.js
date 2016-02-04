@@ -27,6 +27,7 @@ class GalleryDetail extends React.Component {
 		this.state = {
 			galleryEditToggled: false,
 			gallery: this.props.gallery,
+			shouldShowVerifeidToggle: unverifiedPosts,
 			verifiedToggle: unverifiedPosts,
 			sort: 'capture',
 			title: this.props.title
@@ -74,7 +75,7 @@ class GalleryDetail extends React.Component {
 					title={this.state.title}
 					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
 					edit={this.toggleGalleryEdit}
-					verifiedToggle={this.state.verifiedToggle}
+					verifiedToggle={this.state.shouldShowVerifeidToggle}
 					onVerifiedToggled={this.onVerifiedToggled}
 					timeToggle={true}
 					chronToggle={true} />

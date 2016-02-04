@@ -20,6 +20,7 @@ export default class PostList extends React.Component {
 
 	constructor(props) {
 		super(props);
+
 		this.state = {
 			offset: 0,
 			purchases: this.props.purchases,
@@ -30,6 +31,7 @@ export default class PostList extends React.Component {
 			gallery: null,
 			galleryEditToggled: false
 		}
+
 		this.togglePost 		= this.togglePost.bind(this);
 		this.setSelectedPosts 	= this.setSelectedPosts.bind(this);
 		this.scroll 			= this.scroll.bind(this);
@@ -257,7 +259,9 @@ export default class PostList extends React.Component {
 					toggled={this.state.galleryEditToggled}
 					toggle={this.toggle} />
 				
-				<GalleryCreate posts={this.state.selectedPosts} />
+				<GalleryCreate 
+					setSelectedPosts={this.setSelectedPosts}
+					posts={this.state.selectedPosts} />
 			</div>
 		)		
 	}

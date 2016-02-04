@@ -25,7 +25,7 @@ export default class AssignmentEditStats extends React.Component {
 						</div>
 						<div>
 							<span className="md-type-title">{assignment.title}</span>
-							<span id="assignment-edit-owner" className="md-type-body1">Posted by Fresco News</span>
+							<span id="assignment-edit-owner" className="md-type-body1">Posted by {assignment.outlet.title}</span>
 						</div>
 					</div>
 					<div className="meta-description">{assignment.caption}</div>

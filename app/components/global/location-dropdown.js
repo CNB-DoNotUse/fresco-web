@@ -122,12 +122,6 @@ export default class LocationDropdown extends React.Component {
 
 		});
 
-		if(this.props.addLocationButton){
-			dropdownActions.push(
-				<span className="mdi mdi-playlist-plus" onClick={this.addLocation} key={1}></span>
-			);
-		} 
-
 		if(this.props.outlet.owner === this.props.user._id){
 			dropdownActions.push(
 				<a href="/outlet/settings" key={2}>
@@ -135,23 +129,25 @@ export default class LocationDropdown extends React.Component {
 				</a>
 			);
 		}
+
+		if(this.props.addLocationButton){
+			dropdownActions.push(
+				<span className="mdi mdi-playlist-plus" onClick={this.addLocation} key={1}></span>
+			);
+		} 
 							
 		if(locations.length == 0){
-			dropdownBody = <div className="dropdown-body">
-						   		<h3 className="empty-title">There are currently no saved locations for your outlet!</h3>
-						   	</div>
+			dropdownBody = <div className="dropdown-body"></div>
 			
 		} else{
-			dropdownBody = <div className="dropdown-body">
-								<ul className="list">
-									{locations}
-								</ul>
-							</div>
+			dropdownBody = <ul className="list">
+								{locations}
+							</ul>
 		}
 
 		return (
 			<Dropdown 
-				inList={false} 
+				inList={this.props.inList} 
 				title={"SAVED"} 
 				float={false}
 				dropdownClass={"location-dropdown"} 
