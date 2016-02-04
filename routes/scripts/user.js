@@ -152,7 +152,6 @@ router.post('/user/register', function(req, res, next) {
       return res.json({err: err, data: {}}).end();
 
     req.session.token = login_body.data.token;
-
     req.session.user = user_body.data;
     req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
     req.session.save(function(){

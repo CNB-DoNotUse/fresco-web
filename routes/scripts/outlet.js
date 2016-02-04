@@ -57,13 +57,14 @@ router.post('/outlet/create', function(req, res, next) {
       function(cb){
 
         User.registerUser(userData, function(error, user_body, register_body) {
-          if (error){
+          if (error) {
             if (error == 'ERR_EMAIL_IN_USE' ||
-                error == 'username ' + req.body.contact_email + ' already taken'){
+                error == 'username ' + req.body.contact_email + ' already taken') {
               parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
               parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
               parse.headers['X-Parse-Revocable-Session'] = "1";
-              return parse.get('/1/login?username=' + querystring.escape(req.body.contact_email) + '&password=' + querystring.escape(req.body.contact_password), function(err,response,parse_body){
+              return parse.get('/1/login?username=' + querystring.escape(req.body.contact_email) + '&password=' + querystring.escape(req.body.contact_password), function(err, response, parse_body) {
+
                 if(err)
                   return res.json({err: err}).end();
                 if (response.statusCode == 401)

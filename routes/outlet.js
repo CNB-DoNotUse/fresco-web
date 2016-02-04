@@ -1,7 +1,6 @@
 var express     = require('express'),
     config      = require('../lib/config'),
     global      = require('../lib/global'),
-    outer       = express.Router(),
     request     = require('request-json'),
     config      = require('../lib/config'),
     client      = request.createClient(config.API_URL),
