@@ -146,7 +146,7 @@ import AdminBody from './../components/admin/admin-body'
 		switch(tab) {
 			case 'assignments':
 				endpoint = '/api/assignment/list';
-				params = { verified: false, expired: false, limit: 16, last: last };
+				params = { pending: true, limit: 16, last: last };
 				break;
 
 			case 'submissions':
