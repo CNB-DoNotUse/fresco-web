@@ -42,7 +42,7 @@ var animation = {
 					list = dropdown.children[1];
 
 				for (var i = 0; i < dropdowns.length; i++) {
-					//Hide all the lists
+					//Hide all the lists that aren't this one
 					if(dropdowns[i].children[1] !== list)
 						dropdowns[i].children[1].style.display = 'none';
 				}
