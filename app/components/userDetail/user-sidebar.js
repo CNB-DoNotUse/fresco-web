@@ -35,10 +35,12 @@ export default class UserSidebar extends React.Component {
 						<div className="meta">
 							<div className="meta-list">
 								<ul className="md-type-subhead">
+										{email ? 
 										<li className="ellipses">
-											<span className="mdi mdi-email icon"></span>
-											<a target="_top" href={'mailto:' + email}>{email}</a>
-										</li>
+										<span className="mdi mdi-email icon"></span>
+										<a target="_top" href={'mailto:' + email}>{email}</a>
+										</li> 
+										: '' }
 
 										<li>
 											<span className="mdi mdi-image-filter icon"></span>{galleries + ' galleries'}
