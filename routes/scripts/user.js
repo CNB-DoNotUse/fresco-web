@@ -80,19 +80,17 @@ router.post('/user/login', (req, res) => {
       res
     }
     API.request(options, (login_body) => {
-      
-      if(!login_body.data) {
-        return res.send({err: 'Login API Error'});
+      if(!login_body) {
+            return res.json({ "err" : "ERR_LOGIN" });
       }
 
       req.session.token = login_body.data.token;
-
       req.session.user = login_body.data.user;
       req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
 
       if (!req.session.user.outlet) {
-        return  req.session.save(function(){
-          res.json({err: null, data: login_body.data.user}).end();
+        return req.session.save(function(){
+          res.json({err: null, data: login_body.data.user});
         });
       }
 
@@ -107,7 +105,7 @@ router.post('/user/login', (req, res) => {
           req.session.user.outlet.purchases = purchases.data;
         }
         req.session.save(() => {
-          res.json({err: null, data: login_body.data.user}).end();
+          res.json({err: null, data: login_body.data.user});
         });
       });
     })

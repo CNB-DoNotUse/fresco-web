@@ -24,17 +24,19 @@ router.post('/outlet/checkout', (req, res) => {
 
     var options = {
       url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id,
+      token: req.session.token,
       method: 'GET'
     };
 
     API.request(options, (err, response) => {
+      //Update the purchases on the session
       if (!err) {
         req.session.user.outlet.purchases = response.body.data;
       }
 
       req.session.save(() => {
         res.json(data).end();
-      })
+      });
     });
   });
 });

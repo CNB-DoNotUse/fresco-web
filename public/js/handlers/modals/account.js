@@ -234,7 +234,9 @@ var processLogin = function() {
 			loginProcessing = false;
 
 			if(error == 'Unauthorized'){
-				$.snackbar({ content: 'Invalid email or password!'});
+				return $.snackbar({ content: 'Invalid email or password!'});
+			} else{
+				return $.snackbar({ content: 'There was an error logging you in. Please try again in a bit.'});
 			}
 		}
 	});
