@@ -136,8 +136,6 @@ router.get('/settings', (req, res, next) => {
         };
 
     res.render('app', {
-      user: req.session.user,
-      outlet: body.data,
       title: title,
       page: 'outletSettings',
       alerts: req.alerts,

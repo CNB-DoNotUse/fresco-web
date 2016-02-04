@@ -30,6 +30,7 @@ class OutletSettings extends React.Component {
 	}
 
 	render() {
+
 		return (
 			<App user={this.props.user}>
 				<TopBar
