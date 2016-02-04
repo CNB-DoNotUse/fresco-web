@@ -66,7 +66,7 @@ export default class GalleryEditStories extends React.Component {
 
 			//Checking if what the user entered is in the suggestions
 			for (var i = 0; i < this.state.suggestions.length; i++) {
-				if(this.state.suggestions[i].title.toLowerCase() == query.toLowerCase()){ //Conver to lowercase for better check
+				if(this.state.suggestions[i].title.toLowerCase() === query.toLowerCase()){ //Conver to lowercase for better check
 					matched = i;
 					break;
 				}
