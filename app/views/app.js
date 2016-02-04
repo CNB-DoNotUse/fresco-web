@@ -10,12 +10,6 @@ export default class App extends React.Component {
 
 	componentDidMount() {
 		$.material.init();
-
-
-		setTimeout(()=> {
-
-		}, 30000)
-
 	}
 
 	render() {
