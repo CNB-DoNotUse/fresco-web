@@ -197,11 +197,13 @@ export default class AdminBody extends React.Component {
 
 	skip(cb) {
 		$.ajax({
-			url: '/api/gallery/skip',
+			url: '/api/gallery/update',
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
-				id: this.state.activeGallery._id
+				id: this.state.activeGallery._id,
+				rated: 1,
+				visibility: 0
 			}),
 			dataType: 'json',
 			success: (result, status, xhr) => {
