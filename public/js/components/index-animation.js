@@ -59,7 +59,7 @@ var animation = {
 				items[j].addEventListener('click', optionClicked);
 			};
 
-			selector.addEventListener('click', selectorClicked);
+			$(selector).click(selectorClicked);
 		}
 	},
 

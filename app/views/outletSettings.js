@@ -41,7 +41,6 @@ class OutletSettings extends React.Component {
 						<OutletInfo outlet={this.props.user.outlet} />
 
 						<OutletPaymentInfo outlet={this.props.user.outlet} />
-						
 					</div>
 					<div className="right">
 						<OutletLocations outlet={this.props.user.outlet} />	
