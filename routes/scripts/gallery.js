@@ -1,12 +1,13 @@
 var express = require('express'),
     request = require('request'),
-    requestJson = require('request-json'),
     Twitter = require('twitter'),
     config = require('../../lib/config'),
     async = require('async'),
     fs = require('fs'),
     http = require('http'),
     API = require('../../lib/api'),
+    Story = require('../../lib/story'),
+    Gallery = require('../../lib/gallery'),
     router = express.Router();
 
 //---------------------------vvv-GALLERY-ENDPOINTS-vvv---------------------------//
@@ -115,6 +116,9 @@ router.post('/gallery/import', (req, res) => {
   }
 });
 
+ /**
+  * Update multiple galleries at once. Only supports captions, tags, and stories
+  */
 router.post('/gallery/bulkupdate', function(req, res, next) {
   var galleries = req.body.galleries;
   var caption = req.body.caption;
@@ -131,11 +135,9 @@ router.post('/gallery/bulkupdate', function(req, res, next) {
     return story.indexOf('NEW') == -1;
   });
 
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.headers['Content-Type'] = 'application/json';
-
-  console.log(req.body);
+  // We can't let gallery update make the stories, as we'd have a ton of
+  // duplicates. So we make all the stories and get their ids first, and then we
+  // update the galleries
 
   async.series([
     makeStories,
@@ -153,10 +155,10 @@ router.post('/gallery/bulkupdate', function(req, res, next) {
         caption: ''
       }
 
-      api.post('/v1/story/create', story_params, function(err, response, body) {
+      Story.create(req, story_params, (err, body) => {
         if (err || body.err) {
           console.log(err || body.err);
-          return cb();
+          return cb(); //Ignore errors
         }
 
         stories.push(body.data._id);
@@ -169,12 +171,12 @@ router.post('/gallery/bulkupdate', function(req, res, next) {
 
   function updateGalleries(cb) {
     async.each(galleries, function(gallery_id, cb2) {
-      api.get('/v1/gallery/get?id=' + gallery_id, function(err, response, body) {
+      Gallery.get(gallery_id, (err, body) => {
         if (err || body.err) {
           console.log("Error: " + err || body.err);
           return cb2(); //Ignore errors, continue processing other galleries
         }
-        var gallery = body.data;
+        var gallery = body;
 
         var gallery_story_ids = [];
         gallery.related_stories.forEach(function(story) {
@@ -188,8 +190,8 @@ router.post('/gallery/bulkupdate', function(req, res, next) {
           stories: removeAddArray(gallery_story_ids, stories, stories_to_remove),
         }
 
-        api.post("/v1/gallery/update", params, function (err, response, body){
-          cb2();
+        Gallery.update(req, params, (err, body) => {
+          cb2(); //Ignore errors
         });
 
       });
@@ -198,6 +200,16 @@ router.post('/gallery/bulkupdate', function(req, res, next) {
     });
   }
 
+  /**
+   * First remove things from the array, then add some other items to it. Used
+   * to make sure that if a user removes and then adds a tag back, it doesn't
+   * get deleted mistakenly
+   *
+   * @param  {Array} items    Base items
+   * @param  {Array} toAdd    Items to add
+   * @param  {Array} toRemove Items to remove
+   * @return {Array}          The result after the removal and addition
+   */
   function removeAddArray(items, toAdd, toRemove) {
     toRemove.forEach(function(item) {
       var pos = items.indexOf(item);
