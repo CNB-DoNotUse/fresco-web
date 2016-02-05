@@ -19,6 +19,7 @@ a:hover {
 	cursor: hand;
 }
 
+<<<<<<< HEAD
 .mt16 {
   margin-top: 16px !important;
 }
@@ -39,6 +40,11 @@ a:hover {
     -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
     -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+}
+
+input, textarea{
+    color: rgba(0, 0, 0, 0.87);
+    color:#000;
 }
 
 // container fix
@@ -127,6 +133,14 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
   color: #0047bb;
 }
 
+.checkbox input[type=checkbox]:checked + .checkbox-material .check, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check {
+	color:#0047bb;
+}
+
+.checkbox input[type=checkbox]:checked + .checkbox-material .check:before, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check:before{
+	color:#0047bb;	
+}
+
 
 // icons
 .icon {
@@ -159,6 +173,8 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	input.form-control,
 	textarea.form-control {
 		background-color: transparent;
+		color:#000;
+		color:rgba(0, 0, 0, 0.87);
 	}
 	.form-control:disabled {
 		border-bottom: none;
@@ -201,6 +217,15 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	}
 	.checkbox input[type=checkbox]:checked~.check, .checkbox input[type=checkbox]:checked~.check:before {
 		color: $color-accent-primary;
+	}
+
+	.checkbox{
+		.checkbox-material{
+			margin-right:16px;
+		}
+		span{
+			font-weight:500;
+		}
 	}
 
 	.dropdown{
@@ -705,11 +730,17 @@ div.list {
 			+ .dialog-col {
 				padding-left: 32px;
 			}
+			> .dialog-row#byline-edit{
+				padding-bottom:16px;
+			}
 			> .dialog-row {
-				padding: 16px 0;
+				padding: 16px 0 0;
 			}
 			> .dialog-row:first-child {
 				padding-top: 0;
+			}
+			> .dialog-row:last-child{
+				padding:0;
 			}
 		}
 	}
@@ -845,6 +876,7 @@ div.list {
 	z-index: $z-navbar;
 	box-sizing: border-box;
 	border-bottom: 1px solid $color-black-4;
+	// @include box-shadow(0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
 
 	.icon-button {
 		margin: 20px 24px;
@@ -1621,14 +1653,7 @@ div.time {}
   max-width:100%;
 }
 
-.checkbox input[type=checkbox]:checked + .checkbox-material .check, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check {
 
-	color:#0047bb;
-}
-
-.checkbox input[type=checkbox]:checked + .checkbox-material .check:before, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check:before{
-	color:#0047bb;	
-}
 
 
 .form-control:focus, .form-control.focus {
