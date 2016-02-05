@@ -245,9 +245,11 @@ export default class PostList extends React.Component {
 	      	);
 		}
 
+		var className = "container-fluid fat grid " + this.props.className;
+
 		return (
 			<div>
-				<div className="container-fluid fat grid" ref='grid' onScroll={this.state.scrollable ? this.scroll : null} >
+				<div className={className} ref='grid' onScroll={this.state.scrollable ? this.scroll : null} >
 					<div className="row tiles" id="posts">{posts}</div>
 				</div>
 				
@@ -270,6 +272,7 @@ export default class PostList extends React.Component {
 }
 
 PostList.defaultProps = {
+	className: '',
 	size : 'small',
 	editable: true,
 	purchases: [],

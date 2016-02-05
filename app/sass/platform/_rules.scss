@@ -19,6 +19,28 @@ a:hover {
 	cursor: hand;
 }
 
+.mt16 {
+  margin-top: 16px !important;
+}
+
+.mt24 {
+  margin-top: 24px !important;
+}
+
+.pr24 {
+	padding-right: 24px !important;
+}
+
+.img-avatar {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+}
+
 // container fix
 body > div.wrapper > div > .container-fluid {
 	@include display(flex);
@@ -523,7 +545,7 @@ div.chips {
 .tab-control {
 	> button {
 		height: 40px;
-		margin: 0 -3px 0 0;
+		margin: 0px;
 		padding: 8px 24px;
 		text-align: center;
 		box-sizing: border-box;
@@ -533,7 +555,6 @@ div.chips {
 		color: $color-black-2 !important;
 	}
 	> button:last-child {
-		margin: 0;
 	}
 	> button.toggled {
 		border-bottom: 2px solid $color-accent-primary;
@@ -971,7 +992,10 @@ div.list {
 	position: absolute;
 	height: 100%;
 	overflow-y:auto;
-	padding: 64px 0 0;
+	margin: 64px 0 0;
+	&.ntm {
+		margin-top: 0px;
+	}
 	.frame {
 		position: absolute;
 		z-index: $z-tile-body-frame;
@@ -1193,7 +1217,6 @@ div.list {
 
 // profile
 .profile.hidden-xs {
-	margin-top: 64px;
 	padding-left: 24px;
 	padding-right: 24px;
 	padding-bottom: 0px;

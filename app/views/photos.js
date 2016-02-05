@@ -82,7 +82,7 @@ class Photos extends React.Component {
 					timeToggle={true}
 					verifiedToggle={true}
 					chronToggle={true}
-
+					
 					updateSort={this.updateSort}
 					onVerifiedToggled={this.onVerifiedToggled} />
 				<PostList
