@@ -1,5 +1,6 @@
 var express = require('express'),
     request = require('request'),
+    requestJson = require('request-json'),
     Twitter = require('twitter'),
     config = require('../../lib/config'),
     async = require('async'),
@@ -111,6 +112,111 @@ router.post('/gallery/import', (req, res) => {
         }
       );
     });
+  }
+});
+
+router.post('/gallery/bulkupdate', function(req, res, next) {
+  var galleries = req.body.galleries;
+  var caption = req.body.caption;
+  var tags = req.body.tags || [];
+  var tags_to_remove = req.body.tags_removed || [];
+  var stories = req.body.stories || [];
+  var stories_to_remove = req.body.stories_removed || [];
+
+  var new_stories = stories.filter(function(story) {
+    return story.indexOf('NEW') != -1;
+  });
+
+  stories = stories.filter(function(story) {
+    return story.indexOf('NEW') == -1;
+  });
+
+  var api = requestJson.createClient(config.API_URL);
+  api.headers['authtoken'] = req.session.user.token;
+  api.headers['Content-Type'] = 'application/json';
+
+  console.log(req.body);
+
+  async.series([
+    makeStories,
+    updateGalleries
+  ],
+  function() {
+    res.json({}).end();
+  });
+
+  function makeStories(cb) {
+    async.each(new_stories, function(new_story, cb2) {
+      var title = JSON.parse(new_story.split('NEW=')[1]).title;
+      var story_params = {
+        title: title,
+        caption: ''
+      }
+
+      api.post('/v1/story/create', story_params, function(err, response, body) {
+        if (err || body.err) {
+          console.log(err || body.err);
+          return cb();
+        }
+
+        stories.push(body.data._id);
+        cb();
+      });
+    }, function(err) {
+      cb();
+    })
+  }
+
+  function updateGalleries(cb) {
+    async.each(galleries, function(gallery_id, cb2) {
+      api.get('/v1/gallery/get?id=' + gallery_id, function(err, response, body) {
+        if (err || body.err) {
+          console.log("Error: " + err || body.err);
+          return cb2(); //Ignore errors, continue processing other galleries
+        }
+        var gallery = body.data;
+
+        var gallery_story_ids = [];
+        gallery.related_stories.forEach(function(story) {
+          gallery_story_ids.push(story._id);
+        });
+
+        var params = {
+          id: gallery_id,
+          caption: caption,
+          tags: removeAddArray(gallery.tags, tags, tags_to_remove),
+          stories: removeAddArray(gallery_story_ids, stories, stories_to_remove),
+        }
+
+        api.post("/v1/gallery/update", params, function (err, response, body){
+          cb2();
+        });
+
+      });
+    }, function(err) {
+      cb();
+    });
+  }
+
+  function removeAddArray(items, toAdd, toRemove) {
+    toRemove.forEach(function(item) {
+      var pos = items.indexOf(item);
+      if (pos !== -1) {
+        items.splice(pos, 1);
+      }
+    });
+
+    return unionArrays(items, toAdd);
+  }
+
+  function unionArrays(array1, array2) {
+    array2.forEach(function(item) {
+      if (array1.indexOf(item) == -1) {
+        array1.push(item);
+      }
+    });
+
+    return array1;
   }
 });
 

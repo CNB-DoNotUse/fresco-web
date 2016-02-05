@@ -19,6 +19,7 @@ export default class BulkEdit extends React.Component {
     this.hide = this.hide.bind(this);
     this.clear = this.clear.bind(this);
     this.revert = this.revert.bind(this);
+    this.save = this.save.bind(this);
     this.updateCaption = this.updateCaption.bind(this);
     this.updateTags = this.updateTags.bind(this);
     this.updateRelatedStories = this.updateRelatedStories.bind(this);
@@ -57,6 +58,38 @@ export default class BulkEdit extends React.Component {
     })
   }
 
+  getInitialTags() {
+    let tags = new Set(this.state.galleries[0].tags);
+    for (let gallery of this.state.galleries) {
+      let galleryTags = new Set(gallery.tags);
+      tags = new Set([...tags].filter(x => galleryTags.has(x)));
+    }
+    return [...tags];
+  }
+
+  getInitialStories() {
+    let stories = this.state.galleries[0].related_stories
+    for (let gallery of this.state.galleries) {
+      stories = this.intersectStories(gallery.related_stories, stories);
+    }
+    return stories;
+  }
+
+  intersectStories(array1, array2) {
+    var new_array = [];
+		array2.forEach(function(item) {
+			var found = array1.some(function(item2) {
+				return item._id == item2._id;
+			});
+
+			if (found) {
+				new_array.push(item);
+			}
+		});
+
+		return new_array;
+  }
+
   revert() {
     let stateToSet = {};
 
@@ -69,21 +102,73 @@ export default class BulkEdit extends React.Component {
       stateToSet.caption = caption;
     }
 
-    let tags = new Set(this.state.galleries[0].tags);
-    for (let gallery of this.state.galleries) {
-      let galleryTags = new Set(gallery.tags);
-      tags = new Set([...tags].filter(x => galleryTags.has(x)));
-    }
-    stateToSet.tags = [...tags];
-
-    let stories = this.state.galleries[0].related_stories
-    for (let gallery of this.state.galleries) {
-      let galleryStories = new Set(gallery.related_stories);
-      stories = new Set([...stories].filter(x => galleryStories.has(x)));
-    }
-    stateToSet.relatedStories = [...stories];
+    stateToSet.tags = this.getInitialTags();
+    stateToSet.relatedStories = this.getInitialStories();
 
     this.setState(stateToSet);
+  }
+
+  save() {
+    let params = {
+      galleries: this.state.galleries.map(g => { return g._id; })
+    }
+
+    if (this.state.caption.length > 0) {
+      params.caption = this.state.caption;
+    }
+
+    if (this.state.tags.length > 0) {
+      params.tags = this.state.tags;
+    }
+
+    let tagsToRemove = new Set(this.getInitialTags());
+    for (let tag of this.state.tags) {
+      tagsToRemove.delete(tag);
+    }
+    if (tagsToRemove.size > 0) {
+      params.tags_removed = [...tagsToRemove];
+    }
+
+    let stories = this.state.relatedStories.map((story) => {
+ 			if(story.new)
+ 				return 'NEW=' + JSON.stringify(story);
+ 			else
+ 				return story._id;
+ 		});
+
+    if (stories.length > 0) {
+      params.stories = stories;
+    }
+
+    let storiesToRemove = new Set(this.getInitialStories().map((story) => {
+ 			if(story.new)
+ 				return 'NEW=' + JSON.stringify(story);
+ 			else
+ 				return story._id;
+ 		}));
+
+    for (let story of this.state.relatedStories) {
+      storiesToRemove.delete(story._id);
+    }
+    if (storiesToRemove.size > 0) {
+      params.stories_removed = [...storiesToRemove];
+    }
+
+    $.ajax({
+  		url: '/scripts/gallery/bulkupdate',
+  		type: 'post',
+  		data: JSON.stringify(params),
+  		contentType: 'application/json',
+  		success: (data) => {
+        if (data.err) {
+          $.snackbar({
+            content: global.resolveError(data.err, 'We were not able to save these changes')
+          });
+          return;
+        }
+        window.location.reload();
+      }
+    });
   }
 
   updateCaption(e) {
@@ -130,7 +215,7 @@ export default class BulkEdit extends React.Component {
             <div className="dialog-foot">
               <button onClick={this.revert} type="button" className="btn btn-flat">Revert</button>
               <button onClick={this.clear} type="button" className="btn btn-flat">Clear All</button>
-              <button type="button" className="btn btn-flat pull-right">Save</button>
+              <button onClick={this.save} type="button" className="btn btn-flat pull-right">Save</button>
               <button onClick={this.hide} type="button" className="btn btn-flat pull-right toggle-bedit">Discard</button>
             </div>
 
