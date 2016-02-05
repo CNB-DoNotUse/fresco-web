@@ -40,29 +40,29 @@ class UserSettings extends React.Component {
 		var profileSaveBtn = this.refs.profileSaveBtn,
 			accountSaveBtn = this.refs.accountSaveBtn;
 
-		if(newName || newBio || newAvatar) {
-			if(profileSaveBtn.className.indexOf(' changed ') == -1) {
-				profileSaveBtn.className += ' changed ';
-				profileSaveBtn.disabled = false;
-			}
-		} else {
-			if(profileSaveBtn.className.indexOf(' changed ') != -1) {
-				profileSaveBtn.className = profileSaveBtn.className.replace(/\bchanged\b/,'');
-				profileSaveBtn.disabled = true;
-			}
-		}
+		// if(newName || newBio || newAvatar) {
+		// 	if(profileSaveBtn.className.indexOf(' changed ') == -1) {
+		// 		profileSaveBtn.className += ' changed ';
+		// 		profileSaveBtn.disabled = false;
+		// 	}
+		// } else {
+		// 	if(profileSaveBtn.className.indexOf(' changed ') != -1) {
+		// 		profileSaveBtn.className = profileSaveBtn.className.replace(/\bchanged\b/,'');
+		// 		profileSaveBtn.disabled = true;
+		// 	}
+		// }
 
-		if(newEmail || newPhone) {
-			if(accountSaveBtn.className.indexOf(' changed ') == -1) {
-				accountSaveBtn.className += ' changed ';
-				accountSaveBtn.disabled = false;
-			}
-		} else {
-			if(accountSaveBtn.className.indexOf(' changed ') != -1) {
-				accountSaveBtn.className = accountSaveBtn.className.replace(/\bchanged\b/,'');
-				accountSaveBtn.disabled = true;
-			}
-		}
+		// if(newEmail || newPhone) {
+		// 	if(accountSaveBtn.className.indexOf(' changed ') == -1) {
+		// 		accountSaveBtn.className += ' changed ';
+		// 		accountSaveBtn.disabled = false;
+		// 	}
+		// } else {
+		// 	if(accountSaveBtn.className.indexOf(' changed ') != -1) {
+		// 		accountSaveBtn.className = accountSaveBtn.className.replace(/\bchanged\b/,'');
+		// 		accountSaveBtn.disabled = true;
+		// 	}
+		// }
 	}
 
  	/**
@@ -107,7 +107,7 @@ class UserSettings extends React.Component {
  			email =  this.refs.email.value,
  			phone =  this.refs.phone.value,
  			self = this;
-
+ 			
  		if(global.isEmptyString(firstname)){
  			return $.snackbar({ content: 'You must have a firstname!' });
  		}
@@ -133,15 +133,11 @@ class UserSettings extends React.Component {
  			processData: false,
  			contentType: false,
  			data : userData,
- 			success: function(response, status, xhr) {
- 				self.updating = false
+ 			success: (response, status, xhr) => {
+ 				self.updating = false;
 
  				if(response.err) {
-	 				
-	 				$.snackbar({
-	 					content: global.resolveError(response.err, 'We couldn\'t save your settings!')
-	 				});
-
+ 					return this.error(null, null, response.err);
 	 			} 
 	 			else {
 	 				$.snackbar({ content: 'Settings successfuly saved!' });
@@ -154,6 +150,12 @@ class UserSettings extends React.Component {
 	 				//Update state, so everything else updates
 	 				self.setState({ user: user });
 	 			}
+ 			},
+ 			error: (xhr, status, error) => {
+ 				self.updating = false;
+ 				$.snackbar({
+ 					content: global.resolveError(error, 'We couldn\'t save your settings!')
+ 				});
  			}
  		});
  	}
@@ -186,7 +188,7 @@ class UserSettings extends React.Component {
 						<div className="card-form">
 							<input 
 								type="file" 
-								className="outlet-avatar-input" 
+								className="outlet-avatar-input changed" 
 								ref="avatarFileInput"  
 								accept="image/png,image/jpeg" 
 								onChange={this.avatarInputChange} 
@@ -207,7 +209,7 @@ class UserSettings extends React.Component {
 								defaultValue={user.bio}></textarea>
 							
 							<button 
-								className="btn btn-save" 
+								className="btn btn-save changed" 
 								ref="profileSaveBtn" 
 								onClick={this.updateSettings}
 								>SAVE CHANGES</button>
@@ -234,7 +236,7 @@ class UserSettings extends React.Component {
 									defaultValue={user.phone} />
 			
 								<button 
-									className="btn btn-save" 
+									className="btn btn-save changed" 
 									onClick={this.updateSettings} 
 									ref="accountSaveBtn">SAVE CHANGES</button>
 							</div>
