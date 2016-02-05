@@ -177,8 +177,11 @@ router.get('/user/refresh', (req, res, next) => {
 
 router.post('/user/update', (req, res) => {
     // When no picture is uploaded, avatar gets set, which confuses the API
-    if (req.body.avatar) 
+    if(req.body.avatar) 
         delete req.body.avatar;
+
+    if(!req.body.bio)
+        req.body.bio = '';
 
     API.proxyRaw(req, res, (body) => {
         var user = body.data;
