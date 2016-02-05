@@ -1615,3 +1615,9 @@ div.time {}
 .form-control:focus ~ .floating-label, .form-control.focus ~.floating-label {
 	color: #0047bb !important;
 }
+
+.cell-stories {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+}

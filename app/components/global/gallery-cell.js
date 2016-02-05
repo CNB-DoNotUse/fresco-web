@@ -91,7 +91,7 @@ class GalleryCellStories extends React.Component {
   		})
 
 		return (
-			<ul className="md-type-body2 story-list">{stories}</ul>
+			<ul className="md-type-body2 story-list cell-stories">{stories}</ul>
 		);
 	}
 
