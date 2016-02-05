@@ -708,11 +708,17 @@ div.list {
 			+ .dialog-col {
 				padding-left: 32px;
 			}
+			> .dialog-row#byline-edit{
+				padding-bottom:16px;
+			}
 			> .dialog-row {
-				padding: 16px 0;
+				padding: 16px 0 0;
 			}
 			> .dialog-row:first-child {
 				padding-top: 0;
+			}
+			> .dialog-row:last-child{
+				padding:0;
 			}
 		}
 	}
