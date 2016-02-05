@@ -19,6 +19,11 @@ a:hover {
 	cursor: hand;
 }
 
+input, textarea{
+    color: rgba(0, 0, 0, 0.87);
+    color:#000;
+}
+
 // container fix
 body > div.wrapper > div > .container-fluid {
 	@include display(flex);
@@ -105,6 +110,14 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
   color: #0047bb;
 }
 
+.checkbox input[type=checkbox]:checked + .checkbox-material .check, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check {
+	color:#0047bb;
+}
+
+.checkbox input[type=checkbox]:checked + .checkbox-material .check:before, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check:before{
+	color:#0047bb;	
+}
+
 
 // icons
 .icon {
@@ -137,6 +150,8 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	input.form-control,
 	textarea.form-control {
 		background-color: transparent;
+		color:#000;
+		color:rgba(0, 0, 0, 0.87);
 	}
 	.form-control:disabled {
 		border-bottom: none;
@@ -179,6 +194,15 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	}
 	.checkbox input[type=checkbox]:checked~.check, .checkbox input[type=checkbox]:checked~.check:before {
 		color: $color-accent-primary;
+	}
+
+	.checkbox{
+		.checkbox-material{
+			margin-right:16px;
+		}
+		span{
+			font-weight:500;
+		}
 	}
 
 	.dropdown{
@@ -824,6 +848,7 @@ div.list {
 	z-index: $z-navbar;
 	box-sizing: border-box;
 	border-bottom: 1px solid $color-black-4;
+	// @include box-shadow(0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
 
 	.icon-button {
 		margin: 20px 24px;
@@ -1598,14 +1623,7 @@ div.time {}
   max-width:100%;
 }
 
-.checkbox input[type=checkbox]:checked + .checkbox-material .check, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check {
 
-	color:#0047bb;
-}
-
-.checkbox input[type=checkbox]:checked + .checkbox-material .check:before, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check:before{
-	color:#0047bb;	
-}
 
 
 .form-control:focus, .form-control.focus {
