@@ -24,10 +24,10 @@ router.get('/:id', function(req, res, next) {
 			}
 
 			var props = {
-            story: body.data,
-            purchases: config.mapPurchases(),
-            user: req.session.user
-          };
+        story: body.data,
+        purchases: config.mapPurchases(),
+        user: req.session.user
+      };
 
 			res.render('app', {
         props: JSON.stringify(props),

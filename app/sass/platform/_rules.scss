@@ -18,6 +18,9 @@ a:hover {
 .toggler:hover {
 	cursor: hand;
 }
+.mt0 {
+	margin-top: 0px !important;
+}
 
 .mt16 {
   margin-top: 16px !important;
@@ -25,6 +28,9 @@ a:hover {
 
 .mt24 {
   margin-top: 24px !important;
+}
+.mt64 {
+  margin-top: 64px !important;
 }
 
 .pr24 {
@@ -1251,7 +1257,7 @@ div.list {
 	padding-left: 24px;
 	padding-right: 24px;
 	padding-bottom: 0px;
-
+	margin-top: 64px;
 	height: 100%;
 	overflow-y: auto;
 	img {

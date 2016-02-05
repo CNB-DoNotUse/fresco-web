@@ -104,8 +104,7 @@ export default class OutletBody extends React.Component {
 				<div className="tab tab-vault toggled">
 					<div className="container-fluid fat grid">
 						<div className="profile visible-xs"></div>
-						
-						<div className="col-sm-4 profile hidden-xs">
+						<div className="col-sm-4 profile hidden-xs mt0">
 							<div className="container-fluid fat">
 								<div className="col-sm-12">
 									<img className="img-avatar" src={outlet.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'} />
