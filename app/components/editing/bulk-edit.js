@@ -1,11 +1,20 @@
 import React from 'react'
 import GalleryEditTags from './gallery-edit-tags'
-import GalleryEditArticles from './gallery-edit-articles'
 import GalleryEditStories from './gallery-edit-stories'
 import EditPost from './edit-post.js'
 import Slick from 'react-slick'
 import global from '../../../lib/global'
 
+/** //
+
+Description : Component for editing multiple posts at once (from possibly
+  different galleries)
+
+// **/
+
+/**
+ * Bulk Edit Parent Object
+ */
 export default class BulkEdit extends React.Component {
   constructor(props) {
     super(props);
@@ -25,9 +34,13 @@ export default class BulkEdit extends React.Component {
     this.updateRelatedStories = this.updateRelatedStories.bind(this);
   }
 
+  /**
+   * Show this component. Most be called to initialize the fields in the panel
+   */
   show() {
     this.clear();
     $('.toggle-bedit').toggleClass('toggled');
+
     let galleryIds = new Set(this.props.posts.map(post => { return post.parent }));
     $.get('/api/gallery/resolve', {galleries: [...galleryIds]}, (data) => {
       if (!data.data) {
@@ -58,38 +71,59 @@ export default class BulkEdit extends React.Component {
     })
   }
 
+  /**
+   * Get the tags that are common between every gallery
+   * @return {Array[string]} The common tags between each gallery
+   */
   getInitialTags() {
     let tags = new Set(this.state.galleries[0].tags);
     for (let gallery of this.state.galleries) {
       let galleryTags = new Set(gallery.tags);
+
+      //This is a set intersection. JS Sets don't have this built in
       tags = new Set([...tags].filter(x => galleryTags.has(x)));
     }
     return [...tags];
   }
 
+  /**
+   * Get the stories that are common between every gallery. A Story object looks
+   * like this:
+   * {
+   * 		id: string,
+   * 		title: string
+   * }
+   * @return {Array[Story]} The common stories between each gallery
+   */
   getInitialStories() {
+    // We can't use the same method that tags uses, as sets test for reference
+    // equality, not value equality. So we have to manually check each id
+
     let stories = this.state.galleries[0].related_stories
     for (let gallery of this.state.galleries) {
-      stories = this.intersectStories(gallery.related_stories, stories);
+      stories = intersectStories(gallery.related_stories, stories);
     }
     return stories;
+
+    function intersectStories(array1, array2) {
+      var new_array = [];
+  		array2.forEach(function(item) {
+  			var found = array1.some(function(item2) {
+  				return item._id == item2._id;
+  			});
+
+  			if (found) {
+  				new_array.push(item);
+  			}
+  		});
+
+  		return new_array;
+    }
   }
 
-  intersectStories(array1, array2) {
-    var new_array = [];
-		array2.forEach(function(item) {
-			var found = array1.some(function(item2) {
-				return item._id == item2._id;
-			});
-
-			if (found) {
-				new_array.push(item);
-			}
-		});
-
-		return new_array;
-  }
-
+  /**
+   * Revert the component to it's initial state (pre-edits)
+   */
   revert() {
     let stateToSet = {};
 
@@ -108,7 +142,12 @@ export default class BulkEdit extends React.Component {
     this.setState(stateToSet);
   }
 
+  /**
+   * Save the edits made to each post
+   */
   save() {
+    // Only send what's changed
+
     let params = {
       galleries: this.state.galleries.map(g => { return g._id; })
     }
@@ -117,41 +156,25 @@ export default class BulkEdit extends React.Component {
       params.caption = this.state.caption;
     }
 
+    // Tags
     if (this.state.tags.length > 0) {
       params.tags = this.state.tags;
     }
 
-    let tagsToRemove = new Set(this.getInitialTags());
-    for (let tag of this.state.tags) {
-      tagsToRemove.delete(tag);
-    }
-    if (tagsToRemove.size > 0) {
-      params.tags_removed = [...tagsToRemove];
+    let tagsToRemove = subtractArrays(this.getInitialTags(), this.state.tags);
+    if (tagsToRemove.length > 0) {
+      params.tags_removed = tagsToRemove;
     }
 
-    let stories = this.state.relatedStories.map((story) => {
- 			if(story.new)
- 				return 'NEW=' + JSON.stringify(story);
- 			else
- 				return story._id;
- 		});
-
+    // Stories
+    let stories = processStories(this.state.relatedStories)
     if (stories.length > 0) {
       params.stories = stories;
     }
 
-    let storiesToRemove = new Set(this.getInitialStories().map((story) => {
- 			if(story.new)
- 				return 'NEW=' + JSON.stringify(story);
- 			else
- 				return story._id;
- 		}));
-
-    for (let story of this.state.relatedStories) {
-      storiesToRemove.delete(story._id);
-    }
-    if (storiesToRemove.size > 0) {
-      params.stories_removed = [...storiesToRemove];
+    let storiesToRemove = subtractArrays(processStories(this.getInitialStories()), stories);
+    if (storiesToRemove.length > 0) {
+      params.stories_removed = storiesToRemove;
     }
 
     $.ajax({
@@ -169,6 +192,29 @@ export default class BulkEdit extends React.Component {
         window.location.reload();
       }
     });
+
+    function subtractArrays(array1, array2) {
+      let result = new Set(array1);
+      for (let item of array2) {
+        result.delete(item);
+      }
+      return [...result];
+    }
+
+    /**
+     * Turn an array of story objects into id & creation strings. Needed to send
+     * to the api.
+     * @param  {Array[Story]} stories The story objects to process.
+     * @return {Array[string]}         The processed stories, ready to send
+     */
+    function processStories(stories) {
+      return stories.map((story) => {
+        if(story.new)
+          return 'NEW=' + JSON.stringify(story);
+        else
+          return story._id;
+        });
+      }
   }
 
   updateCaption(e) {
@@ -253,4 +299,8 @@ export default class BulkEdit extends React.Component {
       </div>
     );
   }
+}
+
+BulkEdit.defaultProps = {
+  posts: []
 }

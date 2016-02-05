@@ -50,8 +50,7 @@ export default class GalleryEditBulk extends React.Component {
 
 				<BulkEdit
 					ref='bulkedit'
-					posts={this.props.posts}
-					setSelectedPosts={this.props.setSelectedPosts} />
+					posts={this.props.posts} />
  			</div>
  		);
  	}
