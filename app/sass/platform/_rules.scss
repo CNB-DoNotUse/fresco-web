@@ -33,6 +33,9 @@ a:hover {
   margin-top: 64px !important;
 }
 
+.pt24 {
+	padding-top: 24px !important;
+}
 .pr24 {
 	padding-right: 24px !important;
 }
@@ -1035,10 +1038,7 @@ div.list {
 	position: absolute;
 	height: 100%;
 	overflow-y:auto;
-	margin: 64px 0 0;
-	&.ntm {
-		margin-top: 0px;
-	}
+	padding: 64px 0 0;
 	.frame {
 		position: absolute;
 		z-index: $z-tile-body-frame;
@@ -1263,7 +1263,7 @@ div.list {
 	padding-left: 24px;
 	padding-right: 24px;
 	padding-bottom: 0px;
-	margin-top: 64px;
+	padding-top: 64px;
 	height: 100%;
 	overflow-y: auto;
 	img {

@@ -295,7 +295,6 @@ export class Search extends React.Component {
 
 	// Called when gallery div scrolls
 	galleryScroll(e) {
-
 		// Get scroll offset and get more purchases if necessary.
 		var searchContainer = document.getElementById('search-container');
 		var pxToBottom = searchContainer.scrollHeight - (searchContainer.clientHeight + searchContainer.scrollTop);
