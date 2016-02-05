@@ -47,6 +47,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			}
 
 			.last4{
+				font-weight:500;
 				color:#4cd764;
 				margin-right:14px;
 				text-align:right;
@@ -259,11 +260,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 		input{
 			width:50%;
+			padding-right: 10px;
 		}
-
-		.options{
-
-		}
-
 	}
 }
