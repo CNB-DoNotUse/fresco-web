@@ -47,6 +47,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			}
 
 			.last4{
+				font-weight:500;
 				color:#4cd764;
 				margin-right:14px;
 				text-align:right;
@@ -113,6 +114,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 		ul {
 			padding:0;
+			margin:0;
 			list-style:none;
 
 			li{
@@ -122,7 +124,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				.info{
 					float:left;
 					position:relative;
-					top:17px;
+					top:14px;
 
 					.name{
 						margin:0;
@@ -220,6 +222,12 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		}
 
 		.checkbox{
+			margin:0;
+
+			.checkbox-material{
+				margin:0;
+			}
+
 			&.check-sms{
 				margin-right:27px;
 			}
@@ -252,11 +260,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 		input{
 			width:50%;
+			padding-right: 10px;
 		}
-
-		.options{
-
-		}
-
 	}
 }
