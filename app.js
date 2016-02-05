@@ -116,6 +116,7 @@ app.use((req, res, next) => {
     var path = req.path.slice(1).split('/')[0],
         now = Date.now();
 
+
     //Check if not a platform route, then send onwwards
     if(routes.platform.indexOf(path) == -1) {
         return next();
@@ -125,13 +126,12 @@ app.use((req, res, next) => {
     if (!req.session.user) {
         return res.redirect('/account?next=' + req.url);
     }
+    console.log(req.session.token)
 
-    //Check if the session hasn't expired
+    //Check if the session hasn't expired s
     if (!req.session.user.TTL || req.session.user.TTL - now > 0){
         return next();
     }
-
-    console.log('User Refreshing called in APP.JS');
 
     User.refresh(req, res, next);
 });

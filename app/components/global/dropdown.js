@@ -40,8 +40,7 @@ export default class Dropdown extends React.Component {
 			drop.className = drop.className.replace(/\bactive\b/,'');
 		}
 
-		if(this.props.onToggled) this.props.onToggled();
-		
+		if(this.props.onToggled) this.props.onToggled();	
 	}
 
 	/**

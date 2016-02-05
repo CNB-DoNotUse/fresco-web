@@ -35,6 +35,9 @@ var animation = {
 				field.style.color = 'black';
 				//Set the dropdown dataset
 				dropdown.dataset.option = option.innerHTML;
+
+				//Hide the list
+				list.style.display = 'none';
 			},
 			selectorClicked = function(e) {
 				//Toggle the list
