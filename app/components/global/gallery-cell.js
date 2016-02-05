@@ -175,8 +175,9 @@ class GalleryCellImages extends React.Component {
 
 class GalleryCellStats extends React.Component {
 	render() {
-
 		var stats = this.props.stats;
-		return <span className="right-info">{stats.photos} Photo{stats.photos == 1 ? '' : 's'}, {stats.videos} Video{stats.videos == 1 ? '' : 's'}</span>;
+		return <span className="right-info">
+					{stats.photos} Photo{stats.photos == 1 ? '' : 's'} &bull; {stats.videos} Video{stats.videos == 1 ? '' : 's'}
+				</span>;
 	}
 }

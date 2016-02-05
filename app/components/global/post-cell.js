@@ -110,8 +110,6 @@ class PostCellStories extends React.Component {
 
 	render() {
 
-		var stories = ''
-
 		if(this.props.stories.length) {
 
 			var stories = this.props.stories.map((stories, i) => {
@@ -133,6 +131,10 @@ class PostCellStories extends React.Component {
 		);
 	}
 
+}
+
+PostCellStories.defaultProps = {
+	stories: []
 }
 
 /**

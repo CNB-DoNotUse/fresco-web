@@ -847,7 +847,7 @@ div.list {
 		margin: 18px 0 0 10px;
 	}
 	.location-input{
-		margin: 18px 0 0 25px;
+		margin: 18px 0 0 12px;
 	}
 	> h1 {
 		display: inline-block;
@@ -873,6 +873,12 @@ div.list {
 .navbar.navbar-default {
 	background-color: $color-shade-0;
 	color: inherit;
+}
+
+//panel
+
+.panel{
+	@include box-shadow(0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
 }
 
 //drop
@@ -1140,6 +1146,10 @@ div.list {
 							overflow: hidden;
 							white-space: nowrap;
 							text-overflow: ellipsis;
+
+							&.timestring{
+								color:rgba(0, 0, 0, 0.54);
+							}
 						};
 						~ span {
 							margin: 0 12px;
@@ -1407,6 +1417,7 @@ div.admin {
 	margin: 0;
 	padding: 0;
 	width: 640px;
+	@include box-shadow(0 4px 4px 0 rgba(0, 0, 0 , 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12));
 	@include transition-duration(0.3s);
 	> .thumbs {
 		width: 640px;
@@ -1444,6 +1455,7 @@ div.admin {
 	height: 90%;
 	border-radius: 2px;
 	@include transition-duration(0.3s);
+	@include border-radius(2px);
 	> .edit-current,
 	> .edit-new {
 		height: 100%;

@@ -26,7 +26,9 @@ export default class LocationDropdown extends React.Component {
 	/**
 	 * Adds the curret prop location to the outlet locations
 	 */
-	addLocation() {
+	addLocation(e) {
+		e.stopPropagation();
+
 		if(this.props.mapPlace){
 			
 			var autocomplete = document.getElementById('dispatch-location-input'),
@@ -60,7 +62,6 @@ export default class LocationDropdown extends React.Component {
 
 					//Update locations
 					self.loadLocations();
-
 				},
 				error: (xhr, status, error)=> {
 					$.snackbar({ content: global.resolveError(error) });
@@ -101,7 +102,6 @@ export default class LocationDropdown extends React.Component {
 	}
 	
 	render() {
-
 		var dropdownActions = [],
 			dropdownBody;
 
