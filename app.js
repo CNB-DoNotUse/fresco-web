@@ -223,7 +223,7 @@ app.use('/api', API.proxy);
 
 app.use((error, req, res, next) => {
     var err = {};
-    err.status = typeof(error.status) === 'undefined' ? 500 : err.status;
+    err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
 
     // Development error handle will print stacktrace
     if (config.DEV) {
@@ -232,10 +232,9 @@ app.use((error, req, res, next) => {
                     '\nBody', req.body,
                     '\nError: ', error.message + '\n');
 
-        err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
-    } else {
-        err.message = err.message;
     }
+
+    err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
 
     //Respond with code
     res.status(err.status);
