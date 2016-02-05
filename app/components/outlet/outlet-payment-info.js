@@ -141,7 +141,7 @@ export default class OutletPaymentInfo extends React.Component {
 					</div>
 
 					<button 
-						className="btn btn-flat outlet-card-save" 
+						className="btn btn-flat outlet-card-save card-foot-btn" 
 						ref="outlet-card-save" 
 						tabIndex="6" 
 						onClick={this.save}>SAVE CHANGES</button>

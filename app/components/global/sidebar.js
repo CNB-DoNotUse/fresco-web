@@ -42,7 +42,7 @@ export default class Sidebar extends React.Component {
 					<SideBarListItems user={this.props.user} />
 				</div>
 		   	 	<div>
-			    	<img className="img-avatar" id="side-bar-avatar" src={avatar} />
+			    	<img className="img-circle" id="side-bar-avatar" src={avatar} />
 			      
 					<a className="md-type-title user-name-view" href="/user">
 						{this.props.user.firstname + ' ' + this.props.user.lastname}

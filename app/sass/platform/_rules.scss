@@ -384,7 +384,12 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 }
 
 .card{
+	overflow: hidden;
 	pointer-events: all;
+}
+
+.card-foot-btn {
+	border-radius: 0px 0px 2px 2px;
 }
 
 // related
@@ -917,6 +922,7 @@ div.list {
 	> .icon {
 		margin: 10px;
 		padding: 10px;
+		border-radius: 50%;
 	}
 	> .dim {
 		z-index: $z-dim;

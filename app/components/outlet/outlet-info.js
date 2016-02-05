@@ -114,7 +114,7 @@ export default class OutletInfo extends React.Component {
 						placeholder="Bio" 
 						defaultValue={outlet.bio}></textarea>
 					
-					<button className="btn btn-flat" onClick={this.updateSettings}>SAVE CHANGES</button>
+					<button className="btn btn-flat card-foot-btn" onClick={this.updateSettings}>SAVE CHANGES</button>
 				</div>
 			</div>
 		);
