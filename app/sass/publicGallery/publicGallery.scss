@@ -136,6 +136,7 @@ $mobileHeight:240px;
 
 			.caption{
 				font-size:14px;
+				line-height:20px;
 				font-family:$roboto;
 				margin-right:20px;
 				@include rgbaWithHex(color, 0, 0, 0, 0.87, #292929);
