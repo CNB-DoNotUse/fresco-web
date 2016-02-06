@@ -40,6 +40,7 @@ export default class Footer extends React.Component {
 						<ul className="links" id="footer-actions">
 							<li><a href="/team">TEAM</a></li>
 							<li><a href="/press">PRESS</a></li>
+							<li><a href="/faq">FAQ</a></li>
 							<li><a href="/contact">CONTACT</a></li>
 						</ul>
 					</div>
