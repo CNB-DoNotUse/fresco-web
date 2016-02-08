@@ -53,10 +53,11 @@ router.get('/:id', (req, res, next) => {
     
     //return res.render('error', {user: req.session.user, error_code: 404, error_message: config.ERR_PAGE_MESSAGES[404]});
     if (error || !body || body.err) {
-      return next(error || body.err);
+      gallery = {};
+    } else {
+      gallery = body.data;
     }
 
-    gallery = body.data;
    
     //Check if post has approvals in place
     if (post.approvals) {
