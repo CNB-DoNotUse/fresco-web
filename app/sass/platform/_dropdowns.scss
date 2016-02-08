@@ -21,6 +21,9 @@ $radius:2px;
 	vertical-align:middle;
 	position:relative;
 	display:inline-block;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	   	-ms-user-select: none;
 
 	border-top-right-radius:$radius;
 	border-top-left-radius:$radius;

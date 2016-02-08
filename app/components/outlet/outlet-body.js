@@ -124,7 +124,7 @@ export default class OutletBody extends React.Component {
 						
 						<div className="col-sm-8 tall">
 							<PostList
-								className="pt24"
+								className="pt0"
 								loadPosts={this.loadPosts}
 								rank={this.props.user.rank}
 								allPurchased={true}
