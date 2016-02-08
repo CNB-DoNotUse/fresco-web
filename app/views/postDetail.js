@@ -71,17 +71,18 @@ class PostDetail extends React.Component {
  								verifier={this.props.verifier} />
  						</div>
  					</div>
-
+					{this.state.gallery ? 
  					<PostRelated 
- 						gallery={this.state.gallery} />
+ 						gallery={this.state.gallery} /> : ''}
  				</div>
-
- 				<GalleryEdit 
- 					gallery={this.state.gallery} 
- 					toggled={this.state.toggled}
- 					toggle={this.toggle}
- 					updateGallery={this.updateGallery}
- 					hide={this.hide} />
+ 				{this.state.gallery ? 
+	 				<GalleryEdit 
+	 					gallery={this.state.gallery} 
+	 					toggled={this.state.toggled}
+	 					toggle={this.toggle}
+	 					updateGallery={this.updateGallery}
+	 					hide={this.hide} />
+				: '' }
  			</App>
  		);
  	}
