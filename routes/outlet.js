@@ -27,8 +27,8 @@ var express     = require('express'),
 
     function doWithOutletInfo(error, response, body) {
         if (error || !body || body.err){
-            var error = new Error(config.ERR_PAGE_MESSAGES[404]);
-            error.status = 404;
+            var error = new Error(config.ERR_PAGE_MESSAGES[500]);
+            error.status = 500;
 
             return next(error);
         }
