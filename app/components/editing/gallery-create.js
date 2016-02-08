@@ -24,7 +24,7 @@ export default class GalleryCreate extends React.Component {
 			tags: [],
 			relatedStories: [],
 			articles: [],
-			visibility: 0
+			visibility: 0 
 		}
 		this.clear = this.clear.bind(this);
 		this.create = this.create.bind(this);
@@ -102,7 +102,7 @@ export default class GalleryCreate extends React.Component {
  			return post._id
  		});
 
-		if(posts.length == 0)
+		if(posts.length == 0) 
 			return $.snackbar({content:"Galleries must have at least 1 post"});
 
  		//Generate stories for update
@@ -123,7 +123,7 @@ export default class GalleryCreate extends React.Component {
  			else
  				return articles._id;
 
- 		});
+ 		});	
 
  		var params = {
  			caption: caption,
@@ -149,9 +149,9 @@ export default class GalleryCreate extends React.Component {
  					this.hide();
  					this.props.setSelectedPosts([]);
 
- 					$.snackbar({
- 						content: 'Gallery successfully saved! Click here to view it',
- 						timeout: 5000
+ 					$.snackbar({ 
+ 						content: 'Gallery successfully saved! Click here to view it', 
+ 						timeout: 5000 
  					}).click(() => {
 						var win = window.open('/gallery/' + result.data._id, '_blank');
 						win.focus();
@@ -161,7 +161,7 @@ export default class GalleryCreate extends React.Component {
  			}
  		});
  	}
-
+	
 	render() {
 
 		//Map out posts for slick slider
@@ -175,54 +175,54 @@ export default class GalleryCreate extends React.Component {
 
  		return (
  			<div>
-
+	 			
 	 			<div className="dim toggle-gcreate">
 	 			</div>
 
 	 			<div className="edit panel panel-default toggle-gcreate gcreate">
-
+		 			
 		 			<div className="col-xs-12 col-lg-12 edit-new dialog">
-
+		 				
 		 				<div className="dialog-head">
 		 					<span className="md-type-title">Create Gallery</span>
 		 					<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
 		 				</div>
-
+		 					
 	 					<div className="dialog-foot">
 	 						<button onClick={this.clear} type="button" className="btn btn-flat">Clear all</button>
 	 						<button onClick={this.create}  type="button" className="btn btn-flat pull-right">Save</button>
 	 						<button onClick={this.hide} type="button" className="btn btn-flat pull-right toggle-gcreate toggler toggled">Discard</button>
 	 					</div>
-
+	 					
 	 					<div className="dialog-body">
 	 						<div className="dialog-col col-xs-12 col-md-7 form-group-default">
 	 							<div className="dialog-row">
-	 								<textarea
-	 									ref="caption"
-	 									type="text"
-	 									className="form-control floating-label"
+	 								<textarea 
+	 									ref="caption" 
+	 									type="text" 
+	 									className="form-control floating-label" 
 	 									placeholder="Caption" />
 	 							</div>
-
-	 							<GalleryEditTags
-	 								ref='tags'
-	 								tags={this.state.tags}
+	 							
+	 							<GalleryEditTags 
+	 								ref='tags' 
+	 								tags={this.state.tags} 
 	 								updateTags={this.updateTags} />
-
-	 							<GalleryEditStories
+	 							
+	 							<GalleryEditStories 
 	 								relatedStories={this.state.relatedStories}
 	 								updateRelatedStories={this.updateRelatedStories} />
-
-	 							<GalleryEditArticles
+	 							
+	 							<GalleryEditArticles 
 	 								articles={this.state.articles}
 	 								updateArticles={this.updateArticles} />
-
+	 							
 	 							<div className="dialog-row">
 									<div className="checkbox">
 										<label>
-											<input
-												ref="highlight"
-												type="checkbox"
+											<input 
+												ref="highlight" 
+												type="checkbox" 
 												onChange={this.toggleVisibility} /> Highlighted
 										</label>
 									</div>
@@ -230,7 +230,7 @@ export default class GalleryCreate extends React.Component {
 	 						</div>
 
 	 						<Slick
-	 							dots={true}
+	 							dots={true} 
 	 							className="dialog-col col-xs-12 col-md-5">
 	 							{posts}
 	 						</Slick>
@@ -242,7 +242,7 @@ export default class GalleryCreate extends React.Component {
  			</div>
  		);
  	}
-
+	
 
 
 }
