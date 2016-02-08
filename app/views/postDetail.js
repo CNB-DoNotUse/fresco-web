@@ -47,15 +47,28 @@ class PostDetail extends React.Component {
 
  	render() {
 
- 		var editable = this.props.user.rank >= global.RANKS.CONTENT_MANAGER;
+ 		var editable = this.props.user.rank >= global.RANKS.CONTENT_MANAGER && this.state.gallery._id,
+ 			galleryEdit = '',
+ 			relatedPosts = '';
+
+ 		if(editable){
+ 			galleryEdit = <GalleryEdit 
+			 				gallery={this.state.gallery} 
+			 				toggled={this.state.toggled}
+			 				toggle={this.toggle}
+			 				updateGallery={this.updateGallery}
+			 				hide={this.hide} />
+
+			relatedPosts = <PostRelated 
+		 						gallery={this.state.gallery} />
+ 		}
 
  		return (
  			<App user={this.props.user}>
  				<TopBar 
  					title={this.props.title}
  					editable={editable}
- 					edit={this.toggle}
-				/>
+ 					edit={this.toggle} />
 				
  				<div className="content">
  					<div className="row">
@@ -71,18 +84,9 @@ class PostDetail extends React.Component {
  								verifier={this.props.verifier} />
  						</div>
  					</div>
-					{this.state.gallery ? 
- 					<PostRelated 
- 						gallery={this.state.gallery} /> : ''}
+					{relatedPosts}
  				</div>
- 				{this.state.gallery ? 
-	 				<GalleryEdit 
-	 					gallery={this.state.gallery} 
-	 					toggled={this.state.toggled}
-	 					toggle={this.toggle}
-	 					updateGallery={this.updateGallery}
-	 					hide={this.hide} />
-				: '' }
+ 				{galleryEdit}
  			</App>
  		);
  	}
@@ -90,7 +94,7 @@ class PostDetail extends React.Component {
 }
 
 PostDetail.defaultProps = {
-	gallery : {}
+	gallery: {}
 }
 
 ReactDOM.render(

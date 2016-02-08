@@ -47,9 +47,8 @@ a:hover {
     -moz-border-radius: 2px;
     -ms-border-radius: 2px;
     border-radius: 2px;
-    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
-    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    @include border-radius(2px);
+    @include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
 }
 
 input, textarea{
@@ -248,7 +247,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		display: none;
 		max-height:250px;
 		overflow-y:scroll;
-		box-shadow: 0 3px 10px rgba(0,0,0,.23),0 3px 10px rgba(0,0,0,.16);
+		@include box-shadow(0 3px 10px rgba(0,0,0,.23),0 3px 10px rgba(0,0,0,.16));
 
 		li {
 			padding: 5px;
@@ -1057,7 +1056,7 @@ div.list {
 			.right-info {
 				position: absolute;
 				font-size: 12px;
-				color: rgba(0, 0, 0, 54);
+				color:rgba(0, 0, 0, .54);
 				right: 0px;
 			}
 

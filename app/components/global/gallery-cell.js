@@ -48,6 +48,7 @@ export default class GalleryCell extends React.Component {
 				<div className="tile-foot">
 					<div className="hover">
 						<a href={"/gallery/" + this.props.gallery._id} className="md-type-body2">See all</a>
+						
 						<GalleryCellStats stats={this.props.gallery.stats} />
 					</div>
 					
