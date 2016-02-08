@@ -98,7 +98,7 @@ export default class AdminAssignmentEdit extends React.Component {
     approve() {
         this.pending = true;
 
-        $.post('/scripts/assignment/approve',
+        $.post('/api/assignment/approve',
         {
             id: this.props.assignment._id,
             now: Date.now(),
@@ -128,7 +128,7 @@ export default class AdminAssignmentEdit extends React.Component {
 
     reject() {
         this.pending = true;
-        $.post('/scripts/assignment/deny', {
+        $.post('/api/assignment/deny', {
             id: this.props.assignment._id
         }, (data) => {
             this.pending = false;

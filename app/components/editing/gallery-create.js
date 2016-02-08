@@ -134,7 +134,7 @@ export default class GalleryCreate extends React.Component {
  			stories: stories,
  		};
 
- 		$.ajax("/scripts/gallery/create", {
+ 		$.ajax("/api/gallery/create", {
  			method: 'post',
  			contentType: "application/json",
  			data: JSON.stringify(params),

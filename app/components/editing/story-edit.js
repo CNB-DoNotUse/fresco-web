@@ -38,7 +38,7 @@ export default class StoryEdit extends React.Component {
 				caption: this.refs.editCaption.value
 			}
 
-		$.ajax("/scripts/story/update", {
+		$.ajax("/api/story/update", {
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify(params),
