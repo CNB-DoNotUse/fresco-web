@@ -43,10 +43,6 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-
-			@include mobile{
-				font-size:14px;
-			}
 		}
 		td.byline{
 			font-size:24px;
@@ -55,9 +51,6 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			@include mobile{
-				font-size:16px;
-			}
 		}
 
 	}
@@ -75,7 +68,7 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
     list-style: none;
     text-align: right;
 
-	li{
+	li {
 		position: relative;
 		display: inline-block;
 		width: 20px;
@@ -85,7 +78,7 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 		cursor: pointer;
 
 		button:before {
-		    font-size:30px;
+		    font-size: 32px !important;
 		    color:#FFF;
 		    opacity:.7;
 		}

@@ -4,6 +4,7 @@ import GalleryEditStories from './gallery-edit-stories'
 import GalleryEditArticles from './gallery-edit-articles'
 import GalleryEditPosts from './gallery-edit-posts'
 import GalleryEditMap from './gallery-edit-map'
+import GalleryEditAssignment from './gallery-edit-assignment'
 import BylineEdit from './byline-edit.js'
 
 /**
@@ -33,7 +34,6 @@ export default class GalleryEditBody extends React.Component {
 
 		return (
 			<div className="dialog-body">
-
 				<div className="dialog-col col-xs-12 col-md-7 form-group-default">
 
 					<BylineEdit ref="byline" gallery={this.props.gallery} />
@@ -50,6 +50,10 @@ export default class GalleryEditBody extends React.Component {
 							onChange={this.props.updateCaption} />
 
 					</div>
+
+					<GalleryEditAssignment
+						assignment={this.props.gallery.assignment} 
+						updateGalleryField={this.props.updateGalleryField} />
 					
 					<GalleryEditTags
 						tags={this.props.gallery.tags} 
@@ -69,9 +73,7 @@ export default class GalleryEditBody extends React.Component {
 								<input
 									type="checkbox" 
 									checked={this.props.gallery.visibility == 2}
-									onChange={this.toggleHighlight} />
-								<span className="ripple"></span>
-								<span className="check"></span> Highlighted
+									onChange={this.toggleHighlight} />  Highlighted
 							</label>
 						</div>
 					</div>
@@ -89,10 +91,8 @@ export default class GalleryEditBody extends React.Component {
 					onPlaceChange={this.props.onPlaceChange} />
 
 			</div>
-
 		);
 	}
-
 }
 
 GalleryEditBody.defaultProps = {

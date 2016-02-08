@@ -1,10 +1,13 @@
-@import "./public/fonts/roboto";
-@import "./../global/snackbar.scss";
+@import "./public/fonts/roboto/roboto";
+@import "./../global/snackbar";
+@import "./../global/mixins";
+@import "./../global/fresco-slick";
 @import "./bourbon/_bourbon";
 @import "./public/vendor/mdi/scss/materialdesignicons.scss";
 @import "_variables";
 @import "_mixins";
 @import "_functions";
 @import "_rules";
+@import "_dropdowns";
 @import "_material-typography";
-@import "_global"
+@import "_global";

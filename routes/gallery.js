@@ -27,9 +27,9 @@ router.get('/:id', (req, res, next) => {
   request({
     url: config.API_URL + "/v1/gallery/get?stories=true&stats=1&id=" + req.params.id,
     json: true
-  }, doWithGalleryGetStories);
+  }, doWithGalleryGet);
 
-  function doWithGalleryGetStories(err, response, body) {
+  function doWithGalleryGet(err, response, body) {
 
     //Check for error, 404 if true
     if (err || !body || body.err) {
@@ -42,12 +42,11 @@ router.get('/:id', (req, res, next) => {
 
     var gallery = body.data;
 
-    var title = '';
+    var title = 'Gallery';
 
-    if (gallery.owner)
-      title += 'Gallery by ' + gallery.owner.firstname + ' ' + gallery.owner.lastname;
-    else if(gallery.curator)
-      title += 'Imported by ' + gallery.curator.firstname + ' ' + gallery.curator.lastname;
+    if(gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
+      title += ' from ' + gallery.posts[0].location.address;
+    }
 
     //User is logged in, show full gallery page
     if (req.session && req.session.user) {
@@ -56,7 +55,7 @@ router.get('/:id', (req, res, next) => {
 
       var props = {
             user: req.session.user,
-            purchases: config.mapPurchases(),
+            purchases: config.mapPurchases(req.session),
             gallery: gallery,
             title: title
           };

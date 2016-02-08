@@ -24,16 +24,27 @@ export default class AdminBody extends React.Component {
 		this.skip = this.skip.bind(this);
 		this.verify = this.verify.bind(this);
 		this.remove = this.remove.bind(this);
-		
+
+		this.scroll = this.scroll.bind(this);
+
+		this.refreshInterval = null;
+
 	}
 
 	componentDidMount() {
+		this.refreshInterval = setInterval(() => {
+			if(this.props.activeTab != '') {
+				this.props.refresh();
+			}
+		}, 5000);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
 
+		// If tab changed
 	 	if( this.props.activeTab != prevProps.activeTab ) {
 
+	 		// If activeTab has submissions / assignments object, but no actual submissions / assignments, then hide admin panes.
 	 		if( this.props[this.props.activeTab] && this.props[this.props.activeTab].length == 0 ) {
 	 			this.setState({
 	 				hasActiveGallery: false,
@@ -56,7 +67,7 @@ export default class AdminBody extends React.Component {
 	 			});
 
 	 		} else {
-	 			
+
 	 			if(!this.props[this.props.activeTab]) return;
 
 		 		this.setState({
@@ -95,7 +106,7 @@ export default class AdminBody extends React.Component {
 
 	setActiveGallery(id, type) {
 
-		if( this.state.activeGallery._id == id ) return; 
+		if( this.state.activeGallery._id == id ) return;
 
 		var gallery = {};
 
@@ -138,12 +149,14 @@ export default class AdminBody extends React.Component {
 					next_index = index;
 
 				this.props[propGalleryType].splice(index, 1);
-				
+
 				break;
 			}
 		}
-		
-		this.setActiveGallery( this.props[propGalleryType][next_index]._id, this.state.activeGalleryType );
+
+		if(this.props[propGalleryType].length) {
+			this.setActiveGallery( this.props[propGalleryType][next_index]._id, this.state.activeGalleryType );
+		}
 	}
 
 	updateAssignment(id) {
@@ -165,7 +178,7 @@ export default class AdminBody extends React.Component {
 
 	remove(cb) {
 		$.ajax({
-			url: '/scripts/gallery/remove',
+			url: '/api/gallery/remove',
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
@@ -184,11 +197,13 @@ export default class AdminBody extends React.Component {
 
 	skip(cb) {
 		$.ajax({
-			url: '/scripts/gallery/skip',
+			url: '/api/gallery/update',
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
-				id: this.state.activeGallery._id
+				id: this.state.activeGallery._id,
+				rated: 1,
+				visibility: 0
 			}),
 			dataType: 'json',
 			success: (result, status, xhr) => {
@@ -204,12 +219,16 @@ export default class AdminBody extends React.Component {
 	verify(options, cb) {
 
 		$.ajax({
-			url: '/scripts/gallery/verify',
+			url: '/api/gallery/update',
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify(options),
 			dataType: 'json',
 			success: (result, status, xhr) => {
+				if(result.err) {
+					return cb(result.err);
+				}
+
 				this.spliceCurrentGallery();
 				cb(null, options.id);
 			},
@@ -218,6 +237,16 @@ export default class AdminBody extends React.Component {
 			}
 		});
 
+	}
+
+	scroll(e) {
+		var target = e.target;
+		if(target.scrollTop == target.scrollHeight - target.offsetHeight) {
+			var items = this.props[this.props.activeTab];
+			if(!items) return;
+
+			this.props.getData(items[items.length - 1]._id, {concat: true, tab: this.state.activeGalleryType + 's'}, (data) => {});
+		}
 	}
 
 	render() {
@@ -295,7 +324,7 @@ export default class AdminBody extends React.Component {
 
 		return (
 			<div className="container-fluid admin">
-				<div className="col-md-6 col-lg-7 list">
+				<div className="col-md-6 col-lg-7 list" onScroll={this.scroll}>
 					{listItems}
 				</div>
 				<div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">

@@ -31,15 +31,13 @@ export default class StoryCell extends React.Component {
 					<div className="frame"></div>
 					<div className="hover">
 						<p className="md-type-body1">{this.props.story.caption}</p>
-						<ul className="md-type-body2">
-							<li>{this.props.story.gallery_count + ' ' + (this.props.story.gallery_count == 1 ? 'gallery' : 'galleries')}</li>
-						</ul>
 					</div>
 					<StoryCellImages thumbnails={this.props.story.thumbnails} />
 				</div>
 				<div className="tile-foot">
 					<div className="hover">
 						<a href={'/story/'+ this.props.story._id} className="md-type-body2">See all</a>
+						<span className="right-info">{this.props.story.gallery_count + ' ' + (this.props.story.gallery_count == 1 ? 'gallery' : 'galleries')}</span>
 					</div>
 					<div>
 						<div>

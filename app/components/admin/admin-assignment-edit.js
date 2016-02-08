@@ -48,21 +48,20 @@ export default class AdminAssignmentEdit extends React.Component {
         if (this.props.assignment._id != prevProps.assignment._id) {
             if(this.props.hasActiveGallery) {
 
+                var assignment = this.props.assignment;
+
                 this.setState({
                     address: null,
-                    radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
+                    radius: assignment.location ? this.props.assignment.location.radius : 0,
                     location: {
-                        lat: this.props.assignment.location.geo.coordinates[1],
-                        lng: this.props.assignment.location.geo.coordinates[0],
+                        lat: assignment.location.geo.coordinates[1],
+                        lng: assignment.location.geo.coordinates[0],
                     }
                 });
 
-                var expirationDate = new Date(this.props.assignment.expiration_time);
-                var expirationHours = Math.ceil((expirationDate - Date.now()) / 1000 / 60 / 60);
-
-                this.refs['assignment-title'].value = this.props.assignment.title;
-                this.refs['assignment-description'].value = this.props.assignment.caption;
-                this.refs['assignment-expiration'].value = this.props.assignment ? global.hoursToExpiration(this.props.assignment.expiration_time) : null;
+                this.refs['assignment-title'].value = assignment.title;
+                this.refs['assignment-description'].value = assignment.caption;
+                this.refs['assignment-expiration'].value = assignment ? global.hoursToExpiration(assignment.expiration_time) : null;
 
                 $(this.refs['assignment-title']).removeClass('empty');
                 $(this.refs['assignment-description']).removeClass('empty');
@@ -102,6 +101,7 @@ export default class AdminAssignmentEdit extends React.Component {
         $.post('/scripts/assignment/approve',
         {
             id: this.props.assignment._id,
+            now: Date.now(),
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
             address: this.state.address || undefined,
@@ -109,7 +109,7 @@ export default class AdminAssignmentEdit extends React.Component {
             radius: this.state.radius,
             lat: this.state.location.lat,
             lon: this.state.location.lng,
-            expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60
+            expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now() //Convert to ms and current timestamp
         }, (data) => {
             this.pending = false;
             this.props.updateAssignment(this.props.assignment._id);
@@ -159,7 +159,7 @@ export default class AdminAssignmentEdit extends React.Component {
 
         return (
             <div className="dialog">
-                <div className="dialog-body" style={{visibility: this.props.hasActiveGallery ? 'visible' : 'hidden'}}>
+                <div className="dialog-body admin-assignment-edit" style={{visibility: this.props.hasActiveGallery ? 'visible' : 'hidden'}}>
                     <input
                         type="text"
                         className="form-control floating-label"

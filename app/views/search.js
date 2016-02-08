@@ -4,6 +4,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from './../components/topbar'
+import LocationDropdown from '../components/topbar/location-dropdown'
+import TagFilter from '../components/topbar/tag-filter'
 import SearchGalleryList from './../components/search/search-gallery-list'
 import SearchSidebar from './../components/search/search-sidebar'
 
@@ -12,11 +14,14 @@ export class Search extends React.Component {
 	constructor(props) {
 		super(props);
 			
-		var queryLat = this.getParameterByName('lat');
-		var queryLng = this.getParameterByName('lon');
-		var queryRadius = parseFloat(this.getParameterByName('r'));
-		var location = null;
-		var polygon = null;
+		var queryLat = this.getParameterByName('lat'),
+			queryLng = this.getParameterByName('lon'),
+			queryRadius = parseFloat(this.getParameterByName('r')),
+			queryTags = this.getParameterByName('tags'),
+			address = null,
+			location = null,
+			polygon = null,
+			tags = [];
 
 		if(queryRadius == 'NaN') queryRadius = 0;
 
@@ -33,10 +38,14 @@ export class Search extends React.Component {
 				var circle = new google.maps.Circle({
 					center: location,
 					map: null,
-					radius: queryRadius
+					radius: global.milesToMeters(queryRadius)
 				})
 				polygon = this.circleToPolygon(circle, 8);
 			}
+		}
+
+		if(queryTags) {
+			tags = queryTags.split(',');
 		}
 
 		this.pending = false;
@@ -45,14 +54,15 @@ export class Search extends React.Component {
 			assignments: [],
 			galleries: [],
 			isResultsEnd: false,
+			address: address,
 			location: location,
 			offset: 0,
 			polygon: polygon,
 			purchases: [],
-			radius: queryRadius,
-			showOnlyVerified: false,
+			radius: Math.floor(global.milesToFeet(queryRadius)) || 250,
+			verifiedToggle: true,
 			stories: [],
-			tags: [],
+			tags: tags,
 			users: []
 		}
 
@@ -65,6 +75,7 @@ export class Search extends React.Component {
 		this.removeTag				= this.removeTag.bind(this);
 
 		this.didPurchase			= this.didPurchase.bind(this);
+
 		this.galleryScroll			= this.galleryScroll.bind(this);
 
 		this.onVerifiedToggled		= this.onVerifiedToggled.bind(this);
@@ -73,6 +84,8 @@ export class Search extends React.Component {
 
 		this.resetGalleries			= this.resetGalleries.bind(this);
 		this.refreshData			= this.refreshData.bind(this);
+
+		this.pushState				= this.pushState.bind(this);
 	}
 
 	componentDidMount() {
@@ -81,15 +94,34 @@ export class Search extends React.Component {
 		this.resetGalleries();
 		this.getStories(0);
 		this.getUsers(0);
+
+		// If has location in state, get address from LatLng. Location dropdown will use this as it's defaultLocation
+		if(this.state.location) {
+
+			var geocoder = new google.maps.Geocoder();
+
+			geocoder.geocode({'location': this.state.location}, (results, status) => {
+				if(status === google.maps.GeocoderStatus.OK && results[0])
+					this.setState({ address: results[0].formatted_address });
+			});
+		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(JSON.stringify(prevState.location) != JSON.stringify(this.state.location) || 
-			JSON.stringify(prevState.radius) != JSON.stringify(this.state.radius)) {
+		if(JSON.stringify(prevState.location) !== JSON.stringify(this.state.location) ||
+			JSON.stringify(prevState.radius) !== JSON.stringify(this.state.radius) ||
+			prevState.tags.length !== this.state.tags.length ||
+			prevState.verifiedToggle !== this.state.verifiedToggle) {
 			this.refreshData();
 		}
 	}
-	
+
+	onVerifiedToggled(toggled) {
+		this.setState({
+			verifiedToggle: toggled
+		});
+	}
+
 	circleToPolygon(circle, numSides) {
 		var center = circle.getCenter(),
 			topleft = circle.getBounds().getNorthEast(),
@@ -97,7 +129,7 @@ export class Search extends React.Component {
 	  		radiusY = Math.abs(topleft.lng() - center.lng()),
 	  		points = [],
 			degreeStep = Math.PI * 2 / numSides;
-			
+
 		for(var i = 0; i < numSides; i++){
 			//var gpos = google.maps.geometry.spherical.computeOffset(center, radius, degreeStep * i);
 			points.push([center.lng() + radiusY * Math.sin(i * degreeStep), center.lat() + radiusX * Math.cos(i * degreeStep)]);
@@ -118,11 +150,11 @@ export class Search extends React.Component {
 
 	// Query API for assignments
 	getAssignments(offset, force) {
-		$.get('/scripts/assignment/search', {
+		$.get('/api/assignment/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10,
-			verified: this.state.showOnlyVerified,
+			verified: this.state.verifiedToggle,
 			tags: this.state.tags,
 			lat: this.state.location ? this.state.location.lat : undefined,
 			lon: this.state.location ? this.state.location.lng : undefined,
@@ -157,15 +189,16 @@ export class Search extends React.Component {
 				center: this.state.location,
 				radius: this.state.radius
 			});
-
-			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
+			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)));
 		}
 
-		$.get('/scripts/gallery/search', {
+		$.get('/api/gallery/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 18,
 			polygon: polygon,
+			verified: this.state.verifiedToggle,
+			tags: this.state.tags.join(',')
 		}, (galleries) => {
 
 			if(galleries.err || !galleries.data) return cb([]);
@@ -177,7 +210,7 @@ export class Search extends React.Component {
 
 	// Query API for users
 	getUsers(offset, force) {
-		$.get('/scripts/user/search', {
+		$.get('/api/user/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10
@@ -208,11 +241,11 @@ export class Search extends React.Component {
 				center: this.state.location,
 				radius: this.state.radius
 			});
-			
+
 			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
 		}
 
-		$.get('/scripts/story/search', {
+		$.get('/api/story/search', {
 			q: this.props.query,
 			offset: offset,
 			limit: 10,
@@ -220,7 +253,7 @@ export class Search extends React.Component {
 		}, (stories) => {
 
 			if(stories.err || !stories.data.length) return;
-			
+
 			this.setState({
 				stories: force ? stories.data : this.state.stories.concat(stories.data)
 			});
@@ -228,6 +261,7 @@ export class Search extends React.Component {
 	}
 
 	addTag(tag) {
+
 		if(this.state.tags.indexOf(tag) != -1) return;
 
 		this.setState({
@@ -236,36 +270,31 @@ export class Search extends React.Component {
 	}
 
 	removeTag(tag) {
-		if(this.state.tags.indexOf(tag) == -1) return; 
+		var index = this.state.tags.indexOf(tag);
+		if(index == -1) return;
 
-		var tags = [], tagList = this.state.tags;
-		for (var t in tagList) {
-			if(tagList[t] == tag) continue;
-			tags.push(tagList[t]);
+		var tags = [], currentTags = this.state.tags;
+
+		for(var x = 0; x < currentTags.length; x++) {
+			if(currentTags[x] != tag) {
+				tags.push(currentTags[x]);
+			}
 		}
+
 
 		this.setState({
 			tags: tags
 		});
 	}
 
-	/** 
-		Called when an item is purchased.
-		Adds purchase ID to current purchases in state.
-		Prop chain: PostList -> PostCell -> PostCellActions -> PostCellAction -> PurchaseAction
-	**/
 	didPurchase(id) {
-		var purchases = [];
-		this.state.purchases.map((purchase) => { purchases.push(purchase); })
-		purchases.push(id);
 		this.setState({
-			purchases: purchases
+			purchases: this.state.purchases.concat(id)
 		});
 	}
 
 	// Called when gallery div scrolls
 	galleryScroll(e) {
-
 		// Get scroll offset and get more purchases if necessary.
 		var searchContainer = document.getElementById('search-container');
 		var pxToBottom = searchContainer.scrollHeight - (searchContainer.clientHeight + searchContainer.scrollTop);
@@ -279,7 +308,7 @@ export class Search extends React.Component {
 			this.getGalleries(this.state.offset, (galleries) => {
 				// Allow getting more results after we've gotten more results.
 				// Update offset to new results length
-				
+
 				this.pending = false;
 				this.setState({
 					galleries: this.state.galleries.concat(galleries),
@@ -287,13 +316,6 @@ export class Search extends React.Component {
 				});
 			});
 		}
-	}
-
-	// Called when topbar verifiedToggle changed
-	onVerifiedToggled(toggled) {
-		this.setState({
-			showOnlyVerified: toggled
-		});
 	}
 
 	/**
@@ -311,9 +333,9 @@ export class Search extends React.Component {
 			}
 		});
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	resetGalleries() {
 		this.getGalleries(0, (galleries) => {
@@ -329,12 +351,14 @@ export class Search extends React.Component {
 	 * Gets new search data
 	 */
 	refreshData() {
-
 		this.getAssignments(0, true);
 		this.resetGalleries();
 		this.getUsers(0, true);
 		this.getStories(0, true);
+		this.pushState();
+	}
 
+	pushState() {
 		window.history.pushState(
 			{},
 			null,
@@ -345,31 +369,44 @@ export class Search extends React.Component {
 	}
 
 	render() {
+
 		return (
 			<App user={this.props.user}>
 				<TopBar
 					title={this.props.title}
 					timeToggle={true}
 					verifiedToggle={true}
-					tagFilter={true}
-					tagList={this.state.tags}
-					onTagAdd={this.addTag}
-					onTagRemove={this.removeTag}
-					locationDropdown={true}
-					onMapDataChange={this.onMapDataChange}
-					onVerifiedToggled={this.onVerifiedToggled} />
+					onVerifiedToggled={this.onVerifiedToggled}>
+						<TagFilter
+							onTagAdd={this.addTag}
+							onTagRemove={this.removeTag}
+							filterList={this.state.tags}
+							key="tagFilter" />
+
+						<LocationDropdown
+							location={this.state.location}
+							radius={this.state.radius}
+							units="Miles"
+							key="locationDropdown"
+							onPlaceChange={this.onPlaceChange}
+							onRadiusChange={this.onRadiusChange}
+							onMapDataChange={this.onMapDataChange}
+							defaultLocation={this.state.address} />
+				</TopBar>
+
 	    		<div
 	    			id="search-container"
 	    			className="container-fluid grid"
 		    		onScroll={this.galleryScroll}>
-	    			<div className="row">
+	    			<div>
 	    				<SearchGalleryList
 	    					rank={this.props.user.rank}
 		    				galleries={this.state.galleries}
 		    				tags={this.state.tags}
-		    				purchases={this.props.purchases.concat(this.state.purchases)} 
+		    				purchases={this.props.purchases.concat(this.state.purchases)}
 		    				didPurchase={this.didPurchase}
-		    				showOnlyVerified={this.state.showOnlyVerified} />
+		    				onlyVerified={this.state.verifiedToggle}  />
+
 		    			<SearchSidebar
 		    				assignments={this.state.assignments}
 		    				stories={this.state.stories}
@@ -382,9 +419,9 @@ export class Search extends React.Component {
 }
 
 ReactDOM.render(
- 	<Search 
+ 	<Search
  		title={"Results for \"" + window.__initialProps__.title + "\""}
- 		user={window.__initialProps__.user} 
+ 		user={window.__initialProps__.user}
  		purchases={window.__initialProps__.purchases || []}
  		query={window.__initialProps__.query} />,
  	document.getElementById('app')

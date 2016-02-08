@@ -8,10 +8,7 @@ router.get('/', function(req, res, next) {
 
   var purchases = null;
   if (req.session.user.outlet && req.session.user.outlet.verified) {
-    purchases = req.session.user.outlet.purchases || [];
-    purchases = purchases.map(function(purchase) {
-      return purchase.post;
-    });
+    purchases = config.mapPurchases(req.session);
   }
 
   var query = req.query.q,

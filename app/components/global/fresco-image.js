@@ -12,28 +12,28 @@ export default class FrescoImage extends React.Component {
 	}
 
 	componentDidMount() {
-
 		var size = this.props.size,
 			img = this.refs.image;
 
-		img.onerror = function(){
+		img.onerror = () => {
 		    
 		    var timeout = parseInt(img.getAttribute('data-t') || 1),
-		        lastTimeout = parseInt(img.getAttribute('data-lt') || 1);
+		        lastTimeout = parseInt(img.getAttribute('data-lt') || 1),
+		        image = 'https://d2j1l98c0ybckw.cloudfront.net/images/'+ size +'/missing.png';
 
 		    img.setAttribute('data-lt', timeout);
 		    img.setAttribute('data-t', timeout + lastTimeout);
 		    img.setAttribute('data-src', img.getAttribute('src'));
 		    img.setAttribute('src',  'https://d2j1l98c0ybckw.cloudfront.net/images/'+ size +'/missing.png');
 
-		    setTimeout(function(){
+		    setTimeout(() => {
 
 		        img.setAttribute('src', img.getAttribute('data-src'));
 
 		    }, timeout * 1000);
 
-		};
-	      
+		    if(this.props.updateImage) this.props.updateImage(image);
+		}
 	}
 
 	render() {
@@ -50,5 +50,6 @@ export default class FrescoImage extends React.Component {
 }
 
 FrescoImage.defaultProps = {
-	size: 'small'
+	size: 'small',
+	updateImage: ()=>{}
 }

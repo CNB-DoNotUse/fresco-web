@@ -1,4 +1,5 @@
 import React from 'react'
+import global from '../../../lib/global'
 
 export default class OutletInfo extends React.Component {
 
@@ -7,34 +8,48 @@ export default class OutletInfo extends React.Component {
 
 		this.clickProfileImgInput = this.clickProfileImgInput.bind(this);
 		this.avatarInputChange = this.avatarInputChange.bind(this);
-		this.save = this.save.bind(this);
+		this.updateSettings = this.updateSettings.bind(this);
 	}
 
+	/**
+	 * Click event for avater 
+	 */
 	clickProfileImgInput() {
-		this.refs['outlet-avatar'].click();
+		this.refs['avatarFileInput'].click();
 	}
 
+	/**
+	 * File lisntener for outlet avater
+	 */
 	avatarInputChange(e) {
 		var target = e.target;
+		
 		if(target.files && target.files[0]) {
+	        
 	        var reader = new FileReader();
 
 	        reader.onload = (data) => {
-	            this.refs['avatar-image'].style.backgroundImage = 'url(\'' + data.target.result + '\')';
+	            this.refs['outlet-avatar-image'].style.backgroundImage = 'url(\'' + data.target.result + '\')';
 	        }
 
 	        reader.readAsDataURL(target.files[0]);
 		}
 	}
 
-	save() {
-		var avatarFiles = this.refs['outlet-avatar'].files,
+	/**
+	 * Saves outlet's info
+	 */
+	updateSettings() {
+		var avatarFiles = this.refs['avatarFileInput'].files,
 			params = new FormData();
-			
-		if (avatarFiles && avatarFiles.length > 0) params.append('avatar', avatarFiles[0]);
-		params.append('bio', this.refs['outlet-bio'].value);
+		
+		//Check if there are files
+		if (avatarFiles && avatarFiles.length > 0) 
+			params.append('avatar', avatarFiles[0]);
+
+		params.append('bio', this.refs['bio'].value);
 		params.append('link', this.refs['outlet-website'].value);
-		params.append('title', this.refs['outlet-name'].value);
+		params.append('title', this.refs['name'].value);
 
 		$.ajax({
 			url: "/scripts/outlet/update",
@@ -44,38 +59,62 @@ export default class OutletInfo extends React.Component {
 			cache:false,
 			contentType:false,
 			processData:false,
-			success: (result, status, xhr) => {
-				if (result.err)
-					return this.error(null, null, result.err);
-
-				//window.location.assign('/outlet');
-				window.location.reload();
+			success: function(response, status, xhr){
+				if (response.err)
+					return this.error(null, null, response.err);
+				else{
+					$.snackbar({ content: 'Your info has been successfully saved!'})
+				}
 			},
 			error: (xhr, status, error) => {
-				$.snackbar({content:resolveError(error)});
-			},
-			complete: ()  => {
+				$.snackbar({ content: global.resolveError(error, 'There was an error updating your settings!') });
 			}
 		});
 	}
 
 	render() {
-
 		var outlet = this.props.outlet;
+
 		return (
-			<div className="card panel card-outlet-info">
-				<input type="file" className="outlet-avatar" ref="outlet-avatar" style={{position:'absolute', top: '-100px'}} accept="image/png,image/jpeg" onChange={this.avatarInputChange} multiple />
-				<div className="card-image">
-					<div className="img" style={{backgroundImage: 'url(' + outlet.avatar + ')'}} id="avatarImage" ref="avatar-image"></div>
-					<div className="img-overlay" onClick={this.clickProfileImgInput}>
+			<div className="card settings-info">
+				
+				<div className="avatar" ref="outlet-avatar-image" style={{backgroundImage: 'url(' + outlet.avatar + ')'}} >
+					<div className="overlay" onClick={this.clickProfileImgInput}>
 						<span className="mdi mdi-upload"></span>
 					</div>
 				</div>
-				<div className="card-controls">
-					<input type="text" className="outlet-name" ref="outlet-name" placeholder="Outlet name" defaultValue={outlet.title} />
-					<input type="text" className="outlet-website" ref="outlet-website" placeholder="Website" defaultValue={outlet.link} />
-					<textarea className="outlet-bio" ref="outlet-bio" rows="2" placeholder="Bio" defaultValue={outlet.bio}></textarea>
-					<button className="btn btn-flat outlet-info-save" onClick={this.save}>SAVE CHANGES</button>
+				
+				<div className="card-form">
+					<input 
+						type="file" 
+						className="outlet-avatar-input" 
+						ref="avatarFileInput"  
+						accept="image/png,image/jpeg" 
+						onChange={this.avatarInputChange} 
+						multiple />
+
+					<input 
+						type="text" 
+						className="outlet-name" 
+						ref="name" 
+						placeholder="Outlet name" 
+						defaultValue={outlet.title} />
+					
+					<input 
+						type="text" 
+						className="outlet-website" 
+						ref="outlet-website" 
+						placeholder="Website" 
+						defaultValue={outlet.link} />
+					
+					<textarea 
+						className="outlet-bio" 
+						ref="bio" 
+						rows="2"
+						placeholder="Bio" 
+						defaultValue={outlet.bio}></textarea>
+					
+					<button className="btn btn-flat card-foot-btn" onClick={this.updateSettings}>SAVE CHANGES</button>
 				</div>
 			</div>
 		);

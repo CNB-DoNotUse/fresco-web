@@ -31,7 +31,7 @@ export default class DispatchMap extends React.Component {
 		this.isOpeningCallout = false;
 
 		this.updateMap = this.updateMap.bind(this);
-		this.clearMap = this.clearMap.bind(this);
+		this.clearAssignments = this.clearAssignments.bind(this);
 		this.clearCallout = this.clearCallout.bind(this);
 		this.updateAssignmentMarkers = this.updateAssignmentMarkers.bind(this);
 		this.updateUserMarkers = this.updateUserMarkers.bind(this);
@@ -42,8 +42,6 @@ export default class DispatchMap extends React.Component {
 	}
 
 	componentDidMount() {
-
-		console.log(window.sessionStorage.dispatch);
 
 		//Set up session storage for location
 		if(!window.sessionStorage.dispatch){
@@ -67,7 +65,9 @@ export default class DispatchMap extends React.Component {
 
 		//Add event listeners for map life cycle
 		google.maps.event.addListener(map, 'idle', this.updateMap);
-		google.maps.event.addListener(map, 'dragend', this.updateMap);
+		google.maps.event.addListener(map, 'dragend', ()=>{
+			this.updateMap();
+		});
 
 		this.setState({ map: map });	
 
@@ -75,41 +75,45 @@ export default class DispatchMap extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 
-		//Check if there is an active assignment and (there no previous assignment or the prev and current active assignmnet are not the same)
+		//Check if there is an active assignment or the acive assignment has `changed`
 		if(!this.isOpeningCallout && 
 			this.props.activeAssignment && 
 			(!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)) 
-		{
+		{	
 			this.focusOnAssignment(this.props.activeAssignment);
 		}
 
-		if(JSON.stringify(prevProps.mapCenter) != JSON.stringify(this.props.mapCenter)){
+		//The map center has changed on the prop, telling the map to reposition
+		if(JSON.stringify(prevProps.mapPlace) != JSON.stringify(this.props.mapPlace)){
 
-			if(this.props.mapCenter.viewport){
-				this.state.map.fitBounds(this.props.mapCenter.viewport);
+			var place = this.props.mapPlace;
+
+			//Check if the place has a viewport, then use that, otherwsie use the location and a regular zoom
+			if(place.geometry.viewport){
+				this.state.map.fitBounds(place.geometry.viewport);
 			}
 			else{
-				this.state.map.panTo(this.props.mapCenter.location);
+				this.state.map.panTo(place.geometry.location);
 				this.state.map.setZoom(18);
 			}
 
+			//Save new map center to storage
 			window.sessionStorage.dispatch = JSON.stringify({
 				mapCenter: this.state.map.getCenter(),
 				mapZoom: this.state.map.getZoom()
 			});
-
 		}
 
-		//Check if the map should update
+		//Check if the map should update forcefully from the parent
 		if(this.props.shouldMapUpdate){
 			this.updateMap();
-			this.props.mapShouldUpdate(false);
+			this.props.mapShouldUpdate(false); //Send back up saying the map has been updated
 		}
 
-		//Check if view mode has changed
+		//Check if view mode has changed to see if the map should needs to update the assignments
 		if(this.props.viewMode !== prevProps.viewMode){
-			//Clear assignmetns
-			this.clearMap();
+			//Clear assignments
+			this.clearAssignments();
 			//Close callout
 			this.clearCallout();
 		}
@@ -211,16 +215,15 @@ export default class DispatchMap extends React.Component {
 			});
 
 			google.maps.event.addListener(marker, 'dragend', (ev) => {
-				this.props.updatePlace();
+				this.props.updateAssignmentPlace();
 			});
 		}
-
 	}
 
 	/**
 	 * Clears all relevant assignment data from the map
 	 */
-	clearMap(){
+	clearAssignments(){
 
 		for (var i = 0; i < this.state.markers.length; i++) {
 			this.state.markers[i].setMap(null);
@@ -506,11 +509,11 @@ export default class DispatchMap extends React.Component {
 			lng = user.coordinates[0],
 			lat = user.coordinates[1],
 			image = {
-				url: "/images/assignment-user@2x.png",
-				size: new google.maps.Size(70, 70),
-				scaledSize: new google.maps.Size(30, 30),
+				url: "/images/assignment-user@3x.png",
+				size: new google.maps.Size(30, 33),
+				scaledSize: new google.maps.Size(10, 11),
 				origin: new google.maps.Point(0, 0),
-				anchor: new google.maps.Point(15, 15),
+				anchor: new google.maps.Point(5, 5.5),
 			};
 		
 		return new google.maps.Marker({

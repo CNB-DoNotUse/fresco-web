@@ -72,7 +72,7 @@ export default class AutocompleteMap extends React.Component {
 		}
 
 		return (
-			<div className="map-group">
+			<div className="map-group autocomplete-map">
 				<PlacesAutocomplete
 					defaultLocation={this.props.defaultLocation}
 					currentLocation={this.state.location}

@@ -1,7 +1,6 @@
 var express     = require('express'),
     config      = require('../lib/config'),
     global      = require('../lib/global'),
-    outer       = express.Router(),
     request     = require('request-json'),
     config      = require('../lib/config'),
     client      = request.createClient(config.API_URL),
@@ -19,100 +18,94 @@ var express     = require('express'),
 
  router.get('/', (req, res, next) => {
 
-  //Check if we're logged n
-  if (!req.session || !req.session.user || !req.session.user.outlet)
+  //Check if the user has an outlet
+  if (!req.session.user.outlet)
     return res.redirect(config.DASH_HOME);
 
   //Retrieve outlet object from api
   client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
 
-  function doWithOutletInfo(error, response, body) {
+    function doWithOutletInfo(error, response, body) {
+        if (error || !body || body.err){
+            var error = new Error(config.ERR_PAGE_MESSAGES[404]);
+            error.status = 404;
 
-    if (error || !body || body.err){
+            return next(error);
+        }
 
-        var error = new Error(config.ERR_PAGE_MESSAGES[404]);
-        error.status = 404;
+        var purchases = null;
 
-        return next(error);
+        if (req.session.user.outlet.verified) {
+          
+          purchases = config.mapPurchases();
 
+        } else {
+          req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?
+            'This outlet is in demo mode. We’ll be in touch shortly to verify your account.' :
+            'This outlet is in demo mode. Purchases and downloads are currently disabled.');
+        }
+
+        var title = 'Outlet',
+            props = {
+              title: title,
+              user: req.session.user,
+              outlet: body.data,
+              purchases: purchases
+            };
+
+        res.render('app', {
+          title: title,
+          alerts: req.alerts,
+          props: JSON.stringify(props),
+          page: 'outlet'
+        });
     }
-
-    var purchases = null;
-
-    if (req.session.user.outlet.verified) {
-      
-      purchases = config.mapPurchases();
-
-    } else {
-      req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?
-        'This outlet is in demo mode. We’ll be in touch shortly to verify your account.' :
-        'This outlet is in demo mode. Purchases and downloads are currently disabled.');
-    }
-
-      var title = 'Outlet',
-          props = {
-            title: title,
-            user: req.session.user,
-            outlet: body.data,
-            purchases: purchases
-          }
-
-    res.render('app', {
-      title: title,
-      config: config,
-      alerts: req.alerts,
-      props: JSON.stringify(props),
-      page: 'outlet'
-    });
-
-  }
-
 });
 
-/**
- * Displays galleries for a specified outlet
- */
+// /**
+//  * Displays galleries for a specified outlet
+//  */
 
- router.get('/:id/galleries', (req, res, next) => {
+// router.get('/:id/galleries', (req, res, next) => {
 
-  client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);
+//   client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);
 
-  function doWithOutletInfo(error, response, body) {
+//   function doWithOutletInfo(error, response, body) {
 
-    if (error || !body || body.err){
-      var err = new Error(config.ERR_PAGE_MESSAGES[404]);
-      err.status = 403;
-      return next(err);
-    }
+//     if (error || !body || body.err){
+//       var err = new Error(config.ERR_PAGE_MESSAGES[404]);
+//       err.status = 403;
+//       return next(err);
+//     }
 
-    var purchases = null;
+//     var purchases = null;
 
-    if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified) {
-      purchases = req.session.user.outlet.purchases || [];
-      purchases = purchases.map((purchase) => {
-        return purchase.post;
-      });
-    }
+//     if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified) {
+//       purchases = req.session.user.outlet.purchases || [];
+//       purchases = purchases.map((purchase) => {
+//         return purchase.post;
+//       });
+//     }
 
-    res.render('outlet-galleries', {
-      user: req.session.user,
-      title: 'Outlet',
-      outlet: body.data,
-      purchases: purchases,
-      config: config,
-      alerts: req.alerts,
-      page: 'outlet-galleries'
-    });
+//     res.render('outlet-galleries', {
+//       user: req.session.user,
+//       title: 'Outlet',
+//       outlet: body.data,
+//       purchases: purchases,
+//       config: config,
+//       alerts: req.alerts,
+//       page: 'outlet-galleries'
+//     });
   
-  }
+//   }
 
-});
+// });
 
 /**
  *  Outlet settings page for current logged in user
  */
 
- router.get('/settings', (req, res, next) => {
+router.get('/settings', (req, res, next) => {
   
   if (!req.session.user.outlet){
 
@@ -138,52 +131,48 @@ var express     = require('express'),
           user: req.session.user,
           outlet: body.data,
           stripePublishableKey: config.STRIPE_PUBLISHABLE
-        }
+        };
 
     res.render('app', {
-      user: req.session.user,
-      outlet: body.data,
       title: title,
       page: 'outletSettings',
       alerts: req.alerts,
       remoteScripts: ['https://js.stripe.com/v2/'],
       props: JSON.stringify(props)
     });
-
   }
-
 });
 
-/**
- *  Outlet page for specified outlet
- */
+// /**
+//  *  Outlet page for specified outlet
+//  */
 
- router.get('/:id', (req, res, next) => {
-  if (!req.session || !req.session.user || req.session.user.rank < global.RANKS.CONTENT_MANAGER)
-    return res.redirect('/outlet');
+//  router.get('/:id', (req, res, next) => {
+//   if (!req.session || !req.session.user || req.session.user.rank < global.RANKS.CONTENT_MANAGER)
+//     return res.redirect('/outlet');
 
-  client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);
+//   client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);
 
-  function doWithOutletInfo(error, response, body) {
-    if (error || !body || body.err){
+//   function doWithOutletInfo(error, response, body) {
+//     if (error || !body || body.err){
 
-      var err = new Error(config.ERR_PAGE_MESSAGES[404]);
-      err.status = 404;
-      return next(err);
+//       var err = new Error(config.ERR_PAGE_MESSAGES[404]);
+//       err.status = 404;
+//       return next(err);
 
-    }
+//     }
  
-    res.render('outlet', {
-      user: req.session.user,
-      title: 'Outlet',
-      outlet: body.data,
-      purchases:  config.mapPurchases(),
-      config: config,
-      alerts: req.alerts
-    });
+//     res.render('outlet', {
+//       user: req.session.user,
+//       title: 'Outlet',
+//       outlet: body.data,
+//       purchases:  config.mapPurchases(),
+//       config: config,
+//       alerts: req.alerts
+//     });
   
-  }
+//   }
 
-});
+// });
 
 module.exports = router;

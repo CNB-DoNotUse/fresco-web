@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import TopBar from './../components/topbar'
 import App from './app'
-import DispatchMap from './../components/dispatch/dispatch-map'
-import DispatchAssignments from './../components/dispatch/dispatch-assignments'
-import DispatchSubmit from './../components/dispatch/dispatch-submit'
-import DispatchRequest from './../components/dispatch/dispatch-request'
+import DispatchMap from '../components/dispatch/dispatch-map'
+import DispatchAssignments from '../components/dispatch/dispatch-assignments'
+import DispatchSubmit from '../components/dispatch/dispatch-submit'
+import DispatchRequest from '../components/dispatch/dispatch-request'
+import TopBar from '../components/topbar'
+import LocationDropdown from '../components/global/location-dropdown';
 import global from '../../lib/global'
 
 /**
@@ -24,14 +25,14 @@ class Dispatch extends React.Component {
 			newAssignment: null,
 			shouldUpdatePlace: false,
 			shouldMapUpdate: false,
-			mapCenter: null,
+			currentPlace: null,
 			viewMode: 'active',
 		}
 		
 		this.mapShouldUpdate = this.mapShouldUpdate.bind(this);
 		this.findAssignments = this.findAssignments.bind(this);
-		this.updatePlace = this.updatePlace.bind(this);
-		this.updateMapCenter = this.updateMapCenter.bind(this);
+		this.updateAssignmentPlace = this.updateAssignmentPlace.bind(this);
+		this.updateMapPlace = this.updateMapPlace.bind(this);
 		this.updateViewMode = this.updateViewMode.bind(this);
 		this.setActiveAssignment = this.setActiveAssignment.bind(this);
 		this.updateNewAssignment = this.updateNewAssignment.bind(this);
@@ -72,12 +73,15 @@ class Dispatch extends React.Component {
 
 	//Tells the componenets to update their `Google Maps Place Autocomplete`
 	//when the marker is finished dragging
-	updatePlace() {
+	updateAssignmentPlace() {
 		this.setState({ shouldUpdatePlace: true });
 	}
 
-	updateMapCenter(location) {
-		this.setState({ mapCenter: location });
+	/**
+	 * Takes a google maps place
+	 */
+	updateMapPlace(place) {
+		this.setState({ mapPlace: place });
 	}
 
 	updateViewMode(viewMode) {
@@ -96,13 +100,9 @@ class Dispatch extends React.Component {
 		var params = params || {};
 
 		//Update view mode on params
-		params.expired = this.state.viewMode == 'expired' ? true : false;
-		params.active = this.state.viewMode == 'active' ? true : false;
-		params.verified = this.state.viewMode == 'pending' ? false : true;
-
-		//Check if the user is not a CM or Greater
-		if(this.props.user.rank < global.RANKS.CONTENT_MANAGER)
-			params.outlet = this.props.user.outlet._id;
+		params.expired = this.state.viewMode == 'expired';
+		params.active = this.state.viewMode == 'active';
+		params.pending = this.state.viewMode == 'pending';
 
 		//Add map params
 		if(map) {
@@ -129,25 +129,17 @@ class Dispatch extends React.Component {
 			data: params,
 			dataType: 'json',
 			success: (response, status, xhr) => {
-
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
-					callback([]);
+					$.snackbar({content: global.resolveError(error)});
 				else {
-
-					if(!params.verified) {
-						response.data = response.data.filter(assignment => assignment.visibility == 0);
-					}
-
 					callback(response.data);
 				}
 			},
 			error: (xhr, status, error) => {
-				$.snackbar({content: resolveError(error)});
+				$.snackbar({content: global.resolveError(error)});
 			}
-
 		});	
-
 	}
 
 	/**
@@ -186,7 +178,6 @@ class Dispatch extends React.Component {
 				return callback(null, error);
 			}
 		});
-		
 	}
 
 	/**
@@ -213,9 +204,7 @@ class Dispatch extends React.Component {
 			});
 
 			dispatchSubmit.className += ' toggled';
-
 		}
-
 	}
 
 	render() {
@@ -252,8 +241,6 @@ class Dispatch extends React.Component {
 					mapShouldUpdate={this.mapShouldUpdate}
 					key={key++} />
 			);
-
-
 		}
 		else{
 
@@ -266,14 +253,20 @@ class Dispatch extends React.Component {
 		return (
 			<App user={this.props.user}>
 				<TopBar 
-					title={this.props.title}
 					locationInput={true}
-					updateMapCenter={this.updateMapCenter} />
+					updateMapPlace={this.updateMapPlace} >
+
+					<LocationDropdown 
+						user={this.props.user}
+						outlet={this.props.outlet}
+						addLocationButton={true}
+						mapPlace={this.state.mapPlace} />
+				</TopBar>
 				
 				<DispatchMap 
 					user={this.props.user}
 					activeAssignment={this.state.activeAssignment}
-					mapCenter={this.state.mapCenter}
+					mapPlace={this.state.mapPlace}
 					viewMode={this.state.viewMode}
 					newAssignment={this.state.newAssignment}
 					shouldMapUpdate={this.state.shouldMapUpdate}
@@ -282,7 +275,7 @@ class Dispatch extends React.Component {
 					setActiveAssignment={this.setActiveAssignment}
 					findAssignments={this.findAssignments}
 					findUsers={this.findUsers}
-					updatePlace={this.updatePlace}
+					updateAssignmentPlace={this.updateAssignmentPlace}
 					updateNewAssignment={this.updateNewAssignment} />
 				
 				<div className="cards">{cards}</div>
@@ -297,6 +290,7 @@ class Dispatch extends React.Component {
 ReactDOM.render(
 	<Dispatch 
 		user={window.__initialProps__.user} 
+		outlet={window.__initialProps__.outlet}
 		title={window.__initialProps__.title} />,
 	document.getElementById('app')
 );

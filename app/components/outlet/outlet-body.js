@@ -104,11 +104,10 @@ export default class OutletBody extends React.Component {
 				<div className="tab tab-vault toggled">
 					<div className="container-fluid fat grid">
 						<div className="profile visible-xs"></div>
-						
-						<div className="col-sm-4 profile hidden-xs">
+						<div className="col-sm-4 profile hidden-xs pt0">
 							<div className="container-fluid fat">
-								<div className="col-sm-12 col-md-9 col-sm-offset-1 col-md-offset-2">
-									<img className="img-responsive" src={outlet.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'} />
+								<div className="col-sm-12">
+									<img className="img-avatar" src={outlet.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'} />
 									
 									<div className="meta">
 										<div className="meta-list">
@@ -125,6 +124,7 @@ export default class OutletBody extends React.Component {
 						
 						<div className="col-sm-8 tall">
 							<PostList
+								className="pt0"
 								loadPosts={this.loadPosts}
 								rank={this.props.user.rank}
 								allPurchased={true}

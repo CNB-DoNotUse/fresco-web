@@ -1,5 +1,5 @@
 import React from 'react';
-import FrescoImage from './fresco-image'
+import FrescoBackgroundImage from './fresco-background-image'
 import global from '../../../lib/global'
 
 /**
@@ -19,7 +19,7 @@ export default class GalleryCell extends React.Component {
 			timeString = global.formatTime(this.props.gallery.time_created),
 			size = this.props.half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6',
 			location = 'No Location',
-			stories = this.props.gallery.related_stories,
+			stories = this.props.gallery.related_stories.slice(0, 2),
 			galleryCellStories = stories.length > 0 ? <GalleryCellStories stories={stories} /> : '';
 
 		for (var i = 0; i < this.props.gallery.posts.length; i++) {
@@ -48,6 +48,7 @@ export default class GalleryCell extends React.Component {
 				<div className="tile-foot">
 					<div className="hover">
 						<a href={"/gallery/" + this.props.gallery._id} className="md-type-body2">See all</a>
+						<GalleryCellStats stats={this.props.gallery.stats} />
 					</div>
 					
 					<div>
@@ -90,7 +91,7 @@ class GalleryCellStories extends React.Component {
   		})
 
 		return (
-			<ul className="md-type-body2 story-list">{stories}</ul>
+			<ul className="md-type-body2 story-list cell-stories">{stories}</ul>
 		);
 	}
 
@@ -115,7 +116,7 @@ class GalleryCellImages extends React.Component {
 
 			return (
 				<div className="flex-row">
-					<FrescoImage image={this.props.posts[0].image} size="small" />
+					<FrescoBackgroundImage image={this.props.posts[0].image} size="medium" />
 				</div>
 			);
 		}
@@ -123,8 +124,8 @@ class GalleryCellImages extends React.Component {
 
 			return (
 				<div className="flex-row">
-					<FrescoImage image={this.props.posts[0].image} size="small" />
-					<FrescoImage image={this.props.posts[1].image} size="small" />
+					<FrescoBackgroundImage image={this.props.posts[0].image} size="small" />
+					<FrescoBackgroundImage image={this.props.posts[1].image} size="small" />
 				</div>
 			);
 		}
@@ -133,16 +134,16 @@ class GalleryCellImages extends React.Component {
 			return (
 				<div className="flex-row">
 					<div className="flex-col">
-						<FrescoImage image={this.props.posts[0].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[0].image} size="small" />
 					</div>
 					<div className="flex-col">
 						<div className="flex-row">
-							<FrescoImage image={this.props.posts[1].image} size="small" />
-							<FrescoImage image={this.props.posts[2].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[1].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[2].image} size="small" />
 						</div>
 						<div className="flex-row">
-							<FrescoImage image={this.props.posts[3].image} size="small" />
-							<FrescoImage image={this.props.posts[4].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[3].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[4].image} size="small" />
 						</div>
 					</div>
 				</div>
@@ -154,20 +155,29 @@ class GalleryCellImages extends React.Component {
 			return (
 				<div className="flex-col">
 					<div className="flex-row">
-						<FrescoImage image={this.props.posts[0].image} size="small" />
-						<FrescoImage image={this.props.posts[1].image} size="small" />
-						<FrescoImage image={this.props.posts[4].image} size="small" />
-						<FrescoImage image={this.props.posts[3].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[0].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[1].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[4].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[3].image} size="small" />
 					</div>
 					<div className="flex-row">
-						<FrescoImage image={this.props.posts[4].image} size="small" />
-						<FrescoImage image={this.props.posts[5].image} size="small" />
-						<FrescoImage image={this.props.posts[6].image} size="small" />
-						<FrescoImage image={this.props.posts[7].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[4].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[5].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[6].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[7].image} size="small" />
 					</div>
 				</div>
 			);
 		}
 	}
 
+}
+
+class GalleryCellStats extends React.Component {
+	render() {
+		var stats = this.props.stats;
+		return <span className="right-info">
+					{stats.photos} Photo{stats.photos == 1 ? '' : 's'} &bull; {stats.videos} Video{stats.videos == 1 ? '' : 's'}
+				</span>;
+	}
 }

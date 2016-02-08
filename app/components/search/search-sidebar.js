@@ -33,7 +33,7 @@ export default class SearchSide extends React.Component {
 							<span className="md-type-title">{user.firstname} {user.lastname}</span>
 						</a>
 						<span className="md-type-body1">{user.twitter ? '' : 'No Twitter'} • {user.outlet ? 
-							<a href={"/outlet/" + user.outlet}>Outlet</a> : 'No Outlet'}
+							<a href="#">Outlet</a> : 'No Outlet'}
 						</span>
 					</div>
 				</li>

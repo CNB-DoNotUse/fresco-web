@@ -10,7 +10,7 @@ export default class AssignmentListItem extends React.Component {
     render() {
 
         var assignment = this.props.assignment,
-            location = assignment.location.googlemaps || 'Unknown',
+            location = assignment.location.address || 'Unknown',
             expirationTime = new Date(this.props.assignment.expiration_time),
             expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
         
@@ -19,7 +19,7 @@ export default class AssignmentListItem extends React.Component {
         return (
             <div
                 id={assignment._id}
-                className="list-item"
+                className="list-item assignment-list-item"
                 onClick={this.props.setActiveAssignment.bind(null, assignment)}>
                 <div>
                     <img className="img-circle" src={imageUrl} />

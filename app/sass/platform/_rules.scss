@@ -18,6 +18,44 @@ a:hover {
 .toggler:hover {
 	cursor: hand;
 }
+.mt0 {
+	margin-top: 0px !important;
+}
+
+.mt16 {
+  margin-top: 16px !important;
+}
+
+.mt24 {
+  margin-top: 24px !important;
+}
+.mt64 {
+  margin-top: 64px !important;
+}
+.pt0 {
+	padding-top: 0px !important;
+}
+.pt24 {
+	padding-top: 24px !important;
+}
+.pr24 {
+	padding-right: 24px !important;
+}
+
+.img-avatar {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+}
+
+input, textarea{
+    color: rgba(0, 0, 0, 0.87);
+    color:#000;
+}
 
 // container fix
 body > div.wrapper > div > .container-fluid {
@@ -27,8 +65,20 @@ body > div.wrapper > div > .container-fluid {
 	}
 }
 
-.alertify .alert, .alertify .dialog {
-	background: transparent;
+.alertify {
+	.dialog, .alert {
+		background: transparent;
+	}
+
+	> .dialog > div {
+		border-radius: 2px;
+	}
+
+	button {
+		border: 0 !important;
+		font-weight: 500;
+	}
+
 }
 
 .ie .page {
@@ -85,8 +135,20 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	background-color: #3b5998;
 }
 
+.checkbox .check, .checkbox .check:before {
+	color: rgba(0, 0, 0, 0.54);
+}
+
 .checkbox input[type=checkbox]:checked~.check:before, .checkbox input[type=checkbox]:checked~.check{
   color: #0047bb;
+}
+
+.checkbox input[type=checkbox]:checked + .checkbox-material .check, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check {
+	color:#0047bb;
+}
+
+.checkbox input[type=checkbox]:checked + .checkbox-material .check:before, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check:before{
+	color:#0047bb;	
 }
 
 
@@ -115,11 +177,14 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	font-weight: 500;
 }
 .form-group-default {
+
 	display: inline-block;
 	font-weight: 400;
 	input.form-control,
 	textarea.form-control {
 		background-color: transparent;
+		color:#000;
+		color:rgba(0, 0, 0, 0.87);
 	}
 	.form-control:disabled {
 		border-bottom: none;
@@ -164,6 +229,15 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		color: $color-accent-primary;
 	}
 
+	.checkbox{
+		.checkbox-material{
+			margin-right:16px;
+		}
+		span{
+			font-weight:500;
+		}
+	}
+
 	.dropdown{
 		position: absolute;
 		left: 0px;
@@ -172,6 +246,8 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		background:#FFF;
 		padding:0;
 		display: none;
+		max-height:250px;
+		overflow-y:scroll;
 		box-shadow: 0 3px 10px rgba(0,0,0,.23),0 3px 10px rgba(0,0,0,.16);
 
 		li {
@@ -182,11 +258,8 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		li:hover{
 			background:#DDD;
 		}
-
 	}
-
 }
-
 
 // map
 .map-group {
@@ -250,7 +323,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	.assignment-callout-caption {
 		padding-bottom: 8px;
 		overflow: hidden;
-		max-height: 168px;
+		max-height: 120px;
 	}
 	.assignment-callout-icon {
 		padding-right: 6px;
@@ -316,7 +389,12 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 }
 
 .card{
+	overflow: hidden;
 	pointer-events: all;
+}
+
+.card-foot-btn {
+	border-radius: 0px 0px 2px 2px;
 }
 
 // related
@@ -340,6 +418,12 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	}
 }
 
+.toggle-edit {
+	.meta-description {
+		max-height: 300px;
+		overflow: auto;
+	}
+}
 
 // meta
 .meta {
@@ -374,7 +458,6 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	.meta-description {
 		display: block;
 		margin-bottom: 16px;
-
 	}
 	.meta-list > ul {
 		margin-bottom: 0;
@@ -446,6 +529,7 @@ div.chips {
 			position: relative;
 			top: 0px;
 			margin-bottom: 4px;
+			margin-right: 4px;
 			border: 1px solid $color-black-4;
 			border-radius: 2px;
 			background-color: $color-shade-1;
@@ -501,7 +585,7 @@ div.chips {
 .tab-control {
 	> button {
 		height: 40px;
-		margin: 0 -3px 0 0;
+		margin: 0px;
 		padding: 8px 24px;
 		text-align: center;
 		box-sizing: border-box;
@@ -511,7 +595,6 @@ div.chips {
 		color: $color-black-2 !important;
 	}
 	> button:last-child {
-		margin: 0;
 	}
 	> button.toggled {
 		border-bottom: 2px solid $color-accent-primary;
@@ -549,6 +632,13 @@ div.list {
 	> div.list-item {
 		padding: 16px;
 		@include display(flex);
+
+		&.assignment-list-item {
+			max-width: 368px;
+			overflow: hidden;
+		}
+
+
 		> div {
 			cursor:pointer;
 			margin-right: 16px;
@@ -581,6 +671,7 @@ div.list {
 		}
 		> div.flexy {
 			@include flex(1);
+			max-width: 85%;
 		}
 		> div.peek {
 			display: none;
@@ -654,11 +745,17 @@ div.list {
 			+ .dialog-col {
 				padding-left: 32px;
 			}
+			> .dialog-row#byline-edit{
+				padding-bottom:16px;
+			}
 			> .dialog-row {
-				padding: 16px 0;
+				padding: 16px 0 0;
 			}
 			> .dialog-row:first-child {
 				padding-top: 0;
+			}
+			> .dialog-row:last-child{
+				padding:0;
 			}
 		}
 	}
@@ -722,7 +819,7 @@ div.list {
 					line-height: 22px;
 					padding:8px 20px;
 					text-decoration:none;
-					font-weight:inherit;
+					font-weight: 500;
 				    color: rgb(0, 0, 0);
 					color: rgba(0, 0, 0, 0.87);
 					span {
@@ -734,7 +831,6 @@ div.list {
 				background-color: $color-shade-2;
 			}
 			li.active {
-				font-weight: 500;
 				a > span {
 					color: $color-accent-primary;
 				}
@@ -787,18 +883,20 @@ div.list {
 	}
 }
 
-
 //.
 .navbar {
 	position: absolute;
 	height: 64px;
-	padding-right: 8px;
 	color: inherit;
 	z-index: $z-navbar;
 	box-sizing: border-box;
 	border-bottom: 1px solid $color-black-4;
+	// @include box-shadow(0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
+
 	.icon-button {
 		margin: 20px 24px;
+		position: relative;
+		float:left;
 	}
 	.spacer {
 		display: inline-block;
@@ -816,11 +914,20 @@ div.list {
 	> .form-group-default {
 		margin: 18px 0 0 10px;
 	}
+	.location-input{
+		margin: 18px 0 0 24px;
+	}
 	> h1 {
 		display: inline-block;
+		display: inline-block;
+		max-width: 50%;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 	> .icon {
-		margin: 20px 12px;
+		margin: 10px;
+		padding: 10px;
+		border-radius: 50%;
 	}
 	> .dim {
 		z-index: $z-dim;
@@ -835,6 +942,12 @@ div.list {
 .navbar.navbar-default {
 	background-color: $color-shade-0;
 	color: inherit;
+}
+
+//panel
+
+.panel{
+	@include box-shadow(0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
 }
 
 //drop
@@ -927,8 +1040,7 @@ div.list {
 	position: absolute;
 	height: 100%;
 	overflow-y:auto;
-	margin: 64px 0 0;
-	 padding:0 0 64px;
+	padding: 64px 0 0;
 	.frame {
 		position: absolute;
 		z-index: $z-tile-body-frame;
@@ -936,11 +1048,18 @@ div.list {
 	}
 	.tiles {
 		margin: 0;
-		padding:0 0 64px;
+		padding:0;
 		> .tile {
 			cursor: pointer;
 			position: relative;
 			padding: 2px;
+
+			.right-info {
+				position: absolute;
+				font-size: 12px;
+				color: rgba(0, 0, 0, 54);
+				right: 0px;
+			}
 
 			.hover {
 				position: absolute;
@@ -955,6 +1074,8 @@ div.list {
 			}
 			.tile-body {
 				position: relative;
+				border: 1px solid $color-black-4;
+
 				> .frame {
 					position: absolute;
 					width: 100%;
@@ -973,6 +1094,7 @@ div.list {
 					color: $color-white-1;
 					> a {
 						color:#FFF;
+						margin-bottom: 8px;
 					}
 					p {
 						@include flex(1);
@@ -1018,11 +1140,18 @@ div.list {
 						@include flex(1);
 						padding-bottom: 50%;
 					}
+					> .frs-background-image {
+						@include flex(1);
+						padding-bottom: 50%;
+					}
 				}
 				.flex-col {
 					@include flex-direction(column);
 				}
 				> .flex-col > .flex-row > .img {
+					padding-bottom: 25%;
+				}
+				> .flex-col > .flex-row > .frs-background-image {
 					padding-bottom: 25%;
 				}
 				.img {
@@ -1037,13 +1166,30 @@ div.list {
 						z-index: 0;
 					}
 				}
+				.frs-background-image{
+					position: relative;
+					margin: 0;
+					padding-bottom: 100%;
+					overflow: hidden;
+					background-repeat: no-repeat;
+					background-size:cover;
+					background-position:center;
+					width:100%;
+
+					.img{
+						display:none;
+					}
+				}
 			}
 			> .tile-foot {
 				position: relative;
 				height: 64px;
-				border: 1px solid $color-black-4;
 				background-color: $color-shade-0;
+				border: 1px solid $color-black-4;
+				border-top: 0;
+				
 				> .hover {
+
 					background-color: $color-shade-0;
 					> a {
 						margin: 0 12px;
@@ -1069,6 +1215,10 @@ div.list {
 							overflow: hidden;
 							white-space: nowrap;
 							text-overflow: ellipsis;
+
+							&.timestring{
+								color:rgba(0, 0, 0, 0.54);
+							}
 						};
 						~ span {
 							margin: 0 12px;
@@ -1087,7 +1237,6 @@ div.list {
 			}
 			> .tile-foot {
 				background-color: $color-accent-faded;
-				border: 1px solid $color-accent-light;
 				> .hover {
 					background-color: $color-accent-faded;
 				}
@@ -1113,7 +1262,10 @@ div.list {
 
 // profile
 .profile.hidden-xs {
-	padding: 64px 24px 0;
+	padding-left: 24px;
+	padding-right: 24px;
+	padding-bottom: 0px;
+	padding-top: 64px;
 	height: 100%;
 	overflow-y: auto;
 	img {
@@ -1190,10 +1342,8 @@ div.admin {
 
 		.dialog-row {
 			margin-top: 24px;
+			margin-bottom: 24px;
 		}
-	}
-	.form-control-wrapper {
-		margin-bottom: 16px;
 	}
 }
 
@@ -1335,18 +1485,18 @@ div.admin {
 	margin: 0;
 	padding: 0;
 	width: 640px;
+	@include box-shadow(0 4px 4px 0 rgba(0, 0, 0 , 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12));
 	@include transition-duration(0.3s);
 	> .thumbs {
 		width: 640px;
 		height: 144px;
-		padding-left: 3px;
 		border-radius: 2px 2px 0 0;
 		overflow-x: auto;
 		overflow-y: hidden;
 		white-space: nowrap;
 		> .thumb {
 			display: inline-block;
-			margin-left: -3px;
+			margin-right:1px;
 			height: 144px;
 			> .img-responsive {
 				max-height: 100%;
@@ -1373,6 +1523,7 @@ div.admin {
 	height: 90%;
 	border-radius: 2px;
 	@include transition-duration(0.3s);
+	@include border-radius(2px);
 	> .edit-current,
 	> .edit-new {
 		height: 100%;
@@ -1516,10 +1667,18 @@ div.time {}
 }
 
 
+
+
 .form-control:focus, .form-control.focus {
 	background-image: linear-gradient(#0047bb, #0047bb), linear-gradient(#d2d2d2, #d2d2d2) !important;
 }
 
 .form-control:focus ~ .floating-label, .form-control.focus ~.floating-label {
 	color: #0047bb !important;
+}
+
+.cell-stories {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
 }

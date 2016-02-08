@@ -17,20 +17,17 @@ router.get('/:id', function(req, res, next) {
     }, function(err, response, body) {
 			
       if (err || !body || body.err){
-        
-        return res.render('error', {
-          user: req.session.user,
-          error_code: 404,
-          error_message: config.ERR_PAGE_MESSAGES[404]
-        });
-
+          var error = new Error('Story not found!');
+          error.status = 404;
+          
+          return next(error);
 			}
 
 			var props = {
-            story: body.data,
-            purchases: config.mapPurchases(),
-            user: req.session.user
-          };
+        story: body.data,
+        purchases: config.mapPurchases(),
+        user: req.session.user
+      };
 
 			res.render('app', {
         props: JSON.stringify(props),

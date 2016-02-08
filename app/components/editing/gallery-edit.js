@@ -17,7 +17,7 @@ export default class GalleryEdit extends React.Component {
 
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			gallery: null,
 			caption: '',
@@ -32,9 +32,12 @@ export default class GalleryEdit extends React.Component {
 		this.updateRelatedStories 	= this.updateRelatedStories.bind(this);
 		this.updateArticles 		= this.updateArticles.bind(this);
 		this.updateTags 			= this.updateTags.bind(this);
+		this.updateAssignment 	    = this.updateAssignment.bind(this);
 		this.updateVisibility 		= this.updateVisibility.bind(this);
 
+		this.updateGalleryField     = this.updateGalleryField.bind(this);
 		this.updateGallery 			= this.updateGallery.bind(this);
+		this.uploadNewFiles 		= this.uploadNewFiles.bind(this);
 		this.revertGallery 			= this.revertGallery.bind(this);
 		this.saveGallery 			= this.saveGallery.bind(this);
 		this.hide		 			= this.hide.bind(this);
@@ -47,7 +50,7 @@ export default class GalleryEdit extends React.Component {
 			this.setState({
 				gallery: _.clone(nextProps.gallery, true),
 				posts: nextProps.gallery.posts.map(p => p._id)
-			});	
+			});
 			$.material.init();
 		}
 	}
@@ -73,7 +76,14 @@ export default class GalleryEdit extends React.Component {
 		this.setState({
 			gallery: gallery
 		});
+	}
 
+	updateGalleryField(key, value) {
+		var gallery = this.state.gallery;
+		gallery[key] = value;
+		this.setState({
+			gallery: gallery
+		})
 	}
 
 	updateRelatedStories(stories) {
@@ -101,7 +111,14 @@ export default class GalleryEdit extends React.Component {
 		this.setState({
 			gallery: gallery
 		});
+	}
 
+	updateAssignment(assignment) {
+		var gallery = this.state.gallery;
+			gallery.assignment = assignment;
+		this.setState({
+			gallery: gallery
+		});
 	}
 
 	toggleDeletePost(post) {
@@ -126,7 +143,7 @@ export default class GalleryEdit extends React.Component {
  			gallery.visibility = visibility;
 
  		//Update new gallery
- 		this.setState({ 
+ 		this.setState({
  			gallery: gallery,
  			visibilityChanged: true
  		});
@@ -154,7 +171,7 @@ export default class GalleryEdit extends React.Component {
 	//Returns centroid for passed polygon
 	getCentroid(polygon) {
 		var path, lat = 0, lng = 0;
-		
+
 		if (Array.isArray(polygon)) {
 			var newPolygon = new google.maps.Polygon({paths: polygon});
 			path = newPolygon.getPath();
@@ -174,12 +191,18 @@ export default class GalleryEdit extends React.Component {
 	}
 
  	saveGallery() {
- 		var self 	= this,
-	 		gallery = _.clone(this.state.gallery, true),
- 			files 	= gallery.files ? gallery.files : [],
- 			caption = gallery.caption,
- 			tags 	= gallery.tags, 
+ 		var self 	   = this,
+	 		gallery    = _.clone(this.state.gallery, true),
+ 			files 	   = gallery.files ? gallery.files : [],
+ 			caption    = gallery.caption,
+ 			tags 	   = gallery.tags,
+ 			assignment = gallery.assignment ? gallery.assignment._id : undefined, 
  			bylineExists = document.getElementById('byline-edit') !== null;
+
+ 		// If assignment was removed, send -1 instead of undefined.
+ 		if(this.props.gallery.assignment && this.props.gallery.assignment._id && !assignment) {
+ 			assignment = -1;
+ 		}
 
  		//Generate post ids for update
  		var posts = _.difference(this.state.posts, this.state.deletePosts);
@@ -189,29 +212,26 @@ export default class GalleryEdit extends React.Component {
 
  		//Generate stories for update
  		var stories = gallery.related_stories.map((story) => {
-
  			if(story.new)
  				return 'NEW=' + JSON.stringify(story);
  			else
  				return story._id;
-
  		});
 
  		//Generate articles for update
  		var articles = gallery.articles.map((article) => {
-
  			if(article.new)
  				return 'NEW=' + JSON.stringify(article);
  			else
  				return article._id;
-
- 		});	
+ 		});
 
  		//Configure params for the updated gallery
  		var params = {
  			id: gallery._id,
  			caption: caption,
  			posts: posts,
+ 			assignment: assignment,
  			tags: tags,
  			stories: stories,
  			articles: articles
@@ -249,73 +269,75 @@ export default class GalleryEdit extends React.Component {
  		}
 
  		if (files.length) {
- 			// Upload files then update gallery
- 			uploadNewFiles();
-
+ 			// Upload files then update gallery in callback
+ 			this.uploadNewFiles(gallery, files, (newPosts) => {
+ 				updateGallery(newPosts);
+ 			});
  		} else {
  			// Or just update gallery if no files present
  			updateGallery();
  		}
- 		function uploadNewFiles() {
-			var data 	= new FormData();
 
- 			for (var i = 0; i < files.length; i++) {
- 				data.append(i, files[i]);
- 			}
-			
-			data.append('gallery', gallery._id);
-
-			$.ajax({
-				url: '/scripts/gallery/addpost',
-				type: 'POST',
-				data: data,
-				processData: false,
-				contentType: false,
-				cache: false,
-				dataType: 'json',
-				success: (result, status, xhr) => {
-					updateGallery(result.data);
-				},
-				error: (xhr, status, error) => {
-					$.snackbar({content: global.resolveError(error)});
-				},
-				xhr: () => {
-					var xhr = $.ajaxSettings.xhr();
-					xhr.upload.onprogress = function(evt) {
-					}
-
-					xhr.upload.onload = function() { }
-
-					return xhr;
-				}
-			}); 			
- 		}
-
- 		function updateGallery(newPosts) {
-
+ 		function updateGallery(newPosts){
  			if (typeof newPosts !== 'undefined') {
 				params.posts = _.difference(newPosts.posts, self.state.deletePosts);
  			}
 
- 			$.ajax("/scripts/gallery/update", {
+ 			$.ajax("/api/gallery/update", {
 	 			method: 'post',
 	 			contentType: "application/json",
 	 			data: JSON.stringify(params),
-	 			success: (result) => {
-	 				if(result.err) {
+	 			success: (response) => {
+	 				if(response.err || !response.data) {
 	 					$.snackbar({
-	 						content: global.resolveError(result.err, "There was an error saving the gallery.")
+	 						content: global.resolveError(response.err, "There was an error saving the gallery!")
 	 					});
 	 				}
 	 				else {
-	 					location.reload();
+	 					//Update parent gallery
+	 					self.props.updateGallery(response.data);
+	 					//Hide the modal
+	 					self.hide();
 	 				}
 	 			}
-
 	 		});
  		}
- 		
  	}
+
+ 	uploadNewFiles(gallery, files, callback) {
+		var data = new FormData();
+
+		for (var i = 0; i < files.length; i++) {
+			data.append(i, files[i]);
+		}
+
+		data.append('gallery', gallery._id);
+
+		$.ajax({
+			url: '/api/gallery/addpost',
+			type: 'POST',
+			data: data,
+			processData: false,
+			contentType: false,
+			cache: false,
+			dataType: 'json',
+			success: (result, status, xhr) => {
+				callback(result.data);
+			},
+			error: (xhr, status, error) => {
+				$.snackbar({content: global.resolveError(error)});
+			},
+			xhr: () => {
+				var xhr = $.ajaxSettings.xhr();
+				xhr.upload.onprogress = function(evt) {
+				}
+
+				xhr.upload.onload = function() { }
+
+				return xhr;
+			}
+		});
+	}
 
  	hide() {
  		this.setState({
@@ -333,11 +355,11 @@ export default class GalleryEdit extends React.Component {
 		 						<span className="md-type-title">Edit Gallery</span>
 		 						<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
 		 					</div>
-		 					
-		 					<GalleryEditBody 
+
+		 					<GalleryEditBody
 			 					ref="galleryEditBody"
 		 						gallery={this.state.gallery}
-		 						
+
 		 						onPlaceChange={this.onPlaceChange}
 		 						updateCaption={this.updateCaption}
 								updateRelatedStories={this.updateRelatedStories}
@@ -345,10 +367,11 @@ export default class GalleryEdit extends React.Component {
 								updateArticles={this.updateArticles}
 								updateTags={this.updateTags}
 								updateGallery={this.updateGallery}
+								updateGalleryField={this.updateGalleryField}
 		 						deletePosts={this.state.deletePosts}
 		 						toggleDeletePost={this.toggleDeletePost} />
-		 					
-		 					<GalleryEditFoot 
+
+		 					<GalleryEditFoot
 		 						gallery={this.state.gallery}
 		 						revert={this.revertGallery}
 		 						saveGallery={this.saveGallery}

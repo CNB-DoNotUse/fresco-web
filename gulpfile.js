@@ -9,7 +9,7 @@ var fs 				= require('fs'),
 
 var sass 			= require('gulp-sass'),
 	concat 			= require('gulp-concat'),
-	minifyCss		= require('gulp-minify-css'),
+	minifyCss		= require('gulp-cssnano'),
 	uglify			= require('gulp-uglify'),
 	source			= require('vinyl-source-stream'),
 	colors 			= require('colors');

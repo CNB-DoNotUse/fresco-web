@@ -1,8 +1,6 @@
 import React from 'react'
 import global from './../../../lib/global'
 import Dropdown from './../global/dropdown'
-import LocationDropdown from './location-dropdown'
-import TagFilter from './tag-filter'
 
 /** //
 
@@ -33,19 +31,12 @@ export default class TopBar extends React.Component {
 					
 			google.maps.event.addListener(autocomplete, 'place_changed', () => {
 
-				var place = autocomplete.getPlace(),
-					center = {
-						location: {
-							lat: place.geometry.location.lat(),
-							lng: place.geometry.location.lng()
-						}
-					};
+				var place = autocomplete.getPlace();
 
-				if(place.geometry.viewport){} 
-					center.viewport = place.geometry.viewport;
+				if(!place) return;
 
 				//Update the position to the parent component
-				this.props.updateMapCenter(center);
+				this.props.updateMapPlace(place);
 			});
 		}
 	}
@@ -59,8 +50,9 @@ export default class TopBar extends React.Component {
 
 		if(sidebar.className.indexOf('toggled') > -1){
 			//Remove toggled class
-			toggler.className.replace(/\btoggled\b/,'');
-			sidebar.className.replace(/\btoggled\b/,'');
+			$(sidebar).removeClass('toggled');
+			$(toggler).removeClass('toggled');
+
 		} else {
 			//Add toggled class
 			sidebar.className += ' toggled';
@@ -105,10 +97,14 @@ export default class TopBar extends React.Component {
 		var edit = '',
 			topbarItems = [],
 			locationInput = '',
-			saveButton = '';
+			saveButton = '',
+			title = '';
+
+		if(this.props.title){
+			title = <h1 className="md-type-title">{this.props.title}</h1>
+		}
 
 		if(this.props.saveButton){
-
 			saveButton = <a 
 							onClick={this.props.updateSettings} 
 							className="mdi mdi-content-save icon pull-right hidden-xs">
@@ -118,10 +114,11 @@ export default class TopBar extends React.Component {
 		}
 
 		if(this.props.locationInput) {
-			locationInput = <div className="form-group-default">
+			locationInput = <div className="form-group-default pull-left location-input">
 								<input 
 									type="text" 
 									ref="autocomplete"
+									id="dispatch-location-input"
 									className="form-control google-autocomplete" 
 									placeholder="Location" />
 							</div>;
@@ -129,35 +126,33 @@ export default class TopBar extends React.Component {
 		
 		if (this.props.editable) {
 
+			var className = "mdi icon pull-right hidden-xs toggle-edit toggler";
+			
+			if(this.props.editIcon)
+				className += " " + this.props.editIcon;
+			else
+				className += " mdi-pencil";
+
 			topbarItems.push(
-				<a className="mdi mdi-pencil icon pull-right hidden-xs toggle-edit toggler"
+				<a className={className}
 					key="edit"
 					onClick={this.props.edit}></a>
 			);
 		}
 
-		if (this.props.link) {
-			topbarItems.push(
-				<a className="mdi mdi-pencil icon pull-right hidden-xs"
-					key="link"
-					onClick={this.goLink} />
-			)
+		if (this.props.chronToggle) {
+			// topbarItems.push(
+			// 	<Dropdown
+			// 		options={['By capture time', 'By upload time']}
+			// 		selected='By capture time'
+			// 		onSelected={this.chronToggleSelected}
+			// 		key="chronToggle"
+			// 		inList={true} />
+			// );
 		}
 
-		if (this.props.chronToggle) {
-			topbarItems.push(
-				<Dropdown
-					options={['By capture time', 'By upload time']}
-					selected='By capture time'
-					onSelected={this.chronToggleSelected}
-					key="chronToggle"
-					inList={true} />
-			);
-		}
 		if (this.props.timeToggle) {
-			
 			topbarItems.push(
-			
 				<Dropdown
 					options={['Relative', 'Absolute']}
 					selected='Relative'
@@ -165,52 +160,18 @@ export default class TopBar extends React.Component {
 					key="timeToggle"
 					inList={true} />
 			);
-
 		}
 		if (this.props.verifiedToggle) {
 
 			topbarItems.push(
 				<Dropdown
 					options={['All content', 'Verified']}
-					selected={this.props.defalutVerified == 'all' ? 'All content' : 'Verified'}
+					selected={this.props.defaultVerified == 'all' ? 'All content' : 'Verified'}
 					onSelected={this.verifiedToggleSelected}
 					key="verifiedToggle"
 					inList={true} />
 			);
 
-		}
-
-		if (this.props.tagFilter) {
-			topbarItems.push(
-				<TagFilter
-					onTagAdd={this.props.onTagAdd}
-					onTagRemove={this.props.onTagRemove}
-					tagList={this.props.tagList}
-					key="tagFilter" />
-			);
-		}
-
-		if (this.props.locationDropdown) {
-			topbarItems.push(
-				<LocationDropdown
-					onPlaceChange={this.props.onPlaceChange}
-					onRadiusChange={this.props.onRadiusChange}
-					onMapDataChange={this.props.onMapDataChange}
-					units="Miles"
-					key="locationDropdown" />
-			);
-		}
-
-		if (this.props.outletsFilter) {
-			topbarItems.push(
-				<TagFilter
-					text="Outlets"
-					tagList={this.props.outlets}
-					filterList={this.props.outletFilterList}
-					onTagAdd={this.props.onOutletFilterAdd}
-					onTagRemove={this.props.onOutletFilterRemove}
-					key="outletsFilter" />
-			)
 		}
 
 		if(this.props.tabs) {
@@ -236,15 +197,19 @@ export default class TopBar extends React.Component {
 
 		return (
 			<nav className="navbar navbar-fixed-top navbar-default">
-				<div className="dim transparent toggle-drop toggler"></div>
+				<div className="dim toggle-drop toggler" id="_toggler" onClick={this.toggleDrawer}></div>
+				
 				<button type="button" className="icon-button toggle-drawer toggler hidden-lg" onClick={this.toggleDrawer}>
 					<span className="mdi mdi-menu icon"></span>
 				</button>
+				
 				<div className="spacer"></div>
-				<h1 className="md-type-title">{this.props.title}</h1>
+				
+				{title}
 				{locationInput}
 				{tabs}
 				{topbarItems}
+				{this.props.children}
 				{saveButton}
 			</nav>
 		);

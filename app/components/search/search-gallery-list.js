@@ -2,31 +2,37 @@ import React from 'react'
 import PostCell from './../global/post-cell.js'
 
 export default class SearchGalleryList extends React.Component {
+	
 	render() {
-		var galleries = [];
-		var purchases = this.props.purchases;
+		var purchases = this.props.purchases,
+			posts = [];
 
-		for (var g in this.props.galleries) {
-			if(this.props.showOnlyVerified && !this.props.galleries[g].approvals) continue;
+		
+		for (var i = 0; i < this.props.galleries.length; i++) {
+			var post = this.props.galleries[i]; //Actually posts, not galleries #nolan
 
-			galleries.push(
+
+			if(this.props.onlyVerified && post.approvals == 0){
+				continue;
+			}
+
+			posts.push(
 	        	<PostCell 
 	        		size="large" 
-	        		post={this.props.galleries[g]} 
+	        		post={post} 
 	        		rank={this.props.rank} 
-	        		purchased={purchases.indexOf(this.props.galleries[g]._id) != -1}
+	        		purchased={purchases.indexOf(post._id) != -1}
 	        		didPurchase={this.props.didPurchase}
-	        		key={g}
-	        		editable="true" />
+	        		key={i} />
     		);
-		}
+		};
 
 		return (
 			<div
 				className="col-md-8 tiles"
 				id="searchGalleryList"
 				ref="searchGalleryList">
-				{galleries}
+				{posts}
 			</div>
 		)
 	}

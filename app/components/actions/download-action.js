@@ -44,7 +44,6 @@ export default class DownloadAction extends React.Component {
 	    link.download = Date.now() + '.' + href.split('.').pop();
 	    link.href = href;
 	    link.click();
-		
 	}
 
 }

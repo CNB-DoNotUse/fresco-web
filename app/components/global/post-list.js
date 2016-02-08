@@ -20,6 +20,7 @@ export default class PostList extends React.Component {
 
 	constructor(props) {
 		super(props);
+
 		this.state = {
 			offset: 0,
 			purchases: this.props.purchases,
@@ -30,6 +31,7 @@ export default class PostList extends React.Component {
 			gallery: null,
 			galleryEditToggled: false
 		}
+
 		this.togglePost 		= this.togglePost.bind(this);
 		this.setSelectedPosts 	= this.setSelectedPosts.bind(this);
 		this.scroll 			= this.scroll.bind(this);
@@ -40,19 +42,39 @@ export default class PostList extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-
-		// If got new posts in props while having none previously
+		//If we receive new posts in props while having none previously
 		var currentPostIds  = this.state.posts.map(p => p._id),
 			newPostIds 		= nextProps.posts.map(p => p._id),
 			diffIds 		= _.difference(newPostIds, currentPostIds);
 
-	    if(nextProps.posts.length != this.props.posts.length || diffIds.length) {
+		//Check diff or if the parent tells the component to update
+	    if(nextProps.posts.length != this.props.posts.length || diffIds.length || nextProps.updatePosts) {
 	    	this.setState({
 	    		posts: nextProps.posts
 	    	});
 	    }
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		//Checks if the verified prop is changed
+		//`or` Checks if the sort prop is changed
+		if(prevProps.onlyVerified != this.props.onlyVerified 
+			|| prevProps.sort != this.props.sort ) {
+			this.loadInitialPosts();
+		}
+	}
+
+	componentDidMount() {
+		//Check if list is initialzied with posts, then don't load anything
+		if(this.state.posts.length) 
+			return;
+
+		this.loadInitialPosts();
+	}
+	
+	/**
+	 * Initial call to populate posts
+	 */
 	loadInitialPosts() {
 		//Access parent var load method
 		this.props.loadPosts(0, (posts) => {
@@ -64,42 +86,29 @@ export default class PostList extends React.Component {
 				posts: posts,
 				offset : offset
 			});
-
 		});
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.onlyVerified != this.props.onlyVerified || prevProps.sort != this.props.sort ) {
-			this.loadInitialPosts();
-		}
-	}
-
-	componentDidMount() {
-
-		//Check if list is initialzied with posts, then don't load anything
-		if(this.state.posts.length) 
-			return;
-
-		this.loadInitialPosts();
-
-	}
 
 	/**
 	 * Scroll listener for main window
 	 */
-	scroll() {
+	scroll(e) {
 
-		var grid = this.refs.grid;
+		var grid = e.target;
 
 		//Check that nothing is loading and that we're at the end of the scroll, 
 		//and that we have a parent bind to load  more posts
-		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight) && this.props.loadPosts){
+		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400) && this.props.loadPosts){
 
 			//Set that we're loading
 			this.setState({ loading : true });
 
+			//This is here for the new post-list structure, so we check to send an id or an offset integer
+			var offset = this.props.idOffset ? this.state.posts[this.state.offset - 1]._id : this.state.offset;
+
 			//Run load on parent call
-			this.props.loadPosts(this.state.offset, (posts) => {
+			this.props.loadPosts(offset, (posts) => {
 
 				//Disables scroll, and returns if posts are empty
 				if(!posts || posts.length == 0){ 
@@ -202,7 +211,6 @@ export default class PostList extends React.Component {
 	 }
 
 	render() {
-
 		var purchases = this.state.purchases,
 			rank = this.props.rank,
 			posts = [];
@@ -237,9 +245,11 @@ export default class PostList extends React.Component {
 	      	);
 		}
 
+		var className = "container-fluid fat grid " + this.props.className;
+
 		return (
 			<div>
-				<div className="container-fluid fat grid" ref='grid' onScroll={this.state.scrollable ? this.scroll : null} >
+				<div className={className} ref='grid' onScroll={this.state.scrollable ? this.scroll : null} >
 					<div className="row tiles" id="posts">{posts}</div>
 				</div>
 				
@@ -252,7 +262,9 @@ export default class PostList extends React.Component {
 					toggled={this.state.galleryEditToggled}
 					toggle={this.toggle} />
 				
-				<GalleryCreate posts={this.state.selectedPosts} />
+				<GalleryCreate 
+					setSelectedPosts={this.setSelectedPosts}
+					posts={this.state.selectedPosts} />
 			</div>
 		)		
 	}
@@ -260,12 +272,13 @@ export default class PostList extends React.Component {
 }
 
 PostList.defaultProps = {
+	className: '',
 	size : 'small',
 	editable: true,
 	purchases: [],
 	posts: [],
 	gallery: null,
 	scrollable: false,
-	onlyVerified: true,
+	onlyVerified: false,
 	loadPosts: function() {}
 }

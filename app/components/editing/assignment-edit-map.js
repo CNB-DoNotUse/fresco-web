@@ -68,7 +68,7 @@ export default class AssignmentEditMap extends React.Component {
 			            <input
 			                type="text"
 			                className="form-control floating-label"
-			                placeholder="Location"
+			                placeholder="Enter a location"
 			                defaultValue={address}
 			                ref="autocomplete" />
 			            <input

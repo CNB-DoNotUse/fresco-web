@@ -19,6 +19,7 @@ class Archive extends React.Component {
 
 	constructor(props) {
 		super(props);
+		
 		this.state = {
 			purchases : [],
 			verifiedToggle: true,
@@ -38,8 +39,6 @@ class Archive extends React.Component {
 
 	render() {
 
-		console.log(this.state.verifiedToggle);
-
 		return (
 			<App user={this.props.user}>
 				<TopBar 
@@ -49,6 +48,7 @@ class Archive extends React.Component {
 					verifiedToggle={true}
 					onVerifiedToggled={this.onVerifiedToggled}
 					chronToggle={true} />
+				
 				<PostList
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}

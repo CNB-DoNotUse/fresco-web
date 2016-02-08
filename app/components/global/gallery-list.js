@@ -101,11 +101,11 @@ export default class GalleryList extends React.Component {
 	}
 
 	//Scroll listener for main window
-	scroll() {
+	scroll(e) {
 
-		var grid = this.refs.grid;
+		var grid = e.target;
 
-		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight)){
+		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
 
 			this.setState({ 
 				loading : true 

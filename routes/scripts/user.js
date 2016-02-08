@@ -1,14 +1,10 @@
-var express = require('express'),
+var express     = require('express'),
     requestJson = require('request-json'),
-    request = require('request'),
-    config = require('../../lib/config'),
-    async = require('async'),
-    querystring = require('querystring'),
-    validator = require('validator'),
-    fs = require('fs'),
-    xlsx = require('node-xlsx'),
-    User = require('../../lib/user'),
-    router = express.Router();
+    validator   = require('validator'),
+    config      = require('../../lib/config'),
+    User        = require('../../lib/user'),
+    API         = require('../../lib/api'),
+    router      = express.Router();
 
 //---------------------------vvv-USER-ENDPOINTS-vvv---------------------------//
 
@@ -17,7 +13,7 @@ var express = require('express'),
  * Takes an email in the body
  */
 
-router.post('/user/reset', function(req, res, next) {
+router.post('/user/reset', (req, res, next) => {
 
     var request  = require('superagent'),
         email = req.body.email;
@@ -50,236 +46,182 @@ router.post('/user/reset', function(req, res, next) {
        return res.json({
            err: response.body.error
        });
-
     });
-
 });
 
-router.post('/user/follow', function(req, res, next) {
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/user/follow', req.body, function(err,response,body){
-    if (err)
-      return res.json({err: err, data: {}}).end();
-    if (!body)
-      return res.json({err: 'ERR_EMPTY_BODY', data: {}}).end();
-    if (body.err)
-      return res.json({err: body.err, data: {}}).end();
-
-    req.session.user.following = body.data;
-    req.session.save(function(){
-      return res.json({err: null, data: body.data}).end();
-    });
-  });
-});
-router.post('/user/login', function(req, res, next) {
-  if(req.body.email && req.body.password){
-    var parse = requestJson.createClient(config.PARSE_API);
-
-    parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
-    parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
-    parse.headers['X-Parse-Revocable-Session'] = "1";
-    
-    parse.get('/1/login?username=' + req.body.email + '&password=' + req.body.password, function(err,response,parse_body) {
-      if(err) {
-        return res.json({err: err}).end();
-      }
-      if (response.statusCode == 401) {
-        return res.status(401).send({err: 'ERR_UNAUTHORIZED'});
-      }
-      if (!parse_body) {
-        return res.json({err: 'ERR_EMPTY_BODY'}).end();
-      }
-
-
-      var api = requestJson.createClient(config.API_URL);
-      api.post('/v1/auth/loginparse', { parseSession: parse_body.sessionToken }, function(err, response, login_body) {
-        if (err)
-          return res.json({err: err.err}).end();
-        if (response.statusCode == 401)
-          return res.status(401).json({err: 'ERR_UNAUTHORIZED'}).end();
-        if (!login_body)
-          return res.json({err: 'ERR_EMPTY_BODY'}).end();
-        if (login_body.err)
-          return res.json({err: login_body.err}).end();
-
-        req.session.user = login_body.data.user;
-        req.session.user.token = login_body.data.token;
-        req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
-
-        if (!req.session.user.outlet) {
-          return  req.session.save(function(){
-            res.json({err: null, data: login_body.data.user}).end();
-          });
-        }
-
-	      api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(purchase_err,purchase_response,purchase_body){
-          if (!purchase_err && purchase_body && !purchase_body.err) {
-            req.session.user.outlet.purchases = purchase_body.data;
-          }
-
-          req.session.save(function(){
-            res.json({err: null, data: login_body.data.user}).end();
-          });
-        });
-      });
-    });
-  }else
+router.post('/user/login', (req, res) => {
+  if (!req.body.email || !req.body.password) {
     return res.json({err: 'ERR_MISSING_INFO'}).end();
-});
-router.get('/user/logout', function(req, res, next) {
-  if (!req.session.user)
-      return req.session.destroy(function(){
-        res.redirect('/');
-      });
-  
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/auth/logout', { }, function(err,response,body){
-  
-    req.session.destroy(function(){
-      res.redirect('/');
-    });
-  
-  });
-
-});
-
-router.post('/user/register', function(req, res, next) {
-  var userData = {
-    password: req.body.password,
-    email: req.body.email,
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    phone: req.body.phone,
-    token: req.body.token
-  };
-
-  if(!validator.isEmail(userData.email)){
-    return res.json({
-      err: 'ERR_INVALID_EMAIL'
-    });
-  } 
-
-  User.registerUser(userData, function(err, user_body, login_body){
-    if (err)
-      return res.json({err: err, data: {}}).end();
-      
-    req.session.user = user_body.data;
-    req.session.user.token = login_body.data.token;
-    req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
-    req.session.save(function(){
-      res.json(login_body).end();
-    });
-  });
-});
-router.get('/user/search', function(req, res, next){
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  var params = Object.keys(req.query).map(function(key){
-    return encodeURIComponent(key) + '=' + encodeURIComponent(req.query[key]);
-  }).join('&');
-
-  api.get('/v1/user/search?' + params, function(err, response, body){
-    res.json(body).end();
-  });
-});
-router.post('/user/unfollow', function(req, res, next) {
-  var api = requestJson.createClient(config.API_URL);
-  api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/user/unfollow', req.body, function(err,response,body){
-    if (err)
-      return res.json({err: err, data: {}}).end();
-    if (!body)
-      return res.json({err: 'ERR_EMPTY_BODY', data: {}}).end();
-    if (body.err)
-      return res.json({err: body.err, data: {}}).end();
-
-    req.session.user.following = body.data;
-    req.session.save(function(){
-      return res.json({err: null, data: body.data}).end();
-    });
-  });
-});
-router.post('/user/update', function(req, res, next) {
-
-	var request = require('request'),
-    formData = {
-      id: req.body.id,
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-  	  bio: req.body.bio,
-  	  email: req.body.email,
-      phone: req.body.phone || ''
-  	};
-
-	var file = null;
-
-  if(req.files) {
-    for(var i in req.files) {
-      file = req.files[i];
-    }
   }
 
-  if (file) formData.avatar = fs.createReadStream(file.path);
-  if(req.body.password) formData.password = req.body.password;
-  if (formData.email == req.session.user.email) delete formData.email;
+  var parse = requestJson.createClient(config.PARSE_API);
 
-  request.post({ url: config.API_URL + '/v1/user/update', headers: { authtoken: req.session.user.token }, formData: formData }, function(error, response, body){
+  parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
+  parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
+  parse.headers['X-Parse-Revocable-Session'] = "1";
 
-    body = JSON.parse(body);
-    for (var index in req.files)
-      fs.unlink(req.files[index].path, function(){});
+  parse.get('/1/login?username=' + req.body.email + '&password=' + req.body.password, (err, response, parse_body) => {
+    if(err) {
+      return res.json({err: err}).end();
+    }
+    if (response.statusCode == 401) {
+      return res.status(401).send({err: 'ERR_UNAUTHORIZED'});
+    }
+    if (!parse_body) {
+      return res.json({err: 'ERR_EMPTY_BODY'}).end();
+    }
 
-    if (error)
-      return res.json({err: error}).end();
-    if (!body)
-      return res.json({err: 'ERR_MISSING_BODY'}).end();
-    if (body.err)
-      return res.json({err: body.err}).end();
+    var options = {
+      url: '/auth/loginparse',
+      body: {parseSession: parse_body.sessionToken},
+      method: 'POST',
+      res
+    }
+    API.request(options, (login_body) => {
+      if(!login_body) {
+            return res.json({ "err" : "ERR_LOGIN" });
+      }
 
-    var user = body.data;
+      req.session.token = login_body.data.token;
+      req.session.user = login_body.data.user;
+      req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
 
-		req.session.user.firstname = user.firstname;
-		req.session.user.lastname = user.lastname;
-    req.session.user.bio = user.bio;
-		req.session.user.email = user.email;
-    req.session.user.phone = user.phone;
-		req.session.user.avatar = user.avatar;
+      if (!req.session.user.outlet) {
+        return req.session.save(function(){
+          res.json({err: null, data: login_body.data.user});
+        });
+      }
 
-    req.session.save(function(){
-      res.json({}).end();
-    });
+      var purchase_options = {
+        url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id,
+        method: 'GET'
+      };
+
+      API.request(purchase_options, (err, response) => {
+        if (!err) {
+          var purchases = JSON.parse(response.text);
+          req.session.user.outlet.purchases = purchases.data;
+        }
+        req.session.save(() => {
+          res.json({err: null, data: login_body.data.user});
+        });
+      });
+    })
   });
 });
-router.get('/user/verify/resend', function(req, res, next){
-	if (!req.session || !req.session.user)
+
+router.get('/user/logout', (req, res) => {
+    var end = () => {
+        req.session.destroy(() => { 
+            res.redirect('/');
+        });
+    }
+
+    if (!req.session.user) {
+        return end();
+    }
+
+    API.request({
+      method: 'POST',
+      url: '/auth/logout',
+      token: req.session.token
+    }, () => {
+      end();
+    });
+});
+
+router.post('/user/register', (req, res, next) => {
+    var userData = {
+        password: req.body.password,
+        email: req.body.email,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        phone: req.body.phone,
+        token: req.body.token
+    };
+
+    if(!validator.isEmail(userData.email)){
+        return res.json({
+          err: 'ERR_INVALID_EMAIL'
+        });
+    }
+
+    User.registerUser(userData, (err, user_body, login_body) => {
+        if (err)
+            return res.json({err: err, data: {}}).end();
+
+        req.session.token = login_body.data.token;
+        req.session.user = user_body.data;
+        req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
+        req.session.save(() => {
+            res.json(login_body).end();
+        });
+    });
+});
+
+router.get('/user/refresh', (req, res, next) => {
+
+    User.refresh(req, res, (err) => {
+        if(err)
+            return res.json({
+                err: 'ERR_REFRESH_FAIL',
+                data: null
+            });     
+        else
+            return res.json({
+                data: req.session.user,
+                err: null
+            });
+    });
+});
+
+router.post('/user/update', (req, res) => {
+    // When no picture is uploaded, avatar gets set, which confuses the API
+    if(req.body.avatar) 
+        delete req.body.avatar;
+
+    if(!req.body.bio)
+        req.body.bio = '';
+
+    API.proxyRaw(req, res, (body) => {
+        var user = body.data;
+
+        //Update all fields
+        req.session.user.firstname = user.firstname;
+        req.session.user.lastname = user.lastname;
+        req.session.user.bio = user.bio;
+        req.session.user.email = user.email;
+        req.session.user.phone = user.phone;
+        req.session.user.avatar = user.avatar;
+
+        req.session.save(() => {
+            res.json({}).end();
+        });
+    });
+});
+
+router.get('/user/verify/resend', (req, res) => {
+  if (!req.session || !req.session.user) {
     return res.json({err: 'ERR_UNAUTHORIZED'}).end();
+  }
 
-  var api = requestJson.createClient(config.API_URL);
+  API.proxyRaw(req, res, (body) => {
+    var end = () => {
+      res.redirect(req.headers['Referer'] || config.DASH_HOME);
+      res.end();
+    };
 
-  api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/user/verify/resend', {}, function(err,response,body){
-    if (err){
+    if (err) {
       req.session.alerts = [config.resolveError(body.err)];
-      return req.session.save(function(){
-        res.redirect(req.headers['Referer'] || config.DASH_HOME);
-        res.end();
-      });
+      return req.session.save(end);
     }
-    if (!body){
+    if (!body) {
       req.session.alerts = ['Could not connect to server'];
-      return req.session.save(function(){
-        res.redirect(req.headers['Referer'] || config.DASH_HOME);
-        res.end();
-      });
+      return req.session.save(end);
     }
-    
-      req.session.alerts = ['A comfirmation email has been sent to your email.  Please click the link within it in order to verify your email address.'];
-      return req.session.save(function(){
-        res.redirect(req.headers['Referer'] || config.DASH_HOME);
-        res.end();
-      });
+
+    req.session.alerts = ['A comfirmation email has been sent to your email.  Please click the link within it in order to verify your email address.'];
+    return req.session.save(end);
   });
 });
 //---------------------------^^^-USER-ENDPOINTS-^^^---------------------------//

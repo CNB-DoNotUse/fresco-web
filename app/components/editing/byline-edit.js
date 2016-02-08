@@ -33,6 +33,9 @@ export default class GalleryEditByline extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if(this.props.gallery._id != prevProps.gallery._id) {
+
+			$.material.init();
+
 			var post = this.props.gallery.posts[0];
 
 			if(this.isTwitterImport()) {
@@ -104,6 +107,7 @@ export default class GalleryEditByline extends React.Component {
 				<div className="dialog-row" ref="byline-parent" id="byline-edit">
 					<div className="split byline-section" id="gallery-byline-twitter">
 						<Dropdown
+							dropdownClass="twitter-dropdown"
 							options={[post.meta.twitter.handle, post.meta.twitter.user_name]}
 							selected={byline}
 							onSelected={this.handleSelected} />
@@ -111,9 +115,10 @@ export default class GalleryEditByline extends React.Component {
 						<div className="split-cell">
 							<input 
 								type="text" 
-								className="form-control" 
+								className="form-control floating-label byline-affiliation" 
 								defaultValue={affiliation} 
 								ref="affiliation"
+								placeholder="Affiliation"
 								id="gallery-edit-affiliation" />
 						</div>
 					</div>

@@ -41,7 +41,7 @@ form.addEventListener('submit', function(e) {
 	for (var i = 0; i < params.length; i++) {
 		value = params[i].value;
 		if(!/\S/.test(value) || typeof(value) == 'undefined'){
-			$.snackbar({content: 'Please enter a '+ params[i].name});
+			$.snackbar({content: 'Please enter a '+ params[i].name + '!'});
 			disabled = false;
 			return;
 		}

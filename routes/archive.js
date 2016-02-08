@@ -19,10 +19,9 @@ var express     = require('express'),
 router.get('/', (req, res, next) => {
 
   var title = 'Archive',
-      purchases = config.mapPurchases(req.session),
       props = {
         user : req.session.user,
-        purchases : purchases,
+        purchases : config.mapPurchases(req.session),
         title: title
       };
 
@@ -40,7 +39,6 @@ router.get('/', (req, res, next) => {
  */
 
 router.get('/galleries', (req, res, next) => {
-
   var title = 'Galleries',
       props = {
         user : req.session.user,
@@ -63,7 +61,6 @@ router.get('/galleries', (req, res, next) => {
  */
 
 router.get('/stories', (req, res, next) => {
-
   var title = 'Stories',
       props = {
         user : req.session.user
@@ -85,7 +82,6 @@ router.get('/stories', (req, res, next) => {
  */
 
 router.get('/:filter', (req, res, next) => {
-
   var filters = ['photos', 'videos'];
 
   // Check if filter is valid

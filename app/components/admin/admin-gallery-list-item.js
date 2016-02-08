@@ -10,6 +10,10 @@ export default class AdminGalleryListItem extends React.Component {
     render() {
         var gallery = this.props.gallery;
 
+        if(!gallery.posts.length) {
+            return <div></div>
+        }
+
         if(gallery.owner) {
             var galleryOwnerText =
                 <p className="md-type-body2">
@@ -35,15 +39,9 @@ export default class AdminGalleryListItem extends React.Component {
             assignmentLink = <p className="md-type-body2 assignment-link" style={{lineHeight: '18px'}}><a href={"/assignment/" + gallery.assignment._id}>{gallery.assignment.title}</a></p>
         }
 
-        var assignmentText =
-            <div>
-                {assignmentLink}
-                <p className="md-type-body1 assignment-location" style={gallery.assignment ? {lineHeight: '18px'} : {}}>{location}</p>
-            </div>
-
-
         return (
-            <div className={"list-item" + (this.props.active ? ' active' : '')} onClick={this.props.setActiveGallery.bind(null, gallery._id, this.props.type)}>
+            <div className={"list-item" + (this.props.active ? ' active' : '')} 
+                    onClick={this.props.setActiveGallery.bind(null, gallery._id, this.props.type)}>
                 <div>
                     <a href={"/gallery/" + gallery._id} target="_blank">
                         <img
@@ -52,14 +50,17 @@ export default class AdminGalleryListItem extends React.Component {
                             src={global.formatImg(gallery.posts[0].image, 'small')} />{ /* screen.css got rid of the image style */ }
                     </a>
                 </div>
-                <div className="flexy">
-                    <p className="md-type-body1">{gallery.caption || ''}</p>
+                <div className="flexy list-item-caption">
+                    <p className="md-type-body1">{gallery.caption}</p>
                 </div>
-                <div>
+                <div className="list-item-owner">
                     {galleryOwnerText}
                 </div>
-                    {assignmentText}
-                <div>
+                <div className="list-item-assignment">
+                    {assignmentLink}
+                    <p className="md-type-body1 assignment-location" style={gallery.assignment ? {lineHeight: '18px'} : {}}>{location}</p>
+                </div>
+                <div className="list-item-timestamp">
                     <p className="md-type-body1">{global.formatTime(gallery.time_created)}</p>
                 </div>
             </div>

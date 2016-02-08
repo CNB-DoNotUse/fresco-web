@@ -19,10 +19,12 @@ window.addEventListener('resize', function() {
 
 loginForm.addEventListener('submit', processLogin);
 loginButton.addEventListener('keydown', function (e) {
+
 	if(e.keyCode == 13) {
 		processLogin();
 	}
 });
+
 signUpForm.addEventListener('submit', processSignup);
 
 signUpFormHeader.addEventListener('click', function() {
@@ -84,8 +86,12 @@ loginFormHeader.addEventListener('click', function() {
 /**
  * Calls signup to process
  */
-
+var signupProcessing = false;
 var processSignup = function() {
+
+	if(signupProcessing) return;
+
+	signupProcessing = true;
 
 	//Set up fields
 	var params = [
@@ -140,8 +146,8 @@ var processSignup = function() {
 	for (var i = 0; i < params.length; i++) {
 		value = params[i].value;
 		if(!/\S/.test(value) || typeof(value) == 'undefined'){
-			$.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
-			return;
+			signupProcessing = false;
+			return $.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
 		}
 	}
 	
@@ -157,7 +163,9 @@ var processSignup = function() {
 		contentType: "application/json",
 		data: JSON.stringify(newParams),
 		dataType: 'json',
-		success: function(response, status, xhr){
+		success: function(response, status, xhr) {
+
+			signupProcessing = false;
 
 			if (response.err){
 
@@ -178,13 +186,20 @@ var processSignup = function() {
 /**
  * Calls login to process
  */
-
+var loginProcessing = false;
 var processLogin = function() {
+	if(loginProcessing) return;
+
+	loginProcessing = true;
+
 	var email = document.getElementById('login-email').value,
 		password = document.getElementById('login-password').value;
 
 	if(!/\S/.test(email) || !/\S/.test(password)){
-		$.snackbar({ content: 'Please enter in all fields!' });
+		
+		loginProcessing = false;
+
+		return $.snackbar({ content: 'Please enter in all fields!' });
 	}
 
 	$.ajax({
@@ -198,10 +213,12 @@ var processLogin = function() {
 		dataType: 'json',
 		success: function(response, status, xhr){
 
+			loginProcessing = false;
+
 			if(response.err){
 
-				$.snackbar({ content: 'An error occured. Please try again in a bit'});
-
+				$.snackbar({ content: 'Invalid email or password!'});
+				
 			}
 			//Redirect
 			else {
@@ -213,8 +230,13 @@ var processLogin = function() {
 
 		}, 
 		error: function(xhr,status,error){
+
+			loginProcessing = false;
+
 			if(error == 'Unauthorized'){
-				$.snackbar({ content: 'Invalid email or password!'});
+				return $.snackbar({ content: 'Invalid email or password!'});
+			} else{
+				return $.snackbar({ content: 'There was an error logging you in. Please try again in a bit.'});
 			}
 		}
 	});

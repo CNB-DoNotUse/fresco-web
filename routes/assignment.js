@@ -43,7 +43,6 @@ router.get('/:id', (req, res, next) => {
       title : title
     });
   }
-
 });
 
 module.exports = router;

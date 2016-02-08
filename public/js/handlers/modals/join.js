@@ -105,6 +105,8 @@ function resolveError(err) {
 			return 'Please enter a valid email!'
 		case 'ERR_INVALID_PHONE':
 			return 'Please enter a valid phone number!'
+		case 'ERR_UNAUTHORIZED':
+			return 'Invalid email or password!'
 	    default:
 	        return 'An error occured! Please try again in a bit.'   
 	}

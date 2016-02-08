@@ -10,6 +10,7 @@ export default class StoryEdit extends React.Component {
 		this.save = this.save.bind(this);
 		this.revert = this.revert.bind(this);
 		this.cancel = this.cancel.bind(this);
+		this.delete = this.delete.bind(this);
 		this.clear = this.clear.bind(this);
 
 	}
@@ -47,7 +48,6 @@ export default class StoryEdit extends React.Component {
 				if(!self.props.updateStory){
 					location.reload();
 				} else{
-					console.log(result);
 					//Update parent story
 					self.hide();
 					self.props.updateStory(result.data);
@@ -57,6 +57,21 @@ export default class StoryEdit extends React.Component {
 			error: (xhr, status, error) =>{
 				$.snackbar({content: resolveError(error)});
 			}
+		});
+	}
+
+	delete() {
+		alertify.confirm("Are you sure you want to delete this story? This cannot be undone.", (e) => {
+			$.post('/api/story/delete',
+			{
+				id: this.props.story._id
+			}, (data) => {
+				if(data.err) {
+					return $.snackbar({ content: 'There was a problem deleting yoru story' });
+				}
+
+				window.location = '/archive/stories';
+			})
 		});
 	}
 
@@ -90,6 +105,7 @@ export default class StoryEdit extends React.Component {
 							<button id="story-edit-revert" type="button" className="btn btn-flat" onClick={this.revert}>Revert changes</button>
 							<button id="story-edit-clear" type="button" className="btn btn-flat" onClick={this.clear}>Clear all</button>
 							<button id="story-edit-save" type="button" className="btn btn-flat pull-right" onClick={this.save}>Save</button>
+							<button id="story-edit-delete" type="button" className="btn btn-flat pull-right" onClick={this.delete}>Delete</button>
 							<button id="story-edit-discard" type="button" className="btn btn-flat pull-right toggle-edit toggler" onClick={this.cancel}>Discard</button>
 						</div>
 						

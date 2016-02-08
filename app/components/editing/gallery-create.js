@@ -143,11 +143,11 @@ export default class GalleryCreate extends React.Component {
  					$.snackbar({
  						content: global.resolveError(result.err, "There was an error creating your gallery!")
  					});
-
  				}
  				else{
 
  					this.hide();
+ 					this.props.setSelectedPosts([]);
 
  					$.snackbar({ 
  						content: 'Gallery successfully saved! Click here to view it', 

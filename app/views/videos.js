@@ -71,8 +71,6 @@ class Videos extends React.Component {
 
 	render() {
 
-		console.log(this.state.sort);
-
 		return (
 			<App user={this.props.user}>
 				<TopBar 

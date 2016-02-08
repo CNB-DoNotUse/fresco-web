@@ -1,2 +1,31 @@
+.admin-edit-pane {
+	border-left: 1px solid rgba(0, 0, 0, 0.12);
+	background: #ffffff;
+}
+.admin-tabs {
+	top: 11px !important;
+}
+
 video {
+}
+
+.byline-affiliation {
+	margin-top: 8px;
+}
+
+.admin-assignment-edit {
+	.form-control {
+		margin-bottom: 16px;
+	}
+}
+
+.list-item {
+
+	.list-item-caption {
+		width: 40%;
+	}
+
+	.list-item-assignment {
+		max-width: 20%;
+	}
 }

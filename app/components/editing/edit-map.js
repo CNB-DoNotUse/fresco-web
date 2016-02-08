@@ -29,9 +29,13 @@ export default class EditMap extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-
 		if(this.props.rerender) {
 			google.maps.event.trigger(this.state.map, 'resize');
+
+			if(this.state.map && this.state.marker) {
+				this.state.map.panTo(this.state.marker.getPosition(), 12);
+			}
+
 		}
 
 		//Check if there is a radius, and it is not the same as the previous one

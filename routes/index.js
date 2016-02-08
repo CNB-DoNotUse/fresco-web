@@ -33,6 +33,10 @@ router.get('/:modal?', (req, res, next) => {
             return next();
         }
     }
+    //Redirect to dashboard home if the user is already logged in, instead of the landing page 
+    else if(req.session.user != null) {
+        res.redirect('/highlights');
+    }
 
     res.render('index', {
         head: head,
@@ -172,9 +176,9 @@ router.get('/verify', (req, res, next) => {
     req.session.alerts = ['Your email has been verified!'];
 
     if (req.session && req.session.user) {
-      var token = req.session.user.token;
+
       req.session.user = body.data;
-      req.session.user.token = token;
+      
     }
 
     return req.session.save(() => {

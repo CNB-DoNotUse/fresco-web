@@ -18,6 +18,7 @@ class AssignmentDetail extends React.Component {
 
 		this.state = {
 			assignment: this.props.assignment,
+			stats: this.props.assignment.stats,
 			toggled: false,
 			verifiedToggle: true
 		}
@@ -42,18 +43,18 @@ class AssignmentDetail extends React.Component {
  	 */
  	expireAssignment() {
 
- 		/*$.post('/scripts/assignment/update', {
- 			id: this.state.assignment._id,
- 			expiration_time: Date.now()
- 		}, (response) => {
- 			location.reload();
- 		});
- 		*/
- 	
- 		$.post('/scripts/assignment/expire', {
+ 		$.post('/api/assignment/update', {
+			expiration_time: Date.now(),
  			id: this.state.assignment._id
  		}, (response) => {
- 			location.reload();
+ 			if(response.err || !response.data){
+ 				$.snackbar({ content : global.resolveError(response.err, 'There was an error expiring this assignment!') });
+ 			} else{
+ 				$.snackbar({ content : 'Assignment expired' });
+				this.setState({
+					assignment: response.data
+				});
+ 			}
  		});
  	}
 
@@ -62,33 +63,34 @@ class AssignmentDetail extends React.Component {
  			verifiedToggle: toggled
  		});
  	}
- 	
+
  	/**
  	 * Toggles edit modal with `s` (state) value. If `s` is not provided, negates toggled.
  	 */
  	 toggleEdit(s) {
  	 	this.setState({
  	 		toggled: typeof s == 'undefined' ? !this.state.toggled : s
- 	 	})
+ 	 	});
  	 }
 
  	render() {
 
  		return (
  			<App user={this.props.user}>
- 				<TopBar 
+ 				<TopBar
  					title={this.state.assignment.title}
  					timeToggle={true}
- 					chronToggle={true} 
+ 					chronToggle={true}
  					onVerifiedToggled={this.onVerifiedToggled}
  					verifiedToggle={this.props.user.rank >= global.RANKS.CONTENT_MANAGER} /* Based on user rank to see verified content */
  					editable={true}
  					edit={this.toggleEdit} />
- 				
- 				<AssignmentSidebar 
+
+ 				<AssignmentSidebar
  					assignment={this.state.assignment}
+ 					stats={this.state.stats}
  					expireAssignment={this.expireAssignment} />
- 				
+
  				<div className="col-sm-8 tall">
 	 				<PostList
 	 					rank={this.props.user.rank}
@@ -100,8 +102,9 @@ class AssignmentDetail extends React.Component {
 	 					size='large' />
 				</div>
 
-				<AssignmentEdit 
+				<AssignmentEdit
 					assignment={this.state.assignment}
+					stats={this.state.stats}
 					setAssignment={this.setAssignment}
 					toggled={this.state.toggled}
 					toggle={this.toggleEdit}
@@ -113,9 +116,9 @@ class AssignmentDetail extends React.Component {
 }
 
 ReactDOM.render(
-  	<AssignmentDetail 
-  		user={window.__initialProps__.user} 
-  		purchases={window.__initialProps__.purchases} 
+  	<AssignmentDetail
+  		user={window.__initialProps__.user}
+  		purchases={window.__initialProps__.purchases}
   		assignment={window.__initialProps__.assignment}
   		title={window.__initialProps__.title} />,
   	document.getElementById('app')

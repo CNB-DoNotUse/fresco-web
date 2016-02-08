@@ -78,8 +78,6 @@ router.get('/:id?', function(req, res, next) {
  */
 function renderUserPage(user, req, res){
 
-  console.log(req.session.user);
-
   var title = user.firstname + ' ' + user.lastname,
       props = {
         purchases: config.mapPurchases(user),

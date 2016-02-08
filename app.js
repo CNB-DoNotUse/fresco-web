@@ -2,6 +2,8 @@ var config        = require('./lib/config'),
     head          = require('./lib/head'),
     global        = require('./lib/global'),
     routes        = require('./lib/routes'),
+    API           = require('./lib/api'),
+    User          = require('./lib/user'),
     express       = require('express'),
     compression   = require('compression'),
     path          = require('path'),
@@ -14,10 +16,8 @@ var config        = require('./lib/config'),
     bodyParser    = require('body-parser'),
     multer        = require('multer'),
     fs            = require('fs'),
-    http	       =  require('http'),
+    http	        = require('http'),
     https         = require('https'),
-    requestJson   = require('request-json'),
-    request       = require('superagent');
     app           = express();
 
 // If in dev mode, use local redis server as session store
@@ -57,7 +57,7 @@ app.use(
 //Session config
 app.use(
   session({
-    name: 'FRSSID',
+    name: 'FRSSID' + (config.COOKIE_SUFFIX ? ('_' + config.COOKIE_SUFFIX) : ''),
     store: new RedisStore(redisConnection),
     secret: config.SESSION_SECRET,
     resave: false,
@@ -70,7 +70,9 @@ app.use(
 
 //Set up public direc.
 app.use(
-  express.static(path.join(__dirname, 'public'), { maxAge: 1000 * 60 * 60 * 2 }) // 2 hour cache
+  express.static(path.join(__dirname, 'public'), {
+    maxAge: 1000 * 60 * 60 * 2
+  }) // 2 hour cache
 );
 
 /**
@@ -85,15 +87,16 @@ app.use((req, res, next)=> {
   }
 
   if (req.session && req.session.alerts){
-    req.alerts = req.alerts.concat(req.session.alerts);
-    req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
-    delete req.session.alerts;
-    return req.session.save(()=> {
-      next();
-    });
+      req.alerts = req.alerts.concat(req.session.alerts);
+      req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
+      delete req.session.alerts;
+      return req.session.save(()=> {
+          next();
+      });
   }
 
   req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
+  
   next();
 });
 
@@ -109,69 +112,27 @@ app.locals.alerts = [];
  * Route session check
  */
 
-app.use(function(req, res, next) {
-
+app.use((req, res, next) => {
     var path = req.path.slice(1).split('/')[0],
-        err = new Error('Page not found!'),
-        now = Date.now(),
-        api = requestJson.createClient(config.API_URL);
-        err.status = 404;
+        now = Date.now();
+
 
     //Check if not a platform route, then send onwwards
     if(routes.platform.indexOf(path) == -1) {
-      return next();
+        return next();
     }
 
     //Check if there is no sessioned user
     if (!req.session.user) {
-      return res.redirect('/account?next=' + req.url);
+        return res.redirect('/account?next=' + req.url);
     }
 
-    //Check if the session hasn't expired
+    //Check if the session hasn't expired s
     if (!req.session.user.TTL || req.session.user.TTL - now > 0){
         return next();
     }
 
-    //Send request for user profile
-    api.get('/v1/user/profile?id=' + req.session.user._id, (err, response, body) => {
-
-        //Check request
-        if (err || !body) return next(err);
-
-        //Check for error on api payload
-        if (body.err || body.error || !body.data._id) {
-
-            delete req.session.user;
-
-            return req.session.save(function() {
-                res.redirect('/');
-            });
-        }
-
-        //Configure new session config for user
-        var token = req.session.user ? req.session.user.token : null;
-        req.session.user = body.data;
-        req.session.user.token = token;
-        req.session.user.TTL = now + config.SESSION_REFRESH_MS;
-
-        //Check if the user has an outlet, otherwise save session and move onward
-        if (!req.session.user.outlet) {
-            return req.session.save(function() {
-                return next();
-            });
-        }
-
-        //Grab purchases because user does have an outlet, then move onward
-        api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(err, response, body) {
-
-            if (!err && body && !body.err)
-                req.session.user.outlet.purchases = body.data;
-
-            req.session.save(function() {
-                return next();
-            });
-        });
-    });
+    User.refresh(req, res, next);
 });
 
 /**
@@ -199,7 +160,7 @@ for (var i = 0; i < routes.public.length; i++) {
 
   app.use('/' + routePrefix , route);
 
-};
+}
 
 /**
  * Loop through all script routes
@@ -212,7 +173,7 @@ for (var i = 0; i < routes.scripts.length; i++) {
 
   app.use('/scripts' , route);
 
-};
+}
 
 
 /**
@@ -241,65 +202,48 @@ for (var i = 0; i < routes.platform.length; i++) {
 
   app.use('/' + routePrefix , route);
 
-};
+}
 
 /**
  * Webservery proxy for forwarding to the api
  */
 
-app.use('/api', (req, res, next) => {
-  var token = req.session.user ? req.session.user.token ? req.session.user.token : '' : '';
-  if(req.method == 'GET') {
-
-    return request
-      .get(config.API_URL + '/' + config.API_VERSION + req.url)
-      .set('authtoken', token)
-      .end((err, response) => {
-        if(err) {
-          return res.json({err: 'API Error'});
-        }
-
-        var data = '';
-
-        try {
-          data = JSON.parse(response.text);
-        } catch (ex) {
-          return res.send({err: 'API Parse Error'});
-        }
-
-        return res.send(data);
-      });
-
-  }
+// Special case for assignment create
+// TODO: Remove this
+app.post('/api/assignment/create', (req, res, next) => {
+  req.body.outlet = req.session.user && req.session.user.outlet ? req.session.user.outlet._id : undefined;
   next();
-})
+});
+
+app.use('/api', API.proxy);
 
 /**
  * Error Midleware
  */
 
-app.use((err, req, res, next) => {
+app.use((error, req, res, next) => {
+    var err = {};
+    err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
+
     // Development error handle will print stacktrace
-    if (app.get('env') === 'development') {
+    if (config.DEV) {
         console.log('Method:', req.method,
-                  '\nPath:', req.path,
-                  '\nBody', req.body,
-                  '\nError: ', err + '\n');
+                    '\nPath:', req.path,
+                    '\nBody', req.body,
+                    '\nError: ', error.message + '\n');
+
     }
 
+    err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
+
     //Respond with code
-    res.status(err.status || 500);
+    res.status(err.status);
 
     res.render('error', {
-        user: req.session && req.session.user ? req.session.user : null,
-        err: {
-            message: err.message || config.ERR_PAGE_MESSAGES[err.status || 500],
-            code: err.status || 500
-        },
+        err: err,
         section: 'public',
         page: 'error'
     });
-
 });
 
 /**
@@ -307,7 +251,6 @@ app.use((err, req, res, next) => {
  */
 
  app.use((req, res, next) => {
-
     //Respond with code
     res.status(404);
 
@@ -335,30 +278,5 @@ app.use((err, req, res, next) => {
 
  });
 
-if(!config.DEV) {
 
-  var params  = {
-      key: fs.readFileSync('cert/fresconews_com.key'),
-      cert: fs.readFileSync('cert/fresconews_com.crt'),
-      ca: [fs.readFileSync('cert/DigiCertCA.crt')]
-  };
-
-  http.createServer(function (req, res) {
-
-    //  Can be refactored and be applied to more subdomains by creating middleware to handle list of subdomains and their destinations.
-    if(/^pro/.test(req.headers.host)) {
-      res.writeHead(302, { 'Location': config.WEB_ROOT + '/pro' });
-      res.end();
-      return;
-    }
-  
-  	res.writeHead(302, { 'Location': config.WEB_ROOT + req.url });
-    res.end();
-  }).listen(3000);
-
-  https.createServer(params, app).listen(4430);
-  console.log('Listening on port 3000 (http) and port 4430 (https)');
-
-} else {
-  module.exports = app;
-}
+module.exports = app;

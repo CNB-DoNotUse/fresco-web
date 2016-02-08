@@ -9,24 +9,23 @@ import global from '../../lib/global'
 export default class App extends React.Component {
 
 	componentDidMount() {
-
 		$.material.init();
-
 	}
 
 	render() {
 		
 		return (
 			<div>
-				<div className="dim toggle-drawer toggler" id="_toggler"></div>
 				<div className="container-fluid">
 					<Sidebar user={this.props.user} />
+
 					<div className="col-md-12 col-lg-10">
 						{this.props.children}
 					</div>
 				</div>
 			</div>
 		);
-
 	}
+
+
 }

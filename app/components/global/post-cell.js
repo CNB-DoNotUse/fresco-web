@@ -17,7 +17,6 @@ export default class PostCell extends React.Component {
 	}
 	
 	postClicked(e) {
-
 		//Check if clicked with shift key
 		if(e.shiftKey) {
 
@@ -31,7 +30,6 @@ export default class PostCell extends React.Component {
 			win.focus;
 
 		}
-
 	}
 
 	render() {
@@ -112,9 +110,7 @@ class PostCellStories extends React.Component {
 
 	render() {
 
-		var stories = ''
-
-		if(this.props.stories){
+		if(this.props.stories.length) {
 
 			var stories = this.props.stories.map((stories, i) => {
 		      	return (
@@ -126,6 +122,8 @@ class PostCellStories extends React.Component {
 			    )
 	  		});
 
+		} else {
+			return <div></div>;
 		}
 
 		return (
@@ -133,6 +131,10 @@ class PostCellStories extends React.Component {
 		);
 	}
 
+}
+
+PostCellStories.defaultProps = {
+	stories: []
 }
 
 /**
@@ -159,23 +161,21 @@ class PostCellActions extends React.Component {
 				);
 			}
 
-			actions.push(
-				<DownloadAction 
-					post={this.props.post} 
-					key={++key} />
-			);
-
 			//Show the purhcased icon if the post hasn't been purchased                       
 			if(this.props.purchased === false){
-
 				actions.push(
 					<PurchaseAction 
 						post={this.props.post} 
 						didPurchase={this.props.didPurchase} 
 						key={++key}/>
 				);
-
 			}
+
+			actions.push(
+				<DownloadAction 
+					post={this.props.post} 
+					key={++key} />
+			);
 		}
 		//Check if the post has been purchased
 		else if (this.props.purchased === true)
@@ -187,11 +187,7 @@ class PostCellActions extends React.Component {
 
 		//Check if the post is not purhcased, and it is purchasble from the license
 		else if (this.props.purchased == false && this.props.post.license == 1) {
-
-			// actions.push(
-			// 	<span className="mdi mdi-library-plus icon pull-right" key={++key}></span>
-			// );
-			// 
+			
 			actions.push(
 				<PurchaseAction 
 					post={this.props.post} 

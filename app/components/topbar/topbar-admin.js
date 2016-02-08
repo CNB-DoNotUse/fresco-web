@@ -68,7 +68,7 @@ export default class TopBarAdmin extends React.Component {
 				$.snackbar({content: 'Gallery Imported!'});
 				this.refs.uploadImportFiles.value = '';
 				this.props.setTab('imports');
-				this.props.getImports();
+				this.props.resetImports();
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: 'Failed to import media'});
@@ -101,7 +101,7 @@ export default class TopBarAdmin extends React.Component {
 				$.snackbar({content: 'Gallery Imported!'});
 				this.refs['twitter-import-input'].value = '';
 				this.props.setTab('imports');
-				this.props.getImports();
+				this.props.resetImports();
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: 'Failed to import media'});
@@ -143,21 +143,21 @@ export default class TopBarAdmin extends React.Component {
 						onKeyDown={this.handleTwitterInputKeyDown} />
 				</div>
 				
-				<div className="tab-control">
-					<button className="btn btn-flat btn-ink tab-admin" data-tab="assignments" onClick={this.setTab}>
+				<div className="tab-control admin-tabs">
+					<button className="btn btn-flat tab-admin" data-tab="assignments" onClick={this.setTab}>
 						Assignments
 					</button>
 					
-					<button className="btn btn-flat btn-ink tab-admin"  data-tab="submissions" onClick={this.setTab}>
+					<button className="btn btn-flat tab-admin"  data-tab="submissions" onClick={this.setTab}>
 						Submissions
 					</button>
 					
-					<button className="btn btn-flat btn-ink tab-admin" data-tab="imports" onClick={this.setTab}>
+					<button className="btn btn-flat tab-admin" data-tab="imports" onClick={this.setTab}>
 						Imports
 					</button>
 				</div>
 				
-				<li className="drop no-border pull-right hidden-xs" style={{opacity: 0}}>
+				<li className="drop no-border pull-right hidden-xs" style={{display: 'none'}}>
 					<button className="toggle-drop md-type-subhead">
 						<span className="mdi mdi-settings icon"></span><span className="mdi mdi-menu-down icon"></span>
 					</button>

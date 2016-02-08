@@ -16,21 +16,25 @@ class GalleryDetail extends React.Component {
 	constructor(props) {
 		super(props);
 
-		var verifiedCount = 0;
+		var unverifiedPosts = false
 
 		// Check if every post in gallery is not verified and show all content
 		for(var p in this.props.gallery.posts) {
-			verifiedCount += this.props.gallery.posts[p].approvals;
+			if(this.props.gallery.posts[p].approvals == 0)
+				unverifiedPosts = true;
 		}
 
 		this.state = {
 			galleryEditToggled: false,
 			gallery: this.props.gallery,
-			onlyVerified: verifiedCount > 0
+			shouldShowVerifeidToggle: unverifiedPosts,
+			verifiedToggle: unverifiedPosts,
+			sort: 'capture',
+			title: this.props.title
 		}
 
 		this.toggleGalleryEdit = this.toggleGalleryEdit.bind(this);
-		this.verifiedToggled = this.verifiedToggled.bind(this);
+		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
 		this.updateGallery = this.updateGallery.bind(this);
 	}
 
@@ -40,9 +44,9 @@ class GalleryDetail extends React.Component {
 		});
 	}
 
-	verifiedToggled(onlyVerified) {
+	onVerifiedToggled(verifiedToggle) {
 		this.setState({
-			onlyVerified: onlyVerified
+			verifiedToggle: verifiedToggle
 		});
 	}
 
@@ -50,8 +54,16 @@ class GalleryDetail extends React.Component {
 	 * Updates gallery in state
 	 */
 	updateGallery(gallery){
+		var title = 'Gallery';
+
+		if(gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
+			title += ' from ' + gallery.posts[0].location.address;
+		}
+
 		this.setState({
-			gallery: gallery
+			gallery: gallery,
+			title: title,
+			updatePosts: true
 		});
 	}
 
@@ -60,12 +72,11 @@ class GalleryDetail extends React.Component {
 		return (
 			<App user={this.props.user}>
 				<TopBar 
-					title={this.props.title}
+					title={this.state.title}
 					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
 					edit={this.toggleGalleryEdit}
-					verifiedToggle={true}
-					onVerifiedToggled={this.verifiedToggled}
-					defalutVerified={this.state.onlyVerified ? null : 'all'}
+					verifiedToggle={this.state.shouldShowVerifeidToggle}
+					onVerifiedToggled={this.onVerifiedToggled}
 					timeToggle={true}
 					chronToggle={true} />
 				
@@ -76,8 +87,10 @@ class GalleryDetail extends React.Component {
 						rank={this.props.user.rank}
 						purchases={this.props.purchases}
 						posts={this.state.gallery.posts}
-						onlyVerified={this.state.onlyVerified}
+						onlyVerified={this.state.verifiedToggle}
+						updatePosts={this.state.updatePosts}
 						scrollable={false}
+						sort={this.state.sort}
 						editable={false}
 						size='large' />
 				</div>

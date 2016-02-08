@@ -34,10 +34,14 @@ export default class AssignmentSidebar extends React.Component {
 							<div className="meta-description" id="story-description">
 								{this.props.assignment.caption || 'No Description'}
 							</div>
+							
 							<div className="meta-user">
 								{expireButton}
 							</div>
-							<AssignmentStats assignment={this.props.assignment} />
+							
+							<AssignmentStats 
+								stats={this.props.stats}
+								assignment={this.props.assignment} />
 						</div>
 					</div>
 				</div>
@@ -58,46 +62,37 @@ class AssignmentStats extends React.Component {
 	render() {
 
 		var assignment = this.props.assignment,
-			location = '',
-			expiration = '',
-			photos = '',
-			videos = '',
 			expirationTime = new Date(this.props.assignment.expiration_time),
-			expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
-
-		location = <li>
-						<span className="mdi mdi-map-marker icon"></span>
-						<span>{assignment.location && assignment.location.address || 'No Address'}</span>
-					</li>
-		
-		expiration = <li>
-						<span className="mdi mdi-clock icon"></span>
-						<span>{expiredText}</span>
-					</li>
-		
-		// photos = <li>
-		// 			<span className="mdi mdi-file-image-box icon"></span>
-		// 			<span>{this.props.assignment.photos.length} {this.props.assignment.stats.photos > 1 ? 'photos' : 'photo'}</span>
-		// 		</li>
-		
-		// videos = <li>
-		// 			<span className="mdi mdi-movie icon"></span>
-		// 			<span>{this.props.assignment.videos.length} {this.props.assignment.posts.leng > 1 ? 'videos' : 'video'}</span>
-		// 		</li>
-		
+			expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow(),
+			stats = this.props.stats;
 
 		return (
 
 			<div className="meta-list">
 				<ul className="md-type-subhead">
-					{location}
-					{expiration}
-					{photos}
-					{videos}
+					<li>
+						<span className="mdi mdi-map-marker icon"></span>
+						<span>{assignment.location && assignment.location.address || 'No Address'}</span>
+					</li>
+					<li>
+						<span className="mdi mdi-clock icon"></span>
+						<span>{expiredText}</span>
+					</li>
+					<li>
+						<span className="mdi mdi-account icon"></span>
+						<span>{assignment.outlet.title}</span>
+					</li>
+					<li>
+						<span className="mdi mdi-file-image-box icon"></span>
+						<span>{stats.photos + ' photo' + (global.isPlural(stats.photos) ? 's' : '')}</span>
+					</li>
+					<li>
+						<span className="mdi mdi-movie icon"></span>
+						<span>{stats.videos + ' video' + (global.isPlural(stats.videos) ? 's' : '')}</span>
+					</li>
 				</ul>
 			</div>
 			
 		)
 	}
-
 }
