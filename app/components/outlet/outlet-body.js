@@ -1,9 +1,9 @@
 import React from 'react'
-import moment from 'moment'
-import global from '../../../lib/global'
-import PostCell from '../global/post-cell'
 import PurchasesBody from '../purchases/purchases-body'
 import PostList from '../global/post-list'
+import OutletSidebar from './outlet-sidebar'
+import moment from 'moment'
+import global from '../../../lib/global'
 
 export default class OutletBody extends React.Component {
 
@@ -96,31 +96,15 @@ export default class OutletBody extends React.Component {
 	}
 
 	render() {
+		var outlet = this.props.outlet;
 
-		var outlet = this.props.outlet,
-			updatedText = moment().format('L');
 		return (
 			<div className="container-fluid tabs">
 				<div className="tab tab-vault toggled">
 					<div className="container-fluid fat grid">
 						<div className="profile visible-xs"></div>
-						<div className="col-sm-4 profile hidden-xs pt0">
-							<div className="container-fluid fat">
-								<div className="col-sm-12">
-									<img className="img-avatar" src={outlet.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'} />
-									
-									<div className="meta">
-										<div className="meta-list">
-											<ul className="md-type-subhead">
-												<li className="ellipses">
-													<span className="mdi mdi-web icon"></span><a href={outlet.link}>{outlet.link}</a>
-												</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+						
+						<OutletSidebar outlet={outlet} />
 						
 						<div className="col-sm-8 tall">
 							<PostList
