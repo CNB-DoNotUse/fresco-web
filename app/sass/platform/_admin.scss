@@ -1,6 +1,13 @@
 .admin-edit-pane {
 	border-left: 1px solid rgba(0, 0, 0, 0.12);
 	background: #ffffff;
+
+	.gallery-images {
+		margin-bottom: 56px;
+		.slick-dots li button:before {
+			font-size: 30px;
+		}
+	}
 }
 .admin-tabs {
 	top: 11px !important;
