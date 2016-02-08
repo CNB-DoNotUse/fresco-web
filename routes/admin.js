@@ -11,7 +11,7 @@ router.get('/', (req, res, next) => {
     return next({
       message: config.ERR_PAGE_MESSAGES[403],
       status: 403
-    })
+    });
   }
 
   var title = 'Admin',
@@ -23,7 +23,7 @@ router.get('/', (req, res, next) => {
   res.render('app', {
     title: title,
     alerts: req.alerts,
-		page: 'admin',
+	page: 'admin',
     props: JSON.stringify(props)
   });
 

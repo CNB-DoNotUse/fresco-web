@@ -8,7 +8,7 @@ var express     = require('express'),
 
 /** //
 
-	Description : Outlet Specific Routes ~ prefix /outlet/endpoint
+     Description : Outlet Specific Routes ~ prefix /outlet/endpoint
 
 // **/
 
@@ -25,39 +25,39 @@ var express     = require('express'),
   //Retrieve outlet object from api
   client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
 
-    function doWithOutletInfo(error, response, body) {
+     function doWithOutletInfo(error, response, body) {
         if (error || !body || body.err){
-            var error = new Error(config.ERR_PAGE_MESSAGES[500]);
-            error.status = 500;
-
-            return next(error);
+           return next({
+             message: config.ERR_PAGE_MESSAGES[500],
+             status: 500
+           });
         }
 
         var purchases = null;
 
         if (req.session.user.outlet.verified) {
-          
-          purchases = config.mapPurchases();
+
+           purchases = config.mapPurchases();
 
         } else {
-          req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?
-            'This outlet is in demo mode. We’ll be in touch shortly to verify your account.' :
-            'This outlet is in demo mode. Purchases and downloads are currently disabled.');
+           req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?
+             'This outlet is in demo mode. We’ll be in touch shortly to verify your account.' :
+             'This outlet is in demo mode. Purchases and downloads are currently disabled.');
         }
 
         var title = 'Outlet',
             props = {
-              title: title,
-              user: req.session.user,
-              outlet: body.data,
-              purchases: purchases
+                title: title,
+                user: req.session.user,
+                outlet: body.data,
+                purchases: purchases
             };
 
         res.render('app', {
-          title: title,
-          alerts: req.alerts,
-          props: JSON.stringify(props),
-          page: 'outlet'
+           title: title,
+           alerts: req.alerts,
+           props: JSON.stringify(props),
+           page: 'outlet'
         });
     }
 });
