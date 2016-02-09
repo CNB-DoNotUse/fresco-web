@@ -113,9 +113,11 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	.outlet-members-container{
 
 		ul {
-			padding:0;
-			margin:0;
-			list-style:none;
+			padding: 0;
+			margin: 0;
+			list-style: none;
+			max-height: 260px;
+			overflow: auto;
 
 			li{
 				height:72px;
