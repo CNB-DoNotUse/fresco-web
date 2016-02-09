@@ -38,13 +38,14 @@ function registerUser() {
 	//Check all fields for input
 	for (var key in params){
 		if(!/\S/.test(params[key])){
+			
+			disabled = false;
+
 			if(key == 'firstname' || key == 'lastname'){
-				disabled = false;
-				return $.snackbar({ content: 'Please enter in a first and last name!' });
+				return $.snackbar({ content: 'Please enter a first and last name!' });
 			}
 			else {
-				disabled = false;
-				return $.snackbar({ content: 'Please enter in all fields!' });
+				return $.snackbar({ content: 'Please enter all fields!' });
 			}
 		}
 	}
