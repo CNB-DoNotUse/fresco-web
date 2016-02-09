@@ -8,7 +8,8 @@ var screen = {
 	navList = nav.getElementsByTagName('ul')[0].children,
 	modals = document.getElementsByClassName('modal'),
 	modalActions = document.getElementsByClassName('modal-action'),
-	footerList = document.getElementById('footer-actions').children;
+	footerList = document.getElementById('footer-actions').children,
+	transitioning = false;
 
 //Set the active modal if it exists
 for (var i = 0; i < modals.length; i++) {
@@ -51,15 +52,26 @@ function handleClick(e) {
 	}
 	//Modal Transition
 	else if(event == 'modal'){
+		if(transitioning) return;
 
-		loadModal(item.dataset.modal, true);
+		transitioning = true;
+
+		loadModal(item.dataset.modal, true, function() {
+			transitioning = false;
+		});
 
 		$('.wrapper').addClass('full');
 
 	}
 	//Back to landing page transition
 	else if(event == 'landing') {
-		returnToLanding();
+		if(transitioning) return;
+
+		transitioning = true;
+
+		returnToLanding(true, function() {
+			transitioning = false;
+		});
 	}
 }
 
@@ -67,7 +79,10 @@ function handleClick(e) {
  * Sends back to the landing page
  */
 
-function returnToLanding() {
+function returnToLanding(pushState, callback) {
+
+	if(pushState)
+		window.history.pushState({landing : true}, null, '/');
 
 	$(window.modal).velocity({ translateY : '150%' }, { 
 		duration: 450, 
@@ -97,10 +112,10 @@ function returnToLanding() {
 						complete: function () {
 							init();
 							navResize();
+							if(callback) callback(); //Tell the callback we'redone
 						}
 					});
 				}
-
 			});
 		}
 	});
@@ -112,7 +127,7 @@ function returnToLanding() {
  * @param  {string} modal Modal's unique identifier
  */
 
-function loadModal(modalId, pushState) {
+function loadModal(modalId, pushState, callback) {
 
 	var modal = document.getElementById('_' + modalId),
 		fromLanding = $(landingWrap).css('display') == 'block';
@@ -152,6 +167,8 @@ function loadModal(modalId, pushState) {
 						$(modal).velocity({ translateY : '0'}, { duration: modalTransitionLength, easing: 'ease-out' });
 
 						navResize();
+
+						if(callback) callback(); //Tell the callback we'redone
 					}
 				});
 			}
@@ -174,7 +191,6 @@ function loadModal(modalId, pushState) {
 						$(modal).velocity({ translateY : '0'}, { duration: modalTransitionLength, easing: 'ease-out' });
 
 						navResize();
-
 					}
 				});
 			}
@@ -219,14 +235,13 @@ window.addEventListener('resize', function() {
 
 
 window.onpopstate = function(event) {
+	if(!event.state) return;
 
-	console.log('State', event.state);
-
-	if(event.state && event.state.modal){
+	if(event.state.modal){
 		console.log('LOADING MODAL');
 		loadModal(event.state.modal);
 	}
-	else{
+	else if(event.state.landing){
 		console.log('RETURN TO LANDING');
 		returnToLanding();
 	}

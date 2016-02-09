@@ -122,7 +122,7 @@ window.addEventListener('resize', function() {
 });
 
 window.addEventListener('scroll', function(e) {
-
+	//Check if we're on the home page
 	if(window.location.pathname != '/') return;
 
 	//Check if we're not in modal mode
