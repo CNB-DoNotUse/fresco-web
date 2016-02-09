@@ -64,22 +64,22 @@ export default class AdminGalleryEdit extends React.Component {
 	 * Update state gallery to props gallery
 	 */
 	resetState() {
-			// Reset form
-			this.setState({
-				activeGallery: _.clone(this.props.gallery, true),
-				tags: [],
-				stories: [],
-				assignment: this.props.gallery.assignment,
-				mapLocation: null
-			});
+		// Reset form
+		this.setState({
+			activeGallery: _.clone(this.props.gallery, true),
+			tags: [],
+			stories: [],
+			assignment: this.props.gallery.assignment,
+			mapLocation: null
+		});
 
-			if( this.props.hasActiveGallery && this.props.gallery.posts && this.refs['gallery-caption'] )
-				this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
+		if( this.props.hasActiveGallery && this.props.gallery.posts && this.refs['gallery-caption'] )
+			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
 
-			// Remove materialize empty input class
-			$(this.refs['gallery-byline']).removeClass('empty');
-			$(this.refs['gallery-caption']).removeClass('empty');
-			$(this.refs['gallery-stories-input']).removeClass('empty');
+		// Remove materialize empty input class
+		$(this.refs['gallery-byline']).removeClass('empty');
+		$(this.refs['gallery-caption']).removeClass('empty');
+		$(this.refs['gallery-stories-input']).removeClass('empty');
 	}
 
 	/**
@@ -140,7 +140,8 @@ export default class AdminGalleryEdit extends React.Component {
 	 */
 	updateRelatedStories(stories) {
 		var gallery = this.state.activeGallery;
-		gallery.stories = stories;
+
+		gallery.related_stories = stories;
 
 		this.setState({
 			activeGallery: gallery
@@ -252,9 +253,9 @@ export default class AdminGalleryEdit extends React.Component {
 			waiting: true
 		});
 
-		if(!gallery.stories) gallery.stories = [];
+		if(!gallery.related_stories) gallery.related_stories = [];
 
-		var stories = this.state.activeGallery.stories.map((story) => {
+		var stories = this.state.activeGallery.related_stories.map((story) => {
 			return story.new ? 'NEW=' + JSON.stringify({title: story.title}) : story._id;
 		});
 
@@ -336,7 +337,7 @@ export default class AdminGalleryEdit extends React.Component {
 				if(post.video) {
 					return (
 						<div key={i}>
-							<video 
+							<video
 								data-id={post._id}
 								className="admin-video"
 								preload="none"
@@ -344,7 +345,7 @@ export default class AdminGalleryEdit extends React.Component {
 								height="100%"
 								controls={true}
 								poster={post.video.replace('/videos', '/images/small').replace('.m3u8', '-thumb00001.jpg')}
-								src={post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4" >
+								src={post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4">
 								Your browser does not support the video tag.
 							</video>
 						</div>
@@ -407,7 +408,7 @@ export default class AdminGalleryEdit extends React.Component {
 						tags={this.state.activeGallery.tags} />
 
 					<EditStories
-						relatedStories={activeGallery.stories} 
+						relatedStories={activeGallery.related_stories} 
 						updateRelatedStories={this.updateRelatedStories} />
 
 					<div style={{height: '309px'}}>
