@@ -44,20 +44,20 @@ export default class AssignmentEditMap extends React.Component {
 	 */
 	updateRadius(e) {
 	 
-	    var feetRadius = parseFloat(this.refs['radius'].value);
+	    var feetRadius = parseInt(this.refs['radius'].value, 10);
 	    
 	    if(feetRadius == 'NaN') 
 	    	return;
 
 	    this.props.updateLocation(
 	    	this.props.location,
-			global.feetToMiles(feetRadius)
+			feetRadius
 	    );
 	}
 
 	render() {
 
-		var radius = this.props.radius ? Math.ceil(global.milesToFeet(this.props.radius)) : null,
+		var radius = this.props.radius ? Math.round(global.milesToFeet(this.props.radius)) : null,
 			address = this.props.address;
 
 		return ( 
@@ -82,7 +82,7 @@ export default class AssignmentEditMap extends React.Component {
 			        </div>
 			        <EditMap 
 			        	location={this.props.location} 
-			        	radius={radius} />
+			        	radius={global.feetToMeters(radius)} />
 		   		</div>
 			</div>
 
