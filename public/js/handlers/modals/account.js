@@ -4,9 +4,19 @@ var accountModal = document.getElementById('_account'),
 	signup = document.getElementById('_signup'),
 	signUpFormHeader = document.getElementById('_signup-form-header'),
 	loginFormHeader = document.getElementById('_login-form-header'),
+	signUpLoader = document.getElementById('signup-loader'),
+	loginLoader = document.getElementById('login-loader'),
 	signUpForm = document.querySelector('#signupForm');
 	loginForm = document.querySelector('#loginForm'),
 	loginButton = document.querySelector('#login-password');
+
+//Grab the `h3` tag out of the header div so we can hide the text to show the spinner
+var signUpHeaderText = signUpFormHeader.children[0],
+	loginHeaderText = loginFormHeader.children[0];
+
+//State vars to disable signup/login after clicking
+var signupProcessing = false,
+	loginProcessing = false;
 
 //Run on load
 updatePosition(window.innerWidth);
@@ -86,11 +96,15 @@ loginFormHeader.addEventListener('click', function() {
 /**
  * Calls signup to process
  */
-var signupProcessing = false;
+function reEnableSignup() {
+	signupProcessing = false;
+	signUpLoader.style.display = 'none';
+	signUpHeaderText.innerHTML = 'START MY DEMO';
+}
+
 var processSignup = function() {
-
 	if(signupProcessing) return;
-
+	
 	signupProcessing = true;
 
 	//Set up fields
@@ -146,7 +160,7 @@ var processSignup = function() {
 	for (var i = 0; i < params.length; i++) {
 		value = params[i].value;
 		if(!/\S/.test(value) || typeof(value) == 'undefined'){
-			signupProcessing = false;
+			reEnableSignup();
 			return $.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
 		}
 	}
@@ -157,6 +171,9 @@ var processSignup = function() {
 		newParams[params[i].key] = params[i].value;
  	};
 
+ 	signUpHeaderText.innerHTML = '';
+ 	signUpLoader.style.display = 'block';
+
 	$.ajax({
 		url: "/scripts/outlet/create",
 		method: 'post',
@@ -164,8 +181,7 @@ var processSignup = function() {
 		data: JSON.stringify(newParams),
 		dataType: 'json',
 		success: function(response, status, xhr) {
-
-			signupProcessing = false;
+			reEnableSignup();
 
 			if (response.err){
 
@@ -186,7 +202,12 @@ var processSignup = function() {
 /**
  * Calls login to process
  */
-var loginProcessing = false;
+function reEnableLogin() {
+	loginProcessing = false;
+	loginLoader.style.display = 'none';
+	loginHeaderText.innerHTML = 'LOG IN';
+}
+
 var processLogin = function() {
 	if(loginProcessing) return;
 
@@ -197,10 +218,13 @@ var processLogin = function() {
 
 	if(!/\S/.test(email) || !/\S/.test(password)){
 		
-		loginProcessing = false;
+		reEnableLogin();
 
 		return $.snackbar({ content: 'Please enter in all fields!' });
 	}
+
+	loginHeaderText.innerHTML = '';
+	loginLoader.style.display = 'block';
 
 	$.ajax({
 		url: "/scripts/user/login",
@@ -212,25 +236,20 @@ var processLogin = function() {
 		}),
 		dataType: 'json',
 		success: function(response, status, xhr){
-
-			loginProcessing = false;
-
 			if(response.err){
+				reEnableLogin();
 
 				$.snackbar({ content: 'Invalid email or password!'});
 				
 			}
 			//Redirect
 			else {
-
 				var next = getParameterByName('next');
 				window.location.replace(next.length ? next : '/archive');
-
 			}
-
 		}, 
 		error: function(xhr, status, error){
-			loginProcessing = false;
+			reEnableLogin();
 
 			if(error == 'Unauthorized'){
 				return $.snackbar({ content: 'Invalid email or password!'});
@@ -260,7 +279,6 @@ function resolveError(err){
 	        return 'Seems like we ran into an error registering your outlet!'    
 	}
 }
-
 
 /**
  * Updates the postion of the account modal elements
