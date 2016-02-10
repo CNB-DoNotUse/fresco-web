@@ -254,6 +254,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			@include rgba(color, 0, 0, 0, 0.54);
 			font-weight:500;
 			margin-right:20px;
+			float:right;
+			top: 13px;
+			position: relative;
 		}
 		
 		.location-options{
@@ -275,6 +278,4 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 .settings-outlet-notifications {
 
 
-	
-	
 }

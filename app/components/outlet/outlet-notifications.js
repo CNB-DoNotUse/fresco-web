@@ -21,6 +21,12 @@ export default class OutletNotifications extends React.Component {
 		this.loadNotifications();
 	}
 
+	updateAllNotifications(event_type, medium, e) {
+
+
+
+	}
+
 	/**
 	 * Updates specific notficaiton by event key
 	 */
@@ -110,13 +116,13 @@ export default class OutletNotifications extends React.Component {
 
 
 				<div className="footer">
-					<span className="sub-title">SELECT ALL:</span>
 					<div className="location-options">
 						<div className="checkbox check-sms">
 							<label>
 								<input
 									ref="location-sms-check"
-									type="checkbox" />
+									type="checkbox"
+									onChange={this.props.updateNotification.bind(this, notification.eventType, 'notify_email')} />
 							</label>
 						</div>
 						
@@ -124,7 +130,8 @@ export default class OutletNotifications extends React.Component {
 							<label>
 								<input
 									ref="location-email-check"
-									type="checkbox" />
+									type="checkbox" 
+									onChange={this.props.updateNotification.bind(this, notification.eventType, 'notify_email')} />
 							</label>
 						</div>
 						
@@ -132,10 +139,13 @@ export default class OutletNotifications extends React.Component {
 							<label>
 								<input
 									ref="location-fresco-check"
-									type="checkbox" />
+									type="checkbox"
+									onChange={this.props.updateNotification.bind(this, notification.eventType, 'notify_email')} />
 							</label>
 						</div>
 					</div>
+
+					<span className="sub-title">SELECT ALL:</span>
 				</div>
 			</div>
 		)
