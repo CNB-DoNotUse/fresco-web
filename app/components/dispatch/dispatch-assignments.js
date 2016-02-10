@@ -98,28 +98,87 @@ export default class DispatchAssignments extends React.Component {
 		}
 	}
 
+	/**
+	 * Toggle Assignment List
+	 * @param  {string} toggle Which list to toggle to
+	 */
+	toggleList(toggle) {
+
+		if(toggle === this.props.viewMode) return;
+
+		var buttons = document.getElementsByClassName('btn-flat'),
+			button = this.refs[toggle + '-button'];
+
+		//Remove toggle from all other buttons
+		for (var i = 0; i < buttons.length; i++) {
+			buttons[i].className = buttons[i].className.replace(/\btoggled\b/,'');
+		};
+
+		//Add toggle to clicked button
+		button.className += ' toggled';
+
+		this.setState({
+			assignments: []
+		});
+
+		this.props.updateViewMode(toggle);
+	}
+
+	/**
+	 * Loads assignments
+	 * @param  {int}   passedOffset offset to load off of
+	 * @param  {string}   type         type of assignments to retrieve
+	 * @param  {function} callback     callback containing response
+	 */
+	loadAssignments(passedOffset, type, callback) {
+
+		var params = {
+			offset: passedOffset,
+			limit: 10
+		}
+
+		this.props.findAssignments(null, params, (response) => {
+			//Do nothing, because of bad response
+			if(!response || response.err)
+				callback([]);
+			else{
+				callback(response);
+			}
+		});
+	}
+
 	render() {
 
 		var AssignmentList = this.state.assignments.map((assignment, i)  => {
-
 			return (
 				<AssignmentListItem 
 					assignment={assignment}
 					setActiveAssignment={this.props.setActiveAssignment}
 					key={i} />
 			)
-
 		});
 
+		var buttonClass = "btn btn-flat",
+			viewMode = this.props.viewMode;
+
+		console.log(this.state.viewMode );
 
 		return (
 
 			<div className="card panel assignments-panel">
 				<div className="card-head small">
 					<div className="tab-control full">
-						<button ref="active-button"  className="btn btn-flat toggled" onClick={this.toggleList.bind(null, 'active')}>Active</button>
-						<button ref="pending-button" className="btn btn-flat" onClick={this.toggleList.bind(null, 'pending')}>Pending</button>
-						<button ref="expired-button" className="btn btn-flat" onClick={this.toggleList.bind(null, 'expired')}>History</button>
+						<button ref="active-button"  
+							className={viewMode == 'active' ? buttonClass + ' active' : buttonClass} 
+							onClick={this.toggleList.bind(null, 'active')}>Active</button>
+						
+						<button ref="pending-button" 
+							className={viewMode == 'pending' ? buttonClass + ' active' : buttonClass} 
+							onClick={this.toggleList.bind(null, 'pending')}>Pending</button>
+						
+						<button ref="expired-button" 
+							className={viewMode == 'expired' ? buttonClass + ' active' : buttonClass} 
+							onClick={this.toggleList.bind(null, 'expired')}>History</button>
 					</div>
 				</div>
 				<div className="card-foot center toggle-card">
@@ -156,55 +215,5 @@ export default class DispatchAssignments extends React.Component {
 			
 		);
 
-	}
-
-	/**
-	 * Toggle Assignment List
-	 * @param  {string} toggle Which list to toggle to
-	 */
-	toggleList(toggle) {
-
-		if(toggle === this.props.viewMode) return;
-
-		var buttons = document.getElementsByClassName('btn-flat'),
-			button = this.refs[toggle + '-button'];
-
-		//Remove toggle from all other buttons
-		for (var i = 0; i < buttons.length; i++) {
-			buttons[i].className = buttons[i].className.replace(/\btoggled\b/,'');
-		};
-
-		//Add toggle to clicked button
-		button.className += ' toggled';
-
-		this.setState({
-			assignments: []
-		});
-
-		this.props.updateViewMode(toggle);
-
-	}
-
-	/**
-	 * Loads assignments
-	 * @param  {int}   passedOffset offset to load off of
-	 * @param  {string}   type         type of assignments to retrieve
-	 * @param  {function} callback     callback containing response
-	 */
-	loadAssignments(passedOffset, type, callback) {
-
-		var params = {
-			offset: passedOffset,
-			limit: 10
-		}
-
-		this.props.findAssignments(null, params, (response) => {
-			//Do nothing, because of bad response
-			if(!response || response.err)
-				callback([]);
-			else{
-				callback(response);
-			}
-		});
 	}
 }	
