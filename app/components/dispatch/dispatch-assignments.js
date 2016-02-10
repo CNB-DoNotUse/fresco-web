@@ -161,23 +161,21 @@ export default class DispatchAssignments extends React.Component {
 		var buttonClass = "btn btn-flat",
 			viewMode = this.props.viewMode;
 
-		console.log(this.state.viewMode );
-
 		return (
 
 			<div className="card panel assignments-panel">
 				<div className="card-head small">
 					<div className="tab-control full">
 						<button ref="active-button"  
-							className={viewMode == 'active' ? buttonClass + ' active' : buttonClass} 
+							className={viewMode == 'active' ? buttonClass + ' toggled' : buttonClass} 
 							onClick={this.toggleList.bind(null, 'active')}>Active</button>
 						
 						<button ref="pending-button" 
-							className={viewMode == 'pending' ? buttonClass + ' active' : buttonClass} 
+							className={viewMode == 'pending' ? buttonClass + ' toggled' : buttonClass} 
 							onClick={this.toggleList.bind(null, 'pending')}>Pending</button>
 						
 						<button ref="expired-button" 
-							className={viewMode == 'expired' ? buttonClass + ' active' : buttonClass} 
+							className={viewMode == 'expired' ? buttonClass + ' toggled' : buttonClass} 
 							onClick={this.toggleList.bind(null, 'expired')}>History</button>
 					</div>
 				</div>
