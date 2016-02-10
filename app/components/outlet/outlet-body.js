@@ -101,14 +101,13 @@ export default class OutletBody extends React.Component {
 		return (
 			<div className="container-fluid tabs">
 				<div className="tab tab-vault toggled">
-					<div className="container-fluid fat grid">
+					<div className="container-fluid fat">
 						<div className="profile visible-xs"></div>
 						
 						<OutletSidebar outlet={outlet} />
 						
 						<div className="col-sm-8 tall">
 							<PostList
-								className="pt0"
 								loadPosts={this.loadPosts}
 								rank={this.props.user.rank}
 								allPurchased={true}
