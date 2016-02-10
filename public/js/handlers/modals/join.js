@@ -129,6 +129,8 @@ function resolveError(err) {
 			return 'Please use the email you were invited from to join this outlet, or choose the option to create a new account.'
 		case 'ERR_INVALID_PHONE':
 			return 'Please enter a valid phone number!'
+		case 'ERR_USER_IS_MEMBER'
+			return 'You\'re already a member of this outlet!'
 		case 'ERR_UNAUTHORIZED':
 		case 'ERR_INVALID_LOGIN':
 		case 'Unauthorized':
