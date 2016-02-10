@@ -93,8 +93,8 @@ class UserSettings extends React.Component {
 	 * Sends update to user
 	 */
  	updateSettings() {
-
  		if(this.updating) return;
+
  		this.updating = true;
 
  		var userData = new FormData(),
@@ -105,9 +105,9 @@ class UserSettings extends React.Component {
  			lastname = name.slice(1).join(' '),
  			bio = this.refs.bio.value,
  			email =  this.refs.email.value,
- 			phone =  this.refs.phone.value,
+ 			phone =  this.refs.phone.value == '' ? null : this.refs.phone.value,
  			self = this;
- 			
+
  		if(global.isEmptyString(firstname)){
  			return $.snackbar({ content: 'You must have a firstname!' });
  		}
@@ -247,7 +247,6 @@ class UserSettings extends React.Component {
 				</div>
  			</App>
  		);
-
  	}
 }
 

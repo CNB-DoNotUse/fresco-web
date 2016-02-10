@@ -166,7 +166,6 @@ router.post('/user/register', (req, res, next) => {
 });
 
 router.get('/user/refresh', (req, res, next) => {
-
     User.refresh(req, res, (err) => {
         if(err)
             return res.json({
@@ -186,6 +185,8 @@ router.post('/user/update', (req, res) => {
     if(req.body.avatar) 
         delete req.body.avatar;
 
+    if(!req.body.bio)
+        req.body.bio = '';
 
     API.proxyRaw(req, res, (body) => {
         var user = body.data;
