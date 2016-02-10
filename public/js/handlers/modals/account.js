@@ -198,7 +198,7 @@ var processSignup = function() {
 			reEnableSignup();
 
 			return $.snackbar({
-				content: resolveError(error)
+				content: resolveError(error, 'Seems like we ran into an error registering your outlet! Please try again in a bit.')
 			});
 		}
 	});
@@ -253,11 +253,9 @@ var processLogin = function() {
 		error: function(xhr, status, error){
 			reEnableLogin();
 
-			if(error == 'Unauthorized' || error == 'ERR_LOGIN'){
-				return $.snackbar({ content: 'Invalid email or password!'});
-			} else{
-				return $.snackbar({ content: 'There was an error logging you in. Please try again in a bit.'});
-			}
+			return $.snackbar({ 
+				content: resolveError(error, 'There was an error logging you in. Please try again in a bit.')
+			});
 		}
 	});
 
@@ -270,14 +268,17 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-function resolveError(err){
+function resolveError(err, _default){
 	switch(err){
 	    case 'ERR_TITLE_TAKEN':
 	        return 'This outlet title is taken!';
 	    case 'ERR_EMAIL_TAKEN':
 	    	return 'It seems like there\'s an account with this email already, please try a different one.'
+	    case 'Unauthorized':
+	    case 'ERR_LOGIN':
+	    	return 'Invalid email or password!'
 	    default:
-	        return 'Seems like we ran into an error registering your outlet! Please try again in a bit.'    
+	    	return _default || 'Seems like we ran into an error!'     
 	}
 }
 
