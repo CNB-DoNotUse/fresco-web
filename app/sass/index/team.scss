@@ -62,20 +62,20 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 						margin-right:16px;
 
 						@include border-radius(50px);
-						background:#FFC600;
 						width:56px;
 						height:56px;
 						overflow:hidden;
 
+						&.border{
+							background:#FFC600;
+							border:4px solid #FFB500;
+							width:52px;
+							height:52px;
+						}
 						img{
 							width:100%;
 							height:100%;
 						}
-					}
-					.avatar.border{
-						border:4px solid #FFB500;
-						width:52px;
-						height:52px;
 					}
 					.meta{
 						line-height:24px;
