@@ -262,21 +262,19 @@ app.use((error, req, res, next) => {
 
     // respond with html page
     if (req.accepts('html')) {
-        res.render('error', {
-           err: {
-               message: 'Page not found!',
-               code: 404
-           },
-           section: 'public',
-           page: 'error'
-        });
-        return;
+        return res.render('error', {
+                 err: {
+                     message: 'Page not found!',
+                     status: 404
+                 },
+                 section: 'public',
+                 page: 'error'
+              });
     }
 
     // respond with json
     if (req.accepts('json')) {
-        res.send({ error: 'Page not found!' });
-        return;
+        return res.send({ error: 'Page not found!' });
     }
 
     // default to plain-text. send()

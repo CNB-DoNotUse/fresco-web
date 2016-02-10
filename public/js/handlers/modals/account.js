@@ -110,7 +110,7 @@ var processSignup = function() {
 	//Set up fields
 	var params = [
 		{
-			value: document.getElementById('outlet-name').value,
+			value: document.getElementById('outlet-title').value,
 			name: 'Title',
 			key: 'title'
 		},
@@ -158,10 +158,16 @@ var processSignup = function() {
 
 	//Check all the fields
 	for (var i = 0; i < params.length; i++) {
-		value = params[i].value;
+		value = params[i].value,
+		key = params[i].key;
+
 		if(!/\S/.test(value) || typeof(value) == 'undefined'){
 			reEnableSignup();
-			return $.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
+
+			if(key === 'contact_lastname' || key == 'contact_firstname')
+				return $.snackbar({content: 'Please enter a '+ params[i].name + '!'});
+			else
+				return $.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
 		}
 	}
 	
@@ -181,19 +187,19 @@ var processSignup = function() {
 		data: JSON.stringify(newParams),
 		dataType: 'json',
 		success: function(response, status, xhr) {
-			reEnableSignup();
-
 			if (response.err){
-
-				return $.snackbar({content: resolveError(response.err)});
-
+				return this.error(null, null, response.err);
 			}
 			else {
-
 				window.location.replace('/archive');
-
 			}
-			
+		},
+		error: function(xhr, status, error) {
+			reEnableSignup();
+
+			return $.snackbar({
+				content: resolveError(error)
+			});
 		}
 	});
 
@@ -217,7 +223,6 @@ var processLogin = function() {
 		password = document.getElementById('login-password').value;
 
 	if(!/\S/.test(email) || !/\S/.test(password)){
-		
 		reEnableLogin();
 
 		return $.snackbar({ content: 'Please enter in all fields!' });
@@ -237,10 +242,7 @@ var processLogin = function() {
 		dataType: 'json',
 		success: function(response, status, xhr){
 			if(response.err){
-				reEnableLogin();
-
-				$.snackbar({ content: 'Invalid email or password!'});
-				
+				return this.error(null, null, response.err);
 			}
 			//Redirect
 			else {
@@ -269,14 +271,13 @@ function getParameterByName(name) {
 }
 
 function resolveError(err){
-
 	switch(err){
 	    case 'ERR_TITLE_TAKEN':
 	        return 'This outlet title is taken!';
 	    case 'ERR_EMAIL_TAKEN':
 	    	return 'It seems like there\'s an account with this email already, please try a different one.'
 	    default:
-	        return 'Seems like we ran into an error registering your outlet!'    
+	        return 'Seems like we ran into an error registering your outlet! Please try again in a bit.'    
 	}
 }
 
@@ -286,7 +287,6 @@ function resolveError(err){
  */
 
 function updatePosition(width) {
-
 	if(window.innerWidth > screen.tablet){
 		presentation.style.display = 'block';
 		accountModal.insertBefore(presentation, login);
