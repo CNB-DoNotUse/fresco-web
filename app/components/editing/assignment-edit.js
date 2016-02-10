@@ -138,7 +138,14 @@ export default class AssignmentEdit extends React.Component {
 
 	render() {
 
-		var toggledText = this.props.toggled ? ' toggled' : '';
+		var toggledText = this.props.toggled ? ' toggled' : '',
+			assignmentEditOutlet = '';
+
+		if(this.props.user.rank >= global.RANKS.CONTENT_MANAGER) {
+			assignmentEditOutlet = <AssignmentEditOutlet 
+										outlet={this.state.outlet}
+										updateOutlet={this.updateOutlet} />
+		}
 
 		return (
 
@@ -201,9 +208,7 @@ export default class AssignmentEdit extends React.Component {
 										defaultValue={this.props.assignment.caption} />
 								</div>
 
-								<AssignmentEditOutlet 
-									outlet={this.state.outlet}
-									updateOutlet={this.updateOutlet} />
+								{assignmentEditOutlet}
 							</div>
 							<div className="dialog-col col-xs-12 col-md-5">
 								<div className="dialog-row map-group">
