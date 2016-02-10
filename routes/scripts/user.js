@@ -60,8 +60,6 @@ router.post('/user/login', (req, res) => {
   //Sanitize before sending    
   req.body.email = global.sanitizeEmail(req.body.email);
 
-
-
   parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
   parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
   parse.headers['X-Parse-Revocable-Session'] = "1";
@@ -86,6 +84,8 @@ router.post('/user/login', (req, res) => {
     API.request(options, (login_body) => {
       if(!login_body) {
             return res.json({ "err" : "ERR_LOGIN" });
+      } else if(login_body.err){
+          return res.json({"err" : "ERR_LOGIN"});
       }
 
       req.session.token = login_body.data.token;
@@ -186,8 +186,6 @@ router.post('/user/update', (req, res) => {
     if(req.body.avatar) 
         delete req.body.avatar;
 
-    if(!req.body.bio)
-        req.body.bio = '';
 
     API.proxyRaw(req, res, (body) => {
         var user = body.data;

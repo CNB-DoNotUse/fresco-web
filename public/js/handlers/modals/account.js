@@ -253,7 +253,7 @@ var processLogin = function() {
 		error: function(xhr, status, error){
 			reEnableLogin();
 
-			if(error == 'Unauthorized'){
+			if(error == 'Unauthorized' || error == 'ERR_LOGIN'){
 				return $.snackbar({ content: 'Invalid email or password!'});
 			} else{
 				return $.snackbar({ content: 'There was an error logging you in. Please try again in a bit.'});
