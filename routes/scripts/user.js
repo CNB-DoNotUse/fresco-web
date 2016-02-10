@@ -4,6 +4,7 @@ var express     = require('express'),
     config      = require('../../lib/config'),
     User        = require('../../lib/user'),
     API         = require('../../lib/api'),
+    global      = require('../../lib/global'),
     router      = express.Router();
 
 //---------------------------vvv-USER-ENDPOINTS-vvv---------------------------//
@@ -55,6 +56,11 @@ router.post('/user/login', (req, res) => {
   }
 
   var parse = requestJson.createClient(config.PARSE_API);
+  
+  //Sanitize before sending    
+  req.body.email = global.sanitizeEmail(req.body.email);
+
+
 
   parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
   parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
