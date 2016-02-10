@@ -122,7 +122,7 @@ function acceptInvite(){
 function resolveError(err) {
 	switch(err){
 		case 'ERR_EMAIL_TAKEN':
-			return 'There is already an account with email! Please use another one.'
+			return 'There is already an account with this email! Please use another one.'
 		case 'ERR_INVALID_EMAIL':
 			return 'Please enter a valid email!'
 		case 'ERR_INVALID_EMAIL_MATCH':
