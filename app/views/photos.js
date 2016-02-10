@@ -47,11 +47,13 @@ class Photos extends React.Component {
 
 		var params = {
 				limit: global.postCount,
-				verified : this.state.verifiedToggle,
 				offset: passedOffset,
 				type: 'photo',
 				sort: this.state.sort
 			};
+
+		if(this.state.verifiedToggle)
+			params.verified = this.state.verifiedToggle;
 
 		$.ajax({
 			url:  '/api/post/list',

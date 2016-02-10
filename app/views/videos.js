@@ -41,11 +41,13 @@ class Videos extends React.Component {
 
 		var params = {
 			limit: global.postCount,
-			verified : this.state.verifiedToggle,
 			offset: passedOffset,
 			type: 'video',
 			sort: this.state.sort
 		};
+
+		if(this.state.verifiedToggle)
+			params.verified = this.state.verifiedToggle;
 
 		$.ajax({
 			url:  '/api/post/list',

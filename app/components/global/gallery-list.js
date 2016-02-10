@@ -65,17 +65,16 @@ export default class GalleryList extends React.Component {
 			};
 
 		if(this.props.highlighted) {
-			
 			endpoint = 'gallery/highlights';
-
-			params.invalidate = 1;
-
-		} else {
 			
+			params.invalidate = 1;
+		} else {
 			endpoint ='gallery/list';
-			params.verified = this.props.onlyVerified;
+			
 			params.tags = this.state.tags.join(',')
-
+			
+			if(this.props.onlyVerified)
+				params.verified = true;
 		}
 
 		$.ajax({

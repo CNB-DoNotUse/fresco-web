@@ -73,10 +73,12 @@ class Archive extends React.Component {
 
 		var params = {
 			limit: global.postCount,
-			verified : this.state.verifiedToggle,
 			offset: passedOffset,
 			sort: this.state.sort
 		};
+
+		if(this.state.verifiedToggle)
+			params.verified = this.state.verifiedToggle;
 
 		$.ajax({
 			url:  '/api/post/list',
