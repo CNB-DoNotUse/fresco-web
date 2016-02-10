@@ -140,7 +140,6 @@ $mobileSlideHeight:540px;
 				}
 
 				.slick-dots{
-
 					bottom:5%;
 					right:16px;
 
@@ -157,6 +156,10 @@ $mobileSlideHeight:540px;
 					background-position:center;
 					background-size: cover;
 					overflow:hidden;
+
+					.meta-text{
+						max-width:300px;
+					}
 
 					@include mobile{
 						height: mobilePostHeight;
