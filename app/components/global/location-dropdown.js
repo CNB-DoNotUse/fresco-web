@@ -37,7 +37,9 @@ export default class LocationDropdown extends React.Component {
 
 			//Run checks on place and title
 			if (!place || !place.geometry || !place.geometry.viewport){
-				return $.snackbar({content: global.resolveError('ERR_UNSUPPORTED_LOCATION')});
+				return $.snackbar({ 
+					content: global.resolveError('ERR_UNSUPPORTED_LOCATION')
+				});
 			} else if(!autocomplete.value){
 				$.snackbar({content: 'Please enter a valid location title'});
 			}

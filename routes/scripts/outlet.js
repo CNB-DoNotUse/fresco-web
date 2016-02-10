@@ -197,10 +197,12 @@ router.post('/outlet/invite/accept', function(req, res, next) {
   function getInviteTokenCB(err, response, token_body) {
     if(err)
         return res.send({err: err.err});
-    if(!token_body)
+    else if(!token_body)
       return res.send({err: 'ERR_EMPTY_BODY'});
-    if(!token_body.data.user)
+    else if(!token_body.data.user)
       return res.send({err: 'ERR_NOT_FOUND'});
+    else if(token_body.data.user.email !== req.body.email)
+      return res.send({err: 'ERR_INVALID_EMAIL_MATCH'});
 
     var parse = requestJson.createClient(config.PARSE_API);
     parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
@@ -214,10 +216,14 @@ router.post('/outlet/invite/accept', function(req, res, next) {
   function parseLoginCB(err, response, parse_body) {
     if(err)
       return res.send({err: err});
-    if (response.statusCode == 401)
+    else if (response.statusCode == 401)
       return res.status(401).send({err: 'ERR_UNAUTHORIZED'});
-    if (!parse_body)
+    else if (!parse_body)
       return res.send({err: 'ERR_EMPTY_BODY'});
+    else if(parse_body.error){
+      if(parse_body.code == '101')
+        return res.status(401).send({err: 'ERR_UNAUTHORIZED'}); 
+    }
 
     api.post('/v1/auth/loginparse', {parseSession: parse_body.sessionToken}, apiLoginCB);
 
@@ -251,7 +257,7 @@ router.post('/outlet/invite/accept', function(req, res, next) {
     req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
 
     if (!req.session.user.outlet) {
-      return  req.session.save(function(){
+      return req.session.save(function(){
         res.send({err: null});
       });
     }
@@ -267,7 +273,6 @@ router.post('/outlet/invite/accept', function(req, res, next) {
       req.session.save(function(){
         res.send({err: null});
       });
-
     });
   }
 

@@ -38,13 +38,14 @@ function registerUser() {
 	//Check all fields for input
 	for (var key in params){
 		if(!/\S/.test(params[key])){
+			
+			disabled = false;
+
 			if(key == 'firstname' || key == 'lastname'){
-				disabled = false;
-				return $.snackbar({ content: 'Please enter in a first and last name!' });
+				return $.snackbar({ content: 'Please enter a first and last name!' });
 			}
 			else {
-				disabled = false;
-				return $.snackbar({ content: 'Please enter in all fields!' });
+				return $.snackbar({ content: 'Please enter all fields!' });
 			}
 		}
 	}
@@ -76,6 +77,14 @@ function acceptInvite(){
 			token: token,
 			email: emailField.value
 		};
+
+	if(!/\S/.test(params.password)){
+		disabled = false;
+		return $.snackbar({ content: 'Please enter in a password!' });
+	} else if(!/\S/.test(params.email)){
+		disabled = false;
+		return $.snackbar({ content: 'Please enter in an email!' });
+	}
 		
 	$.ajax({
 		url: "/scripts/outlet/invite/accept",
@@ -91,7 +100,6 @@ function acceptInvite(){
 			$.snackbar({content: resolveError(error)});
 		},
 		complete: function(jqXHR, textStatus) {
-
 			disabled = false;
 		}
 	});
@@ -100,12 +108,16 @@ function acceptInvite(){
 function resolveError(err) {
 	switch(err){
 		case 'ERR_EMAIL_TAKEN':
-			return 'This email is taken! Please use another one.'
+			return 'There is already an account with email! Please use another one.'
 		case 'ERR_INVALID_EMAIL':
 			return 'Please enter a valid email!'
+		case 'ERR_INVALID_EMAIL_MATCH':
+			return 'Please use the email you were invited from to join this outlet, or choose the option to create a new account.'
 		case 'ERR_INVALID_PHONE':
 			return 'Please enter a valid phone number!'
 		case 'ERR_UNAUTHORIZED':
+		case 'ERR_INVALID_LOGIN':
+		case 'Unauthorized':
 			return 'Invalid email or password!'
 	    default:
 	        return 'An error occured! Please try again in a bit.'   

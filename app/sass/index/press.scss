@@ -108,6 +108,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				margin:0 auto;
 				text-align:center;
 				float:none;
+				top:12px;
+				@include transform(none);
 			}
 
 			li{

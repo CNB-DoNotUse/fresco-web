@@ -1,3 +1,57 @@
+<% 
+	var articles = [
+		{
+			'image'	      : 'engadget',
+			'link'   	  : 'http://www.engadget.com/2016/01/26/fresco-news-apple-tv-app/',
+			'title'       : 'Fresco News brings its citizen journalism to Apple TV',
+			'author'      : 'Billy Steele • Engadget',
+			'description' : 'Now that most of us carry around a camera in our pockets, we\'re able to provide first-person accounts of breaking news. Fresco News uses iOS and Android apps to source photo and videos from citizen journalists, and now its bringing that content to the Apple TV.'
+		},
+		{
+			'image'	      : '9to5mac',
+			'link'        : 'http://9to5mac.com/2016/01/26/fresco-news-apple-tv/',
+			'title'       : 'Citizen journalism comes to the living room with Fresco News app for Apple TV',
+			'author'	  : 'Greg Barbosa • 9 To 5 Mac',
+			'description' : 'Users can submit photos or videos, which are then immediately screened and curated by Fresco’s content team. After that, the content is then placed into the hands of some of the largest news organizations in the world.'
+		},
+		{
+			'image'	      : 'wsj',
+			'link'		  : 'http://www.wsj.com/articles/BL-VCDB-17672',
+			'title' 	  : 'Fresco News Raises $1.2 Million to Help Media Crowdsource Videos, Photos',
+			'author'      : 'Lora Kolodny • Wall Street Journal',
+			'description' : 'Fresco’s seed investors include Reese Schonfeld, a co-founder of CNN and the Food Network; former Yahoo CEO Ross Levinsohn; former AOL Chief Executive Jon Miller; Michael Jones, former Myspace CEO and currently CEO of Science Inc.; and Mediabistro founder Laurel Touby. Other investors are early-stage funds Fresco Capital, 1517 Fund, Social Starts and others.'
+		},
+		{
+			'image'	      : 'techcrunch',
+			'link'		  : 'http://techcrunch.com/2015/06/05/fresco-news-aims-to-build-a-crowdsourced-network-for-breaking-news/',
+			'title' 	  : 'Fresco News Aims To Build A Crowdsourced Network For Breaking News',
+			'author'      : 'Anthony Ha • TechCrunch',
+			description   : 'If you’ve ever wanted to contribute photos or videos to your local newscast, you might get your chance soon, thanks to a new startup called Fresco News.'
+		},
+		{
+			'image'	      : 'inc',
+			'link'		  : 'http://www.inc.com/graham-winfrey/thiel-fellow-unveils-crowdsourced-photo-app.html',
+			'title' 	  : 'Why This 20-Year-Old Thiel Fellow Is Threatening the Photo Establishment',
+			'author'      : 'Graham Winfrey • Inc.',
+			'description' : 'Through Fresco\'s free app that launches later this month, news organizations will pay individuals between $10 and $30 per photo and between $40 and $90 per video, with Fresco taking an Uber-like cut of each transaction. The company will also provide access to its full photo and video collection to media companies for a monthly fee.'
+		},
+		{
+			'image'	      : 'macrumors',
+			'link'		  : 'http://www.macrumors.com/2015/09/08/fresco-news-photojournalist-tools-update/',
+			'title' 	  : 'Fresco News App Receives Major Update With Tools to Let Users Become Paid Photojournalists',
+			'author'      : 'Juli Clover • MacRumors',
+			'description' : 'Fresco\'s aim with the news Fresco News app is to cover a wider range of events happening worldwide. \"We can shine a light on every relevant news event that should be read about and heard about,\" said Fresco News CEO John Meyer. '
+		},
+		{
+			'image'	      : 'observer',
+			'link'		  : 'http://observer.com/2015/06/get-paid-to-go-to-the-scene-of-news-with-fresco-dispatch/',
+			'title' 	  : 'Get Paid to Go to the Scene of News With Fresco Dispatch',
+			'author'      : 'Brady Dale • The Observer',
+			'description' : 'Fresco News wants to turn iPhone users on the street into photojournalists. The idea is this: if Fresco had enough users out in the world, news outlets would never be lacking for photos of an incident or an event.'
+		}
+	];
+%>
+
 <div class="modal press xs <%- active %>" id="_press">
 	<div class="header">
 		<h2>Fresco in the News</h2>
@@ -7,76 +61,27 @@
 	
 	<div class="body">
 		<ul class="articles">
-			<li>
-				<div class="preview">
-					<img src="<%= global.CDN %>/index/wsj.png" />
-				</div>
-				<div class="meta">
-					<a target="_blank" href="http://www.wsj.com/articles/BL-VCDB-17672">
-						<h3>Fresco News Raises $1.2 Million to Help Media Crowdsource Videos, Photos</h3>
-					</a>
-					<p class="author">Lora Kolodny • Wall Street Journal</p>
-					<div class="description">
-						Fresco’s seed investors include Reese Schonfeld, a co-founder of CNN and the Food Network; former Yahoo CEO Ross Levinsohn; former AOL Chief Executive Jon Miller; Michael Jones, former Myspace CEO and currently CEO of Science Inc.; and Mediabistro founder Laurel Touby. Other investors are early-stage funds Fresco Capital, 1517 Fund, Social Starts and others.
+			
+			<% for(var i=0; i < articles.length; i++) { %>
+
+				<% article = articles[i] %>
+
+				<li>
+					<div class="preview">
+						<img src="<%= global.CDN %>/index/<%- article.image %>.png" />
 					</div>
-				</div>
-			</li>
-			<li>
-				<div class="preview">
-					<img src="<%= global.CDN %>/index/techcrunch.png" />
-				</div>
-				<div class="meta">
-					<a target="_blank" href="http://techcrunch.com/2015/06/05/fresco-news-aims-to-build-a-crowdsourced-network-for-breaking-news/">
-						<h3>Fresco News Aims To Build A Crowdsourced Network For Breaking News</h3>
-					</a>
-					<p class="author">Anthony Ha • TechCrunch</p>
-					<div class="description">
-						If you’ve ever wanted to contribute photos or videos to your local newscast, you might get your chance soon, thanks to a new startup called Fresco News.
+					<div class="meta">
+						<a target="_blank" href="<%- article.link %>">
+							<h3><%- article.title %></h3>
+						</a>
+						
+						<p class="author"><%- article.author %></p>
+						
+						<div class="description"><%- article.description %></div>
 					</div>
-				</div>
-			</li>
-			<li>
-				<div class="preview">
-					<img src="<%= global.CDN %>/index/inc.png" />
-				</div>
-				<div class="meta">
-					<a target="_blank" href="http://www.inc.com/graham-winfrey/thiel-fellow-unveils-crowdsourced-photo-app.html">
-						<h3>Why This 20-Year-Old Thiel Fellow Is Threatening the Photo Establishment</h3>
-					</a>
-					<p class="author">Graham Winfrey • Inc.</p>
-					<div class="description">
-						Through Fresco's free app that launches later this month, news organizations will pay individuals between $10 and $30 per photo and between $40 and $90 per video, with Fresco taking an Uber-like cut of each transaction. The company will also provide access to its full photo and video collection to media companies for a monthly fee.
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="preview">
-					<img src="<%= global.CDN %>/index/macrumors.png" />
-				</div>
-				<div class="meta">
-					<a target="_blank" href="http://www.macrumors.com/2015/09/08/fresco-news-photojournalist-tools-update/">
-						<h3>Fresco News App Receives Major Update With Tools to Let Users Become Paid Photojournalists</h3>
-					</a>
-					<p class="author">Juli Clover • MacRumors</p>
-					<div class="description">
-						Fresco's aim with the news Fresco News app is to cover a wider range of events happening worldwide. "We can shine a light on every relevant news event that should be read about and heard about," said Fresco News CEO John Meyer. 
-					</div>
-				</div>
-			</li>
-			<li>
-				<div class="preview">
-					<img src="<%= global.CDN %>/index/observer.png" />
-				</div>
-				<div class="meta">
-					<a target="_blank" href="http://observer.com/2015/06/get-paid-to-go-to-the-scene-of-news-with-fresco-dispatch/">
-						<h3>Get Paid to Go to the Scene of News With Fresco Dispatch</h3>
-					</a>
-					<p class="author">Brady Dale • The Observer</p>
-					<div class="description">
-						Fresco News wants to turn iPhone users on the street into photojournalists. The idea is this: if Fresco had enough users out in the world, news outlets would never be lacking for photos of an incident or an event.
-					</div>
-				</div>
-			</li>
+				</li>
+
+			<% } %>
 		</ul>
 	</div>
 

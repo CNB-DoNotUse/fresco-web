@@ -229,8 +229,7 @@ var processLogin = function() {
 			}
 
 		}, 
-		error: function(xhr,status,error){
-
+		error: function(xhr, status, error){
 			loginProcessing = false;
 
 			if(error == 'Unauthorized'){

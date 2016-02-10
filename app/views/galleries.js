@@ -35,6 +35,7 @@ import TopBar from './../components/topbar'
 					verifiedToggle={true}
 					updateSort={this.updateSort}
 					onVerifiedToggled={this.onVerifiedToggled} />
+					
 				<GalleryList 
 					withList={false}
 					highlighted={false}
