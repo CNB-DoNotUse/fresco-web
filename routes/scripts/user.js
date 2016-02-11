@@ -17,7 +17,7 @@ var express     = require('express'),
 router.post('/user/reset', (req, res, next) => {
 
     var request  = require('superagent'),
-        email = req.body.email;
+        email = global.sanitizeEmail(req.body.email);
 
     if(!email){
         return res.json({
