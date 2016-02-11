@@ -19,7 +19,7 @@ router.post('/outlet/checkout', (req, res) => {
 
   req.body.outlet = req.session.user.outlet._id;
   
-  API.proxyRaw(req, res, (data) => {
+  API.proxy(req, res, (data) => {
 
     var options = {
       url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id,
@@ -147,7 +147,7 @@ router.post('/outlet/create', function(req, res, next) {
 router.get('/outlet/export', (req, res) => {
   if (!checkOutlet(req, res)) return;
 
-  API.proxyRaw(req, res, (body) => {
+  API.proxy(req, res, (body) => {
     var lines = body.data;
     if(req.query.format == 'xlsx'){
       var data = [['time', 'type', 'price', 'assignment', 'outlet']];
@@ -282,18 +282,25 @@ router.post('/outlet/update', (req, res) => {
 
   if (!checkOutlet(req, res)) return;
 
-  var end = (err) => { res.json(err ? err : {}).end(); };
+  var end = (err) => { 
+      res.json(err ? err : {}).end(); 
+  };
 
   req.body.id = req.session.user.outlet._id;
 
-  API.proxyRaw(req, res, (body) => {
+  API.proxy(req, res, (body) => {
 
-    if(body.err) { return end({err: body.err}); }
+    if(body.err) { 
+        return end({
+            err: body.err
+        }); 
+    }
 
     req.session.user.outlet = body.data;
     req.session.save(function(){
       end();
     });
+
   });
 });
 //---------------------------^^^-OUTLET-ENDPOINTS-^^^---------------------------//

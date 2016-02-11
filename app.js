@@ -226,10 +226,10 @@ app.use((error, req, res, next) => {
     err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
 
     // Development error handle will print stacktrace
-      console.log('Method:', req.method,
-                  '\nPath:', req.path,
-                  '\nBody', req.body,
-                  '\nError: ', error.message + '\n');
+    console.log('Method:', req.method,
+                '\nPath:', req.path,
+                '\nBody', req.body,
+                '\nError: ', error.message + '\n');
 
     err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
 
@@ -249,7 +249,6 @@ app.use((error, req, res, next) => {
     }
 
     res.type('txt').send('Server Error');
-
 });
 
 /**
