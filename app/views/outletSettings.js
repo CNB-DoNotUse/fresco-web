@@ -32,26 +32,38 @@ class OutletSettings extends React.Component {
 
 	render() {
 
+		var isOwner= this.props.user.outlet.owner == this.props.user._id,
+			className = 'outlet-settings' + (!isOwner ? ' centered' : ''),
+			members = '',
+			left = '';
+
+		if(isOwner){
+
+			left = <div className="left">
+						<OutletInfo outlet={this.props.user.outlet} />
+
+						<OutletPaymentInfo outlet={this.props.user.outlet} />
+					</div>
+
+			members = <OutletMembers
+							outlet={this.props.outlet}
+							updateMembers={this.updateMembers}
+							members={this.state.members} />
+		}
+
 		return (
 			<App user={this.props.user}>
 				<TopBar
 					title={this.props.user.outlet.title} />
 				
-				<div className="outlet-settings">
-					<div className="left">
-						<OutletInfo outlet={this.props.user.outlet} />
-
-						<OutletPaymentInfo outlet={this.props.user.outlet} />
-					</div>
+				<div className={className}>
+					{left}
 					<div className="right">
 						<OutletNotifications outlet={this.props.user.outlet} />	
 
 						<OutletLocations outlet={this.props.user.outlet} />	
 						
-						<OutletMembers
-							outlet={this.props.outlet}
-							updateMembers={this.updateMembers}
-							members={this.state.members} />
+						{members}
 					</div>
 
 					<QuickSupport />

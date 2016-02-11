@@ -119,7 +119,7 @@ router.get('/settings', (req, res, next) => {
   
   function doWithOutletInfo(error, response, body) {
 
-    if (error || !body || body.err || body.data.owner._id != req.session.user._id){
+    if (error || !body || body.err){
       var err = new Error('Unauthorized');
       err.status = 403;
       return next(err);

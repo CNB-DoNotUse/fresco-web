@@ -164,7 +164,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	Locations Card
  */
 
-.settings-outlet-locations{
+.settings-outlet-locations, .settings-outlet-notifications{
 
 	.labels{
 		float:right;
@@ -186,12 +186,30 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		li{
 			height:72px;
 			padding:0 16px;
-
 			.info{
 				float:left;
 				position:relative;
-				top:17px;
+				top:14px;
+			}
 
+			&.notification{
+				.title{
+					margin:0;
+					font-size:16px;
+					line-height:24px;
+					@include rgba(color, 0, 0, 0, 0.87);
+				}
+				.description{
+					font-size:13px;
+					line-height:20px;
+					@include rgba(color, 0, 0, 0, 0.54);
+				}
+			}
+
+			&.location{
+				a{
+					font-weight:inherit;
+				}
 				.area{
 					margin:0;
 					font-size:16px;
@@ -211,7 +229,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		}
 	}
 
-	.location-options{
+	.location-options, .notification-options{
 		float:right;
 		position:relative;
 		top:24px;
@@ -250,7 +268,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				margin-right:20px;
 			}
 		}
-
 	}
 
 	.footer{
@@ -266,7 +283,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			position: relative;
 		}
 		
-		.location-options{
+		.location-options, .notification-options{
 			top:-10px;
 
 		}
