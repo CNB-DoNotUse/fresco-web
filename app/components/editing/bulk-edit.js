@@ -178,7 +178,7 @@ export default class BulkEdit extends React.Component {
         }
 
         $.ajax({
-            url: '/scripts/gallery/bulkupdate',
+            url: '/api/gallery/bulkupdate',
             type: 'post',
             data: JSON.stringify(params),
             contentType: 'application/json',
