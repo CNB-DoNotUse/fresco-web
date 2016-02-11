@@ -14,7 +14,7 @@ export default class AssignmentEdit extends React.Component {
 				lat: this.props.assignment.location.geo.coordinates[1],
 				lng: this.props.assignment.location.geo.coordinates[0]
 			},
-			radius: this.props.assignment.location.radius,
+			radius: global.milesToFeet(this.props.assignment.location.radius),
 			address: this.props.assignment.location.address,
 			outlet: this.props.assignment.outlet
 		}
@@ -41,7 +41,7 @@ export default class AssignmentEdit extends React.Component {
 				lat: this.props.assignment.location.geo.coordinates[1],
 				lng: this.props.assignment.location.geo.coordinates[0]
 			},
-			this.props.assignment.location.radius,
+			global.milesToFeet(this.props.assignment.location.radius),
 			this.props.assignment.location.address
 		);
 	}
@@ -65,7 +65,7 @@ export default class AssignmentEdit extends React.Component {
 	/**
 	 * Updates state location with passed params
 	 * @param  {dictionary} location Location Dictionary object {lat: x, lng: y}
-	 * @param  {integer} radius   Radius that has changed
+	 * @param  {integer} radius   Radius that has changed in feet
 	 * @param  {string} address The address to update
 	 */
 	updateLocation(passedLocation, passedRadius, passedAddress) {
@@ -85,7 +85,7 @@ export default class AssignmentEdit extends React.Component {
 			id: this.props.assignment._id,
 			title: this.refs.title.value,
 			caption: this.refs.caption.value,
-			radius: this.state.radius,
+			radius: global.feetToMiles(this.state.radius),
 			lat: this.state.location.lat,
 			lon: this.state.location.lng, //should be `lng:`
 			address: this.state.address,

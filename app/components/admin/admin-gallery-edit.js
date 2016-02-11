@@ -73,8 +73,9 @@ export default class AdminGalleryEdit extends React.Component {
 			mapLocation: null
 		});
 
-		if( this.props.hasActiveGallery && this.props.gallery.posts && this.refs['gallery-caption'] )
+		if( this.props.hasActiveGallery && this.props.gallery.posts && this.refs['gallery-caption'] ) {
 			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
+		}
 
 		// Remove materialize empty input class
 		$(this.refs['gallery-byline']).removeClass('empty');
@@ -399,6 +400,7 @@ export default class AdminGalleryEdit extends React.Component {
 						className="form-control floating-label gallery-caption"
 						placeholder="Caption"
 						onChange={this.props.handleChangeCaption}
+						defaultValue={activeGallery.posts[0].caption}
 						ref="gallery-caption"></textarea>
 
 					{assignmentEdit}
