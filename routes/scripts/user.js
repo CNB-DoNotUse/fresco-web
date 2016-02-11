@@ -4,6 +4,7 @@ var express     = require('express'),
     config      = require('../../lib/config'),
     User        = require('../../lib/user'),
     API         = require('../../lib/api'),
+    global      = require('../../lib/global'),
     router      = express.Router();
 
 //---------------------------vvv-USER-ENDPOINTS-vvv---------------------------//
@@ -16,7 +17,7 @@ var express     = require('express'),
 router.post('/user/reset', (req, res, next) => {
 
     var request  = require('superagent'),
-        email = req.body.email;
+        email = global.sanitizeEmail(req.body.email);
 
     if(!email){
         return res.json({
@@ -55,6 +56,9 @@ router.post('/user/login', (req, res) => {
   }
 
   var parse = requestJson.createClient(config.PARSE_API);
+  
+  //Sanitize before sending    
+  req.body.email = global.sanitizeEmail(req.body.email);
 
   parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
   parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
@@ -80,6 +84,8 @@ router.post('/user/login', (req, res) => {
     API.request(options, (login_body) => {
       if(!login_body) {
             return res.json({ "err" : "ERR_LOGIN" });
+      } else if(login_body.err){
+          return res.json({"err" : "ERR_LOGIN"});
       }
 
       req.session.token = login_body.data.token;
@@ -180,8 +186,6 @@ router.post('/user/update', (req, res) => {
     if(req.body.avatar) 
         delete req.body.avatar;
 
-    if(!req.body.bio)
-        req.body.bio = '';
 
     API.proxyRaw(req, res, (body) => {
         var user = body.data;

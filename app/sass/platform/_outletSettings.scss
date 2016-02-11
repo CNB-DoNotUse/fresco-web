@@ -10,6 +10,13 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 @import 'settings';
 
 /*
+	Ugly fix for bootstrap for this specfic page
+ */
+.col-md-12.col-lg-10{
+	overflow:auto;
+}
+
+/*
 	Outlet Settings Wrapper
  */
 

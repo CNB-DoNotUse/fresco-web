@@ -28,21 +28,19 @@ export default class AssignmentSidebar extends React.Component {
 
 		return (
 			<div className="col-sm-4 profile hidden-xs">
-				<div className="container-fluid fat">
-					<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-						<div className="meta">
-							<div className="meta-description" id="story-description">
-								{this.props.assignment.caption || 'No Description'}
-							</div>
-							
-							<div className="meta-user">
-								{expireButton}
-							</div>
-							
-							<AssignmentStats 
-								stats={this.props.stats}
-								assignment={this.props.assignment} />
+				<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+					<div className="meta">
+						<div className="meta-description" id="story-description">
+							{this.props.assignment.caption || 'No Description'}
 						</div>
+						
+						<div className="meta-user">
+							{expireButton}
+						</div>
+						
+						<AssignmentStats 
+							stats={this.props.stats}
+							assignment={this.props.assignment} />
 					</div>
 				</div>
 			</div>

@@ -84,7 +84,7 @@ class SideBarListItems extends React.Component {
 
 		if(!this.props.user) return;
 
-		if (this.props.user.outlet || this.props.user.rank >= global.RANKS.CONTENT_MANAGER){
+		if (this.props.user.outlet) {
 			var dispatch = 
 				<li className="sidebar-tab">
 					<a href="/dispatch"><span className="mdi mdi-map icon"></span>Dispatch</a>

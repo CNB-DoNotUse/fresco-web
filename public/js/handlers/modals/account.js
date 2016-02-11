@@ -4,9 +4,19 @@ var accountModal = document.getElementById('_account'),
 	signup = document.getElementById('_signup'),
 	signUpFormHeader = document.getElementById('_signup-form-header'),
 	loginFormHeader = document.getElementById('_login-form-header'),
+	signUpLoader = document.getElementById('signup-loader'),
+	loginLoader = document.getElementById('login-loader'),
 	signUpForm = document.querySelector('#signupForm');
 	loginForm = document.querySelector('#loginForm'),
 	loginButton = document.querySelector('#login-password');
+
+//Grab the `h3` tag out of the header div so we can hide the text to show the spinner
+var signUpHeaderText = signUpFormHeader.children[0],
+	loginHeaderText = loginFormHeader.children[0];
+
+//State vars to disable signup/login after clicking
+var signupProcessing = false,
+	loginProcessing = false;
 
 //Run on load
 updatePosition(window.innerWidth);
@@ -86,17 +96,21 @@ loginFormHeader.addEventListener('click', function() {
 /**
  * Calls signup to process
  */
-var signupProcessing = false;
+function reEnableSignup() {
+	signupProcessing = false;
+	signUpLoader.style.display = 'none';
+	signUpHeaderText.innerHTML = 'START MY DEMO';
+}
+
 var processSignup = function() {
-
 	if(signupProcessing) return;
-
+	
 	signupProcessing = true;
 
 	//Set up fields
 	var params = [
 		{
-			value: document.getElementById('outlet-name').value,
+			value: document.getElementById('outlet-title').value,
 			name: 'Title',
 			key: 'title'
 		},
@@ -144,10 +158,16 @@ var processSignup = function() {
 
 	//Check all the fields
 	for (var i = 0; i < params.length; i++) {
-		value = params[i].value;
+		value = params[i].value,
+		key = params[i].key;
+
 		if(!/\S/.test(value) || typeof(value) == 'undefined'){
-			signupProcessing = false;
-			return $.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
+			reEnableSignup();
+
+			if(key === 'contact_lastname' || key == 'contact_firstname')
+				return $.snackbar({content: 'Please enter a '+ params[i].name + '!'});
+			else
+				return $.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
 		}
 	}
 	
@@ -157,6 +177,9 @@ var processSignup = function() {
 		newParams[params[i].key] = params[i].value;
  	};
 
+ 	signUpHeaderText.innerHTML = '';
+ 	signUpLoader.style.display = 'block';
+
 	$.ajax({
 		url: "/scripts/outlet/create",
 		method: 'post',
@@ -164,20 +187,19 @@ var processSignup = function() {
 		data: JSON.stringify(newParams),
 		dataType: 'json',
 		success: function(response, status, xhr) {
-
-			signupProcessing = false;
-
 			if (response.err){
-
-				return $.snackbar({content: resolveError(response.err)});
-
+				return this.error(null, null, response.err);
 			}
 			else {
-
 				window.location.replace('/archive');
-
 			}
-			
+		},
+		error: function(xhr, status, error) {
+			reEnableSignup();
+
+			return $.snackbar({
+				content: resolveError(error)
+			});
 		}
 	});
 
@@ -186,7 +208,12 @@ var processSignup = function() {
 /**
  * Calls login to process
  */
-var loginProcessing = false;
+function reEnableLogin() {
+	loginProcessing = false;
+	loginLoader.style.display = 'none';
+	loginHeaderText.innerHTML = 'LOG IN';
+}
+
 var processLogin = function() {
 	if(loginProcessing) return;
 
@@ -196,11 +223,13 @@ var processLogin = function() {
 		password = document.getElementById('login-password').value;
 
 	if(!/\S/.test(email) || !/\S/.test(password)){
-		
-		loginProcessing = false;
+		reEnableLogin();
 
 		return $.snackbar({ content: 'Please enter in all fields!' });
 	}
+
+	loginHeaderText.innerHTML = '';
+	loginLoader.style.display = 'block';
 
 	$.ajax({
 		url: "/scripts/user/login",
@@ -212,27 +241,19 @@ var processLogin = function() {
 		}),
 		dataType: 'json',
 		success: function(response, status, xhr){
-
-			loginProcessing = false;
-
 			if(response.err){
-
-				$.snackbar({ content: 'Invalid email or password!'});
-				
+				return this.error(null, null, response.err);
 			}
 			//Redirect
 			else {
-
 				var next = getParameterByName('next');
 				window.location.replace(next.length ? next : '/archive');
-
 			}
-
 		}, 
 		error: function(xhr, status, error){
-			loginProcessing = false;
+			reEnableLogin();
 
-			if(error == 'Unauthorized'){
+			if(error == 'Unauthorized' || error == 'ERR_LOGIN'){
 				return $.snackbar({ content: 'Invalid email or password!'});
 			} else{
 				return $.snackbar({ content: 'There was an error logging you in. Please try again in a bit.'});
@@ -250,17 +271,15 @@ function getParameterByName(name) {
 }
 
 function resolveError(err){
-
 	switch(err){
 	    case 'ERR_TITLE_TAKEN':
 	        return 'This outlet title is taken!';
 	    case 'ERR_EMAIL_TAKEN':
 	    	return 'It seems like there\'s an account with this email already, please try a different one.'
 	    default:
-	        return 'Seems like we ran into an error registering your outlet!'    
+	        return 'Seems like we ran into an error registering your outlet! Please try again in a bit.'    
 	}
 }
-
 
 /**
  * Updates the postion of the account modal elements
@@ -268,7 +287,6 @@ function resolveError(err){
  */
 
 function updatePosition(width) {
-
 	if(window.innerWidth > screen.tablet){
 		presentation.style.display = 'block';
 		accountModal.insertBefore(presentation, login);

@@ -10,7 +10,7 @@ var express   = require('express'),
 router.get('/', (req, res, next) => {
 
   //Check if the user is part of an outlet or they are at least aa CM
-  if (!(req.session.user.outlet || req.session.user.rank >= global.RANKS.CONTENT_MANAGER)){
+  if (!req.session.user.outlet) {
       var error = error(config.ERR_PAGE_MESSAGES[401]);
       error.status = 401;
 

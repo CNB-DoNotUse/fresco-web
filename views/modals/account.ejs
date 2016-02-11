@@ -6,24 +6,34 @@
 	<div class="form-wrap login" id="_login">
 		<form id="loginForm">
 			<h3>Log In</h3>
+			
 			<span class="mdi mdi-help-circle help modal-action" data-event="modal" data-modal="forgot"></span>
+			
 			<input id="login-email" placeholder="Email" type="text" />
+			
 			<input id="login-password" placeholder="Password" type="password" />
 		</form>
 
 		<div id="_login-form-header" class="form-header button">
 			<h3>LOG IN</h3>
 		</div>
+
+		<div class="showbox" id="login-loader">
+		  <div class="loader">
+		    <svg class="circular" viewBox="25 25 50 50">
+		      <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10" />
+		    </svg>
+		  </div>
+		</div>
 	</div>
 
 	<div class="form-wrap signup" id="_signup">
 		<form id="signupForm">
-
 			<h3>Try out Fresco News</h3>
 
 			<h2>Outlet Info</h2>
 
-			<input id="outlet-name" type="text" placeholder="Name" />
+			<input id="outlet-title" type="text" placeholder="Title" />
 			<input id="outlet-url" type="text" placeholder="Website URL" />
 			<div class="dropdown" id="outlet-medium">
 				<div>
@@ -110,6 +120,14 @@
 
 		<div id="_signup-form-header" class="form-header button">
 			<h3>TRY OUT FRESCO NEWS</h3>
+		</div>
+
+		<div class="showbox" id="signup-loader">
+		  <div class="loader">
+		    <svg class="circular" viewBox="25 25 50 50">
+		      <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10" />
+		    </svg>
+		  </div>
 		</div>
 	</div>
 </div>

@@ -4,7 +4,9 @@ var form = document.getElementById('join-form'),
 	accountType = document.getElementById('join-account-type'),
 	nameField = document.getElementById('join-name'),
 	phoneField = document.getElementById('join-phone'),
-	disabled = false;
+	disabled = false,
+	submit = document.getElementById('join_submit'),
+	loader = document.getElementById('join-loader');
 
 form.addEventListener('submit', function(e) {
 
@@ -22,8 +24,15 @@ form.addEventListener('submit', function(e) {
 
 });
 
+function reEnable() {
+	disabled = false;
+	loader.style.display = 'none';
+	submit.value = 'JOIN';
+}
 
 function registerUser() {
+	submit.value = '';
+	loader.style.display = 'block';
 
 	var name = nameField.value.split(' '),
 		params = {
@@ -39,7 +48,7 @@ function registerUser() {
 	for (var key in params){
 		if(!/\S/.test(params[key])){
 			
-			disabled = false;
+			reEnable();
 
 			if(key == 'firstname' || key == 'lastname'){
 				return $.snackbar({ content: 'Please enter a first and last name!' });
@@ -65,13 +74,16 @@ function registerUser() {
 		},
 		complete: function(jqXHR, textStatus) {
 
-			disabled = false;
+			reEnable();
 		}
 	});
 
 }
 
 function acceptInvite(){
+	submit.value = '';
+	loader.style.display = 'block';
+
 	var params = {
 			password: passwordField.value,
 			token: token,
@@ -79,10 +91,10 @@ function acceptInvite(){
 		};
 
 	if(!/\S/.test(params.password)){
-		disabled = false;
+		reEnable();
 		return $.snackbar({ content: 'Please enter in a password!' });
 	} else if(!/\S/.test(params.email)){
-		disabled = false;
+		reEnable();
 		return $.snackbar({ content: 'Please enter in an email!' });
 	}
 		
@@ -97,10 +109,12 @@ function acceptInvite(){
 			window.location.replace('/archive');
 		},
 		error: function(xhr, status, error){
+			reEnable();
+			
 			$.snackbar({content: resolveError(error)});
 		},
 		complete: function(jqXHR, textStatus) {
-			disabled = false;
+			reEnable();
 		}
 	});
 }
@@ -108,13 +122,15 @@ function acceptInvite(){
 function resolveError(err) {
 	switch(err){
 		case 'ERR_EMAIL_TAKEN':
-			return 'There is already an account with email! Please use another one.'
+			return 'There is already an account with this email! Please use another one.'
 		case 'ERR_INVALID_EMAIL':
 			return 'Please enter a valid email!'
 		case 'ERR_INVALID_EMAIL_MATCH':
 			return 'Please use the email you were invited from to join this outlet, or choose the option to create a new account.'
 		case 'ERR_INVALID_PHONE':
 			return 'Please enter a valid phone number!'
+		case 'ERR_USER_IS_MEMBER'
+			return 'You\'re already a member of this outlet!'
 		case 'ERR_UNAUTHORIZED':
 		case 'ERR_INVALID_LOGIN':
 		case 'Unauthorized':
