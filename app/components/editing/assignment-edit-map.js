@@ -57,7 +57,7 @@ export default class AssignmentEditMap extends React.Component {
 
 	render() {
 
-		var radius = this.props.radius ? Math.round(global.milesToFeet(this.props.radius)) : null,
+		var radius = this.props.radius ? Math.round(this.props.radius) : null,
 			address = this.props.address;
 
 		return ( 
@@ -82,7 +82,7 @@ export default class AssignmentEditMap extends React.Component {
 			        </div>
 			        <EditMap 
 			        	location={this.props.location} 
-			        	radius={global.feetToMeters(radius)} />
+			        	radius={radius} />
 		   		</div>
 			</div>
 

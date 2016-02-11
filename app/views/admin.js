@@ -32,10 +32,19 @@ import AdminBody from './../components/admin/admin-body'
  		this.resetSubmissions = this.resetSubmissions.bind(this);
  		this.resetImports = this.resetImports.bind(this);
 
+ 		this.spliceGallery = this.spliceGallery.bind(this);
+
  		this.refresh = this.refresh.bind(this);
+ 		this.refreshInterval = null;
+
 	}
 
  	componentDidMount() {
+		this.refreshInterval = setInterval(() => {
+			if(this.props.activeTab != '') {
+				this.refresh();
+			}
+		}, 5000);
  		this.loadInitial();
  	}
 
@@ -100,28 +109,36 @@ import AdminBody from './../components/admin/admin-body'
  		var activeTab = '';
 
  		var tryLoadAssignments = () => {
-
 	 		this.getData(undefined, {tab: 'assignments'}, (assignments) => {
+
 	 			activeTab = assignments.length ? 'assignments' : activeTab;
+
 	 			this.setState({
 	 				assignments: this.state.assignments.concat(assignments)
 	 			});
+
 	 			tryLoadSubmissions();
 	 		});
  		}
 
  		var tryLoadSubmissions = () => {
+
 	 		this.getData(undefined, {tab: 'submissions'}, (submissions) => {
+
 	 			activeTab = submissions.length ? 'submissions' : activeTab;
+
 	 			this.setState({
 	 				submissions: this.state.submissions.concat(submissions)
 	 			});
+
 	 			tryLoadImports();
 	 		});
  		}
 
  		var tryLoadImports = () => {
+
 	 		this.getData(undefined, {tab: 'imports'}, (imports) => {
+
 	 			this.setState({
 	 				activeTab: activeTab.length ? activeTab : 'imports',
 	 				imports: this.state.imports.concat(imports)
@@ -133,14 +150,31 @@ import AdminBody from './../components/admin/admin-body'
 
  	}
 
+
+	spliceGallery(data, cb) {
+
+		var stateData = this.state[data.type], index = 0;
+
+		for (var g in stateData) {
+			if(stateData[g]._id == data.gallery) {
+				index = g;
+				break;
+			}
+		}
+
+		stateData.splice(index, 1);
+		this.setState(stateData);
+
+		cb(null, index);
+	}
+
  	refresh() {
-
  		this.getData(undefined, {unshift: true, tab: this.state.activeTab}, (data) => {});
-
  	}
 
 	getData(last, options, cb) {
-		var concat = false, unshift = false, endpoint = '', params = {}, tab = options.tab || this.state.activeTab, newState = {};
+
+		var self = this, concat = false, unshift = false, endpoint = '', params = {}, tab = options.tab || this.state.activeTab, newState = {};
 
 		// Set up endpoint and params depending on tab
 		switch(tab) {
@@ -160,7 +194,6 @@ import AdminBody from './../components/admin/admin-body'
 				break;
 		}
 
-
 		if(typeof cb == 'undefined') {
 			cb = options;
 		} else if(options.concat) {
@@ -172,15 +205,22 @@ import AdminBody from './../components/admin/admin-body'
 		this.clearXHR();
 
 		this.currentXHR = $.get(endpoint, params, (data) => {
-
 			if (!data.data) {
 				return cb([]);
 			}
 
 			var stateData = this.state[tab];
 
-			var newData = this.getChangedData(stateData.concat(data.data), stateData);
+			if(!stateData.length) {
+				let newState = {};
+				newState[tab] = data.data;
+				if(unshift) {
+					self.setState(newState);
+				}
+				return cb(data.data);
+			}
 
+			var newData = this.getChangedData(stateData.concat(data.data), stateData);
 
 			if(!newData.length) {
 				return cb([]);
@@ -193,19 +233,19 @@ import AdminBody from './../components/admin/admin-body'
 				}
 
 				if(unshift) {
-
-					// Filter posts newer than newest
-					for (var i = 0; i < newData.length; i++) {
-						if(newData[i].time_created < stateData[0].time_created) {
-							newData.splice(i, 1);
+					if(stateData.length) {
+						// Filter posts newer than newest
+						for (var i = 0; i < newData.length; i++) {
+							if(newData[i].time_created < stateData[0].time_created) {
+								newData.splice(i, 1);
+							}
 						}
-					};
+					}
 					stateData.unshift(...newData);
 				}
 
 				newState[tab] = stateData;
-
-				this.setState(newState);
+				self.setState(newState);
 
 			}
 
@@ -255,7 +295,8 @@ import AdminBody from './../components/admin/admin-body'
 					submissions={this.state.submissions}
 					imports={this.state.imports}
 					getData={this.getData}
-					refresh={this.refresh} />
+					refresh={this.refresh}
+					spliceGallery={this.spliceGallery} />
 			</App>
 		)
 	}
