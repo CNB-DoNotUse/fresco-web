@@ -27,7 +27,7 @@ export default class OutletNotifications extends React.Component {
 		var self = this,
 			params = {
 				medium: medium,
-				active: e.target.checked
+				enabled: e.target.checked
 			},
 			stateNotifications = this.state.notifications;
 
@@ -41,8 +41,9 @@ export default class OutletNotifications extends React.Component {
 			notifications: stateNotifications
 		});
 
+
 		$.ajax({
-			url: '/api/notification/updateAll',
+			url: '/api/notification/settings/update/all',
 			method: 'post',
 			data: params,
 			success: function(response) {

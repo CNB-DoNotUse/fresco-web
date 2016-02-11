@@ -39,6 +39,7 @@ export default class DispatchMap extends React.Component {
 		this.addAssignmentsToMap = this.addAssignmentsToMap.bind(this);
 		this.addAssignmentToMap = this.addAssignmentToMap.bind(this);
 		this.addAssignmentMarker = this.addAssignmentMarker.bind(this);
+		this.saveMapLocation = this.saveMapLocation.bind(this);
 	}
 
 	componentDidMount() {
@@ -65,8 +66,9 @@ export default class DispatchMap extends React.Component {
 
 		//Add event listeners for map life cycle
 		google.maps.event.addListener(map, 'idle', this.updateMap);
-		google.maps.event.addListener(map, 'dragend', ()=>{
+		google.maps.event.addListener(map, 'dragend', () => {
 			this.updateMap();
+			this.saveMapLocation();
 		});
 
 		this.setState({ map: map });	
@@ -88,6 +90,9 @@ export default class DispatchMap extends React.Component {
 
 			var place = this.props.mapPlace;
 
+
+			console.log(place);
+
 			//Check if the place has a viewport, then use that, otherwsie use the location and a regular zoom
 			if(place.geometry.viewport){
 				this.state.map.fitBounds(place.geometry.viewport);
@@ -97,11 +102,7 @@ export default class DispatchMap extends React.Component {
 				this.state.map.setZoom(18);
 			}
 
-			//Save new map center to storage
-			window.sessionStorage.dispatch = JSON.stringify({
-				mapCenter: this.state.map.getCenter(),
-				mapZoom: this.state.map.getZoom()
-			});
+			this.saveMapLocation();
 		}
 
 		//Check if the map should update forcefully from the parent
@@ -218,6 +219,19 @@ export default class DispatchMap extends React.Component {
 				this.props.updateAssignmentPlace();
 			});
 		}
+	}
+
+	/**
+	 * Saves the map's current location to local storage
+	 * @return {[type]} [description]
+	 */
+	saveMapLocation() {
+		console.log('Test');
+		//Save new map center to storage
+		window.sessionStorage.dispatch = JSON.stringify({
+			mapCenter: this.state.map.getCenter(),
+			mapZoom: this.state.map.getZoom()
+		});
 	}
 
 	/**

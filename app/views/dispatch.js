@@ -260,6 +260,8 @@ class Dispatch extends React.Component {
 						user={this.props.user}
 						outlet={this.props.outlet}
 						addLocationButton={true}
+
+						updateMapPlace={this.updateMapPlace}
 						mapPlace={this.state.mapPlace} />
 				</TopBar>
 				

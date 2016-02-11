@@ -166,7 +166,6 @@ router.post('/user/register', (req, res, next) => {
 });
 
 router.get('/user/refresh', (req, res, next) => {
-
     User.refresh(req, res, (err) => {
         if(err)
             return res.json({
@@ -187,6 +186,7 @@ router.post('/user/update', (req, res) => {
         delete req.body.avatar;
 
     API.proxy(req, res, (body) => {
+
         var user = body.data;
 
         //Update all fields
