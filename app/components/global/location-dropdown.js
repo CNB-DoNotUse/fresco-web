@@ -16,11 +16,34 @@ export default class LocationDropdown extends React.Component {
 		}
 
 		this.addLocation = this.addLocation.bind(this);
+		this.locationClicked = this.locationClicked.bind(this);
 	}
 
 	componentDidMount() {
 		//Load intial locations
 	    this.loadLocations();  
+	}
+
+	locationClicked(location) {
+		if(!this.props.updateMapPlace) return;
+
+		var polygon = location.location.coordinates[0],
+			bounds = new google.maps.LatLngBounds();
+
+		for (let coordinate of polygon) {
+			var latLng = new google.maps.LatLng(coordinate[1], coordinate[0])
+
+			bounds.extend(latLng);
+		}
+
+		var place = {
+			geometry: {
+				viewport: bounds
+			}
+		};
+
+		//Tell dispatch map to update
+		this.props.updateMapPlace(place);
 	}
 
 	/**
@@ -56,11 +79,8 @@ export default class LocationDropdown extends React.Component {
 				contentType: 'application/json',
 				data: JSON.stringify(params),
 				success: function(response){
-
 					if (response.err) 
 						return this.error(null, null, response.err);
-
-					$.snackbar({ content : params.title + ' has been successfully added to your saved locations.'})
 
 					//Update locations
 					self.loadLocations();
@@ -69,11 +89,9 @@ export default class LocationDropdown extends React.Component {
 					$.snackbar({ content: global.resolveError(error) });
 				}
 			});
-			
-
 		} else{
 			$.snackbar({ 
-				content: 'Please enter a location in the input field on the left to add it your saved locations' 
+				content: 'Please enter a location in the input field on the left to add it your saved locations.' 
 			});
 		}
 	}
@@ -114,23 +132,22 @@ export default class LocationDropdown extends React.Component {
 			unseenCount = global.isPlural(unseenCount) ? unseenCount + ' unseen items' : unseenCount + ' unseen item';
 			
 			return ( 
-				<li className="location-item" key={i}>
+				<li className="location-item" key={i} onClick={this.locationClicked.bind(null, location)}>
 					<a href={"/location/" + location._id}>
-							<span className="area">{location.title}</span>
-							<span className="count">{unseenCount}</span>
+						<span className="mdi mdi-launch"></span>
 					</a>
+					<span className="area">{location.title}</span>
+					<span className="count">{unseenCount}</span>
 				</li> 
 			);
 
 		});
 
-		if(this.props.outlet.owner === this.props.user._id){
-			dropdownActions.push(
-				<a href="/outlet/settings" key={2}>
-					<span className="mdi mdi-settings"></span>
-				</a>
-			);
-		}
+		dropdownActions.push(
+			<a href="/outlet/settings" key={2}>
+				<span className="mdi mdi-settings"></span>
+			</a>
+		);
 
 		if(this.props.addLocationButton){
 			dropdownActions.push(
