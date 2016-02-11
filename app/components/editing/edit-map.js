@@ -198,7 +198,7 @@ export default class EditMap extends React.Component {
 		var circle = new google.maps.Circle({
 			map: map,
 			center: marker.getPosition(),
-			radius: this.props.radius || 0,
+			radius: global.feetToMeters(this.props.radius) || 0,
 			strokeWeight: 0,
 			fillColor: global.assignmentColor[this.props.type],
 			fillOpacity: 0.26

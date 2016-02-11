@@ -16,8 +16,7 @@ import AdminBody from './../components/admin/admin-body'
  			activeTab: '',
  			assignments: [],
  			submissions: [],
- 			imports: [],
- 			last_update: Date.now()
+ 			imports: []
  		}
 
  		this.currentXHR = null;
