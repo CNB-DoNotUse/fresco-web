@@ -17,7 +17,6 @@ export default class AdminBody extends React.Component {
 
 		this.setActiveAssignment = this.setActiveAssignment.bind(this);
 		this.setActiveGallery = this.setActiveGallery.bind(this);
-		this.spliceCurrentGallery = this.spliceCurrentGallery.bind(this);
 
 		this.updateAssignment = this.updateAssignment.bind(this);
 
@@ -25,18 +24,10 @@ export default class AdminBody extends React.Component {
 		this.verify = this.verify.bind(this);
 		this.remove = this.remove.bind(this);
 
+		this.spliceGallery = this.spliceGallery.bind(this);
+
 		this.scroll = this.scroll.bind(this);
 
-		this.refreshInterval = null;
-
-	}
-
-	componentDidMount() {
-		this.refreshInterval = setInterval(() => {
-			if(this.props.activeTab != '') {
-				this.props.refresh();
-			}
-		}, 5000);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -107,7 +98,6 @@ export default class AdminBody extends React.Component {
 	setActiveGallery(id, type) {
 
 		if( this.state.activeGallery._id == id ) return;
-
 		var gallery = {};
 
 		if ( type == 'submission' ) {
@@ -137,28 +127,6 @@ export default class AdminBody extends React.Component {
 
 	}
 
-	spliceCurrentGallery() {
-		var next_index = 0;
-		var propGalleryType = this.state.activeGalleryType + 's';
-		for ( var index in this.props[propGalleryType] ) {
-			if ( this.state.activeGallery._id == this.props[propGalleryType][index]._id ) {
-
-				if ( index == ( this.props[ propGalleryType ].length - 1 ) )
-					next_index = index - 1;
-				else
-					next_index = index;
-
-				this.props[propGalleryType].splice(index, 1);
-
-				break;
-			}
-		}
-
-		if(this.props[propGalleryType].length) {
-			this.setActiveGallery( this.props[propGalleryType][next_index]._id, this.state.activeGalleryType );
-		}
-	}
-
 	updateAssignment(id) {
 		var next_index = 0;
 		var propGalleryType = this.state.activeGalleryType + 's';
@@ -176,7 +144,22 @@ export default class AdminBody extends React.Component {
 		this.setActiveAssignment(assignments ? assignments[next_index] ? assignments[next_index]._id : null : null);
 	}
 
+	spliceGallery(cb) {
+	
+		let propGalleryType = this.state.activeGalleryType + 's';
+
+		this.props.spliceGallery({ type: propGalleryType, gallery: this.state.activeGallery._id }, (err, nextGallery) => {
+
+			if(this.props[propGalleryType].length) {
+				this.setActiveGallery(this.props[propGalleryType][nextGallery]._id, this.state.activeGalleryType);
+			}
+
+			cb();
+		});
+	}
+
 	remove(cb) {
+
 		$.ajax({
 			url: '/api/gallery/remove',
 			method: 'post',
@@ -186,8 +169,9 @@ export default class AdminBody extends React.Component {
 			}),
 			dataType: 'json',
 			success: (result, status, xhr) => {
-				cb(null, this.state.activeGallery._id);
-				this.spliceCurrentGallery();
+				this.spliceGallery(() => {
+					cb(null, this.state.activeGallery._id);
+				})
 			},
 			error: (xhr, status, error) => {
 				cb(error)
@@ -207,8 +191,9 @@ export default class AdminBody extends React.Component {
 			}),
 			dataType: 'json',
 			success: (result, status, xhr) => {
-				cb(null, this.state.activeGallery._id);
-				this.spliceCurrentGallery();
+				this.spliceGallery(() => {
+					cb(null, this.state.activeGallery._id);
+				})
 			},
 			error: (xhr, status, error) => {
 				cb(error)
@@ -228,9 +213,10 @@ export default class AdminBody extends React.Component {
 				if(result.err) {
 					return cb(result.err);
 				}
-
-				this.spliceCurrentGallery();
-				cb(null, options.id);
+				
+				this.spliceGallery(() => {
+					cb(null, this.state.activeGallery._id);
+				})
 			},
 			error: (xhr, status, error) => {
 				cb(error)
