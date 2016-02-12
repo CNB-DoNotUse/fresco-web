@@ -46,7 +46,7 @@ $mobileHeight:240px;
 			position: relative;
 			background-repeat:no-repeat;
 			background-position:center;
-			background-size:100%;
+			background-size:cover;
 			overflow:hidden;
 	     	height:768px;
 	     	min-height:650px;
@@ -61,6 +61,8 @@ $mobileHeight:240px;
 
 			video{
 				height:100%;
+				width: 100%;
+				margin: 0 auto;
 
 				@include mobile{
 					width:100%;
