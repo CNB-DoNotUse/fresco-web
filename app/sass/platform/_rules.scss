@@ -484,6 +484,9 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
     position: relative;
 	> .split-cell {
 		@include flex(1);
+		> span.md-type-body2 {
+			display: none; //hide suggestions since they're not currently provided
+		}
 	}
 	> .split-cell:last-child {
 		margin-left: 16px;
