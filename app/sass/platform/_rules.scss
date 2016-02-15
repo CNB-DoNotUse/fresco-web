@@ -718,6 +718,7 @@ div.list {
 // dialog
 .dialog {
 	position: relative;
+	border-radius: 2px;
 	padding: 0;
 	background-color: $color-shade-0;
 	> .dialog-head,
@@ -740,6 +741,7 @@ div.list {
 		}
 	}
 	> .dialog-body {
+		border-radius: 2px;
 		padding: 24px 32px 88px;
 		max-height: 100%;
 		overflow-y: auto;
