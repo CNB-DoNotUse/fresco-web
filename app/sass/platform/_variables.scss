@@ -6,6 +6,7 @@ $color-brand-dark: #ffb814;
 @mixin color-brand-gradient() {
 	@include radial-gradient(circle, $color-brand-light, $color-brand-dark);
 }
+$color-brand-background: #f2f2ed;
 
 $color-accent-primary: #0047bb;
 $color-accent-light: #9baaf5;

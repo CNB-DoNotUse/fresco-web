@@ -1,7 +1,7 @@
 html,
 body {
 	height: 100%;
-	background-color: $color-shade-1;
+	background-color: $color-brand-background;
 	color: $color-black-1;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 400;
@@ -684,7 +684,7 @@ div.list {
 		}
 	}
 	> div.list-item.active {
-		background-color: $color-accent-faded;
+		background-color: $color-white-2;
 	}
 }
 
