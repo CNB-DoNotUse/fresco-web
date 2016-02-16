@@ -27,20 +27,12 @@ class Outlet extends React.Component {
 	}
 
 	render() {
-
-		var editable = false;
-
-		//Check if user is the owner
-		if(this.props.outlet.owner._id === this.props.user._id){
-			editable = true;
-		}
-
 		return (
 			<App user={this.props.user}>
 				<TopBar
 					title={this.props.outlet.title}
 					rank={this.props.user.rank}
-					editable={editable}
+					editable={true}
 					edit={this.edit}
 					editIcon={"mdi-settings"}
 					activeTab={this.state.activeTab}
