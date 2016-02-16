@@ -3,6 +3,7 @@ import global from './../../../lib/global'
 import AssignmentEditStats from './assignment-edit-stats'
 import AssignmentEditMap from './assignment-edit-map'
 import AssignmentEditOutlet from './assignment-edit-outlet'
+import AutocompleteMap from '../global/autocomplete-map'
 
 export default class AssignmentEdit extends React.Component {
 
@@ -19,7 +20,9 @@ export default class AssignmentEdit extends React.Component {
 			outlet: this.props.assignment.outlet
 		}
 
-		this.updateLocation = this.updateLocation.bind(this);
+		this.onPlaceChange = this.onPlaceChange.bind(this);
+		this.onMapDataChange = this.onMapDataChange.bind(this);
+		this.updateRadius = this.updateRadius.bind(this);
 		this.updateOutlet = this.updateOutlet.bind(this);
 
 		this.revert = this.revert.bind(this);
@@ -37,13 +40,14 @@ export default class AssignmentEdit extends React.Component {
 		this.refs.title.value = this.props.assignment.title;
 		this.refs.caption.value = this.props.assignment.caption;
 		//Set state back to original props
-		this.updateLocation({
+		this.setState({
+			location : {
 				lat: this.props.assignment.location.geo.coordinates[1],
 				lng: this.props.assignment.location.geo.coordinates[0]
 			},
-			global.milesToFeet(this.props.assignment.location.radius),
-			this.props.assignment.location.address
-		);
+			radius: global.milesToFeet(this.props.assignment.location.radius),
+			address: this.props.assignment.location.address
+		});
 	}
 
 	clear() {
@@ -52,7 +56,9 @@ export default class AssignmentEdit extends React.Component {
 		this.refs.expiration.value = '';
 		this.setState({
 			address: null,
-			radius: null
+			radius: null,
+			outlet: null,
+			location: null
 		});
 	}
 
@@ -62,18 +68,30 @@ export default class AssignmentEdit extends React.Component {
 		});
 	}
 
-	/**
-	 * Updates state location with passed params
-	 * @param  {dictionary} location Location Dictionary object {lat: x, lng: y}
-	 * @param  {integer} radius   Radius that has changed in feet
-	 * @param  {string} address The address to update
-	 */
-	updateLocation(passedLocation, passedRadius, passedAddress) {
+
+	updateRadius(radius) {
 	    this.setState({
-	        location: passedLocation || null,
-	        radius: passedRadius || null,
-	        address: passedAddress || null,
+	        radius: radius
 	    });
+	}
+
+	/**
+	 * Updates state map location when AutocompleteMap gives new location
+	 */
+	onPlaceChange(place) {
+	    this.setState({
+	        address: place.address,
+	        location: place.location
+	    });
+	}
+
+	/**
+	 * Listener if the google map's data changes i.e. marker moves
+	 */
+	onMapDataChange(data) {
+		this.setState({
+			location: data.location
+		});
 	}
 
 	/**
@@ -151,8 +169,8 @@ export default class AssignmentEdit extends React.Component {
 
 			<div>
 				<div className={"dim toggle-edit " + toggledText}></div>
+				
 				<div className={"edit panel panel-default toggle-edit" + toggledText}>
-
 					<AssignmentEditStats 
 						stats={this.props.stats}
 						assignment={this.props.assignment} />
@@ -212,11 +230,17 @@ export default class AssignmentEdit extends React.Component {
 							</div>
 							<div className="dialog-col col-xs-12 col-md-5">
 								<div className="dialog-row map-group">
-									<AssignmentEditMap
+
+									<AutocompleteMap
+									    defaultLocation={this.state.address}
 									    location={this.state.location}
 									    radius={this.state.radius}
-									    address={this.state.address}
-									    updateLocation={this.updateLocation} />
+									    onRadiusUpdate={this.updateRadius}
+									    onPlaceChange={this.onPlaceChange}
+									    onMapDataChange={this.onMapDataChange}
+									    draggable={true}
+									    rerender={true} />
+
 								</div>
 								
 								<div className="dialog-row">

@@ -18,8 +18,12 @@ router.post('/outlet/checkout', (req, res) => {
     return;
 
   req.body.outlet = req.session.user.outlet._id;
+
+  console.log('RUNNING');
   
   API.proxyRaw(req, res, (data) => {
+
+    console.log(data);
 
     var options = {
       url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id,
@@ -28,6 +32,7 @@ router.post('/outlet/checkout', (req, res) => {
     };
 
     API.request(options, (err, response) => {
+      console.log(response);
       //Update the purchases on the session
       if (!err) {
         req.session.user.outlet.purchases = response.body.data;
@@ -195,6 +200,9 @@ router.post('/outlet/invite/accept', function(req, res, next) {
   api.get('/v1/outlet/invite/get?token=' + req.body.token, getInviteTokenCB);
 
   function getInviteTokenCB(err, response, token_body) {
+
+    console.log(response);
+
     if(err)
         return res.send({err: err.err});
     else if(!token_body)

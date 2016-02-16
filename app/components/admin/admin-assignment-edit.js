@@ -147,15 +147,12 @@ export default class AdminAssignmentEdit extends React.Component {
 
     render() {
         
-        var location = this.state.location,
-            radius = Math.round(global.milesToFeet(this.state.radius)),
+        var radius = Math.round(global.milesToFeet(this.state.radius)),
             address = this.props.assignment.location ? this.props.assignment.location.address : '',
             expiration_time = this.props.assignment ? global.hoursToExpiration(this.props.assignment.expiration_time) : null;
 
         if(this.props.activeGalleryType != 'assignment' || !this.props.hasActiveGallery) 
             return (<div></div>);
-
-
 
         return (
             <div className="dialog">
@@ -166,19 +163,23 @@ export default class AdminAssignmentEdit extends React.Component {
                         placeholder="Title"
                         ref="assignment-title"
                         defaultValue={this.props.assignment.title} />
+                    
                     <textarea
                         type="text"
                         className="form-control floating-label"
                         placeholder="Description"
                         ref="assignment-description"
                         defaultValue={this.props.assignment.caption}></textarea>
+                    
                     <AutocompleteMap
                         defaultLocation={address}
-                        location={location}
+                        location={this.state.location}
                         radius={radius}
                         onPlaceChange={this.onPlaceChange}
                         onRadiusUpdate={this.onRadiusUpdate}
+                        draggable={true}
                         rerender={true} />
+                    
                     <input
                         type="text"
                         className="form-control floating-label"

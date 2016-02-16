@@ -12,11 +12,11 @@ export default class EditMap extends React.Component {
 		super(props);
 
 		this.state = {
-			mapID: 		Date.now() + Math.floor(Math.random() * 100),
-			map: 		null,
-			polygon: 	null,
-			circle: 	null,
-			marker: 	null
+			mapID: 	 Date.now() + Math.floor(Math.random() * 100),
+			map: 	 null,
+			polygon: null,
+			circle:  null,
+			marker:  null
 		}
 
 		this.getCentroid = this.getCentroid.bind(this);
@@ -29,13 +29,15 @@ export default class EditMap extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+
+		console.log(this.props);
+
 		if(this.props.rerender) {
 			google.maps.event.trigger(this.state.map, 'resize');
 
 			if(this.state.map && this.state.marker) {
 				this.state.map.panTo(this.state.marker.getPosition(), 12);
 			}
-
 		}
 
 		//Check if there is a radius, and it is not the same as the previous one
@@ -102,12 +104,10 @@ export default class EditMap extends React.Component {
 			location: this.props.location,
 			radius: this.props.radius
 		});
-
 	}
 
 	//Returns centroid for passed polygon
 	getCentroid(polygon) {
-
 		if(!polygon.length) {
 			return new google.maps.LatLng(-73.9, 40);
 		}
@@ -128,8 +128,8 @@ export default class EditMap extends React.Component {
 
 		lat /= path.getLength() - 1;
 		lng /= path.getLength() - 1;
-		return new google.maps.LatLng(lat, lng);
 
+		return new google.maps.LatLng(lat, lng);
 	}
 
 	getBounds(polygon) {
@@ -192,8 +192,21 @@ export default class EditMap extends React.Component {
 		var marker = new google.maps.Marker({
 			position: center,
 			map: map,
-			icon: markerImage
+			icon: markerImage,
+			draggable: this.props.draggable
 		});
+
+		if(this.props.draggable){
+			google.maps.event.addListener(marker, 'dragend', (ev) => {
+				// Pass data back up when the marker is moved
+				this.props.onDataChange({
+					location: {
+						lat: ev.latLng.lat(),
+						lng: ev.latLng.lng()
+					},
+				});
+			});
+		}
 
 		var circle = new google.maps.Circle({
 			map: map,
@@ -210,7 +223,6 @@ export default class EditMap extends React.Component {
 			polygon: polygon,
 			marker: marker
 		});
-
 	}
 
 	render() {
@@ -225,5 +237,6 @@ EditMap.defaultProps = {
 	onDataChange: function() {},
 	radius: null,
 	location: null,
+	draggable: false,
 	type: 'active'
 }
