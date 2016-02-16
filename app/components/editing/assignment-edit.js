@@ -89,8 +89,19 @@ export default class AssignmentEdit extends React.Component {
 	 * Listener if the google map's data changes i.e. marker moves
 	 */
 	onMapDataChange(data) {
-		this.setState({
-			location: data.location
+		var geocoder = new google.maps.Geocoder();
+
+		geocoder.geocode({'location': {
+			lat: data.location.lat,
+			lng: data.location.lng
+		}}, (results, status) => {
+
+			if(status === google.maps.GeocoderStatus.OK && results[0]) {
+				this.setState({
+					address: results[0].formatted_address,
+					location: data.location
+				});
+			}
 		});
 	}
 
@@ -155,7 +166,6 @@ export default class AssignmentEdit extends React.Component {
 	}
 
 	render() {
-
 		var toggledText = this.props.toggled ? ' toggled' : '',
 			assignmentEditOutlet = '';
 

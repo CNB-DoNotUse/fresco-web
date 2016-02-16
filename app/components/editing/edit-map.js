@@ -30,8 +30,6 @@ export default class EditMap extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 
-		console.log(this.props);
-
 		if(this.props.rerender) {
 			google.maps.event.trigger(this.state.map, 'resize');
 
@@ -155,8 +153,8 @@ export default class EditMap extends React.Component {
 				center: center,
 				zoom: this.props.zoom || 12,
 				mapTypeControl: false,
-				draggable: false,
-				scrollwheel: false,
+				draggable: this.props.draggable ? true : false,
+				scrollwheel: this.props.draggable ? true : false,
 				disableDoubleClickZoom: true,
 				styles: global.mapStyles
 			};
