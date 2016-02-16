@@ -225,6 +225,8 @@ app.use((error, req, res, next) => {
     var err = {};
     err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
 
+    console.log(err);
+
     // Development error handle will print stacktrace
     console.log('Method:', req.method,
                 '\nPath:', req.path,
@@ -255,7 +257,7 @@ app.use((error, req, res, next) => {
  * 404 Handler Catch
  */
 
- app.use((req, res, next) => {
+app.use((req, res, next) => {
     //Respond with code
     res.status(404);
 
