@@ -215,7 +215,7 @@ export default class AdminBody extends React.Component {
 				}
 				
 				this.spliceGallery(() => {
-					cb(null, this.state.activeGallery._id);
+					cb(null, options.id);
 				})
 			},
 			error: (xhr, status, error) => {

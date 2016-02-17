@@ -321,12 +321,12 @@ export default class AdminGalleryEdit extends React.Component {
 	render() {
 		// If doesn't have active gallery or galleryType is an assignment, don't render anything.
 		if(
-			!this.props.hasActiveGallery || 
-			this.props.activeGalleryType == 'assignment' || 
+			!this.props.hasActiveGallery ||
+			this.props.activeGalleryType == 'assignment' ||
 			!this.props.activeGalleryType.length ||
-			!this.state.activeGallery || 
-			!this.state.activeGallery.posts) { 
-			return <div></div> 
+			!this.state.activeGallery ||
+			!this.state.activeGallery.posts) {
+			return <div></div>
 		}
 
 		var activeGallery = this.state.activeGallery;
