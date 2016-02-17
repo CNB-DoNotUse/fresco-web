@@ -29,7 +29,6 @@ function init(){
 
 	resizeCall();
 
-
 	if(window.location.pathname == '/') { indexInit(); }
 }
 
@@ -86,8 +85,9 @@ function resizeCall(){
 }
 
 function updateElements() {
-
-	if(window.location.pathname != '/') return;
+	if(window.location.pathname != '/'){ 
+		return; 
+	}
 
 	var bottomOffset = initialBottomOffset - window.pageYOffset;
 		bottomOffset = bottomOffset < 0 ? 0 : bottomOffset;
@@ -136,5 +136,4 @@ window.addEventListener('scroll', function(e) {
 	});
 
 	ticking = true;
-
 });

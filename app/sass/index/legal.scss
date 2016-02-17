@@ -12,11 +12,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 .legal{
 	@extend .modal_window;
-
 	max-width:736px;
 
 	.header{
-
 		text-align:center;
 		margin:0 auto;
 
@@ -38,11 +36,39 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 
 	.body{
+		font-family:$roboto;
+		height:500px;
+		overflow:auto;
+		font-size:14px;
+		line-height: 20px;
+
 		div{
-			padding:16px;
+			padding:0px 16px 4px;
 		}
 		div#privacy{
 			display:none;
+		}
+
+		strong{
+			text-transform:uppercase;
+			margin:20px auto;
+			display:block;
+		}
+
+		.s4{
+			text-decoration:underline;
+		}
+
+		p{
+			margin:0 0 10px;
+		}
+
+		ul, ol{
+			margin:0 0 10px 24px;
+		}
+
+		ul{
+			list-style:disc;
 		}
 	}
 }

@@ -920,6 +920,7 @@ div.list {
 		max-width: 50%;
 		white-space: nowrap;
 		text-overflow: ellipsis;
+	    overflow: hidden;
 	}
 	> .icon {
 		margin: 10px;

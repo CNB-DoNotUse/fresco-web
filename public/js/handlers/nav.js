@@ -237,6 +237,8 @@ window.addEventListener('resize', function() {
 window.onpopstate = function(event) {
 	if(!event.state) return;
 
+	console.log(event.state);
+
 	if(event.state.modal){
 		console.log('LOADING MODAL');
 		loadModal(event.state.modal);
