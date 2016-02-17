@@ -9,7 +9,7 @@ Description : Component for bulk selecting posts
 // **/
 
 /**
- * Gallery Bulk Edit Parent Object
+ * Gallery Bulk Select Parent Object
  */
 
 export default class GalleryBulkSelect extends React.Component {
