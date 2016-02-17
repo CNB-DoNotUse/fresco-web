@@ -21,6 +21,7 @@ export default class AdminAssignmentEdit extends React.Component {
         this.pending = false;
         this.onPlaceChange = this.onPlaceChange.bind(this);
         this.onRadiusUpdate = this.onRadiusUpdate.bind(this);
+        this.onMapDataChange = this.onMapDataChange.bind(this);
         this.approve = this.approve.bind(this);
         this.reject = this.reject.bind(this);
     }
@@ -82,6 +83,27 @@ export default class AdminAssignmentEdit extends React.Component {
         this.setState({
             address: place.address,
             location: place.location
+        });
+    }
+
+    /**
+     * Updates state map location when AutocompleteMap gives new location from drag
+     */
+    onMapDataChange(data) {
+
+        var geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({'location': {
+            lat: data.location.lat,
+            lng: data.location.lng
+        }}, (results, status) => {
+
+            if(status === google.maps.GeocoderStatus.OK && results[0]) {
+                this.setState({
+                    address: results[0].formatted_address,
+                    location: data.location
+                });
+            }
         });
     }
 
@@ -148,7 +170,7 @@ export default class AdminAssignmentEdit extends React.Component {
     render() {
         
         var radius = Math.round(global.milesToFeet(this.state.radius)),
-            address = this.props.assignment.location ? this.props.assignment.location.address : '',
+            address = this.state.address ? this.state.address : this.props.assignment.location ? this.props.assignment.location.address : '',
             expiration_time = this.props.assignment ? global.hoursToExpiration(this.props.assignment.expiration_time) : null;
 
         if(this.props.activeGalleryType != 'assignment' || !this.props.hasActiveGallery) 
@@ -176,6 +198,7 @@ export default class AdminAssignmentEdit extends React.Component {
                         location={this.state.location}
                         radius={radius}
                         onPlaceChange={this.onPlaceChange}
+                        onMapDataChange={this.onMapDataChange}
                         onRadiusUpdate={this.onRadiusUpdate}
                         draggable={true}
                         rerender={true} />

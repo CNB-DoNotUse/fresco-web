@@ -23,7 +23,7 @@ export default class AutocompleteMap extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if(this.props.radius && this.props.hasRadius) {
-			this.refs.radius.value = this.props.radius;
+			this.refs.radius.value = Math.round(this.props.radius);
 		}
 	}
 
@@ -38,7 +38,7 @@ export default class AutocompleteMap extends React.Component {
 			                style={{marginTop: '15px'}}
 			                data-hint={this.props.unit}
 			                placeholder="Radius"
-			                defaultValue={this.props.radius}
+			                defaultValue={Math.round(this.props.radius)}
 			                onKeyUp={this.updateRadius}
 			                ref="radius" />
 		}
