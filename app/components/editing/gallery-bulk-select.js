@@ -62,8 +62,14 @@ export default class GalleryBulkSelect extends React.Component {
  	}
 
 	edit() {
-		this.refs.bulkedit.show();
-
+		if (this.props.posts.length > 1) {
+			this.refs.bulkedit.show();
+		}
+		else {
+			$.snackbar({
+				content: 'Select more than one gallery to edit'
+			});
+		}
 	}
 
  	clear() {
