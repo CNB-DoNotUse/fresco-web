@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PostCell from './post-cell'
 import GalleryEdit from '../editing/gallery-edit'
-import GalleryEditBulk from '../editing/gallery-edit-bulk'
+import GalleryBulkSelect from '../editing/gallery-bulk-select'
 import global from '../../../lib/global'
 import GalleryCreate from '../editing/gallery-create'
 import BulkEdit from '../editing/bulk-edit'
@@ -251,7 +251,7 @@ export default class PostList extends React.Component {
 					<div className="row tiles" id="posts">{posts}</div>
 				</div>
 
-				<GalleryEditBulk
+				<GalleryBulkSelect
 					posts={this.state.selectedPosts}
 					setSelectedPosts={this.setSelectedPosts} />
 
@@ -264,7 +264,7 @@ export default class PostList extends React.Component {
 					setSelectedPosts={this.setSelectedPosts}
 					posts={this.state.selectedPosts} />
 
-				
+
 			</div>
 		)
 	}

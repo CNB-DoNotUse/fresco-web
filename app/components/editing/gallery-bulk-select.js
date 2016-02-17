@@ -12,7 +12,7 @@ Description : Component for bulk selecting posts
  * Gallery Bulk Edit Parent Object
  */
 
-export default class GalleryEditBulk extends React.Component {
+export default class GalleryBulkSelect extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -74,6 +74,6 @@ export default class GalleryEditBulk extends React.Component {
 
 }
 
-GalleryEditBulk.defaultProps = {
+GalleryBulkSelect.defaultProps = {
 	posts: []
 }
