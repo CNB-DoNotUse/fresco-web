@@ -4,11 +4,11 @@ var termsTab = document.getElementById('terms-tab'),
 	privacy = document.getElementById('terms');
 
 //Run on load
-updateElements(window.innerWidth);
+updateLegalElements(window.innerWidth);
 
 window.addEventListener('resize', function() {
 
-	updateElements(window.innerWidth);
+	updateLegalElements(window.innerWidth);
 
 });
 
@@ -16,13 +16,13 @@ window.addEventListener('resize', function() {
  * Updates the postion of the account modal elements
  */
 
-function updateElements(width){
+function updateLegalElements(width){
 	if(window.innerWidth > screen.tablet){
 		termsTab.innerHTML = 'Terms of Service';
 		privacyTab.innerHTML = 'Privacy Policy';
 		
 	}
-	else if(window.innerWidth > screen.mobile && window.innerWidth < screen.tablet){
+	else if(window.innerWidth < screen.mobile){
 		termsTab.innerHTML = 'Terms';
 		privacyTab.innerHTML = 'Privacy';
 	}

@@ -95,12 +95,9 @@ router.get('/:id', (req, res, next) => {
         },
         page: 'publicGallery',
         props: JSON.stringify(props)
-      });
-    
+      }); 
     }
-
   }
-
 });
 
 module.exports = router;

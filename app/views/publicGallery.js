@@ -104,7 +104,6 @@ class PublicGallery extends React.Component {
  		}
 
  		return (
-
  			<div>
 	 			<div className="nav">
 	 			    <a className="logo" target="_parent" id="_logo" href="/">

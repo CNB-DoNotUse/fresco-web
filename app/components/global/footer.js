@@ -12,14 +12,20 @@ export default class Footer extends React.Component {
 	}
 
 	render() {
-
 		return(
-
 			<div className="footer" id="_footer">
 				<div className="footer-content">
 					<div className="middle">
 						<ul>
-							<li>&copy;2015 Fresco News Inc</li>
+							<li>&copy;2015 Fresco News Inc.</li>
+							
+							<li>
+								<a href="/legal">&bull; Terms of Service</a>
+							</li>
+							
+							<li>
+								<a href="/legal">&bull; Privacy Policy</a>
+							</li>
 						</ul>
 					</div>
 
