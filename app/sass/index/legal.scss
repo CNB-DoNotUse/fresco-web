@@ -37,13 +37,13 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 	.body{
 		font-family:$roboto;
-		height:500px;
-		overflow:auto;
 		font-size:14px;
 		line-height: 20px;
 
 		div{
 			padding:0px 16px 4px;
+			height:500px;
+			overflow:auto;
 		}
 		div#privacy{
 			display:none;
