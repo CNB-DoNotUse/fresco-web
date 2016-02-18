@@ -44,6 +44,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			padding:0px 16px 4px;
 			height:500px;
 			overflow:auto;
+
+			@include mobile{
+				height:100%;
+			}
 		}
 		div#privacy{
 			display:none;
