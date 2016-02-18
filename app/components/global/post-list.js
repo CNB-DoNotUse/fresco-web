@@ -2,9 +2,10 @@ import _ from 'lodash'
 import React from 'react'
 import PostCell from './post-cell'
 import GalleryEdit from '../editing/gallery-edit'
-import GalleryEditBulk from '../editing/gallery-edit-bulk'
+import GalleryBulkSelect from '../editing/gallery-bulk-select'
 import global from '../../../lib/global'
 import GalleryCreate from '../editing/gallery-create'
+import BulkEdit from '../editing/bulk-edit'
 
 /** //
 
@@ -13,7 +14,7 @@ Description : List for a set of posts used across the site (/videos, /photos, /g
 // **/
 
 /**
- * Post List Parent Object 
+ * Post List Parent Object
  */
 
 export default class PostList extends React.Component {
@@ -58,7 +59,7 @@ export default class PostList extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		//Checks if the verified prop is changed
 		//`or` Checks if the sort prop is changed
-		if(prevProps.onlyVerified != this.props.onlyVerified 
+		if(prevProps.onlyVerified != this.props.onlyVerified
 			|| prevProps.sort != this.props.sort ) {
 			this.loadInitialPosts();
 		}
@@ -66,12 +67,12 @@ export default class PostList extends React.Component {
 
 	componentDidMount() {
 		//Check if list is initialzied with posts, then don't load anything
-		if(this.state.posts.length) 
+		if(this.state.posts.length)
 			return;
 
 		this.loadInitialPosts();
 	}
-	
+
 	/**
 	 * Initial call to populate posts
 	 */
@@ -97,7 +98,7 @@ export default class PostList extends React.Component {
 
 		var grid = e.target;
 
-		//Check that nothing is loading and that we're at the end of the scroll, 
+		//Check that nothing is loading and that we're at the end of the scroll,
 		//and that we have a parent bind to load  more posts
 		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400) && this.props.loadPosts){
 
@@ -111,8 +112,8 @@ export default class PostList extends React.Component {
 			this.props.loadPosts(offset, (posts) => {
 
 				//Disables scroll, and returns if posts are empty
-				if(!posts || posts.length == 0){ 
-					
+				if(!posts || posts.length == 0){
+
 					this.setState({
 						scrollable: false
 					});
@@ -216,7 +217,7 @@ export default class PostList extends React.Component {
 			posts = [];
 
 		for (var i = 0; i < this.state.posts.length; i++) {
-			
+
 			var post = this.state.posts[i];
 
 			if(this.props.onlyVerified && post.approvals == 0){
@@ -230,18 +231,18 @@ export default class PostList extends React.Component {
 				toggled = filteredPosts.length > 0 ? true : false;
 
 	      	posts.push(
-	        	<PostCell 
-	        		size={this.props.size} 
-	        		post={post} 
-	        		rank={rank} 
+	        	<PostCell
+	        		size={this.props.size}
+	        		post={post}
+	        		rank={rank}
 	        		purchased={purchased}
 	        		toggled={toggled}
 	        		key={i}
 	        		editable={this.props.editable}
-	        		
+
 	        		togglePost={this.togglePost}
 	        		didPurchase={this.didPurchase}
-	        		edit={this.edit} />	
+	        		edit={this.edit} />
 	      	);
 		}
 
@@ -252,21 +253,23 @@ export default class PostList extends React.Component {
 				<div className={className} ref='grid' onScroll={this.state.scrollable ? this.scroll : null} >
 					<div className="row tiles" id="posts">{posts}</div>
 				</div>
-				
-				<GalleryEditBulk 
+
+				<GalleryBulkSelect
 					posts={this.state.selectedPosts}
 					setSelectedPosts={this.setSelectedPosts} />
-				
-				<GalleryEdit 
+
+				<GalleryEdit
 					gallery={this.state.gallery}
 					toggled={this.state.galleryEditToggled}
 					toggle={this.toggle} />
-				
-				<GalleryCreate 
+
+				<GalleryCreate
 					setSelectedPosts={this.setSelectedPosts}
 					posts={this.state.selectedPosts} />
+
+
 			</div>
-		)		
+		)
 	}
 
 }
