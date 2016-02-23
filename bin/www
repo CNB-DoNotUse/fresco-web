@@ -1,94 +1,112 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
+var path = require('path');
+var Configurator = require('nconfigurator');
+var config = require('../lib/config');
 
-var app = require('../app');
-var debug = require('debug')('website:server');
+Configurator.use('file', path.join(__dirname, '../config/base.json'));
+Configurator.use('file', path.join(__dirname, '../config/dev.json'));
 
-require('pmx').init({
-  http: true
-});
+Configurator.build()
+    .then(builtConfig => {
+        config = Object.assign(config, builtConfig);
+        startServer();
+    })
+    .catch(err => {
+        console.error(err.stack);
+    });
 
-var http = require('http');
-/**
- * Get port from environment and store in Express.
- */
+function startServer() {
+    /**
+     * Module dependencies.
+     */
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+    var app = require('../app');
+    var debug = require('debug')('website:server');
 
-/**
- * Create HTTP server.
- */
+    require('pmx').init({
+      http: true
+    });
 
-var server = http.createServer(app);
+    var http = require('http');
+    /**
+     * Get port from environment and store in Express.
+     */
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+    var port = normalizePort(process.env.PORT || '3000');
+    app.set('port', port);
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+    /**
+     * Create HTTP server.
+     */
 
-/**
- * Normalize a port into a number, string, or false.
- */
+    var server = http.createServer(app);
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+    /**
+    * Normalize a port into a number, string, or false.
+    */
 
-  return false;
-}
+    function normalizePort(val) {
+        var port = parseInt(val, 10);
 
-/**
- * Event listener for HTTP server "error" event.
- */
+        if (isNaN(port)) {
+            // named pipe
+            return val;
+        }
 
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+        if (port >= 0) {
+            // port number
+            return port;
+        }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+        return false;
+    }
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
+    /**
+    * Event listener for HTTP server "error" event.
+    */
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+    function onError(error) {
+        if (error.syscall !== 'listen') {
+            throw error;
+        }
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  console.log('[ ' + (new Date()).toLocaleString() + ' ] ' + 'Listening on ' + bind);
+        var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+        // handle specific listen errors with friendly messages
+        switch (error.code) {
+            case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+            case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+            default:
+            throw error;
+        }
+    }
+
+    /**
+    * Event listener for HTTP server "listening" event.
+    */
+
+    function onListening() {
+        var addr = server.address();
+        var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+        console.log('[ ' + (new Date()).toLocaleString() + ' ] ' + 'Listening on ' + bind);
+    }
 }
