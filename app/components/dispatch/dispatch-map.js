@@ -208,12 +208,9 @@ export default class DispatchMap extends React.Component {
 						lng: ev.latLng.lng()
 					}, 
 					this.props.newAssignment.radius,
-					this.state.map.getZoom()
+					this.state.map.getZoom(),
+					'markerDrag'
 				);	
-			});
-
-			google.maps.event.addListener(marker, 'dragend', (ev) => {
-				this.props.updateAssignmentPlace();
 			});
 		}
 	}

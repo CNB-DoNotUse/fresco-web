@@ -74,7 +74,7 @@ export default class AdminGalleryEdit extends React.Component {
 		});
 
 		if( this.props.hasActiveGallery && this.props.gallery.posts && this.refs['gallery-caption'] ) {
-			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
+			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption || 'No Caption';
 		}
 
 		// Remove materialize empty input class
@@ -179,12 +179,12 @@ export default class AdminGalleryEdit extends React.Component {
 
 		this.editButtonEnabled(true);
 
-		this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
+		this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption || 'No Caption';
 
 		this.refs['gallery-caption'].className = this.refs['gallery-caption'].className.replace(/\bempty\b/,'');
 
 		if(this.props.hasActiveGallery) {
-			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
+			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption || 'No Caption';
 		}
 	}
 
@@ -400,7 +400,7 @@ export default class AdminGalleryEdit extends React.Component {
 						className="form-control floating-label gallery-caption"
 						placeholder="Caption"
 						onChange={this.props.handleChangeCaption}
-						defaultValue={activeGallery.posts[0].caption}
+						defaultValue={activeGallery.posts[0].caption || 'No Caption'}
 						ref="gallery-caption"></textarea>
 
 					{assignmentEdit}

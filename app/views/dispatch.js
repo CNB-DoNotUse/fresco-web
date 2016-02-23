@@ -23,7 +23,7 @@ class Dispatch extends React.Component {
 			users: [],
 			activeAssignment: null,
 			newAssignment: null,
-			shouldUpdatePlace: false,
+			lastChangeSource: '',
 			shouldMapUpdate: false,
 			currentPlace: null,
 			viewMode: 'active',
@@ -31,7 +31,6 @@ class Dispatch extends React.Component {
 		
 		this.mapShouldUpdate = this.mapShouldUpdate.bind(this);
 		this.findAssignments = this.findAssignments.bind(this);
-		this.updateAssignmentPlace = this.updateAssignmentPlace.bind(this);
 		this.updateMapPlace = this.updateMapPlace.bind(this);
 		this.updateViewMode = this.updateViewMode.bind(this);
 		this.setActiveAssignment = this.setActiveAssignment.bind(this);
@@ -58,23 +57,21 @@ class Dispatch extends React.Component {
 	/**
 	 * Updates the location of the new assignment to be passed 
 	 * back and forth from the mini map to the main map
-	 * @param {dictionary} location The new location
-	 * @param {integer} radius The radius to update the new assignment with
+	 * @param {Object} location The new location
+	 * @param {Integer} radius The radius to update the new assignment with
+	 * @param {String} source where the change comes from
 	 */
-	updateNewAssignment(location, radius, zoom) {
+	updateNewAssignment(location, radius, zoom, source) {
+		if(typeof source == 'undefined')source = '';
+
 		this.setState({
 			newAssignment: {
 				location: location,
 				radius: radius,
 				zoom: zoom
-			}
+			},
+			lastChangeSource: source
 		});
-	}
-
-	//Tells the componenets to update their `Google Maps Place Autocomplete`
-	//when the marker is finished dragging
-	updateAssignmentPlace() {
-		this.setState({ shouldUpdatePlace: true });
 	}
 
 	/**
@@ -207,6 +204,10 @@ class Dispatch extends React.Component {
 		}
 	}
 
+	downloadStats() {
+		window.open('/scripts/assignment/stats', '_blank');
+	}
+
 	render() {
 
 		var cards = [],
@@ -228,12 +229,12 @@ class Dispatch extends React.Component {
 			);
 
 			cards.push(
-				<DispatchSubmit 
+				<DispatchSubmit
 					user={this.props.user} 
 					newAssignment={this.state.newAssignment}
 					rerender={this.state.newAssignment == 'unset'}
-					shouldUpdatePlace={this.state.shouldUpdatePlace}
-					
+					lastChangeSource={this.state.lastChangeSource}
+
 					updateViewMode = {this.updateViewMode}
 					setActiveAssignment={this.setActiveAssignment}
 					toggleSubmissionCard={this.toggleSubmissionCard}
@@ -263,6 +264,10 @@ class Dispatch extends React.Component {
 
 						updateMapPlace={this.updateMapPlace}
 						mapPlace={this.state.mapPlace} />
+
+					<button className="btn btn-flat pull-right mt12 mr16" onClick={this.downloadStats}>
+						Download Stats (.xlsx)
+					</button>
 				</TopBar>
 				
 				<DispatchMap 
@@ -277,7 +282,6 @@ class Dispatch extends React.Component {
 					setActiveAssignment={this.setActiveAssignment}
 					findAssignments={this.findAssignments}
 					findUsers={this.findUsers}
-					updateAssignmentPlace={this.updateAssignmentPlace}
 					updateNewAssignment={this.updateNewAssignment} />
 				
 				<div className="cards">{cards}</div>
