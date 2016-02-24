@@ -1,5 +1,6 @@
 var express = require('express'),
     config = require('../lib/config'),
+    Purchases = require('../lib/purchases'),
     request = require('request-json'),
     router = express.Router(),
     api = request.createClient(config.API_URL);
@@ -50,7 +51,7 @@ router.get('/:id?', function(req, res, next) {
         });
 
       }
-    
+
       //Render page
       renderUserPage(body.data, req, res)
 
@@ -60,7 +61,7 @@ router.get('/:id?', function(req, res, next) {
   //Render currently logged in user otherwise
   else{
 
-    //Check if user is logged in 
+    //Check if user is logged in
     if (!req.session || !req.session.user)
       return res.redirect('/');
 
@@ -80,7 +81,7 @@ function renderUserPage(user, req, res){
 
   var title = user.firstname + ' ' + user.lastname,
       props = {
-        purchases: config.mapPurchases(user),
+        purchases: Purchases.mapPurchases(user),
         title: title,
         user: req.session.user,
         detailUser: user,

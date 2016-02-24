@@ -1,20 +1,12 @@
 #!/usr/bin/env node
 
-var path = require('path');
-var Configurator = require('nconfigurator');
 var config = require('../lib/config');
 
-Configurator.use('file', path.join(__dirname, '../config/base.json'));
-Configurator.use('file', path.join(__dirname, '../config/dev.json'));
-
-Configurator.build()
-    .then(builtConfig => {
-        config = Object.assign(config, builtConfig);
-        startServer();
-    })
+config.buildConfig()
+    .then(startServer)
     .catch(err => {
         console.error(err.stack);
-    });
+    })
 
 function startServer() {
     /**
@@ -29,11 +21,13 @@ function startServer() {
     });
 
     var http = require('http');
+
+
     /**
      * Get port from environment and store in Express.
      */
 
-    var port = normalizePort(process.env.PORT || '3000');
+    var port = normalizePort(config.PORT);
     app.set('port', port);
 
     /**

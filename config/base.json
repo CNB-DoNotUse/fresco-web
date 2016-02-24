@@ -2,16 +2,12 @@
   "STATIC_CDN": "https://d1dw1p6sgigznj.cloudfront.net/",
   "SESSION_SECRET": "Flerbelerbler heller falala laller",
 
-  "SESSION_REDIS": {
-    "ENDPOINT": "fresco-sessions.cls0l1.ng.0001.use1.cache.amazonaws.com",
-    "PORT": 6379
-  },
-
   "REDIS": {
     "SESSIONS": "prod-sessions-001.cls0l1.0001.use1.cache.amazonaws.com"
   },
 
   "API_VERSION": "v1",
+  "CDN": "https://d1dw1p6sgigznj.cloudfront.net",
 
   "TWITTER": {
     "CONSUMER_KEY": "94rpzX0nPHcRVncdP5tBRHUIp",
@@ -49,5 +45,7 @@
 
   "PARSE_API": "https://api.parse.com/",
 
-  "DASH_HOME": "/highlights"
+  "DASH_HOME": "/highlights",
+
+  "PORT": "3000"
 }

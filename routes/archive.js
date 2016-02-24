@@ -1,5 +1,6 @@
 var express     = require('express'),
     config      = require('../lib/config'),
+    Purchases   = require('../lib/purchases'),
     global      = require('../lib/global'),
     request     = require('request-json'),
     router      = express.Router(),
@@ -7,7 +8,7 @@ var express     = require('express'),
 
 /** //
 
-	Description : Contnet Specific Routes ~ prefix /content/~
+	Description : Content Specific Routes ~ prefix /content/~
 
 // **/
 
@@ -21,7 +22,7 @@ router.get('/', (req, res, next) => {
   var title = 'Archive',
       props = {
         user : req.session.user,
-        purchases : config.mapPurchases(req.session),
+        purchases : Purchases.mapPurchases(req.session),
         title: title
       };
 
@@ -91,7 +92,7 @@ router.get('/:filter', (req, res, next) => {
 
   var props = {
     user : req.session.user,
-    purchases : config.mapPurchases(req.session)
+    purchases : Purchases.mapPurchases(req.session)
   },
   title = req.params.filter[0].toUpperCase() + req.params.filter.slice(1);
 

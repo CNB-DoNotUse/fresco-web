@@ -1,5 +1,6 @@
 var express = require('express'),
     config = require('../lib/config'),
+    Purchases = require('../lib/purchases'),
     request = require('request'),
     router = express.Router();
 
@@ -15,17 +16,17 @@ router.get('/:id', function(req, res, next) {
       url: config.API_URL + '/v1/story/get?id=' + req.params.id,
       json: true
     }, function(err, response, body) {
-			
+
       if (err || !body || body.err){
           var error = new Error('Story not found!');
           error.status = 404;
-          
+
           return next(error);
 			}
 
 			var props = {
         story: body.data,
-        purchases: config.mapPurchases(),
+        purchases: Purchases.mapPurchases(),
         user: req.session.user
       };
 
