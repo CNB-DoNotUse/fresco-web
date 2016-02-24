@@ -91,7 +91,7 @@ export default class GalleryEditByline extends React.Component {
 			}
 		}
 
-		if(shouldBeHidden) {
+		if(shouldBeHidden || !post) {
 			return <div></div>;
 		}
 

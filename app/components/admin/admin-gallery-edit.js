@@ -400,7 +400,7 @@ export default class AdminGalleryEdit extends React.Component {
 						className="form-control floating-label gallery-caption"
 						placeholder="Caption"
 						onChange={this.props.handleChangeCaption}
-						defaultValue={activeGallery.posts[0].caption || 'No Caption'}
+						defaultValue={activeGallery.posts.length && activeGallery.posts[0].caption ? activeGallery.posts[0].caption : 'No Caption'}
 						ref="gallery-caption"></textarea>
 
 					{assignmentEdit}
@@ -415,7 +415,7 @@ export default class AdminGalleryEdit extends React.Component {
 
 					<div style={{height: '309px'}}>
 						<AutocompleteMap
-							defaultLocation={activeGallery.posts && activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
+							defaultLocation={activeGallery.posts.length && activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
 							location={editMapLocation}
 							onPlaceChange={this.onPlaceChange}
 							disabled={this.props.activeGalleryType != 'import'}
