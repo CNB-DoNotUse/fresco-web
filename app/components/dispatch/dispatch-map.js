@@ -308,8 +308,6 @@ export default class DispatchMap extends React.Component {
 				if(currentAssignments.length > this.state.assignments.length)
 					changedState.assignments = currentAssignments;
 
-				console.log('UPDATING');
-
 				//Map out all of the previous users
 				var	uniqueUsers = [],
 					currentUsers = _.clone(this.state.users),
