@@ -251,6 +251,15 @@ class Dispatch extends React.Component {
 
 		}
 
+		var statsDownloadButton = '';
+
+		if(this.props.user.rank > 1) {
+			statsDownloadButton =
+					<button className="btn btn-flat pull-right mt12 mr16" onClick={this.downloadStats}>
+						Download Stats (.xlsx)
+					</button>
+		}
+
 		return (
 			<App user={this.props.user}>
 				<TopBar 
@@ -265,9 +274,7 @@ class Dispatch extends React.Component {
 						updateMapPlace={this.updateMapPlace}
 						mapPlace={this.state.mapPlace} />
 
-					<button className="btn btn-flat pull-right mt12 mr16" onClick={this.downloadStats}>
-						Download Stats (.xlsx)
-					</button>
+					{statsDownloadButton}
 				</TopBar>
 				
 				<DispatchMap 

@@ -13,7 +13,8 @@ router.get('/assignment/stats', (req, res) => {
     method: 'GET',
     url: '/assignment/stats'
   }, (err, resp) => {
-    if(err || resp.status != 200) return res.send(err);
+    if(resp.status == 401) { return res.status(401).send({err: 'ERR_UNAUTHORIZED'}); }
+    if(err || resp.status != 200) return res.send({err: 'API Error'});
 
     let assignments = [],
         xlsxData = [[
