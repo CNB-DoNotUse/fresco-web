@@ -2,10 +2,6 @@
   "STATIC_CDN": "https://d1dw1p6sgigznj.cloudfront.net/",
   "SESSION_SECRET": "Flerbelerbler heller falala laller",
 
-  "REDIS": {
-    "SESSIONS": "prod-sessions-001.cls0l1.0001.use1.cache.amazonaws.com"
-  },
-
   "API_VERSION": "v1",
 
   "TWITTER": {

@@ -10,7 +10,7 @@ var express       = require('express'),
 var CONTACT_PREFIX = 'CONTACT_FORM_IP_';
 
 // If in dev mode, use local redis server as session store
-var rClient = config.DEV ? redis.createClient() : redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
+var rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
 var redisConnection = { client: rClient };
 
 /**
@@ -25,7 +25,7 @@ router.post('/contact', (req, res, next) => {
     rClient.get(CONTACT_PREFIX + ip, (err, reply) => {
 
         if(!reply){
-            
+
             return sendMessage(ip, req, res);
 
         } else{
@@ -35,7 +35,7 @@ router.post('/contact', (req, res, next) => {
 
             //Check to make sure it's been 5 seconds between requests
             if(currentTimestamp - previousTimestamep > 5000){
-                
+
                 return sendMessage(ip, req, res);
             }
             else{

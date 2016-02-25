@@ -10,5 +10,9 @@
     "PARSE_API_KEY": "tpZzCZJCTCk5IJNmNsEMSgxT3nqT4TCjOsZltI0C",
 
     "PRICE_VIDEO": 7500,
-    "PRICE_IMAGE": 3000
+    "PRICE_IMAGE": 3000,
+
+    "REDIS": {
+      "SESSIONS": "prod-sessions-001.cls0l1.0001.use1.cache.amazonaws.com"
+    }
 }
