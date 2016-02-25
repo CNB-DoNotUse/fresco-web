@@ -11,9 +11,9 @@ router.get('/assignment/stats', (req, res) => {
 
   API.request({
     method: 'GET',
-    url: '/assignment/stats'
+    url: '/assignment/stats',
+    token: req.session.token
   }, (err, resp) => {
-    if(resp.status == 401) { return res.status(401).send({err: 'ERR_UNAUTHORIZED'}); }
     if(err || resp.status != 200) return res.send({err: 'API Error'});
 
     let assignments = [],
