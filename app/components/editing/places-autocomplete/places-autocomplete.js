@@ -15,7 +15,6 @@ export default class PlacesAutocomplete extends React.Component {
         }
 
         this.locationChanged = this.locationChanged.bind(this);
-
     }
 
     componentDidMount() {

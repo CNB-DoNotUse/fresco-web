@@ -93,6 +93,8 @@ router.get('/join', (req, res, next) => {
     .set('Accept', 'application/json')
     .end(function(err, response){
 
+        console.log(response.body);
+
         if (err || !response || response.body.err) {
 
           req.session.alerts = ['This invitation couldn\'t be loaded. Please contact support@fresconews.com'];

@@ -212,12 +212,9 @@ export default class DispatchMap extends React.Component {
 						lng: ev.latLng.lng()
 					}, 
 					this.props.newAssignment.radius,
-					this.state.map.getZoom()
+					this.state.map.getZoom(),
+					'markerDrag'
 				);	
-			});
-
-			google.maps.event.addListener(marker, 'dragend', (ev) => {
-				this.props.updateAssignmentPlace();
 			});
 		}
 	}
@@ -307,8 +304,6 @@ export default class DispatchMap extends React.Component {
 				//Check if there are any new assignments by comparing length
 				if(currentAssignments.length > this.state.assignments.length)
 					changedState.assignments = currentAssignments;
-
-				console.log('UPDATING');
 
 				//Map out all of the previous users
 				var	uniqueUsers = [],

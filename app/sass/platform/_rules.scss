@@ -1,7 +1,7 @@
 html,
 body {
 	height: 100%;
-	background-color: $color-shade-1;
+	background-color: $color-brand-background;
 	color: $color-black-1;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 400;
@@ -22,6 +22,14 @@ a:hover {
 	margin-top: 0px !important;
 }
 
+.mt12 {
+  margin-top: 12px !important;
+}
+
+.mt14 {
+  margin-top: 14px !important;
+}
+
 .mt16 {
   margin-top: 16px !important;
 }
@@ -29,9 +37,15 @@ a:hover {
 .mt24 {
   margin-top: 24px !important;
 }
+
 .mt64 {
   margin-top: 64px !important;
 }
+
+.mr16 {
+	margin-right: 16px !important;
+}
+
 .pt0 {
 	padding-top: 0px !important;
 }
@@ -484,6 +498,9 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
     position: relative;
 	> .split-cell {
 		@include flex(1);
+		> span.md-type-body2 {
+			display: none; //hide suggestions since they're not currently provided
+		}
 	}
 	> .split-cell:last-child {
 		margin-left: 16px;
@@ -684,7 +701,7 @@ div.list {
 		}
 	}
 	> div.list-item.active {
-		background-color: $color-accent-faded;
+		background-color: $color-white-2;
 	}
 }
 
@@ -715,6 +732,7 @@ div.list {
 // dialog
 .dialog {
 	position: relative;
+	border-radius: 2px;
 	padding: 0;
 	background-color: $color-shade-0;
 	> .dialog-head,
@@ -737,6 +755,7 @@ div.list {
 		}
 	}
 	> .dialog-body {
+		border-radius: 2px;
 		padding: 24px 32px 88px;
 		max-height: 100%;
 		overflow-y: auto;

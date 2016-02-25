@@ -215,7 +215,7 @@ export default class AdminBody extends React.Component {
 				}
 				
 				this.spliceGallery(() => {
-					cb(null, this.state.activeGallery._id);
+					cb(null, options.id);
 				})
 			},
 			error: (xhr, status, error) => {
@@ -237,13 +237,17 @@ export default class AdminBody extends React.Component {
 
 	render() {
 		
+		function sortListItem(a, b) {
+			return a.time_created > b.time_created ? -1 : a.time_created < b.time_created ? 1 : 0;
+		}
+
 		switch(this.props.activeTab) {
 
 			case 'assignments':
 
 				if (!this.state.activeAssignment || !this.state.hasActiveGallery || !this.props.assignments.length) break;
 
-				var listItems = this.props.assignments.map((assignment, i) => {
+				var listItems = this.props.assignments.sort(sortListItem).map((assignment, i) => {
 								return <AssignmentListItem
 											type="assignment"
 											assignment={assignment}
@@ -266,7 +270,7 @@ export default class AdminBody extends React.Component {
 
 				if (!this.state.activeGallery|| !this.state.hasActiveGallery || !this.props.submissions.length) break;
 
-				var listItems = this.props.submissions.map((submission, i) => {
+				var listItems = this.props.submissions.sort(sortListItem).map((submission, i) => {
 								return <GalleryListItem
 											type="submission"
 											gallery={submission}
@@ -288,7 +292,7 @@ export default class AdminBody extends React.Component {
 
 				if (!this.state.activeGallery || !this.state.hasActiveGallery || !this.props.imports.length) break;
 
-				var listItems = this.props.imports.map((gallery, i) => {
+				var listItems = this.props.imports.sort(sortListItem).map((gallery, i) => {
 								return <GalleryListItem
 											type="import"
 											gallery={gallery}

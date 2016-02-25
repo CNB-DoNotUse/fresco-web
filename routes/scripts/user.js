@@ -185,10 +185,8 @@ router.post('/user/update', (req, res) => {
     if(req.body.avatar) 
         delete req.body.avatar;
 
-    if(!req.body.bio)
-        req.body.bio = '';
+    API.proxy(req, res, (body) => {
 
-    API.proxyRaw(req, res, (body) => {
         var user = body.data;
 
         //Update all fields
@@ -210,7 +208,7 @@ router.get('/user/verify/resend', (req, res) => {
     return res.json({err: 'ERR_UNAUTHORIZED'}).end();
   }
 
-  API.proxyRaw(req, res, (body) => {
+  API.proxy(req, res, (body) => {
     var end = () => {
       res.redirect(req.headers['Referer'] || config.DASH_HOME);
       res.end();
