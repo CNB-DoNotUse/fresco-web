@@ -28,9 +28,7 @@ export default class DispatchSubmit extends React.Component {
 		var self = this;
 		this.refs.autocomplete.className = this.refs.autocomplete.className.replace(/\bempty\b/, '');
 
-		//Update the autocomplete field when the marker is finished dragging on the main map
-		if(this.props.shouldUpdatePlace && this.props.newAssignment && this.props.newAssignment.location){
-
+		if(this.props.lastChangeSource == 'markerDrag') {
 			var geocoder = new google.maps.Geocoder();
 
 			geocoder.geocode({'location': {
@@ -41,7 +39,9 @@ export default class DispatchSubmit extends React.Component {
 				if(status === google.maps.GeocoderStatus.OK && results[0])
 					self.refs.autocomplete.value = results[0].formatted_address;
 			});
+
 		}
+
 	}
 
 	componentDidMount() {
@@ -63,7 +63,8 @@ export default class DispatchSubmit extends React.Component {
 			this.props.updateNewAssignment(
 				location,
 				this.props.newAssignment ? this.props.newAssignment.radius : null,
-				this.props.newAssignment ? this.props.newAssignment.zoom : null
+				this.props.newAssignment ? this.props.newAssignment.zoom : null,
+				'autocomplete'
 			);
 
 			this.setState({

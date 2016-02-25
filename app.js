@@ -225,11 +225,13 @@ app.use((error, req, res, next) => {
     var err = {};
     err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
 
+    console.log(err);
+
     // Development error handle will print stacktrace
-      console.log('Method:', req.method,
-                  '\nPath:', req.path,
-                  '\nBody', req.body,
-                  '\nError: ', error.message + '\n');
+    console.log('Method:', req.method,
+                '\nPath:', req.path,
+                '\nBody', req.body,
+                '\nError: ', error.message + '\n');
 
     err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
 
@@ -249,14 +251,13 @@ app.use((error, req, res, next) => {
     }
 
     res.type('txt').send('Server Error');
-
 });
 
 /**
  * 404 Handler Catch
  */
 
- app.use((req, res, next) => {
+app.use((req, res, next) => {
     //Respond with code
     res.status(404);
 

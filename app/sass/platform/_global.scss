@@ -80,3 +80,19 @@ img {
 .twitter-typeahead {
   width: 100%;
 }
+
+.btn, .btn-flat {
+  &:hover {
+    background: #ffffff !important;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
+.tab-control {
+  .btn, .btn-flat {
+    &:hover {
+      background: rgba(0, 0, 0, 0.12) !important;
+      box-shadow: none;
+    }
+  }
+}

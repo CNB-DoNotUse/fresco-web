@@ -74,7 +74,7 @@ export default class AdminGalleryEdit extends React.Component {
 		});
 
 		if( this.props.hasActiveGallery && this.props.gallery.posts && this.refs['gallery-caption'] ) {
-			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
+			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption || 'No Caption';
 		}
 
 		// Remove materialize empty input class
@@ -179,12 +179,12 @@ export default class AdminGalleryEdit extends React.Component {
 
 		this.editButtonEnabled(true);
 
-		this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
+		this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption || 'No Caption';
 
 		this.refs['gallery-caption'].className = this.refs['gallery-caption'].className.replace(/\bempty\b/,'');
 
 		if(this.props.hasActiveGallery) {
-			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption;
+			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption || 'No Caption';
 		}
 	}
 
@@ -321,12 +321,12 @@ export default class AdminGalleryEdit extends React.Component {
 	render() {
 		// If doesn't have active gallery or galleryType is an assignment, don't render anything.
 		if(
-			!this.props.hasActiveGallery || 
-			this.props.activeGalleryType == 'assignment' || 
+			!this.props.hasActiveGallery ||
+			this.props.activeGalleryType == 'assignment' ||
 			!this.props.activeGalleryType.length ||
-			!this.state.activeGallery || 
-			!this.state.activeGallery.posts) { 
-			return <div></div> 
+			!this.state.activeGallery ||
+			!this.state.activeGallery.posts) {
+			return <div></div>
 		}
 
 		var activeGallery = this.state.activeGallery;
@@ -400,7 +400,7 @@ export default class AdminGalleryEdit extends React.Component {
 						className="form-control floating-label gallery-caption"
 						placeholder="Caption"
 						onChange={this.props.handleChangeCaption}
-						defaultValue={activeGallery.posts[0].caption}
+						defaultValue={activeGallery.posts.length && activeGallery.posts[0].caption ? activeGallery.posts[0].caption : 'No Caption'}
 						ref="gallery-caption"></textarea>
 
 					{assignmentEdit}
@@ -415,7 +415,7 @@ export default class AdminGalleryEdit extends React.Component {
 
 					<div style={{height: '309px'}}>
 						<AutocompleteMap
-							defaultLocation={activeGallery.posts && activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
+							defaultLocation={activeGallery.posts.length && activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
 							location={editMapLocation}
 							onPlaceChange={this.onPlaceChange}
 							disabled={this.props.activeGalleryType != 'import'}

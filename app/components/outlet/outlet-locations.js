@@ -210,7 +210,6 @@ export default class OutletLocations extends React.Component {
 					<input type="text"
 						ref="outlet-location-input"
 						placeholder="New location" />
-					<span className="sub-title">SELECT ALL:</span>
 					<div className="location-options">
 						<div className="checkbox check-sms">
 							<label>
@@ -236,6 +235,8 @@ export default class OutletLocations extends React.Component {
 							</label>
 						</div>
 					</div>
+
+					<span className="sub-title">SELECT ALL:</span>
 				</div>
 			</div>
 		)

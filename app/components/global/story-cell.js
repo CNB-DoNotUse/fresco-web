@@ -22,8 +22,8 @@ export default class StoryCell extends React.Component {
 
 		// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 
-		var timestamp = this.props.story.time_created || this.props.story.time_edited;
-		var timeString = global.formatTime(timestamp);
+		var timestamp = this.props.story.time_edited || this.props.story.time_created,
+			timeString = global.formatTime(timestamp);
 
 		return(
 			<div className='col-xs-6 col-md-3 tile story' onClick={this.onClick}>
