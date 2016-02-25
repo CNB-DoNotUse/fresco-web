@@ -24,7 +24,7 @@ export default class GalleryBulkSelect extends React.Component {
 	render() {
 
 		var postCount = this.props.posts.length,
-			toggled = postCount > 0 ? 'toggled' : '',
+			toggled = postCount > 1 ? 'toggled' : '',
 			count = postCount + ' post' + (global.isPlural(postCount) ? 's' : ''),
 			thumbnails = this.props.posts.map((post, i) => {
 				return <a className="thumb" key={i}>
