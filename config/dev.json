@@ -12,6 +12,6 @@
     "PRICE_IMAGE": 3000,
 
     "REDIS": {
-      "SESSIONS": "redis"
+      "SESSIONS": "localhost"
     }
 }

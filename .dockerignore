@@ -15,3 +15,4 @@ public/css/platform.css
 .sass-cache
 .vscode
 .idea
+config/*.json
