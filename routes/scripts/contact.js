@@ -84,8 +84,8 @@ function sendMessage(ip, req, res){
             from: from
         }),
         mailOptions = {
-            to: 'info@fresconews.com',
-            from: 'support@fresconews.com',
+            to: 'support@fresconews.com',
+            from: 'info@fresconews.com',
             subject: subject,
             text: 'Message: ' + message + '\nFrom: ' + from
         };
