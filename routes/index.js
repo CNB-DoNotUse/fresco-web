@@ -27,6 +27,8 @@ router.get('/:modal?', (req, res, next) => {
             
             modal = req.params.modal;
 
+        } else if(req.params.modal == 'partners') {
+            res.redirect('/account');
         }
         //Not a modal, pass onto route sequence
         else {
