@@ -51,7 +51,7 @@ export default class AdminGalleryListItem extends React.Component {
                     </a>
                 </div>
                 <div className="flexy list-item-caption">
-                    <p className="md-type-body1">{gallery.caption}</p>
+                    <p className="md-type-body1">{gallery.caption || 'No Caption'}</p>
                 </div>
                 <div className="list-item-owner">
                     {galleryOwnerText}

@@ -20,6 +20,7 @@ export default class DispatchMap extends React.Component {
 		this.state = {
 			assignments: [],
 			users: [],
+			uniqueUsers: [],
 			markers: [],
 			circles: [],
 			activeCallout: null,
@@ -65,14 +66,17 @@ export default class DispatchMap extends React.Component {
 		);
 
 		//Add event listeners for map life cycle
-		google.maps.event.addListener(map, 'idle', this.updateMap);
-		google.maps.event.addListener(map, 'dragend', () => {
+		google.maps.event.addListener(map, 'idle',() => {
 			this.updateMap();
 			this.saveMapLocation();
 		});
 
-		this.setState({ map: map });	
+		//10 Second interval update
+		setTimeout(() => {
+			this.updateMap();
+		}, 10000);
 
+		this.setState({ map: map });	
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -87,7 +91,6 @@ export default class DispatchMap extends React.Component {
 
 		//The map center has changed on the prop, telling the map to reposition
 		if(JSON.stringify(prevProps.mapPlace) != JSON.stringify(this.props.mapPlace)){
-
 			var place = this.props.mapPlace;
 
 			//Check if the place has a viewport, then use that, otherwsie use the location and a regular zoom
@@ -118,6 +121,7 @@ export default class DispatchMap extends React.Component {
 
 		//Pass down previous for diff check
 		this.updateAssignmentMarkers(prevState.assignments);
+
 		this.updateUserMarkers(prevState.users);
 
 		/* Event Listeners Needed in the page */
@@ -208,12 +212,9 @@ export default class DispatchMap extends React.Component {
 						lng: ev.latLng.lng()
 					}, 
 					this.props.newAssignment.radius,
-					this.state.map.getZoom()
+					this.state.map.getZoom(),
+					'markerDrag'
 				);	
-			});
-
-			google.maps.event.addListener(marker, 'dragend', (ev) => {
-				this.props.updateAssignmentPlace();
 			});
 		}
 	}
@@ -267,7 +268,6 @@ export default class DispatchMap extends React.Component {
 	 * Updates the map with new users/assignments
 	 */
 	updateMap() {
-		
 		//Check if we have map in state
 		if(!this.state.map) return;
 
@@ -305,12 +305,29 @@ export default class DispatchMap extends React.Component {
 				if(currentAssignments.length > this.state.assignments.length)
 					changedState.assignments = currentAssignments;
 
-				if(_.difference(users, this.state.users).length){
-					changedState.users = _.difference(users, this.state.users);
+				//Map out all of the previous users
+				var	uniqueUsers = [],
+					currentUsers = _.clone(this.state.users),
+					currentUserLocs = currentUsers.map((user) => {
+						return JSON.stringify(user.coordinates);
+					});
+
+				//Loop through all the pulled users, and add into the state set
+				for (var i = 0; i < users.length; i++) {
+					var userLoc = JSON.stringify(users[i].coordinates);
+					//Check if the user doesn't exist in the current state of users
+					if(currentUserLocs.indexOf(userLoc) == -1) {
+						//Add it in
+						uniqueUsers.push(users[i]);
+						currentUsers.push(users[i]);
+					}
 				}
 
-				this.setState(changedState);
+				//Update state to have newly pushed in users
+				changedState.users = currentUsers;
+				changedState.uniqueUsers = uniqueUsers;
 
+				this.setState(changedState);
 			});
 		});
 	}
@@ -339,24 +356,14 @@ export default class DispatchMap extends React.Component {
 	}
 
 	/**
-	 * Updates all the user markers on the map, using the previously set ones to remove any repeats
+	 * Updates all the user markers on the map, using the unique set 
 	 */
 	updateUserMarkers(prevUsers) {
-		var newMarkers = [];
-		var prevUsersLocs = [];
-
-		//Map out all of the previous assignmnets
-		prevUsers.map((user) => {
-			prevUsersLocs.push(user.coordinates.toString());
-		})
-
-		//Map out all the new assignments, and return all of the new ones
-		this.state.users.map((user) => {
-			var userLoc = user.coordinates.toString();
-			if(prevUsersLocs.indexOf(userLoc) == -1) {
-				this.addUserMarker(user);
-			}
-		});
+		//Loop through all the new users, and add all of the new ones
+		for (var i = 0; i < this.state.uniqueUsers.length; i++) {
+			//Add it to the map
+			this.addUserMarker(this.state.uniqueUsers[i]);
+		}
 	}
 
 	/**
@@ -525,7 +532,7 @@ export default class DispatchMap extends React.Component {
 				origin: new google.maps.Point(0, 0),
 				anchor: new google.maps.Point(5, 5.5),
 			};
-		
+
 		return new google.maps.Marker({
 			position: new google.maps.LatLng(lat, lng),
 			map: map,
@@ -592,6 +599,4 @@ export default class DispatchMap extends React.Component {
 			</div>
 		);
 	}
-
 }
-
