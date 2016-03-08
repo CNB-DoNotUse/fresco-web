@@ -19,12 +19,14 @@ export default class PostRelated extends React.Component {
 
 			var posts = this.props.gallery.posts.map((post, i) => {
 
-				return <a href={"/post/" + post._id} key={i}>
-							<img 
-								className="img-link" 
-								src={global.formatImg(post.image, 'small')} 
-								key={i} />
-						</a>
+				return (
+					<a href={"/post/" + post._id} key={i}>
+						<img
+							className="img-link"
+							src={global.formatImg(post.image, 'small')}
+							key={i} />
+					</a>
+				);
 
 			})
 
@@ -34,7 +36,10 @@ export default class PostRelated extends React.Component {
 						<button className="btn btn-flat toggled">More from this gallery</button>
 					</div>
 					<div className="tabs">
-						<div className="tab toggled">{posts}</div>
+						<div className="tab toggled">
+							<button className="btn btn-flat">See all</button>
+							{posts}
+						</div>
 					</div>
 				</div>
 			);
