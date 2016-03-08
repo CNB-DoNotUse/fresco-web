@@ -19,10 +19,10 @@ export default class DispatchMap extends React.Component {
 
 		this.state = {
 			assignments: [],
-			users: [],
-			uniqueUsers: [],
 			markers: [],
 			circles: [],
+			users: {},
+			userMarkers: {},
 			activeCallout: null,
 			map: null,
 			newAssignmentMarker: null,
@@ -74,7 +74,7 @@ export default class DispatchMap extends React.Component {
 		//10 Second interval update
 		setTimeout(() => {
 			this.updateMap();
-		}, 10000);
+		}, 2000);
 
 		this.setState({ map: map });	
 	}
@@ -121,8 +121,6 @@ export default class DispatchMap extends React.Component {
 
 		//Pass down previous for diff check
 		this.updateAssignmentMarkers(prevState.assignments);
-
-		this.updateUserMarkers(prevState.users);
 
 		/* Event Listeners Needed in the page */
 		var selector = document.getElementById('callout-selector');
@@ -271,8 +269,9 @@ export default class DispatchMap extends React.Component {
 		//Check if we have map in state
 		if(!this.state.map) return;
 
+		//Get assignments
 		this.props.findAssignments(this.state.map, null, (assignments) => {
-			
+			//Get users
 			this.props.findUsers(this.state.map, (users, error) => {
 
 				var changedState = {},
@@ -290,7 +289,6 @@ export default class DispatchMap extends React.Component {
 
 				//Check if there's a difference
 				if(_.difference(newAssignmentIds, currentAssignmentIds).length){
-					
 					//Loop through new assignmt ids to push into current list of assignment Ids
 					for (var i = 0; i < newAssignmentIds.length; i++) {
 						//Check if the current assignments has this new assignment
@@ -305,29 +303,22 @@ export default class DispatchMap extends React.Component {
 				if(currentAssignments.length > this.state.assignments.length)
 					changedState.assignments = currentAssignments;
 
-				//Map out all of the previous users
-				var	uniqueUsers = [],
-					currentUsers = _.clone(this.state.users),
-					currentUserLocs = currentUsers.map((user) => {
-						return JSON.stringify(user.coordinates);
-					});
+				var formattedUsers = {};
 
-				//Loop through all the pulled users, and add into the state set
+				//Set object keys by hash
 				for (var i = 0; i < users.length; i++) {
-					var userLoc = JSON.stringify(users[i].coordinates);
-					//Check if the user doesn't exist in the current state of users
-					if(currentUserLocs.indexOf(userLoc) == -1) {
-						//Add it in
-						uniqueUsers.push(users[i]);
-						currentUsers.push(users[i]);
-					}
+					var user = users[i];
+
+					formattedUsers[user.hash] = user;
 				}
 
-				//Update state to have newly pushed in users
-				changedState.users = currentUsers;
-				changedState.uniqueUsers = uniqueUsers;
-
-				this.setState(changedState);
+				//Update the user markers, then update state on callback
+				this.updateUserMarkers(formattedUsers, (markers) => {
+					changedState.userMarkers = markers;
+					changedState.users = formattedUsers;
+					
+					this.setState(changedState);
+				});
 			});
 		});
 	}
@@ -356,14 +347,62 @@ export default class DispatchMap extends React.Component {
 	}
 
 	/**
-	 * Updates all the user markers on the map, using the unique set 
+	 * Updates all the user markers on the map, comparing the passed in new users, to the current state users
 	 */
-	updateUserMarkers(prevUsers) {
-		//Loop through all the new users, and add all of the new ones
-		for (var i = 0; i < this.state.uniqueUsers.length; i++) {
-			//Add it to the map
-			this.addUserMarker(this.state.uniqueUsers[i]);
+	updateUserMarkers(newUsers, callback) {
+		var keys = Object.keys(newUsers),
+			markers = _.clone(this.state.userMarkers);
+
+		//Make keys after the loop, because keys may have been deleted 
+		var currentUsers = _.clone(this.state.users),
+			currentUserKeys = Object.keys(currentUsers);
+
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i],
+				user = newUsers[key],
+				prevUser = currentUsers[key];
+
+			//If the location already exists
+			if(prevUser !== null && typeof(prevUser) !== 'undefined') {
+				//If the location has changed, move it, otherwise do nothing
+				if(prevUser.geo.coordinates[0] !== user.geo.coordinates[0] || prevUser.geo.coordinates[1] !== user.geo.coordinates[1]){
+					var marker = markers[key];
+
+					//Update the marker's position
+					marker.setPosition(new google.maps.LatLng(user.geo.coordinates[1], user.geo.coordinates[0]));
+				}
+			}
+			//If the user doesn't exist in the new data set
+			else { 
+				//If the marker exists, but the user doesn't, remove the marker and delete from current set
+				if(markers[key]){
+					markers[key].setMap(null);
+					delete currentUsers[key];
+				}
+
+				var marker = this.addUserMarker(user.geo); //Add user to map
+
+				markers[key] = marker; //Save marker to state
+			}
 		}
+
+		//If the length changed, reset the keys to avoid 
+		//iterating over keys that do no exist any more
+		if(currentUsers.length !== this.state.users.length)
+			currentUserKeys = Object.keys(currentUsers);
+
+		//Loop through current users and remove them if they're not in the new set
+		for (var i = 0; i < currentUserKeys.length; i++) {
+			var key = currentUserKeys[i];
+
+			//Check if the user's aren't in the new set by the key
+			if(newUsers[key] == null && markers[key]) {
+				markers[key].setMap(null);
+				delete markers[key];
+			}
+		}
+
+		callback(markers);
 	}
 
 	/**
