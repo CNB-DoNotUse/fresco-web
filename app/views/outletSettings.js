@@ -19,7 +19,8 @@ class OutletSettings extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			outlet: this.props.outlet
+			outlet: this.props.outlet,
+			user: this.props.user
 		}
 
 		this.updateMembers = this.updateMembers.bind(this);
@@ -31,19 +32,23 @@ class OutletSettings extends React.Component {
 		outlet.users = users;
 		
 		this.setState({
-			outlet: outlet
+			outlet: outlet,
 		});
 	}
 
 	updateOutlet(outlet) {
+		var user = _.clone(this.state.user);
+		user.outlet = outlet;
+		
 		this.setState({
-			outlet: outlet
+			outlet: outlet,
+			user: user
 		});
 	}
 
 	render() {
 
-		var isOwner= this.props.user.outlet.owner == this.props.user._id,
+		var isOwner= this.state.user.outlet.owner == this.state.user._id,
 			className = 'outlet-settings' + (!isOwner ? ' centered' : ''),
 			members = '',
 			left = '';
@@ -64,7 +69,7 @@ class OutletSettings extends React.Component {
 		}
 
 		return (
-			<App user={this.props.user}>
+			<App user={this.state.user}>
 				<TopBar
 					title={this.state.outlet.title} />
 				
