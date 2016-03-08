@@ -152,11 +152,12 @@ class Dispatch extends React.Component {
 			bounds.getSouthWest(), 
 			bounds.getNorthEast()
 		);
-		var proximitymiles = proximitymeter * 0.000621371192;
-		var radius = proximitymiles / 2;
-		var center = map.getCenter();
+		var proximitymiles = proximitymeter * 0.000621371192,
+			radius = proximitymiles / 2,
+			mapCenter = map.getCenter(),
+			center = new google.maps.LatLng(mapCenter .lat(), mapCenter .lng());
 
-		if(!center) return callback(null, 'No center')
+		if(!center) return callback(null, 'No center');
 
 		var query = "lat=" + center.lat() + "&lon=" + center.lng() + "&radius=" + radius;
 		
