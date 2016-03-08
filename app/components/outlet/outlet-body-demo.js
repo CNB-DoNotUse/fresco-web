@@ -2,6 +2,15 @@ import React from 'react'
 import OutletSidebar from './outlet-sidebar'
 import global from '../../../lib/global'
 
+/** //
+
+Description : Outlet screen for when outlet has not yet been verified
+
+// **/
+
+/**
+ * @description Displays a simple message to the user of an unverified outlet
+ */
 export default class OutletBodyDemo extends React.Component {
     render () {
         var outlet = this.props.outlet;
