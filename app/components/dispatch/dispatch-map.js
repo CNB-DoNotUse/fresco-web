@@ -309,7 +309,7 @@ export default class DispatchMap extends React.Component {
 				for (var i = 0; i < users.length; i++) {
 					var user = users[i];
 
-					formattedUsers[i] = user;
+					formattedUsers[user.hash] = user;
 				}
 
 				//Update the user markers, then update state on callback
