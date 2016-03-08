@@ -21,7 +21,7 @@ var config        = require('./lib/config'),
     app           = express();
 
 // If in dev mode, use local redis server as session store
-var rClient = config.DEV ? redis.createClient() : redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
+var rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
 var redisConnection = { client: rClient };
 
 // view engine setup
@@ -96,7 +96,7 @@ app.use((req, res, next)=> {
   }
 
   req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
-  
+
   next();
 });
 
@@ -243,7 +243,7 @@ app.use((error, req, res, next) => {
           err: err,
           section: 'public',
           page: 'error'
-      }); 
+      });
     }
 
     if(req.accepts('json')) {

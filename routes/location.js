@@ -1,5 +1,6 @@
 var express    = require('express'),
     config     = require('../lib/config'),
+    Purchases  = require('../lib/purchases'),
     superagent = require('superagent'),
     router     = express.Router()
 
@@ -23,7 +24,7 @@ router.get('/:id', (req, res, next) => {
             props = {
               user: req.session.user,
               outlet : req.session.user.outlet,
-              purchases: config.mapPurchases(),
+              purchases: Purchases.mapPurchases(),
               title: title,
               location: location
             };

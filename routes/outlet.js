@@ -1,5 +1,6 @@
 var express     = require('express'),
     config      = require('../lib/config'),
+    Purchases   = require('../lib/purchases'),
     global      = require('../lib/global'),
     request     = require('request-json'),
     config      = require('../lib/config'),
@@ -37,7 +38,7 @@ var express     = require('express'),
 
         if (req.session.user.outlet.verified) {
 
-           purchases = config.mapPurchases();
+           purchases = Purchases.mapPurchases();
 
         } else {
            req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?
@@ -96,7 +97,7 @@ var express     = require('express'),
 //       alerts: req.alerts,
 //       page: 'outlet-galleries'
 //     });
-  
+
 //   }
 
 // });
@@ -106,7 +107,7 @@ var express     = require('express'),
  */
 
 router.get('/settings', (req, res, next) => {
-  
+
   if (!req.session.user.outlet){
 
     var err = new Error('No outlet found!');
@@ -116,7 +117,7 @@ router.get('/settings', (req, res, next) => {
   }
 
   client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
-  
+
   function doWithOutletInfo(error, response, body) {
 
     if (error || !body || body.err){
@@ -161,16 +162,16 @@ router.get('/settings', (req, res, next) => {
 //       return next(err);
 
 //     }
- 
+
 //     res.render('outlet', {
 //       user: req.session.user,
 //       title: 'Outlet',
 //       outlet: body.data,
-//       purchases:  config.mapPurchases(),
+//       purchases:  Purchases.mapPurchases(),
 //       config: config,
 //       alerts: req.alerts
 //     });
-  
+
 //   }
 
 // });

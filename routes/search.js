@@ -1,5 +1,6 @@
 var express = require('express'),
   config = require('../lib/config'),
+  Purchases = require('../lib/purchases'),
   router = express.Router();
 
 router.get('/', function(req, res, next) {
@@ -8,7 +9,7 @@ router.get('/', function(req, res, next) {
 
   var purchases = null;
   if (req.session.user.outlet && req.session.user.outlet.verified) {
-    purchases = config.mapPurchases(req.session);
+    purchases = Purchases.mapPurchases(req.session);
   }
 
   var query = req.query.q,
@@ -23,7 +24,7 @@ router.get('/', function(req, res, next) {
       },
       radius: parseFloat(req.query.r)
     };
-    
+
     var props = {
       user: req.session.user,
       title: query,

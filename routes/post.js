@@ -1,5 +1,6 @@
 var express    = require('express'),
     config     = require('../lib/config'),
+    Purchases  = require('../lib/purchases'),
     request    = require('request-json'),
     router     = express.Router(),
     api        = request.createClient(config.API_URL);
@@ -22,12 +23,12 @@ router.get('/:id', (req, res, next) => {
         gallery = {},
         purchases = [],
         verifier = '';
-	 
+
     //Make request for post
     api.get('/v1/post/get?id=' + req.params.id, doWithPostInfo);
 
     function doWithPostInfo(error, response, body) {
-   
+
         if (error || !body || body.err){
           req.session.alerts = ['Error connecting to server'];
           return req.session.save(() => {
@@ -49,19 +50,19 @@ router.get('/:id', (req, res, next) => {
     }
 
     function doWithGallery (error, response, body) {
-    
+
         //return res.render('error', {user: req.session.user, error_code: 404, error_message: config.ERR_PAGE_MESSAGES[404]});
         if (error || !body || body.err) {
           return next(error || body.err);
         }
 
         gallery = body.data;
-       
+
         //Check if post has approvals in place
         if (post.approvals) {
-          
+
           var verifierId = null;
-          
+
             //Loop through edits to find edit for visibility change of `1` i.e. verified
             for (var i in gallery.edits) {
 
@@ -102,7 +103,7 @@ router.get('/:id', (req, res, next) => {
             gallery: gallery,
             verifier: verifier,
             title: title,
-            purchases: config.mapPurchases(req.session)
+            purchases: Purchases.mapPurchases(req.session)
         };
 
         res.render('app', {
