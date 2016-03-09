@@ -146,5 +146,4 @@ class SideBarListItems extends React.Component {
 		window.location.assign(link);
 	}
 
-
 }

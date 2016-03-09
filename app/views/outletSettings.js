@@ -11,57 +11,74 @@ import OutletLocations from '../components/outlet/outlet-locations'
 import OutletNotifications from '../components/outlet/outlet-notifications'
 
 /**
-	Outlet members page
-*/
+ * Outlet Settings page
+ */
 
 class OutletSettings extends React.Component {
+
 	constructor(props) {
 		super(props);
 		this.state = {
-			members: this.props.outlet.users
+			outlet: this.props.outlet,
+			user: this.props.user
 		}
 
 		this.updateMembers = this.updateMembers.bind(this);
+		this.updateOutlet = this.updateOutlet.bind(this);
 	}
 
-	updateMembers(members) {
+	updateMembers(users) {
+		var outlet = _.clone(this.state.outlet);
+		outlet.users = users;
+		
 		this.setState({
-			members: members
+			outlet: outlet,
+		});
+	}
+
+	updateOutlet(outlet) {
+		var user = _.clone(this.state.user);
+		user.outlet = outlet;
+		
+		this.setState({
+			outlet: outlet,
+			user: user
 		});
 	}
 
 	render() {
 
-		var isOwner= this.props.user.outlet.owner == this.props.user._id,
+		var isOwner= this.state.user.outlet.owner == this.state.user._id,
 			className = 'outlet-settings' + (!isOwner ? ' centered' : ''),
 			members = '',
 			left = '';
 
 		if(isOwner){
-
 			left = <div className="left">
-						<OutletInfo outlet={this.props.user.outlet} />
+						<OutletInfo 
+							updateOutlet={this.updateOutlet}
+							outlet={this.state.outlet} />
 
-						<OutletPaymentInfo outlet={this.props.user.outlet} />
+						<OutletPaymentInfo outlet={this.state.outlet} />
 					</div>
 
 			members = <OutletMembers
-							outlet={this.props.outlet}
+							outlet={this.state.outlet}
 							updateMembers={this.updateMembers}
-							members={this.state.members} />
+							members={this.state.outlet.users} />
 		}
 
 		return (
-			<App user={this.props.user}>
+			<App user={this.state.user}>
 				<TopBar
-					title={this.props.user.outlet.title} />
+					title={this.state.outlet.title} />
 				
 				<div className={className}>
 					{left}
 					<div className="right">
-						<OutletNotifications outlet={this.props.user.outlet} />	
+						<OutletNotifications outlet={this.state.outlet} />	
 
-						<OutletLocations outlet={this.props.user.outlet} />	
+						<OutletLocations outlet={this.state.outlet} />	
 						
 						{members}
 					</div>

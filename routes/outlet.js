@@ -115,7 +115,6 @@ router.get('/settings', (req, res, next) => {
     return next(err);
 
   }
-
   client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
 
   function doWithOutletInfo(error, response, body) {

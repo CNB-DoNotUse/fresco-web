@@ -19,12 +19,7 @@ router.post('/outlet/checkout', (req, res) => {
 
   req.body.outlet = req.session.user.outlet._id;
 
-  console.log('RUNNING');
-  
   API.proxy(req, res, (data) => {
-
-    console.log(data);
-
     var options = {
       url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id,
       token: req.session.token,
@@ -288,28 +283,25 @@ router.post('/outlet/invite/accept', function(req, res, next) {
 
 router.post('/outlet/update', (req, res) => {
 
-  if (!checkOutlet(req, res)) return;
+    if (!checkOutlet(req, res)) return;
 
-  var end = (err) => { 
-      res.json(err ? err : {}).end(); 
-  };
+    req.body.id = req.session.user.outlet._id;
 
-  req.body.id = req.session.user.outlet._id;
+    API.proxy(req, res, (body) => {
+        if(body.err) { 
+            return res.json({ err : body.err});
+        }
 
-  API.proxy(req, res, (body) => {
+        req.session.user.outlet = body.data;
+        req.session.user.outlet.owner = body.data.owner._id; //Set the owner to the ID inside the object, because it resolves the entire user
 
-    if(body.err) { 
-        return end({
-            err: body.err
-        }); 
-    }
-
-    req.session.user.outlet = body.data;
-    req.session.save(function(){
-      end();
+        req.session.save(function(){
+            return res.json({
+                err: null,
+                data: body.data
+            });
+        });
     });
-
-  });
 });
 //---------------------------^^^-OUTLET-ENDPOINTS-^^^---------------------------//
 
