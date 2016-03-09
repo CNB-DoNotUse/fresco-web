@@ -162,7 +162,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 }
 
 .checkbox input[type=checkbox]:checked + .checkbox-material .check:before, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check:before{
-	color:#0047bb;	
+	color:#0047bb;
 }
 
 
@@ -305,8 +305,8 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		padding-top: 64px;
 		margin-bottom: 0;
 	}
-	#map-canvas { 
-		height: 100% 
+	#map-canvas {
+		height: 100%
 	}
 	#add-assignment-map {
 		height: 307px;
@@ -418,17 +418,22 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	background-color: $color-shade-2;
 	white-space: nowrap;
 	overflow-x: auto;
-	> button {
-		margin: 0;
-		padding: 0;
-		width: 192px;
-		line-height: 144px;
-		background-color: $color-shade-4;
-	}
-	> img {
-		display: inline-block;
-		margin-left: -3px;
-		height: 144px;
+	> div.tab-inner {
+		display: table;
+		> a.btn {
+			margin: 0;
+			padding: 0;
+			width: 192px;
+			min-width: 192px;
+			height: 100%;
+			background-color: $color-shade-4;
+			display: table-cell;
+		}
+		> img {
+			display: inline-block;
+			margin-left: -3px;
+			height: 144px;
+		}
 	}
 }
 
@@ -1005,7 +1010,7 @@ div.list {
 			padding: 10px 0 0;
 			display: block;
 			max-height: 80%;
-			overflow-y: auto; 
+			overflow-y: auto;
 			ul {
 				list-style-type: none;
 			}
@@ -1204,7 +1209,7 @@ div.list {
 				background-color: $color-shade-0;
 				border: 1px solid $color-black-4;
 				border-top: 0;
-				
+
 				> .hover {
 
 					background-color: $color-shade-0;

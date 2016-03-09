@@ -12,7 +12,7 @@ Description : Related posts at the bottom of the PostDetail view
  */
 
 export default class PostRelated extends React.Component {
-
+	
 	render() {
 
 		if (this.props.gallery.posts && this.props.gallery.posts.length > 1){
@@ -37,8 +37,10 @@ export default class PostRelated extends React.Component {
 					</div>
 					<div className="tabs">
 						<div className="tab toggled">
-							<button className="btn btn-flat">See all</button>
-							{posts}
+							<div className="tab-inner">
+								<a className="btn btn-flat" href={"/gallery/" + this.props.gallery._id}>See all</a>
+								{posts}
+							</div>
 						</div>
 					</div>
 				</div>
