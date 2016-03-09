@@ -1,5 +1,5 @@
 *.scssc
-.idea/*
+.idea
 dump.rdb
 node_modules
 app/server
