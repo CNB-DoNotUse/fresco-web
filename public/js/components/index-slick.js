@@ -94,10 +94,10 @@ var slick = {
 			            <table class="slick-meta">\
 			                <tbody>\
 			                    <tr class="user">\
-			                        <td>\
+			                        <td class="avatar">\
 			                            <img src="https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png" />\
 			                        </td>\
-			                        <td class="meta-text byline">' + byline + '</td>\
+			                        <td class="byline">' + byline + '</td>\
 			                    </tr>\
 			                    \
 			                    <tr>\
