@@ -141,7 +141,7 @@ $mobileSlideHeight:540px;
 				}
 
 				.slick-dots{
-					bottom:5%;
+					bottom:24px;
 					right:16px;
 
 					li{
@@ -173,7 +173,7 @@ $mobileSlideHeight:540px;
 				width:39%;
 				height:100%;
 				overflow:hidden;
-				font-family:Roboto;
+				font-family:$roboto;
 				position:relative;
 
 				@include mobile{
@@ -184,17 +184,17 @@ $mobileSlideHeight:540px;
 
 				p{
 					height:80%;
-					overflow:scroll;
+					overflow:auto;
 					font-size:14px;
 					max-width:95%;
 					padding:10px 15px;
 					margin:0 auto;
+					line-height:20px;
 					@include rgba(color, 0, 0, 0, 0.87);
 
 					@include mobile{
 						height: 180px;
 					}
-
 				}
 
 				.interaction{

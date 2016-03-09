@@ -13,7 +13,7 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
  * Slick Wrapper Parent
  */
 
-$mobileHeight:240px;
+$mobileHeight:280px;
 
 .gallery-slick-wrap{
 	background:#1E1E1D;
@@ -46,15 +46,18 @@ $mobileHeight:240px;
 			position: relative;
 			background-repeat:no-repeat;
 			background-position:center;
-			background-size:cover;
+			background-size:auto 100%;
 			overflow:hidden;
 	     	height:768px;
 	     	min-height:650px;
+	     	
 	     	@include tablet{
 	     		height:576px;
 	     	}
+			
 			@include mobile{
-				background-position:initial;
+				background-position:center;
+				background-size:auto 100%;
 				min-height:initial;
 		     	height:$mobileHeight;
 			}

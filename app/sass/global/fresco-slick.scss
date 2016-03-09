@@ -2,46 +2,48 @@
 
 /*------------------------------------------------------------------------------------
 
-Copyright 2015 Fresco News, Inc. All Rights Reserved.
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
 .slick-meta{
 	color:#FFF;
-	bottom:8px;
+	bottom:14px;
 	left:7px;
 	position:absolute;
 	
 	tr{
-		margin:5px 0 0 5px;
+		margin:5px 0 0 0;
 		width:100%;
 		display:block;
-		
+	
 		td{
-			padding-right:5px;
+			padding-right:12px;
+			width:32px;
 			text-shadow:0 1px 0 rgb(0,0,0);
 			text-shadow:0 1px 0 rgba(0,0,0,0.87);
 
 			img{
-				width:36px;
-				height:36px;
-				@include box-shadow(1px 1px 3px 0 rgb(0, 0, 0));
-				@include box-shadow(1px 1px 3px 0 rgba(0,0,0, .5));    
+				width:32px;
+				height:32px;
+				@include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 3px 3px 0 rgba(0, 0, 0, 0.1));
 				@include border-radius(50px);
 			}
   		    span{
-				width:36px;
+  		    	width:20px;
 				margin:0 auto;
 				display:block;
 				font-size:1.4em;
+				text-align:center;
 			}
 		}
 		td.meta-text{
-			font-size:16px;
-			font-weight:500;
+			font-size:14px;
+			font-weight:400;
 			max-width:80%;
 			white-space: nowrap;
 			overflow: hidden;
+			font-family:$roboto;
 			text-overflow: ellipsis;
 		}
 		td.byline{
@@ -55,9 +57,12 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 
 	}
 	tr.user{
+		.avatar{
+			padding-right:8px;
+		}
+
 		margin:10px 0 0 0;
 	}
-
 }
 
 
@@ -78,7 +83,7 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 		cursor: pointer;
 
 		button:before {
-		    font-size: 32px !important;
+		    font-size:26px !important;
 		    color:#FFF;
 		    opacity:.7;
 		}
