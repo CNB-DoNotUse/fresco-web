@@ -3,6 +3,7 @@ require('babel-core/register');
 var fs                = require('fs'),
     express           = require('express'),
     config            = require('../lib/config'),
+    Purchases         = require('../lib/purchases'),
     head              = require('../lib/head'),
     router            = express.Router(),
     global            = require('../lib/global'),
@@ -55,7 +56,7 @@ router.get('/:id', (req, res, next) => {
 
       var props = {
             user: req.session.user,
-            purchases: config.mapPurchases(req.session),
+            purchases: Purchases.mapPurchases(req.session),
             gallery: gallery,
             title: title
           };
@@ -70,7 +71,7 @@ router.get('/:id', (req, res, next) => {
     }
     //User is not logged in, show public gallery page
     else {
-      
+
       var props = {
             gallery: gallery,
             title: title
@@ -83,9 +84,9 @@ router.get('/:id', (req, res, next) => {
         gallery: gallery,
         react: react,
         og: {
-          title: title,      
-          image: global.formatImg(gallery.posts[0].image, 'large'),      
-          url: req.originalUrl,        
+          title: title,
+          image: global.formatImg(gallery.posts[0].image, 'large'),
+          url: req.originalUrl,
           description: gallery.caption
         },
         twitter:{
@@ -95,7 +96,7 @@ router.get('/:id', (req, res, next) => {
         },
         page: 'publicGallery',
         props: JSON.stringify(props)
-      }); 
+      });
     }
   }
 });

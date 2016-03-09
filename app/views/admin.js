@@ -50,6 +50,7 @@ import AdminBody from './../components/admin/admin-body'
 
  	componentDidUpdate(prevProps, prevState) {
  		if(this.state.activeTab && prevState.activeTab && prevState.activeTab != this.state.activeTab) {
+ 			this.clearXHR();
  			switch(this.state.activeTab) {
  				case 'assignments':
  					this.resetAssignments();
@@ -108,45 +109,34 @@ import AdminBody from './../components/admin/admin-body'
  	loadInitial() {
  		var activeTab = '';
 
- 		var tryLoadAssignments = () => {
-	 		this.getData(undefined, {tab: 'assignments'}, (assignments) => {
+ 		this.getData(undefined, {tab: 'assignments'}, (assignments) => {
 
-	 			activeTab = assignments.length ? 'assignments' : activeTab;
+ 			activeTab = assignments.length ? 'assignments' : activeTab;
 
-	 			this.setState({
-	 				assignments: this.state.assignments.concat(assignments)
-	 			});
+ 			this.setState({
+ 				assignments: this.state.assignments.concat(assignments)
+ 			});
 
-	 			tryLoadSubmissions();
-	 		});
- 		}
+ 		});
 
- 		var tryLoadSubmissions = () => {
+ 		this.getData(undefined, {tab: 'submissions'}, (submissions) => {
 
-	 		this.getData(undefined, {tab: 'submissions'}, (submissions) => {
+ 			activeTab = submissions.length ? 'submissions' : activeTab;
 
-	 			activeTab = submissions.length ? 'submissions' : activeTab;
+ 			this.setState({
+ 				submissions: this.state.submissions.concat(submissions)
+ 			});
 
-	 			this.setState({
-	 				submissions: this.state.submissions.concat(submissions)
-	 			});
+ 		});
 
-	 			tryLoadImports();
-	 		});
- 		}
 
- 		var tryLoadImports = () => {
+ 		this.getData(undefined, {tab: 'imports'}, (imports) => {
 
-	 		this.getData(undefined, {tab: 'imports'}, (imports) => {
-
-	 			this.setState({
-	 				activeTab: activeTab.length ? activeTab : 'imports',
-	 				imports: this.state.imports.concat(imports)
-	 			});
-	 		});
- 		}
-
- 		tryLoadAssignments();
+ 			this.setState({
+ 				activeTab: activeTab.length ? activeTab : 'imports',
+ 				imports: this.state.imports.concat(imports)
+ 			});
+ 		});
 
  	}
 
@@ -173,7 +163,6 @@ import AdminBody from './../components/admin/admin-body'
  	}
 
 	getData(last, options, cb) {
-
 		var self = this, concat = false, unshift = false, endpoint = '', params = {}, tab = options.tab || this.state.activeTab, newState = {};
 
 		// Set up endpoint and params depending on tab
@@ -201,8 +190,6 @@ import AdminBody from './../components/admin/admin-body'
 		} else if(options.unshift) {
 			unshift = true;
 		}
-
-		this.clearXHR();
 
 		this.currentXHR = $.get(endpoint, params, (data) => {
 			if (!data.data) {
@@ -246,7 +233,6 @@ import AdminBody from './../components/admin/admin-body'
 
 				newState[tab] = stateData;
 				self.setState(newState);
-
 			}
 
 			cb(data.data);

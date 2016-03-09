@@ -1,0 +1,46 @@
+{
+  "STATIC_CDN": "https://d1dw1p6sgigznj.cloudfront.net/",
+  "SESSION_SECRET": "Flerbelerbler heller falala laller",
+
+  "API_VERSION": "v1",
+
+  "TWITTER": {
+    "CONSUMER_KEY": "94rpzX0nPHcRVncdP5tBRHUIp",
+    "CONSUMER_SECRET": "ke11m42OxmHI1YGu9it9nKPuGNtDMsVUizCd1ZQtTi5g7IOeF6",
+    "ACCESS_TOKEN_KEY": "2871169317-Mbv4U5wtRnWt9iCxkhehEEaRNaKqHGowyGBXeMx",
+    "ACCESS_TOKEN_SECRET": "DB0OMAsgIeb4PdDafzk5ALedC3MsRPngU9v1FfjkXXLd0"
+  },
+
+  "VISIBILITY": {
+    "PENDING": 0,
+    "VERIFIED": 1,
+    "HIGHLIGHT": 2
+  },
+
+  "MANDRILL": "uUhHD_y81DmLKYdHMhxDcQ",
+
+  "PRO": {
+    "MORNING": "11am-5pm",
+    "EVENING": "5pm-11pm"
+  },
+
+  "ZOHO": {
+    "CREATE_LEAD": "https://crm.zoho.com/crm/private/xml/CustomModule1/insertRecords?newFormat=1&authtoken=41eeeec7111df5498c4301f495ba0302&scope=crmapi",
+    "UPDATE_LEAD": "https://crm.zoho.com/crm/private/xml/CustomModule1/updateRecords?newFormat=1&authtoken=41eeeec7111df5498c4301f495ba0302&scope=crmapi",
+    "FETCH_LEAD" : "https://crm.zoho.com/crm/private/xml/CustomModule1/getRecordById?authtoken=41eeeec7111df5498c4301f495ba0302&scope=crmapi"
+  },
+
+  "SESSION_REFRESH_MS": 86400000,
+
+  "ERR_PAGE_MESSAGES": {
+    "403": "Unauthorized",
+    "404": "Page not found!",
+    "500": "Internal server error"
+  },
+
+  "PARSE_API": "https://api.parse.com/",
+
+  "DASH_HOME": "/highlights",
+
+  "PORT": "3000"
+}
