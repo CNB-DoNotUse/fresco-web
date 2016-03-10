@@ -141,17 +141,17 @@ export default class TopBar extends React.Component {
 		}
 
 		if (this.props.chronToggle) {
-			// topbarItems.push(
-			// 	<Dropdown
-			// 		options={['By capture time', 'By upload time']}
-			// 		selected='By capture time'
-			// 		onSelected={this.chronToggleSelected}
-			// 		key="chronToggle"
-			// 		inList={true} />
-			// );
+			topbarItems.push(
+				<Dropdown
+					options={['By capture time', 'By upload time']}
+					selected='By capture time'
+					onSelected={this.chronToggleSelected}
+					key="chronToggle"
+					inList={true} />
+			);
 		}
-
 		if (this.props.timeToggle) {
+			
 			topbarItems.push(
 				<Dropdown
 					options={['Relative', 'Absolute']}
@@ -160,6 +160,7 @@ export default class TopBar extends React.Component {
 					key="timeToggle"
 					inList={true} />
 			);
+
 		}
 		if (this.props.verifiedToggle) {
 

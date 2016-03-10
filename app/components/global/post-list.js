@@ -90,6 +90,22 @@ export default class PostList extends React.Component {
 		});
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		//Checks if the verified prop is changed
+		//`or` Checks if the sort prop is changed
+		if(prevProps.onlyVerified != this.props.onlyVerified
+			|| prevProps.sort != this.props.sort ) {
+			this.loadInitialPosts();
+		}
+	}
+
+	componentDidMount() {
+		//Check if list is initialzied with posts, then don't load anything
+		if(this.state.posts.length)
+			return;
+
+		this.loadInitialPosts();
+	}
 
 	/**
 	 * Scroll listener for main window
