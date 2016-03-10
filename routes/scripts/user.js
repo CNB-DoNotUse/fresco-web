@@ -89,6 +89,7 @@ router.post('/user/login', (req, res) => {
       }
 
       req.session.token = login_body.data.token;
+      req.session.parseSessionToken = parse_body.sessionToken;
       req.session.user = login_body.data.user;
       req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
 
@@ -184,6 +185,8 @@ router.post('/user/update', (req, res) => {
     // When no picture is uploaded, avatar gets set, which confuses the API
     if(req.body.avatar) 
         delete req.body.avatar;
+
+    req.body.parseSessionToken = req.session.parseSessionToken;
 
     API.proxy(req, res, (body) => {
 
