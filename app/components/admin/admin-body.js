@@ -116,6 +116,7 @@ export default class AdminBody extends React.Component {
 			for(var i in submissions) {
 				if(submissions[i]._id == id) {
 					gallery = submissions[i];
+					break;
 				}
 			}
 		}
@@ -125,12 +126,13 @@ export default class AdminBody extends React.Component {
 			for( var i in imports ) {
 				if( imports[i]._id == id ) {
 					gallery = imports[i];
+					break;
 				}
 			}
 		}
 
  		this.setState({
- 			hasActiveGallery: true,
+ 			hasActiveGallery: gallery.hasOwnProperty('_id'),
  			activeGalleryType: type,
  			activeGallery: gallery,
  			activeAssignment: null
