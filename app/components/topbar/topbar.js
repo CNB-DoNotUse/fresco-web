@@ -1,11 +1,12 @@
 import React from 'react'
 import global from './../../../lib/global'
 import Dropdown from './../global/dropdown'
+import TimeToggle from './time-toggle'
 
 /** //
 
 Description : Top Bar for pages of the site
-The component takes optional toggles/pieces as props, and each prop is checked in the render. 
+The component takes optional toggles/pieces as props, and each prop is checked in the render.
 If the prop exists, then the repsective toggle/dropdown/edit/whatever is added to the navigation bar
 
 // **/
@@ -14,7 +15,7 @@ export default class TopBar extends React.Component {
 
 	constructor(props) {
 		super(props);
-		
+
 		this.goLink = this.goLink.bind(this);
 		this.toggleDrawer = this.toggleDrawer.bind(this);
 		this.timeToggleSelected = this.timeToggleSelected.bind(this);
@@ -28,7 +29,7 @@ export default class TopBar extends React.Component {
 
 			//Set up autocomplete listener
 			var autocomplete = new google.maps.places.Autocomplete(this.refs.autocomplete);
-					
+
 			google.maps.event.addListener(autocomplete, 'place_changed', () => {
 
 				var place = autocomplete.getPlace();
@@ -83,7 +84,7 @@ export default class TopBar extends React.Component {
 	//Called when the user selects a time format
 	chronToggleSelected(selected) {
 		selected = selected.toLowerCase();
-		
+
 		if (selected == 'by capture time') {
 			this.props.updateSort('capture');
 		}
@@ -105,8 +106,8 @@ export default class TopBar extends React.Component {
 		}
 
 		if(this.props.saveButton){
-			saveButton = <a 
-							onClick={this.props.updateSettings} 
+			saveButton = <a
+							onClick={this.props.updateSettings}
 							className="mdi mdi-content-save icon pull-right hidden-xs">
 							<div className="ripple-wrapper"></div>
 						</a>;
@@ -115,19 +116,19 @@ export default class TopBar extends React.Component {
 
 		if(this.props.locationInput) {
 			locationInput = <div className="form-group-default pull-left location-input">
-								<input 
-									type="text" 
+								<input
+									type="text"
 									ref="autocomplete"
 									id="dispatch-location-input"
-									className="form-control google-autocomplete" 
+									className="form-control google-autocomplete"
 									placeholder="Location" />
 							</div>;
 		}
-		
+
 		if (this.props.editable) {
 
 			var className = "mdi icon pull-right hidden-xs toggle-edit toggler";
-			
+
 			if(this.props.editIcon)
 				className += " " + this.props.editIcon;
 			else
@@ -141,17 +142,26 @@ export default class TopBar extends React.Component {
 		}
 
 		if (this.props.chronToggle) {
+			let timeToggle = null;
+			if (this.props.timeToggle) {
+				timeToggle =
+					<TimeToggle
+						selected='Relative'
+						onSelected={this.timeToggleSelected} />
+			}
 			topbarItems.push(
 				<Dropdown
 					options={['By capture time', 'By upload time']}
 					selected='By capture time'
 					onSelected={this.chronToggleSelected}
 					key="chronToggle"
-					inList={true} />
+					inList={true}>
+					{timeToggle}
+				</Dropdown>
 			);
 		}
-		if (this.props.timeToggle) {
-			
+		else if (this.props.timeToggle) {
+
 			topbarItems.push(
 				<Dropdown
 					options={['Relative', 'Absolute']}
@@ -177,7 +187,7 @@ export default class TopBar extends React.Component {
 
 		if(this.props.tabs) {
 			var tabContent = [];
-			
+
 			this.props.tabs.map((tab, i) => {
 
 				var buttonClass = "btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (this.props.activeTab == tab ? ' toggled' : '');
@@ -192,20 +202,20 @@ export default class TopBar extends React.Component {
 					</button>
 				)
 			});
-			
+
 			var tabs = <div className="tab-control">{tabContent}</div>
 		}
 
 		return (
 			<nav className="navbar navbar-fixed-top navbar-default">
 				<div className="dim toggle-drop toggler" id="_toggler" onClick={this.toggleDrawer}></div>
-				
+
 				<button type="button" className="icon-button toggle-drawer toggler hidden-lg" onClick={this.toggleDrawer}>
 					<span className="mdi mdi-menu icon"></span>
 				</button>
-				
+
 				<div className="spacer"></div>
-				
+
 				{title}
 				{locationInput}
 				{tabs}

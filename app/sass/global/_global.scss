@@ -130,7 +130,7 @@ $navHeight:128px;
         height:56px;
         text-align:center;
     }
-    
+
     .logo{
         font-size: 65px;
         color: #ffc600;
@@ -162,7 +162,7 @@ $navHeight:128px;
  */
 
 .footer{
-    
+
     $padding:36px 48px 36px 36px;
     $mobilePadding:33px 48px 88px 36px;
 
@@ -195,7 +195,7 @@ $navHeight:128px;
         font-weight:500;
         line-height:20px;
         font-family:Roboto;
-        
+
         @include mobile {
             float:none;
         }
@@ -219,8 +219,8 @@ $navHeight:128px;
         margin:0 auto;
         font-size:14px;
         position:absolute;
-        left: 0; 
-        bottom: 19%; 
+        left: 0;
+        bottom: 19%;
         right: 0;
         line-height:20px;
 
@@ -280,7 +280,7 @@ $navHeight:128px;
             @include mobile{
                 text-align:left;
             }
-            
+
             li, li a{
                 cursor:pointer;
                 font-weight:700;
@@ -299,7 +299,7 @@ $navHeight:128px;
                 display: block;
                 margin:12px 10px 0 0;
             }
-        
+
         }
     }
 }
@@ -314,7 +314,7 @@ $width:30px;
 .showbox {
   position: absolute;
   display:none;
-  bottom: -5px; 
+  bottom: -5px;
   left: 0; right: 0;
   padding: 5%;
 
@@ -342,7 +342,7 @@ $width:30px;
         stroke:$fresco-blue;
         stroke-dasharray: 3,200;
         stroke-dashoffset: 0;
-        animation: 
+        animation:
          dash 1.5s ease-in-out infinite
         ;
         stroke-linecap: round;
