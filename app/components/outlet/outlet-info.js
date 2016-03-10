@@ -41,7 +41,8 @@ export default class OutletInfo extends React.Component {
 	 */
 	updateSettings() {
 		var avatarFiles = this.refs['avatarFileInput'].files,
-			params = new FormData();
+			params = new FormData(),
+			self = this;
 		
 		//Check if there are files
 		if (avatarFiles && avatarFiles.length > 0) 
@@ -63,6 +64,8 @@ export default class OutletInfo extends React.Component {
 				if (response.err)
 					return this.error(null, null, response.err);
 				else{
+					self.props.updateOutlet(response.data);
+
 					$.snackbar({ content: 'Your info has been successfully saved!'})
 				}
 			},

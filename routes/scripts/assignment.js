@@ -19,13 +19,21 @@ router.get('/assignment/stats', (req, res) => {
     let assignments = [],
         xlsxData = [[
           'Assignment ID',
+          'Outlet ID',
+          'Outlet',
           'Title',
           'Address',
           'Zip Code',
+          'Radius',
           'Day',
           'Date Created',
+          'Time Created',
           'Users',
           'Submissions',
+          'Photos',
+          'Photos Purchased',
+          'Videos',
+          'Videos Purchased',
           'First Submission'
         ]];
 
@@ -39,17 +47,23 @@ router.get('/assignment/stats', (req, res) => {
 
     for(let a of assignments) {
 
-      let day = global.getWeekDay(new Date(a.created).getDay());
-
       xlsxData.push([
         a.id,
+        a.outlet_id,
+        a.outlet_name,
         a.title,
         a.address,
         a.zip,
-        day,
-        new Date(a.created).toLocaleString(),
+        a.radius,
+        global.getWeekDay(a.day_created),
+        a.date_created,
+        a.time_created,
         a.users,
         a.submissions,
+        a.photos,
+        a.photos_purchased,
+        a.videos,
+        a.videos_purchased,
         a.firstSubmissionTime
       ]);
 

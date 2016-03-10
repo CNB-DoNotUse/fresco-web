@@ -92,7 +92,7 @@ gulp.task('Build Assets',  () => {
 						.pipe(concat(pages[p] + '.js'))
 						.pipe(gulp.dest('./public/js/pages'))
 				);
-			}			
+			}
 		}
 	}
 
@@ -126,7 +126,7 @@ gulp.task('Build Webpack', (cb) => {
 	return gulp.src('app/views/app.js')
 		.pipe(webpackStream({
 			entry: views,
-			watch: true,
+			watch: !argv.nowatch,
 		    output: {
 		      filename: "[name].js"
 		    },

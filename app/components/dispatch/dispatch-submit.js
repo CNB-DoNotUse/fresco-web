@@ -28,6 +28,7 @@ export default class DispatchSubmit extends React.Component {
 		var self = this;
 		this.refs.autocomplete.className = this.refs.autocomplete.className.replace(/\bempty\b/, '');
 
+		// Dispatch map has an eventlistener to set lastChangeSource.
 		if(this.props.lastChangeSource == 'markerDrag') {
 			var geocoder = new google.maps.Geocoder();
 

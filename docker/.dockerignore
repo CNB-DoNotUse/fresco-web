@@ -1,12 +1,9 @@
 *.scssc
-.idea
 dump.rdb
 node_modules
 app/server
 uploads
 sessions
-cert/*
-cert/DigiCertCA.crt
 public/vendor
 public/js/pages
 public/css/page
@@ -15,4 +12,7 @@ public/js/public.js
 public/js/platform.js
 public/js/public.css
 public/css/platform.css
+.sass-cache
+.vscode
+.idea
 config/*.json

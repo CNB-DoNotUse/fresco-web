@@ -90,21 +90,22 @@ export default class AdminAssignmentEdit extends React.Component {
      * Updates state map location when AutocompleteMap gives new location from drag
      */
     onMapDataChange(data) {
+        if(data.source == 'markerDrag') {
+            var geocoder = new google.maps.Geocoder();
 
-        var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({'location': {
+                lat: data.location.lat,
+                lng: data.location.lng
+            }}, (results, status) => {
 
-        geocoder.geocode({'location': {
-            lat: data.location.lat,
-            lng: data.location.lng
-        }}, (results, status) => {
-
-            if(status === google.maps.GeocoderStatus.OK && results[0]) {
-                this.setState({
-                    address: results[0].formatted_address,
-                    location: data.location
-                });
-            }
-        });
+                if(status === google.maps.GeocoderStatus.OK && results[0]) {
+                    this.setState({
+                        address: results[0].formatted_address,
+                        location: data.location
+                    });
+                }
+            });
+        }
     }
 
     /**

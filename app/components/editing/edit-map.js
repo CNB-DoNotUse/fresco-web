@@ -202,6 +202,7 @@ export default class EditMap extends React.Component {
 						lat: ev.latLng.lat(),
 						lng: ev.latLng.lng()
 					},
+					source: 'markerDrag'
 				});
 			});
 		}

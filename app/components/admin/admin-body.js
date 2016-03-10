@@ -32,6 +32,8 @@ export default class AdminBody extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 
+ 		var galleryType = this.props.activeTab.slice(0, -1), self = this;
+
 		// If tab changed
 	 	if( this.props.activeTab != prevProps.activeTab ) {
 
@@ -46,7 +48,6 @@ export default class AdminBody extends React.Component {
 	 			return;
 	 		}
 
-	 		var galleryType = this.props.activeTab.slice(0, -1);
 
 	 		if(galleryType == 'assignment') { // Special case for assignments because they are not a gallery.
 
@@ -58,18 +59,28 @@ export default class AdminBody extends React.Component {
 	 			});
 
 	 		} else {
-
-	 			if(!this.props[this.props.activeTab]) return;
-
-		 		this.setState({
-		 			hasActiveGallery: true,
-		 			activeGalleryType: galleryType,
-		 			activeGallery: this.props[this.props.activeTab][0],
-		 			activeAssignment: null
-		 		});
+	 			setFirstGalleryActive();
 	 		}
 
 	 	}
+
+	 	// If didn't have content before, set active to the first in current.
+		if(this.props[this.props.activeTab] && this.props[this.props.activeTab].length && prevProps[this.props.activeTab].length == 0) {
+			setFirstGalleryActive();
+		}
+
+		function setFirstGalleryActive() {
+
+			if(!self.props[self.props.activeTab]) return;
+
+	 		self.setState({
+	 			hasActiveGallery: true,
+	 			activeGalleryType: galleryType,
+	 			activeGallery: self.props[self.props.activeTab][0],
+	 			activeAssignment: null
+	 		});
+		}
+
 
 	}
 
@@ -290,7 +301,9 @@ export default class AdminBody extends React.Component {
 
 			case 'imports':
 
-				if (!this.state.activeGallery || !this.state.hasActiveGallery || !this.props.imports.length) break;
+				if (!this.state.activeGallery || !this.state.hasActiveGallery || !this.props.imports.length) {
+					break;
+				}
 
 				var listItems = this.props.imports.sort(sortListItem).map((gallery, i) => {
 								return <GalleryListItem
