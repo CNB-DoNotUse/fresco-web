@@ -189,6 +189,7 @@ router.post('/user/update', (req, res) => {
     req.body.parseSessionToken = req.session.parseSessionToken;
 
     API.proxy(req, res, (body) => {
+        if(body.err) return res.send({err: body.err});
 
         var user = body.data;
 
