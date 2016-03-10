@@ -70,10 +70,11 @@ export default class AdminGalleryEdit extends React.Component {
 			tags: [],
 			stories: [],
 			assignment: this.props.gallery.assignment,
-			mapLocation: null
+			mapLocation: null,
+			waiting: false
 		});
 
-		if( this.props.hasActiveGallery && this.props.gallery.posts && this.refs['gallery-caption'] ) {
+		if( this.props.hasActiveGallery && this.props.gallery.posts.length && this.refs['gallery-caption'] ) {
 			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption || 'No Caption';
 		}
 
@@ -319,6 +320,7 @@ export default class AdminGalleryEdit extends React.Component {
 	}
 
 	render() {
+
 		// If doesn't have active gallery or galleryType is an assignment, don't render anything.
 		if(
 			!this.props.hasActiveGallery ||
