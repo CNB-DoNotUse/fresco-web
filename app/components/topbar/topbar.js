@@ -1,7 +1,7 @@
 import React from 'react'
 import global from './../../../lib/global'
 import Dropdown from './../global/dropdown'
-import TimeToggle from './time-toggle'
+import RadioGroup from './../global/radio-group'
 
 /** //
 
@@ -141,13 +141,18 @@ export default class TopBar extends React.Component {
 			);
 		}
 
+		// If showing both the capture type and time type toggles, put the time
+		// type toggle into the dropdown for capture time. Otherwise, display
+		// it separately.
 		if (this.props.chronToggle) {
 			let timeToggle = null;
 			if (this.props.timeToggle) {
 				timeToggle =
-					<TimeToggle
+					<RadioGroup
+						options={['Relative', 'Absolute']}
 						selected='Relative'
-						onSelected={this.timeToggleSelected} />
+						onSelected={this.timeToggleSelected}
+						name='timeToggle' />
 			}
 			topbarItems.push(
 				<Dropdown
@@ -172,6 +177,7 @@ export default class TopBar extends React.Component {
 			);
 
 		}
+		
 		if (this.props.verifiedToggle) {
 
 			topbarItems.push(

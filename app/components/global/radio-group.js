@@ -1,7 +1,14 @@
 import React from 'react'
-import Dropdown from '../global/dropdown'
 
-export default class TimeToggle extends React.Component {
+/**
+ * Generic group of (styled) radio buttons
+ * @param {function} onSelected  A function called with the user's selection
+ * @param {Array}    options     The options that are available to select from
+ * @param {string}   name        The name to give the radio button controls
+ * @param {string}   selected    The pre-selected option (if any)
+ */
+
+export default class RadioGroup extends React.Component {
     constructor(props) {
         super(props);
 
@@ -23,8 +30,7 @@ export default class TimeToggle extends React.Component {
     optionClicked(e) {
         var selected = e.currentTarget.value;
 
-        console.log("Selected: " + selected);
-
+        // Ignore if option was already selected
         if (this.state.selected == selected) {
             return;
         }
@@ -40,21 +46,20 @@ export default class TimeToggle extends React.Component {
 
     render() {
         let radioButtons = [];
-        for (let option of ['Relative','Absolute']) {
-            console.log(option + " " + this.state.selected);
+        for (let option of this.props.options) {
             radioButtons.push(
                 <div className="radio" key={option}>
                     <label>
                         <input
                             type="radio"
-                            name="timeToggle"
+                            name={this.props.name}
                             value={option}
                             onClick={this.optionClicked}
                             defaultChecked={option === this.state.selected} />
                         <span className="radio-label">{option}</span>
                     </label>
                 </div>
-            );
+            )
         }
 
         return (
@@ -65,6 +70,7 @@ export default class TimeToggle extends React.Component {
     }
 }
 
-TimeToggle.defaultProps = {
-    onSelected: function() {}
-}
+RadioGroup.defaultProps = {
+    onSelected: function() {},
+    name: 'FACADE5'
+};
