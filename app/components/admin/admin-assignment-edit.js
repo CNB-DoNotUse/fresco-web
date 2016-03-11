@@ -214,6 +214,7 @@ export default class AdminAssignmentEdit extends React.Component {
                         defaultValue={expiration_time} />
                 </div>
                 <div className="dialog-foot">
+                    <button type="button" className="btn btn-flat assignment-merge pull-right" onClick={this.merge} disabled={this.isPending}>Merge</button>
                     <button type="button" className="btn btn-flat assignment-approve pull-right" onClick={this.approve} disabled={this.isPending}>Approve</button>
                     <button type="button" className="btn btn-flat assignment-deny pull-right" onClick={this.reject} disabled={this.isPending}>Reject</button>
                 </div>
