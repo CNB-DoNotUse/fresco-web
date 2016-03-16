@@ -133,7 +133,7 @@ class UserSettings extends React.Component {
  			processData: false,
  			contentType: false,
  			data : userData,
- 			success: (response, status, xhr) => {
+ 			success: function(response, status, xhr) {
  				self.updating = false;
 
  				if(response.err) {
@@ -151,7 +151,7 @@ class UserSettings extends React.Component {
 	 				self.setState({ user: user });
 	 			}
  			},
- 			error: (xhr, status, error) => {
+ 			error: function(xhr, status, error) {
  				self.updating = false;
  				$.snackbar({
  					content: global.resolveError(error, 'We couldn\'t save your settings!')

@@ -26,10 +26,14 @@ export default class PostInfo extends React.Component {
 			verifiedBy = '',
 			userName = '';
 
-		if(this.props.post.approvals) 
-			verifiedBy = 'Verified by ' + this.props.verifier;
-		else
+		if(this.props.post.approvals) {
+			verifiedBy = 'Verified';
+			if(this.props.user.rank > 1) {
+				 verifiedBy += ' by ' + this.props.verifier;
+			}
+		}else {
 			verifiedBy = 'Not yet verified';
+		}
 
 		if(post.meta.twitter)
 	 		userName = post.meta.twitter.user_name;
@@ -54,7 +58,7 @@ export default class PostInfo extends React.Component {
 		}
 
 		//Check to show curator item
-		if (gallery.curator) {
+		if (gallery.curator && this.props.user.rank > 1) {
 			var curator = <li>
 							<span className="mdi mdi-account icon"></span>
 							{this.props.gallery.curator.firstname + ' ' + this.props.gallery.curator.lastname}
