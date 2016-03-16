@@ -121,13 +121,13 @@ class SideBarListItems extends React.Component {
 				</li>
 				<ul>
 					<li className="sidebar-tab">
-						<a href="/archive/photos"><span className="mdi mdi-file-image-box icon"></span>Photos</a>
+						<a href="/archive/photos"><span className="mdi mdi-image icon"></span>Photos</a>
 					</li>
 					<li className="sidebar-tab">
 						<a href="/archive/videos"><span className="mdi mdi-movie icon"></span>Videos</a>
 					</li>
 					<li className="sidebar-tab">
-						<a href="/archive/galleries"><span className="mdi mdi-image-filter icon"></span>Galleries</a>
+						<a href="/archive/galleries"><span className="mdi mdi-image-multiple icon"></span>Galleries</a>
 					</li>
 					<li className="sidebar-tab">
 						<a href="/archive/stories"><span className="mdi mdi-newspaper icon"></span>Stories</a>
