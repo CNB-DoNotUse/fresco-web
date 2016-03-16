@@ -134,7 +134,7 @@ export default class LocationDropdown extends React.Component {
 			return ( 
 				<li className="location-item" key={i} onClick={this.locationClicked.bind(null, location)}>
 					<a href={"/location/" + location._id}>
-						<span className="mdi mdi-launch"></span>
+						<span className="mdi mdi-logout-variant"></span>
 					</a>
 					<span className="area">{location.title}</span>
 					<span className="count">{unseenCount}</span>
