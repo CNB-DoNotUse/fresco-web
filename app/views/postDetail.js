@@ -81,6 +81,7 @@ class PostDetail extends React.Component {
  							<PostInfo 
  								post={this.props.post}
  								gallery={this.state.gallery}
+ 								user={this.props.user}
  								verifier={this.props.verifier} />
  						</div>
  					</div>

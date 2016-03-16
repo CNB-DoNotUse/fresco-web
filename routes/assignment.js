@@ -17,15 +17,27 @@ router.get('/:id', (req, res, next) => {
     var error = new Error(config.ERR_PAGE_MESSAGES[404]);
     error.status = 404;
 
+    let notFoundUserID = true;
+
+    for(let a of body.data.outlets) {
+      if(a._id == req.session.user.outlet._id) {
+        notFoundUserID = false;
+        break;
+      }
+    }
+
     if (err || !body || body.err){
 
       return next(error);
 
     }
     //Check if the assignment is the user's and they're not a CM or Admin
-    else if(body.data.outlet._id !== req.session.user.outlet._id && req.session.user.rank < global.RANKS.CONTENT_MANAGER){
+    else if(notFoundUserID && req.session.user.rank <= 1){
       return next(error);
     }
+
+    // Don't show info of other outlets
+    delete body.data.outlets;
 
     var assignment = body.data,
         title = assignment.title,
