@@ -292,8 +292,8 @@ export default class AdminAssignmentEdit extends React.Component {
                     <AssignmentMergeDropup
                         nearbyAssignments={this.state.nearbyAssignments}
                         selectMerge={this.selectMerge} />
-                    <button type="button" className="btn btn-flat assignment-approve pull-right" disabled={this.isPending}> Approve</button>
-                    <button type="button" className="btn btn-flat assignment-deny pull-right" disabled={this.isPending}> Reject</button>
+                    <button type="button" className="btn btn-flat assignment-approve pull-right" onClick={this.approve} disabled={this.isPending}> Approve</button>
+                    <button type="button" className="btn btn-flat assignment-deny pull-right" onClick={this.reject} disabled={this.isPending}> Reject</button>
                 </div>
                 <AssignmentMerge
                     assignment={this.props.assignment}
