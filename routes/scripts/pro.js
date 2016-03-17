@@ -125,7 +125,7 @@ function sendEmail(params, callback) {
             },
             {
                 name: 'phone',
-                content: 'Phone Number - ' + params.zip
+                content: 'Phone Number - ' + params.phone
             },
             {
                 name: 'time',
