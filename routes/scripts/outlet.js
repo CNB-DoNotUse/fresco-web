@@ -153,7 +153,7 @@ router.get('/outlet/export', (req, res) => {
       var data = [['time', 'type', 'price', 'assignment', 'outlet']];
 
       lines.forEach(function(line){
-        data.push([line.time, line.type, line.price, line.assignment, line.outlet]);
+        data.push([line.time, line.type, line.price.replace('$', ''), line.assignment, line.outlet]);
       });
 
       res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -164,7 +164,7 @@ router.get('/outlet/export', (req, res) => {
       var output = "time,type,price,assignment,outlet\r\n";
 
       lines.forEach(function(line){
-        output += line.time + ',' + line.type + ',' + line.price + ',' + line.assignment + ',' + line.outlet + '\r\n';
+        output += line.time + ',' + line.type + ',' + line.price.replace('$', '') + ',' + line.assignment + ',' + line.outlet + '\r\n';
       });
 
       res.set('Content-Type', 'text/csv');
