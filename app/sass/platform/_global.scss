@@ -101,3 +101,18 @@ img {
     }
   }
 }
+
+/**
+ * Radio button coloring
+ */
+div.radio > label {
+	input[type=radio]:checked ~ .circle {
+		border-color: $fresco-blue;
+	}
+	input[type=radio]:checked ~ .check {
+		background-color: $fresco-blue;
+	}
+	.radio-label {
+		left: 30px;
+	}
+}
