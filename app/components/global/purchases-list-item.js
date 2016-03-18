@@ -35,7 +35,7 @@ export default class PurchasesListItem extends React.Component {
 		var purchase = this.props.purchase,
 			post = purchase.post,
 			video = post ? post.video != null : purchase.video != null,
-			timeString = global.formatTime(purchase.timestamp),
+			timeString = global.formatTime(purchase.timestamp, true),
 			price = '$' + (video ? '75' : '30') + '.00',
 			assignmentText = '';
 
