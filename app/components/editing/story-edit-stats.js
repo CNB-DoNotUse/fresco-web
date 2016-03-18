@@ -18,7 +18,7 @@ export default class StoryEditStats extends React.Component {
 							<span id="story-edit-date">{global.formatTime(this.props.story.time_created)}</span>
 						</li>
 						<li>
-							<span className="mdi mdi-file-image-box icon"></span>
+							<span className="mdi mdi-image icon"></span>
 							<span id="story-edit-photo-num">{this.props.story.stats.photos} {this.props.story.stats.photos == 1 ? 'photo' : 'photos'}</span>
 						</li>
 						<li>

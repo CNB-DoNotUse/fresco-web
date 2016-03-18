@@ -51,7 +51,7 @@ class StoryStats extends React.Component {
 						<span>{this.props.story.stats.galleries} {this.props.story.stats.galleries > 1 ? 'galleries' : 'gallery'}</span>
 					</li>
 					<li>
-						<span className="mdi mdi-file-image-box icon"></span>
+						<span className="mdi mdi-image icon"></span>
 						<span>{this.props.story.stats.photos} {this.props.story.stats.photos > 1 ? 'photos' : 'photo'}</span>
 					</li>
 					<li>

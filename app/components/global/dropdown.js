@@ -33,7 +33,7 @@ export default class Dropdown extends React.Component {
 			menuIcon = this.refs['button'].refs['menu-icon'];
 			
 		if(drop.className.indexOf('active') == -1) {
-			menuIcon.className = 'mdi pull-right ';
+			menuIcon.className = 'mdi ';
 			menuIcon.className += this.props.reverseCaretDirection ? 'mdi-menu-down' : 'mdi-menu-up';
 			drop.className += ' active';
 		} else {
