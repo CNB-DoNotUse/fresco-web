@@ -810,11 +810,12 @@ div.list {
 		list-style-type: none;
 	}
 	> div:first-child {
-		position: absolute;
-		padding: 16px 20px 209px;
-		height: 100%;
+		padding: 16px 20px 0;
+		height:calc(100% - 117px);
 		width: 100%;
 		overflow-y: auto;
+
+
 		img {
 			width: 194px;
 			max-width: 100%;
@@ -824,6 +825,11 @@ div.list {
 			width: 100%;
 			padding: 0;
 		}
+
+		.master-list{
+			padding:0 0 40px;
+		}
+
 		> ul {
 			> ul > li > a {
 				padding-left: 60px;
@@ -856,7 +862,7 @@ div.list {
 	> div:last-child {
 		position: absolute;
 		bottom: 0;
-		left: 0;
+		height:117px;
 		width: 100%;
 		border-top: 1px solid $color-black-4;
 		background-color: $color-shade-1;
