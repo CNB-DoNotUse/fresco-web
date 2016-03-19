@@ -1159,6 +1159,7 @@ div.list {
 					position: relative;
 					padding: 0;
 					margin: 0;
+					height: 200px;
 					> .img {
 						@include flex(1);
 						padding-bottom: 50%;
