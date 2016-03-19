@@ -1072,6 +1072,13 @@ div.list {
 	.tiles {
 		margin: 0;
 		padding:0;
+		
+		// .story{
+		// 	.flex-row, .flex-col{
+		// 		height:150px
+		// 	}
+		// }
+
 		> .tile {
 			cursor: pointer;
 			position: relative;
@@ -1159,7 +1166,7 @@ div.list {
 					position: relative;
 					padding: 0;
 					margin: 0;
-					height: 200px;
+					height:150px;
 					> .img {
 						@include flex(1);
 						padding-bottom: 50%;
