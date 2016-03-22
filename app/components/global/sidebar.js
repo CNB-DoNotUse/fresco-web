@@ -108,6 +108,11 @@ class SideBarListItems extends React.Component {
 				<li className="sidebar-tab">
 					<a href="/purchases"><span className="mdi mdi-currency-usd icon"></span>Purchases</a>
 				</li>;
+
+			var stats = 
+				<li className="sidebar-tab">
+					<a href="/stats"><span className="mdi mdi-chart-line icon"></span>Stats</a>
+				</li>;
 		}
 
 		return (
@@ -137,6 +142,7 @@ class SideBarListItems extends React.Component {
 				{outlet}
 				{admin}	
 				{purchases}
+				{stats}
 			</ul>
 			
 		)
