@@ -4,12 +4,13 @@ var express   = require('express'),
     router    = express.Router();
 
 /**
- * Master dispatch page
+ * Master stats page
  */
 
 router.get('/', (req, res, next) => {
+
     //Check if the user is part of an outlet or they are at least aa CM
-    if (!req.session.user.outlet) {
+    if (req.session.user.rank < global.RANKS.ADMIN) {
         var error = error(config.ERR_PAGE_MESSAGES[401]);
         error.status = 401;
 
@@ -18,17 +19,17 @@ router.get('/', (req, res, next) => {
 
     var props = {
         user: req.session.user,
-        outlet : req.session.user.outlet,
-        title: 'Dispatch'
+        title: 'Stats'
     }
 
     //Render dispatch page
     res.render('app', {
-        title: 'Dispatch',
+        title: props.title,
         props: JSON.stringify(props),
         alerts: req.alerts,
-        page : 'dispatch'
+        page : 'stats'
     });
+
 });
 
 module.exports = router;

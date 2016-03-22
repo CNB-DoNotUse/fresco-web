@@ -85,7 +85,6 @@ export default class OutletLocations extends React.Component {
 	 * Removes a location 
 	 */
 	removeLocation(locationId) {
-
 		var self = this;
 
 		$.ajax({
