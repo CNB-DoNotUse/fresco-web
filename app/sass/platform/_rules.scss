@@ -162,7 +162,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 }
 
 .checkbox input[type=checkbox]:checked + .checkbox-material .check:before, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check:before{
-	color:#0047bb;	
+	color:#0047bb;
 }
 
 
@@ -305,8 +305,8 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		padding-top: 64px;
 		margin-bottom: 0;
 	}
-	#map-canvas { 
-		height: 100% 
+	#map-canvas {
+		height: 100%
 	}
 	#add-assignment-map {
 		height: 307px;
@@ -418,17 +418,22 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	background-color: $color-shade-2;
 	white-space: nowrap;
 	overflow-x: auto;
-	> button {
-		margin: 0;
-		padding: 0;
-		width: 192px;
-		line-height: 144px;
-		background-color: $color-shade-4;
-	}
-	> img {
-		display: inline-block;
-		margin-left: -3px;
-		height: 144px;
+	> div.tab-inner {
+		display: table;
+		> a.btn {
+			margin: 0;
+			padding: 0;
+			width: 192px;
+			min-width: 192px;
+			height: 100%;
+			background-color: $color-shade-4;
+			display: table-cell;
+		}
+		> img {
+			display: inline-block;
+			margin-left: -3px;
+			height: 144px;
+		}
 	}
 }
 
@@ -746,12 +751,13 @@ div.list {
 		z-index: 1;
 		height: 64px;
 		padding: 20px 24px 20px 32px;
+	    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 		> .icon {
 			font-size: 20px;
 			line-height: 24px;
 		}
 		~ .dialog-body {
-			padding-top: 76px;
+			padding-top: 92px;
 		}
 	}
 	> .dialog-body {
@@ -810,11 +816,12 @@ div.list {
 		list-style-type: none;
 	}
 	> div:first-child {
-		position: absolute;
-		padding: 16px 20px 209px;
-		height: 100%;
+		padding: 16px 20px 0;
+		height:calc(100% - 117px);
 		width: 100%;
 		overflow-y: auto;
+
+
 		img {
 			width: 194px;
 			max-width: 100%;
@@ -824,6 +831,11 @@ div.list {
 			width: 100%;
 			padding: 0;
 		}
+
+		.master-list{
+			padding:0 0 40px;
+		}
+
 		> ul {
 			> ul > li > a {
 				padding-left: 60px;
@@ -856,7 +868,7 @@ div.list {
 	> div:last-child {
 		position: absolute;
 		bottom: 0;
-		left: 0;
+		height:117px;
 		width: 100%;
 		border-top: 1px solid $color-black-4;
 		background-color: $color-shade-1;
@@ -1005,7 +1017,7 @@ div.list {
 			padding: 10px 0 0;
 			display: block;
 			max-height: 80%;
-			overflow-y: auto; 
+			overflow-y: auto;
 			ul {
 				list-style-type: none;
 			}
@@ -1066,6 +1078,13 @@ div.list {
 	.tiles {
 		margin: 0;
 		padding:0;
+		
+		// .story{
+		// 	.flex-row, .flex-col{
+		// 		height:150px
+		// 	}
+		// }
+
 		> .tile {
 			cursor: pointer;
 			position: relative;
@@ -1153,6 +1172,7 @@ div.list {
 					position: relative;
 					padding: 0;
 					margin: 0;
+					height:150px;
 					> .img {
 						@include flex(1);
 						padding-bottom: 50%;
@@ -1204,7 +1224,7 @@ div.list {
 				background-color: $color-shade-0;
 				border: 1px solid $color-black-4;
 				border-top: 0;
-				
+
 				> .hover {
 
 					background-color: $color-shade-0;

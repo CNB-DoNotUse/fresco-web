@@ -41,7 +41,7 @@ export default class PostCell extends React.Component {
 			size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small;
 
 		var statusClass = 'mdi icon pull-right '; //Class name for post tile icon
-			statusClass += post.video == null 	? 'mdi-file-image-box ' : 'mdi-movie ';
+			statusClass += post.video == null 	? 'mdi-image ' : 'mdi-movie ';
 			statusClass += this.props.purchased ? 'available ' : 'md-type-black-disabled ';
 
 		return(

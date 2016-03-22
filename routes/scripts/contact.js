@@ -4,6 +4,7 @@ var express       = require('express'),
     router        = express.Router(),
     nodemailer    = require('nodemailer'),
     redis         = require('redis'),
+    zendesk = require('node-zendesk'),
     RedisStore    = require('connect-redis'),
     validator     = require('validator');
 
@@ -35,7 +36,6 @@ router.post('/contact', (req, res, next) => {
 
             //Check to make sure it's been 5 seconds between requests
             if(currentTimestamp - previousTimestamep > 5000){
-
                 return sendMessage(ip, req, res);
             }
             else{
@@ -44,11 +44,9 @@ router.post('/contact', (req, res, next) => {
                 });
             }
         }
-
     });
 
     return;
-
 });
 
 function sendMessage(ip, req, res){
@@ -69,34 +67,33 @@ function sendMessage(ip, req, res){
         });
     }
 
-    //Define needed vars
-    var from = req.body.from,
-        subject = req.body.inquiryType + ' Inquiry from ' + req.body.name,
+    var client = zendesk.createClient({
+      username:  'elmir@fresconews.com',
+      token:     'P16GkstwMdW3oaQOmmim2f7mbuU7aKVO0QLclOnX',
+      remoteUri: 'https://fresco.zendesk.com/api/v2'
+    });
+
+    var subject = req.body.inquiryType + ' Inquiry from ' + req.body.name,
+        name = req.body.name,
         message = req.body.message,
-        transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'info@fresconews.com',
-                pass: '0d1562#Fr3sC0!bd'
+        ticket = {
+            "ticket": {
+                "subject": subject, 
+                "requester" : {
+                    "name" : name,
+                    "email" : req.body.from
+                },
+                "comment": { 
+                    "body":  message
+                }
             }
-        }, {
-            // default values for sendMail method
-            from: from
-        }),
-        mailOptions = {
-            to: 'support@fresconews.com',
-            from: 'info@fresconews.com',
-            subject: subject,
-            text: 'Message: ' + message + '\nFrom: ' + from
-        };
+         };
 
-    //Send out email to `info@fresconews.com`
-    transporter.sendMail(mailOptions, (error, info) => {
-
+    client.tickets.create(ticket,  (err, req, result) => {
         //Save IP to redis now that we're sending
         rClient.set(CONTACT_PREFIX + ip, new Date().getTime());
 
-        if(error){
+        if(err){
             return res.json({
                 err: 'ERR_CONTACT_FAILED'
             });

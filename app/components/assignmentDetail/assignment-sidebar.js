@@ -81,7 +81,7 @@ class AssignmentStats extends React.Component {
 						<span>{assignment.outlet.title}</span>
 					</li>
 					<li>
-						<span className="mdi mdi-file-image-box icon"></span>
+						<span className="mdi mdi-image icon"></span>
 						<span>{stats.photos + ' photo' + (global.isPlural(stats.photos) ? 's' : '')}</span>
 					</li>
 					<li>

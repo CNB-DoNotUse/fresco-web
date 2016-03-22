@@ -12,19 +12,21 @@ Description : Related posts at the bottom of the PostDetail view
  */
 
 export default class PostRelated extends React.Component {
-
+	
 	render() {
 
 		if (this.props.gallery.posts && this.props.gallery.posts.length > 1){
 
 			var posts = this.props.gallery.posts.map((post, i) => {
 
-				return <a href={"/post/" + post._id} key={i}>
-							<img 
-								className="img-link" 
-								src={global.formatImg(post.image, 'small')} 
-								key={i} />
-						</a>
+				return (
+					<a href={"/post/" + post._id} key={i}>
+						<img
+							className="img-link"
+							src={global.formatImg(post.image, 'small')}
+							key={i} />
+					</a>
+				);
 
 			})
 
@@ -34,7 +36,12 @@ export default class PostRelated extends React.Component {
 						<button className="btn btn-flat toggled">More from this gallery</button>
 					</div>
 					<div className="tabs">
-						<div className="tab toggled">{posts}</div>
+						<div className="tab toggled">
+							<div className="tab-inner">
+								<a className="btn btn-flat" href={"/gallery/" + this.props.gallery._id}>See all</a>
+								{posts}
+							</div>
+						</div>
 					</div>
 				</div>
 			);

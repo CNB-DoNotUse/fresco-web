@@ -28,7 +28,7 @@ export default class DispatchMapCallout extends React.Component {
 					<div className="md-type-body1 assignment-callout-caption">{assignment.caption}</div> 
 					
 					<div className="assignment-callout-buttons">
-						<span className="mdi mdi-file-image-box icon assignment-callout-icon"></span>
+						<span className="mdi mdi-image icon assignment-callout-icon"></span>
 						
 						<span className="assignment-callout-image-counter">{assignment.posts.length}</span>
 						

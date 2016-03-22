@@ -108,11 +108,16 @@ class SideBarListItems extends React.Component {
 				<li className="sidebar-tab">
 					<a href="/purchases"><span className="mdi mdi-currency-usd icon"></span>Purchases</a>
 				</li>;
+
+			var stats = 
+				<li className="sidebar-tab">
+					<a href="/stats"><span className="mdi mdi-chart-line icon"></span>Stats</a>
+				</li>;
 		}
 
 		return (
 	
-			<ul className="md-type-body1">
+			<ul className="md-type-body1 master-list">
 				<li className="sidebar-tab">
 					<a href="/highlights"><span className="mdi mdi-star icon"></span>Highlights</a>
 				</li>
@@ -121,13 +126,13 @@ class SideBarListItems extends React.Component {
 				</li>
 				<ul>
 					<li className="sidebar-tab">
-						<a href="/archive/photos"><span className="mdi mdi-file-image-box icon"></span>Photos</a>
+						<a href="/archive/photos"><span className="mdi mdi-image icon"></span>Photos</a>
 					</li>
 					<li className="sidebar-tab">
 						<a href="/archive/videos"><span className="mdi mdi-movie icon"></span>Videos</a>
 					</li>
 					<li className="sidebar-tab">
-						<a href="/archive/galleries"><span className="mdi mdi-image-filter icon"></span>Galleries</a>
+						<a href="/archive/galleries"><span className="mdi mdi-image-multiple icon"></span>Galleries</a>
 					</li>
 					<li className="sidebar-tab">
 						<a href="/archive/stories"><span className="mdi mdi-newspaper icon"></span>Stories</a>
@@ -137,6 +142,7 @@ class SideBarListItems extends React.Component {
 				{outlet}
 				{admin}	
 				{purchases}
+				{stats}
 			</ul>
 			
 		)
