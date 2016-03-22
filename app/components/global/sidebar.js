@@ -112,7 +112,7 @@ class SideBarListItems extends React.Component {
 
 		return (
 	
-			<ul className="md-type-body1">
+			<ul className="md-type-body1 master-list">
 				<li className="sidebar-tab">
 					<a href="/highlights"><span className="mdi mdi-star icon"></span>Highlights</a>
 				</li>

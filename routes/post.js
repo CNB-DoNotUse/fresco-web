@@ -65,11 +65,9 @@ router.get('/:id', (req, res, next) => {
 
             //Loop through edits to find edit for visibility change of `1` i.e. verified
             for (var i in gallery.edits) {
-
                 var edit = gallery.edits[i];
-
                 //Check if the edit is setting visibility to 1
-                if (edit.changes.visibility == 1) {
+                if (edit.changes.visibility == 1 || edit.changes.visibility == 2) {
                     verifierId = edit.editor;
                     break;
                 }

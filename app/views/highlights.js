@@ -15,6 +15,7 @@ class Highlights extends React.Component {
 			<App user={this.props.user}>
 				<TopBar title="Highlights"
 					timeToggle={true} />
+				
 				<GalleryList 
 					withList={true} 
 					highlighted={true} />
