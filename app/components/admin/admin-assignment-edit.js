@@ -30,14 +30,14 @@ export default class AdminAssignmentEdit extends React.Component {
         this.toggleMergeDialog      = this.toggleMergeDialog.bind(this);
         this.approve                = this.approve.bind(this);
         this.reject                 = this.reject.bind(this);
-        this.merge                  = this.merge.bind(this);
+        // this.merge                  = this.merge.bind(this);
         this.selectMerge            = this.selectMerge.bind(this);
     }
 
     componentDidMount() {
         $.material.init();
 
-        this.findNearbyAssignments();
+        // this.findNearbyAssignments();
 
         this.setState({
             radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
@@ -70,7 +70,7 @@ export default class AdminAssignmentEdit extends React.Component {
                     }
                 });
 
-                this.findNearbyAssignments();
+                // this.findNearbyAssignments();
 
                 this.refs['assignment-title'].value = assignment.title;
                 this.refs['assignment-description'].value = assignment.caption;
@@ -252,6 +252,13 @@ export default class AdminAssignmentEdit extends React.Component {
         if(this.props.activeGalleryType != 'assignment' || !this.props.hasActiveGallery) 
             return (<div></div>);
 
+        /**
+         *  Merge button
+                    <AssignmentMergeDropup
+                        nearbyAssignments={this.state.nearbyAssignments}
+                        selectMerge={this.selectMerge} />
+         */
+
         return ( 
             <div className="dialog">
                 <div className="dialog-body admin-assignment-edit" style={{visibility: this.props.hasActiveGallery ? 'visible' : 'hidden'}}>
@@ -289,9 +296,6 @@ export default class AdminAssignmentEdit extends React.Component {
                         defaultValue={expiration_time} />
                 </div>
                 <div className="dialog-foot">
-                    <AssignmentMergeDropup
-                        nearbyAssignments={this.state.nearbyAssignments}
-                        selectMerge={this.selectMerge} />
                     <button type="button" className="btn btn-flat assignment-approve pull-right" onClick={this.approve} disabled={this.isPending}> Approve</button>
                     <button type="button" className="btn btn-flat assignment-deny pull-right" onClick={this.reject} disabled={this.isPending}> Reject</button>
                 </div>
