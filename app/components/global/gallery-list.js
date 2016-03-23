@@ -59,7 +59,7 @@ export default class GalleryList extends React.Component {
 
 		var endpoint,
 			params = {
-				limit: 14,
+				limit: 20,
 				offset: passedOffset,
 				sort: this.props.sort
 			};

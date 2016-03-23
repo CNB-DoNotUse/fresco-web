@@ -43,7 +43,7 @@ class Stories extends React.Component {
 		};
 
 		$.ajax({
-			url:  '/api/story/recent',
+			url:  '/api/story/recent?limit=24',
 			type: 'GET',
 			data: params,
 			dataType: 'json',

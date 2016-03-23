@@ -1173,6 +1173,7 @@ div.list {
 					padding: 0;
 					margin: 0;
 					height:150px;
+					overflow: hidden;
 					> .img {
 						@include flex(1);
 						padding-bottom: 50%;
@@ -1293,6 +1294,12 @@ div.list {
 				margin: 12px 0;
 			}
 		}
+	}
+}
+
+.gallery {
+	.flex-row, .flex-col {
+		height: 250px !important;
 	}
 }
 
