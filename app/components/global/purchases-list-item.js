@@ -31,13 +31,6 @@ export default class PurchasesListItem extends React.Component {
 			user = '',
 			outlet = '';
 
-		if(post.owner){
-			user = <div 
-						className="flexy" 
-						onClick={this.openLink.bind(this, '/user/' + post.owner._id)}>
-						<p className="md-type-body2">{post.owner.firstname + ' ' + post.owner.lastname}</p>
-					</div>
-		}
 
 		if(purchase.assignment) {
 			assignment = 
@@ -52,9 +45,17 @@ export default class PurchasesListItem extends React.Component {
 				</div>
 		}
 
+		if(post.owner){
+			user = <div 
+						className="flexy" 
+						onClick={this.openLink.bind(this, '/user/' + post.owner._id)}>
+						<p className="md-type-body2">{post.owner.firstname + ' ' + post.owner.lastname}</p>
+					</div>
+		}
+
 		if(this.props.showTitle) {
 			outlet = <div>
-						<p className="md-type-body2 toggler">{this.props.showTitle ? this.props.title : ''}</p>
+						<p className="md-type-body2 toggle-aradd  toggler">{this.props.showTitle ? this.props.title : ''}</p>
 					</div>
 		}
 
@@ -79,7 +80,7 @@ export default class PurchasesListItem extends React.Component {
 				<div>
 					<p className="md-type-body1">{video ? 'Video' : 'Photo'}</p>
 				</div>
-				<div>
+				<div className={post.owner ? '' : 'flexy'}>
 					<p className="md-type-body1">{price}</p>
 				</div>
 				{user}
