@@ -20,7 +20,8 @@ class Stats extends React.Component {
                 "week" : null,
                 "week2" : null,
                 "month" : null,
-                "year" : null
+                "year" : null,
+                "total" : null
             }
         }
 
@@ -149,14 +150,19 @@ class Stats extends React.Component {
                 Date.now() - (day * 7), //one week
                 Date.now() - (day * 14), //two weeks
                 Date.now() - (day * 31), //one month
-                Date.now() - (day * 365) //year
+                Date.now() - (day * 365), //year
+                null
             ],
             timeKeys = Object.keys(this.state.counts);
 
         for (var i = 0; i < timeKeys.length; i++) {
             var key = timeKeys[i],
                 self = this,
-                newQuery = query + '&since=' + times[i];
+                newQuery = query;
+
+            if(times[i] !== null){
+                newQuery += '&since=' + times[i];
+            }
 
             $.ajax({
                 url: '/api/stats/user?' + newQuery,
@@ -231,6 +237,11 @@ class Stats extends React.Component {
                                 </tr>
                                 <tr>
                                     <td>Last year</td> 
+                                    <td>{counts.year ? counts.year.active : null}</td>
+                                    <td>{counts.year ? counts.year.total : null}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td> 
                                     <td>{counts.year ? counts.year.active : null}</td>
                                     <td>{counts.year ? counts.year.total : null}</td>
                                 </tr>
