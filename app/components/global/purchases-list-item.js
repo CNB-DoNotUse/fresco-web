@@ -1,33 +1,23 @@
 import React from 'react'
+import moment from 'moment'
 import global from '../../../lib/global'
 
 export default class PurchasesListItem extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.openPurchase = this.openPurchase.bind(this);
-		this.openAssignment = this.openAssignment.bind(this);
+		this.openLink = this.openLink.bind(this);
 	}
 
 	/**
-	 * Opens assignment on click
+	 * Opens passed link
 	 */
-	openAssignment() {
+	openLink(link) {
 
-		if(!this.props.purchase.assignment) return;
+		console.log(link);
 
-		window.open('/assignment/' + this.props.purchase.assignment._id, '_blank');
+		window.open(link, '_blank');
 
-	}
-
-	/**
-	 * Opens purchase
-	 */
-	openPurchase() {
-
-		if(!this.props.purchase.post) return;
-
-		window.open('/post/' + this.props.purchase.post._id, '_blank');
 	}
 	
 	render() {
@@ -35,24 +25,44 @@ export default class PurchasesListItem extends React.Component {
 		var purchase = this.props.purchase,
 			post = purchase.post,
 			video = post ? post.video != null : purchase.video != null,
-			timeString = global.formatTime(purchase.timestamp, true),
+			timeString = moment(purchase.timestamp).format('MMM Do, h:mma'),
 			price = '$' + (video ? '75' : '30') + '.00',
-			assignmentText = '';
+			assignment = '',
+			user = '',
+			outlet = '';
+
+		if(post.owner){
+			user = <div 
+						className="flexy" 
+						onClick={this.openLink.bind(this, '/user/' + post.owner._id)}>
+						<p className="md-type-body2">{post.owner.firstname + ' ' + post.owner.lastname}</p>
+					</div>
+		}
 
 		if(purchase.assignment) {
-			assignmentText = 
-				<div onClick={this.openAssignment}>
+			assignment = 
+				<div onClick={this.openLink.bind(this, '/assignment/' + purchase.assignment._id)}>
 					<p className="md-type-body2" style={{lineHeight: '16px'}}>
 						{purchase.assignment.title}
 					</p>
+					
 					<p className="md-type-body1" style={{lineHeight: '24px'}}>
 						{purchase.assignment.location.address || purchase.assignment.location.googlemaps}
 					</p>
 				</div>
 		}
 
+		if(this.props.showTitle) {
+			outlet = <div>
+						<p className="md-type-body2 toggler">{this.props.showTitle ? this.props.title : ''}</p>
+					</div>
+		}
+
 		return (
-			<div className="list-item" onClick={this.openPurchase} style={{cursor: 'pointer'}}>
+			<div 
+				className="list-item" 
+				onClick={this.openLink.bind(this, '/post/' + post._id)} 
+				style={{cursor: 'pointer'}}>
 				<div>
 					<img
 						className="img-circle"
@@ -69,13 +79,14 @@ export default class PurchasesListItem extends React.Component {
 				<div>
 					<p className="md-type-body1">{video ? 'Video' : 'Photo'}</p>
 				</div>
-				<div className="flexy">
+				<div>
 					<p className="md-type-body1">{price}</p>
 				</div>
-				{assignmentText}
-				<div>
-					<p className="md-type-body2 toggle-aradd toggler">{this.props.showTitle ? this.props.title : ''}</p>
-				</div>
+				{user}
+				
+				{assignment}
+				
+				{outlet}
 			</div>
 		);
 	}
