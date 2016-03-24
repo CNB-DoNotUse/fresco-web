@@ -86,8 +86,9 @@ export default class OutletBody extends React.Component {
 			success: (result, status, xhr) => {
 				if (result.err) {
 					return $.snackbar({content: resolveError(result.err)});
+				} else {
+					return $.snackbar({content: 'Account statement successfully sent! Please check your email.'});
 				}
-				$.snackbar({content: 'Account statement successfully sent! Please check your email.'});
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: resolveError(error)});

@@ -31,6 +31,7 @@ export default class PurchasesBody extends React.Component {
 					updatePurchases={this.props.updatePurchases}
 					purchasesAdded={this.purchasesAdded}
 					loadPurchases={this.props.loadPurchases} />
+				
 				<PurchasesStats 
 					purchases={this.state.purchases} 
 					emailStatement={this.props.emailStatement}
