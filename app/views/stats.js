@@ -205,32 +205,32 @@ class Stats extends React.Component {
                         <table>
                             <tbody>
                                 <tr>
-                                    <td>Time</td> 
-                                    <td># of Active Users (Last 24 hours)</td>
-                                    <td># of Total Users</td>
+                                    <td>Time Joined</td> 
+                                    <td>Active (location in the last 24 hours)</td>
+                                    <td>Total Users</td>
                                 </tr>
                                 <tr>
-                                    <td>Last Day</td> 
+                                    <td>Last day</td> 
                                     <td>{counts.day ? counts.day.active : null}</td>
                                     <td>{counts.day ? counts.day.total : null}</td>
                                 </tr>
                                 <tr>
-                                    <td>Last Week</td> 
+                                    <td>Last week</td> 
                                     <td>{counts.week ? counts.week.active : null}</td>
                                     <td>{counts.week ? counts.week.total : null}</td>
                                 </tr>
                                 <tr>
-                                    <td>Last Two Weeks</td> 
+                                    <td>Last two weeks</td> 
                                     <td>{counts.week2 ? counts.week2.active : null}</td>
                                     <td>{counts.week2 ? counts.week2.total : null}</td>
                                 </tr>
                                 <tr>
-                                    <td>Last Month</td> 
+                                    <td>Last month</td> 
                                     <td>{counts.month ? counts.month.active : null}</td>
                                     <td>{counts.month ? counts.month.total : null}</td>
                                 </tr>
                                 <tr>
-                                    <td>Last Year</td> 
+                                    <td>Last year</td> 
                                     <td>{counts.year ? counts.year.active : null}</td>
                                     <td>{counts.year ? counts.year.total : null}</td>
                                 </tr>
