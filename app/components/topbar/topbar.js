@@ -68,10 +68,10 @@ export default class TopBar extends React.Component {
 
 	//Called when the user selects a time format
 	timeToggleSelected(selected) {
-		if (selected == 'Absolute') {
+		if (selected == 'Absolute time') {
 			global.setTimeDisplayType('absolute');
 		}
-		else if (selected == 'Relative') {
+		else if (selected == 'Relative time') {
 			global.setTimeDisplayType('relative');
 		}
 	}
@@ -149,7 +149,7 @@ export default class TopBar extends React.Component {
 			if (this.props.timeToggle) {
 				timeToggle =
 					<RadioGroup
-						options={['Relative', 'Absolute']}
+						options={['Relative time', 'Absolute time']}
 						selected='Relative'
 						onSelected={this.timeToggleSelected}
 						name='timeToggle' />
@@ -169,7 +169,7 @@ export default class TopBar extends React.Component {
 
 			topbarItems.push(
 				<Dropdown
-					options={['Relative', 'Absolute']}
+					options={['Relative time', 'Absolute time']}
 					selected='Relative'
 					onSelected={this.timeToggleSelected}
 					key="timeToggle"
@@ -177,7 +177,7 @@ export default class TopBar extends React.Component {
 			);
 
 		}
-		
+
 		if (this.props.verifiedToggle) {
 
 			topbarItems.push(
