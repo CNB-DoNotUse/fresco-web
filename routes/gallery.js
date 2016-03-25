@@ -74,7 +74,8 @@ router.get('/:id', (req, res, next) => {
 
       var props = {
             gallery: gallery,
-            title: title
+            title: title,
+            userAgent: req.headers['user-agent']
           },
           element = React.createElement(PublicGallery, props),
           react = ReactDOMServer.renderToString(element);

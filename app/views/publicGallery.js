@@ -70,9 +70,17 @@ class PublicGallery extends React.Component {
 				video = '';
 
 			if(post.video){
-				var autoPlay = i == 0;
+				var autoPlay = i == 0,
+					source = post.video;
+
+				//Check if not iPhone or iPad
+				if (!this.props.userAgent.match(/iPad/i) && !this.props.userAgent.match(/iPhone/i)) {
+					//Set mp4 source instead
+					source = global.formatVideo(post.video);
+				}
+
 				video =  <video autoPlay={autoPlay} onClick={this.toggleVideo}>
-								<source src={global.formatVideo(post.video)} type="video/mp4" />
+								<source src={source} type="video/mp4" />
 								Your browser does not support the video tag.
 							</video>
 				style = '';
@@ -317,7 +325,8 @@ if(isNode){
 } else{
 	ReactDOM.render(
 	 	<PublicGallery 
-	 		gallery={window.__initialProps__.gallery} />,
+	 		gallery={window.__initialProps__.gallery}
+	 		userAgent={window.__initialProps__.userAgent} />,
 	 	document.getElementById('app')
 	);
 }
