@@ -105,14 +105,21 @@ img {
 /**
  * Radio button coloring
  */
-div.radio > label {
+li.radio > label {
 	input[type=radio]:checked ~ .circle {
 		border-color: $fresco-blue;
 	}
 	input[type=radio]:checked ~ .check {
 		background-color: $fresco-blue;
 	}
-	.radio-label {
-		left: 30px;
+	span {
+		left: 1px;
 	}
+	padding-left: 30px;
+}
+
+.list > li.header {
+	font-size: 14pt !important;
+	font-weight: 500 !important;
+	opacity: 0.54;
 }

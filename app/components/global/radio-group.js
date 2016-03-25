@@ -48,7 +48,7 @@ export default class RadioGroup extends React.Component {
         let radioButtons = [];
         for (let option of this.props.options) {
             radioButtons.push(
-                <div className="radio" key={option}>
+                <li className="radio" key={option}>
                     <label>
                         <input
                             type="radio"
@@ -56,14 +56,17 @@ export default class RadioGroup extends React.Component {
                             value={option}
                             onClick={this.optionClicked}
                             defaultChecked={option === this.state.selected} />
-                        <span className="radio-label">{option}</span>
+                        <div className="radio-label">{option}</div>
                     </label>
-                </div>
+                </li>
             )
         }
 
         return (
-            <div className="form-group">
+            <div className="list">
+                <li className="header">
+                    Display:
+                </li>
                 {radioButtons}
             </div>
         );
