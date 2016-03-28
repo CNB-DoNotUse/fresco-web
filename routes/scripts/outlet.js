@@ -150,10 +150,12 @@ router.get('/outlet/export', (req, res) => {
   API.proxy(req, res, (body) => {
     var lines = body.data;
     if(req.query.format == 'xlsx'){
-      var data = [['time', 'type', 'price', 'assignment', 'outlet']];
+      var data = [['time', 'type', 'price', 'assignment', 'outlet', 'user', 'user id']];
 
       lines.forEach(function(line){
-        data.push([line.time, line.type, line.price, line.assignment, line.outlet]);
+	var x = new Date(line.time),
+	    formattedTime = x.getMonth() + '/' + x.getDate() + '/' + x.getFullYear();
+        data.push([formattedTime, line.type, line.price.replace('$', ''), line.assignment, line.outlet, line.user, line.user_id]);
       });
 
       res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -164,7 +166,9 @@ router.get('/outlet/export', (req, res) => {
       var output = "time,type,price,assignment,outlet\r\n";
 
       lines.forEach(function(line){
-        output += line.time + ',' + line.type + ',' + line.price + ',' + line.assignment + ',' + line.outlet + '\r\n';
+        var x = new Date(line.time),
+        formattedTime = x.getMonth() + '/' + x.getDate() + '/' + x.getFullYear();
+        output += formattedTime + ',' + line.type + ',' + line.price.replace('$', '') + ',' + line.assignment + ',' + line.outlet + ',' + line.user + line.user_id + '\r\n';
       });
 
       res.set('Content-Type', 'text/csv');
