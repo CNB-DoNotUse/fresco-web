@@ -25,6 +25,7 @@ class Stats extends React.Component {
             }
         }
 
+        this.downloadStats = this.downloadStats.bind(this);
         this.calculateUsers = this.calculateUsers.bind(this);
         this.polygonChanged = this.polygonChanged.bind(this);
         this.placeChanged = this.placeChanged.bind(this);
@@ -80,6 +81,12 @@ class Stats extends React.Component {
             map: map,
             autocomplete: autocomplete
         });
+    }
+
+    downloadStats() {
+        $.snackbar({content: 'Downloading...'});
+
+        window.location.replace("/api/stats/submissions");
     }
 
     /**
@@ -198,7 +205,6 @@ class Stats extends React.Component {
                     title={this.props.title} />
                 
                 <div className="container-fluid stats">
-
                     <div className="map-wrap">
                         <h3>Drag the polygon to calculate the number of users in an area or use the autocomplete.</h3>
 
@@ -247,6 +253,12 @@ class Stats extends React.Component {
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+
+                    <div className="buttons">
+                        <button className="btn btn-flat pull-right mt12 mr16" onClick={this.downloadStats}>
+                            Download Submissions (.csv)
+                        </button>
                     </div>
                 </div>
             </App>
