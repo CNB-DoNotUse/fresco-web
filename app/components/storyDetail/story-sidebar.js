@@ -47,11 +47,11 @@ class StoryStats extends React.Component {
 			<div className="meta-list">
 				<ul className="md-type-subhead">
 					<li>
-						<span className="mdi mdi-image-filter icon story-galleries"></span>
+						<span className="mdi mdi-image-multiple icon story-galleries"></span>
 						<span>{this.props.story.stats.galleries} {this.props.story.stats.galleries > 1 ? 'galleries' : 'gallery'}</span>
 					</li>
 					<li>
-						<span className="mdi mdi-file-image-box icon"></span>
+						<span className="mdi mdi-image icon"></span>
 						<span>{this.props.story.stats.photos} {this.props.story.stats.photos > 1 ? 'photos' : 'photo'}</span>
 					</li>
 					<li>
