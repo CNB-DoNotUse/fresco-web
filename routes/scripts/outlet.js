@@ -154,7 +154,7 @@ router.get('/outlet/export', (req, res) => {
 
       lines.forEach(function(line){
 	var x = new Date(line.time),
-	    formattedTime = x.getMonth() + '/' + x.getDate() + '/' + x.getFullYear();
+	    formattedTime = (x.getMonth() + 1) + '/' + x.getDate() + '/' + x.getFullYear();
         data.push([formattedTime, line.type, line.price.replace('$', ''), line.assignment, line.outlet, line.user, line.user_id]);
       });
 
@@ -167,7 +167,7 @@ router.get('/outlet/export', (req, res) => {
 
       lines.forEach(function(line){
         var x = new Date(line.time),
-        formattedTime = x.getMonth() + '/' + x.getDate() + '/' + x.getFullYear();
+        formattedTime = (x.getMonth() + 1) + '/' + x.getDate() + '/' + x.getFullYear();
         output += formattedTime + ',' + line.type + ',' + line.price.replace('$', '') + ',' + line.assignment + ',' + line.outlet + ',' + line.user + line.user_id + '\r\n';
       });
 
