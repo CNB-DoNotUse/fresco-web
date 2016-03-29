@@ -81,6 +81,7 @@ export class Search extends React.Component {
 		this.onVerifiedToggled		= this.onVerifiedToggled.bind(this);
 
 		this.onMapDataChange		= this.onMapDataChange.bind(this);
+		this.onRadiusUpdate			= this.onRadiusUpdate.bind(this);
 
 		this.resetGalleries			= this.resetGalleries.bind(this);
 		this.refreshData			= this.refreshData.bind(this);
@@ -319,6 +320,15 @@ export class Search extends React.Component {
 	}
 
 	/**
+	 * When radius changes
+	 */
+	onRadiusUpdate(radius) {
+		this.setState({
+			radius: radius
+		});
+	}
+
+	/**
 	 * Called when AutocompleteMap data changes
 	 * Returns a location coordinate,
 	 * Google Maps Circle,
@@ -369,7 +379,6 @@ export class Search extends React.Component {
 	}
 
 	render() {
-
 		return (
 			<App user={this.props.user}>
 				<TopBar
@@ -388,8 +397,8 @@ export class Search extends React.Component {
 							radius={this.state.radius}
 							units="Miles"
 							key="locationDropdown"
-							onPlaceChange={this.onPlaceChange}
-							onRadiusChange={this.onRadiusChange}
+							onRadiusUpdate={this.onRadiusUpdate}
+							onPlaceChange={this.onMapDataChange}
 							onMapDataChange={this.onMapDataChange}
 							defaultLocation={this.state.address} />
 				</TopBar>

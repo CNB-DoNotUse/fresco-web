@@ -1711,7 +1711,9 @@ div.time {}
 }
 
 
-
+.alertify{
+	z-index:7;
+}
 
 .form-control:focus, .form-control.focus {
 	background-image: linear-gradient(#0047bb, #0047bb), linear-gradient(#d2d2d2, #d2d2d2) !important;

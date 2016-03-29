@@ -217,7 +217,7 @@ class Stats extends React.Component {
                         <table>
                             <tbody>
                                 <tr>
-                                    <td>Time Joined</td>
+                                    <td>Time Joined</td> 
                                     <td>Active (location in the last 24 hours)</td>
                                     <td>Total Users</td>
                                 </tr>
@@ -227,7 +227,7 @@ class Stats extends React.Component {
                                     <td>{counts.day ? counts.day.total : null}</td>
                                 </tr>
                                 <tr>
-                                    <td>Last week</td>
+                                    <td>Last week</td> 
                                     <td>{counts.week ? counts.week.active : null}</td>
                                     <td>{counts.week ? counts.week.total : null}</td>
                                 </tr>
