@@ -4,9 +4,11 @@
 
 #### This is a node-based webserver
 
-The site uses [`webpack`](https://github.com/webpack/webpack), [`gulp`](https://github.com/gulpjs/gulp), and [`bower`](https://github.com/bower/bower) to compile assets, and the platform is built in [`react`](https://github.com/facebook/react) as the front-end framework.
+The site uses [`webpack`](https://github.com/webpack/webpack), [`gulp`](https://github.com/gulpjs/gulp), and [`bower`](https://github.com/bower/bower) to compile assets, and the platform is built in [`react`](https://github.com/facebook/react) for the front-end framework.
 
-Steps to get running -
+Refer to the Fresco [`Javascript`](https://github.com/fresconews/fresco-style/tree/master/javascript) and [`React`](https://github.com/fresconews/fresco-style/tree/master/react) style guide for proper coding & commenting practices in the webserver.
+
+####Steps to get webserver running -
 
 
 1. `npm install` to set up all npm dependencies
@@ -15,7 +17,7 @@ Steps to get running -
 4. `npm start`
 
 
-Steps to get Dockerized version running -
+####Steps to get Dockerized version running -
 
 
 1. Install [Docker Toolbox](https://www.docker.com/products/docker-toolbox)

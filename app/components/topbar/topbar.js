@@ -165,18 +165,6 @@ export default class TopBar extends React.Component {
 				</Dropdown>
 			);
 		}
-		else if (this.props.timeToggle) {
-
-			topbarItems.push(
-				<Dropdown
-					options={['Relative time', 'Absolute time']}
-					selected='Relative'
-					onSelected={this.timeToggleSelected}
-					key="timeToggle"
-					inList={true} />
-			);
-
-		}
 
 		if (this.props.verifiedToggle) {
 

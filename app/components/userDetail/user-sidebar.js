@@ -43,7 +43,7 @@ export default class UserSidebar extends React.Component {
 										: '' }
 
 										<li>
-											<span className="mdi mdi-image-filter icon"></span>{galleries + ' galleries'}
+											<span className="mdi mdi-image-multiple icon"></span>{galleries + ' galleries'}
 										</li>
 									
 										<li>

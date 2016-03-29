@@ -25,6 +25,7 @@ class Stats extends React.Component {
             }
         }
 
+        this.downloadStats = this.downloadStats.bind(this);
         this.calculateUsers = this.calculateUsers.bind(this);
         this.polygonChanged = this.polygonChanged.bind(this);
         this.placeChanged = this.placeChanged.bind(this);
@@ -56,7 +57,7 @@ class Stats extends React.Component {
         var polyCoords = [
             {lat: 40.91525559999999, lng: -73.7002721},
             {lat: 40.4960439 , lng: -73.7002721},
-            {lat: 40.496043, lng: -74.2557349} 
+            {lat: 40.496043, lng: -74.2557349}
         ];
 
         //Create polygon
@@ -80,6 +81,12 @@ class Stats extends React.Component {
             map: map,
             autocomplete: autocomplete
         });
+    }
+
+    downloadStats() {
+        $.snackbar({content: 'Downloading...'});
+
+        window.location.replace("/api/stats/submissions");
     }
 
     /**
@@ -196,9 +203,8 @@ class Stats extends React.Component {
             <App user={this.props.user}>
                 <TopBar
                     title={this.props.title} />
-                
-                <div className="container-fluid stats">
 
+                <div className="container-fluid stats">
                     <div className="map-wrap">
                         <h3>Drag the polygon to calculate the number of users in an area or use the autocomplete.</h3>
 
@@ -211,42 +217,48 @@ class Stats extends React.Component {
                         <table>
                             <tbody>
                                 <tr>
-                                    <td>Time Joined</td> 
+                                    <td>Time Joined</td>
                                     <td>Active (location in the last 24 hours)</td>
                                     <td>Total Users</td>
                                 </tr>
                                 <tr>
-                                    <td>Last day</td> 
+                                    <td>Last day</td>
                                     <td>{counts.day ? counts.day.active : null}</td>
                                     <td>{counts.day ? counts.day.total : null}</td>
                                 </tr>
                                 <tr>
-                                    <td>Last week</td> 
+                                    <td>Last week</td>
                                     <td>{counts.week ? counts.week.active : null}</td>
                                     <td>{counts.week ? counts.week.total : null}</td>
                                 </tr>
                                 <tr>
-                                    <td>Last two weeks</td> 
+                                    <td>Last two weeks</td>
                                     <td>{counts.week2 ? counts.week2.active : null}</td>
                                     <td>{counts.week2 ? counts.week2.total : null}</td>
                                 </tr>
                                 <tr>
-                                    <td>Last month</td> 
+                                    <td>Last month</td>
                                     <td>{counts.month ? counts.month.active : null}</td>
                                     <td>{counts.month ? counts.month.total : null}</td>
                                 </tr>
                                 <tr>
-                                    <td>Last year</td> 
+                                    <td>Last year</td>
                                     <td>{counts.year ? counts.year.active : null}</td>
                                     <td>{counts.year ? counts.year.total : null}</td>
                                 </tr>
                                 <tr>
-                                    <td>Total</td> 
+                                    <td>Total</td>
                                     <td>{counts.year ? counts.year.active : null}</td>
                                     <td>{counts.year ? counts.year.total : null}</td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+
+                    <div className="buttons">
+                        <button className="btn btn-flat pull-right mt12 mr16" onClick={this.downloadStats}>
+                            Download Submissions (.csv)
+                        </button>
                     </div>
                 </div>
             </App>

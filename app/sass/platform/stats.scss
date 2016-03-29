@@ -12,7 +12,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     padding-top:64px;
     overflow:auto;
 
-    .map-wrap, .info-wrap {
+    .map-wrap, .info-wrap, .buttons {
         float:left;
         @include border-radius(2px);
         @include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
@@ -51,10 +51,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     }
 
     .info-wrap{
-
         table{
             border-spacing: 5px;
-            
+
             tr{
                 margin:5px 0px;
                 border-bottom:1px solid #DDD;
@@ -66,6 +65,5 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
                 padding:5px;
             }
         }
-
     }
 }
