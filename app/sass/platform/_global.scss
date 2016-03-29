@@ -118,8 +118,13 @@ li.radio > label {
 	padding-left: 30px;
 }
 
+.list > li.radio {
+	margin: 0;
+}
+
 .list > li.header {
 	font-size: 14pt !important;
 	font-weight: 500 !important;
 	opacity: 0.54;
+	margin-top: 8px;
 }
