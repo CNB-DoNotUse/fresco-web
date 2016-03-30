@@ -8,7 +8,7 @@ The site uses [`webpack`](https://github.com/webpack/webpack), [`gulp`](https://
 
 Refer to the Fresco [`Javascript`](https://github.com/fresconews/fresco-style/tree/master/javascript) and [`React`](https://github.com/fresconews/fresco-style/tree/master/react) style guide for proper coding & commenting practices in the webserver.
 
-####Steps to get webserver running -
+#### Steps to get webserver running -
 
 
 1. `npm install` to set up all npm dependencies
@@ -16,18 +16,18 @@ Refer to the Fresco [`Javascript`](https://github.com/fresconews/fresco-style/tr
 3. `gulp` to compile site assets; `gulp --production` to minify and dedup
 4. `npm start`
 
-####Steps to setup configuration -
+#### Steps to setup configuration -
 
 
 1. Copy `base.json` from `./config/templates/` up a level into `./config/`
 2. Copy the correct configuration (usually `dev.json`) from `./config/templates/` up a level into `./config/`
 3. Put any environment specific overrides (ex different redis or api urls) into a new `./config/local.json`
 
-####Configuration details -
+#### Configuration details -
 
 Configuration is done by merging the json files in `./config/` in alphabetical order (so anything in `z.json` will overwrite `a.json`). Additionally, the `PORT`, `API_URL`, and `REDIS_SESSIONS` override the config files, and the command line overrides everything
 
-####Steps to get Dockerized version running -
+#### Steps to get Dockerized version running -
 
 
 1. Install [Docker Toolbox](https://www.docker.com/products/docker-toolbox)
