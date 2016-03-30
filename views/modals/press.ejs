@@ -1,149 +1,102 @@
-<!-- article format
-{
-	"url"		:"",
-	"source"	:"",
-	"image"		:"",
-	"title"		:"",
-	"author"	:"",
-	"quote"		:null
-}
--->
-<% var articles = [{
-	"url"		:"https://wired.com/2016/03/happen-now-theres-demand-economy-photojournalists/",
-	"source"	:"WIRED",
-	"image"		:"wired",
-	"title"		:"It Had to Happen: Now There’s an On-Demand Economy for Photojournalists",
-	"author"	:"Julia Greenberg",
-	"quote"		:null
-}, {
-	"url"		:"http://usatoday.com/story/tech/columnist/baig/2016/03/10/shoot-video-local-news-get-paid/81562956/",
-	"source"	:"USA Today",
-	"image"		:"usatoday",
-	"title"		:"Shoot video for the local news, get paid",
-	"author"	:"Edward C. Baig",
-	"quote"		:"\“I like to think of it as having bureaus everywhere now,\” [VP \& News Director at FOX Philadelphia, Jim] Driscoll says. \“And the bureaus are our viewers.\”"
-}, {
-	"url"		:"https://nypost.com/2016/03/09/citizen-journalists-are-about-to-take-over-newsrooms/",
-	"source"	:"New York Post",
-	"image"		:"nypost",
-	"title"		:"Citizen journalists are about to take over newsrooms",
-	"author"	:"Richard Morgan",
-	"quote"		:null
-}, {
-	"url"		:"https://techcrunch.com/2016/03/09/fresco-news-teams-with-fox-to-bring-citizen-journalism-to-local-newsrooms-around-the-u-s/",
-	"source"	:"TechCrunch",
-	"image"		:"techcrunch",
-	"title"		:"Fresco News teams with FOX to bring citizen journalism to local newsrooms around the U.S.",
-	"author"	:"Sarah Perez",
-	"quote"		:null
-}, {
-	"url"		:"https://engadget.com/2016/03/09/fresco-news-fox-citizen-journalism/",
-	"source"	:"Engadget",
-	"image"		:"engadget",
-	"title"		:"Fresco News teams with Fox stations for crowd-sourced coverage",
-	"author"	:"Billy Steele",
-	"quote"		:null
-}, {
-	"url"		:"https://9to5mac.com/2016/01/26/fresco-news-apple-tv/",
-	"source"	:"9to5Mac",
-	"image"		:"9to5mac",
-	"title"		:"Citizen journalism comes to the living room with Fresco News app for Apple TV",
-	"author"	:"Greg Barbosa",
-	"quote"		:"iReport’s most curious fact is that they do not edit, fact-check or screen content before it is posted. Creating a platform for citizen journalism, without curating the incoming content, can eventually drown out the voices that matter.\n\nThis is the experience that sets Fresco apart."
-}, {
-	"url"		:"http://appadvice.com/appnn/2016/01/frescos-citizen-journalism-app-is-a-great-addition-to-the-apple-tv",
-	"source"	:"AppAdvice",
-	"image"		:"appadvice",
-	"title"		:"Fresco’s citizen journalism app is a great addition to the Apple TV",
-	"author"	:"Brent Dirk",
-	"quote"		:null
-}, {
-	"url"		:"https://engadget.com/2016/01/26/fresco-news-apple-tv-app/",
-	"source"	:"Engadget",
-	"image"		:"engadget",
-	"title"		:"Fresco News brings its citizen journalism to Apple TV",
-	"author"	:"Billy Steele",
-	"quote"		:"Now that most of us carry around a camera in our pockets, we're able to provide first-person accounts of breaking news. Fresco News uses iOS and Android apps to source photo and videos from citizen journalists, and now its bringing that content to the Apple TV."
-}, {
-	"url"		:"https://blogs.wsj.com/venturecapital/2015/09/08/fresco-news-raises-1-2-million-to-help-media-crowdsource-videos-photos/",
-	"source"	:"Wall Street Journal",
-	"image"		:"wsj",
-	"title"		:"Fresco News Raises $1.2 Million to Help Media Crowdsource Videos, Photos",
-	"author"	:"Lara Kolodny",
-	"quote"		:"Fresco's seed investors include Reese Schonfeld, a co-founder of CNN and the Food Network . . . Mr. Schonfeld, who backs about four startups each year personally, said if he were still a TV executive, he would have his network running a system like this internally, in part because it helps local teams avoid straining resources."
-}, {
-	"url"		:"http://inc.com/graham-winfrey/thiel-fellow-unveils-crowdsourced-photo-app.html", 
-	"source"	:"Inc.",
-	"image"		:"inc",
-	"title"		:"Why This 20-Year-Old Thiel Fellow Is Threatening the Photo Establishment",
-	"author"	:"Graham Winfrey",
-	"quote"		:null
-}, {
-	"url"		:"https://techcrunch.com/2015/06/05/fresco-news-aims-to-build-a-crowdsourced-network-for-breaking-news/",
-	"source"	:"TechCrunch",
-	"image"		:"techcrunch",
-	"title"		:"Fresco News Aims To Build A Crowdsourced Network For Breaking News",
-	"author"	:"Anthony Ha",
-	"quote"		:"For a local TV news station, this could be a source of footage from breaking news events that they might not reach in time, or that they just don’t have enough resources to cover otherwise"
-}, {
-	"url"		:"https://venturebeat.com/2015/06/05/peter-thiel-fellow-launches-app-to-connect-citizen-journalists-with-news-outlets/",
-	"source"	:"VentureBeat",
-	"image"		:"venturebeat",
-	"title"		:"Thiel Fellow launches app to connect citizen journalists with news outlets",
-	"author"	:"Ruth Reader",
-	"quote"		:null
-}, {
-	"url"		:"http://macrumors.com/2015/09/08/fresco-news-photojournalist-tools-update/",
-	"source"	:"MacRumors",
-	"image"		:"macrumors",
-	"title"		:"Fresco News App Receives Major Update With Tools to Let Users Become Paid Photojournalists",
-	"author"	:"Juli Clover",
-	"quote"		:"Fresco's aim with the news Fresco News app is to cover a wider range of events happening worldwide. \"We can shine a light on every relevant news event that should be read about and heard about,\" said Fresco News CEO John Meyer."
-}, {
-	"url"		:"https://observer.com/2015/06/get-paid-to-go-to-the-scene-of-news-with-fresco-dispatch/",
-	"source"	:"Observer",
-	"image"		:"observer",
-	"title"		:"Get Paid to Go to the Scene of News With Fresco Dispatch",
-	"author"	:"Brady Dale",
-	"quote"		:"If Fresco had enough users out in the world, news outlets would never be lacking for photos of an incident or an event."
-}]; %>
+<% 
+	var articles = [
+		{
+			'image'	      : 'engadget',
+			'link'   	  : 'http://www.engadget.com/2016/01/26/fresco-news-apple-tv-app/',
+			'title'       : 'Fresco News brings its citizen journalism to Apple TV',
+			'author'      : 'Billy Steele • Engadget',
+			'description' : 'Now that most of us carry around a camera in our pockets, we\'re able to provide first-person accounts of breaking news. Fresco News uses iOS and Android apps to source photo and videos from citizen journalists, and now its bringing that content to the Apple TV.'
+		},
+		{
+			'image'	      : '9to5mac',
+			'link'        : 'http://9to5mac.com/2016/01/26/fresco-news-apple-tv/',
+			'title'       : 'Citizen journalism comes to the living room with Fresco News app for Apple TV',
+			'author'	  : 'Greg Barbosa • 9 To 5 Mac',
+			'description' : 'Users can submit photos or videos, which are then immediately screened and curated by Fresco’s content team. After that, the content is then placed into the hands of some of the largest news organizations in the world.'
+		},
+		{
+			'image'	      : 'wsj',
+			'link'		  : 'http://www.wsj.com/articles/BL-VCDB-17672',
+			'title' 	  : 'Fresco News Raises $1.2 Million to Help Media Crowdsource Videos, Photos',
+			'author'      : 'Lora Kolodny • Wall Street Journal',
+			'description' : 'Fresco’s seed investors include Reese Schonfeld, a co-founder of CNN and the Food Network; former Yahoo CEO Ross Levinsohn; former AOL Chief Executive Jon Miller; Michael Jones, former Myspace CEO and currently CEO of Science Inc.; and Mediabistro founder Laurel Touby. Other investors are early-stage funds Fresco Capital, 1517 Fund, Social Starts and others.'
+		},
+		{
+			'image'	      : 'techcrunch',
+			'link'		  : 'http://techcrunch.com/2015/06/05/fresco-news-aims-to-build-a-crowdsourced-network-for-breaking-news/',
+			'title' 	  : 'Fresco News Aims To Build A Crowdsourced Network For Breaking News',
+			'author'      : 'Anthony Ha • TechCrunch',
+			description   : 'If you’ve ever wanted to contribute photos or videos to your local newscast, you might get your chance soon, thanks to a new startup called Fresco News.'
+		},
+		{
+			'image'	      : 'inc',
+			'link'		  : 'http://www.inc.com/graham-winfrey/thiel-fellow-unveils-crowdsourced-photo-app.html',
+			'title' 	  : 'Why This 20-Year-Old Thiel Fellow Is Threatening the Photo Establishment',
+			'author'      : 'Graham Winfrey • Inc.',
+			'description' : 'Through Fresco\'s free app that launches later this month, news organizations will pay individuals between $10 and $30 per photo and between $40 and $90 per video, with Fresco taking an Uber-like cut of each transaction. The company will also provide access to its full photo and video collection to media companies for a monthly fee.'
+		},
+		{
+			'image'	      : 'macrumors',
+			'link'		  : 'http://www.macrumors.com/2015/09/08/fresco-news-photojournalist-tools-update/',
+			'title' 	  : 'Fresco News App Receives Major Update With Tools to Let Users Become Paid Photojournalists',
+			'author'      : 'Juli Clover • MacRumors',
+			'description' : 'Fresco\'s aim with the news Fresco News app is to cover a wider range of events happening worldwide. \"We can shine a light on every relevant news event that should be read about and heard about,\" said Fresco News CEO John Meyer. '
+		},
+		{
+			'image'	      : 'observer',
+			'link'		  : 'http://observer.com/2015/06/get-paid-to-go-to-the-scene-of-news-with-fresco-dispatch/',
+			'title' 	  : 'Get Paid to Go to the Scene of News With Fresco Dispatch',
+			'author'      : 'Brady Dale • The Observer',
+			'description' : 'Fresco News wants to turn iPhone users on the street into photojournalists. The idea is this: if Fresco had enough users out in the world, news outlets would never be lacking for photos of an incident or an event.'
+		}
+	];
+%>
 
 <div class="modal press xs <%- active %>" id="_press">
 	<div class="header">
 		<h2>Fresco in the News</h2>
+		
 		<span data-event="landing" class="mdi mdi-close modal-action"></span>
 	</div>
+	
 	<div class="body">
 		<ul class="articles">
+			
 			<% for(var i=0; i < articles.length; i++) { %>
+
 				<% article = articles[i] %>
+
 				<li>
 					<div class="preview">
 						<img src="<%= global.CDN %>/index/<%- article.image %>.png" />
 					</div>
 					<div class="meta">
-						<a target="_blank" href="<%- article.url %>">
+						<a target="_blank" href="<%- article.link %>">
 							<h3><%- article.title %></h3>
 						</a>
-						<p class="author"><%- article.author %> &bull; <%- article.source %></p>
-						if (article.quote) {
-							<div class="description"><%- article.quote %></div>
-						}
+						
+						<p class="author"><%- article.author %></p>
+						
+						<div class="description"><%- article.description %></div>
 					</div>
 				</li>
+
 			<% } %>
 		</ul>
 	</div>
+
 	<div class="modal-footer">
 		<ul>
 			<li class="pdf-kit">
 				<a href="<%= global.CDN %>/pdf/press.pdf" target="_blank">
-					<span class="mdi mdi-download"></span><p></p>
+					<span class="mdi mdi-download"></span>
+					<p></p>
 				</a>
 			</li>
 			<li class="drive-kit">
 				<a href="https://drive.google.com/open?id=0B50wJrfKYm14fkhLdy02anRhM1VoTm1ZekoxZEQxTlpZSTBDWmZ2bnFNbGZ3amlYTW0yWlU" target="_blank">
-					<span class="mdi mdi-google-drive"></span><p></p>
+					<span class="mdi mdi-google-drive"></span>
+					<p></p>
 				</a>
 			</li>
 		</ul>
