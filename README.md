@@ -16,6 +16,16 @@ Refer to the Fresco [`Javascript`](https://github.com/fresconews/fresco-style/tr
 3. `gulp` to compile site assets; `gulp --production` to minify and dedup
 4. `npm start`
 
+####Steps to setup configuration -
+
+
+1. Copy `base.json` from `./config/templates/` up a level into `./config/`
+2. Copy the correct configuration (usually `dev.json`) from `./config/templates/` up a level into `./config/`
+3. Put any environment specific overrides (ex different redis or api urls) into a new `./config/local.json`
+
+####Configuration details -
+
+Configuration is done by merging the json files in `./config/` in alphabetical order (so anything in `z.json` will overwrite `a.json`). Additionally, the `PORT`, `API_URL`, and `REDIS_SESSIONS` override the config files, and the command line overrides everything
 
 ####Steps to get Dockerized version running -
 
