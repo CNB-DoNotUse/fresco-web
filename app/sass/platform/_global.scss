@@ -128,3 +128,7 @@ li.radio > label {
 	opacity: 0.54;
 	margin-top: 8px;
 }
+
+.list > li.header:hover {
+	background: inherit !important;
+}
