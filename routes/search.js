@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
         return res.redirect('/');
 
     var purchases = null;
-    
+
     if (req.session.user.outlet && req.session.user.outlet.verified) {
         purchases = Purchases.mapPurchases(req.session);
     }
@@ -28,7 +28,7 @@ router.get('/', function(req, res, next) {
 
     var props = {
         user: req.session.user,
-        title: query,
+        title: query || tags,
         location: location,
         purchases: purchases,
         config: config,
