@@ -11,7 +11,7 @@ Description : Related posts at the bottom of the PostDetail view
  * @description Contains set of all other posts in the parent gallery
  */
 
-export default class PostRelatedImage {
+export default class PostRelatedImage extends React.Component {
     render() {
         return (
             <a href={"/post/" + this.props.post._id}>

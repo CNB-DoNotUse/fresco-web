@@ -56,6 +56,10 @@ export default class PostRelatedTags extends React.Component {
 	}
 
 	render() {
+		if (this.props.tags.length === 0) {
+			return null;
+		}
+
 		let tagTabs = [];
 		let tagTabControls = [];
 		for (let tag of this.props.tags) {
@@ -63,7 +67,7 @@ export default class PostRelatedTags extends React.Component {
 				break;
 			}
 			let posts = this.state.tags[tag].map((post, i) => {
-				return <RelatedPostImage post={post} />
+				return <RelatedPostImage post={post} key={i}/>
 			});
 
 			let toggled = tag === this.state.selectedTag ? 'toggled' : '';
