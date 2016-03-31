@@ -1,6 +1,9 @@
 import React from 'react'
 import global from '../../../lib/global'
 import RelatedPostImage from './post-related-image'
+
+// TODO: Figure out how to combine this and PostRelatedTags into a single reusable component
+
 /** //
 
 Description : Related posts at the bottom of the PostDetail view
@@ -18,11 +21,14 @@ export default class PostRelated extends React.Component {
 
 		this.state = {
 			stories: {},
-			selectedTab: 'gallery'
+			selectedTab: ''
 		}
 
-		if (this.props.gallery.posts.length > 0) {
+		if (this.props.gallery.posts.length > 1) {
 			this.state.stories.gallery = this.props.gallery.posts;
+			this.state.selectedTab = 'gallery'
+		} else if (this.props.gallery.related_stories.length > 0) {
+			this.state.selectedTab = this.props.gallery.related_stories[0]._id;
 		}
 
 		this.getStories = this.getStories.bind(this);
