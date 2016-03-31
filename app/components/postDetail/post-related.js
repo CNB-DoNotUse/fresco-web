@@ -46,11 +46,11 @@ export default class PostRelated extends React.Component {
 	}
 
 	setDisplayedTag(event) {
-		if (this.state.selectedTag === event.target.dataset.tag) {
-			//return;
+		if (this.state.selectedTag === event.currentTarget.dataset.tag) {
+			return;
 		}
 		this.setState({
-			selectedTag: event.target.dataset.tag
+			selectedTag: event.currentTarget.dataset.tag
 		});
 	}
 
