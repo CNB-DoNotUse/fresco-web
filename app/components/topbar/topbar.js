@@ -150,7 +150,7 @@ export default class TopBar extends React.Component {
 				timeToggle =
 					<RadioGroup
 						options={['Relative time', 'Absolute time']}
-						selected='Relative'
+						selected='Relative time'
 						onSelected={this.timeToggleSelected}
 						name='timeToggle' />
 			}

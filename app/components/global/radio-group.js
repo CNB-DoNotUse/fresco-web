@@ -28,7 +28,7 @@ export default class RadioGroup extends React.Component {
     }
 
     optionClicked(e) {
-        var selected = e.currentTarget.value;
+        var selected = e.currentTarget.dataset.value;
 
         // Ignore if option was already selected
         if (this.state.selected == selected) {
@@ -48,14 +48,15 @@ export default class RadioGroup extends React.Component {
         let radioButtons = [];
         for (let option of this.props.options) {
             radioButtons.push(
-                <li className="radio" key={option}>
+                <li className="radio" key={option} data-value={option} onClick={this.optionClicked}>
                     <label>
                         <input
                             type="radio"
                             name={this.props.name}
                             value={option}
-                            onClick={this.optionClicked}
-                            defaultChecked={option === this.state.selected} />
+                            data-value={option}
+                            checked={option === this.state.selected}
+                            readOnly />
                         <div className="radio-label">{option}</div>
                     </label>
                 </li>
