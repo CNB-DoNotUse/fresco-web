@@ -13,6 +13,6 @@ public/css/page
 public/css/pages
 public/js/public.js
 public/js/platform.js
-public/js/public.css
+public/css/public.css
 public/css/platform.css
 config/*.json
