@@ -19,11 +19,11 @@ class Archive extends React.Component {
 
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			purchases : [],
 			verifiedToggle: true,
-			sort: 'capture'
+			sort: this.props.sort || 'captured'
 		}
 
 		this.loadPosts = this.loadPosts.bind(this);
@@ -41,14 +41,14 @@ class Archive extends React.Component {
 
 		return (
 			<App user={this.props.user}>
-				<TopBar 
+				<TopBar
 					title={this.props.title}
 					updateSort={this.updateSort}
 					timeToggle={true}
 					verifiedToggle={true}
 					onVerifiedToggled={this.onVerifiedToggled}
 					chronToggle={true} />
-				
+
 				<PostList
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}
@@ -105,8 +105,8 @@ class Archive extends React.Component {
 }
 
 ReactDOM.render(
- 	<Archive 
- 		user={window.__initialProps__.user} 
+ 	<Archive
+ 		user={window.__initialProps__.user}
  		purchases={window.__initialProps__.purchases}
  		title={window.__initialProps__.title} />,
 	document.getElementById('app')

@@ -13,10 +13,10 @@ class Videos extends React.Component {
 
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			verifiedToggle: true,
-			sort: 'capture'
+			sort: this.props.sort || 'captured'
 		}
 
 		this.updateSort			= this.updateSort.bind(this);
@@ -75,7 +75,7 @@ class Videos extends React.Component {
 
 		return (
 			<App user={this.props.user}>
-				<TopBar 
+				<TopBar
 					title="Videos"
 					timeToggle={true}
 					verifiedToggle={true}
@@ -102,8 +102,8 @@ Videos.defaultProps = {
 }
 
 ReactDOM.render(
- 	<Videos 
- 		user={window.__initialProps__.user} 
+ 	<Videos
+ 		user={window.__initialProps__.user}
  		purchases={window.__initialProps__.purchases} />,
  	document.getElementById('app')
 );

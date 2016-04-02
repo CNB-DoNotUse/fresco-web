@@ -29,13 +29,14 @@ class GalleryDetail extends React.Component {
 			gallery: this.props.gallery,
 			shouldShowVerifeidToggle: unverifiedPosts,
 			verifiedToggle: unverifiedPosts,
-			sort: 'capture',
+			sort: this.props.sort || 'captured',
 			title: this.props.title
 		}
 
 		this.toggleGalleryEdit = this.toggleGalleryEdit.bind(this);
 		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
 		this.updateGallery = this.updateGallery.bind(this);
+		this.updateSort = this.updateSort.bind(this);
 	}
 
 	toggleGalleryEdit() {
@@ -67,21 +68,28 @@ class GalleryDetail extends React.Component {
 		});
 	}
 
+	updateSort(sort) {
+		this.setState({
+			sort: sort
+		})
+	}
+
 	render() {
 
 		return (
 			<App user={this.props.user}>
-				<TopBar 
+				<TopBar
 					title={this.state.title}
+					updateSort={this.updateSort}
 					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
 					edit={this.toggleGalleryEdit}
 					verifiedToggle={this.state.shouldShowVerifeidToggle}
 					onVerifiedToggled={this.onVerifiedToggled}
 					timeToggle={true}
 					chronToggle={true} />
-				
+
 				<GallerySidebar gallery={this.state.gallery} />
-				
+
 				<div className="col-sm-8 tall">
 					<PostList
 						rank={this.props.user.rank}
@@ -94,8 +102,8 @@ class GalleryDetail extends React.Component {
 						editable={false}
 						size='large' />
 				</div>
-				
-				<GalleryEdit 
+
+				<GalleryEdit
 					updateGallery={this.updateGallery}
 					toggle={this.toggleGalleryEdit}
 
@@ -112,9 +120,9 @@ GalleryDetail.defaultProps = {
 }
 
 ReactDOM.render(
-	<GalleryDetail 
-		user={window.__initialProps__.user} 
-		purchases={window.__initialProps__.purchases} 
+	<GalleryDetail
+		user={window.__initialProps__.user}
+		purchases={window.__initialProps__.purchases}
 		gallery={window.__initialProps__.gallery}
 		title={window.__initialProps__.title} />,
 	document.getElementById('app')

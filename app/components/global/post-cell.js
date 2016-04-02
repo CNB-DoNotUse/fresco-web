@@ -15,13 +15,13 @@ export default class PostCell extends React.Component {
 		super(props);
 		this.postClicked = this.postClicked.bind(this);
 	}
-	
+
 	postClicked(e) {
 		//Check if clicked with shift key
 		if(e.shiftKey) {
 
-			this.props.togglePost(this.props.post)	
-		} 
+			this.props.togglePost(this.props.post)
+		}
 		//Open normally
 		else{
 
@@ -36,7 +36,8 @@ export default class PostCell extends React.Component {
 
 		var post = this.props.post,
 			toggled = this.props.toggled ? 'toggled' : '',
-			timeString = global.formatTime(post.time_created),
+			time = this.props.sort == 'upload' ? post.time_created : post.time_captured,
+			timeString = global.formatTime(time),
 			address = post.location ? post.location.address ? post.location.address : 'No Address' : 'No Address',
 			size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small;
 
@@ -49,17 +50,17 @@ export default class PostCell extends React.Component {
 			<div className={size + ' tile ' + toggled} >
 				<div className="tile-body">
 					<div className="frame"></div>
-					
+
 					<div className="hover"  onClick={this.postClicked}>
 						<p className="md-type-body1">{post.caption}</p>
-					
+
 						<span className="md-type-caption">{post.byline}</span>
-					
+
 						<PostCellStories stories={post.stories} />
 					</div>
-					
-					<FrescoImage 
-						image={this.props.post.image} 
+
+					<FrescoImage
+						image={this.props.post.image}
 						size={this.props.size} />
 				</div>
 
@@ -71,14 +72,14 @@ export default class PostCell extends React.Component {
 						rank={this.props.rank}
 						editable={this.props.editable}
 						edit={this.props.edit} />
-					
+
 					<div>
 						<div className="tile-info">
 						  	<span className="md-type-body2">{address}</span>
-						
-							<span className="md-type-caption timestring" data-timestamp={post.time_created}>{timeString}</span>
+
+							<span className="md-type-caption timestring" data-timestamp={time}>{timeString}</span>
 						</div>
-						
+
 						<span className={statusClass}></span>
 					</div>
 				</div>
@@ -154,44 +155,44 @@ class PostCellActions extends React.Component {
 
 			if(this.props.editable) {
 				actions.push(
-					<PostEditAction 
-						post={this.props.post} 
-						edit={this.props.edit} 
+					<PostEditAction
+						post={this.props.post}
+						edit={this.props.edit}
 						key={++key} />
 				);
 			}
 
-			//Show the purhcased icon if the post hasn't been purchased                       
+			//Show the purhcased icon if the post hasn't been purchased
 			if(this.props.purchased === false){
 				actions.push(
-					<PurchaseAction 
-						post={this.props.post} 
-						didPurchase={this.props.didPurchase} 
+					<PurchaseAction
+						post={this.props.post}
+						didPurchase={this.props.didPurchase}
 						key={++key}/>
 				);
 			}
 
 			actions.push(
-				<DownloadAction 
-					post={this.props.post} 
+				<DownloadAction
+					post={this.props.post}
 					key={++key} />
 			);
 		}
 		//Check if the post has been purchased
 		else if (this.props.purchased === true)
 			actions.push(
-				<DownloadAction 
-					post={this.props.post} 
+				<DownloadAction
+					post={this.props.post}
 					key={++key} />
 			);
 
 		//Check if the post is not purhcased, and it is purchasble from the license
 		else if (this.props.purchased == false && this.props.post.license == 1) {
-			
+
 			actions.push(
-				<PurchaseAction 
-					post={this.props.post} 
-					didPurchase={this.props.didPurchase} 
+				<PurchaseAction
+					post={this.props.post}
+					didPurchase={this.props.didPurchase}
 					key={++key} />
 			);
 
