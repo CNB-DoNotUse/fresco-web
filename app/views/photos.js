@@ -22,7 +22,8 @@ class Photos extends React.Component {
 
 		this.state = {
 			purchases: [],
-			verifiedToggle: true
+			verifiedToggle: true,
+			sort: this.props.sort || 'captured'
 		}
 
 		this.loadPosts 			= this.loadPosts.bind(this);
@@ -79,12 +80,12 @@ class Photos extends React.Component {
 	render() {
 		return (
 			<App user={this.props.user}>
-				<TopBar 
+				<TopBar
 					title="Photos"
 					timeToggle={true}
 					verifiedToggle={true}
 					chronToggle={true}
-					
+
 					updateSort={this.updateSort}
 					onVerifiedToggled={this.onVerifiedToggled} />
 				<PostList
@@ -105,8 +106,8 @@ class Photos extends React.Component {
 
 
 ReactDOM.render(
- 	<Photos 
- 		user={window.__initialProps__.user} 
+ 	<Photos
+ 		user={window.__initialProps__.user}
  		purchases={window.__initialProps__.purchases} />,
 	document.getElementById('app')
 );
