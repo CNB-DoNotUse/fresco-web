@@ -34,6 +34,12 @@ export default class PostList extends React.Component {
 			sort: this.props.sort
 		}
 
+		// If we aren't dynamically loading posts, then sort them locally
+		if (!this.props.scrollable) {
+			let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
+			this.state.posts = this.state.posts.sort((a,b) => {return b[field] - a[field]});
+		}
+
 		this.togglePost 		= this.togglePost.bind(this);
 		this.setSelectedPosts 	= this.setSelectedPosts.bind(this);
 		this.scroll 			= this.scroll.bind(this);
@@ -97,6 +103,13 @@ export default class PostList extends React.Component {
 		if(prevProps.onlyVerified != this.props.onlyVerified
 			|| prevProps.sort != this.props.sort ) {
 			this.loadInitialPosts();
+		}
+
+		// If we aren't dynamically loading posts, then sort them locally
+		if (!this.props.scrollable && prevProps.sort != this.props.sort) {
+			let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
+			let posts = this.state.posts.sort((a,b) => {return b[field] - a[field]});
+			this.setState({posts});
 		}
 	}
 
