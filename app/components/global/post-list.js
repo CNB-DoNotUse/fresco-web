@@ -30,7 +30,8 @@ export default class PostList extends React.Component {
 			scrollable: this.props.scrollable,
 			selectedPosts: [],
 			gallery: null,
-			galleryEditToggled: false
+			galleryEditToggled: false,
+			sort: this.props.sort
 		}
 
 		this.togglePost 		= this.togglePost.bind(this);
@@ -255,6 +256,7 @@ export default class PostList extends React.Component {
 	        		toggled={toggled}
 	        		key={i}
 	        		editable={this.props.editable}
+					sort={this.props.sort}
 
 	        		togglePost={this.togglePost}
 	        		didPurchase={this.didPurchase}
