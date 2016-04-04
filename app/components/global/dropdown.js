@@ -33,10 +33,12 @@ export default class Dropdown extends React.Component {
 			menuIcon = this.refs['button'].refs['menu-icon'];
 			
 		if(drop.className.indexOf('active') == -1) {
-			menuIcon.className = 'mdi mdi-menu-up';
+			menuIcon.className = 'mdi ';
+			menuIcon.className += this.props.reverseCaretDirection ? 'mdi-menu-down' : 'mdi-menu-up';
 			drop.className += ' active';
-		} else{
-			menuIcon.className = 'mdi mdi-menu-down';
+		} else {
+			menuIcon.className = 'mdi ';
+			menuIcon.className += this.props.reverseCaretDirection ? 'mdi-menu-up' : 'mdi-menu-down';
 			drop.className = drop.className.replace(/\bactive\b/,'');
 		}
 
@@ -95,7 +97,8 @@ export default class Dropdown extends React.Component {
 		dropdownButton = <DropdownButton 
 							ref="button"
 							toggle={this.toggle}
-							selected={this.props.title || this.state.selected}>
+							selected={this.props.title || this.state.selected}
+							reverseCaretDirection={this.props.reverseCaretDirection}>
 							{this.props.dropdownActions}
 						</DropdownButton>
 
@@ -124,10 +127,11 @@ class DropdownButton extends React.Component {
 	}
 
 	render() {
+
 		return(
 			<div className="toggle" onClick={this.props.toggle}>
 				<span>{this.props.selected}</span>
-				<span className="mdi mdi-menu-down" ref="menu-icon"></span>
+				<span className={"mdi " + (this.props.reverseCaretDirection ? "mdi-menu-up" : "mdi-menu-down")} ref="menu-icon"></span>
 				{this.props.children}
 			</div>
 		);
@@ -136,6 +140,7 @@ class DropdownButton extends React.Component {
 }
 
 Dropdown.defaultProps = {
+	reverseCaretDirection: false,
 	inList: false,
 	onToggled: function() {}
 }

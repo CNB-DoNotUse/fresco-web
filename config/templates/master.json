@@ -2,8 +2,8 @@
     "DEV": false,
     "COOKIE_SUFFIX": false,
 
-    "API_URL": "https://staging.api.fresconews.com",
-    "WEB_ROOT" : "https://staging.fresconews.com",
+    "API_URL": "https://api.fresconews.com",
+    "WEB_ROOT" : "https://fresconews.com",
     "STRIPE_SECRET": "sk_live_QKR23bLkkyHQPF75o6EE36Rp",
     "STRIPE_PUBLISHABLE": "pk_live_saSjliYnCbjFwYfriTzhTQiO",
     "PARSE_APP_ID": "XYBXNv2HLxukd5JGbE6bK4vXy1JlwUVjeTKQEzZU",
@@ -13,6 +13,6 @@
     "PRICE_IMAGE": 3000,
 
     "REDIS": {
-      "SESSIONS": "prod-sessions-001.cls0l1.0001.use1.cache.amazonaws.com"
+      "SESSIONS": "localhost"
     }
 }

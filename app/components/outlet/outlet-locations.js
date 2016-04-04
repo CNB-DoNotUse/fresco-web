@@ -123,7 +123,7 @@ export default class OutletLocations extends React.Component {
 		var self = this;
 
 		$.ajax({
-			url: '/api/outlet/location/list',
+			url: '/api/outlet/location/list?limit=1000',
 			method: 'GET',
 			success: function(response){
 				if (response.err || !response.data)

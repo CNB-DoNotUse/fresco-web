@@ -23,7 +23,6 @@ var config        = require('./lib/config'),
 // If in dev mode, use local redis server as session store
 var rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
 var redisConnection = { client: rClient };
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

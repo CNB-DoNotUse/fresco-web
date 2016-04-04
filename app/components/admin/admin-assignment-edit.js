@@ -1,7 +1,8 @@
 import global from '../../../lib/global'
 import React from 'react'
 import AutocompleteMap from '../global/autocomplete-map'
-
+import Dropdown from '../global/dropdown'
+import AssignmentMerge from '../assignment/assignment-merge'
 /**
     
     Assignment Edit Sidebar used in assignment administration page
@@ -16,18 +17,27 @@ export default class AdminAssignmentEdit extends React.Component {
         this.state = {
             address: null,
             radius: null,
-            location: null
+            location: null,
+            nearbyAssignments: [],
+            mergeDialogToggled: false,
+            assignmentToMergeInto: null
         }
-        this.pending = false;
-        this.onPlaceChange = this.onPlaceChange.bind(this);
-        this.onRadiusUpdate = this.onRadiusUpdate.bind(this);
-        this.onMapDataChange = this.onMapDataChange.bind(this);
-        this.approve = this.approve.bind(this);
-        this.reject = this.reject.bind(this);
+        this.pending                = false;
+        this.onPlaceChange          = this.onPlaceChange.bind(this);
+        this.onRadiusUpdate         = this.onRadiusUpdate.bind(this);
+        this.onMapDataChange        = this.onMapDataChange.bind(this);
+        this.findNearbyAssignments  = this.findNearbyAssignments.bind(this);
+        this.toggleMergeDialog      = this.toggleMergeDialog.bind(this);
+        this.approve                = this.approve.bind(this);
+        this.reject                 = this.reject.bind(this);
+        // this.merge                  = this.merge.bind(this);
+        this.selectMerge            = this.selectMerge.bind(this);
     }
 
     componentDidMount() {
         $.material.init();
+
+        // this.findNearbyAssignments();
 
         this.setState({
             radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
@@ -59,6 +69,8 @@ export default class AdminAssignmentEdit extends React.Component {
                         lng: assignment.location.geo.coordinates[0],
                     }
                 });
+
+                // this.findNearbyAssignments();
 
                 this.refs['assignment-title'].value = assignment.title;
                 this.refs['assignment-description'].value = assignment.caption;
@@ -118,6 +130,27 @@ export default class AdminAssignmentEdit extends React.Component {
         });
     }
 
+    /**
+     * Finds nearby assignments
+     */
+    findNearbyAssignments(data) {
+        if(!this.props.assignment || !this.props.assignment.caption || !this.props.assignment.location || !this.props.assignment.location.geo) return;
+
+        let assignment = this.props.assignment;
+
+        $.get('/api/assignment/find', {
+            active: true,
+            radius: assignment.location.radius,
+            unpack: false,
+            lat: assignment.location.geo.coordinates[1],
+            lon: assignment.location.geo.coordinates[0]
+        }, (assignments) => {
+            this.setState({
+                nearbyAssignments: assignments.data.slice(0, 5)
+            });
+        });
+    }
+
     approve() {
         this.pending = true;
 
@@ -168,6 +201,48 @@ export default class AdminAssignmentEdit extends React.Component {
         })
     }
 
+    toggleMergeDialog() {
+        let changedState = {
+            mergeDialogToggled: !this.state.mergeDialogToggled
+        };
+
+        if(this.state.mergeDialogToggled) {
+            changedState.assignmentToMergeInto = null;
+        }
+
+        this.setState(changedState);
+    }
+
+    /**
+     * Called when assignment-merge-menu-item is clicked
+     * @param  {[type]} id ID of assignment to be merged into
+     */
+    selectMerge(id) {
+        $.get('/api/assignment/get', {id: id}, (assignment) => {
+            if(assignment.err) return $.snackbar({ content: 'Error retrieving assignment to merge' });
+            this.setState({
+                assignmentToMergeInto: assignment.data
+            });
+            this.toggleMergeDialog();
+        });
+    }
+
+    /**
+     * Merges assignment into existing assignment
+     * @param  {Object} data
+     * @param  {String} data.title
+     * @param  {String} data.caption
+     * @param  {String} data.assignmentToMergeInto
+     * @param  {String} data.assignmentToDelete
+     */
+    merge(data) {
+        $.post('/api/assignment/merge', data, (resp) => {
+            this.toggleMergeDialog();
+            this.props.updateAssignment(data.assignmentToDelete);
+            $.snackbar({ content: 'Assignment successfully merged!' });
+        });
+    }
+
     render() {
         
         var radius = Math.round(global.milesToFeet(this.state.radius)),
@@ -177,7 +252,14 @@ export default class AdminAssignmentEdit extends React.Component {
         if(this.props.activeGalleryType != 'assignment' || !this.props.hasActiveGallery) 
             return (<div></div>);
 
-        return (
+        /**
+         *  Merge button
+                    <AssignmentMergeDropup
+                        nearbyAssignments={this.state.nearbyAssignments}
+                        selectMerge={this.selectMerge} />
+         */
+
+        return ( 
             <div className="dialog">
                 <div className="dialog-body admin-assignment-edit" style={{visibility: this.props.hasActiveGallery ? 'visible' : 'hidden'}}>
                     <input
@@ -214,11 +296,68 @@ export default class AdminAssignmentEdit extends React.Component {
                         defaultValue={expiration_time} />
                 </div>
                 <div className="dialog-foot">
-                    <button type="button" className="btn btn-flat assignment-approve pull-right" onClick={this.approve} disabled={this.isPending}>Approve</button>
-                    <button type="button" className="btn btn-flat assignment-deny pull-right" onClick={this.reject} disabled={this.isPending}>Reject</button>
+                    <button type="button" className="btn btn-flat assignment-approve pull-right" onClick={this.approve} disabled={this.isPending}> Approve</button>
+                    <button type="button" className="btn btn-flat assignment-deny pull-right" onClick={this.reject} disabled={this.isPending}> Reject</button>
                 </div>
+                <AssignmentMerge
+                    assignment={this.props.assignment}
+                    assignmentToMergeInto={this.state.assignmentToMergeInto}
+                    toggled={this.state.mergeDialogToggled}
+                    toggle={this.toggleMergeDialog}
+                    merge={this.merge} />
             </div>
         );
     }
 
+}
+
+class AssignmentMergeDropup extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {
+        $(document).click((e) => {
+            // Hide dropdown on click as long as not clicking on master button.
+            if($('.merge-dropdown').hasClass('active') && e.target.className != 'toggle') {
+                $('.merge-dropdown').removeClass('active');
+                $('.merge-dropdown .mdi-menu-up').removeClass('mdi-menu-up').addClass('mdi-menu-down');
+            }
+        })
+    }
+
+    render() {
+
+        if(!this.props.nearbyAssignments.length) return <div />;
+
+        return (
+            <Dropdown
+                dropdownClass="u-15 merge-dropdown"
+                reverseCaretDirection={true}
+                inList={true}
+                title={'Merge (' + this.props.nearbyAssignments.length + ')'}>
+                {this.props.nearbyAssignments.map((a, i) => {
+                    return (
+                        <AssignmentMergeMenuItem
+                            assignment={a}
+                            onClick={this.props.selectMerge.bind(null, a._id)}
+                            key={i} />
+                    );
+                })}
+            </Dropdown>
+        );
+    }
+}
+
+class AssignmentMergeMenuItem extends React.Component {
+    render() {
+        return (
+            <div className="assignment-merge-menu-item" onClick={this.props.onClick}>
+                <span className="assignment-title">{this.props.assignment.title}</span>
+                <span className="assignment-location">{this.props.assignment.location.googlemaps}</span>
+                <p className="assignment-caption">{this.props.assignment.caption}</p>
+            </div>
+        )
+    }
 }

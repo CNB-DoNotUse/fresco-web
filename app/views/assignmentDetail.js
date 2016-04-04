@@ -23,10 +23,10 @@ class AssignmentDetail extends React.Component {
 			verifiedToggle: true
 		}
 
-		this.expireAssignment = this.expireAssignment.bind(this);
-		this.setAssignment = this.setAssignment.bind(this);
-		this.toggleEdit = this.toggleEdit.bind(this);
-		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
+		this.expireAssignment 	= this.expireAssignment.bind(this);
+		this.setAssignment 		= this.setAssignment.bind(this);
+		this.toggleEdit 		= this.toggleEdit.bind(this);
+		this.onVerifiedToggled 	= this.onVerifiedToggled.bind(this);
 	}
 
  	/**

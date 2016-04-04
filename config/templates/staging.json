@@ -13,6 +13,6 @@
     "PRICE_IMAGE": 3000,
 
     "REDIS": {
-      "SESSIONS": "prod-sessions-001.cls0l1.0001.use1.cache.amazonaws.com"
+      "SESSIONS": "localhost"
     }
 }

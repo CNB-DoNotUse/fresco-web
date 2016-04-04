@@ -17,11 +17,13 @@ class StoryDetail extends React.Component {
 		super(props);
 		this.state = {
 			storyEditToggled: false,
-			story: this.props.story
+			story: this.props.story,
+			sort: this.props.sort || 'captured'
 		}
 		this.toggleStoryEdit = this.toggleStoryEdit.bind(this);
 		this.loadPosts = this.loadPosts.bind(this);
 		this.updateStory = this.updateStory.bind(this);
+		this.updateSort = this.updateSort.bind(this);
 	}
 
 	updateStory(story) {
@@ -36,19 +38,26 @@ class StoryDetail extends React.Component {
 		});
 	}
 
+	updateSort(sort) {
+		this.setState({
+			sort: sort
+		})
+	}
+
  	render() {
 
  		return (
  			<App user={this.props.user}>
- 				<TopBar 
+ 				<TopBar
  					title={this.state.story.title}
+					updateSort={this.updateSort}
  					edit={this.toggleStoryEdit}
 					editable={true}
  					timeToggle={true}
  					chronToggle={true} />
- 				
+
  				<StorySidebar story={this.state.story} />
- 				
+
  				<div className="col-sm-8 tall">
 	 				<PostList
 	 					rank={this.props.user.rank}
@@ -56,13 +65,14 @@ class StoryDetail extends React.Component {
 	 					loadPosts={this.loadPosts}
 	 					scrollable={true}
 	 					editable={false}
+						sort={this.state.sort}
 	 					size='large' />
 				</div>
-				<StoryEdit 
+				<StoryEdit
 					toggle={this.toggleStoryEdit}
 					story={this.state.story}
 					user={this.props.user}
-					toggled={this.state.storyEditToggled} 
+					toggled={this.state.storyEditToggled}
 					updateStory={this.updateStory} />
  			</App>
  		);
@@ -77,6 +87,7 @@ class StoryDetail extends React.Component {
 				id: this.props.story._id,
 				limit: 10,
 				offset: passedOffset,
+				sort: this.state.sort
 			};
 
  		$.ajax({
@@ -108,9 +119,9 @@ StoryDetail.defaultProps = {
 }
 
 ReactDOM.render(
-  	<StoryDetail 
-  		user={window.__initialProps__.user} 
-  		purchases={window.__initialProps__.purchases} 
+  	<StoryDetail
+  		user={window.__initialProps__.user}
+  		purchases={window.__initialProps__.purchases}
   		story={window.__initialProps__.story}
   		title={window.__initialProps__.title} />,
   	document.getElementById('app')

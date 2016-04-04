@@ -30,7 +30,14 @@ export default class PostList extends React.Component {
 			scrollable: this.props.scrollable,
 			selectedPosts: [],
 			gallery: null,
-			galleryEditToggled: false
+			galleryEditToggled: false,
+			sort: this.props.sort
+		}
+
+		// If we aren't dynamically loading posts, then sort them locally
+		if (!this.props.scrollable) {
+			let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
+			this.state.posts = this.state.posts.sort((a,b) => {return b[field] - a[field]});
 		}
 
 		this.togglePost 		= this.togglePost.bind(this);
@@ -90,6 +97,29 @@ export default class PostList extends React.Component {
 		});
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		//Checks if the verified prop is changed
+		//`or` Checks if the sort prop is changed
+		if(prevProps.onlyVerified != this.props.onlyVerified
+			|| prevProps.sort != this.props.sort ) {
+			this.loadInitialPosts();
+		}
+
+		// If we aren't dynamically loading posts, then sort them locally
+		if (!this.props.scrollable && prevProps.sort != this.props.sort) {
+			let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
+			let posts = this.state.posts.sort((a,b) => {return b[field] - a[field]});
+			this.setState({posts});
+		}
+	}
+
+	componentDidMount() {
+		//Check if list is initialzied with posts, then don't load anything
+		if(this.state.posts.length)
+			return;
+
+		this.loadInitialPosts();
+	}
 
 	/**
 	 * Scroll listener for main window
@@ -239,6 +269,7 @@ export default class PostList extends React.Component {
 	        		toggled={toggled}
 	        		key={i}
 	        		editable={this.props.editable}
+					sort={this.props.sort}
 
 	        		togglePost={this.togglePost}
 	        		didPurchase={this.didPurchase}
