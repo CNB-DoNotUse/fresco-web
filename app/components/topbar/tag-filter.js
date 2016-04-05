@@ -14,15 +14,23 @@ export default class TagFilter extends React.Component {
 	}
 
 	handleTagInput(e) {
-		if(e.keyCode != 13) return;
+		//Call on tag input function if passed as a prop
+		if(this.props.onTagInput){
+			this.props.onTagInput(this.refs.tagFilterInput.value);
+		} 
+		//Otherwise interact normally
+		else {		
+			if(e.keyCode != 13) return;
 
-		var tagText = this.refs.tagFilterInput.value;
-		if(!tagText.length) return;
+			var tagText = this.refs.tagFilterInput.value;
+			if(!tagText.length) return;
 
-		if(this.props.filterList.indexOf(tagText) != -1) return;
+			if(this.props.filterList.indexOf(tagText) != -1) return;
 
-		this.props.onTagAdd(tagText);
-		this.refs.tagFilterInput.value = '';
+			this.props.onTagAdd(tagText);
+			this.refs.tagFilterInput.value = '';
+		}
+
 	}
 
 	render() {
@@ -58,9 +66,9 @@ export default class TagFilter extends React.Component {
 		var availableBody = '';
 		if(available.length) {
 			availableBody = <div className="split-cell">
-				<span className="md-type-body2">Available {this.props.text}</span>
-				<ul id="filter-available" className="chips">{available}</ul>
-			</div>
+								<span className="md-type-body2">Available {this.props.text}</span>
+								<ul id="filter-available" className="chips">{available}</ul>
+							</div>
 		}
 
 		return (
@@ -71,15 +79,20 @@ export default class TagFilter extends React.Component {
 							<div className="form-control-wrapper">
 								<input
 									id="tag-filter-input"
-									type="text" className="form-control empty"
+									type="text" 
+									className="form-control empty"
 									ref="tagFilterInput"
-									onKeyUp={this.handleTagInput}
-									/>
+									onKeyUp={this.handleTagInput} />
+								
 								<div className="floating-label">{this.props.text}</div>
+								
 								<span className="material-input"></span>
 							</div>
 						</div>
-						<ul id="tag-filter" className="chips">{tags}</ul>
+						
+						<ul id="tag-filter" className="chips">
+							{tags}
+						</ul>
 					</div>
 					
 					{availableBody}

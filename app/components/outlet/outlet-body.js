@@ -17,6 +17,7 @@ export default class OutletBody extends React.Component {
 
 		this.loadPosts = this.loadPosts.bind(this);
 		this.loadPurchases = this.loadPurchases.bind(this);
+		this.loadStats = this.loadStats.bind(this);
 		this.emailStatement = this.emailStatement.bind(this);
 	}
 
@@ -27,21 +28,38 @@ export default class OutletBody extends React.Component {
 		}
 	}
 
+	/**
+	 * Loads posts using purchases data enpoint
+	 */
 	loadPosts(passedOffset, cb) {
 		this.loadPurchases(passedOffset, (purchases) => {
-			
 			var posts = purchases.map((purchase) => {
 				return purchase.post;
 			});
 
 			cb(posts);
+		});
+	}
 
+	/**
+	 * Loads stats for outlet
+	 */
+	loadStats(callback) {
+		$.get('/api/outlet/purchases/stats', {
+			outlets: [ this.props.outlet._id ]
+		}, (response) => {
+			if(response.err || !response.data) {
+				return $.snackbar({
+					content: 'There was an error receiving the purchases'
+				});
+			}
+
+			callback(response.data);
 		});
 	}
 
 	/**
 	 * Requests purchases from server
-	 * @return {[type]} [description]
 	 */
 	loadPurchases(passedOffset, cb) {
 		$.get('/api/outlet/purchases', {
@@ -122,7 +140,8 @@ export default class OutletBody extends React.Component {
 					<PurchasesBody
 						purchases={this.state.purchases}
 						emailStatement={this.emailStatement}
-						loadPurchases={this.loadPurchases} />
+						loadPurchases={this.loadPurchases}
+						loadStats={this.loadStats} />
 				</div>
 			</div>
 		);

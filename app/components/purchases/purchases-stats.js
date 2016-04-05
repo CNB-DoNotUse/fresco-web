@@ -5,41 +5,42 @@ export default class PurchasesStats extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			day: 0,
+			week: 0,
+			month: 0
+		}
+
+		this.loadStats = this.loadStats.bind(this);
 	}
 
-	componentDidUpdate(prevProps, prevState) { // Got new purchases
-		var pastDay = 0,
-			pastWeek = 0,
-			pastMonth = 0;
+	componentDidMount() {
+	    //Load stats when component first mounts
+	    this.loadStats();  
+	}
 
-		this.props.purchases.map((purchase) => {
-			var post = purchase.post,
-				video = post.video != null,
-				price = video ? 75 : 30,
-				dayDiff = moment().diff(purchase.timestamp, 'days');
+	componentDidUpdate(prevProps, prevState) {
+		//Tell the component to update it's purchases
+		if(this.props.updatePurchases) {
+			this.loadStats();
+		}
+	}
 
-			if(dayDiff <= 1) {
-				pastDay+= price;
-			}
-
-			if(dayDiff <= 7) {
-				pastWeek += price;
-			}
-
-			if(dayDiff <= 30) {
-				pastMonth += price;
-			}
-		});
-
-		this.refs['purchases-past-day'].innerHTML = '$' + pastDay.toFixed(2);
-		this.refs['purchases-past-week'].innerHTML = '$' + pastWeek.toFixed(2);
-		this.refs['purchases-past-month'].innerHTML = '$' + pastMonth.toFixed(2);
+	/**
+	 * Loads stats for purchases
+	 */
+	loadStats() {
+		//Access parent var load method
+		this.props.loadStats((stats) => {
+			this.setState(stats);
+		});  
 	}
 
 	render() {
+		var buttons = [],
+			key = 0;
 
-		var buttons = [];
-		var key = 0;
 		if(this.props.downloadExports){
 			buttons.push(
 				<button 
@@ -76,11 +77,22 @@ export default class PurchasesStats extends React.Component {
 		return (
 			<div className="col-md-4">
 				<h3 className="md-type-button md-type-black-secondary">Total purchases</h3>
+				
 				<ul className="md-type-subhead">
-					<li><span ref="purchases-past-day"></span><span className="md-type-caption"> last 24 hours</span></li>
-					<li><span ref="purchases-past-week"></span><span className="md-type-caption"> last 7 days</span></li>
-					<li><span ref="purchases-past-month"></span><span className="md-type-caption"> last 30 days</span></li>
+					<li>
+						<span>${this.state.day}</span>
+						<span className="md-type-caption"> last 24 hours</span>
+					</li>
+					<li>
+						<span>${this.state.week}</span>
+						<span className="md-type-caption"> last 7 days</span>
+					</li>
+					<li>
+						<span>${this.state.month}</span>
+						<span className="md-type-caption"> last 30 days</span>
+					</li>
 				</ul>
+
 				{buttons}
 			</div>
 		);

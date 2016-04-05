@@ -6,20 +6,6 @@ export default class PurchasesBody extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {
-			purchases: []
-		}
-
-		this.purchasesAdded = this.purchasesAdded.bind(this);
-	}
-
-	/**
-	 * Optional Listener for purchase list for sending purchases to other components
-	 */
-	purchasesAdded(purchases) {
-		this.setState({
-			purchases: purchases
-		});
 	}
 
 	render() {
@@ -33,9 +19,10 @@ export default class PurchasesBody extends React.Component {
 					loadPurchases={this.props.loadPurchases} />
 				
 				<PurchasesStats 
-					purchases={this.state.purchases} 
 					emailStatement={this.props.emailStatement}
-					downloadExports={this.props.downloadExports} />
+					downloadExports={this.props.downloadExports}
+					loadStats={this.props.loadStats}
+					updatePurchases={this.props.updatePurchases} />
 			</div>
 		);
 	}

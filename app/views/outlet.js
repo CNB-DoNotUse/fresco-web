@@ -37,16 +37,14 @@ class Outlet extends React.Component {
 				'Vault',
 				'Purchases'
 			];
-			outletBody =
-				<OutletBody
-					activeTab={this.state.activeTab}
-					outlet={this.props.outlet}
-					user={this.props.user} />;
+			outletBody = <OutletBody
+							activeTab={this.state.activeTab}
+							outlet={this.props.outlet}
+							user={this.props.user} />;
 		}
 		else {
-			outletBody =
-				<OutletBodyDemo
-					outlet={this.props.outlet} />
+			outletBody = <OutletBodyDemo
+							outlet={this.props.outlet} />
 		}
 
 		return (

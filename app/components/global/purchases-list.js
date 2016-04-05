@@ -12,26 +12,21 @@ export default class PurchasesList extends React.Component {
 			purchases: this.props.purchases
 		}
 
-		this.loadInitialPurchases = this.loadInitialPurchases.bind(this);
+		this.loadPurchases = this.loadPurchases.bind(this);
 		this.scroll = this.scroll.bind(this);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-
-	 	//Check if the function exists and there are new purchases
-	 	if(this.props.purchasesAdded && this.state.purchases.length > prevState.purchases.length)
-		 	this.props.purchasesAdded(this.state.purchases);
-
-		 //Tell the component to update it's purchases
+		//Tell the component to update it's purchases
 		if(this.props.updatePurchases) {
-			this.loadInitialPurchases();
+			this.loadPurchases();
 		}
 	}
 
 	/**
 	 * Loads initial set of purchases
 	 */
-	loadInitialPurchases() {
+	loadPurchases() {
 		//Access parent var load method
 		this.props.loadPurchases(0, (purchases) => {
 			
@@ -43,17 +38,16 @@ export default class PurchasesList extends React.Component {
 				purchases: purchases,
 				offset : offset
 			});
-
 		});  
 	}
 
 	componentDidMount() {
-
 	    //Check if list is initialzied with posts or the `loadPurchases` prop is not defined, then don't load anything
 	    if(this.state.purchases.length > 0 || !this.props.loadPurchases) 
 	    	return;
+	    
 	    //Load purchases when component first mounts
-	    this.loadInitialPurchases();
+	    this.loadPurchases();
 	}
 
 	// Handle purchases div scroll
@@ -68,10 +62,12 @@ export default class PurchasesList extends React.Component {
 		
 		// Check if already getting purchases because async
 		if(shouldGetMorePurchases) {
-
 			this.setState({
 				loading: true
 			});
+
+
+			console.log('LOADING MORE');
 
 			// Pass current offset to getMorePurchases
 			this.props.loadPurchases(this.state.offset, (purchases) => {
