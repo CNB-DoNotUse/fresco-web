@@ -84,7 +84,13 @@ export default class PostRelated extends React.Component {
 				</div>
 			);
 
-			tabControls.push(<button className={"btn btn-flat " + toggled} key="gallery" onClick={this.setDisplayedTab} data-tab="gallery">More from this gallery</button>);
+			tabControls.push(
+				<button 
+					className={"btn btn-flat " + toggled} 
+					key="gallery" 
+					onClick={this.setDisplayedTab} 
+					data-tab="gallery">More from this gallery</button>
+				);
 		}
 
 		for (let story of this.props.gallery.related_stories) {
@@ -107,7 +113,13 @@ export default class PostRelated extends React.Component {
 				</div>
 			);
 
-			tabControls.push(<button className={"btn btn-flat " + toggled} key={story._id} onClick={this.setDisplayedTab} data-tab={story._id}>{story.title.toUpperCase()}</button>);
+			tabControls.push(
+				<button 
+					className={"btn btn-flat " + toggled} 
+					key={story._id} 
+					onClick={this.setDisplayedTab} 
+					data-tab={story._id}>{story.title.toUpperCase()}</button>
+			);
 		}
 
 		return (
@@ -120,33 +132,5 @@ export default class PostRelated extends React.Component {
 				</div>
 			</div>
 		);
-
-		// if (this.props.gallery.posts && this.props.gallery.posts.length > 1){
-		//
-		// 	var posts = this.props.gallery.posts.map((post, i) => {
-		// 		return <RelatedPostImage post={post} key={i}/>
-		// 	})
-		//
-		// 	return (
-		// 		<div className="row related hidden-xs">
-		// 			<div className="tab-control">
-		// 				<button className="btn btn-flat toggled">More from this gallery</button>
-		// 			</div>
-		// 			<div className="tabs">
-		// 				<div className="tab toggled">
-		// 					<div className="tab-inner">
-		// 						<a className="btn btn-flat" href={"/gallery/" + this.props.gallery._id}>See all</a>
-		// 						{posts}
-		// 					</div>
-		// 				</div>
-		// 			</div>
-		// 		</div>
-		// 	);
-		//
-		// }
-		// else
-		// 	return null;
-
 	}
-
 }
