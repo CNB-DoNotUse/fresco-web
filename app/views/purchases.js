@@ -16,8 +16,8 @@ class Purchases extends React.Component {
 		}
 
 		this.findOutlets = this.findOutlets.bind(this);
-		this.filterRemove = this.filterRemove.bind(this);
-		this.filterAdd = this.filterAdd.bind(this);
+		this.addOutlet = this.addOutlet.bind(this);
+		this.removeOutlet = this.removeOutlet.bind(this);
 		this.loadStats = this.loadStats.bind(this);
 		this.loadPurchases = this.loadPurchases.bind(this);
 		this.downloadExports = this.downloadExports.bind(this);
@@ -39,34 +39,52 @@ class Purchases extends React.Component {
 			});
 		} else{
 			$.get('/api/outlet/list?q=' + query, (response) => {
-				if(response.err || !response.data) {
-					return $.snackbar({ content: 'There was an error finding outlets!'});
+				if(!response.err && response.data) {
+					this.setState({
+						availableOutlets: response.data
+					});
 				}
-
-				this.setState({
-					availableOutlets: response.data
-				});
 			});
 		}
 	}
 
-	filterAdd(outletToAdd) {
+	/**
+	 * Adds outlet to filter
+	 */
+	addOutlet(outletToAdd) {
 		var availableOutlets = _.clone(this.state.availableOutlets, true),
-			outlets = _.clone(this.state.outlets, true);
+			outlets = _.clone(this.state.outlets, true),
+			outlet = null,
+			outletExists = false;
 
+		//Find the outlet object based on the `title`, outletToAdd is just a `string`
 		for (var i = 0; i < availableOutlets.length; i++) {
 			var outlet = availableOutlets[i];
 
 			if(outlet.title == outletToAdd){
-				outlets.push(availableOutlets[i]);
+				outlet = availableOutlets[i];
 				break;
 			}
 		}
 
-		this.setState({ outlets: outlets });
+		//Check that the outlet isn't already in the list
+		for (var i = 0; i < outlets.length; i++) {
+			if(outlets[i]._id === outlet._id){
+				outletExists = true;
+				break;
+			}
+		}
+
+		if(!outletExists && outlet !== null){
+			outlets.push(outlet);
+			this.setState({ outlets: outlets });
+		}
 	}
 
-	filterRemove(outletToRemove) {
+	/**
+	 * Remove outlet from filter
+	 */
+	removeOutlet(outletToRemove) {
 		var outlets = _.clone(this.state.outlets, true),
 			filterIdsArr = [];
 
@@ -168,8 +186,8 @@ class Purchases extends React.Component {
 						tagList={availableOutlets}
 						filterList={outlets}
 						onTagInput={this.findOutlets}
-						onTagAdd={this.filterAdd}
-						onTagRemove={this.filterRemove}
+						onTagAdd={this.addOutlet}
+						onTagRemove={this.removeOutlet}
 						key="outletsFilter" />
 				</TopBar>
 
