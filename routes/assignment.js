@@ -47,7 +47,7 @@ router.get('/:id', (req, res, next) => {
         title = assignment.title,
         props = {
           user: req.session.user,
-          purchases: Purchases.mapPurchases(),
+          purchases: Purchases.mapPurchases(req.session),
           title: title,
           assignment: assignment
         };
