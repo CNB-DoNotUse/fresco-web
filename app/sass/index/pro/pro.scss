@@ -6,13 +6,12 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
-@import "../../global/_global";
+@import "./../../global/_global";
 @import "../landing";
 @import "../modals";
 @import "pro-schedule";
 
 .hero{
-
 	@include mobile{
 		margin:0 auto 80px !important;
 	}
