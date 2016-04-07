@@ -288,6 +288,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 		.checkbox{
 			margin:0;
+			width:24px;
 
 			.checkbox-material{
 				margin:0;
@@ -322,11 +323,13 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		
 		.location-options, .notification-options{
 			top:-10px;
-
 		}
 
-		input{
+		input[type="text"]{
 			width:50%;
+			height:48px;
+			float:left;
+			position:absolute;
 			padding-right: 10px;
 		}
 	}

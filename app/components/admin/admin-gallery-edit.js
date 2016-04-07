@@ -300,7 +300,6 @@ export default class AdminGalleryEdit extends React.Component {
 		}
 
 		this.props.verify(params, (err, id) => {
-			
 			this.setState({
 				waiting: false
 			});
@@ -315,7 +314,6 @@ export default class AdminGalleryEdit extends React.Component {
 				var win = window.open('/gallery/' + id, '_blank');
 				win.focus();
 			});
-
 		});
 	}
 

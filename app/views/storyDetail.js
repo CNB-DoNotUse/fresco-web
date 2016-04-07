@@ -18,7 +18,7 @@ class StoryDetail extends React.Component {
 		this.state = {
 			storyEditToggled: false,
 			story: this.props.story,
-			sort: this.props.sort || 'captured'
+			sort: this.props.sort || 'upload'
 		}
 		this.toggleStoryEdit = this.toggleStoryEdit.bind(this);
 		this.loadPosts = this.loadPosts.bind(this);

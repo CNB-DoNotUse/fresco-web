@@ -24,21 +24,28 @@ export default class PostInfo extends React.Component {
 			curator = '',
 			timeString = global.formatTime(this.props.post.time_created, true),
 			verifiedBy = '',
+			verifyClass = '',
 			userName = '';
 
-		if(this.props.post.approvals) {
-			verifiedBy = 'Verified';
-			if(this.props.user.rank > 1) {
-				 verifiedBy += ' by ' + this.props.verifier;
-			}
-		}else {
-			verifiedBy = 'Not yet verified';
-		}
-
+		//Define username based on post meta
 		if(post.meta.twitter)
 	 		userName = post.meta.twitter.user_name;
 	 	else if(post.owner)
 	 		userName = post.owner.firstname + ' ' + post.owner.lastname;
+
+	 	//Define verifier text based on approvals
+		if(this.props.post.approvals) {
+			verifiedBy = 'Verified';
+			verifyClass = "mdi icon verified mdi-checkbox-marked-circle";
+
+			if(this.props.user.rank >= global.RANKS.CONTENT_MANAGER && this.props.verifier) {
+				 verifiedBy += ' by ' + this.props.verifier;
+			}
+
+		} else {
+			verifiedBy = 'Not yet verified';
+			verifyClass = 'mdi mdi-alert-circle icon';
+		}
 
 		//Check to show user icon
 		if(this.props.post.owner){
@@ -95,12 +102,12 @@ export default class PostInfo extends React.Component {
 							</li>
 							
 							{twitter}
-							
+
 							<li>
-								<span className={this.props.verifier.length ? "mdi icon verified mdi-checkbox-marked-circle" : "mdi mdi-alert-circle icon"}></span>
+								<span className={verifyClass}></span>
 								{verifiedBy}
 							</li>
-
+						
 							{curator}
 						</ul>
 					</div>

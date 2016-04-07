@@ -20,7 +20,8 @@ class PostDetail extends React.Component {
 
  		this.state = {
  			toggled: false,
- 			gallery: this.props.gallery
+ 			gallery: this.props.gallery,
+            post: this.props.post
  		}
 
  		this.hide = this.hide.bind(this);
@@ -41,13 +42,19 @@ class PostDetail extends React.Component {
  	}
 
  	updateGallery(gallery) {
+        var post = this.state.post;
+        
+        if(gallery.visibility !== this.state.gallery.visibility){
+            post.approvals = gallery.visibility;
+        }
+
  		this.setState({
- 			gallery: gallery
- 		})
+ 			gallery: gallery,
+            post: post
+ 		});
  	}
 
  	render() {
-
  		var editable = this.props.user.rank >= global.RANKS.CONTENT_MANAGER && this.state.gallery._id,
  			galleryEdit = '',
  			relatedPosts = '',
@@ -55,19 +62,17 @@ class PostDetail extends React.Component {
 
  		if(editable){
  			galleryEdit = <GalleryEdit
-			 				gallery={this.state.gallery}
-			 				toggled={this.state.toggled}
-			 				toggle={this.toggle}
-			 				updateGallery={this.updateGallery}
-			 				hide={this.hide} />
+                                gallery={this.state.gallery}
+                                toggled={this.state.toggled}
+                                toggle={this.toggle}
+                                updateGallery={this.updateGallery}
+                                hide={this.hide} />
 
         }
 
-		relatedPosts = <PostRelated
-	 						gallery={this.state.gallery} />
+		relatedPosts = <PostRelated gallery={this.state.gallery} />
 
-        relatedTags = <PostRelatedTags
-                            tags={this.state.gallery.tags} />
+        relatedTags = <PostRelatedTags tags={this.state.gallery.tags} />
                             
  		return (
  			<App user={this.props.user}>
@@ -80,19 +85,20 @@ class PostDetail extends React.Component {
  					<div className="row">
  						<div className="main">
  							<PostDetailImage
- 								post={this.props.post}
+ 								post={this.state.post}
  								user={this.props.user}
  								purchases={this.props.purchases} />
 
  							<PostInfo
 								user={this.props.user}
- 								post={this.props.post}
+ 								post={this.state.post}
  								gallery={this.state.gallery}
  								user={this.props.user}
  								verifier={this.props.verifier} />
  						</div>
  					</div>
 					{relatedPosts}
+
                     {relatedTags}
  				</div>
  				{galleryEdit}

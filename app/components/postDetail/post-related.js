@@ -40,17 +40,39 @@ export default class PostRelated extends React.Component {
 	}
 
 	getStories() {
-		for (let story of this.props.gallery.related_stories) {
-			$.get('/api/story/posts', {
-				id: story._id,
-				limit: 10
-	 		}, (posts) => {
-				if (posts.err || !posts.data) {
-					return console.log('Error getting posts for story ' + story);
-				}
+		var related_stories = this.props.gallery.related_stories,
+			stories = this.state.stories,
+			self = this;
 
-				this.state.stories[story._id] = posts.data;
-				this.setState(this.state);
+		for (var i = 0; i < related_stories.length; i++) {
+			var story = related_stories[i];
+
+			$.ajax({
+			    url: '/api/story/posts',
+			    data: {
+			    	id: story._id,
+			    	limit: 10
+			    },
+			    key: i,
+			    count: related_stories.length,
+			    type: 'GET',
+			    success: function(response, status, xhr) {
+					if (!response.err && response.data) {
+						stories[related_stories[this.key]._id] = response.data;
+					}
+
+					//Wait till end of loop to update the state
+					if(this.key === (this.count - 1)) {
+						updateStories();
+					}
+			    }
+			});
+		}
+
+		//Update the state through function after ajax calls are finished
+		function updateStories() {
+			self.setState({
+				stories: stories
 			});
 		}
 	}

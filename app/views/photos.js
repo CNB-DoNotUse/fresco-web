@@ -23,7 +23,7 @@ class Photos extends React.Component {
 		this.state = {
 			purchases: [],
 			verifiedToggle: true,
-			sort: this.props.sort || 'captured'
+			sort: this.props.sort || 'upload'
 		}
 
 		this.loadPosts 			= this.loadPosts.bind(this);

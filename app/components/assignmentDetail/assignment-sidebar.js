@@ -62,6 +62,7 @@ class AssignmentStats extends React.Component {
 		var assignment = this.props.assignment,
 			expirationTime = new Date(this.props.assignment.expiration_time),
 			expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow(),
+			createdText = 'Created at ' + moment(assignment.time_created).format('LT'),
 			stats = this.props.stats;
 
 		return (
@@ -73,6 +74,10 @@ class AssignmentStats extends React.Component {
 						<span>{assignment.location && assignment.location.address || 'No Address'}</span>
 					</li>
 					<li>
+						<span className="mdi mdi-clock icon"></span>
+						<span>{createdText}</span>
+					</li>
+					<li className="expired">
 						<span className="mdi mdi-clock icon"></span>
 						<span>{expiredText}</span>
 					</li>

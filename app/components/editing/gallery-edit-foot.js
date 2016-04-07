@@ -9,23 +9,19 @@ export default class GalleryEditFoot extends React.Component {
 
 	constructor(props) {
 		super(props);
+
 		this.state = {
 			gallery: _.clone(this.props.gallery, true),
 			newFiles: []
 		}
-		this.revert = this.revert.bind(this);
+
 		this.clear = this.clear.bind(this);
 		this.addMore = this.addMore.bind(this);
 		this.fileUploaderChanged = this.fileUploaderChanged.bind(this);
 		this.delete = this.delete.bind(this);
 	}
 
-	revert() {
-
-	}
-
 	clear() {
-
 		var gallery = this.state.gallery;
 
 		gallery.caption = '';
@@ -37,17 +33,13 @@ export default class GalleryEditFoot extends React.Component {
 		gallery.assignment = null;
 
 		this.props.updateGallery(gallery);
-
 	}
 
 	addMore() {
-
 		document.getElementById('gallery-upload-files').click()
-
 	}
 
 	fileUploaderChanged() {
-			
 		var gallery = this.state.gallery,
 			files = this.refs.fileUpload.files,
 			self = this;
@@ -82,7 +74,6 @@ export default class GalleryEditFoot extends React.Component {
 	}
 
 	delete() {
-
 		var gallery = this.state.gallery;
 		
 		alertify.confirm("Are you sure you want to delete this gallery?", (confirmed) => {
@@ -96,20 +87,21 @@ export default class GalleryEditFoot extends React.Component {
 
 			//Send delete request
 			$.ajax({
-
 				url: "/api/gallery/remove",
 				method: 'post',
 				contentType: "application/json",
 				data: JSON.stringify(params),
 				dataType: 'json',
 				success: (result) => {
-					
 					if(result.err){
 						return this.error(null, null, result.err);
-					};
-		
-					location.href = document.referrer || '/highlights';
+					}
 
+					if(window.location.href.indexOf('post') == -1) {
+						location.reload();
+					} else {
+						location.href = document.referrer || '/highlights';
+					}
 				},
 				error: (xhr, status, error) => {
 					$.snackbar({
@@ -123,16 +115,31 @@ export default class GalleryEditFoot extends React.Component {
 	}
 
 	render() {
-
-		var addMore = '';
+		var addMore = '',
+			verifyToggle = '';
 
 		//Check if the gallery has been imported, to show the 'Add More' button or not
-		if(this.state.gallery.imported) 
-			addMore = <button id="gallery-add-more-button" type="button" onClick={this.addMore} className="btn btn-flat">Add More</button>
+		if(this.state.gallery.imported) {
+			addMore = <button id="gallery-add-more-button" 
+							type="button" 
+							onClick={this.addMore} 
+							className="btn btn-flat">Add More</button>
+		}
 
 		var inputStyle = {
 			display: 'none'
 		};
+
+		if(this.state.gallery.visibility == 0) {
+			verifyToggle = <button id="gallery-delete-button" type="button" 
+								onClick={this.props.verifyGallery} 
+								className="btn btn-flat pull-right">Verify</button>					
+
+		} else {
+			verifyToggle = <button id="gallery-delete-button" type="button" 
+								onClick={this.props.unverifyGallery} 
+								className="btn btn-flat pull-right">Unverify</button>
+		}
 
 		return (
 			
@@ -147,19 +154,33 @@ export default class GalleryEditFoot extends React.Component {
 					style={inputStyle}
 					onChange={this.fileUploaderChanged} />
 
-				<button id="gallery-revert-button" type="button" onClick={this.props.revert} className="btn btn-flat">Revert changes</button>
-				<button id="gallery-clear-button" type="button" onClick={this.clear} className="btn btn-flat">Clear all</button>
+				<button id="gallery-revert-button" type="button" 
+					onClick={this.props.revert} 
+					className="btn btn-flat">Revert changes</button>
+				
+				<button id="gallery-clear-button" type="button" 
+					onClick={this.clear} 
+					className="btn btn-flat">Clear all</button>
+				
 				{addMore}
-				<button id="gallery-cancel-button" type="button" onClick={this.props.hide} className="btn btn-flat pull-right toggle-gedit toggler">Cancel</button>
-				<button id="gallery-delete-button" type="button" onClick={this.delete} className="btn btn-flat pull-right">Delete</button>
-				<button id="gallery-save-button" type="button" onClick={this.props.saveGallery} className="btn btn-flat pull-right">Save</button>
+				
+				<button id="gallery-save-button" type="button" 
+					onClick={this.props.saveGallery} 
+					className="btn btn-flat pull-right">Save</button>
+
+				{verifyToggle}
+
+				<button id="gallery-delete-button" type="button" 
+					onClick={this.delete} 
+					className="btn btn-flat pull-right">Delete</button>
 			
+				<button id="gallery-cancel-button" type="button" 
+					onClick={this.props.hide} 
+					className="btn btn-flat pull-right toggle-gedit toggler">Cancel</button>
 			</div>
 
 		);
-
 	}
-
 }
 
 GalleryEditFoot.defaultProps = {
