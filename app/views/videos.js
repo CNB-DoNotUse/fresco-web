@@ -16,7 +16,7 @@ class Videos extends React.Component {
 
 		this.state = {
 			verifiedToggle: true,
-			sort: this.props.sort || 'captured'
+			sort: this.props.sort || 'upload'
 		}
 
 		this.updateSort			= this.updateSort.bind(this);
@@ -82,6 +82,7 @@ class Videos extends React.Component {
 					updateSort={this.updateSort}
 					chronToggle={true}
 					onVerifiedToggled={this.onVerifiedToggled} />
+					
 				<PostList
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}

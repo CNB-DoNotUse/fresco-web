@@ -157,7 +157,7 @@ export default class TopBar extends React.Component {
 			topbarItems.push(
 				<Dropdown
 					options={['By capture time', 'By upload time']}
-					selected='By capture time'
+					selected='By upload time'
 					onSelected={this.chronToggleSelected}
 					key="chronToggle"
 					inList={true}>

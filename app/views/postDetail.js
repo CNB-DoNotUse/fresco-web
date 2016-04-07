@@ -43,6 +43,7 @@ class PostDetail extends React.Component {
 
  	updateGallery(gallery) {
         var post = this.state.post;
+        
         if(gallery.visibility !== this.state.gallery.visibility){
             post.approvals = gallery.visibility;
         }

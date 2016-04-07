@@ -164,26 +164,23 @@ export default class GalleryEditFoot extends React.Component {
 				
 				{addMore}
 				
-				<button id="gallery-cancel-button" type="button" 
-					onClick={this.props.hide} 
-					className="btn btn-flat pull-right toggle-gedit toggler">Cancel</button>
+				<button id="gallery-save-button" type="button" 
+					onClick={this.props.saveGallery} 
+					className="btn btn-flat pull-right">Save</button>
+
+				{verifyToggle}
 
 				<button id="gallery-delete-button" type="button" 
 					onClick={this.delete} 
 					className="btn btn-flat pull-right">Delete</button>
-				
-				{verifyToggle}
-
-				<button id="gallery-save-button" type="button" 
-					onClick={this.props.saveGallery} 
-					className="btn btn-flat pull-right">Save</button>
 			
+				<button id="gallery-cancel-button" type="button" 
+					onClick={this.props.hide} 
+					className="btn btn-flat pull-right toggle-gedit toggler">Cancel</button>
 			</div>
 
 		);
-
 	}
-
 }
 
 GalleryEditFoot.defaultProps = {

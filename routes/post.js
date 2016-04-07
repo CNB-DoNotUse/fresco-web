@@ -28,8 +28,9 @@ router.get('/:id', (req, res, next) => {
     api.get('/v1/post/get?id=' + req.params.id, doWithPostInfo);
 
     function doWithPostInfo(error, response, body) {
-        if (error || !body || body.err){
+        if (error || !body || body.err || body.error || response.error){
             req.session.alerts = ['Error connecting to server'];
+
             return req.session.save(() => {
                 res.redirect(req.headers.Referer || config.DASH_HOME);
             });
