@@ -61,12 +61,14 @@ class PostDetail extends React.Component {
 			 				updateGallery={this.updateGallery}
 			 				hide={this.hide} />
 
-			relatedPosts = <PostRelated
-		 						gallery={this.state.gallery} />
-            relatedTags = <PostRelatedTags
-                                tags={this.state.gallery.tags} />
- 		}
+        }
 
+		relatedPosts = <PostRelated
+	 						gallery={this.state.gallery} />
+
+        relatedTags = <PostRelatedTags
+                            tags={this.state.gallery.tags} />
+                            
  		return (
  			<App user={this.props.user}>
  				<TopBar

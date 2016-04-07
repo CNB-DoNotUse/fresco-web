@@ -15,13 +15,25 @@ export default class UserSidebar extends React.Component {
 
 	render() {	
 
-		var user = this.props.user,
+		var user = this.props.detailUser,
 			name = user.firstname + ' ' + user.lastname,
-			email = user.email,
+			email = '',
 			avatar = user.avatar || global.defaultAvatar,
 			galleries = user.stats.galleries,
 			photos = user.stats.photos,
 			videos = user.stats.videos;
+
+		console.log(user);
+
+		if(this.props.user.rank >= global.RANKS.CONTENT_MANAGER && user.email !== null){
+
+			email = <li className="ellipses">
+						<span className="mdi mdi-email icon"></span>
+						<a target="_top" href={'mailto:' + user.email}>
+							{user.email}
+						</a>
+					</li> 	
+		}
 
 		return (
 
@@ -35,12 +47,7 @@ export default class UserSidebar extends React.Component {
 						<div className="meta">
 							<div className="meta-list">
 								<ul className="md-type-subhead">
-										{email ? 
-										<li className="ellipses">
-										<span className="mdi mdi-email icon"></span>
-										<a target="_top" href={'mailto:' + email}>{email}</a>
-										</li> 
-										: '' }
+										{email}
 
 										<li>
 											<span className="mdi mdi-image-multiple icon"></span>{galleries + ' galleries'}
