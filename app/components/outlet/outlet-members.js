@@ -13,6 +13,7 @@ export default class OutletMembers extends React.Component {
 		this.getPendingInvites = this.getPendingInvites.bind(this);
 		this.removeMember = this.removeMember.bind(this);
 		this.resendInvite = this.resendInvite.bind(this);
+		this.revokeInvite = this.revokeInvite.bind(this);
 		this.inviteKeyDown = this.inviteKeyDown.bind(this);
 	}
 
@@ -39,6 +40,38 @@ export default class OutletMembers extends React.Component {
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: global.resolveError(error, 'We were unable to retrieve your pending invites!')});
+			}
+		});
+	}
+
+	/**
+	 * Cancels invite 
+	 */
+	revokeInvite(token) {
+		if(!token) {
+			return $.snackbar({
+				content : 'We couldn\'t find this invitation!'
+			});
+		}
+
+		var self = this;
+
+		$.ajax({
+			url: "/api/outlet/invite/decline",
+			method: 'post',
+			data: {
+				token: token
+			},
+			success: function(response, status, xhr){
+				if (response.err)
+					return this.error(null, null, response.err);
+
+				self.getPendingInvites();
+
+				$.snackbar({ content: 'This invitation has been successfully canceled!'});
+			},
+			error: (xhr, status, error) => {
+				$.snackbar({content: global.resolveError(error)});
 			}
 		});
 	}
@@ -165,7 +198,8 @@ export default class OutletMembers extends React.Component {
 					members={this.props.members}
 					pendingInvites={this.state.pendingInvites}
 					removeMember={this.removeMember}
-					resendInvite={this.resendInvite} />
+					resendInvite={this.resendInvite}
+					revokeInvite={this.revokeInvite} />
 
 				<div className="footer">
 					<input type="text"
@@ -203,15 +237,18 @@ class OutletMemberList extends React.Component {
 
 		var invites = this.props.pendingInvites.map((invite, i) => {
 			return (
-				<li className="member pending" key={i}>
-					<div className="info">
+				<li className="member" key={i}>
+					<div className="pending-info">
 						<span className="email">{invite.email}</span>
+						<span className="subtext">Pending Invitation</span>
 					</div>
 
 					<span 
+						className="cancel"
+						onClick={this.props.revokeInvite.bind(null, invite.token)}>CANCEL</span>
+					<span 
 						className="resend" 
-						onClick={this.props.resendInvite.bind(null, invite.token)}>RESEND INVITE</span>
-					<span className="pending">PENDING</span>
+						onClick={this.props.resendInvite.bind(null, invite.token)}>RESEND</span>
 				</li>
 			);
 		});

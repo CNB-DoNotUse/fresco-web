@@ -128,11 +128,14 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				height:72px;
 				padding:0 16px;
 
-				.info{
+
+				.info, .pending-info {
 					float:left;
 					position:relative;
 					top:14px;
+				}
 
+				.info{
 					.name{
 						margin:0;
 						font-size:16px;
@@ -145,7 +148,23 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 					}
 				}
 
-				.delete-member, .pending, .resend {
+				.pending-info {
+					.email{
+						position:relative;
+						font-size:16px;
+						line-height:24px;
+						display:block;
+						@include rgba(color, 0, 0, 0, 0.87);;
+					}
+
+					.subtext{
+						font-size:13px;
+						line-height:20px;
+						@include rgba(color, 0, 0, 0, 0.54);
+					}
+				}
+
+				.delete-member, .cancel, .resend {
 					float:right;
 					position:relative;
 					font-weight:500;
@@ -159,25 +178,18 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 					@include rgba(color, 0, 0 ,0, 0.54);
 				}
 
-				.pending, .resend {
+				.cancel, .resend {
 					top:29px;
 					font-size:12px;
-				}
-
-				.pending {
-					margin-right:16px;
-					color: rgba(0, 0, 0, 0.54);
-				}
-				.resend {
-					color: #0047bb;
 					cursor:pointer;
 				}
-			}
 
-			.pending {
-				.email{
-					position:relative;
-					top:10px;
+				.cancel {
+					color: rgba(0, 0, 0, 0.87);
+				}
+				.resend {
+					margin-right:16px;
+					color: #0047bb;
 				}
 			}
 		}

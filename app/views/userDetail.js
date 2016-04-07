@@ -30,7 +30,8 @@ class UserDetail extends React.Component {
 					edit={this.edit} />
 				
 				<UserSidebar 
-					user={this.props.detailUser} />
+                    user={this.props.user}
+					detailUser={this.props.detailUser} />
 				
 				<div className="col-sm-8 tall">
 					<PostList 

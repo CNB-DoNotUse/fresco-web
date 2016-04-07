@@ -81,8 +81,9 @@ class SideBarListItems extends React.Component {
 	}
 
 	render() {
-
 		if(!this.props.user) return;
+
+		console.log(this.props.user.rank);
 
 		if (this.props.user.outlet) {
 			var dispatch = 
