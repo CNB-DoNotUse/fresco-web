@@ -40,6 +40,8 @@ export default class GalleryEdit extends React.Component {
 		this.uploadNewFiles 		= this.uploadNewFiles.bind(this);
 		this.revertGallery 			= this.revertGallery.bind(this);
 		this.saveGallery 			= this.saveGallery.bind(this);
+		this.verifyGallery 			= this.verifyGallery.bind(this);
+		this.unverifyGallery 		= this.unverifyGallery.bind(this);
 		this.hide		 			= this.hide.bind(this);
 	}
 
@@ -187,10 +189,21 @@ export default class GalleryEdit extends React.Component {
 		lat /= path.getLength() - 1;
 		lng /= path.getLength() - 1;
 		return new google.maps.LatLng(lat, lng);
-
 	}
 
- 	saveGallery() {
+	unverifyGallery() {
+		this.saveGallery(null, {
+			visibility: 0
+		});
+	}
+
+	verifyGallery() {
+		this.saveGallery(null, {
+			visibility: 1
+		});
+	}
+
+ 	saveGallery(event, passedParams) {
  		var self 	   = this,
 	 		gallery    = _.clone(this.state.gallery, true),
  			files 	   = gallery.files ? gallery.files : [],
@@ -236,6 +249,10 @@ export default class GalleryEdit extends React.Component {
  			stories: stories,
  			articles: articles
  		};
+
+ 		if(typeof(passedParams) == 'object') {
+ 			params = _.extend(params, passedParams);
+ 		}
 
  		//Check state var to see if the visibility has changed
  		if(this.state.visibilityChanged){
@@ -375,6 +392,8 @@ export default class GalleryEdit extends React.Component {
 		 						gallery={this.state.gallery}
 		 						revert={this.revertGallery}
 		 						saveGallery={this.saveGallery}
+		 						verifyGallery={this.verifyGallery}
+		 						unverifyGallery={this.unverifyGallery}
 		 						updateGallery={this.updateGallery}
 		 						hide={this.hide} />
 		 				</div>
@@ -399,5 +418,5 @@ GalleryEdit.defaultProps = {
 	posts: [],
 	toggled: false,
 	updateGallery: function(){},
-	toggle: function () { console.log('GalleryEdit missing toggle implementation'); }
+	toggle: function () { }
 }
