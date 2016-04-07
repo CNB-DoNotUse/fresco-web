@@ -482,6 +482,14 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		margin-bottom: 0;
 		padding:0;
 		list-style-type: none;
+		.expired {
+			color:#d0021b;
+
+			.icon{
+				color:#d0021b;
+			}
+			font-weight:500;
+		}
 		> li {
 			padding: 8px 0;
 			margin-bottom: 4px;
@@ -537,7 +545,7 @@ div.chips {
 		z-index: 19;
 		background: white;
 		list-style: none;
-		box-shadow: 0 3px 10px rgba(0,0,0,.23),0 3px 10px rgba(0,0,0,.16);
+		box-shadow: 0 3px 10px rgba(0,0,0,.23), 0 3px 10px rgba(0,0,0,.16);
 		padding:0;
 		li{
 			padding: 5px;
