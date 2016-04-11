@@ -131,7 +131,9 @@ class DropdownButton extends React.Component {
 		return(
 			<div className="toggle" onClick={this.props.toggle}>
 				<span>{this.props.selected}</span>
+				
 				<span className={"mdi " + (this.props.reverseCaretDirection ? "mdi-menu-up" : "mdi-menu-down")} ref="menu-icon"></span>
+				
 				{this.props.children}
 			</div>
 		);

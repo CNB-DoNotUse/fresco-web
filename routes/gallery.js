@@ -46,7 +46,7 @@ router.get('/:id', (req, res, next) => {
     var title = 'Gallery';
 
     if(gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
-      title += ' from ' + gallery.posts[0].location.address;
+        title += ' from ' + gallery.posts[0].location.address;
     }
 
     //User is logged in, show full gallery page

@@ -145,19 +145,16 @@ class Embed extends React.Component {
                         videos[i].pause();
                     };
 
-
                     if(video){ //If there is a video
                         video.paused ? video.play() : video.pause();
                         this.refs.muteButton.style.opacity = '1';
-
-                        //Hide the play button
-                        this.refs.playButton.style.opacity = '0';
                     } else { //If there isn't a video
                         //Hide the mute button for non-videos
                         this.refs.muteButton.style.opacity = '0';
-                        this.refs.playButton.style.opacity = '0';
                     }
 
+                    //Hide the play button
+                    this.refs.playButton.style.opacity = '0';
                     //Update state with the current index
                     this.setState({
                         currentIndex: index
@@ -179,10 +176,15 @@ class Embed extends React.Component {
 
             //Create video element if the post has a video
             if(post.video){
-                var source = post.video;
+                var source = post.video,
+                    userAgent = this.props.userAgent;
+
+                var isSafari = (userAgent.indexOf('Safari') != -1 && userAgent.indexOf('Chrome') == -1);
+
+                console.log(isSafari);
 
                 //Check if not iPhone or iPad
-                if (!this.props.userAgent.match(/iPad/i) && !this.props.userAgent.match(/iPhone/i)) {
+                if ((!userAgent.match(/iPad/i) && !userAgent.match(/iPhone/i)) && !isSafari) {
                     //Set mp4 source instead, otherwise it'll be m3u8 for iOS devices
                     source = global.formatVideo(post.video);
                 }
@@ -230,6 +232,15 @@ class Embed extends React.Component {
             );
         }
 
+        var initialVolumeStyle = {
+            opacity: 1
+        };
+
+        //Hide the volume button if the first post isn't a video
+        if(gallery.posts[0].video == null) {
+            initialVolumeStyle.opacity = 0;
+        }
+
         //Render embed
         return (
             <div className="embed">
@@ -239,10 +250,11 @@ class Embed extends React.Component {
                     <span 
                         className="mdi mdi-volume-off"
                         ref="muteButton"
+                        style={initialVolumeStyle}
                         onClick={this.muteVideo.bind(this, this.state.currentIndex)} >
                     </span>
 
-                    <span className="mdi mdi-fullscreen"></span>
+                    {/*<span className="mdi mdi-fullscreen"></span>*/}
                 </div>
                 
                 <span 
@@ -255,7 +267,8 @@ class Embed extends React.Component {
                     <div 
                         className="gallery-info-wrap" 
                         ref="galleryInfoWrap"
-                        onClick={this.toggleVideo.bind(this, this.state.currentIndex)} >
+                        onClick={this.toggleVideo.bind(this, this.state.currentIndex)} 
+                    >
                         <div className="gallery-info">
                             <p>{gallery.caption}</p>
 

@@ -4,6 +4,7 @@ import TopBar from './../components/topbar'
 import PostList from './../components/global/post-list'
 import GallerySidebar from './../components/galleryDetail/gallery-sidebar'
 import GalleryEdit from './../components/editing/gallery-edit'
+import GalleryShareDropdown from './../components/galleryDetail/gallery-share-dropdown'
 import App from './app'
 import global from '../../lib/global'
 
@@ -86,7 +87,11 @@ class GalleryDetail extends React.Component {
 					verifiedToggle={this.state.shouldShowVerifeidToggle}
 					onVerifiedToggled={this.onVerifiedToggled}
 					timeToggle={true}
-					chronToggle={true} />
+					chronToggle={true} >
+					
+					<GalleryShareDropdown gallery={this.state.gallery} />
+
+				</TopBar>
 
 				<GallerySidebar gallery={this.state.gallery} />
 
