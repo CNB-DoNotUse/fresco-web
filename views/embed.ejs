@@ -1,0 +1,18 @@
+<% 
+    react = typeof(react) !== 'undefined' ? react : '';
+%>
+
+<% include segments/head %>
+    
+<div id="app" class="wrapper"></div>
+
+
+<!-- Props -->
+<% if(typeof(props) !== 'undefined'){ %>
+    <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
+<% } %>
+
+<script type="text/javascript" src="/js/pages/common.js"></script>
+<script type="text/javascript" src="/js/pages/embed.js"></script>
+</body>
+</html>

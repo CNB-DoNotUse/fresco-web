@@ -298,10 +298,7 @@ class PublicGalleryInfo extends React.Component {
 }
 
 
-
-
 class PublicGalleryInfoSection extends React.Component {
-
 	constructor(props){
 		super(props);
 
@@ -316,7 +313,6 @@ class PublicGalleryInfoSection extends React.Component {
 
 		)
 	}
-
 }
 
 

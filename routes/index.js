@@ -56,29 +56,23 @@ router.get('/:modal?', (req, res, next) => {
  */
 
 router.get('/manage', (req, res, next) => {
-
   res.render('parse/manage');
-
 });
 
 router.get('/parse/reset', (req, res, next) => {
-
   res.render('parse/reset', {
       head: head,
       page: 'index',
       alerts: req.alerts
   });
-
 });
 
 router.get('/parse/reset-success', (req, res, next) => {
-
   res.render('parse/reset-success', {
       head: head,
       page: 'index',
       alerts: req.alerts
   });
-
 });
 
 /**
@@ -191,6 +185,10 @@ router.get('/verify', (req, res, next) => {
     });
   }
 
+});
+
+router.get('/embed', (req, res, next) => { 
+    res.render('embed');
 });
 
 module.exports = router;
