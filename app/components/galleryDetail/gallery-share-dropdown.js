@@ -26,7 +26,8 @@ export default class GalleryShareDropdown extends React.Component {
         var gallery = this.props.gallery,
             items = [],
             dropdownBody,
-            key = 0;
+            key = 0,
+            link = 'https://fresconews.com/gallery/' + gallery._id;
 
         items.push(
             <li
@@ -42,7 +43,7 @@ export default class GalleryShareDropdown extends React.Component {
             <li
                 key={key}
                 ref="copyLink"
-                data-clipboard-text={'https://fresconews.com/gallery/' + gallery._id}>
+                data-clipboard-text={link}>
                 Copy link</li>
         );
 
@@ -51,9 +52,15 @@ export default class GalleryShareDropdown extends React.Component {
         items.push(
             <li
                 key={key}>
-                <a href=""><span className="mdi mdi-facebook-box facebook"></span></a>
-                <a href=""><span className="mdi mdi-tumblr tumblr"></span></a>
-                <a href=""><span className="mdi mdi-twitter-box twitter"></span></a>
+                <a href={'https://www.facebook.com/dialog/share?app_id=267157383448416&display=popup&href='+ link +'&redirect_uri=' + encodeURIComponent('https://fresconews.com')}>
+                    <span className="mdi mdi-facebook-box facebook"></span>
+                </a>
+                <a href="">
+                    <span className="mdi mdi-twitter-box twitter"></span>
+                </a>
+                <a href={'https://www.tumblr.com/widgets/share/tool?canonicalUrl=' + link}>
+                    <span className="mdi mdi-tumblr tumblr"></span>
+                </a>
             </li>
         );
              
