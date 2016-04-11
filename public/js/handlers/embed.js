@@ -2,9 +2,7 @@
     window.onload = function() {
         var embedBlocks = document.getElementsByTagName('blockquote'),
             embedBlock = null,
-            WEB_ROOT = 'localhost:3000';
-
-        console.log('FUCK');
+            WEB_ROOT = 'http://dev.fresconews.com';
 
         //Find the block we're looking for by the class name
         for (var i = 0; i < embedBlocks.length; i++) {
@@ -22,7 +20,7 @@
 
         //Generate iFrame
         var iframe = document.createElement('iframe');
-        iframe.src = 'http://localhost:3000/embed/570beb386874bbd87848a344';
+        iframe.src = WEB_ROOT + '/embed/570beb386874bbd87848a344';
         iframe.width = '100%';
         iframe.height ='100%';
         iframe.style.cssText = '\
