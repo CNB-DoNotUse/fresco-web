@@ -20,7 +20,7 @@
 
         //Generate iFrame
         var iframe = document.createElement('iframe');
-        iframe.src = WEB_ROOT + '/embed/570beb386874bbd87848a344';
+        iframe.src = WEB_ROOT + '/embed/' + gallery;
         iframe.width = '100%';
         iframe.height ='100%';
         iframe.style.cssText = '\
