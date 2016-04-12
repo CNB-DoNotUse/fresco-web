@@ -27,7 +27,7 @@ export default class PurchaseAction extends React.Component {
 		if(!this.props.post) return;
 
 		var post = this.props.post._id,
-			assignment = this.props.assignment ? this.props.assignment._id : null
+			assignment = this.props.assignment || null
 
 		//Confirm the purchase
 		alertify.confirm("Are you sure you want to purchase? This will charge your account. Content from members of your outlet may be purchased free of charge.", (e) => {

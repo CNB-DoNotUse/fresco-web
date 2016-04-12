@@ -42,7 +42,6 @@ class AssignmentDetail extends React.Component {
  	 * @description Invoked from the on-page button `Expire`
  	 */
  	expireAssignment() {
-
  		$.post('/api/assignment/update', {
 			expiration_time: Date.now(),
  			id: this.state.assignment._id
@@ -97,6 +96,7 @@ class AssignmentDetail extends React.Component {
 	 					purchases={this.props.purchases}
 	 					posts={this.props.assignment.posts}
 	 					onlyVerified={this.state.verifiedToggle}
+	 					assignment={this.state.assignment}
 	 					scrollable={false}
 	 					editable={false}
 	 					size='large' />

@@ -267,6 +267,7 @@ export default class PostList extends React.Component {
 	        		rank={rank}
 	        		purchased={purchased}
 	        		toggled={toggled}
+	        		assignment={this.props.assignment}
 	        		key={i}
 	        		editable={this.props.editable}
 					sort={this.props.sort}
@@ -297,7 +298,6 @@ export default class PostList extends React.Component {
 				<GalleryCreate
 					setSelectedPosts={this.setSelectedPosts}
 					posts={this.state.selectedPosts} />
-
 
 			</div>
 		)

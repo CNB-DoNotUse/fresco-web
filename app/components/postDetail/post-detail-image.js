@@ -37,6 +37,16 @@ export default class PostDetailImage extends React.Component {
 			postMedia = '',
 			i = 0;
 
+		var assignment = window.location.search.split('assignment=')[1];
+
+		var downloadAction = <DownloadAction post={this.props.post} key={i++} />
+
+		var purchaseAction = <PurchaseAction 
+								post={this.props.post} 
+								assignment={assignment}
+								didPurchase={this.props.didPurchase} 
+								key={i++} />
+
 		//Check rank of user, if less than a CM
 		if(this.props.user.rank < global.RANKS.CONTENT_MANAGER){
 
@@ -45,32 +55,21 @@ export default class PostDetailImage extends React.Component {
 
 				//Check if the post has been purchased
 				if (this.state.purchased){
-					actions.push(
-						<DownloadAction post={this.props.post} key={i++} />
-					);
+					actions.push(downloadAction);
 				}
 				//Check if the post is licensed 
 				else if (this.props.post.license == 1){
-					actions.push(
-						<PurchaseAction post={this.props.post} didPurchase={this.props.didPurchase} key={i++} />
-					);
+					actions.push(purchaseAction);
 				}
 			}
 		}
 		//We are of a rank higher than a content manager
 		else{
 			
-			actions.push(
-				<DownloadAction post={this.props.post} key={i++} />
-			);
+			actions.push(downloadAction);
 
 			if (!this.state.purchased){
-
-				actions.push(
-					<PurchaseAction 
-						post={this.props.post} 
-						didPurchase={this.didPurchase} key={i++} />
-				);
+				actions.push(purchaseAction);
 			}
 
 		}
@@ -100,7 +99,5 @@ export default class PostDetailImage extends React.Component {
 			</div>
 
 		)
-
 	}
-
 }

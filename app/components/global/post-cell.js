@@ -19,21 +19,11 @@ export default class PostCell extends React.Component {
 	postClicked(e) {
 		//Check if clicked with shift key
 		if(e.shiftKey) {
-
 			this.props.togglePost(this.props.post)
-		}
-		//Open normally
-		else{
-
-			var win=window.open('/post/' + this.props.post._id, '_blank');
-
-			win.focus;
-
 		}
 	}
 
 	render() {
-
 		var post = this.props.post,
 			toggled = this.props.toggled ? 'toggled' : '',
 			time = this.props.sort == 'upload' ? post.time_created : post.time_captured,
@@ -67,6 +57,7 @@ export default class PostCell extends React.Component {
 				<div className="tile-foot">
 					<PostCellActions
 						post={post}
+						assignment={this.props.assignment}
 						purchased={this.props.purchased}
 						didPurchase={this.props.didPurchase}
 						rank={this.props.rank}
@@ -115,11 +106,9 @@ class PostCellStories extends React.Component {
 
 			var stories = this.props.stories.map((stories, i) => {
 		      	return (
-
 			        <li key={i}>
 			        	<a href={"/story/" + story._id}>{story.title}</a>
 			        </li>
-
 			    )
 	  		});
 
@@ -167,6 +156,7 @@ class PostCellActions extends React.Component {
 				actions.push(
 					<PurchaseAction
 						post={this.props.post}
+						assignment={this.props.assignment ? this.props.assignment._id : null}
 						didPurchase={this.props.didPurchase}
 						key={++key}/>
 				);
@@ -192,15 +182,22 @@ class PostCellActions extends React.Component {
 			actions.push(
 				<PurchaseAction
 					post={this.props.post}
+					assignment={this.props.assignment ? this.props.assignment._id : null}
 					didPurchase={this.props.didPurchase}
 					key={++key} />
 			);
 
 		}
 
+		var link = '/post/' + this.props.post._id;
+
+		if(this.props.assignment) {
+			link += '?assignment=' + this.props.assignment._id
+		}
+
 		return (
 			<div className="hover">
-				<a className="md-type-body2 post-link" href={'/post/'+ this.props.post._id}>See more</a>
+				<a className="md-type-body2 post-link" href={link}>See more</a>
 				{actions}
 			</div>
 		);
