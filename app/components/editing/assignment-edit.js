@@ -249,7 +249,8 @@ export default class AssignmentEdit extends React.Component {
 									    onPlaceChange={this.onPlaceChange}
 									    onMapDataChange={this.onMapDataChange}
 									    draggable={true}
-									    rerender={true} />
+									    rerender={true}
+									    hasRadius={true} />
 
 								</div>
 								
