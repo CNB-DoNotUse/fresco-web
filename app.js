@@ -224,8 +224,6 @@ app.use((error, req, res, next) => {
     var err = {};
     err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
 
-    console.log(err);
-
     // Development error handle will print stacktrace
     console.log('Method:', req.method,
                 '\nPath:', req.path,
@@ -263,13 +261,13 @@ app.use((req, res, next) => {
     // respond with html page
     if (req.accepts('html')) {
         return res.render('error', {
-                 err: {
-                     message: 'Page not found!',
-                     status: 404
-                 },
-                 section: 'public',
-                 page: 'error'
-              });
+           err: {
+               message: 'Page not found!',
+               status: 404
+           },
+           section: 'public',
+           page: 'error'
+        });
     }
 
     // respond with json

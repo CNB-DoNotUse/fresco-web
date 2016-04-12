@@ -51,7 +51,15 @@ router.get('/:id', (req, res, next) => {
 
     function doWithGallery (error, response, body) {
         if (error || !body || body.err) {
-            return next(error || body.err);
+            if(body.err === 'ERR_NOT_FOUND') {
+                var err = {
+                    message : 'Gallery for post not found!',
+                    status: 404
+                };
+                return next(err);
+            }
+
+            return next(error);
         }
 
         gallery = body.data;
