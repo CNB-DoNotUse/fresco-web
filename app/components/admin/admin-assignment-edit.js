@@ -168,12 +168,12 @@ export default class AdminAssignmentEdit extends React.Component {
             expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now() //Convert to ms and current timestamp
         }, (data) => {
             this.pending = false;
-            this.props.updateAssignment(this.props.assignment._id);
             if(data.err) {
                 $.snackbar({
                     content: 'Could not approve assignment!'
                 });
             } else {
+                this.props.updateAssignment(this.props.assignment._id);
                 $.snackbar({
                     content: 'Assignment Approved!'
                 });
@@ -284,7 +284,8 @@ export default class AdminAssignmentEdit extends React.Component {
                         onMapDataChange={this.onMapDataChange}
                         onRadiusUpdate={this.onRadiusUpdate}
                         draggable={true}
-                        rerender={true} />
+                        rerender={true}
+                        hasRadius={true} />
                     
                     <input
                         type="text"
