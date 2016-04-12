@@ -1,6 +1,7 @@
 import React from 'react'
 import PurchaseAction from '../actions/purchase-action.js'
 import DownloadAction from '../actions/download-action.js'
+import ShareAction from '../actions/share-action.js'
 import global from '../../../lib/global'
 
 /** //
@@ -47,6 +48,9 @@ export default class PostDetailImage extends React.Component {
 								didPurchase={this.props.didPurchase} 
 								key={i++} />
 
+		var shareAction = <ShareAction
+							gallery={this.props.gallery} />
+
 		//Check rank of user, if less than a CM
 		if(this.props.user.rank < global.RANKS.CONTENT_MANAGER){
 
@@ -73,6 +77,8 @@ export default class PostDetailImage extends React.Component {
 			}
 
 		}
+
+		actions.push(shareAction);
 
 		if (this.props.post.video){
 			postMedia = <video width="100%" height="100%" controls>

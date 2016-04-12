@@ -59,7 +59,7 @@ $radius:2px;
 			text-transform: uppercase;
 		}
 
-		@include rgba(0, 0, 0, 0.87);
+		@include rgba(color, 0, 0, 0.87);
 
 		.mdi{
 			vertical-align:middle;
@@ -76,47 +76,51 @@ $radius:2px;
 			margin-left:16px;
 		}
 	}
+}
 
-	.dropdown-body{
-		display:none;
-		position:absolute;
-		width:100%;
+/*
+	Dropdown body
+ */
+.dropdown-body{
+	display:none;
+	position:absolute;
+	width:100%;
+	margin:0;
+	padding:0;
+	background:#FFF;
+	@include box-shadow(0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
+
+	border-bottom-right-radius:$radius;
+	border-bottom-left-radius:$radius;
+
+	.empty-title{
+		font-size:14px;
+		padding:20px 16px;
+		font-weight:400;
+		margin:0;
+		line-height:20px;
+		@include rgba(color, 0, 0, 0, 0.54);
+	}
+
+	.list{
+		max-height:250px;
+		overflow:auto;
+		list-style:none;
 		margin:0;
 		padding:0;
-		background:#FFF;
-		@include box-shadow(0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
-
 		border-bottom-right-radius:$radius;
 		border-bottom-left-radius:$radius;
 
-		.empty-title{
-			font-size:14px;
-			padding:20px 16px;
+		li{
+			height:48px;
+			padding:14px;
+			font-size:16px;
 			font-weight:400;
-			margin:0;
-			line-height:20px;
-			@include rgba(color, 0, 0, 0, 0.54);
-		}
+			cursor:pointer;
+			@include rgba(color, 0, 0, 0, 0.87);
 
-		.list{
-			max-height:250px;
-			overflow:auto;
-			list-style:none;
-			margin:0;
-			padding:0;
-			border-bottom-right-radius:$radius;
-			border-bottom-left-radius:$radius;
-
-			li{
-				height:48px;
-				padding:14px;
-				font-size:16px;
-				font-weight:400;
-				@include rgba(color, 0, 0, 0, 0.87);
-
-				&:hover, &.active{
-					background:#f5f5f5;
-				}
+			&:hover, &.active{
+				background:#f5f5f5;
 			}
 		}
 	}
@@ -211,13 +215,55 @@ $radius:2px;
 
 		&:last-child{
 			height:40px !important;
+			cursor:auto;
+
+			&:hover{
+				background:none;
+			}
 		}
 		
 		span {
 			font-size:20px;
 			position:relative;
 			bottom:5px;
+			cursor:pointer;
 			margin-right:20px;
 		}
 	}
 }
+
+/**
+ * Share dropdown in post detail
+ */
+
+.post-share-dropdown {
+	right:0;
+	bottom:4px;
+	right:8px;
+	width:180px;
+	display:none;
+
+	li {
+		.cancel {
+			font-size:14px;
+			font-weight:500;
+			float:right;
+			margin:0;
+			@include rgba(color, 0, 0, 0.87);
+		}
+
+		&.first{
+			height:40px !important;
+			font-weight:500;
+			font-size:14px;
+			padding:10px 14px 14px;
+			cursor:auto;
+			@include rgba(color, 0, 0, 0, 0.54);
+
+			&:hover{
+				background:none;
+			}
+		}
+	}
+}
+

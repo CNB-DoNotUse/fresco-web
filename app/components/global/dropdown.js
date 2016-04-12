@@ -23,6 +23,10 @@ export default class Dropdown extends React.Component {
 				selected: this.props.selected
 			});
 		}
+
+		if(prevProps.toggled !== this.props.toggled) {
+			this.toggle();
+		}
 	}
 
 	/**

@@ -86,6 +86,7 @@ class PostDetail extends React.Component {
  						<div className="main">
  							<PostDetailImage
  								post={this.state.post}
+                                gallery={this.state.gallery}
  								user={this.props.user}
  								purchases={this.props.purchases} />
 

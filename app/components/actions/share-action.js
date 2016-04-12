@@ -1,27 +1,23 @@
 import React from 'react'
 import global from '../../../lib/global'
-import Dropdown from '../global/dropdown'
 import Clipboard from 'clipboard'
 
 /**
- * Gallery Share dropdown
+ * Global share action for posts
  */
 
-export default class GalleryShareDropdown extends React.Component {
+export default class ShareAction extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.state = {
-            locations: [],
-            dropdownToggled: false
-        }
+        this.toggleDrop = this.toggleDrop.bind(this);
     }
 
     componentDidMount() {
         var link = new Clipboard(this.refs.copyLink),
             embed = new Clipboard(this.refs.copyEmbed),
-            self = this;
+            self = this;   
 
         link.on('success', (e) => {
             successfulCopy();
@@ -32,12 +28,17 @@ export default class GalleryShareDropdown extends React.Component {
 
         //Hide and alert user of success
         function successfulCopy() {
-            self.setState({
-                dropdownToggled: !self.state.dropdownToggled
-            });
+            self.refs.drop.style.display = 'none';
 
             $.snackbar({ content: 'Successfully copied!'})
         }
+    }
+
+    toggleDrop() {
+        var drop = this.refs.drop,
+            style = drop.style.display;
+
+        drop.style.display = style === 'none' || style === '' ? 'block' : 'none';
     }
 
     render() {
@@ -46,6 +47,12 @@ export default class GalleryShareDropdown extends React.Component {
             dropdownBody,
             key = 0,
             link = 'https://fresconews.com/gallery/' + gallery._id;
+
+        items.push(
+            <li className="first" key={key}>SHARE GALLERY</li>
+        );
+
+        key++;
 
         items.push(
             <li
@@ -68,38 +75,42 @@ export default class GalleryShareDropdown extends React.Component {
         key++;
 
         items.push(
-            <li
-                key={key}>
+            <li key={key}>
+                <span className="cancel" onClick={this.toggleDrop}>CANCEL</span>
                 <a 
                     href={'https://www.facebook.com/dialog/share?app_id=267157383448416&display=popup&href='+ link +'&redirect_uri=' + encodeURIComponent('https://fresconews.com')}
                     target="_blank">
                     <span className="mdi mdi-facebook-box facebook"></span>
                 </a>
-                <a 
-                    href={'https://twitter.com/intent/tweet?text='+ encodeURIComponent(link)} 
+                <a  href={'https://twitter.com/intent/tweet?text='+ encodeURIComponent(link)} 
                     target="_blank">
                     <span className="mdi mdi-twitter-box twitter"></span>
                 </a>
-                <a href={'https://www.tumblr.com/widgets/share/tool?canonicalUrl=' + link} target="_blank">
-                    <span className="mdi mdi-tumblr tumblr"></span>
-                </a>
             </li>
         );
-             
 
-        dropdownBody = <ul className="list">
-                            {items}
-                        </ul>
+        var reverseDropdown = <div className="post-share-dropdown share-dropdown dropdown-body" ref="drop">
+                                <ul className="list">
+                                    {items}
+                                </ul>
+                            </div>
 
         return (
-            <Dropdown 
-                inList={true} 
-                toggled={this.state.dropdownToggled}
-                title={"SHARE GALLERY"}
-                dropdownClass={"share-dropdown"}>
-                    {dropdownBody}
-            </Dropdown>
-        );             
-    }
-}
+            <div className="share-action">
+                <span 
+                    className="mdi mdi-share icon pull-right" 
+                    onClick={this.toggleDrop} >
+                </span>
 
+                {reverseDropdown}
+            </div>
+        );        
+    } 
+
+    //Called whenever the purhcase icon is selected
+    share(event) {
+
+        
+    }
+
+}
