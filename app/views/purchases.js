@@ -158,7 +158,7 @@ class Purchases extends React.Component {
 	}
 
 	downloadExports(format) {
-		var filterOutletText = this.state.filterOutlets.map((outlet) => {
+		var filterOutletText = this.state.outlets.map((outlet) => {
 			return 'outlet[]='+ outlet._id
 		}).join('&');
 
