@@ -40,7 +40,7 @@ export class Search extends React.Component {
 					map: null,
 					radius: global.milesToMeters(queryRadius)
 				})
-				polygon = this.circleToPolygon(circle, 8);
+				polygon = this.circleToPolygon(circle, 16);
 			}
 		}
 
@@ -161,7 +161,7 @@ export class Search extends React.Component {
 			tags: this.state.tags,
 			lat: this.state.location ? this.state.location.lat : undefined,
 			lon: this.state.location ? this.state.location.lng : undefined,
-			radius: this.state.radius ? this.state.radius : undefined
+			radius: this.state.radius ? global.feetToMiles(this.state.radius) : undefined
 		}, (assignments) => {
 
 			if(assignments.err || !assignments.data) return;
@@ -182,7 +182,7 @@ export class Search extends React.Component {
 
 		if(this.state.map) {
 			if(this.state.circle) {
-				polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(this.state.circle, 8)));
+				polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(this.state.circle, 16)));
 			}
 		}
 
@@ -190,9 +190,9 @@ export class Search extends React.Component {
 			var circle = new google.maps.Circle({
 				map: null,
 				center: this.state.location,
-				radius: this.state.radius
+				radius: global.feetToMeters(this.state.radius)
 			});
-			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)));
+			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 16)));
 		}
 
 		$.get('/api/gallery/search', {
@@ -235,7 +235,7 @@ export class Search extends React.Component {
 
 		if(this.state.map) {
 			if(this.state.circle) {
-				polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(this.state.circle, 8)));
+				polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(this.state.circle, 16)));
 			}
 		}
 
@@ -243,10 +243,10 @@ export class Search extends React.Component {
 			var circle = new google.maps.Circle({
 				map: null,
 				center: this.state.location,
-				radius: this.state.radius
+				radius: global.feetToMeters(this.state.radius)
 			});
 
-			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 8)))
+			polygon = encodeURIComponent(JSON.stringify(this.circleToPolygon(circle, 16)))
 		}
 
 		$.get('/api/story/search', {

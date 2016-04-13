@@ -29,7 +29,8 @@ export default class LocationDropdown extends React.Component {
 								defaultLocation={this.props.defaultLocation}
 								location={this.props.location}
 								radius={this.props.radius}
-								units="miles" />
+								hasRadius={true}
+								units="feet" />
 
 		return (
 			<Dropdown
