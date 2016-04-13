@@ -48,7 +48,8 @@ export class Search extends React.Component {
 			tags = queryTags.split(',');
 		}
 
-		this.pending = false;
+		this.loadingGalleries = false;
+		this.loadingUsers = false;
 
 		this.state = {
 			assignments: [],
@@ -57,6 +58,7 @@ export class Search extends React.Component {
 			address: address,
 			location: location,
 			offset: 0,
+			userOffset: 0,
 			polygon: polygon,
 			purchases: [],
 			radius: Math.floor(global.milesToFeet(queryRadius)) || 250,
@@ -214,20 +216,21 @@ export class Search extends React.Component {
 		$.get('/api/user/search', {
 			q: this.props.query,
 			offset: offset,
-			limit: 10
-		}, (users) => {
+			limit: 20
+		}, (response) => {
+			if(response.err || !response.data.length) return;
 
-			if(users.err || !users.data.length) return;
+			this.loadingUsers = false;
 
 			this.setState({
-				users: force ? users.data : this.state.users.concat(users.data)
+				users: force ? response.data : this.state.users.concat(response.data),
+				userOffset: force ? 0 : this.state.users.length + response.data.length
 			});
 		});
 	}
 
 	// Query API for stories
 	getStories(offset, force) {
-
 		var polygon = null;
 
 		if(this.state.map) {
@@ -262,7 +265,6 @@ export class Search extends React.Component {
 	}
 
 	addTag(tag) {
-
 		if(this.state.tags.indexOf(tag) != -1) return;
 
 		this.setState({
@@ -282,7 +284,6 @@ export class Search extends React.Component {
 			}
 		}
 
-
 		this.setState({
 			tags: tags
 		});
@@ -296,26 +297,33 @@ export class Search extends React.Component {
 
 	// Called when gallery div scrolls
 	galleryScroll(e) {
-		// Get scroll offset and get more purchases if necessary.
-		var searchContainer = document.getElementById('search-container');
-		var pxToBottom = searchContainer.scrollHeight - (searchContainer.clientHeight + searchContainer.scrollTop);
-		var shouldGetMoreResults = pxToBottom <= 96;
-		// Check if already getting purchases because async
-		if(shouldGetMoreResults && !this.pending) {
+		var grid = e.target,
+			bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400);
 
+		//Check that nothing is loading and that we're at the end of the scroll,
+		//and that we have a parent bind to load  more galleries
+		if(!this.loadingGalleries && bottomReached) {
+			this.loadingGalleries = true;
 
-			this.pending = true;
 			// Pass current offset to getMorePurchases
 			this.getGalleries(this.state.offset, (galleries) => {
 				// Allow getting more results after we've gotten more results.
 				// Update offset to new results length
+				this.loadingGalleries = false;
 
-				this.pending = false;
 				this.setState({
 					galleries: this.state.galleries.concat(galleries),
 					offset: this.state.galleries.length + galleries.length
 				});
 			});
+		}
+
+		//Check that nothing is loading and that we're at the end of the scroll,
+		//and that we have a parent bind to load  more posts
+		if(!this.loadingUsers && bottomReached){
+			this.loadingUsers = true;
+
+			this.getUsers(this.state.userOffset, false);
 		}
 	}
 
@@ -345,7 +353,7 @@ export class Search extends React.Component {
 	}
 
 	/**
-	 *
+	 * Resets galleries in state back to initial offset
 	 */
 	resetGalleries() {
 		this.getGalleries(0, (galleries) => {
