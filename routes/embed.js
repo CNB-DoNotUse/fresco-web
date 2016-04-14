@@ -39,11 +39,16 @@ router.get('/:id', (req, res, next) => {
           return next(err);
         }
 
-        var gallery = body.data;
+        // element = React.createElement(PublicGallery, props),
+        // react = ReactDOMServer.renderToString(element);
+        // 
+        //
 
         var props = {
-                gallery: gallery,
-                userAgent: req.headers['user-agent']
+                gallery: body.data,
+                userAgent: req.headers['user-agent'],
+                cycle: req.query.cycle,
+                start: req.query.start
             };
 
         res.render('embed', {

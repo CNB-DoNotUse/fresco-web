@@ -13,16 +13,29 @@
         }
 
         var embedParent =  embedBlock.parentNode, //define parent
-            gallery = embedBlock.dataset.gallery; //define galleryId
+            gallery = embedBlock.dataset.gallery, //define galleryId
+            width = '100%',
+            height = '100%',
+            source = WEB_ROOT + '/embed/' + gallery;
+
+        if(typeof(embedBlock.dataset.width) !== 'undefined'){
+            width = embedBlock.dataset.width;
+        }
+        if(typeof(embedBlock.dataset.start) !== 'undefined')){
+            src += '?start=' + embedBlock.dataset.start;
+        }
+        if(typeof(embedBlock.dataset.cycle) !== 'undefined')){
+            src += '&cycle=' + embedBlock.dataset.cycle;
+        }
 
         //If we have no gallery, stop the embed
         if(!gallery) return;
 
         //Generate iFrame
         var iframe = document.createElement('iframe');
-        iframe.src = WEB_ROOT + '/embed/' + gallery;
-        iframe.width = '100%';
-        iframe.height ='100%';
+        iframe.src = source;
+        iframe.width = width;
+        iframe.height = height;
         iframe.style.cssText = '\
             border: 0;\
             margin: 0;\
