@@ -81,7 +81,7 @@ export default class GalleryShareDropdown extends React.Component {
                 <a 
                     href={'https://twitter.com/intent/tweet?text='+ encodeURIComponent(link)} 
                     target="_blank">
-                    <span className="mdi mdi-twitter-box twitter"></span>
+                    <span className="mdi mdi-twitter twitter"></span>
                 </a>
             </li>
         );
@@ -96,6 +96,7 @@ export default class GalleryShareDropdown extends React.Component {
                 inList={true} 
                 toggled={this.state.dropdownToggled}
                 title={"SHARE GALLERY"}
+                icon='mdi mdi-share'
                 dropdownClass={"share-dropdown"}>
                     {dropdownBody}
             </Dropdown>

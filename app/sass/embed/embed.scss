@@ -94,13 +94,11 @@ $mobileHeight:359px;
         @include transition(opacity .3s ease-in-out);
 
         @include mobile {
-            height:calc(100vh - 359px);
+            max-height:224px;
         }
-
         @include tablet {
             height:30vh;
         }
-        
         @include mobileAndTablet {
             position:static;
             opacity:1 !important;
@@ -124,6 +122,19 @@ $mobileHeight:359px;
                 line-height:24px;
                 font-weight:400;
                 margin:0 0 16px;
+                max-height:144px;
+                overflow:hidden;
+                display: block;
+                    display: -webkit-box;
+                    line-height: 1.4;
+                    -webkit-line-clamp: 6;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+
+                @include mobile {
+                    max-height:160px;
+                }
             }
 
             a {

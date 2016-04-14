@@ -18,9 +18,6 @@
             height = '100%',
             source = WEB_ROOT + '/embed/' + gallery;
 
-        if(typeof(embedBlock.dataset.height) !== 'undefined'){
-            height = embedBlock.dataset.height;
-        }
         if(typeof(embedBlock.dataset.width) !== 'undefined'){
             width = embedBlock.dataset.width;
         }
@@ -37,12 +34,12 @@
         //Generate iFrame
         var iframe = document.createElement('iframe');
         iframe.src = source;
-        iframe.width = width;
-        iframe.height = height;
         iframe.style.cssText = '\
             border: 0;\
             margin: 0;\
             padding:0;\
+            width:' + width + ';\
+            height:' + height + ';\
             -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
                -mox-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
                     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
@@ -56,7 +53,6 @@
         
         //Insert iframe after blockquote
         embedParent.insertBefore(iframe, embedBlock.nextSibling);
-
         //Remove blockquote
         embedParent.removeChild(embedBlock);
     };
