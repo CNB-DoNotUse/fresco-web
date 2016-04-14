@@ -5,27 +5,5 @@
 <% include segments/head %>
 	
 	<div id="app" class="wrapper"><%- react %></div>
-
-<script type="text/javascript">
-    (function(){
-      var _xhr = null;
-      window.setInterval(function() {
-        if(_xhr) {
-          _xhr.abort();
-          _xhr = null;
-        }
-        _xhr = $.ajax({
-          url: '/api/ping',
-          method: 'get',
-          success: (result, status, xhr) => {
-          },
-          error: (xhr, status, error) => {
-            if(xhr.status == 401) {
-              return location.reload();
-            }
-          }
-        });
-      }, 15000);
-    })();
-</script>
+  
 <% include segments/scripts %>

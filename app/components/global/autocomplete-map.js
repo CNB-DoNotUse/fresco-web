@@ -14,7 +14,7 @@ export default class AutocompleteMap extends React.Component {
 	 * Updates prop radius function
 	 */
 	updateRadius() {
-		var radius = parseFloat(this.refs.radius.value);
+		var radius = parseFloat(this.refs.radius.value.replace(/^0-9/g, ''));
 		//Check if a number
 		if(!isNaN(radius)){
 			this.props.onRadiusUpdate(radius);
@@ -39,7 +39,7 @@ export default class AutocompleteMap extends React.Component {
 			                data-hint={this.props.unit}
 			                placeholder="Radius"
 			                defaultValue={Math.round(this.props.radius)}
-			                onKeyUp={this.updateRadius}
+			                onChange={this.updateRadius}
 			                ref="radius" />
 		}
 
