@@ -18,6 +18,9 @@
             height = '100%',
             source = WEB_ROOT + '/embed/' + gallery;
 
+        if(typeof(embedBlock.dataset.height) !== 'undefined'){
+            height = embedBlock.dataset.height;
+        }
         if(typeof(embedBlock.dataset.width) !== 'undefined'){
             width = embedBlock.dataset.width;
         }
