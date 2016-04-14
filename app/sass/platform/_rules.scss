@@ -413,11 +413,12 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 
 // related
 .related > div.tabs > div.tab {
-	height: auto;
+	height:192px;
 	width: 100%;
 	background-color: $color-shade-2;
 	white-space: nowrap;
 	overflow-x: auto;
+	overflow-y: hidden;
 	> div.tab-inner {
 		display: table;
 		> a.btn {
@@ -429,10 +430,10 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 			background-color: $color-shade-4;
 			display: table-cell;
 		}
-		> img {
+		img {
 			display: inline-block;
 			margin-left: -3px;
-			height: 144px;
+			height: 192px;
 		}
 	}
 }
