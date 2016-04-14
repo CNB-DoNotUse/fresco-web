@@ -21,11 +21,11 @@
         if(typeof(embedBlock.dataset.width) !== 'undefined'){
             width = embedBlock.dataset.width;
         }
-        if(typeof(embedBlock.dataset.start) !== 'undefined')){
-            src += '?start=' + embedBlock.dataset.start;
+        if(typeof(embedBlock.dataset.start) !== 'undefined'){
+            source += '?start=' + embedBlock.dataset.start;
         }
-        if(typeof(embedBlock.dataset.cycle) !== 'undefined')){
-            src += '&cycle=' + embedBlock.dataset.cycle;
+        if(typeof(embedBlock.dataset.cycle) !== 'undefined'){
+            source += '&cycle=' + embedBlock.dataset.cycle;
         }
 
         //If we have no gallery, stop the embed
@@ -43,6 +43,10 @@
             -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
                -mox-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
                     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
+            -webkit-border-radius:2px;\
+               -moz-border-radius:2px;\
+                -ms-border-radius:2px;\
+                    border-radius:2px;\
             display: block;\
             background: rgb(255, 255, 255);\
         ';
