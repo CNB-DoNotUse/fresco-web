@@ -40,12 +40,13 @@ export default class PostDetailImage extends React.Component {
 
 		var assignment = window.location.search.split('assignment=')[1];
 
-		var downloadAction = <DownloadAction post={this.props.post} key={i++} />
+		var downloadAction = <DownloadAction 
+								post={this.props.post} key={i++} />
 
 		var purchaseAction = <PurchaseAction 
 								post={this.props.post} 
 								assignment={assignment}
-								didPurchase={this.props.didPurchase} 
+								didPurchase={this.didPurchase} 
 								key={i++} />
 
 		var shareAction = <ShareAction
@@ -69,13 +70,11 @@ export default class PostDetailImage extends React.Component {
 		}
 		//We are of a rank higher than a content manager
 		else{
-			
 			actions.push(downloadAction);
 
 			if (!this.state.purchased){
 				actions.push(purchaseAction);
 			}
-
 		}
 
 		actions.push(shareAction);
@@ -87,8 +86,10 @@ export default class PostDetailImage extends React.Component {
 						</video>
 		}
 		else{
-		
-			postMedia = <img className="img-responsive" src={global.formatImg(this.props.post.image, 'large')} />
+			postMedia = <img 
+							className="img-responsive" 
+							src={global.formatImg(this.props.post.image, 'large')} 
+						/>
 		}
 
 
