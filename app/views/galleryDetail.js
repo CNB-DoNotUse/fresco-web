@@ -4,7 +4,7 @@ import TopBar from './../components/topbar'
 import PostList from './../components/global/post-list'
 import GallerySidebar from './../components/galleryDetail/gallery-sidebar'
 import GalleryEdit from './../components/editing/gallery-edit'
-import GalleryShareDropdown from './../components/galleryDetail/gallery-share-dropdown'
+import GalleryShareDropdown from './../components/global/gallery-share-dropdown'
 import App from './app'
 import global from '../../lib/global'
 

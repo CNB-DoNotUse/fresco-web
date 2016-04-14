@@ -7,6 +7,7 @@ import PostRelated from './../components/postDetail/post-related'
 import PostRelatedTags from './../components/postDetail/post-related-tags'
 import PostDetailImage from './../components/postDetail/post-detail-image'
 import GalleryEdit from './../components/editing/gallery-edit'
+import GalleryShareDropdown from './../components/global/gallery-share-dropdown'
 import global from '../../lib/global'
 
 /**
@@ -79,7 +80,10 @@ class PostDetail extends React.Component {
  				<TopBar
  					title={this.props.title}
  					editable={editable}
- 					edit={this.toggle} />
+ 					edit={this.toggle}>
+
+                    <GalleryShareDropdown gallery={this.state.gallery} />
+                </TopBar>
 
  				<div className="content">
  					<div className="row">

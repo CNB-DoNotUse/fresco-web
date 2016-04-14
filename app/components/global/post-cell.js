@@ -36,7 +36,7 @@ export default class PostCell extends React.Component {
 			statusClass += this.props.purchased ? 'available ' : 'md-type-black-disabled ';
 
 		return(
-
+			
 			<div className={size + ' tile ' + toggled} >
 				<div className="tile-body">
 					<div className="frame"></div>
@@ -90,10 +90,6 @@ PostCell.defaultProps = {
 	toggled: false
 }
 
-
-// <span className="mdi mdi-library-plus icon pull-right"></span>
-// <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
-
 /**
  * Gallery Cell Stories List
  */
@@ -120,7 +116,6 @@ class PostCellStories extends React.Component {
 			<ul className="md-type-body2">{stories}</ul>
 		);
 	}
-
 }
 
 PostCellStories.defaultProps = {

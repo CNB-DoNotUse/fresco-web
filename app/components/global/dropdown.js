@@ -108,8 +108,6 @@ export default class Dropdown extends React.Component {
 		if(this.props.dropdownClass)
 			className += ' ' + this.props.dropdownClass;
 
-		console.log(this.state.toggled);
-
 		return (
 			<div className={className + (this.state.toggled ? ' active' :'')} 
 				ref="drop">
@@ -144,13 +142,20 @@ class DropdownButton extends React.Component {
 
 		if(typeof(this.props.icon) !== 'undefined' && !this.props.toggled) {
 			buttonHeader = [
-				<span className={this.props.icon} ref="menu-icon"></span>
+				<span 
+					className={this.props.icon} 
+					ref="menu-icon"
+					key='0'></span>
 			];
 		} else {
 			buttonHeader = [
-				<span>{this.props.selected}</span>,
+				<span key='0'>{this.props.selected}</span>,
 				
-				<span className={menuClass} ref="menu-icon"></span>
+				<span 
+					className={menuClass} 
+					ref="menu-icon"
+					key='1'>
+				</span>
 			];
 		}
 
