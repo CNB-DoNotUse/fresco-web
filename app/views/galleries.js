@@ -27,11 +27,13 @@ import TopBar from './../components/topbar'
  	}
 
 	render() {
+
 		return (
 			<App user={this.props.user}>
 				<TopBar 
 					title="Galleries"
 					timeToggle={true}
+					rank={this.props.user.rank}
 					verifiedToggle={true}
 					updateSort={this.updateSort}
 					onVerifiedToggled={this.onVerifiedToggled} />

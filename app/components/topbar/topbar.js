@@ -165,7 +165,7 @@ export default class TopBar extends React.Component {
 			);
 		}
 
-		if (this.props.verifiedToggle) {
+		if (this.props.verifiedToggle && this.props.rank > global.RANKS.BASIC) {
 
 			topbarItems.push(
 				<Dropdown
@@ -175,7 +175,6 @@ export default class TopBar extends React.Component {
 					key="verifiedToggle"
 					inList={true} />
 			);
-
 		}
 
 		if(this.props.tabs) {
@@ -196,7 +195,9 @@ export default class TopBar extends React.Component {
 				)
 			});
 
-			var tabs = <div className="tab-control">{tabContent}</div>
+			var tabs = <div className="tab-control">
+							{tabContent}
+						</div>
 		}
 
 		return (
