@@ -44,6 +44,7 @@ class Archive extends React.Component {
 				<TopBar
 					title={this.props.title}
 					updateSort={this.updateSort}
+					rank={this.props.user.rank}
 					timeToggle={true}
 					verifiedToggle={true}
 					onVerifiedToggled={this.onVerifiedToggled}

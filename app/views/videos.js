@@ -79,6 +79,7 @@ class Videos extends React.Component {
 					title="Videos"
 					timeToggle={true}
 					verifiedToggle={true}
+					rank={this.props.user.rank}
 					updateSort={this.updateSort}
 					chronToggle={true}
 					onVerifiedToggled={this.onVerifiedToggled} />
