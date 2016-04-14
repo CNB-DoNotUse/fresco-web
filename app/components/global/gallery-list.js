@@ -44,6 +44,10 @@ export default class GalleryList extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if(prevProps.onlyVerified != this.props.onlyVerified) {
+			this.setState({
+				galleries: []
+			});
+			
 			this.loadInitalGalleries();
 		}
 	}

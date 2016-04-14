@@ -102,14 +102,25 @@ export default class PostList extends React.Component {
 		//`or` Checks if the sort prop is changed
 		if(prevProps.onlyVerified != this.props.onlyVerified
 			|| prevProps.sort != this.props.sort ) {
+			//Clear out previous posts
+			this.setState({
+				posts: []
+			});
+
+			//Then load them again
 			this.loadInitialPosts();
 		}
 
 		// If we aren't dynamically loading posts, then sort them locally
 		if (!this.props.scrollable && prevProps.sort != this.props.sort) {
-			let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
-			let posts = this.state.posts.sort((a,b) => {return b[field] - a[field]});
-			this.setState({posts});
+			let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created',
+				posts = this.state.posts.sort((post1, post2) => {
+					return post1[field] > post2[field]
+				});
+			
+			this.setState({
+				posts: posts
+			});
 		}
 	}
 
@@ -125,7 +136,6 @@ export default class PostList extends React.Component {
 	 * Scroll listener for main window
 	 */
 	scroll(e) {
-
 		var grid = e.target;
 
 		//Check that nothing is loading and that we're at the end of the scroll,
@@ -143,13 +153,11 @@ export default class PostList extends React.Component {
 
 				//Disables scroll, and returns if posts are empty
 				if(!posts || posts.length == 0){
-
 					this.setState({
 						scrollable: false
 					});
 
 					return;
-
 				}
 
 				var offset = this.state.posts.length + posts.length;

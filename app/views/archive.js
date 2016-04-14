@@ -70,7 +70,6 @@ class Archive extends React.Component {
 
 	//Returns array of posts with offset and callback, used in child PostList
 	loadPosts (passedOffset, callback) {
-
 		var params = {
 			limit: global.postCount,
 			offset: passedOffset,
@@ -99,7 +98,6 @@ class Archive extends React.Component {
 			}
 
 		});
-
 	}
 
 }

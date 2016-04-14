@@ -63,7 +63,6 @@ export default class PurchaseAction extends React.Component {
 						});
 
 						this.props.didPurchase(this.props.post._id);
-
 					},
 					error: (xhr, status, error) => {
 						$.snackbar({
