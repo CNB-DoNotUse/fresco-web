@@ -90,7 +90,6 @@ class GalleryDetail extends React.Component {
 					chronToggle={true} >
 					
 					<GalleryShareDropdown gallery={this.state.gallery} />
-
 				</TopBar>
 
 				<GallerySidebar gallery={this.state.gallery} />

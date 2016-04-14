@@ -75,8 +75,8 @@ export default class ShareAction extends React.Component {
         key++;
 
         items.push(
-            <li key={key}>
-                <span className="cancel" onClick={this.toggleDrop}>CANCEL</span>
+            <li key={key} className="last">
+                <span className="cancel btn btn-flat" onClick={this.toggleDrop}>CANCEL</span>
                 <a 
                     href={'https://www.facebook.com/dialog/share?app_id=267157383448416&display=popup&href='+ link +'&redirect_uri=' + encodeURIComponent('https://fresconews.com')}
                     target="_blank">
@@ -84,7 +84,7 @@ export default class ShareAction extends React.Component {
                 </a>
                 <a  href={'https://twitter.com/intent/tweet?text='+ encodeURIComponent(link)} 
                     target="_blank">
-                    <span className="mdi mdi-twitter-box twitter"></span>
+                    <span className="mdi mdi-twitter twitter"></span>
                 </a>
             </li>
         );
@@ -93,7 +93,7 @@ export default class ShareAction extends React.Component {
                                 <ul className="list">
                                     {items}
                                 </ul>
-                            </div>
+                                </div>
 
         return (
             <div className="share-action">

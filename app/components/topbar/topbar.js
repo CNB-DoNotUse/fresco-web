@@ -99,6 +99,7 @@ export default class TopBar extends React.Component {
 			topbarItems = [],
 			locationInput = '',
 			saveButton = '',
+			editButton = '',
 			title = '';
 
 		if(this.props.title){
@@ -134,11 +135,9 @@ export default class TopBar extends React.Component {
 			else
 				className += " mdi-pencil";
 
-			topbarItems.push(
-				<a className={className}
+			editButton = <a className={className}
 					key="edit"
 					onClick={this.props.edit}></a>
-			);
 		}
 
 		// If showing both the capture type and time type toggles, put the time
@@ -211,10 +210,17 @@ export default class TopBar extends React.Component {
 				<div className="spacer"></div>
 
 				{title}
+				
 				{locationInput}
+				
 				{tabs}
-				{topbarItems}
+				
+				{editButton}
+
 				{this.props.children}
+
+				{topbarItems}
+
 				{saveButton}
 			</nav>
 		);

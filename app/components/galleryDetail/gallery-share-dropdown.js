@@ -75,13 +75,13 @@ export default class GalleryShareDropdown extends React.Component {
                     target="_blank">
                     <span className="mdi mdi-facebook-box facebook"></span>
                 </a>
+                <a href={'https://www.tumblr.com/widgets/share/tool?canonicalUrl=' + link} target="_blank">
+                    <span className="mdi mdi-tumblr tumblr"></span>
+                </a>
                 <a 
                     href={'https://twitter.com/intent/tweet?text='+ encodeURIComponent(link)} 
                     target="_blank">
                     <span className="mdi mdi-twitter-box twitter"></span>
-                </a>
-                <a href={'https://www.tumblr.com/widgets/share/tool?canonicalUrl=' + link} target="_blank">
-                    <span className="mdi mdi-tumblr tumblr"></span>
                 </a>
             </li>
         );

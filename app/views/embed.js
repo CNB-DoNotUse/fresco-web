@@ -135,6 +135,8 @@ class Embed extends React.Component {
                 dots: gallery.posts.length > 1 ? true : false,
                 arrows: false,
                 infinite: false,
+                initialSlide: (this.props.start < gallery.posts.length ? this.props.start : 0),
+                autoplay: this.props.cycle,
                 afterChange: (index) => {
                     var videos = document.getElementsByTagName('video'),
                         slide = document.getElementsByClassName('slick-slide')[index],
@@ -180,8 +182,6 @@ class Embed extends React.Component {
                     userAgent = this.props.userAgent;
 
                 var isSafari = (userAgent.indexOf('Safari') != -1 && userAgent.indexOf('Chrome') == -1);
-
-                console.log(isSafari);
 
                 //Check if not iPhone or iPad
                 if ((!userAgent.match(/iPad/i) && !userAgent.match(/iPhone/i)) && !isSafari) {
@@ -267,8 +267,7 @@ class Embed extends React.Component {
                     <div 
                         className="gallery-info-wrap" 
                         ref="galleryInfoWrap"
-                        onClick={this.toggleVideo.bind(this, this.state.currentIndex)} 
-                    >
+                        onClick={this.toggleVideo.bind(this, this.state.currentIndex)} >
                         <div className="gallery-info">
                             <p>{gallery.caption}</p>
 
@@ -285,9 +284,20 @@ class Embed extends React.Component {
     }
 }
 
+/**
+ * Start = Post to start the slide at
+ * Cycle = BOOL to enable/disable automatic clycling
+ */
+Embed.defaultProps = {
+    start: 0,
+    cycle: false
+}
+
 ReactDOM.render(
     <Embed 
         gallery={window.__initialProps__.gallery}
+        start={window.__initialProps__.start}
+        cycle={window.__initialProps__.cycle}
         userAgent={window.__initialProps__.userAgent} />,
     document.getElementById('app')
 );

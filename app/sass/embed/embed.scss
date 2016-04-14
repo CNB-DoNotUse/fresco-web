@@ -73,13 +73,14 @@ iframe{
     }
 }
 
+$mobileHeight:359px;
+
 //Gallery element holding caption and slick slider
 .gallery {
     width:100%;
     height:100%;
     cursor:pointer;
     @include border-radius($borderRadius);
-
 
     // Hovered info
     .gallery-info-wrap{
@@ -91,15 +92,23 @@ iframe{
         z-index:5;
         color:#FFF;
         @include transition(opacity .3s ease-in-out);
+
+        @include mobile {
+            height:calc(100vh - 359px);
+        }
+
+        @include tablet {
+            height:30vh;
+        }
         
         @include mobileAndTablet {
             position:static;
             opacity:1 !important;
             background:0;
-            height:30vh;
             overflow:auto;
             @include rgba(color, 0, 0, 0, 0.87);       
         }
+
         .gallery-info{
             margin-top:70px;
             padding:0 24px;
@@ -141,8 +150,12 @@ iframe{
         height:100vh;
 
         @include border-radius($borderRadius);
-        @include mobileAndTablet {
+
+        @include tablet {
             height:70vh;
+        }
+        @include mobile {
+            height:359px;
         }
 
         /* Individual Slick Slide */
