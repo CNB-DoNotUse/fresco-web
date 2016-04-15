@@ -80,6 +80,7 @@ class AssignmentDetail extends React.Component {
  					title={this.state.assignment.title}
  					timeToggle={true}
  					chronToggle={true}
+ 					rank={this.props.user.rank}
  					onVerifiedToggled={this.onVerifiedToggled}
  					verifiedToggle={this.props.user.rank >= global.RANKS.CONTENT_MANAGER} /* Based on user rank to see verified content */
  					editable={true}
