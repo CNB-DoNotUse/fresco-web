@@ -1,5 +1,6 @@
 import React from 'react';
 import EditMap from '../editing/edit-map'
+import FrescoAutocomplete from '../global/fresco-autocomplete.js'
 import global from '../../../lib/global'
 
 /** //
@@ -16,64 +17,55 @@ export default class DispatchSubmit extends React.Component {
 
 	constructor(props) {
 		super(props);
+		
 		this.state = {
 			place: null
 		}
+
 		this.submitForm = this.submitForm.bind(this);
 		this.updateRadius = this.updateRadius.bind(this);
+		this.autocompleteUpdated = this.autocompleteUpdated.bind(this);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-
 		var self = this;
-		this.refs.autocomplete.className = this.refs.autocomplete.className.replace(/\bempty\b/, '');
 
-		// Dispatch map has an eventlistener to set lastChangeSource.
+		// Dispatch map has an eventlistener to set `lastChangeSource` 
+		// This occurs when the pending assignment marker is moved.
 		if(this.props.lastChangeSource == 'markerDrag' && this.props.newAssignment) {
 			var geocoder = new google.maps.Geocoder();
 
 			geocoder.geocode({'location': {
 				lat: this.props.newAssignment.location.lat,
 				lng: this.props.newAssignment.location.lng
-			}}, function(results, status){
-
-				if(status === google.maps.GeocoderStatus.OK && results[0])
-					self.refs.autocomplete.value = results[0].formatted_address;
+			}}, (results, status) => {
+				if(status === google.maps.GeocoderStatus.OK && results[0]){
+					this.setState({
+						autocompleteText: results[0].formatted_address
+					})
+				}
 			});
-
 		}
-
 	}
 
-	componentDidMount() {
+	/**
+	 * Prop function called from `FrescoAutocomplete` for getting autocomplete date
+	 */
+	autocompleteUpdated(autocompleteData) {
+		//Update the position to the parent component
+		this.props.updateNewAssignment(
+			autocompleteData.location,
+			this.props.newAssignment ? this.props.newAssignment.radius : null,
+			this.props.newAssignment ? this.props.newAssignment.zoom : null,
+			'autocomplete'
+		);
 
-		this.refs.autocomplete.className = this.refs.autocomplete.className.replace(/\bempty\b/, '');
+		var prediction = autocompleteData.prediction;
 
-		//Set up autocomplete listener
-		var autocomplete = new google.maps.places.Autocomplete(this.refs.autocomplete);
-
-		google.maps.event.addListener(autocomplete, 'place_changed', () => {
-
-			var place = autocomplete.getPlace(),
-				location = {
-					lat: place.geometry.location.lat(),
-					lng: place.geometry.location.lng()
-				};
-
-			//Update the position to the parent component
-			this.props.updateNewAssignment(
-				location,
-				this.props.newAssignment ? this.props.newAssignment.radius : null,
-				this.props.newAssignment ? this.props.newAssignment.zoom : null,
-				'autocomplete'
-			);
-
-			this.setState({
-				place: autocomplete.getPlace()
-			});
-
+		//Update input value of autocomplete
+		this.setState({
+			autocompleteText: prediction.description || prediction.formatted_address
 		});
-
 	}
 
 	/**
@@ -82,7 +74,7 @@ export default class DispatchSubmit extends React.Component {
 	updateRadius(e) {
 	    var radiusInMiles= global.feetToMiles(parseFloat(this.refs['radius'].value));
 
-	    if(radiusInMiles == 'NaN')
+	    if(radiusInMiles == 'NaN') 
 	    	return;
 
 	    this.props.updateNewAssignment(
@@ -92,21 +84,23 @@ export default class DispatchSubmit extends React.Component {
 	    );
 	}
 
+	/**
+	 * Form submissions
+	 */
 	submitForm() {
 		var assignment = {
 				title: this.refs.title.value,
 				caption: this.refs.caption.value,
 				radius: global.feetToMiles(parseInt(this.refs.radius.value)),
 				expiration_time: this.refs.expiration.value ? this.refs.expiration.value  * 60 * 60 * 1000 + Date.now() : null, //Convert to milliseconds and add current time
-				address: this.refs.autocomplete.value,
-				googlemaps: this.refs.autocomplete.value,
+				address: this.refs.autocomplete.refs.inputField.value,
+				googlemaps: this.refs.autocomplete.refs.inputField.value,
 				lon: this.props.newAssignment.location.lng, //Should be lng
 				lat: this.props.newAssignment.location.lat,
 				now: Date.now()
 			};
 
 		/* Run Checks */
-
 		if (global.isEmptyString(assignment.title)){
 			$.snackbar({content: 'Your assignment must have a title!'});
 			return;
@@ -140,7 +134,6 @@ export default class DispatchSubmit extends React.Component {
 					return;
 				}
 				else{
-
 					//Hide the assignment card
 					this.props.toggleSubmissionCard(false, null);
 
@@ -165,7 +158,6 @@ export default class DispatchSubmit extends React.Component {
 	}
 
 	render() {
-
 		var paymentStatus = '',
 			paymentMessage = '',
 			editMap = '',
@@ -192,6 +184,7 @@ export default class DispatchSubmit extends React.Component {
 						onClick={this.props.toggleSubmissionCard.bind(null, false)}
 						className="mdi mdi-close pull-right icon toggle-card toggler"></span>
 				</div>
+				
 				<div className="card-foot center">
 					<button
 						id="add-assignment-submit"
@@ -200,6 +193,7 @@ export default class DispatchSubmit extends React.Component {
 						onClick={this.submitForm}
 						disabled={!this.props.user.outlet && !this.props.user.outlet.card}>Submit</button>
 				</div>
+				
 				<div className="card-body">
 					<div className="form-group-default">
 						<input ref="title" type="text" className="form-control floating-label" placeholder="Title" />
@@ -209,18 +203,18 @@ export default class DispatchSubmit extends React.Component {
 
 					<div className="map-group">
 						<div className="form-group-default">
-							<input
+							<FrescoAutocomplete
+								inputText={this.state.autocompleteText}
 								ref="autocomplete"
-								type="text"
-								className="form-control floating-label"
-								placeholder="Location" />
+								updateAutocompleteData={this.autocompleteUpdated}
+								lastChangeSource={this.props.lastChangeSource} />
 
 							<input
 								ref="radius"
 								type="text"
 								className="form-control floating-label"
 								data-hint="feet"
-								onKeyUp={this.updateRadius}
+								onKeyU p={this.updateRadius}
 								placeholder="Radius" />
 						</div>
 

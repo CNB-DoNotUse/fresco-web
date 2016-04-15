@@ -1,0 +1,65 @@
+/* Sass Document */
+
+/*-----------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+$dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+$bg:#fafafa;
+
+/**
+ * Autocomplete Element
+ */
+
+.autocomplete {
+    position:relative;
+    z-index:1;
+    margin-right:16px;
+    @include border-radius(2px);
+}
+
+.fresco-input {
+    border:none;
+    background:$bg;
+    font-size:16px;
+    line-height:24px;
+    font-weight:400;
+    z-index:2;
+    padding:19px 24px 13px;
+    border-top-right-radius:2px;
+     border-top-left-radius:2px;
+    border-bottom:1px solid transparent;
+
+    @include transition(box-shadow 0.3s ease-in-out, border 0.3s ease-in-out);
+
+    &.active {
+        border-bottom:1px solid #DEDEDE;        
+        @include box-shadow($dropShadow);
+    }
+}
+
+.predictions {
+    background:$bg;
+    list-style:none;
+    padding:8px 0;
+    position:absolute;
+    z-index:10;
+    max-height:256px;
+    overflow:auto;
+    border-bottom-right-radius: 2px;
+     border-bottom-left-radius: 2px;
+
+    @include transition(box-shadow 0.3s ease-in-out);
+    @include box-shadow($dropShadow);
+
+    li {
+        font-size:16px;
+        line-height:28px;
+        padding:15px 24px 5px;
+        cursor:pointer;
+        font-weight:500;
+        @include rgba(color, 0, 0, 0, 0.87);
+    }
+}

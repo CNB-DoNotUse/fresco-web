@@ -11,6 +11,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
  */
 
 $radius:2px;
+$dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 
 .nav-dropdown{
 	background:#FFF;
@@ -38,7 +39,7 @@ $radius:2px;
 	&.active{
 		height:auto;
 		z-index:6;
-		@include box-shadow(0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
+		@include box-shadow($dropShadow);
 
 		.toggle{
 			border-bottom:1px solid rgba(0, 0, 0, 0.12);
@@ -84,7 +85,7 @@ $radius:2px;
 		margin:0;
 		padding:0;
 		background:#FFF;
-		@include box-shadow(0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
+		@include box-shadow($dropShadow);
 
 		border-bottom-right-radius:$radius;
 		border-bottom-left-radius:$radius;

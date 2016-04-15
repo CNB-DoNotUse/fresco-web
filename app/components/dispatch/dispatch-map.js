@@ -202,7 +202,7 @@ export default class DispatchMap extends React.Component {
 				marker.getPosition()
 			);	     
 
-			google.maps.event.addListener(marker, 'drag', (ev) => {
+			google.maps.event.addListener(marker, 'dragend', (ev) => {
 				//Send up location to the parent
 				this.props.updateNewAssignment(
 					{
