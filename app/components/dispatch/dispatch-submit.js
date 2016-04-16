@@ -64,7 +64,7 @@ export default class DispatchSubmit extends React.Component {
 					setTimeout(() => {					
 						//recurse in case of a rate limit
 						geocode(geo);
-					}, 1000);
+					}, 300);
 				}
 			});
 		}
