@@ -28,7 +28,7 @@ export default class FrescoAutocomplete extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         //Check if the passed input text has changed
-        if(nextProps.inputText !== '' && nextProps.inputText !== null){
+        if(nextProps.inputText !== null){
             if(nextProps.inputText !== this.state.inputText){
                 this.refs.inputField.value = nextProps.inputText;
                 this.refs.inputField.className = this.refs.inputField.className.replace(/\bactive\b/,'');

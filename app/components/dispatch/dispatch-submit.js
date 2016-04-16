@@ -27,22 +27,44 @@ export default class DispatchSubmit extends React.Component {
 		this.autocompleteUpdated = this.autocompleteUpdated.bind(this);
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		var self = this;
+
+	componentWillReceiveProps(nextProps) {
+		var self = this,
+			successfulGeo = false;
 
 		// Dispatch map has an eventlistener to set `lastChangeSource` 
 		// This occurs when the pending assignment marker is moved.
-		if(this.props.lastChangeSource == 'markerDrag' && this.props.newAssignment) {
-			var geocoder = new google.maps.Geocoder();
+		if(nextProps.lastChangeSource == 'markerDrag' && nextProps.newAssignment) {
+			var geocoder = new google.maps.Geocoder(),
+				geo = {
+					lat: nextProps.newAssignment.location.lat, 
+					lng: nextProps.newAssignment.location.lng
+				};
 
-			geocoder.geocode({'location': {
-				lat: this.props.newAssignment.location.lat,
-				lng: this.props.newAssignment.location.lng
-			}}, (results, status) => {
-				if(status === google.maps.GeocoderStatus.OK && results[0]){
-					this.setState({
+			self.currentGeocode = geo;
+
+			geocode(geo);
+		}
+
+
+		function geocode(geo) {
+			if(JSON.stringify(geo) !== JSON.stringify(self.currentGeocode)) 
+				return;
+
+			geocoder.geocode({
+				'location': geo
+			}, (results, status) => {
+				if(status === google.maps.GeocoderStatus.OK && results[0] !== null && !successfulGeo){
+					successfulGeo = true;
+
+					self.setState({
 						autocompleteText: results[0].formatted_address
 					})
+				} else if(status === 'OVER_QUERY_LIMIT' && !successfulGeo) {
+					setTimeout(() => {					
+						//recurse in case of a rate limit
+						geocode(geo);
+					}, 1000);
 				}
 			});
 		}
