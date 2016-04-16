@@ -205,6 +205,7 @@ export default class DispatchSubmit extends React.Component {
 						<div className="form-group-default">
 							<FrescoAutocomplete
 								inputText={this.state.autocompleteText}
+								type="full"
 								ref="autocomplete"
 								updateAutocompleteData={this.autocompleteUpdated}
 								lastChangeSource={this.props.lastChangeSource} />

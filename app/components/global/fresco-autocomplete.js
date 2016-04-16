@@ -114,6 +114,12 @@ export default class FrescoAutocomplete extends React.Component {
                 lng: prediction.geometry.location.lng()
             };
 
+            self.setState({
+                predictions: []
+            });
+
+            self.refs.inputField.className = self.refs.inputField.className.replace(/\bactive\b/,'');
+
             self.props.updateAutocompleteData({
                 prediction: prediction,
                 location: location
@@ -136,7 +142,7 @@ export default class FrescoAutocomplete extends React.Component {
 
                 return <li onClick={this.predictionSelected.bind(this, prediction)}
                             key={i} >
-                            {text}
+                            <p>{text}</p>
                         </li>
             });
 
@@ -149,7 +155,7 @@ export default class FrescoAutocomplete extends React.Component {
                     ref="inputField"
                     type="text"
                     onChange={this.inputChanged}
-                    className="fresco-input"
+                    className={this.props.type + ' fresco-autocomplete'}
                     placeholder="Location" />
 
                 {predictionsDropdown}
@@ -160,4 +166,5 @@ export default class FrescoAutocomplete extends React.Component {
 
 FrescoAutocomplete.defaultProps = {
     updateAutocompleteData: function () {},
+    type: 'full'
 }
