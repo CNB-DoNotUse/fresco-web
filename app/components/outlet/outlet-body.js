@@ -92,7 +92,6 @@ export default class OutletBody extends React.Component {
 			});
 
 			cb(purchases);
-
 		});
 	}
 

@@ -26,7 +26,6 @@ export default class PostList extends React.Component {
 			offset: 0,
 			purchases: this.props.purchases,
 			posts: this.props.posts,
-			loading: false,
 			scrollable: this.props.scrollable,
 			selectedPosts: [],
 			gallery: null,
@@ -130,37 +129,30 @@ export default class PostList extends React.Component {
 
 		//Check that nothing is loading and that we're at the end of the scroll,
 		//and that we have a parent bind to load  more posts
-		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400) && this.props.loadPosts){
+		if(!this.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400) && this.props.loadPosts){
 
 			//Set that we're loading
-			this.setState({ loading : true });
+			this.loading = true;
 
 			//This is here for the new post-list structure, so we check to send an id or an offset integer
 			var offset = this.props.idOffset ? this.state.posts[this.state.offset - 1]._id : this.state.offset;
 
 			//Run load on parent call
 			this.props.loadPosts(offset, (posts) => {
+				this.loading = false;
 
 				//Disables scroll, and returns if posts are empty
 				if(!posts || posts.length == 0){
-
-					this.setState({
+					return this.setState({
 						scrollable: false
 					});
-
-					return;
-
 				}
-
-				var offset = this.state.posts.length + posts.length;
 
 				//Set galleries from successful response, and unset loading
 				this.setState({
 					posts: this.state.posts.concat(posts),
-					offset : offset,
-					loading : false
+					offset : this.state.posts.length + posts.length
 				});
-
 			}, this);
 		}
 	}
