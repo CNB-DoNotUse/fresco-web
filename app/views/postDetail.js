@@ -48,6 +48,11 @@ class PostDetail extends React.Component {
             post.approvals = gallery.visibility;
         }
 
+        //Check if address is set, then update the post's address
+        if(gallery.posts[0].location.address) {
+            post.location.address = gallery.posts[0].location.address;
+        }
+
  		this.setState({
  			gallery: gallery,
             post: post

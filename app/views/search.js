@@ -346,6 +346,7 @@ export class Search extends React.Component {
 		this.setState({
 			location: data.location,
 			radius: data.radius,
+			address: data.address,
 			map: {
 				circle: data.circle
 			}

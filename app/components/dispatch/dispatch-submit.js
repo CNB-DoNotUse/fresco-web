@@ -114,13 +114,18 @@ export default class DispatchSubmit extends React.Component {
 				title: this.refs.title.value,
 				caption: this.refs.caption.value,
 				radius: global.feetToMiles(parseInt(this.refs.radius.value)),
-				expiration_time: this.refs.expiration.value ? this.refs.expiration.value  * 60 * 60 * 1000 + Date.now() : null, //Convert to milliseconds and add current time
 				address: this.refs.autocomplete.refs.inputField.value,
+				expiration_time: null,
 				googlemaps: this.refs.autocomplete.refs.inputField.value,
 				lon: this.props.newAssignment.location.lng, //Should be lng
 				lat: this.props.newAssignment.location.lat,
 				now: Date.now()
 			};
+
+		if(this.refs.expiration.value) {
+			//Convert to milliseconds (from hours) and add current time
+			assignment.expiration_time =  this.refs.expiration.value  * 60 * 60 * 1000 + Date.now()
+		}
 
 		/* Run Checks */
 		if (global.isEmptyString(assignment.title)){
@@ -227,8 +232,10 @@ export default class DispatchSubmit extends React.Component {
 						<div className="form-group-default">
 							<FrescoAutocomplete
 								inputText={this.state.autocompleteText}
-								type="full"
+								class="form"
+								inputClass="form-control floating-label"
 								ref="autocomplete"
+								transition={false}
 								updateAutocompleteData={this.autocompleteUpdated}
 								lastChangeSource={this.props.lastChangeSource} />
 
@@ -237,7 +244,7 @@ export default class DispatchSubmit extends React.Component {
 								type="text"
 								className="form-control floating-label"
 								data-hint="feet"
-								onKeyU p={this.updateRadius}
+								onKeyUp={this.updateRadius}
 								placeholder="Radius" />
 						</div>
 

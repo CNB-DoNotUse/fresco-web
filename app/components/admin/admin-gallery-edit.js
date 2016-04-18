@@ -48,34 +48,34 @@ export default class AdminGalleryEdit extends React.Component {
 
 	componentDidMount() {
 		this.editButtonEnabled(false);
-		this.resetState();
+		this.resetState(this.props);
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		if( this.props.activeGalleryType == 'assignment' ||  !this.props.gallery ) { 
-			return 
+	componentWillReceiveProps(nextProps) {
+		if(nextProps.activeGalleryType == 'assignment' ||  !nextProps.gallery ) { 
+			return;
 		}
-		if( this.props.gallery._id != prevProps.gallery._id ) {
-			this.resetState();
+		if(this.props.gallery._id != nextProps.gallery._id ) {
+	      	this.resetState(nextProps);
 		}
 	}
 
 	/**
 	 * Update state gallery to props gallery
 	 */
-	resetState() {
+	resetState(props) {
 		// Reset form
 		this.setState({
-			activeGallery: _.clone(this.props.gallery, true),
+			activeGallery: _.clone(props.gallery, true),
 			tags: [],
 			stories: [],
-			assignment: this.props.gallery.assignment,
+			assignment: props.gallery.assignment,
 			mapLocation: null,
 			waiting: false
 		});
 
-		if( this.props.hasActiveGallery && this.props.gallery.posts.length && this.refs['gallery-caption'] ) {
-			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption || 'No Caption';
+		if(props.hasActiveGallery && props.gallery.posts.length && this.refs['gallery-caption'] ) {
+			this.refs['gallery-caption'].value = props.gallery.posts[0].caption || 'No Caption';
 		}
 
 		// Remove materialize empty input class

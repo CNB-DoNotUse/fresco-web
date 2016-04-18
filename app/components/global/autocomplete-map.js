@@ -1,5 +1,6 @@
 import React from 'react'
 import PlacesAutocomplete from '../editing/places-autocomplete'
+import FrescoAutocomplete from '../global/fresco-autocomplete.js'
 import EditMap from '../editing/edit-map'
 
 export default class AutocompleteMap extends React.Component {
@@ -10,6 +11,13 @@ export default class AutocompleteMap extends React.Component {
 		this.updateRadius = this.updateRadius.bind(this);
 	}
 
+
+	componentDidUpdate(prevProps, prevState) {
+		if(this.props.radius && this.props.hasRadius) {
+			this.refs.radius.value = Math.round(this.props.radius);
+		}
+	}
+	
 	/**
 	 * Updates prop radius function
 	 */
@@ -21,35 +29,31 @@ export default class AutocompleteMap extends React.Component {
 		}
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		if(this.props.radius && this.props.hasRadius) {
-			this.refs.radius.value = Math.round(this.props.radius);
-		}
-	}
-
 	render() {
 		var radiusInput = '';
 
 		if(this.props.hasRadius) {
-			radiusInput = 
-			            <input
-			                type="text"
-			                className="form-control floating-label numbers"
-			                style={{marginTop: '15px'}}
-			                data-hint={this.props.unit}
-			                placeholder="Radius"
-			                defaultValue={Math.round(this.props.radius)}
-			                onChange={this.updateRadius}
-			                ref="radius" />
+			radiusInput = <input
+				            type="text"
+				            className="form-control floating-label numbers"
+				            style={{marginTop: '30px'}}
+				            data-hint={this.props.unit}
+				            placeholder="Radius"
+				            defaultValue={Math.round(this.props.radius)}
+				            onChange={this.updateRadius}
+				            ref="radius" 
+				        />
 		}
 
 		return (
 			<div className="map-group autocomplete-map">
-				<PlacesAutocomplete
-					defaultLocation={this.props.defaultLocation}
-					currentLocation={this.props.location}
-					onPlaceChange={this.props.onPlaceChange}
-					disabled={this.props.disabled} />
+				<FrescoAutocomplete
+					inputText={this.props.defaultLocation}
+					class="form"
+					inputClass="form-control floating-label"
+					ref="autocomplete"
+					transition={false}
+					updateAutocompleteData={this.props.onPlaceChange} />
 	            
 	            {radiusInput}
 				

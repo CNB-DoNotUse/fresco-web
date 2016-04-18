@@ -17,54 +17,71 @@ $bg:#fafafa;
     position:relative;
     z-index:1;
     @include border-radius(2px);
-}
+    @include transition(margin 0.15s ease-in-out);
 
-.fresco-autocomplete::-webkit-input-placeholder {
-    @include rgba(color, 0, 0, 0, 0.25);
-}
- 
-.fresco-autocomplete:-moz-placeholder { /* Firefox 18- */
-    @include rgba(color, 0, 0, 0, 0.25);
-}
- 
-.fresco-autocomplete::-moz-placeholder {  /* Firefox 19+ */
-    @include rgba(color, 0, 0, 0, 0.25);
-}
- 
-.fresco-autocomplete:-ms-input-placeholder {  
-    @include rgba(color, 0, 0, 0, 0.25);
-}
+    input {
+        border:none;
+        font-size:16px;
+        line-height:24px;
+        font-weight:400;
+        padding:0 24px;
+        width:100%;
+        z-index:2;
+        border-top-right-radius:2px;
+         border-top-left-radius:2px;
 
-.fresco-autocomplete {
-    border:none;
-    font-size:16px;
-    line-height:24px;
-    font-weight:400;
-    z-index:2;
-    
-    border-top-right-radius:2px;
-     border-top-left-radius:2px;
-
-    @include transition(box-shadow 0.3s ease-in-out);
-
-    &.small {   
-        height:36px;
-        padding:6px 0 3px 24px;
-        border-radius: 2px;
-        background-color: rgba(0, 0, 0, 0.05);
+        @include transition(
+            box-shadow 0.15s ease-in-out, 
+            height 0.15s ease-in-out,
+            background 0.15s ease-in-out
+        );
     }
 
-    &.full {
-        padding:19px 24px 13px;
-        background:$bg;
+    &.nav {
+        margin:14px 0 0 24px;
+        display:inline-block;
+        float:left;
+    
+        input {
+            height:36px;
+            background: rgba(0, 0, 0, 0.05);
+    
+            @include border-radius(2px);
+            @include placeholderColor{
+                @include rgba(color, 0, 0, 0, 0.25);
+            }
+            
+            &:hover {
+                @include rgba(background, 0, 0, 0, 0.12);
+            }
+        }
+
+        &.active {
+            margin:5px 0 0 24px;
+        }
+    }
+
+    &.form {
         margin-right:16px;
+        margin-bottom:5px;
+        min-width:240px;
+
+        input{
+            font-size:14px;
+        }
     }
 
     &.active {
-        border-bottom:1px solid #DEDEDE;        
-        @include box-shadow($dropShadow);
+        input {
+            background:$bg !important;
+            padding:0 24px !important;
+            height:56px !important;
+            border-bottom:1px solid #DEDEDE;        
+            @include box-shadow($dropShadow);
+        }
     }
 }
+
 
 .predictions {
     background:$bg;
@@ -79,7 +96,7 @@ $bg:#fafafa;
     border-bottom-right-radius: 2px;
      border-bottom-left-radius: 2px;
 
-    @include transition(box-shadow 0.3s ease-in-out);
+    @include transition(box-shadow 0.15s ease-in-out);
     @include box-shadow($dropShadow);
 
     li {

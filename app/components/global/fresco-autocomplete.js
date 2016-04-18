@@ -26,16 +26,22 @@ export default class FrescoAutocomplete extends React.Component {
         this.calculateCrossStreets = this.calculateCrossStreets.bind(this);
     }
 
+    componentDidMount() {
+        if(this.props.inputText) {
+            this.refs.inputField.value = this.props.inputText;
+        }     
+    }
+
     componentWillReceiveProps(nextProps) {
         //Check if the passed input text has changed
         if(nextProps.inputText !== null){
             if(nextProps.inputText !== this.state.inputText){
                 this.refs.inputField.value = nextProps.inputText;
-                this.refs.inputField.className = this.refs.inputField.className.replace(/\bactive\b/,'');
-                
+
                 //Reset predictions for cleanup
                 this.setState({
-                    predictions: []
+                    predictions: [],
+                    active: false
                 });
             }
         }
@@ -49,15 +55,15 @@ export default class FrescoAutocomplete extends React.Component {
             query = field.value;
 
         if(query == '' || query == null) {
-            field.className = field.className.replace(/\bactive\b/,'');
-
             return this.setState({
-                predictions: []
+                predictions: [],
+                active: false
             });
         }
 
-        if(field.className.indexOf('active') == -1)
-            field.className += ' active';
+        this.setState({
+            active: true
+        })
 
         this.autoCompleteService.getPlacePredictions({ 
             input: query
@@ -115,20 +121,21 @@ export default class FrescoAutocomplete extends React.Component {
             };
 
             self.setState({
-                predictions: []
+                predictions: [],
+                active: false
             });
-
-            self.refs.inputField.className = self.refs.inputField.className.replace(/\bactive\b/,'');
 
             self.props.updateAutocompleteData({
                 prediction: prediction,
-                location: location
+                location: location,
+                address: prediction.description
             });
         }
     }
 
     render() {
-        var predictionsDropdown;
+        var predictionsDropdown = '',
+            autocompleteClass = '';
 
         if(this.state.predictions.length !== 0) {
             var predictions = this.state.predictions.map((prediction, i) => {
@@ -149,13 +156,19 @@ export default class FrescoAutocomplete extends React.Component {
             predictionsDropdown = <ul className="predictions">{predictions}</ul>
         }
 
+        autocompleteClass = 'autocomplete ' +  this.props.class
+
+        if(this.state.active && this.props.transition) {
+            autocompleteClass += ' active';
+        }
+
         return (
-            <div className="autocomplete">
+            <div className={autocompleteClass} ref="autocompleteWrap">
                 <input
                     ref="inputField"
                     type="text"
+                    className={this.props.inputClass}
                     onChange={this.inputChanged}
-                    className={this.props.type + ' fresco-autocomplete'}
                     placeholder="Location" />
 
                 {predictionsDropdown}
@@ -166,5 +179,7 @@ export default class FrescoAutocomplete extends React.Component {
 
 FrescoAutocomplete.defaultProps = {
     updateAutocompleteData: function () {},
-    type: 'full'
+    transition: true, 
+    class: '',
+    inputClass: ''
 }

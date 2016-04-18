@@ -107,12 +107,9 @@ export default class TopBar extends React.Component {
 		}
 
 		if(this.props.locationInput) {
-			locationInput = <div className="form-group-default pull-left location-input">
-								<FrescoAutocomplete 
-									type="small"
-									updateAutocompleteData={this.autocompleteUpdated} />
-							</div>
-
+			locationInput = <FrescoAutocomplete 
+								class="nav"
+								updateAutocompleteData={this.autocompleteUpdated} />
 		}
 
 		if (this.props.editable) {
