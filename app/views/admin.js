@@ -107,11 +107,11 @@ import AdminBody from './../components/admin/admin-body'
  	 * Query for initial data. Set the active tab to a tab with data.
  	 */
  	loadInitial() {
- 		var activeTab = '';
+ 		var activeTab = 'submissions';
 
  		this.getData(undefined, {tab: 'assignments'}, (assignments) => {
 
- 			activeTab = assignments.length ? 'assignments' : activeTab;
+ 			activeTab = 'assignments';
 
  			this.setState({
  				assignments: this.state.assignments.concat(assignments)
@@ -121,7 +121,7 @@ import AdminBody from './../components/admin/admin-body'
 
  		this.getData(undefined, {tab: 'submissions'}, (submissions) => {
 
- 			activeTab = submissions.length ? 'submissions' : activeTab;
+ 			activeTab = 'submissions';
 
  			this.setState({
  				submissions: this.state.submissions.concat(submissions)
@@ -131,9 +131,8 @@ import AdminBody from './../components/admin/admin-body'
 
 
  		this.getData(undefined, {tab: 'imports'}, (imports) => {
-
  			this.setState({
- 				activeTab: activeTab.length ? activeTab : 'imports',
+ 				activeTab: imports.length ? 'imports' : activeTab,
  				imports: this.state.imports.concat(imports)
  			});
  		});
