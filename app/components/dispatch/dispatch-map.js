@@ -303,6 +303,8 @@ export default class DispatchMap extends React.Component {
 				if(currentAssignments.length > this.state.assignments.length)
 					changedState.assignments = currentAssignments;
 
+				if(users == null) return;
+
 				var formattedUsers = {};
 
 				//Set object keys by hash

@@ -20,6 +20,10 @@ export default class PostCell extends React.Component {
 		//Check if clicked with shift key
 		if(e.shiftKey) {
 			this.props.togglePost(this.props.post)
+		} else if (e.metaKey || e.ctrlKey) {
+	    	window.open('/post/' + this.props.post._id)
+		} else {
+			window.open('/post/' + this.props.post._id, '_self')
 		}
 	}
 
