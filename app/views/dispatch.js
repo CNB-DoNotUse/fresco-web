@@ -265,6 +265,7 @@ class Dispatch extends React.Component {
 			<App user={this.props.user}>
 				<TopBar 
 					locationInput={true}
+					mapPlace={this.state.mapPlace}
 					updateMapPlace={this.updateMapPlace} >
 
 					<LocationDropdown 
