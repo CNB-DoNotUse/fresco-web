@@ -73,12 +73,17 @@ export default class AdminBody extends React.Component {
 
 			if(!self.props[self.props.activeTab]) return;
 
-	 		self.setState({
+			let updatedData = {
 	 			hasActiveGallery: true,
 	 			activeGalleryType: galleryType,
-	 			activeGallery: self.props[self.props.activeTab][0],
 	 			activeAssignment: null
-	 		});
+	 		};
+
+	 		let activeField = galleryType == 'assignment' ? 'activeAssignment' : 'activeGallery';
+
+ 			updatedData[activeField] = self.props[self.props.activeTab][0];
+ 			
+	 		self.setState(updatedData);
 		}
 
 
