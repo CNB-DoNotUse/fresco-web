@@ -107,8 +107,6 @@ export default class TopBar extends React.Component {
 		}
 
 		if(this.props.locationInput) {
-			console.log(this.props);
-
 			locationInput = <FrescoAutocomplete 
 								class="nav"
 								inputText={this.props.mapPlace ? this.props.mapPlace.description : ''}
