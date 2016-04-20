@@ -51,6 +51,12 @@ router.get('/:modal?', (req, res, next) => {
 
 });
 
+
+router.get('/embedTest', (req, res, next) => {
+    res.render('indexTest');
+});
+
+
 /**
  * Parse Account Management iFrame
  */
@@ -185,10 +191,6 @@ router.get('/verify', (req, res, next) => {
     });
   }
 
-});
-
-router.get('/embed', (req, res, next) => { 
-    res.render('embed');
 });
 
 module.exports = router;
