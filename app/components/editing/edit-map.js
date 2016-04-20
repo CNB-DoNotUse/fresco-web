@@ -217,7 +217,7 @@ export default class EditMap extends React.Component {
 		});
 
 		// Pass data back up
-		this.props.updateCurrentBounds(this.state.map);
+		this.props.updateCurrentBounds(map);
 	}
 
 	render() {
