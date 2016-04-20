@@ -73,8 +73,8 @@ export default class OutletColumnHead extends React.Component {
                 <div className="goal">
                     <div className="circle">
                         <p className="fraction">
-                            <span className="numerator">{outlet.goal}</span>
-                            <span className="denominator">{'/' + (purchaseStats.dayCount || 0)}</span>
+                            <span className="numerator">{purchaseStats.dayCount || 0}</span>
+                            <span className="denominator">{'/' + outlet.goal}</span>
                         </p>
                     </div>
 

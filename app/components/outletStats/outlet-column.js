@@ -140,14 +140,14 @@ export default class OutletColumn extends React.Component {
             params.goal = 1;
         } else {
             params.goal = outlet.goal + increment;
-            outlet.goal = params.goal;
         }
 
-        console.log(params);
-
+        //Set goal on outlet for state
+        outlet.goal = params.goal;
         //Set for immediate feedback
         this.setState({ outlet: outlet });
 
+        //Timeout for efficiency
         setTimeout(() => {
             updateGoal(params);
         }, 1000);

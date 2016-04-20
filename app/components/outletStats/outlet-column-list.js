@@ -74,7 +74,7 @@ class OutletPurchase extends React.Component {
             assignmentMeta = '';
 
         var name = post.owner ? post.owner.firstname + ' ' + post.owner.lastname : post.byline;
-        console.log(purchase);
+
         name = name.replace('via Fresco News', '');
 
         if(post.video !== null) {
