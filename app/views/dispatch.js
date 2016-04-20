@@ -32,6 +32,7 @@ class Dispatch extends React.Component {
 		this.mapShouldUpdate = this.mapShouldUpdate.bind(this);
 		this.findAssignments = this.findAssignments.bind(this);
 		this.updateMapPlace = this.updateMapPlace.bind(this);
+		this.updateCurrentBounds = this.updateCurrentBounds.bind(this);
 		this.updateViewMode = this.updateViewMode.bind(this);
 		this.setActiveAssignment = this.setActiveAssignment.bind(this);
 		this.updateNewAssignment = this.updateNewAssignment.bind(this);
@@ -40,7 +41,7 @@ class Dispatch extends React.Component {
 
 	/**
 	 * Tells the main dispatch map to update
-	 * @param  {BOOL} should Should, or Should not update
+	 * @param  {BOOL} `should` Should, or Should not update
 	 */
 	mapShouldUpdate(should) {
 		this.setState({
@@ -81,6 +82,18 @@ class Dispatch extends React.Component {
 		this.setState({ mapPlace: place });
 	}
 
+	/**
+	 * Updates states bounds for other components
+	 */
+	updateCurrentBounds(map) {
+		this.setState({
+			bounds: map.getBounds()
+		})
+	}
+
+	/**
+	 * Updates view mode on map for assignment type filtering
+	 */
 	updateViewMode(viewMode) {
 		//Do nothing if the same view mode
 		if(viewMode === this.state.viewMode) return;
@@ -90,6 +103,8 @@ class Dispatch extends React.Component {
 
 	/**
 	 * Data call for retrieving assignments
+	 * @param  {Google Maps object}   map      
+	 * @param  {Function} callback callback with data, error
 	 */
 	findAssignments(map, params, callback) {
 		
@@ -207,6 +222,9 @@ class Dispatch extends React.Component {
 		}
 	}
 
+	/**
+	 * Downloads stats when button is clicked
+	 */
 	downloadStats() {
 		window.open('/scripts/assignment/stats', '_blank');
 	}
@@ -236,6 +254,7 @@ class Dispatch extends React.Component {
 					user={this.props.user} 
 					newAssignment={this.state.newAssignment}
 					rerender={this.state.newAssignment == 'unset'}
+					bounds={this.state.bounds}
 					lastChangeSource={this.state.lastChangeSource}
 
 					updateViewMode = {this.updateViewMode}
@@ -257,10 +276,9 @@ class Dispatch extends React.Component {
 		var statsDownloadButton = '';
 
 		if(this.props.user.rank > 1) {
-			statsDownloadButton =
-					<button className="btn btn-flat pull-right mt12 mr16" onClick={this.downloadStats}>
-						Download Stats (.xlsx)
-					</button>
+			statsDownloadButton = <button 
+									className="btn btn-flat pull-right mt12 mr16" 
+									onClick={this.downloadStats} >Download Stats (.xlsx)</button>
 		}
 
 		return (
@@ -268,6 +286,7 @@ class Dispatch extends React.Component {
 				<TopBar 
 					locationInput={true}
 					mapPlace={this.state.mapPlace}
+					bounds={this.state.bounds}
 					updateMapPlace={this.updateMapPlace} >
 
 					<LocationDropdown 
@@ -292,15 +311,14 @@ class Dispatch extends React.Component {
 					mapShouldUpdate={this.mapShouldUpdate}
 					setActiveAssignment={this.setActiveAssignment}
 					findAssignments={this.findAssignments}
+					updateCurrentBounds={this.updateCurrentBounds}
 					findUsers={this.findUsers}
 					updateNewAssignment={this.updateNewAssignment} />
 				
 				<div className="cards">{cards}</div>
 			</App>
 		);
-
 	}
-
 }
 
 

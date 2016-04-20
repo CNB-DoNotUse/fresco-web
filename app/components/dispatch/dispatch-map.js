@@ -44,7 +44,6 @@ export default class DispatchMap extends React.Component {
 	}
 
 	componentDidMount() {
-
 		//Set up session storage for location
 		if(!window.sessionStorage.dispatch){
 			window.sessionStorage.dispatch = JSON.stringify({
@@ -79,54 +78,61 @@ export default class DispatchMap extends React.Component {
 		this.setState({ map: map });	
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-
+	componentWillReceiveProps(nextProps) {
 		//Check if there is an active assignment or the acive assignment has `changed`
-		if(!this.isOpeningCallout && 
-			this.props.activeAssignment && 
-			(!prevProps.activeAssignment || prevProps.activeAssignment._id != this.props.activeAssignment._id)) 
+		if(!this.isOpeningCallout && nextProps.activeAssignment && 
+			(!this.props.activeAssignment || nextProps.activeAssignment._id != this.props.activeAssignment._id)) 
 		{	
-			this.focusOnAssignment(this.props.activeAssignment);
+			this.focusOnAssignment(nextProps.activeAssignment);
 		}
+	    
+	    //The map center has changed on the prop, telling the map to reposition
+	    if(JSON.stringify(nextProps.mapPlace) != JSON.stringify(this.props.mapPlace)){
+	    	var place = nextProps.mapPlace;
 
-		//The map center has changed on the prop, telling the map to reposition
-		if(JSON.stringify(prevProps.mapPlace) != JSON.stringify(this.props.mapPlace)){
-			var place = this.props.mapPlace;
+	    	//Check if the place has a viewport, then use that, otherwsie use the location and a regular zoom
+	    	if(place.geometry.viewport){
+	    		this.state.map.fitBounds(place.geometry.viewport);
+	    	}
+	    	else{
+	    		this.state.map.panTo(place.geometry.location);
+	    		this.state.map.setZoom(18);
+	    	}
 
-			//Check if the place has a viewport, then use that, otherwsie use the location and a regular zoom
-			if(place.geometry.viewport){
-				this.state.map.fitBounds(place.geometry.viewport);
-			}
-			else{
-				this.state.map.panTo(place.geometry.location);
-				this.state.map.setZoom(18);
-			}
+	    	this.saveMapLocation();
+	    }
 
-			this.saveMapLocation();
-		}
+	    //Check if the map should update forcefully from the parent
+	    if(nextProps.shouldMapUpdate){
+	    	this.updateMap();
+	    	this.props.mapShouldUpdate(false); //Send back up saying the map has been updated
+	    }
+
+	    //Check if view mode has changed to see if the map should needs to update the assignments
+	    if(nextProps.viewMode !== this.props.viewMode){
+	    	//Clear assignments
+	    	this.clearAssignments();
+	    	//Close callout
+	    	this.clearCallout();
+	    }
 
 		//Check if the map should update forcefully from the parent
-		if(this.props.shouldMapUpdate){
+		if(nextProps.shouldMapUpdate){
 			this.updateMap();
 			this.props.mapShouldUpdate(false); //Send back up saying the map has been updated
 		}
+	}
 
-		//Check if view mode has changed to see if the map should needs to update the assignments
-		if(this.props.viewMode !== prevProps.viewMode){
-			//Clear assignments
-			this.clearAssignments();
-			//Close callout
-			this.clearCallout();
-		}
+	componentDidUpdate(prevProps, prevState) {
 
 		//Pass down previous for diff check
 		this.updateAssignmentMarkers(prevState.assignments);
 
 		/* Event Listeners Needed in the page */
 		var selector = document.getElementById('callout-selector');
-
+		
 		if(selector) {
-			selector.addEventListener('click', (e)=>{
+			selector.addEventListener('click', (e) => {
 				window.location.assign('/assignment/' + selector.dataset.id);
 			});
 		}
@@ -268,6 +274,8 @@ export default class DispatchMap extends React.Component {
 	updateMap() {
 		//Check if we have map in state
 		if(!this.state.map) return;
+
+		this.props.updateCurrentBounds(this.state.map);
 
 		//Get assignments
 		this.props.findAssignments(this.state.map, null, (assignments) => {
@@ -604,7 +612,7 @@ export default class DispatchMap extends React.Component {
 		});
 
 		var calloutContent = ReactDOM.renderToString(
-			<DispatchMapCallout assignment={assignment} onClick />
+			<DispatchMapCallout assignment={assignment} />
 		);
 
 		var callout = new google.maps.InfoWindow({
@@ -616,9 +624,7 @@ export default class DispatchMap extends React.Component {
 		});
 
 		google.maps.event.addListener(callout, 'closeclick', () => {
-
 			this.clearCallout();
-
 		});
 
 		callout.open(map);

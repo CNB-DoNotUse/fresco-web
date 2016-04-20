@@ -236,6 +236,7 @@ export default class DispatchSubmit extends React.Component {
 								inputClass="form-control floating-label"
 								ref="autocomplete"
 								transition={false}
+								bounds={this.props.bounds}
 								updateAutocompleteData={this.autocompleteUpdated}
 								lastChangeSource={this.props.lastChangeSource} />
 

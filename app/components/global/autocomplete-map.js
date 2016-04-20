@@ -8,7 +8,12 @@ export default class AutocompleteMap extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			bounds: null
+		}
+
 		this.updateRadius = this.updateRadius.bind(this);
+		this.updateCurrentBounds = this.updateCurrentBounds.bind(this);
 	}
 
 
@@ -28,6 +33,16 @@ export default class AutocompleteMap extends React.Component {
 			this.props.onRadiusUpdate(radius);
 		}
 	}
+
+	/**
+	 * Updates states bounds for other components
+	 */
+	updateCurrentBounds(map) {
+		this.setState({
+			bounds: map.getBounds()
+		})
+	}
+
 
 	render() {
 		var radiusInput = '';
@@ -49,6 +64,8 @@ export default class AutocompleteMap extends React.Component {
 			<div className="map-group autocomplete-map">
 				<FrescoAutocomplete
 					inputText={this.props.defaultLocation}
+					disabled={this.props.disabled}
+					bounds={this.state.bounds}
 					class="form"
 					inputClass="form-control floating-label"
 					ref="autocomplete"
@@ -63,6 +80,7 @@ export default class AutocompleteMap extends React.Component {
 						radius={this.props.radius}
 						rerender={this.props.rerender}
 						draggable={this.props.draggable}
+						updateCurrentBounds={this.updateCurrentBounds}
 						onDataChange={this.props.onMapDataChange} />
 				</div>
 			</div>

@@ -43,6 +43,11 @@ export default class FrescoAutocomplete extends React.Component {
         });
     }
 
+    componentWillUnmount() {
+        //Clean up click event on unmount
+        $(document).unbind('click');     
+    }
+
     componentWillReceiveProps(nextProps) {
         //Check if the passed input text has changed
         if(nextProps.inputText !== null){
@@ -74,11 +79,15 @@ export default class FrescoAutocomplete extends React.Component {
 
         this.setState({
             active: true
-        })
+        });
 
-        this.autoCompleteService.getPlacePredictions({ 
-            input: query
-        }, (predictions, status) => {
+        var params = { input: query }
+
+        if(this.props.bounds) {
+            // params.bounds = this.props.bounds;
+        }
+
+        this.autoCompleteService.getPlacePredictions(params, (predictions, status) => {
             if (status === google.maps.GeocoderStatus.OK && typeof(predictions) !== 'undefined') {
                 this.setState({
                     predictions: predictions
@@ -94,13 +103,21 @@ export default class FrescoAutocomplete extends React.Component {
      * Calculates cross street in area using geocoder, called if no results from place suggestions
      */
     calculateCrossStreets(query) {
-        this.geocoder.geocode({
-            'address': query
-        }, (predictions, status) => {
+        var params = { address: query }
+
+        if(this.props.bounds) {
+            params.bounds = this.props.bounds;
+        }
+
+        this.geocoder.geocode(params, (predictions, status) => {
             if(status === google.maps.GeocoderStatus.OK && predictions[0]){
                 this.setState({
                     predictions: predictions
                 });
+            } else {
+                this.setState({
+                    predictions: []
+                })
             }
         });
     }
@@ -180,6 +197,7 @@ export default class FrescoAutocomplete extends React.Component {
                     type="text"
                     className={this.props.inputClass}
                     onChange={this.inputChanged}
+                    disabled={this.props.disabled}
                     placeholder="Location" />
 
                 {predictionsDropdown}

@@ -31,6 +31,11 @@ export default class Dropdown extends React.Component {
 	 	});     
 	}
 
+	componentWillUnmount() {
+	    //Clean up click event on unmount
+	    $(document).unbind('click');     
+	}
+
 	componentWillReceiveProps(nextProps) {
 		if(nextProps.selected !== this.props.selected) {
 			this.setState({

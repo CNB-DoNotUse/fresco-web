@@ -66,7 +66,6 @@ export default class AdminAssignmentEdit extends React.Component {
                 });
 
                 // this.findNearbyAssignments();
-
                 this.refs['assignment-title'].value = assignment.title;
                 this.refs['assignment-description'].value = assignment.caption;
                 this.refs['assignment-expiration'].value = assignment ? global.hoursToExpiration(assignment.expiration_time) : null;
@@ -248,8 +247,6 @@ export default class AdminAssignmentEdit extends React.Component {
                         nearbyAssignments={this.state.nearbyAssignments}
                         selectMerge={this.selectMerge} />
          */
-
-        console.log('ADDRESS', address);
 
         return ( 
             <div className="dialog">

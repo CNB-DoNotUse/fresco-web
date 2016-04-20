@@ -13,28 +13,27 @@ router.get('/:id', (req, res, next) => {
     }, doWithGetAssignments);
 
   function doWithGetAssignments(err, response, body) {
-
     var error = new Error(config.ERR_PAGE_MESSAGES[404]);
     error.status = 404;
 
-    let notFoundUserID = true, outlet = body.data.outlet;
-
-    for(let o of body.data.outlets) {
-      if(o._id == req.session.user.outlet._id) {
-        outlet = o;
-        notFoundUserID = false;
-        break;
-      }
-    }
-
     if (err || !body || body.err){
-
-      return next(error);
-
+        return next(error);
     }
+
+    let notFoundUserID = true, 
+        outlet = body.data.outlet;
+
+    for(let outlet of body.data.outlets) {
+        if(outlet._id == req.session.user.outlet._id) {
+            outlet = outlet;
+            notFoundUserID = false;
+            break;
+        }
+    }
+
     //Check if the assignment is the user's and they're not a CM or Admin
-    else if(notFoundUserID && req.session.user.rank <= 1){
-      return next(error);
+    if(notFoundUserID && req.session.user.rank <= global.RANKS.CONTENT_MANAGER){
+        return next(error);
     }
 
     // Don't show info of other outlets

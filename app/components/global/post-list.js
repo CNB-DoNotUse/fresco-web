@@ -49,6 +49,13 @@ export default class PostList extends React.Component {
 		this.loadInitialPosts	= this.loadInitialPosts.bind(this);
 	}
 
+	componentWillMount() {
+		//Check if list is initialzied with posts, then don't load anything
+		if(this.state.posts.length) return;
+
+		this.loadInitialPosts();
+	}
+
 	componentWillReceiveProps(nextProps) {
 		//If we receive new posts in props while having none previously
 		var currentPostIds  = this.state.posts.map(p => p._id),
@@ -61,23 +68,28 @@ export default class PostList extends React.Component {
 	    		posts: nextProps.posts
 	    	});
 	    }
-	}
 
-	componentDidUpdate(prevProps, prevState) {
-		//Checks if the verified prop is changed
-		//`or` Checks if the sort prop is changed
-		if(prevProps.onlyVerified != this.props.onlyVerified
-			|| prevProps.sort != this.props.sort ) {
-			this.loadInitialPosts();
-		}
-	}
+	    //Checks if the verified prop is changed
+	    //`or` Checks if the sort prop is changed
+	    if(nextProps.onlyVerified != this.props.onlyVerified || nextProps.sort != this.props.sort ) {
+	    	//Clear out previous posts
+			this.setState({
+				posts: []
+			});
 
-	componentDidMount() {
-		//Check if list is initialzied with posts, then don't load anything
-		if(this.state.posts.length)
-			return;
+	    	this.loadInitialPosts();
+	    }
 
-		this.loadInitialPosts();
+	    // If we aren't dynamically loading posts, then sort them locally
+	    if (!nextProps.scrollable && nextProps.sort != this.props.sort) {
+	    	let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
+	    	
+	    	let posts = this.state.posts.sort((post1, post2) => {
+	    		return post2[field] - post1[field]
+	    	});
+
+	    	this.setState({posts});
+	    }
 	}
 
 	/**
@@ -97,29 +109,6 @@ export default class PostList extends React.Component {
 		});
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		//Checks if the verified prop is changed
-		//`or` Checks if the sort prop is changed
-		if(prevProps.onlyVerified != this.props.onlyVerified
-			|| prevProps.sort != this.props.sort ) {
-			this.loadInitialPosts();
-		}
-
-		// If we aren't dynamically loading posts, then sort them locally
-		if (!this.props.scrollable && prevProps.sort != this.props.sort) {
-			let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
-			let posts = this.state.posts.sort((a,b) => {return b[field] - a[field]});
-			this.setState({posts});
-		}
-	}
-
-	componentDidMount() {
-		//Check if list is initialzied with posts, then don't load anything
-		if(this.state.posts.length)
-			return;
-
-		this.loadInitialPosts();
-	}
 
 	/**
 	 * Scroll listener for main window

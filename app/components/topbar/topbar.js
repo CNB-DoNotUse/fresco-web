@@ -116,6 +116,7 @@ export default class TopBar extends React.Component {
 			locationInput = <FrescoAutocomplete 
 								class="nav"
 								inputText={text}
+								bounds={this.props.bounds}
 								updateAutocompleteData={this.autocompleteUpdated} />
 		}
 
