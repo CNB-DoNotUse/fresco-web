@@ -63,58 +63,19 @@ var express     = require('express'),
     }
 });
 
-// /**
-//  * Displays galleries for a specified outlet
-//  */
-
-// router.get('/:id/galleries', (req, res, next) => {
-
-//   client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);
-
-//   function doWithOutletInfo(error, response, body) {
-
-//     if (error || !body || body.err){
-//       var err = new Error(config.ERR_PAGE_MESSAGES[404]);
-//       err.status = 403;
-//       return next(err);
-//     }
-
-//     var purchases = null;
-
-//     if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified) {
-//       purchases = req.session.user.outlet.purchases || [];
-//       purchases = purchases.map((purchase) => {
-//         return purchase.post;
-//       });
-//     }
-
-//     res.render('outlet-galleries', {
-//       user: req.session.user,
-//       title: 'Outlet',
-//       outlet: body.data,
-//       purchases: purchases,
-//       config: config,
-//       alerts: req.alerts,
-//       page: 'outlet-galleries'
-//     });
-
-//   }
-
-// });
 
 /**
  *  Outlet settings page for current logged in user
  */
 
 router.get('/settings', (req, res, next) => {
-
   if (!req.session.user.outlet){
-
-    var err = new Error('No outlet found!');
-    err.status = 500;
-    return next(err);
-
+    return next({
+      message: 'No outlet found!',
+      status: 500
+    });
   }
+
   client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
 
   function doWithOutletInfo(error, response, body) {

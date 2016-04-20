@@ -44,7 +44,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
  * CSS3 Transition
  */
 
-@mixin transition($transition1, $transition2, $transition3, $transition4, $transition5) {
+@mixin transition($transition1, $transition2:false, $transition3:false, $transition4:false, $transition5:false) {
 
   $params: $transition1;
    @if $transition2 

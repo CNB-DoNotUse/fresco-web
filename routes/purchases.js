@@ -13,8 +13,8 @@ router.get('/', (req, res, next) => {
     if (req.session.user.rank < global.RANKS.ADMIN) {
         //Return error
         return next({
-            message: config.ERR_PAGE_MESSAGES[403],
-            status: 403
+            message: config.ERR_PAGE_MESSAGES[401],
+            status: 401
         });
     }
 
@@ -41,8 +41,8 @@ router.get('/outlets', (req, res, next) => {
     if (req.session.user.rank < global.RANKS.ADMIN) {
         //Return error
         return next({
-            message: config.ERR_PAGE_MESSAGES[403],
-            status: 403
+            message: config.ERR_PAGE_MESSAGES[401],
+            status: 401
         });
     }
 

@@ -3,17 +3,16 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from '../components/topbar'
-import OutletColumn from '../components/outletPurchases/outletColumn.js'
+import OutletColumn from '../components/outletStats/outlet-column.js'
 
 class OutletStats extends React.Component {
+
     constructor(props) {
         super(props);
         
         this.state = {
             outlets: [],
         }
-
-
     }
 
     componentDidMount() {
@@ -21,27 +20,24 @@ class OutletStats extends React.Component {
             url: '/api/outlet/get',
             type: 'GET',
             data: {
-                id: '559c01adbd0ecfff74e1a334'
+                id: '5702d0680fc6c0ba470ed37d'
             },
             dataType: 'json',
             success: (response, status, xhr) => {
                 if(!response.err) {
                     this.setState({
                         outlets: [response.data]
-                    })
-                }
+                    });
+                }  
             }
-        });      
+        });  
     }
-
 
     loadOutlets() {
 
     }
 
-
     render() {
-
         var columns = this.state.outlets.map((outlet, i) => {
             return <OutletColumn 
                         outlet={outlet}
