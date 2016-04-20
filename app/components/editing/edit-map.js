@@ -215,6 +215,9 @@ export default class EditMap extends React.Component {
 			polygon: polygon,
 			marker: marker
 		});
+
+		// Pass data back up
+		this.props.updateCurrentBounds(this.state.map);
 	}
 
 	render() {
