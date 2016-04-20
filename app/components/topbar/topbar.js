@@ -107,9 +107,15 @@ export default class TopBar extends React.Component {
 		}
 
 		if(this.props.locationInput) {
+			var text = '';
+
+			if(this.props.mapPlace) {
+				text =  this.props.mapPlace.description ||  this.props.mapPlace.formatted_address;
+			}
+
 			locationInput = <FrescoAutocomplete 
 								class="nav"
-								inputText={this.props.mapPlace ? this.props.mapPlace.description : ''}
+								inputText={text}
 								updateAutocompleteData={this.autocompleteUpdated} />
 		}
 

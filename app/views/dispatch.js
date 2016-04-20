@@ -75,7 +75,7 @@ class Dispatch extends React.Component {
 	}
 
 	/**
-	 * Takes a google maps place
+	 * Updates the stateful google maps place used in the component and its children
 	 */
 	updateMapPlace(place) {
 		this.setState({ mapPlace: place });
@@ -127,8 +127,10 @@ class Dispatch extends React.Component {
 			dataType: 'json',
 			success: (response, status, xhr) => {
 				//Do nothing, because of bad response
-				if(!response.data || response.err)
-					$.snackbar({content: global.resolveError(response.err)});
+				if(!response.data || response.err) {
+					//Where would we error
+					// $.snackbar({content: global.resolveError(response.err)});
+				}
 				else {
 					callback(response.data);
 				}

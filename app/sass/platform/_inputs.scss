@@ -18,7 +18,7 @@ $bg:#fafafa;
     font-size:16px;
     line-height:24px;
     font-weight:400;
-    padding:0 24px;
+    padding:2px 24px 0;
     width:100%;
     z-index:2;
     border-top-right-radius:2px;
@@ -34,6 +34,11 @@ $bg:#fafafa;
     @include placeholderColor{
         @include rgba(color, 0, 0, 0, 0.25);
     }
+    @include transition(
+        box-shadow 0.15s ease-in-out, 
+        height 0.15s ease-in-out,
+        background 0.15s ease-in-out
+    );
     
     &:hover {
         @include rgba(background, 0, 0, 0, 0.12);
@@ -47,10 +52,10 @@ $bg:#fafafa;
 .search-input  {
     @extend .fresco-input;
     @extend .nav-input;
+    margin: 16px -8px 8px;
+    width: calc(100% + 16px);
     padding:2px 24px 0 56px;
-    margin:16px 0 32px;
-    width: 100%;
-    background-position:19.25px 8px;
+    background-position: 11.25px 8px;
     background-size:20px;
     background-repeat: no-repeat;
     background-image: url(/images/magnify.png);
@@ -58,7 +63,7 @@ $bg:#fafafa;
 
     &:hover {
         background-size:20px;
-        background-position:19.25px 8px;
+        background-position: 11.25px 8px;
         background-repeat: no-repeat;
         background-image: url(/images/magnify.png);
         @include rgba(background-color, 0, 0, 0, 0.12);
@@ -78,18 +83,13 @@ $bg:#fafafa;
 
     input {
         @extend .fresco-input;
-
-        @include transition(
-            box-shadow 0.15s ease-in-out, 
-            height 0.15s ease-in-out,
-            background 0.15s ease-in-out
-        );
     }
 
     &.nav {
         margin:14px 0 0 24px;
         display:inline-block;
         float:left;
+        width:320px;
     
         input {
             @extend .nav-input;

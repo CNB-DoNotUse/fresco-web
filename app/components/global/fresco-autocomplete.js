@@ -29,7 +29,18 @@ export default class FrescoAutocomplete extends React.Component {
     componentDidMount() {
         if(this.props.inputText) {
             this.refs.inputField.value = this.props.inputText;
-        }     
+        }
+
+        //Click event for outside clicking
+        $(document).click((e) => {
+            if ($(e.target).parents('.autocomplete').size() == 0 && e.target !== this.refs.autocompleteWrap) { 
+                //Reset predictions for cleanup
+                this.setState({
+                    predictions: [],
+                    active: false
+                });
+            }
+        });
     }
 
     componentWillReceiveProps(nextProps) {
