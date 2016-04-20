@@ -276,6 +276,15 @@ export default class AdminGalleryEdit extends React.Component {
  		var byline = global.getBylineFromComponent(gallery, this.refs.byline);
  		_.extend(params, byline);
 
+ 		if(byline.other_origin_name == '' && byline.other_origin_affiliation == '' || byline.byline == '') {
+ 			this.setState({
+ 				waiting: false
+ 			});
+ 			
+ 			return  $.snackbar({content: 'Please enter a byline for this gallery!'});
+ 		}
+
+
 		if(this.props.activeGalleryType == 'import') {
 			params.address = this.state.address;
 			if(this.state.location) {

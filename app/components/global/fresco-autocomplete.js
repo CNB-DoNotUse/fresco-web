@@ -134,6 +134,8 @@ export default class FrescoAutocomplete extends React.Component {
             }, (details, status) => {
                 //Inherit description from initial object
                 details.description = prediction.description;
+
+                //Set prediciton to details result
                 prediction = details;
                 
                 updateAssignment();
@@ -153,10 +155,12 @@ export default class FrescoAutocomplete extends React.Component {
                 active: false
             });
 
+            console.log(prediction);
+
             self.props.updateAutocompleteData({
                 prediction: prediction,
                 location: location,
-                address: prediction.description
+                address: prediction.description || prediction.formatted_address
             });
         }
     }

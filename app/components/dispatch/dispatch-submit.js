@@ -82,11 +82,9 @@ export default class DispatchSubmit extends React.Component {
 			'autocomplete'
 		);
 
-		var prediction = autocompleteData.prediction;
-
 		//Update input value of autocomplete
 		this.setState({
-			autocompleteText: prediction.description || prediction.formatted_address
+			autocompleteText: autocompleteData.prediction.address
 		});
 	}
 
