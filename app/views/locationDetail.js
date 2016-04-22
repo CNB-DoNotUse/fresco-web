@@ -17,7 +17,8 @@ class LocationDetail extends React.Component {
 		super(props);
 		
 		this.state = {
-			initialPostsLoaded: false
+			initialPostsLoaded: false,
+			sort: 'upload'
 		}
 
 		this.updateSort	= this.updateSort.bind(this);
@@ -29,7 +30,6 @@ class LocationDetail extends React.Component {
 			sort: sort
 		});
 	}
-
 
 	componentWillMount() {
 		//Set up session storage for sinceList as empty object
@@ -54,7 +54,6 @@ class LocationDetail extends React.Component {
 	 * Returns array of posts with offset and callback, used in child PostList
 	 */
 	loadPosts(passedId, callback) {
-
 		var params = {
 			id    : this.props.location._id,
 			limit : global.postCount,
@@ -85,8 +84,7 @@ class LocationDetail extends React.Component {
 			<App user={this.props.user}>
 				<TopBar 
 					title={this.props.location.title}
-					timeToggle={true}
-					chronToggle={true}>
+					timeToggle={true} >
 
 					<LocationDropdown
 						user={this.props.user}
@@ -99,6 +97,7 @@ class LocationDetail extends React.Component {
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}
 					purchases={this.props.purchases}
+					sort={this.state.sort}
 					size='small'
 					idOffset={true}
 					scrollable={true} />

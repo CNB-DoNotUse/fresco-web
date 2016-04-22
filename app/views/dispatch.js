@@ -128,7 +128,7 @@ class Dispatch extends React.Component {
 			success: (response, status, xhr) => {
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
-					$.snackbar({content: global.resolveError(error)});
+					$.snackbar({content: global.resolveError(response.err)});
 				else {
 					callback(response.data);
 				}

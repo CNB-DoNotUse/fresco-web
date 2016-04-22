@@ -83,6 +83,7 @@ class GalleryDetail extends React.Component {
 					title={this.state.title}
 					updateSort={this.updateSort}
 					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
+					rank={this.props.user.rank}
 					edit={this.toggleGalleryEdit}
 					verifiedToggle={this.state.shouldShowVerifeidToggle}
 					onVerifiedToggled={this.onVerifiedToggled}
