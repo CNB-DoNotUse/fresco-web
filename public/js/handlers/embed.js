@@ -42,6 +42,7 @@
             border: 0;\
             margin: 0;\
             padding:0;\
+            height:' + height + ';\
             width:' + width + ';\
             -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
                -mox-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
@@ -56,7 +57,10 @@
 
         //Set height to inner contents on load
         iframe.onload = function() {
-            iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+            //If the width is set, then set the height based on the content
+            if(width !== '100%'){
+                iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+            }
         };
 
         //Insert iframe after blockquote
