@@ -271,11 +271,11 @@ class Embed extends React.Component {
                         <div className="gallery-info">
                             <p>{gallery.caption}</p>
 
-                            <a href={'https://fresconews.com/gallery/' + gallery._id}>SEE MORE ON FRESCO</a>
+                            <a target="_blank" href={'https://fresconews.com/gallery/' + gallery._id}>SEE MORE ON FRESCO</a>
                         </div>
                     </div>
 
-                    <Slider {...settings} className="slick" ref="slider">
+                    <Slider {...settings} className="gallery-slick" ref="slider">
                         {posts ? posts : <div></div>}
                     </Slider>
                 </div>

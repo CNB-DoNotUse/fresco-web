@@ -34,9 +34,9 @@ router.get('/:id', (req, res, next) => {
     }, (err, response, body) => {
         //Check for error, 404 if true
         if (err || !body || body.err) {
-          var err = new Error('Gallery not found!');
-          err.status = 404;
-          return next(err);
+            var err = new Error('Gallery not found!');
+            err.status = 404;
+            return next(err);
         }
 
         // element = React.createElement(PublicGallery, props),

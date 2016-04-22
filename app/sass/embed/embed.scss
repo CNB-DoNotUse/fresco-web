@@ -12,6 +12,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 $desktopHeight:552px;
 $borderRadius:2px;
 
+html, body{
+    height:auto;
+}
+
 iframe{
     border: 0px;
     margin: 0px;
@@ -19,10 +23,11 @@ iframe{
     @include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
 }
 
+
 //Parent embed element
 .embed {
-    display:inline-block;
     position:relative;
+    min-height:400px;
     width:100%;
 }
 
@@ -73,115 +78,125 @@ iframe{
     }
 }
 
-$mobileHeight:359px;
-
-//Gallery element holding caption and slick slider
+/**
+ * Wrapper element holding caption and slick slider
+ */
 .gallery {
     width:100%;
     height:100%;
     cursor:pointer;
     @include border-radius($borderRadius);
 
-    // Hovered info
-    .gallery-info-wrap{
-        position:absolute;
-        opacity:0;
-        width:100%;
-        height:100%;
-        background:rgba(0, 0, 0, 0.54);
-        z-index:5;
-        color:#FFF;
-        @include transition(opacity .3s ease-in-out);
+}
 
-        @include mobile {
-            max-height:224px;
-        }
-        @include tablet {
-            height:30vh;
-        }
+/**
+ * Gallery meta info, either on hover or below the media
+ */
+.gallery-info-wrap{
+    position:absolute;
+    opacity:0;
+    width:100%;
+    height:100%;
+    background:rgba(0, 0, 0, 0.54);
+    z-index:5;
+    color:#FFF;
+    @include transition(opacity .3s ease-in-out);
+
+    @include mobileAndTablet {
+        position:static;
+        opacity:1 !important;
+        background:0;
+        overflow:auto;
+        @include rgba(color, 0, 0, 0, 0.87);       
+    }
+
+    .gallery-info{
+        margin-top:70px;
+        padding:0 24px;
+        
         @include mobileAndTablet {
-            position:static;
-            opacity:1 !important;
-            background:0;
-            overflow:auto;
-            @include rgba(color, 0, 0, 0, 0.87);       
+            padding:16px 24px;
+            margin:0 auto;
         }
 
-        .gallery-info{
-            margin-top:70px;
-            padding:0 24px;
-            
+        p {
+            font-family:$roboto;
+            font-size:16px;
+            line-height:24px;
+            font-weight:400;
+            margin:0 0 16px;
+            max-height:144px;
+            overflow:hidden;
+            display: -webkit-box;
+            line-height: 1.4;
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            @include mobile {
+                max-height:160px;
+            }
+        }
+
+        a {
+            font-size:20px;
+            line-height:28px;
+            text-shadow:0 2px 2px rgba(0, 0, 0, 0.24);
+            font-weight:500;
+            font-family:$nota;
+
             @include mobileAndTablet {
-                padding:16px 24px;
-                margin:0 auto;
-            }
-
-            p {
-                font-family:$roboto;
-                font-size:16px;
-                line-height:24px;
-                font-weight:400;
-                margin:0 0 16px;
-                max-height:144px;
-                overflow:hidden;
-                display: block;
-                    display: -webkit-box;
-                    line-height: 1.4;
-                    -webkit-line-clamp: 6;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-
-                @include mobile {
-                    max-height:160px;
-                }
-            }
-
-            a {
-                font-size:20px;
-                line-height:28px;
-                text-shadow:0 2px 2px rgba(0, 0, 0, 0.24);
-                font-weight:500;
-                font-family:$nota;
-
-                @include mobileAndTablet {
-                    color:$fresco-blue;
-                    text-shadow:none;
-                }
+                color:$fresco-blue;
+                text-shadow:none;
             }
         }
     }
+}
 
-    .slick-slider {
-        margin:0;
-    }
+/**
+ * Slick wrapper for gallery
+ */
+.gallery-slick {
+    margin:0;
+    position: relative;
+    background:black;
 
-    .slick, 
     .slick-slide {
+        position: relative;
+        background-repeat:no-repeat;
+        background-position:center;
+        background-size:cover;
         height:100vh;
-
         @include border-radius($borderRadius);
 
-        @include tablet {
-            height:70vh;
-        }
-        @include mobile {
-            height:359px;
+        @include mobileAndTablet{
+            height:auto;
+            // max-height:386px;
+            width: 100%;
+            padding-bottom:20%;
+            
+            video{
+                width:auto;
+                height: 100%;
+                display: block;
+                margin: 0 auto;
+                position: absolute;
+            }
         }
 
-        /* Individual Slick Slide */
-        .slick-slide{
-            position: relative;
-            background-repeat:no-repeat;
-            background-position:center;
-            background-size:cover;
-        }
-
-        video{
+        video {
+            position:static;
             width:100%;
             height:100%;
             display: block;
             margin: 0 auto;
+
+            @include mobileAndTablet {
+                width:auto;
+                height: 100%;
+                position: absolute;
+            }
         }
     }
 
@@ -189,6 +204,7 @@ $mobileHeight:359px;
         max-width:60%;
     }
 }
+
 
 .slick-dots{
     bottom:22px;

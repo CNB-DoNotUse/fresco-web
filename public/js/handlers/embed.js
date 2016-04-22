@@ -33,13 +33,17 @@
 
         //Generate iFrame
         var iframe = document.createElement('iframe');
+        iframe.id = 'fresco-iframe';
         iframe.src = source;
+        iframe.onload = function() {
+            //Set height to inner contents on load
+            iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+        };
         iframe.style.cssText = '\
             border: 0;\
             margin: 0;\
             padding:0;\
             width:' + width + ';\
-            height:' + height + ';\
             -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
                -mox-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
                     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
@@ -50,10 +54,13 @@
             display: block;\
             background: rgb(255, 255, 255);\
         ';
-        
+
         //Insert iframe after blockquote
         embedParent.insertBefore(iframe, embedBlock.nextSibling);
         //Remove blockquote
         embedParent.removeChild(embedBlock);
+
+
+
     };
 })();
