@@ -12,12 +12,18 @@
             }
         }
 
+        if(embedBlock == null) return; //No blockquote found :(
+
         var embedParent =  embedBlock.parentNode, //define parent
             gallery = embedBlock.dataset.gallery, //define galleryId
             width = '100%',
             height = '100%',
-            source = WEB_ROOT + '/embed/' + gallery;
+            source = WEB_ROOT + '/embed/' + gallery; //define embed iframe source
+        
+        //If we have no gallery, stop the embed
+        if(!gallery) return;
 
+        //Customize iframe based on data attributes
         if(typeof(embedBlock.dataset.width) !== 'undefined'){
             width = embedBlock.dataset.width;
         }
@@ -28,17 +34,10 @@
             source += '&cycle=' + embedBlock.dataset.cycle;
         }
 
-        //If we have no gallery, stop the embed
-        if(!gallery) return;
-
-        //Generate iFrame
+        //Generate iframe
         var iframe = document.createElement('iframe');
         iframe.id = 'fresco-iframe';
         iframe.src = source;
-        iframe.onload = function() {
-            //Set height to inner contents on load
-            iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
-        };
         iframe.style.cssText = '\
             border: 0;\
             margin: 0;\
@@ -55,12 +54,14 @@
             background: rgb(255, 255, 255);\
         ';
 
+        //Set height to inner contents on load
+        iframe.onload = function() {
+            iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+        };
+
         //Insert iframe after blockquote
         embedParent.insertBefore(iframe, embedBlock.nextSibling);
         //Remove blockquote
         embedParent.removeChild(embedBlock);
-
-
-
     };
 })();
