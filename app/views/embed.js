@@ -145,9 +145,12 @@ class Embed extends React.Component {
                 autoplay: this.props.cycle,
                 afterChange: (index) => {
                     var videos = document.getElementsByTagName('video'),
-                        slide = document.getElementsByClassName('slick-slide')[index],
-                        video = slide.getElementsByTagName('video')[0];
+                        slide = document.getElementsByClassName('slick-slide')[index];
+
+                    if(!slide) return;
                     
+                    var video = slide.getElementsByTagName('video')[0];
+
                     //First pause all videos
                     for (var i = 0; i < videos.length; i++) {
                         videos[i].pause();
