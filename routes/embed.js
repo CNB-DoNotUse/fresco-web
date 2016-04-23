@@ -10,7 +10,7 @@ var fs                = require('fs'),
     React             = require('react'),
     ReactDOMServer    = require('react-dom/server'),
     request           = require('request'),
-    PublicGallery     = require('../app/views/publicGallery.js');
+    Embed             = require('../app/views/Embed.js');
 
 /** //
 
@@ -34,25 +34,23 @@ router.get('/:id', (req, res, next) => {
     }, (err, response, body) => {
         //Check for error, 404 if true
         if (err || !body || body.err) {
-            var err = new Error('Gallery not found!');
+            var err = new Error('Embed not found!');
             err.status = 404;
             return next(err);
         }
-
-        // element = React.createElement(PublicGallery, props),
-        // react = ReactDOMServer.renderToString(element);
-        // 
-        //
 
         var props = {
                 gallery: body.data,
                 userAgent: req.headers['user-agent'],
                 cycle: req.query.cycle,
                 start: req.query.start
-            };
+            },
+            element = React.createElement(Embed, props),
+            react = ReactDOMServer.renderToString(element);
 
         res.render('embed', {
             page: 'embed',
+            react: react,
             props: JSON.stringify(props)
         });
     });

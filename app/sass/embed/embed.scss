@@ -14,6 +14,7 @@ $borderRadius:2px;
 
 html, body{
     height:auto;
+    max-height:1000px;
 }
 
 iframe{
@@ -22,7 +23,6 @@ iframe{
     padding: 0px;
     @include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
 }
-
 
 //Parent embed element
 .embed {
@@ -187,8 +187,8 @@ iframe{
 
         video {
             position:static;
-            width:100%;
-            height:100%;
+            width: 100%    !important;
+            height: auto   !important;
             display: block;
             margin: 0 auto;
 

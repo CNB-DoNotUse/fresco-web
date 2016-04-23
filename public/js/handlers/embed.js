@@ -55,13 +55,24 @@
             background: rgb(255, 255, 255);\
         ';
 
-        //Set height to inner contents on load
-        iframe.onload = function() {
-            //If the width is set, then set the height based on the content
-            if(width !== '100%'){
-                iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+        // browser compatibility: get method for event 
+        // addEventListener(FF, Webkit, Opera, IE9+) and attachEvent(IE5-8)
+        var myEventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+        // create event listener
+        var myEventListener = window[myEventMethod];
+        // browser compatibility: attach event uses onmessage
+        var myEventMessage = myEventMethod == "attachEvent" ? "onmessage" : "message";
+        // register callback function on incoming message
+        myEventListener(myEventMessage, function (e) {
+            // we will get a string (better browser support) and validate
+            // if it is an int - set the height of the iframe #my-iframe-id
+            if (e.data === parseInt(e.data)){
+                //If the width is set, then set the height based on the content
+                if(width !== '100%'){
+                    iframe.style.height = e.data + "px";
+                }
             }
-        };
+        }, false);
 
         //Insert iframe after blockquote
         embedParent.insertBefore(iframe, embedBlock.nextSibling);

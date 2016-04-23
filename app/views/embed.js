@@ -33,7 +33,7 @@ class Embed extends React.Component {
                 this.refs['playButton']
             ];
 
-        //Add hover listener to all elements in the array
+        //Add hover listener to elements in the array
         for (var i = 0; i < hovers.length; i++) {
             hovers[i].addEventListener('mouseenter', () => {
                 galleryInfo.style.opacity = '1';
@@ -56,6 +56,12 @@ class Embed extends React.Component {
         window.addEventListener('resize', () => {
             this.resize();
         });
+
+        // all content including images has been loaded
+        window.onload = () => {
+            // post our message to the parent with height
+            window.parent.postMessage(this.refs.embed.scrollHeight ,"*");
+        };
     }
 
     resize() {
@@ -243,7 +249,7 @@ class Embed extends React.Component {
 
         //Render embed
         return (
-            <div className="embed">
+            <div className="embed" ref="embed">
                 <span className="icon-fresco"></span>
 
                 <div className="controls">
@@ -293,11 +299,15 @@ Embed.defaultProps = {
     cycle: false
 }
 
-ReactDOM.render(
-    <Embed 
-        gallery={window.__initialProps__.gallery}
-        start={window.__initialProps__.start}
-        cycle={window.__initialProps__.cycle}
-        userAgent={window.__initialProps__.userAgent} />,
-    document.getElementById('app')
-);
+if(isNode){
+    module.exports = Embed;
+} else{
+    ReactDOM.render(
+        <Embed 
+            gallery={window.__initialProps__.gallery}
+            start={window.__initialProps__.start}
+            cycle={window.__initialProps__.cycle}
+            userAgent={window.__initialProps__.userAgent} />,
+        document.getElementById('app')
+    );
+}
