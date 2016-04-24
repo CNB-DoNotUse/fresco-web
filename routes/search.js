@@ -17,26 +17,26 @@ router.get('/', function(req, res, next) {
         tags = req.query.tags || '',
         location = null;
 
-    if (!isNaN(req.query.lat) && !isNaN(req.query.lon) && !isNaN(req.query.r))
+    if (!isNaN(req.query.lat) && !isNaN(req.query.lon) && !isNaN(req.query.radius)){
         location = {
-            latlng: {
+            coordinates: {
                 lat: parseFloat(req.query.lat),
                 lng: parseFloat(req.query.lon)
             },
-            radius: parseFloat(req.query.r)
+            radius: parseFloat(req.query.radius)
         };
+    }
 
     var props = {
         user: req.session.user,
         title: query || tags,
         location: location,
         purchases: purchases,
-        config: config,
         query: query
     }
 
     res.render('app', {
-        title: query,
+        title: 'Search',
         alerts: req.alerts,
         props: JSON.stringify(props),
         page : 'search'
