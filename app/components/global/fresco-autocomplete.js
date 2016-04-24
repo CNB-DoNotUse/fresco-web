@@ -155,8 +155,6 @@ export default class FrescoAutocomplete extends React.Component {
                 active: false
             });
 
-            console.log(prediction);
-
             self.props.updateAutocompleteData({
                 prediction: prediction,
                 location: location,

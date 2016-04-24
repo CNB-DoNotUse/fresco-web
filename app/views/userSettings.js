@@ -1,10 +1,10 @@
-import _ from 'lodash'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app.js'
 import TopBar from './../components/topbar'
 import QuickSupport from './../components/global/quick-support'
 import global from './../../lib/global'
+import _ from 'lodash'
 
 /**
  * User Settings parent object
@@ -179,7 +179,11 @@ class UserSettings extends React.Component {
 				<div className="user-settings">
 					<div className="card settings-info">
 						
-						<div className="avatar" ref="outlet-avatar-image" style={{backgroundImage: 'url(' + this.state.avatar + ')'}} >
+						<div 
+							className="avatar" 
+							ref="outlet-avatar-image" 
+							style={{backgroundImage: 'url(' + this.state.avatar + ')'}} 
+						>
 							<div className="overlay" onClick={this.clickProfileImgInput}>
 								<span className="mdi mdi-upload"></span>
 							</div>
@@ -192,21 +196,24 @@ class UserSettings extends React.Component {
 								ref="avatarFileInput"  
 								accept="image/png,image/jpeg" 
 								onChange={this.avatarInputChange} 
-								multiple />
+								multiple 
+							/>
 
 							<input 
 								type="text" 
 								className="floating-label" 
 								ref="name" 
 								placeholder="Name" 
-								defaultValue={user.firstname + ' ' + user.lastname} />
+								defaultValue={user.firstname + ' ' + user.lastname} 
+							/>
 							
 							<textarea 
 								className="floating-label" 
 								ref="bio" 
 								rows="2"
 								placeholder="Bio" 
-								defaultValue={user.bio}></textarea>
+								defaultValue={user.bio}>
+							</textarea>
 							
 							<button 
 								className="btn btn-save changed" 
@@ -226,14 +233,16 @@ class UserSettings extends React.Component {
 									type="text" 
 									ref="email" 
 									placeholder="Email address" 
-									defaultValue={user.email} />
+									defaultValue={user.email} 
+								/>
 
 								<input 
 									type="text" 
 									ref="phone" 
 									maxLength={15}
 									placeholder="Phone number" 
-									defaultValue={user.phone} />
+									defaultValue={user.phone} 
+								/>
 			
 								<button 
 									className="btn btn-save changed" 
@@ -261,9 +270,16 @@ class ChangePasswordCard extends React.Component {
 					
 					<div className="padding">
 						<div className="content-info-input">
-							<input type="password" className="form-control floating-label" placeholder="Current password" />
+							<input 
+								type="password" 
+								className="form-control floating-label" 
+								placeholder="Current password" />
 							
-							<input type="password" className="form-control floating-label" placeholder="New password" />
+							<input 
+								type="password" 
+								className="form-control floating-label" 
+								placeholder="New password" 
+							/>
 						</div>
 						
 						<div className="content-info-box">

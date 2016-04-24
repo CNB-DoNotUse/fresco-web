@@ -8,9 +8,7 @@ import GalleryCreate from '../editing/gallery-create'
 import BulkEdit from '../editing/bulk-edit'
 
 /** //
-
 Description : List for a set of posts used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
-
 // **/
 
 /**
@@ -60,7 +58,8 @@ export default class PostList extends React.Component {
 		//If we receive new posts in props while having none previously
 		var currentPostIds  = this.state.posts.map(p => p._id),
 			newPostIds 		= nextProps.posts.map(p => p._id),
-			diffIds 		= _.difference(newPostIds, currentPostIds);
+			diffIds 		= _.difference(newPostIds, currentPostIds),
+			postsUpdated    = false;
 
 		//Check diff or if the parent tells the component to update
 	    if(nextProps.posts.length != this.props.posts.length || diffIds.length || nextProps.updatePosts) {
@@ -71,6 +70,8 @@ export default class PostList extends React.Component {
 
 	    //Checks if the verified prop is changed `or` Checks if the sort prop is changed
 	    if(nextProps.onlyVerified !== this.props.onlyVerified || nextProps.sort !== this.props.sort) {
+	    	postsUpdated = true;
+
 	    	if(nextProps.scrollable) {
 				//Load posts from API
 		    	this.loadInitialPosts();
@@ -79,6 +80,11 @@ export default class PostList extends React.Component {
 	    			posts: this.sortPosts()
 	    		});
 	    	}
+	    }
+
+	    //Tells component to set scroll to the top
+	    if(postsUpdated) {
+	    	this.refs.grid.scrollTop = 0;
 	    }
 	}
 
@@ -268,7 +274,11 @@ export default class PostList extends React.Component {
 
 		return (
 			<div>
-				<div className={className} ref='grid' onScroll={this.state.scrollable ? this.scroll : null} >
+				<div 
+					className={className} 
+					ref='grid' 
+					onScroll={this.state.scrollable ? this.props.scroll ? this.props.scroll : this.scroll : null} 
+				>
 					<div className="row tiles" id="posts">{posts}</div>
 				</div>
 
