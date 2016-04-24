@@ -66,6 +66,7 @@ export default class PostRelatedTags extends React.Component {
 			if (!this.state.tags[tag]) {
 				break;
 			}
+			
 			let posts = this.state.tags[tag].map((post, i) => {
 				return <RelatedPostImage post={post} key={i}/>
 			});
@@ -75,12 +76,17 @@ export default class PostRelatedTags extends React.Component {
 			let tab =
 				<div className={"tab " + toggled} key={tag}>
 					<div className="tab-inner">
-						<a className="btn btn-flat" href={"/search?tags=" + tag}>See all</a>
+						<a className="btn btn-flat" href={"/search?tags[]=" + tag}>See all</a>
 						{posts}
 					</div>
 				</div>;
 
-			let tabControl = <button className={"btn btn-flat " + toggled} key={tag} onClick={this.setDisplayedTag} data-tag={tag}>#{tag.toUpperCase()}</button>
+			let tabControl = <button 
+								className={"btn btn-flat " + toggled} 
+								key={tag} 
+								onClick={this.setDisplayedTag} 
+								data-tag={tag}>#{tag.toUpperCase()} >
+							</button>
 
 			tagTabs.push(tab);
 			tagTabControls.push(tabControl);

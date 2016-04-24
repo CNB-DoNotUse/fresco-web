@@ -9,7 +9,7 @@ router.get('/', (req, res, next) => {
         purchases = Purchases.mapPurchases(req.session);
     }
 
-    var query = req.query.q,
+    var query = req.query.q || '',
         tags = req.query.tags || [],
         location = {};
 
