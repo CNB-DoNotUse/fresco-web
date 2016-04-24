@@ -19,6 +19,7 @@ export class Search extends React.Component {
 		this.loadingGalleries = false;
 		this.loadingUsers = false;
 
+		this.getTitle 				= this.getTitle.bind(this);
 		this.getAssignments			= this.getAssignments.bind(this);
 		this.getGalleries			= this.getGalleries.bind(this);
 		this.getUsers				= this.getUsers.bind(this);
@@ -39,7 +40,8 @@ export class Search extends React.Component {
 	 * Computes initial state based on query params
 	 */
 	computeInitialState() {
-		var location = this.props.location;	
+		var location = this.props.location,
+			title = '';
 
 		if(location.radius && location.coordinates ) {
 			var circle = new google.maps.Circle({
@@ -58,6 +60,7 @@ export class Search extends React.Component {
 			location: location,
 			stories: [],
 			offset: 0,
+			title: this.getTitle(true),
 			userOffset: 0,
 			verifiedToggle: true,
 			tags: this.props.tags,
@@ -80,7 +83,8 @@ export class Search extends React.Component {
 					location.address = results[0].formatted_address;
 
 					this.setState({ 
-						location : location
+						location : location,
+						title: this.getTitle()
 					});
 				}
 			});
@@ -99,8 +103,28 @@ export class Search extends React.Component {
 		}
 
 		//Update if any of the conditions are true
-		if(shouldUpdate) 
+		if(shouldUpdate) {
 			this.refreshData(false);
+
+			this.setState({
+				title : this.getTitle(false)
+			});
+		} 
+	}
+
+	getTitle(withProps) {
+		var state = withProps ? this.props : this.state,
+			title = '';
+
+		if(this.props.query !== '') {
+			title = 'Results for ' + this.props.query;
+		} else if(state.tags.length) {
+			title = 'Results for tags ' + state.tags.join(', ');
+		} else if(state.location && state.location.address) {
+			title = 'Results from ' + state.location.address;
+		}	
+
+		return title;
 	}
 
 	/**
@@ -348,8 +372,8 @@ export class Search extends React.Component {
 
 		query += encodeURIComponent(this.props.query);
 
-		if(state.tags.length > 0){
-			query += '&tags=' + encodeURIComponent(state.tags.join(','))
+		for (var i = 0; i < state.tags.length; i++) {
+			query += '&tags[]=' + encodeURIComponent(this.state.tags[i]);
 		}
 
 		if(state.location.coordinates && state.location.radius){
@@ -436,7 +460,7 @@ export class Search extends React.Component {
 }
 
 Search.defaultProps = {
-	location : {},
+	location: {},
 	tags: []
 }
 
