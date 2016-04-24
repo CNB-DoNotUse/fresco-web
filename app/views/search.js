@@ -6,8 +6,8 @@ import App from './app'
 import TopBar from './../components/topbar'
 import LocationDropdown from '../components/topbar/location-dropdown'
 import TagFilter from '../components/topbar/tag-filter'
-import SearchGalleryList from './../components/search/search-gallery-list'
 import SearchSidebar from './../components/search/search-sidebar'
+import PostList from './../components/global/post-list.js'
 
 export class Search extends React.Component {
 
@@ -16,18 +16,17 @@ export class Search extends React.Component {
 
 		this.state = this.computeInitialState();
 
-		this.loadingGalleries = false;
+		this.loadingPosts = false;
 		this.loadingUsers = false;
 
 		this.getTitle 				= this.getTitle.bind(this);
 		this.getAssignments			= this.getAssignments.bind(this);
-		this.getGalleries			= this.getGalleries.bind(this);
+		this.getPosts				= this.getPosts.bind(this);
 		this.getUsers				= this.getUsers.bind(this);
 		this.getStories				= this.getStories.bind(this);
 		this.onVerifiedToggled		= this.onVerifiedToggled.bind(this);
 		this.addTag					= this.addTag.bind(this);
 		this.removeTag				= this.removeTag.bind(this);
-		this.didPurchase			= this.didPurchase.bind(this);
 		this.scroll  				= this.scroll.bind(this);
 		this.onMapDataChange		= this.onMapDataChange.bind(this);
 		this.onRadiusUpdate			= this.onRadiusUpdate.bind(this);
@@ -55,7 +54,7 @@ export class Search extends React.Component {
 
 		return {
 			assignments: [],
-			galleries: [],
+			posts: [],
 			users: [],
 			location: location,
 			stories: [],
@@ -76,15 +75,14 @@ export class Search extends React.Component {
 		// Location dropdown will use this as it's defaultLocation
 		if(this.state.location.coordinates) {
 			var geocoder = new google.maps.Geocoder(),
-				location = _.clone(this.state.location);
+				location = this.state.location;
 
 			geocoder.geocode({'location': this.state.location.coordinates}, (results, status) => {
 				if(status === google.maps.GeocoderStatus.OK && results[0]){
 					location.address = results[0].formatted_address;
 
 					this.setState({ 
-						location : location,
-						title: this.getTitle()
+						title : this.getTitle()
 					});
 				}
 			});
@@ -94,7 +92,9 @@ export class Search extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		let shouldUpdate = false;
 
-		if(JSON.stringify(prevState.location) !== JSON.stringify(this.state.location)) {
+		if(JSON.stringify(prevState.location.coordinates) !== JSON.stringify(this.state.location.coordinates)) {
+			shouldUpdate = true;
+		} else if(prevState.location.radius !== this.state.location.radius) {
 			shouldUpdate = true;
 		} else if(JSON.stringify(prevState.tags) !== JSON.stringify(this.state.tags)){
 			shouldUpdate = true;
@@ -133,8 +133,8 @@ export class Search extends React.Component {
 	 */
 	refreshData(initial) {
 		this.getAssignments(0);
-		this.getGalleries(0);
-		this.getUsers(0);
+		this.getPosts(true);
+		this.getUsers(true);
 		this.getStories(0);
 
 		if(!initial){
@@ -180,19 +180,18 @@ export class Search extends React.Component {
 	}
 
 	/**
-	 * Retrieves galleries from API based on state
+	 * Retrieves posts from API based on state
 	 */
-	getGalleries(offset, force = true) {
+	getPosts(force = true) {
 		var params = {
 				q: this.props.query,
-				offset: offset,
+				offset: force ?  0 : this.state.offset,
 				limit: 18,
 				verified: this.state.verifiedToggle,
 				tags: this.state.tags.join(','),
 				polygon: null
 			},
 			location = _.clone(this.state.location);
-
 
 		if(this.state.map && this.state.circle) {
 			params.polygon = encodeURIComponent(
@@ -207,29 +206,35 @@ export class Search extends React.Component {
 				radius: global.feetToMeters(location.radius)
 			});
 
-			params.polygon = encodeURIComponent(
-						JSON.stringify(
-							global.circleToPolygon(circle, 16)
-						)
-					);
+			params.polygon = JSON.stringify(global.circleToPolygon(circle, 16));
 		}
 
 		$.get('/api/gallery/search', params, (response) => {
+			this.loadingPosts = false;
+			
 			if(!response.err && response.data) {
-				if(response.data.length == 0) return;
 
-				this.loadingGalleries = false;
+				let posts = null,
+					offset = null;
 
-				let galleries = force ? response.data : this.state.galleries.concat(response.data),
-					offset = force ? response.data.length : this.state.offset + response.data.length;
-				
+				if(force) {
+					//Setting scroll top manually because we're not using the post-list's default 
+					//data mechanism
+					this.refs.postList.refs.grid.scrollTop = 0;
+					posts = response.data;
+					offset = response.data.length;
+				} else {
+					posts = this.state.posts.concat(response.data);
+					offset = this.state.offset + response.data.length;
+				}
+
 				this.setState({
-					galleries: galleries,
+					posts: posts,
 					offset: offset
 				});
 			} else {
 				this.setState({
-					galleries: [],
+					posts: [],
 					offset: 0
 				})
 			}
@@ -239,10 +244,10 @@ export class Search extends React.Component {
 	/**
 	 * Retrieves users from API based on state
 	 */
-	getUsers(offset, force = true) {
+	getUsers(force = true) {
 		$.get('/api/user/search', {
 			q: this.props.query,
-			offset: offset,
+			offset: force ? 0 : this.state.userOffset,
 			limit: 20
 		}, (response) => {
 			if(!response.err && response.data && response.data.length > 0) {
@@ -322,12 +327,6 @@ export class Search extends React.Component {
 		});
 	}
 
-	didPurchase(id) {
-		this.setState({
-			purchases: this.state.purchases.concat(id)
-		});
-	}
-
 	/**
 	 * When radius changes
 	 */
@@ -384,24 +383,24 @@ export class Search extends React.Component {
 		window.history.pushState({}, '', query);
 	}
 
-	// Called when gallery div scrolls
+	// Called when posts div scrolls
 	scroll(e) {
 		var grid = e.target,
 			bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400);
 
 		//Check that nothing is loading and that we're at the end of the scroll,
-		if(!this.loadingGalleries && bottomReached) {
-			this.loadingGalleries = true;
+		if(!this.loadingPosts && bottomReached) {
+			this.loadingPosts = true;
 
-			// Pass current offset to getGalleries
-			this.getGalleries(this.state.offset, false);
+			// Pass current offset to getPosts
+			this.getPosts(false);
 		}
 
 		//Check that nothing is loading and that we're at the end of the scroll,
 		if(!this.loadingUsers && bottomReached){
 			this.loadingUsers = true;
 
-			this.getUsers(this.state.userOffset, false);
+			this.getUsers(false);
 		}
 	}
 
@@ -432,28 +431,25 @@ export class Search extends React.Component {
 						/>
 				</TopBar>
 
-	    		<div
-	    			id="search-container"
-	    			className="container-fluid grid"
-		    		onScroll={this.scroll}
-		    	>
-	    			<div>
-	    				<SearchGalleryList
-	    					rank={this.props.user.rank}
-		    				galleries={this.state.galleries}
-		    				tags={this.state.tags}
-		    				purchases={this.state.purchases}
-		    				didPurchase={this.didPurchase}
-		    				onlyVerified={this.state.verifiedToggle}  
-		    			/>
+				<div className="col-sm-8 tall p0">
+	    			<PostList
+	    				posts={this.state.posts}
+	    				rank={this.props.user.rank}
+	    				purchases={this.props.purchases}
+	    				ref="postList"
+	    				size='large'
+	    				scroll={this.scroll}
+	    				onlyVerified={this.state.verifiedToggle}
+	    				scrollable={true} 
+	    			/>
+    			</div>
 
-		    			<SearchSidebar
-		    				assignments={this.state.assignments}
-		    				stories={this.state.stories}
-		    				users={this.state.users} 
-		    			/>
-	    			</div>
-		    	</div>
+    			<SearchSidebar
+    				assignments={this.state.assignments}
+    				stories={this.state.stories}
+    				users={this.state.users} 
+    				scroll={this.scroll}
+    			/>
 			</App>
 		);
 	}

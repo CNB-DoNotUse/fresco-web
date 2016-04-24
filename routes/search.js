@@ -13,8 +13,6 @@ router.get('/', (req, res, next) => {
         tags = req.query.tags || [],
         location = {};
 
-    console.log(tags);
-
     if (!isNaN(req.query.lat) && !isNaN(req.query.lon) && !isNaN(req.query.radius)){
         location = {
             coordinates: {
