@@ -1,49 +1,50 @@
 <!-- Props -->
 <% if(typeof(props) !== 'undefined'){ %>
-  <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
+    <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
 <% } %>
 
 <!--Global Specifc based on sections-->
 <% if(typeof(section) !== 'undefined'){ %> 
-  <script type="text/javascript" src="/js/<%= section %>.js"></script>
+    <script type="text/javascript">window.mode = "<%= mode %>"</script>
+
+    <script type="text/javascript" src="/js/<%= section %>.js"></script>
   
-  <% if(section == 'platform'){ %>
-    <script type="text/javascript" src="/js/pages/common.js"></script>
+    <% if(section == 'platform'){ %>
+        <script type="text/javascript" src="/js/pages/common.js"></script>
     
-    <!--Material Init-->
-    <script type="text/javascript">
-        $.material.init();
-    </script>
+        <!--Material Init-->
+        <script type="text/javascript">
+            $.material.init();
+        </script>
 
-    <!--Session Ping Check-->
-    <script type="text/javascript">
-        (function(){
-          var _xhr = null;
-          window.setInterval(function() {
-            if(_xhr) {
-              _xhr.abort();
-              _xhr = null;
-            }
-            _xhr = $.ajax({
-              url: '/api/ping',
-              method: 'get',
-              success: (result, status, xhr) => {
-              },
-              error: (xhr, status, error) => {
-                if(xhr.status == 401) {
-                  return location.reload();
+        <!--Session Ping Check-->
+        <script type="text/javascript">
+            (function(){
+              var _xhr = null;
+              window.setInterval(function() {
+                if(_xhr) {
+                  _xhr.abort();
+                  _xhr = null;
                 }
-              }
-            });
-          }, 15000);
-        })();
-    </script>
+                _xhr = $.ajax({
+                  url: '/api/ping',
+                  method: 'get',
+                  success: (result, status, xhr) => {
+                  },
+                  error: (xhr, status, error) => {
+                    if(xhr.status == 401) {
+                      return location.reload();
+                    }
+                  }
+                });
+              }, 15000);
+            })();
+        </script>
 
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places"></script>
-
-  <% } else if(typeof(page) !== 'undefined' && page == 'publicGallery'){ %>  
-    <script type="text/javascript" src="/js/pages/common.js"></script>
-  <% } %> %>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places"></script>
+    <% } else if(typeof(page) !== 'undefined' && page == 'publicGallery'){ %>  
+        <script type="text/javascript" src="/js/pages/common.js"></script>
+    <% } %>
 <% } %>
 
 <!--Remote Scripts-->
