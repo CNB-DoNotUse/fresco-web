@@ -27,7 +27,6 @@ iframe{
 //Parent embed element
 .embed {
     position:relative;
-    min-height:400px;
     width:100%;
 }
 
@@ -86,7 +85,6 @@ iframe{
     height:100%;
     cursor:pointer;
     @include border-radius($borderRadius);
-
 }
 
 /**
@@ -102,7 +100,7 @@ iframe{
     color:#FFF;
     @include transition(opacity .3s ease-in-out);
 
-    @include mobileAndTablet {
+    .mobile &{
         position:static;
         opacity:1 !important;
         background:0;
@@ -114,7 +112,7 @@ iframe{
         margin-top:70px;
         padding:0 24px;
         
-        @include mobileAndTablet {
+        .mobile & {
             padding:16px 24px;
             margin:0 auto;
         }
@@ -134,7 +132,7 @@ iframe{
             overflow: hidden;
             text-overflow: ellipsis;
 
-            @include mobile {
+            .mobile & {
                 max-height:160px;
             }
         }
@@ -146,7 +144,7 @@ iframe{
             font-weight:500;
             font-family:$nota;
 
-            @include mobileAndTablet {
+            .mobile & {
                 color:$fresco-blue;
                 text-shadow:none;
             }
@@ -170,12 +168,11 @@ iframe{
         height:100vh;
         @include border-radius($borderRadius);
 
-        @include mobileAndTablet{
+        .mobile & {
             height:auto;
             // max-height:386px;
             width: 100%;
             padding-bottom:20%;
- 
         }
 
         video {
@@ -184,7 +181,7 @@ iframe{
             position:absolute;
             top: 0; left: 0; bottom: 0; right: 0;
 
-            @include mobileAndTablet {
+            .mobile & {
                 width: 100%;
             }
         }

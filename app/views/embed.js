@@ -1,3 +1,4 @@
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app.js'
@@ -19,10 +20,15 @@ class Embed extends React.Component {
             currentIndex: 0
         }
 
+        if(global.isMobile(this.props.userAgent)) {
+            this.device = 'mobile';
+        } else {
+            this.device = 'desktop';
+        }
+
         this.fullScreen = this.fullScreen.bind(this);
         this.muteVideo = this.muteVideo.bind(this);
         this.toggleVideo = this.toggleVideo.bind(this);
-        this.resize = this.resize.bind(this);
     }
 
     componentDidMount() {
@@ -44,41 +50,11 @@ class Embed extends React.Component {
             }, false);
         }
 
-        this.screen = {
-            tablet: 1024, 
-            mobile: 720
-        }
-
-        //Call once on mount
-        this.resize();
-
-        //Add listener for when the window is resized
-        window.addEventListener('resize', () => {
-            this.resize();
-        });
-
         // all content including images has been loaded
         window.onload = () => {
             // post our message to the parent with height
             window.parent.postMessage(this.refs.embed.scrollHeight ,"*");
         };
-    }
-
-    resize() {
-        var width = window.innerWidth,
-            gallery = this.refs.gallery,
-            galleryInfo = this.refs.galleryInfoWrap,
-            slider = ReactDOM.findDOMNode(this.refs.slider);
-
-        if(width >= this.screen.tablet) { //desktop
-
-            gallery.insertBefore(galleryInfo, slider);
-
-        } else { //tablet % mobile
-
-            gallery.insertBefore(slider, galleryInfo);
-
-        }   
     }
 
     /**
@@ -130,7 +106,8 @@ class Embed extends React.Component {
     }
 
     render() {
-        var gallery = this.props.gallery;
+        var gallery = this.props.gallery,   
+            device = '';
 
         //Stop if there are no posts
         if(gallery.posts.length == 0) return;
@@ -250,9 +227,33 @@ class Embed extends React.Component {
             initialVolumeStyle.opacity = 0;
         }
 
+        //In an array so we can reverse order depending on user agent - `this.device`
+        var internal = [
+            <div 
+                className="gallery-info-wrap" 
+                ref="galleryInfoWrap"
+                onClick={this.toggleVideo.bind(this, this.state.currentIndex)}
+                key={0} >
+                <div className="gallery-info">
+                    <p>{gallery.caption}</p>
+
+                    <a target="_blank" href={'https://fresconews.com/gallery/' + gallery._id}>SEE MORE ON FRESCO</a>
+                </div>
+            </div>,
+
+            <Slider 
+                {...settings} 
+                className="gallery-slick" 
+                ref="slider"
+                key={1}
+            >
+                {posts ? posts : <div></div>}
+            </Slider>
+        ];
+
         //Render embed
         return (
-            <div className="embed" ref="embed">
+            <div className={'embed ' + this.device} ref="embed">
                 <span className="icon-fresco"></span>
 
                 <div className="controls">
@@ -273,20 +274,7 @@ class Embed extends React.Component {
                 </span> 
 
                 <div className="gallery" ref="gallery">
-                    <div 
-                        className="gallery-info-wrap" 
-                        ref="galleryInfoWrap"
-                        onClick={this.toggleVideo.bind(this, this.state.currentIndex)} >
-                        <div className="gallery-info">
-                            <p>{gallery.caption}</p>
-
-                            <a target="_blank" href={'https://fresconews.com/gallery/' + gallery._id}>SEE MORE ON FRESCO</a>
-                        </div>
-                    </div>
-
-                    <Slider {...settings} className="gallery-slick" ref="slider">
-                        {posts ? posts : <div></div>}
-                    </Slider>
+                    {this.device == 'desktop' ? internal : [internal[1], internal[0]]}
                 </div>
             </div>
         );
