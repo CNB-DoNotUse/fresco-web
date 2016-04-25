@@ -16,18 +16,19 @@ var config        = require('./lib/config'),
     bodyParser    = require('body-parser'),
     multer        = require('multer'),
     fs            = require('fs'),
-    http	        = require('http'),
+    http	      = require('http'),
     https         = require('https'),
     app           = express();
 
 // If in dev mode, use local redis server as session store
-var rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
-var redisConnection = { client: rClient };
-// view engine setup
+var rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false }),
+    redisConnection = { client: rClient };
+
+//View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
+//Uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // app.use(morgan('dev'));
@@ -37,41 +38,41 @@ app.use(compression())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({
-  dest : './uploads/',
-  rename: (fieldname, filename) => {
+    dest : './uploads/',
+    rename: (fieldname, filename) => {
       return Date.now() + filename.split('.').pop();
-  },
-  onFileUploadStart: (file) => {
-  },
-  onFileUploadComplete: (file) => {
+    },
+    onFileUploadStart: (file) => {
+    },
+    onFileUploadComplete: (file) => {
       done = true;
-  }
+    }
 }));
 
 //Cookie parser
 app.use(
-  cookieParser()
+    cookieParser()
 );
 
 //Session config
 app.use(
-  session({
-    name: 'FRSSID' + (config.COOKIE_SUFFIX ? ('_' + config.COOKIE_SUFFIX) : ''),
-    store: new RedisStore(redisConnection),
-    secret: config.SESSION_SECRET,
-    resave: false,
-    rolling: true,
-    saveUninitialized: false,
-    cookie: { httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
-    unset: 'destroy'
-  })
+    session({
+        name: 'FRSSID' + (config.COOKIE_SUFFIX ? ('_' + config.COOKIE_SUFFIX) : ''),
+        store: new RedisStore(redisConnection),
+        secret: config.SESSION_SECRET,
+        resave: false,
+        rolling: true,
+        saveUninitialized: false,
+        cookie: { httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
+        unset: 'destroy'
+    })
 );
 
 //Set up public direc.
 app.use(
-  express.static(path.join(__dirname, 'public'), {
-    maxAge: 1000 * 60 * 60 * 2
-  }) // 2 hour cache
+    express.static(path.join(__dirname, 'public'), {
+        maxAge: 1000 * 60 * 60 * 2
+    }) // 2 hour cache
 );
 
 /**
@@ -103,6 +104,7 @@ app.use((req, res, next)=> {
  * Set up local head and global for all templates
  */
 
+app.locals.mode = config.DEV ? 'dev' : 'production';
 app.locals.head = head;
 app.locals.global = global;
 app.locals.alerts = [];
@@ -114,7 +116,6 @@ app.locals.alerts = [];
 app.use((req, res, next) => {
     var path = req.path.slice(1).split('/')[0],
         now = Date.now();
-
 
     //Check if not a platform route, then send onwwards
     if(routes.platform.indexOf(path) == -1) {
@@ -145,7 +146,6 @@ app.use((req, res, next) => {
 
   res.locals.section = 'public';
   next();
-
 });
 
 /**
@@ -180,13 +180,12 @@ for (var i = 0; i < routes.scripts.length; i++) {
  */
 
 app.use((req, res, next) => {
-
   if(!req.fresco)
     req.fresco = {};
 
   res.locals.section = 'platform';
-  next();
 
+  next();
 });
 
 
@@ -195,12 +194,10 @@ app.use((req, res, next) => {
  */
 
 for (var i = 0; i < routes.platform.length; i++) {
-
   var routePrefix = routes.platform[i] ,
       route = require('./routes/' + routePrefix);
 
   app.use('/' + routePrefix , route);
-
 }
 
 /**
@@ -219,7 +216,6 @@ app.use('/api', API.proxy);
 /**
  * Error Midleware
  */
-
 app.use((error, req, res, next) => {
     var err = {};
     err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
@@ -253,7 +249,6 @@ app.use((error, req, res, next) => {
 /**
  * 404 Handler Catch
  */
-
 app.use((req, res, next) => {
     //Respond with code
     res.status(404);

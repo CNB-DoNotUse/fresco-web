@@ -45,7 +45,7 @@ export default class GalleryShareDropdown extends React.Component {
             items = [],
             dropdownBody,
             key = 0,
-            link = 'https://fresconews.com/gallery/' + gallery._id;
+            link = global.baseUrl() + '/gallery/' + gallery._id;
 
         items.push(
             <li
