@@ -5,12 +5,12 @@ var fs                = require('fs'),
     config            = require('../lib/config'),
     Purchases         = require('../lib/purchases'),
     head              = require('../lib/head'),
-    router            = express.Router(),
     global            = require('../lib/global'),
     React             = require('react'),
     ReactDOMServer    = require('react-dom/server'),
     request           = require('request'),
-    Embed             = require('../app/views/Embed.js');
+    embed             = require('../app/views/embed.js'),
+    router            = express.Router();
 
 /** //
 
@@ -45,7 +45,7 @@ router.get('/:id', (req, res, next) => {
                 cycle: req.query.cycle,
                 start: req.query.start
             },
-            element = React.createElement(Embed, props),
+            element = React.createElement(embed, props),
             react = ReactDOMServer.renderToString(element);
 
         res.render('embed', {
