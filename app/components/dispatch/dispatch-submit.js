@@ -27,6 +27,10 @@ export default class DispatchSubmit extends React.Component {
 		this.autocompleteUpdated = this.autocompleteUpdated.bind(this);
 	}
 
+	componentDidMount() {
+	 	$.material.init();     
+	}
+
 
 	componentWillReceiveProps(nextProps) {
 		var self = this,
@@ -84,7 +88,7 @@ export default class DispatchSubmit extends React.Component {
 
 		//Update input value of autocomplete
 		this.setState({
-			autocompleteText: autocompleteData.prediction.address
+			autocompleteText: autocompleteData.address
 		});
 	}
 
@@ -221,9 +225,19 @@ export default class DispatchSubmit extends React.Component {
 				
 				<div className="card-body">
 					<div className="form-group-default">
-						<input ref="title" type="text" className="form-control floating-label" placeholder="Title" />
+						<input 
+							ref="title" 
+							type="text" 
+							className="form-control floating-label" 
+							placeholder="Title" 
+						/>
 
-						<textarea ref="caption" type="text" className="form-control floating-label" placeholder="Caption" />
+						<textarea 
+							ref="caption" 
+							type="text" 
+							className="form-control floating-label" 
+							placeholder="Caption" 
+						/>
 					</div>
 
 					<div className="map-group">
@@ -252,6 +266,7 @@ export default class DispatchSubmit extends React.Component {
 							radius={global.milesToFeet(radius)}
 							zoom={zoom}
 							type='drafted'
+							updateCurrentBounds={this.props.updateCurrentBounds}
 							rerender={this.props.rerender} />
 					</div>
 

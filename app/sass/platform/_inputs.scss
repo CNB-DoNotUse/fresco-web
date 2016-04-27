@@ -28,7 +28,7 @@ $bg:#FFFFFF;
 .nav-input {
     height:36px;
     background: rgba(0, 0, 0, 0.05);
-    padding:4px 24px 0;
+    padding:2px 24px 0;
     
     @include border-radius(2px);
     @include placeholderColor{

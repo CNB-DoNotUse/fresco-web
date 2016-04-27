@@ -256,7 +256,7 @@ class Dispatch extends React.Component {
 					rerender={this.state.newAssignment == 'unset'}
 					bounds={this.state.bounds}
 					lastChangeSource={this.state.lastChangeSource}
-
+					updateCurrentBounds={this.updateCurrentBounds}
 					updateViewMode = {this.updateViewMode}
 					setActiveAssignment={this.setActiveAssignment}
 					toggleSubmissionCard={this.toggleSubmissionCard}
