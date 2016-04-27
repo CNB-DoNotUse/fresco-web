@@ -101,6 +101,7 @@ class PostDetail extends React.Component {
 
                     {relatedTags}
  				</div>
+                
  				{galleryEdit}
  			</App>
  		);

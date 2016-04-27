@@ -8,9 +8,7 @@ import GalleryCreate from '../editing/gallery-create'
 import BulkEdit from '../editing/bulk-edit'
 
 /** //
-
 Description : List for a set of posts used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
-
 // **/
 
 /**
@@ -35,12 +33,12 @@ export default class PostList extends React.Component {
 
 		// If we aren't dynamically loading posts, then sort them locally
 		if (!this.props.scrollable) {
-			let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
-			this.state.posts = this.state.posts.sort((a,b) => {return b[field] - a[field]});
+			this.state.posts = this.sortPosts();
 		}
 
 		this.togglePost 		= this.togglePost.bind(this);
 		this.setSelectedPosts 	= this.setSelectedPosts.bind(this);
+		this.sortPosts 		    = this.sortPosts.bind(this);
 		this.scroll 			= this.scroll.bind(this);
 		this.didPurchase 		= this.didPurchase.bind(this);
 		this.edit 				= this.edit.bind(this);
@@ -48,11 +46,19 @@ export default class PostList extends React.Component {
 		this.loadInitialPosts	= this.loadInitialPosts.bind(this);
 	}
 
+	componentWillMount() {
+		//Check if list is initialzied with posts, then don't load anything
+		if(this.state.posts.length) return;
+
+		this.loadInitialPosts();
+	}
+
 	componentWillReceiveProps(nextProps) {
 		//If we receive new posts in props while having none previously
 		var currentPostIds  = this.state.posts.map(p => p._id),
 			newPostIds 		= nextProps.posts.map(p => p._id),
-			diffIds 		= _.difference(newPostIds, currentPostIds);
+			diffIds 		= _.difference(newPostIds, currentPostIds),
+			postsUpdated    = false;
 
 		//Check diff or if the parent tells the component to update
 	    if(nextProps.posts.length != this.props.posts.length || diffIds.length || nextProps.updatePosts) {
@@ -60,23 +66,35 @@ export default class PostList extends React.Component {
 	    		posts: nextProps.posts
 	    	});
 	    }
+
+	    //Checks if the verified prop is changed `or` Checks if the sort prop is changed
+	    if(nextProps.onlyVerified !== this.props.onlyVerified || nextProps.sort !== this.props.sort) {
+	    	postsUpdated = true;
+
+	    	if(nextProps.scrollable) {
+				//Load posts from API
+		    	this.loadInitialPosts();
+	    	} else {
+	    		this.setState({
+	    			posts: this.sortPosts()
+	    		});
+	    	}
+	    }
+
+	    //Tells component to set scroll to the top
+	    if(postsUpdated) {
+	    	this.refs.grid.scrollTop = 0;
+	    }
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		//Checks if the verified prop is changed
-		//`or` Checks if the sort prop is changed
-		if(prevProps.onlyVerified != this.props.onlyVerified
-			|| prevProps.sort != this.props.sort ) {
-			this.loadInitialPosts();
-		}
-	}
+	sortPosts() {
+		let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
+		
+		let posts = this.state.posts.sort((post1, post2) => {
+			return post2[field] - post1[field]
+		});
 
-	componentDidMount() {
-		//Check if list is initialzied with posts, then don't load anything
-		if(this.state.posts.length)
-			return;
-
-		this.loadInitialPosts();
+		return posts;
 	}
 
 	/**
@@ -94,30 +112,6 @@ export default class PostList extends React.Component {
 				offset : offset
 			});
 		});
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-		//Checks if the verified prop is changed
-		//`or` Checks if the sort prop is changed
-		if(prevProps.onlyVerified != this.props.onlyVerified
-			|| prevProps.sort != this.props.sort ) {
-			this.loadInitialPosts();
-		}
-
-		// If we aren't dynamically loading posts, then sort them locally
-		if (!this.props.scrollable && prevProps.sort != this.props.sort) {
-			let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
-			let posts = this.state.posts.sort((a,b) => {return b[field] - a[field]});
-			this.setState({posts});
-		}
-	}
-
-	componentDidMount() {
-		//Check if list is initialzied with posts, then don't load anything
-		if(this.state.posts.length)
-			return;
-
-		this.loadInitialPosts();
 	}
 
 	/**
@@ -172,8 +166,7 @@ export default class PostList extends React.Component {
 	 * @param  {object} passedPost The post to toggle selected or unselected in the post-list and bulk edit
 	 */
 	togglePost(passedPost) {
-
-		//Check if CM
+		//Check if `not` CM
 		if(this.props.rank < global.RANKS.CONTENT_MANAGER) return;
 
 		//Filter out anything, but ones that equal the passed post
@@ -183,11 +176,9 @@ export default class PostList extends React.Component {
 
 		//Post not found, so add
 		if(result.length == 0){
-
 			this.setState({
 				selectedPosts: this.state.selectedPosts.concat(passedPost)
 			});
-
 		}
 		//No post found
 		else{
@@ -242,6 +233,7 @@ export default class PostList extends React.Component {
 
 			var post = this.state.posts[i];
 
+			//Check if post should be added based on approvals and verified toggle
 			if(this.props.onlyVerified && post.approvals == 0){
 				continue;
 			}
@@ -274,7 +266,11 @@ export default class PostList extends React.Component {
 
 		return (
 			<div>
-				<div className={className} ref='grid' onScroll={this.state.scrollable ? this.scroll : null} >
+				<div 
+					className={className} 
+					ref='grid' 
+					onScroll={this.state.scrollable ? this.props.scroll ? this.props.scroll : this.scroll : null} 
+				>
 					<div className="row tiles" id="posts">{posts}</div>
 				</div>
 

@@ -93,15 +93,15 @@ export default class EditMap extends React.Component {
 		//Update the circles position
 		this.state.circle.setCenter(this.state.marker.getPosition());
 
-		// Pass data back up
-		this.props.onDataChange({
-			map: this.state.map,
-			polygon: this.state.polygon,
-			circle: this.state.circle,
-			marker: this.state.marker,
-			location: this.props.location,
-			radius: this.props.radius
-		});
+		// // Pass data back up
+		// this.props.onDataChange({
+		// 	map: this.state.map,
+		// 	polygon: this.state.polygon,
+		// 	circle: this.state.circle,
+		// 	marker: this.state.marker,
+		// 	location: this.props.location,
+		// 	radius: this.props.radius
+		// });
 	}
 
 	//Returns centroid for passed polygon

@@ -44,13 +44,21 @@ export default class SearchSide extends React.Component {
 		});
 
 		return (
-			<div className="col-md-4">
+			<div className="col-md-4 search-sidebar" onScroll={this.props.scroll}>
 				<h3 className="md-type-button md-type-black-secondary">Assignments</h3>
-				<ul id="assignments" className="md-type-subhead">{assignments}</ul>
+				<ul id="assignments" className="md-type-subhead">
+					{assignments}
+				</ul>
+				
 				<h3 className="md-type-button md-type-black-secondary">Stories</h3>
-				<ul id="stories" className="md-type-subhead">{stories}</ul>
+				<ul id="stories" className="md-type-subhead">
+					{stories}
+				</ul>
+				
 				<h3 className="md-type-button md-type-black-secondary">Users</h3>
-				<ul id="users" className="meta">{users}</ul>
+				<ul id="users" className="meta">
+					{users}
+				</ul>
 			</div>
 		)
 	}

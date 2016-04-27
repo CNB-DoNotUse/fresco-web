@@ -30,8 +30,8 @@ export default class PostCell extends React.Component {
 	render() {
 		var post = this.props.post,
 			toggled = this.props.toggled ? 'toggled' : '',
-			time = this.props.sort == 'upload' ? post.time_created : post.time_captured,
-			timeString = global.formatTime(time),
+			time = this.props.sort == 'captured' ? post.time_captured : post.time_created,
+			timeString = typeof(time) == 'undefined' ? 'No timestamp' : global.formatTime(time),
 			address = post.location ? post.location.address ? post.location.address : 'No Address' : 'No Address',
 			size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small;
 
