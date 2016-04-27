@@ -2,7 +2,7 @@
     window.onload = function() {
         var embedBlocks = document.getElementsByTagName('blockquote'),
             embedBlock = null,
-            WEB_ROOT = 'http://dev.fresconews.com';
+            WEB_ROOT = 'http://localhost:3000';
 
         //Find the block we're looking for by the class name
         for (var i = 0; i < embedBlocks.length; i++) {
@@ -17,7 +17,7 @@
         var embedParent =  embedBlock.parentNode, //define parent
             gallery = embedBlock.dataset.gallery, //define galleryId
             width = '100%',
-            height = '100%',
+            height = window.innerWidth || document.documentElement.clientWidth|| document.body.clientWidth,
             source = WEB_ROOT + '/embed/' + gallery; //define embed iframe source
         
         //If we have no gallery, stop the embed
@@ -26,6 +26,7 @@
         //Customize iframe based on data attributes
         if(typeof(embedBlock.dataset.width) !== 'undefined'){
             width = embedBlock.dataset.width;
+            height = width;
         }
         if(typeof(embedBlock.dataset.start) !== 'undefined'){
             source += '?start=' + embedBlock.dataset.start;
@@ -67,10 +68,8 @@
             // we will get a string (better browser support) and validate
             // if it is an int - set the height of the iframe #my-iframe-id
             if (e.data === parseInt(e.data)){
-                //If the width is set, then set the height based on the content
-                if(width !== '100%'){
-                    iframe.style.height = e.data + "px";
-                }
+                //Set the height based on the content
+                iframe.style.height = e.data + "px";
             }
         }, false);
 

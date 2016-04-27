@@ -53,7 +53,8 @@ class Embed extends React.Component {
         // all content including images has been loaded
         window.onload = () => {
             // post our message to the parent with height
-            window.parent.postMessage(this.refs.embed.scrollHeight ,"*");
+            if(this.device == 'mobile')
+                window.parent.postMessage(this.refs.embed.scrollHeight ,"*");
         };
     }
 
