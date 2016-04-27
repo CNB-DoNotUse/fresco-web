@@ -17,7 +17,7 @@
         var embedParent =  embedBlock.parentNode, //define parent
             gallery = embedBlock.dataset.gallery, //define galleryId
             width = '100%',
-            height = embedParent.offsetWidth,
+            height = embedParent.offsetWidth + 'px',
             source = WEB_ROOT + '/embed/' + gallery; //define embed iframe source
         
         //If we have no gallery, stop the embed
@@ -26,7 +26,8 @@
         //Customize iframe based on data attributes
         if(typeof(embedBlock.dataset.width) !== 'undefined'){
             width = embedBlock.dataset.width;
-            height = width;
+            if(width.indexOf('px') > -1)
+                height = width;
         }
         if(typeof(embedBlock.dataset.start) !== 'undefined'){
             source += '?start=' + embedBlock.dataset.start;
