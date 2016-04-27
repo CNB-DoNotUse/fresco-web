@@ -176,7 +176,7 @@ class Embed extends React.Component {
                 }
 
                 video =  <video 
-                            onClick={this.toggleVideo.bind(this, i)} 
+                            onClick={this.toggleVideo.bind(null, i)} 
                             muted={true} 
                             loop={true}
                             className="post-video" >
@@ -232,13 +232,18 @@ class Embed extends React.Component {
             <div 
                 className="gallery-info-wrap" 
                 ref="galleryInfoWrap"
-                onClick={this.toggleVideo.bind(this, this.state.currentIndex)}
+                onClick={this.toggleVideo.bind(null, this.state.currentIndex)}
                 key={0} >
                 <div className="gallery-info">
                     <p>{gallery.caption}</p>
 
                     <a target="_blank" href={'https://fresconews.com/gallery/' + gallery._id}>SEE MORE ON FRESCO</a>
                 </div>
+                
+                <span 
+                    ref="playButton"
+                    className="mdi mdi-play playButton" >
+                </span> 
             </div>,
 
             <Slider 
@@ -267,12 +272,6 @@ class Embed extends React.Component {
                     {/*<span className="mdi mdi-fullscreen"></span>*/}
                 </div>
                 
-                <span 
-                    onClick={this.toggleVideo.bind(this, this.state.currentIndex)} 
-                    ref="playButton"
-                    className="mdi mdi-play playButton" >
-                </span> 
-
                 <div className="gallery" ref="gallery">
                     {this.device == 'desktop' ? internal : [internal[1], internal[0]]}
                 </div>

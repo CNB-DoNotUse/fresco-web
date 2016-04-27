@@ -47,16 +47,17 @@ iframe{
     font-size:54px;
     z-index:6;
     text-shadow:0 8px 8px rgba(0, 0, 0, 0.54);
-    position: absolute;
     margin: 0 auto;
     text-align:center;
     opacity:0;
-    left:0; right:0;
-    top:45%;
     cursor:pointer;
+    display:block;
     @include transition(opacity .3s ease-in-out);
-    @include mobileAndTablet {
-        top:25%;
+    
+    .mobile & {
+        position:absolute;
+        left:0; right:0;
+        top:30%;
     }
 }
 
