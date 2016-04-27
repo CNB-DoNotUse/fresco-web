@@ -5,9 +5,11 @@ export default class OutletNotifications extends React.Component {
 
 	constructor(props) {
 		super(props);
+		
 		this.state = {
 			notifications: []
 		}
+
 		this.loadNotifications = this.loadNotifications.bind(this);
 		this.updateAllNotifications = this.updateAllNotifications.bind(this);
 		this.updateNotification = this.updateNotification.bind(this);
@@ -117,6 +119,8 @@ export default class OutletNotifications extends React.Component {
 			success: function(response){
 				if (response.err || !response.data)
 					return this.error(null, null, response.err);
+
+				console.log(response);
 				
 				//Update state
 				self.setState({ notifications: response.data });
@@ -131,6 +135,22 @@ export default class OutletNotifications extends React.Component {
 
 				
 	render () {
+		var allSms = 1,
+			allEmail = 1,
+			allFresco = 1;
+
+		for (var i = 0; i < this.state.notifications.length; i++) {
+			var notif = this.state.notifications[i];
+
+			if(notif.medium.sms == 0)
+				allSms = 0;
+			if(notif.medium.email == 0)
+				allEmail = 0;
+			if(notif.medium.fresco == 0)
+				allFresco = 0;
+		}
+
+
 		return (
 			<div className="card settings-outlet-notifications">
 				<div className="header">
@@ -154,6 +174,7 @@ export default class OutletNotifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
+									checked={allSms}
 									onChange={this.updateAllNotifications.bind(this, 'sms')} />
 							</label>
 						</div>
@@ -162,6 +183,7 @@ export default class OutletNotifications extends React.Component {
 							<label>
 								<input
 									type="checkbox" 
+									checked={allEmail}
 									onChange={this.updateAllNotifications.bind(this, 'email')} />
 							</label>
 						</div>
@@ -170,6 +192,7 @@ export default class OutletNotifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
+									checked={allFresco}
 									onChange={this.updateAllNotifications.bind(this, 'fresco')} />
 							</label>
 						</div>
