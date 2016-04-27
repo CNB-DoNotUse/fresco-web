@@ -32,7 +32,8 @@ class Embed extends React.Component {
     }
 
     componentDidMount() {
-        var gallery = this.refs.gallery,
+        var self = this,
+            gallery = this.refs.gallery,
             galleryInfo = this.refs.galleryInfoWrap, 
             hovers = [
                 galleryInfo, 
@@ -51,11 +52,14 @@ class Embed extends React.Component {
         }
 
         // all content including images has been loaded
-        window.onload = () => {
+        window.onload = sendMessage;
+        window.onresize = sendMessage;
+
+        function sendMessage() {
             // post our message to the parent with height
-            if(this.device == 'mobile')
-                window.parent.postMessage(this.refs.embed.scrollHeight ,"*");
-        };
+            if(self.device == 'mobile')
+                window.parent.postMessage(self.refs.embed.scrollHeight ,"*");
+        }
     }
 
     /**

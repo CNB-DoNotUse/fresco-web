@@ -17,7 +17,7 @@
         var embedParent =  embedBlock.parentNode, //define parent
             gallery = embedBlock.dataset.gallery, //define galleryId
             width = '100%',
-            height = window.innerWidth || document.documentElement.clientWidth|| document.body.clientWidth,
+            height = embedParent.offsetWidth,
             source = WEB_ROOT + '/embed/' + gallery; //define embed iframe source
         
         //If we have no gallery, stop the embed
@@ -45,13 +45,14 @@
             padding:0;\
             height:' + height + ';\
             width:' + width + ';\
+            overflow:hidden;\
             -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
                -mox-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
                     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);\
-            -webkit-border-radius:2px;\
-               -moz-border-radius:2px;\
-                -ms-border-radius:2px;\
-                    border-radius:2px;\
+            -webkit-border-radius:4px;\
+               -moz-border-radius:4px;\
+                -ms-border-radius:4px;\
+                    border-radius:4px;\
             display: block;\
             background: rgb(255, 255, 255);\
         ';
@@ -69,13 +70,26 @@
             // if it is an int - set the height of the iframe #my-iframe-id
             if (e.data === parseInt(e.data)){
                 //Set the height based on the content
+                window.dynamicHeight = true;
                 iframe.style.height = e.data + "px";
             }
         }, false);
+
+        //TODO Make height of parent
 
         //Insert iframe after blockquote
         embedParent.insertBefore(iframe, embedBlock.nextSibling);
         //Remove blockquote
         embedParent.removeChild(embedBlock);
-    };
+    }
+
+    window.onresize = function() {
+        var iframe = document.getElementById('fresco-iframe');
+
+        if(!iframe || window.dynamicHeight) return;
+
+        var embedParent = iframe.parentNode;
+
+        iframe.style.height = embedParent.offsetWidth;
+    }
 })();
