@@ -3,6 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from '../components/topbar'
+import Dropdown from '../components/global/dropdown'
 import OutletColumn from '../components/outletStats/outlet-column.js'
 
 class OutletStats extends React.Component {
@@ -12,7 +13,11 @@ class OutletStats extends React.Component {
         
         this.state = {
             outlets: [],
+            since: 0
         }
+
+        this.timeToggleSelected = this.timeToggleSelected.bind(this);
+        this.loadOutlets = this.loadOutlets.bind(this);
     }
 
     componentDidMount() {
@@ -37,6 +42,10 @@ class OutletStats extends React.Component {
 
     }
 
+    timeToggleSelected(selected) {
+
+    }
+
     render() {
         var columns = this.state.outlets.map((outlet, i) => {
             return <OutletColumn 
@@ -48,7 +57,13 @@ class OutletStats extends React.Component {
             <App user={this.props.user}>
                 <TopBar 
                     title="Outlet Purchases">
-
+                    <Dropdown
+                        options={['today so far', 'last 24 hours', 'last 7 days', 'last 30 days', 'this year', 'all time']}
+                        selected='today so far'
+                        onSelected={this.timeToggleSelected}
+                        key="timeToggle"
+                        inList={true}>
+                    </Dropdown>
                 </TopBar>
 
                 <div className="outletStats">

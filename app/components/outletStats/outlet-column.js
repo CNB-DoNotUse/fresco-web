@@ -66,17 +66,29 @@ export default class OutletColumn extends React.Component {
     loadPurchaseStats() {
         var self = this;
 
-        $.get('/api/outlet/purchases/stats', {
-            outlets: [this.state.outlet._id]
-        }, (response) => {
-            if(response.err || !response.data) {
-                return $.snackbar({
-                    content: 'There was an error receiving the purchases'
-                });
-            }
+        var params = {
+            outlets: [this.state.outlet._id],
+            since: this.props.since,
+            now: Date.now()
+        }
 
-            calculateStats(response.data);
-        });
+        $.ajax({
+            url: '/api/outlet/purchases/stats',
+            type: 'GET',
+            data: params,
+            dataType: 'json',
+            success: (response, status, xhr) => {
+                console.log(response.data);
+
+                if(response.err || !response.data) {
+                    return $.snackbar({
+                        content: 'There was an error receiving the purchases'
+                    });
+                }
+
+                calculateStats(response.data);
+            }
+        }); 
 
         function calculateStats(stats) {
             var stripeFee = (.029 * stats.allTime) + .30,
@@ -147,7 +159,7 @@ export default class OutletColumn extends React.Component {
         //Set for immediate feedback
         this.setState({ outlet: outlet });
 
-        //Timeout for efficiency
+        //Timeout in case of rapid clicks
         setTimeout(() => {
             updateGoal(params);
         }, 1000);
@@ -164,19 +176,20 @@ export default class OutletColumn extends React.Component {
                 type: 'POST',
                 data: params,
                 dataType: 'json',
-                success: (response, status, xhr) => {
+                success: function(response, status, xhr) {
                     if(response.err || !response.data)
-                        $.snackbar({ 
-                            content: global.resolveError(response.err, 'There was an error updating this outlet\'s goal.') 
-                        });
+                        this.error();
                     else {
+                        //Set again based on response data for consistency
                         self.setState({
                             outlet : response.data
                         });
                     }
                 },
                 error: (xhr, status, error) => {
-                    $.snackbar({ content: global.resolveError(error) });
+                    $.snackbar({ 
+                        content: global.resolveError(error, 'There was an error updating this outlet\'s goal.') 
+                    });
                 }
             }); 
         }
