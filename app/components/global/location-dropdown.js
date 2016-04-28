@@ -35,11 +35,12 @@ export default class LocationDropdown extends React.Component {
 
 			bounds.extend(latLng);
 		}
-
+		
 		var place = {
 			geometry: {
 				viewport: bounds
-			}
+			},
+			description: location.title
 		};
 
 		//Tell dispatch map to update

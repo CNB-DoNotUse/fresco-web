@@ -47,7 +47,8 @@ export default class GalleryEditBody extends React.Component {
 							ref="gallery-caption"
 							value={this.props.gallery.caption}
 							placeholder="Caption"
-							onChange={this.props.updateCaption} />
+							onChange={this.props.updateCaption} 
+						/>
 
 					</div>
 

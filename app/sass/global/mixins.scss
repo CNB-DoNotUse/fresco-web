@@ -63,15 +63,26 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 }
 
 /**
+ * Placeholder color mixin
+ */
+
+@mixin placeholderColor {
+    ::-webkit-input-placeholder {@content}
+    :-moz-placeholder           {@content}
+    ::-moz-placeholder          {@content}
+    :-ms-input-placeholder      {@content}  
+}
+
+/**
  * CSS3 Transform
  */
 
- @mixin transform($transform) {
+@mixin transform($transform) {
    -webkit-transform:$transform;
       -moz-transform:$transform;
         -o-transform:$transform;
            transform:$transform;
- }
+}
 
 @mixin rgba($property, $r, $g, $b, $opacity:1) {
     #{$property}: rgb($r, $g, $b);

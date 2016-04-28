@@ -63,7 +63,7 @@ export default class PostList extends React.Component {
 
 		//Check diff or if the parent tells the component to update
 	    if(nextProps.posts.length != this.props.posts.length || diffIds.length || nextProps.updatePosts) {
-	    	this.setState({
+	    	return this.setState({
 	    		posts: nextProps.posts
 	    	});
 	    }

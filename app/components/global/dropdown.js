@@ -17,12 +17,31 @@ export default class Dropdown extends React.Component {
 		this.optionClicked = this.optionClicked.bind(this);
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.selected != this.props.selected) {
+	componentDidMount() {
+	 	//Click event for outside clicking
+	 	$(document).click((e) => {
+	 		//Check that the click is out of bounds
+	 	    if ($(e.target).parents('.nav-dropdown').size() == 0 && e.target !== this.refs.drop) { 
+	 	    	//Check if it's active first
+	 	    	if(this.refs.drop.className.indexOf('active') > 0){
+		 	        //Reset toggle
+		 	        this.toggle();
+		 	    }
+	 	    }
+	 	});     
+	}
+
+	componentWillUnmount() {
+	    //Clean up click event on unmount
+	    $(document).unbind('click');     
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if(nextProps.selected !== this.props.selected) {
 			this.setState({
-				selected: this.props.selected
+				selected: nextProps.selected
 			});
-		}
+		} 
 	}
 
 	/**
@@ -49,7 +68,6 @@ export default class Dropdown extends React.Component {
 	 * Called whenever an option is selected from the dropdown
 	 */
 	optionClicked(e) {
-
 		//Get the span tag from the list item
 		var selected = e.currentTarget.getElementsByTagName('span')[0].innerHTML;
 

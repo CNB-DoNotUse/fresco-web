@@ -24,6 +24,7 @@ export default class GallerySidebar extends React.Component {
 					<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
 						<div className="meta">
 							<div className="meta-description" id="gallery-description">{this.props.gallery.caption}</div>
+							
 							<GalleryStats gallery={this.props.gallery} />
 						</div>
 					</div>

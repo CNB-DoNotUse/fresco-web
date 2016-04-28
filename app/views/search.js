@@ -341,9 +341,6 @@ export class Search extends React.Component {
 
 	/**
 	 * Called when AutocompleteMap data changes
-	 * Returns a location coordinate,
-	 * Google Maps Circle,
-	 * Radius
 	 */
 	onMapDataChange(data) {
 		var location = _.clone(this.state.location);

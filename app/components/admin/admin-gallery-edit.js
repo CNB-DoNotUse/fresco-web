@@ -48,34 +48,34 @@ export default class AdminGalleryEdit extends React.Component {
 
 	componentDidMount() {
 		this.editButtonEnabled(false);
-		this.resetState();
+		this.resetState(this.props);
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		if( this.props.activeGalleryType == 'assignment' ||  !this.props.gallery ) { 
-			return 
+	componentWillReceiveProps(nextProps) {
+		if(nextProps.activeGalleryType == 'assignment' ||  !nextProps.gallery ) { 
+			return;
 		}
-		if( this.props.gallery._id != prevProps.gallery._id ) {
-			this.resetState();
+		if(this.props.gallery._id != nextProps.gallery._id ) {
+	      	this.resetState(nextProps);
 		}
 	}
 
 	/**
 	 * Update state gallery to props gallery
 	 */
-	resetState() {
+	resetState(props) {
 		// Reset form
 		this.setState({
-			activeGallery: _.clone(this.props.gallery, true),
+			activeGallery: _.clone(props.gallery, true),
 			tags: [],
 			stories: [],
-			assignment: this.props.gallery.assignment,
+			assignment: props.gallery.assignment,
 			mapLocation: null,
 			waiting: false
 		});
 
-		if( this.props.hasActiveGallery && this.props.gallery.posts.length && this.refs['gallery-caption'] ) {
-			this.refs['gallery-caption'].value = this.props.gallery.posts[0].caption || 'No Caption';
+		if(props.hasActiveGallery && props.gallery.posts.length && this.refs['gallery-caption'] ) {
+			this.refs['gallery-caption'].value = props.gallery.posts[0].caption || 'No Caption';
 		}
 
 		// Remove materialize empty input class
@@ -156,7 +156,7 @@ export default class AdminGalleryEdit extends React.Component {
 	onPlaceChange(place) {
 		this.setState({
 			address: place.address,
-			mapLocation: place.location
+			location: place.location
 		});
 	}
 
@@ -276,11 +276,20 @@ export default class AdminGalleryEdit extends React.Component {
  		var byline = global.getBylineFromComponent(gallery, this.refs.byline);
  		_.extend(params, byline);
 
+ 		if(byline.other_origin_name == '' && byline.other_origin_affiliation == '' || byline.byline == '') {
+ 			this.setState({
+ 				waiting: false
+ 			});
+ 			
+ 			return  $.snackbar({content: 'Please enter a byline for this gallery!'});
+ 		}
+
+
 		if(this.props.activeGalleryType == 'import') {
 			params.address = this.state.address;
-			if(this.state.mapLocation) {
-				params.lat = this.state.mapLocation.lat;
-				params.lon = this.state.mapLocation.lng;
+			if(this.state.location) {
+				params.lat = this.state.location.lat;
+				params.lon = this.state.location.lng;
 			}
 		}
 		if (!params.posts || params.posts.length == 0) {
@@ -329,7 +338,9 @@ export default class AdminGalleryEdit extends React.Component {
 			return <div></div>
 		}
 
-		var activeGallery = this.state.activeGallery;
+		var activeGallery = this.state.activeGallery,	
+			location = '',
+			address = '';
 
 		// Map gallery posts into slider elements
 		var galleryImages = [];
@@ -353,7 +364,11 @@ export default class AdminGalleryEdit extends React.Component {
 					)
 				} else {
 					return (
-						<div key={i}><img className="img-responsive" src={global.formatImg(post.image, 'medium')} data-id={post._id} /></div>
+						<div key={i}>
+							<img className="img-responsive" 
+								src={global.formatImg(post.image, 'medium')} 
+								data-id={post._id} />
+						</div>
 					)
 				}
 			});
@@ -361,14 +376,17 @@ export default class AdminGalleryEdit extends React.Component {
 
 		// If gallery is a submission, 
 		if(this.props.activeGalleryType == 'submission') {
+
 			// map polygon points to array.
 			if(activeGallery.location) {
-				var editMapLocation = activeGallery.location.coordinates[0].map((coord) => {
+				location = activeGallery.location.coordinates[0].map((coord) => {
 					return {
 						lat: coord[1],
 						lng: coord[0]
 					}
 				});
+
+				address = activeGallery.posts.length && activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null;
 			}
 
 			var assignmentEdit = <GalleryEditAssignment 
@@ -377,9 +395,15 @@ export default class AdminGalleryEdit extends React.Component {
 
 		} else { // if an import
 
-			// set map location to one from state
-			var editMapLocation = this.state.mapLocation;
-			
+			if(this.state.location) {
+				location = this.state.location;
+				address = this.state.address;
+			} else {
+
+
+				address = activeGallery.posts.length && activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null
+			}
+
 		}
 
 		return (
@@ -415,8 +439,8 @@ export default class AdminGalleryEdit extends React.Component {
 
 					<div style={{height: '309px'}}>
 						<AutocompleteMap
-							defaultLocation={activeGallery.posts.length && activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null}
-							location={editMapLocation}
+							location={location}
+							defaultLocation={address}
 							onPlaceChange={this.onPlaceChange}
 							disabled={this.props.activeGalleryType != 'import'}
 							hasRadius={false}
