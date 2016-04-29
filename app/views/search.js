@@ -196,9 +196,17 @@ export class Search extends React.Component {
 		}
 
 		$.get('/api/gallery/search', params, (response) => {
-			this.loadingPosts = false;
+			//If the caller of this method passes force, this means that the post list will reset
+			//So this ensures that the next time `loadingPosts` is checked, it'll be ready to be called again
+			if(force)
+				this.loadingPosts = false;
 			
 			if(!response.err && response.data) {
+				//Check if there are any more posts
+				//If there aren't, prevent the scroll event from making the data call
+				//the next time around
+				if(response.data.length > 0)
+					this.loadingPosts = false;
 
 				let posts = null,
 					offset = null;
@@ -361,13 +369,18 @@ export class Search extends React.Component {
 		window.history.pushState({}, '', query);
 	}
 
-	// Called when posts div scrolls
+
+	/**
+	 * Called when posts div scrolls
+	 */
 	scroll(e) {
 		var grid = e.target,
 			bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400);
 
+		var sidebarScrolled = grid.className.indexOf('search-sidebar') > -1; 
+
 		//Check that nothing is loading and that we're at the end of the scroll,
-		if(!this.loadingPosts && bottomReached) {
+		if(!this.loadingPosts && bottomReached && !sidebarScrolled) {
 			this.loadingPosts = true;
 
 			// Pass current offset to getPosts
@@ -375,7 +388,7 @@ export class Search extends React.Component {
 		}
 
 		//Check that nothing is loading and that we're at the end of the scroll,
-		if(!this.loadingUsers && bottomReached){
+		if(!this.loadingUsers && bottomReached && sidebarScrolled){
 			this.loadingUsers = true;
 
 			this.getUsers(false);
