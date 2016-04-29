@@ -21,6 +21,7 @@ var config        = require('./lib/config'),
 // If in dev mode, use local redis server as session store
 var rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
 var redisConnection = { client: rClient };
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -34,21 +35,24 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(compression())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({
-  dest : './uploads/',
-  rename: (fieldname, filename) => {
-      return Date.now() + filename.split('.').pop();
-  },
-  onFileUploadStart: (file) => {
-  },
-  onFileUploadComplete: (file) => {
-      done = true;
-  }
-}));
+
+//Multer
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '.' + file.originalname.split('.').pop())
+    }
+});
+
+app.use( 
+    multer({ storage: storage }).any()
+);
 
 //Cookie parser
 app.use(
-  cookieParser()
+    cookieParser()
 );
 
 //Session config

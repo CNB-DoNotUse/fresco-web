@@ -8,6 +8,7 @@ import EditStories from './../editing/gallery-edit-stories'
 import GalleryEditAssignment from './../editing/gallery-edit-assignment'
 import AdminGalleryEditFoot from './admin-gallery-edit-foot'
 import BylineEdit from '../editing/byline-edit'
+import FrescoImage from '../global/fresco-image'
 import global from '../../../lib/global'
 
 /**
@@ -100,7 +101,6 @@ export default class AdminGalleryEdit extends React.Component {
 		});
 
 		this.refs['gallery-caption'].value = e.target.value;
-
 	}
 
 	/**
@@ -365,9 +365,10 @@ export default class AdminGalleryEdit extends React.Component {
 				} else {
 					return (
 						<div key={i}>
-							<img className="img-responsive" 
-								src={global.formatImg(post.image, 'medium')} 
-								data-id={post._id} />
+							<FrescoImage
+								imageClass={'img-responsive'}
+								image={post.image}
+								size={'medium'} />
 						</div>
 					)
 				}
