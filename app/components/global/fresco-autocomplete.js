@@ -83,10 +83,6 @@ export default class FrescoAutocomplete extends React.Component {
 
         var params = { input: query }
 
-        if(this.props.bounds) {
-            // params.bounds = this.props.bounds;
-        }
-
         this.autoCompleteService.getPlacePredictions(params, (predictions, status) => {
             if (status === google.maps.GeocoderStatus.OK && typeof(predictions) !== 'undefined') {
                 this.setState({
@@ -194,13 +190,16 @@ export default class FrescoAutocomplete extends React.Component {
 
         return (
             <div className={autocompleteClass} ref="autocompleteWrap">
-                <input
-                    ref="inputField"
-                    type="text"
-                    className={this.props.inputClass}
-                    onChange={this.inputChanged}
-                    disabled={this.props.disabled}
-                    placeholder="Location" />
+                <div class="form-control-wrapper">
+                    <input
+                        ref="inputField"
+                        type="text"
+                        className={this.props.inputClass}
+                        onChange={this.inputChanged}
+                        disabled={this.props.disabled}
+                        placeholder="Location" />
+                    <span className="material-input"></span>
+                </div>
 
                 {predictionsDropdown}
             </div>

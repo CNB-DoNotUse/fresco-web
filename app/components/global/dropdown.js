@@ -90,9 +90,8 @@ export default class Dropdown extends React.Component {
 
 	render() {
 
-		var list,
-			body,
-			dropdownButton;
+		var list = '',
+			dropdownButton = '';
 
 		//If options are passed, use those
 		if(this.props.options){
