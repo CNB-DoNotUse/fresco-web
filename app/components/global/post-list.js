@@ -73,6 +73,9 @@ export default class PostList extends React.Component {
 	    	postsUpdated = true;
 
 	    	if(nextProps.scrollable) {
+	    		//Clear state for immediate feedback
+	    		this.setState({ posts: [] });
+
 				//Load posts from API
 		    	this.loadInitialPosts();
 	    	} else {
