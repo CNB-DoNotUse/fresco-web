@@ -122,7 +122,9 @@ export class Search extends React.Component {
 			title = 'Results for tags ' + state.tags.join(', ');
 		} else if(state.location && state.location.address) {
 			title = 'Results from ' + state.location.address;
-		}	
+		} else {
+			title = "No search query!"
+		}
 
 		return title;
 	}
