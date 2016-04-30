@@ -14,7 +14,11 @@ export default class Sidebar extends React.Component {
 	}
 
 	handleSearchKeyDown(e) {
-		if(e.keyCode != 13) return;
+		var input = this.refs.searchInput;
+
+		if(e.keyCode != 13 || input.value === '') 
+			return;
+		
 		window.location ='/search?q=' + encodeURIComponent(this.refs.searchInput.value);
 	}
 
