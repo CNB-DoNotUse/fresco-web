@@ -192,7 +192,11 @@ export class Search extends React.Component {
 			location = _.clone(this.state.location);
 
 		if(location.coordinates && location.radius) {
-		    params.polygon = global.circleToPolygon(location.coordinates, global.feetToMeters(location.radius), 16);
+		    params.polygon = global.circleToPolygon(
+		    	location.coordinates, 
+		    	global.feetToMeters(location.radius), 
+		    	16
+		    );
 		}
 
 		$.get('/api/gallery/search', params, (response) => {
@@ -402,6 +406,7 @@ export class Search extends React.Component {
 					title={this.state.title}
 					timeToggle={true}
 					verifiedToggle={true}
+					rank={this.props.user.rank}
 					onVerifiedToggled={this.onVerifiedToggled}>
 						<TagFilter
 							onTagAdd={this.addTag}
@@ -430,7 +435,6 @@ export class Search extends React.Component {
 	    				ref="postList"
 	    				size='large'
 	    				scroll={this.scroll}
-	    				onlyVerified={this.state.verifiedToggle}
 	    				scrollable={true} 
 	    			/>
     			</div>
