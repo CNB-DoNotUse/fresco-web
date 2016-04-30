@@ -20,9 +20,9 @@ export default class PurchasesStats extends React.Component {
 	    this.loadStats();  
 	}
 
-	componentDidUpdate(prevProps, prevState) {
+	componentWillReceiveProps(nextProps) {
 		//Tell the component to update it's purchases
-		if(this.props.updatePurchases) {
+		if(nextProps.updatePurchases) {
 			this.loadStats();
 		}
 	}
@@ -80,15 +80,15 @@ export default class PurchasesStats extends React.Component {
 				
 				<ul className="md-type-subhead">
 					<li>
-						<span>${this.state.day}</span>
+						<span>${this.state.day.amount}</span>
 						<span className="md-type-caption"> last 24 hours</span>
 					</li>
 					<li>
-						<span>${this.state.week}</span>
+						<span>${this.state.week.amount}</span>
 						<span className="md-type-caption"> last 7 days</span>
 					</li>
 					<li>
-						<span>${this.state.month}</span>
+						<span>${this.state.month.amount}</span>
 						<span className="md-type-caption"> last 30 days</span>
 					</li>
 				</ul>

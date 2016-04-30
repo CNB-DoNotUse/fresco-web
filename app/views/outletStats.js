@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
@@ -13,7 +14,7 @@ class OutletStats extends React.Component {
         
         this.state = {
             outlets: [],
-            since: 0
+            since: moment().utc().startOf('day')
         }
 
         this.timeToggleSelected = this.timeToggleSelected.bind(this);
@@ -25,7 +26,7 @@ class OutletStats extends React.Component {
             url: '/api/outlet/get',
             type: 'GET',
             data: {
-                id: '5702d0680fc6c0ba470ed37d'
+                id: '56bb6dd380b5a9c7717974ec'
             },
             dataType: 'json',
             success: (response, status, xhr) => {
@@ -50,6 +51,7 @@ class OutletStats extends React.Component {
         var columns = this.state.outlets.map((outlet, i) => {
             return <OutletColumn 
                         outlet={outlet}
+                        since={this.state.since}
                         key={i} />
         });
 
@@ -57,6 +59,7 @@ class OutletStats extends React.Component {
             <App user={this.props.user}>
                 <TopBar 
                     title="Outlet Purchases">
+                    
                     <Dropdown
                         options={['today so far', 'last 24 hours', 'last 7 days', 'last 30 days', 'this year', 'all time']}
                         selected='today so far'

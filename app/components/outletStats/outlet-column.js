@@ -1,8 +1,8 @@
 import React from 'react'
-import global from '../../../lib/global'
 import moment from 'moment'
 import OutletColumnHead from './outlet-column-head'
 import OutletColumnList from './outlet-column-list'
+import global from '../../../lib/global'
 
 /**
  * Outlet Column Component
@@ -65,10 +65,11 @@ export default class OutletColumn extends React.Component {
      */
     loadPurchaseStats() {
         var self = this;
-
+        
         var params = {
             outlets: [this.state.outlet._id],
-            since: this.props.since,
+            since: this.props.since.unix() * 1000,
+            offset: moment().utcOffset(),
             now: Date.now()
         }
 
