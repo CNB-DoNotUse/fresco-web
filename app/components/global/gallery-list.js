@@ -17,20 +17,37 @@ export default class GalleryList extends React.Component {
 
 	constructor(props) {
 		super(props);
+		
 		this.state = {
 			galleries: [],
 			offset : 0,
 			loading : false,
 			tags :[]
 		}
+
 		this.loadGalleries = this.loadGalleries.bind(this);
 		this.loadInitalGalleries = this.loadInitalGalleries.bind(this);
 		this.scroll = this.scroll.bind(this);
 	}
 
+	componentDidMount() {
+		this.loadInitalGalleries();
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.onlyVerified !== this.props.onlyVerified) {
+			this.setState({
+				galleries: []
+			});
+			
+	      	this.loadInitalGalleries();
+
+	      	this.refs.grid.scrollTop = 0;
+		}
+	}
+
 	loadInitalGalleries() {
 		this.loadGalleries(0, (galleries) => {
-
 			var offset = galleries ? galleries.length : 0;
 
 			//Set galleries from successful response
@@ -38,25 +55,11 @@ export default class GalleryList extends React.Component {
 				galleries: galleries,
 				offset : offset
 			});
-
 		});
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.onlyVerified != this.props.onlyVerified) {
-			this.loadInitalGalleries();
-		}
-	}
-
-	componentDidMount() {
-
-		this.loadInitalGalleries();
-
 	}
 
 	//Returns array of galleries with offset and callback
 	loadGalleries(passedOffset, callback) {
-
 		var endpoint,
 			params = {
 				limit: 20,
@@ -70,9 +73,7 @@ export default class GalleryList extends React.Component {
 			params.invalidate = 1;
 		} else {
 			endpoint ='gallery/list';
-			
-			params.tags = this.state.tags.join(',')
-			
+
 			if(this.props.onlyVerified)
 				params.verified = true;
 		}
@@ -101,7 +102,6 @@ export default class GalleryList extends React.Component {
 
 	//Scroll listener for main window
 	scroll(e) {
-
 		var grid = e.target;
 
 		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
@@ -124,13 +124,10 @@ export default class GalleryList extends React.Component {
 				});
 
 			});
-
 		}
-
 	}
 
 	render() {
-
 		var half = !this.props.withList;
 
 		//Save all the galleries
@@ -145,20 +142,26 @@ export default class GalleryList extends React.Component {
 
 		//Check if a list is needed
 		if(!half) {
-
 			return (
-	    		<div className="container-fluid grid" onScroll={this.scroll} ref="grid" >
+	    		<div 
+	    			className="container-fluid grid" 
+	    			onScroll={this.scroll} 
+	    			ref="grid" >
 			    	<div className="col-md-8">{galleries}</div>
+				    
 				    <SuggestionList />
 		    	</div>
 		    );
-
 		}
 		//No list needed
 		else {
 
 			return (
-	    		<div className="container-fluid grid" onScroll={this.scroll} ref="grid">
+	    		<div 
+	    			className="container-fluid grid" 
+	    			onScroll={this.scroll} 
+	    			ref="grid"
+	    		>
 	    			{galleries}
 	    		</div>
 		    );

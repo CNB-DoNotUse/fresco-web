@@ -13,7 +13,6 @@ Description : List for a set of stories used across the site (/videos, /photos, 
 
 export default class StoryList extends React.Component {
 
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -23,7 +22,6 @@ export default class StoryList extends React.Component {
 	}
 
 	componentDidMount() {
-
 		//Access parent var load method
 		this.props.loadStories(0, (stories) => {
 			

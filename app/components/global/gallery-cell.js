@@ -65,9 +65,7 @@ export default class GalleryCell extends React.Component {
 			</div>
 
 		);
-
 	}
-
 }
 
 GalleryCell.defaultProps = {

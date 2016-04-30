@@ -15,7 +15,6 @@ Description : Column on the right of the detail post showing all the post's info
 export default class PostInfo extends React.Component {
 	
 	render() {
-
 		//Init needed vars to make list
 		var post = this.props.post,
 			gallery = this.props.gallery,

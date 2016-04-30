@@ -46,6 +46,7 @@ export default class RadioGroup extends React.Component {
 
     render() {
         let radioButtons = [];
+        
         for (let option of this.props.options) {
             radioButtons.push(
                 <li className="radio" key={option} data-value={option} onClick={this.optionClicked}>

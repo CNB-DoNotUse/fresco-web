@@ -68,7 +68,6 @@ export default class AssignmentEdit extends React.Component {
 		});
 	}
 
-
 	updateRadius(radius) {
 	    this.setState({
 	        radius: radius

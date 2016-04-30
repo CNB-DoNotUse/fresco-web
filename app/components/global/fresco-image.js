@@ -16,7 +16,6 @@ export default class FrescoImage extends React.Component {
 			img = this.refs.image;
 
 		img.onerror = () => {
-		    
 		    var timeout = parseInt(img.getAttribute('data-t') || 1),
 		        lastTimeout = parseInt(img.getAttribute('data-lt') || 1),
 		        image = 'https://d2j1l98c0ybckw.cloudfront.net/images/'+ size +'/missing.png';
@@ -37,10 +36,12 @@ export default class FrescoImage extends React.Component {
 	}
 
 	render() {
+		var imageClass = this.props.imageClass || 'img-cover';
+
 		return (
 			<div className="img">
 				<img 
-					className="img-cover"
+					className={imageClass}
 					ref='image'
 					data-src={global.formatImg(this.props.image, this.props.size)}
 					src={global.formatImg(this.props.image, this.props.size)} />

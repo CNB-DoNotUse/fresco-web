@@ -36,8 +36,8 @@ export default class DispatchMapCallout extends React.Component {
 							type="button" 
 							className="btn btn-flat assignment-callout-button pull-right"
 							id="callout-selector"
-							data-id={assignment._id}>See All
-							<div className="ripple-wrapper"></div>
+							data-id={assignment._id} >
+							See All
 						</button>
 					</div>
 				</div>

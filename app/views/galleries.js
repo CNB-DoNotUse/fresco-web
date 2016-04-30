@@ -27,7 +27,6 @@ import TopBar from './../components/topbar'
  	}
 
 	render() {
-
 		return (
 			<App user={this.props.user}>
 				<TopBar 

@@ -117,8 +117,14 @@ gulp.task('Build Webpack', (cb) => {
 	    	new webpack.optimize.UglifyJsPlugin({
 	    		compress: {
 	    			warnings: false
-				},
-	    		minimize: true
+				}
+			})
+		)
+		plugins.push(
+			new webpack.DefinePlugin({
+			    'process.env': {
+					NODE_ENV: JSON.stringify("production")
+			    }
 			})
 		)
 	}

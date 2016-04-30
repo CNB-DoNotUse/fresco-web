@@ -62,7 +62,7 @@ export default class PostList extends React.Component {
 
 		//Check diff or if the parent tells the component to update
 	    if(nextProps.posts.length != this.props.posts.length || diffIds.length || nextProps.updatePosts) {
-	    	this.setState({
+	    	return this.setState({
 	    		posts: nextProps.posts
 	    	});
 	    }
@@ -72,6 +72,9 @@ export default class PostList extends React.Component {
 	    	postsUpdated = true;
 
 	    	if(nextProps.scrollable) {
+	    		//Clear state for immediate feedback
+	    		this.setState({ posts: [] });
+
 				//Load posts from API
 		    	this.loadInitialPosts();
 	    	} else {

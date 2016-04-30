@@ -16,13 +16,12 @@ var config        = require('./lib/config'),
     bodyParser    = require('body-parser'),
     multer        = require('multer'),
     fs            = require('fs'),
-    http	        = require('http'),
-    https         = require('https'),
     app           = express();
 
 // If in dev mode, use local redis server as session store
 var rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
 var redisConnection = { client: rClient };
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -36,21 +35,24 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(compression())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({
-  dest : './uploads/',
-  rename: (fieldname, filename) => {
-      return Date.now() + filename.split('.').pop();
-  },
-  onFileUploadStart: (file) => {
-  },
-  onFileUploadComplete: (file) => {
-      done = true;
-  }
-}));
+
+//Multer
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '.' + file.originalname.split('.').pop())
+    }
+});
+
+app.use( 
+    multer({ storage: storage }).any()
+);
 
 //Cookie parser
 app.use(
-  cookieParser()
+    cookieParser()
 );
 
 //Session config
@@ -78,25 +80,31 @@ app.use(
  * Verifications check
  */
 app.use((req, res, next)=> {
+    req.alerts = [];
 
-  req.alerts = [];
+    if (req.session && req.session.user && !req.session.user.verified){
+        req.alerts.push('\
+            <p>Your email hasn\'t been verified.\
+              <br>Please click on the link sent to your inbox to verify your email!\
+            </p>\
+            <div>\
+                <a href="/scripts/user/verify/resend">RESEND EMAIL</a>\
+            </div>'
+        );
+    }
 
-  if (req.session && req.session.user && !req.session.user.verified){
-    req.alerts.push('<p>Your email hasn\'t been verified.<br>Please click on the link sent to your inbox to verify your email!</p><div><a href="/scripts/user/verify/resend">RESEND EMAIL</a></div>');
-  }
+    if (req.session && req.session.alerts){
+        req.alerts = req.alerts.concat(req.session.alerts);
+        req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
+        delete req.session.alerts;
+        return req.session.save(() => {
+            next();
+        });
+    }
 
-  if (req.session && req.session.alerts){
-      req.alerts = req.alerts.concat(req.session.alerts);
-      req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
-      delete req.session.alerts;
-      return req.session.save(()=> {
-          next();
-      });
-  }
+    req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
 
-  req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
-
-  next();
+    next();
 });
 
 /**
@@ -115,7 +123,6 @@ app.use((req, res, next) => {
     var path = req.path.slice(1).split('/')[0],
         now = Date.now();
 
-
     //Check if not a platform route, then send onwwards
     if(routes.platform.indexOf(path) == -1) {
         return next();
@@ -126,7 +133,7 @@ app.use((req, res, next) => {
         return res.redirect('/account?next=' + req.url);
     }
 
-    //Check if the session hasn't expired s
+    //Check if the session hasn't expired
     if (!req.session.user.TTL || req.session.user.TTL - now > 0){
         return next();
     }
@@ -206,6 +213,8 @@ for (var i = 0; i < routes.platform.length; i++) {
 /**
  * Webservery proxy for forwarding to the api
  */
+
+
 
 // Special case for assignment create
 // TODO: Remove this

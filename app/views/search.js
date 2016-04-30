@@ -49,7 +49,7 @@ export class Search extends React.Component {
 					radius: global.feetToMiles(location.radius)
 				});
 
-			location.polygon = global.circleToPolygon(circle, 16);
+			// location.polygon = global.circleToPolygon(circle, 16);
 		}
 
 		return {
@@ -122,7 +122,9 @@ export class Search extends React.Component {
 			title = 'Results for tags ' + state.tags.join(', ');
 		} else if(state.location && state.location.address) {
 			title = 'Results from ' + state.location.address;
-		}	
+		} else {
+			title = "No search query!"
+		}
 
 		return title;
 	}
@@ -167,7 +169,7 @@ export class Search extends React.Component {
 				radius: location.radius ? global.feetToMiles(location.radius) : undefined
 			};
 
-		$.get('/api/assignment/search', params, (response) => {
+		$.get('/api/assignment/search', params, (err, response) => {
 			if(!response.err && response.data && response.data.length > 0) {
 				let assignments = force ? response.data : this.state.assignments.concat(response.data);
 				
@@ -175,8 +177,7 @@ export class Search extends React.Component {
 					assignments: assignments
 				});
 			}
-
-		})
+		});
 	}
 
 	/**
@@ -188,38 +189,36 @@ export class Search extends React.Component {
 				offset: force ?  0 : this.state.offset,
 				limit: 18,
 				verified: this.state.verifiedToggle,
-				tags: this.state.tags.join(','),
-				polygon: null
+				tags: this.state.tags,
 			},
 			location = _.clone(this.state.location);
 
-		if(this.state.map && this.state.circle) {
-			params.polygon = encodeURIComponent(
-						JSON.stringify(
-							global.circleToPolygon(this.state.circle, 16)
-						)
-					);
-		} else if(location.coordinates && location.radius) {
-			var circle = new google.maps.Circle({
-				map: null,
-				center: location.coordinates,
-				radius: global.feetToMeters(location.radius)
-			});
-
-			params.polygon = JSON.stringify(global.circleToPolygon(circle, 16));
+		if(location.coordinates && location.radius) {
+		    params.polygon = global.circleToPolygon(
+		    	location.coordinates, 
+		    	global.feetToMeters(location.radius), 
+		    	16
+		    );
 		}
 
 		$.get('/api/gallery/search', params, (response) => {
-			this.loadingPosts = false;
+			//If the caller of this method passes force, this means that the post list will reset
+			//So this ensures that the next time `loadingPosts` is checked, it'll be ready to be called again
+			if(force)
+				this.loadingPosts = false;
 			
 			if(!response.err && response.data) {
+				//Check if there are any more posts
+				//If there aren't, prevent the scroll event from making the data call
+				//the next time around
+				if(response.data.length > 0)
+					this.loadingPosts = false;
 
 				let posts = null,
 					offset = null;
 
 				if(force) {
-					//Setting scroll top manually because we're not using the post-list's default 
-					//data mechanism
+					//Setting scroll top manually because we're not using the post-list's default data mechanism
 					this.refs.postList.refs.grid.scrollTop = 0;
 					posts = response.data;
 					offset = response.data.length;
@@ -268,36 +267,32 @@ export class Search extends React.Component {
 	 * Retrieves stories from API based on state
 	 */
 	getStories(offset, force = true) {
-		let polygon = null;
+		var location = this.state.location;
 
-		if(this.state.map) {
-			if(this.state.circle) {
-				polygon = encodeURIComponent(JSON.stringify(global.circleToPolygon(this.state.circle, 16)));
-			}
-		} else if(this.state.location.coordinates && this.state.location.radius) {
-			let circle = new google.maps.Circle({
-				map: null,
-				center: this.state.location.coordinates,
-				radius: global.feetToMeters(this.state.radius)
-			});
-
-			polygon = encodeURIComponent(JSON.stringify(global.circleToPolygon(circle, 16)))
-		}
-
-		$.get('/api/story/search', {
+		var params = {
 			q: this.props.query,
 			offset: offset,
-			limit: 10,
-			polygon: polygon,
-		}, (response) => {
-			if(!response.err && response.data && response.data.length > 0) {
-				let stories = force ? response.data : this.state.stories.concat(response.data);
-		
-				this.setState({
-					stories: stories
-				});
+			limit: 10
+		}
+
+		if(location.coordinates && location.radius) {
+		    params.polygon = global.circleToPolygon(location.coordinates, global.feetToMeters(location.radius), 16);
+		}
+
+		$.ajax({
+			url: '/api/story/search',
+			type: 'GET',
+			data: params,
+			success: (response, status, xhr) => {
+				if(!response.err && response.data && response.data.length > 0) {
+					let stories = force ? response.data : this.state.stories.concat(response.data);
+			
+					this.setState({
+						stories: stories
+					});
+				}
 			}
-		});
+		});	
 	}
 
 	addTag(tag) {
@@ -341,9 +336,6 @@ export class Search extends React.Component {
 
 	/**
 	 * Called when AutocompleteMap data changes
-	 * Returns a location coordinate,
-	 * Google Maps Circle,
-	 * Radius
 	 */
 	onMapDataChange(data) {
 		var location = _.clone(this.state.location);
@@ -383,13 +375,18 @@ export class Search extends React.Component {
 		window.history.pushState({}, '', query);
 	}
 
-	// Called when posts div scrolls
+
+	/**
+	 * Called when posts div scrolls
+	 */
 	scroll(e) {
 		var grid = e.target,
 			bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400);
 
+		var sidebarScrolled = grid.className.indexOf('search-sidebar') > -1; 
+
 		//Check that nothing is loading and that we're at the end of the scroll,
-		if(!this.loadingPosts && bottomReached) {
+		if(!this.loadingPosts && bottomReached && !sidebarScrolled) {
 			this.loadingPosts = true;
 
 			// Pass current offset to getPosts
@@ -397,7 +394,7 @@ export class Search extends React.Component {
 		}
 
 		//Check that nothing is loading and that we're at the end of the scroll,
-		if(!this.loadingUsers && bottomReached){
+		if(!this.loadingUsers && bottomReached && sidebarScrolled){
 			this.loadingUsers = true;
 
 			this.getUsers(false);
@@ -411,6 +408,7 @@ export class Search extends React.Component {
 					title={this.state.title}
 					timeToggle={true}
 					verifiedToggle={true}
+					rank={this.props.user.rank}
 					onVerifiedToggled={this.onVerifiedToggled}>
 						<TagFilter
 							onTagAdd={this.addTag}
@@ -439,7 +437,6 @@ export class Search extends React.Component {
 	    				ref="postList"
 	    				size='large'
 	    				scroll={this.scroll}
-	    				onlyVerified={this.state.verifiedToggle}
 	    				scrollable={true} 
 	    			/>
     			</div>

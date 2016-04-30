@@ -14,7 +14,11 @@ export default class Sidebar extends React.Component {
 	}
 
 	handleSearchKeyDown(e) {
-		if(e.keyCode != 13) return;
+		var input = this.refs.searchInput;
+
+		if(e.keyCode != 13 || input.value === '') 
+			return;
+		
 		window.location ='/search?q=' + encodeURIComponent(this.refs.searchInput.value);
 	}
 
@@ -29,16 +33,14 @@ export default class Sidebar extends React.Component {
 						<img src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-news.png" />
 					</a>
 				
-					<div className="form-group-default">
-						<input 
-							className="form-control floating-label" 
-							id="sidebar-search" 
-							placeholder="Search" 
-							type="text" 
-							ref="searchInput" 
-							onKeyDown={this.handleSearchKeyDown} />
-					</div>
-					
+					<input 
+						className="search-input" 
+						id="sidebar-search" 
+						placeholder="Search" 
+						type="text" 
+						ref="searchInput" 
+						onKeyDown={this.handleSearchKeyDown} />
+				
 					<SideBarListItems user={this.props.user} />
 				</div>
 		   	 	<div>

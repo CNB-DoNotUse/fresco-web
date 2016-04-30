@@ -2,6 +2,7 @@ import React from 'react'
 import global from './../../../lib/global'
 import Dropdown from './../global/dropdown'
 import RadioGroup from './../global/radio-group'
+import FrescoAutocomplete from './../global/fresco-autocomplete.js'
 
 /** //
 
@@ -21,26 +22,17 @@ export default class TopBar extends React.Component {
 		this.timeToggleSelected = this.timeToggleSelected.bind(this);
 		this.verifiedToggleSelected = this.verifiedToggleSelected.bind(this);
 		this.chronToggleSelected = this.chronToggleSelected.bind(this);
+		this.autocompleteUpdated = this.autocompleteUpdated.bind(this);
 	}
 
-	componentDidMount() {
-		//Set up autocomplete
-		if(this.props.locationInput) {
-
-			//Set up autocomplete listener
-			var autocomplete = new google.maps.places.Autocomplete(this.refs.autocomplete);
-
-			google.maps.event.addListener(autocomplete, 'place_changed', () => {
-
-				var place = autocomplete.getPlace();
-
-				if(!place) return;
-
-				//Update the position to the parent component
-				this.props.updateMapPlace(place);
-			});
-		}
+	/**
+	 * Prop function called from `FrescoAutocomplete` for getting autocomplete date
+	 */
+	autocompleteUpdated(autocompleteData) {
+		//Update the position to the parent component
+		this.props.updateMapPlace(autocompleteData.prediction);
 	}
+
 
 	/**
 	 * Toggles the sidebar from hidden to showing
@@ -115,18 +107,20 @@ export default class TopBar extends React.Component {
 		}
 
 		if(this.props.locationInput) {
-			locationInput = <div className="form-group-default pull-left location-input">
-								<input
-									type="text"
-									ref="autocomplete"
-									id="dispatch-location-input"
-									className="form-control google-autocomplete"
-									placeholder="Location" />
-							</div>;
+			var text = '';
+
+			if(this.props.mapPlace) {
+				text =  this.props.mapPlace.description ||  this.props.mapPlace.formatted_address;
+			}
+
+			locationInput = <FrescoAutocomplete 
+								class="nav"
+								inputText={text}
+								bounds={this.props.bounds}
+								updateAutocompleteData={this.autocompleteUpdated} />
 		}
 
 		if (this.props.editable) {
-
 			var className = "mdi icon pull-right hidden-xs toggle-edit toggler";
 
 			if(this.props.editIcon)
@@ -146,6 +140,7 @@ export default class TopBar extends React.Component {
 		// it separately.
 		if (this.props.chronToggle) {
 			let timeToggle = null;
+			
 			if (this.props.timeToggle) {
 				timeToggle =
 					<RadioGroup
@@ -167,7 +162,6 @@ export default class TopBar extends React.Component {
 		}
 
 		if (this.props.verifiedToggle && this.props.rank > global.RANKS.BASIC) {
-
 			topbarItems.push(
 				<Dropdown
 					options={['All content', 'Verified']}
