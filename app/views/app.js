@@ -17,7 +17,9 @@ export default class App extends React.Component {
 		return (
 			<div>
 				<div className="container-fluid">
-					<Sidebar user={this.props.user} />
+					<Sidebar 
+						query={this.props.query}
+						user={this.props.user} />
 
 					<div className="col-md-12 col-lg-10">
 						{this.props.children}

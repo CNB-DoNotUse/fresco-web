@@ -403,7 +403,9 @@ export class Search extends React.Component {
 
 	render() {
 		return (
-			<App user={this.props.user}>
+			<App
+				query={this.props.query} 
+				user={this.props.user}>
 				<TopBar
 					title={this.state.title}
 					timeToggle={true}
