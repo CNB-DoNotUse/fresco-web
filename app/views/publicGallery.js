@@ -313,6 +313,7 @@ class PublicGalleryInfoSection extends React.Component {
 				<h2>{this.props.title}</h2>
 				<ul>{this.props.list}</ul>
 			</div>
+
 		)
 	}
 
