@@ -169,7 +169,7 @@ export class Search extends React.Component {
 				radius: location.radius ? global.feetToMiles(location.radius) : undefined
 			};
 
-		$.get('/api/assignment/search', params, (err, response) => {
+		$.get('/api/assignment/search', params, (response, err) => {
 			if(!response.err && response.data && response.data.length > 0) {
 				let assignments = force ? response.data : this.state.assignments.concat(response.data);
 				
