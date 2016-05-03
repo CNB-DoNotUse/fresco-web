@@ -74,27 +74,27 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     text-align: right;
 
 	li {
-		position: relative !important;
-		display: inline-block !important;
-		width: 20px !important;
-		height: 20px !important;
-		margin:0px !important;
-		padding: 0 !important;
-		cursor: pointer !important;
-
-		&.slick-active{
-			button:before{
-				color:#FFF;
-				opacity:1 !important;
-			}
-		}
+		position: relative;
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		margin: 0 5px;
+		padding: 0;
+		cursor: pointer;
 
 		button:before {
-		    font-size:8px !important;
-		    color:#FFF !important;
+		    font-size:26px !important;
+		    color:#FFF;
 		    opacity:.7;
 		}
 	}
 
+
+	li.slick-active{
+		button:before{
+			color:#FFF;
+			opacity:1;
+		}
+	}
 
 }
