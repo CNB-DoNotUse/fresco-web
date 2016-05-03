@@ -25,6 +25,7 @@ export default class DispatchSubmit extends React.Component {
 		this.submitForm = this.submitForm.bind(this);
 		this.updateRadius = this.updateRadius.bind(this);
 		this.autocompleteUpdated = this.autocompleteUpdated.bind(this);
+		this.editMapChanged = this.editMapChanged.bind(this);
 	}
 
 	componentDidMount() {
@@ -72,6 +73,11 @@ export default class DispatchSubmit extends React.Component {
 				}
 			});
 		}
+	}
+
+	editMapChanged(data) {
+		//Update the position to the parent component
+		this.props.updateNewAssignment(data.location, 0, 0, 'markerDrag');
 	}
 
 	/**
@@ -266,6 +272,8 @@ export default class DispatchSubmit extends React.Component {
 							radius={global.milesToFeet(radius)}
 							zoom={zoom}
 							type='drafted'
+							onDataChange={this.editMapChanged}
+							draggable={true}
 							updateCurrentBounds={this.props.updateCurrentBounds}
 							rerender={this.props.rerender} />
 					</div>
