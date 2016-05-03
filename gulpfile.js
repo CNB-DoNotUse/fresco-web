@@ -49,17 +49,17 @@ gulp.task('Build Assets',  () => {
 		// Build section _global css
 		cssTasks.push(
 			gulp.src(dependencies.global.css.concat(dependencies[section]._global.css))
+				.pipe(concat(section + '.css')) //Move into 'section'.css file 
 				.pipe(sass().on('error', sass.logError))
 				.pipe(gulpif(argv.production, minifyCss()))
-				.pipe(concat(section + '.css')) //Move into 'secion'.css file 
 				.pipe(gulp.dest('./public/css'))
 		);
 
 		// Build section _global JS
 		jsTasks.push(
 			gulp.src(dependencies.global.js.concat(dependencies[section]._global.js))
-				.pipe(gulpif(argv.production, uglify()))
 				.pipe(concat(section + '.js')) //Move into 'secion'.js file 
+				.pipe(gulpif(argv.production, uglify()))
 				.pipe(gulp.dest('./public/js'))
 		);
 
@@ -80,8 +80,8 @@ gulp.task('Build Assets',  () => {
 			if(pageDependencies.css.length) {
 				cssTasks.push(
 					gulp.src(pageDependencies.css)
-						.pipe(sass().on('error', sass.logError))
 						.pipe(concat(pages[p] + '.css'))
+						.pipe(sass().on('error', sass.logError))
 						.pipe(gulpif(argv.production, minifyCss()))
 						.pipe(gulp.dest('./public/css/pages'))
 				);
@@ -92,8 +92,8 @@ gulp.task('Build Assets',  () => {
 
 				jsTasks.push(
 					gulp.src(pageDependencies.js)
-						.pipe(gulpif(argv.production, uglify()))
 						.pipe(concat(pages[p] + '.js'))
+						.pipe(gulpif(argv.production, uglify()))
 						.pipe(gulp.dest('./public/js/pages'))
 				);
 			}
