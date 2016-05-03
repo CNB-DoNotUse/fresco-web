@@ -49,7 +49,7 @@ gulp.task('Build Assets',  () => {
 		// Build section _global css
 		cssTasks.push(
 			gulp.src(dependencies.global.css.concat(dependencies[section]._global.css))
-				.pipe(concat(section + '.css'))
+				.pipe(concat(section + '.css')) //Move into 'section'.css file 
 				.pipe(sass().on('error', sass.logError))
 				.pipe(gulpif(argv.production, minifyCss()))
 				.pipe(gulp.dest('./public/css'))
@@ -58,7 +58,8 @@ gulp.task('Build Assets',  () => {
 		// Build section _global JS
 		jsTasks.push(
 			gulp.src(dependencies.global.js.concat(dependencies[section]._global.js))
-				.pipe(concat(section + '.js'))
+				.pipe(concat(section + '.js')) //Move into 'secion'.js file 
+				.pipe(gulpif(argv.production, uglify()))
 				.pipe(gulp.dest('./public/js'))
 		);
 
@@ -85,11 +86,14 @@ gulp.task('Build Assets',  () => {
 						.pipe(gulp.dest('./public/css/pages'))
 				);
 			}
-
+			
 			if(pageDependencies.js.length) {
+				
+
 				jsTasks.push(
 					gulp.src(pageDependencies.js)
 						.pipe(concat(pages[p] + '.js'))
+						.pipe(gulpif(argv.production, uglify()))
 						.pipe(gulp.dest('./public/js/pages'))
 				);
 			}

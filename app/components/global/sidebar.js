@@ -38,7 +38,8 @@ export default class Sidebar extends React.Component {
 						id="sidebar-search" 
 						placeholder="Search" 
 						type="text" 
-						ref="searchInput" 
+						ref="searchInput"
+						defaultValue={this.props.query}
 						onKeyDown={this.handleSearchKeyDown} />
 				
 					<SideBarListItems user={this.props.user} />
@@ -58,7 +59,10 @@ export default class Sidebar extends React.Component {
 			</div>
 		)
 	}
+}
 
+Sidebar.defaultProps = {
+	query: ''
 }
 
 class SideBarListItems extends React.Component {
@@ -152,5 +156,4 @@ class SideBarListItems extends React.Component {
 	goLink(link) {
 		window.location.assign(link);
 	}
-
 }

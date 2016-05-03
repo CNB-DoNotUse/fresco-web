@@ -8,6 +8,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 @import "../global/_global";
 @import "../global/fresco-slick";
+@import "./public/vendor/slick-carousel/slick/slick.scss";
+@import "./public/vendor/slick-carousel/slick/slick-theme.scss";
+@import "./public/vendor/Waves/src/scss/waves.scss";
 @import "landing";
 @import "modals";
 @import "team";
@@ -74,6 +77,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	font-size:48px;
 	text-shadow:0 3px 2px rgb(0, 0, 0);
 	text-shadow:0 3px 2px rgba(0, 0, 0, 0.15);
+
+	.full & {
+		display:none;
+	}
 }
 
 
