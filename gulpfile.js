@@ -59,6 +59,7 @@ gulp.task('Build Assets',  () => {
 		jsTasks.push(
 			gulp.src(dependencies.global.js.concat(dependencies[section]._global.js))
 				.pipe(concat(section + '.js'))
+				.pipe(gulpif(argv.production, uglify()))
 				.pipe(gulp.dest('./public/js'))
 		);
 
@@ -90,6 +91,7 @@ gulp.task('Build Assets',  () => {
 				jsTasks.push(
 					gulp.src(pageDependencies.js)
 						.pipe(concat(pages[p] + '.js'))
+						.pipe(gulpif(argv.production, uglify()))
 						.pipe(gulp.dest('./public/js/pages'))
 				);
 			}
