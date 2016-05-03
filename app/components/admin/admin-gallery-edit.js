@@ -413,9 +413,7 @@ export default class AdminGalleryEdit extends React.Component {
 					<div className="gallery-images">
 						<Slider
 							dots={true}
-							infinite={false}
-							adaptiveHeight={true}
-						>
+							infinite={false}>
 							{galleryImages ? galleryImages : <div></div>}
 						</Slider>
 					</div>
