@@ -6,6 +6,8 @@ Copyright 2015 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
+@import "./public/vendor/slick-carousel/slick/slick.scss";
+@import "./public/vendor/slick-carousel/slick/slick-theme.scss";
 @import "./../global/_global.scss";
 @import "./../global/fresco-slick.scss";
 
@@ -64,7 +66,7 @@ $mobileHeight:280px;
 
 			video{
 				height:100%;
-				width: 100%;
+				width:auto;
 				margin: 0 auto;
 
 				@include mobile{
