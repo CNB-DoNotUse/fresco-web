@@ -43,8 +43,38 @@ class OutletStats extends React.Component {
 
     }
 
+    /**
+     * Selection function for the time toggle dropdown
+     */
     timeToggleSelected(selected) {
+        var since = 0;
 
+        switch(selected) {
+            case 'today so far':
+                since = moment().utc().startOf('day')
+                break;
+            case 'last 24 hours':
+                since = moment().utc().subtract(1, 'day');
+                break;
+            case 'last 7 days':
+                since = moment().utc().subtract(7, 'days');
+                break;
+            case 'last 30 days':
+                since = moment().utc().subtract(30, 'days');
+                break;
+            case 'this year':
+                since = moment().utc().subtract(1, 'year');
+                break;
+            case 'all time':
+                since = null;
+                break;
+            default:
+                since = moment().utc().startOf('day')
+        }
+
+        this.setState({
+            since: since
+        })
     }
 
     render() {

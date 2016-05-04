@@ -134,7 +134,7 @@ export default class GalleryEditByline extends React.Component {
 
 			if (post.meta.other_origin) {
 				name = post.meta.other_origin.name;
-				affiliation = post.meta.other_origin.affiliation;
+				affiliation = post.meta.other_origin ? post.meta.other_origin.affiliation : '';
 			}
 			
 			return (

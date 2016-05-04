@@ -39,6 +39,12 @@ export default class OutletColumn extends React.Component {
         this.instantiateColumn();  
     }   
 
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.since !== this.props.since) {
+            this.loadPurchaseStats();
+        }
+    }
+
     /**
      * Instantiates column to receive needed data
      */
@@ -73,13 +79,15 @@ export default class OutletColumn extends React.Component {
             now: Date.now()
         }
 
+        console.log(params);
+
         $.ajax({
             url: '/api/outlet/purchases/stats',
             type: 'GET',
             data: params,
             dataType: 'json',
             success: (response, status, xhr) => {
-                console.log(response.data);
+                console.log(response);
 
                 if(response.err || !response.data) {
                     return $.snackbar({
@@ -92,12 +100,12 @@ export default class OutletColumn extends React.Component {
         }); 
 
         function calculateStats(stats) {
-            var stripeFee = (.029 * stats.allTime) + .30,
-                userFee = .67 * stats.allTime,
-                margin = stats.allTime - stripeFee - userFee;
+            var stripeFee = (.029 * stats.since.amount) + .30,
+                userFee = .67 * stats.since.amount,
+                margin = stats.since.amount - stripeFee - userFee;
 
             stats.margin = '$' + Math.round(margin * 100) / 100;
-            stats.revenue = '$' + stats.allTime;
+            stats.revenue = '$' + stats.since.amount;
 
             self.setState({
                 purchaseStats: stats

@@ -53,11 +53,11 @@ export default class OutletColumnHead extends React.Component {
                     <ul>
                         <li>
                             <span className="count">{purchaseStats.photos}</span>
-                            <span>photos</span>
+                            <span>{global.isPlural(purchaseStats.photos) ? 'photos' : 'photo'}</span>
                         </li>
                         <li>
                             <span className="count">{purchaseStats.videos}</span>
-                            <span>videos</span>
+                            <span>{global.isPlural(purchaseStats.photos) ? 'videos' : 'video'}</span>
                         </li>
                         <li>
                             <span className="count">{purchaseStats.revenue}</span>
@@ -67,6 +67,10 @@ export default class OutletColumnHead extends React.Component {
                             <span className="count">{purchaseStats.margin}</span>
                             <span>margin</span>
                         </li>
+                        <li>
+                            <span className="count">{purchaseStats.margin}</span>
+                            <span>assignments</span>
+                        </li>
                     </ul>
                 </div>
 
@@ -74,7 +78,7 @@ export default class OutletColumnHead extends React.Component {
                     <div className="circle">
                         <p className="fraction">
                             <span className="numerator">{purchaseStats.dayCount || 0}</span>
-                            <span className="denominator">{'/' + outlet.goal}</span>
+                            <span className="denominator">{'/' + (outlet.goal || 0)}</span>
                         </p>
                     </div>
 
