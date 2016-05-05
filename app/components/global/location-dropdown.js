@@ -59,21 +59,21 @@ export default class LocationDropdown extends React.Component {
 				place = this.props.mapPlace,
 				self = this;
 
+			console.log(autocomplete);
+
 			//Run checks on place and title
 			if (!place || !place.geometry || !place.geometry.viewport){
 				return $.snackbar({ 
 					content: global.resolveError('ERR_UNSUPPORTED_LOCATION')
 				});
-			} else if(!autocomplete.value){
-				$.snackbar({content: 'Please enter a valid location title'});
 			}
 			
 			var bounds = place.geometry.viewport,
 				params = {
-					title: autocomplete.value,
+					title: place.description,
 					polygon: global.generatePolygonFromBounds(bounds)
 				};
-			
+
 			$.ajax({
 				url: '/api/outlet/location/create',
 				method: 'post',
