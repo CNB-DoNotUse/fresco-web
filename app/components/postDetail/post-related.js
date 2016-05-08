@@ -1,13 +1,11 @@
 import React from 'react'
-import global from '../../../lib/global'
 import RelatedPostImage from './post-related-image'
+import global from '../../../lib/global'
 
 // TODO: Figure out how to combine this and PostRelatedTags into a single reusable component
 
 /** //
-
 Description : Related posts at the bottom of the PostDetail view
-
 // **/
 
 /**

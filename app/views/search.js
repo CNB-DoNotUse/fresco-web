@@ -69,7 +69,12 @@ export class Search extends React.Component {
 
 	componentWillMount() {
 		//Load intial set of data
-		this.refreshData(false);
+		this.refreshData(true);
+
+		window.onpopstate = (event) => {
+			//Reload page
+			document.location.reload();
+		};
 
 		// If has location in state, get address from LatLng. 
 		// Location dropdown will use this as it's defaultLocation

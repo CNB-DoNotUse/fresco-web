@@ -1,9 +1,8 @@
 import React from 'react'
 import global from '../../../lib/global'
+
 /** //
-
 Description : Related posts at the bottom of the PostDetail view
-
 // **/
 
 /**

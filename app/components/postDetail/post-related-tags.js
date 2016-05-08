@@ -1,10 +1,9 @@
 import React from 'react'
 import global from '../../../lib/global'
 import RelatedPostImage from './post-related-image'
+
 /** //
-
 Description : Related posts at the bottom of the PostDetail view, organized by tags
-
 // **/
 
 /**
@@ -30,18 +29,20 @@ export default class PostRelatedTags extends React.Component {
 		this.getTags();
 	}
 
+	/**
+	 * Retrieves tags for the post
+	 */
 	getTags() {
 		for (let tag of this.props.tags) {
 			$.get('/api/gallery/search', {
 				limit: 10,
-				tags: tag
-			}, (posts) => {
-				if(posts.err || !posts.data) {
-					return console.log('Error getting posts for tag: ' + tag);
+				q: '',
+				tags: [tag]
+			}, (response) => {
+				if(!response.err && response.data) {
+					this.state.tags[tag] = response.data;
+					this.setState(this.state);
 				}
-
-				this.state.tags[tag] = posts.data;
-				this.setState(this.state);
 			});
 		}
 	}
@@ -50,6 +51,7 @@ export default class PostRelatedTags extends React.Component {
 		if (this.state.selectedTag === event.currentTarget.dataset.tag) {
 			return;
 		}
+
 		this.setState({
 			selectedTag: event.currentTarget.dataset.tag
 		});
@@ -60,23 +62,25 @@ export default class PostRelatedTags extends React.Component {
 			return null;
 		}
 
-		let tagTabs = [];
-		let tagTabControls = [];
+		let tagTabs = [],
+			tagTabControls = [];
+
 		for (let tag of this.props.tags) {
 			if (!this.state.tags[tag]) {
 				break;
 			}
+
+			console.log(tag);
 			
 			let posts = this.state.tags[tag].map((post, i) => {
-				return <RelatedPostImage post={post} key={i}/>
-			});
-
-			let toggled = tag === this.state.selectedTag ? 'toggled' : '';
+					return <RelatedPostImage post={post} key={i}/>
+				}),
+				toggled = (tag === this.state.selectedTag ? 'toggled' : '');
 
 			let tab =
 				<div className={"tab " + toggled} key={tag}>
 					<div className="tab-inner">
-						<a className="btn btn-flat" href={"/search?tags[]=" + tag}>See all</a>
+						<a className="btn btn-flat" href={"/search?q=&tags[]=" + tag}>See all</a>
 						{posts}
 					</div>
 				</div>;
@@ -85,8 +89,9 @@ export default class PostRelatedTags extends React.Component {
 								className={"btn btn-flat " + toggled} 
 								key={tag} 
 								onClick={this.setDisplayedTag} 
-								data-tag={tag}>#{tag.toUpperCase()} >
+								data-tag={tag}>{'#' + tag.toUpperCase()}
 							</button>
+
 
 			tagTabs.push(tab);
 			tagTabControls.push(tabControl);
