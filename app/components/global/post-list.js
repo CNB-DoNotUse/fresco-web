@@ -180,10 +180,16 @@ export default class PostList extends React.Component {
 		//Check if `not` CM
 		if(this.props.rank < global.RANKS.CONTENT_MANAGER) return;
 
+		//Make sure we haven't reached the limit
+		if(this.state.selectedPosts.length >= global.limits.galleryItems) {
+			return $.snackbar({ content: 'Galleries can only contain up to 10 items!'});
+		}
+
 		//Filter out anything, but ones that equal the passed post
 		var result = this.state.selectedPosts.filter((post) => {
 			return passedPost._id === post._id
 		});
+
 
 		//Post not found, so add
 		if(result.length == 0){
@@ -193,11 +199,9 @@ export default class PostList extends React.Component {
 		}
 		//No post found
 		else{
-
 			this.setState({
 				selectedPosts: this.state.selectedPosts.filter((post) => post._id !== passedPost._id)
 			});
-
 		}
 	}
 

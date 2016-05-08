@@ -20,6 +20,25 @@ export default class GalleryBulkSelect extends React.Component {
 		this.edit = this.edit.bind(this);
 		this.createGallery = this.createGallery.bind(this);
 	}
+	
+	createGallery() {
+ 		$(".toggle-gcreate").toggleClass("toggled");
+ 	}
+
+	edit() {
+		if (this.props.posts.length > 1) {
+			this.refs.bulkedit.show();
+		}
+		else {
+			$.snackbar({
+				content: 'Select more than one gallery to edit'
+			});
+		}
+	}
+
+ 	clear() {
+ 		this.props.setSelectedPosts([]);
+ 	}
 
 	render() {
 
@@ -54,30 +73,6 @@ export default class GalleryBulkSelect extends React.Component {
  			</div>
  		);
  	}
-
- 	createGallery() {
-
- 		$(".toggle-gcreate").toggleClass("toggled");
-
- 	}
-
-	edit() {
-		if (this.props.posts.length > 1) {
-			this.refs.bulkedit.show();
-		}
-		else {
-			$.snackbar({
-				content: 'Select more than one gallery to edit'
-			});
-		}
-	}
-
- 	clear() {
-
- 		this.props.setSelectedPosts([]);
-
- 	}
-
 }
 
 GalleryBulkSelect.defaultProps = {
