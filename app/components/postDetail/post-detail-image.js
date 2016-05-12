@@ -22,6 +22,7 @@ export default class PostDetailImage extends React.Component {
 			purchased: this.props.purchases && this.props.purchases.indexOf(this.props.post._id) >= 0
 		}
 
+		this.contextMenu = this.contextMenu.bind(this);
 		this.didPurchase = this.didPurchase.bind(this);
 	}
 
@@ -29,6 +30,13 @@ export default class PostDetailImage extends React.Component {
 		this.setState({
 			purchased: true
 		});
+	}
+
+	/**
+	 * Click event for either the image tag or the video tag
+	 */
+	contextMenu(e) {
+		e.preventDefault();
 	}
 
 	render() {
@@ -75,14 +83,17 @@ export default class PostDetailImage extends React.Component {
 		}
 
 		if (this.props.post.video){
-			postMedia = <video width="100%" height="100%" controls>
+			postMedia = <video width="100%" height="100%" controls onContextMenu={this.contextMenu}>
 							<source src={global.formatVideo(this.props.post.video)} type="video/mp4" />
 							Your browser does not support the video tag.
 						</video>
 		}
 		else{
 		
-			postMedia = <img className="img-responsive" src={global.formatImg(this.props.post.image, 'large')} />
+			postMedia = <img 
+							className="img-responsive" 
+							onContextMenu={this.contextMenu}
+							src={global.formatImg(this.props.post.image, 'large')} />
 		}
 
 
@@ -92,8 +103,10 @@ export default class PostDetailImage extends React.Component {
 				<div className="card panel">
 					<div className="card-foot small">
 						{actions}
+
 						<span className="md-type-body1">{this.props.post.byline}</span>
 					</div>
+
 					<div className="card-body">{postMedia}</div>
 				</div>
 			</div>
