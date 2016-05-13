@@ -228,7 +228,6 @@ app.use('/api', API.proxy);
 /**
  * Error Midleware
  */
-
 app.use((error, req, res, next) => {
     var err = {};
     err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
@@ -264,7 +263,6 @@ app.use((error, req, res, next) => {
 /**
  * 404 Handler Catch
  */
-
 app.use((req, res, next) => {
     //Respond with code
     res.status(404);

@@ -74,12 +74,10 @@ export default class OutletColumn extends React.Component {
         
         var params = {
             outlets: [this.state.outlet._id],
-            since: this.props.since.unix() * 1000,
+            since: this.props.since ? this.props.since.unix() * 1000 : null,
             offset: moment().utcOffset(),
             now: Date.now()
         }
-
-        console.log(params);
 
         $.ajax({
             url: '/api/outlet/purchases/stats',
@@ -87,8 +85,6 @@ export default class OutletColumn extends React.Component {
             data: params,
             dataType: 'json',
             success: (response, status, xhr) => {
-                console.log(response);
-
                 if(response.err || !response.data) {
                     return $.snackbar({
                         content: 'There was an error receiving the purchases'
@@ -100,16 +96,25 @@ export default class OutletColumn extends React.Component {
         }); 
 
         function calculateStats(stats) {
-            var stripeFee = (.029 * stats.since.amount) + .30,
-                userFee = .67 * stats.since.amount,
-                margin = stats.since.amount - stripeFee - userFee;
+            var amount = 0;
+
+            if(typeof(stats.allTime) !== 'undefined'){
+                amount = stats.allTime.amount;
+            }
+            else if(typeof(stats.since) !== 'undefined'){
+                amount = stats.since.amount;
+            }
+
+            var stripeFee = (.029 * amount) + .30,
+                userFee = .67 * amount,
+                margin = amount - stripeFee - userFee;
 
             stats.margin = '$' + Math.round(margin * 100) / 100;
-            stats.revenue = '$' + stats.since.amount;
+            stats.revenue = '$' + amount;
 
             self.setState({
                 purchaseStats: stats
-            })
+            });
         }
     }
 
@@ -216,7 +221,6 @@ export default class OutletColumn extends React.Component {
             scrollTop = grid.scrollTop,
             head = this.refs.columnHead.refs.head,
             headClass = head.className;
-
 
         if(scrollTop <= 0) {
             head.className = headClass.replace(/\bshadow\b/,'');

@@ -11,10 +11,11 @@ export default class OutletColumnHead extends React.Component {
     }
 
     render() {
-
         var outlet = this.props.outlet,
             userStats = this.props.userStats,
             purchaseStats = this.props.purchaseStats;
+
+        console.log(purchaseStats);
 
         return (
             <div className="head" ref="head">
@@ -68,18 +69,20 @@ export default class OutletColumnHead extends React.Component {
                             <span>margin</span>
                         </li>
                         <li>
-                            <span className="count">{purchaseStats.margin}</span>
+                            <span className="count">0</span>
                             <span>assignments</span>
                         </li>
                     </ul>
                 </div>
 
                 <div className="goal">
-                    <div className="circle">
-                        <p className="fraction">
-                            <span className="numerator">{purchaseStats.dayCount || 0}</span>
-                            <span className="denominator">{'/' + (outlet.goal || 0)}</span>
-                        </p>
+                    <div className="activeBorder">
+                        <div className="circle">
+                            <p className="fraction">
+                                <span className="numerator">{purchaseStats.dayCount || 0}</span>
+                                <span className="denominator">{'/' + (outlet.goal || 0)}</span>
+                            </p>
+                        </div>
                     </div>
 
                     <div className="actions">

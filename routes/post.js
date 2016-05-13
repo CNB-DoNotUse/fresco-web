@@ -7,7 +7,7 @@ var express    = require('express'),
 
 /** //
 
-  Description : Post Specific Routes ~ prefix /gallery/~
+  Description : Post Specific Routes ~ prefix /post/~
 
 // **/
 
@@ -28,7 +28,7 @@ router.get('/:id', (req, res, next) => {
     api.get('/v1/post/get?id=' + req.params.id, doWithPostInfo);
 
     function doWithPostInfo(error, response, body) {
-        if (error || !body || body.err || body.error || response.error){
+        if (error || !body || body.err){
             req.session.alerts = ['Error connecting to server'];
 
             return req.session.save(() => {
@@ -51,15 +51,17 @@ router.get('/:id', (req, res, next) => {
 
     function doWithGallery (error, response, body) {
         if (error || !body || body.err) {
-            return next(error || body.err);
+            return next({
+                message : 'Post could not be resolved!',
+                status: response.status
+            });
         }
 
         gallery = body.data;
 
         //Check if post has approvals in place
         if (post.approvals) {
-
-          var verifierId = null;
+            var verifierId = null;
 
             //Loop through edits to find edit for visibility change of `1` i.e. verified
             for (var i in gallery.edits) {
@@ -69,7 +71,6 @@ router.get('/:id', (req, res, next) => {
                     verifierId = edit.editor;
                     break;
                 }
-
             }
 
             if (verifierId) {
@@ -78,7 +79,6 @@ router.get('/:id', (req, res, next) => {
             } else {
                 render();
             }
-
         } else {
             render();
         }
@@ -87,6 +87,7 @@ router.get('/:id', (req, res, next) => {
     function doWithUserProfile(error, response, body) {
         if (!error && body && !body.err) {
             verifier = body.data.firstname + ' ' + body.data.lastname;
+
             render();
         }
     }

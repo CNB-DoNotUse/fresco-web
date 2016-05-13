@@ -119,9 +119,9 @@ class OutletPurchase extends React.Component {
             assignmentMeta = <div className="meta-assignment">
                                 <a href={'/assignment/' + purchase.assignment._id}>
                                     <span className="mdi mdi-logout-variant"></span>
-                                </a>
 
-                                <p>{purchase.assignment.title}</p>
+                                    <p>{purchase.assignment.title}</p>
+                                </a>
                             </div>
         }
 
