@@ -7,6 +7,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------*/
 
 @import '../global/mixins';
+@import 'circle';
 
 /**
  * Outlet Stats wrapper class
@@ -151,32 +152,18 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
         flex-direction:column;
         justify-content:flex-end;
 
-        .activeBorder{ 
-            flex-basis:100%;
-            align-self:flex-end;
-            width:56px;
-            height:56px;
-            @include border-radius(50%);
-
-            background-color:#39B4CC;
-            background-image: linear-gradient(91deg, transparent 50%, #A2ECFB 50%),
-                            linear-gradient(90deg, #A2ECFB 50%, transparent 50%);
-        }
-
-        .circle {
-            @include border-radius(50%);
-            flex-basis:100%;
-            align-self:flex-end;
-            width:56px;
-            height:56px;
+        .circle{
             margin:0 0 10px;
-            border: solid 4px;
-            background: #FAFAFA;
-            @include rgba(border-color, 0, 0, 0, 0.12);
-
+            position:relative;
+            flex-basis:100%;
+            align-self:flex-end;
+            font-size: 56px !important;
+    
             .fraction {
-                margin:13px auto 0;
-                width:48px;
+                position:absolute;
+                top: -26px;
+                left: 17px;
+                z-index:5;
                 text-align: center;
 
                 .numerator {
@@ -206,86 +193,100 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     }
 }
 
+/**
+ * Purchases list
+ */
 .purchases {
     overflow:auto;
     height: calc(100% - 252px);
     padding:0 0 8px;
 
-    .purchase {
+}
+
+/**
+ * Purchase List Item
+ */
+.purchase {
+    width:100%;
+    margin:8px 0 0;
+    overflow:hidden;
+    display:flex;
+    flex-wrap:wrap;
+    flex-direction:row;
+
+    &:hover {
+
+    }
+
+    .meta-top {
+        padding:0 24px;
         width:100%;
-        margin:8px 0 0;
-        overflow:hidden;
+        height:48px;
         display:flex;
-        flex-wrap:wrap;
-        flex-direction:row;
+        flex-basis:100%;
+        align-items:center;
+        justify-content:space-between;
 
-        &:hover {
-
+        h3 {
+            display:inline-block;
+            margin:0;
+            font-size:16px;
+            font-weight:500;
+            @include rgba(color, 0, 0, 0, 0.87);
         }
 
-        .meta-top {
-            padding:0 24px;
+        span {
+            font-size:12px;
+            line-height:16px;
+            @include rgba(color, 0, 0, 0, 0.54);
+        }
+    }
+
+    .media-cell {
+        z-index:4;
+        width:304px;
+        max-height:228px;
+        flex-basis:100%;
+        position:relative;
+        padding:0 8px;
+        overflow:hidden;
+
+        img, video  {
+            @include border-radius(2px);
+            display:block;
             width:100%;
-            height:48px;
-            display:flex;
-            flex-basis:100%;
-            align-items:center;
-            justify-content:space-between;
-
-            h3 {
-                display:inline-block;
-                margin:0;
-                font-size:16px;
-                font-weight:500;
-                @include rgba(color, 0, 0, 0, 0.87);
-            }
-
-            span {
-                font-size:12px;
-                line-height:16px;
-                @include rgba(color, 0, 0, 0, 0.54);
-            }
+            height:100%;
         }
 
-        .media-cell {
-            z-index:4;
-            width:304px;
-            max-height:228px;
-            flex-basis:100%;
-            position:relative;
-            padding:0 8px;
-            overflow:hidden;
-
-            img, video  {
-                @include border-radius(2px);
-                display:block;
-                width:100%;
-                height:100%;
-            }
-
-            video {
-                cursor:pointer;
-            }
-
-            .volume-toggle {
-                position:absolute;
-                z-index:5;
-                color:white;
-                cursor:pointer;
-                font-size:18px;
-                top:20px;
-                right:20px;
-                text-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
-            }
+        video {
+            cursor:pointer;
         }
 
-        .meta-assignment {
-            padding:0 24px;
-            display:flex;
-            height:48px;
-            flex-basis:100%;
-            align-items:center;
-            justify-content:flex-start;
+        .volume-toggle {
+            position:absolute;
+            z-index:5;
+            color:white;
+            cursor:pointer;
+            font-size:18px;
+            top:20px;
+            right:20px;
+            text-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+        }
+    }
+
+    .meta-assignment {
+        padding:0 24px;
+        display:flex;
+        height:48px;
+        flex-basis:100%;
+        align-items:center;
+        justify-content:flex-start;
+
+        a{
+            max-width:65%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
 
             span.mdi-logout-variant {
                 font-size:20px;
@@ -293,14 +294,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
                 @include rgba(color, 0, 0, 0, 0.54);
             }
 
-            p {
+            .title {
                 font-size:14px;
                 font-weight:500;
-                margin:0;
-                max-width:224px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
             }
         }
     }

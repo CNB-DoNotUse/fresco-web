@@ -24,13 +24,15 @@ export default class OutletColumn extends React.Component {
 
             purchaseStats: {},
 
+            dailyVideoCount: 0,
+
             purchases: []
         }
 
         this.scroll = this.scroll.bind(this);
         this.loadUserStats = this.loadUserStats.bind(this);
+        this.getGoal = this.getGoal.bind(this);
         this.adjustGoal = this.adjustGoal.bind(this);
-        this.drag = this.drag.bind(this);
         this.loadPurchaseStats = this.loadPurchaseStats.bind(this);
         this.loadPurchases = this.loadPurchases.bind(this);
     }
@@ -50,6 +52,7 @@ export default class OutletColumn extends React.Component {
      */
     instantiateColumn() {
         this.loadPurchaseStats();
+        this.getGoal();
 
         this.loadPurchases(0, (purchases) => {
             this.setState({
@@ -75,7 +78,6 @@ export default class OutletColumn extends React.Component {
         var params = {
             outlets: [this.state.outlet._id],
             since: this.props.since ? this.props.since.unix() * 1000 : null,
-            offset: moment().utcOffset(),
             now: Date.now()
         }
 
@@ -85,13 +87,9 @@ export default class OutletColumn extends React.Component {
             data: params,
             dataType: 'json',
             success: (response, status, xhr) => {
-                if(response.err || !response.data) {
-                    return $.snackbar({
-                        content: 'There was an error receiving the purchases'
-                    });
+                if(!response.err &&  response.data) {
+                    calculateStats(response.data);
                 }
-
-                calculateStats(response.data);
             }
         }); 
 
@@ -122,6 +120,8 @@ export default class OutletColumn extends React.Component {
      * Requests purchases for a passed outlet
      */
     loadPurchases(offset, callback) {
+        return; 
+
         var params = {
             limit: 5,
             offset: offset,
@@ -147,6 +147,28 @@ export default class OutletColumn extends React.Component {
             },
             error: (xhr, status, error) => {
                 $.snackbar({content: global.resolveError(error)});
+            }
+        }); 
+    }
+
+    getGoal() {
+        var params = {
+            outlets: [this.state.outlet._id],
+            since: moment().utc().startOf('day').unix() * 1000,
+            now: Date.now()
+        }
+
+        $.ajax({
+            url: '/api/outlet/purchases/stats',
+            type: 'GET',
+            data: params,
+            dataType: 'json',
+            success: (response, status, xhr) => {
+                if(!response.err &&  response.data) {
+                    this.setState({
+                        dailyVideoCount: response.data.videos
+                    })
+                }
             }
         }); 
     }
@@ -195,9 +217,9 @@ export default class OutletColumn extends React.Component {
                         this.error();
                     else {
                         //Set again based on response data for consistency
-                        self.setState({
-                            outlet : response.data
-                        });
+                        // self.setState({
+                        //     outlet : response.data
+                        // });
                     }
                 },
                 error: (xhr, status, error) => {
@@ -207,10 +229,6 @@ export default class OutletColumn extends React.Component {
                 }
             }); 
         }
-    }
-
-    drag(e) {
-        console.log(e);
     }
 
     /**
@@ -266,6 +284,7 @@ export default class OutletColumn extends React.Component {
                     adjustGoal={this.adjustGoal}
                     userStats={this.state.userStats}
                     purchaseStats={purchaseStats}
+                    dailyVideoCount={this.state.dailyVideoCount}
                     outlet={outlet} />
 
                 <OutletColumnList 

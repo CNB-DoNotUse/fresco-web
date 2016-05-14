@@ -120,7 +120,7 @@ class OutletPurchase extends React.Component {
                                 <a href={'/assignment/' + purchase.assignment._id}>
                                     <span className="mdi mdi-logout-variant"></span>
 
-                                    <p>{purchase.assignment.title}</p>
+                                    <span className="title">{purchase.assignment.title}</span>
                                 </a>
                             </div>
         }

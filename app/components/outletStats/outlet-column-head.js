@@ -13,9 +13,16 @@ export default class OutletColumnHead extends React.Component {
     render() {
         var outlet = this.props.outlet,
             userStats = this.props.userStats,
-            purchaseStats = this.props.purchaseStats;
+            purchaseStats = this.props.purchaseStats,
+            videoCount = this.props.dailyVideoCount,
+            percentage = Math.round((videoCount / outlet.goal) * 100);
 
-        console.log(purchaseStats);
+        var circleColor = 'red';
+
+        if(videoCount >= outlet.goal)
+            circleColor = 'green';
+        else if(videoCount > (.25 * outlet.goal))
+            circleColor = 'orange';
 
         return (
             <div className="head" ref="head">
@@ -33,7 +40,7 @@ export default class OutletColumnHead extends React.Component {
                         draggable={true}></span>
                 </div>
 
-                <div className="users">
+                {/*<div className="users">
                     <ul>
                         <li>
                             <p>{userStats.mau}</p>
@@ -48,7 +55,7 @@ export default class OutletColumnHead extends React.Component {
                             <p>galleries/user/day</p>
                         </li>
                     </ul>
-                </div>
+                </div>*/}
 
                 <div className="revenue">
                     <ul>
@@ -76,12 +83,15 @@ export default class OutletColumnHead extends React.Component {
                 </div>
 
                 <div className="goal">
-                    <div className="activeBorder">
-                        <div className="circle">
-                            <p className="fraction">
-                                <span className="numerator">{purchaseStats.dayCount || 0}</span>
-                                <span className="denominator">{'/' + (outlet.goal || 0)}</span>
-                            </p>
+                    <div className={"c100 p" + percentage + " circle small " + circleColor}>
+                        <p className="fraction">
+                           <span className="numerator">{this.props.dailyVideoCount}</span>
+                           <span className="denominator">{'/' + (outlet.goal || 0)}</span>
+                        </p>
+
+                        <div className="slice">
+                            <div className="bar"></div>
+                            <div className="fill"></div>
                         </div>
                     </div>
 
