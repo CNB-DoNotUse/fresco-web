@@ -17,7 +17,6 @@ export default class TopBar extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.goLink = this.goLink.bind(this);
 		this.toggleDrawer = this.toggleDrawer.bind(this);
 		this.timeToggleSelected = this.timeToggleSelected.bind(this);
 		this.verifiedToggleSelected = this.verifiedToggleSelected.bind(this);
@@ -32,7 +31,6 @@ export default class TopBar extends React.Component {
 		//Update the position to the parent component
 		this.props.updateMapPlace(autocompleteData.prediction);
 	}
-
 
 	/**
 	 * Toggles the sidebar from hidden to showing
@@ -51,11 +49,6 @@ export default class TopBar extends React.Component {
 			sidebar.className += ' toggled';
 			toggler.className += ' toggled';
 		}
-	}
-
-	// Called when has link prop.
-	goLink() {
-		window.location = this.props.link
 	}
 
 	//Called when the user selects a time format
@@ -120,7 +113,7 @@ export default class TopBar extends React.Component {
 								updateAutocompleteData={this.autocompleteUpdated} />
 		}
 
-		if (this.props.editable) {
+		if (typeof(this.props.edit) !== 'undefined') {
 			var className = "mdi icon pull-right hidden-xs toggle-edit toggler";
 
 			if(this.props.editIcon)
@@ -142,12 +135,11 @@ export default class TopBar extends React.Component {
 			let timeToggle = null;
 			
 			if (this.props.timeToggle) {
-				timeToggle =
-					<RadioGroup
-						options={['Relative time', 'Absolute time']}
-						selected='Relative time'
-						onSelected={this.timeToggleSelected}
-						name='timeToggle' />
+				timeToggle = <RadioGroup
+								options={['Relative time', 'Absolute time']}
+								selected='Relative time'
+								onSelected={this.timeToggleSelected}
+								name='timeToggle' />
 			}
 			topbarItems.push(
 				<Dropdown
@@ -156,7 +148,7 @@ export default class TopBar extends React.Component {
 					onSelected={this.chronToggleSelected}
 					key="chronToggle"
 					inList={true}>
-					{timeToggle}
+						{timeToggle}
 				</Dropdown>
 			);
 		}
@@ -219,7 +211,6 @@ export default class TopBar extends React.Component {
 
 TopBar.defaultProps = {
 	title: '',
-	edit: function() {},
 	hide: function () { console.log('Hide function not implemented in TopBar'); },
 	onVerifiedToggled: function() {},
 	onOutletFilterAdd: function() {},

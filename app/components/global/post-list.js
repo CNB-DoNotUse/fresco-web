@@ -121,7 +121,6 @@ export default class PostList extends React.Component {
 	 * Scroll listener for main window
 	 */
 	scroll(e) {
-
 		var grid = e.target;
 
 		//Check that nothing is loading and that we're at the end of the scroll,

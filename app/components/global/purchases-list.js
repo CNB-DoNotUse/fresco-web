@@ -8,37 +8,12 @@ export default class PurchasesList extends React.Component {
 
 		this.state = {
 			loading: false,
-			offset: 0,
-			purchases: this.props.purchases
+			purchases: this.props.purchases,
+			scrollable: true
 		}
 
 		this.loadPurchases = this.loadPurchases.bind(this);
 		this.scroll = this.scroll.bind(this);
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-		//Tell the component to update it's purchases
-		if(this.props.updatePurchases) {
-			this.loadPurchases();
-		}
-	}
-
-	/**
-	 * Loads initial set of purchases
-	 */
-	loadPurchases() {
-		//Access parent var load method
-		this.props.loadPurchases(0, (purchases) => {
-			
-			//Update offset based on purchases from callaback
-			var offset = purchases ? purchases.length : 0;
-
-			//Set posts & callback from successful response
-			this.setState({
-				purchases: purchases,
-				offset : offset
-			});
-		});  
 	}
 
 	componentDidMount() {
@@ -50,61 +25,71 @@ export default class PurchasesList extends React.Component {
 	    this.loadPurchases();
 	}
 
-	// Handle purchases div scroll
-	scroll(e) {
+	componentDidUpdate(prevProps, prevState) {
+		//Tell the component to update it's purchases
+		if(this.props.updatePurchases) {
+			this.loadPurchases();
+		}
+	}
 
-		if(this.state.loading) return;
-
-		// Get scroll offset and get more purchases if necessary.
-		var purchasesListDiv = document.getElementById('purchases-list');
-		var pxToBottom = purchasesListDiv.scrollHeight - (purchasesListDiv.clientHeight + purchasesListDiv.scrollTop);
-		var shouldGetMorePurchases = pxToBottom <= 96;
-		
-		// Check if already getting purchases because async
-		if(shouldGetMorePurchases) {
+	loadPurchases() {
+		//Access parent var load method
+		this.props.loadPurchases(0, (purchases) => {
+			//Set posts & callback from successful response
 			this.setState({
-				loading: true
+				purchases: purchases,
+				scrollable: true
 			});
+		});  
+	}
 
+	//Handle purchases div scroll
+	scroll(e) {
+		var grid = e.target,
+			bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400);
 
-			console.log('LOADING MORE');
+		//Check that nothing is loading and that we're at the end of the scroll,
+		//and that we have a parent bind to load  more posts
+		if(!this.loading && bottomReached){
+			//Set that we're loading
+			this.loading = true;
 
 			// Pass current offset to getMorePurchases
-			this.props.loadPurchases(this.state.offset, (purchases) => {
-
+			this.props.loadPurchases(this.state.purchases.length, (purchases) => {
 				//Disables scroll, and returns if purchases are empty
 				if(!purchases || purchases.length == 0){ 
-					this.setState({
+					return this.setState({
 						scrollable: false
 					});
-					return;
 				}
 
-				var offset = this.state.purchases.length + purchases.length;
+				//Disabling loading on object
+				this.loading = false;
 
 				// Allow getting more purchases after we've gotten more purchases.
-				// Update offset to new purchases length
 				this.setState({
-					loading: false,
-					purchases: this.state.purchases.concat(purchases),
-					offset: offset
+					purchases: this.state.purchases.concat(purchases)
 				});
-
 			});
 		}
 	}
 
 	render() {
-
 		// Map purchases JSON to PurchaseListItem
 		var purchases = this.state.purchases.map((purchase, i) => {
-		
-			return <PurchasesListItem purchase={purchase} title={purchase.title} key={i} />
-		
+			return <PurchasesListItem 
+						purchase={purchase} 
+						title={purchase.title} 
+						key={i} 
+					/>
 		});
 
 		return (
-			<div id="purchases-list" className="col-md-8 col-xs-12 list" onScroll={this.props.scrollable ? this.scroll : null}>
+			<div 
+				id="purchases-list" 
+				className="col-md-8 col-xs-12 list" 
+				onScroll={this.state.scrollable ? this.scroll : null}
+			>
 				{purchases}
 			</div>
 		);
@@ -112,6 +97,5 @@ export default class PurchasesList extends React.Component {
 }
 
 PurchasesList.defaultProps= {
-	purchases: [],
-	scrollable: false
+	purchases: []
 }

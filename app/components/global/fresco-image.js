@@ -31,17 +31,15 @@ export default class FrescoImage extends React.Component {
 
 		    }, timeout * 1000);
 
-		    if(this.props.updateImage) this.props.updateImage(image);
+		    this.props.updateImage(image);
 		}
 	}
 
 	render() {
-		var imageClass = this.props.imageClass || 'img-cover';
-
 		return (
 			<div className="img">
 				<img 
-					className={imageClass}
+					className={this.props.imageClass || 'img-cover'}
 					ref='image'
 					data-src={global.formatImg(this.props.image, this.props.size)}
 					src={global.formatImg(this.props.image, this.props.size)} />

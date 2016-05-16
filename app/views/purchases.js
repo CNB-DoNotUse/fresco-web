@@ -3,24 +3,30 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from '../components/topbar'
-import PurchasesBody from '../components/purchases/purchases-body'
+import PurchasesSummary from '../components/purchases/purchases-summary'
+import OutletPurchases from '../components/purchases/purchases-outlets'
+import Dropdown from '../components/global/dropdown'
 import TagFilter from '../components/topbar/tag-filter'
 
 class Purchases extends React.Component {
 	constructor(props) {
 		super(props);
+
 		this.state = {
 			outlets: [],
 			availableOutlets: [],
 			updatePurchases: false,
+			selectedTimeToggle: null,
+			activeTab: 'Summary'
 		}
 
 		this.findOutlets = this.findOutlets.bind(this);
 		this.addOutlet = this.addOutlet.bind(this);
-		this.removeOutlet = this.removeOutlet.bind(this);
-		this.loadStats = this.loadStats.bind(this);
 		this.loadPurchases = this.loadPurchases.bind(this);
-		this.downloadExports = this.downloadExports.bind(this);
+		this.loadStats = this.loadStats.bind(this);
+		this.removeOutlet = this.removeOutlet.bind(this);
+		this.setActiveTab = this.setActiveTab.bind(this);
+		this.timeToggleSelected = this.timeToggleSelected.bind(this);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -32,6 +38,16 @@ class Purchases extends React.Component {
 		}
 	}
 
+	setActiveTab(tab) {
+		this.setState({
+			activeTab: tab
+		});
+	}
+
+	/**
+	 * Gets search results for query and sets to state the outlets
+	 * @param  {String} query query for the outlet
+	 */
 	findOutlets(query) {
 		if(query.length == 0) {
 			this.setState({
@@ -50,6 +66,7 @@ class Purchases extends React.Component {
 
 	/**
 	 * Adds outlet to filter
+	 * @param {String} outletToAdd Title of the outlet
 	 */
 	addOutlet(outletToAdd) {
 		var availableOutlets = _.clone(this.state.availableOutlets, true),
@@ -81,9 +98,6 @@ class Purchases extends React.Component {
 		}
 	}
 
-	/**
-	 * Remove outlet from filter
-	 */
 	removeOutlet(outletToRemove) {
 		var outlets = _.clone(this.state.outlets, true),
 			filterIdsArr = [];
@@ -100,10 +114,6 @@ class Purchases extends React.Component {
 		this.setState({ outlets: outlets });
 	}
 
-
-	/**
-	 * Loads stats for purchases
-	 */
 	loadStats(callback) {
 		$.get('/api/outlet/purchases/stats', {
 			outlets: this.state.outlets.map(p => p._id)
@@ -118,24 +128,12 @@ class Purchases extends React.Component {
 		});
 	}
 
-
-	/**
-	 * Requests purchases from server
-	 * @return {[type]} [description]
-	 */
 	loadPurchases(passedOffset, cb) {
-		//Update state for purchase list if needed so it doesn't loop
-		if(this.state.updatePurchases){
-			this.setState({
-				updatePurchases: false
-			});
-		}
-
 		$.get('/api/outlet/purchases/list', {
 			limit: 20,
 			offset: passedOffset,
 			details: true,
-			outlets: this.state.outlets.map(p => p._id)
+			outlets: this.state.outlets.map(o => o._id)
 		}, (response) => {
 			if(response.err) {
 				return $.snackbar({
@@ -153,7 +151,6 @@ class Purchases extends React.Component {
 			});
 
 			if(cb) cb(purchases);
-
 		});
 	}
 
@@ -167,35 +164,59 @@ class Purchases extends React.Component {
 		window.open(url, '_blank');
 	}
 
-	render() {
-		var outlets = this.state.outlets.map((outlet) => {
-			return outlet.title;
-		});
+	timeToggleSelected(selected) {
+		this.setState({
+			selectedTimeToggle: selected
+		})
+	}
 
-		var availableOutlets = this.state.availableOutlets.map((outlet) =>{
-			return outlet.title;
-		});
+	render() {
+		var isSummary = this.state.activeTab == 'Summary';
 
 		return (
 			<App user={this.props.user}>
 				<TopBar 
-					title="Purchases">
-
-					<TagFilter
-						text="Outlets"
-						tagList={availableOutlets}
-						filterList={outlets}
-						onTagInput={this.findOutlets}
-						onTagAdd={this.addOutlet}
-						onTagRemove={this.removeOutlet}
-						key="outletsFilter" />
+					title="Purchases"
+					activeTab={this.state.activeTab}
+					setActiveTab={this.setActiveTab}
+					tabs={['Summary', 'Purchases']}
+				>	
+					{isSummary ? 
+		                [
+		                	<TagFilter
+			                	text="Outlets"
+			                	tagList={ this.state.availableOutlets.map( o => o.title ) }
+			                	filterList={ this.state.outlets.map( o => o.title )}
+			                	onTagInput={this.findOutlets}
+			                	onTagAdd={this.addOutlet}
+			                	onTagRemove={this.removeOutlet}
+			                	key="outletsFilter" />
+	                	]:[
+							<Dropdown
+			                    options={['today so far', 'last 24 hours', 'last 7 days', 'last 30 days', 'this year', 'all time']}
+			                    selected='today so far'
+			                    onSelected={this.timeToggleSelected}
+			                    key="timeToggle"
+			                    inList={true}>
+			                </Dropdown>
+		                ]
+					}
 				</TopBar>
 
-				<PurchasesBody
-					updatePurchases={this.state.updatePurchases}
-					downloadExports={this.downloadExports}
-					loadPurchases={this.loadPurchases}
-					loadStats={this.loadStats} />
+				<div className="container-fluid tabs">
+					<div className={isSummary ? 'tab tab-summary toggled' : 'tab tab-summary'}>
+						<PurchasesSummary 
+							loadStats={this.loadStats}
+							loadPurchases={this.loadPurchases}
+							updatePurchases={this.state.updatePurchases} />
+					</div>
+
+					<div className={isSummary ? 'tab tab-outlets' : 'tab tab-outlets toggled'}>
+						<OutletPurchases 
+							outletIds={this.state.outlets.map(o => o._id)}
+							selectedTimeToggle={this.state.selectedTimeToggle} />
+					</div>
+				</div>
 			</App>
 		)
 	}

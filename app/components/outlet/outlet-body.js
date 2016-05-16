@@ -1,5 +1,5 @@
 import React from 'react'
-import PurchasesBody from '../purchases/purchases-body'
+import PurchasesSummary from '../purchases/purchases-summary'
 import PostList from '../global/post-list'
 import OutletSidebar from './outlet-sidebar'
 import moment from 'moment'
@@ -19,13 +19,6 @@ export default class OutletBody extends React.Component {
 		this.loadPurchases = this.loadPurchases.bind(this);
 		this.loadStats = this.loadStats.bind(this);
 		this.emailStatement = this.emailStatement.bind(this);
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.activeTab != this.props.activeTab) {
-			$('.tab').removeClass('toggled');
-			$('.tab-' + this.props.activeTab.toLowerCase()).addClass('toggled');
-		}
 	}
 
 	/**
@@ -114,11 +107,13 @@ export default class OutletBody extends React.Component {
 	}
 
 	render() {
-		var outlet = this.props.outlet;
+		var outlet = this.props.outlet,
+			vaultClass = this.props.activeTab == 'Vault' ? 'tab tab-vault toggled' : 'tab tab-vault',
+			purchasesClass = this.props.activeTab == 'Purchases' ? 'tab tab-purchases toggled' : 'tab tab-purchases';
 
 		return (
 			<div className="container-fluid tabs">
-				<div className="tab tab-vault toggled">
+				<div className={vaultClass}>
 					<div className="container-fluid fat">
 						<div className="profile visible-xs"></div>
 						
@@ -135,8 +130,9 @@ export default class OutletBody extends React.Component {
 						</div>
 					</div>
 				</div>
-				<div className="tab tab-purchases">
-					<PurchasesBody
+
+				<div className={purchasesClass}>
+					<PurchasesSummary
 						purchases={this.state.purchases}
 						emailStatement={this.emailStatement}
 						loadPurchases={this.loadPurchases}

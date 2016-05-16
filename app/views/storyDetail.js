@@ -52,7 +52,6 @@ class StoryDetail extends React.Component {
  					title={this.state.story.title}
 					updateSort={this.updateSort}
  					edit={this.toggleStoryEdit}
-					editable={true}
  					timeToggle={true}
  					chronToggle={true} />
 

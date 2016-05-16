@@ -8,13 +8,13 @@ import OutletBodyDemo from '../components/outlet/outlet-body-demo'
 class Outlet extends React.Component {
 	constructor(props) {
 		super(props);
+		
 		this.state = {
 			activeTab: 'Vault',
 			purchases: []
 		}
 
 		this.setActiveTab = this.setActiveTab.bind(this);
-
 	}
 
 	setActiveTab(tab) {
@@ -28,8 +28,8 @@ class Outlet extends React.Component {
 	}
 
 	render() {
-		let topbarTabs = [];
-		let outletBody = null;
+		let topbarTabs = [],
+			outletBody = null;
 
 		// Only show purchases if outlet has been verified
 		if (this.props.outlet.verified) {
@@ -52,12 +52,13 @@ class Outlet extends React.Component {
 				<TopBar
 					title={this.props.outlet.title}
 					rank={this.props.user.rank}
-					editable={true}
 					edit={this.edit}
 					editIcon={"mdi-settings"}
 					activeTab={this.state.activeTab}
 					setActiveTab={this.setActiveTab}
-					tabs={topbarTabs} />
+					tabs={topbarTabs} 
+				/>
+				
 				{outletBody}
 			</App>
 		)

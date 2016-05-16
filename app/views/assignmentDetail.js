@@ -83,7 +83,6 @@ class AssignmentDetail extends React.Component {
  					rank={this.props.user.rank}
  					onVerifiedToggled={this.onVerifiedToggled}
  					verifiedToggle={this.props.user.rank >= global.RANKS.CONTENT_MANAGER} /* Based on user rank to see verified content */
- 					editable={true}
  					edit={this.toggleEdit} />
 
  				<AssignmentSidebar

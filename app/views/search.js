@@ -117,6 +117,11 @@ export class Search extends React.Component {
 		} 
 	}
 
+	/**
+	 * Calculates title based on state and props
+	 * @param  {BOOL} withProps if title could be calculated withProps or not 	
+	 * @return {String} The calculated title
+	 */
 	getTitle(withProps) {
 		var state = withProps ? this.props : this.state,
 			title = '';
@@ -272,13 +277,12 @@ export class Search extends React.Component {
 	 * Retrieves stories from API based on state
 	 */
 	getStories(offset, force = true) {
-		var location = this.state.location;
-
-		var params = {
-			q: this.props.query,
-			offset: offset,
-			limit: 10
-		}
+		var location = this.state.location,
+			params = {
+				q: this.props.query,
+				offset: offset,
+				limit: 10
+			};
 
 		if(location.coordinates && location.radius) {
 		    params.polygon = global.circleToPolygon(location.coordinates, global.feetToMeters(location.radius), 16);

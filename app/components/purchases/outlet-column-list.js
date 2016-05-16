@@ -11,16 +11,15 @@ export default class OutletColumnList extends React.Component {
     }
 
     render() {
-
-        var purchases = this.props.purchases.map((purchase, i) => {
-            return <OutletPurchase 
-                        purchase={purchase}
-                        key={i} />;
-        });
-
         return (
             <ul className="purchases" onScroll={this.props.scroll}>
-                {purchases}
+                {
+                    this.props.purchases.map((purchase, i) => {
+                        return <OutletPurchase 
+                                purchase={purchase}
+                                key={i} />;
+                    });
+                }
             </ul>
         );
     }
@@ -74,7 +73,6 @@ class OutletPurchase extends React.Component {
             assignmentMeta = '';
 
         var name = post.owner ? post.owner.firstname + ' ' + post.owner.lastname : post.byline;
-
         name = name.replace('via Fresco News', '');
 
         if(post.video !== null) {

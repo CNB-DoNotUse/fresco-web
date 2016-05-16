@@ -31,10 +31,9 @@ export default class OutletColumn extends React.Component {
 
         this.scroll = this.scroll.bind(this);
         this.loadUserStats = this.loadUserStats.bind(this);
-        this.getGoal = this.getGoal.bind(this);
+        this.loadGoal = this.loadGoal.bind(this);
         this.adjustGoal = this.adjustGoal.bind(this);
         this.loadPurchaseStats = this.loadPurchaseStats.bind(this);
-        this.loadPurchases = this.loadPurchases.bind(this);
     }
 
     componentDidMount() {
@@ -52,9 +51,9 @@ export default class OutletColumn extends React.Component {
      */
     instantiateColumn() {
         this.loadPurchaseStats();
-        this.getGoal();
+        this.loadGoal();
 
-        this.loadPurchases(0, (purchases) => {
+        this.getPurchases(0, (purchases) => {
             this.setState({
                 purchases: purchases,
                 offset: purchases.length
@@ -98,8 +97,7 @@ export default class OutletColumn extends React.Component {
 
             if(typeof(stats.allTime) !== 'undefined'){
                 amount = stats.allTime.amount;
-            }
-            else if(typeof(stats.since) !== 'undefined'){
+            } else if(typeof(stats.since) !== 'undefined'){
                 amount = stats.since.amount;
             }
 
@@ -119,9 +117,7 @@ export default class OutletColumn extends React.Component {
     /**
      * Requests purchases for a passed outlet
      */
-    loadPurchases(offset, callback) {
-        return; 
-
+    getPurchases(offset, callback) {
         var params = {
             limit: 5,
             offset: offset,
@@ -140,9 +136,9 @@ export default class OutletColumn extends React.Component {
                 if(!response.data || response.err)
                     $.snackbar({content: global.resolveError(response.err)});
                 else {
-                    var purchases = response.data.map(p => p.purchase);
-
-                    callback(purchases);
+                    callback(
+                        response.data.map(p => p.purchase)
+                    );
                 }
             },
             error: (xhr, status, error) => {
@@ -151,7 +147,7 @@ export default class OutletColumn extends React.Component {
         }); 
     }
 
-    getGoal() {
+    loadGoal() {
         var params = {
             outlets: [this.state.outlet._id],
             since: moment().utc().startOf('day').unix() * 1000,
@@ -253,7 +249,7 @@ export default class OutletColumn extends React.Component {
             this.loading  = true;
 
             //Run load on parent call
-            this.loadPurchases(this.state.offset, (purchases) => {
+            this.getPurchases(this.state.offset, (purchases) => {
                 this.loading = false;
 
                 //Disables scroll, and returns if posts are empty
@@ -274,7 +270,6 @@ export default class OutletColumn extends React.Component {
 
     render() {  
         var outlet = this.state.outlet,
-            state = this.state,
             purchaseStats = this.state.purchaseStats;
 
         return (

@@ -2,18 +2,16 @@ import React from 'react'
 import PurchasesList from '../global/purchases-list'
 import PurchasesStats from './purchases-stats'
 
-export default class PurchasesBody extends React.Component {
+export default class PurchasesSummary extends React.Component {
 
 	constructor(props) {
 		super(props);
 	}
 
 	render() {
-
 		return (
 			<div className="container-fluid fat grid">
 				<PurchasesList
-					scrollable={true}
 					updatePurchases={this.props.updatePurchases}
 					purchasesAdded={this.purchasesAdded}
 					loadPurchases={this.props.loadPurchases} />
@@ -28,7 +26,7 @@ export default class PurchasesBody extends React.Component {
 	}
 }
 
-PurchasesBody.defaultProps = {
+PurchasesSummary.defaultProps = {
 	purchases: [],
 	updatePurchases: false
 }
