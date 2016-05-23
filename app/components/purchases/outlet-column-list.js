@@ -13,13 +13,11 @@ export default class OutletColumnList extends React.Component {
     render() {
         return (
             <ul className="purchases" onScroll={this.props.scroll}>
-                {
-                    this.props.purchases.map((purchase, i) => {
+                {this.props.purchases.map((purchase, i) => {
                         return <OutletPurchase 
-                                purchase={purchase}
-                                key={i} />;
-                    });
-                }
+                                    purchase={purchase}
+                                    key={i} />
+                })}
             </ul>
         );
     }

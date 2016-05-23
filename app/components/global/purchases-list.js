@@ -17,24 +17,24 @@ export default class PurchasesList extends React.Component {
 	}
 
 	componentDidMount() {
-	    //Check if list is initialzied with posts or the `loadPurchases` prop is not defined, then don't load anything
-	    if(this.state.purchases.length > 0 || !this.props.loadPurchases) 
+	    //Check if list is initialzied with posts or the `getPurchases` prop is not defined, then don't load anything
+	    if(this.state.purchases.length > 0 || !this.props.getPurchases) 
 	    	return;
 	    
 	    //Load purchases when component first mounts
 	    this.loadPurchases();
 	}
 
-	componentDidUpdate(prevProps, prevState) {
+	componentWillReceiveProps(nextProps) {
 		//Tell the component to update it's purchases
-		if(this.props.updatePurchases) {
+		if(nextProps.updatePurchases) {
 			this.loadPurchases();
 		}
 	}
 
 	loadPurchases() {
 		//Access parent var load method
-		this.props.loadPurchases(0, (purchases) => {
+		this.props.getPurchases(0, (purchases) => {
 			//Set posts & callback from successful response
 			this.setState({
 				purchases: purchases,
@@ -51,11 +51,10 @@ export default class PurchasesList extends React.Component {
 		//Check that nothing is loading and that we're at the end of the scroll,
 		//and that we have a parent bind to load  more posts
 		if(!this.loading && bottomReached){
-			//Set that we're loading
 			this.loading = true;
 
-			// Pass current offset to getMorePurchases
-			this.props.loadPurchases(this.state.purchases.length, (purchases) => {
+			// Pass current offset to getPurchases
+			this.props.getPurchases(this.state.purchases.length, (purchases) => {
 				//Disables scroll, and returns if purchases are empty
 				if(!purchases || purchases.length == 0){ 
 					return this.setState({
@@ -75,22 +74,18 @@ export default class PurchasesList extends React.Component {
 	}
 
 	render() {
-		// Map purchases JSON to PurchaseListItem
-		var purchases = this.state.purchases.map((purchase, i) => {
-			return <PurchasesListItem 
-						purchase={purchase} 
-						title={purchase.title} 
-						key={i} 
-					/>
-		});
-
 		return (
 			<div 
 				id="purchases-list" 
 				className="col-md-8 col-xs-12 list" 
-				onScroll={this.state.scrollable ? this.scroll : null}
-			>
-				{purchases}
+				onScroll={this.state.scrollable ? this.scroll : null} >
+				{this.state.purchases.map((purchase, i) => {
+					return <PurchasesListItem 
+								purchase={purchase} 
+								title={purchase.title} 
+								key={i} 
+							/>
+				})}
 			</div>
 		);
 	}

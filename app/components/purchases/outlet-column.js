@@ -41,6 +41,7 @@ export default class OutletColumn extends React.Component {
     }   
 
     componentDidUpdate(prevProps, prevState) {
+        console.log('SINCE', prevProps.since !== this.props.since)
         if(prevProps.since !== this.props.since) {
             this.loadPurchaseStats();
         }
@@ -73,17 +74,15 @@ export default class OutletColumn extends React.Component {
      */
     loadPurchaseStats() {
         var self = this;
-        
-        var params = {
-            outlets: [this.state.outlet._id],
-            since: this.props.since ? this.props.since.unix() * 1000 : null,
-            now: Date.now()
-        }
 
         $.ajax({
             url: '/api/outlet/purchases/stats',
             type: 'GET',
-            data: params,
+            data: {
+                outlets: [this.state.outlet._id],
+                since: this.props.since ? this.props.since.unix() * 1000 : null,
+                now: Date.now()
+            },
             dataType: 'json',
             success: (response, status, xhr) => {
                 if(!response.err &&  response.data) {
@@ -100,6 +99,8 @@ export default class OutletColumn extends React.Component {
             } else if(typeof(stats.since) !== 'undefined'){
                 amount = stats.since.amount;
             }
+
+            if(amount == 0) return;
 
             var stripeFee = (.029 * amount) + .30,
                 userFee = .67 * amount,
@@ -118,27 +119,23 @@ export default class OutletColumn extends React.Component {
      * Requests purchases for a passed outlet
      */
     getPurchases(offset, callback) {
-        var params = {
-            limit: 5,
-            offset: offset,
-            sort: true,
-            details: true,
-            outlets: [this.state.outlet._id]
-        }
-
         $.ajax({
             url: '/api/outlet/purchases/list',
             type: 'GET',
-            data: params,
+            data: {
+                limit: 5,
+                offset: offset,
+                sort: true,
+                details: true,
+                outlets: [this.state.outlet._id]
+            },
             dataType: 'json',
             success: (response, status, xhr) => {
                 //Do nothing, because of bad response
                 if(!response.data || response.err)
                     $.snackbar({content: global.resolveError(response.err)});
                 else {
-                    callback(
-                        response.data.map(p => p.purchase)
-                    );
+                    callback(response.data);
                 }
             },
             error: (xhr, status, error) => {
@@ -148,16 +145,14 @@ export default class OutletColumn extends React.Component {
     }
 
     loadGoal() {
-        var params = {
-            outlets: [this.state.outlet._id],
-            since: moment().utc().startOf('day').unix() * 1000,
-            now: Date.now()
-        }
-
         $.ajax({
             url: '/api/outlet/purchases/stats',
             type: 'GET',
-            data: params,
+            data: {
+                outlets: [this.state.outlet._id],
+                since: moment().utc().startOf('day').unix() * 1000,
+                now: Date.now()
+            },
             dataType: 'json',
             success: (response, status, xhr) => {
                 if(!response.err &&  response.data) {
@@ -269,18 +264,15 @@ export default class OutletColumn extends React.Component {
     }
 
     render() {  
-        var outlet = this.state.outlet,
-            purchaseStats = this.state.purchaseStats;
-
         return (
             <div className="outletColumn" draggable={true}>
                 <OutletColumnHead 
                     ref="columnHead"
                     adjustGoal={this.adjustGoal}
                     userStats={this.state.userStats}
-                    purchaseStats={purchaseStats}
+                    purchaseStats={this.state.purchaseStats}
                     dailyVideoCount={this.state.dailyVideoCount}
-                    outlet={outlet} />
+                    outlet={this.state.outlet} />
 
                 <OutletColumnList 
                     scroll={this.scroll}

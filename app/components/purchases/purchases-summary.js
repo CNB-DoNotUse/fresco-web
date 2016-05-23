@@ -13,13 +13,12 @@ export default class PurchasesSummary extends React.Component {
 			<div className="container-fluid fat grid">
 				<PurchasesList
 					updatePurchases={this.props.updatePurchases}
-					purchasesAdded={this.purchasesAdded}
-					loadPurchases={this.props.loadPurchases} />
+					getPurchases={this.props.getPurchases} />
 				
 				<PurchasesStats 
 					emailStatement={this.props.emailStatement}
 					downloadExports={this.props.downloadExports}
-					loadStats={this.props.loadStats}
+					getStats={this.props.getStats}
 					updatePurchases={this.props.updatePurchases} />
 			</div>
 		);

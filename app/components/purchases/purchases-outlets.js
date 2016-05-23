@@ -15,7 +15,7 @@ export default class PurchasesOutlets extends React.Component {
             outlets: {}
         }
 
-        this.updateTimeInterval = this.updateTimeInterval.bind(this);
+        this.getTimeInterval = this.getTimeInterval.bind(this);
     }
 
     componentDidMount() {
@@ -25,19 +25,18 @@ export default class PurchasesOutlets extends React.Component {
     componentWillReceiveProps(nextProps) {  
         if(nextProps.selectedTimeToggle !== this.props.selectedTimeToggle) {
             this.setState({
-                since: this.updateTimeInterval(nextProps.selectedTimeToggle)
+                since: this.getTimeInterval(nextProps.selectedTimeToggle)
             })
         }
-    }
 
-    componentDidUpdate(prevProps, prevState) {
-        if(JSON.stringify(prevProps.outletIds) !== JSON.stringify(this.props.outletIds)) {
-            this.loadOutlets();
+        if(JSON.stringify(nextProps.outletIds) !== JSON.stringify(this.props.outletIds)) {
+            this.loadOutlets(nextProps.outletIds);
         } 
     }
 
-    loadOutlets() {
-        this.props.outletIds.forEach((outletId) => {
+    loadOutlets(outletIds = []) {
+        //Loop through, and update state on each response
+        outletIds.forEach((outletId) => {
             $.ajax({
                 url: '/api/outlet/get',
                 type: 'GET',
@@ -62,7 +61,7 @@ export default class PurchasesOutlets extends React.Component {
      * Updates the time interval the outelt data is loaded in
      * @return {moment} Moment.JS Object for the selected time
      */
-    updateTimeInterval(selected) {
+    getTimeInterval(selected) {
         var since = 0;
 
         switch(selected) {
@@ -92,20 +91,16 @@ export default class PurchasesOutlets extends React.Component {
     }
 
     render() {
-        var columns = [];
-
-        Object.keys(this.state.outlets).forEach((outlet, i) => {
-            columns.push(
-                <OutletColumn 
-                        outlet={this.state.outlets[outlet]}
-                        since={this.state.since}
-                        key={i} />
-            );
-        });
-
         return (
             <div className="outletStats">
-                {columns}
+                {
+                    Object.keys(this.state.outlets).map((outlet, i) => {
+                        return <OutletColumn 
+                                    outlet={this.state.outlets[outlet]}
+                                    since={this.state.since}
+                                    key={i} />
+                    })
+                }
             </div>
         )
     }

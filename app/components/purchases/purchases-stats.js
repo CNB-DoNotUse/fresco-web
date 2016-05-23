@@ -32,7 +32,7 @@ export default class PurchasesStats extends React.Component {
 	 */
 	loadStats() {
 		//Access parent var load method
-		this.props.loadStats((stats) => {
+		this.props.getStats((stats) => {
 			this.setState(stats);
 		});  
 	}

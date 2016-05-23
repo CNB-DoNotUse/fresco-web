@@ -22,8 +22,8 @@ class Purchases extends React.Component {
 
 		this.findOutlets = this.findOutlets.bind(this);
 		this.addOutlet = this.addOutlet.bind(this);
-		this.loadPurchases = this.loadPurchases.bind(this);
-		this.loadStats = this.loadStats.bind(this);
+		this.getPurchases = this.getPurchases.bind(this);
+		this.getStats = this.getStats.bind(this);
 		this.removeOutlet = this.removeOutlet.bind(this);
 		this.setActiveTab = this.setActiveTab.bind(this);
 		this.timeToggleSelected = this.timeToggleSelected.bind(this);
@@ -31,7 +31,7 @@ class Purchases extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		//Check if outlets are the same
-		if (JSON.stringify(prevState.outlets) != JSON.stringify(this.state.outlets)) {
+		if (JSON.stringify(prevState.outlets) !== JSON.stringify(this.state.outlets)) {
 			this.setState({
 				updatePurchases: true
 			});
@@ -114,11 +114,30 @@ class Purchases extends React.Component {
 		this.setState({ outlets: outlets });
 	}
 
-	loadStats(callback) {
+	getStats(callback) {
 		$.get('/api/outlet/purchases/stats', {
 			outlets: this.state.outlets.map(p => p._id)
 		}, (response) => {
 			if(response.err || !response.data) {
+				$.snackbar({ content: 'There was an error receiving the purchases' });
+
+				return callback(null);
+			}
+
+			callback(response.data);
+		});
+	}
+
+	getPurchases(passedOffset, callback) {
+		$.get('/api/outlet/purchases/list', {
+			limit: 20,
+			offset: passedOffset,
+			details: true,
+			outlets: this.state.outlets.map(o => o._id)
+		}, (response) => {
+			if(response.err || !response.data) {
+				callback([]);
+
 				return $.snackbar({
 					content: 'There was an error receiving the purchases'
 				});
@@ -128,40 +147,13 @@ class Purchases extends React.Component {
 		});
 	}
 
-	loadPurchases(passedOffset, cb) {
-		$.get('/api/outlet/purchases/list', {
-			limit: 20,
-			offset: passedOffset,
-			details: true,
-			outlets: this.state.outlets.map(o => o._id)
-		}, (response) => {
-			if(response.err) {
-				return $.snackbar({
-					content: 'There was an error receiving the purchases'
-				});
-			} else if(!response.data){
-				return;
-			}
-
-			var purchases = response.data.map((purchaseParent) => {
-				var purchase = purchaseParent.purchase;
-					purchase.title = purchaseParent.title;
-
-				return purchase;
-			});
-
-			if(cb) cb(purchases);
-		});
-	}
-
 	downloadExports(format) {
-		var filterOutletText = this.state.outlets.map((outlet) => {
-			return 'outlet[]='+ outlet._id
-		}).join('&');
+		let filterOutletText = this.state.outlets.map(o => 'outlet[]='+ o._id).join('&');
 
-		var url = "/scripts/outlet/export?format=" + format + '&' + filterOutletText;
-
-		window.open(url, '_blank');
+		window.open(
+			"/scripts/outlet/export?format=" + format + '&' + filterOutletText, 
+			'_blank'
+		);
 	}
 
 	timeToggleSelected(selected) {
@@ -171,7 +163,7 @@ class Purchases extends React.Component {
 	}
 
 	render() {
-		var isSummary = this.state.activeTab == 'Summary';
+		let isSummary = this.state.activeTab == 'Summary';
 
 		return (
 			<App user={this.props.user}>
@@ -206,8 +198,8 @@ class Purchases extends React.Component {
 				<div className="container-fluid tabs">
 					<div className={isSummary ? 'tab tab-summary toggled' : 'tab tab-summary'}>
 						<PurchasesSummary 
-							loadStats={this.loadStats}
-							loadPurchases={this.loadPurchases}
+							getStats={this.getStats}
+							getPurchases={this.getPurchases}
 							updatePurchases={this.state.updatePurchases} />
 					</div>
 

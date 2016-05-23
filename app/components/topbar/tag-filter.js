@@ -30,7 +30,6 @@ export default class TagFilter extends React.Component {
 			this.props.onTagAdd(tagText);
 			this.refs.tagFilterInput.value = '';
 		}
-
 	}
 
 	render() {
