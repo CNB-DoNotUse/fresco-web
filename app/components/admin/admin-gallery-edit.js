@@ -377,7 +377,6 @@ export default class AdminGalleryEdit extends React.Component {
 
 		// If gallery is a submission, 
 		if(this.props.activeGalleryType == 'submission') {
-
 			// map polygon points to array.
 			if(activeGallery.location) {
 				location = activeGallery.location.coordinates[0].map((coord) => {
@@ -389,11 +388,6 @@ export default class AdminGalleryEdit extends React.Component {
 
 				address = activeGallery.posts.length && activeGallery.posts[0].location ? activeGallery.posts[0].location.address : null;
 			}
-
-			var assignmentEdit = <GalleryEditAssignment 
-									assignment={this.state.activeGallery.assignment}
-									updateGalleryField={this.updateGallery} />
-
 		} else { // if an import
 
 			if(this.state.location) {
@@ -428,7 +422,9 @@ export default class AdminGalleryEdit extends React.Component {
 						defaultValue={activeGallery.posts.length && activeGallery.posts[0].caption ? activeGallery.posts[0].caption : 'No Caption'}
 						ref="gallery-caption"></textarea>
 
-					{assignmentEdit}
+					<GalleryEditAssignment 
+						assignment={this.state.activeGallery.assignment}
+						updateGalleryField={this.updateGallery} />
 
 					<EditTags  
 						updateTags={this.updateTags}

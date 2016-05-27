@@ -63,26 +63,7 @@ export default class GalleryEditAssignment extends React.Component {
 	}
 
 	render() {
-
-		var assignment = '';
-
-		if(this.props.assignment){
-			assignment = <Tag
-							text={this.props.assignment.title}
-							plus={false}
-							onClick={this.props.updateGalleryField.bind(null, 'assignment', null)} />
-		}
-
-		//Map suggestions for dropdown
-		var suggestions = this.state.suggestions.map((assignment, i) => {
-
-			return <li onClick={this.addAssignment.bind(null, assignment)}
-						key={i}>{assignment.title}</li>
-
-		});
-
 		return (
-			
 			<div className="dialog-row split chips">
 				<div className="split-cell">
 					<input
@@ -93,11 +74,22 @@ export default class GalleryEditAssignment extends React.Component {
 						ref='autocomplete' />
 
 					<ul ref="dropdown" className="dropdown">
-						{suggestions}
+						{this.state.suggestions.map((assignment, i) => {
+							return (
+								<li onClick={this.addAssignment.bind(null, assignment)}
+									key={i}>{assignment.title}</li>
+							)
+						});}
 					</ul>
 
 					<ul className="chips">
-						{assignment}
+						{this.props.assignment ? 
+							<Tag
+								text={this.props.assignment.title}
+								plus={false}
+								onClick={this.props.updateGalleryField.bind(null, 'assignment', null)} /> 
+							: ''
+						}
 					</ul>
 				</div>
 			</div>
