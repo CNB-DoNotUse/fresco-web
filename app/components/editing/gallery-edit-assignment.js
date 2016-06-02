@@ -79,7 +79,7 @@ export default class GalleryEditAssignment extends React.Component {
 								<li onClick={this.addAssignment.bind(null, assignment)}
 									key={i}>{assignment.title}</li>
 							)
-						});}
+						})}
 					</ul>
 
 					<ul className="chips">

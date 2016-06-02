@@ -1,0 +1,37 @@
+<div class="landing-wrap" id="_landing-wrap" style="display:<%-display%>">
+    <div id="_hero" class="hero">
+        <div class="tagline">
+            <h1>THE WORLD NEEDS YOUR CAMERA.</h1>
+
+            <h3>Be a part of the news with Fresco. 
+                <a href="http://android.fresco.news">Now in beta for Android.</a>
+            </h3>
+        </div>
+
+        <div class="download">
+            <a href="http://app.fresco.news">
+                <img src="<%= global.CDN %>/index/appstore.png" />
+            </a>
+            
+            <a href="http://android.fresco.news">
+                <img src="<%= global.CDN %>/index/play-new.png" />
+            </a>
+        </div>
+    </div>
+
+    <div id="_bottom" class="bottom">
+        <% include about %>
+
+        <div id="_highlights" class="highlights-wrap card">
+            <div id="arrow-left" class="left arrow">
+                <span>‹</span>
+            </div>
+            
+            <div class="highlights" id="slick-highlights"></div>
+
+            <div id="arrow-right" class="right arrow">
+                <span>›</span>
+            </div>
+        </div>
+    </div>
+</div>

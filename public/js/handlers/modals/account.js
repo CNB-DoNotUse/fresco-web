@@ -6,9 +6,9 @@ var accountModal = document.getElementById('_account'),
 	loginFormHeader = document.getElementById('_login-form-header'),
 	signUpLoader = document.getElementById('signup-loader'),
 	loginLoader = document.getElementById('login-loader'),
-	signUpForm = document.querySelector('#signupForm');
-	loginForm = document.querySelector('#loginForm'),
-	loginButton = document.querySelector('#login-password');
+	signUpForm = document.getElementById('signupForm');
+	loginForm = document.getElementById('loginForm'),
+	loginButton = document.getElementById('login-password');
 
 //Grab the `h3` tag out of the header div so we can hide the text to show the spinner
 var signUpHeaderText = signUpFormHeader.children[0],
@@ -41,7 +41,7 @@ signUpFormHeader.addEventListener('click', function() {
 
 	if(signUpForm.style.display == 'none' || signUpForm.style.display == ''){
 		
-		//Check if we're in a deskptop view to adjust the top margin
+		//Check if we're in a desktop view to adjust the top margin
 		if(window.innerWidth > screen.tablet){
 			$(loginForm).velocity("slideUp", { duration: 500 });
 			$(login).velocity({'margin-top' : '10px'}, {duration: 500});
@@ -57,7 +57,6 @@ signUpFormHeader.addEventListener('click', function() {
 				});
 			}
 		});
-
 	}
 	else
 		processSignup();
@@ -202,7 +201,6 @@ var processSignup = function() {
 			});
 		}
 	});
-
 }
 
 /**
@@ -276,7 +274,7 @@ function resolveError(err, _default){
 	    	return 'It seems like there\'s an account with this email already, please try a different one.'
 	    case 'Unauthorized':
 	    case 'ERR_LOGIN':
-	    	return 'Invalid email or password!'
+	    	return 'The email or password you entered isn\'t correct!'
 	    default:
 	    	return _default || 'Seems like we ran into an error!'     
 	}

@@ -1,14 +1,15 @@
 <% include segments/head %>
 
 <% 
-    navClass = typeof(modal) !== 'undefined' ? 'nav transparent' : 'nav',
-    display = typeof(modal) !== 'undefined' ? 'none' : '';
-    show = typeof(modal) !== 'undefined' ? ' inline-block' : '';
-    loggedIn = typeof(loggedIn) == 'undefined' || !loggedIn ? false : true;
+    var showModal = typeof(modal) !== 'undefined';
+
+    display = showModal ? 'none' : '';
+    show = showModal ? ' inline-block' : '';
+
 %>
 
 <div class="wrapper">
-    <div id="_nav" class="<%- navClass %>">
+    <div id="_nav" class="<%- showModal ? 'nav transparent' : 'nav' %>">
         <a class="logo" href="/">
             <span class="icon-fresco"></span>
         </a>
@@ -17,8 +18,10 @@
             <li class="modal-action" style="display:<%- display %>" data-event="scroll" data-element="_hero">ABOUT</li>
             <li class="modal-action" style="display:<%- display %>" data-event="scroll" data-element="_highlights">HIGHLIGHTS</li>
             <li class="modal-action" style="display:<%- show %>" data-event="landing" id="landing-action">HOME</li>
-            <% if(loggedIn){ %>
-                <li><a href="/archive">NEWS DASHBOARD</a></li>
+            <% if(typeof(loggedIn) == 'undefined' || !loggedIn ? false : true){ %>
+                <li>
+                    <a href="/archive">NEWS DASHBOARD</a>
+                </li>
             <% } else { %>
                 <li data-event="modal" data-modal="account">NEWS DASHBOARD</li>
             <% } %> 
@@ -29,54 +32,18 @@
         <div></div>
     </div>
 
-    <span class="mdi mdi-arrow-down-bold modal-action" id="landing-arrow" data-event="scroll" data-element="_hero"></span>
+    <span 
+        class="mdi mdi-arrow-down-bold modal-action" 
+        id="landing-arrow" 
+        data-event="scroll" 
+        data-element="_hero">    
+    </span>
 
-    <div class="landing-wrap" id="_landing-wrap" style="display:<%-display%>">
-        <div class="hero-wrap">
-            <div id="_hero" class="hero">
-                <div class="tagline">
-                    <h1>THE WORLD NEEDS YOUR CAMERA.</h1>
+    <%- include('segments/landing', {display: display}) %>
 
-                    <h3>Be a part of the news with Fresco. 
-                        <a href="http://android.fresco.news">Now in beta for Android.</a>
-                    </h3>
-                </div>
-
-                <div class="download">
-                    <a href="http://app.fresco.news">
-                        <img src="<%= global.CDN %>/index/appstore.png" />
-                    </a>
-                    
-                    <a href="http://android.fresco.news">
-                        <img src="<%= global.CDN %>/index/play-new.png" />
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div id="_bottom" class="bottom" style="">
-            <% include segments/about %>
-
-            <div id="_highlights" class="highlights-wrap card">
-                <div id="arrow-left" class="left arrow">
-                    <span>‹</span>
-                </div>
-                
-                <div class="highlights" id="slick-highlights"></div>
-
-                <div id="arrow-right" class="right arrow">
-                    <span>›</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <% modals.forEach(function(currentModal){ %>
-        <%  active = currentModal == modal ? 'active-modal' : '' %>
-        <%- include('modals/' + currentModal, {active: active}) %>
-    <% }); %>
+    <%- include('modals/modal-wrap', {modals: modals}) %>
 
     <%- include('segments/footer', {display: display}) %>
-
 </div>
 
 <% include segments/scripts %>

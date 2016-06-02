@@ -1,0 +1,17 @@
+<% modals.forEach((currentModal) => { %>
+    <% if(typeof(currentModal) === 'string') { %> 
+
+        <% // Check if there's an alias for the modal we're on %>
+        <% if(aliases[modal] !== null && aliases[modal] == currentModal) { %>
+
+            <% active = 'active-modal' %>
+
+        <% } else { %>
+
+            <% active = currentModal == modal ? 'active-modal' : '' %>
+
+        <% } %>
+
+        <%- include(currentModal, {active: active}) %>
+    <% } %>
+<% }); %>

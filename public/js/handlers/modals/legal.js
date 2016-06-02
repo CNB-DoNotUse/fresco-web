@@ -1,10 +1,16 @@
 var termsTab = document.getElementById('terms-tab'),
 	privacyTab = document.getElementById('privacy-tab'),
-	terms = document.getElementById('privacy'),
-	privacy = document.getElementById('terms');
+	terms = document.getElementById('terms'),
+	privacy = document.getElementById('privacy');
 
-//Run on load
-updateLegalElements(window.innerWidth);
+window.onload = function() {
+	
+	updateLegalElements(window.innerWidth);
+
+	if(window.location.href.indexOf('privacy') > -1) {
+		showPrivacy();
+	}
+}
 
 window.addEventListener('resize', function() {
 
@@ -21,34 +27,31 @@ function updateLegalElements(width){
 		termsTab.innerHTML = 'Terms of Service';
 		privacyTab.innerHTML = 'Privacy Policy';
 		
-	}
-	else if(window.innerWidth < screen.mobile){
+	} else if(window.innerWidth < screen.mobile){
 		termsTab.innerHTML = 'Terms';
 		privacyTab.innerHTML = 'Privacy';
 	}
 }
 
+function showTerms() {
+	termsTab.className = 'tab';
+	terms.style.display = 'block';
+
+	privacyTab.className = 'tab inactive';
+	privacy.style.display = 'none';
+}
+
+function showPrivacy() {
+	privacyTab.className = 'tab';
+	privacy.style.display = 'block';
+
+	terms.style.display = 'none';
+	termsTab.className = 'tab inactive';
+}
+
 /**
  * Toggling listerns for `Privacy Policy` and `Terms of Service`
  */
+termsTab.addEventListener('click', showTerms);
 
-termsTab.addEventListener('click', function() {
-
-	termsTab.className = 'tab';
-	terms.style.display = 'none';
-
-	privacyTab.className = 'tab inactive';
-	privacy.style.display = 'block';
-
-});
-
-
-privacyTab.addEventListener('click', function() {
-
-	privacyTab.className = 'tab';
-	privacy.style.display = 'none';
-
-	termsTab.className = 'tab inactive';
-	terms.style.display = 'block';
-
-});
+privacyTab.addEventListener('click', showPrivacy);
