@@ -1,30 +1,25 @@
-var express       = require('express'),
-    router        = express.Router(),
-    xml2js        = require("xml2js").parseString;
-    config        = require('../lib/config'),
-    routes        = require('../lib/routes'),
-    head          = require('../lib/head'),
-    superagent    = require('superagent');
+var express    = require('express'),
+    router     = express.Router(),
+    xml2js     = require("xml2js").parseString;
+    config     = require('../lib/config'),
+    routes     = require('../lib/routes'),
+    head       = require('../lib/head'),
+    superagent = require('superagent');
 
 /**
  * Pro User Page
  */
-
 router.get('/', (req, res, next) => {
-   
     res.render('pro/pro', {
         head: head,
         page: 'pro'
     });
-
 });
 
 /**
  * Pro User schedule page
  */
-
 router.get('/:id', (req, res, next) => {
-
     //Check if Zoho record id is passed exists
     if(req.params.id) {
 
@@ -76,6 +71,7 @@ router.get('/:id', (req, res, next) => {
                         }
                     }
                 }
+                
                 res.render('pro/pro', {
                     head: head,
                     page: 'pro',

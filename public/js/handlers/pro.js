@@ -14,7 +14,6 @@ var formWrap = document.getElementById('_form-wrap'),
 init();
 
 function init() {
-
 	Waves.attach('.button', [ 'waves-block', 'waves-classic']);
 	Waves.init();
 
@@ -81,12 +80,13 @@ function signup(e) {
 			}
 		}
 	}
+	
 	//Set ad id for body
 	params.adid = QueryString.adid;
 	//Set referral for body
 	params.ref = QueryString.ref;
-
-	console.log(params);
+	//Set market for body
+	params.market = QueryString.market;
 
 	$.ajax({
 		method: "POST",
