@@ -6,9 +6,10 @@
     display = showModal ? 'none' : '';
     show = showModal ? ' inline-block' : '';
 
+    console.log(showModal);
 %>
 
-<div class="wrapper">
+<div class="<%- showModal ? 'full wrapper' : 'wrapper' %>">
     <div id="_nav" class="<%- showModal ? 'nav transparent' : 'nav' %>">
         <a class="logo" href="/">
             <span class="icon-fresco"></span>

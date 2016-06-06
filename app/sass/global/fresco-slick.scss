@@ -54,8 +54,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
-
 	}
+
 	tr.user{
 		.avatar{
 			padding-right:8px;
@@ -64,7 +64,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		margin:10px 0 0 0;
 	}
 }
-
 
 .slick-dots{
     position: absolute;
@@ -87,14 +86,12 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		    color:#FFF;
 		    opacity:.7;
 		}
-	}
 
-
-	li.slick-active{
-		button:before{
-			color:#FFF;
-			opacity:1;
+		&.slick-active{
+			button:before{
+				color:#FFF;
+				opacity:1;
+			}
 		}
 	}
-
 }

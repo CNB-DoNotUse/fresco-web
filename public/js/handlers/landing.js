@@ -57,6 +57,8 @@ Landing.prototype.resize = function() {
     this.slick.updateArrows();
     this.nav.resize();
 
+    console.log('RESIZING');
+
     if(window.location.pathname !== '/') return;
 
     var dH = $(document).height(),
@@ -64,10 +66,6 @@ Landing.prototype.resize = function() {
         pxToScroll = dH - wH;
 
     this.bottomOffset = wH - this.bottomOffsetTop;
-
-    console.log('BOTTOM OFFSET TOP', this.bottomOffsetTop);
-    console.log('WINDOW HEIGHT', wH); 
-    console.log('BOTTOM OFFSET', this.bottomOffset);
     
     if(this.bottomOffset > pxToScroll) {
         var pxToAdd = this.bottomOffset - pxToScroll;
