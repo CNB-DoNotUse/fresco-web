@@ -13,6 +13,7 @@ var Nav = function(screen){
 	this.modalActions = document.getElementsByClassName('modal-action');
 	this.footerList = document.getElementById('footer-actions').children;
 	this.transitioning = false;
+	this.scrolling = false;
 
 	//Set the active modal if it exists
 	for (var i = 0; i < this.modals.length; i++) {
@@ -195,21 +196,26 @@ Nav.prototype.handleClick = function(e){
     	self = this;
 
     //Scroll Event
-    if(event == 'scroll'){
+    if(event == 'scroll' && !this.scrolling){
     	var element = document.getElementById(item.dataset.element);
+
+    	self.scrolling = true;
 
     	//Scroll to element
     	$("html").velocity("scroll", { 
     		offset: $(element).offset().top - 150, 
     		mobileHA: false,  
-    		duration: 1000
+    		duration: 1000,
+    		complete: function() {
+    			self.scrolling = false;
+    		}
     	});
     }
     //Modal Transition
     else if(event == 'modal'){
-    	if(this.transitioning) return;
+    	if(self.transitioning) return;
 
-    	this.transitioning = true;
+    	self.transitioning = true;
 
     	this.loadModal(item.dataset.modal, true, function() {
     		self.transitioning = false;
