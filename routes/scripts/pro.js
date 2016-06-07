@@ -14,16 +14,17 @@ var express         = require('express'),
 
 router.post('/pro/signup', (req, res, next) => {
     var params = {
-            firstname : req.body.firstname,
-            lastname  : req.body.lastname,
-            zip       : req.body.zip,
-            phone     : req.body.phone,
-            email     : req.body.email,
-            time      : req.body.time,
-            adid      : typeof(req.body.adid) === 'undefined' ? '' : req.body.adid,
-            referral  : typeof(req.body.ref) === 'undefined' ?  '' : req.body.ref
-        };
-
+        firstname : req.body.firstname,
+        lastname  : req.body.lastname,
+        zip       : req.body.zip,
+        phone     : req.body.phone,
+        email     : req.body.email,
+        time      : req.body.time,
+        adid      : typeof(req.body.adid) === 'undefined' ? '' : req.body.adid,
+        market    : typeof(req.body.market) === 'undefined' ? '' : req.body.market,
+        referral  : typeof(req.body.ref) === 'undefined' ?  '' : req.body.ref
+    };
+    
     /*
     Check fields
      */
@@ -61,6 +62,7 @@ router.post('/pro/signup', (req, res, next) => {
                 '<FL val="Phone Number">' + params.phone + '</FL>' +
                 '<FL val="Best Time To Call">' + params.time + '</FL>' +
                 '<FL val="Facebook Ad ID">' + params.adid + '</FL>' +
+                '<FL val="AD Market">' + params.market + '</FL>' +
                 '<FL val="Content Manager">' + params.referral + '</FL>' +
             '</row>' +
         '</CustomModule1>';
