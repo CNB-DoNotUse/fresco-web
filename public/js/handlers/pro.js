@@ -13,6 +13,9 @@ var formWrap = document.getElementById('_form-wrap'),
 
 init();
 
+var nav = new Nav();
+var animation = new Animation();
+
 function init() {
 	Waves.attach('.button', [ 'waves-block', 'waves-classic']);
 	Waves.init();
