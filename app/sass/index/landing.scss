@@ -6,23 +6,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
-
-/**
- * Landing Wrapper, contains the top part of the landing page
- */
-.landing-wrap{
-
-	&.index {
-		height:100%;
-		margin-top:40vh;
-	
-		@include mobile{
-			margin-top:20vh;
-		}
-	}
-
-}
-
 /**
  *  Master Hero Background
  */
@@ -211,7 +194,6 @@ $heroHeight: 180px;
 /**
  * Shared style for each card
  */
-
 .card{
 	@include box-shadow(0 2px 2px 0 rgb(0, 0, 0), 0 3px 2px 0 rgb(0, 0, 0));
 	@include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 3px 2px 0 rgba(0, 0, 0, 0.10));
@@ -229,7 +211,6 @@ $heroHeight: 180px;
 /**
  * About Section
  */
-
 .about{
 	text-align:center;
 	$mobileWidth:90%;

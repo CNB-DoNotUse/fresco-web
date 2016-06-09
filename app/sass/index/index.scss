@@ -12,7 +12,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 @import "./public/vendor/Waves/src/scss/waves.scss";
 @import "../global/fresco-slick";
 @import "landing";
-@import "modals";
+@import "modal";
 @import "team";
 @import "account";
 @import "press";
@@ -32,8 +32,38 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 }
 
+/**
+ * Landing Wrapper, contains the top part of the landing page
+ */
+.landing-wrap.index{
+    height:100%;
+    margin-top:40vh;
+
+    @include mobile{
+        margin-top:20vh;
+    }
+}
+
+/*
+    Generic text banner, shows up on reset password page
+ */
+.text-banner {      
+    text-shadow:0 2px 2px #000;     
+    text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);      
+    text-align: center;     
+    color: #FFF;        
+    font-weight: 700;       
+    line-height:1.5em;      
+    font-size:30px;     
+    max-width:500px;        
+    margin:0 auto;      
+    position:absolute;      
+    top:40%;        
+    left:0; right:0;        
+}
+
 .nav{
-	transform: translate3d(0, -128px, 0);
+    @include transform(translate3d(0, -128px, 0));
 }
 
  @keyframes animateBackground {
