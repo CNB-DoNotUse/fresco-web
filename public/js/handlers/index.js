@@ -7,15 +7,6 @@ var landing = new Landing(screen);
 
 window.onload = function() {
 	landing.init();
-
-	var modal = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-
- 	//Set initial history state
-	if(modal === '') {
-		window.history.replaceState({landing : true}, null, '/');
-	} else {
-		window.history.pushState({modal : modal}, null, modal);
-	}
 };
 
 window.addEventListener('resize', function() {

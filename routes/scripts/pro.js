@@ -197,6 +197,8 @@ router.post('/pro/update', (req, res, next) => {
     superagent
     .post(config.ZOHO.UPDATE_LEAD + '&id=' + params.id + '&xmlData=' + proUser)
     .end((err, response) => {
+        console.log(response.text);
+        
         //Response comes back as XML, we `indexOf` for the success message inside
         if(err || response.text.indexOf('Record(s) updated successfully') == -1) {
              return res.json({

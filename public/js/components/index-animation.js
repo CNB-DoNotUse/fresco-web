@@ -109,7 +109,7 @@ Animation.prototype.has3d = function() {
 	return (has3d !== undefined && has3d.length > 0 && has3d !== "none");
 }
 
-Animation.prototype.getPosition = function() {
+Animation.prototype.getPosition = function(element) {
 	var xPosition = 0,
 		yPosition = 0;
 	  

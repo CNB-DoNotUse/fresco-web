@@ -1,6 +1,10 @@
-var schedule = document.getElementById('schedule');
+var schedule = document.getElementById('schedule'),
+	nav = new Nav({
+	    tablet: 1024, 
+	    mobile: 720
+	});
 
-navResize();
+nav.resize();
 
 /**
  * Click handler for schedule block element

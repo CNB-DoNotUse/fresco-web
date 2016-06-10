@@ -103,7 +103,9 @@ Nav.prototype.loadModal = function(modalId, pushState, callback) {
 		fromLanding = this.landingWrap.style.display == 'block' || this.landingWrap.style.display == '',
 		self = this;
 
-	if(window.modal === modal) return;
+	if(window.modal === modal){
+        if(callback) return callback();
+    }
 
 	//Save modal to window
 	window.modal = modal;
