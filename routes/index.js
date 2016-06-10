@@ -15,7 +15,6 @@ Description : Client Index Routes
 /**
  * Root index for the landing page
  */
-
 router.get('/:modal?', (req, res, next) => {
     if(req.params.modal){
         if(req.params.modal == 'partners') {
@@ -44,11 +43,8 @@ router.get('/:modal?', (req, res, next) => {
 /**
  * Parse Account Management iFrame
  */
-
 router.get('/manage', (req, res, next) => {
-
     res.render('parse/manage');
-
 });
 
 router.get('/parse/reset', (req, res, next) => {
@@ -68,7 +64,6 @@ router.get('/parse/reset-success', (req, res, next) => {
 /**
  * Outlet join page
  */
-
 router.get('/join', (req, res, next) => {
     if (!req.query.o)
         return res.redirect('/');
@@ -97,6 +92,7 @@ router.get('/join', (req, res, next) => {
             title: body.data.outlet_title,
             alerts: req.alerts,
             modal: 'join',
+            aliases: routes.aliases,
             modals: routes.modals.concat('join'),
         });
     });
@@ -105,7 +101,6 @@ router.get('/join', (req, res, next) => {
 /**
  * Email verify page
  */
-
 router.get('/verify', (req, res, next) => {
 
     //Check if the user is logged in already
