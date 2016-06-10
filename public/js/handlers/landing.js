@@ -57,8 +57,6 @@ Landing.prototype.resize = function() {
     this.slick.updateArrows();
     this.nav.resize();
 
-    console.log('RESIZING');
-
     if(window.location.pathname !== '/') return;
 
     var dH = $(document).height(),
