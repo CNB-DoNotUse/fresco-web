@@ -43,7 +43,7 @@ var storage = multer.diskStorage({
     }
 });
 
-app.use( 
+app.use(
     multer({ storage: storage }).any()
 );
 
@@ -152,7 +152,7 @@ app.use((req, res, next) => {
  * Loop through all public routes
  */
 for (var i = 0; i < routes.public.length; i++) {
-    let routePrefix = routes.public[i] == 'index' ? '' : routes.public[i],
+    var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i],
         route = require('./routes/' + routes.public[i]);
 
     app.use('/' + routePrefix , route);
@@ -162,7 +162,7 @@ for (var i = 0; i < routes.public.length; i++) {
  * Loop through all script routes
  */
 for (var i = 0; i < routes.scripts.length; i++) {
-    let routePrefix = routes.scripts[i],
+    var routePrefix = routes.scripts[i],
         route = require('./routes/scripts/' + routePrefix);
 
     app.use('/scripts' , route);
