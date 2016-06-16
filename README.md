@@ -14,7 +14,8 @@ Refer to the Fresco [`Javascript`](https://github.com/fresconews/fresco-style/tr
 1. `npm install` to set up all npm dependencies
 2. `bower install` to download assets
 3. `gulp` to compile site assets; `gulp --production` to minify and dedup
-4. `npm start`
+4. Set up the configuration (see below)
+5. `npm start`
 
 #### Steps to setup configuration -
 
