@@ -14,7 +14,6 @@ Description : View page for content/photos
 /**
  * Photos Parent Object (composed of PhotoList and Navbar)
  */
-
 class Photos extends React.Component {
 
 	constructor(props) {
@@ -46,7 +45,7 @@ class Photos extends React.Component {
 	//Returns array of posts with offset and callback, used in child PostList
 	loadPosts (passedOffset, callback) {
 
-		var params = {
+		const params = {
 				limit: global.postCount,
 				offset: passedOffset,
 				type: 'photo',
@@ -101,7 +100,6 @@ class Photos extends React.Component {
 		);
 
 	}
-
 }
 
 

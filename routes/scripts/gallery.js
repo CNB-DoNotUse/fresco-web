@@ -1,14 +1,12 @@
 var express = require('express'),
-        request = require('request'),
-        Twitter = require('twitter'),
-        config = require('../../lib/config'),
-        async = require('async'),
-        fs = require('fs'),
-        http = require('http'),
-        API = require('../../lib/api'),
-        Story = require('../../lib/story'),
-        Gallery = require('../../lib/gallery'),
-        router = express.Router();
+    request = require('request'),
+    Twitter = require('twitter'),
+    config = require('../../lib/config'),
+    async = require('async'),
+    fs = require('fs'),
+    http = require('http'),
+    API = require('../../lib/api'),
+    router = express.Router();
 
 //---------------------------vvv-GALLERY-ENDPOINTS-vvv---------------------------//
 

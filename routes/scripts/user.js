@@ -1,9 +1,10 @@
-var express     = require('express'),
-    requestJson = require('request-json'),
+const 
+    express     = require('express'),
     validator   = require('validator'),
     config      = require('../../lib/config'),
     User        = require('../../lib/user'),
     API         = require('../../lib/api'),
+    resolveError = require('../../lib/resolveError'),
     global      = require('../../lib/global'),
     router      = express.Router();
 
@@ -51,74 +52,54 @@ router.post('/user/reset', (req, res, next) => {
 });
 
 router.post('/user/login', (req, res) => {
-  if (!req.body.email || !req.body.password) {
-    return res.json({err: 'ERR_MISSING_INFO'}).end();
-  }
-
-  var parse = requestJson.createClient(config.PARSE_API);
-  
-  //Sanitize before sending    
-  req.body.email = global.sanitizeEmail(req.body.email);
-
-  parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
-  parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
-  parse.headers['X-Parse-Revocable-Session'] = "1";
-
-  parse.get('/1/login?username=' + req.body.email + '&password=' + req.body.password, (err, response, parse_body) => {
-    if(err) {
-      return res.json({err: err}).end();
-    }
-    if (response.statusCode == 401) {
-      return res.status(401).send({err: 'ERR_UNAUTHORIZED'});
-    }
-    if (!parse_body) {
-      return res.json({err: 'ERR_EMPTY_BODY'}).end();
-    }
-
-    var options = {
-      url: '/auth/loginparse',
-      body: {parseSession: parse_body.sessionToken},
-      method: 'POST',
-      res
-    }
-    API.request(options, (login_body) => {
-      if(!login_body) {
-            return res.json({ "err" : "ERR_LOGIN" });
-      } else if(login_body.err){
-          return res.json({"err" : "ERR_LOGIN"});
-      }
-
-      req.session.token = login_body.data.token;
-      req.session.parseSessionToken = parse_body.sessionToken;
-      req.session.user = login_body.data.user;
-      req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
-
-      if (!req.session.user.outlet) {
-        return req.session.save(function(){
-          res.json({err: null, data: login_body.data.user});
-        });
-      }
-
-      var purchase_options = {
-        url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id,
-        method: 'GET'
-      };
-
-      API.request(purchase_options, (err, response) => {
-        if (!err) {
-          var purchases = JSON.parse(response.text);
-          req.session.user.outlet.purchases = purchases.data;
+    API.request({
+        method: 'POST',
+        url: '/auth/signin',
+        body: {
+            username: req.body.username,
+            password: req.body.password 
         }
-        req.session.save(() => {
-          res.json({err: null, data: login_body.data.user});
-        });
-      });
     })
-  });
+    .then((response) => {
+        let { body } = response; 
+
+        //Save to session
+        req.session.token = body.token;
+
+
+        //Send request for user object
+        API.request({
+            method: 'GET',
+            url: '/user/me',
+            token: body.token
+        }).then((response) => {
+            req.sessions.user = response.body;
+            req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
+
+            //Save session and return
+            req.session.save(() => {
+                return res.status(response.status).json({ success: true });
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+
+            return res.status(error.status).json({
+                error: resolveError(error.type || ''),
+                success: false
+            });
+        });
+    })
+    .catch((error) => {
+        return res.status(error.status).json({
+            error: resolveError(error.type || ''),
+            success: false
+        });
+    });
 });
 
 router.get('/user/logout', (req, res) => {
-    var end = () => {
+    let end = () => {
         req.session.destroy(() => { 
             res.redirect('/');
         });
@@ -129,39 +110,50 @@ router.get('/user/logout', (req, res) => {
     }
 
     API.request({
-      method: 'POST',
-      url: '/auth/logout',
-      token: req.session.token
-    }, () => {
-      end();
-    });
+        method: 'POST',
+        url: '/auth/logout',
+        token: req.session.token
+    })
+    .then(response => end())
+    .catch(error => end());
 });
 
 router.post('/user/register', (req, res, next) => {
-    var userData = {
-        password: req.body.password,
+    let body = {
         email: req.body.email,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
+        password: req.body.password,
+        full_name: req.body.firstname + ' ' + req.body.lastname, 
         phone: req.body.phone,
-        token: req.body.token
+        outlet: req.body.outlet
     };
 
-    if(!validator.isEmail(userData.email)){
+    if(!validator.isEmail(body.email)){
         return res.json({
-          err: 'ERR_INVALID_EMAIL'
+            error: 'ERR_INVALID_EMAIL'
         });
     }
 
-    User.registerUser(userData, (err, user_body, login_body) => {
-        if (err)
-            return res.json({err: err, data: {}}).end();
+    API.request({
+        method: 'POST',
+        url: '/auth/register',
+        body: body
+    }).then((response) => {
+        let { body, status } = response;
 
-        req.session.token = login_body.data.token;
-        req.session.user = user_body.data;
-        req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
+        // req.session.token = login_body.data.token;
+        // req.session.user = user_body.data;
+        // req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
+        // req.session.save(() => {
+        //     res.json(login_body).end();
+        // });
+
         req.session.save(() => {
-            res.json(login_body).end();
+            return res.status(status).json({ success: true });
+        });
+    }).catch((error) => {
+        return res.status(error.status).json({
+            error: resolveError(error.type || ''),
+            success: false
         });
     });
 });

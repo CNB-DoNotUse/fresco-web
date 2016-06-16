@@ -29,7 +29,6 @@ window.addEventListener('resize', function() {
 
 loginForm.addEventListener('submit', processLogin);
 loginButton.addEventListener('keydown', function (e) {
-
 	if(e.keyCode == 13) {
 		processLogin();
 	}
@@ -217,10 +216,10 @@ var processLogin = function() {
 
 	loginProcessing = true;
 
-	var email = document.getElementById('login-email').value,
+	var username = document.getElementById('login-email').value,
 		password = document.getElementById('login-password').value;
 
-	if(!/\S/.test(email) || !/\S/.test(password)){
+	if(!/\S/.test(username) || !/\S/.test(password)){
 		reEnableLogin();
 
 		return $.snackbar({ content: 'Please enter in all fields!' });
@@ -233,17 +232,13 @@ var processLogin = function() {
 		url: "/scripts/user/login",
 		method: 'post',
 		contentType: "application/json",
-		data: JSON.stringify({
-			email: email,
+		data: {
+			username: username,
 			password: password,
-		}),
+		},
 		dataType: 'json',
 		success: function(response, status, xhr){
-			if(response.err){
-				return this.error(null, null, response.err);
-			}
-			//Redirect
-			else {
+			if(response.success){
 				var next = getParameterByName('next');
 				window.location.replace(next.length ? next : '/archive');
 			}
@@ -252,7 +247,7 @@ var processLogin = function() {
 			reEnableLogin();
 
 			return $.snackbar({ 
-				content: resolveError(error, 'There was an error logging you in. Please try again in a bit.')
+				content: error
 			});
 		}
 	});
@@ -266,25 +261,11 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-function resolveError(err, _default){
-	switch(err){
-	    case 'ERR_TITLE_TAKEN':
-	        return 'This outlet title is taken!';
-	    case 'ERR_EMAIL_TAKEN':
-	    	return 'It seems like there\'s an account with this email already, please try a different one.'
-	    case 'Unauthorized':
-	    case 'ERR_LOGIN':
-	    	return 'The email or password you entered isn\'t correct!'
-	    default:
-	    	return _default || 'Seems like we ran into an error!'     
-	}
-}
 
 /**
  * Updates the postion of the account modal elements
  * @param {float} width current width of the window
  */
-
 function updatePosition(width) {
 	if(window.innerWidth > screen.tablet){
 		presentation.style.display = 'block';
