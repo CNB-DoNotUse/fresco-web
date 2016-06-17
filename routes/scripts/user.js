@@ -1,4 +1,4 @@
-const 
+const
     express     = require('express'),
     validator   = require('validator'),
     config      = require('../../lib/config'),
@@ -51,29 +51,30 @@ router.post('/user/reset', (req, res, next) => {
     });
 });
 
+
 router.post('/user/login', (req, res) => {
     API.request({
         method: 'POST',
         url: '/auth/signin',
         body: {
             username: req.body.username,
-            password: req.body.password 
+            password: req.body.password
         }
     })
     .then((response) => {
-        let { body } = response; 
+        let { body } = response;
 
         //Save to session
         req.session.token = body.token;
 
 
         //Send request for user object
-        API.request({
+        return API.request({
             method: 'GET',
             url: '/user/me',
             token: body.token
         }).then((response) => {
-            req.sessions.user = response.body;
+            req.session.user = response.body;
             req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
 
             //Save session and return
@@ -81,14 +82,6 @@ router.post('/user/login', (req, res) => {
                 return res.status(response.status).json({ success: true });
             });
         })
-        .catch((error) => {
-            console.log(error);
-
-            return res.status(error.status).json({
-                error: resolveError(error.type || ''),
-                success: false
-            });
-        });
     })
     .catch((error) => {
         return res.status(error.status).json({
@@ -100,7 +93,7 @@ router.post('/user/login', (req, res) => {
 
 router.get('/user/logout', (req, res) => {
     let end = () => {
-        req.session.destroy(() => { 
+        req.session.destroy(() => {
             res.redirect('/');
         });
     }
@@ -118,11 +111,12 @@ router.get('/user/logout', (req, res) => {
     .catch(error => end());
 });
 
-router.post('/user/register', (req, res, next) => {
+router.post('/auth/register', (req, res, next) => {
     let body = {
         email: req.body.email,
+        username: req.body.username,
         password: req.body.password,
-        full_name: req.body.firstname + ' ' + req.body.lastname, 
+        full_name: req.body.firstname + ' ' + req.body.lastname,
         phone: req.body.phone,
         outlet: req.body.outlet
     };
@@ -138,6 +132,7 @@ router.post('/user/register', (req, res, next) => {
         url: '/auth/register',
         body: body
     }).then((response) => {
+        console.log(response)
         let { body, status } = response;
 
         // req.session.token = login_body.data.token;
@@ -164,7 +159,7 @@ router.get('/user/refresh', (req, res, next) => {
             return res.json({
                 err: 'ERR_REFRESH_FAIL',
                 data: null
-            });     
+            });
         else
             return res.json({
                 data: req.session.user,
@@ -175,7 +170,7 @@ router.get('/user/refresh', (req, res, next) => {
 
 router.post('/user/update', (req, res) => {
     // When no picture is uploaded, avatar gets set, which confuses the API
-    if(req.body.avatar) 
+    if(req.body.avatar)
         delete req.body.avatar;
 
     req.body.parseSessionToken = req.session.parseSessionToken;
