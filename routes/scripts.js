@@ -345,7 +345,7 @@ router.post('/gallery/import', function(req, res, next){
 
       params.source = 'Twitter';
       params.caption = tweet.text;
-      params.time_captured = new Date(Date.parse(tweet.created_at)).getTime()
+      params.captured_at = new Date(Date.parse(tweet.created_at)).getTime()
       params.twitter = JSON.stringify({
         id: tweet.id_str,
         url: req.body.tweet,

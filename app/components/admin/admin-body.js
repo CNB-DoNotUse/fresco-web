@@ -256,7 +256,7 @@ export default class AdminBody extends React.Component {
 	render() {
 		
 		function sortListItem(a, b) {
-			return a.time_created > b.time_created ? -1 : a.time_created < b.time_created ? 1 : 0;
+			return a.created_at > b.created_at ? -1 : a.created_at < b.created_at ? 1 : 0;
 		}
 
 		switch(this.props.activeTab) {

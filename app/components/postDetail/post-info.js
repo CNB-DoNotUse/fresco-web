@@ -21,7 +21,7 @@ export default class PostInfo extends React.Component {
 			userIcon = '',
 			twitter = '',
 			curator = '',
-			timeString = global.formatTime(this.props.post.time_created, true),
+			timeString = global.formatTime(this.props.post.created_at, true),
 			verifiedBy = '',
 			verifyClass = '',
 			userName = '';

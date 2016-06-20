@@ -92,7 +92,7 @@ export default class PostList extends React.Component {
 	}
 
 	sortPosts() {
-		let field = this.props.sort == 'captured_at' ? 'time_captured' : 'time_created';
+		let field = this.props.sort == 'captured_at' ? 'captured_at' : 'created_at';
 
 		let posts = this.state.posts.sort((post1, post2) => {
 			return post2[field] - post1[field]

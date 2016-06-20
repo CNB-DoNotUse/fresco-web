@@ -46,7 +46,7 @@ export default class PostCell extends React.Component {
 					<div className="frame"></div>
 
 					<div className="hover"  onClick={this.postClicked}>
-						<p className="md-type-body1">{post.caption}</p>
+						<p className="md-type-body1">{post.parent.caption}</p>
 
 						<span className="md-type-caption">{post.byline}</span>
 

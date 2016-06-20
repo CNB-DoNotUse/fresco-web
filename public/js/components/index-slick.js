@@ -92,7 +92,7 @@ Slick.prototype.createGalleryView = function(gallery) {
 		var defaultAvatar = 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png';
 			avatar = post.owner ? post.owner.avatar ? post.owner.avatar : defaultAvatar :defaultAvatar,
 			address = post.location.address != null ? post.location.address : 'No location',
-			timestampText = moment(post.time_created).format('h:mm A'),
+			timestampText = moment(post.created_at).format('h:mm A'),
 			byline = post.byline.replace('via Fresco News', ''),
 			link = 'https://fresconews.com/gallery/' + gallery.id;
 			

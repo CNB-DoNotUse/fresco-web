@@ -25,7 +25,7 @@ router.get('/:id', (req, res, next) => {
         verifier = '';
 
     //Make request for post
-    api.get('/v1/post/get?id=' + req.params.id, doWithPostInfo);
+    api.get('/api/post/' + req.params.id, doWithPostInfo);
 
     function doWithPostInfo(error, response, body) {
         if (error || !body || body.err || body.error || response.error){

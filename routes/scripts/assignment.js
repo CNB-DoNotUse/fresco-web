@@ -61,7 +61,7 @@ router.get('/assignment/stats', (req, res) => {
         a.radius,
         global.getWeekDay(a.day_created),
         a.date_created,
-        a.time_created,
+        a.created_at,
         a.users,
         a.submissions,
         a.photos,

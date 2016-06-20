@@ -62,7 +62,7 @@ class PublicGallery extends React.Component {
  				post = gallery.posts[i],
  				avatar = post.owner ? post.owner.avatar ? post.owner.avatar : global.defaultAvatar : global.defaultAvatar,
  				address = post.location ? post.location.address != null ? post.location.address : 'No location' : 'No location',
-				timestampText = moment(post.time_created).format('MMM Do YYYY, h:mm:ss a'),
+				timestampText = moment(post.created_at).format('MMM Do YYYY, h:mm:ss a'),
 				image = global.formatImg(post.image, 'medium'),
 				style = {
 					backgroundImage: 'url(' + image + ')'

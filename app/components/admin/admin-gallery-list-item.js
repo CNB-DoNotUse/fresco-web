@@ -61,7 +61,7 @@ export default class AdminGalleryListItem extends React.Component {
                     <p className="md-type-body1 assignment-location" style={gallery.assignment ? {lineHeight: '18px'} : {}}>{location}</p>
                 </div>
                 <div className="list-item-timestamp">
-                    <p className="md-type-body1">{global.formatTime(gallery.time_created)}</p>
+                    <p className="md-type-body1">{global.formatTime(gallery.created_at)}</p>
                 </div>
             </div>
         );

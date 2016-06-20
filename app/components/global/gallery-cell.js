@@ -12,8 +12,8 @@ export default class GalleryCell extends React.Component {
 	render() {
         const { half, gallery } = this.props;
 
-		const timestamp = gallery.time_created;
-        const timeString = global.formatTime(gallery.time_created);
+		const timestamp = gallery.created_at;
+        const timeString = global.formatTime(gallery.created_at);
         const size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
         const stories = (gallery.stories || []).slice(0, 2);
         const galleryCellStories = stories.length > 0 ? <GalleryCellStories stories={stories} /> : '';
@@ -49,7 +49,7 @@ export default class GalleryCell extends React.Component {
 
 							<span
 								className="md-type-caption timestring"
-								data-timestamp={gallery.time_created}>{timeString}</span>
+								data-timestamp={gallery.created_at}>{timeString}</span>
 						</div>
 					</div>
 				</div>

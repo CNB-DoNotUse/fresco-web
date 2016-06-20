@@ -222,7 +222,7 @@ import AdminBody from './../components/admin/admin-body'
 					if(stateData.length) {
 						// Filter posts newer than newest
 						for (var i = 0; i < newData.length; i++) {
-							if(newData[i].time_created < stateData[0].time_created) {
+							if(newData[i].created_at < stateData[0].created_at) {
 								newData.splice(i, 1);
 							}
 						}

@@ -46,7 +46,7 @@ export default class AdminAssignmentListItem extends React.Component {
                     <p className="md-type-body1 assignment-location" style={assignment.assignment ? {lineHeight: '18px'} : {}}>{location}</p>
                 </div>
                 <div>
-                    <p className="md-type-body1">{global.formatTime(assignment.time_created)}</p>
+                    <p className="md-type-body1">{global.formatTime(assignment.created_at)}</p>
                 </div>
             </div>
         );

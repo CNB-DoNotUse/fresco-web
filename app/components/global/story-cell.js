@@ -22,7 +22,7 @@ export default class StoryCell extends React.Component {
 
 		// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 
-		var timestamp = this.props.story.time_edited || this.props.story.time_created,
+		var timestamp = this.props.story.time_edited || this.props.story.created_at,
 			timeString = global.formatTime(timestamp);
 
 		return(
