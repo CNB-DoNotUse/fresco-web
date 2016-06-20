@@ -85,7 +85,7 @@ app.use((req, res, next)=> {
               <br>Please click on the link sent to your inbox to verify your email!\
             </p>\
             <div>\
-                <a href="/scripts/user/verify/resend">RESEND EMAIL</a>\
+                <a href=\\"/scripts/user/verify/resend\\">RESEND EMAIL</a>\
             </div>'
         );
     }

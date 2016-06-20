@@ -1,6 +1,7 @@
 import React from 'react';
 import FrescoBackgroundImage from './fresco-background-image'
 import global from '../../../lib/global'
+import R from 'ramda';
 
 /**
  * Single Gallery Cell, child of GalleryList
@@ -8,32 +9,23 @@ import global from '../../../lib/global'
 
 
 export default class GalleryCell extends React.Component {
-
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
+        const { half, gallery } = this.props;
 
-		var timestamp = this.props.gallery.time_created,
-			timeString = global.formatTime(this.props.gallery.time_created),
-			size = this.props.half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6',
-			location = 'No Location',
-			stories = this.props.gallery.related_stories.slice(0, 2),
-			galleryCellStories = stories.length > 0 ? <GalleryCellStories stories={stories} /> : '';
+		const timestamp = gallery.time_created;
+        const timeString = global.formatTime(gallery.time_created);
+        const size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
+        const stories = (gallery.fooz || []).slice(0, 2);
+        const galleryCellStories = stories.length > 0 ? <GalleryCellStories stories={stories} /> : '';
 
-		for (var i = 0; i < this.props.gallery.posts.length; i++) {
-			if(!this.props.gallery.posts[i].location) continue;
 
-			if (this.props.gallery.posts[i].location.address) {
-				location = this.props.gallery.posts[i].location.address;
-			}
-		}
+        const postWithAddress = gallery.posts.find(p => p.address);
+        const location = postWithAddress ? postWithAddress.address : 'No Location';
 
 		return (
 			<div className={size + " tile story gallery"}>
 				<div className="frame"></div>
-				
+
 				<div className="tile-body">
 					<div className="hover">
 						<a href={"/gallery/" + this.props.gallery._id}>
@@ -41,23 +33,23 @@ export default class GalleryCell extends React.Component {
 						</a>
 						{galleryCellStories}
 					</div>
-					
+
 					<GalleryCellImages posts={this.props.gallery.posts} />
 				</div>
-			
+
 				<div className="tile-foot">
 					<div className="hover">
 						<a href={"/gallery/" + this.props.gallery._id} className="md-type-body2">See all</a>
-						
+
 						<GalleryCellStats stats={this.props.gallery.stats} />
 					</div>
-					
+
 					<div>
 						<div className="ellipses">
 							<span className="md-type-body2">{location}</span>
-							
-							<span 
-								className="md-type-caption timestring" 
+
+							<span
+								className="md-type-caption timestring"
 								data-timestamp={this.props.gallery.time_created}>{timeString}</span>
 						</div>
 					</div>
@@ -177,16 +169,16 @@ class GalleryCellStats extends React.Component {
 		var stats = this.props.stats,
 			statString = '';
 
-		if(stats.photos > 0) 
+		if(stats.photos > 0)
 			statString = stats.photos + ' Photo' + (stats.photos == 1 ? '' : 's');
-		
+
 		if(stats.videos > 0){
 			if(statString.length > 0)
 				statString += ' • ';
 
 			statString +=  stats.videos + ' Video' + (stats.videos == 1 ? '' : 's');
 		}
-		
+
 		return <span className="right-info">{statString}</span>;
 	}
 }
