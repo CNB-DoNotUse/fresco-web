@@ -2,8 +2,8 @@ var express    = require('express'),
     config     = require('../lib/config'),
     Purchases  = require('../lib/purchases'),
     request    = require('request-json'),
-    router     = express.Router(),
-    api        = request.createClient(config.API_URL);
+    api        = require('../lib/api'),
+    router     = express.Router();
 
 /** //
 
@@ -24,72 +24,37 @@ router.get('/:id', (req, res, next) => {
         purchases = [],
         verifier = '';
 
+    const token = req.session.token;
+
     //Make request for post
-    api.get('/api/post/' + req.params.id, doWithPostInfo);
-
-    function doWithPostInfo(error, response, body) {
-        if (error || !body || body.err || body.error || response.error){
-            req.session.alerts = ['Error connecting to server'];
-
-            return req.session.save(() => {
-                res.redirect(req.headers.Referer || config.DASH_HOME);
-            });
-        }
-
-        post = body.data;
-
-        if (post.owner)
-            title += 'Post by ' + post.owner.firstname + ' ' + post.owner.lastname;
-        else if(post.curator)
-            title += 'Imported by ' + post.curator.firstname + ' ' + post.curator.lastname;
-        else
-            title = post.byline;
-
-        //Make request for gallery
-        api.get('/v1/post/gallery?id=' + req.params.id, doWithGallery);
-    }
-
-    function doWithGallery (error, response, body) {
-        if (error || !body || body.err) {
-            return next(error || body.err);
-        }
-
-        gallery = body.data;
-
-        //Check if post has approvals in place
-        if (post.approvals) {
-
-          var verifierId = null;
-
-            //Loop through edits to find edit for visibility change of `1` i.e. verified
-            for (var i in gallery.edits) {
-                var edit = gallery.edits[i];
-                //Check if the edit is setting visibility to 1
-                if (edit.changes.visibility == 1 || edit.changes.visibility == 2) {
-                    verifierId = edit.editor;
-                    break;
-                }
-
-            }
-
-            if (verifierId) {
-                //Retrieve profile in order to get verifier
-                api.get('/v1/user/profile?id=' + verifierId, doWithUserProfile);
-            } else {
-                render();
-            }
-
+    const postPromise = api.request({
+        token,
+        url: '/post/' + req.params.id,
+    }).then(response => {
+        post = response.body;
+        gallery = post.gallery;
+        if (post.owner) {
+            title += 'Post by ' + post.owner.full_name;
+        } else if (post.curator) {
+            title += 'Imported by ' + post.curator.full_name;
         } else {
-            render();
+            title = post.byline;
         }
-    }
 
-    function doWithUserProfile(error, response, body) {
-        if (!error && body && !body.err) {
-            verifier = body.data.firstname + ' ' + body.data.lastname;
-            render();
-        }
-    }
+      const curatorId = post.curator_id;
+
+      if (!curatorId) return render();
+
+      return api.request({ token, url: '/user/' + curatorId }).then(user => {
+        verifier = user.full_name;
+        return render();
+      });
+    }).catch(e => {
+        console.log(e)
+        return req.session.save(() => {
+            res.redirect(req.headers.Referer || config.DASH_HOME);
+        });
+    });
 
     function render() {
         var props = {
