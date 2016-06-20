@@ -36,7 +36,7 @@ class Videos extends React.Component {
 		});
 	}
 
-	//Returns array of posts with offset and callback, used in child PostList
+	//Returns array of posts with last and callback, used in child PostList
 	loadPosts(last, callback) {
 
 		var params = {

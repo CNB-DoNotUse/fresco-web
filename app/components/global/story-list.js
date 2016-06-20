@@ -8,7 +8,7 @@ Description : List for a set of stories used across the site (/videos, /photos, 
 // **/
 
 /**
- * Story List Parent Object 
+ * Story List Parent Object
  */
 
 export default class StoryList extends React.Component {
@@ -23,8 +23,8 @@ export default class StoryList extends React.Component {
 
 	componentDidMount() {
 		//Access parent var load method
-		this.props.loadStories(0, (stories) => {
-			
+		this.props.loadStories(null, (stories) => {
+
 			var offset = stories ? stories.length : 0;
 
 			//Set stories from successful response
@@ -40,7 +40,7 @@ export default class StoryList extends React.Component {
 
 		var grid = e.target;
 
-		//Check that nothing is loading and that we're at the end of the scroll, 
+		//Check that nothing is loading and that we're at the end of the scroll,
 		//and that we have a parent bind to load  more stories
 		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400) && this.props.loadStories){
 
@@ -49,8 +49,9 @@ export default class StoryList extends React.Component {
 			//Set that we're loading
 			this.setState({ loading : true })
 
+            const lastStory = this.state.stories[this.state.stories.length - 1];
 			//Run load on parent call
-			this.props.loadStories(this.state.offset, function(stories){
+			this.props.loadStories(lastStory.id, function(stories){
 
 				if(!stories) return;
 
@@ -66,7 +67,7 @@ export default class StoryList extends React.Component {
 			}, this);
 		}
 	}
-	
+
 	render() {
 
 		//Check if list was initialzied with stories
@@ -81,13 +82,13 @@ export default class StoryList extends React.Component {
 			var purchased = purchases ? purchases.indexOf(story.id) != -1 : null;
 
 	      	return (
-	        	
-	        	<StoryCell 
-	        		story={story} 
+
+	        	<StoryCell
+	        		story={story}
 	        		key={i} />
-	        		
+
 	      	)
-                             
+
   		});
 
 		return (
@@ -96,7 +97,7 @@ export default class StoryList extends React.Component {
 				<div className="row tiles" id="stories">{stories}</div>
 			</div>
 
-		)		
+		)
 	}
 
 }

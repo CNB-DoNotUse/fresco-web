@@ -42,9 +42,8 @@ class Photos extends React.Component {
 		});
 	}
 
-	//Returns array of posts with offset and callback, used in child PostList
+	//Returns array of posts with last and callback, used in child PostList
 	loadPosts (last, callback) {
-
 		const params = {
                 last,
 				limit: global.postCount,
@@ -60,16 +59,8 @@ class Photos extends React.Component {
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: (photos, status, xhr) => {
-                if (status === 'success') {
-                    callback(photos)
-                }
-
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({content: global.resolveError(error)});
-			}
-
+			success: (photos) => callback(photos),
+			error: (xhr) => $.snackbar({content: xhr.responseJSON.msg})
 		});
 	}
 

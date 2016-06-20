@@ -21,7 +21,6 @@ export default class PostList extends React.Component {
 		super(props);
 
 		this.state = {
-			offset: 0,
 			purchases: this.props.purchases,
 			posts: this.props.posts,
 			loading: false,
@@ -107,14 +106,8 @@ export default class PostList extends React.Component {
 	loadInitialPosts() {
 		//Access parent var load method
 		this.props.loadPosts(null, (posts) => {
-			//Update offset based on psts from callaback
-			var offset = posts ? posts.length : 0;
-
 			//Set posts & callback from successful response
-			this.setState({
-				posts: posts,
-				offset : offset
-			});
+			this.setState({ posts });
 		});
 	}
 
@@ -133,12 +126,11 @@ export default class PostList extends React.Component {
 			this.setState({ loading : true });
 
 			//This is here for the new post-list structure, so we check to send an id or an offset integer
-			var offset = this.props.idOffset ? this.state.posts[this.state.offset - 1].id : this.state.offset;
 
             const lastPost = this.state.posts[this.state.posts.length - 1];
 
 			//Run load on parent call
-			this.props.loadPosts(lastPost, (posts) => {
+			this.props.loadPosts(lastPost.id, (posts) => {
 
 				//Disables scroll, and returns if posts are empty
 				if(!posts || posts.length == 0){
@@ -151,12 +143,10 @@ export default class PostList extends React.Component {
 
 				}
 
-				var offset = this.state.posts.length + posts.length;
 
 				//Set galleries from successful response, and unset loading
 				this.setState({
 					posts: this.state.posts.concat(posts),
-					offset : offset,
 					loading : false
 				});
 
