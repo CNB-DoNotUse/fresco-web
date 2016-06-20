@@ -29,9 +29,9 @@ export default class AssignmentMerge extends React.Component {
         this.props.merge({
             title: this.refs.title.value,
             caption: this.refs.caption.value,
-            assignmentToMergeInto: this.props.assignmentToMergeInto._id,
-            assignmentToDelete: this.props.assignment._id,
-            outlet: this.props.assignment.outlets[0]._id
+            assignmentToMergeInto: this.props.assignmentToMergeInto.id,
+            assignmentToDelete: this.props.assignment.id,
+            outlet: this.props.assignment.outlets[0].id
         });
     }
 

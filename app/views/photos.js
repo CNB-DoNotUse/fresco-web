@@ -22,7 +22,7 @@ class Photos extends React.Component {
 		this.state = {
 			purchases: [],
 			verifiedToggle: true,
-			sort: this.props.sort || 'upload'
+			sort: this.props.sort || 'created_at'
 		}
 
 		this.loadPosts 			= this.loadPosts.bind(this);
@@ -43,13 +43,13 @@ class Photos extends React.Component {
 	}
 
 	//Returns array of posts with offset and callback, used in child PostList
-	loadPosts (passedOffset, callback) {
+	loadPosts (last, callback) {
 
 		const params = {
+                last,
 				limit: global.postCount,
-				offset: passedOffset,
 				type: 'photo',
-				sort: this.state.sort
+				sortBy: this.state.sort
 			};
 
 		if(this.state.verifiedToggle)
@@ -60,13 +60,10 @@ class Photos extends React.Component {
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: (response, status, xhr) => {
-
-				//Send empty array, because of bad response
-				if(!response.data || response.err)
-					callback([]);
-				else
-					callback(response.data);
+			success: (photos, status, xhr) => {
+                if (status === 'success') {
+                    callback(photos)
+                }
 
 			},
 			error: (xhr, status, error) => {

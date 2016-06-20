@@ -16,7 +16,7 @@ class Videos extends React.Component {
 
 		this.state = {
 			verifiedToggle: true,
-			sort: this.props.sort || 'upload'
+			sort: this.props.sort || 'created_at'
 		}
 
 		this.updateSort			= this.updateSort.bind(this);
@@ -37,13 +37,13 @@ class Videos extends React.Component {
 	}
 
 	//Returns array of posts with offset and callback, used in child PostList
-	loadPosts(passedOffset, callback) {
+	loadPosts(last, callback) {
 
 		var params = {
+            last,
 			limit: global.postCount,
-			offset: passedOffset,
 			type: 'video',
-			sort: this.state.sort
+			sortBy: this.state.sort
 		};
 
 		if(this.state.verifiedToggle)
@@ -54,14 +54,10 @@ class Videos extends React.Component {
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: (response, status, xhr) => {
-
-				//Send empty array, because of bad response
-				if(!response.data || response.err)
-					callback([]);
-				else
-					callback(response.data);
-
+			success: (videos, status, xhr) => {
+                if (status === 'success') {
+                    callback(videos)
+                }
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: global.resolveError(error)});
@@ -83,7 +79,7 @@ class Videos extends React.Component {
 					updateSort={this.updateSort}
 					chronToggle={true}
 					onVerifiedToggled={this.onVerifiedToggled} />
-					
+
 				<PostList
 					loadPosts={this.loadPosts}
 					rank={this.props.user.rank}

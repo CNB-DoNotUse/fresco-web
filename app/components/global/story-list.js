@@ -78,7 +78,7 @@ export default class StoryList extends React.Component {
 		//Map all the stories into cells
 		var stories = stories.map((story, i) => {
 
-			var purchased = purchases ? purchases.indexOf(story._id) != -1 : null;
+			var purchased = purchases ? purchases.indexOf(story.id) != -1 : null;
 
 	      	return (
 	        	

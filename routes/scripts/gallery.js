@@ -52,8 +52,8 @@ router.post('/gallery/import', (req, res) => {
             /**
              * Dev API has a new twitter structure.
             */
-            req.body.twitter_id = tweet.id_str;
-            req.body.twitter_user_id = tweet.user.id_str;
+            req.body.twitterid = tweet.id_str;
+            req.body.twitter_userid = tweet.user.id_str;
             req.body.twitter_url = req.body.tweet;
             req.body.twitter_handle = handle;
             req.body.twitter_name = tweet.user.name;

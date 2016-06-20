@@ -51,7 +51,7 @@ router.get('/assignment/stats', (req, res) => {
 
       xlsxData.push([
         a.id,
-        a.outlet_id,
+        a.outletid,
         a.outlet_name,
         a.creator,
         a.transferred,

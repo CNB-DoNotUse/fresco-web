@@ -79,7 +79,7 @@ export default class PostInfo extends React.Component {
 						<div className="meta-user">
 							{userIcon}
 							<div>
-								<a href={ post.owner ? "/user/" + post.owner._id : ""}>
+								<a href={ post.owner ? "/user/" + post.owner.id : ""}>
 									<span className="md-type-title">{userName}</span>
 								</a>
 								

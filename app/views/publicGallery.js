@@ -208,7 +208,7 @@ class PublicGalleryInfo extends React.Component {
 			url:  '/api/story/galleries',
 			type: 'GET',
 			data: {
-				id: story._id
+				id: story.id
 			},
 			dataType: 'json',
 			success: (response, status, xhr) => {
@@ -238,7 +238,7 @@ class PublicGalleryInfo extends React.Component {
 			var galleries = this.state.relatedStory.galleries.map((gallery, i) => {
 
 				return <li key={i} className="gallery">
-							<a href={'/gallery/' + gallery._id}>
+							<a href={'/gallery/' + gallery.id}>
 								<img src={global.formatImg(gallery.posts[0].image, 'small')} />
 							</a>
 						</li>
@@ -256,7 +256,7 @@ class PublicGalleryInfo extends React.Component {
 			var galleries = this.state.relatedGalleries.map((gallery, i)  => {
 
 				return <li key={i} className="gallery">
-							<a  href={'/gallery/' + gallery._id}>
+							<a  href={'/gallery/' + gallery.id}>
 								<img src={global.formatImg(gallery.posts[0].image, 'small')} />
 							</a>
 						</li>

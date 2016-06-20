@@ -26,9 +26,9 @@ export default class AdminAssignmentListItem extends React.Component {
         }
 
         return (
-            <div className={"list-item" + (this.props.active ? ' active' : '')} onClick={this.props.setActiveAssignment.bind(null, assignment._id)}>
+            <div className={"list-item" + (this.props.active ? ' active' : '')} onClick={this.props.setActiveAssignment.bind(null, assignment.id)}>
                 <div>
-                    <a href={"/outlet/" + assignment.outlet._id} target="_blank">
+                    <a href={"/outlet/" + assignment.outlet.id} target="_blank">
                         <img
                             className="img-circle"
                             style={{width: '40px', height: '40px'}}
@@ -37,7 +37,7 @@ export default class AdminAssignmentListItem extends React.Component {
                 </div>
                 <div className="flexy list-item-caption">
                     <p className="md-type-body1">
-                        <a href={"/assignment/" + assignment._id} target="_blank">
+                        <a href={"/assignment/" + assignment.id} target="_blank">
                             {assignment.title}
                         </a>
                     </p>

@@ -46,7 +46,7 @@ export default class OutletBody extends React.Component {
 	 */
 	loadStats(callback) {
 		$.get('/api/outlet/purchases/stats', {
-			outlets: [ this.props.outlet._id ]
+			outlets: [ this.props.outlet.id ]
 		}, (response) => {
 			if(response.err || !response.data) {
 				return $.snackbar({
@@ -67,7 +67,7 @@ export default class OutletBody extends React.Component {
 			offset: passedOffset,
 			sort: true,
 			details: true,
-			id: this.props.outlet._id
+			id: this.props.outlet.id
 		}, (response) => {
 
 			if(response.err) {
