@@ -128,7 +128,7 @@ export default class OutletMembers extends React.Component {
 							return this.error(null, null, result.err);
 
 						var members = self.props.members.filter((member) => {
-							return member._id !== id;
+							return member.id !== id;
 						});
 
 						self.props.updateMembers(members);
@@ -165,7 +165,7 @@ export default class OutletMembers extends React.Component {
 			contentType: "application/json",
 			data: JSON.stringify({
 				emails: addresses,
-				id: this.props.outlet._id
+				id: this.props.outlet.id
 			}),
 			dataType: 'json',
 			success: function(result, status, xhr){
@@ -229,7 +229,7 @@ class OutletMemberList extends React.Component {
 					</div>
 
 					<span
-						onClick={this.props.removeMember.bind(null, member._id)}
+						onClick={this.props.removeMember.bind(null, member.id)}
 						className="delete-member mdi mdi-delete"></span>
 				</li>
 			);

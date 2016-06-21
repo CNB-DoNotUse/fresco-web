@@ -33,7 +33,7 @@ export default class StoryEdit extends React.Component {
 
 		var self = this,
 			params = {
-				id: this.props.story._id,
+				id: this.props.story.id,
 				title: this.refs.editTitle.value,
 				caption: this.refs.editCaption.value
 			}
@@ -64,7 +64,7 @@ export default class StoryEdit extends React.Component {
 		alertify.confirm("Are you sure you want to delete this story? This cannot be undone.", (e) => {
 			$.post('/api/story/delete',
 			{
-				id: this.props.story._id
+				id: this.props.story.id
 			}, (data) => {
 				if(data.err) {
 					return $.snackbar({ content: 'There was a problem deleting yoru story' });

@@ -56,7 +56,7 @@ export default class AdminGalleryEdit extends React.Component {
 		if(nextProps.activeGalleryType == 'assignment' ||  !nextProps.gallery ) { 
 			return;
 		}
-		if(this.props.gallery._id != nextProps.gallery._id ) {
+		if(this.props.gallery.id != nextProps.gallery.id ) {
 	      	this.resetState(nextProps);
 		}
 	}
@@ -248,8 +248,8 @@ export default class AdminGalleryEdit extends React.Component {
 
 		var gallery = this.state.activeGallery,
 			tags = !Array.isArray(gallery.tags) ? [] : gallery.tags,
-			assignment = gallery.assignment ? gallery.assignment._id : null,
-			posts = gallery.posts.map(p => p._id);
+			assignment = gallery.assignment ? gallery.assignment.id : null,
+			posts = gallery.posts.map(p => p.id);
 
 		this.setState({
 			waiting: true
@@ -258,11 +258,11 @@ export default class AdminGalleryEdit extends React.Component {
 		if(!gallery.related_stories) gallery.related_stories = [];
 
 		var stories = this.state.activeGallery.related_stories.map((story) => {
-			return story.new ? 'NEW=' + JSON.stringify({title: story.title}) : story._id;
+			return story.new ? 'NEW=' + JSON.stringify({title: story.title}) : story.id;
 		});
 
 		var params = {
-			id: gallery._id,
+			id: gallery.id,
 			caption: this.refs['gallery-caption'].value,
 			posts: posts,
 			stories: stories,
@@ -350,7 +350,7 @@ export default class AdminGalleryEdit extends React.Component {
 					return (
 						<div key={i}>
 							<video
-								data-id={post._id}
+								data-id={post.id}
 								className="admin-video"
 								preload="none"
 								width="100%"

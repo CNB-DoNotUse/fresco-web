@@ -21,7 +21,6 @@ export default class PostList extends React.Component {
 		super(props);
 
 		this.state = {
-			offset: 0,
 			purchases: this.props.purchases,
 			posts: this.props.posts,
 			loading: false,
@@ -56,8 +55,8 @@ export default class PostList extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		//If we receive new posts in props while having none previously
-		var currentPostIds  = this.state.posts.map(p => p._id),
-			newPostIds 		= nextProps.posts.map(p => p._id),
+		var currentPostIds  = this.state.posts.map(p => p.id),
+			newPostIds 		= nextProps.posts.map(p => p.id),
 			diffIds 		= _.difference(newPostIds, currentPostIds),
 			postsUpdated    = false;
 
@@ -92,8 +91,8 @@ export default class PostList extends React.Component {
 	}
 
 	sortPosts() {
-		let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
-		
+		let field = this.props.sort == 'captured_at' ? 'captured_at' : 'created_at';
+
 		let posts = this.state.posts.sort((post1, post2) => {
 			return post2[field] - post1[field]
 		});
@@ -106,15 +105,9 @@ export default class PostList extends React.Component {
 	 */
 	loadInitialPosts() {
 		//Access parent var load method
-		this.props.loadPosts(0, (posts) => {
-			//Update offset based on psts from callaback
-			var offset = posts ? posts.length : 0;
-
+		this.props.loadPosts(null, (posts) => {
 			//Set posts & callback from successful response
-			this.setState({
-				posts: posts,
-				offset : offset
-			});
+			this.setState({ posts });
 		});
 	}
 
@@ -133,10 +126,11 @@ export default class PostList extends React.Component {
 			this.setState({ loading : true });
 
 			//This is here for the new post-list structure, so we check to send an id or an offset integer
-			var offset = this.props.idOffset ? this.state.posts[this.state.offset - 1]._id : this.state.offset;
+
+            const lastPost = this.state.posts[this.state.posts.length - 1];
 
 			//Run load on parent call
-			this.props.loadPosts(offset, (posts) => {
+			this.props.loadPosts(lastPost.id, (posts) => {
 
 				//Disables scroll, and returns if posts are empty
 				if(!posts || posts.length == 0){
@@ -149,12 +143,10 @@ export default class PostList extends React.Component {
 
 				}
 
-				var offset = this.state.posts.length + posts.length;
 
 				//Set galleries from successful response, and unset loading
 				this.setState({
 					posts: this.state.posts.concat(posts),
-					offset : offset,
 					loading : false
 				});
 
@@ -187,7 +179,7 @@ export default class PostList extends React.Component {
 
 		//Filter out anything, but ones that equal the passed post
 		var result = this.state.selectedPosts.filter((post) => {
-			return passedPost._id === post._id
+			return passedPost.id === post.id
 		});
 
 
@@ -200,7 +192,7 @@ export default class PostList extends React.Component {
 		//No post found
 		else{
 			this.setState({
-				selectedPosts: this.state.selectedPosts.filter((post) => post._id !== passedPost._id)
+				selectedPosts: this.state.selectedPosts.filter((post) => post.id !== passedPost.id)
 			});
 		}
 	}
@@ -253,9 +245,9 @@ export default class PostList extends React.Component {
 				continue;
 			}
 
-			var purchased = purchases.indexOf(post._id) > -1 || this.props.allPurchased ? true : false,
+			var purchased = purchases.indexOf(post.id) > -1 || this.props.allPurchased ? true : false,
 				//Filter out this posts from the currently selected posts
-				filteredPosts = this.state.selectedPosts.filter((currentPost) => currentPost._id === post._id),
+				filteredPosts = this.state.selectedPosts.filter((currentPost) => currentPost.id === post.id),
 				//Pass down toggled if this post is inside the filtered posts
 				toggled = filteredPosts.length > 0 ? true : false;
 
@@ -281,10 +273,10 @@ export default class PostList extends React.Component {
 
 		return (
 			<div>
-				<div 
-					className={className} 
-					ref='grid' 
-					onScroll={this.state.scrollable ? this.props.scroll ? this.props.scroll : this.scroll : null} 
+				<div
+					className={className}
+					ref='grid'
+					onScroll={this.state.scrollable ? this.props.scroll ? this.props.scroll : this.scroll : null}
 				>
 					<div className="row tiles" id="posts">{posts}</div>
 				</div>

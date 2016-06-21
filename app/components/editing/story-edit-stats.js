@@ -15,7 +15,7 @@ export default class StoryEditStats extends React.Component {
 					<ul className="md-type-subhead">
 						<li>
 							<span className="mdi mdi-clock icon"></span>
-							<span id="story-edit-date">{global.formatTime(this.props.story.time_created)}</span>
+							<span id="story-edit-date">{global.formatTime(this.props.story.created_at)}</span>
 						</li>
 						<li>
 							<span className="mdi mdi-image icon"></span>

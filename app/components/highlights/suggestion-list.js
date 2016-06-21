@@ -29,17 +29,12 @@ export default class SuggestionList extends React.Component {
 				limit: 8
 			},
 			dataType: 'json',
-			success: (response, status, xhr) => {
+			success: (stories, status, xhr) => {
+                if (status === 'success') {
+                    //Set galleries from successful response
+                    this.setState({ stories });
+                }
 
-				//Do nothing, because of bad response
-				if(!response.data || response.err) 
-					return;
-				
-				//Set galleries from successful response
-				this.setState({
-					stories: response.data
-				});
-				
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: resolveError(error)});
@@ -58,7 +53,7 @@ export default class SuggestionList extends React.Component {
 	 				{this.state.stories.map((story, i) => {
 				      	return (
 				        	<li key={i}>
-				        		<a href={'/story/' + story._id}>{story.title}</a>
+				        		<a href={'/story/' + story.id}>{story.title}</a>
 				        	</li>
 				      	)
 			  		})}

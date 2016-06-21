@@ -109,7 +109,7 @@ export default class BulkEdit extends React.Component {
             var new_array = [];
             array2.forEach(function(item) {
                 var found = array1.some(function(item2) {
-                    return item._id == item2._id;
+                    return item.id == item2.id;
                 });
 
                 if (found) {
@@ -149,7 +149,7 @@ export default class BulkEdit extends React.Component {
         // Only send what's changed
 
         let params = {
-            galleries: this.state.galleries.map(g => { return g._id; })
+            galleries: this.state.galleries.map(g => { return g.id; })
         }
 
         if (this.state.caption.length > 0) {
@@ -212,7 +212,7 @@ export default class BulkEdit extends React.Component {
                 if(story.new)
                     return 'NEW=' + JSON.stringify(story);
                 else
-                    return story._id;
+                    return story.id;
                 });
             }
     }

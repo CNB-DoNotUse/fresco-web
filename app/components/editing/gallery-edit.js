@@ -48,10 +48,10 @@ export default class GalleryEdit extends React.Component {
 	componentWillReceiveProps(nextProps) {
 		// If props has a gallery, and GalleryEdit does not currently have a gallery or the galleries are not the same
 		if (nextProps.gallery &&
-			(!this.state.gallery || (this.state.gallery._id != nextProps.gallery._id))) {
+			(!this.state.gallery || (this.state.gallery.id != nextProps.gallery.id))) {
 			this.setState({
 				gallery: _.clone(nextProps.gallery, true),
-				posts: nextProps.gallery.posts.map(p => p._id)
+				posts: nextProps.gallery.posts.map(p => p.id)
 			});
 			$.material.init();
 		}
@@ -165,7 +165,7 @@ export default class GalleryEdit extends React.Component {
  		// Set gallery back to original
  		this.setState({
  			gallery: _.clone(this.props.gallery, true),
- 			posts: this.props.gallery.posts.map(p => p._id),
+ 			posts: this.props.gallery.posts.map(p => p.id),
  			deletePosts: []
  		})
  	}
@@ -209,11 +209,11 @@ export default class GalleryEdit extends React.Component {
  			files 	   = gallery.files ? gallery.files : [],
  			caption    = gallery.caption,
  			tags 	   = gallery.tags,
- 			assignment = gallery.assignment ? gallery.assignment._id : undefined, 
+ 			assignment = gallery.assignment ? gallery.assignment.id : undefined, 
  			bylineExists = document.getElementById('byline-edit') !== null;
 
  		// If assignment was removed, send -1 instead of undefined.
- 		if(this.props.gallery.assignment && this.props.gallery.assignment._id && !assignment) {
+ 		if(this.props.gallery.assignment && this.props.gallery.assignment.id && !assignment) {
  			assignment = -1;
  		}
 
@@ -228,7 +228,7 @@ export default class GalleryEdit extends React.Component {
  			if(story.new)
  				return 'NEW=' + JSON.stringify(story);
  			else
- 				return story._id;
+ 				return story.id;
  		});
 
  		//Generate articles for update
@@ -236,12 +236,12 @@ export default class GalleryEdit extends React.Component {
  			if(article.new)
  				return 'NEW=' + JSON.stringify(article);
  			else
- 				return article._id;
+ 				return article.id;
  		});
 
  		//Configure params for the updated gallery
  		var params = {
- 			id: gallery._id,
+ 			id: gallery.id,
  			caption: caption,
  			posts: posts,
  			assignment: assignment,
@@ -328,7 +328,7 @@ export default class GalleryEdit extends React.Component {
 			data.append(i, files[i]);
 		}
 
-		data.append('gallery', gallery._id);
+		data.append('gallery', gallery.id);
 
 		$.ajax({
 			url: '/api/gallery/addpost',

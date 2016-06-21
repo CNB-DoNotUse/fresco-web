@@ -54,7 +54,7 @@ class UserDetail extends React.Component {
  	loadPosts(passedOffset, callback) {
 
 		var params = {
-			id: this.props.detailUser._id,
+			id: this.props.detailUser.id,
 			limit: 15,
 			offset: passedOffset,
 		};

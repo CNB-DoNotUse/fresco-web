@@ -26,7 +26,7 @@ export default class PostRelated extends React.Component {
 			this.state.stories.gallery = this.props.gallery.posts;
 			this.state.selectedTab = 'gallery'
 		} else if (this.props.gallery.related_stories.length > 0) {
-			this.state.selectedTab = this.props.gallery.related_stories[0]._id;
+			this.state.selectedTab = this.props.gallery.related_stories[0].id;
 		}
 
 		this.getStories = this.getStories.bind(this);
@@ -48,7 +48,7 @@ export default class PostRelated extends React.Component {
 			$.ajax({
 			    url: '/api/story/posts',
 			    data: {
-			    	id: story._id,
+			    	id: story.id,
 			    	limit: 10
 			    },
 			    key: i,
@@ -56,7 +56,7 @@ export default class PostRelated extends React.Component {
 			    type: 'GET',
 			    success: function(response, status, xhr) {
 					if (!response.err && response.data) {
-						stories[related_stories[this.key]._id] = response.data;
+						stories[related_stories[this.key].id] = response.data;
 					}
 
 					//Wait till end of loop to update the state
@@ -98,7 +98,7 @@ export default class PostRelated extends React.Component {
 			tabs.push(
 				<div className={"tab " + toggled} key="gallery">
 					<div className="tab-inner">
-						<a className="btn btn-flat" href={"/gallery/" + this.props.gallery._id}>See all</a>
+						<a className="btn btn-flat" href={"/gallery/" + this.props.gallery.id}>See all</a>
 						{posts}
 					</div>
 				</div>
@@ -114,20 +114,20 @@ export default class PostRelated extends React.Component {
 		}
 
 		for (let story of this.props.gallery.related_stories) {
-			if (!this.state.stories[story._id]) {
+			if (!this.state.stories[story.id]) {
 				break;
 			}
 
-			let posts = this.state.stories[story._id].map((post, i) => {
+			let posts = this.state.stories[story.id].map((post, i) => {
 				return <RelatedPostImage post={post} key={i}/>
 			});
 
-			let toggled = this.state.selectedTab === story._id ? 'toggled' : '';
+			let toggled = this.state.selectedTab === story.id ? 'toggled' : '';
 
 			tabs.push(
-				<div className={"tab " + toggled} key={story._id}>
+				<div className={"tab " + toggled} key={story.id}>
 					<div className="tab-inner">
-						<a className="btn btn-flat" href={"/story/" + story._id}>See all</a>
+						<a className="btn btn-flat" href={"/story/" + story.id}>See all</a>
 						{posts}
 					</div>
 				</div>
@@ -136,9 +136,9 @@ export default class PostRelated extends React.Component {
 			tabControls.push(
 				<button 
 					className={"btn btn-flat " + toggled} 
-					key={story._id} 
+					key={story.id} 
 					onClick={this.setDisplayedTab} 
-					data-tab={story._id}>{story.title.toUpperCase()}</button>
+					data-tab={story.id}>{story.title.toUpperCase()}</button>
 			);
 		}
 

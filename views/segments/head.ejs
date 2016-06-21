@@ -2,14 +2,14 @@
 <!--[if lte IE 9]> <html lang='en' class="ie"> <![endif]-->
 <!--[if !IE ]> <html lang='en'> <![endif]-->
 <head>
-  <% 
+  <%
     meta = typeof(meta) !== 'undefined' ? meta : {};
     og = typeof(og) !== 'undefined' ? og : {};
     twitter = typeof(twitter) !== 'undefined' ? twitter : {};
   %>
   <!--
-  
-  01000110 01110010 01100101 01110011 01100011 01101111  01001110 01100101 01110111 01110011 
+
+  01000110 01110010 01100101 01110011 01100011 01101111  01001110 01100101 01110111 01110011
 
   ███████╗██████╗ ███████╗███████╗ ██████╗ ██████╗       ███╗   ██╗███████╗██╗    ██╗███████╗
   ██╔════╝██╔══██╗██╔════╝██╔════╝██╔════╝██╔═══██╗      ████╗  ██║██╔════╝██║    ██║██╔════╝
@@ -17,9 +17,9 @@
   ██╔══╝  ██╔══██╗██╔══╝  ╚════██║██║     ██║   ██║      ██║╚██╗██║██╔══╝  ██║███╗██║╚════██║
   ██║     ██║  ██║███████╗███████║╚██████╗╚██████╔╝      ██║ ╚████║███████╗╚███╔███╔╝███████║
   ╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═════╝       ╚═╝  ╚═══╝╚══════╝ ╚══╝╚══╝ ╚══════╝
-                                                                                           
+
   -->
-  
+
   <title><%= typeof(title) !== 'undefined' ? title + ' | Fresco News' : head.title %></title>
 
   <!--Icons-->
@@ -28,7 +28,7 @@
 
   <!--Apple-->
   <meta name="apple-mobile-web-app-title" content="Fresco">
-  <meta name="apple-itunes-app" content="app-id=872040692, affiliate-data=myAffiliateData, app-argument=myURL">   
+  <meta name="apple-itunes-app" content="app-id=872040692, affiliate-data=myAffiliateData, app-argument=myURL">
   <link rel="apple-touch-icon" type="image/png" href="https://d1dw1p6sgigznj.cloudfront.net/images/icon-apple.png">
 
   <!--Meta-->
@@ -39,7 +39,7 @@
   <meta name="web_author"  content="<%= head.meta.web_author %>">
   <meta name="language"    content="<%= head.meta.language %>">
   <meta name="viewport"    content="<%= head.meta.viewport %>">
-  
+
   <!--OG-->
   <meta property="og:site_name"   content="Fresco News">
   <meta property="og:locale"      content="<%= head.og.locale %>">
@@ -50,7 +50,7 @@
 
   <!--Facebook-->
   <meta property="fb:app_id" content="267157383448416">
-    
+
   <!--Twitter-->
   <meta name="twitter:card"            content="<%= twitter.card               || head.twitter.card               %>">
   <meta name="twitter:site"            content="<%= twitter.site               || head.twitter.site               %>">
@@ -64,15 +64,18 @@
   <meta name="twitter:app:url:iphone"  content="<%= twitter['app:url:iphone']  || head.twitter['app:url:iphone']  %>">
 
   <!--Global Specifc based on sections-->
-  <% if(typeof(section) !== 'undefined'){ %> 
+  <% if(typeof(section) !== 'undefined'){ %>
     <link rel="stylesheet" type="text/css" href="/css/<%= section %>.css">
-  <% } %>  
+  <% } %>
 
   <!--Page Specifc based on page-->
-  <% if(typeof(page) !== 'undefined'){ %> 
+  <% if(typeof(page) !== 'undefined'){ %>
     <link rel="stylesheet" type="text/css" href="/css/pages/<%= page %>.css">
-  <% } %> 
+  <% } %>
 
+
+  <!-- TODO remove me when webpack is added -->
+  <script src="https://cdn.jsdelivr.net/ramda/0.21.0/ramda.min.js"></script>
 </head>
 
 <body>

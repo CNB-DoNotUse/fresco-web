@@ -99,7 +99,7 @@ class UserSettings extends React.Component {
 
  		var userData = new FormData(),
  			user = this.props.user,
- 			id = user._id,
+ 			id = user.id,
  			name = this.refs.name.value.split(' '),
  			firstname = name[0],
  			lastname = name.slice(1).join(' '),
