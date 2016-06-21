@@ -25,8 +25,8 @@ export default class PostRelated extends React.Component {
 		if (this.props.gallery.posts.length > 1) {
 			this.state.stories.gallery = this.props.gallery.posts;
 			this.state.selectedTab = 'gallery'
-		} else if (this.props.gallery.related_stories.length > 0) {
-			this.state.selectedTab = this.props.gallery.related_stories[0].id;
+		} else if (this.props.gallery.stories.length > 0) {
+			this.state.selectedTab = this.props.gallery.stories[0].id;
 		}
 
 		this.getStories = this.getStories.bind(this);
@@ -38,12 +38,12 @@ export default class PostRelated extends React.Component {
 	}
 
 	getStories() {
-		var related_stories = this.props.gallery.related_stories,
+		var stories = this.props.gallery.stories,
 			stories = this.state.stories,
 			self = this;
 
-		for (var i = 0; i < related_stories.length; i++) {
-			var story = related_stories[i];
+		for (var i = 0; i < stories.length; i++) {
+			var story = stories[i];
 
 			$.ajax({
 			    url: '/api/story/posts',
@@ -52,11 +52,11 @@ export default class PostRelated extends React.Component {
 			    	limit: 10
 			    },
 			    key: i,
-			    count: related_stories.length,
+			    count: stories.length,
 			    type: 'GET',
 			    success: function(response, status, xhr) {
 					if (!response.err && response.data) {
-						stories[related_stories[this.key].id] = response.data;
+						stories[stories[this.key].id] = response.data;
 					}
 
 					//Wait till end of loop to update the state
@@ -105,15 +105,15 @@ export default class PostRelated extends React.Component {
 			);
 
 			tabControls.push(
-				<button 
-					className={"btn btn-flat " + toggled} 
-					key="gallery" 
-					onClick={this.setDisplayedTab} 
+				<button
+					className={"btn btn-flat " + toggled}
+					key="gallery"
+					onClick={this.setDisplayedTab}
 					data-tab="gallery">More from this gallery</button>
 				);
 		}
 
-		for (let story of this.props.gallery.related_stories) {
+		for (let story of this.props.gallery.stories) {
 			if (!this.state.stories[story.id]) {
 				break;
 			}
@@ -134,10 +134,10 @@ export default class PostRelated extends React.Component {
 			);
 
 			tabControls.push(
-				<button 
-					className={"btn btn-flat " + toggled} 
-					key={story.id} 
-					onClick={this.setDisplayedTab} 
+				<button
+					className={"btn btn-flat " + toggled}
+					key={story.id}
+					onClick={this.setDisplayedTab}
 					data-tab={story.id}>{story.title.toUpperCase()}</button>
 			);
 		}

@@ -31,8 +31,11 @@ router.get('/:id', (req, res, next) => {
         token,
         url: '/post/' + req.params.id,
     }).then(response => {
-        post = response.body;
-        gallery = post.gallery;
+        return api.request({ token, url: '/gallery/' + response.body.parent_id });
+    }).then(response => {
+        // todo remove [0]
+        gallery = response.body[0];
+        post = gallery.posts.find(p => p.id === req.params.id);
         if (post.owner) {
             title += 'Post by ' + post.owner.full_name;
         } else if (post.curator) {
@@ -41,16 +44,15 @@ router.get('/:id', (req, res, next) => {
             title = post.byline;
         }
 
-      const curatorId = post.curator_id;
+        const curatorId = post.curator_id;
 
-      if (!curatorId) return render();
+        if (!curatorId) return render();
 
-      return api.request({ token, url: '/user/' + curatorId }).then(user => {
-        verifier = user.full_name;
-        return render();
-      });
+        return api.request({ token, url: '/user/' + curatorId }).then(user => {
+          verifier = user.full_name;
+          return render();
+        });
     }).catch(e => {
-        console.log(e)
         return req.session.save(() => {
             res.redirect(req.headers.Referer || config.DASH_HOME);
         });
@@ -58,11 +60,8 @@ router.get('/:id', (req, res, next) => {
 
     function render() {
         var props = {
+            gallery, post, title, verifier,
             user: req.session.user,
-            post: post,
-            gallery: gallery,
-            verifier: verifier,
-            title: title,
             purchases: Purchases.mapPurchases(req.session)
         };
 
