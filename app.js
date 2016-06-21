@@ -26,9 +26,6 @@ var redisConnection = { client: rClient };
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-app.use(favicon(__dirname + '/public/favicon.ico'));
-
 // app.use(morgan('dev'));
 
 //GZIP
@@ -46,7 +43,7 @@ var storage = multer.diskStorage({
     }
 });
 
-app.use( 
+app.use(
     multer({ storage: storage }).any()
 );
 
@@ -88,7 +85,7 @@ app.use((req, res, next)=> {
               <br>Please click on the link sent to your inbox to verify your email!\
             </p>\
             <div>\
-                <a href="/scripts/user/verify/resend">RESEND EMAIL</a>\
+                <a href=\\"/scripts/user/verify/resend\\">RESEND EMAIL</a>\
             </div>'
         );
     }
@@ -110,7 +107,6 @@ app.use((req, res, next)=> {
 /**
  * Set up local head and global for all templates
  */
-
 app.locals.head = head;
 app.locals.global = global;
 app.locals.alerts = [];
@@ -118,7 +114,6 @@ app.locals.alerts = [];
 /**
  * Route session check
  */
-
 app.use((req, res, next) => {
     var path = req.path.slice(1).split('/')[0],
         now = Date.now();
@@ -144,82 +139,65 @@ app.use((req, res, next) => {
 /**
  * Route config for public facing pages
  */
-
 app.use((req, res, next) => {
+    if(!req.fresco)
+        req.fresco = {};
 
-  if(!req.fresco)
-    req.fresco = {};
+    res.locals.section = 'public';
 
-  res.locals.section = 'public';
-  next();
-
+    next();
 });
 
 /**
  * Loop through all public routes
  */
-
 for (var i = 0; i < routes.public.length; i++) {
+    var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i],
+        route = require('./routes/' + routes.public[i]);
 
-  var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i] ,
-      route = require('./routes/' + routes.public[i]);
-
-  app.use('/' + routePrefix , route);
-
+    app.use('/' + routePrefix , route);
 }
 
 /**
  * Loop through all script routes
  */
-
 for (var i = 0; i < routes.scripts.length; i++) {
+    var routePrefix = routes.scripts[i],
+        route = require('./routes/scripts/' + routePrefix);
 
-  var routePrefix = routes.scripts[i] ,
-      route = require('./routes/scripts/' + routePrefix);
-
-  app.use('/scripts' , route);
-
+    app.use('/scripts' , route);
 }
 
 
 /**
  * Route config for private (platform) facing pages
  */
-
 app.use((req, res, next) => {
+    if(!req.fresco)
+        req.fresco = {};
 
-  if(!req.fresco)
-    req.fresco = {};
-
-  res.locals.section = 'platform';
-  next();
-
+    res.locals.section = 'platform';
+    next();
 });
 
 
 /**
  * Loop through all platform routes
  */
-
 for (var i = 0; i < routes.platform.length; i++) {
+    var routePrefix = routes.platform[i] ,
+        route = require('./routes/' + routePrefix);
 
-  var routePrefix = routes.platform[i] ,
-      route = require('./routes/' + routePrefix);
-
-  app.use('/' + routePrefix , route);
-
+    app.use('/' + routePrefix , route);
 }
 
 /**
  * Webservery proxy for forwarding to the api
  */
-
-
-
 // Special case for assignment create
 // TODO: Remove this
 app.post('/api/assignment/create', (req, res, next) => {
-  req.body.outlet = req.session.user && req.session.user.outlet ? req.session.user.outlet._id : undefined;
+  req.body.outlet = req.session.user && req.session.user.outlet ? req.session.user.outlet.id : undefined;
   next();
 });
 

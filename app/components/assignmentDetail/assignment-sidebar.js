@@ -62,7 +62,7 @@ class AssignmentStats extends React.Component {
 		var assignment = this.props.assignment,
 			expirationTime = new Date(this.props.assignment.expiration_time),
 			expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow(),
-			createdText = 'Created at ' + moment(assignment.time_created).format('LT'),
+			createdText = 'Created at ' + moment(assignment.created_at).format('LT'),
 			stats = this.props.stats;
 
 		return (

@@ -4,7 +4,7 @@ import global from '../../../lib/global'
 /**
  * Side bar object found across the site; inside of the top level App class
  */
-	
+
 export default class Sidebar extends React.Component {
 
 	constructor(props) {
@@ -16,42 +16,42 @@ export default class Sidebar extends React.Component {
 	handleSearchKeyDown(e) {
 		var input = this.refs.searchInput;
 
-		if(e.keyCode != 13 || input.value === '') 
+		if(e.keyCode != 13 || input.value === '')
 			return;
-		
+
 		window.location ='/search?q=' + encodeURIComponent(this.refs.searchInput.value);
 	}
 
 	render() {
 
 		var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
-		
+
 		return (
 			<div className="col-lg-2 sidebar toggle-drawer" id="_sidebar">
 				<div>
 					<a href="/highlights">
 						<img src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-news.png" />
 					</a>
-				
-					<input 
-						className="search-input" 
-						id="sidebar-search" 
-						placeholder="Search" 
-						type="text" 
+
+					<input
+						className="search-input"
+						id="sidebar-search"
+						placeholder="Search"
+						type="text"
 						ref="searchInput"
 						defaultValue={this.props.query}
 						onKeyDown={this.handleSearchKeyDown} />
-				
+
 					<SideBarListItems user={this.props.user} />
 				</div>
 		   	 	<div>
 			    	<img className="img-circle" id="side-bar-avatar" src={avatar} />
-			      
+
 					<a className="md-type-title user-name-view" href="/user">
-						{this.props.user.firstname + ' ' + this.props.user.lastname}
+						{this.props.user.full_name}
 					</a>
 
-			    	<ul>	
+			    	<ul>
 						<li><a href="/user/settings">Settings</a></li>
 				        <li><a href="/scripts/user/logout">Log out</a></li>
 			     	</ul>
@@ -90,38 +90,38 @@ class SideBarListItems extends React.Component {
 		if(!this.props.user) return;
 
 		if (this.props.user.outlet) {
-			var dispatch = 
+			var dispatch =
 				<li className="sidebar-tab">
 					<a href="/dispatch"><span className="mdi mdi-map icon"></span>Dispatch</a>
 				</li>;
 		}
 
 		if (this.props.user.outlet != null){
-			var outlet = 
+			var outlet =
 				<li className="sidebar-tab">
 					<a href="/outlet"><span className="mdi mdi-account-multiple icon"></span>{this.props.user.outlet.title}</a>
 				</li>;
 		}
-		if(this.props.user.rank >= global.RANKS.CONTENT_MANAGER) { 
-			var admin = 
+		if(this.props.user.rank >= global.RANKS.CONTENT_MANAGER) {
+			var admin =
 				<li className="sidebar-tab">
 					<a href="/admin"><span className="mdi mdi-dots-horizontal icon"></span>Admin</a>
 				</li>;
-		} 
-		if(this.props.user.rank == global.RANKS.ADMIN) { 
-			var purchases =  
+		}
+		if(this.props.user.rank == global.RANKS.ADMIN) {
+			var purchases =
 				<li className="sidebar-tab">
 					<a href="/purchases"><span className="mdi mdi-currency-usd icon"></span>Purchases</a>
 				</li>;
 
-			var stats = 
+			var stats =
 				<li className="sidebar-tab">
 					<a href="/stats"><span className="mdi mdi-chart-line icon"></span>Stats</a>
 				</li>;
 		}
 
 		return (
-	
+
 			<ul className="md-type-body1 master-list">
 				<li className="sidebar-tab">
 					<a href="/highlights"><span className="mdi mdi-star icon"></span>Highlights</a>
@@ -145,11 +145,11 @@ class SideBarListItems extends React.Component {
 				</ul>
 				{dispatch}
 				{outlet}
-				{admin}	
+				{admin}
 				{purchases}
 				{stats}
 			</ul>
-			
+
 		)
 	}
 

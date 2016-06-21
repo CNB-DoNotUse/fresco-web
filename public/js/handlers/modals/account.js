@@ -29,7 +29,6 @@ window.addEventListener('resize', function() {
 
 loginForm.addEventListener('submit', processLogin);
 loginButton.addEventListener('keydown', function (e) {
-
 	if(e.keyCode == 13) {
 		processLogin();
 	}
@@ -40,14 +39,14 @@ signUpForm.addEventListener('submit', processSignup);
 signUpFormHeader.addEventListener('click', function() {
 
 	if(signUpForm.style.display == 'none' || signUpForm.style.display == ''){
-		
+
 		//Check if we're in a desktop view to adjust the top margin
 		if(window.innerWidth > screen.tablet){
 			$(loginForm).velocity("slideUp", { duration: 500 });
 			$(login).velocity({'margin-top' : '10px'}, {duration: 500});
 		}
 		//Slide downt the sign up form
-		$(signUpForm).velocity("slideDown", { 
+		$(signUpForm).velocity("slideDown", {
 			duration: 500,
 			complete: function() {
 				//Swap the title
@@ -72,7 +71,7 @@ loginFormHeader.addEventListener('click', function() {
 		$(login).velocity({'margin-top' : '12%'}, {duration: 500});
 
 		//Slide up and hide the `Sign Up` form
-		$(signUpForm).velocity("slideUp", { 
+		$(signUpForm).velocity("slideUp", {
 			duration: 500,
 			complete: function() {
 
@@ -84,11 +83,11 @@ loginFormHeader.addEventListener('click', function() {
 
 			}
 		});
-	} 
+	}
 	//Process Login
 	else
 		processLogin();
-	
+
 });
 
 
@@ -103,87 +102,98 @@ function reEnableSignup() {
 
 var processSignup = function() {
 	if(signupProcessing) return;
-	
+
 	signupProcessing = true;
 
-	//Set up fields
-	var params = [
-		{
-			value: document.getElementById('outlet-title').value,
-			name: 'Title',
-			key: 'title'
-		},
-		{
-			value: document.getElementById('outlet-url').value,
-			name: 'URL',
-			key: 'link'
-		},
-		{
-			value: document.getElementById('outlet-medium').dataset.option,
-			name: 'medium of communcation',
-			key: 'medium'
-		},
-		{
-			value: document.getElementById('outlet-state').dataset.option,
-			name: 'State',
-			key: 'state'
-		},
+    const outletParams = [
+        {
+            value: document.getElementById('outlet-title').value,
+            name: 'Title',
+            key: 'title'
+        },
+        {
+            value: document.getElementById('outlet-url').value,
+            name: 'URL',
+            key: 'link'
+        }
+        // TODO uncomment me when these keys are added to API
+        // {
+        //     value: document.getElementById('outlet-medium').dataset.option,
+        //     name: 'medium of communcation',
+        //     key: 'medium'
+        // },
+        // {
+        //     value: document.getElementById('outlet-state').dataset.option,
+        //     name: 'State',
+        //     key: 'state'
+        // }
+    ];
+
+	const params = [
 		{
 			value: document.getElementById('outlet-member-name').value.split(' ')[0],
 			name: 'first name',
-			key: 'contact_firstname'
+			key: 'firstname'
 		},
 		{
 			value: document.getElementById('outlet-member-name').value.split(' ').slice(1).join(' '),
 			name: 'last name',
-			key: 'contact_lastname'
+			key: 'lastname'
 		},
 		{
 			value: document.getElementById('outlet-phone').value,
 			name: 'phone number',
-			key: 'contact_phone'
+			key: 'phone'
 		},
 		{
 			value: document.getElementById('outlet-email').value,
 			name: 'email',
-			key: 'contact_email'
+			key: 'email'
+		},
+        {
+			value: document.getElementById('outlet-username').value,
+			name: 'username',
+			key: 'username'
 		},
 		{
 			value: document.getElementById('outlet-password').value,
 			name: 'password',
-			key: 'contact_password'
+			key: 'password'
 		}
 	];
 
-	//Check all the fields
-	for (var i = 0; i < params.length; i++) {
-		value = params[i].value,
-		key = params[i].key;
+    // Validate params
+    const invalid = R.anyPass([R.not, R.test(/^\s*$/)]);
 
-		if(!/\S/.test(value) || typeof(value) == 'undefined'){
-			reEnableSignup();
+    outletParams.forEach(function(param) {
+        if (invalid(param.value)) {
+            reEnableSignup();
+            $.snackbar({content: "Please enter a " + param.name + "!"});
+        }
+    });
 
-			if(key === 'contact_lastname' || key == 'contact_firstname')
-				return $.snackbar({content: 'Please enter a '+ params[i].name + '!'});
-			else
-				return $.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
-		}
-	}
-	
-	var newParams = {};
+    params.forEach(function(param) {
+        if (invalid(param.value)) {
+            reEnableSignup();
+            $.snackbar({content: "Please enter a " + param.name + " for your outlet!"});
+        }
+    });
 
-	for (var i = 0; i < params.length; i++) {
-		newParams[params[i].key] = params[i].value;
- 	};
+    // Convert validated param lists into API payload
+    const flatten = R.reduce(function(payload, next) {
+        return R.assoc(next.key, next.value, payload);
+    }, {})
+    const apiParams = R.merge(flatten(params), { outlet: flatten(outletParams) });
+
 
  	signUpHeaderText.innerHTML = '';
  	signUpLoader.style.display = 'block';
 
 	$.ajax({
-		url: "/scripts/outlet/create",
+		url: "/scripts/auth/register",
 		method: 'post',
 		contentType: "application/json",
-		data: JSON.stringify(newParams),
+		data: JSON.stringify(apiParams),
 		dataType: 'json',
 		success: function(response, status, xhr) {
 			if (response.err){
@@ -217,10 +227,10 @@ var processLogin = function() {
 
 	loginProcessing = true;
 
-	var email = document.getElementById('login-email').value,
+	var username = document.getElementById('login-username').value,
 		password = document.getElementById('login-password').value;
 
-	if(!/\S/.test(email) || !/\S/.test(password)){
+	if(!/\S/.test(username) || !/\S/.test(password)){
 		reEnableLogin();
 
 		return $.snackbar({ content: 'Please enter in all fields!' });
@@ -234,25 +244,21 @@ var processLogin = function() {
 		method: 'post',
 		contentType: "application/json",
 		data: JSON.stringify({
-			email: email,
+			username: username,
 			password: password,
 		}),
 		dataType: 'json',
 		success: function(response, status, xhr){
-			if(response.err){
-				return this.error(null, null, response.err);
-			}
-			//Redirect
-			else {
+			if(response.success){
 				var next = getParameterByName('next');
 				window.location.replace(next.length ? next : '/archive');
 			}
-		}, 
+		},
 		error: function(xhr, status, error){
 			reEnableLogin();
 
-			return $.snackbar({ 
-				content: resolveError(error, 'There was an error logging you in. Please try again in a bit.')
+			return $.snackbar({
+				content: error
 			});
 		}
 	});
@@ -266,25 +272,11 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-function resolveError(err, _default){
-	switch(err){
-	    case 'ERR_TITLE_TAKEN':
-	        return 'This outlet title is taken!';
-	    case 'ERR_EMAIL_TAKEN':
-	    	return 'It seems like there\'s an account with this email already, please try a different one.'
-	    case 'Unauthorized':
-	    case 'ERR_LOGIN':
-	    	return 'The email or password you entered isn\'t correct!'
-	    default:
-	    	return _default || 'Seems like we ran into an error!'     
-	}
-}
 
 /**
  * Updates the postion of the account modal elements
  * @param {float} width current width of the window
  */
-
 function updatePosition(width) {
 	if(window.innerWidth > screen.tablet){
 		presentation.style.display = 'block';

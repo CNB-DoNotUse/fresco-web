@@ -100,7 +100,7 @@ export default class OutletLocations extends React.Component {
 
 				//Remove location from state
 				var locations = self.state.locations.filter((locations) => {
-					return locations._id !== locationId;
+					return locations.id !== locationId;
 				});
 
 				//Update state
@@ -157,7 +157,7 @@ export default class OutletLocations extends React.Component {
 		// Update notification setting in state, if update fails, loadLocations will revert the check
 		for(var x in stateLocations) {
 			var location = stateLocations[x];
-			if(location._id == locationId) {
+			if(location.id == locationId) {
 				location.notifications[notifType.split('_')[1]] = e.target.checked;
 
 				this.setState({
@@ -256,7 +256,7 @@ class OutletLocationsList extends React.Component {
 			return(
 				<li className="location" key={i}>
 					<div className="info">
-						<a href={"/location/" + location._id}>
+						<a href={"/location/" + location.id}>
 							<p className="area">{location.title}</p>
 						
 							<span className="count">{unseenCount}</span>
@@ -265,7 +265,7 @@ class OutletLocationsList extends React.Component {
 
 					<div className="location-options form-group-default">
 						<span 
-							onClick={this.props.removeLocation.bind(null, location._id)} 
+							onClick={this.props.removeLocation.bind(null, location.id)} 
 							className="remove-location mdi mdi-delete"></span>
 						
 						<div className="checkbox check-sms">
@@ -273,7 +273,7 @@ class OutletLocationsList extends React.Component {
 								<input
 									type="checkbox" 
 									checked={notifications.sms || false}
-									onChange={this.props.updateLocationNotifications.bind(this, location._id, 'notify_sms')} />
+									onChange={this.props.updateLocationNotifications.bind(this, location.id, 'notify_sms')} />
 							</label>
 						</div>
 						
@@ -282,7 +282,7 @@ class OutletLocationsList extends React.Component {
 								<input
 									type="checkbox" 
 									checked={notifications.email || false}
-									onChange={this.props.updateLocationNotifications.bind(this, location._id, 'notify_email')}/>
+									onChange={this.props.updateLocationNotifications.bind(this, location.id, 'notify_email')}/>
 							</label>
 						</div>
 						
@@ -291,7 +291,7 @@ class OutletLocationsList extends React.Component {
 								<input
 									type="checkbox" 
 									checked={notifications.fresco || false}
-									onChange={this.props.updateLocationNotifications.bind(this, location._id, 'notify_fresco')} />
+									onChange={this.props.updateLocationNotifications.bind(this, location.id, 'notify_fresco')} />
 							</label>
 						</div>
 					</div>

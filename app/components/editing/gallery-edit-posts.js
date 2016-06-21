@@ -18,14 +18,14 @@ export default class GalleryEditPosts extends React.Component {
 		var k = 0;
 
 		var posts = this.props.posts.map((post) => {
-			var shouldDelete = this.props.deletePosts.indexOf(post._id) != -1;
+			var shouldDelete = this.props.deletePosts.indexOf(post.id) != -1;
 			var deleteText = '';
 			if(this.props.posts.length > 1) {
 				deleteText =
 					<a>
 						<span
 							className={"mdi mdi-close-circle icon" + (shouldDelete ? ' addback' : '')}
-							onClick={this.props.toggleDelete.bind(null, post._id)} />
+							onClick={this.props.toggleDelete.bind(null, post.id)} />
 					</a>
 			}
 			return (

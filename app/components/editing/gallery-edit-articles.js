@@ -25,7 +25,7 @@ export default class GalleryEditArticles extends React.Component {
 
 		var index = -1;
 		for (var a in this.props.articles) {
-			if(this.props.articles[a]._id == id) {
+			if(this.props.articles[a].id == id) {
 				index = a;
 				break;
 			}
@@ -116,7 +116,7 @@ export default class GalleryEditArticles extends React.Component {
 			var article = this.props.articles[a];
 			articles.push(
 				<Tag
-					onClick={this.removeArticle.bind(null, article._id)}
+					onClick={this.removeArticle.bind(null, article.id)}
 					text={article.link}
 					plus={false}
 					key={a} />

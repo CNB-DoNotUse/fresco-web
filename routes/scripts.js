@@ -57,7 +57,7 @@ router.post('/assignment/create', (req, res, next) => {
   	return res.status(403).json({err: 'ERR_INVALID_OUTLET'}).end();
 
   var api = requestJson.createClient(config.API_URL);
-	req.body.outlet = req.session.user.outlet._id;
+	req.body.outlet = req.session.user.outlet.id;
 
   api.headers['authtoken'] = req.session.user.token;
 	api.post('/v1/assignment/create', req.body, doAfterAssignmentCreate);
@@ -121,7 +121,7 @@ router.get('/assignment/expired', (req, res, next) => {
   }
 
   var api = requestJson.createClient(config.API_URL);
-  if (req.session.user.outlet) req.body.outlet = req.session.user.outlet._id;
+  if (req.session.user.outlet) req.body.outlet = req.session.user.outlet.id;
 
   var options = {
     limit: 10,
@@ -169,7 +169,7 @@ router.get('/assignment/find', (req, res, next) => {
     var assignments = [];
 
     for (var index in body.data) {
-      if (req.session.user.rank == 2 || (req.session.user.outlet && req.session.user.outlet._id == body.data[index].outlet)) {
+      if (req.session.user.rank == 2 || (req.session.user.outlet && req.session.user.outlet.id == body.data[index].outlet)) {
         assignments.push(body.data[index]);
       }
     }
@@ -345,7 +345,7 @@ router.post('/gallery/import', function(req, res, next){
 
       params.source = 'Twitter';
       params.caption = tweet.text;
-      params.time_captured = new Date(Date.parse(tweet.created_at)).getTime()
+      params.captured_at = new Date(Date.parse(tweet.created_at)).getTime()
       params.twitter = JSON.stringify({
         id: tweet.id_str,
         url: req.body.tweet,
@@ -493,7 +493,7 @@ router.post('/outlet/checkout', function(req, res, next){
   if (!req.session.user || !req.session.user.outlet)
     return res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
 
-  req.body.outlet = req.session.user.outlet._id;
+  req.body.outlet = req.session.user.outlet.id;
 
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
@@ -506,7 +506,7 @@ router.post('/outlet/checkout', function(req, res, next){
       if (!checkout_body)
         return res.json({err: 'ERR_MISSING_BODY', data: []}).end();
 
-      api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(purchase_err,purchase_response,purchase_body){
+      api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet.id, function(purchase_err,purchase_response,purchase_body){
         if (!purchase_err && purchase_body && !purchase_body.err)
           req.session.user.outlet.purchases = purchase_body.data;
         req.session.save(function(){
@@ -536,7 +536,7 @@ router.post('/outlet/create', function(req, res, next){
           if (error){
             if (error == 'ERR_EMAIL_IN_USE' ||
                 error == 'username ' + req.body.contact_email + ' already taken'){
-              parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
+              parse.headers['X-Parse-Application-Id'] = config.PARSE_APPid;
               parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
               parse.headers['X-Parse-Revocable-Session'] = "1";
               return parse.get('/1/login?username=' + querystring.escape(req.body.contact_email) + '&password=' + querystring.escape(req.body.contact_password), function(err,response,parse_body){
@@ -575,7 +575,7 @@ router.post('/outlet/create', function(req, res, next){
         api.post(
           '/v1/outlet/create',
           {
-            owner: authtoken.user._id,
+            owner: authtoken.user.id,
             title: req.body.title,
             link: req.body.link,
             type: req.body.type,
@@ -633,7 +633,7 @@ router.get('/outlet/export', function(req, res, next){
   if (!req.session.user || !req.session.user.outlet)
     return res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
 
-  req.body.outlet = req.session.user.outlet._id;
+  req.body.outlet = req.session.user.outlet.id;
 
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
@@ -682,7 +682,7 @@ router.get('/outlet/export/email', function(req, res, next){
   if (!req.session.user || !req.session.user.outlet)
     return res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
 
-  var id = req.session.user.outlet._id;
+  var id = req.session.user.outlet.id;
 
   var api = requestJson.createClient(config.API_URL);
   api.headers['authtoken'] = req.session.user.token;
@@ -704,7 +704,7 @@ router.post('/outlet/invite', function(req, res, next){
   var api = requestJson.createClient(config.API_URL);
 
   api.headers['authtoken'] = req.session.user.token;
-  api.post('/v1/outlet/invite', { emails: req.body.emails, id: req.session.user.outlet._id }, function(err,response,body){
+  api.post('/v1/outlet/invite', { emails: req.body.emails, id: req.session.user.outlet.id }, function(err,response,body){
     if (err)
       return res.json({err: err.err}).end();
     if (!body)
@@ -736,7 +736,7 @@ router.post('/outlet/invite/accept', function(req, res, next){
     var querystring = require('querystring'),
         parse = requestJson.createClient(config.PARSE_API);
 
-    parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
+    parse.headers['X-Parse-Application-Id'] = config.PARSE_APPid;
     parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
     parse.headers['X-Parse-Revocable-Session'] = "1";
     parse.get('/1/login?username=' + querystring.escape(token_body.data.user.email) + '&password=' + querystring.escape(req.body.password), function(err,response,parse_body){
@@ -774,7 +774,7 @@ router.post('/outlet/invite/accept', function(req, res, next){
                       res.json({err: null}).end();
                     });
 
-          api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(purchase_err,purchase_response,purchase_body){
+          api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet.id, function(purchase_err,purchase_response,purchase_body){
             if (!purchase_err && purchase_body && !purchase_body.err)
               req.session.user.outlet.purchases = purchase_body.data;
             req.session.save(function(){
@@ -880,7 +880,7 @@ router.post('/outlet/update', function(req, res, next){
   var fs = require('fs'),
       request = require('request'),
       params = {
-        id: req.session.user.outlet._id
+        id: req.session.user.outlet.id
       };
 
   if (req.body.title) params.title = req.body.title;
@@ -1021,7 +1021,7 @@ router.post('/user/login', function(req, res, next) {
   if(req.body.email && req.body.password){
     var parse = requestJson.createClient(config.PARSE_API);
 
-    parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
+    parse.headers['X-Parse-Application-Id'] = config.PARSE_APPid;
     parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
     parse.headers['X-Parse-Revocable-Session'] = "1";
     parse.get('/1/login?username=' + querystring.escape(req.body.email) + '&password=' + querystring.escape(req.body.password), function(err,response,parse_body){
@@ -1052,7 +1052,7 @@ router.post('/user/login', function(req, res, next) {
                     res.json({err: null, data: login_body.data.user}).end();
                   });
 
-	      api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function(purchase_err,purchase_response,purchase_body){
+	      api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet.id, function(purchase_err,purchase_response,purchase_body){
           if (!purchase_err && purchase_body && !purchase_body.err)
             req.session.user.outlet.purchases = purchase_body.data;
           req.session.save(function(){
@@ -1217,8 +1217,8 @@ router.get('/user/verify/resend', function(req, res, next){
 //---------------------------^^^-USER-ENDPOINTS-^^^---------------------------//
 
 // router.get('/gallery/download/:id', function(req, res, next){
-//   var gallery_id = req.params.id;
-//   Gallery.get(gallery_id, function(err, gallery){
+//   var galleryid = req.params.id;
+//   Gallery.get(galleryid, function(err, gallery){
 //     if (err) return res.status(404).send('Not Found').end();
 
 //     var archive = archiver('zip');
