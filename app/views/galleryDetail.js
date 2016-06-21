@@ -18,11 +18,12 @@ class GalleryDetail extends React.Component {
 
 		var unverifiedPosts = false
 
-		// Check if every post in gallery is not verified and show all content
-		for(var p in this.props.gallery.posts) {
-			if(this.props.gallery.posts[p].approvals == 0)
-				unverifiedPosts = true;
-		}
+        // this is dirty but hard to deal with confusing api models any other way...
+        // PostList expects the posts to come from post/list or post/:id which returns .parent
+        props.gallery.posts.forEach(p => {
+            p.unverifiedPosts = p.approvals == 0;
+            p.parent = props.gallery;
+        });
 
 		this.state = {
 			galleryEditToggled: false,

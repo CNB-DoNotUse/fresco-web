@@ -10,7 +10,8 @@ var fs                = require('fs'),
     React             = require('react'),
     ReactDOMServer    = require('react-dom/server'),
     request           = require('request'),
-    PublicGallery     = require('../app/views/publicGallery.js');
+    PublicGallery     = require('../app/views/publicGallery.js'),
+    api               = require('../lib/api');
 
 /** //
 
@@ -24,39 +25,43 @@ var fs                = require('fs'),
  */
 
 router.get('/:id', (req, res, next) => {
-    request({
-        url: config.API_URL + "/v1/gallery/get?stories=true&stats=1&id=" + req.params.id,
-        json: true
-    }, doWithGalleryGet);
+    var user;
+    var token;
+    if (req.session) {
+        token = req.session.token;
+        user = req.session.user;
+    }
 
-    function doWithGalleryGet(err, response, body) {
-        //Check for error, 404 if true
-        if (err || !body || body.err) {
-            return next({
-                message: 'Galelry not found!',
-                status : 404
-            });
-        }
+    api.request({
+        token,
+        url: '/gallery/' + req.params.id,
+    }).then(response => {
+        render(response.body[0]);
+    }).catch(e => {
+        console.log(e)
+        return next({
+            message: 'Gallery not found!',
+            status : 404
+        });
+    });
 
-        var gallery = body.data,
-            title = 'Gallery';
+    function render(gallery) {
+        var title = 'Gallery';
 
         if(gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
             title += ' from ' + gallery.posts[0].location.address;
         }
 
         //User is logged in, show full gallery page
-        if (req.session && req.session.user) {
+        if (user) {
             var props = {
-                user: req.session.user,
-                purchases: Purchases.mapPurchases(req.session),
-                gallery: gallery,
-                title: title
+                gallery, title, user,
+                purchases: Purchases.mapPurchases(req.session)
             };
 
             res.locals.section = 'platform';
             res.render('app', {
-                title: title,
+                title,
                 alerts: req.alerts,
                 page: 'galleryDetail',
                 props: JSON.stringify(props)
@@ -64,25 +69,22 @@ router.get('/:id', (req, res, next) => {
 
         } else { //User is not logged in, show public gallery page
             var props = {
-                    gallery: gallery,
-                    title: title,
-                    userAgent: req.headers['user-agent']
-                },
-                element = React.createElement(PublicGallery, props),
-                react = ReactDOMServer.renderToString(element);
+                gallery, title,
+                userAgent: req.headers['user-agent']
+            };
+            var element = React.createElement(PublicGallery, props);
+            var react = ReactDOMServer.renderToString(element);
 
             res.render('app', {
-                title: title,
-                gallery: gallery,
-                react: react,
+                title, gallery, react,
                 og: {
-                    title: title,
+                    title,
                     image: global.formatImg(gallery.posts[0].image, 'large'),
                     url: req.originalUrl,
                     description: gallery.caption
                 },
-                twitter:{
-                    title: title,
+                twitter: {
+                    title,
                     description: gallery.caption,
                     image: global.formatImg(gallery.posts[0].image, 'large')
                 },
