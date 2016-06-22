@@ -82,7 +82,7 @@ export default class GalleryEditFoot extends React.Component {
 
 			//Consturct params with gallery id
 			var params = {
-				id: gallery.id
+				id: gallery._id
 			}
 
 			//Send delete request

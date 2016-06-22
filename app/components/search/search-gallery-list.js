@@ -21,7 +21,7 @@ export default class SearchGalleryList extends React.Component {
 	        		size="large" 
 	        		post={post} 
 	        		rank={this.props.rank} 
-	        		purchased={purchases.indexOf(post.id) != -1}
+	        		purchased={purchases.indexOf(post._id) != -1}
 	        		didPurchase={this.props.didPurchase}
 	        		key={i} />
     		);

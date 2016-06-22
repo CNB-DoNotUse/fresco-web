@@ -99,7 +99,7 @@ export default class GalleryCreate extends React.Component {
 
  		//Generate post ids for update
  		var posts = this.props.posts.map((post) => {
- 			return post.id
+ 			return post._id
  		});
 
 		if(posts.length == 0) 
@@ -111,7 +111,7 @@ export default class GalleryCreate extends React.Component {
  			if(story.new)
  				return 'NEW=' + JSON.stringify(story);
  			else
- 				return story.id;
+ 				return story._id;
 
  		});
 
@@ -121,7 +121,7 @@ export default class GalleryCreate extends React.Component {
  			if(articles.new)
  				return 'NEW=' + JSON.stringify(articles);
  			else
- 				return articles.id;
+ 				return articles._id;
 
  		});	
 
@@ -153,7 +153,7 @@ export default class GalleryCreate extends React.Component {
  						content: 'Gallery successfully saved! Click here to view it', 
  						timeout: 5000 
  					}).click(() => {
-						var win = window.open('/gallery/' + result.data.id, '_blank');
+						var win = window.open('/gallery/' + result.data._id, '_blank');
 						win.focus();
 					});
 

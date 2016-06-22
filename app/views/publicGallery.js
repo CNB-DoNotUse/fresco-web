@@ -62,7 +62,7 @@ class PublicGallery extends React.Component {
  				post = gallery.posts[i],
  				avatar = post.owner ? post.owner.avatar ? post.owner.avatar : global.defaultAvatar : global.defaultAvatar,
  				address = post.location ? post.location.address != null ? post.location.address : 'No location' : 'No location',
-				timestampText = moment(post.created_at).format('MMM Do YYYY, h:mm:ss a'),
+				timestampText = moment(post.time_created).format('MMM Do YYYY, h:mm:ss a'),
 				image = global.formatImg(post.image, 'medium'),
 				style = {
 					backgroundImage: 'url(' + image + ')'
@@ -208,7 +208,7 @@ class PublicGalleryInfo extends React.Component {
 			url:  '/api/story/galleries',
 			type: 'GET',
 			data: {
-				id: story.id
+				id: story._id
 			},
 			dataType: 'json',
 			success: (response, status, xhr) => {
@@ -238,7 +238,7 @@ class PublicGalleryInfo extends React.Component {
 			var galleries = this.state.relatedStory.galleries.map((gallery, i) => {
 
 				return <li key={i} className="gallery">
-							<a href={'/gallery/' + gallery.id}>
+							<a href={'/gallery/' + gallery._id}>
 								<img src={global.formatImg(gallery.posts[0].image, 'small')} />
 							</a>
 						</li>
@@ -256,7 +256,7 @@ class PublicGalleryInfo extends React.Component {
 			var galleries = this.state.relatedGalleries.map((gallery, i)  => {
 
 				return <li key={i} className="gallery">
-							<a  href={'/gallery/' + gallery.id}>
+							<a  href={'/gallery/' + gallery._id}>
 								<img src={global.formatImg(gallery.posts[0].image, 'small')} />
 							</a>
 						</li>

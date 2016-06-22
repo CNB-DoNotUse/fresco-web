@@ -17,7 +17,7 @@ export default class AdminGalleryListItem extends React.Component {
         if(gallery.owner) {
             var galleryOwnerText =
                 <p className="md-type-body2">
-                    <a href={"/user/" + gallery.owner.id} target="_blank">
+                    <a href={"/user/" + gallery.owner._id} target="_blank">
                         {(gallery.owner ? gallery.owner.firstname : '') + ' ' + (gallery.owner ? gallery.owner.lastname : '')}
                     </a>
                 </p>
@@ -36,14 +36,14 @@ export default class AdminGalleryListItem extends React.Component {
         var assignmentLink = <div></div>;
 
         if(gallery.assignment) {
-            assignmentLink = <p className="md-type-body2 assignment-link" style={{lineHeight: '18px'}}><a href={"/assignment/" + gallery.assignment.id}>{gallery.assignment.title}</a></p>
+            assignmentLink = <p className="md-type-body2 assignment-link" style={{lineHeight: '18px'}}><a href={"/assignment/" + gallery.assignment._id}>{gallery.assignment.title}</a></p>
         }
 
         return (
             <div className={"list-item" + (this.props.active ? ' active' : '')} 
-                    onClick={this.props.setActiveGallery.bind(null, gallery.id, this.props.type)}>
+                    onClick={this.props.setActiveGallery.bind(null, gallery._id, this.props.type)}>
                 <div>
-                    <a href={"/gallery/" + gallery.id} target="_blank">
+                    <a href={"/gallery/" + gallery._id} target="_blank">
                         <img
                             className="img-circle"
                             style={{width: '40px', height: '40px'}}
@@ -61,7 +61,7 @@ export default class AdminGalleryListItem extends React.Component {
                     <p className="md-type-body1 assignment-location" style={gallery.assignment ? {lineHeight: '18px'} : {}}>{location}</p>
                 </div>
                 <div className="list-item-timestamp">
-                    <p className="md-type-body1">{global.formatTime(gallery.created_at)}</p>
+                    <p className="md-type-body1">{global.formatTime(gallery.time_created)}</p>
                 </div>
             </div>
         );

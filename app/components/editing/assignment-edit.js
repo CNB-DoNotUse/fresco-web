@@ -110,14 +110,14 @@ export default class AssignmentEdit extends React.Component {
 	save() {
 
 		var params = {
-			id: this.props.assignment.id,
+			id: this.props.assignment._id,
 			title: this.refs.title.value,
 			caption: this.refs.caption.value,
 			radius: global.feetToMiles(this.state.radius),
 			lat: this.state.location.lat,
 			lon: this.state.location.lng, //should be `lng:`
 			address: this.state.address,
-			outlet: this.state.outlet ? this.state.outlet.id : null,
+			outlet: this.state.outlet ? this.state.outlet._id : null,
 			now: Date.now(),
 			expiration_time: this.refs.expiration.value * 60 * 60 * 1000 + Date.now() //Convert to milliseconds
 		};

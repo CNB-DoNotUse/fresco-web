@@ -18,7 +18,7 @@ class LocationDetail extends React.Component {
 		
 		this.state = {
 			initialPostsLoaded: false,
-			sort: 'created_at'
+			sort: 'upload'
 		}
 
 		this.updateSort	= this.updateSort.bind(this);
@@ -44,7 +44,7 @@ class LocationDetail extends React.Component {
 			var sinceList = JSON.parse(window.sessionStorage.sinceList);
 
 			//Update the last seen time to now after posts have been loaded
-			sinceList[this.props.location.id] = Date.now();
+			sinceList[this.props.location._id] = Date.now();
 
 			window.sessionStorage.sinceList = JSON.stringify(sinceList);
 		}
@@ -55,7 +55,7 @@ class LocationDetail extends React.Component {
 	 */
 	loadPosts(passedId, callback) {
 		var params = {
-			id    : this.props.location.id,
+			id    : this.props.location._id,
 			limit : global.postCount,
 			last  : passedId == 0 || passedId == null ? null : passedId
 		}

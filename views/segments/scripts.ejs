@@ -4,12 +4,12 @@
 <% } %>
 
 <!--Global Specifc based on sections-->
-<% if(typeof(section) !== 'undefined'){ %>
+<% if(typeof(section) !== 'undefined'){ %> 
     <script type="text/javascript" src="/js/<%= section %>.js"></script>
-
+  
     <% if(section == 'platform'){ %>
         <script type="text/javascript" src="/js/pages/common.js"></script>
-
+    
         <!--Material Init-->
         <script type="text/javascript">
             $.material.init();
@@ -17,7 +17,6 @@
 
         <!--Session Ping Check-->
         <script type="text/javascript">
-            /*
             (function(){
                 var _xhr = null;
 
@@ -37,12 +36,12 @@
                         }
                     });
                 }, 15000);
-            })(); */
+            })();
         </script>
 
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places"></script>
 
-    <% } else if(typeof(page) !== 'undefined' && page == 'publicGallery'){ %>
+    <% } else if(typeof(page) !== 'undefined' && page == 'publicGallery'){ %>  
         <script type="text/javascript" src="/js/pages/common.js"></script>
     <% } %>
 
@@ -56,18 +55,18 @@
 <% } %>
 
 <!--Page Specifc-->
-<% if(typeof(page) !== 'undefined'){ %>
+<% if(typeof(page) !== 'undefined'){ %> 
   <script type="text/javascript" src="/js/pages/<%= page %>.js"></script>
-<% } %>
+<% } %> 
 
 <!--Alerts-->
 <script type="text/javascript">
     <% for(var i=0; i < alerts.length; i++) {%>
-
+        
       $(document).ready(function(){
-        $.snackbar({
-            content: "<%- alerts[i] %>",
-            timeout: 5000,
+        $.snackbar({ 
+            content: "<%- alerts[i] %>", 
+            timeout: 5000, 
             htmlAllowed: true
         });
       });

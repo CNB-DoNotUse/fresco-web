@@ -17,11 +17,11 @@ router.post('/outlet/checkout', (req, res) => {
   if (!checkOutlet(req, res)) 
     return;
 
-  req.body.outlet = req.session.user.outlet.id;
+  req.body.outlet = req.session.user.outlet._id;
 
   API.proxy(req, res, (data) => {
     var options = {
-      url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet.id,
+      url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id,
       token: req.session.token,
       method: 'GET'
     };
@@ -61,7 +61,7 @@ router.post('/outlet/create', function(req, res, next) {
           if (error) {
             if (error == 'ERR_EMAIL_IN_USE' ||
                 error == 'username ' + req.body.contact_email + ' already taken') {
-              parse.headers['X-Parse-Application-Id'] = config.PARSE_APPid;
+              parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
               parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
               parse.headers['X-Parse-Revocable-Session'] = "1";
               return parse.get('/1/login?username=' + querystring.escape(req.body.contact_email) + '&password=' + querystring.escape(req.body.contact_password), function(err, response, parse_body) {
@@ -101,7 +101,7 @@ router.post('/outlet/create', function(req, res, next) {
         api.post(
           '/v1/outlet/create',
           {
-            owner: authtoken.user.id,
+            owner: authtoken.user._id,
             title: req.body.title,
             link: req.body.link,
             type: req.body.type,
@@ -155,7 +155,7 @@ router.get('/outlet/export', (req, res) => {
       lines.forEach(function(line){
 	var x = new Date(line.time),
 	    formattedTime = (x.getMonth() + 1) + '/' + x.getDate() + '/' + x.getFullYear();
-        data.push([formattedTime, line.type, line.price.replace('$', ''), line.assignment, line.outlet, line.user, line.userid]);
+        data.push([formattedTime, line.type, line.price.replace('$', ''), line.assignment, line.outlet, line.user, line.user_id]);
       });
 
       res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -168,7 +168,7 @@ router.get('/outlet/export', (req, res) => {
       lines.forEach(function(line){
         var x = new Date(line.time),
         formattedTime = (x.getMonth() + 1) + '/' + x.getDate() + '/' + x.getFullYear();
-        output += formattedTime + ',' + line.type + ',' + line.price.replace('$', '') + ',' + line.assignment + ',' + line.outlet + ',' + line.user + ',' + line.userid + '\r\n';
+        output += formattedTime + ',' + line.type + ',' + line.price.replace('$', '') + ',' + line.assignment + ',' + line.outlet + ',' + line.user + ',' + line.user_id + '\r\n';
       });
 
       res.set('Content-Type', 'text/csv');
@@ -181,7 +181,7 @@ router.get('/outlet/export', (req, res) => {
 router.get('/outlet/export/email', (req, res) => {
   if (!checkOutlet(req, res)) return;
 
-  req.url = '/outlet/export/email?id=' + req.session.user.outlet.id;
+  req.url = '/outlet/export/email?id=' + req.session.user.outlet._id;
   API.proxy(req, res);
 });
 
@@ -212,7 +212,7 @@ router.post('/outlet/invite/accept', function(req, res, next) {
       return res.send({err: 'ERR_INVALID_EMAIL_MATCH'});
 
     var parse = requestJson.createClient(config.PARSE_API);
-    parse.headers['X-Parse-Application-Id'] = config.PARSE_APPid;
+    parse.headers['X-Parse-Application-Id'] = config.PARSE_APP_ID;
     parse.headers['X-Parse-REST-API-Key'] = config.PARSE_API_KEY;
     parse.headers['X-Parse-Revocable-Session'] = "1";
 
@@ -273,7 +273,7 @@ router.post('/outlet/invite/accept', function(req, res, next) {
   }
 
   function finishAccept() {
-    api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet.id, function (purchase_err,purchase_response,purchase_body) {
+    api.get('/v1/outlet/purchases?shallow=true&id=' + req.session.user.outlet._id, function (purchase_err,purchase_response,purchase_body) {
       if (!purchase_err && purchase_body && !purchase_body.err)
         req.session.user.outlet.purchases = purchase_body.data;
 
@@ -289,7 +289,7 @@ router.post('/outlet/update', (req, res) => {
 
     if (!checkOutlet(req, res)) return;
 
-    req.body.id = req.session.user.outlet.id;
+    req.body.id = req.session.user.outlet._id;
 
     API.proxy(req, res, (body) => {
         if(body.err) { 
@@ -297,7 +297,7 @@ router.post('/outlet/update', (req, res) => {
         }
 
         req.session.user.outlet = body.data;
-        req.session.user.outlet.owner = body.data.owner.id; //Set the owner to the ID inside the object, because it resolves the entire user
+        req.session.user.outlet.owner = body.data.owner._id; //Set the owner to the ID inside the object, because it resolves the entire user
 
         req.session.save(function(){
             return res.json({

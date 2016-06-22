@@ -34,7 +34,7 @@ export default class GalleryEditStories extends React.Component {
 
 		//Check if story already exists
 		for(var s in stories) {
-			if(stories[s].id && stories[s].id == newStory.id)
+			if(stories[s]._id && stories[s]._id == newStory._id)
 				return;
 		}
 

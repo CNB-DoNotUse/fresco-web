@@ -10,7 +10,7 @@ export default class FrescoBackgroundImage extends React.Component {
 
 	constructor(props) {
 		super(props);
-
+		
 		this.state = {
 			image: global.formatImg(this.props.image, this.props.size)
 		}
@@ -20,7 +20,7 @@ export default class FrescoBackgroundImage extends React.Component {
 
 	updateImage(image) {
 		if (!this.isMounted()) return;
-
+		
 		this.setState({
 			image: image
 		});
@@ -28,15 +28,15 @@ export default class FrescoBackgroundImage extends React.Component {
 
 	render() {
 		return (
-			<div
-				className="frs-background-image"
-				style={{
+			<div 
+				className="frs-background-image" 
+				style={{ 
 					backgroundImage: 'url(' + this.state.image + ')'
 				}}>
 
-				<FrescoImage
-					image={this.props.image}
-					size={this.props.size}
+				<FrescoImage 
+					image={this.props.image} 
+					size={this.props.size} 
 					updateImage={this.updateImage} />
 			</div>
 		)

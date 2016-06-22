@@ -13,7 +13,7 @@ Description : Column on the right of the detail post showing all the post's info
  */
 
 export default class PostInfo extends React.Component {
-
+	
 	render() {
 		//Init needed vars to make list
 		var post = this.props.post,
@@ -21,17 +21,16 @@ export default class PostInfo extends React.Component {
 			userIcon = '',
 			twitter = '',
 			curator = '',
-			timeString = global.formatTime(this.props.post.created_at, true),
+			timeString = global.formatTime(this.props.post.time_created, true),
 			verifiedBy = '',
 			verifyClass = '',
 			userName = '';
 
 		//Define username based on post meta
-		if (post.meta && post.meta.twitter) {
+		if(post.meta.twitter)
 	 		userName = post.meta.twitter.user_name;
-        } else if (post.owner) {
+	 	else if(post.owner)
 	 		userName = post.owner.firstname + ' ' + post.owner.lastname;
-        }
 
 	 	//Define verifier text based on approvals
 		if(this.props.post.approvals) {
@@ -50,8 +49,8 @@ export default class PostInfo extends React.Component {
 		//Check to show user icon
 		if(this.props.post.owner){
 			userIcon = <div>
-							<img
-								className="img-circle img-responsive"
+							<img 
+								className="img-circle img-responsive" 
 								src={post.owner && post.owner.avatar ? post.owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'} />
 						</div>
 		}
@@ -80,10 +79,10 @@ export default class PostInfo extends React.Component {
 						<div className="meta-user">
 							{userIcon}
 							<div>
-								<a href={ post.owner ? "/user/" + post.owner.id : ""}>
+								<a href={ post.owner ? "/user/" + post.owner._id : ""}>
 									<span className="md-type-title">{userName}</span>
 								</a>
-
+								
 								<span className="md-type-body1">{this.props.post.affiliation}</span>
 							</div>
 						</div>
@@ -95,19 +94,19 @@ export default class PostInfo extends React.Component {
 								<span className="mdi mdi-clock icon"></span>
 								{timeString}
 							</li>
-
+							
 							<li>
 								<span className="mdi mdi-map-marker icon"></span>
 								{post.location ? post.location.address ? post.location.address : 'No Location' : 'No Location'}
 							</li>
-
+							
 							{twitter}
 
 							<li>
 								<span className={verifyClass}></span>
 								{verifiedBy}
 							</li>
-
+						
 							{curator}
 						</ul>
 					</div>

@@ -14,6 +14,7 @@ Description : View page for content/photos
 /**
  * Photos Parent Object (composed of PhotoList and Navbar)
  */
+
 class Photos extends React.Component {
 
 	constructor(props) {
@@ -22,7 +23,7 @@ class Photos extends React.Component {
 		this.state = {
 			purchases: [],
 			verifiedToggle: true,
-			sort: this.props.sort || 'created_at'
+			sort: this.props.sort || 'upload'
 		}
 
 		this.loadPosts 			= this.loadPosts.bind(this);
@@ -42,13 +43,14 @@ class Photos extends React.Component {
 		});
 	}
 
-	//Returns array of posts with last and callback, used in child PostList
-	loadPosts (last, callback) {
-		const params = {
-                last,
+	//Returns array of posts with offset and callback, used in child PostList
+	loadPosts (passedOffset, callback) {
+
+		var params = {
 				limit: global.postCount,
+				offset: passedOffset,
 				type: 'photo',
-				sortBy: this.state.sort
+				sort: this.state.sort
 			};
 
 		if(this.state.verifiedToggle)
@@ -59,8 +61,19 @@ class Photos extends React.Component {
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: (photos) => callback(photos),
-			error: (xhr) => $.snackbar({content: xhr.responseJSON.msg})
+			success: (response, status, xhr) => {
+
+				//Send empty array, because of bad response
+				if(!response.data || response.err)
+					callback([]);
+				else
+					callback(response.data);
+
+			},
+			error: (xhr, status, error) => {
+				$.snackbar({content: global.resolveError(error)});
+			}
+
 		});
 	}
 
@@ -88,6 +101,7 @@ class Photos extends React.Component {
 		);
 
 	}
+
 }
 
 

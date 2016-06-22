@@ -1,7 +1,6 @@
 import React from 'react';
 import FrescoBackgroundImage from './fresco-background-image'
 import global from '../../../lib/global'
-import R from 'ramda';
 
 /**
  * Single Gallery Cell, child of GalleryList
@@ -9,47 +8,57 @@ import R from 'ramda';
 
 
 export default class GalleryCell extends React.Component {
+
+	constructor(props) {
+		super(props);
+	}
+
 	render() {
-        const { half, gallery } = this.props;
 
-		const timestamp = gallery.created_at;
-        const timeString = global.formatTime(gallery.created_at);
-        const size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
-        const stories = (gallery.stories || []).slice(0, 2);
-        const galleryCellStories = stories.length > 0 ? <GalleryCellStories stories={stories} /> : '';
+		var timestamp = this.props.gallery.time_created,
+			timeString = global.formatTime(this.props.gallery.time_created),
+			size = this.props.half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6',
+			location = 'No Location',
+			stories = this.props.gallery.related_stories.slice(0, 2),
+			galleryCellStories = stories.length > 0 ? <GalleryCellStories stories={stories} /> : '';
 
-        const postWithAddress = gallery.posts.find(p => p.address);
-        const location = postWithAddress ? postWithAddress.address : 'No Location';
+		for (var i = 0; i < this.props.gallery.posts.length; i++) {
+			if(!this.props.gallery.posts[i].location) continue;
+
+			if (this.props.gallery.posts[i].location.address) {
+				location = this.props.gallery.posts[i].location.address;
+			}
+		}
 
 		return (
 			<div className={size + " tile story gallery"}>
 				<div className="frame"></div>
-
+				
 				<div className="tile-body">
 					<div className="hover">
-						<a href={"/gallery/" + gallery.id}>
-							<p className="md-type-body1">{gallery.caption}</p>
+						<a href={"/gallery/" + this.props.gallery._id}>
+							<p className="md-type-body1">{this.props.gallery.caption}</p>
 						</a>
 						{galleryCellStories}
 					</div>
-
-					<GalleryCellImages posts={gallery.posts} />
+					
+					<GalleryCellImages posts={this.props.gallery.posts} />
 				</div>
-
+			
 				<div className="tile-foot">
 					<div className="hover">
-						<a href={"/gallery/" + gallery.id} className="md-type-body2">See all</a>
-
-						<GalleryCellStats stats={gallery.stats} />
+						<a href={"/gallery/" + this.props.gallery._id} className="md-type-body2">See all</a>
+						
+						<GalleryCellStats stats={this.props.gallery.stats} />
 					</div>
-
+					
 					<div>
 						<div className="ellipses">
 							<span className="md-type-body2">{location}</span>
-
-							<span
-								className="md-type-caption timestring"
-								data-timestamp={gallery.created_at}>{timeString}</span>
+							
+							<span 
+								className="md-type-caption timestring" 
+								data-timestamp={this.props.gallery.time_created}>{timeString}</span>
 						</div>
 					</div>
 				</div>
@@ -75,7 +84,7 @@ class GalleryCellStories extends React.Component {
 		var stories = this.props.stories.map((story, i) => {
 	      	return (
 	        	<li key={i}>
-		        	<a href={"/story/" + story.id}>{story.title}</a>
+		        	<a href={"/story/" + story._id}>{story.title}</a>
 		        </li>
 	      	)
   		})
@@ -94,68 +103,67 @@ class GalleryCellStories extends React.Component {
 class GalleryCellImages extends React.Component {
 
 	render() {
-        const { posts = [] } = this.props;
 
-		if (!posts || posts.length == 0){
+		if (!this.props.posts || this.props.posts.length == 0){
 
 			return (
 				<div className="flex-row"></div>
 			);
 
 		}
-		else if (posts.length == 1){
+		else if (this.props.posts.length == 1){
 
 			return (
 				<div className="flex-row">
-					<FrescoBackgroundImage image={posts[0].image} size="medium" />
+					<FrescoBackgroundImage image={this.props.posts[0].image} size="medium" />
 				</div>
 			);
 		}
-		else if(posts.length < 5){
+		else if(this.props.posts.length < 5){
 
 			return (
 				<div className="flex-row">
-					<FrescoBackgroundImage image={posts[0].image} size="small" />
-					<FrescoBackgroundImage image={posts[1].image} size="small" />
+					<FrescoBackgroundImage image={this.props.posts[0].image} size="small" />
+					<FrescoBackgroundImage image={this.props.posts[1].image} size="small" />
 				</div>
 			);
 		}
-		else if(posts.length >= 5 && posts.length < 8){
+		else if(this.props.posts.length >= 5 && this.props.posts.length < 8){
 
 			return (
 				<div className="flex-row">
 					<div className="flex-col">
-						<FrescoBackgroundImage image={posts[0].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[0].image} size="small" />
 					</div>
 					<div className="flex-col">
 						<div className="flex-row">
-							<FrescoBackgroundImage image={posts[1].image} size="small" />
-							<FrescoBackgroundImage image={posts[2].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[1].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[2].image} size="small" />
 						</div>
 						<div className="flex-row">
-							<FrescoBackgroundImage image={posts[3].image} size="small" />
-							<FrescoBackgroundImage image={posts[4].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[3].image} size="small" />
+							<FrescoBackgroundImage image={this.props.posts[4].image} size="small" />
 						</div>
 					</div>
 				</div>
 			);
 
 		}
-		else if(posts.length >= 8){
+		else if(this.props.posts.length >= 8){
 
 			return (
 				<div className="flex-col">
 					<div className="flex-row">
-						<FrescoBackgroundImage image={posts[0].image} size="small" />
-						<FrescoBackgroundImage image={posts[1].image} size="small" />
-						<FrescoBackgroundImage image={posts[4].image} size="small" />
-						<FrescoBackgroundImage image={posts[3].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[0].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[1].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[4].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[3].image} size="small" />
 					</div>
 					<div className="flex-row">
-						<FrescoBackgroundImage image={posts[4].image} size="small" />
-						<FrescoBackgroundImage image={posts[5].image} size="small" />
-						<FrescoBackgroundImage image={posts[6].image} size="small" />
-						<FrescoBackgroundImage image={posts[7].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[4].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[5].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[6].image} size="small" />
+						<FrescoBackgroundImage image={this.props.posts[7].image} size="small" />
 					</div>
 				</div>
 			);
@@ -166,21 +174,19 @@ class GalleryCellImages extends React.Component {
 
 class GalleryCellStats extends React.Component {
 	render() {
-		const { stats = {} } = this.props;
-        let statString = '';
+		var stats = this.props.stats,
+			statString = '';
 
-		if (stats.photos > 0) {
+		if(stats.photos > 0) 
 			statString = stats.photos + ' Photo' + (stats.photos == 1 ? '' : 's');
-        }
-
-		if (stats.videos > 0) {
-			if (statString.length > 0) {
+		
+		if(stats.videos > 0){
+			if(statString.length > 0)
 				statString += ' • ';
-            }
 
 			statString +=  stats.videos + ' Video' + (stats.videos == 1 ? '' : 's');
 		}
-
+		
 		return <span className="right-info">{statString}</span>;
 	}
 }

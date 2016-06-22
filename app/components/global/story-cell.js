@@ -15,14 +15,14 @@ export default class StoryCell extends React.Component {
 	}
 
 	onClick() {
-		window.location = '/story/' + this.props.story.id;
+		window.location = '/story/' + this.props.story._id;
 	}
 
 	render() {
 
 		// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
 
-		var timestamp = this.props.story.time_edited || this.props.story.created_at,
+		var timestamp = this.props.story.time_edited || this.props.story.time_created,
 			timeString = global.formatTime(timestamp);
 
 		return(
@@ -36,7 +36,7 @@ export default class StoryCell extends React.Component {
 				</div>
 				<div className="tile-foot">
 					<div className="hover">
-						<a href={'/story/'+ this.props.story.id} className="md-type-body2">See all</a>
+						<a href={'/story/'+ this.props.story._id} className="md-type-body2">See all</a>
 						<span className="right-info">{this.props.story.gallery_count + ' ' + (this.props.story.gallery_count == 1 ? 'gallery' : 'galleries')}</span>
 					</div>
 					<div>

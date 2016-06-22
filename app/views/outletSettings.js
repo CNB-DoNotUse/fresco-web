@@ -48,7 +48,7 @@ class OutletSettings extends React.Component {
 
 	render() {
 
-		var isOwner= this.state.user.outlet.owner == this.state.user.id,
+		var isOwner= this.state.user.outlet.owner == this.state.user._id,
 			className = 'outlet-settings' + (!isOwner ? ' centered' : ''),
 			members = '',
 			left = '';

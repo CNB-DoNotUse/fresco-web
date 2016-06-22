@@ -19,7 +19,7 @@ export default class PostDetailImage extends React.Component {
 		super(props);
 		
 		this.state = {
-			purchased: this.props.purchases && this.props.purchases.indexOf(this.props.post.id) >= 0
+			purchased: this.props.purchases && this.props.purchases.indexOf(this.props.post._id) >= 0
 		}
 
 		this.contextMenu = this.contextMenu.bind(this);

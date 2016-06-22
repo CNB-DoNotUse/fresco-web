@@ -24,7 +24,7 @@ var express     = require('express'),
     return res.redirect(config.DASH_HOME);
 
   //Retrieve outlet object from api
-  client.get('/v1/outlet/get?id=' + req.session.user.outlet.id, doWithOutletInfo);
+  client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
 
      function doWithOutletInfo(error, response, body) {
         if (error || !body || body.err){
@@ -41,7 +41,7 @@ var express     = require('express'),
            purchases = Purchases.mapPurchases();
 
         } else {
-           req.alerts.push(req.session.user.id == req.session.user.outlet.owner ?
+           req.alerts.push(req.session.user._id == req.session.user.outlet.owner ?
              'This outlet is in demo mode. We’ll be in touch shortly to verify your account.' :
              'This outlet is in demo mode. Purchases and downloads are currently disabled.');
         }
@@ -115,7 +115,7 @@ router.get('/settings', (req, res, next) => {
     return next(err);
 
   }
-  client.get('/v1/outlet/get?id=' + req.session.user.outlet.id, doWithOutletInfo);
+  client.get('/v1/outlet/get?id=' + req.session.user.outlet._id, doWithOutletInfo);
 
   function doWithOutletInfo(error, response, body) {
 

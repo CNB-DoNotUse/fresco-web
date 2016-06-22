@@ -18,7 +18,7 @@ export default class AssignmentListItem extends React.Component {
 
         return (
             <div
-                id={assignment.id}
+                id={assignment._id}
                 className="list-item assignment-list-item"
                 onClick={this.props.setActiveAssignment.bind(null, assignment)}>
                 <div>

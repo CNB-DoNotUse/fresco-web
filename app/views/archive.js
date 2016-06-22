@@ -23,7 +23,7 @@ class Archive extends React.Component {
 		this.state = {
 			purchases : [],
 			verifiedToggle: true,
-			sort: this.props.sort || 'created_at'
+			sort: this.props.sort || 'upload'
 		}
 
 		this.loadPosts = this.loadPosts.bind(this);
@@ -69,28 +69,31 @@ class Archive extends React.Component {
 		})
 	}
 
-	//Returns array of posts with last and callback, used in child PostList
-	loadPosts (last, callback) {
+	//Returns array of posts with offset and callback, used in child PostList
+	loadPosts (passedOffset, callback) {
 
 		var params = {
-            last,
 			limit: global.postCount,
-			sortBy: this.state.sort
+			offset: passedOffset,
+			sort: this.state.sort
 		};
 
-		if (this.state.verifiedToggle) {
-			params.verified = false;
-        }
+		if(this.state.verifiedToggle)
+			params.verified = this.state.verifiedToggle;
 
 		$.ajax({
 			url:  '/api/post/list',
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: (posts, status, xhr) => {
-                if (status === 'success') {
-                    callback(posts);
-                }
+			success: (response, status, xhr) => {
+
+				//Do nothing, because of bad response
+				if(!response.data || response.err)
+					callback([]);
+				else
+					callback(response.data);
+
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: global.resolveError(error)});

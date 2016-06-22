@@ -26,9 +26,9 @@ export default class AdminAssignmentListItem extends React.Component {
         }
 
         return (
-            <div className={"list-item" + (this.props.active ? ' active' : '')} onClick={this.props.setActiveAssignment.bind(null, assignment.id)}>
+            <div className={"list-item" + (this.props.active ? ' active' : '')} onClick={this.props.setActiveAssignment.bind(null, assignment._id)}>
                 <div>
-                    <a href={"/outlet/" + assignment.outlet.id} target="_blank">
+                    <a href={"/outlet/" + assignment.outlet._id} target="_blank">
                         <img
                             className="img-circle"
                             style={{width: '40px', height: '40px'}}
@@ -37,7 +37,7 @@ export default class AdminAssignmentListItem extends React.Component {
                 </div>
                 <div className="flexy list-item-caption">
                     <p className="md-type-body1">
-                        <a href={"/assignment/" + assignment.id} target="_blank">
+                        <a href={"/assignment/" + assignment._id} target="_blank">
                             {assignment.title}
                         </a>
                     </p>
@@ -46,7 +46,7 @@ export default class AdminAssignmentListItem extends React.Component {
                     <p className="md-type-body1 assignment-location" style={assignment.assignment ? {lineHeight: '18px'} : {}}>{location}</p>
                 </div>
                 <div>
-                    <p className="md-type-body1">{global.formatTime(assignment.created_at)}</p>
+                    <p className="md-type-body1">{global.formatTime(assignment.time_created)}</p>
                 </div>
             </div>
         );

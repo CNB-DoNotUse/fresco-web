@@ -21,18 +21,18 @@ export default class PostCell extends React.Component {
 		if(e.shiftKey) {
 			this.props.togglePost(this.props.post)
 		} else if (e.metaKey || e.ctrlKey) {
-	    	window.open('/post/' + this.props.post.id)
+	    	window.open('/post/' + this.props.post._id)
 		} else {
-			window.open('/post/' + this.props.post.id, '_self')
+			window.open('/post/' + this.props.post._id, '_self')
 		}
 	}
 
 	render() {
 		var post = this.props.post,
 			toggled = this.props.toggled ? 'toggled' : '',
-			time = this.props.sort == 'captured_at' ? post.captured_at : post.created_at,
+			time = this.props.sort == 'captured' ? post.time_captured : post.time_created,
 			timeString = typeof(time) == 'undefined' ? 'No timestamp' : global.formatTime(time),
-			address = post.location ? post.address ? post.address : 'No Address' : 'No Address',
+			address = post.location ? post.location.address ? post.location.address : 'No Address' : 'No Address',
 			size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small;
 
 		var statusClass = 'mdi icon pull-right '; //Class name for post tile icon
@@ -46,7 +46,7 @@ export default class PostCell extends React.Component {
 					<div className="frame"></div>
 
 					<div className="hover"  onClick={this.postClicked}>
-						<p className="md-type-body1">{post.parent.caption}</p>
+						<p className="md-type-body1">{post.caption}</p>
 
 						<span className="md-type-caption">{post.byline}</span>
 
@@ -111,7 +111,7 @@ class PostCellStories extends React.Component {
 			var stories = this.props.stories.map((stories, i) => {
 		      	return (
 			        <li key={i}>
-			        	<a href={"/story/" + story.id}>{story.title}</a>
+			        	<a href={"/story/" + story._id}>{story.title}</a>
 			        </li>
 			    )
 	  		});
@@ -160,7 +160,7 @@ class PostCellActions extends React.Component {
 				actions.push(
 					<PurchaseAction
 						post={this.props.post}
-						assignment={this.props.assignment ? this.props.assignment.id : null}
+						assignment={this.props.assignment ? this.props.assignment._id : null}
 						didPurchase={this.props.didPurchase}
 						key={++key}/>
 				);
@@ -186,17 +186,17 @@ class PostCellActions extends React.Component {
 			actions.push(
 				<PurchaseAction
 					post={this.props.post}
-					assignment={this.props.assignment ? this.props.assignment.id : null}
+					assignment={this.props.assignment ? this.props.assignment._id : null}
 					didPurchase={this.props.didPurchase}
 					key={++key} />
 			);
 
 		}
 
-		var link = '/post/' + this.props.post.id;
+		var link = '/post/' + this.props.post._id;
 
 		if(this.props.assignment) {
-			link += '?assignment=' + this.props.assignment.id
+			link += '?assignment=' + this.props.assignment._id
 		}
 
 		return (

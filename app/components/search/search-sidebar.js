@@ -6,14 +6,14 @@ export default class SearchSide extends React.Component {
 		// Build assignment list item
 		var assignments = this.props.assignments.map((assignment, i) => {
 			return(
-				<li key={i}><a href={"/assignment/" + assignment.id}>{assignment.title}</a></li>
+				<li key={i}><a href={"/assignment/" + assignment._id}>{assignment.title}</a></li>
 			);
 		});
 
 		// Build story list item
 		var stories = this.props.stories.map((story, i) => {
 			return (
-				<li key={i}><a href={"/story/" + story.id}>{story.title}</a></li>
+				<li key={i}><a href={"/story/" + story._id}>{story.title}</a></li>
 			);
 		});
 
@@ -22,21 +22,21 @@ export default class SearchSide extends React.Component {
 			return (
 				<li className="meta-user" key={i}>
 					<div>
-						<a href={"/user/" + user.id}>
+						<a href={"/user/" + user._id}>
 							<img
 								className="img-circle img-responsive"
 								src={user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png'} />
 						</a>
 					</div>
 					<div>
-						<a href={"/user/" + user.id}>
+						<a href={"/user/" + user._id}>
 							<span className="md-type-title">{user.firstname} {user.lastname}</span>
 						</a>
 						
 						<span className="md-type-body1">{user.email}</span>
 
 						<span className="md-type-body1">{user.twitter ? '' : 'No Twitter'} • {user.outlet ? 
-							<a href={"/outlet/" + user.id}>Outlet</a> : 'No Outlet'}
+							<a href={"/outlet/" + user._id}>Outlet</a> : 'No Outlet'}
 						</span>
 					</div>
 				</li>

@@ -101,7 +101,7 @@ export default class AdminBody extends React.Component {
 		}
 
 		for (var a in this.props.assignments) {
-			if(this.props.assignments[a].id == id) {
+			if(this.props.assignments[a]._id == id) {
 				this.setState({
 					hasActiveGallery: true,
 					activeAssignment: this.props.assignments[a]
@@ -113,13 +113,13 @@ export default class AdminBody extends React.Component {
 
 	setActiveGallery(id, type) {
 
-		if( this.state.activeGallery.id == id ) return;
+		if( this.state.activeGallery._id == id ) return;
 		var gallery = {};
 
 		if ( type == 'submission' ) {
 			var submissions = this.props.submissions;
 			for(var i in submissions) {
-				if(submissions[i].id == id) {
+				if(submissions[i]._id == id) {
 					gallery = submissions[i];
 					break;
 				}
@@ -129,7 +129,7 @@ export default class AdminBody extends React.Component {
 		if( type == 'import' ) {
 			var imports = this.props.imports;
 			for( var i in imports ) {
-				if( imports[i].id == id ) {
+				if( imports[i]._id == id ) {
 					gallery = imports[i];
 					break;
 				}
@@ -137,7 +137,7 @@ export default class AdminBody extends React.Component {
 		}
 
  		this.setState({
- 			hasActiveGallery: gallery.hasOwnProperty('id'),
+ 			hasActiveGallery: gallery.hasOwnProperty('_id'),
  			activeGalleryType: type,
  			activeGallery: gallery,
  			activeAssignment: null
@@ -150,7 +150,7 @@ export default class AdminBody extends React.Component {
 		var propGalleryType = this.state.activeGalleryType + 's';
 		var assignments = this.props[propGalleryType];
 		for (var a in assignments) {
-			if(id == assignments[a].id) {
+			if(id == assignments[a]._id) {
 				if (a == (assignments.length - 1))
 					next_index = a - 1;
 				else
@@ -159,17 +159,17 @@ export default class AdminBody extends React.Component {
 			}
 		}
 
-		this.setActiveAssignment(assignments ? assignments[next_index] ? assignments[next_index].id : null : null);
+		this.setActiveAssignment(assignments ? assignments[next_index] ? assignments[next_index]._id : null : null);
 	}
 
 	spliceGallery(cb) {
 	
 		let propGalleryType = this.state.activeGalleryType + 's';
 
-		this.props.spliceGallery({ type: propGalleryType, gallery: this.state.activeGallery.id }, (err, nextGallery) => {
+		this.props.spliceGallery({ type: propGalleryType, gallery: this.state.activeGallery._id }, (err, nextGallery) => {
 
 			if(this.props[propGalleryType].length) {
-				this.setActiveGallery(this.props[propGalleryType][nextGallery].id, this.state.activeGalleryType);
+				this.setActiveGallery(this.props[propGalleryType][nextGallery]._id, this.state.activeGalleryType);
 			}
 
 			cb();
@@ -183,12 +183,12 @@ export default class AdminBody extends React.Component {
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
-				id: this.state.activeGallery.id
+				id: this.state.activeGallery._id
 			}),
 			dataType: 'json',
 			success: (result, status, xhr) => {
 				this.spliceGallery(() => {
-					cb(null, this.state.activeGallery.id);
+					cb(null, this.state.activeGallery._id);
 				})
 			},
 			error: (xhr, status, error) => {
@@ -203,14 +203,14 @@ export default class AdminBody extends React.Component {
 			method: 'post',
 			contentType: "application/json",
 			data: JSON.stringify({
-				id: this.state.activeGallery.id,
+				id: this.state.activeGallery._id,
 				rated: 1,
 				visibility: 0
 			}),
 			dataType: 'json',
 			success: (result, status, xhr) => {
 				this.spliceGallery(() => {
-					cb(null, this.state.activeGallery.id);
+					cb(null, this.state.activeGallery._id);
 				})
 			},
 			error: (xhr, status, error) => {
@@ -249,14 +249,14 @@ export default class AdminBody extends React.Component {
 			var items = this.props[this.props.activeTab];
 			if(!items) return;
 
-			this.props.getData(items[items.length - 1].id, {concat: true, tab: this.state.activeGalleryType + 's'}, (data) => {});
+			this.props.getData(items[items.length - 1]._id, {concat: true, tab: this.state.activeGalleryType + 's'}, (data) => {});
 		}
 	}
 
 	render() {
 		
 		function sortListItem(a, b) {
-			return a.created_at > b.created_at ? -1 : a.created_at < b.created_at ? 1 : 0;
+			return a.time_created > b.time_created ? -1 : a.time_created < b.time_created ? 1 : 0;
 		}
 
 		switch(this.props.activeTab) {
@@ -270,11 +270,11 @@ export default class AdminBody extends React.Component {
 											type="assignment"
 											assignment={assignment}
 											key={i}
-											active={this.state.activeAssignment.id == assignment.id}
+											active={this.state.activeAssignment._id == assignment._id}
 											setActiveAssignment={this.setActiveAssignment} />
 							});
 
-				if(this.state.activeAssignment && this.state.activeAssignment.id) {
+				if(this.state.activeAssignment && this.state.activeAssignment._id) {
 					var editPane = <AdminAssignmentEdit
 									hasActiveGallery={this.state.hasActiveGallery}
 									activeGalleryType={this.state.activeGalleryType}
@@ -293,7 +293,7 @@ export default class AdminBody extends React.Component {
 											type="submission"
 											gallery={submission}
 											key={i}
-											active={this.state.activeGallery.id == submission.id}
+											active={this.state.activeGallery._id == submission._id}
 											setActiveGallery={this.setActiveGallery} />
 							});
 
@@ -317,7 +317,7 @@ export default class AdminBody extends React.Component {
 											type="import"
 											gallery={gallery}
 											key={i}
-											active={this.state.activeGallery.id == gallery.id}
+											active={this.state.activeGallery._id == gallery._id}
 											setActiveGallery={this.setActiveGallery} />
 							});
 

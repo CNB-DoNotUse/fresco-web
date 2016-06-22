@@ -18,7 +18,7 @@ class StoryDetail extends React.Component {
 		this.state = {
 			storyEditToggled: false,
 			story: this.props.story,
-			sort: this.props.sort || 'created_at'
+			sort: this.props.sort || 'upload'
 		}
 		this.toggleStoryEdit = this.toggleStoryEdit.bind(this);
 		this.loadPosts = this.loadPosts.bind(this);
@@ -84,7 +84,7 @@ class StoryDetail extends React.Component {
  	loadPosts(passedOffset, callback) {
 
  		var params = {
-				id: this.props.story.id,
+				id: this.props.story._id,
 				limit: 10,
 				offset: passedOffset,
 				sort: this.state.sort

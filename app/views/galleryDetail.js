@@ -29,7 +29,7 @@ class GalleryDetail extends React.Component {
 			gallery: this.props.gallery,
 			shouldShowVerifeidToggle: unverifiedPosts,
 			verifiedToggle: unverifiedPosts,
-			sort: this.props.sort || 'created_at',
+			sort: this.props.sort || 'upload',
 			title: this.props.title
 		}
 

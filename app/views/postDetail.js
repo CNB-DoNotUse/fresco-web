@@ -60,7 +60,7 @@ class PostDetail extends React.Component {
  	}
 
  	render() {
- 		var editable = this.props.user.rank >= global.RANKS.CONTENT_MANAGER && this.state.gallery.id,
+ 		var editable = this.props.user.rank >= global.RANKS.CONTENT_MANAGER && this.state.gallery._id,
  			galleryEdit = '',
  			relatedPosts = '',
             relatedTags = '';

@@ -10,16 +10,17 @@ Description : List for a gallery used across the site (/highlights, /content/gal
 // **/
 
 /**
- * Gallery List Parent Object
+ * Gallery List Parent Object 
  */
 
 export default class GalleryList extends React.Component {
 
 	constructor(props) {
 		super(props);
-
+		
 		this.state = {
 			galleries: [],
+			offset : 0,
 			loading : false,
 			tags :[]
 		}
@@ -38,7 +39,7 @@ export default class GalleryList extends React.Component {
 			this.setState({
 				galleries: []
 			});
-
+			
 	      	this.loadInitalGalleries();
 
 	      	this.refs.grid.scrollTop = 0;
@@ -46,23 +47,30 @@ export default class GalleryList extends React.Component {
 	}
 
 	loadInitalGalleries() {
-		this.loadGalleries(null, (galleries) => {
+		this.loadGalleries(0, (galleries) => {
+			var offset = galleries ? galleries.length : 0;
+
 			//Set galleries from successful response
-			this.setState({ galleries });
+			this.setState({
+				galleries: galleries,
+				offset : offset
+			});
 		});
 	}
 
 	//Returns array of galleries with offset and callback
-	loadGalleries(last, callback) {
+	loadGalleries(passedOffset, callback) {
 		var endpoint,
 			params = {
 				limit: 20,
-				last: last,
+				offset: passedOffset,
 				sort: this.props.sort
 			};
 
 		if(this.props.highlighted) {
 			endpoint = 'gallery/highlights';
+			
+			params.invalidate = 1;
 		} else {
 			endpoint ='gallery/list';
 
@@ -75,10 +83,14 @@ export default class GalleryList extends React.Component {
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: (data, status, xhr) => {
-          if (status === 'success') {
-              callback(data);
-          }
+			success: (response, status, xhr) => {
+				
+				//Do nothing, because of bad response
+				if(!response.data || response.err) 
+					callback([]);
+				else
+					callback(response.data);
+				
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: global.resolveError(error)});
@@ -94,18 +106,20 @@ export default class GalleryList extends React.Component {
 
 		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
 
-			this.setState({
-				loading : true
+			this.setState({ 
+				loading : true 
 			})
 
-             const lastGallery = this.state.galleries[this.state.galleries.length - 1];
-			this.loadGalleries(lastGallery.id, (galleries) => {
+			this.loadGalleries(this.state.offset, (galleries) => {
 
 				if(!galleries) return;
+
+				var offset = this.state.galleries.length + galleries.length;
 
 				//Set galleries from successful response
 				this.setState({
 					galleries: this.state.galleries.concat(galleries),
+					offset : offset,
 					loading : false
 				});
 
@@ -129,12 +143,12 @@ export default class GalleryList extends React.Component {
 		//Check if a list is needed
 		if(!half) {
 			return (
-	    		<div
-	    			className="container-fluid grid"
-	    			onScroll={this.scroll}
+	    		<div 
+	    			className="container-fluid grid" 
+	    			onScroll={this.scroll} 
 	    			ref="grid" >
 			    	<div className="col-md-8">{galleries}</div>
-
+				    
 				    <SuggestionList />
 		    	</div>
 		    );
@@ -143,9 +157,9 @@ export default class GalleryList extends React.Component {
 		else {
 
 			return (
-	    		<div
-	    			className="container-fluid grid"
-	    			onScroll={this.scroll}
+	    		<div 
+	    			className="container-fluid grid" 
+	    			onScroll={this.scroll} 
 	    			ref="grid"
 	    		>
 	    			{galleries}

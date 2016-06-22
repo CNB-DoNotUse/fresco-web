@@ -54,7 +54,7 @@ router.get('/:id?', (req, res, next) => {
         // }
 
         API.request(options, (err, response) => {
-            if (err || !response.body.data.id || response.body.err) {
+            if (err || !response.body.data._id || response.body.err) {
                 return req.session.save(() => {
                     res.redirect(req.headers.Referer || config.DASH_HOME);
                 });
@@ -88,7 +88,7 @@ function renderUserPage(user, req, res){
             title: title,
             user: req.session.user,
             detailUser: user,
-            editable: req.session.user.id == user.id
+            editable: req.session.user._id == user._id
         };
 
     res.render('app', {

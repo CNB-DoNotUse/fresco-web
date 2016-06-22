@@ -20,11 +20,11 @@ class Stories extends React.Component {
 
 		return (
 			<App user={this.props.user}>
-				<TopBar
+				<TopBar 
 					title="Stories"
 					timeToggle={true}
 					tagToggle={true} />
-				<StoryList
+				<StoryList 
 					loadStories={this.loadStories}
 					scrollable={true} />
 			</App>
@@ -33,21 +33,33 @@ class Stories extends React.Component {
 	}
 
 	//Returns array of posts with offset and callback, used in child PostList
-	loadStories (last, callback) {
+	loadStories (passedOffset, callback) {
 
 		var params = {
-            last,
-			limit: 10
+			limit: 10,
+			verified : true,
+			invalidate: 1,
+			offset: passedOffset,
 		};
 
 		$.ajax({
-			url:  '/api/story/recent',
+			url:  '/api/story/recent?limit=24',
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: (stories) => callback(stories),
+			success: (response, status, xhr) => {
+
+				//Do nothing, because of bad response
+				if(!response.data || response.err)
+					callback([]);
+				else
+					callback(response.data);
+
+			},
 			error: (xhr, status, error) => {
-				$.snackbar({ content:  'Couldn\'t fetch any stories!' });
+				$.snackbar({
+					content:  'Couldn\'t fetch any stories!'
+				});
 			}
 
 		});

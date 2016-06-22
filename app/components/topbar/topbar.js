@@ -78,10 +78,10 @@ export default class TopBar extends React.Component {
 		selected = selected.toLowerCase();
 
 		if (selected == 'by capture time') {
-			this.props.updateSort('captured_at');
+			this.props.updateSort('captured');
 		}
 		else if (selected == 'by upload time') {
-			this.props.updateSort('created_at');
+			this.props.updateSort('upload');
 		}
 	}
 

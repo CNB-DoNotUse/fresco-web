@@ -69,7 +69,7 @@ export default class PlacesAutocomplete extends React.Component {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng()
             },
-            placeid: place.placeid
+            place_id: place.place_id
         });
     }
 

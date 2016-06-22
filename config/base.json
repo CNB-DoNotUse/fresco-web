@@ -2,7 +2,7 @@
     "STATIC_CDN": "https://d1dw1p6sgigznj.cloudfront.net/",
     "SESSION_SECRET": "Flerbelerbler heller falala laller",
 
-    "API_VERSION": "v2",
+    "API_VERSION": "v1",
 
     "TWITTER": {
         "CONSUMER_KEY": "94rpzX0nPHcRVncdP5tBRHUIp",

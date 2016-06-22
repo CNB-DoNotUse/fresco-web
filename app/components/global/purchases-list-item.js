@@ -34,7 +34,7 @@ export default class PurchasesListItem extends React.Component {
 
 		if(purchase.assignment) {
 			assignment = 
-				<div onClick={this.openLink.bind(this, '/assignment/' + purchase.assignment.id)}>
+				<div onClick={this.openLink.bind(this, '/assignment/' + purchase.assignment._id)}>
 					<p className="md-type-body2" style={{lineHeight: '16px'}}>
 						{purchase.assignment.title}
 					</p>
@@ -48,7 +48,7 @@ export default class PurchasesListItem extends React.Component {
 		if(post.owner){
 			user = <div 
 						className="flexy" 
-						onClick={this.openLink.bind(this, '/user/' + post.owner.id)}>
+						onClick={this.openLink.bind(this, '/user/' + post.owner._id)}>
 						<p className="md-type-body2">{post.owner.firstname + ' ' + post.owner.lastname}</p>
 					</div>
 		}
@@ -62,7 +62,7 @@ export default class PurchasesListItem extends React.Component {
 		return (
 			<div 
 				className="list-item" 
-				onClick={this.openLink.bind(this, '/post/' + post.id)} 
+				onClick={this.openLink.bind(this, '/post/' + post._id)} 
 				style={{cursor: 'pointer'}}>
 				<div>
 					<img

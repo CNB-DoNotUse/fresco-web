@@ -24,7 +24,7 @@ router.get('/:id', (req, res, next) => {
         outlet = body.data.outlet;
 
     for(let outlet of body.data.outlets) {
-        if(outlet.id == req.session.user.outlet.id) {
+        if(outlet._id == req.session.user.outlet._id) {
             outlet = outlet;
             notFoundUserID = false;
             break;

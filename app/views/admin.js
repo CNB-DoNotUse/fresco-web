@@ -84,14 +84,14 @@ import AdminBody from './../components/admin/admin-body'
  	}
 
  	getChangedData(newGalleries, currentGalleries) {
- 		var newIDs = newGalleries.map(n => n.id),
- 			curIDs = currentGalleries.map(c => c.id);
+ 		var newIDs = newGalleries.map(n => n._id),
+ 			curIDs = currentGalleries.map(c => c._id);
 
  		var diffIds = _.difference(newIDs, curIDs),
  			diffGalleries = [];
 
  		for(var x in newGalleries) {
- 			if(diffIds.indexOf(newGalleries[x].id) != -1) {
+ 			if(diffIds.indexOf(newGalleries[x]._id) != -1) {
  				diffGalleries.push(newGalleries[x]);
  			}
 
@@ -145,7 +145,7 @@ import AdminBody from './../components/admin/admin-body'
 		var stateData = this.state[data.type], index = 0;
 
 		for (var g in stateData) {
-			if(stateData[g].id == data.gallery) {
+			if(stateData[g]._id == data.gallery) {
 				index = g;
 				break;
 			}
@@ -222,7 +222,7 @@ import AdminBody from './../components/admin/admin-body'
 					if(stateData.length) {
 						// Filter posts newer than newest
 						for (var i = 0; i < newData.length; i++) {
-							if(newData[i].created_at < stateData[0].created_at) {
+							if(newData[i].time_created < stateData[0].time_created) {
 								newData.splice(i, 1);
 							}
 						}

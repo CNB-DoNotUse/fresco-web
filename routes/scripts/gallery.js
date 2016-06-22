@@ -1,12 +1,14 @@
 var express = require('express'),
-    request = require('request'),
-    Twitter = require('twitter'),
-    config = require('../../lib/config'),
-    async = require('async'),
-    fs = require('fs'),
-    http = require('http'),
-    API = require('../../lib/api'),
-    router = express.Router();
+        request = require('request'),
+        Twitter = require('twitter'),
+        config = require('../../lib/config'),
+        async = require('async'),
+        fs = require('fs'),
+        http = require('http'),
+        API = require('../../lib/api'),
+        Story = require('../../lib/story'),
+        Gallery = require('../../lib/gallery'),
+        router = express.Router();
 
 //---------------------------vvv-GALLERY-ENDPOINTS-vvv---------------------------//
 
@@ -47,13 +49,13 @@ router.post('/gallery/import', (req, res) => {
 
             req.body.source = 'Twitter';
             req.body.caption = tweet.text;
-            req.body.captured_at = new Date(Date.parse(tweet.created_at)).getTime();
+            req.body.time_captured = new Date(Date.parse(tweet.created_at)).getTime();
 
             /**
              * Dev API has a new twitter structure.
             */
-            req.body.twitterid = tweet.id_str;
-            req.body.twitter_userid = tweet.user.id_str;
+            req.body.twitter_id = tweet.id_str;
+            req.body.twitter_user_id = tweet.user.id_str;
             req.body.twitter_url = req.body.tweet;
             req.body.twitter_handle = handle;
             req.body.twitter_name = tweet.user.name;

@@ -32,7 +32,7 @@ export default class GalleryEditByline extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(this.props.gallery.id != prevProps.gallery.id) {
+		if(this.props.gallery._id != prevProps.gallery._id) {
 
 			$.material.init();
 

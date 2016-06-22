@@ -27,7 +27,7 @@ export default class EditPost extends React.Component {
 			if (this.props.file.type.indexOf('video') !== -1) { //video
 
 				return (
-					<video width="100%" height="100%" data-id={this.props.post.id} controls>
+					<video width="100%" height="100%" data-id={this.props.post._id} controls>
 						<source 
 							id={this.props.file.lastModified}
 							src={this.props.source}
@@ -51,7 +51,7 @@ export default class EditPost extends React.Component {
 		else if(this.props.post.video) {
 
 			return (
-				<video width="100%" height="100%" data-id={this.props.post.id} controls>
+				<video width="100%" height="100%" data-id={this.props.post._id} controls>
 					<source 
 						src={global.formatVideo(this.props.post.video)}
 						type="video/mp4" />
@@ -66,7 +66,7 @@ export default class EditPost extends React.Component {
 				<img 
 					className='img-responsive'
 					src={global.formatImg(this.props.post.image, 'medium')}
-					data-id={this.props.post.id} />
+					data-id={this.props.post._id} />
 			)
 
 		}
