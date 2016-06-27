@@ -30,7 +30,7 @@ router.post('/user/reset', (req, res, next) => {
     request
     .post('https://api.parse.com/1/requestPasswordReset')
     .send({ email: email })
-    .set('X-Parse-Application-Id', config.PARSE_APP_ID)
+    .set('X-Parse-Application-Id', config.PARSE_APPid)
     .set('X-Parse-REST-API-Key', config.PARSE_API_KEY)
     .set('X-Parse-Revocable-Session', "1")
     .set('Accept', 'application/json')

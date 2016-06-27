@@ -51,7 +51,7 @@ export default class AdminAssignmentEdit extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.assignment._id != nextProps.assignment._id) {
+        if (this.props.assignment.id != nextProps.assignment.id) {
             if(nextProps.hasActiveGallery) {
 
                 var assignment = nextProps.assignment;
@@ -145,7 +145,7 @@ export default class AdminAssignmentEdit extends React.Component {
 
         $.post('/api/assignment/approve',
         {
-            id: this.props.assignment._id,
+            id: this.props.assignment.id,
             now: Date.now(),
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
@@ -162,7 +162,7 @@ export default class AdminAssignmentEdit extends React.Component {
                     content: 'Could not approve assignment!'
                 });
             } else {
-                this.props.updateAssignment(this.props.assignment._id);
+                this.props.updateAssignment(this.props.assignment.id);
                 $.snackbar({
                     content: 'Assignment Approved!'
                 });
@@ -174,10 +174,10 @@ export default class AdminAssignmentEdit extends React.Component {
     reject() {
         this.pending = true;
         $.post('/api/assignment/deny', {
-            id: this.props.assignment._id
+            id: this.props.assignment.id
         }, (data) => {
             this.pending = false;
-            this.props.updateAssignment(this.props.assignment._id);
+            this.props.updateAssignment(this.props.assignment.id);
             if(data.err) {
                 $.snackbar({
                     content: 'Could not reject assignment!'
@@ -334,7 +334,7 @@ class AssignmentMergeDropup extends React.Component {
                     return (
                         <AssignmentMergeMenuItem
                             assignment={a}
-                            onClick={this.props.selectMerge.bind(null, a._id)}
+                            onClick={this.props.selectMerge.bind(null, a.id)}
                             key={i} />
                     );
                 })}

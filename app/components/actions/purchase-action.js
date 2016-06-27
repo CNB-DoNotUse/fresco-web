@@ -26,7 +26,7 @@ export default class PurchaseAction extends React.Component {
 		//Check if the prop exists first
 		if(!this.props.post) return;
 
-		var post = this.props.post._id,
+		var post = this.props.post.id,
 			assignment = this.props.assignment || null
 
 		//Confirm the purchase
@@ -62,7 +62,7 @@ export default class PurchaseAction extends React.Component {
 							window.location = '/outlet';
 						});
 
-						this.props.didPurchase(this.props.post._id);
+						this.props.didPurchase(this.props.post.id);
 
 					},
 					error: (xhr, status, error) => {

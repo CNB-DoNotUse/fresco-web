@@ -81,7 +81,7 @@ export default class DispatchMap extends React.Component {
 	componentWillReceiveProps(nextProps) {
 		//Check if there is an active assignment or the acive assignment has `changed`
 		if(!this.isOpeningCallout && nextProps.activeAssignment && 
-			(!this.props.activeAssignment || nextProps.activeAssignment._id != this.props.activeAssignment._id)) 
+			(!this.props.activeAssignment || nextProps.activeAssignment.id != this.props.activeAssignment.id)) 
 		{	
 			this.focusOnAssignment(nextProps.activeAssignment);
 		}
@@ -287,12 +287,12 @@ export default class DispatchMap extends React.Component {
 
 				//Map out passed assignment IDs
 				var newAssignmentIds = assignments.map((assignment) => {
-					return assignment._id;
+					return assignment.id;
 				});
 
 				//Map out current assignment IDs
 				var currentAssignmentIds = currentAssignments.map((assignment) => {
-					return assignment._id;
+					return assignment.id;
 				});
 
 				//Check if there's a difference
@@ -341,12 +341,12 @@ export default class DispatchMap extends React.Component {
 
 		//Map out all of the previous assignmnets
 		var prevAssignmentIds = prevAssignments.map((assignment) => {
-			return assignment._id.toString();
+			return assignment.id.toString();
 		});
 
 		for (var i = 0; i < this.state.assignments.length; i++) {
 			//Check if it doesn't exist
-			if(prevAssignmentIds.indexOf(this.state.assignments[i]._id.toString()) == -1) {
+			if(prevAssignmentIds.indexOf(this.state.assignments[i].id.toString()) == -1) {
 				assignments.push(this.state.assignments[i]);
 			}
 		}
@@ -490,7 +490,7 @@ export default class DispatchMap extends React.Component {
 			position, 
 			global.milesToMeters(radius), 
 			status,
-			assignment._id
+			assignment.id
 		);
 		
 		//Create the marker
@@ -500,7 +500,7 @@ export default class DispatchMap extends React.Component {
 			status,
 			zIndex, 
 			draggable,
-			assignment._id
+			assignment.id
 		);
 
 		//Add event handler to display callout when clicekd
