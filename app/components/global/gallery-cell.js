@@ -1,7 +1,6 @@
 import React from 'react';
 import FrescoBackgroundImage from './fresco-background-image'
 import global from '../../../lib/global'
-import R from 'ramda';
 
 /**
  * Single Gallery Cell, child of GalleryList
