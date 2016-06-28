@@ -1,5 +1,6 @@
-import React from 'react'
-import global from '../../../lib/global'
+import React from 'react';
+import global from '../../../lib/global';
+import intersection from 'lodash/intersection';
 
 /**
  * Side bar object found across the site; inside of the top level App class
@@ -9,7 +10,6 @@ export default class Sidebar extends React.Component {
 
 	constructor(props) {
 		super(props);
-
 		this.handleSearchKeyDown = this.handleSearchKeyDown.bind(this);
 	}
 
@@ -23,7 +23,6 @@ export default class Sidebar extends React.Component {
 	}
 
 	render() {
-
 		var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 
 		return (
@@ -87,28 +86,29 @@ class SideBarListItems extends React.Component {
 	}
 
 	render() {
-		if(!this.props.user) return;
+        const { user: { outlet, permissions = [] } } = this.props;
+		if(!user) return;
 
-		if (this.props.user.outlet) {
+		if (outlet) {
 			var dispatch =
 				<li className="sidebar-tab">
 					<a href="/dispatch"><span className="mdi mdi-map icon"></span>Dispatch</a>
 				</li>;
 		}
 
-		if (this.props.user.outlet != null){
+		if (outlet != null){
 			var outlet =
 				<li className="sidebar-tab">
 					<a href="/outlet"><span className="mdi mdi-account-multiple icon"></span>{this.props.user.outlet.title}</a>
 				</li>;
 		}
-		if(this.props.user.rank >= global.RANKS.CONTENT_MANAGER) {
+		if(permissions.includes(global.permissions.UPDATE_OTHER_CONTENT)) {
 			var admin =
 				<li className="sidebar-tab">
 					<a href="/admin"><span className="mdi mdi-dots-horizontal icon"></span>Admin</a>
 				</li>;
 		}
-		if(this.props.user.rank == global.RANKS.ADMIN) {
+		if(intersect(permissions, global.permissions.GET_ALL_PURCHASES, global.permissions.VIEW_ALL_ASSIGNMENTS)) {
 			var purchases =
 				<li className="sidebar-tab">
 					<a href="/purchases"><span className="mdi mdi-currency-usd icon"></span>Purchases</a>
@@ -121,7 +121,6 @@ class SideBarListItems extends React.Component {
 		}
 
 		return (
-
 			<ul className="md-type-body1 master-list">
 				<li className="sidebar-tab">
 					<a href="/highlights"><span className="mdi mdi-star icon"></span>Highlights</a>
@@ -149,8 +148,7 @@ class SideBarListItems extends React.Component {
 				{purchases}
 				{stats}
 			</ul>
-
-		)
+		);
 	}
 
 	goLink(link) {
