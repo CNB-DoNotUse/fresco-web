@@ -90,6 +90,7 @@ class TopBar extends React.Component {
 		let locationInputCmp = '';
 	    let	saveButtonCmp = '';
 	    let	titleCmp = '';
+        let tabCmps = '';
         const {
             title,
             saveButton,
@@ -105,7 +106,6 @@ class TopBar extends React.Component {
             verifiedToggle,
             defaultVerified,
             permissions,
-            verifiedToggleSelected,
             tabs,
             setActiveTab,
             activeTab,
@@ -182,7 +182,7 @@ class TopBar extends React.Component {
 				<Dropdown
 					options={['All content', 'Verified']}
 					selected={defaultVerified == 'all' ? 'All content' : 'Verified'}
-					onSelected={verifiedToggleSelected}
+					onSelected={this.verifiedToggleSelected}
 					key="verifiedToggle"
                     inList={true}
                 />
@@ -200,14 +200,12 @@ class TopBar extends React.Component {
 						onClick={setActiveTab.bind(null, tab)}
 						key={tab.toLowerCase()}>
 						{tab}
-						<div className="ripple-wrapper"></div>
+                        <div className="ripple-wrapper" />
 					</button>
-				)
+				);
 			});
 
-			var tabCmps = <div className="tab-control">
-							{tabContent}
-						</div>
+			tabCmps = <div className="tab-control">{tabContent}</div>;
 		}
 
 		return (
