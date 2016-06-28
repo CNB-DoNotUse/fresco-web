@@ -57,7 +57,7 @@ export default class PostInfo extends React.Component {
 		}
 
 		//Check to show twitter item
-		if (post.meta.twitter && post.meta.twitter.url){
+		if (post.meta && post.meta.twitter && post.meta.twitter.url){
 			var twitter = 	<li>
 								<span className="mdi mdi-twitter icon"></span>
 								<a href={ post.meta.twitter.url } target="_blank">See original</a>

@@ -209,7 +209,7 @@ export default class GalleryEdit extends React.Component {
  			files 	   = gallery.files ? gallery.files : [],
  			caption    = gallery.caption,
  			tags 	   = gallery.tags,
- 			assignment = gallery.assignment ? gallery.assignment.id : undefined, 
+ 			assignment = gallery.assignment ? gallery.assignment.id : undefined,
  			bylineExists = document.getElementById('byline-edit') !== null;
 
  		// If assignment was removed, send -1 instead of undefined.

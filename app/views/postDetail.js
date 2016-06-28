@@ -43,7 +43,7 @@ class PostDetail extends React.Component {
 
  	updateGallery(gallery) {
         var post = this.state.post;
-        
+
         if(gallery.visibility !== this.state.gallery.visibility){
             post.approvals = gallery.visibility;
         }
@@ -78,7 +78,7 @@ class PostDetail extends React.Component {
 		relatedPosts = <PostRelated gallery={this.state.gallery} />
 
         relatedTags = <PostRelatedTags tags={this.state.gallery.tags} />
-                            
+
  		return (
  			<App user={this.props.user}>
  				<TopBar
@@ -106,7 +106,7 @@ class PostDetail extends React.Component {
 
                     {relatedTags}
  				</div>
-                
+
  				{galleryEdit}
  			</App>
  		);
