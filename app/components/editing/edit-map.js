@@ -28,13 +28,12 @@ export default class EditMap extends React.Component {
 		this.initializeMap();
 	}
 
-	componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
+        if(this.props.rerender) {
 
-		if(this.props.rerender) {
-			google.maps.event.trigger(this.state.map, 'resize');
-
-			if(this.state.map && this.state.marker) {
-				this.state.map.panTo(this.state.marker.getPosition(), 12);
+            if(this.state.map) {
+                google.maps.event.trigger(this.state.map, 'resize');
+				if(this.state.marker) this.state.map.panTo(this.state.marker.getPosition(), 12);
 			}
 		}
 
@@ -45,7 +44,7 @@ export default class EditMap extends React.Component {
 		}
 
 		//Check if locations are the same from what was previsouly set
-		if(JSON.stringify(prevProps.location) == JSON.stringify(this.props.location) && 
+		if(JSON.stringify(prevProps.location) == JSON.stringify(this.props.location) &&
 			JSON.stringify(prevProps.radius) == JSON.stringify(this.props.radius)) {
 			return;
 		}
@@ -78,10 +77,10 @@ export default class EditMap extends React.Component {
 						lng: loc[0]
 					}
 				});
-			} 
+			}
 			this.state.marker.setPosition(this.getCentroid(locationArr || this.props.location));
 			this.state.map.panTo(this.getCentroid(locationArr || this.props.location));
-		} 
+		}
 		//Otherwise just set the marker to the passed position
 		else {
 			this.state.marker.setPosition(
@@ -104,7 +103,7 @@ export default class EditMap extends React.Component {
 		}
 
 		var path, lat = 0, lng = 0;
-		
+
 		if (Array.isArray(polygon)) {
 			var newPolygon = new google.maps.Polygon({paths: polygon});
 			path = newPolygon.getPath();
@@ -124,11 +123,11 @@ export default class EditMap extends React.Component {
 	}
 
 	getBounds(polygon) {
-		
+
 		var bounds = new google.maps.LatLngBounds();
 		var paths = polygon.getPaths();
-		var path;        
-		
+		var path;
+
 		for (var i = 0; i < paths.getLength(); i++) {
 			path = paths.getAt(i);
 			for (var ii = 0; ii < path.getLength(); ii++) {
@@ -224,7 +223,7 @@ export default class EditMap extends React.Component {
 		return (
 			<div id={"edit-map-canvas-" + this.state.mapID} className="map-container"></div>
 		);
-		
+
 	}
 }
 
