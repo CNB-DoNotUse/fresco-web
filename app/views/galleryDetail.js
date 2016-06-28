@@ -1,11 +1,11 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import TopBar from './../components/topbar'
-import PostList from './../components/global/post-list'
-import GallerySidebar from './../components/galleryDetail/gallery-sidebar'
-import GalleryEdit from './../components/editing/gallery-edit'
-import App from './app'
-import global from '../../lib/global'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TopBar from './../components/topbar';
+import PostList from './../components/global/post-list';
+import GallerySidebar from './../components/galleryDetail/gallery-sidebar';
+import GalleryEdit from './../components/editing/gallery-edit';
+import App from './app';
+import global from '../../lib/global';
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
@@ -16,7 +16,7 @@ class GalleryDetail extends React.Component {
 	constructor(props) {
 		super(props);
 
-		var unverifiedPosts = false
+		var unverifiedPosts = false;
 
         // this is dirty but hard to deal with confusing api models any other way...
         // PostList expects the posts to come from post/list or post/:id which returns .parent
@@ -32,7 +32,7 @@ class GalleryDetail extends React.Component {
 			verifiedToggle: unverifiedPosts,
 			sort: this.props.sort || 'created_at',
 			title: this.props.title
-		}
+		};
 
 		this.toggleGalleryEdit = this.toggleGalleryEdit.bind(this);
 		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
@@ -46,11 +46,9 @@ class GalleryDetail extends React.Component {
 		});
 	}
 
-	onVerifiedToggled(verifiedToggle) {
-		this.setState({
-			verifiedToggle: verifiedToggle
-		});
-	}
+    onVerifiedToggled(verifiedToggle) {
+        this.setState({ verifiedToggle });
+    }
 
 	/**
 	 * Updates gallery in state
@@ -70,55 +68,55 @@ class GalleryDetail extends React.Component {
 	}
 
 	updateSort(sort) {
-		this.setState({
-			sort: sort
-		})
+		this.setState({ sort });
 	}
 
-	render() {
+    render() {
+        const { user, purchases } = this.props;
 
-		return (
-			<App user={this.props.user}>
-				<TopBar
-					title={this.state.title}
-					updateSort={this.updateSort}
-					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
-					rank={this.props.user.rank}
-					edit={this.toggleGalleryEdit}
-					verifiedToggle={this.state.shouldShowVerifeidToggle}
-					onVerifiedToggled={this.onVerifiedToggled}
-					timeToggle={true}
-					chronToggle={true} />
+        return (
+            <App user={user}>
+                <TopBar
+                    title={this.state.title}
+                    updateSort={this.updateSort}
+                    editable={user.permissions.includes(global.permissions.UPDATE_OTHER_CONTENT)}
+                    permissions={user.permissions}
+                    edit={this.toggleGalleryEdit}
+                    verifiedToggle={this.state.shouldShowVerifeidToggle}
+                    onVerifiedToggled={this.onVerifiedToggled}
+                    timeToggle={true}
+                    chronToggle={true}
+                />
 
-				<GallerySidebar gallery={this.state.gallery} />
+            <GallerySidebar gallery={this.state.gallery} />
 
-				<div className="col-sm-8 tall">
-					<PostList
-						rank={this.props.user.rank}
-						purchases={this.props.purchases}
-						posts={this.state.gallery.posts}
-						onlyVerified={this.state.verifiedToggle}
-						updatePosts={this.state.updatePosts}
-						scrollable={false}
-						sort={this.state.sort}
-						editable={false}
-						size='large' />
-				</div>
+            <div className="col-sm-8 tall">
+                <PostList
+                    permissions={user.permissions}
+                    purchases={purchases}
+                    posts={this.state.gallery.posts}
+                    onlyVerified={this.state.verifiedToggle}
+                    updatePosts={this.state.updatePosts}
+                    scrollable={false}
+                    sort={this.state.sort}
+                    editable={false}
+                    size='large'
+                />
+            </div>
 
-				<GalleryEdit
-					updateGallery={this.updateGallery}
-					toggle={this.toggleGalleryEdit}
-
-					gallery={this.state.gallery}
-					toggled={this.state.galleryEditToggled} />
-			</App>
-		);
-
-	}
- }
+            <GalleryEdit
+                updateGallery={this.updateGallery}
+                toggle={this.toggleGalleryEdit}
+                gallery={this.state.gallery}
+                toggled={this.state.galleryEditToggled}
+            />
+        </App>
+        );
+    }
+}
 
 GalleryDetail.defaultProps = {
-	gallery : {}
+	gallery: {}
 }
 
 ReactDOM.render(
