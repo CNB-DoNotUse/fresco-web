@@ -5,7 +5,7 @@ import GalleryList from './../components/global/gallery-list.js'
 import TopBar from './../components/topbar'
 
 /**
- * Galleries Parent Object (composed of GalleryList and Navbar) 
+ * Galleries Parent Object (composed of GalleryList and Navbar)
  * Half = False, to render at large size instead of half size
  */
 
@@ -29,18 +29,20 @@ import TopBar from './../components/topbar'
 	render() {
 		return (
 			<App user={this.props.user}>
-				<TopBar 
+				<TopBar
 					title="Galleries"
 					timeToggle={true}
-					rank={this.props.user.rank}
+					permissions={this.props.user.permissions}
 					verifiedToggle={true}
 					updateSort={this.updateSort}
-					onVerifiedToggled={this.onVerifiedToggled} />
-					
-				<GalleryList 
+                    onVerifiedToggled={this.onVerifiedToggled}
+                />
+
+				<GalleryList
 					withList={false}
 					highlighted={false}
-					onlyVerified={this.state.verifiedToggle} />
+                    onlyVerified={this.state.verifiedToggle}
+                />
 			</App>
 		)
 	}
@@ -48,7 +50,7 @@ import TopBar from './../components/topbar'
 }
 
 ReactDOM.render(
-  <Galleries 
+  <Galleries
   	user={window.__initialProps__.user} />,
   document.getElementById('app')
 );

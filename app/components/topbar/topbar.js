@@ -1,8 +1,8 @@
-import React from 'react'
-import global from './../../../lib/global'
-import Dropdown from './../global/dropdown'
-import RadioGroup from './../global/radio-group'
-import FrescoAutocomplete from './../global/fresco-autocomplete.js'
+import React from 'react';
+import global from './../../../lib/global';
+import Dropdown from './../global/dropdown';
+import RadioGroup from './../global/radio-group';
+import FrescoAutocomplete from './../global/fresco-autocomplete.js';
 
 /** //
 
@@ -12,7 +12,7 @@ If the prop exists, then the repsective toggle/dropdown/edit/whatever is added t
 
 // **/
 
-export default class TopBar extends React.Component {
+class TopBar extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -86,62 +86,78 @@ export default class TopBar extends React.Component {
 	}
 
 	render() {
+	    let topbarItems = [];
+		let locationInputCmp = '';
+	    let	saveButtonCmp = '';
+	    let	titleCmp = '';
+        const {
+            title,
+            saveButton,
+            locationInput,
+            mapPlace,
+            editable,
+            updateSettings,
+            bounds,
+            editIcon,
+            edit,
+            chronToggle,
+            timeToggle,
+            verifiedToggle,
+            defaultVerified,
+            permissions,
+            verifiedToggleSelected,
+            tabs,
+            setActiveTab,
+            activeTab,
+        } = this.props;
 
-		var edit = '',
-			topbarItems = [],
-			locationInput = '',
-			saveButton = '',
-			title = '';
-
-		if(this.props.title){
-			title = <h1 className="md-type-title">{this.props.title}</h1>
+		if(title){
+			titleCmp = <h1 className="md-type-title">{title}</h1>
 		}
 
-		if(this.props.saveButton){
-			saveButton = <a
-							onClick={this.props.updateSettings}
-							className="mdi mdi-content-save icon pull-right hidden-xs">
-							<div className="ripple-wrapper"></div>
-						</a>;
+        if(saveButton){
+            saveButtonCmp = <a
+                onClick={updateSettings}
+                className="mdi mdi-content-save icon pull-right hidden-xs">
+                <div className="ripple-wrapper"></div>
+            </a>;
 
 		}
 
-		if(this.props.locationInput) {
+		if(locationInput) {
 			var text = '';
 
-			if(this.props.mapPlace) {
-				text =  this.props.mapPlace.description ||  this.props.mapPlace.formatted_address;
+			if(mapPlace) {
+				text = mapPlace.description || mapPlace.formatted_address;
 			}
 
-			locationInput = <FrescoAutocomplete 
+			locationInputCmp = <FrescoAutocomplete
 								class="nav"
 								inputText={text}
-								bounds={this.props.bounds}
+								bounds={bounds}
 								updateAutocompleteData={this.autocompleteUpdated} />
 		}
 
-		if (this.props.editable) {
+		if (editable) {
 			var className = "mdi icon pull-right hidden-xs toggle-edit toggler";
 
-			if(this.props.editIcon)
-				className += " " + this.props.editIcon;
+			if(editIcon)
+				className += " " + editIcon;
 			else
 				className += " mdi-pencil";
 
 			topbarItems.push(
-				<a className={className}
-					key="edit"
-					onClick={this.props.edit}></a>
+                <a className={className} key="edit" onClick={edit} />
 			);
 		}
 
 		// If showing both the capture type and time type toggles, put the time
 		// type toggle into the dropdown for capture time. Otherwise, display
 		// it separately.
-		if (this.props.chronToggle) {
+		if (chronToggle) {
 			let timeToggle = null;
-			
-			if (this.props.timeToggle) {
+
+			if (timeToggle) {
 				timeToggle =
 					<RadioGroup
 						options={['Relative time', 'Absolute time']}
@@ -161,28 +177,27 @@ export default class TopBar extends React.Component {
 			);
 		}
 
-		if (this.props.verifiedToggle && this.props.rank > global.RANKS.BASIC) {
+        if (verifiedToggle && permissions.includes(global.permissions.IMPORT_CONTENT)) {
 			topbarItems.push(
 				<Dropdown
 					options={['All content', 'Verified']}
-					selected={this.props.defaultVerified == 'all' ? 'All content' : 'Verified'}
-					onSelected={this.verifiedToggleSelected}
+					selected={defaultVerified == 'all' ? 'All content' : 'Verified'}
+					onSelected={verifiedToggleSelected}
 					key="verifiedToggle"
-					inList={true} />
+                    inList={true}
+                />
 			);
-		}
+        }
 
-		if(this.props.tabs) {
+		if(tabs) {
 			var tabContent = [];
 
-			this.props.tabs.map((tab, i) => {
-
-				var buttonClass = "btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (this.props.activeTab == tab ? ' toggled' : '');
-
+			tabs.map((tab, i) => {
+				var buttonClass = "btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (activeTab == tab ? ' toggled' : '');
 				tabContent.push(
 					<button
 						className={buttonClass}
-						onClick={this.props.setActiveTab.bind(null, tab)}
+						onClick={setActiveTab.bind(null, tab)}
 						key={tab.toLowerCase()}>
 						{tab}
 						<div className="ripple-wrapper"></div>
@@ -190,7 +205,7 @@ export default class TopBar extends React.Component {
 				)
 			});
 
-			var tabs = <div className="tab-control">
+			var tabCmps = <div className="tab-control">
 							{tabContent}
 						</div>
 		}
@@ -205,12 +220,12 @@ export default class TopBar extends React.Component {
 
 				<div className="spacer"></div>
 
-				{title}
-				{locationInput}
-				{tabs}
+				{titleCmp}
+				{locationInputCmp}
+				{tabCmps}
 				{topbarItems}
 				{this.props.children}
-				{saveButton}
+				{saveButtonCmp}
 			</nav>
 		);
 	}
@@ -223,5 +238,8 @@ TopBar.defaultProps = {
 	hide: function () { console.log('Hide function not implemented in TopBar'); },
 	onVerifiedToggled: function() {},
 	onOutletFilterAdd: function() {},
-	onOutletFilterRemove: function() {}
-}
+    onOutletFilterRemove: function() {},
+    permissions: [],
+};
+
+export default TopBar;
