@@ -36,7 +36,7 @@ router.get('/:id', (req, res, next) => {
         token,
         url: '/gallery/' + req.params.id,
     }).then(response => {
-        render(response.body[0]);
+        render(response.body);
     }).catch(e => {
         console.log(e)
         return next({
