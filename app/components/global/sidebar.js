@@ -1,6 +1,5 @@
 import React from 'react';
 import global from '../../../lib/global';
-import intersection from 'lodash/intersection';
 
 /**
  * Side bar object found across the site; inside of the top level App class
