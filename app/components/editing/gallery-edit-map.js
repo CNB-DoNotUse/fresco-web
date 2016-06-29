@@ -12,10 +12,12 @@ export default class GalleryEditMap extends React.Component {
 	}
 
 	render() {
+        let location = this.props.gallery.location
+        ? this.props.gallery.location.coordinates
+        ? this.props.gallery.location.coordinates[0]
+        : this.props.gallery.location : null;
 
-		var location = this.props.gallery.location ? this.props.gallery.location.coordinates ? this.props.gallery.location.coordinates[0] : this.props.gallery.location : null;
-		
-		var defaultLocation = '';
+        let defaultLocation = '';
 
 		if(this.props.gallery.address) {
 			defaultLocation = this.props.gallery.address;
@@ -38,15 +40,15 @@ export default class GalleryEditMap extends React.Component {
 
 		return (
 			<div className="dialog-col col-xs-12 col-md-5 pull-right">
-				<AutocompleteMap
-					defaultLocation={defaultLocation}
-					location={location}
-					hasRadius={false}
-					onPlaceChange={this.props.onPlaceChange}
-					disabled={this.props.gallery.owner}
-					rerender={true} />
+                <AutocompleteMap
+                    defaultLocation={defaultLocation}
+                    location={location}
+                    hasRadius={false}
+                    onPlaceChange={this.props.onPlaceChange}
+                    disabled={this.props.gallery.owner}
+                    rerender={true}
+                />
 			</div>
 		);
-
 	}
 }
