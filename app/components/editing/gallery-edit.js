@@ -204,7 +204,6 @@ export default class GalleryEdit extends React.Component {
 	}
 
  	saveGallery(event, passedParams) {
-        debugger;
  		var self 	   = this,
 	 		gallery    = _.clone(this.state.gallery, true),
  			files 	   = gallery.files ? gallery.files : [],
