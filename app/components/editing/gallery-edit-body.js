@@ -37,59 +37,66 @@ export default class GalleryEditBody extends React.Component {
 				<div className="dialog-col col-xs-12 col-md-7 form-group-default">
 
 					<BylineEdit ref="byline" gallery={this.props.gallery} />
-					
+
 					<div className="dialog-row">
-										
-						<textarea 
-							id="gallery-edit-caption" 
-							type="text" 
+
+						<textarea
+							id="gallery-edit-caption"
+							type="text"
 							className="form-control floating-label"
 							ref="gallery-caption"
 							value={this.props.gallery.caption}
 							placeholder="Caption"
-							onChange={this.props.updateCaption} 
+							onChange={this.props.updateCaption}
 						/>
 
 					</div>
 
 					<GalleryEditAssignment
-						assignment={this.props.gallery.assignment} 
-						updateGalleryField={this.props.updateGalleryField} />
-					
+						assignment={this.props.gallery.assignment}
+                        updateGalleryField={this.props.updateGalleryField}
+                    />
+
 					<GalleryEditTags
-						tags={this.props.gallery.tags} 
-						updateTags={this.props.updateTags} />
-					
-					<GalleryEditStories 
-						relatedStories={this.props.gallery.related_stories} 
-						updateRelatedStories={this.props.updateRelatedStories} />
-					
+						tags={this.props.gallery.tags}
+                        updateTags={this.props.updateTags}
+                    />
+
+					<GalleryEditStories
+						relatedStories={this.props.gallery.related_stories}
+                        updateRelatedStories={this.props.updateRelatedStories}
+                    />
+
 					<GalleryEditArticles
 						articles={this.props.gallery.articles}
-						updateArticles={this.props.updateArticles} />
-					
+                        updateArticles={this.props.updateArticles}
+                    />
+
 					<div className="dialog-row">
 						<div className="checkbox">
 							<label>
 								<input
-									type="checkbox" 
+									type="checkbox"
 									checked={this.props.gallery.visibility == 2}
-									onChange={this.toggleHighlight} />  Highlighted
+                                    onChange={this.toggleHighlight}
+                                />
+                                Highlighted
 							</label>
 						</div>
 					</div>
-
 				</div>
-				
-				<GalleryEditPosts 
-					posts={this.props.gallery.posts} 
-					files={this.props.gallery.files}
-					deletePosts={this.props.deletePosts}
-					toggleDelete={this.props.toggleDeletePost} />
-				
+
+                <GalleryEditPosts
+                    posts={this.props.gallery.posts}
+                    files={this.props.gallery.files}
+                    deletePosts={this.props.deletePosts}
+                    toggleDelete={this.props.toggleDeletePost}
+                />
+
 				<GalleryEditMap
-					gallery={this.props.gallery}
-					onPlaceChange={this.props.onPlaceChange} />
+                    gallery={this.props.gallery}
+                    onPlaceChange={this.props.onPlaceChange}
+                />
 
 			</div>
 		);
