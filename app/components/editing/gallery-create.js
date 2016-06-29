@@ -145,6 +145,7 @@ export default class GalleryCreate extends React.Component {
  					});
  				}
  				else{
+
  					this.hide();
  					this.props.setSelectedPosts([]);
 
@@ -155,6 +156,7 @@ export default class GalleryCreate extends React.Component {
 						var win = window.open('/gallery/' + result.data._id, '_blank');
 						win.focus();
 					});
+
  				}
  			}
  		});

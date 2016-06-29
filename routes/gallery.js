@@ -1,5 +1,3 @@
-'use strict'
-
 require('babel-core/register');
 
 var fs                = require('fs'),
@@ -24,6 +22,7 @@ var fs                = require('fs'),
  * Gallery Detail Page
  * @param Gallery ID
  */
+
 router.get('/:id', (req, res, next) => {
     request({
         url: config.API_URL + "/v1/gallery/get?stories=true&stats=1&id=" + req.params.id,
@@ -34,7 +33,7 @@ router.get('/:id', (req, res, next) => {
         //Check for error, 404 if true
         if (err || !body || body.err) {
             return next({
-                message: 'Gallery not found!',
+                message: 'Galelry not found!',
                 status : 404
             });
         }
@@ -48,45 +47,42 @@ router.get('/:id', (req, res, next) => {
 
         //User is logged in, show full gallery page
         if (req.session && req.session.user) {
-            let props = {
+            var props = {
                 user: req.session.user,
                 purchases: Purchases.mapPurchases(req.session),
-                gallery,
-                title
+                gallery: gallery,
+                title: title
             };
 
             res.locals.section = 'platform';
-
-            console.log('POSTS', gallery.posts.map(post => post._id));
-
             res.render('app', {
                 title: title,
                 alerts: req.alerts,
                 page: 'galleryDetail',
                 props: JSON.stringify(props)
             });
-        } 
-        //User is not logged in, show public gallery page
-        else {
-            let props = {
-                    gallery,
-                    title,
+
+        } else { //User is not logged in, show public gallery page
+            var props = {
+                    gallery: gallery,
+                    title: title,
                     userAgent: req.headers['user-agent']
                 },
                 element = React.createElement(PublicGallery, props),
                 react = ReactDOMServer.renderToString(element);
 
             res.render('app', {
-                title,
-                react,
+                title: title,
+                gallery: gallery,
+                react: react,
                 og: {
-                    title,
+                    title: title,
                     image: global.formatImg(gallery.posts[0].image, 'large'),
                     url: req.originalUrl,
                     description: gallery.caption
                 },
                 twitter:{
-                    title,
+                    title: title,
                     description: gallery.caption,
                     image: global.formatImg(gallery.posts[0].image, 'large')
                 },

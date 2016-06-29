@@ -16,21 +16,27 @@ class GalleryDetail extends React.Component {
 	constructor(props) {
 		super(props);
 
-		// Check if every post in gallery is not verified and show all content
-		let unverifiedPosts = this.props.gallery.posts.every(post => post.approvals == 0);
+		var unverifiedPosts = false
 
+		// Check if every post in gallery is not verified and show all content
+		for(var p in this.props.gallery.posts) {
+			if(this.props.gallery.posts[p].approvals == 0)
+				unverifiedPosts = true;
+		}
 
 		this.state = {
 			galleryEditToggled: false,
 			gallery: this.props.gallery,
-			shouldShowVerifiedToggle: unverifiedPosts,
+			shouldShowVerifeidToggle: unverifiedPosts,
 			verifiedToggle: unverifiedPosts,
+			sort: this.props.sort || 'upload',
 			title: this.props.title
 		}
 
 		this.toggleGalleryEdit = this.toggleGalleryEdit.bind(this);
 		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
 		this.updateGallery = this.updateGallery.bind(this);
+		this.updateSort = this.updateSort.bind(this);
 	}
 
 	toggleGalleryEdit() {
@@ -49,7 +55,7 @@ class GalleryDetail extends React.Component {
 	 * Updates gallery in state
 	 */
 	updateGallery(gallery){
-		let title = 'Gallery';
+		var title = 'Gallery';
 
 		if(gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
 			title += ' from ' + gallery.posts[0].location.address;
@@ -62,17 +68,26 @@ class GalleryDetail extends React.Component {
 		});
 	}
 
+	updateSort(sort) {
+		this.setState({
+			sort: sort
+		})
+	}
+
 	render() {
+
 		return (
 			<App user={this.props.user}>
 				<TopBar
 					title={this.state.title}
+					updateSort={this.updateSort}
 					editable={this.props.user.rank >= global.RANKS.CONTENT_MANAGER}
 					rank={this.props.user.rank}
 					edit={this.toggleGalleryEdit}
-					verifiedToggle={this.state.shouldShowVerifiedToggle}
+					verifiedToggle={this.state.shouldShowVerifeidToggle}
 					onVerifiedToggled={this.onVerifiedToggled}
-					timeToggle={true} />
+					timeToggle={true}
+					chronToggle={true} />
 
 				<GallerySidebar gallery={this.state.gallery} />
 
@@ -84,6 +99,7 @@ class GalleryDetail extends React.Component {
 						onlyVerified={this.state.verifiedToggle}
 						updatePosts={this.state.updatePosts}
 						scrollable={false}
+						sort={this.state.sort}
 						editable={false}
 						size='large' />
 				</div>
@@ -96,6 +112,7 @@ class GalleryDetail extends React.Component {
 					toggled={this.state.galleryEditToggled} />
 			</App>
 		);
+
 	}
  }
 

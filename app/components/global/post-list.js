@@ -28,11 +28,12 @@ export default class PostList extends React.Component {
 			scrollable: this.props.scrollable,
 			selectedPosts: [],
 			gallery: null,
-			galleryEditToggled: false
+			galleryEditToggled: false,
+			sort: this.props.sort
 		}
 
 		// If we aren't dynamically loading posts, then sort them locally
-		if (!this.props.scrollable && this.props.sort) {
+		if (!this.props.scrollable) {
 			this.state.posts = this.sortPosts();
 		}
 
@@ -90,14 +91,14 @@ export default class PostList extends React.Component {
 	    }
 	}
 
-	/**
-	 * Sorts posts based on the current field in props
-	 * @return {array} An array of posts now sorted
-	 */
 	sortPosts() {
 		let field = this.props.sort == 'captured' ? 'time_captured' : 'time_created';
 		
-		return this.state.posts.sort((post1, post2) => post2[field] - post1[field]);
+		let posts = this.state.posts.sort((post1, post2) => {
+			return post2[field] - post1[field]
+		});
+
+		return posts;
 	}
 
 	/**
@@ -245,14 +246,14 @@ export default class PostList extends React.Component {
 
 		for (var i = 0; i < this.state.posts.length; i++) {
 
-			let post = this.state.posts[i];
+			var post = this.state.posts[i];
 
 			//Check if post should be added based on approvals and verified toggle
 			if(this.props.onlyVerified && post.approvals == 0){
 				continue;
 			}
 
-			let purchased = purchases.indexOf(post._id) > -1 || this.props.allPurchased ? true : false,
+			var purchased = purchases.indexOf(post._id) > -1 || this.props.allPurchased ? true : false,
 				//Filter out this posts from the currently selected posts
 				filteredPosts = this.state.selectedPosts.filter((currentPost) => currentPost._id === post._id),
 				//Pass down toggled if this post is inside the filtered posts
@@ -300,6 +301,7 @@ export default class PostList extends React.Component {
 				<GalleryCreate
 					setSelectedPosts={this.setSelectedPosts}
 					posts={this.state.selectedPosts} />
+
 			</div>
 		)
 	}
