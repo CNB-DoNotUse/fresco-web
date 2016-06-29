@@ -39,20 +39,20 @@ router.get('/', (req, res, next) => {
  */
 
 router.get('/galleries', (req, res, next) => {
-  var title = 'Galleries',
-      props = {
-        user : req.session.user,
-        title: title
-      };
+    const title = 'Galleries';
+    const props = {
+        user: req.session.user,
+        title,
+    };
 
-  res.render('app', {
-    user: req.session.user,
-    title: title,
-    config: config,
-    alerts: req.alerts,
-    page: 'galleries',
-    props : JSON.stringify(props)
-  });
+    res.render('app', {
+        user: req.session.user,
+        title: title,
+        config: config,
+        alerts: req.alerts,
+        page: 'galleries',
+        props : JSON.stringify(props)
+    });
 
 });
 

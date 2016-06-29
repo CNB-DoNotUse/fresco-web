@@ -140,9 +140,7 @@ export default class PostList extends React.Component {
 					});
 
 					return;
-
 				}
-
 
 				//Set galleries from successful response, and unset loading
 				this.setState({
@@ -159,9 +157,7 @@ export default class PostList extends React.Component {
 	 * @param {array} posts The posts to set the `selectedPosts` to
 	 */
 	setSelectedPosts(posts){
-		this.setState({
-			selectedPosts: posts
-		});
+		this.setState({ selectedPosts: posts });
 	}
 
 	/**
@@ -170,7 +166,8 @@ export default class PostList extends React.Component {
 	 */
 	togglePost(passedPost) {
 		//Check if `not` CM
-		if(this.props.rank < global.RANKS.CONTENT_MANAGER) return;
+        if(this.props.rank < global.RANKS.CONTENT_MANAGER) return;
+
 
 		//Make sure we haven't reached the limit
 		if(this.state.selectedPosts.length >= global.limits.galleryItems) {
@@ -232,9 +229,9 @@ export default class PostList extends React.Component {
 	 }
 
 	render() {
-		var purchases = this.state.purchases,
-			rank = this.props.rank,
-			posts = [];
+		const purchases = this.state.purchases;
+		const { rank } = this.props;
+		let posts = [];
 
 		for (var i = 0; i < this.state.posts.length; i++) {
 
@@ -256,16 +253,16 @@ export default class PostList extends React.Component {
 	        		size={this.props.size}
 	        		post={post}
 	        		rank={rank}
-	        		purchased={purchased}
-	        		toggled={toggled}
-	        		assignment={this.props.assignment}
-	        		key={i}
-	        		editable={this.props.editable}
-					sort={this.props.sort}
-
-	        		togglePost={this.togglePost}
-	        		didPurchase={this.didPurchase}
-	        		edit={this.edit} />
+                    purchased={purchased}
+                    toggled={toggled}
+                    assignment={this.props.assignment}
+                    key={i}
+                    editable={this.props.editable}
+                    sort={this.props.sort}
+                    togglePost={this.togglePost}
+                    didPurchase={this.didPurchase}
+                    edit={this.edit}
+                />
 	      	);
 		}
 

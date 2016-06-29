@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 
 /**
  * Gallery Edit Foot component
  * @description Contains all the interaction buttons
  */
 
-export default class GalleryEditFoot extends React.Component {
+class GalleryEditFoot extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -75,9 +75,9 @@ export default class GalleryEditFoot extends React.Component {
 
 	delete() {
 		var gallery = this.state.gallery;
-		
+
 		alertify.confirm("Are you sure you want to delete this gallery?", (confirmed) => {
-			
+
 			if (!confirmed) return;
 
 			//Consturct params with gallery id
@@ -111,18 +111,24 @@ export default class GalleryEditFoot extends React.Component {
 			});
 
 		});
-
 	}
 
 	render() {
-		var addMore = '',
-			verifyToggle = '';
+		let addMore = '';
+		let verifyToggle = '';
+        const {
+            verifyGallery,
+            unverifyGallery,
+            revert,
+            saveGallery,
+            hide,
+        } = this.props;
 
 		//Check if the gallery has been imported, to show the 'Add More' button or not
 		if(this.state.gallery.imported) {
-			addMore = <button id="gallery-add-more-button" 
-							type="button" 
-							onClick={this.addMore} 
+			addMore = <button id="gallery-add-more-button"
+							type="button"
+							onClick={this.addMore}
 							className="btn btn-flat">Add More</button>
 		}
 
@@ -131,58 +137,69 @@ export default class GalleryEditFoot extends React.Component {
 		};
 
 		if(this.state.gallery.visibility == 0) {
-			verifyToggle = <button id="gallery-delete-button" type="button" 
-								onClick={this.props.verifyGallery} 
-								className="btn btn-flat pull-right">Verify</button>					
+			verifyToggle = <button id="gallery-delete-button" type="button"
+								onClick={verifyGallery}
+								className="btn btn-flat pull-right">Verify</button>
 
 		} else {
-			verifyToggle = <button id="gallery-delete-button" type="button" 
-								onClick={this.props.unverifyGallery} 
+			verifyToggle = <button id="gallery-delete-button" type="button"
+								onClick={unverifyGallery}
 								className="btn btn-flat pull-right">Unverify</button>
 		}
 
 		return (
-			
 			<div className="dialog-foot">
-				
-				<input 
-					id="gallery-upload-files" 
-					type="file"  
-					accept="image/*,video/*,video/mp4" 
+				<input
+					id="gallery-upload-files"
+					type="file"
+					accept="image/*,video/*,video/mp4"
 					multiple
 					ref='fileUpload'
 					style={inputStyle}
 					onChange={this.fileUploaderChanged} />
 
-				<button id="gallery-revert-button" type="button" 
-					onClick={this.props.revert} 
+				<button id="gallery-revert-button" type="button"
+					onClick={revert}
 					className="btn btn-flat">Revert changes</button>
-				
-				<button id="gallery-clear-button" type="button" 
-					onClick={this.clear} 
+
+				<button id="gallery-clear-button" type="button"
+					onClick={this.clear}
 					className="btn btn-flat">Clear all</button>
-				
+
 				{addMore}
-				
-				<button id="gallery-save-button" type="button" 
-					onClick={this.props.saveGallery} 
-					className="btn btn-flat pull-right">Save</button>
+
+                <button
+                    id="gallery-save-button"
+                    type="button"
+					onClick={saveGallery}
+                    className="btn btn-flat pull-right">
+                    Save
+                </button>
 
 				{verifyToggle}
 
-				<button id="gallery-delete-button" type="button" 
-					onClick={this.delete} 
+				<button id="gallery-delete-button" type="button"
+					onClick={this.delete}
 					className="btn btn-flat pull-right">Delete</button>
-			
-				<button id="gallery-cancel-button" type="button" 
-					onClick={this.props.hide} 
+
+				<button id="gallery-cancel-button" type="button"
+					onClick={hide}
 					className="btn btn-flat pull-right toggle-gedit toggler">Cancel</button>
 			</div>
-
 		);
 	}
 }
 
 GalleryEditFoot.defaultProps = {
 	hide: function () { console.log('Hide not implemented in GalleryEdit'); }
-}
+};
+
+GalleryEditFoot.propTypes = {
+    verifyGallery: PropTypes.func.isRequired,
+    unverifyGallery: PropTypes.func.isRequired,
+    saveGallery: PropTypes.func.isRequired,
+    revert: PropTypes.func.isRequired,
+    hide: PropTypes.func.isRequired,
+};
+
+export default GalleryEditFoot;

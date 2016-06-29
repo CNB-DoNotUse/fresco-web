@@ -105,7 +105,7 @@ class TopBar extends React.Component {
             timeToggle,
             verifiedToggle,
             defaultVerified,
-            permissions,
+            rank,
             tabs,
             setActiveTab,
             activeTab,
@@ -141,10 +141,8 @@ class TopBar extends React.Component {
 		if (editable) {
 			var className = "mdi icon pull-right hidden-xs toggle-edit toggler";
 
-			if(editIcon)
-				className += " " + editIcon;
-			else
-				className += " mdi-pencil";
+			if (editIcon) { className += " " + editIcon; }
+			else { className += " mdi-pencil"; }
 
 			topbarItems.push(
                 <a className={className} key="edit" onClick={edit} />
@@ -177,7 +175,7 @@ class TopBar extends React.Component {
 			);
 		}
 
-        if (verifiedToggle && permissions.includes(global.permissions.IMPORT_CONTENT)) {
+        if (verifiedToggle && rank > global.RANKS.BASIC) {
 			topbarItems.push(
 				<Dropdown
 					options={['All content', 'Verified']}
@@ -237,7 +235,6 @@ TopBar.defaultProps = {
 	onVerifiedToggled: function() {},
 	onOutletFilterAdd: function() {},
     onOutletFilterRemove: function() {},
-    permissions: [],
 };
 
 export default TopBar;

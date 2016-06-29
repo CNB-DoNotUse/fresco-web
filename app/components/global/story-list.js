@@ -68,36 +68,22 @@ export default class StoryList extends React.Component {
 		}
 	}
 
-	render() {
-
-		//Check if list was initialzied with stories
-		stories = this.state.stories;
-
-		var purchases = this.props.purchases,
-			rank = this.props.rank;
+    render() {
+        let stories = this.state.stories;
 
 		//Map all the stories into cells
-		var stories = stories.map((story, i) => {
-
-			var purchased = purchases ? purchases.indexOf(story.id) != -1 : null;
-
+		stories.map((story, i) => {
 	      	return (
-
 	        	<StoryCell
 	        		story={story}
 	        		key={i} />
-
-	      	)
-
+	      	);
   		});
 
 		return (
-
 			<div className="container-fluid fat grid" ref='grid' onScroll={this.props.scrollable ? this.scroll : null}>
 				<div className="row tiles" id="stories">{stories}</div>
 			</div>
-
-		)
+		);
 	}
-
 }

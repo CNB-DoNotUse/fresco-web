@@ -17,7 +17,7 @@ export default class PostDetailImage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			purchased: this.props.purchases && this.props.purchases.indexOf(this.props.post.id) >= 0
 		}
@@ -39,61 +39,50 @@ export default class PostDetailImage extends React.Component {
 		e.preventDefault();
 	}
 
-	render() {
-
-		var actions = [],
-			postMedia = '',
-			i = 0;
+    render() {
+        const { user, post, didPurchase } = this.props;
+		let actions = [];
+		let postMedia = '';
+		let i = 0;
 
 		var assignment = window.location.search.split('assignment=')[1];
 
-		var downloadAction = <DownloadAction post={this.props.post} key={i++} />
+		var downloadAction = <DownloadAction post={post} key={i++} />
 
-		var purchaseAction = <PurchaseAction 
-								post={this.props.post} 
+		var purchaseAction = <PurchaseAction
+								post={post}
 								assignment={assignment}
-								didPurchase={this.props.didPurchase} 
+								didPurchase={didPurchase}
 								key={i++} />
 
-		//Check rank of user, if less than a CM
-		if(this.props.user.rank < global.RANKS.CONTENT_MANAGER){
+        if(this.props.user.rank < global.RANKS.CONTENT_MANAGER){
 
-			//Check to make sure the user has an outlet
-			if(this.props.user.outlet){
-
-				//Check if the post has been purchased
-				if (this.state.purchased){
-					actions.push(downloadAction);
-				}
-				//Check if the post is licensed 
-				else if (this.props.post.license == 1){
-					actions.push(purchaseAction);
-				}
+			if(user.outlet && this.state.purchased){
+                actions.push(downloadAction);
+				//Check if the post is licensed
+            } else if (user.outlet && post.license == 1){
+                actions.push(purchaseAction);
 			}
-		}
-		//We are of a rank higher than a content manager
-		else{
-			
-			actions.push(downloadAction);
+        } else {
+            actions.push(downloadAction);
 
-			if (!this.state.purchased){
-				actions.push(purchaseAction);
-			}
+            if (!this.state.purchased){
+                actions.push(purchaseAction);
+            }
+        }
 
-		}
-
-		if (this.props.post.video){
+		if (post.video){
 			postMedia = <video width="100%" height="100%" controls onContextMenu={this.contextMenu}>
-							<source src={global.formatVideo(this.props.post.video)} type="video/mp4" />
+							<source src={global.formatVideo(post.video)} type="video/mp4" />
 							Your browser does not support the video tag.
 						</video>
 		}
 		else{
-		
-			postMedia = <img 
-							className="img-responsive" 
-							onContextMenu={this.contextMenu}
-							src={global.formatImg(this.props.post.image, 'large')} />
+            postMedia = <img
+                            className="img-responsive"
+                            onContextMenu={this.contextMenu}
+                            src={global.formatImg(post.image, 'large')}
+                        />
 		}
 
 
@@ -104,7 +93,7 @@ export default class PostDetailImage extends React.Component {
 					<div className="card-foot small">
 						{actions}
 
-						<span className="md-type-body1">{this.props.post.byline}</span>
+						<span className="md-type-body1">{post.byline}</span>
 					</div>
 
 					<div className="card-body">{postMedia}</div>

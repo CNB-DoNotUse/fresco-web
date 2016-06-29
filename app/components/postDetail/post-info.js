@@ -16,12 +16,11 @@ export default class PostInfo extends React.Component {
 
 	render() {
 		//Init needed vars to make list
-		var post = this.props.post,
-			gallery = this.props.gallery,
-			userIcon = '',
+        const { post, gallery, verifier, user } = this.props;
+		var userIcon = '',
 			twitter = '',
 			curator = '',
-			timeString = global.formatTime(this.props.post.created_at, true),
+			timeString = global.formatTime(post.created_at, true),
 			verifiedBy = '',
 			verifyClass = '',
 			userName = '';
@@ -34,12 +33,12 @@ export default class PostInfo extends React.Component {
         }
 
 	 	//Define verifier text based on approvals
-		if(this.props.post.approvals) {
+		if (post.approvals) {
 			verifiedBy = 'Verified';
 			verifyClass = "mdi icon verified mdi-checkbox-marked-circle";
 
-			if(this.props.user.rank >= global.RANKS.CONTENT_MANAGER && this.props.verifier) {
-				 verifiedBy += ' by ' + this.props.verifier;
+            if (user.rank >= global.RANKS.CONTENT_MANAGER && verifier) {
+				 verifiedBy += ' by ' + verifier;
 			}
 
 		} else {
@@ -48,7 +47,7 @@ export default class PostInfo extends React.Component {
 		}
 
 		//Check to show user icon
-		if(this.props.post.owner){
+		if(post.owner){
 			userIcon = <div>
 							<img
 								className="img-circle img-responsive"
@@ -61,7 +60,7 @@ export default class PostInfo extends React.Component {
 			var twitter = 	<li>
 								<span className="mdi mdi-twitter icon"></span>
 								<a href={ post.meta.twitter.url } target="_blank">See original</a>
-							</li>
+							</li>;
 		}
 
 		//Check to show curator item

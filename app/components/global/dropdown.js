@@ -21,19 +21,19 @@ export default class Dropdown extends React.Component {
 	 	//Click event for outside clicking
 	 	$(document).click((e) => {
 	 		//Check that the click is out of bounds
-	 	    if ($(e.target).parents('.nav-dropdown').size() == 0 && e.target !== this.refs.drop) { 
+	 	    if ($(e.target).parents('.nav-dropdown').size() == 0 && e.target !== this.refs.drop) {
 	 	    	//Check if it's active first
 	 	    	if(this.refs.drop.className.indexOf('active') > 0){
 		 	        //Reset toggle
 		 	        this.toggle();
 		 	    }
 	 	    }
-	 	});     
+	 	});
 	}
 
 	componentWillUnmount() {
 	    //Clean up click event on unmount
-	    $(document).unbind('click');     
+	    $(document).unbind('click');
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -41,7 +41,7 @@ export default class Dropdown extends React.Component {
 			this.setState({
 				selected: nextProps.selected
 			});
-		} 
+		}
 	}
 
 	/**
@@ -50,7 +50,7 @@ export default class Dropdown extends React.Component {
 	toggle() {
 		var drop = this.refs.drop,
 			menuIcon = this.refs['button'].refs['menu-icon'];
-			
+
 		if(drop.className.indexOf('active') == -1) {
 			menuIcon.className = 'mdi ';
 			menuIcon.className += this.props.reverseCaretDirection ? 'mdi-menu-down' : 'mdi-menu-up';
@@ -61,7 +61,7 @@ export default class Dropdown extends React.Component {
 			drop.className = drop.className.replace(/\bactive\b/,'');
 		}
 
-		if(this.props.onToggled) this.props.onToggled();	
+		if(this.props.onToggled) this.props.onToggled();
 	}
 
 	/**
@@ -96,13 +96,13 @@ export default class Dropdown extends React.Component {
 		//If options are passed, use those
 		if(this.props.options){
 			var options = this.props.options.map((option, i) => {
-				return ( 
-					<li 
-						className={option === this.state.selected ? 'active' : ''} 
-						key={i} 
+				return (
+					<li
+						className={option === this.state.selected ? 'active' : ''}
+						key={i}
 						onClick={this.optionClicked}>
 						<span>{option}</span>
-					</li> 
+					</li>
 				);
 			});
 
@@ -111,7 +111,7 @@ export default class Dropdown extends React.Component {
 					</ul>
 		}
 
-		dropdownButton = <DropdownButton 
+		dropdownButton = <DropdownButton
 							ref="button"
 							toggle={this.toggle}
 							selected={this.props.title || this.state.selected}
@@ -119,7 +119,7 @@ export default class Dropdown extends React.Component {
 							{this.props.dropdownActions}
 						</DropdownButton>
 
-						
+
 		var className = this.props.inList ? 'nav-dropdown pull-right' : 'nav-dropdown';
 
 		if(this.props.dropdownClass)

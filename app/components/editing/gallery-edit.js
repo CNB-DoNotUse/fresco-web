@@ -204,6 +204,7 @@ export default class GalleryEdit extends React.Component {
 	}
 
  	saveGallery(event, passedParams) {
+        debugger;
  		var self 	   = this,
 	 		gallery    = _.clone(this.state.gallery, true),
  			files 	   = gallery.files ? gallery.files : [],
@@ -386,7 +387,8 @@ export default class GalleryEdit extends React.Component {
 								updateGallery={this.updateGallery}
 								updateGalleryField={this.updateGalleryField}
 		 						deletePosts={this.state.deletePosts}
-		 						toggleDeletePost={this.toggleDeletePost} />
+                                toggleDeletePost={this.toggleDeletePost}
+                            />
 
 		 					<GalleryEditFoot
 		 						gallery={this.state.gallery}
@@ -395,7 +397,8 @@ export default class GalleryEdit extends React.Component {
 		 						verifyGallery={this.verifyGallery}
 		 						unverifyGallery={this.unverifyGallery}
 		 						updateGallery={this.updateGallery}
-		 						hide={this.hide} />
+                                hide={this.hide}
+                            />
 		 				</div>
 		}
 

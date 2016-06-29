@@ -32,7 +32,7 @@ import TopBar from './../components/topbar'
 				<TopBar
 					title="Galleries"
 					timeToggle={true}
-					permissions={this.props.user.permissions}
+					rank={this.props.user.rank}
 					verifiedToggle={true}
 					updateSort={this.updateSort}
                     onVerifiedToggled={this.onVerifiedToggled}

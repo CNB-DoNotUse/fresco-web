@@ -22,42 +22,43 @@ export default class Sidebar extends React.Component {
 		window.location ='/search?q=' + encodeURIComponent(this.refs.searchInput.value);
 	}
 
-	render() {
-		var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
+    render() {
+        const avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
 
-		return (
-			<div className="col-lg-2 sidebar toggle-drawer" id="_sidebar">
-				<div>
-					<a href="/highlights">
-						<img src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-news.png" />
-					</a>
+        return (
+            <div className="col-lg-2 sidebar toggle-drawer" id="_sidebar">
+                <div>
+                    <a href="/highlights">
+                        <img src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-news.png" />
+                    </a>
 
-					<input
-						className="search-input"
-						id="sidebar-search"
-						placeholder="Search"
-						type="text"
-						ref="searchInput"
-						defaultValue={this.props.query}
-						onKeyDown={this.handleSearchKeyDown} />
+                    <input
+                        className="search-input"
+                        id="sidebar-search"
+                        placeholder="Search"
+                        type="text"
+                        ref="searchInput"
+                        defaultValue={this.props.query}
+                        onKeyDown={this.handleSearchKeyDown}
+                    />
 
-					<SideBarListItems user={this.props.user} />
-				</div>
-		   	 	<div>
-			    	<img className="img-circle" id="side-bar-avatar" src={avatar} />
+                    <SideBarListItems user={this.props.user} />
+                </div>
+                <div>
+                    <img className="img-circle" id="side-bar-avatar" src={avatar} />
 
-					<a className="md-type-title user-name-view" href="/user">
-						{this.props.user.full_name}
-					</a>
+                    <a className="md-type-title user-name-view" href="/user">
+                        {this.props.user.full_name}
+                    </a>
 
-			    	<ul>
-						<li><a href="/user/settings">Settings</a></li>
-				        <li><a href="/scripts/user/logout">Log out</a></li>
-			     	</ul>
-		    	</div>
-			</div>
-		)
-	}
+                    <ul>
+                        <li><a href="/user/settings">Settings</a></li>
+                        <li><a href="/scripts/user/logout">Log out</a></li>
+                    </ul>
+                </div>
+            </div>
+        )
+    }
 }
 
 Sidebar.defaultProps = {
@@ -70,6 +71,10 @@ class SideBarListItems extends React.Component {
 		super(props);
 		this.goLink = this.goLink.bind(this);
 	}
+
+    goLink(link) {
+        window.location.assign(link);
+    }
 
 	componentDidMount(prevProps, prevState) {
 		var sidebarTabs = document.getElementsByClassName('sidebar-tab');
@@ -85,30 +90,30 @@ class SideBarListItems extends React.Component {
 		}
 	}
 
-	render() {
-        const { user: { outlet, permissions = [] } } = this.props;
-		if(!user) return;
+    render() {
+        const { user } = this.props;
+        if(typeof(user) == 'undefined') return <span />;
 
-		if (outlet) {
+		if (user.outlet) {
 			var dispatch =
 				<li className="sidebar-tab">
 					<a href="/dispatch"><span className="mdi mdi-map icon"></span>Dispatch</a>
 				</li>;
 		}
 
-		if (outlet != null){
+		if (user.outlet != null){
 			var outlet =
 				<li className="sidebar-tab">
-					<a href="/outlet"><span className="mdi mdi-account-multiple icon"></span>{this.props.user.outlet.title}</a>
+					<a href="/outlet"><span className="mdi mdi-account-multiple icon"></span>{user.outlet.title}</a>
 				</li>;
 		}
-		if(permissions.includes(global.permissions.UPDATE_OTHER_CONTENT)) {
+        if (user.rank >= global.RANKS.CONTENT_MANAGER) {
 			var admin =
 				<li className="sidebar-tab">
 					<a href="/admin"><span className="mdi mdi-dots-horizontal icon"></span>Admin</a>
 				</li>;
 		}
-		if(intersect(permissions, global.permissions.GET_ALL_PURCHASES, global.permissions.VIEW_ALL_ASSIGNMENTS)) {
+		if (user.rank == global.RANKS.ADMIN) {
 			var purchases =
 				<li className="sidebar-tab">
 					<a href="/purchases"><span className="mdi mdi-currency-usd icon"></span>Purchases</a>
@@ -149,9 +154,5 @@ class SideBarListItems extends React.Component {
 				{stats}
 			</ul>
 		);
-	}
-
-	goLink(link) {
-		window.location.assign(link);
 	}
 }

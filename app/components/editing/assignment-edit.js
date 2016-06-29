@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import global from './../../../lib/global'
 import AssignmentEditStats from './assignment-edit-stats'
 import AssignmentEditMap from './assignment-edit-map'
 import AssignmentEditOutlet from './assignment-edit-outlet'
 import AutocompleteMap from '../global/autocomplete-map'
 
-export default class AssignmentEdit extends React.Component {
+class AssignmentEdit extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -164,12 +164,13 @@ export default class AssignmentEdit extends React.Component {
 		this.props.toggle();
 	}
 
-	render() {
-		var toggledText = this.props.toggled ? ' toggled' : '',
-			assignmentEditOutlet = '';
+    render() {
+        const { user, toggled, stats, assignment } = this.props;
+        const toggledText = toggled ? ' toggled' : '';
+        let	assignmentEditOutlet = '';
 
-		if(this.props.user.rank >= global.RANKS.CONTENT_MANAGER) {
-			assignmentEditOutlet = <AssignmentEditOutlet 
+		if(user.rank >= global.RANKS.CONTENT_MANAGER) {
+			assignmentEditOutlet = <AssignmentEditOutlet
 										outlet={this.state.outlet}
 										updateOutlet={this.updateOutlet} />
 		}
@@ -178,41 +179,41 @@ export default class AssignmentEdit extends React.Component {
 
 			<div>
 				<div className={"dim toggle-edit " + toggledText}></div>
-				
+
 				<div className={"edit panel panel-default toggle-edit" + toggledText}>
-					<AssignmentEditStats 
-						stats={this.props.stats}
-						assignment={this.props.assignment} />
+					<AssignmentEditStats
+						stats={stats}
+						assignment={assignment} />
 
 					<div className="col-xs-12 col-lg-9 edit-new dialog">
 						<div className="dialog-head">
 							<span className="md-type-title">Edit assignment</span>
 							<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.cancel}></span>
 						</div>
-						
+
 						<div className="dialog-foot">
-							<button 
-								id="story-edit-revert" 
-								type="button" 
-								className="btn btn-flat" 
+							<button
+								id="story-edit-revert"
+								type="button"
+								className="btn btn-flat"
 								onClick={this.revert}>Revert changes</button>
-							<button 
-								id="story-edit-clear" 
-								type="button" 
-								className="btn btn-flat" 
+							<button
+								id="story-edit-clear"
+								type="button"
+								className="btn btn-flat"
 								onClick={this.clear}>Clear all</button>
-							<button 
-								id="story-edit-save" 
-								type="button" 
-								className="btn btn-flat pull-right" 
+							<button
+								id="story-edit-save"
+								type="button"
+								className="btn btn-flat pull-right"
 								onClick={this.save}>Save</button>
-							<button 
-								id="story-edit-discard" 
-								type="button" 
-								className="btn btn-flat pull-right toggle-edit toggler" 
+							<button
+								id="story-edit-discard"
+								type="button"
+								className="btn btn-flat pull-right toggle-edit toggler"
 								onClick={this.cancel}>Discard</button>
 						</div>
-						
+
 						<div className="dialog-body">
 							<div className="dialog-col col-xs-12 col-md-7 form-group-default">
 								<div className="dialog-row">
@@ -222,9 +223,9 @@ export default class AssignmentEdit extends React.Component {
 										placeholder="Title"
 										title="Title"
 										ref="title"
-										defaultValue={this.props.assignment.title} />
+										defaultValue={assignment.title} />
 								</div>
-								
+
 								<div className="dialog-row">
 									<textarea
 										type="text"
@@ -232,7 +233,7 @@ export default class AssignmentEdit extends React.Component {
 										placeholder="Caption"
 										title="Caption"
 										ref="caption"
-										defaultValue={this.props.assignment.caption} />
+										defaultValue={assignment.caption} />
 								</div>
 
 								{assignmentEditOutlet}
@@ -252,7 +253,7 @@ export default class AssignmentEdit extends React.Component {
 									    hasRadius={true} />
 
 								</div>
-								
+
 								<div className="dialog-row">
 									<div className="form-group-default">
 										<input
@@ -261,7 +262,7 @@ export default class AssignmentEdit extends React.Component {
 											className="form-control floating-label"
 											data-hint="hours from now"
 											placeholder="Expiration time"
-											defaultValue={global.hoursToExpiration(this.props.assignment.expiration_time)} />
+											defaultValue={global.hoursToExpiration(assignment.expiration_time)} />
 									</div>
 								</div>
 							</div>
@@ -275,4 +276,14 @@ export default class AssignmentEdit extends React.Component {
 
 AssignmentEdit.defaultProps = {
 	toggled: false
-}
+};
+
+AssignmentEdit.propTypes = {
+    user: PropTypes.object,
+    toggled: PropTypes.bool,
+    stats: PropTypes.object,
+    assignment: PropTypes.object,
+};
+
+export default AssignmentEdit;
+

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import FrescoImage from './fresco-image'
 import PurchaseAction from './../actions/purchase-action.js'
 import DownloadAction from './../actions/download-action.js'
@@ -9,7 +9,7 @@ import global from '../../../lib/global'
  * Single Post Cell, child of PostList
  */
 
-export default class PostCell extends React.Component {
+class PostCell extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -27,8 +27,8 @@ export default class PostCell extends React.Component {
 		}
 	}
 
-	render() {
-		var post = this.props.post,
+    render() {
+        var post = this.props.post,
 			toggled = this.props.toggled ? 'toggled' : '',
 			time = this.props.sort == 'captured_at' ? post.captured_at : post.created_at,
 			timeString = typeof(time) == 'undefined' ? 'No timestamp' : global.formatTime(time),
@@ -55,7 +55,8 @@ export default class PostCell extends React.Component {
 
 					<FrescoImage
 						image={this.props.post.image}
-						size={this.props.size} />
+                        size={this.props.size}
+                    />
 				</div>
 
 				<div className="tile-foot">
@@ -66,7 +67,8 @@ export default class PostCell extends React.Component {
 						didPurchase={this.props.didPurchase}
 						rank={this.props.rank}
 						editable={this.props.editable}
-						edit={this.props.edit} />
+                        edit={this.props.edit}
+                    />
 
 					<div>
 						<div className="tile-info">
@@ -137,66 +139,74 @@ PostCellStories.defaultProps = {
  */
 
 class PostCellActions extends React.Component {
+    render() {
+        const {
+            rank,
+            purchased,
+            editable,
+            post,
+            edit,
+            assignment,
+            didPurchase,
+        } = this.props;
 
-	render() {
+        var actions = [],
+        key = 0;
 
-		var actions = [],
-			key = 0;
+        //Check if we're CM or greater
+		if(typeof(rank) !== 'undefined' && rank >= global.RANKS.CONTENT_MANAGER) {
 
-		//Check if we're CM or greater
-		if(typeof(this.props.rank) !== 'undefined' && this.props.rank >= global.RANKS.CONTENT_MANAGER) {
+            if(editable) {
+                actions.push(
+                    <PostEditAction
+                        post={post}
+                        edit={edit}
+                        key={++key} />
+                );
+            }
 
-			if(this.props.editable) {
-				actions.push(
-					<PostEditAction
-						post={this.props.post}
-						edit={this.props.edit}
-						key={++key} />
-				);
-			}
-
-			//Show the purhcased icon if the post hasn't been purchased
-			if(this.props.purchased === false){
+            //Show the purhcased icon if the post hasn't been purchased
+            if(purchased === false){
 				actions.push(
 					<PurchaseAction
-						post={this.props.post}
-						assignment={this.props.assignment ? this.props.assignment.id : null}
-						didPurchase={this.props.didPurchase}
+						post={post}
+						assignment={assignment ? assignment.id : null}
+						didPurchase={didPurchase}
 						key={++key}/>
 				);
 			}
 
 			actions.push(
 				<DownloadAction
-					post={this.props.post}
+					post={post}
 					key={++key} />
 			);
 		}
 		//Check if the post has been purchased
-		else if (this.props.purchased === true)
+		else if (purchased === true)
 			actions.push(
 				<DownloadAction
-					post={this.props.post}
+					post={post}
 					key={++key} />
 			);
 
 		//Check if the post is not purhcased, and it is purchasble from the license
-		else if (this.props.purchased == false && this.props.post.license == 1) {
+		else if (purchased == false && post.license == 1) {
 
 			actions.push(
 				<PurchaseAction
-					post={this.props.post}
-					assignment={this.props.assignment ? this.props.assignment.id : null}
-					didPurchase={this.props.didPurchase}
+					post={post}
+					assignment={assignment ? assignment.id : null}
+					didPurchase={didPurchase}
 					key={++key} />
 			);
 
 		}
 
-		var link = '/post/' + this.props.post.id;
+		var link = '/post/' + post.id;
 
-		if(this.props.assignment) {
-			link += '?assignment=' + this.props.assignment.id
+		if(assignment) {
+			link += '?assignment=' + assignment.id
 		}
 
 		return (
@@ -208,3 +218,9 @@ class PostCellActions extends React.Component {
 
 	}
 }
+
+PostCell.propTypes = {
+    rank: PropTypes.number,
+};
+
+export default PostCell;

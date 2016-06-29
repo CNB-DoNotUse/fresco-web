@@ -77,14 +77,14 @@ export default class OutletBody extends React.Component {
 					});
 				}
 				return cb([]);
-			} 
+			}
 			else if(!response.data){
 				return cb([]);
 			}
 
 			var purchases = response.data.map((purchaseParent) => {
 				if(!purchaseParent.purchase) return purchaseParent;
-				
+
 				var purchase = purchaseParent.purchase;
 					purchase.title = purchaseParent.title;
 
@@ -115,24 +115,25 @@ export default class OutletBody extends React.Component {
 	}
 
 	render() {
-		var outlet = this.props.outlet;
+        const { outlet, user } = this.props;
 
 		return (
 			<div className="container-fluid tabs">
 				<div className="tab tab-vault toggled">
 					<div className="container-fluid fat">
 						<div className="profile visible-xs"></div>
-						
+
 						<OutletSidebar outlet={outlet} />
-						
+
 						<div className="col-sm-8 tall">
 							<PostList
 								loadPosts={this.loadPosts}
-								rank={this.props.user.rank}
 								allPurchased={true}
 								size='large'
 								editable={false}
-								scrollable={true} />
+                                scrollable={true}
+                                rank={user.rank}
+                            />
 						</div>
 					</div>
 				</div>
