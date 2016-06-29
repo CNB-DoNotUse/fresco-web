@@ -73,49 +73,44 @@ class GalleryEditFoot extends React.Component {
 		}
 	}
 
-	delete() {
-		var gallery = this.state.gallery;
+    delete() {
+        const gallery = this.state.gallery;
 
-		alertify.confirm("Are you sure you want to delete this gallery?", (confirmed) => {
+        alertify.confirm("Are you sure you want to delete this gallery?", (confirmed) => {
+            if (!confirmed) return;
 
-			if (!confirmed) return;
+            // Consturct params with gallery id
+            const params = { id: gallery.id };
 
-			//Consturct params with gallery id
-			var params = {
-				id: gallery.id
-			}
+            // Send delete request
+            $.ajax({
+                url: '/api/gallery/remove',
+                method: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                dataType: 'json',
+                success: (result) => {
+                    if (result.err) {
+                        return this.error(null, null, result.err);
+                    }
 
-			//Send delete request
-			$.ajax({
-				url: "/api/gallery/remove",
-				method: 'post',
-				contentType: "application/json",
-				data: JSON.stringify(params),
-				dataType: 'json',
-				success: (result) => {
-					if(result.err){
-						return this.error(null, null, result.err);
-					}
+                    if (window.location.href.indexOf('post') === -1) {
+                        return location.reload();
+                    }
+                    location.href = document.referrer || '/highlights';
 
-					if(window.location.href.indexOf('post') == -1) {
-						location.reload();
-					} else {
-						location.href = document.referrer || '/highlights';
-					}
-				},
-				error: (xhr, status, error) => {
-					$.snackbar({
-						content: 'Couldn\'t successfully delete this gallery!'
-					});
-				}
-			});
+                    return null;
+                },
+                error: () => {
+                    $.snackbar({ content: 'Couldn\'t successfully delete this gallery!' });
+                },
+            });
+        });
+    }
 
-		});
-	}
-
-	render() {
-		let addMore = '';
-		let verifyToggle = '';
+    render() {
+        let addMore = '';
+        let verifyToggle = '';
         const {
             verifyGallery,
             unverifyGallery,
@@ -123,31 +118,44 @@ class GalleryEditFoot extends React.Component {
             saveGallery,
             hide,
         } = this.props;
+        const { gallery } = this.state;
 
-		//Check if the gallery has been imported, to show the 'Add More' button or not
-		if(this.state.gallery.imported) {
-			addMore = <button id="gallery-add-more-button"
-							type="button"
-							onClick={this.addMore}
-							className="btn btn-flat">Add More</button>
-		}
+        //Check if the gallery has been imported, to show the 'Add More' button or not
+        if (gallery.imported) {
+            addMore = (
+                <button
+                    type="button"
+                    onClick={this.addMore}
+                    className="btn btn-flat">
+                    Add More
+                </button>
+            );
+        }
 
 		var inputStyle = {
 			display: 'none'
 		};
 
-		if(this.state.gallery.visibility == 0) {
-			verifyToggle = <button id="gallery-delete-button" type="button"
-								onClick={verifyGallery}
-								className="btn btn-flat pull-right">Verify</button>
+        if (gallery.visibility == 0) {
+            verifyToggle = (
+                <button
+                    type="button"
+                    onClick={verifyGallery}
+                    className="btn btn-flat pull-right">
+                    Verify
+                </button>
+            );
+        } else {
+            verifyToggle = (
+                <button
+                    onClick={unverifyGallery}
+                    className="btn btn-flat pull-right">
+                    Unverify
+                </button>
+            );
+        }
 
-		} else {
-			verifyToggle = <button id="gallery-delete-button" type="button"
-								onClick={unverifyGallery}
-								className="btn btn-flat pull-right">Unverify</button>
-		}
-
-		return (
+        return (
 			<div className="dialog-foot">
 				<input
 					id="gallery-upload-files"
@@ -156,20 +164,26 @@ class GalleryEditFoot extends React.Component {
 					multiple
 					ref='fileUpload'
 					style={inputStyle}
-					onChange={this.fileUploaderChanged} />
+                    onChange={this.fileUploaderChanged}
+                />
 
-				<button id="gallery-revert-button" type="button"
+                <button
+                    type="button"
 					onClick={revert}
-					className="btn btn-flat">Revert changes</button>
+                    className="btn btn-flat">
+                    Revert changes
+                </button>
 
-				<button id="gallery-clear-button" type="button"
+                <button
+                    type="button"
 					onClick={this.clear}
-					className="btn btn-flat">Clear all</button>
+                    className="btn btn-flat">
+                    Clear all
+                </button>
 
 				{addMore}
 
                 <button
-                    id="gallery-save-button"
                     type="button"
 					onClick={saveGallery}
                     className="btn btn-flat pull-right">
@@ -178,17 +192,24 @@ class GalleryEditFoot extends React.Component {
 
 				{verifyToggle}
 
-				<button id="gallery-delete-button" type="button"
-					onClick={this.delete}
-					className="btn btn-flat pull-right">Delete</button>
+                <button
+                    type="button"
+                    onClick={this.delete}
+                    className="btn btn-flat pull-right">
+                    Delete
+                </button>
 
-				<button id="gallery-cancel-button" type="button"
-					onClick={hide}
-					className="btn btn-flat pull-right toggle-gedit toggler">Cancel</button>
+                <button
+                    type="button"
+                    onClick={hide}
+                    className="btn btn-flat pull-right toggle-gedit toggler">
+                    Cancel
+                </button>
 			</div>
 		);
-	}
+    }
 }
+
 
 GalleryEditFoot.defaultProps = {
 	hide: function () { console.log('Hide not implemented in GalleryEdit'); }
@@ -203,3 +224,4 @@ GalleryEditFoot.propTypes = {
 };
 
 export default GalleryEditFoot;
+

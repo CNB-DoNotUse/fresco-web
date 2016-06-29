@@ -191,17 +191,13 @@ export default class GalleryEdit extends React.Component {
 		return new google.maps.LatLng(lat, lng);
 	}
 
-	unverifyGallery() {
-		this.saveGallery(null, {
-			visibility: 0
-		});
-	}
+    unverifyGallery() {
+        this.saveGallery(null, { visibility: 0 });
+    }
 
-	verifyGallery() {
-		this.saveGallery(null, {
-			visibility: 1
-		});
-	}
+    verifyGallery() {
+        this.saveGallery(null, { visibility: 1 });
+    }
 
  	saveGallery(event, passedParams) {
  		var self 	   = this,
@@ -211,6 +207,7 @@ export default class GalleryEdit extends React.Component {
  			tags 	   = gallery.tags,
  			assignment = gallery.assignment ? gallery.assignment.id : undefined,
  			bylineExists = document.getElementById('byline-edit') !== null;
+
 
  		// If assignment was removed, send -1 instead of undefined.
  		if(this.props.gallery.assignment && this.props.gallery.assignment.id && !assignment) {
