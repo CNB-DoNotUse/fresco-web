@@ -150,12 +150,12 @@ router.get('/outlet/export', (req, res) => {
   API.proxy(req, res, (body) => {
     var lines = body.data;
     if(req.query.format == 'xlsx'){
-      var data = [['time', 'type', 'price', 'assignment', 'outlet', 'user', 'user id']];
+      var data = [['time', 'type', 'price', 'assignment', 'outlet', 'user', 'user id', 'post']];
 
       lines.forEach(function(line){
 	var x = new Date(line.time),
 	    formattedTime = (x.getMonth() + 1) + '/' + x.getDate() + '/' + x.getFullYear();
-        data.push([formattedTime, line.type, line.price.replace('$', ''), line.assignment, line.outlet, line.user, line.user_id]);
+        data.push([formattedTime, line.type, line.price.replace('$', ''), line.assignment, line.outlet, line.user, line.user_id, line.post]);
       });
 
       res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -163,12 +163,12 @@ router.get('/outlet/export', (req, res) => {
       return res.send(xlsx.build([{name: 'Purchases', data: data}])).end();
     }
     else { //CSV
-      var output = "time,type,price,assignment,outlet\r\n";
+      var output = "time,type,price,assignment,outlet,user,userId,post\r\n";
 
       lines.forEach(function(line){
         var x = new Date(line.time),
         formattedTime = (x.getMonth() + 1) + '/' + x.getDate() + '/' + x.getFullYear();
-        output += formattedTime + ',' + line.type + ',' + line.price.replace('$', '') + ',' + line.assignment + ',' + line.outlet + ',' + line.user + ',' + line.user_id + '\r\n';
+        output += formattedTime + ',' + line.type + ',' + line.price.replace('$', '') + ',' + line.assignment + ',' + line.outlet + ',' + line.user + ',' + line.user_id + ',' + line.post + '\r\n';
       });
 
       res.set('Content-Type', 'text/csv');
