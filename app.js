@@ -118,22 +118,31 @@ app.use((req, res, next) => {
     var path = req.path.slice(1).split('/')[0],
         now = Date.now();
 
-    //Check if not a platform route, then send onwwards
+    // Check if not a platform route, then send onwwards
     if(routes.platform.indexOf(path) == -1) {
         return next();
     }
 
-    //Check if there is no sessioned user
+    // Check if there is no sessioned user
     if (!req.session.user) {
         return res.redirect('/account?next=' + req.url);
     }
 
-    //Check if the session hasn't expired
-    if (!req.session.user.TTL || req.session.user.TTL - now > 0){
+    // Check if the session hasn't expired
+    if (!req.session.user.TTL || req.session.user.TTL - now > 0) {
         return next();
     }
 
     User.refresh(req, res, next);
+});
+
+// Check if user rank exists (calc'd from permissions arr)
+app.use((req, res, next) => {
+    if (req.session.user && req.session.user.permissions) {
+        return User.updateRank(req, next);
+    }
+
+    next();
 });
 
 /**
@@ -197,8 +206,9 @@ for (var i = 0; i < routes.platform.length; i++) {
 // Special case for assignment create
 // TODO: Remove this
 app.post('/api/assignment/create', (req, res, next) => {
-  req.body.outlet = req.session.user && req.session.user.outlet ? req.session.user.outlet.id : undefined;
-  next();
+    req.body.outlet = req.session.user &&
+        req.session.user.outlet ? req.session.user.outlet.id : undefined;
+    next();
 });
 
 app.use('/api', API.proxy);
