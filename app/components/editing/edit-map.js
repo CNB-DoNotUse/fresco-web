@@ -1,5 +1,5 @@
-import React from 'react'
-import global from './../../../lib/global'
+import React from 'react';
+import global from './../../../lib/global';
 
 /**
  * Single Edit-Map Element
@@ -7,7 +7,6 @@ import global from './../../../lib/global'
  */
 
 export default class EditMap extends React.Component {
-
 	constructor(props) {
 		super(props);
 
@@ -16,8 +15,8 @@ export default class EditMap extends React.Component {
 			map: 	 null,
 			polygon: null,
 			circle:  null,
-			marker:  null
-		}
+			marker:  null,
+		};
 
 		this.getCentroid = this.getCentroid.bind(this);
 		this.getBounds = this.getBounds.bind(this);

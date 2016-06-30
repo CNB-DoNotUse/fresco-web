@@ -221,12 +221,12 @@ export default class GalleryEdit extends React.Component {
 			return $.snackbar({content:"Galleries must have at least 1 post"});
 
  		//Generate stories for update
- 		var stories = gallery.related_stories.map((story) => {
- 			if(story.new)
- 				return 'NEW=' + JSON.stringify(story);
- 			else
- 				return story.id;
- 		});
+        var stories = gallery.related_stories
+            ? gallery.related_stories.map((story) => {
+                if (story.new) return 'NEW=' + JSON.stringify(story);
+                return story.id;
+            })
+            : null;
 
  		//Generate articles for update
  		var articles = gallery.articles.map((article) => {
