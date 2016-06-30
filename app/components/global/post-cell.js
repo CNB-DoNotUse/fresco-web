@@ -28,25 +28,37 @@ class PostCell extends React.Component {
 	}
 
     render() {
-        var post = this.props.post,
-			toggled = this.props.toggled ? 'toggled' : '',
-			time = this.props.sort == 'captured_at' ? post.captured_at : post.created_at,
-			timeString = typeof(time) == 'undefined' ? 'No timestamp' : global.formatTime(time),
-			address = post.location ? post.address ? post.address : 'No Address' : 'No Address',
-			size = this.props.size == 'large' ? this.props.sizes.large : this.props.sizes.small;
+        const {
+            post,
+            toggled,
+            sort,
+            assignment,
+            purchased,
+            didPurchase,
+            rank,
+            editable,
+            edit,
+            parentCaption,
+            size,
+            sizes,
+        } = this.props;
 
-		var statusClass = 'mdi icon pull-right '; //Class name for post tile icon
+        let time = sort == 'captured_at' ? post.captured_at : post.created_at;
+		let	timeString = typeof(time) == 'undefined' ? 'No timestamp' : global.formatTime(time);
+		let address = post.location ? post.address ? post.address : 'No Address' : 'No Address';
+		let divSize = size == 'large' ? sizes.large : sizes.small;
+
+		let statusClass = 'mdi icon pull-right '; //Class name for post tile icon
 			statusClass += post.video == null 	? 'mdi-image ' : 'mdi-movie ';
 			statusClass += this.props.purchased ? 'available ' : 'md-type-black-disabled ';
 
 		return(
-
-			<div className={size + ' tile ' + toggled} >
+			<div className={`${divSize} tile ${toggled ? 'toggled' : ''}`} >
 				<div className="tile-body">
 					<div className="frame"></div>
 
 					<div className="hover"  onClick={this.postClicked}>
-						<p className="md-type-body1">{post.parent.caption}</p>
+						<p className="md-type-body1">{parentCaption}</p>
 
 						<span className="md-type-caption">{post.byline}</span>
 
@@ -54,20 +66,20 @@ class PostCell extends React.Component {
 					</div>
 
 					<FrescoImage
-						image={this.props.post.image}
-                        size={this.props.size}
+						image={post.image}
+                        size={size}
                     />
 				</div>
 
 				<div className="tile-foot">
 					<PostCellActions
 						post={post}
-						assignment={this.props.assignment}
-						purchased={this.props.purchased}
-						didPurchase={this.props.didPurchase}
-						rank={this.props.rank}
-						editable={this.props.editable}
-                        edit={this.props.edit}
+						assignment={assignment}
+						purchased={purchased}
+						didPurchase={didPurchase}
+						rank={rank}
+						editable={editable}
+                        edit={edit}
                     />
 
 					<div>
@@ -92,9 +104,9 @@ PostCell.defaultProps = {
 		large: 'col-xs-12 col-sm-6 col-lg-4',
 		small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2'
 	},
-	togglePost: ()=>{},
-	toggled: false
-}
+	togglePost: () => {},
+	toggled: false,
+};
 
 
 // <span className="mdi mdi-library-plus icon pull-right"></span>
@@ -221,6 +233,8 @@ class PostCellActions extends React.Component {
 
 PostCell.propTypes = {
     rank: PropTypes.number,
+    parentCaption: PropTypes.string.isRequired,
 };
 
 export default PostCell;
+

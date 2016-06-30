@@ -16,28 +16,20 @@ class GalleryDetail extends React.Component {
 	constructor(props) {
 		super(props);
 
-		var unverifiedPosts = false;
-
-        // this is dirty but hard to deal with confusing api models any other way...
-        // PostList expects the posts to come from post/list or post/:id which returns .parent
-        props.gallery.posts.forEach(p => {
-            p.unverifiedPosts = p.approvals == 0;
-            p.parent = props.gallery;
-        });
+		// Check if every post in gallery is not verified and show all content
+		let unverifiedPosts = this.props.gallery.posts.every(post => post.approvals == 0);
 
 		this.state = {
 			galleryEditToggled: false,
 			gallery: this.props.gallery,
-			shouldShowVerifeidToggle: unverifiedPosts,
+			shouldShowVerifiedToggle: unverifiedPosts,
 			verifiedToggle: unverifiedPosts,
-			sort: this.props.sort || 'created_at',
 			title: this.props.title
 		};
 
 		this.toggleGalleryEdit = this.toggleGalleryEdit.bind(this);
 		this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
 		this.updateGallery = this.updateGallery.bind(this);
-		this.updateSort = this.updateSort.bind(this);
 	}
 
 	toggleGalleryEdit() {
@@ -54,7 +46,7 @@ class GalleryDetail extends React.Component {
 	 * Updates gallery in state
 	 */
 	updateGallery(gallery){
-		var title = 'Gallery';
+		let title = 'Gallery';
 
 		if(gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
 			title += ' from ' + gallery.posts[0].location.address;
@@ -67,10 +59,6 @@ class GalleryDetail extends React.Component {
 		});
 	}
 
-	updateSort(sort) {
-		this.setState({ sort });
-	}
-
     render() {
         const { user, purchases } = this.props;
 
@@ -78,14 +66,12 @@ class GalleryDetail extends React.Component {
             <App user={user}>
                 <TopBar
                     title={this.state.title}
-                    updateSort={this.updateSort}
                     editable={user.rank >= global.RANKS.CONTENT_MANAGER}
                     rank={user.rank}
                     edit={this.toggleGalleryEdit}
                     verifiedToggle={this.state.shouldShowVerifeidToggle}
                     onVerifiedToggled={this.onVerifiedToggled}
                     timeToggle={true}
-                    chronToggle={true}
                 />
 
             <GallerySidebar gallery={this.state.gallery} />
@@ -94,11 +80,11 @@ class GalleryDetail extends React.Component {
                 <PostList
                     rank={user.rank}
                     purchases={purchases}
+                    galleryCaption={this.state.gallery.caption}
                     posts={this.state.gallery.posts}
                     onlyVerified={this.state.verifiedToggle}
                     updatePosts={this.state.updatePosts}
                     scrollable={false}
-                    sort={this.state.sort}
                     editable={false}
                     size='large'
                 />
@@ -127,3 +113,4 @@ ReactDOM.render(
 		title={window.__initialProps__.title} />,
 	document.getElementById('app')
 );
+
