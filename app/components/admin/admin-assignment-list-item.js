@@ -14,9 +14,8 @@ export default class AdminAssignmentListItem extends React.Component {
 
     render() {
         var assignment = this.props.assignment;
-
         var location = 'No Location';
-        
+
         if(assignment.location.address) {
             location = assignment.location.address;
         }
@@ -28,7 +27,7 @@ export default class AdminAssignmentListItem extends React.Component {
         return (
             <div className={"list-item" + (this.props.active ? ' active' : '')} onClick={this.props.setActiveAssignment.bind(null, assignment._id)}>
                 <div>
-                    <a href={"/outlet/" + assignment.outlet._id} target="_blank">
+                    <a href="" target="_blank">
                         <img
                             className="img-circle"
                             style={{width: '40px', height: '40px'}}
