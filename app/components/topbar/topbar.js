@@ -173,7 +173,17 @@ class TopBar extends React.Component {
 					{timeToggle}
 				</Dropdown>
 			);
-		}
+        } else if (timeToggle) {
+            topbarItems.push(
+                <Dropdown
+                    options={['Relative time', 'Absolute time']}
+                    selected='Relative time'
+                    onSelected={this.timeToggleSelected}
+                    name='timeToggle'
+                    inList={true}
+                />
+            );
+        }
 
         if (verifiedToggle && rank > global.RANKS.BASIC) {
 			topbarItems.push(
