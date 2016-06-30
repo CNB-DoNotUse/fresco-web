@@ -26,21 +26,17 @@ export default class GalleryEditAssignment extends React.Component {
 		if(query.length == 0){
 			this.setState({ suggestions: [] });
 			this.refs.dropdown.style.display = 'none';
-		} else{
-
+		} else {
 			this.refs.dropdown.style.display = 'block';
 
 			$.ajax({
-				url: '/api/assignment/search',
+				url: '/api/search?assignments=true',
 				data: { q: query },
 				success: (result, status, xhr) => {
-
-					if(result.data){
-
-						this.setState({ suggestions: result.data });
-
+					if(result.assignments){
+						this.setState({ suggestions: result.assignments});
 					}
-				}
+				},
 			});
 		}
 	}
@@ -53,7 +49,7 @@ export default class GalleryEditAssignment extends React.Component {
 		if(this.props.assignment){
 			return $.snackbar({ content : 'Submissions can only have one assignment!' });
 		}
-		
+
 		//Clear the input field
 		this.refs.autocomplete.value = ''
 		this.refs.dropdown.style.display = 'none';
@@ -71,23 +67,25 @@ export default class GalleryEditAssignment extends React.Component {
 						className="form-control floating-label"
 						placeholder="Assignment"
 						onKeyUp={this.change}
-						ref='autocomplete' />
+                        ref='autocomplete'
+                    />
 
 					<ul ref="dropdown" className="dropdown">
 						{this.state.suggestions.map((assignment, i) => {
 							return (
-								<li onClick={this.addAssignment.bind(null, assignment)}
-									key={i}>{assignment.title}</li>
+                                <li onClick={this.addAssignment.bind(null, assignment)} key={i} >
+                                    {assignment.title}
+                                </li>
 							)
 						})}
 					</ul>
 
 					<ul className="chips">
-						{this.props.assignment ? 
+						{this.props.assignment ?
 							<Tag
 								text={this.props.assignment.title}
 								plus={false}
-								onClick={this.props.updateGalleryField.bind(null, 'assignment', null)} /> 
+								onClick={this.props.updateGalleryField.bind(null, 'assignment', null)} />
 							: ''
 						}
 					</ul>

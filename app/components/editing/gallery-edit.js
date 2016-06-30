@@ -228,21 +228,18 @@ export default class GalleryEdit extends React.Component {
 
  		//Generate articles for update
  		var articles = gallery.articles.map((article) => {
- 			if(article.new)
- 				return 'NEW=' + JSON.stringify(article);
- 			else
- 				return article.id;
+ 			if(article.new) return 'NEW=' + JSON.stringify(article);
+ 			return article.id;
  		});
 
  		//Configure params for the updated gallery
  		var params = {
- 			id: gallery.id,
  			caption: caption,
- 			posts: posts,
- 			assignment: assignment,
+ 			// posts: posts,
+ 			// assignment: assignment,
  			tags: tags,
- 			stories: stories,
- 			articles: articles
+ 			// stories: stories,
+ 			// articles: articles,
  		};
 
  		if(typeof(passedParams) == 'object') {
@@ -255,8 +252,8 @@ export default class GalleryEdit extends React.Component {
  		}
 
  		//Configure the byline's other origin
- 		var byline = global.getBylineFromComponent(gallery, this.refs.galleryEditBody.refs.byline);
- 		_.extend(params, byline);
+ 		// var byline = global.getBylineFromComponent(gallery, this.refs.galleryEditBody.refs.byline);
+ 		// _.extend(params, byline);
 
  		//Check if imported and there is a location to add a location to the save request
  		if (gallery.imported && gallery.location) {
