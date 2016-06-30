@@ -156,12 +156,14 @@ class TopBar extends React.Component {
 			let timeToggle = null;
 
 			if (timeToggle) {
-				timeToggle =
-					<RadioGroup
-						options={['Relative time', 'Absolute time']}
-						selected='Relative time'
-						onSelected={this.timeToggleSelected}
-						name='timeToggle' />
+				timeToggle = (
+                    <RadioGroup
+                        options={['Relative time', 'Absolute time']}
+                        selected='Relative time'
+                        onSelected={this.timeToggleSelected}
+                        key='timeToggle'
+                    />
+                )
 			}
 			topbarItems.push(
 				<Dropdown
@@ -169,7 +171,7 @@ class TopBar extends React.Component {
 					selected='By upload time'
 					onSelected={this.chronToggleSelected}
 					key="chronToggle"
-					inList={true}>
+                    inList >
 					{timeToggle}
 				</Dropdown>
 			);
@@ -179,8 +181,8 @@ class TopBar extends React.Component {
                     options={['Relative time', 'Absolute time']}
                     selected='Relative time'
                     onSelected={this.timeToggleSelected}
-                    name='timeToggle'
-                    inList={true}
+                    key='timeToggle'
+                    inList
                 />
             );
         }

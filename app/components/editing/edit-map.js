@@ -140,6 +140,7 @@ export default class EditMap extends React.Component {
 		// If location, check if is array and get centroid of polygon, or use the point passed. Otherwise use NYC for center.
         let center;
         if (this.props.location && Array.isArray(this.props.location)) {
+            // TODO: make this try/catch unnecessary
             try {
                 center = this.getCentroid(this.props.location)
             } catch(e) {

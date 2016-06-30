@@ -1,8 +1,8 @@
-import _ from 'lodash'
-import React from 'react'
-import GalleryEditBody from './gallery-edit-body.js'
-import GalleryEditFoot from './gallery-edit-foot.js'
-import global from '../../../lib/global'
+import _ from 'lodash';
+import React from 'react';
+import GalleryEditBody from './gallery-edit-body.js';
+import GalleryEditFoot from './gallery-edit-foot.js';
+import global from '../../../lib/global';
 
 /** //
 
@@ -140,26 +140,24 @@ export default class GalleryEdit extends React.Component {
 		}
 	}
 
- 	updateVisibility(visibility) {
- 		var gallery = this.state.gallery;
- 			gallery.visibility = visibility;
+    updateVisibility(visibility) {
+        const gallery = this.state.gallery;
+        gallery.visibility = visibility;
 
- 		//Update new gallery
- 		this.setState({
- 			gallery: gallery,
- 			visibilityChanged: true
- 		});
- 	}
+        // Update new gallery
+        this.setState({
+            gallery,
+            visibilityChanged: true,
+        });
+    }
 
- 	/**
+    /**
  	 * Updates GalleryEdit Gallery
  	 * Used by GalelryEditFoot's Add Files
  	 */
- 	updateGallery(gallery) {
- 		this.setState({
- 			gallery: gallery
- 		});
- 	}
+    updateGallery(gallery) {
+        this.setState({ gallery });
+    }
 
  	revertGallery() {
  		// Set gallery back to original
@@ -297,7 +295,7 @@ export default class GalleryEdit extends React.Component {
 				params.posts = _.difference(newPosts.posts, self.state.deletePosts);
  			}
 
- 			$.ajax("/api/gallery/update", {
+            $.ajax(`/api/gallery/${gallery.id}/update`, {
 	 			method: 'post',
 	 			contentType: "application/json",
 	 			data: JSON.stringify(params),
