@@ -22,7 +22,7 @@ export default class GalleryEdit extends React.Component {
 			gallery: null,
 			caption: '',
 			posts: null,
-			visibilityChanged: false,
+			ratingChanged: false,
 			deletePosts: []
 		}
 
@@ -33,7 +33,7 @@ export default class GalleryEdit extends React.Component {
 		this.updateArticles 		= this.updateArticles.bind(this);
 		this.updateTags 			= this.updateTags.bind(this);
 		this.updateAssignment 	    = this.updateAssignment.bind(this);
-		this.updateVisibility 		= this.updateVisibility.bind(this);
+        this.updateRating           = this.updateRating.bind(this);
 
 		this.updateGalleryField     = this.updateGalleryField.bind(this);
 		this.updateGallery 			= this.updateGallery.bind(this);
@@ -140,14 +140,14 @@ export default class GalleryEdit extends React.Component {
 		}
 	}
 
-    updateVisibility(visibility) {
-        const gallery = this.state.gallery;
-        gallery.visibility = visibility;
+    updateRating(rating) {
+        const { gallery  } = this.state;
+        gallery.rating = rating;
 
         // Update new gallery
         this.setState({
             gallery,
-            visibilityChanged: true,
+            ratingChanged: true,
         });
     }
 
@@ -190,11 +190,11 @@ export default class GalleryEdit extends React.Component {
 	}
 
     unverifyGallery() {
-        this.saveGallery(null, { visibility: 0 });
+        this.saveGallery(null, { rating: 1 });
     }
 
     verifyGallery() {
-        this.saveGallery(null, { visibility: 1 });
+        this.saveGallery(null, { rating: 2 });
     }
 
  	saveGallery(event, passedParams) {
@@ -246,11 +246,6 @@ export default class GalleryEdit extends React.Component {
  			params = _.extend(params, passedParams);
  		}
 
- 		//Check state var to see if the visibility has changed
- 		if(this.state.visibilityChanged){
- 			params.visibility = gallery.visibility;
- 		}
-
  		//Configure the byline's other origin
  		// var byline = global.getBylineFromComponent(gallery, this.refs.galleryEditBody.refs.byline);
  		// _.extend(params, byline);
@@ -261,16 +256,18 @@ export default class GalleryEdit extends React.Component {
 	 			params.lat = gallery.location.lat;
 	 			params.lon = gallery.location.lng;
  			} else {
- 				var coord = this.getCentroid(gallery.location.coordinates[0].map((coord) => {
-			 					return {
-			 						lat: coord[1],
-			 						lng: coord[0]
-			 					}
-			 				})),
-					lat = coord.lat(),
-					lon = coord.lng();
-				params.lat = lat;
-				params.lon = lon;
+                const coord = this.getCentroid(
+                    gallery.location.coordinates[0].map((coord) => {
+                    return {
+                        lat: coord[1],
+                        lng: coord[0]
+                    }
+                }));
+                const lat = coord.lat();
+                const lon = coord.lng();
+
+                params.lat = lat;
+                params.lon = lon;
  			}
  			if (gallery.address) {
  				params.address = gallery.address;
@@ -372,7 +369,7 @@ export default class GalleryEdit extends React.Component {
 		 						onPlaceChange={this.onPlaceChange}
 		 						updateCaption={this.updateCaption}
 								updateRelatedStories={this.updateRelatedStories}
-								updateVisibility={this.updateVisibility}
+								updateRating={this.updateRating}
 								updateArticles={this.updateArticles}
 								updateTags={this.updateTags}
 								updateGallery={this.updateGallery}

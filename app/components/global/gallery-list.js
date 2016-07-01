@@ -54,23 +54,28 @@ class GalleryList extends React.Component {
 
 	//Returns array of galleries with offset and callback
 	loadGalleries(last, callback) {
-		var endpoint,
-			params = {
-				limit: 20,
-				last: last,
-				sort: this.props.sort
-			};
+		let endpoint;
+        let	params = {
+            limit: 20,
+            last,
+            sort: this.props.sort,
+            skipped: true,
+            verified: true,
+            highlighted: true,
+        };
 
 		if(this.props.highlighted) {
 			endpoint = 'gallery/highlights';
 		} else {
 			endpoint ='gallery/list';
 
-			if(this.props.onlyVerified) params.verified = true;
+            if(this.props.onlyVerified){
+                params = Object.assign({}, params, {skipped: false, verified: true, highlighted: true});
+            }
 		}
 
 		$.ajax({
-			url:  '/api/' + endpoint,
+			url: '/api/' + endpoint,
 			type: 'GET',
 			data: params,
 			dataType: 'json',

@@ -12,7 +12,7 @@ import BylineEdit from './byline-edit.js'
  * @description manages all of the input fields, and speaks to parent
  */
 
-export default class GalleryEditBody extends React.Component {
+class GalleryEditBody extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -25,12 +25,12 @@ export default class GalleryEditBody extends React.Component {
 	}
 
 	toggleHighlight(e) {
-		this.props.updateVisibility(e.target.checked ? 2 : 1);
+		this.props.updateRating(e.target.checked ? 3 : 2);
 	}
 
 	render() {
 
-		var visibility = this.props.gallery.visibility;
+		var rating = this.props.gallery.rating;
 
 		return (
 			<div className="dialog-body">
@@ -77,7 +77,7 @@ export default class GalleryEditBody extends React.Component {
 							<label>
 								<input
 									type="checkbox"
-									checked={this.props.gallery.visibility == 2}
+									checked={this.props.gallery.rating == 3}
                                     onChange={this.toggleHighlight}
                                 />
                                 Highlighted
@@ -111,4 +111,7 @@ GalleryEditBody.defaultProps = {
 	updateRelatedStories: 	function 	() { console.log('GalleryEditBody missing updateRelatedStories prop') },
 	updateArticles: 		function 	() { console.log('GalleryEditBody missing updateArticles prop') },
 	updateTags: 			function	() { console.log('GalleryEditBody missing updatedTags prop') }
-}
+};
+
+export default GalleryEditBody;
+
