@@ -21,9 +21,7 @@ import TopBar from './../components/topbar'
  	}
 
  	onVerifiedToggled(toggle) {
- 		this.setState({
- 			verifiedToggle: toggle
- 		});
+ 		this.setState({ verifiedToggle: toggle });
  	}
 
 	render() {

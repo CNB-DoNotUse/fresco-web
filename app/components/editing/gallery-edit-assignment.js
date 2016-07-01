@@ -81,11 +81,12 @@ export default class GalleryEditAssignment extends React.Component {
 					</ul>
 
 					<ul className="chips">
-						{this.props.assignment ?
-							<Tag
-								text={this.props.assignment.title}
-								plus={false}
-								onClick={this.props.updateGalleryField.bind(null, 'assignment', null)} />
+                        {this.props.assignment
+                            ? <Tag
+                                text={this.props.assignment.title}
+                                plus={false}
+                                onClick={this.props.updateGalleryField.bind(null, 'assignment', null)}
+                            />
 							: ''
 						}
 					</ul>

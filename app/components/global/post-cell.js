@@ -1,31 +1,31 @@
-import React, { PropTypes } from 'react'
-import FrescoImage from './fresco-image'
-import PurchaseAction from './../actions/purchase-action.js'
-import DownloadAction from './../actions/download-action.js'
-import PostEditAction from './../actions/post-edit-action.js'
-import global from '../../../lib/global'
+import React, { PropTypes } from 'react';
+import FrescoImage from './fresco-image';
+import PurchaseAction from './../actions/purchase-action.js';
+import DownloadAction from './../actions/download-action.js';
+import PostEditAction from './../actions/post-edit-action.js';
+import global from '../../../lib/global';
 
 /**
- * Single Post Cell, child of PostList
- */
+    * Single Post Cell, child of PostList
+*/
 
 class PostCell extends React.Component {
 
-	constructor(props) {
-		super(props);
-		this.postClicked = this.postClicked.bind(this);
-	}
+    constructor(props) {
+        super(props);
+        this.postClicked = this.postClicked.bind(this);
+    }
 
-	postClicked(e) {
-		//Check if clicked with shift key
-		if(e.shiftKey) {
-			this.props.togglePost(this.props.post)
-		} else if (e.metaKey || e.ctrlKey) {
-	    	window.open('/post/' + this.props.post.id)
-		} else {
-			window.open('/post/' + this.props.post.id, '_self')
-		}
-	}
+    postClicked(e) {
+        // Check if clicked with shift key
+        if (e.shiftKey) {
+            this.props.togglePost(this.props.post);
+        } else if (e.metaKey || e.ctrlKey) {
+            window.open('/post/' + this.props.post.id);
+        } else {
+            window.open('/post/' + this.props.post.id, '_self');
+        }
+    }
 
     render() {
         const {
@@ -131,7 +131,7 @@ class PostCellStories extends React.Component {
 	  		});
 
 		} else {
-			return <div></div>;
+            return <div />;
 		}
 
 		return (

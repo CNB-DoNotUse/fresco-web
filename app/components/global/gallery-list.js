@@ -13,7 +13,7 @@ Description : List for a gallery used across the site (/highlights, /content/gal
  * Gallery List Parent Object
  */
 
-export default class GalleryList extends React.Component {
+class GalleryList extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -66,8 +66,7 @@ export default class GalleryList extends React.Component {
 		} else {
 			endpoint ='gallery/list';
 
-			if(this.props.onlyVerified)
-				params.verified = true;
+			if(this.props.onlyVerified) params.verified = true;
 		}
 
 		$.ajax({
@@ -156,5 +155,7 @@ export default class GalleryList extends React.Component {
 }
 
 GalleryList.defaultProps = {
-	onlyVerified: true
-}
+	onlyVerified: true,
+};
+
+export default GalleryList;
