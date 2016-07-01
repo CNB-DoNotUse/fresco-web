@@ -33,8 +33,7 @@ router.get('/:id', (req, res, next) => {
     }).then(response => {
         return api.request({ token, url: '/gallery/' + response.body.parent_id });
     }).then(response => {
-        // todo remove [0]
-        gallery = response.body[0];
+        gallery = response.body;
         post = gallery.posts.find(p => p.id === req.params.id);
         if (post.owner) {
             title += 'Post by ' + post.owner.full_name;
