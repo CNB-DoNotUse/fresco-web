@@ -44,14 +44,14 @@ router.get('/:id?', (req, res, next) => {
         }
 
         //Set secure URL for Admins/CMS
-        // if(req.session.user.rank >= global.RANKS.CONTENT_MANAGER) {
+        if(req.session.user.rank >= global.RANKS.CONTENT_MANAGER) {
             options.url =  '/user/profileSecure?id=' + req.params.id;
-        // } 
-        // //Otherwise regular URL for regular users
-        // //Note: Secure API endpoint will fail with a regular user as well
-        // else {
-        //     options.url =  '/user/profile?id=' + req.params.id;
-        // }
+        } 
+        //Otherwise regular URL for regular users
+        //Note: Secure API endpoint will fail with a regular user as well
+        else {
+            options.url =  '/user/profile?id=' + req.params.id;
+        }
 
         API.request(options, (err, response) => {
             if (err || !response.body.data._id || response.body.err) {
