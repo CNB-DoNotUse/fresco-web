@@ -16,25 +16,33 @@ var express    = require('express'),
  * @param Post ID
  */
 
-router.get('/:id', (req, res, next) => {
+function render(req, res, props) {
+    res.render('app', {
+        props: JSON.stringify(props),
+        title: props.title,
+        config,
+        alerts: req.alerts,
+        page: 'postDetail',
+    });
+}
 
-    var post = {},
-        title = '',
-        gallery = {},
-        purchases = [],
-        verifier = '';
+router.get('/:id', (req, res) => {
+    let post;
+    let gallery;
+    let title = '';
+    let verifier;
 
     const token = req.session.token;
 
-    //Make request for post
-    const postPromise = api.request({
+    // Make request for post
+    api.request({
         token,
         url: '/post/' + req.params.id,
     }).then(response => {
+        post = response.body || {};
         return api.request({ token, url: '/gallery/' + response.body.parent_id });
     }).then(response => {
-        gallery = response.body;
-        post = gallery.posts.find(p => p.id === req.params.id);
+        gallery = response.body || {};
         if (post.owner) {
             title += 'Post by ' + post.owner.full_name;
         } else if (post.curator) {
@@ -43,35 +51,21 @@ router.get('/:id', (req, res, next) => {
             title = post.byline;
         }
 
-        const curatorId = post.curator_id;
+        verifier = post.curator ? post.curator.full_name : '';
 
-        if (!curatorId) return render();
-
-        return api.request({ token, url: '/user/' + curatorId }).then(user => {
-          verifier = user.full_name;
-          return render();
-        });
-    }).catch(e => {
-        return req.session.save(() => {
-            res.redirect(req.headers.Referer || config.DASH_HOME);
-        });
-    });
-
-    function render() {
-        var props = {
-            gallery, post, title, verifier,
-            user: req.session.user,
-            purchases: Purchases.mapPurchases(req.session)
-        };
-
-        res.render('app', {
-            props: JSON.stringify(props),
-            title: title,
-            config: config,
-            alerts: req.alerts,
-            page: 'postDetail',
-        });
-    }
+        return render(req,
+                      res,
+                      { gallery,
+                          post,
+                          title,
+                          verifier,
+                          user: req.session.user,
+                          purchases: Purchases.mapPurchases(req.session),
+                      });
+    }).catch(() => (
+        req.session.save(() => res.redirect(req.headers.Referer || config.DASH_HOME))
+    ));
 });
 
 module.exports = router;
+
