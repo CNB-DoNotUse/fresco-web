@@ -33,7 +33,7 @@ export default class PostInfo extends React.Component {
         }
 
 	 	//Define verifier text based on approvals
-		if (post.approvals) {
+        if (post.rating >= 2) {
 			verifiedBy = 'Verified';
 			verifyClass = "mdi icon verified mdi-checkbox-marked-circle";
 
@@ -52,8 +52,11 @@ export default class PostInfo extends React.Component {
                 <div>
                     <img
                         className="img-circle img-responsive"
-                        src={post.owner && post.owner.avatar ? post.owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'} />
-                </div>
+                        src={(post.owner && post.owner.avatar)
+                            ? post.owner.avatar
+                            : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'}
+                        />
+                    </div>
             );
         }
 
@@ -102,7 +105,7 @@ export default class PostInfo extends React.Component {
 
 							<li>
 								<span className="mdi mdi-map-marker icon"></span>
-								{post.location ? post.location.address ? post.location.address : 'No Location' : 'No Location'}
+								{(post.location && post.location.address) ? post.location.address : 'No Location'}
 							</li>
 
 							{twitter}
