@@ -56,68 +56,72 @@ class PostDetail extends React.Component {
  		this.setState({
  			gallery: gallery,
             post: post
- 		});
- 	}
+        });
+    }
 
- 	render() {
- 		var editable = this.props.user.rank >= global.RANKS.CONTENT_MANAGER && this.state.gallery.id,
- 			galleryEdit = '',
- 			relatedPosts = '',
-            relatedTags = '';
+    render() {
+        let editable = this.props.user.rank >=
+            global.RANKS.CONTENT_MANAGER && this.state.gallery.id;
+        let galleryEdit = '';
+        let relatedPosts = '';
+        let relatedTags = '';
 
- 		if(editable){
- 			galleryEdit = <GalleryEdit
-                                gallery={this.state.gallery}
-                                toggled={this.state.toggled}
-                                toggle={this.toggle}
-                                updateGallery={this.updateGallery}
-                                hide={this.hide} />
-
+        if (editable) {
+            galleryEdit = (
+                <GalleryEdit
+                    gallery={this.state.gallery}
+                    toggled={this.state.toggled}
+                    toggle={this.toggle}
+                    updateGallery={this.updateGallery}
+                    hide={this.hide}
+                />
+            );
         }
 
-		relatedPosts = <PostRelated gallery={this.state.gallery} />
+        relatedPosts = <PostRelated gallery={this.state.gallery} />;
 
-        relatedTags = <PostRelatedTags tags={this.state.gallery.tags} />
+        relatedTags = <PostRelatedTags tags={this.state.gallery.tags} />;
 
- 		return (
- 			<App user={this.props.user}>
- 				<TopBar
- 					title={this.props.title}
- 					editable={editable}
+        return (
+            <App user={this.props.user}>
+                <TopBar
+                    title={this.props.title}
+                    editable={editable}
                     edit={this.toggle}
                 />
 
- 				<div className="content">
- 					<div className="row">
- 						<div className="main">
- 							<PostDetailImage
- 								post={this.state.post}
- 								user={this.props.user}
- 								purchases={this.props.purchases} />
+                <div className="content">
+                    <div className="row">
+                        <div className="main">
+                            <PostDetailImage
+                                post={this.state.post}
+                                user={this.props.user}
+                                purchases={this.props.purchases}
+                            />
 
- 							<PostInfo
-								user={this.props.user}
- 								post={this.state.post}
- 								gallery={this.state.gallery}
- 								user={this.props.user}
- 								verifier={this.props.verifier} />
- 						</div>
- 					</div>
-					{relatedPosts}
+                            <PostInfo
+                                user={this.props.user}
+                                post={this.state.post}
+                                gallery={this.state.gallery}
+                                user={this.props.user}
+                                verifier={this.props.verifier}
+                            />
+                        </div>
+                    </div>
+                    {relatedPosts}
 
                     {relatedTags}
- 				</div>
+                </div>
 
- 				{galleryEdit}
- 			</App>
- 		);
- 	}
-
+                {galleryEdit}
+            </App>
+        );
+    }
 }
 
 PostDetail.defaultProps = {
-	gallery: {}
-}
+	gallery: {},
+};
 
 ReactDOM.render(
   <PostDetail
