@@ -19,8 +19,6 @@ var express    = require('express'),
 function render(req, res, props) {
     res.render('app', {
         props: JSON.stringify(props),
-        title: props.title,
-        config,
         alerts: req.alerts,
         page: 'postDetail',
     });
@@ -44,7 +42,7 @@ router.get('/:id', (req, res) => {
     }).then(response => {
         gallery = response.body || {};
         if (post.owner) {
-            title += 'Post by ' + post.owner.full_name;
+            title += 'Post by ' + (post.owner.full_name || post.owner.username);
         } else if (post.curator) {
             title += 'Imported by ' + post.curator.full_name;
         } else {

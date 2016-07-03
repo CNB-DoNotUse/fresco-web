@@ -17,19 +17,19 @@ export default class PostInfo extends React.Component {
 	render() {
 		//Init needed vars to make list
         const { post, gallery, verifier, user } = this.props;
-		var userIcon = '',
-			twitter = '',
-			curator = '',
-			timeString = global.formatTime(post.created_at, true),
-			verifiedBy = '',
-			verifyClass = '',
-			userName = '';
+		let userIcon = '';
+		let twitter = '';
+	    let	curator = '';
+		let timeString = global.formatTime(post.created_at, true);
+		let verifiedBy = '';
+		let verifyClass = '';
+		let userName = '';
 
-		//Define username based on post meta
+		// Define username based on post meta
 		if (post.meta && post.meta.twitter) {
 	 		userName = post.meta.twitter.user_name;
         } else if (post.owner) {
-	 		userName = post.owner.firstname + ' ' + post.owner.lastname;
+	 		userName = post.owner.full_name || post.owner.username;
         }
 
 	 	//Define verifier text based on approvals
@@ -46,33 +46,38 @@ export default class PostInfo extends React.Component {
 			verifyClass = 'mdi mdi-alert-circle icon';
 		}
 
-		//Check to show user icon
-		if(post.owner){
-			userIcon = <div>
-							<img
-								className="img-circle img-responsive"
-								src={post.owner && post.owner.avatar ? post.owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'} />
-						</div>
-		}
+        //Check to show user icon
+        if(post.owner){
+            userIcon = (
+                <div>
+                    <img
+                        className="img-circle img-responsive"
+                        src={post.owner && post.owner.avatar ? post.owner.avatar : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'} />
+                </div>
+            );
+        }
 
-		//Check to show twitter item
+		// Check to show twitter item
 		if (post.meta && post.meta.twitter && post.meta.twitter.url){
-			var twitter = 	<li>
-								<span className="mdi mdi-twitter icon"></span>
-								<a href={ post.meta.twitter.url } target="_blank">See original</a>
-							</li>;
+            twitter = (
+                <li>
+                    <span className="mdi mdi-twitter icon"></span>
+                    <a href={ post.meta.twitter.url } target="_blank">See original</a>
+                </li>
+            );
 		}
 
-		//Check to show curator item
+		// Check to show curator item
 		if (gallery.curator && this.props.user.rank > 1) {
-			var curator = <li>
-							<span className="mdi mdi-account icon"></span>
-							{this.props.gallery.curator.firstname + ' ' + this.props.gallery.curator.lastname}
-						</li>
-		}
+            curator = (
+                <li>
+                    <span className="mdi mdi-account icon"></span>
+                    {this.props.gallery.curator.firstname + ' ' + this.props.gallery.curator.lastname}
+                </li>
+            );
+        }
 
 		return (
-
 			<div className="col-xs-12 col-md-4 meta">
 				<div className="row">
 					<div className="col-xs-12 col-sm-7 col-md-12">
@@ -112,7 +117,6 @@ export default class PostInfo extends React.Component {
 					</div>
 				</div>
 			</div>
-
 		);
 	}
 

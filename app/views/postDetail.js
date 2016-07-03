@@ -84,7 +84,8 @@ class PostDetail extends React.Component {
  				<TopBar
  					title={this.props.title}
  					editable={editable}
- 					edit={this.toggle} />
+                    edit={this.toggle}
+                />
 
  				<div className="content">
  					<div className="row">
