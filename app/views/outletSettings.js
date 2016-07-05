@@ -25,9 +25,9 @@ class OutletSettings extends React.Component {
         this.updateOutlet = this.updateOutlet.bind(this);
     }
 
-    updateMembers(users) {
+    updateMembers(members) {
         const outlet = clone(this.state.outlet);
-        outlet.users = users;
+        outlet.members = members;
 
         this.setState({ outlet });
     }
@@ -53,13 +53,13 @@ class OutletSettings extends React.Component {
                     <OutletPaymentInfo outlet={this.state.outlet} />
                 </div>
             );
-            // members = (
-            //     <OutletMembers
-            //         outlet={this.state.outlet}
-            //         updateMembers={this.updateMembers}
-            //         members={this.state.outlet.users}
-            //     />
-            // );
+            members = (
+                <OutletMembers
+                    outlet={this.state.outlet}
+                    updateMembers={this.updateMembers}
+                    members={this.state.outlet.members}
+                />
+            );
         }
 
         return (
