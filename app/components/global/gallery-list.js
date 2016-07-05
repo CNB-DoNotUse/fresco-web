@@ -52,24 +52,25 @@ class GalleryList extends React.Component {
 		});
 	}
 
-	//Returns array of galleries with offset and callback
+	// Returns array of galleries with offset and callback
 	loadGalleries(last, callback) {
-		let endpoint;
+        const { highlighted, onlyVerified, sort } = this.props;
+        let endpoint;
         let	params = {
             limit: 20,
             last,
-            sort: this.props.sort,
+            sort,
             skipped: true,
             verified: true,
             highlighted: true,
         };
 
-		if(this.props.highlighted) {
-			endpoint = 'gallery/highlights';
-		} else {
-			endpoint ='gallery/list';
+        if(highlighted) {
+            endpoint = 'gallery/highlights';
+        } else {
+            endpoint = 'gallery/list';
 
-            if(this.props.onlyVerified){
+            if(onlyVerified){
                 params = Object.assign({}, params, {skipped: false, verified: true, highlighted: true});
             }
 		}
@@ -79,16 +80,16 @@ class GalleryList extends React.Component {
 			type: 'GET',
 			data: params,
 			dataType: 'json',
-			success: (data, status, xhr) => {
-          if (status === 'success') {
-              callback(data);
-          }
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({content: global.resolveError(error)});
-			}
+			success: (data, status) => {
+                if (status === 'success') {
+                    callback(data);
+                }
+            },
+            error: (xhr, status, error) => {
+                $.snackbar({content: global.resolveError(error)});
+            }
 
-		});
+        });
 
 	}
 
@@ -102,9 +103,8 @@ class GalleryList extends React.Component {
 				loading : true
 			})
 
-             const lastGallery = this.state.galleries[this.state.galleries.length - 1];
+            const lastGallery = this.state.galleries[this.state.galleries.length - 1];
 			this.loadGalleries(lastGallery.id, (galleries) => {
-
 				if(!galleries) return;
 
 				//Set galleries from successful response
@@ -121,14 +121,13 @@ class GalleryList extends React.Component {
 		var half = !this.props.withList;
 
 		//Save all the galleries
-		var galleries = <div className="row tiles">
-				    		{this.state.galleries.map((gallery, i) => {
-						      	return (
-						        	<GalleryCell gallery={gallery} half={half} key={i} />
-						      	)
-					  		})}
-			    		</div>;
-
+        var galleries = (
+            <div className="row tiles">
+                {this.state.galleries.map((gallery, i) => (
+                    <GalleryCell gallery={gallery} half={half} key={i} />
+                ))}
+            </div>
+        );
 
 		//Check if a list is needed
 		if(!half) {

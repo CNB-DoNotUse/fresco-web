@@ -68,7 +68,7 @@ class TopBar extends React.Component {
 		}
 	}
 
-	//Called when the user selects a time format
+	// Called when the user selects all content or verified
 	verifiedToggleSelected(selected) {
 		this.props.onVerifiedToggled(selected == 'Verified');
 	}

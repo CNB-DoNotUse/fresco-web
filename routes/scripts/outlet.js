@@ -32,12 +32,11 @@ router.post('/outlet/checkout', (req, res) => {
         const options = {
             url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet.id,
             token: req.session.token,
-            method: 'GET'
+            method: 'GET',
         };
 
         API.request(options, (err, response) => {
-            console.log(response);
-            //Update the purchases on the session
+            // Update the purchases on the session
             if (!err) {
                 req.session.user.outlet.purchases = response.body.data;
             }

@@ -38,8 +38,8 @@ class GalleryDetail extends React.Component {
 		});
 	}
 
-    onVerifiedToggled(verifiedToggle) {
-        this.setState({ verifiedToggle });
+    onVerifiedToggled(onlyVerified) {
+        this.setState({ onlyVerified });
     }
 
 	/**
@@ -82,7 +82,7 @@ class GalleryDetail extends React.Component {
                     purchases={purchases}
                     galleryCaption={this.state.gallery.caption}
                     posts={this.state.gallery.posts}
-                    onlyVerified={this.state.verifiedToggle}
+                    onlyVerified={this.state.onlyVerified}
                     updatePosts={this.state.updatePosts}
                     scrollable={false}
                     editable={false}
