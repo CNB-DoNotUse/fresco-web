@@ -25,7 +25,7 @@ router.get('/:modal?', (req, res, next) => {
             return next();
         }
     }
-    //Redirect to dashboard home if the user is already logged in, instead of the landing page 
+    //Redirect to dashboard home if the user is already logged in, instead of the landing page
     else if(req.session.user !== null && typeof(req.session.user) !== 'undefined') {
         return res.redirect('/highlights');
     }
@@ -127,7 +127,7 @@ router.get('/verify', (req, res, next) => {
     function doAfterUserVerify(error, response, body) {
         if (error || !body) {
           req.session.alerts = ['Error connecting to server'];
-          
+
           return req.session.save(() => {
             res.redirect('/');
             res.end();

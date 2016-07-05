@@ -22,7 +22,7 @@ class PurchaseAction extends React.Component {
                 posts: [post.id],
                 assignment,
             }),
-            success: (result, status) => {
+            success: (result) => {
                 if (result.err) {
                     return $.snackbar({
                         content: global.resolveError(result.err, 'There was an error while completing your purchase! Please double check your payment info.')
@@ -34,7 +34,7 @@ class PurchaseAction extends React.Component {
                 }
 
                 $.snackbar({
-                    content:'Purchase successful! Visit your outlet page or click to view your purchased content'
+                    content: 'Purchase successful! Visit your outlet page or click to view your purchased content'
                 }).click(() => {
                     window.location = '/outlet';
                 });
