@@ -14,49 +14,48 @@ Description : List for a gallery used across the site (/highlights, /content/gal
  */
 
 class GalleryList extends React.Component {
+    constructor(props) {
+        super(props);
 
-	constructor(props) {
-		super(props);
+        this.state = {
+            galleries: [],
+            loading : false,
+            tags :[]
+        }
 
-		this.state = {
-			galleries: [],
-			loading : false,
-			tags :[]
-		}
+        this.loadGalleries = this.loadGalleries.bind(this);
+        this.loadInitalGalleries = this.loadInitalGalleries.bind(this);
+        this.scroll = this.scroll.bind(this);
+    }
 
-		this.loadGalleries = this.loadGalleries.bind(this);
-		this.loadInitalGalleries = this.loadInitalGalleries.bind(this);
-		this.scroll = this.scroll.bind(this);
-	}
+    componentDidMount() {
+        this.loadInitalGalleries();
+    }
 
-	componentDidMount() {
-		this.loadInitalGalleries();
-	}
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.onlyVerified !== this.props.onlyVerified) {
+            this.setState({
+                galleries: []
+            });
 
-	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.onlyVerified !== this.props.onlyVerified) {
-			this.setState({
-				galleries: []
-			});
+            this.loadInitalGalleries();
 
-	      	this.loadInitalGalleries();
+            this.refs.grid.scrollTop = 0;
+        }
+    }
 
-	      	this.refs.grid.scrollTop = 0;
-		}
-	}
+    loadInitalGalleries() {
+        this.loadGalleries(null, (galleries) => {
+            // Set galleries from successful response
+            this.setState({ galleries });
+        });
+    }
 
-	loadInitalGalleries() {
-		this.loadGalleries(null, (galleries) => {
-			//Set galleries from successful response
-			this.setState({ galleries });
-		});
-	}
-
-	// Returns array of galleries with offset and callback
-	loadGalleries(last, callback) {
+    // Returns array of galleries with offset and callback
+    loadGalleries(last, callback) {
         const { highlighted, onlyVerified, sort } = this.props;
         let endpoint;
-        let	params = {
+        const params = {
             limit: 20,
             last,
             sort,
@@ -70,17 +69,15 @@ class GalleryList extends React.Component {
         } else {
             endpoint = 'gallery/list';
 
-            if(onlyVerified){
-                params = Object.assign({}, params, {skipped: false, verified: true, highlighted: true});
-            }
-		}
+            if (onlyVerified) params.skipped = false;
+        }
 
-		$.ajax({
-			url: '/api/' + endpoint,
-			type: 'GET',
-			data: params,
-			dataType: 'json',
-			success: (data, status) => {
+        $.ajax({
+            url: '/api/' + endpoint,
+            type: 'GET',
+            data: params,
+            dataType: 'json',
+            success: (data, status) => {
                 if (status === 'success') {
                     callback(data);
                 }
@@ -91,75 +88,74 @@ class GalleryList extends React.Component {
 
         });
 
-	}
+    }
 
 	//Scroll listener for main window
-	scroll(e) {
-		var grid = e.target;
+    scroll(e) {
+        var grid = e.target;
 
-		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
+        if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
 
-			this.setState({
-				loading : true
-			})
+            this.setState({
+                loading : true
+            })
 
             const lastGallery = this.state.galleries[this.state.galleries.length - 1];
-			this.loadGalleries(lastGallery.id, (galleries) => {
-				if(!galleries) return;
+            this.loadGalleries(lastGallery.id, (galleries) => {
+                if(!galleries) return;
 
-				//Set galleries from successful response
-				this.setState({
-					galleries: this.state.galleries.concat(galleries),
-					loading : false
-				});
+                //Set galleries from successful response
+                this.setState({
+                    galleries: this.state.galleries.concat(galleries),
+                    loading : false
+                });
 
-			});
-		}
-	}
+            });
+        }
+    }
 
-	render() {
-		var half = !this.props.withList;
+    render() {
+        var half = !this.props.withList;
 
-		//Save all the galleries
+        //Save all the galleries
         var galleries = (
             <div className="row tiles">
-                {this.state.galleries.map((gallery, i) => (
+                { this.state.galleries.map((gallery, i) => (
                     <GalleryCell gallery={gallery} half={half} key={i} />
                 ))}
             </div>
         );
 
-		//Check if a list is needed
-		if(!half) {
-			return (
-	    		<div
-	    			className="container-fluid grid"
-	    			onScroll={this.scroll}
-	    			ref="grid" >
-			    	<div className="col-md-8">{galleries}</div>
+        // Check if a list is needed
+        if (!half) {
+            return (
+                <div
+                    className="container-fluid grid"
+                    onScroll={this.scroll}
+                    ref="grid"
+                >
+                    <div className="col-md-8">{galleries}</div>
 
-				    <SuggestionList />
-		    	</div>
-		    );
-		}
-		//No list needed
-		else {
-
-			return (
-	    		<div
-	    			className="container-fluid grid"
-	    			onScroll={this.scroll}
-	    			ref="grid"
-	    		>
-	    			{galleries}
-	    		</div>
-		    );
-		}
-	}
+                    <SuggestionList />
+                </div>
+            );
+        } else {
+            //No list needed
+            return (
+                <div
+                    className="container-fluid grid"
+                    onScroll={this.scroll}
+                    ref="grid"
+                >
+                    {galleries}
+                </div>
+            );
+        }
+    }
 }
 
 GalleryList.defaultProps = {
-	onlyVerified: true,
+    onlyVerified: true,
 };
 
 export default GalleryList;
