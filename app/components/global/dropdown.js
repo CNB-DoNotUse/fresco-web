@@ -73,7 +73,7 @@ export default class Dropdown extends React.Component {
 
 		//If the user chose the already selected option, don't do anything
 		if (this.state.selected == selected) {
-			this.hideDropdown();
+			this.toggle();
 			return;
 		}
 
