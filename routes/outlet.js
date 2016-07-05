@@ -67,6 +67,9 @@ router.get('/', (req, res, next) => {
 router.get('/settings', (req, res, next) => {
     let user;
     let token;
+    let outlet;
+    let payment;
+
     if (req.session) {
         token = req.session.token;
         user = req.session.user;
@@ -81,14 +84,25 @@ router.get('/settings', (req, res, next) => {
     return api.request({
         url: '/outlet/',
         token,
-    }).then(response => {
+    })
+    .then(response => {
+        outlet = response.body;
+        return api.request({
+            url: '/outlet/payment',
+            token,
+        });
+    })
+    .then(response => {
+        payment = response.body;
         const title = 'Outlet Settings';
         const props = {
             title,
             user,
-            outlet: response.body,
+            outlet,
+            payment
             stripePublishableKey: config.STRIPE_PUBLISHABLE,
         };
+
 
         return res.render('app', {
             title,
@@ -97,7 +111,8 @@ router.get('/settings', (req, res, next) => {
             remoteScripts: ['https://js.stripe.com/v2/'],
             props: JSON.stringify(props),
         });
-    }).catch(() => (
+    })
+    .catch(() => (
         next({
             message: 'Outlet not found!',
             status: 404,
