@@ -27,7 +27,12 @@ export default class OutletBodyDemo extends React.Component {
                             <div className="grid">
                                 <h1>This outlet is currently in demo mode.</h1>
                                 <p>
-                                    Purchases and downloads are disabled until we verify your outlet. We'll be in contact with {outlet.owner.firstname} {outlet.owner.lastname}.
+                                    {
+                                        outlet.owner
+                                        ?  `Purchases and downloads are disabled until we verify your outlet. We'll be in contact with
+                                        {outlet.owner.firstname} {outlet.owner.lastname}.`
+                                        : `Purchases and downloads are disabled until we verify your outlet.`
+                                    }
                                 </p>
                             </div>
 						</div>
