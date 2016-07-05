@@ -1,7 +1,7 @@
 import React from 'react';
-import SuggestionList from '../highlights/suggestion-list'
-import GalleryCell from './gallery-cell'
-import global from '../../../lib/global'
+import SuggestionList from '../highlights/suggestion-list';
+import GalleryCell from './gallery-cell';
+import global from '../../../lib/global';
 
 /** //
 
