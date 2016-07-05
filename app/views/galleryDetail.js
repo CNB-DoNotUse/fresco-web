@@ -80,7 +80,7 @@ class GalleryDetail extends React.Component {
                 <PostList
                     rank={user.rank}
                     purchases={purchases}
-                    galleryCaption={this.state.gallery.caption}
+                    parentCaption={this.state.gallery.caption}
                     posts={this.state.gallery.posts}
                     onlyVerified={this.state.onlyVerified}
                     updatePosts={this.state.updatePosts}
