@@ -138,11 +138,11 @@ app.use((req, res, next) => {
 
 // Check if user rank exists (calc'd from permissions arr)
 app.use((req, res, next) => {
-    if (req.session.user && req.session.user.permissions) {
+    if (req.session.user && !req.session.user.rank) {
         return User.updateRank(req, next);
     }
 
-    next();
+    return next();
 });
 
 /**
