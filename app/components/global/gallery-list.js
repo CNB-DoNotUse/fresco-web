@@ -95,32 +95,27 @@ class GalleryList extends React.Component {
         var grid = e.target;
 
         if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
-
-            this.setState({
-                loading : true
-            })
-
+            this.setState({ loading : true });
             const lastGallery = this.state.galleries[this.state.galleries.length - 1];
-            this.loadGalleries(lastGallery.id, (galleries) => {
-                if(!galleries) return;
 
-                //Set galleries from successful response
+            this.loadGalleries(lastGallery.id, (galleries) => {
+                if (!galleries) return;
+
+                // Set galleries from successful response
                 this.setState({
                     galleries: this.state.galleries.concat(galleries),
-                    loading : false
+                    loading: false,
                 });
-
             });
         }
     }
 
     render() {
-        var half = !this.props.withList;
-
-        //Save all the galleries
-        var galleries = (
+        const half = !this.props.withList;
+        // Save all the galleries
+        const galleries = (
             <div className="row tiles">
-                { this.state.galleries.map((gallery, i) => (
+                {this.state.galleries.map((gallery, i) => (
                     <GalleryCell gallery={gallery} half={half} key={i} />
                 ))}
             </div>
@@ -139,18 +134,17 @@ class GalleryList extends React.Component {
                     <SuggestionList />
                 </div>
             );
-        } else {
-            //No list needed
-            return (
-                <div
-                    className="container-fluid grid"
-                    onScroll={this.scroll}
-                    ref="grid"
-                >
-                    {galleries}
-                </div>
-            );
         }
+        // No list needed
+        return (
+            <div
+                className="container-fluid grid"
+                onScroll={this.scroll}
+                ref="grid"
+            >
+                {galleries}
+            </div>
+        );
     }
 }
 
