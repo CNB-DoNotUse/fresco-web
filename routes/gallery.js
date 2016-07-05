@@ -86,14 +86,12 @@ router.get('/:id', (req, res, next) => {
         url: '/gallery/' + req.params.id,
     }).then(response => {
         render(response.body, user, req, res);
-    }).catch(e => {
-        console.log(e);
-        return next({
+    }).catch(() => (
+        next({
             message: 'Gallery not found!',
-            status : 404
-        });
-    });
-
+            status: 404,
+        })
+    ));
 });
 
 module.exports = router;
