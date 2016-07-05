@@ -14,12 +14,12 @@ class PurchaseAction extends React.Component {
 
     requestPurchase(post, assignment) {
         $.ajax({
-            url: '/scripts/outlet/checkout',
+            url: '/scripts/outlet/purchase',
             dataType: 'json',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
-                posts: [post.id],
+                post_ids: [post.id],
                 assignment,
             }),
             success: (result) => {

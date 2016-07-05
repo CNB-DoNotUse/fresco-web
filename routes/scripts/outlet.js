@@ -23,10 +23,8 @@ function checkOutlet(req, res) {
 }
 
 //---------------------------vvv-OUTLET-ENDPOINTS-vvv---------------------------//
-router.post('/outlet/checkout', (req, res) => {
+router.post('/outlet/purchase', (req, res) => {
     if (!checkOutlet(req, res)) return;
-
-    req.body.outlet = req.session.user.outlet.id;
 
     API.proxy(req, res, (data) => {
         const options = {
