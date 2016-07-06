@@ -11,6 +11,11 @@ class PostCell extends React.Component {
 
     constructor(props) {
         super(props);
+
+        const purchased = props.post.purchased
+            ? props.post.purchased !== 0
+            : false;
+        this.state = { purchased };
         this.postClicked = this.postClicked.bind(this);
     }
 
@@ -25,13 +30,16 @@ class PostCell extends React.Component {
         }
     }
 
+    onPurchase() {
+        this.setState({ purchased: true });
+    }
+
     render() {
         const {
             post,
             toggled,
             sort,
             assignment,
-            didPurchase,
             rank,
             editable,
             edit,
@@ -39,8 +47,8 @@ class PostCell extends React.Component {
             size,
             sizes,
         } = this.props;
+        const { purchased } = this.state;
 
-        const purchased = post.purchased !== 0;
         let time = sort === 'captured_at' ? post.captured_at : post.created_at;
         let	timeString = typeof(time) === 'undefined' ? 'No timestamp' : global.formatTime(time);
         let address = post.location && post.address ? post.address : 'No Address';
@@ -77,7 +85,7 @@ class PostCell extends React.Component {
                         post={post}
                         assignment={assignment}
                         purchased={purchased}
-                        didPurchase={didPurchase}
+                        onPurchase={(bool) => this.onPurchase(bool)}
                         rank={rank}
                         editable={editable}
                         edit={edit}
@@ -117,8 +125,6 @@ PostCell.propTypes = {
     sizes: PropTypes.object,
     editable: PropTypes.bool,
     toggled: PropTypes.bool,
-    purchased: PropTypes.bool,
-    didPurchase: PropTypes.func,
     edit: PropTypes.func,
 };
 

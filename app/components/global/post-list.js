@@ -56,22 +56,22 @@ class PostList extends React.Component {
             diffIds 		= _.difference(newPostIds, currentPostIds),
             postsUpdated = false;
 
-    // Check diff or if the parent tells the component to update
+        // Check diff or if the parent tells the component to update
         if (nextProps.posts.length != this.props.posts.length || diffIds.length || nextProps.updatePosts) {
             return this.setState({
                 posts: nextProps.posts,
             });
         }
 
-    // Checks if the verified prop is changed `or` Checks if the sort prop is changed
+        // Checks if the verified prop is changed `or` Checks if the sort prop is changed
         if (nextProps.onlyVerified !== this.props.onlyVerified || nextProps.sort !== this.props.sort) {
             postsUpdated = true;
 
             if (nextProps.scrollable) {
-            // Clear state for immediate feedback
+                // Clear state for immediate feedback
                 this.setState({ posts: [] });
 
-        // Load posts from API
+                // Load posts from API
                 this.loadInitialPosts();
             } else {
                 this.setState({
@@ -80,7 +80,7 @@ class PostList extends React.Component {
             }
         }
 
-    // Tells component to set scroll to the top
+        // Tells component to set scroll to the top
         if (postsUpdated) {
             this.refs.grid.scrollTop = 0;
         }
@@ -218,7 +218,6 @@ class PostList extends React.Component {
             editable,
             sort,
             onlyVerified,
-            allPurchased,
             parentCaption,
         } = this.props;
         const { posts, selectedPosts } = this.state;

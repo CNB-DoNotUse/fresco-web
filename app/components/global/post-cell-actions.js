@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import PostEditAction from './../actions/post-edit-action.js';
 import DownloadAction from './../actions/download-action.js';
 import PurchaseAction from './../actions/purchase-action.js';
@@ -15,13 +15,12 @@ class PostCellActions extends React.Component {
             purchased,
             editable,
             post,
-            edit,
             assignment,
-            didPurchase,
+            onPurchase,
         } = this.props;
 
-        var actions = [],
-            key = 0;
+        let actions = [];
+        let key = 0;
 
         // Check if we're CM or greater
         if (typeof(rank) !== 'undefined' && rank >= global.RANKS.CONTENT_MANAGER) {
@@ -36,12 +35,12 @@ class PostCellActions extends React.Component {
             }
 
             // Show the purhcased icon if the post hasn't been purchased
-            if (purchased === false) {
+            if (!purchased) {
                 actions.push(
                     <PurchaseAction
                         post={post}
                         assignment={assignment ? assignment.id : null}
-                        didPurchase={didPurchase}
+                        onPurchase={onPurchase}
                         key={++key}
                     />
                 );
@@ -53,7 +52,7 @@ class PostCellActions extends React.Component {
                     key={++key}
                 />
             );
-        } else if (purchased === true) {
+        } else if (purchased) {
             // Check if the post has been purchased
             actions.push(
                 <DownloadAction
@@ -61,25 +60,20 @@ class PostCellActions extends React.Component {
                     key={++key}
                 />
             );
-
-        } else if (purchased == false && post.license == 1) {
+        } else if (!purchased && post.license === 1) {
             // Check if the post is not purhcased, and it is purchasble from the license
-
             actions.push(
                 <PurchaseAction
                     post={post}
                     assignment={assignment ? assignment.id : null}
-                    didPurchase={didPurchase}
+                    onPurchase={onPurchase}
                     key={++key}
                 />
             );
         }
 
         let link = '/post/' + post.id;
-
-        if (assignment) {
-            link += '?assignment=' + assignment.id;
-        }
+        if (assignment) link += '?assignment=' + assignment.id;
 
         return (
             <div className="hover">
@@ -90,4 +84,14 @@ class PostCellActions extends React.Component {
     }
 }
 
+PostCellActions.propTypes = {
+    rank: PropTypes.number,
+    editable: PropTypes.bool,
+    purchased: PropTypes.bool.isRequired,
+    post: PropTypes.object,
+    assignment: PropTypes.object,
+    onPurchase: PropTypes.func.isRequired,
+};
+
 export default PostCellActions;
+

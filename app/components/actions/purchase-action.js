@@ -1,5 +1,4 @@
 /* global alertify:true */
-
 import React, { PropTypes } from 'react';
 import global from '../../../lib/global';
 
@@ -31,7 +30,7 @@ class PurchaseAction extends React.Component {
                     window.location = '/outlet';
                 });
 
-                return this.props.didPurchase(post.id);
+                return this.props.onPurchase();
             },
             error: (xhr, status, error) => {
                 $.snackbar({
@@ -68,14 +67,11 @@ class PurchaseAction extends React.Component {
     }
 }
 
-PurchaseAction.defaultProps = {
-    didPurchase() {},
-};
-
 PurchaseAction.propTypes = {
     post: PropTypes.object,
     assignment: PropTypes.object,
-    didPurchase: PropTypes.func.isRequired,
+    onPurchase: PropTypes.func.isRequired,
 };
 
 export default PurchaseAction;
+
