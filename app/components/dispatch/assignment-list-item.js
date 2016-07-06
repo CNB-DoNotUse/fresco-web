@@ -1,34 +1,37 @@
-import React from 'react'
-import moment from 'moment'
+import React, { PropTypes } from 'react';
+import moment from 'moment';
 
-export default class AssignmentListItem extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
+class AssignmentListItem extends React.Component {
     render() {
-
-        var assignment = this.props.assignment,
-            location = assignment.location.address || 'Unknown',
-            expirationTime = new Date(this.props.assignment.expiration_time),
-            expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
-        
-        var imageUrl = '/images/placeholder-assignment.png';
+        const { assignment, setActiveAssignment } = this.props;
+        const location = assignment.location.address || 'Unknown';
+        const expirationTime = new Date(assignment.expiration_time);
+        const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
+        const imageUrl = '/images/placeholder-assignment.png';
 
         return (
             <div
                 id={assignment.id}
                 className="list-item assignment-list-item"
-                onClick={this.props.setActiveAssignment.bind(null, assignment)}>
+                onClick={setActiveAssignment(assignment)}
+            >
                 <div>
                     <img className="img-circle" src={imageUrl} />
                 </div>
                 <div className="flexy">
                     <span className="md-type-body2">{assignment.title}</span>
-                    <span className="md-type-caption md-type-black-secondary">{location + ' • ' + expiredText}</span>
+                    <span className="md-type-caption md-type-black-secondary">
+                        {location + ' • ' + expiredText}
+                    </span>
                 </div>
             </div>
         );
     }
 }
+
+AssignmentListItem.propTypes = {
+    assignment: PropTypes.object.isRequired,
+    setActiveAssignment: PropTypes.func.isRequired,
+};
+
+export default AssignmentListItem;
