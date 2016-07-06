@@ -1,295 +1,286 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './app'
-import TopBar from './../components/topbar/topbar-admin'
-import AdminBody from './../components/admin/admin-body'
+import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
+import App from './app';
+import TopBar from './../components/topbar/topbar-admin';
+import AdminBody from './../components/admin/admin-body';
+import difference from 'lodash/difference';
 
 /**
- * Admin Page Component (composed of Admin Component and Navbar) 
+ * Admin Page Component (composed of Admin Component and Navbar)
 */
 
- class Admin extends React.Component {
+class Admin extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeTab: '',
+            assignments: [],
+            submissions: [],
+            imports: [],
+        };
 
- 	constructor(props) {
- 		super(props);
- 		this.state = {
- 			activeTab: '',
- 			assignments: [],
- 			submissions: [],
- 			imports: []
- 		}
+        this.currentXHR = null;
+        this.clearXHR = this.clearXHR.bind(this);
 
- 		this.currentXHR = null;
- 		this.clearXHR = this.clearXHR.bind(this);
+        this.setTab = this.setTab.bind(this);
 
- 		this.setTab = this.setTab.bind(this);
+        this.getChangedData = this.getChangedData.bind(this);
 
- 		this.getChangedData = this.getChangedData.bind(this);
+        this.getData = this.getData.bind(this);
 
- 		this.getData = this.getData.bind(this);
+        this.resetAssignments = this.resetAssignments.bind(this);
+        this.resetSubmissions = this.resetSubmissions.bind(this);
+        this.resetImports = this.resetImports.bind(this);
 
- 		this.resetAssignments = this.resetAssignments.bind(this);
- 		this.resetSubmissions = this.resetSubmissions.bind(this);
- 		this.resetImports = this.resetImports.bind(this);
+        this.spliceGallery = this.spliceGallery.bind(this);
 
- 		this.spliceGallery = this.spliceGallery.bind(this);
+        this.refresh = this.refresh.bind(this);
+        this.refreshInterval = null;
+    }
 
- 		this.refresh = this.refresh.bind(this);
- 		this.refreshInterval = null;
+    componentDidMount() {
+        this.refreshInterval = setInterval(() => {
+            if (this.props.activeTab !== '') this.refresh();
+        }, 5000);
+        this.loadInitial();
+    }
 
-	}
+    componentDidUpdate(prevProps, prevState) {
+        if ((this.state.activeTab && prevState.activeTab) && (prevState.activeTab !== this.state.activeTab)) {
+            this.clearXHR();
 
- 	componentDidMount() {
-		this.refreshInterval = setInterval(() => {
-			if(this.props.activeTab != '') {
-				this.refresh();
-			}
-		}, 5000);
- 		this.loadInitial();
- 	}
+            switch (this.state.activeTab) {
+                case 'assignments':
+                    this.resetAssignments();
+                    break;
+                case 'submissions':
+                    this.resetSubmissions();
+                    break;
+                case 'imports':
+                    this.resetImports();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
- 	componentDidUpdate(prevProps, prevState) {
- 		if(this.state.activeTab && prevState.activeTab && prevState.activeTab != this.state.activeTab) {
- 			this.clearXHR();
- 			switch(this.state.activeTab) {
- 				case 'assignments':
- 					this.resetAssignments();
- 					break;
- 				case 'submissions':
- 					this.resetSubmissions();
- 					break;
- 				case 'imports':
- 					this.resetImports();
- 					break;
- 			}
- 		}
- 	}
+    setTab(tab) {
+        if (tab === this.state.activeTab) return;
 
- 	/**
- 	 * Clear any pending XHR requests
- 	 */
- 	clearXHR() {
-		if(this.currentXHR != null) {
-			this.currentXHR.abort();
-			this.currentXHR = null;
-		}
- 	}
+        this.setState({ activeTab: tab });
+    }
 
- 	setTab(tab) {
- 		if(tab == this.state.activeTab) return;
+    getChangedData(newGalleries, currentGalleries) {
+        const newIDs = newGalleries.map(n => n.id);
+        const curIDs = currentGalleries.map(c => c.id);
+        const diffIds = difference(newIDs, curIDs);
+        const diffGalleries = [];
 
- 		this.setState({
- 			activeTab: tab
- 		});
- 	}
+        for (let x in newGalleries) {
+            if (diffIds.indexOf(newGalleries[x].id) !== -1) {
+                diffGalleries.push(newGalleries[x]);
+            }
 
- 	getChangedData(newGalleries, currentGalleries) {
- 		var newIDs = newGalleries.map(n => n.id),
- 			curIDs = currentGalleries.map(c => c.id);
+            if (diffIds.length === diffGalleries.length) break;
+        }
 
- 		var diffIds = _.difference(newIDs, curIDs),
- 			diffGalleries = [];
+        return diffGalleries;
+    }
 
- 		for(var x in newGalleries) {
- 			if(diffIds.indexOf(newGalleries[x].id) != -1) {
- 				diffGalleries.push(newGalleries[x]);
- 			}
+    getData(last, options, cb) {
+        const self = this;
+        const tab = options.tab || this.state.activeTab;
+        const newState = {};
+        let params = {};
+        let endpoint = '';
+        let concat = false;
+        let unshift = false;
 
- 			if(diffIds.length == diffGalleries.length) break;
+        // Set up endpoint and params depending on tab
+        switch (tab) {
+            case 'assignments':
+                endpoint = '/api/assignment/list';
+                params = { pending: true, limit: 16, last: last };
+                break;
+            case 'submissions':
+                endpoint = '/api/gallery/submissions';
+                params = { last: last, limit: 16 };
+                break;
+            case 'imports':
+                endpoint = '/api/gallery/imports';
+                params = { last: last, limit: 16, rated: 0 };
+                break;
+            default:
+                break;
+        }
 
- 		}
+        if (typeof cb === 'undefined') {
+            cb = options;
+        } else if (options.concat) {
+            concat = true;
+        } else if (options.unshift) {
+            unshift = true;
+        }
 
- 		return diffGalleries;
- 		
- 	}
+        this.currentXHR = $.get(endpoint, params, (data) => {
+            if (!data.data) {
+                return cb([]);
+            }
 
- 	/**
- 	 * Query for initial data. Set the active tab to a tab with data.
- 	 */
- 	loadInitial() {
- 		var activeTab = 'submissions';
+            let stateData = this.state[tab];
+            if (!stateData.length) {
+                const state = {};
+                state[tab] = data.data;
+                if (unshift) self.setState(state);
 
- 		this.getData(undefined, {tab: 'assignments'}, (assignments) => {
+                return cb(data.data);
+            }
 
- 			activeTab = 'assignments';
+            const newData = this.getChangedData(stateData.concat(data.data), stateData);
+            if (!newData.length) {
+                return cb([]);
+            }
 
- 			this.setState({
- 				assignments: this.state.assignments.concat(assignments)
- 			});
+            if (concat || unshift) {
+                if (concat) stateData = stateData.concat(data.data);
 
- 		});
+                if (unshift) {
+                    if (stateData.length) {
+                        // Filter posts newer than newest
+                        for (let i = 0; i < newData.length; i++) {
+                            if (newData[i].created_at < stateData[0].created_at) {
+                                newData.splice(i, 1);
+                            }
+                        }
+                    }
+                    stateData.unshift(...newData);
+                }
 
- 		this.getData(undefined, {tab: 'submissions'}, (submissions) => {
+                newState[tab] = stateData;
+                self.setState(newState);
+            }
 
- 			activeTab = 'submissions';
+            return cb(data.data);
+        });
+    }
 
- 			this.setState({
- 				submissions: this.state.submissions.concat(submissions)
- 			});
+    /**
+     * Clear any pending XHR requests
+     */
+    clearXHR() {
+        if (this.currentXHR != null) {
+            this.currentXHR.abort();
+            this.currentXHR = null;
+        }
+    }
 
- 		});
+    /**
+     * Query for initial data. Set the active tab to a tab with data.
+     */
+    loadInitial() {
+        let activeTab = 'submissions';
+
+        this.getData(undefined, { tab: 'assignments' }, (assignments) => {
+            activeTab = 'assignments';
+            this.setState({
+                assignments: this.state.assignments.concat(assignments),
+            });
+        });
+
+        this.getData(undefined, { tab: 'submissions' }, (submissions) => {
+            activeTab = 'submissions';
+            this.setState({
+                submissions: this.state.submissions.concat(submissions),
+            });
+        });
 
 
- 		this.getData(undefined, {tab: 'imports'}, (imports) => {
- 			this.setState({
- 				activeTab: imports.length ? 'imports' : activeTab,
- 				imports: this.state.imports.concat(imports)
- 			});
- 		});
+        this.getData(undefined, { tab: 'imports' }, (imports) => {
+            this.setState({
+                activeTab: imports.length ? 'imports' : activeTab,
+                imports: this.state.imports.concat(imports),
+            });
+        });
+    }
 
- 	}
 
+    spliceGallery(data, cb) {
+        const stateData = this.state[data.type];
+        let index = 0;
 
-	spliceGallery(data, cb) {
+        for (let g in stateData) {
+            if (stateData[g].id === data.gallery) {
+                index = g;
+                break;
+            }
+        }
 
-		var stateData = this.state[data.type], index = 0;
+        stateData.splice(index, 1);
+        this.setState(stateData);
 
-		for (var g in stateData) {
-			if(stateData[g].id == data.gallery) {
-				index = g;
-				break;
-			}
-		}
+        cb(null, index);
+    }
 
-		stateData.splice(index, 1);
-		this.setState(stateData);
+    refresh() {
+        this.getData(undefined, { unshift: true, tab: this.state.activeTab }, () => {});
+    }
 
-		cb(null, index);
-	}
+    resetAssignments() {
+        this.getData(undefined, { tab: 'assignments' }, (assignments) => {
+            this.setState({
+                activeTab: 'assignments',
+                assignments: assignments.length ? assignments : this.state.assignments,
+            });
+        });
+    }
 
- 	refresh() {
- 		this.getData(undefined, {unshift: true, tab: this.state.activeTab}, (data) => {});
- 	}
+    resetSubmissions() {
+        this.getData(undefined, { tab: 'submissions' }, (submissions) => {
+            this.setState({
+                activeTab: 'submissions',
+                submissions: submissions.length ? submissions : this.state.submissions,
+            });
+        });
+    }
 
-	getData(last, options, cb) {
-		var self = this, concat = false, unshift = false, endpoint = '', params = {}, tab = options.tab || this.state.activeTab, newState = {};
+    resetImports() {
+        this.getData(undefined, { tab: 'imports' }, (imports) => {
+            this.setState({
+                activeTab: 'imports',
+                imports: imports.length ? imports : this.state.imports,
+            });
+        });
+    }
 
-		// Set up endpoint and params depending on tab
-		switch(tab) {
-			case 'assignments':
-				endpoint = '/api/assignment/list';
-				params = { pending: true, limit: 16, last: last };
-				break;
-
-			case 'submissions':
-				endpoint = '/api/gallery/submissions';
-				params = { last: last, limit: 16 };
-				break;
-
-			case 'imports':
-				endpoint = '/api/gallery/imports';
-				params = { last: last, limit: 16, rated: 0 };
-				break;
-		}
-
-		if(typeof cb == 'undefined') {
-			cb = options;
-		} else if(options.concat) {
-			concat = true;
-		} else if(options.unshift) {
-			unshift = true;
-		}
-
-		this.currentXHR = $.get(endpoint, params, (data) => {
-			if (!data.data) {
-				return cb([]);
-			}
-
-			var stateData = this.state[tab];
-
-			if(!stateData.length) {
-				let newState = {};
-				newState[tab] = data.data;
-				if(unshift) {
-					self.setState(newState);
-				}
-				return cb(data.data);
-			}
-
-			var newData = this.getChangedData(stateData.concat(data.data), stateData);
-
-			if(!newData.length) {
-				return cb([]);
-			}
-
-			if(concat || unshift) {
-
-				if(concat) {
-					stateData = stateData.concat(data.data);
-				}
-
-				if(unshift) {
-					if(stateData.length) {
-						// Filter posts newer than newest
-						for (var i = 0; i < newData.length; i++) {
-							if(newData[i].created_at < stateData[0].created_at) {
-								newData.splice(i, 1);
-							}
-						}
-					}
-					stateData.unshift(...newData);
-				}
-
-				newState[tab] = stateData;
-				self.setState(newState);
-			}
-
-			cb(data.data);
-
-		});
-
-	}
-
-	resetAssignments() {
-		this.getData(undefined, {tab: 'assignments'}, (assignments) => {
-			this.setState({
-				activeTab: 'assignments',
-				assignments: assignments.length ? assignments : this.state.assignments
-			})
-		});
-	}
-
-	resetSubmissions() {
-		this.getData(undefined, {tab: 'submissions'}, (submissions) => {
-			this.setState({
-				activeTab: 'submissions',
-				submissions: submissions.length ? submissions : this.state.submissions
-			})
-		});
-	}
-
-	resetImports() {
-		this.getData(undefined, {tab: 'imports'}, (imports) => {
-			this.setState({
-				activeTab: 'imports',
-				imports: imports.length ? imports : this.state.imports
-			})
-		});
-	}
-
-	render() {
-		return (
-			<App user={this.props.user}>
-				<TopBar
-					activeTab={this.state.activeTab}
-					resetImports={this.resetImports}
-					setTab={this.setTab} />
-				<AdminBody
-					activeTab={this.state.activeTab}
-					assignments={this.state.assignments}
-					submissions={this.state.submissions}
-					imports={this.state.imports}
-					getData={this.getData}
-					refresh={this.refresh}
-					spliceGallery={this.spliceGallery} />
-			</App>
-		)
-	}
-
+    render() {
+        return (
+            <App user={this.props.user}>
+                <TopBar
+                    activeTab={this.state.activeTab}
+                    resetImports={this.resetImports}
+                    setTab={this.setTab}
+                />
+                <AdminBody
+                    activeTab={this.state.activeTab}
+                    assignments={this.state.assignments}
+                    submissions={this.state.submissions}
+                    imports={this.state.imports}
+                    getData={this.getData}
+                    refresh={this.refresh}
+                    spliceGallery={this.spliceGallery}
+                />
+            </App>
+        );
+    }
 }
 
+Admin.propTypes = {
+    activeTab: PropTypes.string,
+    user: PropTypes.object,
+};
+
 ReactDOM.render(
-  <Admin 
-  	user={window.__initialProps__.user} />,
-	document.getElementById('app')
+    <Admin user={window.__initialProps__.user} />,
+    document.getElementById('app')
 );
