@@ -99,7 +99,7 @@ router.get('/settings', (req, res, next) => {
             title,
             user,
             outlet,
-            payment
+            payment,
             stripePublishableKey: config.STRIPE_PUBLISHABLE,
         };
 
