@@ -16,7 +16,7 @@ const router = express.Router();
     */
 function checkOutlet(req, res) {
     if (!req.session.user || !req.session.user.outlet) {
-        res.status(400).json({err: 'ERR_INVALID_OUTLET'}).end();
+        res.status(400).json({ err: 'ERR_INVALID_OUTLET' }).end();
         return false;
     }
     return true;
@@ -26,24 +26,7 @@ function checkOutlet(req, res) {
 router.post('/outlet/purchase', (req, res) => {
     if (!checkOutlet(req, res)) return;
 
-    API.proxy(req, res, (data) => {
-        const options = {
-            url: '/outlet/purchases?shallow=true&id=' + req.session.user.outlet.id,
-            token: req.session.token,
-            method: 'GET',
-        };
-
-        API.request(options, (err, response) => {
-            // Update the purchases on the session
-            if (!err) {
-                req.session.user.outlet.purchases = response.body.data;
-            }
-
-            req.session.save(() => {
-                res.json(data).end();
-            });
-        });
-    });
+    API.proxy(req, res);
 });
 
 router.post('/outlet/create', function(req, res, next) {

@@ -24,17 +24,7 @@ class PurchaseAction extends React.Component {
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: (result) => {
-                if (result.err) {
-                    return $.snackbar({
-                        content: global.resolveError(result.err, 'There was an error while completing your purchase! Please double check your payment info.')
-                    });
-                } else if (result.data.length === 0) {
-                    return $.snackbar({
-                        content: 'There was an error while completing your purchase!',
-                    });
-                }
-
+            success: () => {
                 $.snackbar({
                     content: 'Purchase successful! Visit your outlet page or click to view your purchased content'
                 }).click(() => {
@@ -45,7 +35,8 @@ class PurchaseAction extends React.Component {
             },
             error: (xhr, status, error) => {
                 $.snackbar({
-                    content: global.resolveError(error, 'There was an error while completing your purchase!')
+                    content: xhr.responseJSON.msg ||
+                        global.resolveError(error, 'There was an error while completing your purchase!')
                 });
             },
         });
