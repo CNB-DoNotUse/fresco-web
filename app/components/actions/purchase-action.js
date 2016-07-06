@@ -1,3 +1,5 @@
+/* global alertify:true */
+
 import React, { PropTypes } from 'react';
 import global from '../../../lib/global';
 
@@ -13,23 +15,23 @@ class PurchaseAction extends React.Component {
     }
 
     requestPurchase(post, assignment) {
+        const data = { post_ids: [post.id] };
+        if (assignment && assignment.id) data.assignment_id = assignment.id;
+
         $.ajax({
             url: '/scripts/outlet/purchase',
             dataType: 'json',
             method: 'post',
             contentType: 'application/json',
-            data: JSON.stringify({
-                post_ids: [post.id],
-                assignment,
-            }),
+            data: JSON.stringify(data),
             success: (result) => {
                 if (result.err) {
                     return $.snackbar({
                         content: global.resolveError(result.err, 'There was an error while completing your purchase! Please double check your payment info.')
                     });
-                } else if(result.data.length == 0){
+                } else if (result.data.length === 0) {
                     return $.snackbar({
-                        content: 'There was an error while completing your purchase!'
+                        content: 'There was an error while completing your purchase!',
                     });
                 }
 
@@ -39,7 +41,7 @@ class PurchaseAction extends React.Component {
                     window.location = '/outlet';
                 });
 
-                this.props.didPurchase(post.id);
+                return this.props.didPurchase(post.id);
             },
             error: (xhr, status, error) => {
                 $.snackbar({
