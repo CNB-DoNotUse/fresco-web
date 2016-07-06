@@ -216,10 +216,9 @@ class PostCellActions extends React.Component {
                     key={++key}
                 />
             );
-
         }
 
-        var link = '/post/' + post.id;
+        let link = '/post/' + post.id;
 
         if (assignment) {
             link += '?assignment=' + assignment.id;
@@ -237,6 +236,16 @@ class PostCellActions extends React.Component {
 PostCell.propTypes = {
     rank: PropTypes.number,
     parentCaption: PropTypes.string,
+    size: PropTypes.string,
+    sort: PropTypes.string,
+    assignment: PropTypes.object,
+    post: PropTypes.object,
+    sizes: PropTypes.object,
+    editable: PropTypes.bool,
+    toggled: PropTypes.bool,
+    purchased: PropTypes.bool,
+    didPurchase: PropTypes.func,
+    edit: PropTypes.func,
 };
 
 export default PostCell;

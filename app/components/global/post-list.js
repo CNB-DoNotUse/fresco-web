@@ -14,7 +14,7 @@ import GalleryCreate from '../editing/gallery-create';
     * Post List Parent Object
 */
 
-export default class PostList extends React.Component {
+class PostList extends React.Component {
 
     constructor(props) {
         super(props);
@@ -314,3 +314,6 @@ PostList.defaultProps = {
     onlyVerified: false,
     loadPosts() {},
 };
+
+export default PostList;
+
