@@ -1,14 +1,12 @@
 import React, { PropTypes } from 'react';
 import FrescoImage from './fresco-image';
-import PurchaseAction from './../actions/purchase-action.js';
-import DownloadAction from './../actions/download-action.js';
-import PostEditAction from './../actions/post-edit-action.js';
+import PostCellActions from './post-cell-actions';
+import PostCellStories from './post-cell-stories';
 import global from '../../../lib/global';
 
 /**
     * Single Post Cell, child of PostList
 */
-
 class PostCell extends React.Component {
 
     constructor(props) {
@@ -33,7 +31,6 @@ class PostCell extends React.Component {
             toggled,
             sort,
             assignment,
-            purchased,
             didPurchase,
             rank,
             editable,
@@ -43,6 +40,7 @@ class PostCell extends React.Component {
             sizes,
         } = this.props;
 
+        const purchased = post.purchased !== 0;
         let time = sort === 'captured_at' ? post.captured_at : post.created_at;
         let	timeString = typeof(time) === 'undefined' ? 'No timestamp' : global.formatTime(time);
         let address = post.location && post.address ? post.address : 'No Address';
@@ -108,130 +106,6 @@ PostCell.defaultProps = {
     togglePost: () => {},
     toggled: false,
 };
-
-
-// <span className="mdi mdi-library-plus icon pull-right"></span>
-// <span className="mdi mdi-download icon toggle-edit toggler pull-right" onClick={this.downloadGallery} ></span>
-
-/**
-    * Gallery Cell Stories List
-*/
-
-class PostCellStories extends React.Component {
-
-    render() {
-
-        if (this.props.stories.length) {
-
-            var stories = this.props.stories.map((stories, i) => {
-                return (
-                    <li key={i}>
-                        <a href={'/story/' + story.id}>{story.title}</a>
-                    </li>
-                );
-            });
-
-        } else {
-            return <div />;
-        }
-
-        return (
-            <ul className="md-type-body2">{stories}</ul>
-        );
-    }
-
-}
-
-PostCellStories.defaultProps = {
-    stories: [],
-};
-
-/**
-    * Post Cell Actions
-* Description : Set of icons on the the post cell's hover
-*/
-
-class PostCellActions extends React.Component {
-    render() {
-        const {
-            rank,
-            purchased,
-            editable,
-            post,
-            edit,
-            assignment,
-            didPurchase,
-        } = this.props;
-
-        var actions = [],
-            key = 0;
-
-        // Check if we're CM or greater
-        if (typeof(rank) !== 'undefined' && rank >= global.RANKS.CONTENT_MANAGER) {
-            if (editable) {
-                actions.push(
-                    <PostEditAction
-                        post={post}
-                        edit={post}
-                        key={++key}
-                    />
-                );
-            }
-
-            // Show the purhcased icon if the post hasn't been purchased
-            if (purchased === false) {
-                actions.push(
-                    <PurchaseAction
-                        post={post}
-                        assignment={assignment ? assignment.id : null}
-                        didPurchase={didPurchase}
-                        key={++key}
-                    />
-                );
-            }
-
-            actions.push(
-                <DownloadAction
-                    post={post}
-                    key={++key}
-                />
-            );
-        } else if (purchased === true) {
-            // Check if the post has been purchased
-            actions.push(
-                <DownloadAction
-                    post={post}
-                    key={++key}
-                />
-            );
-
-        } else if (purchased == false && post.license == 1) {
-            // Check if the post is not purhcased, and it is purchasble from the license
-
-            actions.push(
-                <PurchaseAction
-                    post={post}
-                    assignment={assignment ? assignment.id : null}
-                    didPurchase={didPurchase}
-                    key={++key}
-                />
-            );
-        }
-
-        let link = '/post/' + post.id;
-
-        if (assignment) {
-            link += '?assignment=' + assignment.id;
-        }
-
-        return (
-            <div className="hover">
-                <a className="md-type-body2 post-link" href={link}>See more</a>
-                {actions}
-            </div>
-        );
-    }
-}
 
 PostCell.propTypes = {
     rank: PropTypes.number,

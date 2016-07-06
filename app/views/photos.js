@@ -20,7 +20,6 @@ class Photos extends React.Component {
         super(props);
 
         this.state = {
-            purchases: [],
             showVerified: true,
             sort: this.props.sort || 'created_at',
         };
@@ -77,7 +76,6 @@ class Photos extends React.Component {
                 />
                 <PostList
                     rank={this.props.user.rank}
-                    purchases={this.props.purchases}
                     size="small"
                     sort={this.state.sort}
                     onlyVerified={this.state.showVerified}
@@ -91,9 +89,6 @@ class Photos extends React.Component {
 
 
 ReactDOM.render(
-    <Photos
-        user={window.__initialProps__.user}
-        purchases={window.__initialProps__.purchases}
-    />,
+    <Photos user={window.__initialProps__.user} />,
     document.getElementById('app')
 );

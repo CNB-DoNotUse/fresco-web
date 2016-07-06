@@ -20,7 +20,6 @@ class PostList extends React.Component {
         super(props);
 
         this.state = {
-            purchases: this.props.purchases,
             posts: this.props.posts,
             loading: false,
             scrollable: this.props.scrollable,
@@ -38,7 +37,6 @@ class PostList extends React.Component {
         this.setSelectedPosts 	= this.setSelectedPosts.bind(this);
         this.sortPosts 		    = this.sortPosts.bind(this);
         this.scroll 			= this.scroll.bind(this);
-        this.didPurchase 		= this.didPurchase.bind(this);
         this.edit 				= this.edit.bind(this);
         this.toggle				= this.toggle.bind(this);
         this.loadInitialPosts	= this.loadInitialPosts.bind(this);
@@ -167,40 +165,29 @@ class PostList extends React.Component {
         if (this.props.rank < global.RANKS.CONTENT_MANAGER) return;
 
 
-    // Make sure we haven't reached the limit
+        // Make sure we haven't reached the limit
         if (this.state.selectedPosts.length >= global.limits.galleryItems) {
             return $.snackbar({ content: 'Galleries can only contain up to 10 items!' });
         }
 
-    // Filter out anything, but ones that equal the passed post
+        // Filter out anything, but ones that equal the passed post
         var result = this.state.selectedPosts.filter((post) => {
             return passedPost.id === post.id;
         });
 
 
-    // Post not found, so add
+        // Post not found, so add
         if (result.length == 0) {
             this.setState({
                 selectedPosts: this.state.selectedPosts.concat(passedPost),
             });
         }
-    // No post found
+        // No post found
         else {
             this.setState({
                 selectedPosts: this.state.selectedPosts.filter((post) => post.id !== passedPost.id),
             });
         }
-    }
-
-    /**
-        * Called when an item is purchased.
-        * Adds purchase ID to current purchases in state.
-        * Prop chain: PostList -> PostCell -> PostCellActions -> PostCellAction -> PurchaseAction
-    */
-    didPurchase(id) {
-        this.setState({
-            purchases: this.state.purchases.concat(id),
-        });
     }
 
     /**
@@ -234,23 +221,22 @@ class PostList extends React.Component {
             allPurchased,
             parentCaption,
         } = this.props;
-        const { purchases, posts, selectedPosts } = this.state;
+        const { posts, selectedPosts } = this.state;
         let postCmps = [];
 
-        for (var i = 0; i < posts.length; i++) {
+        for (let i = 0; i < posts.length; i++) {
 
             let post = posts[i];
 
             // Check if post should be added based on approvals and verified toggle
-            if (onlyVerified && post.approvals == 0) {
+            if (onlyVerified && post.approvals === 0) {
                 continue;
             }
 
-            let purchased = purchases.indexOf(post.id) > -1 || allPurchased ? true : false,
             // Filter out this posts from the currently selected posts
-                filteredPosts = selectedPosts.filter((currentPost) => currentPost.id === post.id),
+            const filteredPosts = selectedPosts.filter((currentPost) => currentPost.id === post.id);
             // Pass down toggled if this post is inside the filtered posts
-                toggled = filteredPosts.length > 0 ? true : false;
+            let toggled = filteredPosts.length > 0;
 
             postCmps.push(
                 <PostCell
@@ -258,14 +244,12 @@ class PostList extends React.Component {
                     parentCaption={parentCaption}
                     post={post}
                     rank={rank}
-                    purchased={purchased}
                     toggled={toggled}
                     assignment={assignment}
                     key={i}
                     editable={editable}
                     sort={sort}
                     togglePost={this.togglePost}
-                    didPurchase={this.didPurchase}
                     edit={this.edit}
                 />
             );
@@ -307,7 +291,6 @@ PostList.defaultProps = {
     className: '',
     size: 'small',
     editable: true,
-    purchases: [],
     posts: [],
     gallery: null,
     scrollable: false,
