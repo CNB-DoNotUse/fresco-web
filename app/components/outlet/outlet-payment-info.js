@@ -1,7 +1,9 @@
-import React from 'react';
+/* global Stripe:true */
+
+import React, { PropTypes } from 'react';
 import global from '../../../lib/global';
 
-export default class OutletPaymentInfo extends React.Component {
+class OutletPaymentInfo extends React.Component {
     constructor(props) {
         super(props);
         this.save = this.save.bind(this);
@@ -11,8 +13,16 @@ export default class OutletPaymentInfo extends React.Component {
         Stripe.setPublishableKey(window.__initialProps__.stripePublishableKey);
     }
 
+    getActiveCard() {
+        // returns active card or first card
+        const { payment } = this.props;
+
+        return payment.find((p) => (p.active === true))
+        || payment.length ? payment[0] : null;
+    }
+
 	/**
-	 * Save funciton for the card
+	 * Save function for the card
     */
     save() {
         const exp_times = this.refs['payment-exp'].value.split('/');
@@ -38,7 +48,7 @@ export default class OutletPaymentInfo extends React.Component {
         const form = $('<form></form>');
 		for (let index in params) form.append('<input type="hidden" data-stripe="' + index + '" value="' + params[index] + '">');
 
-        Stripe.card.createToken(form, (status, response) => {
+        return Stripe.card.createToken(form, (status, response) => {
             if (response.error) {
                 saveBtn.prop('disabled', false);
                 return $.snackbar({ content: response.error.message });
@@ -65,7 +75,7 @@ export default class OutletPaymentInfo extends React.Component {
     }
 
     render() {
-        let card = this.props.outlet.card;
+        let card = this.getActiveCard();
         let currentCardText = '';
 
         if (card) {
@@ -145,3 +155,9 @@ export default class OutletPaymentInfo extends React.Component {
         );
     }
 }
+
+OutletPaymentInfo.propTypes = {
+    payment: PropTypes.array,
+};
+
+export default OutletPaymentInfo;

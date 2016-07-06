@@ -37,7 +37,7 @@ class OutletSettings extends React.Component {
     }
 
     render() {
-        const { user } = this.props;
+        const { user, payment } = this.props;
         const isOwner = user.permissions.includes('update-outlet');
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
         let members = '';
@@ -50,7 +50,7 @@ class OutletSettings extends React.Component {
                         updateOutlet={this.updateOutlet}
                         outlet={this.state.outlet}
                     />
-                    <OutletPaymentInfo outlet={this.state.outlet} />
+                    <OutletPaymentInfo payment={payment} outlet={this.state.outlet} />
                 </div>
             );
             members = (
@@ -73,7 +73,7 @@ class OutletSettings extends React.Component {
                     <div className="right">
                         <OutletNotifications outlet={this.state.outlet} />
                         <OutletLocations outlet={this.state.outlet} />
-                        {members ? members : ''}
+                        {members}
                     </div>
 
                     <QuickSupport />
@@ -86,12 +86,14 @@ class OutletSettings extends React.Component {
 OutletSettings.propTypes = {
     user: PropTypes.object,
     outlet: PropTypes.object,
+    payment: PropTypes.array,
 };
 
 ReactDOM.render(
     <OutletSettings
         user={window.__initialProps__.user}
         outlet={window.__initialProps__.outlet}
+        payment={window.__initialProps__.payment}
     />,
 	document.getElementById('app')
 );
