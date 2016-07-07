@@ -102,15 +102,15 @@ class Admin extends React.Component {
         switch (tab) {
             case 'assignments':
                 endpoint = '/api/assignment/find';
-                params = { unrated: true, last: last };
+                params = { unrated: true, last, limit: 16 };
                 break;
             case 'submissions':
                 endpoint = '/api/gallery/list';
-                params = { unrated: true, last: last };
+                params = { unrated: true, last, limit: 16 };
                 break;
             case 'imports':
-                endpoint = '/api/gallery/imports';
-                params = { last: last, rated: 0 };
+                endpoint = '/api/gallery/list';
+                params = { imported: true, last, limit: 16 };
                 break;
             default:
                 break;

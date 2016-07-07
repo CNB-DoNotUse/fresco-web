@@ -1,7 +1,7 @@
-import global from '../../../lib/global';
 import React from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
 import AssignmentMerge from '../assignment/assignment-merge';
+import global from '../../../lib/global';
 
 /**
     Assignment Edit Sidebar used in assignment administration page
