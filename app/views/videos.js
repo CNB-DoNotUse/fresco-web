@@ -53,9 +53,7 @@ class Videos extends React.Component {
             data: params,
             dataType: 'json',
             success: (videos, status) => {
-                if (status === 'success') {
-                    callback(videos);
-                }
+                if (status === 'success') callback(videos);
             },
             error: (xhr, status, error) => {
                 $.snackbar({ content: global.resolveError(error) });
@@ -79,7 +77,6 @@ class Videos extends React.Component {
                 <PostList
                     loadPosts={this.loadPosts}
                     rank={this.props.user.rank}
-                    purchases={this.props.purchases}
                     size="small"
                     sort={this.state.sort}
                     onlyVerified={this.state.showVerified}
@@ -90,14 +87,7 @@ class Videos extends React.Component {
     }
 }
 
-Videos.defaultProps = {
-    purchases : [],
-};
-
 ReactDOM.render(
-    <Videos
-        user={window.__initialProps__.user}
-        purchases={window.__initialProps__.purchases}
-    />,
+    <Videos user={window.__initialProps__.user} />,
     document.getElementById('app')
 );
