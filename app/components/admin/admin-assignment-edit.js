@@ -4,13 +4,13 @@ import AutocompleteMap from '../global/autocomplete-map'
 import Dropdown from '../global/dropdown'
 import AssignmentMerge from '../assignment/assignment-merge'
 /**
-    
+
     Assignment Edit Sidebar used in assignment administration page
 
 **/
 
 export default class AdminAssignmentEdit extends React.Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -24,7 +24,7 @@ export default class AdminAssignmentEdit extends React.Component {
         }
 
         this.pending                = false;
-        
+
         this.onPlaceChange          = this.onPlaceChange.bind(this);
         this.onRadiusUpdate         = this.onRadiusUpdate.bind(this);
         this.onMapDataChange        = this.onMapDataChange.bind(this);
@@ -52,29 +52,27 @@ export default class AdminAssignmentEdit extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.assignment.id != nextProps.assignment.id) {
-            if(nextProps.hasActiveGallery) {
 
-                var assignment = nextProps.assignment;
+            var assignment = nextProps.assignment;
 
-                this.setState({
-                    address: null,
-                    radius: assignment.location ? assignment.location.radius : 0,
-                    location: {
-                        lat: assignment.location.geo.coordinates[1],
-                        lng: assignment.location.geo.coordinates[0],
-                    }
-                });
+            this.setState({
+                address: null,
+                radius: assignment.location ? assignment.location.radius : 0,
+                location: {
+                    lat: assignment.location.geo.coordinates[1],
+                    lng: assignment.location.geo.coordinates[0],
+                }
+            });
 
-                // this.findNearbyAssignments();
-                this.refs['assignment-title'].value = assignment.title;
-                this.refs['assignment-description'].value = assignment.caption;
-                this.refs['assignment-expiration'].value = assignment ? global.hoursToExpiration(assignment.expiration_time) : null;
+            // this.findNearbyAssignments();
+            this.refs['assignment-title'].value = assignment.title;
+            this.refs['assignment-description'].value = assignment.caption;
+            this.refs['assignment-expiration'].value = assignment ? global.hoursToExpiration(assignment.expiration_time) : null;
 
-                $(this.refs['assignment-title']).removeClass('empty');
-                $(this.refs['assignment-description']).removeClass('empty');
-                $(this.refs['assignment-expiration']).removeClass('empty');
-            }
-        }     
+            $(this.refs['assignment-title']).removeClass('empty');
+            $(this.refs['assignment-description']).removeClass('empty');
+            $(this.refs['assignment-expiration']).removeClass('empty');
+        }
     }
 
     /**
@@ -233,14 +231,10 @@ export default class AdminAssignmentEdit extends React.Component {
     }
 
     render() {
-        
+
         var radius = Math.round(global.milesToFeet(this.state.radius)),
             address = this.state.address ? this.state.address : this.props.assignment.location ? this.props.assignment.location.address : '',
             expiration_time = this.props.assignment ? global.hoursToExpiration(this.props.assignment.expiration_time) : null;
-
-        if(this.props.activeGalleryType != 'assignment' || !this.props.hasActiveGallery) 
-            return (<div></div>);
-
         /**
          *  Merge button
                     <AssignmentMergeDropup
@@ -248,23 +242,23 @@ export default class AdminAssignmentEdit extends React.Component {
                         selectMerge={this.selectMerge} />
          */
 
-        return ( 
+        return (
             <div className="dialog">
-                <div className="dialog-body admin-assignment-edit" style={{visibility: this.props.hasActiveGallery ? 'visible' : 'hidden'}}>
+                <div className="dialog-body admin-assignment-edit" style={{visibility: 'visible'}}>
                     <input
                         type="text"
                         className="form-control floating-label titleInput"
                         placeholder="Title"
                         ref="assignment-title"
                         defaultValue={this.props.assignment.title} />
-                    
+
                     <textarea
                         type="text"
                         className="form-control floating-label"
                         placeholder="Description"
                         ref="assignment-description"
                         defaultValue={this.props.assignment.caption}></textarea>
-                    
+
                     <AutocompleteMap
                         defaultLocation={address}
                         location={this.state.location}
@@ -275,7 +269,7 @@ export default class AdminAssignmentEdit extends React.Component {
                         draggable={true}
                         rerender={true}
                         hasRadius={true} />
-                    
+
                     <input
                         type="text"
                         className="form-control floating-label"
@@ -321,7 +315,7 @@ class AssignmentMergeDropup extends React.Component {
 
     render() {
 
-        if(!this.props.nearbyAssignments.length) 
+        if(!this.props.nearbyAssignments.length)
             return <div />;
 
         return (

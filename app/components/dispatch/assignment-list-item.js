@@ -13,7 +13,7 @@ class AssignmentListItem extends React.Component {
             <div
                 id={assignment.id}
                 className="list-item assignment-list-item"
-                onClick={setActiveAssignment(assignment)}
+                onClick={() => setActiveAssignment(assignment)}
             >
                 <div>
                     <img className="img-circle" src={imageUrl} />

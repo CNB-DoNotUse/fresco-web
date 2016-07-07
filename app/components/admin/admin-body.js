@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import GalleryListItem from './admin-gallery-list-item';
-import AssignmentListItem from './admin-assignment-list-item';
 import AdminGalleryEdit from './admin-gallery-edit';
-import AdminAssignmentEdit from './admin-assignment-edit';
 
 class AdminBody extends React.Component {
     constructor(props) {
@@ -15,9 +13,7 @@ class AdminBody extends React.Component {
             activeAssignment: {},
         };
 
-        this.setActiveAssignment = this.setActiveAssignment.bind(this);
         this.setActiveGallery = this.setActiveGallery.bind(this);
-        this.updateAssignment = this.updateAssignment.bind(this);
         this.skip = this.skip.bind(this);
         this.verify = this.verify.bind(this);
         this.remove = this.remove.bind(this);
@@ -26,13 +22,14 @@ class AdminBody extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const galleryType = this.props.activeTab.slice(0, -1);
+        const { activeTab } = this.props;
+        const galleryType = activeTab.slice(0, -1);
         const self = this;
 
         // If tab changed
-        if (this.props.activeTab != prevProps.activeTab) {
+        if (activeTab !== prevProps.activeTab) {
             // If activeTab has submissions / assignments object, but no actual submissions / assignments, then hide admin panes.
-            if (this.props[this.props.activeTab] && this.props[this.props.activeTab].length === 0) {
+            if (this.props[activeTab] && this.props[activeTab].length === 0) {
                 this.setState({
                     hasActiveGallery: false,
                     activeAssignment: null,
@@ -45,21 +42,19 @@ class AdminBody extends React.Component {
 
             if (galleryType === 'assignment') {
                 // Special case for assignments because they are not a gallery.
-
                 this.setState({
                     hasActiveGallery: true,
                     activeAssignment: this.props.assignments[0],
                     activeGallery: null,
                     activeGalleryType: 'assignment',
                 });
-
             } else {
                 setFirstGalleryActive();
             }
         }
 
         // If didn't have content before, set active to the first in current.
-        if (this.props[this.props.activeTab] && this.props[this.props.activeTab].length && prevProps[this.props.activeTab].length == 0) {
+        if (this.props[activeTab] && this.props[activeTab].length && prevProps[activeTab].length == 0) {
             setFirstGalleryActive();
         }
 
@@ -79,29 +74,9 @@ class AdminBody extends React.Component {
         }
     }
 
-    setActiveAssignment(id) {
-        if (id == null) {
-            this.setState({
-                hasActiveGallery: false,
-                activeAssignment: false,
-            });
-
-            return;
-        }
-
-        for (let a in this.props.assignments) {
-            if (this.props.assignments[a].id == id) {
-                this.setState({
-                    hasActiveGallery: true,
-                    activeAssignment: this.props.assignments[a],
-                });
-                break;
-            }
-        }
-    }
 
     setActiveGallery(id, type) {
-        if( this.state.activeGallery.id == id ) return;
+        if (this.state.activeGallery.id == id) return;
         let gallery = {};
 
         if (type === 'submission') {
@@ -130,25 +105,6 @@ class AdminBody extends React.Component {
             activeGallery: gallery,
             activeAssignment: null,
         });
-    }
-
-    updateAssignment(id) {
-        const propGalleryType = this.state.activeGalleryType + 's';
-        const assignments = this.props[propGalleryType];
-        let next_index = 0;
-
-        for (let a in assignments) {
-            if (id === assignments[a].id) {
-                if (a === (assignments.length - 1)) {
-                    next_index = a - 1;
-                } else {
-                    next_index = a;
-                    assignments.splice(a, 1);
-                }
-            }
-        }
-
-        this.setActiveAssignment(assignments ? assignments[next_index] ? assignments[next_index].id : null : null);
     }
 
     spliceGallery(cb) {
@@ -247,30 +203,6 @@ class AdminBody extends React.Component {
         let listItems;
         let editPane;
         switch (this.props.activeTab) {
-            case 'assignments':
-                if (!this.state.activeAssignment || !this.state.hasActiveGallery || !this.props.assignments.length) break;
-                listItems = this.props.assignments.sort(sortListItem).map((assignment, i) => {
-                    return (
-                        <AssignmentListItem
-                            type="assignment"
-                            assignment={assignment}
-                            key={i}
-                            active={this.state.activeAssignment.id === assignment.id}
-                            setActiveAssignment={this.setActiveAssignment}
-                        />
-                    );
-                });
-                if (this.state.activeAssignment && this.state.activeAssignment.id) {
-                    editPane = (
-                        <AdminAssignmentEdit
-                            hasActiveGallery={this.state.hasActiveGallery}
-                            activeGalleryType={this.state.activeGalleryType}
-                            assignment={this.state.activeAssignment}
-                            updateAssignment={this.updateAssignment}
-                        />
-                    );
-                }
-                break;
 			case 'submissions':
                 if (!this.state.activeGallery|| !this.state.hasActiveGallery || !this.props.submissions.length) break;
                 listItems = this.props.submissions.sort(sortListItem).map((submission, i) => {
