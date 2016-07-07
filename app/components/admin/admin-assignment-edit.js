@@ -1,67 +1,62 @@
-import global from '../../../lib/global'
-import React from 'react'
-import AutocompleteMap from '../global/autocomplete-map'
-import Dropdown from '../global/dropdown'
-import AssignmentMerge from '../assignment/assignment-merge'
+import global from '../../../lib/global';
+import React from 'react';
+import AutocompleteMap from '../global/autocomplete-map';
+import AssignmentMerge from '../assignment/assignment-merge';
+
 /**
-
     Assignment Edit Sidebar used in assignment administration page
-
 **/
-
 export default class AdminAssignmentEdit extends React.Component {
-
     constructor(props) {
         super(props);
+        const { assignment } = props;
+        let radius = 0;
+        let location = { lat: null, lng: null };
+
+        if (assignment && assignment.location) {
+            radius = assignment.location
+                && assignment.location.radius ? assignment.location.radius : 0;
+            location = {
+                lat: assignment.location.coordinates ? assignment.location.coordinates[1] : null,
+                lng: assignment.location.coordinates ? assignment.location.coordinates[0] : null,
+            };
+        }
 
         this.state = {
             address: null,
-            radius: null,
-            location: null,
+            radius,
+            location,
             nearbyAssignments: [],
             mergeDialogToggled: false,
-            assignmentToMergeInto: null
-        }
+            assignmentToMergeInto: null,
+        };
 
-        this.pending                = false;
-
-        this.onPlaceChange          = this.onPlaceChange.bind(this);
-        this.onRadiusUpdate         = this.onRadiusUpdate.bind(this);
-        this.onMapDataChange        = this.onMapDataChange.bind(this);
-        this.findNearbyAssignments  = this.findNearbyAssignments.bind(this);
-        this.toggleMergeDialog      = this.toggleMergeDialog.bind(this);
-        this.approve                = this.approve.bind(this);
-        this.reject                 = this.reject.bind(this);
-        // this.merge                  = this.merge.bind(this);
-        this.selectMerge            = this.selectMerge.bind(this);
+        this.pending = false;
+        this.onPlaceChange = this.onPlaceChange.bind(this);
+        this.onRadiusUpdate = this.onRadiusUpdate.bind(this);
+        this.onMapDataChange = this.onMapDataChange.bind(this);
+        this.findNearbyAssignments = this.findNearbyAssignments.bind(this);
+        this.toggleMergeDialog = this.toggleMergeDialog.bind(this);
+        this.approve = this.approve.bind(this);
+        this.reject = this.reject.bind(this);
+        this.selectMerge = this.selectMerge.bind(this);
+        // this.merge = this.merge.bind(this);
     }
 
     componentDidMount() {
         $.material.init();
-
-        // this.findNearbyAssignments();
-
-        this.setState({
-            radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
-            location: {
-                lat: this.props.assignment.location.geo.coordinates[1],
-                lng: this.props.assignment.location.geo.coordinates[0],
-            }
-        });
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.assignment.id != nextProps.assignment.id) {
-
-            var assignment = nextProps.assignment;
-
+        const assignment = nextProps.assignment;
+        if (this.props.assignment.id != assignment.id) {
             this.setState({
                 address: null,
                 radius: assignment.location ? assignment.location.radius : 0,
                 location: {
-                    lat: assignment.location.geo.coordinates[1],
-                    lng: assignment.location.geo.coordinates[0],
-                }
+                    lat: assignment.location.coordinates[1],
+                    lng: assignment.location.coordinates[0],
+                },
             });
 
             // this.findNearbyAssignments();
@@ -81,7 +76,7 @@ export default class AdminAssignmentEdit extends React.Component {
     onPlaceChange(place) {
         this.setState({
             address: place.address,
-            location: place.location
+            location: place.location,
         });
     }
 
@@ -90,11 +85,11 @@ export default class AdminAssignmentEdit extends React.Component {
      */
     onMapDataChange(data) {
         if(data.source == 'markerDrag') {
-            var geocoder = new google.maps.Geocoder();
+            const geocoder = new google.maps.Geocoder();
 
             geocoder.geocode({'location': {
                 lat: data.location.lat,
-                lng: data.location.lng
+                lng: data.location.lng,
             }}, (results, status) => {
 
                 if(status === google.maps.GeocoderStatus.OK && results[0]) {
@@ -121,7 +116,7 @@ export default class AdminAssignmentEdit extends React.Component {
      * Finds nearby assignments
      */
     findNearbyAssignments(data) {
-        if(!this.props.assignment || !this.props.assignment.caption || !this.props.assignment.location || !this.props.assignment.location.geo) return;
+        if(!this.props.assignment || !this.props.assignment.caption || !this.props.assignment.location || !this.props.assignment.location) return;
 
         let assignment = this.props.assignment;
 
@@ -129,8 +124,8 @@ export default class AdminAssignmentEdit extends React.Component {
             active: true,
             radius: assignment.location.radius,
             unpack: false,
-            lat: assignment.location.geo.coordinates[1],
-            lon: assignment.location.geo.coordinates[0]
+            lat: assignment.location.coordinates[1],
+            lon: assignment.location.coordinates[0]
         }, (assignments) => {
             this.setState({
                 nearbyAssignments: assignments.data.slice(0, 5)
@@ -290,61 +285,11 @@ export default class AdminAssignmentEdit extends React.Component {
                     assignmentToMergeInto={this.state.assignmentToMergeInto}
                     toggled={this.state.mergeDialogToggled}
                     toggle={this.toggleMergeDialog}
-                    merge={this.merge} />
+                    merge={this.merge}
+                />
             </div>
         );
     }
 
 }
 
-class AssignmentMergeDropup extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount() {
-        $(document).click((e) => {
-            // Hide dropdown on click as long as not clicking on master button.
-            if($('.merge-dropdown').hasClass('active') && e.target.className != 'toggle') {
-                $('.merge-dropdown').removeClass('active');
-                $('.merge-dropdown .mdi-menu-up').removeClass('mdi-menu-up').addClass('mdi-menu-down');
-            }
-        })
-    }
-
-    render() {
-
-        if(!this.props.nearbyAssignments.length)
-            return <div />;
-
-        return (
-            <Dropdown
-                dropdownClass="u-15 merge-dropdown"
-                reverseCaretDirection={true}
-                inList={true}
-                title={'Merge (' + this.props.nearbyAssignments.length + ')'}>
-                {this.props.nearbyAssignments.map((a, i) => {
-                    return (
-                        <AssignmentMergeMenuItem
-                            assignment={a}
-                            onClick={this.props.selectMerge.bind(null, a.id)}
-                            key={i} />
-                    );
-                })}
-            </Dropdown>
-        );
-    }
-}
-
-class AssignmentMergeMenuItem extends React.Component {
-    render() {
-        return (
-            <div className="assignment-merge-menu-item" onClick={this.props.onClick}>
-                <span className="assignment-title">{this.props.assignment.title}</span>
-                <span className="assignment-location">{this.props.assignment.location.googlemaps}</span>
-                <p className="assignment-caption">{this.props.assignment.caption}</p>
-            </div>
-        )
-    }
-}

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './app';
 import TopBar from './../components/topbar/topbar-admin';
 import AdminBody from './../components/admin/admin-body';
+import Assignments from './../components/admin/assignments';
 import difference from 'lodash/difference';
 
 /**
@@ -13,8 +14,8 @@ class Admin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            activeTab: '',
-            assignments: [],
+            activeTab: 'assignments',
+            assignments: {},
             submissions: [],
             imports: [],
         };
@@ -100,16 +101,16 @@ class Admin extends React.Component {
         // Set up endpoint and params depending on tab
         switch (tab) {
             case 'assignments':
-                endpoint = '/api/assignment/list';
-                params = { pending: true, limit: 16, last: last };
+                endpoint = '/api/assignment/find';
+                params = { unrated: true, last: last };
                 break;
             case 'submissions':
-                endpoint = '/api/gallery/submissions';
-                params = { last: last, limit: 16 };
+                endpoint = '/api/gallery/list';
+                params = { unrated: true, last: last };
                 break;
             case 'imports':
                 endpoint = '/api/gallery/imports';
-                params = { last: last, limit: 16, rated: 0 };
+                params = { last: last, rated: 0 };
                 break;
             default:
                 break;
@@ -124,26 +125,26 @@ class Admin extends React.Component {
         }
 
         this.currentXHR = $.get(endpoint, params, (data) => {
-            if (!data.data) {
+            if (!data) {
                 return cb([]);
             }
 
             let stateData = this.state[tab];
             if (!stateData.length) {
                 const state = {};
-                state[tab] = data.data;
+                state[tab] = data;
                 if (unshift) self.setState(state);
 
-                return cb(data.data);
+                return cb(data);
             }
 
-            const newData = this.getChangedData(stateData.concat(data.data), stateData);
+            const newData = this.getChangedData(stateData.concat(data), stateData);
             if (!newData.length) {
                 return cb([]);
             }
 
             if (concat || unshift) {
-                if (concat) stateData = stateData.concat(data.data);
+                if (concat) stateData = stateData.concat(data);
 
                 if (unshift) {
                     if (stateData.length) {
@@ -161,7 +162,7 @@ class Admin extends React.Component {
                 self.setState(newState);
             }
 
-            return cb(data.data);
+            return cb(data);
         });
     }
 
@@ -183,9 +184,7 @@ class Admin extends React.Component {
 
         this.getData(undefined, { tab: 'assignments' }, (assignments) => {
             activeTab = 'assignments';
-            this.setState({
-                assignments: this.state.assignments.concat(assignments),
-            });
+            this.setState({ assignments });
         });
 
         this.getData(undefined, { tab: 'submissions' }, (submissions) => {
@@ -253,7 +252,54 @@ class Admin extends React.Component {
         });
     }
 
+    renderActiveTab() {
+        let tab = '';
+
+        switch (this.state.activeTab) {
+            case 'assignments':
+                tab = (
+                    <Assignments
+                        assignments={this.state.assignments}
+                        getData={this.getData}
+                        refresh={this.refresh}
+                        spliceGallery={this.spliceGallery}
+                    />
+                );
+                break;
+            case 'submissions':
+                tab = (
+                    <AdminBody
+                        activeTab={this.state.activeTab}
+                        submissions={this.state.submissions}
+                        imports={this.state.imports}
+                        getData={this.getData}
+                        refresh={this.refresh}
+                        spliceGallery={this.spliceGallery}
+                    />
+                );
+                break;
+            case 'imports':
+                tab = (
+                    <AdminBody
+                        activeTab={this.state.activeTab}
+                        submissions={this.state.submissions}
+                        imports={this.state.imports}
+                        getData={this.getData}
+                        refresh={this.refresh}
+                        spliceGallery={this.spliceGallery}
+                    />
+                );
+                break;
+            default:
+                break;
+        }
+
+        return tab;
+    }
+
     render() {
+        let activeTab = this.renderActiveTab();
+
         return (
             <App user={this.props.user}>
                 <TopBar
@@ -261,15 +307,8 @@ class Admin extends React.Component {
                     resetImports={this.resetImports}
                     setTab={this.setTab}
                 />
-                <AdminBody
-                    activeTab={this.state.activeTab}
-                    assignments={this.state.assignments}
-                    submissions={this.state.submissions}
-                    imports={this.state.imports}
-                    getData={this.getData}
-                    refresh={this.refresh}
-                    spliceGallery={this.spliceGallery}
-                />
+
+                {activeTab}
             </App>
         );
     }
@@ -284,3 +323,4 @@ ReactDOM.render(
     <Admin user={window.__initialProps__.user} />,
     document.getElementById('app')
 );
+

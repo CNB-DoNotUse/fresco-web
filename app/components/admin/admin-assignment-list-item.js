@@ -18,7 +18,7 @@ class AdminAssignmentListItem extends React.Component {
         return (
             <div
                 className={`list-item ${active ? 'active' : ''}`}
-                onClick={() => setActiveAssignment(assignment.id)}
+                onClick={setActiveAssignment}
             >
                 <div>
                     <a href={`/outlet/${assignment.outlets[0].id}`} target="_blank">

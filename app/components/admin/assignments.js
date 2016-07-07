@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import AssignmentListItem from './admin-assignment-list-item';
 import AdminAssignmentEdit from './admin-assignment-edit';
+import uniqBy from 'lodash/uniqBy';
 
 class Assignments extends React.Component {
     constructor(props) {
@@ -14,24 +15,12 @@ class Assignments extends React.Component {
             activeAssignment: firstAssignment,
         };
 
-        this.setActiveAssignment = this.setActiveAssignment.bind(this);
         this.updateAssignment = this.updateAssignment.bind(this);
         this.scroll = this.scroll.bind(this);
     }
 
-    setActiveAssignment(id) {
-        if (id == null) {
-            this.setState({ activeAssignment: false });
-
-            return;
-        }
-
-        for (let a in this.props.assignments) {
-            if (this.props.assignments[a].id == id) {
-                this.setState({ activeAssignment: this.props.assignments[a] });
-                break;
-            }
-        }
+    setActiveAssignment(assignment) {
+        this.setState({ activeAssignment: assignment });
     }
 
     updateAssignment(id) {
@@ -67,9 +56,17 @@ class Assignments extends React.Component {
         }
     }
 
-    render() {
+    renderAssignments() {
         const { assignments } = this.props;
         const { activeAssignment } = this.state;
+        let cmps = [];
+        let assignmentsToRender = [];
+        ['nearby', 'global'].forEach((type) => {
+            assignmentsToRender = assignmentsToRender
+                .concat(assignments[type] && assignments[type].length ? assignments[type] : []);
+        });
+        assignmentsToRender = uniqBy(assignmentsToRender, 'id');
+
         function sortListItem(a, b) {
             if (a.created_at > b.created_at) {
                 return -1;
@@ -80,26 +77,25 @@ class Assignments extends React.Component {
             return 0;
         }
 
-        let listItems = [];
-        let editPane = '';
-
-        let assignmentsToRender = [];
-        ['nearby', 'global'].forEach((type) => {
-            assignmentsToRender = assignmentsToRender
-                .concat(assignments[type] && assignments[type].length ? assignments[type] : []);
-        });
-
         if (assignmentsToRender.length) {
-            listItems = assignmentsToRender.sort(sortListItem).map((assignment, i) => (
+            cmps = assignmentsToRender.sort(sortListItem).map((assignment, i) => (
                 <AssignmentListItem
                     type="assignment"
                     assignment={assignment}
                     key={i}
                     active={activeAssignment && activeAssignment.id === assignment.id}
-                    setActiveAssignment={this.setActiveAssignment}
+                    setActiveAssignment={() => this.setActiveAssignment(assignment)}
                 />
             ));
         }
+
+        return cmps;
+    }
+
+    render() {
+        const { activeAssignment } = this.state;
+
+        let editPane = '';
         if (activeAssignment && activeAssignment.id) {
             editPane = (
                 <AdminAssignmentEdit
@@ -112,7 +108,7 @@ class Assignments extends React.Component {
         return (
             <div className="container-fluid admin">
                 <div className="col-md-6 col-lg-7 list" onScroll={this.scroll}>
-                    {listItems}
+                    {this.renderAssignments()}
                 </div>
                 <div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">
                     {editPane}
