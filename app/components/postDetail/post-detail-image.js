@@ -36,6 +36,7 @@ class PostDetailImage extends React.Component {
 
     render() {
         const { user, post } = this.props;
+        const { purchased } = this.state;
         let actions = [];
         let postMedia = '';
         let i = 0;
@@ -52,7 +53,7 @@ class PostDetailImage extends React.Component {
         );
 
         if (user.rank < global.RANKS.CONTENT_MANAGER) {
-            if (user.outlet && this.state.purchased) {
+            if (user.outlet && purchased) {
                 actions.push(downloadAction);
             } else if (user.outlet && post.license === 1) {
                 // Check if the post is licensed
@@ -60,10 +61,7 @@ class PostDetailImage extends React.Component {
             }
         } else {
             actions.push(downloadAction);
-
-            if (!this.state.purchased) {
-                actions.push(purchaseAction);
-            }
+            if (!purchased) actions.push(purchaseAction);
         }
 
         if (post.video) {
@@ -84,16 +82,13 @@ class PostDetailImage extends React.Component {
             );
         }
 
-
         return (
             <div className="col-xs-12 col-md-8">
                 <div className="card panel">
                     <div className="card-foot small">
                         {actions}
-
                         <span className="md-type-body1">{post.byline}</span>
                     </div>
-
                     <div className="card-body">{postMedia}</div>
                 </div>
             </div>
