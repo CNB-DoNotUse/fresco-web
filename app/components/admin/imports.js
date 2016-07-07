@@ -122,7 +122,7 @@ class Imports extends React.Component {
                 gallery={gallery}
                 key={i}
                 active={activeImport && activeImport.id === gallery.id}
-                setActiveGallery={this.setActiveImport}
+                setActiveGallery={() => this.setActiveImport(gallery)}
             />
         ));
     }

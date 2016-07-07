@@ -1,53 +1,67 @@
-import React from 'react'
-import global from '../../../lib/global'
+import React, { PropTypes } from 'react';
+import global from '../../../lib/global';
 
-export default class AdminGalleryListItem extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
+class AdminGalleryListItem extends React.Component {
     render() {
-        var gallery = this.props.gallery;
+        const { gallery, active, setActiveGallery } = this.props;
 
-        if(!gallery.posts.length) {
-            return <div></div>
+        if (!gallery.posts.length) {
+            return <div />;
         }
 
-        if(gallery.owner) {
-            var galleryOwnerText =
+        let galleryOwnerText;
+        if (gallery.owner) {
+            galleryOwnerText = (
                 <p className="md-type-body2">
-                    <a href={"/user/" + gallery.owner.id} target="_blank">
-                        {(gallery.owner ? gallery.owner.firstname : '') + ' ' + (gallery.owner ? gallery.owner.lastname : '')}
+                    <a href={`/user/${gallery.owner.id}`} target="_blank">
+                        {
+                            gallery.owner.full_name.length
+                                ? gallery.owner.full_name
+                                : gallery.owner.username
+                        }
                     </a>
                 </p>
+            );
         }
 
-        var location = 'No Location';
-                            
-        for (var i in gallery.posts) {
-            if(gallery.posts[i].location) {
+        let location = 'No Location';
+        for (let i in gallery.posts) {
+            if (gallery.posts[i].location) {
                 if (gallery.posts[i].location.address) {
                     location = gallery.posts[i].location.address;
                     break;
                 }
             }
         }
-        var assignmentLink = <div></div>;
 
-        if(gallery.assignment) {
-            assignmentLink = <p className="md-type-body2 assignment-link" style={{lineHeight: '18px'}}><a href={"/assignment/" + gallery.assignment.id}>{gallery.assignment.title}</a></p>
+        let assignmentLink = <div />;
+        if (gallery.assignment) {
+            assignmentLink = (
+                <p
+                    className="md-type-body2 assignment-link"
+                    style={{ lineHeight: '18px' }}
+                >
+                    <a href={`/assignment/${gallery.assignment.id}`}>
+                        {gallery.assignment.title}
+                    </a>
+                </p>
+            );
         }
 
         return (
-            <div className={"list-item" + (this.props.active ? ' active' : '')} 
-                    onClick={this.props.setActiveGallery.bind(null, gallery.id, this.props.type)}>
+            <div
+                className={`list-item ${active ? 'active' : ''}`}
+                onClick={setActiveGallery}
+            >
                 <div>
-                    <a href={"/gallery/" + gallery.id} target="_blank">
+                    <a href={`/gallery/${gallery.id}`} target="_blank">
                         <img
                             className="img-circle"
-                            style={{width: '40px', height: '40px'}}
-                            src={global.formatImg(gallery.posts[0].image, 'small')} />{ /* screen.css got rid of the image style */ }
+                            style={{ width: '40px', height: '40px' }}
+                            src={global.formatImg(gallery.posts[0].image, 'small')}
+                            role="presentation"
+                        />
+                        {/* screen.css got rid of the image style */}
                     </a>
                 </div>
                 <div className="flexy list-item-caption">
@@ -58,7 +72,12 @@ export default class AdminGalleryListItem extends React.Component {
                 </div>
                 <div className="list-item-assignment">
                     {assignmentLink}
-                    <p className="md-type-body1 assignment-location" style={gallery.assignment ? {lineHeight: '18px'} : {}}>{location}</p>
+                    <p
+                        className="md-type-body1 assignment-location"
+                        style={gallery.assignment ? { lineHeight: '18px' } : {}}
+                    >
+                        {location}
+                    </p>
                 </div>
                 <div className="list-item-timestamp">
                     <p className="md-type-body1">{global.formatTime(gallery.created_at)}</p>
@@ -67,3 +86,11 @@ export default class AdminGalleryListItem extends React.Component {
         );
     }
 }
+
+AdminGalleryListItem.propTypes = {
+    gallery: PropTypes.object.isRequired,
+    active: PropTypes.bool.isRequired,
+    setActiveGallery: PropTypes.func.isRequired,
+};
+
+export default AdminGalleryListItem;
