@@ -45,7 +45,7 @@ var storage = multer.diskStorage({
         cb(null, Date.now() + '.' + file.originalname.split('.').pop())
     }
 });
-
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 app.use( 
     multer({ storage: storage }).any()
 );
