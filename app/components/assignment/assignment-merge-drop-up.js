@@ -1,4 +1,10 @@
 // TODO: to be useed in admin-assignment-edit?
+/*
+ * Merge button
+ <AssignmentMergeDropup
+ nearbyAssignments={this.state.nearbyAssignments}
+ selectMerge={this.selectMerge} />
+ */
 export default class AssignmentMergeDropup extends React.Component {
 
     constructor(props) {

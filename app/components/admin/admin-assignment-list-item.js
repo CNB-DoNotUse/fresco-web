@@ -12,7 +12,7 @@ class AdminAssignmentListItem extends React.Component {
         if (assignment.address) {
             location = assignment.address;
         } else if (assignment.location.googlemaps) {
-            location = assignment.location.googlemaps;
+            location = assignment.location.coordinates.join(', ');
         }
 
         return (

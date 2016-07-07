@@ -5,6 +5,7 @@ import TopBar from './../components/topbar/topbar-admin';
 import AdminBody from './../components/admin/admin-body';
 import Assignments from './../components/admin/assignments';
 import difference from 'lodash/difference';
+import remove from 'lodash/remove';
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar)
@@ -32,9 +33,7 @@ class Admin extends React.Component {
         this.resetAssignments = this.resetAssignments.bind(this);
         this.resetSubmissions = this.resetSubmissions.bind(this);
         this.resetImports = this.resetImports.bind(this);
-
         this.spliceGallery = this.spliceGallery.bind(this);
-
         this.refresh = this.refresh.bind(this);
         this.refreshInterval = null;
     }
@@ -194,7 +193,6 @@ class Admin extends React.Component {
             });
         });
 
-
         this.getData(undefined, { tab: 'imports' }, (imports) => {
             this.setState({
                 activeTab: imports.length ? 'imports' : activeTab,
@@ -219,6 +217,16 @@ class Admin extends React.Component {
         this.setState(stateData);
 
         cb(null, index);
+    }
+
+    removeAssignment(id) {
+        const { assignments } = this.state;
+
+        if (!assignments) return;
+        if (assignments.global) assignments.global = remove(assignments.global, { id });
+        if (assignments.nearby) assignments.nearby = remove(assignments.nearby, { id });
+
+        this.setState({ assignments });
     }
 
     refresh() {
@@ -263,6 +271,7 @@ class Admin extends React.Component {
                         getData={this.getData}
                         refresh={this.refresh}
                         spliceGallery={this.spliceGallery}
+                        removeAssignment={(id) => this.removeAssignment(id)}
                     />
                 );
                 break;

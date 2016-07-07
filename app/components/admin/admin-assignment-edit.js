@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
 import AssignmentMerge from '../assignment/assignment-merge';
 import global from '../../../lib/global';
@@ -6,7 +6,7 @@ import global from '../../../lib/global';
 /**
     Assignment Edit Sidebar used in assignment administration page
 **/
-export default class AdminAssignmentEdit extends React.Component {
+class AdminAssignmentEdit extends React.Component {
     constructor(props) {
         super(props);
         const { assignment } = props;
@@ -38,7 +38,6 @@ export default class AdminAssignmentEdit extends React.Component {
         this.findNearbyAssignments = this.findNearbyAssignments.bind(this);
         this.toggleMergeDialog = this.toggleMergeDialog.bind(this);
         this.approve = this.approve.bind(this);
-        this.reject = this.reject.bind(this);
         this.selectMerge = this.selectMerge.bind(this);
         // this.merge = this.merge.bind(this);
     }
@@ -49,7 +48,7 @@ export default class AdminAssignmentEdit extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const assignment = nextProps.assignment;
-        if (this.props.assignment.id != assignment.id) {
+        if (this.props.assignment.id !== assignment.id) {
             this.setState({
                 address: null,
                 radius: assignment.location ? assignment.location.radius : 0,
@@ -134,11 +133,12 @@ export default class AdminAssignmentEdit extends React.Component {
     }
 
     approve() {
+        const { assignment, onUpdateAssignment } = this.props;
         this.pending = true;
 
-        $.post('/api/assignment/approve',
+        $.post(`/api/assignment/${assignment.id}/approve`,
         {
-            id: this.props.assignment.id,
+            id: assignment.id,
             now: Date.now(),
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
@@ -155,7 +155,7 @@ export default class AdminAssignmentEdit extends React.Component {
                     content: 'Could not approve assignment!'
                 });
             } else {
-                this.props.updateAssignment(this.props.assignment.id);
+                onUpdateAssignment(assignment.id);
                 $.snackbar({
                     content: 'Assignment Approved!'
                 });
@@ -165,12 +165,14 @@ export default class AdminAssignmentEdit extends React.Component {
     }
 
     reject() {
+        const { assignment } = this.props;
         this.pending = true;
-        $.post('/api/assignment/deny', {
-            id: this.props.assignment.id
+
+        $.post(`/api/assignment/${assignment.id}/reject`, {
+            id: assignment.id,
         }, (data) => {
             this.pending = false;
-            this.props.updateAssignment(this.props.assignment.id);
+            this.props.onUpdateAssignment(assignment.id);
             if(data.err) {
                 $.snackbar({
                     content: 'Could not reject assignment!'
@@ -220,22 +222,15 @@ export default class AdminAssignmentEdit extends React.Component {
     merge(data) {
         $.post('/api/assignment/merge', data, (resp) => {
             this.toggleMergeDialog();
-            this.props.updateAssignment(data.assignmentToDelete);
+            this.props.onUpdateAssignment(data.assignmentToDelete);
             $.snackbar({ content: 'Assignment successfully merged!' });
         });
     }
 
     render() {
-
-        var radius = Math.round(global.milesToFeet(this.state.radius)),
-            address = this.state.address ? this.state.address : this.props.assignment.location ? this.props.assignment.location.address : '',
-            expiration_time = this.props.assignment ? global.hoursToExpiration(this.props.assignment.expiration_time) : null;
-        /**
-         *  Merge button
-                    <AssignmentMergeDropup
-                        nearbyAssignments={this.state.nearbyAssignments}
-                        selectMerge={this.selectMerge} />
-         */
+        const radius = Math.round(global.milesToFeet(this.state.radius));
+        const address = this.state.address ? this.state.address : this.props.assignment.location ? this.props.assignment.location.address : '';
+        const expiration_time = this.props.assignment ? global.hoursToExpiration(this.props.assignment.expiration_time) : null;
 
         return (
             <div className="dialog">
@@ -276,8 +271,22 @@ export default class AdminAssignmentEdit extends React.Component {
                 </div>
 
                 <div className="dialog-foot">
-                    <button type="button" className="btn btn-flat assignment-approve pull-right" onClick={this.approve} disabled={this.isPending}> Approve</button>
-                    <button type="button" className="btn btn-flat assignment-deny pull-right" onClick={this.reject} disabled={this.isPending}> Reject</button>
+                    <button
+                        type="button"
+                        className="btn btn-flat assignment-approve pull-right"
+                        onClick={this.approve}
+                        disabled={this.isPending}
+                    >
+                        Approve
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-flat assignment-deny pull-right"
+                        onClick={() => this.reject()}
+                        disabled={this.isPending}
+                    >
+                        Reject
+                    </button>
                 </div>
 
                 <AssignmentMerge
@@ -290,6 +299,11 @@ export default class AdminAssignmentEdit extends React.Component {
             </div>
         );
     }
-
 }
+
+AdminAssignmentEdit.propTypes = {
+    assignment: PropTypes.object.isRequired,
+};
+
+export default AdminAssignmentEdit;
 
