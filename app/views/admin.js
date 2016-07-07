@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
 import TopBar from './../components/topbar/topbar-admin';
-import AdminBody from './../components/admin/admin-body';
 import Assignments from './../components/admin/assignments';
+import Imports from './../components/admin/imports';
+import Submissions from './../components/admin/submissions';
 import difference from 'lodash/difference';
 import remove from 'lodash/remove';
 
@@ -33,7 +34,6 @@ class Admin extends React.Component {
         this.resetAssignments = this.resetAssignments.bind(this);
         this.resetSubmissions = this.resetSubmissions.bind(this);
         this.resetImports = this.resetImports.bind(this);
-        this.spliceGallery = this.spliceGallery.bind(this);
         this.refresh = this.refresh.bind(this);
         this.refreshInterval = null;
     }
@@ -202,23 +202,6 @@ class Admin extends React.Component {
     }
 
 
-    spliceGallery(data, cb) {
-        const stateData = this.state[data.type];
-        let index = 0;
-
-        for (let g in stateData) {
-            if (stateData[g].id === data.gallery) {
-                index = g;
-                break;
-            }
-        }
-
-        stateData.splice(index, 1);
-        this.setState(stateData);
-
-        cb(null, index);
-    }
-
     removeAssignment(id) {
         const { assignments } = this.state;
 
@@ -227,6 +210,13 @@ class Admin extends React.Component {
         if (assignments.nearby) assignments.nearby = remove(assignments.nearby, { id });
 
         this.setState({ assignments });
+    }
+
+    removeImport(id) {
+        const { imports } = this.state;
+
+        if (!imports) return;
+        this.setState({ imports: remove(imports, { id }) });
     }
 
     refresh() {
@@ -270,32 +260,26 @@ class Admin extends React.Component {
                         assignments={this.state.assignments}
                         getData={this.getData}
                         refresh={this.refresh}
-                        spliceGallery={this.spliceGallery}
                         removeAssignment={(id) => this.removeAssignment(id)}
                     />
                 );
                 break;
             case 'submissions':
                 tab = (
-                    <AdminBody
-                        activeTab={this.state.activeTab}
+                    <Submissions
                         submissions={this.state.submissions}
-                        imports={this.state.imports}
                         getData={this.getData}
                         refresh={this.refresh}
-                        spliceGallery={this.spliceGallery}
                     />
                 );
                 break;
             case 'imports':
                 tab = (
-                    <AdminBody
-                        activeTab={this.state.activeTab}
-                        submissions={this.state.submissions}
+                    <Imports
                         imports={this.state.imports}
                         getData={this.getData}
                         refresh={this.refresh}
-                        spliceGallery={this.spliceGallery}
+                        removeImport={(id) => this.removeImport(id)}
                     />
                 );
                 break;
