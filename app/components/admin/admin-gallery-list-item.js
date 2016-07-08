@@ -15,7 +15,7 @@ class AdminGalleryListItem extends React.Component {
                 <p className="md-type-body2">
                     <a href={`/user/${gallery.owner.id}`} target="_blank">
                         {
-                            gallery.owner.full_name.length
+                            gallery.owner.full_name
                                 ? gallery.owner.full_name
                                 : gallery.owner.username
                         }

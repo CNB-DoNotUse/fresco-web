@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import GalleryListItem from './admin-gallery-list-item';
 import AdminGalleryEdit from './admin-gallery-edit';
+import findIndex from 'lodash/findIndex';
+import omit from 'lodash/omit';
 
 class Imports extends React.Component {
     constructor(props) {
@@ -18,13 +20,9 @@ class Imports extends React.Component {
         this.scroll = this.scroll.bind(this);
     }
 
-    setActiveImport(activeImport) {
-        this.setState({ activeImport });
-    }
-
     onUpdateImport(id) {
-        const { removeImport, imports} = this.props;
-        const index = findIndex(galleries, { id });
+        const { removeImport, imports } = this.props;
+        const index = findIndex(imports, { id });
 
         if (imports[index + 1]) {
             this.setState({ activeImport: imports[index + 1] },
@@ -34,9 +32,13 @@ class Imports extends React.Component {
         }
     }
 
+    setActiveImport(activeImport) {
+        this.setState({ activeImport });
+    }
+
     remove(id) {
         $.ajax({
-            url: '/api/gallery/remove',
+            url: `/api/gallery/${id}/delete`,
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({ id: this.state.activeImport.id }),
@@ -52,7 +54,7 @@ class Imports extends React.Component {
 
     skip(id) {
         $.ajax({
-            url: '/api/gallery/update',
+            url: `/api/gallery/${id}/update`,
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -70,19 +72,26 @@ class Imports extends React.Component {
         });
     }
 
-    verify(id, options) {
+
+    verify(params, cb) {
+        const { id } = params;
+        if (!id || !cb) return;
+        let data = Object.assign({}, params, { rating: 2 });
+        data = omit(data, 'id');
+
         $.ajax({
-            url: '/api/gallery/update',
+            url: `/api/gallery/${id}/update`,
             method: 'post',
             contentType: 'application/json',
-            data: JSON.stringify(options),
+            data: JSON.stringify(data),
             dataType: 'json',
-            success: (result) => {
-                return this.onUpdateImport();
+            success: () => {
+                this.onUpdateImport();
+                cb(null, id);
             },
-            // error: (xhr, status, error) => {
-            //     cb(error);
-            // },
+            error: (xhr, status, error) => {
+                cb(error);
+            },
         });
     }
 
@@ -160,6 +169,7 @@ class Imports extends React.Component {
 Imports.propTypes = {
     removeImport: PropTypes.func.isRequired,
     imports: PropTypes.array.isRequired,
+    getData: PropTypes.func.isRequired,
 };
 
 export default Imports;
