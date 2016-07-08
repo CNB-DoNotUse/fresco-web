@@ -88,7 +88,7 @@ class Admin extends React.Component {
         return diffGalleries;
     }
 
-    getData(last, options, cb) {
+    getData(last, options, callback) {
         const self = this;
         const tab = options.tab || this.state.activeTab;
         const newState = {};
@@ -96,6 +96,7 @@ class Admin extends React.Component {
         let endpoint = '';
         let concat = false;
         let unshift = false;
+        let cb = callback;
 
         // Set up endpoint and params depending on tab
         switch (tab) {
@@ -115,8 +116,8 @@ class Admin extends React.Component {
                 break;
         }
 
-        if (typeof cb === 'undefined') {
-            cb = options;
+        if (typeof cb !== 'function') {
+            cb = typeof(options) === 'function' ? options : () => {};
         } else if (options.concat) {
             concat = true;
         } else if (options.unshift) {
@@ -219,6 +220,13 @@ class Admin extends React.Component {
         this.setState({ imports: remove(imports, { id }) });
     }
 
+    removeSubmission(id) {
+        const { submissions } = this.state;
+
+        if (!submissions) return;
+        this.setState({ submissions: remove(submissions, { id }) });
+    }
+
     refresh() {
         this.getData(undefined, { unshift: true, tab: this.state.activeTab }, () => {});
     }
@@ -270,6 +278,7 @@ class Admin extends React.Component {
                         submissions={this.state.submissions}
                         getData={this.getData}
                         refresh={this.refresh}
+                        removeSubmission={(id) => this.removeSubmission(id)}
                     />
                 );
                 break;

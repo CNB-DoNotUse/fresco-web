@@ -25,13 +25,10 @@ class AdminGalleryListItem extends React.Component {
         }
 
         let location = 'No Location';
-        for (let i in gallery.posts) {
-            if (gallery.posts[i].location) {
-                if (gallery.posts[i].location.address) {
-                    location = gallery.posts[i].location.address;
-                    break;
-                }
-            }
+        if (gallery.address) {
+            location = gallery.address;
+        } else if (gallery.location && gallery.location.coordinates) {
+            location = gallery.location.coordinates.join(', ');
         }
 
         let assignmentLink = <div />;
@@ -48,6 +45,11 @@ class AdminGalleryListItem extends React.Component {
             );
         }
 
+        const imgUrl = gallery.posts && gallery.posts.length
+            ? global.formatImg(gallery.posts[0].image, 'small')
+            : '';
+
+
         return (
             <div
                 className={`list-item ${active ? 'active' : ''}`}
@@ -58,7 +60,7 @@ class AdminGalleryListItem extends React.Component {
                         <img
                             className="img-circle"
                             style={{ width: '40px', height: '40px' }}
-                            src={global.formatImg(gallery.posts[0].image, 'small')}
+                            src={imgUrl}
                             role="presentation"
                         />
                         {/* screen.css got rid of the image style */}
@@ -94,3 +96,4 @@ AdminGalleryListItem.propTypes = {
 };
 
 export default AdminGalleryListItem;
+

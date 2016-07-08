@@ -178,7 +178,7 @@ class AdminGalleryEdit extends React.Component {
         const gallery = this.state.activeGallery;
         const id = gallery.id;
         const tags = !Array.isArray(gallery.tags) ? [] : gallery.tags;
-        const assignmentId = gallery.assignment ? gallery.assignment.id : undefined;
+        const assignmentId = gallery.assignment ? gallery.assignment.id : null;
         const caption = this.refs['gallery-caption'].value;
         // const posts = gallery.posts.map(p => p.id);
 
@@ -200,7 +200,7 @@ class AdminGalleryEdit extends React.Component {
             id,
             caption,
             tags,
-            assignmment_id: assignmentId,
+            assignment_id: assignmentId,
         };
 
         if (this.props.activeGalleryType === 'import') {

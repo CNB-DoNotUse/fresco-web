@@ -4,6 +4,8 @@ import AdminGalleryEdit from './admin-gallery-edit';
 import findIndex from 'lodash/findIndex';
 import omit from 'lodash/omit';
 
+// TODO: Imports and Submissions should maybe still be one cmp
+// (depending on future differences if any)
 class Imports extends React.Component {
     constructor(props) {
         super(props);
@@ -96,14 +98,13 @@ class Imports extends React.Component {
     }
 
     scroll(e) {
-        const { getData } = this.props;
+        const { getData, imports } = this.props;
         const target = e.target;
 
         if (target.scrollTop === target.scrollHeight - target.offsetHeight) {
-            const items = this.props[this.props.activeTab];
-            if (!items) return;
+            if (!imports || !imports.length) return;
 
-            getData(items[items.length - 1].id, {
+            getData(imports[imports.length - 1].id, {
                 concat: true,
                 tab: 'imports',
             },
