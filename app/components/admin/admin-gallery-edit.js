@@ -240,11 +240,13 @@ class AdminGalleryEdit extends React.Component {
     }
 
     render() {
-        if (!this.props.hasActiveGallery || !this.state.activeGallery) {
+        const { hasActiveGallery, activeGalleryType } = this.props;
+        const { activeGallery } = this.state;
+
+        if (!hasActiveGallery || !activeGallery) {
             return <div />;
         }
 
-        const { activeGallery } = this.state;
         let location = '';
         let address = '';
 
@@ -284,7 +286,7 @@ class AdminGalleryEdit extends React.Component {
         }
 
 		// If gallery is a submission,
-        if (this.props.activeGalleryType === 'submission') {
+        if (activeGalleryType === 'submission') {
             // map polygon points to array.
             if (activeGallery.location) {
                 location = activeGallery.location.coordinates[0].map((coord) => (
@@ -306,7 +308,7 @@ class AdminGalleryEdit extends React.Component {
             <div className="dialog">
                 <div
                     className="dialog-body"
-                    style={{ visibility: this.props.hasActiveGallery ? 'visible' : 'hidden' }}
+                    style={{ visibility: hasActiveGallery ? 'visible' : 'hidden' }}
                 >
                     <div className="gallery-images">
                         <Slider
@@ -353,7 +355,7 @@ class AdminGalleryEdit extends React.Component {
                             location={location}
                             defaultLocation={address}
                             onPlaceChange={this.onPlaceChange}
-                            disabled={this.props.activeGalleryType !== 'import'}
+                            disabled={activeGalleryType !== 'import'}
                             hasRadius={false}
                             rerender
                         />
