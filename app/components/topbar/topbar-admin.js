@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
 import global from '../../../lib/global';
+import times from 'lodash/times';
 
 /** //
 Description : Top for admin page
@@ -35,40 +36,82 @@ class TopBarAdmin extends React.Component {
         this.refs.uploadImportFiles.click();
     }
 
-    importFiles() { // Probably shouldn't be happening here, but whatevs.
+    uploadImages(res) {
         const data = new FormData();
+        const posts = res.posts;
         const files = this.refs.uploadImportFiles.files;
-
         for (let i = files.length - 1; i >= 0; i--) {
             data.append(i, files[i]);
         }
 
-        data.append('caption',
-            `Gallery imported from local system on ${moment().format('MMMM Do YYYY, h:mm:ss a')}`
-        );
+        posts.forEach((p) => {
+            $.ajax({
+                type: 'PUT',
+                url: p.urls[0],
+                data: {},
+            });
+        });
+    }
+
+    createGallery() {
+        const files = this.refs.uploadImportFiles.files;
+        const caption = `Gallery imported from local system on
+        ${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
+        const posts = [];
+
+        times(files.length, (i) => {
+            posts.push({ 'contentType': files[i].type });
+        });
+
+        const data = {
+            caption,
+            tags: ['a'],
+            posts,
+        };
 
         $.ajax({
-            url: '/scripts/gallery/import',
+            url: '/api/gallery/import',
             type: 'POST',
-            data,
-            processData: false,
-            contentType: false,
-            cache: false,
+            data: JSON.stringify(data),
+            contentType: 'application/json',
             dataType: 'json',
-            success: (result) => {
-                if (result.err) {
-                    return $.snackbar({ content: 'Failed to import media' });
-                }
-
-                $.snackbar({ content: 'Gallery Imported!' });
-                this.refs.uploadImportFiles.value = '';
-                this.props.setTab('imports');
-                return this.props.resetImports();
-            },
-            error: () => {
-                $.snackbar({ content: 'Failed to import media' });
-            },
+        }).
+        done((res) => {
+            this.uploadImages(res);
+        })
+        .fail((e) => {
+            $.snackbar({ content: 'Failed to import media' });
         });
+    }
+
+    importFiles() { // Probably shouldn't be happening here, but whatevs.
+        const files = this.refs.uploadImportFiles.files;
+
+        this.createGallery()
+
+
+        // $.ajax({
+        //     url: '/scripts/gallery/create',
+        //     type: 'POST',
+        //     data,
+        //     processData: false,
+        //     contentType: false,
+        //     cache: false,
+        //     dataType: 'json',
+        //     success: (result) => {
+        //         if (result.err) {
+        //             return $.snackbar({ content: 'Failed to import media' });
+        //         }
+
+        //         $.snackbar({ content: 'Gallery Imported!' });
+        //         this.refs.uploadImportFiles.value = '';
+        //         this.props.setTab('imports');
+        //         return this.props.resetImports();
+        //     },
+        //     error: () => {
+        //         $.snackbar({ content: 'Failed to import media' });
+        //     },
+        // });
     }
 
     handleTwitterInputKeyDown(e) {
