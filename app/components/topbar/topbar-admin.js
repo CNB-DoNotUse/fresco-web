@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import moment from 'moment';
 import global from '../../../lib/global';
 import times from 'lodash/times';
+import request from 'superagent';
 
 /** //
 Description : Top for admin page
@@ -10,9 +11,6 @@ class TopBarAdmin extends React.Component {
     constructor(props) {
         super(props);
         this.state = { loading: false };
-        this.setTab = this.setTab.bind(this);
-        this.clickImportFileUpload = this.clickImportFileUpload.bind(this);
-        this.handleTwitterInputKeyDown = this.handleTwitterInputKeyDown.bind(this);
     }
 
     componentDidMount() {
@@ -26,50 +24,31 @@ class TopBarAdmin extends React.Component {
         }
     }
 
-    clickImportFileUpload() {
-        this.refs.uploadImportFiles.click();
+    onImportFiles() {
+        this.createGallery();
+    }
+
+    setTab(e) {
+        const tab = e.target.dataset.tab;
+        this.props.setTab(tab);
     }
 
     uploadImages(res) {
-        const data = new FormData();
         const posts = res.posts;
         const files = this.refs.uploadImportFiles.files;
 
-        for (let i = files.length - 1; i >= 0; i--) {
-            data.append(i, files[i]);
-        }
-
         posts.forEach((p, i) => {
             const reader = new FileReader();
-            reader.readAsArrayBuffer(files[i]);
+            reader.readAsBinaryString(files[i]);
             reader.onload = () => {
-                $.ajax({
-                    type: 'PUT',
-                    url: p.urls[0],
-                    data: reader.result,
-                })
-                .done((res, status, xhr) => {
-                    this.createPost({
-                        key: p.key,
-                        uploadId: p.uploadId,
-                        eTags: [xhr.getResponseHeader('ETag')],
+                request
+                    .put(p.upload_url)
+                    .send(reader.result)
+                    .type(files[i].type)
+                    .end((err) => {
+                        if (!err) $.snackbar('Gallery imported!')
                     });
-                });
             };
-        });
-    }
-
-    createPost(d) {
-        // data = {key, uploadId, eTags[]}
-        $.ajax({
-            type: 'POST',
-            url: 'api/post/complete',
-            data: JSON.stringify(d),
-            contentType: 'application/json',
-            dataType: 'json',
-        })
-        .done((res, status, xhr) => {
-            $.snackbar({ content: 'Successfully imported media' });
         });
     }
 
@@ -102,10 +81,6 @@ class TopBarAdmin extends React.Component {
         .fail(() => {
             $.snackbar({ content: 'Failed to import media' });
         });
-    }
-
-    onImportFiles() {
-        this.createGallery();
     }
 
     handleTwitterInputKeyDown(e) {
@@ -142,9 +117,8 @@ class TopBarAdmin extends React.Component {
         });
     }
 
-    setTab(e) {
-        const tab = e.target.dataset.tab;
-        this.props.setTab(tab);
+    clickImportFileUpload() {
+        this.refs.uploadImportFiles.click();
     }
 
     render() {
@@ -168,7 +142,7 @@ class TopBarAdmin extends React.Component {
                 <button
                     type="button"
                     className="icon-button hidden-xs upload-import"
-                    onClick={this.clickImportFileUpload}
+                    onClick={() => this.clickImportFileUpload()}
                 >
                     <span className="mdi mdi-upload icon"></span>
                 </button>
@@ -179,7 +153,7 @@ class TopBarAdmin extends React.Component {
                         className="form-control twitter-import"
                         placeholder="Link"
                         ref="twitter-import-input"
-                        onKeyDown={this.handleTwitterInputKeyDown}
+                        onKeyDown={() => this.handleTwitterInputKeyDown()}
                     />
                 </div>
 
@@ -187,7 +161,7 @@ class TopBarAdmin extends React.Component {
                     <button
                         className="btn btn-flat tab-admin"
                         data-tab="assignments"
-                        onClick={this.setTab}
+                        onClick={() => this.setTab()}
                     >
 						Assignments
                     </button>
@@ -195,7 +169,7 @@ class TopBarAdmin extends React.Component {
                     <button
                         className="btn btn-flat tab-admin"
                         data-tab="submissions"
-                        onClick={this.setTab}
+                        onClick={() => this.setTab()}
                     >
                         Submissions
                     </button>
@@ -203,7 +177,7 @@ class TopBarAdmin extends React.Component {
                     <button
                         className="btn btn-flat tab-admin"
                         data-tab="imports"
-                        onClick={this.setTab}
+                        onClick={() => this.setTab()}
                     >
                         Imports
                     </button>
