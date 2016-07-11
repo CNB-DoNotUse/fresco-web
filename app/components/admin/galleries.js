@@ -1,50 +1,48 @@
 import React, { PropTypes } from 'react';
-import GalleryListItem from './admin-gallery-list-item';
-import AdminGalleryEdit from './admin-gallery-edit';
+import GalleryListItem from './gallery-list-item';
+import AdminGalleryEdit from './gallery-edit';
 import findIndex from 'lodash/findIndex';
 import omit from 'lodash/omit';
 
-class Submissions extends React.Component {
+// TODO: Galleries and Submissions should maybe still be one cmp
+// (depending on future differences if any)
+class Galleries extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            hasActiveSubmission: false,
-            activeSubmission: {},
+            hasActiveGallery: false,
+            activeGallery: {},
         };
-
-        this.skip = this.skip.bind(this);
-        this.verify = this.verify.bind(this);
-        this.remove = this.remove.bind(this);
-        this.scroll = this.scroll.bind(this);
     }
 
-    onUpdateSubmission(id) {
-        const { removeSubmission, submissions } = this.props;
-        const index = findIndex(submissions, { id });
+    onUpdateGallery(id) {
+        const { removeGallery, galleries} = this.props;
+        const index = findIndex(galleries, { id });
+        const newIndex = galleries.length === (index + 1)
+            ? index - 1
+            : index + 1;
 
-        if (submissions[index + 1]) {
-            this.setState({ activeSubmission: submissions[index + 1] },
-                () => removeSubmission(id));
+        if (galleries[newIndex]) {
+            this.setState({ activeGallery: galleries[newIndex] },
+                () => removeGallery(id));
         } else {
-            this.setState({ activeSubmission: null }, () => removeSubmission(id));
+            this.setState({ activeGallery: null }, () => removeGallery(id));
         }
     }
 
-
-    setActiveSubmission(activeSubmission) {
-        this.setState({ activeSubmission });
+    setActiveGallery(activeGallery) {
+        this.setState({ activeGallery });
     }
 
     remove(id) {
         $.ajax({
-            url: `/api/gallery/${id}/remove`,
+            url: `/api/gallery/${id}/delete`,
             method: 'post',
             contentType: 'application/json',
-            data: JSON.stringify({ id: this.state.activeGallery.id }),
             dataType: 'json',
             success: () => {
-                this.onUpdateSubmission(id);
+                this.onUpdateGallery(id);
             },
             // error: (xhr, status, error) => {
             //     cb(error);
@@ -58,19 +56,18 @@ class Submissions extends React.Component {
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
-                id: this.state.activeGallery.id,
-                rated: 1,
-                visibility: 0,
+                rating: 1,
             }),
             dataType: 'json',
             success: () => {
-                this.onUpdateSubmission(id);
+                this.onUpdateGallery(id);
             },
             // error: (xhr, status, error) => {
             //     cb(error);
             // },
         });
     }
+
 
     verify(params, cb) {
         const { id } = params;
@@ -85,7 +82,7 @@ class Submissions extends React.Component {
             data: JSON.stringify(data),
             dataType: 'json',
             success: () => {
-                this.onUpdateSubmission();
+                this.onUpdateGallery(id);
                 cb(null, id);
             },
             error: (xhr, status, error) => {
@@ -95,23 +92,23 @@ class Submissions extends React.Component {
     }
 
     scroll(e) {
-        const { getData, submissions } = this.props;
+        const { getData, galleries } = this.props;
         const target = e.target;
 
         if (target.scrollTop === target.scrollHeight - target.offsetHeight) {
-            if (!submissions || !submissions.length) return;
+            if (!galleries || !galleries.length) return;
 
-            getData(submissions[submissions.length - 1].id, {
+            getData(galleries[galleries.length - 1].id, {
                 concat: true,
-                tab: 'submissions',
+                tab: 'galleries',
             },
             null);
         }
     }
 
-    renderSubmissions() {
-        const { submissions } = this.props;
-        const { activeSubmission } = this.state;
+    renderGalleries() {
+        const { galleries } = this.props;
+        const { activeGallery } = this.state;
 
         function sortListItem(a, b) {
             if (a.created_at > b.created_at) {
@@ -123,38 +120,38 @@ class Submissions extends React.Component {
             return 0;
         }
 
-        return submissions.sort(sortListItem).map((gallery, i) => (
+        return galleries.sort(sortListItem).map((gallery, i) => (
             <GalleryListItem
-                type="submission"
+                type="gallery"
                 gallery={gallery}
                 key={i}
-                active={activeSubmission && activeSubmission.id === gallery.id}
-                setActiveGallery={() => this.setActiveSubmission(gallery)}
+                active={(activeGallery && activeGallery.id === gallery.id) || false}
+                setActiveGallery={() => this.setActiveGallery(gallery)}
             />
         ));
     }
 
     render() {
-        const { activeSubmission } = this.state;
+        const { activeGallery } = this.state;
         let editPane = '';
 
-        if (activeSubmission && activeSubmission.id) {
+        if (activeGallery && activeGallery.id) {
             editPane = (
                 <AdminGalleryEdit
                     hasActiveGallery
-                    activeGalleryType={'submissions'}
-                    gallery={activeSubmission}
-                    skip={this.skip}
-                    verify={this.verify}
-                    remove={this.remove}
+                    activeGalleryType={'galleries'}
+                    gallery={activeGallery}
+                    skip={(id, cb) => this.skip(id, cb)}
+                    verify={(params, cb) => this.verify(params, cb)}
+                    remove={(id, cb) => this.remove(id, cb)}
                 />
             );
         }
 
         return (
             <div className="container-fluid admin">
-                <div className="col-md-6 col-lg-7 list" onScroll={this.scroll}>
-                    {this.renderSubmissions()}
+                <div className="col-md-6 col-lg-7 list" onScroll={(e) => this.scroll(e)}>
+                    {this.renderGalleries()}
                 </div>
                 <div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">
                     {editPane}
@@ -164,10 +161,11 @@ class Submissions extends React.Component {
     }
 }
 
-Submissions.propTypes = {
-    removeSubmission: PropTypes.func.isRequired,
-    submissions: PropTypes.array.isRequired,
+Galleries.propTypes = {
+    removeGallery: PropTypes.func.isRequired,
+    galleries: PropTypes.array.isRequired,
     getData: PropTypes.func.isRequired,
 };
 
-export default Submissions;
+export default Galleries;
+

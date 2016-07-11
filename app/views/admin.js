@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './app';
 import TopBar from './../components/topbar/topbar-admin';
 import Assignments from './../components/admin/assignments';
-import Imports from './../components/admin/imports';
-import Submissions from './../components/admin/submissions';
+import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
 import remove from 'lodash/remove';
 
@@ -271,21 +270,21 @@ class Admin extends React.Component {
                 break;
             case 'submissions':
                 tab = (
-                    <Submissions
-                        submissions={this.state.submissions}
+                    <Galleries
+                        galleries={this.state.submissions}
                         getData={this.getData}
                         refresh={this.refresh}
-                        removeSubmission={(id) => this.removeSubmission(id)}
+                        removeGallery={(id) => this.removeSubmission(id)}
                     />
                 );
                 break;
             case 'imports':
                 tab = (
-                    <Imports
-                        imports={this.state.imports}
+                    <Galleries
+                        galleries={this.state.imports}
                         getData={this.getData}
                         refresh={this.refresh}
-                        removeImport={(id) => this.removeImport(id)}
+                        removeGallery={(id) => this.removeImport(id)}
                     />
                 );
                 break;

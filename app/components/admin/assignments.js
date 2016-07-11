@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import AssignmentListItem from './admin-assignment-list-item';
-import AdminAssignmentEdit from './admin-assignment-edit';
+import AssignmentListItem from './assignment-list-item';
+import AdminAssignmentEdit from './assignment-edit';
 import uniqBy from 'lodash/uniqBy';
 import findIndex from 'lodash/findIndex';
 
