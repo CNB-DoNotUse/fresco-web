@@ -206,8 +206,8 @@ class Admin extends React.Component {
         const { assignments } = this.state;
         if (!id || !assignments) return;
 
-        if (assignments.global) assignments.global = remove(assignments.global, { id });
-        if (assignments.nearby) assignments.nearby = remove(assignments.nearby, { id });
+        if (assignments.global) remove(assignments.global, { id });
+        if (assignments.nearby) remove(assignments.nearby, { id });
 
         this.setState({ assignments });
     }
@@ -215,15 +215,17 @@ class Admin extends React.Component {
     removeImport(id) {
         const { imports } = this.state;
         if (!id || !imports) return;
+        remove(imports, { id })
 
-        this.setState({ imports: remove(imports, { id }) });
+        this.setState({ imports });
     }
 
     removeSubmission(id) {
         const { submissions } = this.state;
         if (!id || !submissions) return;
+        remove(submissions, { id })
 
-        this.setState({ submissions: remove(submissions, { id }) });
+        this.setState({ submissions });
     }
 
     refresh() {
