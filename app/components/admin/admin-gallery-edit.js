@@ -4,7 +4,6 @@ import AutocompleteMap from '../global/autocomplete-map';
 import EditTags from './../editing/gallery-edit-tags';
 import EditStories from './../editing/gallery-edit-stories';
 import GalleryEditAssignment from './../editing/gallery-edit-assignment';
-import AdminGalleryEditFoot from './admin-gallery-edit-foot';
 import FrescoImage from '../global/fresco-image';
 import clone from 'lodash/clone';
 
@@ -344,13 +343,40 @@ class AdminGalleryEdit extends React.Component {
                         />
                     </div>
                 </div>
-                <AdminGalleryEditFoot
-                    revert={this.revert}
-                    verify={this.verify}
-                    skip={this.skip}
-                    remove={this.remove}
-                    enabled={!this.state.waiting}
-                />
+                <div className="dialog-foot">
+                    <button
+                        type="button"
+                        className="btn btn-flat gallery-revert"
+                        onClick={this.revert}
+                        disabled={this.state.waiting}
+                    >
+                        Revert changes
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-flat pull-right gallery-verify"
+                        onClick={this.verify}
+                        disabled={this.state.waiting}
+                    >
+                        Verify
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-flat pull-right gallery-skip"
+                        onClick={this.skip}
+                        disabled={this.state.waiting}
+                    >
+                        Skip
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-flat pull-right gallery-delete"
+                        onClick={this.remove}
+                        disabled={this.state.waiting}
+                    >
+                        Delete
+                    </button>
+                </div>
             </div>
 		);
     }

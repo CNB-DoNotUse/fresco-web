@@ -36,26 +36,25 @@ class Submissions extends React.Component {
         this.setState({ activeSubmission });
     }
 
-    remove(cb) {
+    remove(id) {
         $.ajax({
-            url: '/api/gallery/remove',
+            url: `/api/gallery/${id}/remove`,
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({ id: this.state.activeGallery.id }),
             dataType: 'json',
             success: () => {
-                this.onUpdateSubmission();
-                cb();
+                this.onUpdateSubmission(id);
             },
-            error: (xhr, status, error) => {
-                cb(error);
-            },
+            // error: (xhr, status, error) => {
+            //     cb(error);
+            // },
         });
     }
 
-    skip(cb) {
+    skip(id) {
         $.ajax({
-            url: '/api/gallery/update',
+            url: `/api/gallery/${id}/update`,
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -65,12 +64,11 @@ class Submissions extends React.Component {
             }),
             dataType: 'json',
             success: () => {
-                this.onUpdateSubmission();
-                cb();
+                this.onUpdateSubmission(id);
             },
-            error: (xhr, status, error) => {
-                cb(error);
-            },
+            // error: (xhr, status, error) => {
+            //     cb(error);
+            // },
         });
     }
 
