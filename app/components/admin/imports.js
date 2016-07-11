@@ -14,20 +14,17 @@ class Imports extends React.Component {
             hasActiveImport: false,
             activeImport: {},
         };
-
-        this.setActiveImport = this.setActiveImport.bind(this);
-        this.skip = this.skip.bind(this);
-        this.verify = this.verify.bind(this);
-        this.remove = this.remove.bind(this);
-        this.scroll = this.scroll.bind(this);
     }
 
     onUpdateImport(id) {
         const { removeImport, imports } = this.props;
         const index = findIndex(imports, { id });
+        const newIndex = imports.length === (index + 1)
+            ? index - 1
+            : index + 1;
 
-        if (imports[index + 1]) {
-            this.setState({ activeImport: imports[index + 1] },
+        if (imports[newIndex]) {
+            this.setState({ activeImport: imports[newIndex] },
                 () => removeImport(id));
         } else {
             this.setState({ activeImport: null }, () => removeImport(id));
@@ -43,7 +40,6 @@ class Imports extends React.Component {
             url: `/api/gallery/${id}/delete`,
             method: 'post',
             contentType: 'application/json',
-            data: JSON.stringify({ id: this.state.activeImport.id }),
             dataType: 'json',
             success: () => {
                 this.onUpdateImport(id);
@@ -60,9 +56,7 @@ class Imports extends React.Component {
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
-                id: this.state.activeImport.id,
-                rated: 1,
-                visibility: 0,
+                rating: 1,
             }),
             dataType: 'json',
             success: () => {
@@ -147,16 +141,16 @@ class Imports extends React.Component {
                     hasActiveGallery
                     activeGalleryType={'imports'}
                     gallery={activeImport}
-                    skip={this.skip}
-                    verify={this.verify}
-                    remove={this.remove}
+                    skip={(id, cb) => this.skip(id, cb)}
+                    verify={(params, cb) => this.verify(params, cb)}
+                    remove={(id, cb) => this.remove(id, cb)}
                 />
             );
         }
 
         return (
             <div className="container-fluid admin">
-                <div className="col-md-6 col-lg-7 list" onScroll={this.scroll}>
+                <div className="col-md-6 col-lg-7 list" onScroll={(e) => this.scroll(e)}>
                     {this.renderImports()}
                 </div>
                 <div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">

@@ -41,7 +41,7 @@ class Admin extends React.Component {
     componentDidMount() {
         this.refreshInterval = setInterval(() => {
             if (this.props.activeTab !== '') this.refresh();
-        }, 5000);
+        }, 10000);
         this.loadInitial();
     }
 
@@ -110,7 +110,7 @@ class Admin extends React.Component {
                 break;
             case 'imports':
                 endpoint = '/api/gallery/list';
-                params = { imported: true, last, limit: 16 };
+                params = { imported: true, unrated: true, last, limit: 16 };
                 break;
             default:
                 break;
@@ -201,7 +201,6 @@ class Admin extends React.Component {
             });
         });
     }
-
 
     removeAssignment(id) {
         const { assignments } = this.state;

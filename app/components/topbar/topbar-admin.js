@@ -38,17 +38,13 @@ class TopBarAdmin extends React.Component {
         const files = this.refs.uploadImportFiles.files;
 
         posts.forEach((p, i) => {
-            const reader = new FileReader();
-            reader.readAsBinaryString(files[i]);
-            reader.onload = () => {
-                request
-                    .put(p.upload_url)
-                    .send(reader.result)
-                    .type(files[i].type)
-                    .end((err) => {
-                        if (!err) $.snackbar('Gallery imported!')
-                    });
-            };
+            request
+                .put(p.upload_url)
+                .set('Content-Type', files[i].type)
+                .send(files[i])
+                .end((err) => {
+                    if (!err) $.snackbar('Gallery imported!');
+                });
         });
     }
 
@@ -84,16 +80,14 @@ class TopBarAdmin extends React.Component {
     }
 
     handleTwitterInputKeyDown(e) {
-        if (e.keyCode !== 13 || this.state.loading) return;
-
+        const tweet = this.refs['twitter-import-input'].value;
+        if (e.keyCode !== 13 || this.state.loading || !tweet.length) return;
         this.setState({ loading: true });
-        const data = new FormData();
-        data.append('tweet', this.refs['twitter-import-input'].value);
 
         $.ajax({
-            url: '/scripts/gallery/import',
+            url: '/scripts/gallery/twitter',
             type: 'POST',
-            data,
+            data: { tweet },
             processData: false,
             contentType: false,
             cache: false,
@@ -153,7 +147,7 @@ class TopBarAdmin extends React.Component {
                         className="form-control twitter-import"
                         placeholder="Link"
                         ref="twitter-import-input"
-                        onKeyDown={() => this.handleTwitterInputKeyDown()}
+                        onKeyDown={(e) => this.handleTwitterInputKeyDown(e)}
                     />
                 </div>
 

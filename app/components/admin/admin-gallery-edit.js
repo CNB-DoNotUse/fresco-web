@@ -59,7 +59,6 @@ class AdminGalleryEdit extends React.Component {
      */
     updateRelatedStories(stories) {
         const gallery = this.state.activeGallery;
-
         gallery.related_stories = stories;
 
         this.setState({ activeGallery: gallery });
@@ -139,8 +138,9 @@ class AdminGalleryEdit extends React.Component {
     remove() {
         if (this.state.waiting) return;
         this.setState({ waiting: true });
+        const { activeGallery } = this.state;
 
-        this.props.remove((err) => {
+        this.props.remove(activeGallery.id, (err) => {
             this.setState({ waiting: false });
             if (err) return $.snackbar({ content: 'Unable to delete gallery' });
             return $.snackbar({ content: 'Gallery deleted' });
@@ -153,8 +153,9 @@ class AdminGalleryEdit extends React.Component {
     skip() {
         if (this.state.waiting) return;
         this.setState({ waiting: true });
+        const { activeGallery } = this.state;
 
-        this.props.skip((err, id) => {
+        this.props.skip(activeGallery.id, (err, id) => {
             this.setState({ waiting: false });
             if (err) return $.snackbar({ content: 'Unable to skip gallery' });
 
