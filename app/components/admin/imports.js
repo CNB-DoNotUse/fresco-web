@@ -46,7 +46,7 @@ class Imports extends React.Component {
             data: JSON.stringify({ id: this.state.activeImport.id }),
             dataType: 'json',
             success: () => {
-                this.onUpdateImport();
+                this.onUpdateImport(id);
             },
             // error: (xhr, status, error) => {
             //     cb(error);
@@ -66,7 +66,7 @@ class Imports extends React.Component {
             }),
             dataType: 'json',
             success: () => {
-                this.onUpdateImport();
+                this.onUpdateImport(id);
             },
             // error: (xhr, status, error) => {
             //     cb(error);
@@ -88,7 +88,7 @@ class Imports extends React.Component {
             data: JSON.stringify(data),
             dataType: 'json',
             success: () => {
-                this.onUpdateImport();
+                this.onUpdateImport(id);
                 cb(null, id);
             },
             error: (xhr, status, error) => {
@@ -131,7 +131,7 @@ class Imports extends React.Component {
                 type="import"
                 gallery={gallery}
                 key={i}
-                active={activeImport && activeImport.id === gallery.id}
+                active={(activeImport && activeImport.id === gallery.id) || false}
                 setActiveGallery={() => this.setActiveImport(gallery)}
             />
         ));
