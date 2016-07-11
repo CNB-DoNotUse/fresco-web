@@ -25,12 +25,8 @@ class Admin extends React.Component {
         this.currentXHR = null;
         this.clearXHR = this.clearXHR.bind(this);
 
-        this.setTab = this.setTab.bind(this);
-
         this.getChangedData = this.getChangedData.bind(this);
-
         this.getData = this.getData.bind(this);
-
         this.resetAssignments = this.resetAssignments.bind(this);
         this.resetSubmissions = this.resetSubmissions.bind(this);
         this.resetImports = this.resetImports.bind(this);
@@ -308,7 +304,7 @@ class Admin extends React.Component {
                 <TopBar
                     activeTab={this.state.activeTab}
                     resetImports={this.resetImports}
-                    setTab={this.setTab}
+                    setTab={(tab) => this.setTab(tab)}
                 />
 
                 {activeTab}

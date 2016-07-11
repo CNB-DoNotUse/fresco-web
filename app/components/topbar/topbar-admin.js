@@ -28,11 +28,6 @@ class TopBarAdmin extends React.Component {
         this.createGallery();
     }
 
-    setTab(e) {
-        const tab = e.target.dataset.tab;
-        this.props.setTab(tab);
-    }
-
     uploadImages(res) {
         const posts = res.posts;
         const files = this.refs.uploadImportFiles.files;
@@ -155,7 +150,7 @@ class TopBarAdmin extends React.Component {
                     <button
                         className="btn btn-flat tab-admin"
                         data-tab="assignments"
-                        onClick={() => this.setTab()}
+                        onClick={() => this.props.setTab('assignments')}
                     >
 						Assignments
                     </button>
@@ -163,7 +158,7 @@ class TopBarAdmin extends React.Component {
                     <button
                         className="btn btn-flat tab-admin"
                         data-tab="submissions"
-                        onClick={() => this.setTab()}
+                        onClick={() => this.props.setTab('submissions')}
                     >
                         Submissions
                     </button>
@@ -171,7 +166,7 @@ class TopBarAdmin extends React.Component {
                     <button
                         className="btn btn-flat tab-admin"
                         data-tab="imports"
-                        onClick={() => this.setTab()}
+                        onClick={() => this.props.setTab('imports')}
                     >
                         Imports
                     </button>
