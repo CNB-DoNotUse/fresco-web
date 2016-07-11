@@ -190,12 +190,6 @@ class AdminGalleryEdit extends React.Component {
         //     (story.new ? `NEW=${JSON.stringify({ title: story.title })}` : story.id)
         // ));
 
-        // necessary? - v2 api doesnt support null values
-        // let params = {};
-        // [{ id }, { caption }, { tags }, { assignmentId }].forEach((p) => {
-        //     if (p) params = Object.assign({}, params, { p });
-        // });
-
         const params = {
             id,
             caption,

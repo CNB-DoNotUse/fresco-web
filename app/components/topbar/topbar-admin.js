@@ -40,16 +40,22 @@ class TopBarAdmin extends React.Component {
         const data = new FormData();
         const posts = res.posts;
         const files = this.refs.uploadImportFiles.files;
+
         for (let i = files.length - 1; i >= 0; i--) {
             data.append(i, files[i]);
         }
 
-        posts.forEach((p) => {
-            $.ajax({
-                type: 'PUT',
-                url: p.urls[0],
-                data: {},
-            });
+        posts.forEach((p, i) => {
+            const reader = new FileReader();
+            reader.readAsArrayBuffer(files[i]);
+            reader.onload = () => {
+                $.ajax({
+                    type: 'PUT',
+                    url: p.urls[0],
+                    data: reader.result,
+                    xhrFields: { withCredentials: true },
+                });
+            };
         });
     }
 
@@ -60,7 +66,7 @@ class TopBarAdmin extends React.Component {
         const posts = [];
 
         times(files.length, (i) => {
-            posts.push({ 'contentType': files[i].type });
+            posts.push({ contentType: files[i].type });
         });
 
         const data = {
@@ -85,33 +91,7 @@ class TopBarAdmin extends React.Component {
     }
 
     importFiles() { // Probably shouldn't be happening here, but whatevs.
-        const files = this.refs.uploadImportFiles.files;
-
         this.createGallery()
-
-
-        // $.ajax({
-        //     url: '/scripts/gallery/create',
-        //     type: 'POST',
-        //     data,
-        //     processData: false,
-        //     contentType: false,
-        //     cache: false,
-        //     dataType: 'json',
-        //     success: (result) => {
-        //         if (result.err) {
-        //             return $.snackbar({ content: 'Failed to import media' });
-        //         }
-
-        //         $.snackbar({ content: 'Gallery Imported!' });
-        //         this.refs.uploadImportFiles.value = '';
-        //         this.props.setTab('imports');
-        //         return this.props.resetImports();
-        //     },
-        //     error: () => {
-        //         $.snackbar({ content: 'Failed to import media' });
-        //     },
-        // });
     }
 
     handleTwitterInputKeyDown(e) {
