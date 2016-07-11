@@ -9,10 +9,9 @@ Description : Top for admin page
 class TopBarAdmin extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { importRunning: false };
+        this.state = { loading: false };
         this.setTab = this.setTab.bind(this);
         this.clickImportFileUpload = this.clickImportFileUpload.bind(this);
-        this.importFiles = this.importFiles.bind(this);
         this.handleTwitterInputKeyDown = this.handleTwitterInputKeyDown.bind(this);
     }
 
@@ -25,11 +24,6 @@ class TopBarAdmin extends React.Component {
             $('.tab, .tab-admin').removeClass('toggled');
             $('[data-tab="' + nextProps.activeTab + '"]').addClass('toggled');
         }
-    }
-
-    setTab(e) {
-        const tab = e.target.dataset.tab;
-        this.props.setTab(tab);
     }
 
     clickImportFileUpload() {
@@ -53,9 +47,29 @@ class TopBarAdmin extends React.Component {
                     type: 'PUT',
                     url: p.urls[0],
                     data: reader.result,
-                    xhrFields: { withCredentials: true },
+                })
+                .done((res, status, xhr) => {
+                    this.createPost({
+                        key: p.key,
+                        uploadId: p.uploadId,
+                        eTags: [xhr.getResponseHeader('ETag')],
+                    });
                 });
             };
+        });
+    }
+
+    createPost(d) {
+        // data = {key, uploadId, eTags[]}
+        $.ajax({
+            type: 'POST',
+            url: 'api/post/complete',
+            data: JSON.stringify(d),
+            contentType: 'application/json',
+            dataType: 'json',
+        })
+        .done((res, status, xhr) => {
+            $.snackbar({ content: 'Successfully imported media' });
         });
     }
 
@@ -81,23 +95,23 @@ class TopBarAdmin extends React.Component {
             data: JSON.stringify(data),
             contentType: 'application/json',
             dataType: 'json',
-        }).
-        done((res) => {
+        })
+        .done((res) => {
             this.uploadImages(res);
         })
-        .fail((e) => {
+        .fail(() => {
             $.snackbar({ content: 'Failed to import media' });
         });
     }
 
-    importFiles() { // Probably shouldn't be happening here, but whatevs.
-        this.createGallery()
+    onImportFiles() {
+        this.createGallery();
     }
 
     handleTwitterInputKeyDown(e) {
-        if (e.keyCode !== 13 || this.importRunning) return;
+        if (e.keyCode !== 13 || this.state.loading) return;
 
-        this.importRunning = true;
+        this.setState({ loading: true });
         const data = new FormData();
         data.append('tweet', this.refs['twitter-import-input'].value);
 
@@ -123,9 +137,14 @@ class TopBarAdmin extends React.Component {
                 $.snackbar({ content: 'Failed to import media' });
             },
             complete: () => {
-                this.importRunning = false;
+                this.setState({ loading: false });
             },
         });
+    }
+
+    setTab(e) {
+        const tab = e.target.dataset.tab;
+        this.props.setTab(tab);
     }
 
     render() {
@@ -137,7 +156,7 @@ class TopBarAdmin extends React.Component {
                     style={{ position: 'absolute', top: '-100px' }}
                     accept="image/*,video/*,video/mp4"
                     multiple
-                    onChange={this.importFiles}
+                    onChange={() => this.onImportFiles()}
                 />
 
                 <div className="dim transparent toggle-drop toggler"></div>

@@ -9,10 +9,8 @@ import FrescoImage from '../global/fresco-image';
 import clone from 'lodash/clone';
 
 /**
-
 	Admin Submission Edit component.
 	Delete, Skip, Verify imported
-
 **/
 class AdminGalleryEdit extends React.Component {
     constructor(props) {
@@ -78,7 +76,6 @@ class AdminGalleryEdit extends React.Component {
         this.setState({ activeGallery: gallery });
     }
 
-
 	/**
 	 * Updates specific field of gallery
 	 */
@@ -88,7 +85,6 @@ class AdminGalleryEdit extends React.Component {
 
         this.setState({ activeGallery: gallery });
     }
-
 
 	/**
 	 * Called when caption input fires keyUp event
@@ -312,13 +308,6 @@ class AdminGalleryEdit extends React.Component {
                             {galleryImages || <div />}
                         </Slider>
                     </div>
-
-                    <textarea
-                        type="text"
-                        className="form-control floating-label"
-                        placeholder="Byline (generated in v2 api - coming soon)"
-                        defaultValue={'Byline placeholder'}
-                    />
 
                     <textarea
                         type="text"
