@@ -3,6 +3,7 @@ import AssignmentListItem from './assignment-list-item';
 import AdminAssignmentEdit from './assignment-edit';
 import uniqBy from 'lodash/uniqBy';
 import findIndex from 'lodash/findIndex';
+import omit from 'lodash/omit';
 
 class Assignments extends React.Component {
     constructor(props) {
@@ -14,6 +15,7 @@ class Assignments extends React.Component {
 
         this.state = {
             activeAssignment: firstAssignment,
+            loading: false,
         };
 
         this.scroll = this.scroll.bind(this);
@@ -47,6 +49,69 @@ class Assignments extends React.Component {
         });
 
         return allAssignments;
+    }
+
+    approve(params) {
+        const { id } = params;
+        if (!id) return;
+        this.setState({ loading: true });
+
+        let data = Object.assign({}, params);
+        data = omit(data, 'id');
+        $.ajax({
+            type: 'POST',
+            url: `/api/assignment/${id}/approve`,
+            data,
+        })
+        .done(() => {
+            this.onUpdateAssignment(id);
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Assignment Approved!' });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not approve assignment!' });
+        });
+    }
+
+    reject(id) {
+        if (!id) return;
+        this.setState({ loading: true });
+
+        $.ajax({
+            type: 'POST',
+            url: `/api/assignment/${id}/reject`,
+        })
+        .done(() => {
+            $.snackbar({ content: 'Assignment Rejected!' });
+            this.onUpdateAssignment(id);
+            this.setState({ loading: false });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not reject assignment!' });
+        });
+    }
+
+    /**
+     * Merges assignment into existing assignment
+     * @param  {Object} data
+     * @param  {String} data.title
+     * @param  {String} data.caption
+     * @param  {String} data.assignmentToMergeInto
+     * @param  {String} data.assignmentToDelete
+     */
+    merge(data, cb) {
+        $.ajax({
+            url: '/api/assignment/merge',
+            data,
+        })
+        .done(() => {
+            this.onUpdateAssignment(data.assignmentToDelete);
+            $.snackbar({ content: 'Assignment successfully merged!' });
+            cb();
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not merge assignment!' });
+        });
     }
 
     scroll(e) {
@@ -94,14 +159,17 @@ class Assignments extends React.Component {
     }
 
     render() {
-        const { activeAssignment } = this.state;
+        const { activeAssignment, loading } = this.state;
 
         let editPane = '';
         if (activeAssignment && activeAssignment.id) {
             editPane = (
                 <AdminAssignmentEdit
                     assignment={activeAssignment}
-                    onApproveAssignment={(v) => this.onApproveAssignment(v)}
+                    loading={loading}
+                    approve={(params) => this.approve(params)}
+                    reject={(id) => this.reject(id)}
+                    merge={(params, cb) => this.merge(params, cb)}
                 />
             );
         }

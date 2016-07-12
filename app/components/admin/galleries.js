@@ -15,7 +15,7 @@ class Galleries extends React.Component {
     }
 
     onUpdateGallery(id) {
-        const { removeGallery, galleries} = this.props;
+        const { removeGallery, galleries } = this.props;
         const index = findIndex(galleries, { id });
         const newIndex = galleries.length === (index + 1)
             ? index - 1
