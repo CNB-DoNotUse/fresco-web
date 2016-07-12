@@ -1,6 +1,6 @@
 var config        = require('./lib/config'),
     head          = require('./lib/head'),
-    global        = require('./lib/global'),
+    utils         = require('./lib/utils'),
     routes        = require('./lib/routes'),
     API           = require('./lib/api'),
     User          = require('./lib/user'),
@@ -18,6 +18,9 @@ var config        = require('./lib/config'),
     fs            = require('fs'),
     app           = express();
 
+
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+
 // If in dev mode, use local redis server as session store
 var rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
 var redisConnection = { client: rClient };
@@ -25,6 +28,9 @@ var redisConnection = { client: rClient };
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+// uncomment after placing your favicon in /public
+app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // app.use(morgan('dev'));
 
@@ -43,7 +49,7 @@ var storage = multer.diskStorage({
     }
 });
 
-app.use(
+app.use( 
     multer({ storage: storage }).any()
 );
 
@@ -85,7 +91,7 @@ app.use((req, res, next)=> {
               <br>Please click on the link sent to your inbox to verify your email!\
             </p>\
             <div>\
-                <a href=\\"/scripts/user/verify/resend\\">RESEND EMAIL</a>\
+                <a href="/scripts/user/verify/resend">RESEND EMAIL</a>\
             </div>'
         );
     }
@@ -108,7 +114,8 @@ app.use((req, res, next)=> {
  * Set up local head and global for all templates
  */
 app.locals.head = head;
-app.locals.global = global;
+app.locals.utils = utils;
+app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
 app.locals.alerts = [];
 
 /**
@@ -118,63 +125,59 @@ app.use((req, res, next) => {
     var path = req.path.slice(1).split('/')[0],
         now = Date.now();
 
-    // Check if not a platform route, then send onwwards
+    //Check if not a platform route, then send onwwards
     if(routes.platform.indexOf(path) == -1) {
         return next();
     }
 
-    // Check if there is no sessioned user
+    //Check if there is no sessioned user
     if (!req.session.user) {
         return res.redirect('/account?next=' + req.url);
     }
 
-    // Check if the session hasn't expired
-    if (!req.session.user.TTL || req.session.user.TTL - now > 0) {
+    //Check if the session hasn't expired
+    if (!req.session.user.TTL || req.session.user.TTL - now > 0){
         return next();
     }
 
     User.refresh(req, res, next);
 });
 
-// Check if user rank exists (calc'd from permissions arr)
-app.use((req, res, next) => {
-    if (req.session.user && !req.session.user.rank) {
-        return User.updateRank(req, next);
-    }
-
-    return next();
-});
-
 /**
  * Route config for public facing pages
  */
 app.use((req, res, next) => {
-    if(!req.fresco)
-        req.fresco = {};
 
-    res.locals.section = 'public';
+  if(!req.fresco)
+    req.fresco = {};
 
-    next();
+  res.locals.section = 'public';
+  next();
+
 });
 
 /**
  * Loop through all public routes
  */
 for (var i = 0; i < routes.public.length; i++) {
-    var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i],
-        route = require('./routes/' + routes.public[i]);
 
-    app.use('/' + routePrefix , route);
+  var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i] ,
+      route = require('./routes/' + routes.public[i]);
+
+  app.use('/' + routePrefix , route);
+
 }
 
 /**
  * Loop through all script routes
  */
 for (var i = 0; i < routes.scripts.length; i++) {
-    var routePrefix = routes.scripts[i],
-        route = require('./routes/scripts/' + routePrefix);
 
-    app.use('/scripts' , route);
+  var routePrefix = routes.scripts[i] ,
+      route = require('./routes/scripts/' + routePrefix);
+
+  app.use('/scripts' , route);
+
 }
 
 
@@ -182,11 +185,13 @@ for (var i = 0; i < routes.scripts.length; i++) {
  * Route config for private (platform) facing pages
  */
 app.use((req, res, next) => {
-    if(!req.fresco)
-        req.fresco = {};
 
-    res.locals.section = 'platform';
-    next();
+  if(!req.fresco)
+    req.fresco = {};
+
+  res.locals.section = 'platform';
+  next();
+
 });
 
 
@@ -194,10 +199,12 @@ app.use((req, res, next) => {
  * Loop through all platform routes
  */
 for (var i = 0; i < routes.platform.length; i++) {
-    var routePrefix = routes.platform[i] ,
-        route = require('./routes/' + routePrefix);
 
-    app.use('/' + routePrefix , route);
+  var routePrefix = routes.platform[i] ,
+      route = require('./routes/' + routePrefix);
+
+  app.use('/' + routePrefix , route);
+
 }
 
 /**
@@ -206,9 +213,8 @@ for (var i = 0; i < routes.platform.length; i++) {
 // Special case for assignment create
 // TODO: Remove this
 app.post('/api/assignment/create', (req, res, next) => {
-    req.body.outlet = req.session.user &&
-        req.session.user.outlet ? req.session.user.outlet.id : undefined;
-    next();
+  req.body.outlet = req.session.user && req.session.user.outlet ? req.session.user.outlet._id : undefined;
+  next();
 });
 
 app.use('/api', API.proxy);
@@ -216,18 +222,17 @@ app.use('/api', API.proxy);
 /**
  * Error Midleware
  */
-
 app.use((error, req, res, next) => {
     var err = {};
     err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
 
-    console.log(err);
-
     // Development error handle will print stacktrace
-    console.log('Method:', req.method,
-                '\nPath:', req.path,
-                '\nBody', req.body,
-                '\nError: ', error.message + '\n');
+    if(config.dev) {
+        console.log('Method:', req.method,
+                    '\nPath:', req.path,
+                    '\nBody', req.body,
+                    '\nError: ', error.message + '\n');
+    }
 
     err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
 
@@ -235,11 +240,11 @@ app.use((error, req, res, next) => {
     res.status(err.status);
 
     if(req.accepts('html')) {
-      return res.render('error', {
-          err: err,
-          section: 'public',
-          page: 'error'
-      });
+        return res.render('error', {
+            err: err,
+            section: 'public',
+            page: 'error'
+        });
     }
 
     if(req.accepts('json')) {
@@ -252,7 +257,6 @@ app.use((error, req, res, next) => {
 /**
  * 404 Handler Catch
  */
-
 app.use((req, res, next) => {
     //Respond with code
     res.status(404);
@@ -260,13 +264,13 @@ app.use((req, res, next) => {
     // respond with html page
     if (req.accepts('html')) {
         return res.render('error', {
-                 err: {
-                     message: 'Page not found!',
-                     status: 404
-                 },
-                 section: 'public',
-                 page: 'error'
-              });
+           err: {
+               message: 'Page not found!',
+               status: 404
+           },
+           section: 'public',
+           page: 'error'
+        });
     }
 
     // respond with json

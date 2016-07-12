@@ -53,6 +53,10 @@
 					'title'  : 'Software Engineer - Full Stack'
 				},
 				{
+					'name'   : 'Evan Rubinton',
+					'title'  : 'Sr. Software Engineer - Front-end'
+				},
+				{
 					'name'   : 'Philip Bernstein',
 					'title'  : 'Sr. iOS Engineer',
 					'avatar' : 'phil.jpg'
@@ -64,12 +68,11 @@
 					'handle' : 'elfanek'
 				},
 				{
-					'name'   : 'Ryan McVeety',
-					'title'  : 'Android Engineer'
+					'name'   : 'Arthur Araujo',
+					'title'  : 'iOS Intern'
 				},
 				{
-					'avatar' : 'tim.jpg',
-					'name'   : 'Tim Reynolds',
+					'name'   : 'Ryan McVeety',
 					'title'  : 'Android Engineer'
 				}
 			]
@@ -82,11 +85,6 @@
 					'name'   : 'Morgan Boyer',
 					'title'  : 'VP, News & Content',
 					'handle' : '_bookofmorgan_'
-				},
-				{
-					'avatar' : 'trushaa.jpg',
-					'name'   : 'Trushaa Castelino',
-					'title'  : 'Managing Editor'
 				},
 				{
 					'avatar' : 'alberto.jpg',
@@ -149,10 +147,6 @@
 					'title'  : 'Content Manager'
 				},
 				{
-					'name'   : 'Nicolette Acosta',
-					'title'  : 'Content Manager'
-				},
-				{
 					'name'   : 'Jon Ben-Menachem',
 					'title'  : 'Content Manager'
 				}
@@ -195,7 +189,7 @@
 	
 	<div class="body">
 		<div class="banner">
-			<img src="<%= global.CDN %>/index/team.jpg">
+			<img src="<%= utils.CDN %>/index/team.jpg">
 		</div>
 
 		<div class="team-rows">
@@ -257,7 +251,7 @@
 			var image = listItems[k].getElementsByTagName('img')[0];
 
 			if(typeof(image) !== 'undefined')
-				image.src = '<%= global.CDN %>/index/team/' + member.avatar;
+				image.src = '<%= utils.CDN %>/index/team/' + member.avatar;
 		}
 	}
 </script>

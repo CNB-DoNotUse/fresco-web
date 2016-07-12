@@ -1,6 +1,6 @@
 var express = require('express'),
     config = require('../lib/config'),
-    global = require('../lib/global'),
+    utils = require('../lib/utils'),
     Purchases = require('../lib/purchases'),
     router = express.Router(),
     API = require('../lib/api');

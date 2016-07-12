@@ -2,76 +2,70 @@
 <!--[if lte IE 9]> <html lang='en' class="ie"> <![endif]-->
 <!--[if !IE ]> <html lang='en'> <![endif]-->
 <head>
-  <%
-    meta = typeof(meta) !== 'undefined' ? meta : {};
-    og = typeof(og) !== 'undefined' ? og : {};
-    twitter = typeof(twitter) !== 'undefined' ? twitter : {};
-  %>
-  <!--
+    <% 
+        meta = typeof(meta) !== 'undefined' ? meta : {};
+        og = typeof(og) !== 'undefined' ? og : {};
+        twitter = typeof(twitter) !== 'undefined' ? twitter : {};
+    %>
+    <!--
+  
+    01000110 01110010 01100101 01110011 01100011 01101111  01001110 01100101 01110111 01110011 
 
-  01000110 01110010 01100101 01110011 01100011 01101111  01001110 01100101 01110111 01110011
+    ███████╗██████╗ ███████╗███████╗ ██████╗ ██████╗       ███╗   ██╗███████╗██╗    ██╗███████╗
+    ██╔════╝██╔══██╗██╔════╝██╔════╝██╔════╝██╔═══██╗      ████╗  ██║██╔════╝██║    ██║██╔════╝
+    █████╗  ██████╔╝█████╗  ███████╗██║     ██║   ██║      ██╔██╗ ██║█████╗  ██║ █╗ ██║███████╗
+    ██╔══╝  ██╔══██╗██╔══╝  ╚════██║██║     ██║   ██║      ██║╚██╗██║██╔══╝  ██║███╗██║╚════██║
+    ██║     ██║  ██║███████╗███████║╚██████╗╚██████╔╝      ██║ ╚████║███████╗╚███╔███╔╝███████║
+    ╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═════╝       ╚═╝  ╚═══╝╚══════╝ ╚══╝╚══╝ ╚══════╝
+                                                                                           
+    -->
+  
+    <title><%= typeof(title) !== 'undefined' ? title + ' | Fresco News' : head.title %></title>
 
-  ███████╗██████╗ ███████╗███████╗ ██████╗ ██████╗       ███╗   ██╗███████╗██╗    ██╗███████╗
-  ██╔════╝██╔══██╗██╔════╝██╔════╝██╔════╝██╔═══██╗      ████╗  ██║██╔════╝██║    ██║██╔════╝
-  █████╗  ██████╔╝█████╗  ███████╗██║     ██║   ██║      ██╔██╗ ██║█████╗  ██║ █╗ ██║███████╗
-  ██╔══╝  ██╔══██╗██╔══╝  ╚════██║██║     ██║   ██║      ██║╚██╗██║██╔══╝  ██║███╗██║╚════██║
-  ██║     ██║  ██║███████╗███████║╚██████╗╚██████╔╝      ██║ ╚████║███████╗╚███╔███╔╝███████║
-  ╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═════╝       ╚═╝  ╚═══╝╚══════╝ ╚══╝╚══╝ ╚══════╝
+    <!--Icons-->
+    <link rel="shortcut icon" type="image/png" content="https://d1dw1p6sgigznj.cloudfront.net/images/icon-favicon.png">
+    <link rel="image_src" type="image/png" content="https://d1dw1p6sgigznj.cloudfront.net/images/icon-generic.png">
 
-  -->
+    <!--Apple-->
+    <meta name="apple-mobile-web-app-title" content="Fresco">
+    <meta name="apple-itunes-app" content="app-id=872040692, affiliate-data=myAffiliateData, app-argument=myURL">   
+    <link rel="apple-touch-icon" type="image/png" href="https://d1dw1p6sgigznj.cloudfront.net/images/icon-apple.png">
 
-  <title><%= typeof(title) !== 'undefined' ? title + ' | Fresco News' : head.title %></title>
+    <!--Meta-->
+    <meta name="description" content="<%= meta.description || head.meta.description %>">
+    <meta name="keywords"    content="<%= head.meta.keywords %>">
+    <meta name="reply-to"    content="<%= head.meta['reply-to']  %>">
+    <meta name="copyright"   content="<%= head.meta.copyright %>">
+    <meta name="web_author"  content="<%= head.meta.web_author %>">
+    <meta name="language"    content="<%= head.meta.language %>">
+    <meta name="viewport"    content="<%= head.meta.viewport %>">
 
-  <!--Icons-->
-  <link rel="shortcut icon" type="image/png" content="https://d1dw1p6sgigznj.cloudfront.net/images/icon-favicon.png">
-  <link rel="image_src" type="image/png" content="https://d1dw1p6sgigznj.cloudfront.net/images/icon-generic.png">
+    <!--OG-->
+    <meta property="og:site_name"   content="Fresco News">
+    <meta property="og:locale"      content="<%= head.og.locale %>">
+    <meta property="og:title"       content="<%= og.title       || head.og.title     %>">
+    <meta property="og:image"       content="<%= og.image       || head.og.image     %>">
+    <meta property="og:url"         content="<%= og.url         || head.og.url       %>">
+    <meta property="og:description" content="<%= og.description || head.og.description %>">
 
-  <!--Apple-->
-  <meta name="apple-mobile-web-app-title" content="Fresco">
-  <meta name="apple-itunes-app" content="app-id=872040692, affiliate-data=myAffiliateData, app-argument=myURL">
-  <link rel="apple-touch-icon" type="image/png" href="https://d1dw1p6sgigznj.cloudfront.net/images/icon-apple.png">
+    <!--Facebook-->
+    <meta property="fb:app_id" content="267157383448416">
 
-  <!--Meta-->
-  <meta name="description" content="<%= meta.description || head.meta.description %>">
-  <meta name="keywords"    content="<%= head.meta.keywords %>">
-  <meta name="reply-to"    content="<%= head.meta['reply-to']  %>">
-  <meta name="copyright"   content="<%= head.meta.copyright %>">
-  <meta name="web_author"  content="<%= head.meta.web_author %>">
-  <meta name="language"    content="<%= head.meta.language %>">
-  <meta name="viewport"    content="<%= head.meta.viewport %>">
+    <!--Twitter-->
+    <meta name="twitter:card"            content="<%= twitter.card               || head.twitter.card               %>">
+    <meta name="twitter:site"            content="<%= twitter.site               || head.twitter.site               %>">
+    <meta name="twitter:creator"         content="<%= twitter.creator            || head.twitter.creator            %>">
+    <meta name="twitter:title"           content="<%= twitter.title              || head.twitter.title              %>">
+    <meta name="twitter:description"     content="<%= twitter.description        || head.twitter.description        %>">
+    <meta name="twitter:image"           content="<%= twitter.image              || head.twitter.image              %>">
+    <meta name="twitter:app:country"     content="<%= twitter['app:country']     || head.twitter['app:country']     %>">
+    <meta name="twitter:app:name:iphone" content="<%= twitter['app:name:iphone'] || head.twitter['app:name:iphone'] %>">
+    <meta name="twitter:app:id:iphone"   content="<%= twitter['app:id:iphone']   || head.twitter['app:id:iphone']   %>">
+    <meta name="twitter:app:url:iphone"  content="<%= twitter['app:url:iphone']  || head.twitter['app:url:iphone']  %>">
 
-  <!--OG-->
-  <meta property="og:site_name"   content="Fresco News">
-  <meta property="og:locale"      content="<%= head.og.locale %>">
-  <meta property="og:title"       content="<%= og.title       || head.og.title     %>">
-  <meta property="og:image"       content="<%= og.image       || head.og.image     %>">
-  <meta property="og:url"         content="<%= og.url         || head.og.url       %>">
-  <meta property="og:description" content="<%= og.description || head.og.description %>">
-
-  <!--Facebook-->
-  <meta property="fb:app_id" content="267157383448416">
-
-  <!--Twitter-->
-  <meta name="twitter:card"            content="<%= twitter.card               || head.twitter.card               %>">
-  <meta name="twitter:site"            content="<%= twitter.site               || head.twitter.site               %>">
-  <meta name="twitter:creator"         content="<%= twitter.creator            || head.twitter.creator            %>">
-  <meta name="twitter:title"           content="<%= twitter.title              || head.twitter.title              %>">
-  <meta name="twitter:description"     content="<%= twitter.description        || head.twitter.description        %>">
-  <meta name="twitter:image"           content="<%= twitter.image              || head.twitter.image              %>">
-  <meta name="twitter:app:country"     content="<%= twitter['app:country']     || head.twitter['app:country']     %>">
-  <meta name="twitter:app:name:iphone" content="<%= twitter['app:name:iphone'] || head.twitter['app:name:iphone'] %>">
-  <meta name="twitter:app:id:iphone"   content="<%= twitter['app:id:iphone']   || head.twitter['app:id:iphone']   %>">
-  <meta name="twitter:app:url:iphone"  content="<%= twitter['app:url:iphone']  || head.twitter['app:url:iphone']  %>">
-
-  <!--Global Specifc based on sections-->
-  <% if(typeof(section) !== 'undefined'){ %>
-    <link rel="stylesheet" type="text/css" href="/css/<%= section %>.css">
-  <% } %>
-
-  <!--Page Specifc based on page-->
-  <% if(typeof(page) !== 'undefined'){ %>
-    <link rel="stylesheet" type="text/css" href="/css/pages/<%= page %>.css">
-  <% } %>
+    <% // Load asset based on page, check if in dev mode or not %>
+    <% if(typeof(page) !== 'undefined' && typeof(assets) !== 'undefined'){ %> 
+        <link rel="stylesheet" type="text/css" href="<%= assets[page]['css'] %>">
+    <% } %>
 </head>
-
 <body>

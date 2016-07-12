@@ -200,55 +200,61 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	padding: 8px;
 	font-weight: 500;
 }
-.form-group-default {
 
-	display: inline-block;
-	font-weight: 400;
-	input.form-control,
-	textarea.form-control {
-		background-color: transparent;
-		color:#000;
-		color:rgba(0, 0, 0, 0.87);
+/**
+ * Boostrap Material UI Override
+ */
+.form-group-default {
+	display:inline-block;
+	font-weight:400;
+
+	.form-group {
+		margin:18px 0 0;
+		padding:0;
+
+		.form-control {
+			margin:0;
+			color:#000;
+			font-size:14px;
+			padding:6px 0 0;
+			height:28px;
+
+		}
+
+		textarea{
+			height:40px !important;
+			resize:vertical;
+		}
+
+		//Default style
+		.control-label{			
+			color: rgba(0,0,0,.26);
+		}
+
+		//Just empty
+		&.is-empty {
+			.control-label{
+				font-size:14px !important;
+				top:-10px !important;
+			}
+		}
+
+		//Empty and not focused
+		&.is-empty, &:not(.is-focused) {
+			.control-label {
+				color: #7e7e7e;
+			}
+		}
+
+		//Empty and focused, just focused, not empty .-.
+		&.is-empty.is-focused, &.is-focused, &:not(.is-empty) {
+			.control-label{
+				font-size: 9px !important;
+				top:-22px !important;
+			}
+		}
 	}
-	.form-control:disabled {
-		border-bottom: none;
-	}
-	.form-control:focus {
-		@include background-image(linear-gradient($color-accent-primary, $color-accent-primary), linear-gradient($color-black-4, $color-black-4));
-	}
-	.hint {
-		color: $color-black-3;
-	}
-	input.form-control:not(.empty) ~ .floating-label,
-	textarea.form-control:not(.empty) ~ .floating-label {
-		color: $color-black-3;
-		white-space: nowrap;
-	}
-	input.form-control:not(.empty):focus ~ .floating-label,
-	textarea.form-control:not(.empty):focus ~ .floating-label {
-		color: $color-accent-primary;
-	}
-	textarea {
-		resize: vertical;
-	}
-	textarea.empty ~ .floating-label {
-		margin-top: -5px;
-	}
-	.form-control:disabled{
-	  border-bottom: none;
-	}
-	.form-control.error {
-		@include background-image(linear-gradient($color-error, $color-error), linear-gradient($color-error, $color-error));
-	}
-	.form-control.success {
-		@include background-image(linear-gradient($color-success, $color-success), linear-gradient($color-success, $color-success));
-	}
-	.form-control.error:not(.empty):focus ~ .floating-label {
-		color: $color-error;
-	}
-	.form-control.success:not(.empty):focus ~ .floating-label {
-		color: $color-success;
-	}
+
 	.checkbox input[type=checkbox]:checked~.check, .checkbox input[type=checkbox]:checked~.check:before {
 		color: $color-accent-primary;
 	}
@@ -285,18 +291,24 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	}
 }
 
+.autocomplete-map {
+	> div {
+		float:left;
+	}
+}
+
 // map
 .map-group {
 	height: 100%;
+	width: 100%;
+
 	.form-group-default {
-		@include display(flex);
-		@include flex-direction(row);
-		margin-bottom: 8px;
+		margin-bottom: 22px;
+		width:100%;
+		
 		.form-control-wrapper {
 			width: 100%;
-			@include flex(3);
 			+ .form-control-wrapper {
-				@include flex(1);
 				margin-left: 16px;
 				margin-bottom: 8px;
 			}
@@ -305,7 +317,6 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	.map-container {
 		width: 100%;
 		height:250px;
-		margin-bottom: 8px;
 		background-color: $color-shade-2;
 	}
 	.map-container.dispatch{
@@ -764,7 +775,7 @@ div.list {
 	}
 	> .dialog-head {
 		position: absolute;
-		z-index: 1;
+		z-index: 10;
 		height: 64px;
 		padding: 20px 24px 20px 32px;
 	    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
@@ -773,16 +784,23 @@ div.list {
 			line-height: 24px;
 		}
 		~ .dialog-body {
-			padding-top: 92px;
+			padding-top: 71px;
 		}
 	}
 	> .dialog-body {
 		border-radius: 2px;
-		padding: 24px 32px 88px;
+		padding:24px 32px 88px;
 		max-height: 100%;
 		overflow-y: auto;
+
+		.slick-slider{
+			margin-bottom:20px;
+		}
+
 		> .dialog-col {
 			padding: 0;
+
+
 			+ .dialog-col {
 				padding-left: 32px;
 			}
@@ -805,7 +823,7 @@ div.list {
 		padding: 14px 16px;
 		border-top: 1px solid $color-black-4;
 		~ .dialog-body {
-			padding-bottom: 76px;
+			padding-bottom:92px;
 		}
 	}
 }
@@ -858,6 +876,8 @@ div.list {
 			}
 			li {
 				margin: 0 -20px;
+				@include transition(background-color 0.3s ease);
+
 				a {
 					display:block;
 					line-height: 22px;
@@ -867,7 +887,13 @@ div.list {
 				    color: rgb(0, 0, 0);
 					color: rgba(0, 0, 0, 0.87);
 					span {
+						vertical-align: middle;
 						margin-right: 24px;
+
+						~ span {
+							position:relative;
+							top:2px;
+						}
 					}
 				}
 			}
@@ -952,11 +978,15 @@ div.list {
 	> .tab-control {
 		display: inline-block;
 		position: relative;
-		top: 9px;
+		top:24px;
 		margin: 0 24px;
 	}
 	> .form-group-default {
-		margin: 18px 0 0 10px;
+		float:left;
+
+		.form-group {
+			margin: 14px 0 0;
+		}
 	}
 	> h1 {
 		display: inline-block;
@@ -1393,17 +1423,6 @@ div.admin {
 	}
 }
 
-.admin-edit-pane {
-	.dialog {
-		height: 100%;
-
-		.dialog-row {
-			margin-top: 24px;
-			margin-bottom: 24px;
-		}
-	}
-}
-
 
 // cards
 .cards {
@@ -1439,7 +1458,7 @@ div.admin {
 			line-height: 24px;
 		}
 		~ .card-body {
-			padding-top: 56px;
+			padding-top: 45px;
 		}
 		> .tab-control {
 			margin: -16px -20px 0;
@@ -1610,7 +1629,7 @@ div.admin {
 // payment
 a.payment {
 	display: block;
-	margin-bottom: 24px;
+	margin:26px 0 14px;
 	font-size: 12px;
 	line-height: 12px;
 	font-weight: normal;
@@ -1730,7 +1749,7 @@ div.time {}
 	background-image: linear-gradient(#0047bb, #0047bb), linear-gradient(#d2d2d2, #d2d2d2) !important;
 }
 
-.form-control:focus ~ .floating-label, .form-control.focus ~.floating-label {
+.form-control:focus ~ .control-label, .form-control.focus ~.control-label {
 	color: #0047bb !important;
 }
 

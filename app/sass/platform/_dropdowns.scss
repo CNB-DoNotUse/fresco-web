@@ -86,7 +86,6 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 		padding:0;
 		background:#FFF;
 		@include box-shadow($dropShadow);
-
 		border-bottom-right-radius:$radius;
 		border-bottom-left-radius:$radius;
 
@@ -181,7 +180,7 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 		width:320px;
 
 		.dropdown-body{
-		    padding:20px 24px 8px;
+		    padding:0 24px 8px;
 		}
 	}
 }
@@ -196,7 +195,7 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 
 		.dropdown-body{
 			width: 280px;
-		    padding:17px 24px 8px;
+		    padding:0px 24px 8px;
 		    max-height:500px;
 		    overflow:auto;
 		}

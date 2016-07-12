@@ -10,7 +10,7 @@ var fs                = require('fs'),
     React             = require('react'),
     ReactDOMServer    = require('react-dom/server'),
     request           = require('request'),
-    PublicGallery     = require('../app/views/publicGallery.js'),
+    PublicGallery     = require('../app/platform/views/publicGallery.js'),
     api               = require('../lib/api');
 
 /** //

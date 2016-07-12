@@ -7,12 +7,6 @@ uploads
 sessions
 cert/*
 cert/DigiCertCA.crt
-public/vendor
-public/js/pages
-public/css/page
-public/css/pages
-public/js/public.js
-public/js/platform.js
-public/css/public.css
-public/css/platform.css
+bower_components
+public/build/
 config/*.json

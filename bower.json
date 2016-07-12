@@ -16,21 +16,12 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "public/vendor/",
     "test",
     "tests"
   ],
   "dependencies": {
     "alertify.js": "alertifyjs#~1.0.5",
-    "slick-carousel": "slick.js#~1.5.8",
-    "jquery": "~2.1.4",
-    "bootstrap": "~3.3.5",
-    "snackbarjs": "~1.0.0",
-    "bootstrap-material-design": "~0.3.0",
-    "mdi": "~1.5.54",
-    "video.js": "~5.4.5",
-    "Waves": "waves#~0.7.4",
-    "velocity": "~1.2.3",
-    "moment": "~2.11.0"
+    "snackbarjs": "~1.1.0",
+    "video.js": "~5.4.5"
   }
 }

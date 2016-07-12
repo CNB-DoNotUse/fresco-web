@@ -3,17 +3,14 @@
 	background: #ffffff;
 
 	.gallery-images {
-		margin-bottom: 56px;
 		.slick-dots li button:before {
 			font-size:8px;
 		}
 	}
-}
-.admin-tabs {
-	top: 11px !important;
-}
 
-video {
+	.dialog {
+		height: 100%;
+	}
 }
 
 .byline-affiliation {

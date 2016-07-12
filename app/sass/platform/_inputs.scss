@@ -12,7 +12,6 @@ $bg:#FFFFFF;
 /**
  * Basic styles
  */
-
 .fresco-input {
     border:none;
     font-size:16px;
@@ -48,7 +47,6 @@ $bg:#FFFFFF;
 /**
  * Search Input
  */
-
 .search-input  {
     @extend .fresco-input;
     @extend .nav-input;
@@ -74,7 +72,6 @@ $bg:#FFFFFF;
 /**
  * Autocomplete Element
  */
-
 .autocomplete {
     position:relative;
     z-index:1;
@@ -103,8 +100,8 @@ $bg:#FFFFFF;
     &.form {
         margin-right:16px;
         margin-bottom:5px;
-        min-width:240px;
-
+        width:100%;
+        
         input{
             font-size:14px;
             padding:0;
@@ -121,7 +118,6 @@ $bg:#FFFFFF;
         }
     }
 }
-
 
 .predictions {
     background:$bg;

@@ -1,0 +1,20 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+/**
+ * Join Modal
+ */
+
+.join{
+	@extend .modal_window;
+	width:320px;
+	position: absolute;
+	left:0;
+	right:0;
+	
+}

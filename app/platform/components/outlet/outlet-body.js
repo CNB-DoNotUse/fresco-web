@@ -1,0 +1,150 @@
+import React from 'react'
+import PurchasesBody from '../purchases/purchases-body'
+import PostList from '../global/post-list'
+import OutletSidebar from './outlet-sidebar'
+import moment from 'moment'
+import utils from 'utils'
+
+export default class OutletBody extends React.Component {
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			posts: [],
+			purchases: []
+		}
+
+		this.loadPosts = this.loadPosts.bind(this);
+		this.loadPurchases = this.loadPurchases.bind(this);
+		this.loadStats = this.loadStats.bind(this);
+		this.emailStatement = this.emailStatement.bind(this);
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.activeTab != this.props.activeTab) {
+			$('.tab').removeClass('toggled');
+			$('.tab-' + this.props.activeTab.toLowerCase()).addClass('toggled');
+		}
+	}
+
+	/**
+	 * Loads posts using purchases data enpoint
+	 */
+	loadPosts(passedOffset, cb) {
+		this.loadPurchases(passedOffset, (purchases) => {
+			var posts = purchases.map((purchase) => {
+				return purchase.post;
+			});
+
+			cb(posts);
+		});
+	}
+
+	/**
+	 * Loads stats for outlet
+	 */
+	loadStats(callback) {
+		$.get('/api/outlet/purchases/stats', {
+			outlets: [ this.props.outlet.id ]
+		}, (response) => {
+			if(response.err || !response.data) {
+				return $.snackbar({
+					content: 'There was an error receiving the purchases'
+				});
+			}
+
+			callback(response.data);
+		});
+	}
+
+	/**
+	 * Requests purchases from server
+	 */
+	loadPurchases(passedOffset, cb) {
+		$.get('/api/outlet/purchases', {
+			limit: 20,
+			offset: passedOffset,
+			sort: true,
+			details: true,
+			id: this.props.outlet.id
+		}, (response) => {
+
+			if(response.err) {
+				if(response.err != 'ERR_UNAUTHORIZED'){
+					return $.snackbar({
+						content: 'There was an error receiving your purchases'
+					});
+				}
+				return cb([]);
+			}
+			else if(!response.data){
+				return cb([]);
+			}
+
+			var purchases = response.data.map((purchaseParent) => {
+				if(!purchaseParent.purchase) return purchaseParent;
+
+				var purchase = purchaseParent.purchase;
+					purchase.title = purchaseParent.title;
+
+				return purchase;
+			});
+
+			cb(purchases);
+
+		});
+	}
+
+	emailStatement() {
+		$.ajax({
+			url: '/scripts/outlet/export/email',
+			type: 'GET',
+			dataType: 'json',
+			success: (result, status, xhr) => {
+				if (result.err) {
+					return $.snackbar({content: resolveError(result.err)});
+				} else {
+					return $.snackbar({content: 'Account statement successfully sent! Please check your email.'});
+				}
+			},
+			error: (xhr, status, error) => {
+				$.snackbar({content: resolveError(error)});
+			}
+		});
+	}
+
+	render() {
+        const { outlet, user } = this.props;
+
+		return (
+			<div className="container-fluid tabs">
+				<div className="tab tab-vault toggled">
+					<div className="container-fluid fat">
+						<div className="profile visible-xs"></div>
+
+						<OutletSidebar outlet={outlet} />
+
+						<div className="col-sm-8 tall">
+							<PostList
+								loadPosts={this.loadPosts}
+								allPurchased={true}
+								size='large'
+								editable={false}
+                                scrollable={true}
+                                rank={user.rank}
+                            />
+						</div>
+					</div>
+				</div>
+				<div className="tab tab-purchases">
+					<PurchasesBody
+						purchases={this.state.purchases}
+						emailStatement={this.emailStatement}
+						loadPurchases={this.loadPurchases}
+						loadStats={this.loadStats} />
+				</div>
+			</div>
+		);
+	}
+}

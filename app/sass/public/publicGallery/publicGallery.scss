@@ -1,0 +1,196 @@
+// /* Sass Document */
+
+// /*------------------------------------------------------------------------------------
+
+// Copyright 2015 Fresco News, Inc. All Rights Reserved.
+
+// -------------------------------------------------------------------------------------*/
+
+// @import "../../../public/vendor/slick-carousel/slick/slick.scss";
+// @import "../../../public/vendor/slick-carousel/slick/slick-theme.scss";
+// @import "../global/_global.scss";
+// @import "../global/fresco-slick.scss";
+
+// /**
+//  * Slick Wrapper Parent
+//  */
+
+// $mobileHeight:280px;
+
+// .gallery-slick-wrap{
+// 	background:#1E1E1D;
+// 	overflow:hidden;
+
+// 	@include mobile{
+// 		height:$mobileHeight;
+// 	}
+
+// 	/* Slick Component */
+// 	.slick{
+// 		width:71%;
+// 		display:block;
+// 		margin:0 auto;
+
+// 		@include desktop{
+// 			width:83%;
+// 		}
+
+// 		@include mobileAndTablet{
+// 			width:100%;
+// 		}
+
+// 		@include mobile{
+// 			height:$mobileHeight;
+// 		}
+
+// 		/* Individual Slick Slide */
+// 		.slick-slide{
+// 			position: relative;
+// 			background-repeat:no-repeat;
+// 			background-position:center;
+// 			background-size:auto 100%;
+// 			overflow:hidden;
+// 	     	height:768px;
+// 	     	min-height:650px;
+	     	
+// 	     	@include tablet{
+// 	     		height:576px;
+// 	     	}
+			
+// 			@include mobile{
+// 				background-position:center;
+// 				background-size:auto 100%;
+// 				min-height:initial;
+// 		     	height:$mobileHeight;
+// 			}
+
+// 			video{
+// 				height:100%;
+// 				width: 100%;
+// 				margin: 0 auto;
+
+// 				@include mobile{
+// 					width:100%;
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	.slick-prev, .slick-next{
+// 		top:45%;
+// 	}
+
+// 	@include mobileAndTablet{
+// 		.slick-prev, .slick-next{
+// 			display:none !important;
+// 		}
+// 	}
+
+// 	/* Slick Arrow Styles */
+// 	.slick-prev{
+// 	    left: -6%;
+
+// 	    @include desktop-large{
+// 	    	left:-12%;
+// 	    }
+
+// 		&:before {
+// 		  content: "\2039";
+// 		  color:white;
+// 		  font-size:120px;
+// 		}
+// 	}
+// 	.slick-next{
+// 		left: 103%;
+
+// 	    @include desktop-large{
+// 	    	left:109%;
+// 	    }
+
+// 		&:before {
+// 			content: "\203A";
+// 			color:white;
+// 			font-size:120px;
+// 		}
+// 	}
+
+// }
+
+// /**
+//  * Bottom Half of page, `gallery info`
+//  */
+
+// .gallery-info-wrap{
+// 	background:#F2F2ED;
+
+// 	.gallery-info{
+// 		width:70%;
+// 		margin:0 auto;
+// 		overflow:hidden;
+
+// 		@include mobileAndTablet{
+// 			width:93%;
+// 		}
+
+// 		.column{
+// 			width:50%;
+// 			float:left;
+// 			margin:24px 0 0;
+
+// 			@include mobile{
+// 				width:100%;
+// 			}
+
+// 			.caption{
+// 				font-size:14px;
+// 				line-height:20px;
+// 				font-family:$roboto;
+// 				margin-right:20px;
+// 				@include rgbaWithHex(color, 0, 0, 0, 0.87, #292929);
+// 			}
+
+// 			.gallery-info-section{
+// 				margin:0 0 24px 0;
+
+// 				h2{
+// 					font-weight:500;
+// 					margin:0 0 12px 0;
+// 				}
+
+// 				ul{
+// 					list-style:none;
+
+// 					li.gallery{
+// 						max-width:180px;
+// 						margin:0 1px 12px 0;
+// 						height:90px;
+// 						overflow:hidden;
+// 						display:inline-block;
+
+// 						img{
+// 							width:auto;
+// 							height:100%;
+// 						}
+// 					}
+
+// 					li.article{
+// 						img{
+// 						    width: 30px;
+// 						    height: 30px;
+// 						    display:inline-block;
+// 						    vertical-align:middle;
+// 						    margin-right:10px;
+// 						}
+
+// 						a{
+// 							line-height: 34px;
+// 						    text-decoration: none;
+// 						    color: rgb(0, 0, 0);
+// 						    color: rgba(0, 0, 0, 0.54);
+// 					 	}
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// }

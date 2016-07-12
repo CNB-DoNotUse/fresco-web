@@ -1,0 +1,593 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+/**
+ *  Master Hero Background
+ */
+.hero-bg{
+	height:100%;
+	width:100%;
+	z-index:-1;
+	overflow:hidden;
+	position:fixed;
+	left:0; right:0; top:0; bottom:0;
+
+	div{
+		position:absolute;
+		left:0; right:0; top:0; bottom:0;
+		background: #ffc600 url("https://d1dw1p6sgigznj.cloudfront.net/index/map.png");
+		background-repeat: no-repeat;
+		background-position:50%;
+	    background-size:cover;
+		left:0; right:0; top:0; bottom:0;
+		animation: animateBackground 30s linear;
+		overflow:hidden;
+	}
+}
+
+
+/*
+	Arrow Style
+ */
+.mdi-arrow-down-bold{
+	cursor:pointer;
+	color:#FFF;
+	position:absolute;
+	display:inline-block;
+	max-width:48px;
+	bottom:20px;
+	left:0;
+	right:0;
+	margin:0 auto;
+	font-size:48px;
+	text-shadow:0 3px 2px rgb(0, 0, 0);
+	text-shadow:0 3px 2px rgba(0, 0, 0, 0.15);
+
+	.full & {
+		display:none;
+	}
+}
+
+/**
+ * Overriden navigation styles
+ */
+.nav{
+	@include box-shadow(0 4px 4px 0 rgba(0, 0, 0, 0.05), 0 6px 6px 0 rgba(0, 0, 0, 0.15));
+
+	.logo{
+		float:left;
+		position:static;
+		padding: 31px 0 31px 36px;
+
+		@include mobile{
+	        padding:0;
+		}
+	}
+
+	ul {
+		float: right;
+	    padding: 68px 48px 0 0;
+
+		@include mobile{
+			display:none;
+		}
+
+		#landing-action{
+			display:none;
+		}
+
+		li{
+			cursor:pointer;
+			font-weight:700;
+			a{
+				font-weight:700;
+			}
+			font-size:24px;
+			display:inline-block;
+			margin-left:24px;
+		}
+	}
+
+	//Transparent styling for nav bar
+	&.transparent{
+		background:none;
+		position:relative;
+		margin-bottom:30px;
+		@include box-shadow(none !important);
+		text-shadow:0 2px 2px #000;
+		text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+		color:#FFF;
+		top:0;
+		-webkit-transform:none !important;
+		   -moz-transform:none !important;
+		    -ms-transform:none !important;
+		     -o-transform:none !important;
+
+		transform:none !important;
+
+		a{
+			color:#FFF !important;
+			text-shadow:0 2px 2px #000;
+			text-shadow:0 2px 2px rgba(0, 0, 0, .15); 
+		}
+	}
+}
+
+$heroHeight: 180px;
+
+/**
+ * Hero element
+ * @description - The tagline and download links
+ */
+.hero{
+	height:$heroHeight;
+	margin:0 auto 168px;
+	text-align:center;
+	left: 0;
+    right: 0;
+    position:relative;
+	color:#FFF;
+
+	.tagline{
+		margin:0 auto 48px;
+		max-width:98%;
+
+		h1{
+			font-weight:700;
+			font-size:48px;
+			text-shadow:0 2px 2px #F5F5F5;
+			text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+		}
+		
+		h3{
+			margin:4px 0 0 ;
+			font-weight:400;
+			font-size:26px;
+			text-shadow:0 2px 2px #F5F5F5;
+			text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+
+			a {
+				font-weight:500;
+			}
+		}
+	}
+
+	.download{
+		a{
+			margin:0 5px;
+			img{
+				width:145px;
+			}	
+		}
+	}
+}
+
+/**
+ * Card Container below the hero
+ */
+
+.bottom{
+	position:relative;
+   	margin-bottom: -72px;
+
+   	.index &{
+	   	opacity:0;
+    }
+
+	@include mobile{
+   		margin-bottom:12px;		
+	}
+
+	@media screen and (max-width: 1280px) {
+   		margin-bottom:40px;
+   	}
+
+	position:relative;
+	z-index:10;
+}
+
+/**
+ * Shared style for each card
+ */
+.card{
+	@include box-shadow(0 2px 2px 0 rgb(0, 0, 0), 0 3px 2px 0 rgb(0, 0, 0));
+	@include box-shadow(0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 3px 2px 0 rgba(0, 0, 0, 0.10));
+	@include border-radius(2px);
+	background:#FFF;
+	max-width:736px;
+	margin:20px auto;
+
+	@include mobile{
+		margin:12px auto 0 !important;
+		max-width:100%;
+	}
+}
+
+/**
+ * About Section
+ */
+.about{
+	text-align:center;
+	$mobileWidth:90%;
+	$mobileLineWidth:$mobileWidth * 3 + 2%;
+
+	.scroll{
+
+		@include mobile{
+			white-space: nowrap;
+			overflow: scroll;
+			margin: 0 auto;
+			position: relative;
+		}
+
+		.timeline{
+			padding: 44px 5% 0px;
+			height:auto;
+
+			@include mobile{
+				margin: 0 auto;
+				position: relative;
+				padding:44px 0 24px;
+			}
+
+			li{
+				height:216px;
+				position:relative;
+				display:inline-block;
+				text-align:center;
+
+				@include mobile{
+					width:$mobileWidth !important;
+				}
+
+				img{
+					vertical-align:middle;
+					margin:0 auto;
+					max-height:100%;
+					max-width:100%;
+				}
+			}
+			
+			li.third{
+				.callout{
+					z-index:50;
+					top:-20px;
+					width:72px;
+					height:72px;
+					position:absolute;
+					top: -60px;
+					right: 0px;
+
+					@include mobile{
+						top:-40px;
+						right:inherit;
+
+					}
+				}
+			}
+			
+			li.second{
+				width:42%;
+				margin:0 4%;
+				margin-bottom: -28px;
+				@include mobile{
+					margin:0 auto;
+				}
+			}
+			
+
+			li.first, li.third{
+				width:24%;
+			}
+			
+		}
+
+		.line{
+			height: 4px;
+			background: rgba(0, 0, 0, 0.12);
+			position: relative;
+			top: 14px;
+			@include mobile{
+				width:$mobileLineWidth;
+			}
+		
+		}
+
+		.progress{
+		    position: relative;
+		    height:60px;
+		    margin: 0 auto;
+			$circleBorder:4px;
+
+			@include mobile{
+				margin:0 auto;
+				position:relative;
+			}
+
+			li{
+				position:absolute;
+				text-align:center;
+				margin:-$circleBorder 0;
+
+				@include mobile{
+					display:inline-block;
+					width:$mobileWidth !important;
+					position:relative !important;
+					left:0 !important;
+					right:0 !important;
+				}
+
+				.circle{
+					width:24px;
+					height:24px;
+					position:absolute;
+					left:0;
+					right:0;
+					margin:0 auto 20px;
+					background:$fresco-yellow;
+					border:$circleBorder solid #FFF;
+					@include border-radius(50px);
+				}
+
+				p{
+					color:#000;
+					font-weight:700;
+					font-size:24px;
+					margin-top:40px;
+				}
+			}
+
+			li.first{
+				left:9%;
+			}
+			
+			li.second{
+				left: 0;
+				right: 0;
+			}
+			
+			li.third{
+				right:9%;
+			}
+
+		}
+
+
+	}
+	.info{
+		font-family: Roboto;
+		max-width:90%;
+		font-size:14px;
+		margin:0 auto;
+		color:rgb(0, 0, 0);
+		color:rgba(0, 0, 0, .54);
+		padding:20px 40px;
+		line-height:20px;
+
+		@include mobile{
+			padding:20px 20px;
+		}
+	}
+
+}
+
+/**
+ * Highlights Section, double slick
+ */
+$postHeight:384px;
+$slideHeight:384px;
+$mobilePostHeight:320px;
+$mobileSlideHeight:540px;
+
+.highlights-wrap{
+	margin:0 auto;
+	overflow:hidden;
+	height:$slideHeight;
+
+	@include mobile{
+		overflow:scroll;
+		height:auto;
+	}
+
+	> div{
+		display:inline-block;
+		float:left;
+		height:100%;
+	}
+
+	.highlights{
+		margin:0 auto;
+		width:85%;
+
+		@include mobile{
+			width:100%;
+			height: auto;
+			border-bottom:1px solid;
+			@include rgba(border-color, 0, 0, 0, 0.12);
+		}
+
+		.gallery-slide{
+			height:$slideHeight;
+			width:100%;
+			overflow:hidden;
+
+			@include mobile{
+				height: auto;
+			}
+
+			.posts{
+				width:61%;
+				height:$postHeight;
+				margin:0 auto;
+				overflow: hidden;
+				float:left;
+
+				@include mobile{
+					display:inline-block;
+					height: mobilePostHeight;
+					width:100%;
+				}
+
+				.slick-dots{
+					bottom:24px;
+					right:16px;
+
+					li{
+						width:10px;
+						margin:0 5px;
+					}
+				}
+
+				.post-slide{
+					height:$postHeight;
+					position:relative;
+					background-repeat:no-repeat;
+					background-position:center;
+					background-size: cover;
+					overflow:hidden;
+
+					.meta-text{
+						max-width:300px;
+					}
+
+					@include mobile{
+						height: mobilePostHeight;
+					}
+				}
+			}
+
+			.gallery-info {
+				float:left;
+				width:39%;
+				height:100%;
+				overflow:hidden;
+				font-family:$roboto;
+				position:relative;
+
+				@include mobile{
+					float:none;
+					height: auto;
+					width:100%;
+				}
+
+				p{
+					height:80%;
+					overflow:auto;
+					font-size:14px;
+					max-width:95%;
+					padding:10px 15px;
+					margin:0 auto;
+					line-height:20px;
+					@include rgba(color, 0, 0, 0, 0.87);
+
+					@include mobile{
+						height: 180px;
+					}
+				}
+
+				.interaction{
+					position: absolute;
+					height:14%;
+					width: 100%;
+					overflow:hidden;
+					bottom: 0;
+					border-top:1px solid rgb(0, 0, 0);
+					border-top:1px solid rgba(0, 0, 0, 0.12);
+
+					@include mobile{
+						position:relative;
+						height:24%;
+					}
+
+					span{
+						font-size:22px;
+						cursor:pointer;
+					}
+
+					.link{
+					    position: relative;
+					    top:10px;
+					    cursor:pointer;
+					    left:10px;
+
+						span.mdi-link-variant{
+							position: relative;
+							top: 3px;
+							font-size: 24px;
+						}
+
+						span{
+							cursor:pointer;
+							@include rgba(color, 0, 0, 0, 0.54);
+							font-size:14px;
+						}
+					}
+
+					.social{
+						float:right;
+					    position: relative;
+					    bottom:10px;
+					    right:18px;
+
+						span.mdi-facebook-box{
+							color:#3b5998;
+							padding-left:15px;
+						}
+
+						span.mdi-twitter{
+							color:#55acee;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.arrow{
+		text-align:center;
+		position:relative;
+		font-size:34px;
+		cursor:pointer;
+		width:7%;
+		width:calc(7% + 1px);
+		@include rgba(color, 0, 0, 0, .54);
+
+		@include mobile{
+			float:left;
+			width:49%;
+			width:calc(50% - 1px);
+			height:56px;
+		}
+
+		span{
+			margin:0 -5px;
+			position:absolute;
+			top:45%;
+			bottom:0;
+
+			@include mobile{
+				margin:0 auto;
+				bottom:0;
+				top:20%;
+			}
+		}
+	}
+
+	#arrow-left{
+		border-right:1px solid;
+		@include rgba(border-color, 0, 0, 0, 0.12);
+	}
+
+	#arrow-right{
+		border-left:1px solid;
+		@include rgba(border-color, 0, 0, 0, 0.12);
+		@include mobile{
+			border:none;
+		}
+	}
+}

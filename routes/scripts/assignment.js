@@ -1,6 +1,6 @@
 var express = require('express'),
     config = require('../../lib/config'),
-    global = require('../../lib/global'),
+    utils = require('../../lib/utils'),
     API = require('../../lib/api'),
     xlsx = require('node-xlsx'),
     router = express.Router();
