@@ -45,8 +45,7 @@ class TopBarAdmin extends React.Component {
 
     createGallery() {
         const files = this.refs.uploadImportFiles.files;
-        const caption = `Gallery imported from local system on
-        ${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
+        const caption = `Gallery imported from local system on ${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
         const posts = [];
 
         times(files.length, (i) => {
@@ -55,7 +54,7 @@ class TopBarAdmin extends React.Component {
 
         const data = {
             caption,
-            tags: ['a'],
+            tags: [],
             posts,
         };
 

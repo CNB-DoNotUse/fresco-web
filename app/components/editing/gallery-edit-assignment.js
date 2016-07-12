@@ -94,9 +94,7 @@ export default class GalleryEditAssignment extends React.Component {
 			</div>
 
 		);
-
 	}
-
 }
 
 GalleryEditAssignment.defaultProps = {

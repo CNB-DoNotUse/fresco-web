@@ -23,7 +23,7 @@ export default class GalleryEditStories extends React.Component {
 	 * Adds story element, return if story exists in prop stories.
 	 */
 	addStory(newStory) {
-		if(global.isEmptyString(newStory.title)) 
+		if(global.isEmptyString(newStory.title))
 			return;
 
 		//Clear the input field
@@ -81,19 +81,18 @@ export default class GalleryEditStories extends React.Component {
 				});
 			}
 		} else{
-			//Field is empty
+			// Field is empty
 			if(query.length == 0){
 				this.setState({ suggestions: [] });
 				this.refs.dropdown.style.display = 'none';
 			} else{
-
 				this.refs.dropdown.style.display = 'block';
 
 				$.ajax({
 					url: '/api/story/autocomplete',
 					data: { q: query },
 					success: (result, status, xhr) => {
-						if(result.data){
+						if (result.data) {
 							this.setState({ suggestions: result.data });
 						}
 					}
@@ -111,7 +110,8 @@ export default class GalleryEditStories extends React.Component {
 					text={story.title}
 					plus={false}
 					onClick={this.removeStory.bind(null, i)}
-					key={i} />
+                    key={i}
+                />
 			)
 		});
 
