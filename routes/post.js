@@ -38,7 +38,10 @@ router.get('/:id', (req, res) => {
         url: '/post/' + req.params.id,
     }).then(response => {
         post = response.body || {};
-        return api.request({ token, url: '/gallery/' + response.body.parent_id });
+        return api.request({ 
+            token, 
+            url: '/gallery/' + response.body.parent_id 
+        });
     }).then(response => {
         gallery = response.body || {};
         if (post.owner) {
@@ -66,4 +69,3 @@ router.get('/:id', (req, res) => {
 });
 
 module.exports = router;
-

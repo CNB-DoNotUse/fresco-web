@@ -1,47 +1,30 @@
-var express = require('express'),
-    config = require('../lib/config'),
-    Purchases = require('../lib/purchases'),
-    request = require('request'),
-    router = express.Router();
+const express = require('express');
+const config = require('../lib/config');
+const api = require('../lib/api');
+const request = require('request');
+const router = express.Router();
 
-/** //
+/**
+ * Description : Story Specific Routes ~ prefix /story/endpoint
+ */
+router.get('/:id', (req, res, next) => {
+    api.request({
+        token: req.session.token,
+        url: '/story/' + req.params.id,
+    }).then(response => {
+        const props = {
+            story: response.body,
+            user: req.session.user
+        };
 
-	Description : Story Specific Routes ~ prefix /story/endpoint
-
-// **/
-
-router.get('/:id', function(req, res, next) {
-
-  request({
-      url: config.API_URL + '/v1/story/get?id=' + req.params.id,
-      json: true
-    }, function(err, response, body) {
-
-      if (err || !body || body.err){
-          var error = new Error('Story not found!');
-          error.status = 404;
-
-          return next(error);
-			}
-
-			var props = {
-        story: body.data,
-        purchases: Purchases.mapPurchases(),
-        user: req.session.user
-      };
-
-			res.render('app', {
-        props: JSON.stringify(props),
-        config: config,
-        alerts: req.alerts,
-        page: 'storyDetail',
-				title : 'Story'
-      });
-
-    }
-
-  );
-
+        res.render('app', {
+            props: JSON.stringify(props),
+            config: config,
+            alerts: req.alerts,
+            page: 'storyDetail',
+            title : 'Story'
+        });
+    });
 });
 
 module.exports = router;

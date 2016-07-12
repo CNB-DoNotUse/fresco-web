@@ -8,16 +8,15 @@ import global from '../../lib/global'
 /**
  * Stories Parent Object, contains StoryList composed of StoryCells
  */
-
 class Stories extends React.Component {
 
 	constructor(props) {
 		super(props);
+		
 		this.loadStories = this.loadStories.bind(this);
 	}
 
 	render() {
-
 		return (
 			<App user={this.props.user}>
 				<TopBar
@@ -29,13 +28,13 @@ class Stories extends React.Component {
 					scrollable={true} />
 			</App>
 		);
-
 	}
 
-	//Returns array of posts with offset and callback, used in child PostList
+	/**
+	 * Returns array of posts with offset and callback, used in child PostList	 
+	 */
 	loadStories (last, callback) {
-
-		var params = {
+		const params = {
             last,
 			limit: 10
 		};

@@ -12,7 +12,6 @@ import global from '../../lib/global'
 /**
  * Dispatch Parent Component, contains the Dispatch Map, as well as a set of cards
  */
-
 class Dispatch extends React.Component {
 
 	constructor(props) {
@@ -107,9 +106,8 @@ class Dispatch extends React.Component {
 	 * @param  {Function} callback callback with data, error
 	 */
 	findAssignments(map, params, callback) {
-		
 		//Check if params are set, otherwise default to empty dictionary
-		var params = params || {};
+		const params = params || {};
 
 		//Update view mode on params
 		params.expired = this.state.viewMode == 'expired';
@@ -118,17 +116,18 @@ class Dispatch extends React.Component {
 
 		//Add map params
 		if(map) {
-			var bounds = map.getBounds();
+			const bounds = map.getBounds();
+			
 			if(!bounds) callback('No bounds');
 			
-			var proximitymeter = google.maps.geometry.spherical.computeDistanceBetween (
-					bounds.getSouthWest(), 
-					bounds.getNorthEast()
-				),
-				proximitymiles = proximitymeter * 0.000621371192,
-				radius = proximitymiles / 2,
-				mapCenter = map.getCenter(),
-				center = new google.maps.LatLng(mapCenter .lat(), mapCenter .lng());
+			const proximityMeter = google.maps.geometry.spherical.computeDistanceBetween (
+				bounds.getSouthWest(), 
+				bounds.getNorthEast()
+			);
+
+			const radius = global.metersToMiles(proximityMeter) / 2;
+			const mapCenter = map.getCenter();
+			const center = new google.maps.LatLng(mapCenter .lat(), mapCenter .lng());
 
 			params.lat = center.lat();
 			params.lon =  center.lng();
@@ -142,12 +141,11 @@ class Dispatch extends React.Component {
 			dataType: 'json',
 			success: (response, status, xhr) => {
 				//Do nothing, because of bad response
-				if(!response.data || response.err) {
-					//Where would we error
-					// $.snackbar({content: global.resolveError(response.err)});
+				if(response.data && !response.err) {
+					callback(response.data);
 				}
 				else {
-					callback(response.data);
+					callback([]);
 				}
 			},
 			error: (xhr, status, error) => {
@@ -163,31 +161,29 @@ class Dispatch extends React.Component {
 	 */
 	findUsers(map, callback) {
 		
-		var bounds = map.getBounds();
-		
-		var proximitymeter = google.maps.geometry.spherical.computeDistanceBetween (
+		const bounds = map.getBounds();
+		const proximitymeter = google.maps.geometry.spherical.computeDistanceBetween(
 			bounds.getSouthWest(), 
 			bounds.getNorthEast()
 		);
-		var proximitymiles = proximitymeter * 0.000621371192,
-			radius = proximitymiles / 2,
-			mapCenter = map.getCenter(),
-			center = new google.maps.LatLng(mapCenter .lat(), mapCenter .lng());
+		const proximitymiles = proximitymeter * 0.000621371192;
+		const radius = proximitymiles / 2;
+		const mapCenter = map.getCenter();
+		const center = new google.maps.LatLng(mapCenter .lat(), mapCenter .lng());
 
-		if(!center) return callback(null, 'No center');
+		if(!center) 
+			return callback(null, 'No center');
 
-		var query = "lat=" + center.lat() + "&lon=" + center.lng() + "&radius=" + radius;
+		const query = `lat=${center.lat()}&lon=${center.lng()}&radius=${radius}`;
 		
 		//Should be authed
-		$.ajax('/api/user/findInRadius?' + query, {
+		$.ajax(`/api/user/findInRadius?${query}`, {
 			success: (response) => {
-
 				//Do nothing, because of bad response
 				if(!response.data || response.err)
 					callback(null, 'Error');
 				else
 					callback(response.data, null);
-
 			},
 			error: (xhr, status, error) => {
 				return callback(null, error);
@@ -230,12 +226,12 @@ class Dispatch extends React.Component {
 	}
 
 	render() {
-
-		var cards = [],
-			key = 0;
+		const { user } = this.props;
+		let cards = [];
+		let key = 0;
 
 		//Check if the user has an outlet and they're enabled for dispatch 
-		if (this.props.user.outlet && this.props.user.outlet.dispatch_enabled) {
+		if (user.outlet && user.outlet.dispatch_enabled) {
 
 			cards.push(
 				<DispatchAssignments 
@@ -246,7 +242,8 @@ class Dispatch extends React.Component {
 					updateViewMode = {this.updateViewMode}
 					setActiveAssignment={this.setActiveAssignment}
 					toggleSubmissionCard={this.toggleSubmissionCard}
-					findAssignments={this.findAssignments} />
+					findAssignments={this.findAssignments} 
+				/>
 			);
 
 			cards.push(
@@ -262,23 +259,25 @@ class Dispatch extends React.Component {
 					toggleSubmissionCard={this.toggleSubmissionCard}
 					updateNewAssignment={this.updateNewAssignment}
 					mapShouldUpdate={this.mapShouldUpdate}
-					key={key++} />
+					key={key++} 
+				/>
 			);
 		}
 		else{
-
 			cards.push(
-				<DispatchRequest key={key++} />
+				<DispatchRequest 
+					key={key++} />
 			);
-
 		}
 
-		var statsDownloadButton = '';
+		let statsDownloadButton = '';
 
 		if(this.props.user.rank > 1) {
-			statsDownloadButton = <button 
-									className="btn btn-flat pull-right mt12 mr16" 
-									onClick={this.downloadStats} >Download Stats (.xlsx)</button>
+			statsDownloadButton = (
+				<button 
+					className="btn btn-flat pull-right mt12 mr16" 
+					onClick={this.downloadStats} >Download Stats (.xlsx)</button>
+			);
 		}
 
 		return (
@@ -315,7 +314,9 @@ class Dispatch extends React.Component {
 					findUsers={this.findUsers}
 					updateNewAssignment={this.updateNewAssignment} />
 				
-				<div className="cards">{cards}</div>
+				<div className="cards">
+					{cards}
+				</div>
 			</App>
 		);
 	}

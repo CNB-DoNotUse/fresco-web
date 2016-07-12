@@ -1,5 +1,6 @@
 import React from 'react'
 import StoryCell from './story-cell.js'
+import _ from 'lodash';
 
 /** //
 
@@ -24,65 +25,54 @@ export default class StoryList extends React.Component {
 	componentDidMount() {
 		//Access parent var load method
 		this.props.loadStories(null, (stories) => {
-
-			var offset = stories ? stories.length : 0;
-
 			//Set stories from successful response
 			this.setState({
-				stories: stories,
+				stories: stories
 			});
-
 		});
 	}
 
 	//Scroll listener for main window
 	scroll(e) {
-
-		var grid = e.target;
+		const grid = e.target;
 
 		//Check that nothing is loading and that we're at the end of the scroll,
-		//and that we have a parent bind to load  more stories
+		//and that we have a parent bind to load more stories
 		if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400) && this.props.loadStories){
-
-			self = this;
-
 			//Set that we're loading
 			this.setState({ loading : true })
 
-            const lastStory = this.state.stories[this.state.stories.length - 1];
 			//Run load on parent call
-			this.props.loadStories(lastStory.id, function(stories){
-
+			this.props.loadStories(_.last(this.state.stories).id, (stories) => {
 				if(!stories) return;
 
-				var offset = self.state.stories.length + stories.length;
-
 				//Set galleries from successful response, and unset loading
-				self.setState({
-					stories: self.state.stories.concat(stories),
-					offset : offset,
-					loading : false
+				this.setState({
+					stories: this.state.stories.concat(stories),
+					loading : !this.state.loading
 				});
-
-			}, this);
+			});
 		}
 	}
 
     render() {
-        let stories = this.state.stories;
-
-		//Map all the stories into cells
-		stories.map((story, i) => {
-	      	return (
-	        	<StoryCell
-	        		story={story}
-	        		key={i} />
-	      	);
-  		});
+    	console.log(this.state);
 
 		return (
-			<div className="container-fluid fat grid" ref='grid' onScroll={this.props.scrollable ? this.scroll : null}>
-				<div className="row tiles" id="stories">{stories}</div>
+			<div 
+				className="container-fluid fat grid" 
+				ref='grid' 
+				onScroll={this.props.scrollable ? this.scroll : null}
+			>
+				<div className="row tiles" id="stories">
+					{this.state.stories.map((story, i) => {
+				      	return (
+				        	<StoryCell
+				        		story={story}
+				        		key={i} />
+				      	)
+			  		})}
+				</div>
 			</div>
 		);
 	}

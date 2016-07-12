@@ -5,7 +5,6 @@ import global from '../../../lib/global'
 /**
  * Single Story Cell, child of StoryList
  */
-
 export default class StoryCell extends React.Component {
 
 	constructor(props) {
@@ -19,29 +18,35 @@ export default class StoryCell extends React.Component {
 	}
 
 	render() {
-
-		// var size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
-
-		var timestamp = this.props.story.time_edited || this.props.story.created_at,
-			timeString = global.formatTime(timestamp);
+		const {story} = this.props;
+		const timestamp = story.updated_at || story.created_at;
+		const timeString = global.formatTime(timestamp);
 
 		return(
 			<div className='col-xs-6 col-md-3 tile story' onClick={this.onClick}>
 				<div className="tile-body">
 					<div className="frame"></div>
+					
 					<div className="hover">
-						<p className="md-type-body1">{this.props.story.caption}</p>
+						<p className="md-type-body1">{story.caption}</p>
 					</div>
-					<StoryCellImages thumbnails={this.props.story.thumbnails} />
+					
+					<StoryCellImages 
+						thumbnails={story.thumbnails} />
 				</div>
 				<div className="tile-foot">
 					<div className="hover">
-						<a href={'/story/'+ this.props.story.id} className="md-type-body2">See all</a>
-						<span className="right-info">{this.props.story.gallery_count + ' ' + (this.props.story.gallery_count == 1 ? 'gallery' : 'galleries')}</span>
+						<a href={'/story/'+ story.id} className="md-type-body2">See all</a>
+						
+						<span className="right-info">
+								{story.galleries + ' ' + (story.galleries == 1 ? 'gallery' : 'galleries')}
+						</span>
 					</div>
+					
 					<div>
 						<div>
 							<span className="md-type-body2">{this.props.story.title}</span>
+							
 							<span className="md-type-caption timestring" data-timestamp={timestamp}>{timeString}</span>
 						</div>
 					</div>
@@ -51,11 +56,9 @@ export default class StoryCell extends React.Component {
 	}
 }
 
-
 /**
  * Post Cell Images
  */
-
 class StoryCellImages extends React.Component {
 
 	render() {
