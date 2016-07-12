@@ -5,28 +5,32 @@ import EditTags from './../editing/gallery-edit-tags';
 import EditStories from './../editing/gallery-edit-stories';
 import GalleryEditAssignment from './../editing/gallery-edit-assignment';
 import FrescoImage from '../global/fresco-image';
-import clone from 'lodash/clone';
+import cloneDeep from 'lodash/cloneDeep';
 
 /**
-	Admin Submission Edit component.
-	Delete, Skip, Verify imported
-**/
+ *	Admin Submission Edit component.
+ *	Delete, Skip, Verify imported
+ */
 class AdminGalleryEdit extends React.Component {
     constructor(props) {
         super(props);
+
+        const activeGallery = cloneDeep(props.gallery);
         this.state = {
-            activeGallery: {},
+            activeGallery,
             editButtonsEnabled: false,
-            address: null,
-            mapLocation: [],
+            tags: activeGallery.tags,
+            stories: activeGallery.stories,
+            assignment: activeGallery.assignment,
+            address: activeGallery.address,
             waiting: false,
+            caption: activeGallery.caption || 'No Caption',
         };
 
         this.resetState = this.resetState.bind(this);
 
         this.editButtonEnabled = this.editButtonEnabled.bind(this);
         this.updateTags = this.updateTags.bind(this);
-        this.updateRelatedStories = this.updateRelatedStories.bind(this);
         this.onPlaceChange = this.onPlaceChange.bind(this);
         this.updateGallery = this.updateGallery.bind(this);
 
@@ -38,7 +42,6 @@ class AdminGalleryEdit extends React.Component {
 
     componentDidMount() {
         this.editButtonEnabled(false);
-        this.resetState(this.props);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -57,7 +60,7 @@ class AdminGalleryEdit extends React.Component {
     /**
      * Updates state with new stories
      */
-    updateRelatedStories(stories) {
+    updateStories(stories) {
         const gallery = this.state.activeGallery;
         gallery.related_stories = stories;
 
@@ -97,18 +100,19 @@ class AdminGalleryEdit extends React.Component {
      */
     resetState(props) {
         // Reset form
+        const activeGallery = cloneDeep(props.gallery);
         this.setState({
-            activeGallery: clone(props.gallery, true),
-            tags: [],
-            stories: [],
-            assignment: props.gallery.assignment,
-            mapLocation: null,
+            activeGallery,
+            editButtonsEnabled: false,
+            tags: activeGallery.tags,
+            stories: activeGallery.stories,
+            assignment: activeGallery.assignment,
+            address: activeGallery.address,
             waiting: false,
-            caption: props.gallery.caption || 'No Caption',
+            caption: activeGallery.caption || 'No Caption',
         });
 
         // Remove materialize empty input class
-        // $(this.refs['gallery-byline']).removeClass('empty');
         $(this.refs['gallery-caption']).removeClass('empty');
         $(this.refs['gallery-stories-input']).removeClass('empty');
     }
@@ -125,7 +129,7 @@ class AdminGalleryEdit extends React.Component {
 	 * Reverts all changes
 	 */
     revert() {
-        this.setState({ activeGallery: clone(this.props.gallery, true) });
+        this.setState({ activeGallery: cloneDeep(this.props.gallery) });
         this.editButtonEnabled(true);
         this.refs['gallery-caption'].value = this.props.gallery.caption || 'No Caption';
         this.refs['gallery-caption'].className =
@@ -179,8 +183,6 @@ class AdminGalleryEdit extends React.Component {
         // const posts = gallery.posts.map(p => p.id);
 
         this.setState({ waiting: true });
-
-        // if (!gallery.related_stories) gallery.related_stories = [];
 
         // const stories = this.state.activeGallery.related_stories.map((story) => (
         //     (story.new ? `NEW=${JSON.stringify({ title: story.title })}` : story.id)
@@ -314,7 +316,7 @@ class AdminGalleryEdit extends React.Component {
                         className="form-control floating-label gallery-caption"
                         placeholder="Caption"
                         onChange={(e) => this.handleChangeCaption(e)}
-                        defaultValue={activeGallery.caption ? activeGallery.caption : 'No Caption'}
+                        defaultValue={activeGallery.caption}
                         ref="gallery-caption"
                     />
 
@@ -329,8 +331,8 @@ class AdminGalleryEdit extends React.Component {
                     />
 
                     <EditStories
-                        relatedStories={activeGallery.related_stories}
-                        updateRelatedStories={this.updateRelatedStories}
+                        relatedStories={activeGallery.stories}
+                        updateRelatedStories={(stories) => this.updateStories(stories)}
                     />
 
                     <div style={{ height: '309px' }}>

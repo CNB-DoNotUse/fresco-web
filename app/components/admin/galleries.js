@@ -4,8 +4,6 @@ import AdminGalleryEdit from './gallery-edit';
 import findIndex from 'lodash/findIndex';
 import omit from 'lodash/omit';
 
-// TODO: Galleries and Submissions should maybe still be one cmp
-// (depending on future differences if any)
 class Galleries extends React.Component {
     constructor(props) {
         super(props);
@@ -17,7 +15,7 @@ class Galleries extends React.Component {
     }
 
     onUpdateGallery(id) {
-        const { removeGallery, galleries} = this.props;
+        const { removeGallery, galleries } = this.props;
         const index = findIndex(galleries, { id });
         const newIndex = galleries.length === (index + 1)
             ? index - 1
