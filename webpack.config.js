@@ -155,5 +155,5 @@ module.exports = {
             'lib'
         ]
     },
-    devtool: "source-map"
+    devtool: "eval-source-map"
 };

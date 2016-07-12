@@ -215,7 +215,6 @@ class AdminAssignmentEdit extends React.Component {
                         placeholder="Expiration Time"
                         data-hint="hours from now"
                         ref="assignment-expiration"
-                        style={{ marginTop: '30px' }}
                         defaultValue={expiration_time}
                     />
                 </div>

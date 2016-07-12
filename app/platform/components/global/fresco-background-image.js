@@ -19,11 +19,7 @@ export default class FrescoBackgroundImage extends React.Component {
 	}
 
 	updateImage(image) {
-		if (!this.isMounted()) return;
-
-		this.setState({
-			image: image
-		});
+		this.setState({ image });
 	}
 
 	render() {
