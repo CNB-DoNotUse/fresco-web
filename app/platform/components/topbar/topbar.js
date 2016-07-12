@@ -17,8 +17,6 @@ class TopBar extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log('utils', utils);
-
         this.goLink = this.goLink.bind(this);
         this.toggleDrawer = this.toggleDrawer.bind(this);
         this.timeToggleSelected = this.timeToggleSelected.bind(this);
