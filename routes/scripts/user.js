@@ -57,7 +57,7 @@ router.post('/user/login', (req, res) => {
         method: 'POST',
         url: '/auth/signin',
         body: {
-            username: req.body.username,
+            username: req.body.email,
             password: req.body.password
         }
     })
