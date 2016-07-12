@@ -6,7 +6,7 @@ var fs                = require('fs'),
     Purchases         = require('../lib/purchases'),
     head              = require('../lib/head'),
     router            = express.Router(),
-    global            = require('../lib/global'),
+    utils             = require('../lib/utils'),
     React             = require('react'),
     ReactDOMServer    = require('react-dom/server'),
     request           = require('request'),
@@ -58,14 +58,14 @@ function render(gallery, user, req, res) {
             title, gallery, react,
             og: {
                 title,
-                image: global.formatImg(gallery.posts[0].image, 'large'),
+                image: utils.formatImg(gallery.posts[0].image, 'large'),
                 url: req.originalUrl,
                 description: gallery.caption
             },
             twitter: {
                 title,
                 description: gallery.caption,
-                image: global.formatImg(gallery.posts[0].image, 'large')
+                image: utils.formatImg(gallery.posts[0].image, 'large')
             },
             page: 'publicGallery',
             props: JSON.stringify(props)

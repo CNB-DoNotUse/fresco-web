@@ -3,7 +3,7 @@ var express    = require('express'),
     Purchases  = require('../lib/purchases'),
     request    = require('request'),
     router     = express.Router(),
-    global     = require('../lib/global');
+    utils     = require('../lib/utils');
 
 router.get('/:id', (req, res, next) => {
 
@@ -32,7 +32,7 @@ router.get('/:id', (req, res, next) => {
     }
 
     //Check if the assignment is the user's and they're not a CM or Admin
-    if(notFoundUserID && req.session.user.rank <= global.RANKS.CONTENT_MANAGER){
+    if(notFoundUserID && req.session.user.rank <= utils.RANKS.CONTENT_MANAGER){
         return next(error);
     }
 

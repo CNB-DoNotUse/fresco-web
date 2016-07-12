@@ -5,7 +5,7 @@ const
     User        = require('../../lib/user'),
     API         = require('../../lib/api'),
     resolveError = require('../../lib/resolveError'),
-    global      = require('../../lib/global'),
+    utils      = require('../../lib/utils'),
     router      = express.Router();
 
 //---------------------------vvv-USER-ENDPOINTS-vvv---------------------------//
@@ -18,7 +18,7 @@ const
 router.post('/user/reset', (req, res, next) => {
 
     var request  = require('superagent'),
-        email = global.sanitizeEmail(req.body.email);
+        email = utils.sanitizeEmail(req.body.email);
 
     if(!email){
         return res.json({

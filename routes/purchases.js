@@ -1,6 +1,6 @@
-var express   = require('express'),
+var express     = require('express'),
     config      = require('../lib/config'),
-    global      = require('../lib/global'),
+    utils       = require('../lib/utils'),
     request     = require('request-json'),
     router      = express.Router(),
     api         = request.createClient(config.API_URL);
@@ -10,9 +10,9 @@ var express   = require('express'),
  */
 
 router.get('/', (req, res, next) => {
-  
+
   //Check if an Admin
-  if (req.session.user.rank < global.RANKS.ADMIN) {
+  if (req.session.user.rank < utils.RANKS.ADMIN) {
       var error = new Error(config.ERR_PAGE_MESSAGES[403]);
       error.status = 403;
       return next(error);

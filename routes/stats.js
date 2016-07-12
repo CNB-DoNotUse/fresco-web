@@ -1,6 +1,6 @@
 var express   = require('express'),
     config    = require('../lib/config'),
-    global    = require('../lib/global'),
+    utils     = require('../lib/utils'),
     router    = express.Router();
 
 /**
@@ -10,7 +10,7 @@ var express   = require('express'),
 router.get('/', (req, res, next) => {
 
     //Check if the user is part of an outlet or they are at least aa CM
-    if (req.session.user.rank < global.RANKS.ADMIN) {
+    if (req.session.user.rank < utils.RANKS.ADMIN) {
         var error = error(config.ERR_PAGE_MESSAGES[401]);
         error.status = 401;
 

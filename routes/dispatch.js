@@ -1,6 +1,5 @@
 var express   = require('express'),
     config    = require('../lib/config'),
-    global    = require('../lib/global'),
     router    = express.Router();
 
 /**

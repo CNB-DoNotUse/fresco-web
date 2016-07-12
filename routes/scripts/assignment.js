@@ -4,7 +4,7 @@ var express = require('express'),
     API = require('../../lib/api'),
     xlsx = require('node-xlsx'),
     router = express.Router();
-	
+
 //---------------------------vvv-ASSIGNMENT-ENDPOINTS-vvv---------------------------//
 router.get('/assignment/stats', (req, res) => {
   // if(!req.session.user || req.session.user.rank < 1) return res.status(403).send({ err: 'Unauthorized' });
@@ -59,7 +59,7 @@ router.get('/assignment/stats', (req, res) => {
         a.address,
         a.zip,
         a.radius,
-        global.getWeekDay(a.day_created),
+        utils.getWeekDay(a.day_created),
         a.date_created,
         a.created_at,
         a.users,
