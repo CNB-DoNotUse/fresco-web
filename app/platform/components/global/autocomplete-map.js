@@ -3,7 +3,7 @@ import PlacesAutocomplete from '../editing/places-autocomplete'
 import FrescoAutocomplete from '../global/fresco-autocomplete.js'
 import EditMap from '../editing/edit-map'
 
-class AutocompleteMap extends React.Component {
+export default class AutocompleteMap extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -22,7 +22,7 @@ class AutocompleteMap extends React.Component {
 			this.refs.radius.value = Math.round(this.props.radius);
 		}
 	}
-
+	
 	/**
 	 * Updates prop radius function
 	 */
@@ -51,17 +51,17 @@ class AutocompleteMap extends React.Component {
 			radiusInput = <input
 				            type="text"
 				            className="form-control floating-label numbers"
-				            style={{marginTop: '30px'}}
+				            style={{marginBottom: '10px'}}
 				            data-hint={this.props.unit}
 				            placeholder="Radius"
 				            defaultValue={Math.round(this.props.radius)}
 				            onChange={this.updateRadius}
-				            ref="radius"
+				            ref="radius" 
 				        />
 		}
 
 		return (
-			<div className="map-group autocomplete-map">
+			<div className="map-group autocomplete-map form-group-default">
 				<FrescoAutocomplete
 					inputText={this.props.defaultLocation}
 					disabled={this.props.disabled}
@@ -70,21 +70,17 @@ class AutocompleteMap extends React.Component {
 					inputClass="form-control floating-label"
 					ref="autocomplete"
 					transition={false}
-                    updateAutocompleteData={this.props.onPlaceChange}
-                />
-
+					updateAutocompleteData={this.props.onPlaceChange} />
+	            
 	            {radiusInput}
-
-				<div className="form-group-default" style={{marginTop: '24px'}}>
-					<EditMap
-						location={this.props.location}
-						radius={this.props.radius}
-						rerender={this.props.rerender}
-						draggable={this.props.draggable}
-						updateCurrentBounds={this.updateCurrentBounds}
-                        onDataChange={this.props.onMapDataChange}
-                    />
-				</div>
+				
+				<EditMap 
+					location={this.props.location}
+					radius={this.props.radius}
+					rerender={this.props.rerender}
+					draggable={this.props.draggable}
+					updateCurrentBounds={this.updateCurrentBounds}
+					onDataChange={this.props.onMapDataChange} />
 			</div>
 		);
 	}
@@ -101,7 +97,4 @@ AutocompleteMap.defaultProps = {
 	updateRadius: function() {},
 	onPlaceChange: function() {},
 	onRadiusUpdate: function() {}
-};
-
-export default AutocompleteMap;
-
+}

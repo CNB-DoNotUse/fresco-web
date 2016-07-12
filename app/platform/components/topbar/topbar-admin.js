@@ -4,9 +4,9 @@ import utils from 'utils';
 import times from 'lodash/times';
 import request from 'superagent';
 
-/** //
-Description : Top for admin page
-// **/
+/**
+ * Description : Top for admin page
+ */
 class TopBarAdmin extends React.Component {
     constructor(props) {
         super(props);
@@ -138,14 +138,14 @@ class TopBarAdmin extends React.Component {
                 <div className="form-group-default">
                     <input
                         type="text"
-                        className="form-control twitter-import"
+                        className="form-control twitter-import floating-label"
                         placeholder="Link"
                         ref="twitter-import-input"
                         onKeyDown={(e) => this.handleTwitterInputKeyDown(e)}
                     />
                 </div>
 
-                <div className="tab-control admin-tabs">
+                <div className="tab-control">
                     <button
                         className="btn btn-flat tab-admin"
                         data-tab="assignments"

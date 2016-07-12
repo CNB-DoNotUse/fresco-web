@@ -9,6 +9,7 @@ import TagFilter from '../components/topbar/tag-filter'
 class Purchases extends React.Component {
 	constructor(props) {
 		super(props);
+
 		this.state = {
 			outlets: [],
 			availableOutlets: [],
@@ -69,7 +70,7 @@ class Purchases extends React.Component {
 
 		//Check that the outlet isn't already in the list
 		for (var i = 0; i < outlets.length; i++) {
-			if(outlets[i].id === outlet.id){
+			if(outlets[i]._id === outlet._id){
 				outletExists = true;
 				break;
 			}
@@ -106,7 +107,7 @@ class Purchases extends React.Component {
 	 */
 	loadStats(callback) {
 		$.get('/api/outlet/purchases/stats', {
-			outlets: this.state.outlets.map(p => p.id)
+			outlets: this.state.outlets.map(p => p._id)
 		}, (response) => {
 			if(response.err || !response.data) {
 				return $.snackbar({
@@ -135,7 +136,7 @@ class Purchases extends React.Component {
 			limit: 20,
 			offset: passedOffset,
 			details: true,
-			outlets: this.state.outlets.map(p => p.id)
+			outlets: this.state.outlets.map(p => p._id)
 		}, (response) => {
 			if(response.err) {
 				return $.snackbar({
@@ -159,7 +160,7 @@ class Purchases extends React.Component {
 
 	downloadExports(format) {
 		var filterOutletText = this.state.outlets.map((outlet) => {
-			return 'outlet[]='+ outlet.id
+			return 'outlet[]='+ outlet._id
 		}).join('&');
 
 		var url = "/scripts/outlet/export?format=" + format + '&' + filterOutletText;
@@ -182,7 +183,7 @@ class Purchases extends React.Component {
 					title="Purchases">
 
 					<TagFilter
-						text="Outlets"
+						text="Outlet"
 						tagList={availableOutlets}
 						filterList={outlets}
 						onTagInput={this.findOutlets}

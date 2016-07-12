@@ -23,7 +23,7 @@ export default class GalleryEditStories extends React.Component {
 	 * Adds story element, return if story exists in prop stories.
 	 */
 	addStory(newStory) {
-		if(utils.isEmptyString(newStory.title))
+		if(utils.isEmptyString(newStory.title)) 
 			return;
 
 		//Clear the input field
@@ -34,7 +34,7 @@ export default class GalleryEditStories extends React.Component {
 
 		//Check if story already exists
 		for(var s in stories) {
-			if(stories[s].id && stories[s].id == newStory.id)
+			if(stories[s]._id && stories[s]._id == newStory._id)
 				return;
 		}
 
@@ -81,18 +81,19 @@ export default class GalleryEditStories extends React.Component {
 				});
 			}
 		} else{
-			// Field is empty
+			//Field is empty
 			if(query.length == 0){
 				this.setState({ suggestions: [] });
 				this.refs.dropdown.style.display = 'none';
 			} else{
+
 				this.refs.dropdown.style.display = 'block';
 
 				$.ajax({
 					url: '/api/story/autocomplete',
 					data: { q: query },
 					success: (result, status, xhr) => {
-						if (result.data) {
+						if(result.data){
 							this.setState({ suggestions: result.data });
 						}
 					}
@@ -110,8 +111,7 @@ export default class GalleryEditStories extends React.Component {
 					text={story.title}
 					plus={false}
 					onClick={this.removeStory.bind(null, i)}
-                    key={i}
-                />
+					key={i} />
 			)
 		});
 
@@ -125,7 +125,7 @@ export default class GalleryEditStories extends React.Component {
 
 		return (
 
-			<div className="dialog-row split chips">
+			<div className="dialog-row split chips form-group-default">
 				<div className="split-cell">
 					<input
 						type="text"

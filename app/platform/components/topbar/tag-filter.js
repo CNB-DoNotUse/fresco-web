@@ -80,13 +80,10 @@ export default class TagFilter extends React.Component {
 								<input
 									id="tag-filter-input"
 									type="text" 
-									className="form-control empty"
+									className="form-control floating-label"
+									placeholder={this.props.text}
 									ref="tagFilterInput"
 									onKeyUp={this.handleTagInput} />
-								
-								<div className="floating-label">{this.props.text}</div>
-								
-								<span className="material-input"></span>
 							</div>
 						</div>
 						
