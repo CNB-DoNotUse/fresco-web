@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
 import AssignmentMerge from '../assignment/assignment-merge';
+import AssignmentMergeDropup from '../assignment/assignment-merge-drop-up';
 import utils from 'utils';
 import uniqBy from 'lodash/uniqBy';
 
@@ -237,6 +238,11 @@ class AdminAssignmentEdit extends React.Component {
                         Reject
                     </button>
                 </div>
+
+                <AssignmentMergeDropup
+                    nearbyAssignments={this.state.nearbyAssignments}
+                    selectMerge={(id) => this.selectMerge(id)}
+                />
 
                 <AssignmentMerge
                     assignment={assignment}

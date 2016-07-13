@@ -114,7 +114,7 @@ AutocompleteMap.propTypes = {
     onRadiusUpdate: PropTypes.func,
     defaultLocation: PropTypes.string,
     onPlaceChange: PropTypes.func,
-    location: PropTypes.object,
+    location: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     rerender: PropTypes.bool,
     draggable: PropTypes.bool,
     onMapDataChange: PropTypes.func,
