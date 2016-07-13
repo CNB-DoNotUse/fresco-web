@@ -211,7 +211,7 @@ class Admin extends React.Component {
     removeImport(id) {
         const { imports } = this.state;
         if (!id || !imports) return;
-        remove(imports, { id })
+        remove(imports, { id });
 
         this.setState({ imports });
     }
@@ -219,7 +219,7 @@ class Admin extends React.Component {
     removeSubmission(id) {
         const { submissions } = this.state;
         if (!id || !submissions) return;
-        remove(submissions, { id })
+        remove(submissions, { id });
 
         this.setState({ submissions });
     }

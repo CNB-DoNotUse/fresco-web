@@ -1,42 +1,34 @@
-import React from 'react'
+import React, { PropTypes} from 'react';
 
-export default class AssignmentMerge extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.cancel = this.cancel.bind(this);
-        this.merge  = this.merge.bind(this);
-
-    }
-
+class AssignmentMerge extends React.Component {
     cancel() {
         this.props.toggle();
     }
 
     merge() {
-        if(!this.refs.title.value.length) {
+        const { merge, assignmentToMergeInto, assignment } = this.props;
+
+        if (!this.refs.title.value.length) {
             $.snackbar({ content: 'The merged assignment\'s title cannot be empty!' });
             this.refs.title.focus();
             return;
         }
-        if(!this.refs.caption.value.length) {
+        if (!this.refs.caption.value.length) {
             $.snackbar({ content: 'The merged assignment\'s caption cannot be empty!' });
             this.refs.caption.focus();
             return;
         }
 
-        this.props.merge({
+        merge({
             title: this.refs.title.value,
             caption: this.refs.caption.value,
-            assignmentToMergeInto: this.props.assignmentToMergeInto.id,
-            assignmentToDelete: this.props.assignment.id,
-            outlet: this.props.assignment.outlets[0].id
+            assignmentToMergeInto: assignmentToMergeInto.id,
+            assignmentToDelete: assignment.id,
+            outlet: assignment.outlets[0].id,
         });
     }
 
     render() {
-
         let toggledText = this.props.toggled ? ' toggled' : '';
 
         if(!this.props.assignment || !this.props.assignmentToMergeInto) return <div />;
@@ -60,7 +52,7 @@ export default class AssignmentMerge extends React.Component {
                     <div className="col-xs-12 col-lg-8 edit-new dialog">
                         <div className="dialog-head">
                             <span className="md-type-title">Update assignment info</span>
-                            <span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.cancel}></span>
+                            <span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={() => this.cancel()}></span>
                         </div>
                         <div className="dialog-body">
                             <div className="dialog-col col-xs-12 form-group-default">
@@ -73,7 +65,7 @@ export default class AssignmentMerge extends React.Component {
                                         ref="title"
                                         defaultValue={this.props.assignmentToMergeInto.title} />
                                 </div>
-                                
+
                                 <div className="dialog-row">
                                     <textarea
                                         type="text"
@@ -84,19 +76,27 @@ export default class AssignmentMerge extends React.Component {
                                 </div>
                             </div>
                         </div>
-                            
+
                         <div className="dialog-foot">
-                            <button type="button" className="btn btn-flat" onClick={this.cancel}>Cancel</button>
-                            <button type="button" className="btn btn-flat pull-right" onClick={this.merge}>Merge & Update</button>
+                            <button type="button" className="btn btn-flat" onClick={() => this.cancel()}>Cancel</button>
+                            <button type="button" className="btn btn-flat pull-right" onClick={() => this.merge()}>Merge & Update</button>
                         </div>
                     </div>
                 </div>
             </div>
         );
-
     }
 }
 
 AssignmentMerge.defaultProps = {
-    toggle: function() {}
-}
+    toggle() {},
+};
+
+AssignmentMerge.propTypes = {
+    toggle: PropTypes.func.isRequired,
+    merge: PropTypes.func.isRequired,
+    assignmentToMergeInto: PropTypes.object.isRequired,
+    assignment: PropTypes.object.isRequired,
+};
+
+export default AssignmentMerge;

@@ -35,7 +35,6 @@ class AdminAssignmentEdit extends React.Component {
         this.onRadiusUpdate = this.onRadiusUpdate.bind(this);
         this.onMapDataChange = this.onMapDataChange.bind(this);
         this.findNearbyAssignments = this.findNearbyAssignments.bind(this);
-        this.toggleMergeDialog = this.toggleMergeDialog.bind(this);
         this.selectMerge = this.selectMerge.bind(this);
     }
 
@@ -111,7 +110,6 @@ class AdminAssignmentEdit extends React.Component {
         this.setState({ radius: utils.feetToMiles(radius) });
     }
 
-
     approve(){
         const params = {
             id: this.props.assignment.id,
@@ -173,7 +171,7 @@ class AdminAssignmentEdit extends React.Component {
     }
 
     render() {
-        const { loading, assignment, reject } = this.props;
+        const { loading, assignment, reject, merge } = this.props;
         const radius = Math.round(utils.milesToFeet(this.state.radius));
         const address = this.state.address ? this.state.address : assignment.location ? assignment.location.address : '';
         const expiration_time = assignment ? utils.hoursToExpiration(assignment.expiration_time) : null;
@@ -242,8 +240,8 @@ class AdminAssignmentEdit extends React.Component {
                     assignment={assignment}
                     assignmentToMergeInto={this.state.assignmentToMergeInto}
                     toggled={this.state.mergeDialogToggled}
-                    toggle={this.toggleMergeDialog}
-                    merge={this.merge}
+                    toggle={() => this.toggleMergeDialog()}
+                    merge={merge}
                 />
             </div>
         );
@@ -254,6 +252,7 @@ AdminAssignmentEdit.propTypes = {
     assignment: PropTypes.object.isRequired,
     approve: PropTypes.func.isRequired,
     reject: PropTypes.func.isRequired,
+    merge: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
 };
 
