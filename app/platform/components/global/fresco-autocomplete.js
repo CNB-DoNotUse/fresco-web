@@ -20,7 +20,7 @@ export default class FrescoAutocomplete extends React.Component {
         this.geocoder = new google.maps.Geocoder();
         this.autoCompleteService = new google.maps.places.AutocompleteService();
         this.placesService = new google.maps.places.PlacesService(document.createElement('span'));
-       
+
         this.predictionSelected = this.predictionSelected.bind(this);
         this.inputChanged = this.inputChanged.bind(this);
         this.calculateCrossStreets = this.calculateCrossStreets.bind(this);
@@ -33,7 +33,7 @@ export default class FrescoAutocomplete extends React.Component {
 
         //Click event for outside clicking
         $(document).click((e) => {
-            if ($(e.target).parents('.autocomplete').size() == 0 && e.target !== this.refs.autocompleteWrap) { 
+            if ($(e.target).parents('.autocomplete').size() == 0 && e.target !== this.refs.autocompleteWrap) {
                 //Reset predictions for cleanup
                 this.setState({
                     predictions: [],
@@ -45,7 +45,7 @@ export default class FrescoAutocomplete extends React.Component {
 
     componentWillUnmount() {
         //Clean up click event on unmount
-        $(document).unbind('click');     
+        $(document).unbind('click');
     }
 
     componentWillReceiveProps(nextProps) {
@@ -133,7 +133,7 @@ export default class FrescoAutocomplete extends React.Component {
 
                 //Set prediciton to details result
                 prediction = details;
-                
+
                 updateAssignment();
             });
         } else {
@@ -192,12 +192,14 @@ export default class FrescoAutocomplete extends React.Component {
             <div className={autocompleteClass} ref="autocompleteWrap">
                 <div>
                     <input
+                        placeholder="Location"
+                        defaultValue={this.props.inputText}
                         ref="inputField"
                         type="text"
                         className={this.props.inputClass}
                         onChange={this.inputChanged}
                         disabled={this.props.disabled}
-                        placeholder="Location" />
+                    />
                 </div>
 
                 {predictionsDropdown}
@@ -208,7 +210,7 @@ export default class FrescoAutocomplete extends React.Component {
 
 FrescoAutocomplete.defaultProps = {
     updateAutocompleteData: function () {},
-    transition: true, 
+    transition: true,
     class: '',
     inputClass: ''
 }

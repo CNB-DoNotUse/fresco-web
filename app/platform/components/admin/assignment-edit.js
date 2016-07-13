@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
 import AssignmentMerge from '../assignment/assignment-merge';
 import utils from 'utils';
+import uniqBy from 'lodash/uniqBy';
 
 /**
     Assignment Edit Sidebar used in assignment administration page
@@ -30,12 +31,6 @@ class AdminAssignmentEdit extends React.Component {
             mergeDialogToggled: false,
             assignmentToMergeInto: null,
         };
-
-        this.onPlaceChange = this.onPlaceChange.bind(this);
-        this.onRadiusUpdate = this.onRadiusUpdate.bind(this);
-        this.onMapDataChange = this.onMapDataChange.bind(this);
-        this.findNearbyAssignments = this.findNearbyAssignments.bind(this);
-        this.selectMerge = this.selectMerge.bind(this);
     }
 
     componentDidMount() {
@@ -57,7 +52,7 @@ class AdminAssignmentEdit extends React.Component {
                 });
             }
 
-            // this.findNearbyAssignments();
+            this.findNearbyAssignments();
             this.refs['assignment-title'].value = assignment.title;
             this.refs['assignment-description'].value = assignment.caption;
             this.refs['assignment-expiration'].value = assignment
@@ -77,7 +72,7 @@ class AdminAssignmentEdit extends React.Component {
         this.setState({
             address: place.address,
             location: place.location,
-        });
+        }, this.findNearbyAssignments);
     }
 
     /**
@@ -96,7 +91,7 @@ class AdminAssignmentEdit extends React.Component {
                     this.setState({
                         address: results[0].formatted_address,
                         location: data.location,
-                    });
+                    }, this.findNearbyAssignments);
                 }
             });
         }
@@ -132,17 +127,24 @@ class AdminAssignmentEdit extends React.Component {
      * Finds nearby assignments
      */
     findNearbyAssignments() {
-        if (!this.props.assignment || !this.props.assignment.location) return;
-        const { assignment } = this.props;
+        const { location, radius } = this.state;
+        if (!location || !location.lat || !location.lng) return;
+        const geo = {
+            type: 'Point',
+            coordinates: [location.lat, location.lng],
+        };
 
         $.get('/api/assignment/find', {
-            active: true,
-            radius: assignment.location.radius,
-            unpack: false,
-            lat: assignment.location.coordinates[1],
-            lon: assignment.location.coordinates[0],
-        }, (assignments) => {
-            this.setState({ nearbyAssignments: assignments.data.slice(0, 5) });
+            radius,
+            geo,
+            unrated: true,
+            limit: 5,
+        }, (data) => {
+            if (data.nearby && data.global) {
+                this.setState({
+                    nearbyAssignments: uniqBy(data.nearby.concat(data.global), 'id'),
+                });
+            }
         });
     }
 
@@ -199,9 +201,9 @@ class AdminAssignmentEdit extends React.Component {
                         defaultLocation={address}
                         location={this.state.location}
                         radius={radius}
-                        onPlaceChange={this.onPlaceChange}
-                        onMapDataChange={this.onMapDataChange}
-                        onRadiusUpdate={this.onRadiusUpdate}
+                        onPlaceChange={(place) => this.onPlaceChange(place)}
+                        onMapDataChange={(data) => this.onMapDataChange(data)}
+                        onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
                         draggable
                         rerender
                         hasRadius
