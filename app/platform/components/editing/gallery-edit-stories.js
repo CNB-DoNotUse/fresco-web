@@ -23,7 +23,7 @@ export default class GalleryEditStories extends React.Component {
 	 * Adds story element, return if story exists in prop stories.
 	 */
 	addStory(newStory) {
-		if(utils.isEmptyString(newStory.title)) 
+		if(utils.isEmptyString(newStory.title))
 			return;
 
 		//Clear the input field
@@ -90,8 +90,8 @@ export default class GalleryEditStories extends React.Component {
 				this.refs.dropdown.style.display = 'block';
 
 				$.ajax({
-					url: '/api/story/autocomplete',
-					data: { q: query },
+					url: '/api/search',
+					data: { 'stories[q]': query },
 					success: (result, status, xhr) => {
 						if(result.data){
 							this.setState({ suggestions: result.data });
