@@ -19,7 +19,7 @@ class AssignmentMergeDropup extends React.Component {
             <div
                 key={i}
                 className="assignment-merge-menu-item"
-                onClick={() => selectMerge(a.id)}
+                onClick={() => selectMerge(a)}
             >
                 <span className="assignment-title">
                     {a.title}

@@ -6,7 +6,7 @@ class AssignmentMerge extends React.Component {
     }
 
     merge() {
-        const { merge, assignmentToMergeInto, assignment } = this.props;
+        const { merge, mergeAssignment, assignment } = this.props;
 
         if (!this.refs.title.value.length) {
             $.snackbar({ content: 'The merged assignment\'s title cannot be empty!' });
@@ -22,7 +22,7 @@ class AssignmentMerge extends React.Component {
         merge({
             title: this.refs.title.value,
             caption: this.refs.caption.value,
-            assignmentToMergeInto: assignmentToMergeInto.id,
+            mergeAssignment: mergeAssignment.id,
             assignmentToDelete: assignment.id,
             outlet: assignment.outlets[0].id,
         });
@@ -31,7 +31,7 @@ class AssignmentMerge extends React.Component {
     render() {
         let toggledText = this.props.toggled ? ' toggled' : '';
 
-        if (!this.props.assignment || !this.props.assignmentToMergeInto) return <div />;
+        if (!this.props.assignment || !this.props.mergeAssignment) return <div />;
 
         return (
             <div className="assignment-merge-container">
@@ -40,8 +40,8 @@ class AssignmentMerge extends React.Component {
                     <div className="col-lg-4 visible-lg edit-current assignment-merge-side">
                         <div className="assignment-block">
                             <span className="section-label">Active Assignment</span>
-                            <h1>{this.props.assignmentToMergeInto.title}</h1>
-                            <p>{this.props.assignmentToMergeInto.caption}</p>
+                            <h1>{this.props.mergeAssignment.title}</h1>
+                            <p>{this.props.mergeAssignment.caption}</p>
                         </div>
                         <div className="assignment-block">
                             <span className="section-label">Submitted Assignment</span>
@@ -63,7 +63,7 @@ class AssignmentMerge extends React.Component {
                                         placeholder="Title"
                                         title="Title"
                                         ref="title"
-                                        defaultValue={this.props.assignmentToMergeInto.title}
+                                        defaultValue={this.props.mergeAssignment.title}
                                     />
                                 </div>
 
@@ -96,7 +96,7 @@ AssignmentMerge.defaultProps = {
 AssignmentMerge.propTypes = {
     toggle: PropTypes.func.isRequired,
     merge: PropTypes.func.isRequired,
-    assignmentToMergeInto: PropTypes.object,
+    mergeAssignment: PropTypes.object,
     assignment: PropTypes.object,
 };
 

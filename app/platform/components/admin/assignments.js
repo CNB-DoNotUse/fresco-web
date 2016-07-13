@@ -168,7 +168,7 @@ class Assignments extends React.Component {
                     assignment={activeAssignment}
                     loading={loading}
                     approve={(params) => this.approve(params)}
-                    reject={(id) => this.reject(id)}
+                    rejectAssignment={(id) => this.reject(id)}
                     merge={(params, cb) => this.merge(params, cb)}
                 />
             );

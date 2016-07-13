@@ -30,8 +30,8 @@ class AdminAssignmentEdit extends React.Component {
             radius,
             location,
             nearbyAssignments: [],
-            mergeDialogToggled: false,
-            assignmentToMergeInto: null,
+            showMergeDialog: false,
+            mergeAssignment: null,
         };
     }
 
@@ -152,31 +152,24 @@ class AdminAssignmentEdit extends React.Component {
     }
 
     toggleMergeDialog() {
-        const changedState = { mergeDialogToggled: !this.state.mergeDialogToggled };
-
-        if (this.state.mergeDialogToggled) {
-            changedState.assignmentToMergeInto = null;
+        const { showMergeDialog } = this.state;
+        if (showMergeDialog) {
+            this.setState({ showMergeDialog: !showMergeDialog, mergeAssignment: null });
+        } else {
+            this.setState({ showMergeDialog: !showMergeDialog });
         }
-
-        this.setState(changedState);
     }
 
     /**
      * Called when assignment-merge-menu-item is clicked
      * @param  {[type]} id ID of assignment to be merged into
      */
-    selectMerge(id) {
-        $.get('/api/assignment/get', { id }, (assignment) => {
-            if (assignment.err) {
-                return $.snackbar({ content: 'Error retrieving assignment to merge' });
-            }
-            this.setState({ assignmentToMergeInto: assignment.data });
-            return this.toggleMergeDialog();
-        });
+    selectMerge(assignment) {
+        this.setState({ mergeAssignment: assignment }, this.toggleMergeDialog);
     }
 
     render() {
-        const { loading, assignment, reject, merge } = this.props;
+        const { loading, assignment, rejectAssignment, merge } = this.props;
         const radius = Math.round(utils.milesToFeet(this.state.radius));
         const address = this.state.address ? this.state.address : assignment.location ? assignment.location.address : '';
         const expiration_time = assignment ? utils.hoursToExpiration(assignment.expiration_time) : null;
@@ -223,7 +216,7 @@ class AdminAssignmentEdit extends React.Component {
 
                     <AssignmentMergeDropup
                         nearbyAssignments={this.state.nearbyAssignments}
-                        selectMerge={(id) => this.selectMerge(id)}
+                        selectMerge={(a) => this.selectMerge(a)}
                     />
                 </div>
 
@@ -239,7 +232,7 @@ class AdminAssignmentEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat assignment-deny pull-right"
-                        onClick={() => reject(assignment.id)}
+                        onClick={() => rejectAssignment(assignment.id)}
                         disabled={loading}
                     >
                         Reject
@@ -248,8 +241,8 @@ class AdminAssignmentEdit extends React.Component {
 
                 <AssignmentMerge
                     assignment={assignment}
-                    assignmentToMergeInto={this.state.assignmentToMergeInto}
-                    toggled={this.state.mergeDialogToggled}
+                    mergeAssignment={this.state.mergeAssignment}
+                    toggled={this.state.showMergeDialog}
                     toggle={() => this.toggleMergeDialog()}
                     merge={merge}
                 />
@@ -261,7 +254,7 @@ class AdminAssignmentEdit extends React.Component {
 AdminAssignmentEdit.propTypes = {
     assignment: PropTypes.object.isRequired,
     approve: PropTypes.func.isRequired,
-    reject: PropTypes.func.isRequired,
+    rejectAssignment: PropTypes.func.isRequired,
     merge: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
 };
