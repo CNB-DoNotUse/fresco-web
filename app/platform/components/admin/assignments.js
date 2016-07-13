@@ -48,7 +48,7 @@ class Assignments extends React.Component {
                 .concat(assignments[type] && assignments[type].length ? assignments[type] : []);
         });
 
-        return allAssignments;
+        return uniqBy(allAssignments, 'id');
     }
 
     approve(params) {
@@ -131,7 +131,7 @@ class Assignments extends React.Component {
     renderAssignments() {
         const { activeAssignment } = this.state;
         let cmps = [];
-        const assignmentsToRender = uniqBy(this.getAllAssignments(), 'id');
+        const assignmentsToRender = this.getAllAssignments();
 
         function sortListItem(a, b) {
             if (a.created_at > b.created_at) {
