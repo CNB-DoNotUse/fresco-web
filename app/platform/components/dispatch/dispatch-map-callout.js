@@ -18,10 +18,7 @@ export default class DispatchMapCallout extends React.Component {
 
 	render() {
 		const { assignment } = this.props;
-
 		const posts = assignment.posts || [];
-
-		console.log(posts);
 
 		return (
 			<div className="callout">

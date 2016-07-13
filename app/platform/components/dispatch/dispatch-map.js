@@ -38,8 +38,7 @@ export default class DispatchMap extends React.Component {
 		this.updateUserMarkers = this.updateUserMarkers.bind(this);
 		this.focusOnAssignment = this.focusOnAssignment.bind(this);
 		this.addAssignmentsToMap = this.addAssignmentsToMap.bind(this);
-		this.addAssignmentToMap = this.addAssignmentToMap.bind(this);
-		this.addAssignmentMarker = this.addAssignmentMarker.bind(this);
+		this.addAssignment = this.addAssignment.bind(this);
 		this.saveMapLocation = this.saveMapLocation.bind(this);
 	}
 
@@ -54,11 +53,13 @@ export default class DispatchMap extends React.Component {
 		
 		//Grab dispatch info saved in local storage	
 		const dispatch = JSON.parse(window.sessionStorage.dispatch);
+		
 		//Set up the map object
 		const map = new google.maps.Map(
 			document.getElementById('map-canvas'), 
 			{
 				zoom: dispatch.mapZoom,
+				zoomControl: true,
 				center: dispatch.mapCenter,
 				styles: utils.mapStyles
 			}
@@ -71,22 +72,22 @@ export default class DispatchMap extends React.Component {
 		});
 
 		//10 Second interval update
-		setTimeout(() => {
-			this.updateMap();
-		}, 10000);
+		// setTimeout(() => {
+		// 	this.updateMap();
+		// }, 10000);
 
-		this.setState({ map});	
+		this.setState({ map });	
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const activeAssignmentChanged = nextProps.activeAssignment.id !== this.props.activeAssignment.id;
-
 		//Check if there is an active assignment or the acive assignment has `changed`
-		if(!this.isOpeningCallout && nextProps.activeAssignment)
-			//If there is currently an active assignment and it has changed
-			if(nextProps.activeAssignment.id !== this.props.activeAssignment.id) {
+		if(!this.isOpeningCallout && nextProps.activeAssignment){
+			//No current active assignment
+			if(!this.props.activeAssignment) {
 				this.focusOnAssignment(nextProps.activeAssignment);
-			} else if(!this.props.activeAssignment) {
+			} 
+			//If there is currently an active assignment and it has changed
+			else if(nextProps.activeAssignment.id !== this.props.activeAssignment.id) {
 				this.focusOnAssignment(nextProps.activeAssignment);
 			}
 		}
@@ -122,10 +123,6 @@ export default class DispatchMap extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-
-		//Pass down previous for diff check
-		this.updateAssignmentMarkers(prevState.assignments);
-
 		/* Event Listeners Needed in the page */
 		let selector = document.getElementById('callout-selector');
 		
@@ -185,8 +182,8 @@ export default class DispatchMap extends React.Component {
 		else if(this.props.newAssignment){
 
 			//Create the marker with a null position
-			var marker = this.addAssignmentMarker(),
-				circle = this.addCircle(null, 0, 'drafted', null),
+			var marker = this.createAssignmentMarker(this.state.map),
+				circle = this.createCircle(this.state.map, null, 0, 'drafted', null),
 				location = {
 					lat: marker.getPosition().lat(),
 					lng: marker.getPosition().lng()
@@ -238,7 +235,7 @@ export default class DispatchMap extends React.Component {
 	 */
 	clearAssignments(){
 		this.state.markers.forEach((marker) => {
-			market.setMap(null);
+			marker.setMap(null);
 		});
 		this.state.circles.forEach((circle) => {
 			circle.setMap(null);
@@ -267,82 +264,213 @@ export default class DispatchMap extends React.Component {
 
 	/**
 	 * Updates the map with new users/assignments
+	 * @description Makes ajax call for both assignments and users separately
 	 */
 	updateMap() {
-		//Check if we have map in state
+		//Check if we have map in state or are loading
 		if(!this.state.map) return;
 
+		//Send bounds for dispatch parent state
 		this.props.updateCurrentBounds(this.state.map);
 
 		//Get assignments
-		this.props.findAssignments(this.state.map, {}, (assignments) => {
-			let currentAssignments = _.clone(this.state.assignments);
-			//Map out passed assignment IDs
-			let currentAssignmentIds = currentAssignments.map(assignment => assignment.id );
-			//Map out passed assignment IDs
-			let newAssignmentIds = assignments.nearby.map(assignment => assignment.id);
-
-			//Check if there's a difference
-			if(_.difference(newAssignmentIds, currentAssignmentIds).length){
-				//Loop through new assignmt ids to push into current list of assignment Ids
-				for (var i = 0; i < newAssignmentIds.length; i++) {
-					//Check if the current assignments has this new assignment
-					if(currentAssignmentIds.indexOf(newAssignmentIds[i]) == -1){
-						//If not, push into current assignments list
-						currentAssignments.push(assignments.nearby[i]);
-					}
-				}
-			}
-
-			//Check if there are any new assignments by comparing length
-			if(currentAssignments.length > this.state.assignments.length){
-				this.setState({ 
-					assignments: currentAssignments
-				});
-			}
-		});
+		if(!this.loadingAssignments){
+			this.loadingAssignments = true;
+			
+			this.props.findAssignments(this.state.map, {}, (assignments) => {
+				this.loadingAssignments = false;
+				if(!assignments.nearby || assignments.nearby.length == 0) 
+					return;
+				
+				this.updateAssignmentMarkers(assignments.nearby);
+			});
+		}
 
 		//Get users
-		this.props.findUsers(this.state.map, (users, error) => {
-			if(users == null) return;
+		if(!this.loadingUsers){
+			this.loadingUsers = true;
+			
+			this.props.findUsers(this.state.map, (users, error) => {
+				this.loadingUsers = false;
+				
+				if(users == null) return;
 
-			let formattedUsers = {};
+				let formattedUsers = {};
 
-			//Set object keys by hash
-			users.forEach((user) => {
-				formattedUsers[user.hash] = user;
-			});
+				//Set object keys by hash
+				users.forEach((user) => {
+					formattedUsers[user.hash] = user;
+				});
 
-			//Update the user markers, then update state on callback
-			this.updateUserMarkers(formattedUsers, (markers) => {
-				this.setState({
-					userMarkers: markers,
-					users: formattedUsers
+				//Update the user markers, then update state on callback
+				this.updateUserMarkers(formattedUsers, (markers) => {
+					this.setState({
+						userMarkers: markers,
+						users: formattedUsers
+					});
 				});
 			});
-		});
+		}
 	}
 
 	/**
 	 * Updates all assignment markers on the map, using the previously set ones to remove any repeats
+	 * @param {array} newAssignments List of new assignments to update
 	 */
-	updateAssignmentMarkers(prevAssignments) {
-		var assignments = [];
+	updateAssignmentMarkers(newAssignments) {
+		let assignments = _.clone(this.state.assignments);
+		
+		//Iterate backwards, because we slice as we go
+		let i = newAssignments.length;
+		while (i--) {
+		    const assignment = newAssignments[i];
 
-		//Map out all of the previous assignmnets
-		var prevAssignmentIds = prevAssignments.map(assignment => assignment.id.toString());
+		    //If it exists, remove it from the new assignments
+		    if(_.find(assignments, ['id' , assignment.id])) {
+		    	newAssignments.splice(i, 1);
+		    } 
+		    //If it doesn't, push it into the list of assignments in state, and keep it in new assignments
+		    else {
+		    	assignments.push(assignment);
+		    }
+		}
 
+		this.setState({ assignments });
 
-		for (var i = 0; i < this.state.assignments.length; i++) {
-			//Check if it doesn't exist
-			if(prevAssignmentIds.indexOf(this.state.assignments[i].id.toString()) == -1) {
-				assignments.push(this.state.assignments[i]);
+		//Add cleaned assignments to the map
+		this.addAssignmentsToMap(newAssignments);
+	}
+
+	/**
+	 * Adds passed array of assignments to the map, 
+	 * then sets state from concatted response from `addAssignmentToMap` on each assignment
+	 */
+	addAssignmentsToMap(assignments){
+		let markers = [];
+		let circles = [];
+
+		//Loop and add assignments to map
+		assignments.forEach((assignment) => {
+			const assignmentMapData = this.addAssignment(assignment, false);
+			
+			//Push into local marker and circles
+			markers.push(assignmentMapData.marker);
+			circles.push(assignmentMapData.circle);
+		});
+
+		//Update state
+		this.setState({
+			markers: this.state.markers.concat(markers),
+			circles: this.state.circles.concat(circles)
+		});
+	}
+
+	/**
+	 * Makes a marker with the passed assignment and adds it to the map
+	 * @return adds a google maps marker, with the passed geo-location
+	 */
+	addAssignment(assignment, draggable) {
+		//Lat/Lng will default to center if for a created assignment
+		const { map } = this.state;
+		let title = assignment.title || 'No title';
+		let zIndex; 
+		let status;
+		let position = new google.maps.LatLng(
+			assignment.location.coordinates[1], 
+			assignment.location.coordinates[0]
+		);
+		let radius = assignment.location.radius;
+
+		//Check if the assignment is expired
+		if (new Date(assignment.ends_at).getTime() < Date.now()) {
+			status = 'expired';
+			zIndex = 100;
+		} 
+		//Not expired assignment
+		else {
+			if(assignment.rating == 0) { //Assignment is pending
+				status = 'pending';
+				zIndex = 200;
+			} else { //Assignment has 'active' or unchecked status
+				status = 'active'
+				zIndex = 300;
 			}
 		}
 
-		if(assignments.length == 0 ) return;
+		//Create the rendered circle
+		const circle = this.createCircle(
+			map,
+			position, 
+			utils.milesToMeters(radius), 
+			status,
+			assignment.id
+		);
+		//Create the marker
+		const marker = this.createAssignmentMarker(
+			map,
+			position, 
+			title,
+			status,
+			zIndex, 
+			draggable,
+			assignment.id
+		);
 
-		this.addAssignmentsToMap(assignments);
+		//Add event handler to display callout when clicekd
+		google.maps.event.addListener(
+			marker, 
+			'click',  
+			this.focusOnAssignment.bind(null, assignment)
+		);
+
+		return { circle, marker }
+	}
+
+	/**
+	 * Creates a marker from passed params
+	 */
+	createAssignmentMarker(map, position, title, status, zIndex, draggable, assignmentId) {
+		//Create the marker image
+		const image = {
+			url: status ? utils.assignmentImage[status] : utils.assignmentImage.drafted,
+			size: new google.maps.Size(108, 114),
+			scaledSize: new google.maps.Size(36, 38),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(18, 19)
+		};
+		
+		//Default to position or center of map
+		if(!position){
+			position = {lat: map.getCenter().lat(), lng: map.getCenter().lng()};
+		}
+		
+		return new google.maps.Marker({
+			position: position,
+			map: map,
+			title: title || 'No title',
+			icon: image,
+			zIndex: zIndex || 0,
+			draggable: draggable !== undefined ? draggable : true,
+			assignmentId: assignmentId !== undefined ? assignmentId : true
+		});
+	}
+
+	/**
+	 * Adds circle to the map given a center and a radius
+	 * @param {dictionary} center Center of the circle
+	 * @param {integer} radius Circle radius in meters
+	 * @param {Assignment status} status active/pending/expired
+	 */
+	createCircle(map, center, radius, status, assignmentId) {
+		return new google.maps.Circle({
+			map: map,
+			center: center || map.getCenter(),
+			radius: radius || 0,
+			strokeWeight: 0,
+			fillColor: utils.assignmentColor[status],
+			fillOpacity: 0.3,
+			assignmentId: assignmentId !== undefined ? assignmentId : true
+		});
 	}
 
 	/**
@@ -358,18 +486,18 @@ export default class DispatchMap extends React.Component {
 			currentUserKeys = Object.keys(currentUsers);
 
 		for (var i = 0; i < keys.length; i++) {
-			var key = keys[i],
-				user = newUsers[key],
-				prevUser = currentUsers[key];
+			let key = keys[i];
+			let user = newUsers[key];
+			let prevUser = currentUsers[key];
 
-			//If the location already exists
+			//If the user already exists
 			if(prevUser !== null && typeof(prevUser) !== 'undefined') {
 				//If the location has changed, move it, otherwise do nothing
-				if(prevUser.geo.coordinates[0] !== user.geo.coordinates[0] || prevUser.geo.coordinates[1] !== user.geo.coordinates[1]){
+				if(prevUser.curr_geo.coordinates[0] !== user.curr_geo.coordinates[0] || prevUser.curr_geo.coordinates[1] !== user.curr_geo.coordinates[1]){
 					var marker = markers[key];
 
 					//Update the marker's position
-					marker.setPosition(new google.maps.LatLng(user.geo.coordinates[1], user.geo.coordinates[0]));
+					marker.setPosition(new google.maps.LatLng(user.curr_geo.coordinates[1], user.curr_geo.coordinates[0]));
 				}
 			}
 			//If the user doesn't exist in the new data set
@@ -380,7 +508,7 @@ export default class DispatchMap extends React.Component {
 					delete currentUsers[key];
 				}
 
-				var marker = this.addUserMarker(user.geo); //Add user to map
+				const marker = this.createUserMarker(this.state.map, user.curr_geo); //Add user to map
 
 				markers[key] = marker; //Save marker to state
 			}
@@ -406,166 +534,20 @@ export default class DispatchMap extends React.Component {
 	}
 
 	/**
-	 * Adds passed array of assignments to the map, 
-	 * then sets state from concatted response from `addAssignmentToMap` on each assignment
-	 */
-	addAssignmentsToMap(assignments){
-		let markers = [];
-		let circles = [];
-
-		for (var i = 0; i < assignments.length; i++) {
-			const mapData = this.addAssignmentToMap(assignments[i], false);
-			
-			if(typeof(mapData) === 'undefined') continue;
-			
-			//Push into local marker and circles
-			markers.push(mapData.marker);
-			circles.push(mapData.circle);
-			assignments[i]
-		}
-
-		//Update state
-		this.setState({
-			markers: this.state.markers.concat(markers),
-			circles: this.state.circles.concat(circles)
-		});
-	}
-
-	/**
-	 * Makes a marker with the passed assignment
-	 * @return adds a google maps marker, with the passed geo-location
-	 */
-	addAssignmentToMap(assignment, draggable) {
-		console.log(assignment);
-
-		//Lat/Lng will default to center if for a created assignment
-		let map = this.state.map;
-		let title = assignment.title || 'No title';
-		let zIndex; 
-		let status;
-		let position = new google.maps.LatLng(
-			assignment.location.coordinates[1], 
-			assignment.location.coordinates[0]
-		);
-		let radius = assignment.location.radius;
-
-		//Check if the assignment is expired
-		if (assignment.expiration_time && assignment.expiration_time < Date.now()) {
-			status = 'expired';
-			zIndex = 100;
-		}
-		//Not expired assignment
-		else {
-			//Assignment is pending
-			if(assignment.visibility == 0) {
-				status = 'pending';
-				zIndex = 200;
-			}
-			//Assignment has 'active' or unchecked status
-			else {
-				status = 'active'
-				zIndex = 300;
-			}
-		}
-
-		//Check if the status matches the view mode
-		if(status != this.props.viewMode) return;
-
-		//Create the rendered circle
-		const circle = this.addCircle(
-			position, 
-			utils.milesToMeters(radius), 
-			status,
-			assignment.id
-		);
-		
-		//Create the marker
-		const marker = this.addAssignmentMarker(
-			position, 
-			title,
-			status,
-			zIndex, 
-			draggable,
-			assignment.id
-		);
-
-		//Add event handler to display callout when clicekd
-		google.maps.event.addListener(
-			marker, 
-			'click',  
-			this.focusOnAssignment.bind(null, assignment)
-		);
-
-		return { circle, marker }
-	}
-
-	addAssignmentMarker(position, title, status, zIndex, draggable, assignmentId) {
-
-		//Create the marker image
-		var image = {
-				url: status ? utils.assignmentImage[status] : utils.assignmentImage.drafted,
-				size: new google.maps.Size(108, 114),
-				scaledSize: new google.maps.Size(36, 38),
-				origin: new google.maps.Point(0, 0),
-				anchor: new google.maps.Point(18, 19)
-			},
-			
-			position = position || {lat: this.state.map.getCenter().lat(), lng: this.state.map.getCenter().lng()},
-			
-			marker = new google.maps.Marker({
-				position: position,
-				map: this.state.map,
-				title: title || 'No title',
-				icon: image,
-				zIndex: zIndex || 0,
-				draggable: draggable !== undefined ? draggable : true,
-				assignmentId: assignmentId !== undefined ? assignmentId : true
-			});
-
-		return marker;
-
-	}
-
-	/**
-	 * Adds circle to the map given a center and a radius
-	 * @param {dictionary} center Center of the circle
-	 * @param {integer} radius Circle radius in meters
-	 * @param {Assignment status} status active/pending/expired
-	 */
-	addCircle(center, radius, status, assignmentId) {
-		
-		var fillColor = utils.assignmentColor[status],
-			circle =  new google.maps.Circle({
-				map: this.state.map,
-				center: center || this.state.map.getCenter(),
-				radius: radius || 0,
-				strokeWeight: 0,
-				fillColor: fillColor,
-				fillOpacity: 0.3,
-				assignmentId: assignmentId !== undefined ? assignmentId : true
-			});
-
-		return circle;
-	}
-
-	/**
 	 * Makes a marker for a user
 	 * @return a google maps marker for a user, with the passed geo-location
 	 */
-	addUserMarker(user) {
-		var map = this.state.map,
-			lng = user.coordinates[0],
-			lat = user.coordinates[1],
-			image = {
-				url: "/images/assignment-user@3x.png",
-				size: new google.maps.Size(30, 33),
-				scaledSize: new google.maps.Size(10, 11),
-				origin: new google.maps.Point(0, 0),
-				anchor: new google.maps.Point(5, 5.5),
-			};
+	createUserMarker(map, geo) {
+		const image = {
+			url: "/images/assignment-user@3x.png",
+			size: new google.maps.Size(30, 33),
+			scaledSize: new google.maps.Size(10, 11),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(5, 5.5),
+		};
 
 		return new google.maps.Marker({
-			position: new google.maps.LatLng(lat, lng),
+			position: new google.maps.LatLng(geo.coordinates[0], geo.coordinates[1]),
 			map: map,
 			icon: image,
 			zIndex: 0,
@@ -578,26 +560,27 @@ export default class DispatchMap extends React.Component {
 	 * @param  {Object} assignment     Assignment focus on. Assumes assignment has Lat / Lng
 	 */
 	focusOnAssignment(assignment) {
-
 		this.isOpeningCallout = true;
-		var map = this.state.map,
-			lat = assignment.location.coordinates[1],
-			lng = assignment.location.coordinates[0];
+
+		if(assignment.location == null) {
+			return this.isOpeningCallout = false;
+		}
+
+		const map = this.state.map;
+		const lat = assignment.location.coordinates[1];
+		const lng = assignment.location.coordinates[0];
 
 		//Close the active callout if it exists yet
 		if(this.state.activeCallout)
 			this.clearCallout();
 
-		map.panTo({
-			lat: lat,
-			lng: lng
-		});
+		map.panTo({ lat, lng });
 
-		var calloutContent = ReactDOM.renderToString(
+		let calloutContent = ReactDOM.renderToString(
 			<DispatchMapCallout assignment={assignment} />
 		);
 
-		var callout = new google.maps.InfoWindow({
+		const callout = new google.maps.InfoWindow({
 			content: calloutContent,
 			position: {
 				lat: lat,
@@ -619,7 +602,6 @@ export default class DispatchMap extends React.Component {
 	}
 
 	render() {
-
 		return (
 			<div className="map-group">
 				<div className="map-container full dispatch">

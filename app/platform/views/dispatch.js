@@ -24,6 +24,7 @@ class Dispatch extends React.Component {
 			newAssignment: null,
 			lastChangeSource: '',
 			shouldMapUpdate: false,
+			displaySubmissionCard: false,
 			currentPlace: null,
 			viewMode: 'active',
 		}
@@ -48,6 +49,11 @@ class Dispatch extends React.Component {
 		});
 	}
 
+	/**
+	 * Sets active assignment
+	 * @description Dispatch map needs to know which assignment was clicked on the assignment
+	 * list component
+	 */
 	setActiveAssignment(assignment) {
 		this.setState({
 			activeAssignment: assignment
@@ -105,40 +111,32 @@ class Dispatch extends React.Component {
 	 * @param  {Google Maps object}   map
 	 * @param  {Function} callback callback with data, error
 	 */
-	findAssignments(map = null, params = {}, callback) {
-		let endpoint = '';
+	findAssignments(map = null, params = {}, callback = function(){}) {
+		//Update view mode on params
+		params.active = this.state.viewMode == 'active';
+		params.unrated = this.state.viewMode == 'pending';
 
 		//Add map params
 		if(map) {
 			endpoint = 'assignment/find';
 
-			const bounds = map.getBounds();
-
-			if(!bounds) callback([]);
-
 			params.geo = {
 				type : "Polygon",
-				coordinates :  utils.generatePolygonFromBounds(bounds)
+				coordinates :  utils.generatePolygonFromBounds(map.getBounds())
 			};
-
 		} else {
-			//Update view mode on params
-			params.active = this.state.viewMode == 'active';
-			params.unrated = this.state.viewMode == 'pending';
 			params.sortBy = 'ends_at';
 			params.direction = 'asc';
-			params.limit = 3;
-
-			endpoint = 'assignment/list'
+			params.limit = 10;	
 		}
 
 		$.ajax({
-			url: `/api/${endpoint}`,
+			url: '/api/assignment/find',
 			type: 'GET',
 			data: $.param(params),
 			success: (response, status, xhr) => {
 				callback(
-					response.length > 0 || response.nearby.length > 0 && !response.err ? response : []
+					response && !response.err ? response : []
 				);
 			},
 			error: (xhr, status, error) => {
@@ -153,48 +151,24 @@ class Dispatch extends React.Component {
 	 * @param  {Function} callback callback with data, error
 	 */
 	findUsers(map, callback) {
-
-		const bounds = map.getBounds();
-
-		if(!bounds) callback([]);
-
-		params.geo = {
-			type : "Polygon",
-			coordinates :  utils.generatePolygonFromBounds(bounds)
+		const params = {
+			geo: {
+				type : "Polygon",
+				coordinates :  utils.generatePolygonFromBounds( map.getBounds())
+			}
 		};
 
-		if(!center)
-			return callback(null, 'No center');
-
-		const query = `lat=${center.lat()}&lon=${center.lng()}&radius=${radius}`;
-
 		$.ajax({
-			url: `/api/${endpoint}`,
+			url: '/api/user/locations/find',
 			type: 'GET',
-			data: params,
-			dataType: 'json',
+			data: $.param(params),
 			success: (response, status, xhr) => {
-				console.log(response);
 				callback(
-					response.length > 0 && !response.err ? response : []
+					!response.err && response.length > 0 ? response : []
 				);
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: utils.resolveError(error)});
-			}
-		});
-
-		//Should be authed
-		$.ajax(`/api/user/findInRadius?${query}`, {
-			success: (response) => {
-				//Do nothing, because of bad response
-				if(!response.data || response.err)
-					callback(null, 'Error');
-				else
-					callback(response.data, null);
-			},
-			error: (xhr, status, error) => {
-				return callback(null, error);
 			}
 		});
 	}
@@ -204,33 +178,17 @@ class Dispatch extends React.Component {
 	 * @param  {BOOL} show To show or hide the window
 	 */
 	toggleSubmissionCard(show, event) {
-
-		var dispatchSubmit = document.getElementById('dispatch-submit');
-
-		if(show && this.state.newAssignment == null) {
-
-			this.setState({
-				newAssignment: 'unset'
-			})
-
-			dispatchSubmit.className = dispatchSubmit.className.replace(/\btoggled\b/,'');
-
-		}
-		else if(!show) {
-
-			this.setState({
-				newAssignment: null
-			});
-
-			dispatchSubmit.className += ' toggled';
-		}
+		this.setState({
+			displaySubmissionCard: !this.state.displaySubmissionCard,
+			newAssignment: this.state.newAssignment == null ? 'unset' : null
+		})
 	}
 
 	/**
 	 * Downloads stats when button is clicked
 	 */
 	downloadStats() {
-		window.open('/scripts/assignment/stats', '_blank');
+		window.open('/api/assignment/report', '_blank');
 	}
 
 	render() {
@@ -259,6 +217,7 @@ class Dispatch extends React.Component {
 					user={this.props.user}
 					newAssignment={this.state.newAssignment}
 					rerender={this.state.newAssignment == 'unset'}
+					displaySubmissionCard={this.state.displaySubmissionCard}
 					bounds={this.state.bounds}
 					lastChangeSource={this.state.lastChangeSource}
 					updateCurrentBounds={this.updateCurrentBounds}
@@ -278,16 +237,6 @@ class Dispatch extends React.Component {
 			);
 		}
 
-		let statsDownloadButton = '';
-
-		if(this.props.user.rank > 1) {
-			statsDownloadButton = (
-				<button
-					className="btn btn-flat pull-right mt12 mr16"
-					onClick={this.downloadStats} >Download Stats (.xlsx)</button>
-			);
-		}
-
 		return (
 			<App user={this.props.user}>
 				<TopBar
@@ -304,7 +253,13 @@ class Dispatch extends React.Component {
 						updateMapPlace={this.updateMapPlace}
 						mapPlace={this.state.mapPlace} />
 
-					{statsDownloadButton}
+					{this.props.user.rank > 1 ? 
+						<button
+							className="btn btn-flat pull-right mt12 mr16"
+							onClick={this.downloadStats} >Download Stats (.xlsx)</button>
+						:
+						''
+					}
 				</TopBar>
 
 				<DispatchMap

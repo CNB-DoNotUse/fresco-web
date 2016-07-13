@@ -32,7 +32,7 @@ export default class DispatchAssignments extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if(prevProps.viewMode !== this.props.viewMode){
 			//Access parent var load method
-			this.findAssignments(null, {}, (assignments) => {
+			this.props.findAssignments(null, {}, (assignments) => {
 				this.setState({ assignments });
 			});
 		}

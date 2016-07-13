@@ -12,43 +12,10 @@ const
 
 /**
  * Reset password endpoint
- * Takes an email in the body
+ * @description Takes an email in the body
  */
-
 router.post('/user/reset', (req, res, next) => {
 
-    var request  = require('superagent'),
-        email = utils.sanitizeEmail(req.body.email);
-
-    if(!email){
-        return res.json({
-            err: 'Invalid Data',
-            data: {}
-        }).end();
-    }
-
-    request
-    .post('https://api.parse.com/1/requestPasswordReset')
-    .send({ email: email })
-    .set('X-Parse-Application-Id', config.PARSE_APPid)
-    .set('X-Parse-REST-API-Key', config.PARSE_API_KEY)
-    .set('X-Parse-Revocable-Session', "1")
-    .set('Accept', 'application/json')
-    .end(function(err, response){
-
-       //No error, return success
-       if(!response.body && !err){
-           return res.json({
-               success: true,
-               err: false
-           });
-       }
-
-       //Return the error
-       return res.json({
-           err: response.body.error
-       });
-    });
 });
 
 
@@ -66,7 +33,6 @@ router.post('/user/login', (req, res) => {
 
         //Save to session
         req.session.token = body.token;
-
 
         //Send request for user object
         return API.request({
@@ -92,7 +58,7 @@ router.post('/user/login', (req, res) => {
 });
 
 router.get('/user/logout', (req, res) => {
-    let end = () => {
+    const end = () => {
         req.session.destroy(() => {
             res.redirect('/');
         });

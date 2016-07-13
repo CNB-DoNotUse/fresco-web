@@ -680,8 +680,11 @@ div.chips {
 div.list {
 	height: 100%;
 	overflow-y: auto;
-	> div.list-item {
+	
+	div.list-item {
 		padding: 16px;
+		position:relative;
+
 		@include display(flex);
 
 		&.assignment-list-item {
@@ -689,6 +692,18 @@ div.list {
 			overflow: hidden;
 		}
 
+		&.global {
+			.flexy {
+				max-width:71%;
+			}
+			
+			.mdi-logout-variant {
+				position:absolute;
+				top: 25px;
+			    right: 20px;
+			    opacity: .26;
+			}
+		}
 
 		> div {
 			cursor:pointer;
@@ -728,13 +743,13 @@ div.list {
 			display: none;
 		}
 	}
-	> div.list-item:hover {
+	div.list-item:hover {
 		background-color: $color-shade-2;
 		> div.peek {
 			display: initial;
 		}
 	}
-	> div.list-item.active {
+	div.list-item.active {
 		background-color: $color-white-2;
 	}
 }
