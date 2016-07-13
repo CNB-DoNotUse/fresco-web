@@ -37,7 +37,7 @@ class Admin extends React.Component {
     componentDidMount() {
         this.refreshInterval = setInterval(() => {
             if (this.props.activeTab !== '') this.refresh();
-        }, 10000);
+        }, 5000);
         this.loadInitial();
     }
 

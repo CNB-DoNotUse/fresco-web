@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
-import utils from 'utils';
 import times from 'lodash/times';
 import request from 'superagent';
 
@@ -75,26 +74,24 @@ class TopBarAdmin extends React.Component {
 
     handleTwitterInputKeyDown(e) {
         const tweet = this.refs['twitter-import-input'].value;
+        const twitterId = tweet.split('/').pop();
         if (e.keyCode !== 13 || this.state.loading || !tweet.length) return;
         this.setState({ loading: true });
 
         $.ajax({
-            url: '/scripts/gallery/twitter',
+            url: 'api/gallery/import',
             type: 'POST',
-            data: { tweet },
-            processData: false,
-            contentType: false,
-            cache: false,
+            data: JSON.stringify({
+                external_id: twitterId,
+                external_source: 'twitter',
+            }),
+            contentType: 'application/json',
             dataType: 'json',
-            success: (result) => {
-                if (result.err) {
-                    return $.snackbar({ content: utils.resolveError(result.err) });
-                }
-
+            success: () => {
                 $.snackbar({ content: 'Gallery Imported!' });
                 this.refs['twitter-import-input'].value = '';
                 this.props.setTab('imports');
-                return this.props.resetImports();
+                this.props.resetImports();
             },
             error: () => {
                 $.snackbar({ content: 'Failed to import media' });

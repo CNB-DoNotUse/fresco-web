@@ -1,4 +1,4 @@
-import React, { PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 
 class AssignmentMerge extends React.Component {
     cancel() {
@@ -96,8 +96,8 @@ AssignmentMerge.defaultProps = {
 AssignmentMerge.propTypes = {
     toggle: PropTypes.func.isRequired,
     merge: PropTypes.func.isRequired,
-    assignmentToMergeInto: PropTypes.object.isRequired,
-    assignment: PropTypes.object.isRequired,
+    assignmentToMergeInto: PropTypes.object,
+    assignment: PropTypes.object,
 };
 
 export default AssignmentMerge;
