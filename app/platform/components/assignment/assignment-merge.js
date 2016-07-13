@@ -31,7 +31,7 @@ class AssignmentMerge extends React.Component {
     render() {
         let toggledText = this.props.toggled ? ' toggled' : '';
 
-        if(!this.props.assignment || !this.props.assignmentToMergeInto) return <div />;
+        if (!this.props.assignment || !this.props.assignmentToMergeInto) return <div />;
 
         return (
             <div className="assignment-merge-container">
@@ -63,7 +63,8 @@ class AssignmentMerge extends React.Component {
                                         placeholder="Title"
                                         title="Title"
                                         ref="title"
-                                        defaultValue={this.props.assignmentToMergeInto.title} />
+                                        defaultValue={this.props.assignmentToMergeInto.title}
+                                    />
                                 </div>
 
                                 <div className="dialog-row">
