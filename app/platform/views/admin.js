@@ -6,6 +6,7 @@ import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
 import remove from 'lodash/remove';
+import 'sass/platform/_admin';
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar)

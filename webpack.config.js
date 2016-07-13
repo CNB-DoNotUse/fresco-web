@@ -147,12 +147,13 @@ module.exports = {
     plugins: plugins,
     resolve: {
         //All these extensions will be resolved without specifying extension in the `require` function
-        extensions: ['', '.js'],
+        extensions: ['', '.js', '.scss'],
         //Files in these directory can be required without a relative path
         modulesDirectories: [
             'node_modules',
             'bower_components',
-            'lib'
+            'lib',
+            './',
         ]
     },
     devtool: "eval-source-map"
