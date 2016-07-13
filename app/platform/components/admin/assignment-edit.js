@@ -4,6 +4,7 @@ import AssignmentMerge from '../assignment/assignment-merge';
 import AssignmentMergeDropup from '../assignment/assignment-merge-drop-up';
 import utils from 'utils';
 import uniqBy from 'lodash/uniqBy';
+import reject from 'lodash/reject';
 
 /**
     Assignment Edit Sidebar used in assignment administration page
@@ -106,7 +107,7 @@ class AdminAssignmentEdit extends React.Component {
         this.setState({ radius: utils.feetToMiles(radius) });
     }
 
-    approve(){
+    approve() {
         const params = {
             id: this.props.assignment.id,
             now: Date.now(),
@@ -129,6 +130,7 @@ class AdminAssignmentEdit extends React.Component {
      */
     findNearbyAssignments() {
         const { location, radius } = this.state;
+        const { assignment } = this.props;
         if (!location || !location.lat || !location.lng) return;
         const geo = {
             type: 'Point',
@@ -142,9 +144,9 @@ class AdminAssignmentEdit extends React.Component {
             limit: 5,
         }, (data) => {
             if (data.nearby && data.global) {
-                this.setState({
-                    nearbyAssignments: uniqBy(data.nearby.concat(data.global), 'id'),
-                });
+                const nearbyAssignments =
+                    uniqBy(reject(data.nearby.concat(data.global), { id: assignment.id }), 'id');
+                this.setState({ nearbyAssignments });
             }
         });
     }
@@ -218,6 +220,11 @@ class AdminAssignmentEdit extends React.Component {
                         ref="assignment-expiration"
                         defaultValue={expiration_time}
                     />
+
+                    <AssignmentMergeDropup
+                        nearbyAssignments={this.state.nearbyAssignments}
+                        selectMerge={(id) => this.selectMerge(id)}
+                    />
                 </div>
 
                 <div className="dialog-foot">
@@ -238,11 +245,6 @@ class AdminAssignmentEdit extends React.Component {
                         Reject
                     </button>
                 </div>
-
-                <AssignmentMergeDropup
-                    nearbyAssignments={this.state.nearbyAssignments}
-                    selectMerge={(id) => this.selectMerge(id)}
-                />
 
                 <AssignmentMerge
                     assignment={assignment}

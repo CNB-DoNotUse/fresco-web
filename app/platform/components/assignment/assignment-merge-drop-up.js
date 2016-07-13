@@ -40,9 +40,9 @@ class AssignmentMergeDropup extends React.Component {
 
         return (
             <Dropdown
-                dropdownClass="u-15 merge-dropdown"
-                reverseCaretDirection
+                dropdownClass="merge-dropdown"
                 title={`Merge (${this.props.nearbyAssignments.length})`}
+                reverseCaretDirection
             >
                 {this.renderAssignments(nearbyAssignments)}
             </Dropdown>

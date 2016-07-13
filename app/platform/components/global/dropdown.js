@@ -1,163 +1,148 @@
-import React from 'react'
+import React, { PropTypes } from 'react';
 
 /**
  * Generic Dropdown Element
  * @param  {function} onSelected A function called wtih the user's selection
  */
+class Dropdown extends React.Component {
 
-export default class Dropdown extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selected: this.props.selected,
+            active: false,
+        };
+    }
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			selected: this.props.selected
-		}
+    componentDidMount() {
+        // Click event for outside clicking
+        $(document).click((e) => {
+            if ($(e.target).parents('.nav-dropdown').size() === 0 && e.target !== this.refs.drop) {
+                this.setState({ active: false });
+            }
+        });
+    }
 
-		this.toggle = this.toggle.bind(this);
-		this.optionClicked = this.optionClicked.bind(this);
-	}
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.selected !== this.props.selected) {
+            this.setState({ selected: nextProps.selected });
+        }
+    }
 
-	componentDidMount() {
-	 	//Click event for outside clicking
-	 	$(document).click((e) => {
-	 		//Check that the click is out of bounds
-	 	    if ($(e.target).parents('.nav-dropdown').size() == 0 && e.target !== this.refs.drop) {
-	 	    	//Check if it's active first
-	 	    	if(this.refs.drop.className.indexOf('active') > 0){
-		 	        //Reset toggle
-		 	        this.toggle();
-		 	    }
-	 	    }
-	 	});
-	}
+    componentWillUnmount() {
+        // Clean up click event on unmount
+        $(document).unbind('click');
+    }
 
-	componentWillUnmount() {
-	    //Clean up click event on unmount
-	    $(document).unbind('click');
-	}
+    getCaretIconClassName() {
+        const { active } = this.state;
+        const { reverseCaretDirection } = this.props;
 
-	componentWillReceiveProps(nextProps) {
-		if(nextProps.selected !== this.props.selected) {
-			this.setState({
-				selected: nextProps.selected
-			});
-		}
-	}
+        if (reverseCaretDirection) {
+            return `mdi ${active ? 'mdi-menu-down pull-right' : 'mdi-menu-up'}`;
+        }
+        return `mdi ${active ? 'mdi-menu-up pull-right' : 'mdi-menu-down'}`;
+    }
 
 	/**
 	 * Called whenever the master button is clicked
 	 */
-	toggle() {
-		var drop = this.refs.drop,
-			menuIcon = this.refs['button'].refs['menu-icon'];
+    toggle() {
+        this.setState({ active: !this.state.active }, () => {
+            this.props.onToggled();
+        });
+    }
 
-		if(drop.className.indexOf('active') == -1) {
-			menuIcon.className = 'mdi ';
-			menuIcon.className += this.props.reverseCaretDirection ? 'mdi-menu-down' : 'mdi-menu-up';
-			drop.className += ' active';
-		} else {
-			menuIcon.className = 'mdi ';
-			menuIcon.className += this.props.reverseCaretDirection ? 'mdi-menu-up' : 'mdi-menu-down';
-			drop.className = drop.className.replace(/\bactive\b/,'');
-		}
+    /**
+     * Called whenever an option is selected from the dropdown
+     */
+    optionClicked(e) {
+        // Get the span tag from the list item
+        const selected = e.currentTarget.getElementsByTagName('span')[0].innerHTML;
 
-		if(this.props.onToggled) this.props.onToggled();
-	}
+        // If the user chose the already selected option, don't do anything
+        if (this.state.selected === selected) {
+            this.toggle();
+            return;
+        }
 
-	/**
-	 * Called whenever an option is selected from the dropdown
-	 */
-	optionClicked(e) {
-		//Get the span tag from the list item
-		var selected = e.currentTarget.getElementsByTagName('span')[0].innerHTML;
+        this.setState({ selected });
 
-		//If the user chose the already selected option, don't do anything
-		if (this.state.selected == selected) {
-			this.toggle();
-			return;
-		}
+        this.toggle();
 
-		this.setState({
-			selected: selected
-		});
+        if (this.props.onSelected) {
+            this.props.onSelected(selected);
+        }
+    }
 
-		this.toggle();
+    render() {
+        const {
+            options,
+            dropdownClass,
+            inList,
+            title,
+            dropdownActions,
+            children,
+        } = this.props;
+        const { active } = this.state;
 
-		if(this.props.onSelected) {
-			this.props.onSelected(selected);
-		}
-	}
+        let list = '';
+        if (options) {
+            // If options are passed, use those
+            list = (
+                <ul className="list">
+                    {
+                        options.map((option, i) => (
+                            <li
+                                className={option === this.state.selected ? 'active' : ''}
+                                key={i}
+                                onClick={() => this.optionClicked()}
+                            >
+                                <span>{option}</span>
+                            </li>
+                            ))
+                    }
+                </ul>
+            );
+        }
 
-	render() {
+        return (
+            <div
+                className={`nav-dropdown ${inList ? 'pull-right' : ''}
+                ${dropdownClass} ${active ? 'active' : ''}`}
+            >
+                <div className="toggle" onClick={() => this.toggle()} >
+                    <span>{title || this.state.selected}</span>
+                    <i className={this.getCaretIconClassName()} />
+                    {dropdownActions}
+                </div>
 
-		var list = '',
-			dropdownButton = '';
-
-		//If options are passed, use those
-		if(this.props.options){
-			var options = this.props.options.map((option, i) => {
-				return (
-					<li
-						className={option === this.state.selected ? 'active' : ''}
-						key={i}
-						onClick={this.optionClicked}>
-						<span>{option}</span>
-					</li>
-				);
-			});
-
-			list = <ul className="list">
-						{options}
-					</ul>
-		}
-
-		dropdownButton = <DropdownButton
-							ref="button"
-							toggle={this.toggle}
-							selected={this.props.title || this.state.selected}
-							reverseCaretDirection={this.props.reverseCaretDirection}>
-							{this.props.dropdownActions}
-						</DropdownButton>
-
-
-		var className = this.props.inList ? 'nav-dropdown pull-right' : 'nav-dropdown';
-
-		if(this.props.dropdownClass)
-			className += ' ' + this.props.dropdownClass;
-
-		return (
-			<div className={className} ref="drop">
-				{dropdownButton}
-				<div className="dropdown-body">
+                <div className="dropdown-body">
 					{list}
-					{this.props.children}
-				</div>
-			</div>
+					{children}
+                </div>
+            </div>
 		);
-	}
-}
-
-class DropdownButton extends React.Component {
-
-	constructor(props) {
-		super(props)
-	}
-
-	render() {
-
-		return(
-			<div className="toggle" onClick={this.props.toggle}>
-				<span>{this.props.selected}</span>
-				<span className={"mdi " + (this.props.reverseCaretDirection ? "mdi-menu-up" : "mdi-menu-down")} ref="menu-icon"></span>
-				{this.props.children}
-			</div>
-		);
-	}
-
+    }
 }
 
 Dropdown.defaultProps = {
-	reverseCaretDirection: false,
-	inList: false,
-	onToggled: function() {}
-}
+    reverseCaretDirection: false,
+    inList: false,
+    onToggled() {},
+};
+
+Dropdown.propTypes = {
+    selected: PropTypes.string,
+    onToggled: PropTypes.func,
+    onSelected: PropTypes.func,
+    options: PropTypes.array,
+    inList: PropTypes.bool,
+    dropdownClass: PropTypes.string,
+    title: PropTypes.string,
+    reverseCaretDirection: PropTypes.bool,
+    dropdownActions: PropTypes.node,
+    children: PropTypes.node,
+};
+
+export default Dropdown;
