@@ -1,70 +1,46 @@
 import React from 'react';
-import AssignmentListItem from './assignment-list-item'
+import AssignmentListItem from './assignment-list-item';
+import _ from 'lodash';
 
-/** //
-
-Description : The list switcher for assignments for the dispatch page
-
-// **/
 
 /**
  * List toggle component
+ * @description The list switcher for assignments for the dispatch page
  */
-
 export default class DispatchAssignments extends React.Component {
 
 	constructor(props) {
 		super(props);
+		
 		this.state = {
 			assignments: [],
-			loading: false,
-			offset: 0
+			loading: false
 		}
+
 		this.toggleList = this.toggleList.bind(this);
 		this.scroll = this.scroll.bind(this);
 	}
 
 	componentDidMount() {
-
-		//Access parent var load method
-		this.loadAssignments(0, 'active', (assignments) => {
-			
-			//Update offset based on psts from callaback
-			var offset = assignments ? assignments.length : 0;
-
+		//Access parent find method
+		this.props.findAssignments(null, {}, (assignments) => {
 			//Set posts & callback from successful response
-			this.setState({
-				assignments: assignments,
-				offset : offset
-			});
-
+			this.setState({ assignments });
 		});
-	      
 	}
 
 	componentDidUpdate(prevProps, prevState) {
 		if(prevProps.viewMode !== this.props.viewMode){
-
 			//Access parent var load method
-			this.loadAssignments(0, this.props.viewMode, (assignments) => {
-
-				//Update offset based on psts from callaback
-				var offset = assignments ? assignments.length : 0;
-
-				//Set posts & callback from successful response
-				this.setState({
-					assignments: assignments,
-					offset : offset
-				});
-
+			this.findAssignments(null, {}, (assignments) => {
+				this.setState({ assignments });
 			});
 		}
 	}
 
 	//Scroll listener for main window
 	scroll(type, event) {
-
-		var grid;
+		let grid;
 
 		if(type == 'active')
 			grid = this.refs.activeList
@@ -76,22 +52,18 @@ export default class DispatchAssignments extends React.Component {
 		//Check that nothing is loading and that we're at the end of the scroll, 
 		//and that we have a parent bind to load  more posts
 		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight)){
-
 			//Set that we're loading
 			this.setState({ loading : true });
 
-			var params = {
-				offset: this.state.offset
+			const params = {
+				last: _.last(this.state.assignments).id
 			};
 
 			//Access parent var load method
-			this.loadAssignments(this.state.offset, this.props.viewMode, (assignments) => {
-				var offset = this.state.assignments.length + assignments.length;
-
+			this.props.findAssignments(null, params, (assignments) => {
 				//Set galleries from successful response, and unset loading
 				this.setState({
 					assignments: this.state.assignments.concat(assignments),
-					offset : offset,
 					loading : false
 				});
 			});
@@ -124,32 +96,9 @@ export default class DispatchAssignments extends React.Component {
 		this.props.updateViewMode(toggle);
 	}
 
-	/**
-	 * Loads assignments
-	 * @param  {int}   passedOffset offset to load off of
-	 * @param  {string}   type         type of assignments to retrieve
-	 * @param  {function} callback     callback containing response
-	 */
-	loadAssignments(passedOffset, type, callback) {
-
-		var params = {
-			offset: passedOffset,
-			limit: 10
-		}
-
-		this.props.findAssignments(null, params, (response) => {
-			//Do nothing, because of bad response
-			if(!response || response.err)
-				callback([]);
-			else{
-				callback(response);
-			}
-		});
-	}
-
 	render() {
 
-		var AssignmentList = this.state.assignments.map((assignment, i)  => {
+		let AssignmentList = this.state.assignments.map((assignment, i)  => {
 			return (
 				<AssignmentListItem 
 					assignment={assignment}
@@ -158,35 +107,47 @@ export default class DispatchAssignments extends React.Component {
 			)
 		});
 
-		var buttonClass = "btn btn-flat",
-			viewMode = this.props.viewMode;
+	    const buttonClass = "btn btn-flat";
+		const { viewMode } = this.props;
 
 		return (
 
 			<div className="card panel assignments-panel">
 				<div className="card-head small">
 					<div className="tab-control full">
-						<button ref="active-button"  
+						<button 
+							ref="active-button"  
 							className={viewMode == 'active' ? buttonClass + ' toggled' : buttonClass} 
-							onClick={this.toggleList.bind(null, 'active')}>Active</button>
+							onClick={this.toggleList.bind(null, 'active')}>
+								Active
+						</button>
 						
-						<button ref="pending-button" 
+						<button 
+							ref="pending-button" 
 							className={viewMode == 'pending' ? buttonClass + ' toggled' : buttonClass} 
-							onClick={this.toggleList.bind(null, 'pending')}>Pending</button>
+							onClick={this.toggleList.bind(null, 'pending')}>
+							Pending
+						</button>
 						
 						<button ref="expired-button" 
 							className={viewMode == 'expired' ? buttonClass + ' toggled' : buttonClass} 
-							onClick={this.toggleList.bind(null, 'expired')}>History</button>
+							onClick={this.toggleList.bind(null, 'expired')}>
+							History
+						</button>
 					</div>
 				</div>
+				
 				<div className="card-foot center toggle-card">
 					<button 
 						type="button" 
 						id="open-assignment-window" 
 						className="btn btn-flat toggle-card toggler" 
 						disabled={!(this.props.user.outlet && this.props.user.outlet.verified)} 
-						onClick={this.props.toggleSubmissionCard.bind(null, true)}>Post an assignment</button>
+						onClick={this.props.toggleSubmissionCard.bind(null, true)}>
+							Post an assignment
+					</button>
 				</div>
+
 				<div className="card-body">
 					<div className="tabs full">
 						<div className="tab toggled">

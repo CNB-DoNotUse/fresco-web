@@ -23,6 +23,7 @@ class Stories extends React.Component {
 					title="Stories"
 					timeToggle={true}
 					tagToggle={true} />
+
 				<StoryList
 					loadStories={this.loadStories}
 					scrollable={true} />
@@ -48,7 +49,6 @@ class Stories extends React.Component {
 			error: (xhr, status, error) => {
 				$.snackbar({ content:  'Couldn\'t fetch any stories!' });
 			}
-
 		});
 	}
 

@@ -66,9 +66,9 @@ class Dispatch extends React.Component {
 
 		this.setState({
 			newAssignment: {
-				location: location,
-				radius: radius,
-				zoom: zoom
+				location,
+				radius,
+				zoom
 			},
 			lastChangeSource: source
 		});
@@ -97,7 +97,7 @@ class Dispatch extends React.Component {
 		//Do nothing if the same view mode
 		if(viewMode === this.state.viewMode) return;
 
-		this.setState({ viewMode : viewMode });
+		this.setState({ viewMode });
 	}
 
 	/**
@@ -105,45 +105,41 @@ class Dispatch extends React.Component {
 	 * @param  {Google Maps object}   map
 	 * @param  {Function} callback callback with data, error
 	 */
-	findAssignments(map, params = {}, callback) {
-		//Update view mode on params
-		params.expired = this.state.viewMode == 'expired';
-		params.active = this.state.viewMode == 'active';
-		params.pending = this.state.viewMode == 'pending';
+	findAssignments(map = null, params = {}, callback) {
+		let endpoint = '';
 
 		//Add map params
 		if(map) {
+			endpoint = 'assignment/find';
+
 			const bounds = map.getBounds();
 
-			if(!bounds) callback('No bounds');
+			if(!bounds) callback([]);
 
-			const proximityMeter = google.maps.geometry.spherical.computeDistanceBetween (
-				bounds.getSouthWest(),
-				bounds.getNorthEast()
-			);
+			params.geo = {
+				type : "Polygon",
+				coordinates :  utils.generatePolygonFromBounds(bounds)
+			};
 
-			const radius = utils.metersToMiles(proximityMeter) / 2;
-			const mapCenter = map.getCenter();
-			const center = new google.maps.LatLng(mapCenter .lat(), mapCenter .lng());
+		} else {
+			//Update view mode on params
+			params.active = this.state.viewMode == 'active';
+			params.unrated = this.state.viewMode == 'pending';
+			params.sortBy = 'ends_at';
+			params.direction = 'asc';
+			params.limit = 3;
 
-			params.lat = center.lat();
-			params.lon =  center.lng();
-			params.radius =	radius;
+			endpoint = 'assignment/list'
 		}
 
 		$.ajax({
-			url: '/api/assignment/list',
+			url: `/api/${endpoint}`,
 			type: 'GET',
-			data: params,
-			dataType: 'json',
+			data: $.param(params),
 			success: (response, status, xhr) => {
-				//Do nothing, because of bad response
-				if(response.data && !response.err) {
-					callback(response.data);
-				}
-				else {
-					callback([]);
-				}
+				callback(
+					response.length > 0 || response.nearby.length > 0 && !response.err ? response : []
+				);
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: utils.resolveError(error)});
@@ -159,19 +155,34 @@ class Dispatch extends React.Component {
 	findUsers(map, callback) {
 
 		const bounds = map.getBounds();
-		const proximitymeter = google.maps.geometry.spherical.computeDistanceBetween(
-			bounds.getSouthWest(),
-			bounds.getNorthEast()
-		);
-		const proximitymiles = proximitymeter * 0.000621371192;
-		const radius = proximitymiles / 2;
-		const mapCenter = map.getCenter();
-		const center = new google.maps.LatLng(mapCenter .lat(), mapCenter .lng());
+
+		if(!bounds) callback([]);
+
+		params.geo = {
+			type : "Polygon",
+			coordinates :  utils.generatePolygonFromBounds(bounds)
+		};
 
 		if(!center)
 			return callback(null, 'No center');
 
 		const query = `lat=${center.lat()}&lon=${center.lng()}&radius=${radius}`;
+
+		$.ajax({
+			url: `/api/${endpoint}`,
+			type: 'GET',
+			data: params,
+			dataType: 'json',
+			success: (response, status, xhr) => {
+				console.log(response);
+				callback(
+					response.length > 0 && !response.err ? response : []
+				);
+			},
+			error: (xhr, status, error) => {
+				$.snackbar({content: utils.resolveError(error)});
+			}
+		});
 
 		//Should be authed
 		$.ajax(`/api/user/findInRadius?${query}`, {
