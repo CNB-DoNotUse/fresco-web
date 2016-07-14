@@ -23,7 +23,7 @@ class AssignmentMerge extends React.Component {
         $.ajax({
             type: 'POST',
             url: `/api/assignment/${id}/merge`,
-            data,
+            data: JSON.stringify(data),
         })
         .done(() => {
             this.onUpdateAssignment(data.mergeWith_id);

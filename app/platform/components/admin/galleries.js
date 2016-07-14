@@ -15,18 +15,13 @@ class Galleries extends React.Component {
     }
 
     onUpdateGallery(id) {
-        const { removeGallery, galleries } = this.props;
+        const { galleries, removeGallery } = this.props;
         const index = findIndex(galleries, { id });
-        const newIndex = galleries.length === (index + 1)
-            ? index - 1
-            : index + 1;
-
-        if (galleries[newIndex]) {
-            this.setState({ activeGallery: galleries[newIndex] },
-                () => removeGallery(id));
-        } else {
-            this.setState({ activeGallery: null }, () => removeGallery(id));
-        }
+        const nextGallery = galleries[index + 1]
+            || galleries[index - 1]
+            || null;
+        removeGallery(id);
+        this.setActiveGallery(nextGallery);
     }
 
     setActiveGallery(activeGallery) {
