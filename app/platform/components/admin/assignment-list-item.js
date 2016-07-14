@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
-/**
-    Assignment List Item used in assignment administration page
-**/
 
+/**
+ * Assignment List Item used in assignment administration page
+ */
 class AdminAssignmentListItem extends React.Component {
     render() {
         const { assignment, active, setActiveAssignment } = this.props;
