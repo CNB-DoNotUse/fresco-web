@@ -299,6 +299,7 @@ class Admin extends React.Component {
                         getData={this.getData}
                         refresh={this.refresh}
                         removeGallery={(id) => this.removeSubmission(id)}
+                        galleryType="submissions"
                     />
                 );
                 break;
@@ -309,6 +310,7 @@ class Admin extends React.Component {
                         getData={this.getData}
                         refresh={this.refresh}
                         removeGallery={(id) => this.removeImport(id)}
+                        galleryType="imports"
                     />
                 );
                 break;
