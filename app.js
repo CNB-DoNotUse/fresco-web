@@ -1,22 +1,22 @@
-var config        = require('./lib/config'),
-    head          = require('./lib/head'),
-    utils         = require('./lib/utils'),
-    routes        = require('./lib/routes'),
-    API           = require('./lib/api'),
-    User          = require('./lib/user'),
-    express       = require('express'),
-    compression   = require('compression'),
-    path          = require('path'),
-    favicon       = require('serve-favicon'),
-    morgan        = require('morgan'),
-    session       = require('express-session'),
-    redis         = require('redis'),
-    RedisStore    = require('connect-redis')(session),
-    cookieParser  = require('cookie-parser'),
-    bodyParser    = require('body-parser'),
-    multer        = require('multer'),
-    fs            = require('fs'),
-    app           = express();
+const config        = require('./lib/config');
+const head          = require('./lib/head');
+const utils         = require('./lib/utils');
+const routes        = require('./lib/routes');
+const API           = require('./lib/api');
+const User          = require('./lib/user');
+const express       = require('express');
+const compression   = require('compression');
+const path          = require('path');
+const favicon       = require('serve-favicon');
+const morgan        = require('morgan');
+const session       = require('express-session');
+const redis         = require('redis');
+const RedisStore    = require('connect-redis')(session);
+const cookieParser  = require('cookie-parser');
+const bodyParser    = require('body-parser');
+const multer        = require('multer');
+const fs            = require('fs');
+const app           = express();
 
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
@@ -54,9 +54,7 @@ app.use(
 );
 
 //Cookie parser
-app.use(
-    cookieParser()
-);
+app.use( cookieParser() );
 
 //Session config
 app.use(
@@ -74,9 +72,9 @@ app.use(
 
 //Set up public direc.
 app.use(
-  express.static(path.join(__dirname, 'public'), {
-    maxAge: 1000 * 60 * 60 * 2
-  }) // 2 hour cache
+    express.static(path.join(__dirname, 'public'), {
+      maxAge: 1000 * 60 * 60 * 2
+    }) // 2 hour cache
 );
 
 /**
@@ -220,13 +218,6 @@ for (var i = 0; i < routes.platform.length; i++) {
 /**
  * Webservery proxy for forwarding to the api
  */
-// Special case for assignment create
-// TODO: Remove this
-app.post('/api/assignment/create', (req, res, next) => {
-  req.body.outlet = req.session.user && req.session.user.outlet ? req.session.user.outlet._id : undefined;
-  next();
-});
-
 app.use('/api', API.proxy);
 
 /**

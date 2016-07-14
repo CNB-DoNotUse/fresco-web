@@ -27,11 +27,13 @@ class Assignments extends React.Component {
         const index = findIndex(allAssignments, { id });
 
         if (allAssignments[index + 1]) {
-            this.setState({ activeAssignment: allAssignments[index + 1] },
-                () => removeAssignment(id));
+            this.setState({ 
+                activeAssignment: allAssignments[index + 1] 
+            }, () => removeAssignment(id));
         } else {
-            this.setState({ activeAssignment: null },
-                () => removeAssignment(id));
+            this.setState({ 
+                activeAssignment: null 
+            }, () => removeAssignment(id));
         }
     }
 

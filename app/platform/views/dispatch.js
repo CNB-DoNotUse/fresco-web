@@ -24,6 +24,7 @@ class Dispatch extends React.Component {
 			newAssignment: null,
 			lastChangeSource: '',
 			shouldMapUpdate: false,
+			displaySubmissionCard: false,
 			currentPlace: null,
 			viewMode: 'active',
 		}
@@ -48,6 +49,11 @@ class Dispatch extends React.Component {
 		});
 	}
 
+	/**
+	 * Sets active assignment
+	 * @description Dispatch map needs to know which assignment was clicked on the assignment
+	 * list component
+	 */
 	setActiveAssignment(assignment) {
 		this.setState({
 			activeAssignment: assignment
@@ -66,9 +72,9 @@ class Dispatch extends React.Component {
 
 		this.setState({
 			newAssignment: {
-				location: location,
-				radius: radius,
-				zoom: zoom
+				location,
+				radius,
+				zoom
 			},
 			lastChangeSource: source
 		});
@@ -97,7 +103,7 @@ class Dispatch extends React.Component {
 		//Do nothing if the same view mode
 		if(viewMode === this.state.viewMode) return;
 
-		this.setState({ viewMode : viewMode });
+		this.setState({ viewMode });
 	}
 
 	/**
@@ -105,45 +111,31 @@ class Dispatch extends React.Component {
 	 * @param  {Google Maps object}   map
 	 * @param  {Function} callback callback with data, error
 	 */
-	findAssignments(map, params = {}, callback) {
+	findAssignments(map = null, params = {}, callback = function(){}) {
 		//Update view mode on params
-		params.expired = this.state.viewMode == 'expired';
 		params.active = this.state.viewMode == 'active';
-		params.pending = this.state.viewMode == 'pending';
+		params.unrated = this.state.viewMode == 'pending';
 
 		//Add map params
 		if(map) {
-			const bounds = map.getBounds();
-
-			if(!bounds) callback('No bounds');
-
-			const proximityMeter = google.maps.geometry.spherical.computeDistanceBetween (
-				bounds.getSouthWest(),
-				bounds.getNorthEast()
-			);
-
-			const radius = utils.metersToMiles(proximityMeter) / 2;
-			const mapCenter = map.getCenter();
-			const center = new google.maps.LatLng(mapCenter .lat(), mapCenter .lng());
-
-			params.lat = center.lat();
-			params.lon =  center.lng();
-			params.radius =	radius;
+			params.geo = {
+				type : "Polygon",
+				coordinates :  utils.generatePolygonFromBounds(map.getBounds())
+			};
+		} else {
+			params.sortBy = 'ends_at';
+			params.direction = params.active ? 'asc' : 'desc'; //Switch sort when viewing non-active `history`
+			params.limit = 10;	
 		}
 
 		$.ajax({
-			url: '/api/assignment/list',
+			url: '/api/assignment/find',
 			type: 'GET',
-			data: params,
-			dataType: 'json',
+			data: $.param(params),
 			success: (response, status, xhr) => {
-				//Do nothing, because of bad response
-				if(response.data && !response.err) {
-					callback(response.data);
-				}
-				else {
-					callback([]);
-				}
+				callback(
+					response && !response.err ? response : []
+				);
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: utils.resolveError(error)});
@@ -157,33 +149,24 @@ class Dispatch extends React.Component {
 	 * @param  {Function} callback callback with data, error
 	 */
 	findUsers(map, callback) {
+		const params = {
+			geo: {
+				type : "Polygon",
+				coordinates :  utils.generatePolygonFromBounds( map.getBounds())
+			}
+		};
 
-		const bounds = map.getBounds();
-		const proximitymeter = google.maps.geometry.spherical.computeDistanceBetween(
-			bounds.getSouthWest(),
-			bounds.getNorthEast()
-		);
-		const proximitymiles = proximitymeter * 0.000621371192;
-		const radius = proximitymiles / 2;
-		const mapCenter = map.getCenter();
-		const center = new google.maps.LatLng(mapCenter .lat(), mapCenter .lng());
-
-		if(!center)
-			return callback(null, 'No center');
-
-		const query = `lat=${center.lat()}&lon=${center.lng()}&radius=${radius}`;
-
-		//Should be authed
-		$.ajax(`/api/user/findInRadius?${query}`, {
-			success: (response) => {
-				//Do nothing, because of bad response
-				if(!response.data || response.err)
-					callback(null, 'Error');
-				else
-					callback(response.data, null);
+		$.ajax({
+			url: '/api/user/locations/find',
+			type: 'GET',
+			data: $.param(params),
+			success: (response, status, xhr) => {
+				callback(
+					!response.err && response.length > 0 ? response : []
+				);
 			},
 			error: (xhr, status, error) => {
-				return callback(null, error);
+				$.snackbar({content: utils.resolveError(error)});
 			}
 		});
 	}
@@ -193,33 +176,17 @@ class Dispatch extends React.Component {
 	 * @param  {BOOL} show To show or hide the window
 	 */
 	toggleSubmissionCard(show, event) {
-
-		var dispatchSubmit = document.getElementById('dispatch-submit');
-
-		if(show && this.state.newAssignment == null) {
-
-			this.setState({
-				newAssignment: 'unset'
-			})
-
-			dispatchSubmit.className = dispatchSubmit.className.replace(/\btoggled\b/,'');
-
-		}
-		else if(!show) {
-
-			this.setState({
-				newAssignment: null
-			});
-
-			dispatchSubmit.className += ' toggled';
-		}
+		this.setState({
+			displaySubmissionCard: !this.state.displaySubmissionCard,
+			newAssignment: this.state.newAssignment == null ? 'unset' : null
+		})
 	}
 
 	/**
 	 * Downloads stats when button is clicked
 	 */
 	downloadStats() {
-		window.open('/scripts/assignment/stats', '_blank');
+		window.open('/api/assignment/report', '_blank');
 	}
 
 	render() {
@@ -248,6 +215,7 @@ class Dispatch extends React.Component {
 					user={this.props.user}
 					newAssignment={this.state.newAssignment}
 					rerender={this.state.newAssignment == 'unset'}
+					displaySubmissionCard={this.state.displaySubmissionCard}
 					bounds={this.state.bounds}
 					lastChangeSource={this.state.lastChangeSource}
 					updateCurrentBounds={this.updateCurrentBounds}
@@ -267,16 +235,6 @@ class Dispatch extends React.Component {
 			);
 		}
 
-		let statsDownloadButton = '';
-
-		if(this.props.user.rank > 1) {
-			statsDownloadButton = (
-				<button
-					className="btn btn-flat pull-right mt12 mr16"
-					onClick={this.downloadStats} >Download Stats (.xlsx)</button>
-			);
-		}
-
 		return (
 			<App user={this.props.user}>
 				<TopBar
@@ -293,7 +251,13 @@ class Dispatch extends React.Component {
 						updateMapPlace={this.updateMapPlace}
 						mapPlace={this.state.mapPlace} />
 
-					{statsDownloadButton}
+					{this.props.user.rank > 1 ? 
+						<button
+							className="btn btn-flat pull-right mt12 mr16"
+							onClick={this.downloadStats} >Download Stats (.xlsx)</button>
+						:
+						''
+					}
 				</TopBar>
 
 				<DispatchMap
@@ -318,7 +282,6 @@ class Dispatch extends React.Component {
 		);
 	}
 }
-
 
 ReactDOM.render(
 	<Dispatch

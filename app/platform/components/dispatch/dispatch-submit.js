@@ -32,21 +32,19 @@ export default class DispatchSubmit extends React.Component {
 	 	$.material.init();     
 	}
 
-
 	componentWillReceiveProps(nextProps) {
-		var self = this,
-			successfulGeo = false;
+		let successfulGeo = false;
 
 		// Dispatch map has an eventlistener to set `lastChangeSource` 
 		// This occurs when the pending assignment marker is moved.
 		if(nextProps.lastChangeSource == 'markerDrag' && nextProps.newAssignment) {
-			var geocoder = new google.maps.Geocoder(),
-				geo = {
-					lat: nextProps.newAssignment.location.lat, 
-					lng: nextProps.newAssignment.location.lng
-				};
+			let geocoder = new google.maps.Geocoder();
+			let geo = {
+				lat: nextProps.newAssignment.location.lat, 
+				lng: nextProps.newAssignment.location.lng
+			};
 
-			self.currentGeocode = geo;
+			this.currentGeocode = geo;
 
 			geocode(geo);
 		}
@@ -62,7 +60,7 @@ export default class DispatchSubmit extends React.Component {
 				if(status === google.maps.GeocoderStatus.OK && results[0] !== null && !successfulGeo){
 					successfulGeo = true;
 
-					self.setState({
+					this.setState({
 						autocompleteText: results[0].formatted_address
 					})
 				} else if(status === 'OVER_QUERY_LIMIT' && !successfulGeo) {
@@ -118,43 +116,53 @@ export default class DispatchSubmit extends React.Component {
 	 * Form submissions
 	 */
 	submitForm() {
-		var assignment = {
-				title: this.refs.title.value,
-				caption: this.refs.caption.value,
-				radius: utils.feetToMiles(parseInt(this.refs.radius.value)),
-				address: this.refs.autocomplete.refs.inputField.value,
-				expiration_time: null,
-				googlemaps: this.refs.autocomplete.refs.inputField.value,
-				lon: this.props.newAssignment.location.lng, //Should be lng
-				lat: this.props.newAssignment.location.lat,
-				now: Date.now()
-			};
+		const { newAssignment } = this.props;
+		const { 
+			title, 
+			caption, 
+			radius, 
+			inputField,
+			autocomplete,
+			expiration
+		} = this.refs;
 
-		if(this.refs.expiration.value) {
+		let assignment = {
+			title: title.value,
+			caption: caption.value,
+			radius: utils.feetToMiles(parseInt(radius.value)),
+			address: autocomplete.refs.inputField.value,
+			location: {
+				type: 'Point',
+				coordinates: [
+					this.props.newAssignment.location.lng,
+					this.props.newAssignment.location.lat
+				]
+			},
+			starts_at: Date.now()
+		};
+
+		if(expiration.value) {
 			//Convert to milliseconds (from hours) and add current time
-			assignment.expiration_time =  this.refs.expiration.value  * 60 * 60 * 1000 + Date.now()
+			assignment.ends_at =  expiration.value  * 60 * 60 * 1000 + Date.now()
 		}
+
+		console.log(assignment);
 
 		/* Run Checks */
 		if (utils.isEmptyString(assignment.title)){
-			$.snackbar({content: 'Your assignment must have a title!'});
-			return;
+			return $.snackbar({content: 'Your assignment must have a title!'});
 		}
 		if (utils.isEmptyString(assignment.caption)){
-			$.snackbar({content: 'Your assignment must have a caption!'});
-			return ;
+			return $.snackbar({content: 'Your assignment must have a caption!'});
 		}
-		if (utils.isEmptyString(assignment.googlemaps)){
-			$.snackbar({content: 'Your assignment must have a location!'});
-			return;
+		if (utils.isEmptyString(assignment.address)){
+			return $.snackbar({content: 'Your assignment must have a location!'});
 		}
-		if (isNaN(assignment.expiration_time) || assignment.expiration_time < 1){
-			$.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
-			return;
+		if (isNaN(expiration.value) || expiration.value < 1){
+			return $.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
 		}
 		if (!utils.isValidRadius(assignment.radius)){
-			$.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
-			return;
+			return $.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
 		}
 
 		$.ajax({
@@ -163,12 +171,9 @@ export default class DispatchSubmit extends React.Component {
 			data: JSON.stringify(assignment),
 			contentType: 'application/json',
 			success: (result) => {
-
 				if (result.err){
-					$.snackbar({content: 'There was an error submitting your assignment!'});
-					return;
-				}
-				else{
+					return $.snackbar({content: 'There was an error submitting your assignment!'});
+				} else{
 					//Hide the assignment card
 					this.props.toggleSubmissionCard(false, null);
 
@@ -193,30 +198,35 @@ export default class DispatchSubmit extends React.Component {
 	}
 
 	render() {
-		var paymentStatus = '',
-			paymentMessage = '',
-			editMap = '',
-			location = this.props.newAssignment ? this.props.newAssignment.location : null,
-			radius =  this.props.newAssignment ? this.props.newAssignment.radius : null,
-			zoom =  this.props.newAssignment ? this.props.newAssignment.zoom : null;
+		const { 
+			newAssignment,
+			user,
+			bounds,
+			toggleSubmissionCard,
+			displaySubmissionCard,
+			updateCurrentBounds,
+			lastChangeSource,
+			rerender
+		} = this.props;
+		const paymentAvailable = this.props.user.outlet && this.props.user.outlet.card;
 
-		if(this.props.user.outlet && this.props.user.outlet.card){
-			paymentStatus = <span className="mdi mdi-check available"></span>;
-			paymentMessage = 'Payment information available';
-		}
-		else{
-			paymentStatus = <span className="mdi mdi-close unavailable"></span>;
-			paymentMessage = 'Payment information unavailable';
-		}
+		let paymentStatus = '';
+		let paymentMessage = '';
+		let editMap = '';
+		let location = newAssignment ? newAssignment.location : null;
+		let radius = newAssignment ? newAssignment.radius : null;
+		let zoom = newAssignment ? newAssignment.zoom : null;
 
 		return (
-
-			<div className="card panel toggle-card toggled" id="dispatch-submit">
+			<div 
+				className={'card panel toggle-card ' + (displaySubmissionCard ? '' : 'toggled')}
+				id="dispatch-submit"
+			>
 				<div className="card-head">
 					<span className="md-type-title">New Assignment</span>
 
 					<span
-						onClick={this.props.toggleSubmissionCard.bind(null, false)}
+						onClick={toggleSubmissionCard.bind(null, false)}
 						className="mdi mdi-close pull-right icon toggle-card toggler"></span>
 				</div>
 				
@@ -226,7 +236,7 @@ export default class DispatchSubmit extends React.Component {
 						type="button"
 						className="btn btn-flat toggle-card toggler"
 						onClick={this.submitForm}
-						disabled={!this.props.user.outlet && !this.props.user.outlet.card}>Submit</button>
+						disabled={!user.outlet && !user.outlet.card}>Submit</button>
 				</div>
 				
 				<div className="card-body">
@@ -254,9 +264,9 @@ export default class DispatchSubmit extends React.Component {
 								inputClass="form-control floating-label"
 								ref="autocomplete"
 								transition={false}
-								bounds={this.props.bounds}
+								bounds={bounds}
 								updateAutocompleteData={this.autocompleteUpdated}
-								lastChangeSource={this.props.lastChangeSource} />
+								lastChangeSource={lastChangeSource} />
 
 							<input
 								ref="radius"
@@ -274,8 +284,8 @@ export default class DispatchSubmit extends React.Component {
 							type='drafted'
 							onDataChange={this.editMapChanged}
 							draggable={true}
-							updateCurrentBounds={this.props.updateCurrentBounds}
-							rerender={this.props.rerender} />
+							updateCurrentBounds={updateCurrentBounds}
+							rerender={rerender} />
 					</div>
 
 					<div className="form-group-default">
@@ -288,8 +298,10 @@ export default class DispatchSubmit extends React.Component {
 					</div>
 
 					<a className="payment" href="/outlet/settings">
-						{paymentStatus}
-						{paymentMessage}
+						<span 
+							className={'mdi mdi-check ' + ( paymentAvailable ? 'available' : 'un-available')}>
+						</span>
+						{paymentAvailable ? 'Payment information available' : 'Payment information unavailable'}
 					</a>
 				</div>
 			</div>
