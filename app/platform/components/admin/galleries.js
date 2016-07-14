@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import GalleryListItem from './gallery-list-item';
-import AdminGalleryEdit from './gallery-edit';
+import GalleryEdit from './gallery-edit';
 import findIndex from 'lodash/findIndex';
 import omit from 'lodash/omit';
 
@@ -135,7 +135,7 @@ class Galleries extends React.Component {
 
         if (activeGallery && activeGallery.id) {
             editPane = (
-                <AdminGalleryEdit
+                <GalleryEdit
                     hasActiveGallery
                     activeGalleryType={'galleries'}
                     gallery={activeGallery}

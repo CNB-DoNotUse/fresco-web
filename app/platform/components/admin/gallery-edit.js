@@ -11,7 +11,7 @@ import cloneDeep from 'lodash/cloneDeep';
  *	Admin Submission Edit component.
  *	Delete, Skip, Verify imported
  */
-class AdminGalleryEdit extends React.Component {
+class GalleryEdit extends React.Component {
     constructor(props) {
         super(props);
 
@@ -370,7 +370,7 @@ class AdminGalleryEdit extends React.Component {
     }
 }
 
-AdminGalleryEdit.propTypes = {
+GalleryEdit.propTypes = {
     gallery: PropTypes.object.isRequired,
     hasActiveGallery: PropTypes.bool.isRequired,
     remove: PropTypes.func.isRequired,
@@ -379,5 +379,5 @@ AdminGalleryEdit.propTypes = {
     activeGalleryType: PropTypes.string.isRequired,
 };
 
-export default AdminGalleryEdit;
+export default GalleryEdit;
 
