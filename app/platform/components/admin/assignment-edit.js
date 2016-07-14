@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
-import AssignmentMerge from '../assignment/assignment-merge';
-import AssignmentMergeDropup from '../assignment/assignment-merge-drop-up';
+import AssignmentMerge from './assignment-merge';
+import AssignmentMergeDropup from './assignment-merge-drop-up';
 import utils from 'utils';
 import uniqBy from 'lodash/uniqBy';
 import reject from 'lodash/reject';
@@ -72,6 +72,23 @@ class AssignmentEdit extends React.Component {
      */
     onRadiusUpdate(radius) {
         this.setState({ radius: utils.feetToMiles(radius) });
+    }
+
+    onCloseMerge() {
+        this.setState({ showMergeDialog: false, mergeAssignment: null });
+    }
+
+    /**
+     * Called when assignment-merge-menu-item is clicked
+     * @param  {[type]} id ID of assignment to be merged into
+     */
+    onSelectMerge(assignment) {
+        this.setState({ mergeAssignment: assignment, showMergeDialog: true });
+    }
+
+    onMergeAssignment(id) {
+        this.onCloseMerge();
+        this.props.onUpdateAssignment(id);
     }
 
     getStateFromProps(props) {
@@ -185,26 +202,15 @@ class AssignmentEdit extends React.Component {
         });
     }
 
-    toggleMergeDialog() {
-        const { showMergeDialog } = this.state;
-        if (showMergeDialog) {
-            this.setState({ showMergeDialog: !showMergeDialog, mergeAssignment: null });
-        } else {
-            this.setState({ showMergeDialog: !showMergeDialog });
-        }
-    }
-
-    /**
-     * Called when assignment-merge-menu-item is clicked
-     * @param  {[type]} id ID of assignment to be merged into
-     */
-    selectMerge(assignment) {
-        this.setState({ mergeAssignment: assignment }, this.toggleMergeDialog);
-    }
-
     render() {
         const { loading, assignment } = this.props;
-        const { radius, address, nearbyAssignments, location } = this.state;
+        const {
+            radius,
+            address,
+            nearbyAssignments,
+            location,
+            showMergeDialog,
+        } = this.state;
         const defaultLocation = address || '';
         const expiration_time = assignment ? utils.hoursToExpiration(assignment.expiration_time) : null;
 
@@ -250,7 +256,7 @@ class AssignmentEdit extends React.Component {
 
                     <AssignmentMergeDropup
                         nearbyAssignments={nearbyAssignments}
-                        selectMerge={(a) => this.selectMerge(a)}
+                        onSelectMerge={(a) => this.onSelectMerge(a)}
                     />
                 </div>
 
@@ -273,12 +279,15 @@ class AssignmentEdit extends React.Component {
                     </button>
                 </div>
 
-                <AssignmentMerge
-                    assignment={assignment}
-                    mergeAssignment={this.state.mergeAssignment}
-                    toggled={this.state.showMergeDialog}
-                    toggle={() => this.toggleMergeDialog()}
-                />
+                {showMergeDialog
+                    ? <AssignmentMerge
+                        assignment={assignment}
+                        mergeAssignment={this.state.mergeAssignment}
+                        onClose={() => this.onCloseMerge()}
+                        onMergeAssignment={(id) => this.onMergeAssignment(id)}
+                    />
+                    : ''
+                }
             </div>
         );
     }

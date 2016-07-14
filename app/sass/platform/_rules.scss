@@ -15,6 +15,9 @@ a:hover {
 	color: #000;
 	text-decoration: none;
 }
+.toggler{
+    cursor: pointer;
+}
 .toggler:hover {
 	cursor: hand;
 }
@@ -227,7 +230,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		}
 
 		//Default style
-		.control-label{			
+		.control-label{
 			color: rgba(0,0,0,.26);
 		}
 
@@ -305,7 +308,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	.form-group-default {
 		margin-bottom: 22px;
 		width:100%;
-		
+
 		.form-control-wrapper {
 			width: 100%;
 			+ .form-control-wrapper {
@@ -680,7 +683,7 @@ div.chips {
 div.list {
 	height: 100%;
 	overflow-y: auto;
-	
+
 	div.list-item {
 		padding: 16px;
 		position:relative;
@@ -696,7 +699,7 @@ div.list {
 			.flexy {
 				max-width:71%;
 			}
-			
+
 			.mdi-logout-variant {
 				position:absolute;
 				top: 25px;
@@ -1138,7 +1141,7 @@ div.list {
 	.tiles {
 		margin: 0;
 		padding:0;
-		
+
 		// .story{
 		// 	.flex-row, .flex-col{
 		// 		height:150px
