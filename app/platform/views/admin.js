@@ -6,6 +6,7 @@ import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
 import remove from 'lodash/remove';
+import uniqBy from 'lodash/uniqBy';
 import 'sass/platform/_admin';
 
 /**
@@ -37,7 +38,7 @@ class Admin extends React.Component {
     componentDidMount() {
         this.refreshInterval = setInterval(() => {
             if (this.props.activeTab !== '') this.refresh();
-        }, 10000);
+        }, 5000);
         this.loadInitial();
     }
 
@@ -126,7 +127,7 @@ class Admin extends React.Component {
             }
 
             let stateData = this.state[tab];
-            if (!stateData.length) {
+            if (!stateData || !stateData.length) {
                 const state = {};
                 state[tab] = data;
                 if (unshift) self.setState(state);
@@ -135,7 +136,7 @@ class Admin extends React.Component {
             }
 
             const newData = this.getChangedData(stateData.concat(data), stateData);
-            if (!newData.length) {
+            if (!newData || !newData.length) {
                 return cb([]);
             }
 
@@ -211,7 +212,7 @@ class Admin extends React.Component {
     removeImport(id) {
         const { imports } = this.state;
         if (!id || !imports) return;
-        remove(imports, { id })
+        remove(imports, { id });
 
         this.setState({ imports });
     }
@@ -219,7 +220,7 @@ class Admin extends React.Component {
     removeSubmission(id) {
         const { submissions } = this.state;
         if (!id || !submissions) return;
-        remove(submissions, { id })
+        remove(submissions, { id });
 
         this.setState({ submissions });
     }
@@ -255,6 +256,28 @@ class Admin extends React.Component {
         });
     }
 
+    getAssignments() {
+        const { assignments } = this.state;
+        if (!assignments) return [];
+        let allAssignments = [];
+        function sortListItem(a, b) {
+            if (a.created_at > b.created_at) {
+                return -1;
+            } else if (a.created_at < b.created_at) {
+                return 1;
+            }
+
+            return 0;
+        }
+
+        ['nearby', 'global'].forEach((type) => {
+            allAssignments = allAssignments
+                .concat(assignments[type] && assignments[type].length ? assignments[type] : []);
+        });
+
+        return uniqBy(allAssignments, 'id').sort(sortListItem);
+    }
+
     renderActiveTab() {
         let tab = '';
 
@@ -262,7 +285,7 @@ class Admin extends React.Component {
             case 'assignments':
                 tab = (
                     <Assignments
-                        assignments={this.state.assignments}
+                        assignments={this.getAssignments()}
                         getData={this.getData}
                         refresh={this.refresh}
                         removeAssignment={(id) => this.removeAssignment(id)}

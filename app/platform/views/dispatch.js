@@ -128,13 +128,15 @@ class Dispatch extends React.Component {
 			params.limit = 10;	
 		}
 
+		console.log(params);
+
 		$.ajax({
 			url: '/api/assignment/find',
 			type: 'GET',
 			data: $.param(params),
 			success: (response, status, xhr) => {
 				callback(
-					response && !response.err ? response : []
+					response && !response.err ? utils.mergeAssignments(response, params.sortBy) : []
 				);
 			},
 			error: (xhr, status, error) => {

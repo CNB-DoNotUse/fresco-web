@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import AssignmentListItem from './assignment-list-item';
 import _ from 'lodash';
 
@@ -25,7 +25,7 @@ export default class DispatchAssignments extends React.Component {
 		//Access parent find method
 		this.props.findAssignments(null, {}, (assignments) => {
 			//Set posts & callback from successful response
-			this.setState({ assignments: assignments.nearby });
+			this.setState({ assignments });
 		});
 	}
 
@@ -33,7 +33,8 @@ export default class DispatchAssignments extends React.Component {
 		if(prevProps.viewMode !== this.props.viewMode){
 			//Access parent var load method
 			this.props.findAssignments(null, {}, (assignments) => {
-				this.setState({ assignments: assignments.nearby });
+				console.log(assignments);
+				this.setState({ assignments });
 			});
 		}
 	}
@@ -65,7 +66,7 @@ export default class DispatchAssignments extends React.Component {
 			this.props.findAssignments(null, params, (assignments) => {
 				//Set galleries from successful response, and unset loading
 				this.setState({
-					assignments: this.state.assignments.concat(assignments.nearby),
+					assignments: this.state.assignments.concat(assignments),
 					loading : false
 				});
 			});
@@ -174,3 +175,7 @@ export default class DispatchAssignments extends React.Component {
 		);
 	}
 }	
+
+DispatchAssignments.propTypes = {
+    assignments: PropTypes.array.isRequired
+};

@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react';
 import AssignmentListItem from './assignment-list-item';
 import AdminAssignmentEdit from './assignment-edit';
-import uniqBy from 'lodash/uniqBy';
 import findIndex from 'lodash/findIndex';
-import omit from 'lodash/omit';
 
 class Assignments extends React.Component {
     constructor(props) {
@@ -17,103 +15,20 @@ class Assignments extends React.Component {
             activeAssignment: firstAssignment,
             loading: false,
         };
-
-        this.scroll = this.scroll.bind(this);
     }
 
     onUpdateAssignment(id) {
-        const { removeAssignment } = this.props;
-        const allAssignments = this.getAllAssignments();
-        const index = findIndex(allAssignments, { id });
-
-        if (allAssignments[index + 1]) {
-            this.setState({ 
-                activeAssignment: allAssignments[index + 1] 
-            }, () => removeAssignment(id));
-        } else {
-            this.setState({ 
-                activeAssignment: null 
-            }, () => removeAssignment(id));
-        }
+        const { assignments, removeAssignment } = this.props;
+        const index = findIndex(assignments, { id });
+        const nextAssignment = assignments[index + 1]
+            || assignments[index - 1]
+            || null;
+        removeAssignment(id);
+        this.setActiveAssignment(nextAssignment);
     }
 
     setActiveAssignment(assignment) {
         this.setState({ activeAssignment: assignment });
-    }
-
-    getAllAssignments() {
-        const { assignments } = this.props;
-        let allAssignments = [];
-
-        ['nearby', 'global'].forEach((type) => {
-            allAssignments = allAssignments
-                .concat(assignments[type] && assignments[type].length ? assignments[type] : []);
-        });
-
-        return allAssignments;
-    }
-
-    approve(params) {
-        const { id } = params;
-        if (!id) return;
-        this.setState({ loading: true });
-
-        let data = Object.assign({}, params);
-        data = omit(data, 'id');
-        $.ajax({
-            type: 'POST',
-            url: `/api/assignment/${id}/approve`,
-            data,
-        })
-        .done(() => {
-            this.onUpdateAssignment(id);
-            this.setState({ loading: false });
-            $.snackbar({ content: 'Assignment Approved!' });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Could not approve assignment!' });
-        });
-    }
-
-    reject(id) {
-        if (!id) return;
-        this.setState({ loading: true });
-
-        $.ajax({
-            type: 'POST',
-            url: `/api/assignment/${id}/reject`,
-        })
-        .done(() => {
-            $.snackbar({ content: 'Assignment Rejected!' });
-            this.onUpdateAssignment(id);
-            this.setState({ loading: false });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Could not reject assignment!' });
-        });
-    }
-
-    /**
-     * Merges assignment into existing assignment
-     * @param  {Object} data
-     * @param  {String} data.title
-     * @param  {String} data.caption
-     * @param  {String} data.assignmentToMergeInto
-     * @param  {String} data.assignmentToDelete
-     */
-    merge(data, cb) {
-        $.ajax({
-            url: '/api/assignment/merge',
-            data,
-        })
-        .done(() => {
-            this.onUpdateAssignment(data.assignmentToDelete);
-            $.snackbar({ content: 'Assignment successfully merged!' });
-            cb();
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Could not merge assignment!' });
-        });
     }
 
     scroll(e) {
@@ -132,32 +47,17 @@ class Assignments extends React.Component {
 
     renderAssignments() {
         const { activeAssignment } = this.state;
-        let cmps = [];
-        const assignmentsToRender = uniqBy(this.getAllAssignments(), 'id');
+        const { assignments } = this.props;
 
-        function sortListItem(a, b) {
-            if (a.created_at > b.created_at) {
-                return -1;
-            } else if (a.created_at < b.created_at) {
-                return 1;
-            }
-
-            return 0;
-        }
-
-        if (assignmentsToRender.length) {
-            cmps = assignmentsToRender.sort(sortListItem).map((assignment, i) => (
-                <AssignmentListItem
-                    type="assignment"
-                    assignment={assignment}
-                    key={i}
-                    active={activeAssignment && activeAssignment.id === assignment.id}
-                    setActiveAssignment={() => this.setActiveAssignment(assignment)}
-                />
-            ));
-        }
-
-        return cmps;
+        return assignments.map((assignment, i) => (
+            <AssignmentListItem
+                type="assignment"
+                assignment={assignment}
+                key={i}
+                active={activeAssignment && activeAssignment.id === assignment.id}
+                setActiveAssignment={() => this.setActiveAssignment(assignment)}
+            />
+        ));
     }
 
     render() {
@@ -169,16 +69,14 @@ class Assignments extends React.Component {
                 <AdminAssignmentEdit
                     assignment={activeAssignment}
                     loading={loading}
-                    approve={(params) => this.approve(params)}
-                    reject={(id) => this.reject(id)}
-                    merge={(params, cb) => this.merge(params, cb)}
+                    onUpdateAssignment={(id) => this.onUpdateAssignment(id)}
                 />
             );
         }
 
         return (
             <div className="container-fluid admin">
-                <div className="col-md-6 col-lg-7 list" onScroll={this.scroll}>
+                <div className="col-md-6 col-lg-7 list" onScroll={() => this.scroll()}>
                     {this.renderAssignments()}
                 </div>
                 <div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">
@@ -190,7 +88,7 @@ class Assignments extends React.Component {
 }
 
 Assignments.propTypes = {
-    assignments: PropTypes.object.isRequired,
+    assignments: PropTypes.array.isRequired,
     getData: PropTypes.func.isRequired,
     removeAssignment: PropTypes.func.isRequired,
 };

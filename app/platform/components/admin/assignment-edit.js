@@ -1,73 +1,36 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
 import AssignmentMerge from '../assignment/assignment-merge';
+import AssignmentMergeDropup from '../assignment/assignment-merge-drop-up';
 import utils from 'utils';
+import uniqBy from 'lodash/uniqBy';
+import reject from 'lodash/reject';
 
 /**
     Assignment Edit Sidebar used in assignment administration page
 **/
-class AdminAssignmentEdit extends React.Component {
+class AssignmentEdit extends React.Component {
     constructor(props) {
         super(props);
-        const { assignment } = props;
-        let radius = 0;
-        let location = { lat: null, lng: null };
 
-        if (assignment && assignment.location) {
-            radius = assignment.location
-                && assignment.location.radius ? assignment.location.radius : 0;
-            location = {
-                lat: assignment.location.coordinates ? assignment.location.coordinates[1] : null,
-                lng: assignment.location.coordinates ? assignment.location.coordinates[0] : null,
-            };
-        }
-
-        this.state = {
-            address: null,
-            radius,
-            location,
-            nearbyAssignments: [],
-            mergeDialogToggled: false,
-            assignmentToMergeInto: null,
-        };
-
-        this.onPlaceChange = this.onPlaceChange.bind(this);
-        this.onRadiusUpdate = this.onRadiusUpdate.bind(this);
-        this.onMapDataChange = this.onMapDataChange.bind(this);
-        this.findNearbyAssignments = this.findNearbyAssignments.bind(this);
-        this.toggleMergeDialog = this.toggleMergeDialog.bind(this);
-        this.selectMerge = this.selectMerge.bind(this);
+        this.state = this.getStateFromProps(props);
     }
 
     componentDidMount() {
         $.material.init();
+        this.findNearbyAssignments();
     }
 
     componentWillReceiveProps(nextProps) {
-        const { assignment } = nextProps;
+        if (this.props.assignment.id !== nextProps.assignment.id) {
+            this.setState(this.getStateFromProps(nextProps));
+            this.resetForm(nextProps.assignment);
+        }
+    }
 
-        if (this.props.assignment.id !== assignment.id) {
-            if (assignment.location) {
-                this.setState({
-                    address: null,
-                    radius: assignment.location ? assignment.location.radius : 0,
-                    location: {
-                        lat: assignment.location.coordinates[1],
-                        lng: assignment.location.coordinates[0],
-                    },
-                });
-            }
-
-            // this.findNearbyAssignments();
-            this.refs['assignment-title'].value = assignment.title;
-            this.refs['assignment-description'].value = assignment.caption;
-            this.refs['assignment-expiration'].value = assignment
-                ? utils.hoursToExpiration(assignment.expiration_time)
-                : null;
-
-            $(this.refs['assignment-title']).removeClass('empty');
-            $(this.refs['assignment-description']).removeClass('empty');
-            $(this.refs['assignment-expiration']).removeClass('empty');
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.location !== prevState.location) {
+            this.findNearbyAssignments();
         }
     }
 
@@ -111,10 +74,43 @@ class AdminAssignmentEdit extends React.Component {
         this.setState({ radius: utils.feetToMiles(radius) });
     }
 
+    getStateFromProps(props) {
+        const { assignment } = props;
+        const radius = assignment.radius || 0;
+        let location = { lat: 40.7, lng: -74 };
 
-    approve(){
-        const params = {
-            id: this.props.assignment.id,
+        if (assignment && assignment.location) {
+            location = {
+                lat: assignment.location.coordinates ? assignment.location.coordinates[1] : null,
+                lng: assignment.location.coordinates ? assignment.location.coordinates[0] : null,
+            };
+        }
+
+        return {
+            address: assignment.address,
+            radius,
+            location,
+            nearbyAssignments: [],
+            showMergeDialog: false,
+            mergeAssignment: null,
+        };
+    }
+
+    resetForm(assignment) {
+        this.refs['assignment-title'].value = assignment.title;
+        this.refs['assignment-description'].value = assignment.caption;
+        this.refs['assignment-expiration'].value = assignment
+            ? utils.hoursToExpiration(assignment.expiration_time)
+            : null;
+
+        $(this.refs['assignment-title']).removeClass('empty');
+        $(this.refs['assignment-description']).removeClass('empty');
+        $(this.refs['assignment-expiration']).removeClass('empty');
+    }
+
+    approveAssignment() {
+        const id = this.props.assignment.id;
+        const data = {
             now: Date.now(),
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
@@ -127,55 +123,92 @@ class AdminAssignmentEdit extends React.Component {
             expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
         };
 
-        this.props.approve(params);
+        if (!id) return;
+        this.setState({ loading: true });
+
+        $.ajax({
+            type: 'POST',
+            url: `/api/assignment/${id}/approve`,
+            data,
+        })
+        .done(() => {
+            this.props.onUpdateAssignment(id);
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Assignment Approved!' });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not approve assignment!' });
+        });
+    }
+
+    rejectAssignment(id) {
+        if (!id) return;
+        this.setState({ loading: true });
+
+        $.ajax({
+            type: 'POST',
+            url: `/api/assignment/${id}/reject`,
+        })
+        .done(() => {
+            $.snackbar({ content: 'Assignment Rejected!' });
+            this.props.onUpdateAssignment(id);
+            this.setState({ loading: false });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not reject assignment!' });
+        });
     }
 
     /**
      * Finds nearby assignments
      */
     findNearbyAssignments() {
-        if (!this.props.assignment || !this.props.assignment.location) return;
+        const { location } = this.state;
         const { assignment } = this.props;
+        if (!location || !location.lat || !location.lng) return;
+        const geo = {
+            type: 'Point',
+            coordinates: [location.lat, location.lng],
+        };
 
         $.get('/api/assignment/find', {
-            active: true,
-            radius: assignment.location.radius,
-            unpack: false,
-            lat: assignment.location.coordinates[1],
-            lon: assignment.location.coordinates[0],
-        }, (assignments) => {
-            this.setState({ nearbyAssignments: assignments.data.slice(0, 5) });
+            radius: 50,
+            geo,
+            unrated: true,
+            limit: 5,
+        }, (data) => {
+            if (data.nearby && data.global) {
+                this.setState({
+                    nearbyAssignments: uniqBy(
+                        reject(data.nearby.concat(data.global), { id: assignment.id }),
+                        'id'
+                    ),
+                });
+            }
         });
     }
 
     toggleMergeDialog() {
-        const changedState = { mergeDialogToggled: !this.state.mergeDialogToggled };
-
-        if (this.state.mergeDialogToggled) {
-            changedState.assignmentToMergeInto = null;
+        const { showMergeDialog } = this.state;
+        if (showMergeDialog) {
+            this.setState({ showMergeDialog: !showMergeDialog, mergeAssignment: null });
+        } else {
+            this.setState({ showMergeDialog: !showMergeDialog });
         }
-
-        this.setState(changedState);
     }
 
     /**
      * Called when assignment-merge-menu-item is clicked
      * @param  {[type]} id ID of assignment to be merged into
      */
-    selectMerge(id) {
-        $.get('/api/assignment/get', { id }, (assignment) => {
-            if (assignment.err) {
-                return $.snackbar({ content: 'Error retrieving assignment to merge' });
-            }
-            this.setState({ assignmentToMergeInto: assignment.data });
-            return this.toggleMergeDialog();
-        });
+    selectMerge(assignment) {
+        this.setState({ mergeAssignment: assignment }, this.toggleMergeDialog);
     }
 
     render() {
-        const { loading, assignment, reject } = this.props;
-        const radius = Math.round(utils.milesToFeet(this.state.radius));
-        const address = this.state.address ? this.state.address : assignment.location ? assignment.location.address : '';
+        const { loading, assignment } = this.props;
+        const { radius, address, nearbyAssignments, location } = this.state;
+        const defaultLocation = address || '';
         const expiration_time = assignment ? utils.hoursToExpiration(assignment.expiration_time) : null;
 
         return (
@@ -198,12 +231,12 @@ class AdminAssignmentEdit extends React.Component {
                     />
 
                     <AutocompleteMap
-                        defaultLocation={address}
-                        location={this.state.location}
-                        radius={radius}
-                        onPlaceChange={this.onPlaceChange}
-                        onMapDataChange={this.onMapDataChange}
-                        onRadiusUpdate={this.onRadiusUpdate}
+                        defaultLocation={defaultLocation}
+                        location={location}
+                        radius={Math.round(utils.milesToFeet(radius))}
+                        onPlaceChange={(place) => this.onPlaceChange(place)}
+                        onMapDataChange={(data) => this.onMapDataChange(data)}
+                        onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
                         draggable
                         rerender
                         hasRadius
@@ -217,13 +250,18 @@ class AdminAssignmentEdit extends React.Component {
                         ref="assignment-expiration"
                         defaultValue={expiration_time}
                     />
+
+                    <AssignmentMergeDropup
+                        nearbyAssignments={nearbyAssignments}
+                        selectMerge={(a) => this.selectMerge(a)}
+                    />
                 </div>
 
                 <div className="dialog-foot">
                     <button
                         type="button"
                         className="btn btn-flat assignment-approve pull-right"
-                        onClick={() => this.approve()}
+                        onClick={() => this.approveAssignment()}
                         disabled={loading}
                     >
                         Approve
@@ -231,7 +269,7 @@ class AdminAssignmentEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat assignment-deny pull-right"
-                        onClick={() => reject(assignment.id)}
+                        onClick={() => this.rejectAssignment(assignment.id)}
                         disabled={loading}
                     >
                         Reject
@@ -240,22 +278,20 @@ class AdminAssignmentEdit extends React.Component {
 
                 <AssignmentMerge
                     assignment={assignment}
-                    assignmentToMergeInto={this.state.assignmentToMergeInto}
-                    toggled={this.state.mergeDialogToggled}
-                    toggle={this.toggleMergeDialog}
-                    merge={this.merge}
+                    mergeAssignment={this.state.mergeAssignment}
+                    toggled={this.state.showMergeDialog}
+                    toggle={() => this.toggleMergeDialog()}
                 />
             </div>
         );
     }
 }
 
-AdminAssignmentEdit.propTypes = {
+AssignmentEdit.propTypes = {
     assignment: PropTypes.object.isRequired,
-    approve: PropTypes.func.isRequired,
-    reject: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
+    onUpdateAssignment: PropTypes.func.isRequired,
 };
 
-export default AdminAssignmentEdit;
+export default AssignmentEdit;
 

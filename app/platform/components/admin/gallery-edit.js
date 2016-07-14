@@ -26,22 +26,10 @@ class AdminGalleryEdit extends React.Component {
             waiting: false,
             caption: activeGallery.caption || 'No Caption',
         };
-
-        this.resetState = this.resetState.bind(this);
-
-        this.editButtonEnabled = this.editButtonEnabled.bind(this);
-        this.updateTags = this.updateTags.bind(this);
-        this.onPlaceChange = this.onPlaceChange.bind(this);
-        this.updateGallery = this.updateGallery.bind(this);
-
-        this.revert = this.revert.bind(this);
-        this.skip = this.skip.bind(this);
-        this.verify = this.verify.bind(this);
-        this.remove = this.remove.bind(this);
     }
 
     componentDidMount() {
-        this.editButtonEnabled(false);
+        $.material.init();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -297,11 +285,8 @@ class AdminGalleryEdit extends React.Component {
         }
 
         return (
-            <div className="dialog">
-                <div
-                    className="dialog-body"
-                    style={{ visibility: hasActiveGallery ? 'visible' : 'hidden' }}
-                >
+            <div className="dialog admin-edit-pane">
+                <div className="dialog-body" style={{ visibility: hasActiveGallery ? 'visible' : 'hidden' }}>
                     <div className="gallery-images">
                         <Slider
                             dots
@@ -322,11 +307,11 @@ class AdminGalleryEdit extends React.Component {
 
                     <GalleryEditAssignment
                         assignment={activeGallery.assignment}
-                        updateGalleryField={this.updateGallery}
+                        updateGalleryField={() => this.updateGallery()}
                     />
 
                     <EditTags
-                        updateTags={this.updateTags}
+                        updateTags={() => this.updateTags()}
                         tags={activeGallery.tags}
                     />
 
@@ -339,7 +324,7 @@ class AdminGalleryEdit extends React.Component {
                         <AutocompleteMap
                             location={location}
                             defaultLocation={address}
-                            onPlaceChange={this.onPlaceChange}
+                            onPlaceChange={() => this.onPlaceChange()}
                             disabled={activeGalleryType !== 'import'}
                             hasRadius={false}
                             rerender
@@ -350,7 +335,7 @@ class AdminGalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat gallery-revert"
-                        onClick={this.revert}
+                        onClick={() => this.revert()}
                         disabled={this.state.waiting}
                     >
                         Revert changes
@@ -358,7 +343,7 @@ class AdminGalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-verify"
-                        onClick={this.verify}
+                        onClick={() => this.verify()}
                         disabled={this.state.waiting}
                     >
                         Verify
@@ -366,7 +351,7 @@ class AdminGalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-skip"
-                        onClick={this.skip}
+                        onClick={() => this.skip()}
                         disabled={this.state.waiting}
                     >
                         Skip
@@ -374,7 +359,7 @@ class AdminGalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-delete"
-                        onClick={this.remove}
+                        onClick={() => this.remove()}
                         disabled={this.state.waiting}
                     >
                         Delete
