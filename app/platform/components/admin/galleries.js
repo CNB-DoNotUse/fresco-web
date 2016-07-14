@@ -75,7 +75,7 @@ class Galleries extends React.Component {
             editPane = (
                 <GalleryEdit
                     hasActiveGallery
-                    activeGalleryType={'galleries'}
+                    galleryType={this.props.galleryType}
                     gallery={activeGallery}
                     onUpdateGallery={(id) => this.onUpdateGallery(id)}
                 />
@@ -99,6 +99,7 @@ Galleries.propTypes = {
     removeGallery: PropTypes.func.isRequired,
     galleries: PropTypes.array.isRequired,
     getData: PropTypes.func.isRequired,
+    galleryType: PropTypes.string.isRequired,
 };
 
 export default Galleries;

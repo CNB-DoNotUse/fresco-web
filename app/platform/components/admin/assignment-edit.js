@@ -166,10 +166,7 @@ class AssignmentEdit extends React.Component {
         const { location } = this.state;
         const { assignment } = this.props;
         if (!location || !location.lat || !location.lng) return;
-        const geo = {
-            type: 'Point',
-            coordinates: [location.lat, location.lng],
-        };
+        const geo = utils.getGeoFromCoord(location);
 
         $.get('/api/assignment/find', {
             radius: 50,
