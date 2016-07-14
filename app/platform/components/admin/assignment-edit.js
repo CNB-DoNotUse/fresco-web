@@ -77,7 +77,7 @@ class AssignmentEdit extends React.Component {
     getStateFromProps(props) {
         const { assignment } = props;
         const radius = assignment.radius || 0;
-        let location = { lat: null, lng: null };
+        let location = { lat: 40.7, lng: -74 };
 
         if (assignment && assignment.location) {
             location = {
@@ -208,7 +208,7 @@ class AssignmentEdit extends React.Component {
     render() {
         const { loading, assignment } = this.props;
         const { radius, address, nearbyAssignments, location } = this.state;
-        const defaultLocation = address || (assignment.location ? assignment.location.address : '');
+        const defaultLocation = address || '';
         const expiration_time = assignment ? utils.hoursToExpiration(assignment.expiration_time) : null;
 
         return (
