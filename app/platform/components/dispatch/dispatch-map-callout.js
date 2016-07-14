@@ -17,20 +17,26 @@ export default class DispatchMapCallout extends React.Component {
 	}
 
 	render() {
-
-		var assignment = this.props.assignment;
+		const { assignment } = this.props;
+		const posts = assignment.posts || [];
 
 		return (
 			<div className="callout">
 				<div className="assignment-callout-main">
-					<div className="md-type-body2 assignment-callout-title">{assignment.title}</div> 
+					<div className="md-type-body2 assignment-callout-title">
+						{assignment.title}
+					</div> 
 					
-					<div className="md-type-body1 assignment-callout-caption">{assignment.caption}</div> 
+					<div className="md-type-body1 assignment-callout-caption">
+						{assignment.caption}
+					</div> 
 					
 					<div className="assignment-callout-buttons">
 						<span className="mdi mdi-image icon assignment-callout-icon"></span>
 						
-						<span className="assignment-callout-image-counter">{assignment.posts.length}</span>
+						<span className="assignment-callout-image-counter">
+							{posts.length}
+						</span>
 						
 						<button 
 							type="button" 
