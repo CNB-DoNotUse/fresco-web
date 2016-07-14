@@ -170,8 +170,8 @@ class AdminAssignmentEdit extends React.Component {
 
     render() {
         const { loading, assignment, rejectAssignment, merge } = this.props;
-        const radius = Math.round(utils.milesToFeet(this.state.radius));
-        const address = this.state.address ? this.state.address : assignment.location ? assignment.location.address : '';
+        const { radius, address } = this.state;
+        const defaultLocation = address || (assignment.location ? assignment.location.address : '');
         const expiration_time = assignment ? utils.hoursToExpiration(assignment.expiration_time) : null;
 
         return (
@@ -194,9 +194,9 @@ class AdminAssignmentEdit extends React.Component {
                     />
 
                     <AutocompleteMap
-                        defaultLocation={address}
+                        defaultLocation={defaultLocation}
                         location={this.state.location}
-                        radius={radius}
+                        radius={Math.round(utils.milesToFeet(radius))}
                         onPlaceChange={(place) => this.onPlaceChange(place)}
                         onMapDataChange={(data) => this.onMapDataChange(data)}
                         onRadiusUpdate={(r) => this.onRadiusUpdate(r)}

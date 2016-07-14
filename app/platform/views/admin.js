@@ -126,7 +126,7 @@ class Admin extends React.Component {
             }
 
             let stateData = this.state[tab];
-            if (!stateData.length) {
+            if (!stateData || !stateData.length) {
                 const state = {};
                 state[tab] = data;
                 if (unshift) self.setState(state);
@@ -135,7 +135,7 @@ class Admin extends React.Component {
             }
 
             const newData = this.getChangedData(stateData.concat(data), stateData);
-            if (!newData.length) {
+            if (!newData || !newData.length) {
                 return cb([]);
             }
 

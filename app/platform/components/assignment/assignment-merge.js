@@ -52,7 +52,10 @@ class AssignmentMerge extends React.Component {
                     <div className="col-xs-12 col-lg-8 edit-new dialog">
                         <div className="dialog-head">
                             <span className="md-type-title">Update assignment info</span>
-                            <span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={() => this.cancel()}></span>
+                            <span
+                                className="mdi mdi-close pull-right icon toggle-edit toggler"
+                                onClick={() => this.cancel()}
+                            />
                         </div>
                         <div className="dialog-body">
                             <div className="dialog-col col-xs-12 form-group-default">
@@ -73,14 +76,27 @@ class AssignmentMerge extends React.Component {
                                         className="form-control floating-label"
                                         placeholder="Caption"
                                         title="Caption"
-                                        ref="caption"/>
+                                        ref="caption"
+                                    />
                                 </div>
                             </div>
                         </div>
 
                         <div className="dialog-foot">
-                            <button type="button" className="btn btn-flat" onClick={() => this.cancel()}>Cancel</button>
-                            <button type="button" className="btn btn-flat pull-right" onClick={() => this.merge()}>Merge & Update</button>
+                            <button
+                                type="button"
+                                className="btn btn-flat"
+                                onClick={() => this.cancel()}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-flat pull-right"
+                                onClick={() => this.merge()}
+                            >
+                                Merge & Update
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -101,3 +117,4 @@ AssignmentMerge.propTypes = {
 };
 
 export default AssignmentMerge;
+
