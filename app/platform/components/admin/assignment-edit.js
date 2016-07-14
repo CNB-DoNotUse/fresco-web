@@ -13,12 +13,10 @@ class AdminAssignmentEdit extends React.Component {
     constructor(props) {
         super(props);
         const { assignment } = props;
-        let radius = 0;
+        const radius = assignment.radius || 0;
         let location = { lat: null, lng: null };
 
         if (assignment && assignment.location) {
-            radius = assignment.location
-                && assignment.location.radius ? assignment.location.radius : 0;
             location = {
                 lat: assignment.location.coordinates ? assignment.location.coordinates[1] : null,
                 lng: assignment.location.coordinates ? assignment.location.coordinates[0] : null,
@@ -26,7 +24,7 @@ class AdminAssignmentEdit extends React.Component {
         }
 
         this.state = {
-            address: null,
+            address: assignment.address,
             radius,
             location,
             nearbyAssignments: [],
@@ -45,8 +43,8 @@ class AdminAssignmentEdit extends React.Component {
         if (this.props.assignment.id !== assignment.id) {
             if (assignment.location) {
                 this.setState({
-                    address: null,
-                    radius: assignment.location ? assignment.location.radius : 0,
+                    address: assignment.address,
+                    radius: assignment.radius,
                     location: {
                         lat: assignment.location.coordinates[1],
                         lng: assignment.location.coordinates[0],
