@@ -96,7 +96,7 @@ class Dropdown extends React.Component {
                             <li
                                 className={option === this.state.selected ? 'active' : ''}
                                 key={i}
-                                onClick={() => this.optionClicked()}
+                                onClick={(e) => this.optionClicked(e)}
                             >
                                 <span>{option}</span>
                             </li>
