@@ -6,6 +6,7 @@ import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
 import remove from 'lodash/remove';
+import uniqBy from 'lodash/uniqBy';
 import 'sass/platform/_admin';
 
 /**
@@ -255,6 +256,28 @@ class Admin extends React.Component {
         });
     }
 
+    getAssignments() {
+        const { assignments } = this.state;
+        if (!assignments) return [];
+        let allAssignments = [];
+        function sortListItem(a, b) {
+            if (a.created_at > b.created_at) {
+                return -1;
+            } else if (a.created_at < b.created_at) {
+                return 1;
+            }
+
+            return 0;
+        }
+
+        ['nearby', 'global'].forEach((type) => {
+            allAssignments = allAssignments
+                .concat(assignments[type] && assignments[type].length ? assignments[type] : []);
+        });
+
+        return uniqBy(allAssignments, 'id').sort(sortListItem);
+    }
+
     renderActiveTab() {
         let tab = '';
 
@@ -262,7 +285,7 @@ class Admin extends React.Component {
             case 'assignments':
                 tab = (
                     <Assignments
-                        assignments={this.state.assignments}
+                        assignments={this.getAssignments()}
                         getData={this.getData}
                         refresh={this.refresh}
                         removeAssignment={(id) => this.removeAssignment(id)}

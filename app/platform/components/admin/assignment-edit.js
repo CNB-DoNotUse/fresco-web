@@ -108,10 +108,9 @@ class AssignmentEdit extends React.Component {
         $(this.refs['assignment-expiration']).removeClass('empty');
     }
 
-
-    approve() {
-        const params = {
-            id: this.props.assignment.id,
+    approveAssignment() {
+        const id = this.props.assignment.id;
+        const data = {
             now: Date.now(),
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
@@ -124,7 +123,40 @@ class AssignmentEdit extends React.Component {
             expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
         };
 
-        this.props.approve(params);
+        if (!id) return;
+        this.setState({ loading: true });
+
+        $.ajax({
+            type: 'POST',
+            url: `/api/assignment/${id}/approve`,
+            data,
+        })
+        .done(() => {
+            this.props.onUpdateAssignment(id);
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Assignment Approved!' });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not approve assignment!' });
+        });
+    }
+
+    rejectAssignment(id) {
+        if (!id) return;
+        this.setState({ loading: true });
+
+        $.ajax({
+            type: 'POST',
+            url: `/api/assignment/${id}/reject`,
+        })
+        .done(() => {
+            $.snackbar({ content: 'Assignment Rejected!' });
+            this.props.onUpdateAssignment(id);
+            this.setState({ loading: false });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not reject assignment!' });
+        });
     }
 
     /**
@@ -174,7 +206,7 @@ class AssignmentEdit extends React.Component {
     }
 
     render() {
-        const { loading, assignment, rejectAssignment, merge } = this.props;
+        const { loading, assignment } = this.props;
         const { radius, address, nearbyAssignments, location } = this.state;
         const defaultLocation = address || (assignment.location ? assignment.location.address : '');
         const expiration_time = assignment ? utils.hoursToExpiration(assignment.expiration_time) : null;
@@ -229,7 +261,7 @@ class AssignmentEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat assignment-approve pull-right"
-                        onClick={() => this.approve()}
+                        onClick={() => this.approveAssignment()}
                         disabled={loading}
                     >
                         Approve
@@ -237,7 +269,7 @@ class AssignmentEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat assignment-deny pull-right"
-                        onClick={() => rejectAssignment(assignment.id)}
+                        onClick={() => this.rejectAssignment(assignment.id)}
                         disabled={loading}
                     >
                         Reject
@@ -249,7 +281,6 @@ class AssignmentEdit extends React.Component {
                     mergeAssignment={this.state.mergeAssignment}
                     toggled={this.state.showMergeDialog}
                     toggle={() => this.toggleMergeDialog()}
-                    merge={merge}
                 />
             </div>
         );
@@ -258,10 +289,8 @@ class AssignmentEdit extends React.Component {
 
 AssignmentEdit.propTypes = {
     assignment: PropTypes.object.isRequired,
-    approve: PropTypes.func.isRequired,
-    rejectAssignment: PropTypes.func.isRequired,
-    merge: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
+    onUpdateAssignment: PropTypes.func.isRequired,
 };
 
 export default AssignmentEdit;

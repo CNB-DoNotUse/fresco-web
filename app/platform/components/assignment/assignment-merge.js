@@ -1,12 +1,41 @@
 import React, { PropTypes } from 'react';
 
 class AssignmentMerge extends React.Component {
+    componentDidMount() {
+        $.material.init();
+    }
+
     cancel() {
         this.props.toggle();
     }
 
+    /**
+     * Merges assignment into existing assignment
+     * @param  {Object} data
+     * @param  {String} data.title
+     * @param  {String} data.caption
+     * @param  {String} data.assignmentToMergeInto
+     * @param  {String} data.assignmentToDelete
+     */
+    postMerge(id, data) {
+        if (!id || !data.mergeWith_id) return;
+
+        $.ajax({
+            type: 'POST',
+            url: `/api/assignment/${id}/merge`,
+            data,
+        })
+        .done(() => {
+            this.onUpdateAssignment(data.mergeWith_id);
+            $.snackbar({ content: 'Assignment successfully merged!' });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not merge assignment!' });
+        });
+    }
+
     merge() {
-        const { merge, mergeAssignment, assignment } = this.props;
+        const { mergeAssignment, assignment } = this.props;
 
         if (!this.refs.title.value.length) {
             $.snackbar({ content: 'The merged assignment\'s title cannot be empty!' });
@@ -19,17 +48,16 @@ class AssignmentMerge extends React.Component {
             return;
         }
 
-        merge({
+        this.postMerge(assignment.id, {
             title: this.refs.title.value,
             caption: this.refs.caption.value,
-            mergeAssignment: mergeAssignment.id,
-            assignmentToDelete: assignment.id,
-            outlet: assignment.outlets[0].id,
+            mergeWith_id: mergeAssignment.id,
         });
     }
 
     render() {
         let toggledText = this.props.toggled ? ' toggled' : '';
+        const { assignment, mergeAssignment } = this.props;
 
         if (!this.props.assignment || !this.props.mergeAssignment) return <div />;
 
@@ -40,13 +68,13 @@ class AssignmentMerge extends React.Component {
                     <div className="col-lg-4 visible-lg edit-current assignment-merge-side">
                         <div className="assignment-block">
                             <span className="section-label">Active Assignment</span>
-                            <h1>{this.props.mergeAssignment.title}</h1>
-                            <p>{this.props.mergeAssignment.caption}</p>
+                            <h1>{assignment.title}</h1>
+                            <p>{assignment.caption}</p>
                         </div>
                         <div className="assignment-block">
                             <span className="section-label">Submitted Assignment</span>
-                            <h1>{this.props.assignment.title}</h1>
-                            <p>{this.props.assignment.caption}</p>
+                            <h1>{mergeAssignment.title}</h1>
+                            <p>{mergeAssignment.caption}</p>
                         </div>
                     </div>
                     <div className="col-xs-12 col-lg-8 edit-new dialog">
@@ -66,7 +94,7 @@ class AssignmentMerge extends React.Component {
                                         placeholder="Title"
                                         title="Title"
                                         ref="title"
-                                        defaultValue={this.props.mergeAssignment.title}
+                                        defaultValue={assignment.title}
                                     />
                                 </div>
 
@@ -77,6 +105,7 @@ class AssignmentMerge extends React.Component {
                                         placeholder="Caption"
                                         title="Caption"
                                         ref="caption"
+                                        defaultValue={assignment.caption}
                                     />
                                 </div>
                             </div>
@@ -111,7 +140,6 @@ AssignmentMerge.defaultProps = {
 
 AssignmentMerge.propTypes = {
     toggle: PropTypes.func.isRequired,
-    merge: PropTypes.func.isRequired,
     mergeAssignment: PropTypes.object,
     assignment: PropTypes.object,
 };
