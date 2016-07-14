@@ -25,7 +25,7 @@ export default class DispatchAssignments extends React.Component {
 		//Access parent find method
 		this.props.findAssignments(null, {}, (assignments) => {
 			//Set posts & callback from successful response
-			this.setState({ assignments });
+			this.setState({ assignments: assignments.nearby });
 		});
 	}
 
@@ -33,7 +33,7 @@ export default class DispatchAssignments extends React.Component {
 		if(prevProps.viewMode !== this.props.viewMode){
 			//Access parent var load method
 			this.props.findAssignments(null, {}, (assignments) => {
-				this.setState({ assignments });
+				this.setState({ assignments: assignments.nearby });
 			});
 		}
 	}
@@ -41,6 +41,8 @@ export default class DispatchAssignments extends React.Component {
 	//Scroll listener for main window
 	scroll(type, event) {
 		let grid;
+
+		const { loading, assignments } = this.state;
 
 		if(type == 'active')
 			grid = this.refs.activeList
@@ -51,19 +53,19 @@ export default class DispatchAssignments extends React.Component {
 
 		//Check that nothing is loading and that we're at the end of the scroll, 
 		//and that we have a parent bind to load  more posts
-		if(!this.state.loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight)){
+		if(!loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight) && assignments.length > 0){
 			//Set that we're loading
 			this.setState({ loading : true });
 
 			const params = {
-				last: _.last(this.state.assignments).id
+				last: _.last(assignments).id
 			};
 
 			//Access parent var load method
 			this.props.findAssignments(null, params, (assignments) => {
 				//Set galleries from successful response, and unset loading
 				this.setState({
-					assignments: this.state.assignments.concat(assignments),
+					assignments: this.state.assignments.concat(assignments.nearby),
 					loading : false
 				});
 			});
@@ -97,6 +99,8 @@ export default class DispatchAssignments extends React.Component {
 	}
 
 	render() {
+	    const buttonClass = "btn btn-flat";
+		const { viewMode } = this.props;
 
 		let AssignmentList = this.state.assignments.map((assignment, i)  => {
 			return (
@@ -106,10 +110,6 @@ export default class DispatchAssignments extends React.Component {
 					key={i} />
 			)
 		});
-
-	    const buttonClass = "btn btn-flat";
-		const { viewMode } = this.props;
-
 		return (
 
 			<div className="card panel assignments-panel">
@@ -170,9 +170,7 @@ export default class DispatchAssignments extends React.Component {
 						</div>
 					</div>
 				</div>
-			</div>
-			
+			</div>	
 		);
-
 	}
 }	

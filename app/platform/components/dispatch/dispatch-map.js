@@ -319,7 +319,7 @@ export default class DispatchMap extends React.Component {
 	 */
 	updateAssignmentMarkers(newAssignments) {
 		let assignments = _.clone(this.state.assignments);
-		
+
 		//Iterate backwards, because we slice as we go
 		let i = newAssignments.length;
 		while (i--) {
@@ -381,16 +381,14 @@ export default class DispatchMap extends React.Component {
 		);
 		let radius = assignment.location.radius;
 
-		//Check if the assignment is expired
-		if (new Date(assignment.ends_at).getTime() < Date.now()) {
-			status = 'expired';
-			zIndex = 100;
-		} 
-		//Not expired assignment
-		else {
-			if(assignment.rating == 0) { //Assignment is pending
-				status = 'pending';
-				zIndex = 200;
+		if(assignment.rating == 0) { //Assignment is pending
+			status = 'pending';
+			zIndex = 200;
+		} else {
+			//Check if the assignment is expired
+			if (new Date(assignment.ends_at).getTime() < Date.now()) {
+				status = 'expired';
+				zIndex = 100;
 			} else { //Assignment has 'active' or unchecked status
 				status = 'active'
 				zIndex = 300;

@@ -118,15 +118,13 @@ class Dispatch extends React.Component {
 
 		//Add map params
 		if(map) {
-			endpoint = 'assignment/find';
-
 			params.geo = {
 				type : "Polygon",
 				coordinates :  utils.generatePolygonFromBounds(map.getBounds())
 			};
 		} else {
 			params.sortBy = 'ends_at';
-			params.direction = 'asc';
+			params.direction = params.active ? 'asc' : 'desc'; //Switch sort when viewing non-active `history`
 			params.limit = 10;	
 		}
 
@@ -284,7 +282,6 @@ class Dispatch extends React.Component {
 		);
 	}
 }
-
 
 ReactDOM.render(
 	<Dispatch
