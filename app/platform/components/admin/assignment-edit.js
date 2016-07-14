@@ -35,6 +35,7 @@ class AdminAssignmentEdit extends React.Component {
 
     componentDidMount() {
         $.material.init();
+        this.findNearbyAssignments();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -127,7 +128,7 @@ class AdminAssignmentEdit extends React.Component {
      * Finds nearby assignments
      */
     findNearbyAssignments() {
-        const { location, radius } = this.state;
+        const { location } = this.state;
         const { assignment } = this.props;
         if (!location || !location.lat || !location.lng) return;
         const geo = {
@@ -136,12 +137,13 @@ class AdminAssignmentEdit extends React.Component {
         };
 
         $.get('/api/assignment/find', {
-            radius,
+            radius: 50,
             geo,
             unrated: true,
             limit: 5,
         }, (data) => {
             if (data.nearby && data.global) {
+                console.log('find data', data);
                 const nearbyAssignments =
                     uniqBy(reject(data.nearby.concat(data.global), { id: assignment.id }), 'id');
                 this.setState({ nearbyAssignments });
