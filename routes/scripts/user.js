@@ -98,15 +98,7 @@ router.post('/auth/register', (req, res, next) => {
         url: '/auth/register',
         body: body
     }).then((response) => {
-        console.log(response)
         let { body, status } = response;
-
-        // req.session.token = login_body.data.token;
-        // req.session.user = user_body.data;
-        // req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
-        // req.session.save(() => {
-        //     res.json(login_body).end();
-        // });
 
         req.session.save(() => {
             return res.status(status).json({ success: true });
