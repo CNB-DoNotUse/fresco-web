@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import GalleryListItem from './gallery-list-item';
 import GalleryEdit from './gallery-edit';
 import findIndex from 'lodash/findIndex';
-import omit from 'lodash/omit';
 
 class Galleries extends React.Component {
     constructor(props) {
@@ -26,62 +25,6 @@ class Galleries extends React.Component {
 
     setActiveGallery(activeGallery) {
         this.setState({ activeGallery });
-    }
-
-    remove(id) {
-        $.ajax({
-            url: `/api/gallery/${id}/delete`,
-            method: 'post',
-            contentType: 'application/json',
-            dataType: 'json',
-            success: () => {
-                this.onUpdateGallery(id);
-            },
-            // error: (xhr, status, error) => {
-            //     cb(error);
-            // },
-        });
-    }
-
-    skip(id) {
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                rating: 1,
-            }),
-            dataType: 'json',
-            success: () => {
-                this.onUpdateGallery(id);
-            },
-            // error: (xhr, status, error) => {
-            //     cb(error);
-            // },
-        });
-    }
-
-
-    verify(params, cb) {
-        const { id } = params;
-        if (!id || !cb) return;
-        let data = Object.assign({}, params, { rating: 2 });
-        data = omit(data, 'id');
-
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            dataType: 'json',
-            success: () => {
-                this.onUpdateGallery(id);
-                cb(null, id);
-            },
-            error: (xhr, status, error) => {
-                cb(error);
-            },
-        });
     }
 
     scroll(e) {
@@ -134,9 +77,7 @@ class Galleries extends React.Component {
                     hasActiveGallery
                     activeGalleryType={'galleries'}
                     gallery={activeGallery}
-                    skip={(id, cb) => this.skip(id, cb)}
-                    verify={(params, cb) => this.verify(params, cb)}
-                    remove={(id, cb) => this.remove(id, cb)}
+                    onUpdateGallery={(id) => this.onUpdateGallery(id)}
                 />
             );
         }
