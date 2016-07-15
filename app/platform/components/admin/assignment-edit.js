@@ -131,8 +131,7 @@ class AssignmentEdit extends React.Component {
             address: this.state.address || undefined,
             googlemaps: this.state.address || undefined,
             radius: this.state.radius,
-            lat: this.state.location.lat,
-            lon: this.state.location.lng,
+            location: utils.getGeoFromCoord(this.state.location),
             // Convert to ms and current timestamp
             expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
         };
@@ -143,7 +142,7 @@ class AssignmentEdit extends React.Component {
         $.ajax({
             type: 'POST',
             url: `/api/assignment/${id}/approve`,
-            data,
+            data: JSON.stringify(data),
         })
         .done(() => {
             this.props.onUpdateAssignment(id);
@@ -180,11 +179,10 @@ class AssignmentEdit extends React.Component {
         const { location } = this.state;
         const { assignment } = this.props;
         if (!location || !location.lat || !location.lng) return;
-        const geo = utils.getGeoFromCoord(location);
 
         $.get('/api/assignment/find', {
             radius: 1,
-            geo,
+            geo: utils.getGeoFromCoord(location),
             limit: 5,
         }, (data) => {
             if (data.nearby && data.global) {

@@ -58,8 +58,6 @@ class GalleryEdit extends React.Component {
             location,
         } = this.state;
 
-        this.setState({ loading: true });
-
         // const stories = this.state.activeGallery.related_stories.map((story) => (
         //     (story.new ? `NEW=${JSON.stringify({ title: story.title })}` : story.id)
         // ));
@@ -77,6 +75,41 @@ class GalleryEdit extends React.Component {
         };
 
         return params;
+    }
+
+	/**
+	 * Gets all form data and verifies gallery.
+	 */
+    verify() {
+        this.setState({ loading: true });
+        const id = this.state.activeGallery.id;
+        const params = this.getFormData();
+        if (!id || !params) return;
+        params.rating = 2;
+
+        $.ajax({
+            url: `/api/gallery/${id}/update`,
+            method: 'POST',
+            data: JSON.stringify(params),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: () => {
+                this.onUpdateGallery(id);
+                $.snackbar({
+                    content: 'Gallery verified! Click to open',
+                    timeout: 5000,
+                }).click(() => {
+                    const win = window.open(`/gallery/${id}`, '_blank');
+                    win.focus();
+                });
+            },
+            error: () => {
+                $.snackbar({ content: 'Unable to verify gallery' });
+            },
+            done: () => {
+                this.setState({ loading: false });
+            },
+        });
     }
 
 	/**
@@ -128,38 +161,6 @@ class GalleryEdit extends React.Component {
             },
             error: () => {
                 $.snackbar({ content: 'Unable to skip gallery' });
-            },
-            done: () => {
-                this.setState({ loading: false });
-            },
-        });
-    }
-
-	/**
-	 * Gets all form data and verifies gallery.
-	 */
-    verify() {
-        const id = this.state.activeGallery.id;
-        const params = this.getFormData();
-
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'POST',
-            data: JSON.stringify(params),
-            dataType: 'json',
-            contentType: 'application/json',
-            success: () => {
-                this.onUpdateGallery(id);
-                $.snackbar({
-                    content: 'Gallery verified! Click to open',
-                    timeout: 5000,
-                }).click(() => {
-                    const win = window.open(`/gallery/${id}`, '_blank');
-                    win.focus();
-                });
-            },
-            error: () => {
-                $.snackbar({ content: 'Unable to verify gallery' });
             },
             done: () => {
                 this.setState({ loading: false });
