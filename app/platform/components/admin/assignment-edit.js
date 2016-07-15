@@ -151,6 +151,9 @@ class AssignmentEdit extends React.Component {
         })
         .fail(() => {
             $.snackbar({ content: 'Could not approve assignment!' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
@@ -169,6 +172,9 @@ class AssignmentEdit extends React.Component {
         })
         .fail(() => {
             $.snackbar({ content: 'Could not reject assignment!' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
