@@ -5,10 +5,6 @@ class AdminGalleryListItem extends React.Component {
     render() {
         const { gallery, active, onClick } = this.props;
 
-        if (!gallery.posts.length) {
-            return <div />;
-        }
-
         let galleryOwnerText;
         if (gallery.owner) {
             galleryOwnerText = (

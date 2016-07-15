@@ -278,6 +278,18 @@ class Admin extends React.Component {
         return uniqBy(allAssignments, 'id').sort(sortListItem);
     }
 
+    getSubmissions() {
+        return this.state.submissions.filter((s) => (
+            s.posts && s.posts.length
+        ));
+    }
+
+    getImports() {
+        return this.state.imports.filter((s) => (
+            s.posts && s.posts.length
+        ));
+    }
+
     renderActiveTab() {
         let tab = '';
 
@@ -295,7 +307,7 @@ class Admin extends React.Component {
             case 'submissions':
                 tab = (
                     <Galleries
-                        galleries={this.state.submissions}
+                        galleries={this.getSubmissions()}
                         getData={this.getData}
                         refresh={this.refresh}
                         removeGallery={(id) => this.removeSubmission(id)}
@@ -306,7 +318,7 @@ class Admin extends React.Component {
             case 'imports':
                 tab = (
                     <Galleries
-                        galleries={this.state.imports}
+                        galleries={this.getImports()}
                         getData={this.getData}
                         refresh={this.refresh}
                         removeGallery={(id) => this.removeImport(id)}

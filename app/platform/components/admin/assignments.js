@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import AssignmentListItem from './assignment-list-item';
-import AdminAssignmentEdit from './assignment-edit';
+import AssignmentEdit from './assignment-edit';
 import findIndex from 'lodash/findIndex';
 
 class Assignments extends React.Component {
@@ -66,7 +66,7 @@ class Assignments extends React.Component {
         let editPane = '';
         if (activeAssignment && activeAssignment.id) {
             editPane = (
-                <AdminAssignmentEdit
+                <AssignmentEdit
                     assignment={activeAssignment}
                     loading={loading}
                     onUpdateAssignment={(id) => this.onUpdateAssignment(id)}
@@ -76,7 +76,7 @@ class Assignments extends React.Component {
 
         return (
             <div className="container-fluid admin">
-                <div className="col-md-6 col-lg-7 list" onScroll={() => this.scroll()}>
+                <div className="col-md-6 col-lg-7 list" onScroll={(e) => this.scroll(e)}>
                     {this.renderAssignments()}
                 </div>
                 <div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">
