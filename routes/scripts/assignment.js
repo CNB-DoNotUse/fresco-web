@@ -15,11 +15,15 @@ router.get('/assignment/report', (req, res, next) => {
         url: '/assignment/report',
         token: req.session.token
     }).then((response) => {
-        const output = csv(response.body);
+        csv(response.body, (err, csv) => {
+            if(err) {
+                return next({ message: err, status: 500 });
+            }
 
-        res.set('Content-Type', 'text/csv');
-        res.set('Content-Disposition', 'inline; filename="assignments.csv"');
-        res.send(output).end();
+            res.set('Content-Type', 'text/csv');
+            res.set('Content-Disposition', 'inline; filename="assignments.csv"');
+            res.send(csv).end();
+        });
     })
     .catch((error) => {
         return next({
