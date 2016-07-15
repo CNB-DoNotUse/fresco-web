@@ -91,22 +91,22 @@ class GalleryEdit extends React.Component {
             data: JSON.stringify(params),
             dataType: 'json',
             contentType: 'application/json',
-            success: () => {
-                this.props.onUpdateGallery(id);
-                $.snackbar({
-                    content: 'Gallery verified! Click to open',
-                    timeout: 5000,
-                }).click(() => {
-                    const win = window.open(`/gallery/${id}`, '_blank');
-                    win.focus();
-                });
-            },
-            error: () => {
-                $.snackbar({ content: 'Unable to verify gallery' });
-            },
-            done: () => {
-                this.setState({ loading: false });
-            },
+        })
+        .done(() => {
+            this.props.onUpdateGallery(id);
+            $.snackbar({
+                content: 'Gallery verified! Click to open',
+                timeout: 5000,
+            }).click(() => {
+                const win = window.open(`/gallery/${id}`, '_blank');
+                win.focus();
+            });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Unable to verify gallery' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
@@ -123,16 +123,16 @@ class GalleryEdit extends React.Component {
             method: 'POST',
             dataType: 'json',
             contentType: 'application/json',
-            success: () => {
-                this.props.onUpdateGallery(id);
-                $.snackbar({ content: 'Gallery deleted' });
-            },
-            error: () => {
-                $.snackbar({ content: 'Unable to delete gallery' });
-            },
-            done: () => {
-                this.setState({ loading: false });
-            },
+        })
+        .done(() => {
+            this.props.onUpdateGallery(id);
+            $.snackbar({ content: 'Gallery deleted' });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Unable to delete gallery' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
@@ -152,17 +152,17 @@ class GalleryEdit extends React.Component {
             data: JSON.stringify({
                 rating: 1,
             }),
-            success: () => {
-                this.props.onUpdateGallery(id);
-                $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
-                    .click(() => { window.open('/gallery/' + id); });
-            },
-            error: () => {
-                $.snackbar({ content: 'Unable to skip gallery' });
-            },
-            done: () => {
-                this.setState({ loading: false });
-            },
+        })
+        .done(() => {
+            this.props.onUpdateGallery(id);
+            $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
+                .click(() => { window.open(`/gallery/${id}`); });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Unable to skip gallery' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
