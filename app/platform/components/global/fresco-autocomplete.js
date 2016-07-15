@@ -8,7 +8,7 @@ class FrescoAutocomplete extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { inputText: this.props.inputText, predictions: [] };
+        this.state = { predictions: [] };
 
         // Instantiate Google Maps services
         this.geocoder = new google.maps.Geocoder();
@@ -35,12 +35,10 @@ class FrescoAutocomplete extends React.Component {
     componentWillReceiveProps(nextProps) {
         // Check if the passed input text has changed
         if (nextProps.inputText !== null) {
-            if (nextProps.inputText !== this.state.inputText) {
-                this.refs.inputField.value = nextProps.inputText;
+            this.refs.inputField.value = nextProps.inputText;
 
-                // Reset predictions for cleanup
-                this.setState({ predictions: [], active: false });
-            }
+            // Reset predictions for cleanup
+            this.setState({ predictions: [], active: false });
         }
     }
 
