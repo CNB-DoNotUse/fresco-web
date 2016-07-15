@@ -379,7 +379,7 @@ export default class DispatchMap extends React.Component {
 			assignment.location.coordinates[1], 
 			assignment.location.coordinates[0]
 		);
-		let radius = assignment.location.radius;
+		let radius = assignment.radius;
 
 		if(assignment.rating == 0) { //Assignment is pending
 			status = 'pending';

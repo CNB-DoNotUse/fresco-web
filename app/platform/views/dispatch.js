@@ -8,6 +8,7 @@ import DispatchRequest from '../components/dispatch/dispatch-request'
 import TopBar from '../components/topbar'
 import LocationDropdown from '../components/global/location-dropdown';
 import utils from 'utils'
+import 'sass/platform/_dispatch'
 
 /**
  * Dispatch Parent Component, contains the Dispatch Map, as well as a set of cards
@@ -113,8 +114,14 @@ class Dispatch extends React.Component {
 	 */
 	findAssignments(map = null, params = {}, callback = function(){}) {
 		//Update view mode on params
-		params.active = this.state.viewMode == 'active';
-		params.unrated = this.state.viewMode == 'pending';
+		const { viewMode } = this.state;
+
+		if(viewMode !== 'pending') {
+			params.active = this.state.viewMode == 'active';
+		} else{
+			params.unrated = this.state.viewMode == 'pending';
+		}
+
 
 		//Add map params
 		if(map) {

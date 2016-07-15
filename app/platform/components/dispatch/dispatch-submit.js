@@ -148,8 +148,6 @@ export default class DispatchSubmit extends React.Component {
 					]
 				}
 			});
-		} else {
-			assignment.global = true;
 		}
 
 		/* Run regular Checks */
@@ -221,50 +219,18 @@ export default class DispatchSubmit extends React.Component {
 		} = this.state;
 
 		const paymentAvailable = this.props.user.outlet && this.props.user.outlet.card;
-		
+
+		let className = 'card panel toggle-card ';
+		className += displaySubmissionCard ? '' : 'toggled ';
+		className += global ? 'global' : '';
+
 		let radius = newAssignment ? newAssignment.radius : null;
 		let zoom = newAssignment ? newAssignment.zoom : null;
 		let mapGroup = '';
 
-		if(!global) {
-			mapGroup = (
-				<div className="map-group">
-					<div className="form-group-default">
-						<FrescoAutocomplete
-							inputText={this.state.autocompleteText}
-							class="form"
-							inputClass="form-control floating-label"
-							ref="autocomplete"
-							transition={false}
-							bounds={bounds}
-							updateAutocompleteData={this.autocompleteUpdated}
-							lastChangeSource={lastChangeSource} />
-
-						<input
-							ref="radius"
-							type="text"
-							className="form-control floating-label"
-							data-hint="feet"
-							onKeyUp={this.updateRadius}
-							placeholder="Radius" />
-					</div>
-
-					<EditMap
-						location={newAssignment ? newAssignment.location : null}
-						radius={utils.milesToFeet(radius)}
-						zoom={zoom}
-						type='drafted'
-						onDataChange={this.editMapChanged}
-						draggable={true}
-						updateCurrentBounds={updateCurrentBounds}
-						rerender={rerender} />
-				</div>
-			);
-		}
-
 		return (
 			<div 
-				className={'card panel toggle-card ' + (displaySubmissionCard ? '' : 'toggled')}
+				className={className}
 				id="dispatch-submit"
 			>
 				<div className="card-head">
@@ -301,7 +267,39 @@ export default class DispatchSubmit extends React.Component {
 						/>
 					</div>
 
-					{mapGroup}
+					<div className="map-group">
+						<div className="form-group-default">
+							<FrescoAutocomplete
+								inputText={this.state.autocompleteText}
+								class="form"
+								inputClass="form-control floating-label"
+								ref="autocomplete"
+								transition={false}
+								bounds={bounds}
+								disabled={global}
+								updateAutocompleteData={this.autocompleteUpdated}
+								lastChangeSource={lastChangeSource} />
+
+							<input
+								ref="radius"
+								type="text"
+								className="form-control floating-label"
+								data-hint="feet"
+								disabled={global}
+								onKeyUp={this.updateRadius}
+								placeholder="Radius" />
+						</div>
+
+						<EditMap
+							location={newAssignment ? newAssignment.location : null}
+							radius={utils.milesToFeet(radius)}
+							zoom={zoom}
+							type='drafted'
+							onDataChange={this.editMapChanged}
+							draggable={true}
+							updateCurrentBounds={updateCurrentBounds}
+							rerender={rerender} />
+					</div>
 
 					<div className="form-group-default">
 						<input

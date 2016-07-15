@@ -4,4 +4,13 @@
 
 #dispatch-submit {
 	margin-bottom: 100px;
+
+    &.global {
+
+
+        .map-group {
+            opacity:.3;
+        }
+    }
 }
+
