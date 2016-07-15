@@ -35,6 +35,18 @@ class EditMap extends React.Component {
             }
         }
 
+        if(this.props.disabled) {
+            this.state.map.setOptions({ 
+                draggable: false,
+                zoomControl: false
+            })
+        } else {
+            this.state.map.setOptions({ 
+                draggable: true,
+                zoomControl: true
+            })
+        }
+
         //Check if there is a radius, and it is not the same as the previous one
         if (this.props.radius && prevProps.radius != this.props.radius) {
             this.state.circle.setRadius(utils.feetToMeters(this.props.radius));

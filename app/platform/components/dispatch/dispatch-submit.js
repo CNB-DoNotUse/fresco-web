@@ -75,7 +75,15 @@ export default class DispatchSubmit extends React.Component {
 		this.props.updateNewAssignment(data.location, 0, 0, 'markerDrag');
 	}
 
+	/**
+	 * Checkbox listener for global options
+	 */
 	onGlobalChange() {
+		if(!this.state.global)
+			this.props.updateNewAssignment();
+		else 
+			this.props.updateNewAssignment('new');
+		
 		this.setState({ global : !this.state.global });
 	}
 
@@ -295,6 +303,7 @@ export default class DispatchSubmit extends React.Component {
 							radius={utils.milesToFeet(radius)}
 							zoom={zoom}
 							type='drafted'
+							disabled={global}
 							onDataChange={this.editMapChanged}
 							draggable={true}
 							updateCurrentBounds={updateCurrentBounds}

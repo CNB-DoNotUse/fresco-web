@@ -115,7 +115,7 @@ export default class DispatchMap extends React.Component {
 
 	    //Check if view mode has changed to see if the map should needs to update the assignments
 	    if(nextProps.viewMode !== this.props.viewMode){
-	    	//Clear assignments
+	    	//Clear assignments and update map
 	    	this.clearAssignments();
 	    	//Close callout
 	    	this.clearCallout();
@@ -128,94 +128,81 @@ export default class DispatchMap extends React.Component {
 		
 		if(selector) {
 			selector.addEventListener('click', (e) => {
-				window.location.assign('/assignment/' + selector.dataset.id);
+				window.location.assign(`/assignment/${selector.dataset.id}`);
 			});
 		}
 
-		//Check if there's already a new assignment marker 
-		//Meaning the marker has already been added, and we don't need to add a new one
-		if(this.state.newAssignmentMarker && this.state.newAssignmentCircle){
+		const {
+			newAssignmentMarker,
+			newAssignmentCircle,
+			map
+		} = this.state;
 
-			var marker = this.state.newAssignmentMarker,
-				circle = this.state.newAssignmentCircle,
-				map = this.state.map,
-				prevMarkerLoc = {
-					lat: marker.getPosition().lat(),
-					lng: marker.getPosition().lng()
-				},
-				prevCircleLoc = {
-					lat: circle.getCenter().lat(),
-					lng: circle.getCenter().lng()
-				}
+		if(this.props.newAssignment) {
+			const { newAssignment, updateNewAssignment } = this.props;
+			const prevNewAssignment = prevProps.newAssignment;
 
-			if(this.props.newAssignment){
+			//Check if there's already a new assignment marker and a previous new assignment
+			if(newAssignmentMarker && newAssignmentCircle && prevNewAssignment){
 				//Compare to make sure we don't change the marker unless its position hasn't actually changed
-				if(JSON.stringify(this.props.newAssignment.location) !== JSON.stringify(prevMarkerLoc)){
-					marker.setPosition(this.props.newAssignment.location);	
-					map.setCenter(marker.getPosition());	     
-				}
-
-				//Check if circle center has changed
-				if(JSON.stringify(this.props.newAssignment.location) !== JSON.stringify(prevCircleLoc)){
-					circle.setCenter(marker.getPosition());	     
+				if(JSON.stringify(newAssignment.location) !== JSON.stringify(prevNewAssignment.location)){
+					newAssignmentMarker.setPosition(newAssignment.location);	
+					newAssignmentCircle.setCenter(newAssignmentMarker.getPosition());	     
+					
+					map.setCenter(newAssignmentMarker.getPosition());	     
 				}
 
 				//Check if circle radius has changed
-				if(prevProps.newAssignment.radius != this.props.newAssignment.radius){
-					circle.setRadius(
-						utils.milesToMeters(this.props.newAssignment.radius)
+				if(prevNewAssignment.radius !== newAssignment.radius){
+					newAssignmentCircle.setRadius(
+						utils.milesToMeters(newAssignment.radius)
 					);
 				}
-			}
-			//Remove marker, and radius on the new assignment
-			else{
-				marker.setMap(null);
-				circle.setMap(null);
-				this.setState({
-					newAssignmentMarker: null,
-					newAssignmentCircle: null
-				});
-			}
-
-		}
-		//Otherwise make the marker
-		else if(this.props.newAssignment){
-
-			//Create the marker with a null position
-			var marker = this.createAssignmentMarker(this.state.map),
-				circle = this.createCircle(this.state.map, null, 0, 'drafted', null),
-				location = {
-					lat: marker.getPosition().lat(),
-					lng: marker.getPosition().lng()
+			} 
+			//None existing, so create a new marker and circle
+			else {
+				//Create the marker with a null position
+				const newAssignmentMarker = this.createAssignmentMarker(map);
+				const newAssignmentCircle = this.createCircle(map, null, 0, 'drafted', null);
+				const location = {
+					lat: newAssignmentMarker.getPosition().lat(),
+					lng: newAssignmentMarker.getPosition().lng()
 				};	
 
-			//Update the position to the parent component
-			this.props.updateNewAssignment(location, null, null);
+				//Update the maps center to reflect the new positon of the marker
+				map.setCenter(newAssignmentMarker.getPosition());	     
 
-			//Set marker to state of map so we can manage its location
-			this.setState({ 
-				newAssignmentMarker: marker,
-				newAssignmentCircle: circle 
-			});
+				google.maps.event.addListener(newAssignmentMarker, 'dragend', (ev) => {
+					//Send up location to the parent
+					updateNewAssignment({
+							lat: ev.latLng.lat(),
+							lng: ev.latLng.lng()
+						}, 
+						newAssignment.radius,
+						map.getZoom(),
+						'markerDrag'
+					);	
+				});
 
-			//Update the maps center to reflect the new positon of the marker
-			this.state.map.setCenter(
-				marker.getPosition()
-			);	     
-
-			google.maps.event.addListener(marker, 'dragend', (ev) => {
-				//Send up location to the parent
-				this.props.updateNewAssignment(
-					{
-						lat: ev.latLng.lat(),
-						lng: ev.latLng.lng()
-					}, 
-					this.props.newAssignment.radius,
-					this.state.map.getZoom(),
-					'markerDrag'
-				);	
+				//Set marker to state of map so we can manage its location
+				this.setState({  newAssignmentMarker, newAssignmentCircle });
+				
+				//Update the position to the parent component
+				updateNewAssignment(location, null, null);
+			}
+		} else if(prevProps.newAssignment) {
+			newAssignmentMarker.setMap(null);
+			newAssignmentCircle.setMap(null);
+			this.setState({
+				newAssignmentMarker: null,
+				newAssignmentCircle: null
 			});
 		}
+	}
+
+	handleNewAssignment() {
+
+
 	}
 
 	/**

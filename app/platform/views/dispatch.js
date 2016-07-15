@@ -68,17 +68,19 @@ class Dispatch extends React.Component {
 	 * @param {Integer} radius The radius to update the new assignment with
 	 * @param {String} source where the change comes from
 	 */
-	updateNewAssignment(location, radius, zoom, source) {
-		if(typeof source == 'undefined')source = '';
+	updateNewAssignment(location = null, radius = 0, zoom = 0, lastChangeSource = null) {
+		let newAssignment = null;
 
-		this.setState({
-			newAssignment: {
-				location,
-				radius,
-				zoom
-			},
-			lastChangeSource: source
-		});
+		//Clear the new assignment if there's no location
+		if(location == null) {
+			newAssignment = null
+		} else if (location == 'new') {
+			newAssignment = 'unset';
+		} else {	
+			newAssignment = { location, radius, zoom };
+		}
+
+		this.setState({ newAssignment, lastChangeSource });
 	}
 
 	/**
@@ -121,7 +123,6 @@ class Dispatch extends React.Component {
 		} else{
 			params.unrated = this.state.viewMode == 'pending';
 		}
-
 
 		//Add map params
 		if(map) {
