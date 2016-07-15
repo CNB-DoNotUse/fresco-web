@@ -36,17 +36,16 @@ class GalleryEdit extends React.Component {
     }
 
     getStateFromProps(props) {
-        const activeGallery = props.gallery;
+        const { gallery } = this.props;
 
         return {
-            activeGallery,
             editButtonsEnabled: false,
-            tags: activeGallery.tags || [],
-            stories: activeGallery.stories,
-            assignment: activeGallery.assignment,
-            address: activeGallery.address,
+            tags: gallery.tags || [],
+            stories: gallery.stories,
+            assignment: gallery.assignment,
+            address: gallery.address,
             loading: false,
-            caption: activeGallery.caption || 'No Caption',
+            caption: gallery.caption || 'No Caption',
         };
     }
 
@@ -69,7 +68,7 @@ class GalleryEdit extends React.Component {
             caption,
             address,
             geo: utils.getGeoFromCoord(location),
-            stories,
+            // stories,
         };
 
         return params;
@@ -80,7 +79,7 @@ class GalleryEdit extends React.Component {
 	 */
     verify() {
         this.setState({ loading: true });
-        const id = this.state.activeGallery.id;
+        const id = this.props.gallery.id;
         const params = this.getFormData();
         if (!id || !params) return;
         params.rating = 2;
@@ -91,22 +90,22 @@ class GalleryEdit extends React.Component {
             data: JSON.stringify(params),
             dataType: 'json',
             contentType: 'application/json',
-            success: () => {
-                this.props.onUpdateGallery(id);
-                $.snackbar({
-                    content: 'Gallery verified! Click to open',
-                    timeout: 5000,
-                }).click(() => {
-                    const win = window.open(`/gallery/${id}`, '_blank');
-                    win.focus();
-                });
-            },
-            error: () => {
-                $.snackbar({ content: 'Unable to verify gallery' });
-            },
-            done: () => {
-                this.setState({ loading: false });
-            },
+        })
+        .done(() => {
+            this.props.onUpdateGallery(id);
+            $.snackbar({
+                content: 'Gallery verified! Click to open',
+                timeout: 5000,
+            }).click(() => {
+                const win = window.open(`/gallery/${id}`, '_blank');
+                win.focus();
+            });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Unable to verify gallery' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
@@ -116,23 +115,23 @@ class GalleryEdit extends React.Component {
     remove() {
         if (this.state.loading) return;
         this.setState({ loading: true });
-        const id = this.state.activeGallery.id;
+        const id = this.props.gallery.id;
 
         $.ajax({
             url: `/api/gallery/${id}/delete`,
             method: 'POST',
             dataType: 'json',
             contentType: 'application/json',
-            success: () => {
-                this.props.onUpdateGallery(id);
-                $.snackbar({ content: 'Gallery deleted' });
-            },
-            error: () => {
-                $.snackbar({ content: 'Unable to delete gallery' });
-            },
-            done: () => {
-                this.setState({ loading: false });
-            },
+        })
+        .done(() => {
+            this.props.onUpdateGallery(id);
+            $.snackbar({ content: 'Gallery deleted' });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Unable to delete gallery' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
@@ -142,7 +141,7 @@ class GalleryEdit extends React.Component {
     skip() {
         if (this.state.loading) return;
         this.setState({ loading: true });
-        const id = this.state.activeGallery.id;
+        const id = this.props.gallery.id;
 
         $.ajax({
             url: `/api/gallery/${id}/update`,
@@ -152,17 +151,17 @@ class GalleryEdit extends React.Component {
             data: JSON.stringify({
                 rating: 1,
             }),
-            success: () => {
-                this.props.onUpdateGallery(id);
-                $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
-                    .click(() => { window.open('/gallery/' + id); });
-            },
-            error: () => {
-                $.snackbar({ content: 'Unable to skip gallery' });
-            },
-            done: () => {
-                this.setState({ loading: false });
-            },
+        })
+        .done(() => {
+            this.props.onUpdateGallery(id);
+            $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
+                .click(() => { window.open(`/gallery/${id}`); });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Unable to skip gallery' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
@@ -193,14 +192,8 @@ class GalleryEdit extends React.Component {
         this.setState({ tags });
     }
 
-	/**
-	 * Updates specific field of gallery
-	 */
-    updateGallery(key, value) {
-        const gallery = this.state.activeGallery;
-        gallery[key] = value;
-
-        this.setState({ activeGallery: gallery });
+    updateAssignment(assignment) {
+        this.setState({ assignment });
     }
 
 	/**
@@ -211,10 +204,10 @@ class GalleryEdit extends React.Component {
     }
 
     renderPosts() {
-        const { activeGallery } = this.state;
-        if (!activeGallery.posts) return <div />;
+        const { gallery } = this.props;
+        if (!gallery.posts) return <div />;
         // Map gallery posts into slider elements
-        return activeGallery.posts.map((post, i) => {
+        return gallery.posts.map((post, i) => {
             if (post.video) {
                 return (
                     <div key={i}>
@@ -247,26 +240,23 @@ class GalleryEdit extends React.Component {
     }
 
     render() {
-        const { hasActiveGallery, galleryType } = this.props;
+        const { gallery, galleryType } = this.props;
         const {
-            activeGallery,
             location,
             address,
             stories,
             tags,
             caption,
+            assignment,
         } = this.state;
 
-        if (!hasActiveGallery || !activeGallery) {
+        if (!gallery) {
             return <div />;
         }
 
         return (
             <div className="dialog admin-edit-pane">
-                <div
-                    className="dialog-body"
-                    style={{ visibility: hasActiveGallery ? 'visible' : 'hidden' }}
-                >
+                <div className="dialog-body" style={{ visibility: 'visible' }} >
                     <div className="gallery-images">
                         <Slider
                             dots
@@ -286,8 +276,8 @@ class GalleryEdit extends React.Component {
                     />
 
                     <GalleryEditAssignment
-                        assignment={activeGallery.assignment}
-                        updateGalleryField={(k, v) => this.updateGallery(k, v)}
+                        assignment={assignment}
+                        updateAssignment={(a) => this.updateAssignment(a)}
                     />
 
                     <EditTags
@@ -350,7 +340,6 @@ class GalleryEdit extends React.Component {
 
 GalleryEdit.propTypes = {
     gallery: PropTypes.object.isRequired,
-    hasActiveGallery: PropTypes.bool.isRequired,
     galleryType: PropTypes.string.isRequired,
     onUpdateGallery: PropTypes.func.isRequired,
 };

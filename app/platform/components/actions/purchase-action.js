@@ -7,12 +7,6 @@ import utils from 'utils';
  */
 
 class PurchaseAction extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.purchase = this.purchase.bind(this);
-    }
-
     requestPurchase(post, assignment) {
         const data = { post_ids: [post.id] };
         if (assignment && assignment.id) data.assignment_id = assignment.id;
@@ -23,21 +17,21 @@ class PurchaseAction extends React.Component {
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: () => {
-                $.snackbar({
-                    content: 'Purchase successful! Visit your outlet page or click to view your purchased content'
-                }).click(() => {
-                    window.location = '/outlet';
-                });
+        })
+        .done(() => {
+            $.snackbar({
+                content: 'Purchase successful! Visit your outlet page or click to view your purchased content'
+            }).click(() => {
+                window.location = '/outlet';
+            });
 
-                return this.props.onPurchase();
-            },
-            error: (xhr, status, error) => {
-                $.snackbar({
-                    content: xhr.responseJSON.msg ||
-                        utils.resolveError(error, 'There was an error while completing your purchase!')
-                });
-            },
+            this.props.onPurchase();
+        })
+        .fail((xhr, status, error) => {
+            $.snackbar({
+                content: xhr.responseJSON.msg ||
+                    utils.resolveError(error, 'There was an error while completing your purchase!'),
+            });
         });
     }
 
@@ -62,7 +56,7 @@ class PurchaseAction extends React.Component {
 
     render() {
         return (
-            <span className="mdi mdi-cash icon pull-right" onClick={this.purchase} />
+            <span className="mdi mdi-cash icon pull-right" onClick={() => this.purchase()} />
         );
     }
 }

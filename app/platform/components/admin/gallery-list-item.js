@@ -3,11 +3,7 @@ import utils from 'utils';
 
 class AdminGalleryListItem extends React.Component {
     render() {
-        const { gallery, active, setActiveGallery } = this.props;
-
-        if (!gallery.posts.length) {
-            return <div />;
-        }
+        const { gallery, active, onClick } = this.props;
 
         let galleryOwnerText;
         if (gallery.owner) {
@@ -51,10 +47,7 @@ class AdminGalleryListItem extends React.Component {
 
 
         return (
-            <div
-                className={`list-item ${active ? 'active' : ''}`}
-                onClick={setActiveGallery}
-            >
+            <div onClick={onClick} className={`list-item ${active ? 'active' : ''}`} >
                 <div>
                     <a href={`/gallery/${gallery.id}`} target="_blank">
                         <img
@@ -92,7 +85,7 @@ class AdminGalleryListItem extends React.Component {
 AdminGalleryListItem.propTypes = {
     gallery: PropTypes.object.isRequired,
     active: PropTypes.bool.isRequired,
-    setActiveGallery: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired,
 };
 
 export default AdminGalleryListItem;

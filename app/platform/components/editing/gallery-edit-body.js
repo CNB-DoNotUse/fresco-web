@@ -48,7 +48,7 @@ class GalleryEditBody extends React.Component {
 
                     <GalleryEditAssignment
                         assignment={this.props.gallery.assignment}
-                        updateGalleryField={this.props.updateGalleryField}
+                        updateAssignment={(a) => this.props.updateGalleryField('assignment', a)}
                     />
 
                     <GalleryEditTags

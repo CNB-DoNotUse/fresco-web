@@ -46,6 +46,7 @@ class TopBarAdmin extends React.Component {
         const files = this.refs.uploadImportFiles.files;
         const caption = `Gallery imported from local system on ${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
         const posts = [];
+        this.setState({ loading: true });
 
         times(files.length, (i) => {
             posts.push({ contentType: files[i].type });
@@ -69,6 +70,9 @@ class TopBarAdmin extends React.Component {
         })
         .fail(() => {
             $.snackbar({ content: 'Failed to import media' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
@@ -87,18 +91,18 @@ class TopBarAdmin extends React.Component {
             }),
             contentType: 'application/json',
             dataType: 'json',
-            success: () => {
-                $.snackbar({ content: 'Gallery Imported!' });
-                this.refs['twitter-import-input'].value = '';
-                this.props.setTab('imports');
-                this.props.resetImports();
-            },
-            error: () => {
-                $.snackbar({ content: 'Failed to import media' });
-            },
-            complete: () => {
-                this.setState({ loading: false });
-            },
+        })
+        .done(() => {
+            $.snackbar({ content: 'Gallery Imported!' });
+            this.refs['twitter-import-input'].value = '';
+            this.props.setTab('imports');
+            this.props.resetImports();
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Failed to import media' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
