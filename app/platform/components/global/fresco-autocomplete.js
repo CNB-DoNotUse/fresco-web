@@ -37,7 +37,6 @@ class FrescoAutocomplete extends React.Component {
         if (nextProps.inputText !== null) {
             if (nextProps.inputText !== this.state.inputText) {
                 this.refs.inputField.value = nextProps.inputText;
-                this.refs.inputField.focus();
 
                 // Reset predictions for cleanup
                 this.setState({ predictions: [], active: false });
