@@ -47,6 +47,8 @@
 	}
 
 	.dropdown-body {
+        max-height: 400px;
+        overflow-y: scroll;
 		bottom: 100%;
 		box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.72);
 	    border-radius: 0;

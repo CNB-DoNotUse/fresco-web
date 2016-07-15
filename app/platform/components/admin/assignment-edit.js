@@ -38,10 +38,7 @@ class AssignmentEdit extends React.Component {
      * Updates state map location when AutocompleteMap gives new location
      */
     onPlaceChange(place) {
-        this.setState({
-            address: place.address,
-            location: place.location,
-        });
+        this.setState({ address: place.address, location: place.location });
     }
 
     /**
@@ -75,7 +72,7 @@ class AssignmentEdit extends React.Component {
     }
 
     onCloseMerge() {
-        this.setState({ showMergeDialog: false, mergeAssignment: null });
+        this.setState({ showMergeDialog: false, mergeIntoAssignment: null });
     }
 
     /**
@@ -83,7 +80,7 @@ class AssignmentEdit extends React.Component {
      * @param  {[type]} id ID of assignment to be merged into
      */
     onSelectMerge(assignment) {
-        this.setState({ mergeAssignment: assignment, showMergeDialog: true });
+        this.setState({ mergeIntoAssignment: assignment, showMergeDialog: true });
     }
 
     onMergeAssignment(id) {
@@ -109,7 +106,7 @@ class AssignmentEdit extends React.Component {
             location,
             nearbyAssignments: [],
             showMergeDialog: false,
-            mergeAssignment: null,
+            mergeIntoAssignment: null,
         };
     }
 
@@ -117,7 +114,7 @@ class AssignmentEdit extends React.Component {
         this.refs['assignment-title'].value = assignment.title;
         this.refs['assignment-description'].value = assignment.caption;
         this.refs['assignment-expiration'].value = assignment
-            ? utils.hoursToExpiration(assignment.expiration_time)
+            ? utils.hoursToExpiration(assignment.ends_at)
             : null;
 
         $(this.refs['assignment-title']).removeClass('empty');
@@ -128,25 +125,24 @@ class AssignmentEdit extends React.Component {
     approveAssignment() {
         const id = this.props.assignment.id;
         const data = {
-            now: Date.now(),
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
             address: this.state.address || undefined,
-            googlemaps: this.state.address || undefined,
             radius: this.state.radius,
-            lat: this.state.location.lat,
-            lon: this.state.location.lng,
+            location: utils.getGeoFromCoord(this.state.location),
             // Convert to ms and current timestamp
-            expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
+            ends_at: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
         };
 
         if (!id) return;
         this.setState({ loading: true });
 
         $.ajax({
-            type: 'POST',
+            method: 'POST',
             url: `/api/assignment/${id}/approve`,
-            data,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(data),
         })
         .done(() => {
             this.props.onUpdateAssignment(id);
@@ -183,12 +179,10 @@ class AssignmentEdit extends React.Component {
         const { location } = this.state;
         const { assignment } = this.props;
         if (!location || !location.lat || !location.lng) return;
-        const geo = utils.getGeoFromCoord(location);
 
         $.get('/api/assignment/find', {
-            radius: 50,
-            geo,
-            unrated: true,
+            radius: 1,
+            geo: utils.getGeoFromCoord(location),
             limit: 5,
         }, (data) => {
             if (data.nearby && data.global) {
@@ -212,7 +206,7 @@ class AssignmentEdit extends React.Component {
             showMergeDialog,
         } = this.state;
         const defaultLocation = address || '';
-        const expiration_time = assignment ? utils.hoursToExpiration(assignment.expiration_time) : null;
+        const expirationTime = assignment ? utils.hoursToExpiration(assignment.ends_at) : null;
 
         return (
             <div className="dialog">
@@ -251,7 +245,7 @@ class AssignmentEdit extends React.Component {
                         placeholder="Expiration Time"
                         data-hint="hours from now"
                         ref="assignment-expiration"
-                        defaultValue={expiration_time}
+                        defaultValue={expirationTime}
                     />
 
                     <AssignmentMergeDropup
@@ -282,7 +276,7 @@ class AssignmentEdit extends React.Component {
                 {showMergeDialog
                     ? <AssignmentMerge
                         assignment={assignment}
-                        mergeAssignment={this.state.mergeAssignment}
+                        mergeIntoAssignment={this.state.mergeIntoAssignment}
                         onClose={() => this.onCloseMerge()}
                         onMergeAssignment={(id) => this.onMergeAssignment(id)}
                     />
