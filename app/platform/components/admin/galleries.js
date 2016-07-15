@@ -7,10 +7,13 @@ class Galleries extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            hasActiveGallery: false,
-            activeGallery: {},
-        };
+        this.state = { activeGallery: null };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.galleryType !== nextProps.galleryType) {
+            this.setState({ activeGallery: null });
+        }
     }
 
     onUpdateGallery(id) {
