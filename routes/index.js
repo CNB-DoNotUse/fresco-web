@@ -1,10 +1,10 @@
-var express       = require('express'),
-    router        = express.Router(),
-    requestJson   = require('request-json'),
-    config        = require('../lib/config'),
-    routes        = require('../lib/routes'),
-    api           = requestJson.createClient(config.API_URL),
-    superagent    = require('superagent');
+const express       = require('express');
+const router        = express.Router();
+const requestJson   = require('request-json');
+const config        = require('../lib/config');
+const routes        = require('../lib/routes');
+const api           = requestJson.createClient(config.API_URL);
+const superagent    = require('superagent');
 
 /** //
 
