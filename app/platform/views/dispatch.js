@@ -123,21 +123,21 @@ class Dispatch extends React.Component {
 				coordinates :  utils.generatePolygonFromBounds(map.getBounds())
 			};
 		} else {
-			params.sortBy = 'ends_at';
+			params.sortBy = params.unrated ? 'created_at' : 'ends_at';
 			params.direction = params.active ? 'asc' : 'desc'; //Switch sort when viewing non-active `history`
 			params.limit = 10;	
 		}
-
-		console.log(params);
 
 		$.ajax({
 			url: '/api/assignment/find',
 			type: 'GET',
 			data: $.param(params),
 			success: (response, status, xhr) => {
-				callback(
-					response && !response.err ? utils.mergeAssignments(response, params.sortBy) : []
-				);
+				if(response && !response.err) {
+					callback(map ? response  : utils.mergeAssignments(response, params.sortBy, params.direction))
+				} else {
+					callback([]);
+				}
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: utils.resolveError(error)});

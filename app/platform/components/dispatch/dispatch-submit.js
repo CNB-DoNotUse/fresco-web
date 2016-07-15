@@ -3,25 +3,22 @@ import EditMap from '../editing/edit-map'
 import FrescoAutocomplete from '../global/fresco-autocomplete.js'
 import utils from 'utils'
 
-/** //
-
-Description : Submit form for an assignemnt
-
-// **/
 
 /**
  * Assignment Form parent component
+ * @description Submit form for an assignemnt
  */
-
 export default class DispatchSubmit extends React.Component {
 
 	constructor(props) {
 		super(props);
 		
 		this.state = {
-			place: null
+			place: null,
+			global: false
 		}
 
+		this.geocoder = new google.maps.Geocoder();
 		this.submitForm = this.submitForm.bind(this);
 		this.updateRadius = this.updateRadius.bind(this);
 		this.autocompleteUpdated = this.autocompleteUpdated.bind(this);
@@ -34,12 +31,12 @@ export default class DispatchSubmit extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		let successfulGeo = false;
+		const self = this;
 
 		// Dispatch map has an eventlistener to set `lastChangeSource` 
 		// This occurs when the pending assignment marker is moved.
 		if(nextProps.lastChangeSource == 'markerDrag' && nextProps.newAssignment) {
-			let geocoder = new google.maps.Geocoder();
-			let geo = {
+			const geo = {
 				lat: nextProps.newAssignment.location.lat, 
 				lng: nextProps.newAssignment.location.lng
 			};
@@ -54,13 +51,13 @@ export default class DispatchSubmit extends React.Component {
 			if(JSON.stringify(geo) !== JSON.stringify(self.currentGeocode)) 
 				return;
 
-			geocoder.geocode({
+			self.geocoder.geocode({
 				'location': geo
 			}, (results, status) => {
 				if(status === google.maps.GeocoderStatus.OK && results[0] !== null && !successfulGeo){
 					successfulGeo = true;
 
-					this.setState({
+					self.setState({
 						autocompleteText: results[0].formatted_address
 					})
 				} else if(status === 'OVER_QUERY_LIMIT' && !successfulGeo) {
@@ -76,6 +73,10 @@ export default class DispatchSubmit extends React.Component {
 	editMapChanged(data) {
 		//Update the position to the parent component
 		this.props.updateNewAssignment(data.location, 0, 0, 'markerDrag');
+	}
+
+	onGlobalChange() {
+		this.setState({ global : !this.state.global });
 	}
 
 	/**
@@ -100,7 +101,7 @@ export default class DispatchSubmit extends React.Component {
 	 * Updates the state radius from the input event
 	 */
 	updateRadius(e) {
-	    var radiusInMiles= utils.feetToMiles(parseFloat(this.refs['radius'].value));
+	    const radiusInMiles = utils.feetToMiles(parseFloat(this.refs['radius'].value));
 
 	    if(radiusInMiles == 'NaN') 
 	    	return;
@@ -117,6 +118,7 @@ export default class DispatchSubmit extends React.Component {
 	 */
 	submitForm() {
 		const { newAssignment } = this.props;
+		const { global } = this.state;
 		const { 
 			title, 
 			caption, 
@@ -129,41 +131,44 @@ export default class DispatchSubmit extends React.Component {
 		let assignment = {
 			title: title.value,
 			caption: caption.value,
-			radius: utils.feetToMiles(parseInt(radius.value)),
-			address: autocomplete.refs.inputField.value,
-			location: {
-				type: 'Point',
-				coordinates: [
-					this.props.newAssignment.location.lng,
-					this.props.newAssignment.location.lat
-				]
-			},
-			starts_at: Date.now()
+			starts_at: Date.now(),
+			//Convert to milliseconds (from hours) and add current time
+			ends_at: expiration.value  * 60 * 60 * 1000 + Date.now()
 		};
 
-		if(expiration.value) {
-			//Convert to milliseconds (from hours) and add current time
-			assignment.ends_at =  expiration.value  * 60 * 60 * 1000 + Date.now()
+		if(!global) {
+			_.assign(assignment, {
+				radius: utils.feetToMiles(parseInt(radius.value)),
+				address: autocomplete.refs.inputField.value,
+				location: {
+					type: 'Point',
+					coordinates: [
+						this.props.newAssignment.location.lng,
+						this.props.newAssignment.location.lat
+					]
+				}
+			});
+		} else {
+			assignment.global = true;
 		}
 
-		console.log(assignment);
-
-		/* Run Checks */
+		/* Run regular Checks */
 		if (utils.isEmptyString(assignment.title)){
 			return $.snackbar({content: 'Your assignment must have a title!'});
-		}
-		if (utils.isEmptyString(assignment.caption)){
+		} else if (utils.isEmptyString(assignment.caption)){
 			return $.snackbar({content: 'Your assignment must have a caption!'});
-		}
-		if (utils.isEmptyString(assignment.address)){
-			return $.snackbar({content: 'Your assignment must have a location!'});
-		}
-		if (isNaN(expiration.value) || expiration.value < 1){
+		} else if (isNaN(expiration.value) || expiration.value < 1){
 			return $.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
 		}
-		if (!utils.isValidRadius(assignment.radius)){
-			return $.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
-		}
+
+		/* Run check only if it's not global */
+		if(!global) {
+			if (utils.isEmptyString(assignment.address)){
+				return $.snackbar({content: 'Your assignment must have a location!'});
+			} else if (!utils.isValidRadius(assignment.radius)){
+				return $.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
+			}
+		}	
 
 		$.ajax({
 			method: 'post',
@@ -177,6 +182,7 @@ export default class DispatchSubmit extends React.Component {
 					//Hide the assignment card
 					this.props.toggleSubmissionCard(false, null);
 
+					//Update view mode for all components
 					this.props.updateViewMode('pending');
 
 					//Tell the main map to update itself, to reflect the new assignment
@@ -188,10 +194,10 @@ export default class DispatchSubmit extends React.Component {
 					});
 
 					//Clear all the fields
-					this.refs.title.value = '';
-					this.refs.caption.value = '';
-					this.refs.expiration.value = '';
-					this.refs.autocomplete.value = '';
+					title.value = '';
+					caption.value = '';
+					expiration.value = '';
+					autocomplete.value = '';
 				}
 			}
 		});
@@ -208,14 +214,53 @@ export default class DispatchSubmit extends React.Component {
 			lastChangeSource,
 			rerender
 		} = this.props;
-		const paymentAvailable = this.props.user.outlet && this.props.user.outlet.card;
 
-		let paymentStatus = '';
-		let paymentMessage = '';
-		let editMap = '';
-		let location = newAssignment ? newAssignment.location : null;
+		const {
+			global,
+			autocompleteText
+		} = this.state;
+
+		const paymentAvailable = this.props.user.outlet && this.props.user.outlet.card;
+		
 		let radius = newAssignment ? newAssignment.radius : null;
 		let zoom = newAssignment ? newAssignment.zoom : null;
+		let mapGroup = '';
+
+		if(!global) {
+			mapGroup = (
+				<div className="map-group">
+					<div className="form-group-default">
+						<FrescoAutocomplete
+							inputText={this.state.autocompleteText}
+							class="form"
+							inputClass="form-control floating-label"
+							ref="autocomplete"
+							transition={false}
+							bounds={bounds}
+							updateAutocompleteData={this.autocompleteUpdated}
+							lastChangeSource={lastChangeSource} />
+
+						<input
+							ref="radius"
+							type="text"
+							className="form-control floating-label"
+							data-hint="feet"
+							onKeyUp={this.updateRadius}
+							placeholder="Radius" />
+					</div>
+
+					<EditMap
+						location={newAssignment ? newAssignment.location : null}
+						radius={utils.milesToFeet(radius)}
+						zoom={zoom}
+						type='drafted'
+						onDataChange={this.editMapChanged}
+						draggable={true}
+						updateCurrentBounds={updateCurrentBounds}
+						rerender={rerender} />
+				</div>
+			);
+		}
 
 		return (
 			<div 
@@ -256,37 +301,7 @@ export default class DispatchSubmit extends React.Component {
 						/>
 					</div>
 
-					<div className="map-group">
-						<div className="form-group-default">
-							<FrescoAutocomplete
-								inputText={this.state.autocompleteText}
-								class="form"
-								inputClass="form-control floating-label"
-								ref="autocomplete"
-								transition={false}
-								bounds={bounds}
-								updateAutocompleteData={this.autocompleteUpdated}
-								lastChangeSource={lastChangeSource} />
-
-							<input
-								ref="radius"
-								type="text"
-								className="form-control floating-label"
-								data-hint="feet"
-								onKeyUp={this.updateRadius}
-								placeholder="Radius" />
-						</div>
-
-						<EditMap
-							location={location}
-							radius={utils.milesToFeet(radius)}
-							zoom={zoom}
-							type='drafted'
-							onDataChange={this.editMapChanged}
-							draggable={true}
-							updateCurrentBounds={updateCurrentBounds}
-							rerender={rerender} />
-					</div>
+					{mapGroup}
 
 					<div className="form-group-default">
 						<input
@@ -295,6 +310,16 @@ export default class DispatchSubmit extends React.Component {
 							data-hint="hours from now"
 							ref="expiration"
 							placeholder="Expiration time" />
+
+						<div className="checkbox check-global form-group">
+							<label>
+								<input
+									type="checkbox" 
+									checked={this.state.global}
+									onChange={this.onGlobalChange.bind(this)} />
+								Global
+							</label>
+						</div>
 					</div>
 
 					<a className="payment" href="/outlet/settings">

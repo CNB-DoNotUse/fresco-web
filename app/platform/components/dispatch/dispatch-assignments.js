@@ -33,7 +33,6 @@ export default class DispatchAssignments extends React.Component {
 		if(prevProps.viewMode !== this.props.viewMode){
 			//Access parent var load method
 			this.props.findAssignments(null, {}, (assignments) => {
-				console.log(assignments);
 				this.setState({ assignments });
 			});
 		}
@@ -61,6 +60,8 @@ export default class DispatchAssignments extends React.Component {
 			const params = {
 				last: _.last(assignments).id
 			};
+
+			console.log(_.last(assignments));
 
 			//Access parent var load method
 			this.props.findAssignments(null, params, (assignments) => {
@@ -177,5 +178,5 @@ export default class DispatchAssignments extends React.Component {
 }	
 
 DispatchAssignments.propTypes = {
-    assignments: PropTypes.array.isRequired
+    findAssignments: PropTypes.func.isRequired
 };
