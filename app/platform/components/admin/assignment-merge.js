@@ -14,7 +14,7 @@ class AssignmentMerge extends React.Component {
      * @param  {String} data.assignmentToDelete
      */
     postMerge(id, data) {
-        if (!id || !data.mergeWith_id) return;
+        if (!id || !data.mergeInto_id) return;
 
         $.ajax({
             method: 'POST',
@@ -24,7 +24,7 @@ class AssignmentMerge extends React.Component {
             contentType: 'application/json',
         })
         .done(() => {
-            this.props.onMergeAssignment(data.mergeWith_id);
+            this.props.onMergeAssignment(id);
             $.snackbar({ content: 'Assignment successfully merged!' });
         })
         .fail(() => {
@@ -33,7 +33,7 @@ class AssignmentMerge extends React.Component {
     }
 
     merge() {
-        const { mergeAssignment, assignment } = this.props;
+        const { mergeIntoAssignment, assignment } = this.props;
 
         if (!this.refs.title.value.length) {
             $.snackbar({ content: 'The merged assignment\'s title cannot be empty!' });
@@ -49,12 +49,12 @@ class AssignmentMerge extends React.Component {
         this.postMerge(assignment.id, {
             title: this.refs.title.value,
             caption: this.refs.caption.value,
-            mergeWith_id: mergeAssignment.id,
+            mergeInto_id: mergeIntoAssignment.id,
         });
     }
 
     render() {
-        const { assignment, mergeAssignment, onClose } = this.props;
+        const { assignment, mergeIntoAssignment, onClose } = this.props;
 
         return (
             <div className="assignment-merge-container">
@@ -63,13 +63,13 @@ class AssignmentMerge extends React.Component {
                     <div className="col-lg-4 visible-lg edit-current assignment-merge-side">
                         <div className="assignment-block">
                             <span className="section-label">Active Assignment</span>
-                            <h1>{assignment.title}</h1>
-                            <p>{assignment.caption}</p>
+                            <h1>{mergeIntoAssignment.title}</h1>
+                            <p>{mergeIntoAssignment.caption}</p>
                         </div>
                         <div className="assignment-block">
                             <span className="section-label">Submitted Assignment</span>
-                            <h1>{mergeAssignment.title}</h1>
-                            <p>{mergeAssignment.caption}</p>
+                            <h1>{assignment.title}</h1>
+                            <p>{assignment.caption}</p>
                         </div>
                     </div>
                     <div className="col-xs-12 col-lg-8 edit-new dialog">
@@ -89,7 +89,7 @@ class AssignmentMerge extends React.Component {
                                         placeholder="Title"
                                         title="Title"
                                         ref="title"
-                                        defaultValue={assignment.title}
+                                        defaultValue={mergeIntoAssignment.title}
                                     />
                                 </div>
 
@@ -100,7 +100,7 @@ class AssignmentMerge extends React.Component {
                                         placeholder="Caption"
                                         title="Caption"
                                         ref="caption"
-                                        defaultValue={assignment.caption}
+                                        defaultValue={mergeIntoAssignment.caption}
                                     />
                                 </div>
                             </div>
@@ -129,13 +129,10 @@ class AssignmentMerge extends React.Component {
     }
 }
 
-AssignmentMerge.defaultProps = {
-    toggle() {},
-};
-
 AssignmentMerge.propTypes = {
-    toggle: PropTypes.func.isRequired,
-    mergeAssignment: PropTypes.object,
+    onClose: PropTypes.func.isRequired,
+    onMergeAssignment: PropTypes.func.isRequired,
+    mergeIntoAssignment: PropTypes.object,
     assignment: PropTypes.object,
 };
 

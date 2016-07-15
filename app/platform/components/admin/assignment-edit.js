@@ -38,10 +38,7 @@ class AssignmentEdit extends React.Component {
      * Updates state map location when AutocompleteMap gives new location
      */
     onPlaceChange(place) {
-        this.setState({
-            address: place.address,
-            location: place.location,
-        });
+        this.setState({ address: place.address, location: place.location });
     }
 
     /**
@@ -75,7 +72,7 @@ class AssignmentEdit extends React.Component {
     }
 
     onCloseMerge() {
-        this.setState({ showMergeDialog: false, mergeAssignment: null });
+        this.setState({ showMergeDialog: false, mergeIntoAssignment: null });
     }
 
     /**
@@ -83,7 +80,7 @@ class AssignmentEdit extends React.Component {
      * @param  {[type]} id ID of assignment to be merged into
      */
     onSelectMerge(assignment) {
-        this.setState({ mergeAssignment: assignment, showMergeDialog: true });
+        this.setState({ mergeIntoAssignment: assignment, showMergeDialog: true });
     }
 
     onMergeAssignment(id) {
@@ -109,7 +106,7 @@ class AssignmentEdit extends React.Component {
             location,
             nearbyAssignments: [],
             showMergeDialog: false,
-            mergeAssignment: null,
+            mergeIntoAssignment: null,
         };
     }
 
@@ -186,9 +183,8 @@ class AssignmentEdit extends React.Component {
         const geo = utils.getGeoFromCoord(location);
 
         $.get('/api/assignment/find', {
-            radius: 50,
+            radius: 1,
             geo,
-            unrated: true,
             limit: 5,
         }, (data) => {
             if (data.nearby && data.global) {
@@ -282,7 +278,7 @@ class AssignmentEdit extends React.Component {
                 {showMergeDialog
                     ? <AssignmentMerge
                         assignment={assignment}
-                        mergeAssignment={this.state.mergeAssignment}
+                        mergeIntoAssignment={this.state.mergeIntoAssignment}
                         onClose={() => this.onCloseMerge()}
                         onMergeAssignment={(id) => this.onMergeAssignment(id)}
                     />
