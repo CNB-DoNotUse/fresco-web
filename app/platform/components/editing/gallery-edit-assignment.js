@@ -55,7 +55,7 @@ export default class GalleryEditAssignment extends React.Component {
 		this.refs.dropdown.style.display = 'none';
 
 		//Send assignment up to parent
-		this.props.updateGalleryField('assignment', assignment);
+		this.props.updateAssignment(assignment);
 	}
 
 	render() {
@@ -85,7 +85,7 @@ export default class GalleryEditAssignment extends React.Component {
                             ? <Tag
                                 text={this.props.assignment.title}
                                 plus={false}
-                                onClick={this.props.updateGalleryField.bind(null, 'assignment', null)}
+                                onClick={() => this.props.updateAssignment(null)}
                             />
 							: ''
 						}

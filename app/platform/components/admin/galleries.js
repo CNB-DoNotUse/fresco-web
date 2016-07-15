@@ -62,7 +62,7 @@ class Galleries extends React.Component {
                 gallery={gallery}
                 key={i}
                 active={(activeGallery && activeGallery.id === gallery.id) || false}
-                setActiveGallery={() => this.setActiveGallery(gallery)}
+                onClick={() => this.setActiveGallery(gallery)}
             />
         ));
     }
@@ -74,7 +74,6 @@ class Galleries extends React.Component {
         if (activeGallery && activeGallery.id) {
             editPane = (
                 <GalleryEdit
-                    hasActiveGallery
                     galleryType={this.props.galleryType}
                     gallery={activeGallery}
                     onUpdateGallery={(id) => this.onUpdateGallery(id)}
