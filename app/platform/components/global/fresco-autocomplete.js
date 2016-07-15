@@ -22,7 +22,6 @@ export default class FrescoAutocomplete extends React.Component {
         this.placesService = new google.maps.places.PlacesService(document.createElement('span'));
 
         this.predictionSelected = this.predictionSelected.bind(this);
-        this.inputChanged = this.inputChanged.bind(this);
         this.calculateCrossStreets = this.calculateCrossStreets.bind(this);
     }
 
@@ -53,12 +52,10 @@ export default class FrescoAutocomplete extends React.Component {
         if(nextProps.inputText !== null){
             if(nextProps.inputText !== this.state.inputText){
                 this.refs.inputField.value = nextProps.inputText;
+                this.refs.inputField.focus();
 
-                //Reset predictions for cleanup
-                this.setState({
-                    predictions: [],
-                    active: false
-                });
+                // Reset predictions for cleanup
+                this.setState({ predictions: [], active: false });
             }
         }
     }
@@ -67,19 +64,17 @@ export default class FrescoAutocomplete extends React.Component {
      * Input event handler
      */
     inputChanged(e) {
-        var field = this.refs.inputField,
-            query = field.value;
+        const field = this.refs.inputField;
+        const query = field.value;
 
-        if(query == '' || query == null) {
+        if (query === '' || query == null) {
             return this.setState({
                 predictions: [],
                 active: false
             });
         }
 
-        this.setState({
-            active: true
-        });
+        this.setState({ active: true });
 
         var params = { input: query }
 
@@ -197,7 +192,7 @@ export default class FrescoAutocomplete extends React.Component {
                         ref="inputField"
                         type="text"
                         className={this.props.inputClass}
-                        onChange={this.inputChanged}
+                        onChange={(e) => this.inputChanged(e)}
                         disabled={this.props.disabled}
                     />
                 </div>

@@ -56,11 +56,8 @@ class GalleryEdit extends React.Component {
             caption,
             address,
             location,
+            stories,
         } = this.state;
-
-        // const stories = this.state.activeGallery.related_stories.map((story) => (
-        //     (story.new ? `NEW=${JSON.stringify({ title: story.title })}` : story.id)
-        // ));
 
         if (caption.length === 0) {
             $.snackbar({ content: 'A gallery must have a caption' });
@@ -72,6 +69,7 @@ class GalleryEdit extends React.Component {
             caption,
             address,
             geo: utils.getGeoFromCoord(location),
+            stories,
         };
 
         return params;
@@ -94,7 +92,7 @@ class GalleryEdit extends React.Component {
             dataType: 'json',
             contentType: 'application/json',
             success: () => {
-                this.onUpdateGallery(id);
+                this.props.onUpdateGallery(id);
                 $.snackbar({
                     content: 'Gallery verified! Click to open',
                     timeout: 5000,
