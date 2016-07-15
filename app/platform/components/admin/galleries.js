@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import GalleryListItem from './gallery-list-item';
-import AdminGalleryEdit from './gallery-edit';
+import GalleryEdit from './gallery-edit';
 import findIndex from 'lodash/findIndex';
-import omit from 'lodash/omit';
 
 class Galleries extends React.Component {
     constructor(props) {
@@ -15,78 +14,17 @@ class Galleries extends React.Component {
     }
 
     onUpdateGallery(id) {
-        const { removeGallery, galleries } = this.props;
+        const { galleries, removeGallery } = this.props;
         const index = findIndex(galleries, { id });
-        const newIndex = galleries.length === (index + 1)
-            ? index - 1
-            : index + 1;
-
-        if (galleries[newIndex]) {
-            this.setState({ activeGallery: galleries[newIndex] },
-                () => removeGallery(id));
-        } else {
-            this.setState({ activeGallery: null }, () => removeGallery(id));
-        }
+        const nextGallery = galleries[index + 1]
+            || galleries[index - 1]
+            || null;
+        removeGallery(id);
+        this.setActiveGallery(nextGallery);
     }
 
     setActiveGallery(activeGallery) {
         this.setState({ activeGallery });
-    }
-
-    remove(id) {
-        $.ajax({
-            url: `/api/gallery/${id}/delete`,
-            method: 'post',
-            contentType: 'application/json',
-            dataType: 'json',
-            success: () => {
-                this.onUpdateGallery(id);
-            },
-            // error: (xhr, status, error) => {
-            //     cb(error);
-            // },
-        });
-    }
-
-    skip(id) {
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                rating: 1,
-            }),
-            dataType: 'json',
-            success: () => {
-                this.onUpdateGallery(id);
-            },
-            // error: (xhr, status, error) => {
-            //     cb(error);
-            // },
-        });
-    }
-
-
-    verify(params, cb) {
-        const { id } = params;
-        if (!id || !cb) return;
-        let data = Object.assign({}, params, { rating: 2 });
-        data = omit(data, 'id');
-
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            dataType: 'json',
-            success: () => {
-                this.onUpdateGallery(id);
-                cb(null, id);
-            },
-            error: (xhr, status, error) => {
-                cb(error);
-            },
-        });
     }
 
     scroll(e) {
@@ -135,13 +73,11 @@ class Galleries extends React.Component {
 
         if (activeGallery && activeGallery.id) {
             editPane = (
-                <AdminGalleryEdit
+                <GalleryEdit
                     hasActiveGallery
-                    activeGalleryType={'galleries'}
+                    galleryType={this.props.galleryType}
                     gallery={activeGallery}
-                    skip={(id, cb) => this.skip(id, cb)}
-                    verify={(params, cb) => this.verify(params, cb)}
-                    remove={(id, cb) => this.remove(id, cb)}
+                    onUpdateGallery={(id) => this.onUpdateGallery(id)}
                 />
             );
         }
@@ -163,6 +99,7 @@ Galleries.propTypes = {
     removeGallery: PropTypes.func.isRequired,
     galleries: PropTypes.array.isRequired,
     getData: PropTypes.func.isRequired,
+    galleryType: PropTypes.string.isRequired,
 };
 
 export default Galleries;

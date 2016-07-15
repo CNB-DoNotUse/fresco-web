@@ -13,13 +13,13 @@ class AssignmentMergeDropup extends React.Component {
     }
 
     renderAssignments(assignments) {
-        const { selectMerge } = this.props;
+        const { onSelectMerge } = this.props;
 
         return assignments.map((a, i) => (
             <div
                 key={i}
                 className="assignment-merge-menu-item"
-                onClick={() => selectMerge(a)}
+                onClick={() => onSelectMerge(a)}
             >
                 <span className="assignment-title">
                     {a.title}
@@ -52,7 +52,7 @@ class AssignmentMergeDropup extends React.Component {
 
 AssignmentMergeDropup.propTypes = {
     nearbyAssignments: PropTypes.array.isRequired,
-    selectMerge: PropTypes.func.isRequired,
+    onSelectMerge: PropTypes.func.isRequired,
 };
 
 export default AssignmentMergeDropup;

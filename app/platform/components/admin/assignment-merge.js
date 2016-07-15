@@ -5,10 +5,6 @@ class AssignmentMerge extends React.Component {
         $.material.init();
     }
 
-    cancel() {
-        this.props.toggle();
-    }
-
     /**
      * Merges assignment into existing assignment
      * @param  {Object} data
@@ -21,12 +17,14 @@ class AssignmentMerge extends React.Component {
         if (!id || !data.mergeWith_id) return;
 
         $.ajax({
-            type: 'POST',
+            method: 'POST',
             url: `/api/assignment/${id}/merge`,
-            data,
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: 'application/json',
         })
         .done(() => {
-            this.onUpdateAssignment(data.mergeWith_id);
+            this.props.onMergeAssignment(data.mergeWith_id);
             $.snackbar({ content: 'Assignment successfully merged!' });
         })
         .fail(() => {
@@ -56,15 +54,12 @@ class AssignmentMerge extends React.Component {
     }
 
     render() {
-        let toggledText = this.props.toggled ? ' toggled' : '';
-        const { assignment, mergeAssignment } = this.props;
-
-        if (!this.props.assignment || !this.props.mergeAssignment) return <div />;
+        const { assignment, mergeAssignment, onClose } = this.props;
 
         return (
             <div className="assignment-merge-container">
-                <div className={"dim toggle-edit " + toggledText} onClick={this.props.toggle}></div>
-                <div className={"edit panel panel-default toggle-edit assignment-merge-dialog" + toggledText}>
+                <div className={"dim toggle-edit toggled"} onClick={onClose}></div>
+                <div className={"edit panel panel-default toggle-edit assignment-merge-dialog toggled"}>
                     <div className="col-lg-4 visible-lg edit-current assignment-merge-side">
                         <div className="assignment-block">
                             <span className="section-label">Active Assignment</span>
@@ -82,7 +77,7 @@ class AssignmentMerge extends React.Component {
                             <span className="md-type-title">Update assignment info</span>
                             <span
                                 className="mdi mdi-close pull-right icon toggle-edit toggler"
-                                onClick={() => this.cancel()}
+                                onClick={onClose}
                             />
                         </div>
                         <div className="dialog-body">
@@ -115,7 +110,7 @@ class AssignmentMerge extends React.Component {
                             <button
                                 type="button"
                                 className="btn btn-flat"
-                                onClick={() => this.cancel()}
+                                onClick={onClose}
                             >
                                 Cancel
                             </button>
