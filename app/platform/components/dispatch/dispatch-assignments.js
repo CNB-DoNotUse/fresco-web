@@ -61,8 +61,6 @@ export default class DispatchAssignments extends React.Component {
 				last: _.last(assignments).id
 			};
 
-			console.log(_.last(assignments));
-
 			//Access parent var load method
 			this.props.findAssignments(null, params, (assignments) => {
 				//Set galleries from successful response, and unset loading
