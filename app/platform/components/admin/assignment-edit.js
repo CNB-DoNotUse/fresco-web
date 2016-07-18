@@ -190,6 +190,7 @@ class AssignmentEdit extends React.Component {
             radius: 1,
             geo: utils.getGeoFromCoord(location),
             limit: 5,
+            rating: 1,
         }, (data) => {
             if (data.nearby && data.global) {
                 this.setState({
