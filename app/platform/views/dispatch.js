@@ -118,10 +118,14 @@ class Dispatch extends React.Component {
 		//Update view mode on params
 		const { viewMode } = this.state;
 
-		if(viewMode !== 'pending') {
-			params.active = this.state.viewMode == 'active';
-		} else{
-			params.unrated = this.state.viewMode == 'pending';
+		if(viewMode === 'pending') {
+			params.rating = 0;
+		} else if(viewMode === 'active'){
+			params.ends_after = Date.now();
+			params.rating = 1;
+		} else {
+			params.rating = 1;
+			params.ends_before = Date.now();
 		}
 
 		//Add map params
@@ -131,8 +135,8 @@ class Dispatch extends React.Component {
 				coordinates :  utils.generatePolygonFromBounds(map.getBounds())
 			};
 		} else {
-			params.sortBy = params.unrated ? 'created_at' : 'ends_at';
-			params.direction = params.active ? 'asc' : 'desc'; //Switch sort when viewing non-active `history`
+			params.sortBy = params.rating == 0 ? 'created_at' : 'ends_at';
+			params.direction = viewMode === 'active' ? 'asc' : 'desc'; //Switch sort when viewing non-active `history`
 			params.limit = 10;	
 		}
 
@@ -253,13 +257,6 @@ class Dispatch extends React.Component {
 					bounds={this.state.bounds}
 					updateMapPlace={this.updateMapPlace} >
 
-					<LocationDropdown
-						user={this.props.user}
-						outlet={this.props.outlet}
-						addLocationButton={true}
-
-						updateMapPlace={this.updateMapPlace}
-						mapPlace={this.state.mapPlace} />
 
 					{this.props.user.rank > 1 ? 
 						<button

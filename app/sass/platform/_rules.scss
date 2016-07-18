@@ -693,12 +693,18 @@ div.list {
 
 		@include display(flex);
 
+		a & {
+			text-decoration:none;
+		}
+
 		&.assignment-list-item {
 			max-width: 368px;
 			overflow: hidden;
 		}
 
 		&.global {
+			text-decoration:none;
+
 			.flexy {
 				max-width:71%;
 			}

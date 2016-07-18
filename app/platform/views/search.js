@@ -16,6 +16,8 @@ export class Search extends React.Component {
 
 		this.state = this.computeInitialState();
 
+		console.log('STATE', this.state);
+
 		this.loadingPosts = false;
 		this.loadingUsers = false;
 
@@ -39,35 +41,20 @@ export class Search extends React.Component {
 	 * Computes initial state based on query params
 	 */
 	computeInitialState() {
-		var location = this.props.location,
-			title = '';
-
-		if(location.radius && location.coordinates ) {
-			var circle = new google.maps.Circle({
-					center: location.coordinates,
-					map: null,
-					radius: utils.feetToMiles(location.radius)
-				});
-
-			// location.polygon = utils.circleToPolygon(circle, 16);
-		}
-
 		return {
 			assignments: [],
 			posts: [],
 			users: [],
-			location: location,
+			location: this.props.location,
 			stories: [],
-			offset: 0,
 			title: this.getTitle(true),
-			userOffset: 0,
 			verifiedToggle: true,
 			tags: this.props.tags,
 			purchases: this.props.purchases,
 		}
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		//Load intial set of data
 		this.refreshData(true);
 
@@ -139,10 +126,10 @@ export class Search extends React.Component {
 	 * @param {bool} initial Indicates if it is the initial data load
 	 */
 	refreshData(initial) {
-		this.getAssignments(0);
-		this.getPosts(true);
-		this.getUsers(true);
-		this.getStories(0);
+		this.getAssignments();
+		this.getPosts();
+		this.getUsers();
+		this.getStories();
 
 		if(!initial){
 			this.pushState();
@@ -161,25 +148,27 @@ export class Search extends React.Component {
 	/**
 	 * Retrieves assignments based on state
 	 */
-	getAssignments(offset, force = true) {
-		var location = this.state.location,
-			params = {
-				offset: offset,
-				q: this.props.query,
-				limit: 10,
-				verified: this.state.verifiedToggle,
-				tags: this.state.tags,
-				lat: location.coordinates ? location.coordinates.lat : undefined,
-				lon: location.coordinates ? location.coordinates.lng : undefined,
-				radius: location.radius ? utils.feetToMiles(location.radius) : undefined
-			};
+	getAssignments(force = true) {
+		const { location, tags } = this.state;
 
-		$.get('/api/assignment/search', params, (response, err) => {
-			if(!response.err && response.data && response.data.length > 0) {
-				let assignments = force ? response.data : this.state.assignments.concat(response.data);
-				
+		const params = {
+			last: force ? null : _.last(this.state.assignments),
+			q: this.props.query,
+			limit: 10,
+			verified: this.state.verifiedToggle,
+			tags: tags,
+			lat: location.coordinates ? location.coordinates.lat : undefined,
+			lon: location.coordinates ? location.coordinates.lng : undefined,
+			radius: location.radius ? utils.feetToMiles(location.radius) : undefined
+		};
+
+		if(this.state.verifiedToggle)
+			params.rating = utils.RATINGS.VERIFIED;
+
+		$.get('/api/assignment/search', { assignments: params }, (response, err) => {
+			if(!response.err && response.length > 0) {
 				this.setState({
-					assignments: assignments
+					assignments: force ? response : this.state.assignments.concat(response)
 				});
 			}
 		});
@@ -189,57 +178,65 @@ export class Search extends React.Component {
 	 * Retrieves posts from API based on state
 	 */
 	getPosts(force = true) {
-		var params = {
-				q: this.props.query,
-				offset: force ?  0 : this.state.offset,
-				limit: 18,
-				verified: this.state.verifiedToggle,
-				tags: this.state.tags,
-			},
-			location = _.clone(this.state.location);
+		let params = {
+			q: this.props.query,
+			limit: 18,
+			tags: this.state.tags,
+			sortBy: 'created_at',
+			direction: 'asc'
+		};
+
+		if(this.state.verifiedToggle)
+			params.rating = utils.RATINGS.VERIFIED;
+
+		const { location } = this.state;
 
 		if(location.coordinates && location.radius) {
-		    params.polygon = utils.circleToPolygon(
-		    	location.coordinates, 
-		    	utils.feetToMeters(location.radius), 
-		    	16
-		    );
+			params.geo = {
+				type: 'Point',
+				coordinates: [
+					location.coordinates.lat,
+					location.coordinates.lng,
+				]
+			};
+
+			params.radius = utils.feetToMiles(location.radius);
 		}
 
-		$.get('/api/gallery/search', params, (response) => {
-			//If the caller of this method passes force, this means that the post list will reset
-			//So this ensures that the next time `loadingPosts` is checked, it'll be ready to be called again
-			if(force)
-				this.loadingPosts = false;
-			
-			if(!response.err && response.data) {
-				//Check if there are any more posts
-				//If there aren't, prevent the scroll event from making the data call
-				//the next time around
-				if(response.data.length > 0)
+		$.ajax({
+			url: '/api/search',
+			type: 'GET',
+			data: $.param({ posts: params }),
+			success: (response, status, xhr) => {
+				//If the caller of this method passes force, this means that the post list will reset
+				//So this ensures that the next time `loadingPosts` is checked, it'll be ready to be called again
+				if(force)
 					this.loadingPosts = false;
+				
+				if(!response.err && response.length > 0) {
+					//Check if there are any more posts
+					//If there aren't, prevent the scroll event from making the data call
+					//the next time around
+					if(response.length > 0)
+						this.loadingPosts = false;
 
-				let posts = null,
-					offset = null;
+					if(force) {
+						//Setting scroll top manually because we're not using the post-list's default data mechanism
+						this.refs.postList.refs.grid.scrollTop = 0;
+					}
 
-				if(force) {
-					//Setting scroll top manually because we're not using the post-list's default data mechanism
-					this.refs.postList.refs.grid.scrollTop = 0;
-					posts = response.data;
-					offset = response.data.length;
+					this.setState({
+						posts: force ? response : this.state.posts.concat(response)
+					});
 				} else {
-					posts = this.state.posts.concat(response.data);
-					offset = this.state.offset + response.data.length;
+					this.setState({
+						posts: []
+					})
 				}
-
+			},
+			error: (xhr, status, error) => {
 				this.setState({
-					posts: posts,
-					offset: offset
-				});
-			} else {
-				this.setState({
-					posts: [],
-					offset: 0
+					posts: []
 				})
 			}
 		});
@@ -249,20 +246,20 @@ export class Search extends React.Component {
 	 * Retrieves users from API based on state
 	 */
 	getUsers(force = true) {
-		$.get('/api/user/search', {
-			q: this.props.query,
-			offset: force ? 0 : this.state.userOffset,
-			limit: 20
-		}, (response) => {
-			if(!response.err && response.data && response.data.length > 0) {
+		const params = {
+			user: {
+				q: this.props.query,
+				last: force ? undefined : _.last(this.state.users),
+				limit: 20
+			}
+		};
+
+		$.get('/api/user/search', params, (response) => {
+			if(!response.error && response && response.length > 0) {
 				this.loadingUsers = false;
 
-				var users = force ? response.data : this.state.users.concat(response.data),
-					userOffset = force ? response.data.length : this.state.userOffset + response.data.length;
-
 				this.setState({
-					users: users,
-					userOffset: userOffset
+					users: force ? response : this.state.users.concat(response)
 				});
 			}
 		});
@@ -271,29 +268,35 @@ export class Search extends React.Component {
 	/**
 	 * Retrieves stories from API based on state
 	 */
-	getStories(offset, force = true) {
-		var location = this.state.location;
+	getStories(force = true) {
+		const { location } = this.state;
 
-		var params = {
+		let params = {
 			q: this.props.query,
-			offset: offset,
+			last: force ? null : _.last(this.state.stories),
 			limit: 10
 		}
 
 		if(location.coordinates && location.radius) {
-		    params.polygon = utils.circleToPolygon(location.coordinates, utils.feetToMeters(location.radius), 16);
+			params.geo = {
+				type: 'Point',
+				coordinates: [
+					location.coordinates.lat,
+					location.coordinates.lng,
+				]
+			};
+
+			params.radius = location.radius;
 		}
 
 		$.ajax({
 			url: '/api/story/search',
 			type: 'GET',
-			data: params,
+			data: { stories: params },
 			success: (response, status, xhr) => {
-				if(!response.err && response.data && response.data.length > 0) {
-					let stories = force ? response.data : this.state.stories.concat(response.data);
-			
+				if(!response.err && response && response.length > 0) {
 					this.setState({
-						stories: stories
+						stories: force ? response : this.state.stories.concat(response)
 					});
 				}
 			}
@@ -301,6 +304,7 @@ export class Search extends React.Component {
 	}
 
 	addTag(tag) {
+		//Check if tag exists
 		if(this.state.tags.indexOf(tag) != -1) return;
 
 		this.setState({
@@ -309,41 +313,28 @@ export class Search extends React.Component {
 	}
 
 	removeTag(tag) {
-		var index = this.state.tags.indexOf(tag);
-		
-		if(index == -1) return;
-
-		var tags = [], 
-			currentTags = this.state.tags;
-
-		for(var i = 0; i < currentTags.length; i++) {
-			if(currentTags[i] !== tag) {
-				tags.push(currentTags[i]);
-			}
-		}
-
-		this.setState({
-			tags: tags
+		const tags = _.remove(this.state.tags, (tagToCheck) => {
+			return tagToCheck === tag;
 		});
+
+		this.setState({ tags });
 	}
 
 	/**
 	 * When radius changes
 	 */
 	onRadiusUpdate(radius) {
-		var location = _.clone(this.state.location);
+		let location = _.clone(this.state.location);
 		location.radius = radius;
 
-		this.setState({
-			location: location
-		});
+		this.setState({ location });
 	}
 
 	/**
 	 * Called when AutocompleteMap data changes
 	 */
 	onMapDataChange(data) {
-		var location = _.clone(this.state.location);
+		let location = _.clone(this.state.location);
 
 		location.coordinates = data.location;
 		location.address = data.address;
@@ -352,7 +343,7 @@ export class Search extends React.Component {
 			location.radius = 250;
 
 		this.setState({
-			location: location,
+			location,
 			map: {
 				circle: data.circle
 			}
@@ -363,18 +354,18 @@ export class Search extends React.Component {
 	 * Updates URL push state for latest query based on state
 	 */
 	pushState() {
-		var state = this.state,
-			query = '?q=';
+		const { location, tags } = this.state;
+		let query = '?q=';
 
 		query += encodeURIComponent(this.props.query);
 
-		for (var i = 0; i < state.tags.length; i++) {
-			query += '&tags[]=' + encodeURIComponent(this.state.tags[i]);
-		}
+		tags.forEach((tag) => {
+			query += '&tags[]=' + encodeURIComponent(tag);	
+		});
 
-		if(state.location.coordinates && state.location.radius){
-			query += '&lat=' + state.location.coordinates.lat + '&lon=' + state.location.coordinates.lng;
-			query += '&radius=' + state.location.radius;
+		if(location.coordinates && location.radius){
+			query += '&lat=' + location.coordinates.lat + '&lon=' + location.coordinates.lng;
+			query += '&radius=' + location.radius;
 		}
 
 		window.history.pushState({}, '', query);
@@ -461,7 +452,8 @@ export class Search extends React.Component {
 
 Search.defaultProps = {
 	location: {},
-	tags: []
+	tags: [],
+	q: ''
 }
 
 

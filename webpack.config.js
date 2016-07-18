@@ -10,12 +10,6 @@ const fileLoaderName = 'fonts/[name].[ext]';
 const hashDate = Date.now();
 const argv = { production: false };
 
-let output = {
-    path: './public/build/',
-    filename: 'js/[name].js',
-    publicPath: '/build/'
-}
-
 //Generates view object for us
 let views = function() {
     let viewsToReturn = {};
@@ -79,6 +73,13 @@ if(argv.production) {
         filename: 'js/[name].js',
         publicPath: `/build/${hashDate}/`
     }
+}
+
+//Define output obj. for webpack
+let output = {
+    path: './public/build/',
+    filename: 'js/[name].js',
+    publicPath: '/build/'
 }
 
 module.exports = {
