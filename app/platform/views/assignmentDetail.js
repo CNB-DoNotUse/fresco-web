@@ -47,9 +47,12 @@ class AssignmentDetail extends React.Component {
     expireAssignment() {
         $.ajax({
             method: 'POST',
-            url: '/api/assignment/update',
-            expiration_time: Date.now(),
-            id: this.state.assignment.id,
+            url: `/api/assignment/${this.state.assignment.id}/update`,
+            data: JSON.stringify({
+                ends_at: Date.now(),
+            }),
+            dataType: 'json',
+            contentType: 'application/json',
         })
         .done((response) => {
             $.snackbar({ content: 'Assignment expired' });

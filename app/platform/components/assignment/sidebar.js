@@ -66,18 +66,15 @@ class AssignmentSidebar extends React.Component {
     }
 
     render() {
-        const { assignment } = this.props;
-        let expireButton = '';
-        if (assignment.expiration_time > Date.now()) {
-            expireButton = (
-                <button
-                    className="btn fat tall btn-error assignment-expire"
-                    onClick={this.props.expireAssignment}
-                >
-                    Expire
-                </button>
-            );
-        }
+        const { assignment, expireAssignment } = this.props;
+        const expireButton = (
+            <button
+                className="btn fat tall btn-error assignment-expire"
+                onClick={expireAssignment}
+            >
+                Expire
+            </button>
+        );
 
         return (
             <div className="col-sm-4 profile hidden-xs">
@@ -88,17 +85,20 @@ class AssignmentSidebar extends React.Component {
                         </div>
 
                         <div className="meta-user">
-                            {expireButton}
+                            {moment().diff(assignment.ends_at) < 1
+                                ? expireButton
+                                : ''
+                            }
                         </div>
 
                         {this.renderStats()}
+
                     </div>
                 </div>
             </div>
 
         );
     }
-
 }
 
 AssignmentSidebar.propTypes = {
