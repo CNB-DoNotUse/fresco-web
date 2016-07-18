@@ -1,17 +1,12 @@
 require('babel-core/register');
 
-var fs                = require('fs'),
-    express           = require('express'),
-    config            = require('../lib/config'),
-    Purchases         = require('../lib/purchases'),
-    head              = require('../lib/head'),
-    router            = express.Router(),
-    utils             = require('../lib/utils'),
-    React             = require('react'),
-    ReactDOMServer    = require('react-dom/server'),
-    request           = require('request'),
-    PublicGallery     = require('../app/platform/views/publicGallery.js'),
-    api               = require('../lib/api');
+const express = require('express');
+const router = express.Router();
+const utils = require('../lib/utils');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+const PublicGallery = require('../app/platform/views/publicGallery.js');
+const api = require('../lib/api');
 
 /** //
 
@@ -25,34 +20,32 @@ var fs                = require('fs'),
  */
 
 function render(gallery, user, req, res) {
-    var title = 'Gallery';
+    let title = 'Gallery';
 
-    if(gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
+    if (gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
         title += ' from ' + gallery.posts[0].location.address;
     }
 
-    //User is logged in, show full gallery page
+    // User is logged in, show full gallery page
     if (user) {
-        var props = {
-            gallery, title, user,
-            purchases: Purchases.mapPurchases(req.session)
-        };
+        const props = { gallery, title, user };
 
         res.locals.section = 'platform';
         res.render('app', {
             title,
             alerts: req.alerts,
             page: 'galleryDetail',
-            props: JSON.stringify(props)
+            props: JSON.stringify(props),
         });
-
-    } else { //User is not logged in, show public gallery page
-        var props = {
-            gallery, title,
-            userAgent: req.headers['user-agent']
+    } else {
+        // User is not logged in, show public gallery page
+        const props = {
+            gallery,
+            title,
+            userAgent: req.headers['user-agent'],
         };
-        var element = React.createElement(PublicGallery, props);
-        var react = ReactDOMServer.renderToString(element);
+        const element = React.createElement(PublicGallery, props);
+        const react = ReactDOMServer.renderToString(element);
 
         res.render('app', {
             title, gallery, react,
@@ -60,15 +53,15 @@ function render(gallery, user, req, res) {
                 title,
                 image: utils.formatImg(gallery.posts[0].image, 'large'),
                 url: req.originalUrl,
-                description: gallery.caption
+                description: gallery.caption,
             },
             twitter: {
                 title,
                 description: gallery.caption,
-                image: utils.formatImg(gallery.posts[0].image, 'large')
+                image: utils.formatImg(gallery.posts[0].image, 'large'),
             },
             page: 'publicGallery',
-            props: JSON.stringify(props)
+            props: JSON.stringify(props),
         });
     }
 }
