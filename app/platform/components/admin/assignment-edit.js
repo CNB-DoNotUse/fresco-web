@@ -5,6 +5,7 @@ import AssignmentMergeDropup from './assignment-merge-drop-up';
 import utils from 'utils';
 import uniqBy from 'lodash/uniqBy';
 import reject from 'lodash/reject';
+import isEmpty from 'lodash/isEmpty';
 
 /**
     Assignment Edit Sidebar used in assignment administration page
@@ -88,27 +89,49 @@ class AssignmentEdit extends React.Component {
         this.props.onUpdateAssignment(id);
     }
 
-    getStateFromProps(props) {
-        const { assignment } = props;
-        const radius = assignment.radius || 0;
-        let location = { lat: 40.7, lng: -74 };
+    onChangeGlobal() {
+        if (this.isGlobalLocation()) {
+            const { assignment } = this.props;
+            this.setState({
+                location: this.getLocationFromAssignment(assignment) || { lat: 40.7, lng: -74 },
+                address: assignment.address || '',
+            });
+        } else {
+            this.setState({ location: null, address: null });
+        }
+    }
 
+    getLocationFromAssignment(assignment) {
         if (assignment && assignment.location) {
-            location = {
+            return {
                 lat: assignment.location.coordinates ? assignment.location.coordinates[1] : null,
                 lng: assignment.location.coordinates ? assignment.location.coordinates[0] : null,
             };
         }
 
+        return null;
+    }
+
+    getStateFromProps(props) {
+        const { assignment } = props;
+        const radius = assignment.radius || 0;
+
         return {
             address: assignment.address,
             radius,
-            location,
+            location: this.getLocationFromAssignment(assignment),
             nearbyAssignments: [],
             showMergeDialog: false,
             mergeIntoAssignment: null,
+            loading: false,
+            loadingNearby: false,
         };
     }
+
+    isGlobalLocation() {
+        return !this.state.location || isEmpty(this.state.location);
+    }
+
 
     resetForm(assignment) {
         this.refs['assignment-title'].value = assignment.title;
@@ -129,7 +152,7 @@ class AssignmentEdit extends React.Component {
             caption: this.refs['assignment-description'].value,
             address: this.state.address || undefined,
             radius: this.state.radius,
-            location: utils.getGeoFromCoord(this.state.location),
+            location: this.state.location ? utils.getGeoFromCoord(this.state.location) : null,
             // Convert to ms and current timestamp
             ends_at: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
         };
@@ -182,24 +205,31 @@ class AssignmentEdit extends React.Component {
      * Finds nearby assignments
      */
     findNearbyAssignments() {
-        const { location } = this.state;
+        const { location, loadingNearby } = this.state;
         const { assignment } = this.props;
-        if (!location || !location.lat || !location.lng) return;
-
-        $.get('/api/assignment/find', {
+        if (!location || loadingNearby || !location.lat || !location.lng) return;
+        this.setState({ loadingNearby: true });
+        const data = {
             radius: 1,
             geo: utils.getGeoFromCoord(location),
             limit: 5,
             rating: 1,
-        }, (data) => {
-            if (data.nearby && data.global) {
-                this.setState({
-                    nearbyAssignments: uniqBy(
-                        reject(data.nearby.concat(data.global), { id: assignment.id }),
-                        'id'
-                    ),
-                });
+        };
+
+        $.ajax({
+            url: '/api/assignment/find',
+            data,
+            dataType: 'json',
+            contentType: 'application/json',
+        })
+        .done((res) => {
+            if (res.nearby && res.global) {
+                const nearbyAssignments = uniqBy(reject(res.nearby.concat(res.global), { id: assignment.id }), 'id');
+                this.setState({ nearbyAssignments });
             }
+        })
+        .always(() => {
+            this.setState({ loadingNearby: false });
         });
     }
 
@@ -214,6 +244,7 @@ class AssignmentEdit extends React.Component {
         } = this.state;
         const defaultLocation = address || '';
         const expirationTime = assignment ? utils.hoursToExpiration(assignment.ends_at) : null;
+        const globalLocation = this.isGlobalLocation();
 
         return (
             <div className="dialog">
@@ -234,17 +265,26 @@ class AssignmentEdit extends React.Component {
                         defaultValue={assignment.caption}
                     />
 
-                    <AutocompleteMap
-                        defaultLocation={defaultLocation}
-                        location={location}
-                        radius={Math.round(utils.milesToFeet(radius))}
-                        onPlaceChange={(place) => this.onPlaceChange(place)}
-                        onMapDataChange={(data) => this.onMapDataChange(data)}
-                        onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
-                        draggable
-                        rerender
-                        hasRadius
-                    />
+                    <div className="form-group">
+                        <label className="form-control">
+                            Global <input onChange={(a, b, c) => this.onChangeGlobal(a, b, c)} type="checkbox" checked={globalLocation} />
+                        </label>
+                    </div>
+
+                    {globalLocation
+                        ? ''
+                        : <AutocompleteMap
+                            defaultLocation={defaultLocation}
+                            location={location}
+                            radius={Math.round(utils.milesToFeet(radius))}
+                            onPlaceChange={(place) => this.onPlaceChange(place)}
+                            onMapDataChange={(data) => this.onMapDataChange(data)}
+                            onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
+                            draggable
+                            rerender
+                            hasRadius
+                        />
+                    }
 
                     <input
                         type="text"
@@ -275,7 +315,7 @@ class AssignmentEdit extends React.Component {
                     </button>
 
                     {
-                        nearbyAssignments.length
+                        !globalLocation && nearbyAssignments.length
                             ? <AssignmentMergeDropup
                                 nearbyAssignments={nearbyAssignments}
                                 onSelectMerge={(a) => this.onSelectMerge(a)}
