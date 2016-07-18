@@ -3,23 +3,6 @@ const config = require('../lib/config');
 const router = express.Router();
 const api = require('../lib/api');
 
-function render(assignment, user, req, res) {
-    const title = assignment.title;
-    const props = {
-        user: req.session.user,
-        title,
-        assignment,
-    };
-
-    res.render('app', {
-        props: JSON.stringify(props),
-        config,
-        alerts: req.alerts,
-        page: 'assignmentDetail',
-        title,
-    });
-}
-
 router.get('/:id', (req, res, next) => {
     let user;
     let token;
@@ -32,7 +15,27 @@ router.get('/:id', (req, res, next) => {
         token,
         url: '/assignment/' + req.params.id,
     }).then(response => {
-        render(response.body, user, req, res);
+        const assignment = response.body;
+        const props = {
+            user,
+            title: assignment.title,
+            assignment,
+        };
+
+        if (!(user.rank >= 1) || assignment.outlets.some((o) => (o.id === user.outlet.id))) {
+            res.render('app', {
+                props: JSON.stringify(props),
+                config,
+                alerts: req.alerts,
+                title: assignment.title,
+                page: 'assignmentDetail',
+            });
+        } else {
+            next({
+                message: 'Not authorized to view assignment.',
+                status: 401,
+            });
+        }
     }).catch(() => (
         next({
             message: 'Assignment not found!',

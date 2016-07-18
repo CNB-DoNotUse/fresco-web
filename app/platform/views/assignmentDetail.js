@@ -56,7 +56,7 @@ class AssignmentDetail extends React.Component {
         })
         .done((response) => {
             $.snackbar({ content: 'Assignment expired' });
-            this.setState({ assignment: response.data });
+            this.setState({ assignment: response });
         })
         .fail(() => {
             $.snackbar({
