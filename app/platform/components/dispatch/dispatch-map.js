@@ -4,14 +4,11 @@ import DispatchMapCallout from './dispatch-map-callout'
 import _ from 'lodash'
 import utils from 'utils' 
 
-/**
-* Description : The container for the map element in the dispatch page
-**/
 
 /**
  * Dispatch Map component
+ * @description The container for the map element in the dispatch page
  */
-
 export default class DispatchMap extends React.Component {
 
 	constructor(props) {

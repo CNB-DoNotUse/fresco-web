@@ -14,9 +14,17 @@ export class Search extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = this.computeInitialState();
-
-		console.log('STATE', this.state);
+		this.state = {
+			assignments: [],
+			posts: [],
+			users: [],
+			location: this.props.location,
+			stories: [],
+			title: this.getTitle(true),
+			verifiedToggle: true,
+			tags: this.props.tags,
+			purchases: this.props.purchases,
+		}
 
 		this.loadingPosts = false;
 		this.loadingUsers = false;
@@ -33,25 +41,7 @@ export class Search extends React.Component {
 		this.onMapDataChange		= this.onMapDataChange.bind(this);
 		this.onRadiusUpdate			= this.onRadiusUpdate.bind(this);
 		this.refreshData			= this.refreshData.bind(this);
-		this.computeInitialState    = this.computeInitialState.bind(this);
 		this.pushState				= this.pushState.bind(this);
-	}
-
-	/**
-	 * Computes initial state based on query params
-	 */
-	computeInitialState() {
-		return {
-			assignments: [],
-			posts: [],
-			users: [],
-			location: this.props.location,
-			stories: [],
-			title: this.getTitle(true),
-			verifiedToggle: true,
-			tags: this.props.tags,
-			purchases: this.props.purchases,
-		}
 	}
 
 	componentDidMount() {
@@ -313,11 +303,9 @@ export class Search extends React.Component {
 	}
 
 	removeTag(tag) {
-		const tags = _.remove(this.state.tags, (tagToCheck) => {
-			return tagToCheck === tag;
+		this.setState({ 
+			tags: _.pull(this.state.tags, tag)
 		});
-
-		this.setState({ tags });
 	}
 
 	/**

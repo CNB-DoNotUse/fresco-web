@@ -26,7 +26,7 @@ router.get('/', (req, res, next) => {
         location,
         tags,
         query
-    }
+    };
 
     res.render('app', {
         title: 'Search',
