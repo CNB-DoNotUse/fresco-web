@@ -12,12 +12,12 @@ class AssignmentSidebar extends React.Component {
      */
     renderStats() {
         const { assignment, stats } = this.props;
-        const expirationTime = new Date(this.props.assignment.expiration_time);
+        const expirationTime = new Date(assignment.ends_at);
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ')
             + moment(expirationTime).fromNow();
         const createdText = 'Created at ' + moment(assignment.created_at).format('LT');
 
-        if (!stats || !stats.photos || !stats.videos) {
+        if (!stats) {
             return '';
         }
 
@@ -26,7 +26,7 @@ class AssignmentSidebar extends React.Component {
                 <ul className="md-type-subhead">
                     <li>
                         <span className="mdi mdi-map-marker icon"></span>
-                        <span>{assignment.location && assignment.location.address || 'No Address'}</span>
+                        <span>{assignment.address || 'No Address'}</span>
                     </li>
                     <li>
                         <span className="mdi mdi-clock icon"></span>
@@ -42,11 +42,23 @@ class AssignmentSidebar extends React.Component {
                     </li>
                     <li>
                         <span className="mdi mdi-image icon"></span>
-                        <span>{stats.photos + ' photo' + (utils.isPlural(stats.photos) ? 's' : '')}</span>
+                        <span>
+                            {
+                                stats.photos
+                                    ? stats.photos + ' photo' + (utils.isPlural(stats.photos) ? 's' : '')
+                                    : 'No photos'
+                            }
+                        </span>
                     </li>
                     <li>
                         <span className="mdi mdi-movie icon"></span>
-                        <span>{stats.videos + ' video' + (utils.isPlural(stats.videos) ? 's' : '')}</span>
+                        <span>
+                            {
+                                stats.videos
+                                    ? stats.videos + ' video' + (utils.isPlural(stats.video) ? 's' : '')
+                                    : 'No videos'
+                            }
+                        </span>
                     </li>
                 </ul>
             </div>
@@ -54,9 +66,9 @@ class AssignmentSidebar extends React.Component {
     }
 
     render() {
-        const { assignment, stats } = this.props;
+        const { assignment } = this.props;
         let expireButton = '';
-        if (assignment.expiration_time > Date.now()){
+        if (assignment.expiration_time > Date.now()) {
             expireButton = (
                 <button
                     className="btn fat tall btn-error assignment-expire"
@@ -91,7 +103,8 @@ class AssignmentSidebar extends React.Component {
 
 AssignmentSidebar.propTypes = {
     assignment: PropTypes.object.isRequired,
-    stats: PropTypes.object,
+    expireAssignment: PropTypes.func.isRequired,
+    stats: PropTypes.object.isRequired,
 };
 
 export default AssignmentSidebar;

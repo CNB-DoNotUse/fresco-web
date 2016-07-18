@@ -13,12 +13,14 @@ import utils from 'utils';
 class AssignmentDetail extends React.Component {
     constructor(props) {
         super(props);
+        const { assignment } = this.props;
 
         this.state = {
-            assignment: props.assignment,
-            stats: props.assignment.stats || { photos: 0, videos: 0 },
+            assignment,
+            stats: assignment.stats || { photos: 0, videos: 0 },
             toggled: false,
             verifiedToggle: true,
+            outlet: assignment.outlets[0],
         };
     }
 
@@ -32,6 +34,10 @@ class AssignmentDetail extends React.Component {
      */
     setAssignment(assignment) {
         this.setState({ assignment });
+    }
+
+    updateOutlet(outlet) {
+        this.setState({ outlet });
     }
 
     /**
@@ -67,7 +73,7 @@ class AssignmentDetail extends React.Component {
 
     render() {
         const { user } = this.props;
-        const { assignment, toggled, stats, verifiedToggle } = this.state;
+        const { assignment, toggled, stats, verifiedToggle, outlet } = this.state;
 
         return (
             <App user={user}>
@@ -106,7 +112,9 @@ class AssignmentDetail extends React.Component {
                     setAssignment={(a) => this.setAssignment(a)}
                     toggled={toggled}
                     toggle={(b) => this.toggleEdit(b)}
+                    updateOutlet={(o) => this.updateOutlet(o)}
                     user={user}
+                    outlet={outlet}
                 />
             </App>
         );

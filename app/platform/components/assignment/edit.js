@@ -53,7 +53,6 @@ class AssignmentEdit extends React.Component {
             address: assignment.address,
             radius,
             location,
-            outlet: assignment.outlets[0],
         };
     }
 
@@ -71,13 +70,8 @@ class AssignmentEdit extends React.Component {
         this.setState({
             address: null,
             radius: null,
-            outlet: null,
             location: null,
         });
-    }
-
-    updateOutlet(outlet) {
-        this.setState({ outlet });
     }
 
     updateRadius(radius) {
@@ -140,8 +134,7 @@ class AssignmentEdit extends React.Component {
     }
 
     render() {
-        const { user, toggled, stats, assignment } = this.props;
-        const { outlet } = this.state;
+        const { user, toggled, stats, assignment, outlet, updateOutlet } = this.props;
         const toggledText = toggled ? ' toggled' : '';
 
         return (
@@ -224,7 +217,7 @@ class AssignmentEdit extends React.Component {
 
                                 {
                                     (user.rank >= utils.RANKS.CONTENT_MANAGER)
-                                        ? <EditOutlet outlet={outlet} updateOutlet={(o) => this.updateOutlet(o)} />
+                                        ? <EditOutlet outlet={outlet} updateOutlet={(o) => updateOutlet(o)} />
                                         : ''
                                 }
 

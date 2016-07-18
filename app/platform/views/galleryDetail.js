@@ -71,39 +71,39 @@ class GalleryDetail extends React.Component {
                     edit={this.toggleGalleryEdit}
                     verifiedToggle={this.state.shouldShowVerifeidToggle}
                     onVerifiedToggled={this.onVerifiedToggled}
-                    timeToggle={true}
+                    timeToggle
                 />
 
-            <GallerySidebar gallery={this.state.gallery} />
+                <GallerySidebar gallery={this.state.gallery} />
 
-            <div className="col-sm-8 tall">
-                <PostList
-                    rank={user.rank}
-                    purchases={purchases}
-                    parentCaption={this.state.gallery.caption}
-                    posts={this.state.gallery.posts}
-                    onlyVerified={this.state.onlyVerified}
-                    updatePosts={this.state.updatePosts}
-                    scrollable={false}
-                    editable={false}
-                    size='large'
+                <div className="col-sm-8 tall">
+                    <PostList
+                        rank={user.rank}
+                        purchases={purchases}
+                        parentCaption={this.state.gallery.caption}
+                        posts={this.state.gallery.posts}
+                        onlyVerified={this.state.onlyVerified}
+                        updatePosts={this.state.updatePosts}
+                        scrollable={false}
+                        editable={false}
+                        size="large"
+                    />
+                </div>
+
+                <GalleryEdit
+                    updateGallery={this.updateGallery}
+                    toggle={this.toggleGalleryEdit}
+                    gallery={this.state.gallery}
+                    toggled={this.state.galleryEditToggled}
                 />
-            </div>
-
-            <GalleryEdit
-                updateGallery={this.updateGallery}
-                toggle={this.toggleGalleryEdit}
-                gallery={this.state.gallery}
-                toggled={this.state.galleryEditToggled}
-            />
-        </App>
+            </App>
         );
     }
 }
 
 GalleryDetail.defaultProps = {
 	gallery: {}
-}
+};
 
 ReactDOM.render(
 	<GalleryDetail
