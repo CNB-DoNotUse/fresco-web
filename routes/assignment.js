@@ -13,10 +13,10 @@ function render(assignment, user, req, res) {
 
     res.render('app', {
         props: JSON.stringify(props),
-        config: config,
+        config,
         alerts: req.alerts,
         page: 'assignmentDetail',
-        title : title
+        title,
     });
 }
 

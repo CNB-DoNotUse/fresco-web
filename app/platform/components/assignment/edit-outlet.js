@@ -1,22 +1,16 @@
-import _ from 'lodash'
-import React from 'react'
-import Tag from './tag.js'
-import utils from 'utils'
+import React from 'react';
+import Tag from 'app/platform/components/editing/tag.js';
 
 /**
  * Component for managing added/removed tags
  */
-
 export default class AssignmentEditOutlet extends React.Component {
-
-	constructor(props) {
-		super(props);
-		this.state = {
-			suggestions: []
-		}
-		this.change = this.change.bind(this);
-		this.addOutlet = this.addOutlet.bind(this);
-	}
+    constructor(props) {
+        super(props);
+        this.state = { suggestions: [] };
+        this.change = this.change.bind(this);
+        this.addOutlet = this.addOutlet.bind(this);
+    }
 
 	change(e) {
 		//Current fields input
@@ -49,7 +43,7 @@ export default class AssignmentEditOutlet extends React.Component {
 		if(this.props.outlet){
 			return $.snackbar({ content : 'Outlets can only have one owner!' });
 		}
-		
+
 		//Clear the input field
 		this.refs.autocomplete.value = ''
 		this.refs.dropdown.style.display = 'none';
@@ -78,7 +72,7 @@ export default class AssignmentEditOutlet extends React.Component {
 		});
 
 		return (
-			
+
 			<div className="dialog-row split chips">
 				<div className="split-cell">
 					<input
