@@ -7,12 +7,11 @@ import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
 import remove from 'lodash/remove';
 import uniqBy from 'lodash/uniqBy';
-import 'sass/platform/_admin';
+import 'app/sass/platform/_admin';
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar)
 */
-
 class Admin extends React.Component {
     constructor(props) {
         super(props);
@@ -99,7 +98,7 @@ class Admin extends React.Component {
         switch (tab) {
             case 'assignments':
                 endpoint = '/api/assignment/find';
-                params = { unrated: true, last, limit: 16 };
+                params = { rating: 0, last, limit: 16 };
                 break;
             case 'submissions':
                 endpoint = '/api/gallery/list';

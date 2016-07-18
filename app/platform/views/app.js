@@ -1,8 +1,8 @@
-import React from 'react'
-import Sidebar from '../components/global/sidebar'
+import React from 'react';
+import Sidebar from '../components/global/sidebar';
 global.jQuery = require('jquery');
 require('snackbarjs');
-require('../../sass/platform/screen.scss');
+import '../../sass/platform/screen.scss';
 require('script!bootstrap/dist/js/bootstrap');
 require('script!bootstrap-material-design/dist/js/material');
 require('script!bootstrap-material-design/dist/js/ripples');
@@ -13,23 +13,24 @@ require('script!alertify.js/dist/js/alertify');
  */
 export default class App extends React.Component {
 
-	componentDidMount() {
-		$.material.init();
-	}
+    componentDidMount() {
+        $.material.init();
+    }
 
-	render() {
-		return (
-			<div>
-				<div className="container-fluid">
-					<Sidebar
-						query={this.props.query}
-						user={this.props.user} />
+    render() {
+        return (
+            <div>
+                <div className="container-fluid">
+                    <Sidebar
+                        query={this.props.query}
+                        user={this.props.user}
+                    />
 
-					<div className="col-md-12 col-lg-10">
-						{this.props.children}
-					</div>
-				</div>
-			</div>
-		);
-	}
+                    <div className="col-md-12 col-lg-10">
+                        {this.props.children}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }

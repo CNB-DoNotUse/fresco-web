@@ -253,11 +253,6 @@ class AssignmentEdit extends React.Component {
                         ref="assignment-expiration"
                         defaultValue={expirationTime}
                     />
-
-                    <AssignmentMergeDropup
-                        nearbyAssignments={nearbyAssignments}
-                        onSelectMerge={(a) => this.onSelectMerge(a)}
-                    />
                 </div>
 
                 <div className="dialog-foot">
@@ -277,16 +272,26 @@ class AssignmentEdit extends React.Component {
                     >
                         Reject
                     </button>
+
+                    {
+                        nearbyAssignments.length
+                            ? <AssignmentMergeDropup
+                                nearbyAssignments={nearbyAssignments}
+                                onSelectMerge={(a) => this.onSelectMerge(a)}
+                            />
+                            : ''
+                    }
                 </div>
 
-                {showMergeDialog
-                    ? <AssignmentMerge
-                        assignment={assignment}
-                        mergeIntoAssignment={this.state.mergeIntoAssignment}
-                        onClose={() => this.onCloseMerge()}
-                        onMergeAssignment={(id) => this.onMergeAssignment(id)}
-                    />
-                    : ''
+                {
+                    showMergeDialog
+                        ? <AssignmentMerge
+                            assignment={assignment}
+                            mergeIntoAssignment={this.state.mergeIntoAssignment}
+                            onClose={() => this.onCloseMerge()}
+                            onMergeAssignment={(id) => this.onMergeAssignment(id)}
+                        />
+                        : ''
                 }
             </div>
         );
