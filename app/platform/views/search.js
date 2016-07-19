@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import utils from 'utils'
-import React from 'react'
+import React, { PropTypes, Component } from 'react/addons'
 import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from './../components/topbar'
@@ -9,7 +9,7 @@ import TagFilter from '../components/topbar/tag-filter'
 import SearchSidebar from './../components/search/search-sidebar'
 import PostList from './../components/global/post-list.js'
 
-export class Search extends React.Component {
+export class Search extends Component {
 
 	constructor(props) {
 		super(props);
@@ -56,8 +56,8 @@ export class Search extends React.Component {
 		// If has location in state, get address from LatLng. 
 		// Location dropdown will use this as it's defaultLocation
 		if(this.state.location.coordinates) {
-			var geocoder = new google.maps.Geocoder(),
-				location = this.state.location;
+			const geocoder = new google.maps.Geocoder();
+			const { location } = this.state;
 
 			geocoder.geocode({'location': this.state.location.coordinates}, (results, status) => {
 				if(status === google.maps.GeocoderStatus.OK && results[0]){
@@ -94,9 +94,14 @@ export class Search extends React.Component {
 		} 
 	}
 
+	/**
+	 * Determins title for page
+	 * @param  {BOOL} withProps To determine from props or state
+	 * @return {string} Returns a title
+	 */
 	getTitle(withProps) {
-		var state = withProps ? this.props : this.state,
-			title = '';
+		const state = withProps ? this.props : this.state;
+		let title = '';
 
 		if(this.props.query !== '') {
 			title = 'Results for ' + this.props.query;
@@ -295,7 +300,8 @@ export class Search extends React.Component {
 
 	addTag(tag) {
 		//Check if tag exists
-		if(this.state.tags.indexOf(tag) != -1) return;
+		if(this.state.tags.indexOf(tag) != -1) 
+			return;
 
 		this.setState({
 			tags: this.state.tags.concat(tag)
@@ -312,10 +318,9 @@ export class Search extends React.Component {
 	 * When radius changes
 	 */
 	onRadiusUpdate(radius) {
-		let location = _.clone(this.state.location);
-		location.radius = radius;
-
-		this.setState({ location });
+		this.setState({ 
+			location : update(this.state.location, {radius: {$set: radius}})
+		});
 	}
 
 	/**
@@ -364,10 +369,10 @@ export class Search extends React.Component {
 	 * Called when posts div scrolls
 	 */
 	scroll(e) {
-		var grid = e.target,
-			bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400);
+		const grid = e.target;
+		const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400);
 
-		var sidebarScrolled = grid.className.indexOf('search-sidebar') > -1; 
+		const sidebarScrolled = grid.className.indexOf('search-sidebar') > -1; 
 
 		//Check that nothing is loading and that we're at the end of the scroll,
 		if(!this.loadingPosts && bottomReached && !sidebarScrolled) {
@@ -444,11 +449,15 @@ Search.defaultProps = {
 	q: ''
 }
 
+Search.propTypes = {
+    q: PropTypes.string,
+    tags: PropTypes.array,
+    location: PropTypes.object,
+};
 
 ReactDOM.render(
  	<Search
  		user={window.__initialProps__.user}
- 		purchases={window.__initialProps__.purchases || []}
  		location={window.__initialProps__.location}
  		tags={window.__initialProps__.tags}
  		query={window.__initialProps__.query} />,
