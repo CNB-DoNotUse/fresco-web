@@ -28,9 +28,7 @@ class GalleryEditStories extends React.Component {
         const stories = this.props.relatedStories;
 
         // Check if story already exists
-        for(var s in stories) {
-            if (stories[s]._id && stories[s]._id == newStory._id) return;
-        }
+        if (stories.some((s) => (s.id === newStory.id))) return;
 
         stories.push(newStory);
 
@@ -80,11 +78,11 @@ class GalleryEditStories extends React.Component {
                 this.refs.dropdown.style.display = 'block';
 
                 $.ajax({
-                    url: '/api/search',
-                    data: { 'stories[q]': query },
+                    url: '/api/search?stories=true',
+                    data: { q: query },
                     success: (res) => {
-                        if (res.stories) {
-                            this.setState({ suggestions: res.stories });
+                        if (res.stories && res.stories.results) {
+                            this.setState({ suggestions: res.stories.results });
                         }
                     },
                 });

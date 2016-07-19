@@ -68,7 +68,7 @@ class GalleryEdit extends React.Component {
             caption,
             address,
             geo: utils.getGeoFromCoord(location),
-            // stories,
+            stories,
         };
 
         return params;
