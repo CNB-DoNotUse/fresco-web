@@ -42,7 +42,7 @@ class AdminGalleryListItem extends React.Component {
         }
 
         const imgUrl = gallery.posts && gallery.posts.length
-            ? utils.formatImg(gallery.posts[0].image, '50x50')
+            ? utils.formatImg(gallery.posts[0].image, 'thumb')
             : '';
 
 
