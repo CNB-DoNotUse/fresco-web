@@ -180,8 +180,8 @@ class AssignmentEdit extends React.Component {
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
             address: this.state.address || undefined,
-            radius: this.state.radius,
-            location: this.state.location ? utils.getGeoFromCoord(this.state.location) : null,
+            radius: this.isGlobalLocation() ? null : this.state.location,
+            location: this.isGlobalLocation() ? null : utils.getGeoFromCoord(this.state.location),
             // Convert to ms and current timestamp
             ends_at: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
         };

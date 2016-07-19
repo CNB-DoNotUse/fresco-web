@@ -134,6 +134,6 @@ ReactDOM.render(
         user={window.__initialProps__.user}
         assignment={window.__initialProps__.assignment}
     />,
-document.getElementById('app')
+    document.getElementById('app')
 );
 

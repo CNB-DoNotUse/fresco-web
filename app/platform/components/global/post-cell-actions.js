@@ -39,7 +39,7 @@ class PostCellActions extends React.Component {
                 actions.push(
                     <PurchaseAction
                         post={post}
-                        assignment={assignment ? assignment.id : null}
+                        assignment={assignment}
                         onPurchase={onPurchase}
                         key={++key}
                     />
@@ -65,7 +65,7 @@ class PostCellActions extends React.Component {
             actions.push(
                 <PurchaseAction
                     post={post}
-                    assignment={assignment ? assignment.id : null}
+                    assignment={assignment}
                     onPurchase={onPurchase}
                     key={++key}
                 />
