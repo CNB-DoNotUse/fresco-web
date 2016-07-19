@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import utils from 'utils'
-import React, { PropTypes, Component } from 'react/addons'
+import React, { PropTypes, Component } from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
 import TopBar from './../components/topbar'
