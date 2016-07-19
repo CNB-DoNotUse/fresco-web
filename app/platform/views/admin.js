@@ -6,7 +6,6 @@ import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
 import remove from 'lodash/remove';
-import uniqBy from 'lodash/uniqBy';
 import 'app/sass/platform/_admin';
 
 /**
@@ -201,9 +200,7 @@ class Admin extends React.Component {
     removeAssignment(id) {
         const { assignments } = this.state;
         if (!id || !assignments) return;
-
-        if (assignments.global) remove(assignments.global, { id });
-        if (assignments.nearby) remove(assignments.nearby, { id });
+        remove(assignments, { id });
 
         this.setState({ assignments });
     }
