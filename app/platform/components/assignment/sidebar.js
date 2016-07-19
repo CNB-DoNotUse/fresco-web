@@ -3,10 +3,10 @@ import utils from 'utils';
 import moment from 'moment';
 
 /**
- * Assignment sidebar parent object
+ * sidebar Component
  * Description : Column on the left of the posts grid on the assignment detail page
  */
-class AssignmentSidebar extends React.Component {
+class Sidebar extends React.Component {
     /**
      * AssignmentStats stats inside the sidebar
      */
@@ -26,7 +26,13 @@ class AssignmentSidebar extends React.Component {
                 <ul className="md-type-subhead">
                     <li>
                         <span className="mdi mdi-map-marker icon"></span>
-                        <span>{assignment.address || 'No Address'}</span>
+                        <span>
+                            {
+                                assignment.location
+                                    ? assignment.address || 'No Address'
+                                    : 'Global'
+                            }
+                        </span>
                     </li>
                     <li>
                         <span className="mdi mdi-clock icon"></span>
@@ -101,11 +107,11 @@ class AssignmentSidebar extends React.Component {
     }
 }
 
-AssignmentSidebar.propTypes = {
+Sidebar.propTypes = {
     assignment: PropTypes.object.isRequired,
     expireAssignment: PropTypes.func.isRequired,
     stats: PropTypes.object.isRequired,
 };
 
-export default AssignmentSidebar;
+export default Sidebar;
 

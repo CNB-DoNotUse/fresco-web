@@ -17,7 +17,7 @@ class Admin extends React.Component {
         super(props);
         this.state = {
             activeTab: 'assignments',
-            assignments: {},
+            assignments: [],
             submissions: [],
             imports: [],
         };
@@ -97,7 +97,7 @@ class Admin extends React.Component {
         // Set up endpoint and params depending on tab
         switch (tab) {
             case 'assignments':
-                endpoint = '/api/assignment/find';
+                endpoint = '/api/assignment/list';
                 params = { rating: 0, last, limit: 16 };
                 break;
             case 'submissions':
@@ -258,7 +258,6 @@ class Admin extends React.Component {
     getAssignments() {
         const { assignments } = this.state;
         if (!assignments) return [];
-        let allAssignments = [];
         function sortListItem(a, b) {
             if (a.created_at > b.created_at) {
                 return -1;
@@ -269,12 +268,7 @@ class Admin extends React.Component {
             return 0;
         }
 
-        ['nearby', 'global'].forEach((type) => {
-            allAssignments = allAssignments
-                .concat(assignments[type] && assignments[type].length ? assignments[type] : []);
-        });
-
-        return uniqBy(allAssignments, 'id').sort(sortListItem);
+        return assignments.sort(sortListItem);
     }
 
     getSubmissions() {
