@@ -263,13 +263,14 @@ class AssignmentEdit extends React.Component {
     }
 
     render() {
-        const { loading, assignment } = this.props;
+        const { assignment } = this.props;
         const {
             radius,
             address,
             nearbyAssignments,
             location,
             showMergeDialog,
+            loading,
         } = this.state;
         const defaultLocation = address || '';
         const expirationTime = assignment ? utils.hoursToExpiration(assignment.ends_at) : null;
@@ -370,7 +371,6 @@ class AssignmentEdit extends React.Component {
 
 AssignmentEdit.propTypes = {
     assignment: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired,
     onUpdateAssignment: PropTypes.func.isRequired,
 };
 

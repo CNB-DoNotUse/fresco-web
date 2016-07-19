@@ -22,7 +22,7 @@ router.get('/:id', (req, res, next) => {
             assignment,
         };
 
-        if (!(user.rank >= 1) || assignment.outlets.some((o) => (o.id === user.outlet.id))) {
+        if (user.rank >= 1 || assignment.outlets.some((o) => (o.id === user.outlet.id))) {
             res.render('app', {
                 props: JSON.stringify(props),
                 config,
