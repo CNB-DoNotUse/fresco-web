@@ -295,9 +295,15 @@ class AssignmentEdit extends React.Component {
                         defaultValue={assignment.caption}
                     />
 
-                    <div className="form-group">
-                        <label className="form-control">
-                            Global <input onChange={(a, b, c) => this.onChangeGlobal(a, b, c)} type="checkbox" checked={globalLocation} />
+
+                    <div className="checkbox check-global form-group">
+                        <label>
+                            <input
+                                type="checkbox"
+                                onChange={() => this.onChangeGlobal()}
+                                checked={globalLocation}
+                            />
+                            Global
                         </label>
                     </div>
 
