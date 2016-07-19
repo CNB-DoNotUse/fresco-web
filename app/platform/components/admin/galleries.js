@@ -3,6 +3,12 @@ import GalleryListItem from './gallery-list-item';
 import GalleryEdit from './gallery-edit';
 import findIndex from 'lodash/findIndex';
 
+/**
+ * Galleries - component for managing submissions
+ * and imports galleries in admin view
+ *
+ * @extends React.Component
+ */
 class Galleries extends React.Component {
     constructor(props) {
         super(props);
@@ -16,6 +22,11 @@ class Galleries extends React.Component {
         }
     }
 
+    /**
+     * onUpdateGallery
+     *
+     * @param {number} id Called on updating gallery to set next active assignment and remove updated
+     */
     onUpdateGallery(id) {
         const { galleries, removeGallery } = this.props;
         const index = findIndex(galleries, { id });

@@ -1,5 +1,11 @@
 import React, { PropTypes } from 'react';
 
+/**
+ * AssignmentMergeDropup Dropdown(up) menu that displays list of nearby assignments
+ * Click on assignment in list, calls onSelectMerge prop
+ *
+ * @extends React.Component
+ */
 class AssignmentMergeDropup extends React.Component {
     constructor(props) {
         super(props);

@@ -8,8 +8,8 @@ import FrescoImage from '../global/fresco-image';
 import utils from 'utils';
 
 /**
- *	Admin Submission Edit component.
- *	Delete, Skip, Verify imported
+ *	Admin Gallery Edit component.
+ *	Delete, Skip, Verify galleries
  */
 class GalleryEdit extends React.Component {
     constructor(props) {
@@ -36,7 +36,7 @@ class GalleryEdit extends React.Component {
     }
 
     getStateFromProps(props) {
-        const { gallery } = this.props;
+        const { gallery } = props;
 
         return {
             editButtonsEnabled: false,
@@ -49,6 +49,11 @@ class GalleryEdit extends React.Component {
         };
     }
 
+    /**
+     * getFormData
+     *
+     * @returns {Object} Form Data Object
+     */
     getFormData() {
         const {
             tags,
@@ -56,6 +61,7 @@ class GalleryEdit extends React.Component {
             address,
             location,
             stories,
+            assignment,
         } = this.state;
 
         if (caption.length === 0) {
@@ -69,6 +75,7 @@ class GalleryEdit extends React.Component {
             address,
             geo: utils.getGeoFromCoord(location),
             stories,
+            assignment_id: assignment ? assignment.id : null,
         };
 
         return params;

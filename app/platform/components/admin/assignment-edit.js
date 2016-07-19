@@ -8,8 +8,11 @@ import reject from 'lodash/reject';
 import isEmpty from 'lodash/isEmpty';
 
 /**
-    Assignment Edit Sidebar used in assignment administration page
-**/
+ * AssignmentEdit
+ * Reject and Approve/Update assignments
+ *
+ * @extends React.Component
+ */
 class AssignmentEdit extends React.Component {
     constructor(props) {
         super(props);
@@ -84,11 +87,21 @@ class AssignmentEdit extends React.Component {
         this.setState({ mergeIntoAssignment: assignment, showMergeDialog: true });
     }
 
+    /**
+     * onMergeAssignment - closes merge dialog, calls onUpdateAssignment
+     *
+     * @param {Number} id Id of inactive assignment being merged into active assignment
+     */
     onMergeAssignment(id) {
         this.onCloseMerge();
         this.props.onUpdateAssignment(id);
     }
 
+    /**
+     * onChangeGlobal - called on global checkbox change
+     * When global is checked, location and address set to null
+     * When not checked, location and adress are set to original/default vals
+     */
     onChangeGlobal() {
         if (this.isGlobalLocation()) {
             const { assignment } = this.props;
@@ -101,6 +114,12 @@ class AssignmentEdit extends React.Component {
         }
     }
 
+    /**
+     * getLocationFromAssignment
+     *
+     * @param {Object} assignment object
+     * @returns {Object} assignment Location object containing lat lng coordinates
+     */
     getLocationFromAssignment(assignment) {
         if (assignment && assignment.location) {
             return {
@@ -112,6 +131,12 @@ class AssignmentEdit extends React.Component {
         return null;
     }
 
+    /**
+     * getStateFromProps
+     *
+     * @param {Object} props Component props
+     * @returns {Object} State object derived from component props
+     */
     getStateFromProps(props) {
         const { assignment } = props;
         const radius = assignment.radius || 0;
@@ -132,7 +157,6 @@ class AssignmentEdit extends React.Component {
         return !this.state.location || isEmpty(this.state.location);
     }
 
-
     resetForm(assignment) {
         this.refs['assignment-title'].value = assignment.title;
         this.refs['assignment-description'].value = assignment.caption;
@@ -145,6 +169,11 @@ class AssignmentEdit extends React.Component {
         $(this.refs['assignment-expiration']).removeClass('empty');
     }
 
+    /**
+     * approveAssignment
+     * gets form data then calls posts request to approve and update assignment
+     *
+     */
     approveAssignment() {
         const id = this.props.assignment.id;
         const data = {
