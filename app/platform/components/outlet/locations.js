@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import utils from 'utils';
 
 class Locations extends React.Component {
@@ -7,8 +7,6 @@ class Locations extends React.Component {
         this.state = { locations: [] };
 
         this.loadLocations = this.loadLocations.bind(this);
-        this.removeLocation = this.removeLocation.bind(this);
-        this.updateLocationNotifications = this.updateLocationNotifications.bind(this);
     }
 
     componentDidMount() {
@@ -34,7 +32,6 @@ class Locations extends React.Component {
      */
     addLocation(place) {
         const autocomplete = this.refs['outlet-location-input'];
-        const self = this;
 
         // Run checks on place and title
         if (!place || !place.geometry || !place.geometry.viewport) {
@@ -64,245 +61,191 @@ class Locations extends React.Component {
             // Clear field
             autocomplete.value = '';
             // Update locations
-            self.loadLocations();
+            this.loadLocations();
         })
-        .fail(() => {
-            $.snackbar({ content: 'Failed to add location' });
+        .fail((xhr, status, error) => {
+            $.snackbar({ content: utils.resolveError(error) });
         });
     }
 
 	/**
-	 * Removes a location
+	 * Removes a location, makes api request, removes from state on success cb
 	 */
-	removeLocation(locationId) {
-		var self = this;
+    removeLocation(locationId) {
+        $.ajax({
+            url: '/api/outlet/location/remove',
+            method: 'post',
+            data: { id: locationId },
+        })
+        .done(() => {
+            const locations = this.state.locations.filter((l) => (
+                l.id !== locationId
+            ));
 
-		$.ajax({
-			url: '/api/outlet/location/remove',
-			method: 'post',
-			data: {
-				id: locationId
-			},
-			success: function(response){
+            this.setState({ locations });
+        })
+        .fail((xhr, status, error) => {
+            $.snackbar({ content: utils.resolveError(error) });
+        });
+    }
 
-				if (response.err)
-					return this.error(null, null, response.err);
-
-				//Remove location from state
-				var locations = self.state.locations.filter((locations) => {
-					return locations.id !== locationId;
-				});
-
-				//Update state
-				self.setState({
-					locations: locations
-				});
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({content: utils.resolveError(error)});
-			}
-		});
-	}
-
-	/**
+    /**
 	 * Loads locations for the outlet
 	 */
-	loadLocations(){
-		//`since` is the last time they've seen the locations page,
-		//eitehr grabbed from location storage, or defaults to the current timestamp
-		var self = this;
+    loadLocations() {
+        // `since` is the last time they've seen the locations page,
+        // eitehr grabbed from location storage, or defaults to the current timestamp
 
-		$.ajax({
-			url: '/api/outlet/location/list?limit=1000',
-			method: 'GET',
-			success: function(response){
-				if (response.err || !response.data)
-					return this.error(null, null, response.err);
-
-				//Update state
-				self.setState({ locations: response.data });
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({
-					content: utils.resolveError(error,  'We\'re unable to load your locations at the moment! Please try again in a bit.')
-				});
-			}
-		});
-	}
+        $.ajax({ url: '/api/outlet/locations?limit=1000' })
+        .done((response) => {
+            // Update state
+            this.setState({ locations: response.body });
+        })
+        .fail((xhr, status, error) => {
+            $.snackbar({
+                content: utils.resolveError(error,  'We\'re unable to load your locations at the moment! Please try again in a bit.')
+            });
+        });
+    }
 
 	/**
 	 * Updates the notification type for the passed location id
 	 */
-	updateLocationNotifications(locationId, notifType, e) {
-		var self = this,
-			params = {
-				id: locationId
-			};
+    updateLocationNotifications(locationId, notifType, e) {
+        const { locations } = this.state;
 
-		//Set the passed notif type to true
-		params[notifType] = e.target.checked;
+        // Update notification setting in state, if update fails, loadLocations will revert the check
+        const index = locations.findIndex((l) => (l.id === locationId));
+        if (index && locations[index]) {
+            locations[index].notifications[notifType.split('_')[1]] = e.target.checked;
+            this.setState({ locations });
+        }
 
-		var stateLocations = this.state.locations;
+        // TODO: this endpoint doesnt exist in v2
+        $.ajax({
+            url: `/api/outlet/location/${locationId}/update`,
+            method: 'post',
+            data: { notifType: e.target.checked },
+        })
+        .done(() => {
+            // Run update to get latest data and update the checkboxes
+            this.loadLocations();
+        })
+        .fail((xhr, status, error) => {
+            $.snackbar({ content: utils.resolveError(error) });
+        });
+    }
 
-		// Update notification setting in state, if update fails, loadLocations will revert the check
-		for(var x in stateLocations) {
-			var location = stateLocations[x];
-			if(location.id == locationId) {
-				location.notifications[notifType.split('_')[1]] = e.target.checked;
+    renderLocationList() {
+        const { locations } = this.state;
 
-				this.setState({
-					locations: stateLocations
-				});
+        if (!locations || !locations.length) return <div className="outlet-locations-container" />;
 
-				break; // Break ya legs
-			}
-		}
+        const locationJSX = locations.map((location, i) => {
+            const unseenCount = location.unseen_count || 0;
+            const notifications = location.notifications;
 
-		$.ajax({
-			url: '/api/outlet/location/update',
-			method: 'post',
-			data: params,
-			success: function(response) {
-				if (response.err)
-					return this.error(null, null, response.err);
+            return (
+                <li className="location" key={i}>
+                    <div className="info">
+                        <a href={`/location/${location.id}`}>
+                            <p className="area">{location.title}</p>
 
-				//Run update to get latest data and update the checkboxes
-				self.loadLocations();
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({content: utils.resolveError(error)});
-			}
-		});
-	}
+                            <span className="count">
+                                {utils.isPlural(unseenCount) ? unseenCount + ' unseen items' : unseenCount + ' unseen item'}
+                            </span>
+                        </a>
+                    </div>
 
-	render () {
-		return (
-			<div className="card settings-outlet-locations">
-				<div className="header">
-					<span className="title">SAVED LOCATIONS</span>
+                    <div className="location-options form-group-default">
+                        <span onClick={() => this.removeLocation(location.id)} className="remove-location mdi mdi-delete" />
 
-					<div className="labels">
-						<span>NOTIFICATIONS:</span>
-						<span>SMS</span>
-						<span>EMAIL</span>
-						<span>FRESCO</span>
-					</div>
-				</div>
+                        <div className="checkbox check-sms">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={notifications.sms || false}
+                                    onChange={() => this.updateLocationNotifications(location.id, 'notify_sms')}
+                                />
+                            </label>
+                        </div>
 
-				<OutletLocationsList
-					locations={this.state.locations}
+                        <div className="checkbox check-email">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={notifications.email || false}
+                                    onChange={() => this.updateLocationNotifications(location.id, 'notify_email')}
+                                />
+                            </label>
+                        </div>
 
-					updateLocationNotifications={this.updateLocationNotifications}
-					removeLocation={this.removeLocation} />
-
-				<div className="footer">
-					<input type="text"
-						ref="outlet-location-input"
-						placeholder="New location" />
-					<div className="location-options">
-						<div className="checkbox check-sms">
-							<label>
-								<input
-									ref="location-sms-check"
-									type="checkbox" />
-							</label>
-						</div>
-
-						<div className="checkbox check-email">
-							<label>
-								<input
-									ref="location-email-check"
-									type="checkbox" />
-							</label>
-						</div>
-
-						<div className="checkbox check-fresco">
-							<label>
-								<input
-									ref="location-fresco-check"
-									type="checkbox" />
-							</label>
-						</div>
-					</div>
-
-					<span className="sub-title">SELECT ALL:</span>
-				</div>
-			</div>
-		)
-	}
-}
-
-class OutletLocationsList extends React.Component {
-
-	render () {
-
-		var locations = this.props.locations.map((location, i) => {
-
-			var unseenCount = location.unseen_count || 0,
-				notifications = location.notifications;
-
-			unseenCount = utils.isPlural(unseenCount) ? unseenCount + ' unseen items' : unseenCount + ' unseen item';
-
-			return(
-				<li className="location" key={i}>
-					<div className="info">
-						<a href={"/location/" + location.id}>
-							<p className="area">{location.title}</p>
-
-							<span className="count">{unseenCount}</span>
-						</a>
-					</div>
-
-					<div className="location-options form-group-default">
-						<span
-							onClick={this.props.removeLocation.bind(null, location.id)}
-							className="remove-location mdi mdi-delete"></span>
-
-						<div className="checkbox check-sms">
-							<label>
-								<input
-									type="checkbox"
-									checked={notifications.sms || false}
-									onChange={this.props.updateLocationNotifications.bind(this, location.id, 'notify_sms')} />
-							</label>
-						</div>
-
-						<div className="checkbox check-email">
-							<label>
-								<input
-									type="checkbox"
-									checked={notifications.email || false}
-									onChange={this.props.updateLocationNotifications.bind(this, location.id, 'notify_email')}/>
-							</label>
-						</div>
-
-						<div className="checkbox check-fresco">
-							<label>
-								<input
-									type="checkbox"
-									checked={notifications.fresco || false}
-									onChange={this.props.updateLocationNotifications.bind(this, location.id, 'notify_fresco')} />
-							</label>
-						</div>
-					</div>
-				</li>
+                        <div className="checkbox check-fresco">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={notifications.fresco || false}
+                                    onChange={() => this.updateLocationNotifications(location.id, 'notify_fresco')}
+                                />
+                            </label>
+                        </div>
+                    </div>
+                </li>
 			);
-		});
+        });
 
-		if(locations.length == 0) {
-			return (
-				<div className="outlet-locations-container"></div>
-			)
-		}
+        return (
+            <div className="outlet-locations-container">
+                <ul className="outlet-locations">
+                    {locationJSX}
+                </ul>
+            </div>
+        );
+    }
 
-		return (
-			<div className="outlet-locations-container">
-				<ul className="outlet-locations">
-					{locations}
-				</ul>
-			</div>
-		)
-	}
+    render() {
+        return (
+            <div className="card settings-outlet-locations">
+                <div className="header">
+                    <span className="title">SAVED LOCATIONS</span>
+
+                    <div className="labels">
+                        <span>NOTIFICATIONS:</span>
+                        <span>SMS</span>
+                        <span>EMAIL</span>
+                        <span>FRESCO</span>
+                    </div>
+                </div>
+
+                {this.renderLocationList()}
+
+                <div className="footer">
+                    <input type="text" ref="outlet-location-input" placeholder="New location" />
+                    <div className="location-options">
+                        <div className="checkbox check-sms">
+                            <label>
+                                <input ref="location-sms-check" type="checkbox" />
+                            </label>
+                        </div>
+
+                        <div className="checkbox check-email">
+                            <label>
+                                <input ref="location-email-check" type="checkbox" />
+                            </label>
+                        </div>
+
+                        <div className="checkbox check-fresco">
+                            <label>
+                                <input ref="location-fresco-check" type="checkbox" />
+                            </label>
+                        </div>
+                    </div>
+
+                    <span className="sub-title">SELECT ALL:</span>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default Locations;

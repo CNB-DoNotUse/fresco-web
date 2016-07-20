@@ -9,6 +9,7 @@ import QuickSupport from '../components/global/quick-support';
 import OutletMembers from '../components/outlet/outlet-members';
 import OutletLocations from '../components/outlet/locations';
 import OutletNotifications from '../components/outlet/outlet-notifications';
+import 'app/sass/platform/_outletSettings';
 
 /**
  * Outlet Settings page
