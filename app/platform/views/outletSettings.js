@@ -41,27 +41,6 @@ class OutletSettings extends React.Component {
         const { user, payment } = this.props;
         const isOwner = user.permissions.includes('update-outlet');
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
-        let members = '';
-        let left = '';
-
-        if (isOwner) {
-            left = (
-                <div className="left">
-                    <OutletInfo
-                        updateOutlet={this.updateOutlet}
-                        outlet={this.state.outlet}
-                    />
-                    <OutletPaymentInfo payment={payment} outlet={this.state.outlet} />
-                </div>
-            );
-            members = (
-                <OutletMembers
-                    outlet={this.state.outlet}
-                    updateMembers={this.updateMembers}
-                    members={this.state.outlet.members}
-                />
-            );
-        }
 
         return (
             <App user={user}>
@@ -70,11 +49,29 @@ class OutletSettings extends React.Component {
                 />
 
                 <div className={className}>
-                    {left}
+                    {
+                        isOwner
+                            ? <div className="left">
+                                <OutletInfo
+                                    updateOutlet={this.updateOutlet}
+                                    outlet={this.state.outlet}
+                                />
+                                <OutletPaymentInfo payment={payment} outlet={this.state.outlet} />
+                            </div>
+                            : ''
+                    }
                     <div className="right">
                         <OutletNotifications outlet={this.state.outlet} />
                         <OutletLocations outlet={this.state.outlet} />
-                        {members}
+                        {
+                            isOwner
+                                ? <OutletMembers
+                                    outlet={this.state.outlet}
+                                    updateMembers={this.updateMembers}
+                                    members={this.state.outlet.members}
+                                />
+                                : ''
+                        }
                     </div>
 
                     <QuickSupport />

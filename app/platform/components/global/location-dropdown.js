@@ -1,27 +1,23 @@
-import React from 'react'
-import utils from 'utils'
-import Dropdown from './dropdown'
+import React from 'react';
+import utils from 'utils';
+import Dropdown from './dropdown';
 
 /**
  * Location Dropdown for saved locations
  */
-
 export default class LocationDropdown extends React.Component {
+    constructor(props) {
+        super(props);
 
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			locations: []
-		}
+        this.state = { locations: [] };
 
 		this.addLocation = this.addLocation.bind(this);
 		this.locationClicked = this.locationClicked.bind(this);
 	}
 
 	componentDidMount() {
-		//Load intial locations
-	    this.loadLocations();  
+		// Load intial locations
+	    this.loadLocations();
 	}
 
 	locationClicked(location) {
@@ -35,7 +31,7 @@ export default class LocationDropdown extends React.Component {
 
 			bounds.extend(latLng);
 		}
-		
+
 		var place = {
 			geometry: {
 				viewport: bounds
@@ -54,7 +50,7 @@ export default class LocationDropdown extends React.Component {
 		e.stopPropagation();
 
 		if(this.props.mapPlace){
-			
+
 			var autocomplete = document.getElementById('dispatch-location-input'),
 				place = this.props.mapPlace,
 				self = this;
@@ -63,11 +59,11 @@ export default class LocationDropdown extends React.Component {
 
 			//Run checks on place and title
 			if (!place || !place.geometry || !place.geometry.viewport){
-				return $.snackbar({ 
+				return $.snackbar({
 					content: utils.resolveError('ERR_UNSUPPORTED_LOCATION')
 				});
 			}
-			
+
 			var bounds = place.geometry.viewport,
 				params = {
 					title: place.description,
@@ -75,12 +71,12 @@ export default class LocationDropdown extends React.Component {
 				};
 
 			$.ajax({
-				url: '/api/outlet/location/create',
+				url: '/api/outlet/locations/create',
 				method: 'post',
 				contentType: 'application/json',
 				data: JSON.stringify(params),
 				success: function(response){
-					if (response.err) 
+					if (response.err)
 						return this.error(null, null, response.err);
 
 					//Update locations
@@ -91,8 +87,8 @@ export default class LocationDropdown extends React.Component {
 				}
 			});
 		} else{
-			$.snackbar({ 
-				content: 'Please enter a location in the input field on the left to add it your saved locations.' 
+			$.snackbar({
+				content: 'Please enter a location in the input field on the left to add it your saved locations.'
 			});
 		}
 	}
@@ -116,12 +112,12 @@ export default class LocationDropdown extends React.Component {
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({
-					content: utils.resolveError(error, 'We\'re unable to load your locations at the moment! Please try again in a bit.') 
+					content: utils.resolveError(error, 'We\'re unable to load your locations at the moment! Please try again in a bit.')
 				});
 			}
 		});
 	}
-	
+
 	render() {
 		var dropdownActions = [],
 			dropdownBody;
@@ -131,15 +127,15 @@ export default class LocationDropdown extends React.Component {
 			var unseenCount = location.unseen_count || 0;
 
 			unseenCount = utils.isPlural(unseenCount) ? unseenCount + ' unseen items' : unseenCount + ' unseen item';
-			
-			return ( 
+
+			return (
 				<li className="location-item" key={i} onClick={this.locationClicked.bind(null, location)}>
 					<a href={"/location/" + location.id}>
 						<span className="mdi mdi-logout-variant icon"></span>
 					</a>
 					<span className="area">{location.title}</span>
 					<span className="count">{unseenCount}</span>
-				</li> 
+				</li>
 			);
 
 		});
@@ -154,11 +150,11 @@ export default class LocationDropdown extends React.Component {
 			dropdownActions.push(
 				<span className="mdi mdi-playlist-plus" onClick={this.addLocation} key={1}></span>
 			);
-		} 
-							
+		}
+
 		if(locations.length == 0){
 			dropdownBody = <div className="dropdown-body"></div>
-			
+
 		} else{
 			dropdownBody = <ul className="list">
 								{locations}
@@ -166,16 +162,16 @@ export default class LocationDropdown extends React.Component {
 		}
 
 		return (
-			<Dropdown 
-				inList={this.props.inList} 
-				title={"SAVED"} 
+			<Dropdown
+				inList={this.props.inList}
+				title={"SAVED"}
 				float={false}
-				dropdownClass={"location-dropdown"} 
+				dropdownClass={"location-dropdown"}
 				dropdownActions={dropdownActions}>
 					{dropdownBody}
 			</Dropdown>
 		);
-					
+
 	}
 }
 

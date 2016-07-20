@@ -36,7 +36,6 @@ class OutletPaymentInfo extends React.Component {
             'currency': 'usd',
         };
 
-        // TODO: Check why snackbar isnt rendering
         if (!Stripe.card.validateCardNumber(params.number)) return $.snackbar({content:'Invalid credit card number'});
         if (!Stripe.card.validateExpiry(params['exp-month'], params['exp-year'])) return $.snackbar({content:'Invalid expiration date'});
         if (!Stripe.card.validateCVC(params.cvv)) return $.snackbar({content:'Invalid CVV number'});

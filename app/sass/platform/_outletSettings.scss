@@ -6,8 +6,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 -------------------------------------------------------------------------------------*/
 
-@import '../global/mixins';
 @import 'settings';
+@import "./bourbon/_bourbon";
 
 /*
 	Ugly fix for bootstrap for this specfic page
@@ -38,20 +38,17 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
  */
 
 .settings-outlet-payment{
-	height:228px;
+	// height:228px;
 
-	.header{
-
+	.header {
 		text-transform: uppercase;
-
-		div{
+		div {
 			float:right;
+            a {
+                @include rgba(color, 0, 0, 0, .87);
+            }
 
-			a{
-				@include rgba(color, 0, 0, 0, .87);
-			}
-
-			.last4{
+			.last4 {
 				font-weight:500;
 				color:#4cd764;
 				margin-right:14px;
@@ -61,7 +58,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 
 	.card-form{
-
 		.inputs{
 			padding: 15px 18px 8px 18px;
 			overflow:auto;
@@ -69,34 +65,37 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 			input[type="text"]{
 				padding:4px 0;
-				height:40px;
+				// height:40px;
 			}
 
 			.left, .right{
 				float:left;
 			}
 
-			$bottomMargn:18px;
-
 			.left{
-				input:first-of-type{
-					margin:0 auto $bottomMargn;
-				}
-
 				padding-right:18px;
 				width:342px;
+
+				input:first-of-type{
+					margin-bottom: 18px;
+				}
 			}
 
 			.right{
 				width:182px;
-
-				.ccv, .date{
-					margin:0 auto $bottomMargn;
-					width:83px;
-					float:left;
+                input:first-of-type {
+                    margin-bottom: 13px;
+                }
+                .form-group {
+                    @include clearfix;
+                    display: inline-block;
+                }
+				.ccv, .date {
+					width: 83px;
+					float: left;
 				}
-				.date{
-					margin:0 16px $bottomMargn 0;
+				.date {
+                    margin-right: 16px;
 				}
 			}
 		}
