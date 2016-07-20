@@ -5,8 +5,6 @@ class Locations extends React.Component {
     constructor(props) {
         super(props);
         this.state = { locations: [] };
-
-        this.loadLocations = this.loadLocations.bind(this);
     }
 
     componentDidMount() {
@@ -34,25 +32,27 @@ class Locations extends React.Component {
         const autocomplete = this.refs['outlet-location-input'];
 
         // Run checks on place and title
-        if (!place || !place.geometry || !place.geometry.viewport) {
+        if (!place || !place.geometry) {
             $.snackbar({ content: utils.resolveError('ERR_UNSUPPORTED_LOCATION') });
             return;
         } else if (!autocomplete.value) {
             $.snackbar({ content: 'Please enter a valid location title' });
         }
 
-        const bounds = place.geometry.viewport;
         const params = {
-            title: autocomplete.value,
-            notify_fresco: this.refs['location-fresco-check'].checked,
-            notify_email: this.refs['location-email-check'].checked,
-            notify_sms: this.refs['location-sms-check'].checked,
-            polygon: utils.generatePolygonFromBounds(bounds),
+            title: place.formatted_address,
+            // notify_fresco: this.refs['location-fresco-check'].checked,
+            // notify_email: this.refs['location-email-check'].checked,
+            // notify_sms: this.refs['location-sms-check'].checked,
+            geo: utils.getGeoFromCoord({
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng(),
+            }),
         };
 
         $.ajax({
             method: 'post',
-            url: '/api/outlet/location/create',
+            url: '/api/outlet/locations/create',
             data: JSON.stringify(params),
             contentType: 'application/json',
             dataType: 'json',
@@ -71,17 +71,14 @@ class Locations extends React.Component {
 	/**
 	 * Removes a location, makes api request, removes from state on success cb
 	 */
-    removeLocation(locationId) {
+    removeLocation(id) {
         $.ajax({
-            url: '/api/outlet/location/remove',
             method: 'post',
-            data: { id: locationId },
+            url: `/api/outlet/locations/${id}/delete`,
         })
         .done(() => {
-            const locations = this.state.locations.filter((l) => (
-                l.id !== locationId
-            ));
-
+            const locations = this.state.locations.filter((l) => (l.id !== id));
+            $.snackbar({ content: 'Location deleted' });
             this.setState({ locations });
         })
         .fail((xhr, status, error) => {
@@ -93,13 +90,9 @@ class Locations extends React.Component {
 	 * Loads locations for the outlet
 	 */
     loadLocations() {
-        // `since` is the last time they've seen the locations page,
-        // eitehr grabbed from location storage, or defaults to the current timestamp
-
-        $.ajax({ url: '/api/outlet/locations?limit=1000' })
-        .done((response) => {
-            // Update state
-            this.setState({ locations: response.body });
+        $.ajax({ url: '/api/outlet/locations?limit=16' })
+        .done((res) => {
+            this.setState({ locations: res });
         })
         .fail((xhr, status, error) => {
             $.snackbar({
@@ -112,28 +105,29 @@ class Locations extends React.Component {
 	 * Updates the notification type for the passed location id
 	 */
     updateLocationNotifications(locationId, notifType, e) {
-        const { locations } = this.state;
-
-        // Update notification setting in state, if update fails, loadLocations will revert the check
-        const index = locations.findIndex((l) => (l.id === locationId));
-        if (index && locations[index]) {
-            locations[index].notifications[notifType.split('_')[1]] = e.target.checked;
-            this.setState({ locations });
-        }
-
         // TODO: this endpoint doesnt exist in v2
-        $.ajax({
-            url: `/api/outlet/location/${locationId}/update`,
-            method: 'post',
-            data: { notifType: e.target.checked },
-        })
-        .done(() => {
-            // Run update to get latest data and update the checkboxes
-            this.loadLocations();
-        })
-        .fail((xhr, status, error) => {
-            $.snackbar({ content: utils.resolveError(error) });
-        });
+        return true;
+        // const { locations } = this.state;
+
+        // // Update notification setting in state, if update fails, loadLocations will revert the check
+        // const index = locations.findIndex((l) => (l.id === locationId));
+        // if (index && locations[index]) {
+        //     locations[index].notifications[notifType.split('_')[1]] = e.target.checked;
+        //     this.setState({ locations });
+        // }
+
+        // $.ajax({
+        //     url: `/api/outlet/location/${locationId}/update`,
+        //     method: 'post',
+        //     data: { notifType: e.target.checked },
+        // })
+        // .done(() => {
+        //     // Run update to get latest data and update the checkboxes
+        //     this.loadLocations();
+        // })
+        // .fail((xhr, status, error) => {
+        //     $.snackbar({ content: utils.resolveError(error) });
+        // });
     }
 
     renderLocationList() {
@@ -143,7 +137,7 @@ class Locations extends React.Component {
 
         const locationJSX = locations.map((location, i) => {
             const unseenCount = location.unseen_count || 0;
-            const notifications = location.notifications;
+            const notifications = location.notifications || {sms: false, email: false, fresco: false};
 
             return (
                 <li className="location" key={i}>
