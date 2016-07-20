@@ -7,7 +7,7 @@ import OutletInfo from '../components/outlet/outlet-info';
 import OutletPaymentInfo from '../components/outlet/outlet-payment-info';
 import QuickSupport from '../components/global/quick-support';
 import OutletMembers from '../components/outlet/outlet-members';
-import OutletLocations from '../components/outlet/outlet-locations';
+import OutletLocations from '../components/outlet/locations';
 import OutletNotifications from '../components/outlet/outlet-notifications';
 
 /**

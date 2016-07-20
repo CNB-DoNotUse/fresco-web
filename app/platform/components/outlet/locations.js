@@ -1,88 +1,78 @@
-import React from 'react'
-import utils from 'utils'
+import React, { PropTypes } from 'react';
+import utils from 'utils';
 
-export default class OutletLocations extends React.Component {
+class Locations extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { locations: [] };
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			locations: []
-		}
+        this.loadLocations = this.loadLocations.bind(this);
+        this.removeLocation = this.removeLocation.bind(this);
+        this.updateLocationNotifications = this.updateLocationNotifications.bind(this);
+    }
 
-		this.loadLocations = this.loadLocations.bind(this);
-		this.addLocation = this.addLocation.bind(this);
-		this.removeLocation = this.removeLocation.bind(this);
-		this.updateLocationNotifications = this.updateLocationNotifications.bind(this);
-	}
+    componentDidMount() {
+        // Retreive locations
+        this.loadLocations();
 
-	componentDidUpdate(prevProps, prevState) {
-		//Need to init everytime because of the fucking checkboxes
-		$.material.init();  
-	}
-
-	componentDidMount() {
-		//Retreive locations		
-		this.loadLocations();
-
-		var autocomplete = new google.maps.places.Autocomplete(this.refs['outlet-location-input']);
+        const autocomplete = new google.maps.places.Autocomplete(this.refs['outlet-location-input']);
 
         // Bind place_changed event to locationChanged
-        google.maps.event.addListener(autocomplete, 'place_changed', ()=> {
-
-        	this.addLocation(autocomplete.getPlace())
- 
+        google.maps.event.addListener(autocomplete, 'place_changed', () => {
+            this.addLocation(autocomplete.getPlace());
         });
-	}
+    }
+
+    componentDidUpdate() {
+        // Need to init everytime because of the fucking checkboxes
+        $.material.init();
+    }
+
+    /**
+     * Adds a location to the outlet's saved locations
+     * @param {object} place Google Autocomplete place
+     */
+    addLocation(place) {
+        const autocomplete = this.refs['outlet-location-input'];
+        const self = this;
+
+        // Run checks on place and title
+        if (!place || !place.geometry || !place.geometry.viewport) {
+            $.snackbar({ content: utils.resolveError('ERR_UNSUPPORTED_LOCATION') });
+            return;
+        } else if (!autocomplete.value) {
+            $.snackbar({ content: 'Please enter a valid location title' });
+        }
+
+        const bounds = place.geometry.viewport;
+        const params = {
+            title: autocomplete.value,
+            notify_fresco: this.refs['location-fresco-check'].checked,
+            notify_email: this.refs['location-email-check'].checked,
+            notify_sms: this.refs['location-sms-check'].checked,
+            polygon: utils.generatePolygonFromBounds(bounds),
+        };
+
+        $.ajax({
+            method: 'post',
+            url: '/api/outlet/location/create',
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            dataType: 'json',
+        })
+        .done(() => {
+            // Clear field
+            autocomplete.value = '';
+            // Update locations
+            self.loadLocations();
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Failed to add location' });
+        });
+    }
 
 	/**
-	 * Adds a location to the outlet's saved locations
-	 * @param {object} place Google Autocomplete place
-	 */
-	addLocation(place) {
-		var autocomplete = this.refs['outlet-location-input'],
-			self = this;
-
-		//Run checks on place and title
-		if (!place || !place.geometry || !place.geometry.viewport){
-			return $.snackbar({content: utils.resolveError('ERR_UNSUPPORTED_LOCATION')});
-		} else if(!autocomplete.value){
-			$.snackbar({content: 'Please enter a valid location title'});
-		}
-		
-		var bounds = place.geometry.viewport,
-			params = {
-				title: autocomplete.value,
-				notify_fresco: this.refs['location-fresco-check'].checked,
-				notify_email: this.refs['location-email-check'].checked,
-				notify_sms: this.refs['location-sms-check'].checked,
-				polygon: utils.generatePolygonFromBounds(bounds)
-			};
-		
-		$.ajax({
-			url: '/api/outlet/location/create',
-			method: 'post',
-			contentType: 'application/json',
-			data: JSON.stringify(params),
-			success: function(response){
-
-				if (response.err) 
-					return this.error(null, null, response.err);
-				
-				//Clear field
-				autocomplete.value = '';
-
-				//Update locations
-				self.loadLocations();
-
-			},
-			error: (xhr, status, error)=> {
-				$.snackbar({ content: utils.resolveError(error) });
-			}
-		});
-	}
-
-	/**
-	 * Removes a location 
+	 * Removes a location
 	 */
 	removeLocation(locationId) {
 		var self = this;
@@ -128,7 +118,7 @@ export default class OutletLocations extends React.Component {
 			success: function(response){
 				if (response.err || !response.data)
 					return this.error(null, null, response.err);
-				
+
 				//Update state
 				self.setState({ locations: response.data });
 			},
@@ -148,7 +138,7 @@ export default class OutletLocations extends React.Component {
 			params = {
 				id: locationId
 			};
-		
+
 		//Set the passed notif type to true
 		params[notifType] = e.target.checked;
 
@@ -184,7 +174,7 @@ export default class OutletLocations extends React.Component {
 			}
 		});
 	}
-				
+
 	render () {
 		return (
 			<div className="card settings-outlet-locations">
@@ -198,8 +188,8 @@ export default class OutletLocations extends React.Component {
 						<span>FRESCO</span>
 					</div>
 				</div>
-				
-				<OutletLocationsList 
+
+				<OutletLocationsList
 					locations={this.state.locations}
 
 					updateLocationNotifications={this.updateLocationNotifications}
@@ -217,7 +207,7 @@ export default class OutletLocations extends React.Component {
 									type="checkbox" />
 							</label>
 						</div>
-						
+
 						<div className="checkbox check-email">
 							<label>
 								<input
@@ -225,7 +215,7 @@ export default class OutletLocations extends React.Component {
 									type="checkbox" />
 							</label>
 						</div>
-						
+
 						<div className="checkbox check-fresco">
 							<label>
 								<input
@@ -252,44 +242,44 @@ class OutletLocationsList extends React.Component {
 				notifications = location.notifications;
 
 			unseenCount = utils.isPlural(unseenCount) ? unseenCount + ' unseen items' : unseenCount + ' unseen item';
-			
+
 			return(
 				<li className="location" key={i}>
 					<div className="info">
 						<a href={"/location/" + location.id}>
 							<p className="area">{location.title}</p>
-						
+
 							<span className="count">{unseenCount}</span>
 						</a>
 					</div>
 
 					<div className="location-options form-group-default">
-						<span 
-							onClick={this.props.removeLocation.bind(null, location.id)} 
+						<span
+							onClick={this.props.removeLocation.bind(null, location.id)}
 							className="remove-location mdi mdi-delete"></span>
-						
+
 						<div className="checkbox check-sms">
 							<label>
 								<input
-									type="checkbox" 
+									type="checkbox"
 									checked={notifications.sms || false}
 									onChange={this.props.updateLocationNotifications.bind(this, location.id, 'notify_sms')} />
 							</label>
 						</div>
-						
+
 						<div className="checkbox check-email">
 							<label>
 								<input
-									type="checkbox" 
+									type="checkbox"
 									checked={notifications.email || false}
 									onChange={this.props.updateLocationNotifications.bind(this, location.id, 'notify_email')}/>
 							</label>
 						</div>
-						
+
 						<div className="checkbox check-fresco">
 							<label>
 								<input
-									type="checkbox" 
+									type="checkbox"
 									checked={notifications.fresco || false}
 									onChange={this.props.updateLocationNotifications.bind(this, location.id, 'notify_fresco')} />
 							</label>
@@ -297,14 +287,14 @@ class OutletLocationsList extends React.Component {
 					</div>
 				</li>
 			);
-		});	
+		});
 
 		if(locations.length == 0) {
 			return (
 				<div className="outlet-locations-container"></div>
 			)
 		}
-		
+
 		return (
 			<div className="outlet-locations-container">
 				<ul className="outlet-locations">
@@ -314,3 +304,5 @@ class OutletLocationsList extends React.Component {
 		)
 	}
 }
+
+export default Locations;

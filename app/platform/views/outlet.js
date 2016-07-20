@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
 import TopBar from '../components/topbar';
@@ -60,6 +60,11 @@ class Outlet extends React.Component {
         );
     }
 }
+
+Outlet.propTypes = {
+    user: PropTypes.object,
+    outlet: PropTypes.object.isRequired,
+};
 
 ReactDOM.render(
     <Outlet
