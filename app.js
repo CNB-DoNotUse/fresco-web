@@ -120,25 +120,25 @@ app.locals.alerts = [];
  * Route session check
  */
 app.use((req, res, next) => {
-    var path = req.path.slice(1).split('/')[0],
-        now = Date.now();
+    const route = req.path.slice(1).split('/')[0];
+    const now = Date.now();
 
-    //Check if not a platform route, then send onwwards
-    if(routes.platform.indexOf(path) == -1) {
+    // Check if not a platform route, then send onwwards
+    if (routes.platform.indexOf(route) === -1) {
         return next();
     }
 
-    //Check if there is no sessioned user
+    // Check if there is no sessioned user
     if (!req.session.user) {
         return res.redirect('/account?next=' + req.url);
     }
 
-    //Check if the session hasn't expired
-    if (!req.session.user.TTL || req.session.user.TTL - now > 0){
+    // Check if the session hasn't expired
+    if (!req.session.user.TTL || req.session.user.TTL - now > 0) {
         return next();
     }
 
-    User.refresh(req, res, next);
+    return User.refresh(req, res, next);
 });
 
 
