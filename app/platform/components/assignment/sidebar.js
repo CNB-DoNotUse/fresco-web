@@ -3,10 +3,10 @@ import utils from 'utils';
 import moment from 'moment';
 
 /**
- * Assignment sidebar parent object
+ * sidebar Component
  * Description : Column on the left of the posts grid on the assignment detail page
  */
-class AssignmentSidebar extends React.Component {
+class Sidebar extends React.Component {
     /**
      * AssignmentStats stats inside the sidebar
      */
@@ -26,7 +26,13 @@ class AssignmentSidebar extends React.Component {
                 <ul className="md-type-subhead">
                     <li>
                         <span className="mdi mdi-map-marker icon"></span>
-                        <span>{assignment.address || 'No Address'}</span>
+                        <span>
+                            {
+                                assignment.location
+                                    ? assignment.address || 'No Address'
+                                    : 'Global'
+                            }
+                        </span>
                     </li>
                     <li>
                         <span className="mdi mdi-clock icon"></span>
@@ -66,18 +72,15 @@ class AssignmentSidebar extends React.Component {
     }
 
     render() {
-        const { assignment } = this.props;
-        let expireButton = '';
-        if (assignment.expiration_time > Date.now()) {
-            expireButton = (
-                <button
-                    className="btn fat tall btn-error assignment-expire"
-                    onClick={this.props.expireAssignment}
-                >
-                    Expire
-                </button>
-            );
-        }
+        const { assignment, expireAssignment } = this.props;
+        const expireButton = (
+            <button
+                className="btn fat tall btn-error assignment-expire"
+                onClick={expireAssignment}
+            >
+                Expire
+            </button>
+        );
 
         return (
             <div className="col-sm-4 profile hidden-xs">
@@ -88,24 +91,27 @@ class AssignmentSidebar extends React.Component {
                         </div>
 
                         <div className="meta-user">
-                            {expireButton}
+                            {moment().diff(assignment.ends_at) < 1
+                                ? expireButton
+                                : ''
+                            }
                         </div>
 
                         {this.renderStats()}
+
                     </div>
                 </div>
             </div>
 
         );
     }
-
 }
 
-AssignmentSidebar.propTypes = {
+Sidebar.propTypes = {
     assignment: PropTypes.object.isRequired,
     expireAssignment: PropTypes.func.isRequired,
     stats: PropTypes.object.isRequired,
 };
 
-export default AssignmentSidebar;
+export default Sidebar;
 

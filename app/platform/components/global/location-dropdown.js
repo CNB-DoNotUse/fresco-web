@@ -1,185 +1,169 @@
-import React from 'react'
-import utils from 'utils'
-import Dropdown from './dropdown'
+import React, { PropTypes } from 'react';
+import utils from 'utils';
+import Dropdown from './dropdown';
 
 /**
  * Location Dropdown for saved locations
  */
+class LocationDropdown extends React.Component {
+    constructor(props) {
+        super(props);
 
-export default class LocationDropdown extends React.Component {
+        this.state = { locations: [] };
+    }
 
-	constructor(props) {
-		super(props);
+    componentDidMount() {
+        // Load intial locations
+        this.loadLocations();
+    }
 
-		this.state = {
-			locations: []
-		}
+    locationClicked(loc) {
+        if (!this.props.updateMapPlace) return;
 
-		this.addLocation = this.addLocation.bind(this);
-		this.locationClicked = this.locationClicked.bind(this);
-	}
+        const place = {
+            geometry: {
+                location: {
+                    lng: loc.location.coordinates[0],
+                    lat: loc.location.coordinates[1],
+                },
+            },
+            description: loc.title,
+        };
 
-	componentDidMount() {
-		//Load intial locations
-	    this.loadLocations();  
-	}
-
-	locationClicked(location) {
-		if(!this.props.updateMapPlace) return;
-
-		var polygon = location.location.coordinates[0],
-			bounds = new google.maps.LatLngBounds();
-
-		for (let coordinate of polygon) {
-			var latLng = new google.maps.LatLng(coordinate[1], coordinate[0])
-
-			bounds.extend(latLng);
-		}
-		
-		var place = {
-			geometry: {
-				viewport: bounds
-			},
-			description: location.title
-		};
-
-		//Tell dispatch map to update
-		this.props.updateMapPlace(place);
-	}
+        // Tell dispatch map to update
+        this.props.updateMapPlace(place);
+    }
 
 	/**
 	 * Adds the curret prop location to the outlet locations
 	 */
-	addLocation(e) {
-		e.stopPropagation();
+    addLocation(e) {
+        e.stopPropagation();
+        const place = this.props.mapPlace;
 
-		if(this.props.mapPlace){
-			
-			var autocomplete = document.getElementById('dispatch-location-input'),
-				place = this.props.mapPlace,
-				self = this;
+        // Run checks on place and title
+        if (!place || !place.geometry) {
+            $.snackbar({ content: utils.resolveError('ERR_UNSUPPORTED_LOCATION') });
+            return;
+        }
 
-			console.log(autocomplete);
+        const params = {
+            title: place.formatted_address,
+            // TODO: not toggleable in ui, however should be sent up as true by default
+            //   - waiting on api
+            // notify_fresco: this.refs['location-fresco-check'].checked,
+            // notify_email: this.refs['location-email-check'].checked,
+            // notify_sms: this.refs['location-sms-check'].checked,
+            geo: utils.getGeoFromCoord({
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng(),
+            }),
+        };
 
-			//Run checks on place and title
-			if (!place || !place.geometry || !place.geometry.viewport){
-				return $.snackbar({ 
-					content: utils.resolveError('ERR_UNSUPPORTED_LOCATION')
-				});
-			}
-			
-			var bounds = place.geometry.viewport,
-				params = {
-					title: place.description,
-					polygon: utils.generatePolygonFromBounds(bounds)
-				};
-
-			$.ajax({
-				url: '/api/outlet/location/create',
-				method: 'post',
-				contentType: 'application/json',
-				data: JSON.stringify(params),
-				success: function(response){
-					if (response.err) 
-						return this.error(null, null, response.err);
-
-					//Update locations
-					self.loadLocations();
-				},
-				error: (xhr, status, error)=> {
-					$.snackbar({ content: utils.resolveError(error) });
-				}
-			});
-		} else{
-			$.snackbar({ 
-				content: 'Please enter a location in the input field on the left to add it your saved locations.' 
-			});
-		}
-	}
+        $.ajax({
+            method: 'post',
+            url: '/api/outlet/locations/create',
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            dataType: 'json',
+        })
+        .done(() => {
+            // Update locations
+            this.loadLocations();
+        })
+        .fail((xhr, status, err) => {
+            const { responseJSON: { error: { msg = utils.resolveError(err) } } } = xhr;
+            $.snackbar({ content: msg });
+        });
+    }
 
 	/**
 	 * Loads locations for the outlet
 	 */
-	loadLocations(){
-		var self = this;
+    loadLocations() {
+        $.ajax({ url: '/api/outlet/locations?limit=16' })
+        .done((res) => {
+            this.setState({ locations: res });
+        })
+        .fail((xhr, status, error) => {
+            $.snackbar({
+                content: utils.resolveError(error,  'We\'re unable to load your locations at the moment! Please try again in a bit.')
+            });
+        });
+    }
 
-		$.ajax({
-			url: '/api/outlet/location/stats',
-			method: 'GET',
-			success: function(response){
-				if (response.err){
-					return this.error(null, null, response.err);
-				} else{
-					//Update state
-					self.setState({ locations: response.data });
-				}
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({
-					content: utils.resolveError(error, 'We\'re unable to load your locations at the moment! Please try again in a bit.') 
-				});
-			}
-		});
-	}
-	
-	render() {
-		var dropdownActions = [],
-			dropdownBody;
+    renderLocations() {
+        const { locations } = this.state;
 
-		var locations = this.state.locations.map((location, i) => {
+        if (!locations.length) {
+            return <div className="dropdown-body" />;
+        }
 
-			var unseenCount = location.unseen_count || 0;
+        return (
+            <ul className="list">
+                {
+                    locations.map((location, i) => {
+                        const unseenCount = location.unseen_count || 0;
+                        return (
+                            <li
+                                className="location-item"
+                                key={i}
+                                onClick={() => this.locationClicked(location)}
+                            >
+                                <a href={'/location/' + location.id}>
+                                    <span className="mdi mdi-logout-variant icon" />
+                                </a>
+                                <span className="area">{location.title}</span>
+                                <span className="count">
+                                    {utils.isPlural(unseenCount) ? unseenCount + ' unseen items' : unseenCount + ' unseen item'}
+                                </span>
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        );
+    }
 
-			unseenCount = utils.isPlural(unseenCount) ? unseenCount + ' unseen items' : unseenCount + ' unseen item';
-			
-			return ( 
-				<li className="location-item" key={i} onClick={this.locationClicked.bind(null, location)}>
-					<a href={"/location/" + location.id}>
-						<span className="mdi mdi-logout-variant icon"></span>
-					</a>
-					<span className="area">{location.title}</span>
-					<span className="count">{unseenCount}</span>
-				</li> 
-			);
+    render() {
+        const { inList, addLocationButton } = this.props;
 
-		});
+        let dropdownActions = [(
+            <a href="/outlet/settings" key={2}>
+                <span className="mdi mdi-settings"></span>
+            </a>
+        )];
 
-		dropdownActions.push(
-			<a href="/outlet/settings" key={2}>
-				<span className="mdi mdi-settings"></span>
-			</a>
-		);
+        if (addLocationButton) {
+            dropdownActions.push(
+                <span className="mdi mdi-playlist-plus" onClick={(e) => this.addLocation(e)} key={1}/>
+            );
+        }
 
-		if(this.props.addLocationButton){
-			dropdownActions.push(
-				<span className="mdi mdi-playlist-plus" onClick={this.addLocation} key={1}></span>
-			);
-		} 
-							
-		if(locations.length == 0){
-			dropdownBody = <div className="dropdown-body"></div>
-			
-		} else{
-			dropdownBody = <ul className="list">
-								{locations}
-							</ul>
-		}
-
-		return (
-			<Dropdown 
-				inList={this.props.inList} 
-				title={"SAVED"} 
-				float={false}
-				dropdownClass={"location-dropdown"} 
-				dropdownActions={dropdownActions}>
-					{dropdownBody}
-			</Dropdown>
-		);
-					
-	}
+        return (
+            <Dropdown
+                inList={inList}
+                title="SAVED"
+                float={false}
+                dropdownClass="location-dropdown"
+                dropdownActions={dropdownActions}
+            >
+                {this.renderLocations()}
+            </Dropdown>
+        );
+    }
 }
 
-Dropdown.defaultProps = {
-	inList: false,
-	addLocationButton: false
-}
+LocationDropdown.defaultProps = {
+    inList: false,
+    addLocationButton: false,
+};
+
+LocationDropdown.propTypes = {
+    updateMapPlace: PropTypes.func,
+    mapPlace: PropTypes.object,
+    addLocationButton: PropTypes.bool,
+    inList: PropTypes.bool,
+};
+
+export default LocationDropdown;

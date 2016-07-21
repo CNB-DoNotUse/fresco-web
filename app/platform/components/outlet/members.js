@@ -18,7 +18,7 @@ export default class OutletMembers extends React.Component {
 	}
 
 	componentDidMount() {
-	 	this.getPendingInvites();     
+	 	this.getPendingInvites();
 	}
 
 	/**
@@ -45,7 +45,7 @@ export default class OutletMembers extends React.Component {
 	}
 
 	/**
-	 * Cancels invite 
+	 * Cancels invite
 	 */
 	revokeInvite(token) {
 		if(!token) {
@@ -214,7 +214,7 @@ export default class OutletMembers extends React.Component {
 }
 
 class OutletMemberList extends React.Component {
-	
+
 	render () {
 
 		var members = this.props.members.map((member, i) => {
@@ -223,7 +223,7 @@ class OutletMemberList extends React.Component {
 			return(
 				<li className="member" key={i}>
 					<div className="info">
-						<p className="name">{member.firstname + ' ' + member.lastname}</p>
+						<p className="name">{member.full_name || member.username}</p>
 						<span className="email">{member.email}</span>
 						<span className="phone">{phone}</span>
 					</div>
@@ -243,11 +243,11 @@ class OutletMemberList extends React.Component {
 						<span className="subtext">Pending Invitation</span>
 					</div>
 
-					<span 
+					<span
 						className="cancel"
 						onClick={this.props.revokeInvite.bind(null, invite.token)}>CANCEL</span>
-					<span 
-						className="resend" 
+					<span
+						className="resend"
 						onClick={this.props.resendInvite.bind(null, invite.token)}>RESEND</span>
 				</li>
 			);

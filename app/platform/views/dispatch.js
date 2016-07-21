@@ -76,7 +76,7 @@ class Dispatch extends React.Component {
 			newAssignment = null
 		} else if (location == 'new') {
 			newAssignment = 'unset';
-		} else {	
+		} else {
 			newAssignment = { location, radius, zoom };
 		}
 
@@ -257,8 +257,15 @@ class Dispatch extends React.Component {
 					bounds={this.state.bounds}
 					updateMapPlace={this.updateMapPlace} >
 
+					<LocationDropdown
+						user={this.props.user}
+						outlet={this.props.outlet}
+						updateMapPlace={this.updateMapPlace}
+                        mapPlace={this.state.mapPlace}
+						addLocationButton
+                    />
 
-					{this.props.user.rank > 1 ? 
+					{this.props.user.rank > 1 ?
 						<button
 							className="btn btn-flat pull-right mt12 mr16"
 							onClick={this.downloadStats} >Download Stats (.xlsx)</button>

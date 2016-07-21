@@ -3,6 +3,11 @@ import AssignmentListItem from './assignment-list-item';
 import AssignmentEdit from './assignment-edit';
 import findIndex from 'lodash/findIndex';
 
+/**
+ * Assignments - component for managing unrated assignments in admin view
+ *
+ * @extends React.Component
+ */
 class Assignments extends React.Component {
     constructor(props) {
         super(props);
@@ -17,6 +22,11 @@ class Assignments extends React.Component {
         };
     }
 
+    /**
+     * onUpdateAssignment
+     *
+     * @param {number} id Called on updating assignment to set next active assignment and remove updated
+     */
     onUpdateAssignment(id) {
         const { assignments, removeAssignment } = this.props;
         const index = findIndex(assignments, { id });

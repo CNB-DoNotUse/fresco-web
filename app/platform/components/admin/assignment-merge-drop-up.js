@@ -1,15 +1,36 @@
 import React, { PropTypes } from 'react';
-import Dropdown from '../global/dropdown';
 
+/**
+ * AssignmentMergeDropup Dropdown(up) menu that displays list of nearby assignments
+ * Click on assignment in list, calls onSelectMerge prop
+ *
+ * @extends React.Component
+ */
 class AssignmentMergeDropup extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            active: false,
+        };
+    }
+
     componentDidMount() {
         $(document).click((e) => {
             // Hide dropdown on click as long as not clicking on master button.
-            if ($('.merge-dropdown').hasClass('active') && e.target.className != 'toggle') {
-                $('.merge-dropdown').removeClass('active');
-                $('.merge-dropdown .mdi-menu-up').removeClass('mdi-menu-up').addClass('mdi-menu-down');
+            if ($(e.target).parents('.merge-dropup').size() === 0
+                && e.target.className !== 'merge-dropup__toggle') {
+                this.setState({ active: false });
             }
         });
+    }
+
+    componentWillUnmount() {
+        // Clean up click event on unmount
+        $(document).unbind('click');
+    }
+
+    onToggle() {
+        this.setState({ active: !this.state.active });
     }
 
     renderAssignments(assignments) {
@@ -18,7 +39,7 @@ class AssignmentMergeDropup extends React.Component {
         return assignments.map((a, i) => (
             <div
                 key={i}
-                className="assignment-merge-menu-item"
+                className="merge-dropup__menu-item"
                 onClick={() => onSelectMerge(a)}
             >
                 <span className="assignment-title">
@@ -36,16 +57,32 @@ class AssignmentMergeDropup extends React.Component {
 
     render() {
         const { nearbyAssignments } = this.props;
-        if (!nearbyAssignments.length) return <div />;
+        const { active } = this.state;
+
+        if (active) {
+            return (
+                <div className={'merge-dropup merge-dropup--active pull-right '}>
+                    <div className="merge-dropup__toggle merge-dropup__toggle--active" onClick={() => this.onToggle()} >
+                        <span>{`Merge (${nearbyAssignments.length})`}</span>
+                        <i className={'mdi mdi-menu-down pull-right'} />
+                    </div>
+
+                    <div className="merge-dropup__body">
+                        {this.renderAssignments(nearbyAssignments)}
+                    </div>
+                </div>
+
+            );
+        }
 
         return (
-            <Dropdown
-                dropdownClass="merge-dropdown"
-                title={`Merge (${this.props.nearbyAssignments.length})`}
-                reverseCaretDirection
-            >
-                {this.renderAssignments(nearbyAssignments)}
-            </Dropdown>
+            <div className={'merge-dropup pull-right btn'}  onClick={() => this.onToggle()}>
+                <div className="merge-dropup__toggle">
+                    <span>{`Merge (${nearbyAssignments.length})`}</span>
+                    <i className={'mdi mdi-menu-up'} />
+                </div>
+            </div>
+
         );
     }
 }

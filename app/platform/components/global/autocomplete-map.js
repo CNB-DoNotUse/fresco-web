@@ -11,6 +11,10 @@ class AutocompleteMap extends React.Component {
         this.updateCurrentBounds = this.updateCurrentBounds.bind(this);
     }
 
+    componentDidMount() {
+        $.material.init();
+    }
+
     componentDidUpdate() {
         if (this.props.radius && this.props.hasRadius) {
             this.refs.radius.value = Math.round(this.props.radius);

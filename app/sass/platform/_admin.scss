@@ -1,3 +1,5 @@
+@import 'settings';
+
 .admin-edit-pane {
 	border-left: 1px solid rgba(0, 0, 0, 0.12);
 	background: #ffffff;
@@ -38,31 +40,81 @@
 	}
 }
 
-.merge-dropdown {
-	position: relative;
-
-	&.active {
-		box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.72);
-		width: 320px;
-	}
-
-	.dropdown-body {
-        max-height: 400px;
-        overflow-y: scroll;
-		bottom: 100%;
-		box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.72);
-	    border-radius: 0;
-	    padding: 0px;
-		top: auto;
-	}
-
-	.toggle {
-		color: #0047BB;
-	}
-
+.merge-dropup {
+    position: relative;
 }
 
-.assignment-merge-menu-item {
+.merge-dropup--active {
+    width: 320px;
+    bottom: 8px;
+
+    .merge-toggle {
+        padding: 10px;
+    }
+
+    margin: 0;
+}
+
+.merge-dropup__toggle{
+    color: #0047BB;
+    cursor: pointer;
+
+    span{
+        font-size:14px;
+        font-weight:500;
+        text-transform: uppercase;
+    }
+
+    .mdi{
+        vertical-align:middle;
+        margin:0 0 2px 4px;
+        font-size:22px;
+        line-height: 22px;
+        color:#757575;
+    }
+
+    .mdi-settings, .mdi-playlist-plus{
+        float:right;
+    }
+    .mdi-settings{
+        margin-left:16px;
+    }
+}
+
+.merge-dropup__toggle--active{
+    height: 48px;
+    position: relative;
+    padding: 0 16px;
+    border: solid 1px rgba(0, 0, 0, 0.12);
+    border-top: none;
+
+    span, i {
+        position: absolute;
+        transform: translateY(-50%);
+        top: 50%;
+    }
+
+    i {
+        right: 16px;
+    }
+}
+
+.merge-dropup__body {
+    position: absolute;
+    display: block;
+    max-height: 400px;
+    width: 100%;
+    overflow-y: scroll;
+    bottom: 100%;
+    border-radius: 0;
+    top: auto;
+    margin:0;
+    background: #FFF;
+    border: solid 1px rgba(0, 0, 0, 0.12);
+}
+
+.merge-dropup__menu-item {
+    cursor: pointer;
 	width: 100%;
 	padding: 16px;
 
@@ -97,7 +149,6 @@
 }
 
 .assignment-merge-dialog {
-
 	.assignment-merge-side {
 		overflow: auto;
 

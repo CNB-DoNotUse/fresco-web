@@ -3,7 +3,7 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 
-class OutletPaymentInfo extends React.Component {
+class PaymentInfo extends React.Component {
     constructor(props) {
         super(props);
         this.save = this.save.bind(this);
@@ -36,7 +36,6 @@ class OutletPaymentInfo extends React.Component {
             'currency': 'usd',
         };
 
-        // TODO: Check why snackbar isnt rendering
         if (!Stripe.card.validateCardNumber(params.number)) return $.snackbar({content:'Invalid credit card number'});
         if (!Stripe.card.validateExpiry(params['exp-month'], params['exp-year'])) return $.snackbar({content:'Invalid expiration date'});
         if (!Stripe.card.validateCVC(params.cvv)) return $.snackbar({content:'Invalid CVV number'});
@@ -156,8 +155,9 @@ class OutletPaymentInfo extends React.Component {
     }
 }
 
-OutletPaymentInfo.propTypes = {
+PaymentInfo.propTypes = {
     payment: PropTypes.array,
 };
 
-export default OutletPaymentInfo;
+export default PaymentInfo;
+

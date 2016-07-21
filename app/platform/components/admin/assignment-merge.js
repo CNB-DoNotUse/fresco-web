@@ -7,11 +7,8 @@ class AssignmentMerge extends React.Component {
 
     /**
      * Merges assignment into existing assignment
-     * @param  {Object} data
-     * @param  {String} data.title
-     * @param  {String} data.caption
-     * @param  {String} data.assignmentToMergeInto
-     * @param  {String} data.assignmentToDelete
+     * @param  {Number} id of assignment to be merged
+     * @param  {Object} data, requires mergeInto_id(id of assignment to be merged into)
      */
     postMerge(id, data) {
         if (!id || !data.mergeInto_id) return;
@@ -32,6 +29,9 @@ class AssignmentMerge extends React.Component {
         });
     }
 
+    /**
+     * Initiates merge assignments, fails if empty form data
+     */
     merge() {
         const { mergeIntoAssignment, assignment } = this.props;
 

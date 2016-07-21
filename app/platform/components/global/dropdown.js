@@ -5,7 +5,6 @@ import React, { PropTypes } from 'react';
  * @param  {function} onSelected A function called wtih the user's selection
  */
 class Dropdown extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -39,9 +38,9 @@ class Dropdown extends React.Component {
         const { reverseCaretDirection } = this.props;
 
         if (reverseCaretDirection) {
-            return `mdi ${active ? 'mdi-menu-down pull-right' : 'mdi-menu-up'}`;
+            return `mdi ${active ? 'mdi-menu-down' : 'mdi-menu-up'}`;
         }
-        return `mdi ${active ? 'mdi-menu-up pull-right' : 'mdi-menu-down'}`;
+        return `mdi ${active ? 'mdi-menu-up' : 'mdi-menu-down'}`;
     }
 
 	/**

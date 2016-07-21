@@ -29,19 +29,20 @@ export class Search extends Component {
 		this.loadingPosts = false;
 		this.loadingUsers = false;
 
-		this.getTitle 				= this.getTitle.bind(this);
-		this.getAssignments			= this.getAssignments.bind(this);
-		this.getPosts				= this.getPosts.bind(this);
-		this.getUsers				= this.getUsers.bind(this);
-		this.getStories				= this.getStories.bind(this);
-		this.onVerifiedToggled		= this.onVerifiedToggled.bind(this);
-		this.addTag					= this.addTag.bind(this);
-		this.removeTag				= this.removeTag.bind(this);
-		this.scroll  				= this.scroll.bind(this);
-		this.onMapDataChange		= this.onMapDataChange.bind(this);
-		this.onRadiusUpdate			= this.onRadiusUpdate.bind(this);
-		this.refreshData			= this.refreshData.bind(this);
-		this.pushState				= this.pushState.bind(this);
+		this.getTitle 			= this.getTitle.bind(this);
+		this.geoParams			= this.geoParams.bind(this);
+		this.getAssignments		= this.getAssignments.bind(this);
+		this.getPosts			= this.getPosts.bind(this);
+		this.getUsers			= this.getUsers.bind(this);
+		this.getStories			= this.getStories.bind(this);
+		this.onVerifiedToggled	= this.onVerifiedToggled.bind(this);
+		this.addTag				= this.addTag.bind(this);
+		this.removeTag			= this.removeTag.bind(this);
+		this.scroll  			= this.scroll.bind(this);
+		this.onMapDataChange	= this.onMapDataChange.bind(this);
+		this.onRadiusUpdate		= this.onRadiusUpdate.bind(this);
+		this.refreshData		= this.refreshData.bind(this);
+		this.pushState			= this.pushState.bind(this);
 	}
 
 	componentDidMount() {
@@ -116,6 +117,25 @@ export class Search extends Component {
 		return title;
 	}
 
+	geoParams() {
+		const { location } = this.state;
+
+		if(location.coordinates && location.radius) {
+			return {
+				geo: {
+					type: 'Point',
+					coordinates: [
+						location.coordinates.lat,
+						location.coordinates.lng,
+					]
+				},
+				radius: utils.feetToMiles(location.radius)
+			}
+		} else {
+			return {};
+		}
+	}
+
 	/**
 	 * Gets new search data
 	 * @param {bool} initial Indicates if it is the initial data load
@@ -144,29 +164,29 @@ export class Search extends Component {
 	 * Retrieves assignments based on state
 	 */
 	getAssignments(force = true) {
-		const { location, tags } = this.state;
-
-		const params = {
-			last: force ? null : _.last(this.state.assignments),
+		let params = {
 			q: this.props.query,
 			limit: 10,
-			verified: this.state.verifiedToggle,
-			tags: tags,
-			lat: location.coordinates ? location.coordinates.lat : undefined,
-			lon: location.coordinates ? location.coordinates.lng : undefined,
-			radius: location.radius ? utils.feetToMiles(location.radius) : undefined
+			tags: this.state.tags,
+			rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : undefined
 		};
 
-		if(this.state.verifiedToggle)
-			params.rating = utils.RATINGS.VERIFIED;
+		params = Object.assign(params, this.geoParams());
 
-		$.get('/api/assignment/search', { assignments: params }, (response, err) => {
-			if(!response.err && response.length > 0) {
-				this.setState({
-					assignments: force ? response : this.state.assignments.concat(response)
-				});
+		$.ajax({
+			url: '/api/search',
+			type: 'GET',
+			data: { assignments: params },
+			success: (response, status, xhr) => {
+				if(!response.error && response.assignments && response.assignments.results.length > 0) {
+					const assignments = response.assignments.results;
+
+					this.setState({
+						assignments: force ? assignments : this.state.assignments.concat(assignments)
+					});
+				}
 			}
-		});
+		});	
 	}
 
 	/**
@@ -178,41 +198,29 @@ export class Search extends Component {
 			limit: 18,
 			tags: this.state.tags,
 			sortBy: 'created_at',
-			direction: 'asc'
+			direction: 'asc',
+			rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : undefined
 		};
 
-		if(this.state.verifiedToggle)
-			params.rating = utils.RATINGS.VERIFIED;
+		params = Object.assign(params, this.geoParams());
 
-		const { location } = this.state;
-
-		if(location.coordinates && location.radius) {
-			params.geo = {
-				type: 'Point',
-				coordinates: [
-					location.coordinates.lat,
-					location.coordinates.lng,
-				]
-			};
-
-			params.radius = utils.feetToMiles(location.radius);
-		}
+		let posts = [];
 
 		$.ajax({
 			url: '/api/search',
 			type: 'GET',
-			data: $.param({ posts: params }),
+			data: { posts: params },
 			success: (response, status, xhr) => {
 				//If the caller of this method passes force, this means that the post list will reset
 				//So this ensures that the next time `loadingPosts` is checked, it'll be ready to be called again
 				if(force)
 					this.loadingPosts = false;
-				
-				if(!response.err && response.length > 0) {
+
+				if(!response.error && response.posts && response.posts.results) {
 					//Check if there are any more posts
 					//If there aren't, prevent the scroll event from making the data call
 					//the next time around
-					if(response.length > 0)
+					if(response.posts.results.length > 0)
 						this.loadingPosts = false;
 
 					if(force) {
@@ -220,19 +228,15 @@ export class Search extends Component {
 						this.refs.postList.refs.grid.scrollTop = 0;
 					}
 
+					posts = response.posts.results;
+
 					this.setState({
-						posts: force ? response : this.state.posts.concat(response)
+						posts: force ? posts : this.state.posts.concat(stories)
 					});
-				} else {
-					this.setState({
-						posts: []
-					})
 				}
 			},
 			error: (xhr, status, error) => {
-				this.setState({
-					posts: []
-				})
+				this.setState({ posts });
 			}
 		});
 	}
@@ -242,22 +246,29 @@ export class Search extends Component {
 	 */
 	getUsers(force = true) {
 		const params = {
-			user: {
+			users: {
 				q: this.props.query,
 				last: force ? undefined : _.last(this.state.users),
 				limit: 20
 			}
 		};
 
-		$.get('/api/user/search', params, (response) => {
-			if(!response.error && response && response.length > 0) {
-				this.loadingUsers = false;
+		$.ajax({
+			url: '/api/search',
+			type: 'GET',
+			data: params,
+			success: (response, status, xhr) => {
+				if(!response.error && response.users && response.users.results.length > 0) {
+					this.loadingUsers = false;
 
-				this.setState({
-					users: force ? response : this.state.users.concat(response)
-				});
+					const users = response.users.results;
+
+					this.setState({
+						users: force ? users : this.state.users.concat(users)
+					});
+				}
 			}
-		});
+		});	
 	}
 
 	/**
@@ -269,29 +280,22 @@ export class Search extends Component {
 		let params = {
 			q: this.props.query,
 			last: force ? null : _.last(this.state.stories),
-			limit: 10
+			limit: 10,
+			tags: this.state.tags
 		}
 
-		if(location.coordinates && location.radius) {
-			params.geo = {
-				type: 'Point',
-				coordinates: [
-					location.coordinates.lat,
-					location.coordinates.lng,
-				]
-			};
-
-			params.radius = location.radius;
-		}
+		params = Object.assign(params, this.geoParams());
 
 		$.ajax({
-			url: '/api/story/search',
+			url: '/api/search',
 			type: 'GET',
 			data: { stories: params },
 			success: (response, status, xhr) => {
-				if(!response.err && response && response.length > 0) {
+				if(!response.error && response.stories && response.stories.results.length > 0) {
+					const stories = response.stories.results;
+
 					this.setState({
-						stories: force ? response : this.state.stories.concat(response)
+						stories: force ? stories : this.state.stories.concat(stories)
 					});
 				}
 			}
@@ -318,8 +322,11 @@ export class Search extends Component {
 	 * When radius changes
 	 */
 	onRadiusUpdate(radius) {
+		let location = _.clone(this.state.location);
+		location.radius = radius;
+
 		this.setState({ 
-			location : update(this.state.location, {radius: {$set: radius}})
+			location : location
 		});
 	}
 
@@ -391,6 +398,8 @@ export class Search extends Component {
 	}
 
 	render() {
+		console.log(this.state);
+
 		return (
 			<App
 				query={this.props.query} 

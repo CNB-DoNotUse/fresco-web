@@ -1,102 +1,107 @@
-import _ from 'lodash'
-import React from 'react'
-import Tag from './tag.js'
-import utils from 'utils'
+import React, { PropTypes } from 'react';
+import Tag from './tag.js';
 
 /**
  * Component for managing added/removed tags
  */
+class GalleryEditAssignment extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { suggestions: [] };
+    }
 
-export default class GalleryEditAssignment extends React.Component {
+    change() {
+        // Current fields input
+        const query = this.refs.autocomplete.value;
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			suggestions: []
-		}
-		this.change = this.change.bind(this);
-		this.addAssignment = this.addAssignment.bind(this);
-	}
+        // Field is empty
+        if (query.length === 0) {
+            this.setState({ suggestions: [] });
+            this.refs.dropdown.style.display = 'none';
+        } else {
+            this.refs.dropdown.style.display = 'block';
 
-	change(e) {
-		//Current fields input
-		var query = this.refs.autocomplete.value;
+            $.ajax({
+                url: '/api/search?assignments[rating]=1',
+                data: { q: query },
+                success: (res) => {
+                    if (res.assignments && res.assignments.results) {
+                        this.setState({ suggestions: res.assignments.results });
+                    }
+                },
+            });
+        }
+    }
 
-		//Field is empty
-		if(query.length == 0){
-			this.setState({ suggestions: [] });
-			this.refs.dropdown.style.display = 'none';
-		} else {
-			this.refs.dropdown.style.display = 'block';
+    /**
+     * Adds assignment at passed index to current assignment
+     * @param {[type]} index [description]
+     */
+    addAssignment(assignment) {
+        if (this.props.assignment) {
+            $.snackbar({ content: 'Submissions can only have one assignment!' });
+            return;
+        }
 
-			$.ajax({
-				url: '/api/search?assignments=true',
-				data: { q: query },
-				success: (result, status, xhr) => {
-					if(result.assignments){
-						this.setState({ suggestions: result.assignments});
-					}
-				},
-			});
-		}
-	}
+        // Clear the input field
+        this.refs.autocomplete.value = '';
+        this.refs.dropdown.style.display = 'none';
 
-	/**
-	 * Adds assignment at passed index to current assignment
-	 * @param {[type]} index [description]
-	 */
-	addAssignment(assignment) {
-		if(this.props.assignment){
-			return $.snackbar({ content : 'Submissions can only have one assignment!' });
-		}
+        // Send assignment up to parent
+        this.props.updateAssignment(assignment);
+    }
 
-		//Clear the input field
-		this.refs.autocomplete.value = ''
-		this.refs.dropdown.style.display = 'none';
+    render() {
+        const { suggestions } = this.state;
+        const { assignment, updateAssignment } = this.props;
 
-		//Send assignment up to parent
-		this.props.updateAssignment(assignment);
-	}
-
-	render() {
-		return (
-			<div className="dialog-row split chips">
-				<div className="split-cell">
-					<input
-						type="text"
-						className="form-control floating-label"
-						placeholder="Assignment"
-						onKeyUp={this.change}
-                        ref='autocomplete'
+        return (
+            <div className="dialog-row split chips">
+                <div className="split-cell">
+                    <input
+                        type="text"
+                        className="form-control floating-label"
+                        placeholder="Assignment"
+                        onKeyUp={() => this.change()}
+                        ref="autocomplete"
                     />
 
-					<ul ref="dropdown" className="dropdown">
-						{this.state.suggestions.map((assignment, i) => {
-							return (
-                                <li onClick={this.addAssignment.bind(null, assignment)} key={i} >
-                                    {assignment.title}
-                                </li>
-							)
-						})}
-					</ul>
+                    <ul ref="dropdown" className="dropdown">
+                        {
+                            suggestions && suggestions.length
+                                ? suggestions.map((s, i) => (
+                                    <li onClick={() => this.addAssignment(s)} key={i} >
+                                        {s.title}
+                                    </li>
+                                    ))
+                                : ''
+                        }
+                    </ul>
 
-					<ul className="chips">
-                        {this.props.assignment
+                    <ul className="chips">
+                        {assignment
                             ? <Tag
-                                text={this.props.assignment.title}
+                                text={assignment.title}
                                 plus={false}
-                                onClick={() => this.props.updateAssignment(null)}
+                                onClick={() => updateAssignment(null)}
                             />
-							: ''
-						}
-					</ul>
-				</div>
-			</div>
-
+                            : ''
+                        }
+                    </ul>
+                </div>
+            </div>
 		);
-	}
+    }
 }
 
 GalleryEditAssignment.defaultProps = {
-	updateAssignment: () => {}
-}
+    updateAssignment() {},
+};
+
+GalleryEditAssignment.propTypes = {
+    updateAssignment: PropTypes.func.isRequired,
+    assignment: PropTypes.object,
+};
+
+export default GalleryEditAssignment;
+

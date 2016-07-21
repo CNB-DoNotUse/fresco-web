@@ -42,18 +42,21 @@ class AssignmentDetail extends React.Component {
 
     /**
      * Sets the assignment to expire
-     * @description Invoked from the on-page button `Expire`
+     * Invoked from the on-page button `Expire`
      */
     expireAssignment() {
         $.ajax({
             method: 'POST',
-            url: '/api/assignment/update',
-            expiration_time: Date.now(),
-            id: this.state.assignment.id,
+            url: `/api/assignment/${this.state.assignment.id}/update`,
+            data: JSON.stringify({
+                ends_at: Date.now(),
+            }),
+            dataType: 'json',
+            contentType: 'application/json',
         })
         .done((response) => {
             $.snackbar({ content: 'Assignment expired' });
-            this.setState({ assignment: response.data });
+            this.setState({ assignment: response });
         })
         .fail(() => {
             $.snackbar({
@@ -131,6 +134,6 @@ ReactDOM.render(
         user={window.__initialProps__.user}
         assignment={window.__initialProps__.assignment}
     />,
-document.getElementById('app')
+    document.getElementById('app')
 );
 

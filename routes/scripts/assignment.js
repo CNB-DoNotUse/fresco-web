@@ -2,7 +2,6 @@ const express = require('express');
 const config = require('../../lib/config');
 const utils = require('../../lib/utils');
 const API = require('../../lib/api');
-const xlsx = require('node-xlsx');
 const router = express.Router();
 const csv = require('../../lib/csv');
 
@@ -15,14 +14,14 @@ router.get('/assignment/report', (req, res, next) => {
         url: '/assignment/report',
         token: req.session.token
     }).then((response) => {
-        csv(response.body, (err, csv) => {
-            if(err) {
-                return next({ message: err, status: 500 });
-            }
-
+        csv(response.body)
+        .then((csv) => {
             res.set('Content-Type', 'text/csv');
             res.set('Content-Disposition', 'inline; filename="assignments.csv"');
             res.send(csv).end();
+        })
+        .catch((error) => {
+            return next({ message: error, status: 500 });
         });
     })
     .catch((error) => {
@@ -32,6 +31,5 @@ router.get('/assignment/report', (req, res, next) => {
         });
     });
 });
-//---------------------------^^^-ASSIGNMENT-ENDPOINTS-^^^---------------------------//
 
 module.exports = router;

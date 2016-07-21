@@ -6,19 +6,17 @@ import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
 import remove from 'lodash/remove';
-import uniqBy from 'lodash/uniqBy';
-import 'sass/platform/_admin';
+import 'app/sass/platform/_admin';
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar)
 */
-
 class Admin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             activeTab: 'assignments',
-            assignments: {},
+            assignments: [],
             submissions: [],
             imports: [],
         };
@@ -98,8 +96,8 @@ class Admin extends React.Component {
         // Set up endpoint and params depending on tab
         switch (tab) {
             case 'assignments':
-                endpoint = '/api/assignment/find';
-                params = { unrated: true, last, limit: 16 };
+                endpoint = '/api/assignment/list';
+                params = { rating: 0, last, limit: 16 };
                 break;
             case 'submissions':
                 endpoint = '/api/gallery/list';
@@ -202,9 +200,7 @@ class Admin extends React.Component {
     removeAssignment(id) {
         const { assignments } = this.state;
         if (!id || !assignments) return;
-
-        if (assignments.global) remove(assignments.global, { id });
-        if (assignments.nearby) remove(assignments.nearby, { id });
+        remove(assignments, { id });
 
         this.setState({ assignments });
     }
@@ -259,7 +255,6 @@ class Admin extends React.Component {
     getAssignments() {
         const { assignments } = this.state;
         if (!assignments) return [];
-        let allAssignments = [];
         function sortListItem(a, b) {
             if (a.created_at > b.created_at) {
                 return -1;
@@ -270,12 +265,7 @@ class Admin extends React.Component {
             return 0;
         }
 
-        ['nearby', 'global'].forEach((type) => {
-            allAssignments = allAssignments
-                .concat(assignments[type] && assignments[type].length ? assignments[type] : []);
-        });
-
-        return uniqBy(allAssignments, 'id').sort(sortListItem);
+        return assignments.sort(sortListItem);
     }
 
     getSubmissions() {
