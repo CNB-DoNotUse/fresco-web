@@ -42,7 +42,7 @@ class AssignmentDetail extends React.Component {
 
     /**
      * Sets the assignment to expire
-     * @description Invoked from the on-page button `Expire`
+     * Invoked from the on-page button `Expire`
      */
     expireAssignment() {
         $.ajax({
