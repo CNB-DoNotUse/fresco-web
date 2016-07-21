@@ -1,6 +1,5 @@
 const express = require('express');
 const config = require('../lib/config');
-const Purchases = require('../lib/purchases');
 const api = require('../lib/api');
 const router = express.Router();
 
@@ -14,7 +13,7 @@ router.get('/:id', (req, res, next) => {
 
     api.request({
         token,
-        url: `outlet/location/${req.params.id}`,
+        url: `/outlet/locations/${req.params.id}`,
     }).then(response => {
         const location = response.body;
         const props = {
