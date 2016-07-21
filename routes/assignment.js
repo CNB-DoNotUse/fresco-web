@@ -13,14 +13,10 @@ router.get('/:id', (req, res, next) => {
 
     api.request({
         token,
-        url: '/assignment/' + req.params.id,
+        url: `/assignment/${req.params.id}`,
     }).then(response => {
         const assignment = response.body;
-        const props = {
-            user,
-            title: assignment.title,
-            assignment,
-        };
+        const props = { user, assignment };
 
         if (user.rank >= 1 || assignment.outlets.some((o) => (o.id === user.outlet.id))) {
             res.render('app', {

@@ -1,42 +1,41 @@
-var express    = require('express'),
-    config     = require('../lib/config'),
-    Purchases  = require('../lib/purchases'),
-    superagent = require('superagent'),
-    router     = express.Router()
+const express = require('express');
+const config = require('../lib/config');
+const Purchases = require('../lib/purchases');
+const api = require('../lib/api');
+const router = express.Router();
 
 router.get('/:id', (req, res, next) => {
-    superagent
-    .get(config.API_URL + '/v1/outlet/location/get?id=' + req.params.id)
-    .set('authtoken', req.session.token)
-    .set('Accept', 'application/json')
-    .end((err, response) => {
+    let user;
+    let token;
+    if (req.session) {
+        token = req.session.token;
+        user = req.session.user;
+    }
 
-        //Check if the response checks
-        if (err || response.body.err || !response.body.data || typeof(response.body.data) === 'undefined'){
-            var error = new Error(config.ERR_PAGE_MESSAGES[404]);
-            error.status = 404;
-
-            return next(error);
-        }
-
-        var location = response.body.data,
-            title = location.title,
-            props = {
-              user: req.session.user,
-              outlet : req.session.user.outlet,
-              purchases: Purchases.mapPurchases(),
-              title: title,
-              location: location
-            };
+    api.request({
+        token,
+        url: `outlet/location/${req.params.id}`,
+    }).then(response => {
+        const location = response.body;
+        const props = {
+            user,
+            outlet: user.outlet,
+            location,
+        };
 
         res.render('app', {
-          props: JSON.stringify(props),
-          config: config,
-          alerts: req.alerts,
-          page: 'locationDetail',
-          title : title
+            props: JSON.stringify(props),
+            config,
+            alerts: req.alerts,
+            title: location.title,
+            page: 'locationDetail',
         });
-    });
+    }).catch(() => (
+        next({
+            message: 'Outlet location not found!',
+            status: 404,
+        })
+    ));
 });
 
 module.exports = router;
