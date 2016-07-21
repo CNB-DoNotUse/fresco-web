@@ -9,7 +9,7 @@ router.get('/assignment/stats', (req, res, next) => {
     API.request({
         method: 'GET',
         url: '/assignment/stats',
-        token: 'c328b663-42f9-48e3-bff7-195d800329d5'
+        token: req.session.token
     }, (err, response) => {
         if(err) {
             return next({ 
