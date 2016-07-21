@@ -17,22 +17,17 @@ class LocationDropdown extends React.Component {
         this.loadLocations();
     }
 
-    locationClicked(location) {
+    locationClicked(loc) {
         if (!this.props.updateMapPlace) return;
-
-        const polygon = location.location.coordinates[0];
-        const bounds = new google.maps.LatLngBounds();
-
-        for (let coordinate of polygon) {
-            const latLng = new google.maps.LatLng(coordinate[1], coordinate[0]);
-            bounds.extend(latLng);
-        }
 
         const place = {
             geometry: {
-                viewport: bounds
+                location: {
+                    lng: loc.location.coordinates[0],
+                    lat: loc.location.coordinates[1],
+                },
             },
-            description: location.title
+            description: loc.title,
         };
 
         // Tell dispatch map to update
