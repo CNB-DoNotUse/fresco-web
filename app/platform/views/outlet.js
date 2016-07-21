@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
 import TopBar from '../components/topbar';
-import OutletBody from '../components/outlet/outlet-body';
-import OutletBodyDemo from '../components/outlet/outlet-body-demo';
+import Body from '../components/outlet/body';
+import BodyDemo from '../components/outlet/body-demo';
 
 class Outlet extends React.Component {
     constructor(props) {
@@ -33,14 +33,14 @@ class Outlet extends React.Component {
         if (outlet.verified) {
             topbarTabs = ['Vault', 'Purchases'];
             outletBody = (
-                <OutletBody
+                <Body
                     activeTab={this.state.activeTab}
                     outlet={outlet}
                     user={user}
                 />
             );
         } else {
-            outletBody = <OutletBodyDemo outlet={outlet} />;
+            outletBody = <BodyDemo outlet={outlet} />;
         }
 
         return (

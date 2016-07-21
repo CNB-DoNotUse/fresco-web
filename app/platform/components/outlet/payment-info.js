@@ -3,7 +3,7 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 
-class OutletPaymentInfo extends React.Component {
+class PaymentInfo extends React.Component {
     constructor(props) {
         super(props);
         this.save = this.save.bind(this);
@@ -155,8 +155,9 @@ class OutletPaymentInfo extends React.Component {
     }
 }
 
-OutletPaymentInfo.propTypes = {
+PaymentInfo.propTypes = {
     payment: PropTypes.array,
 };
 
-export default OutletPaymentInfo;
+export default PaymentInfo;
+

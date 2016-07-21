@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default class OutletQuickSupport extends React.Component {
+export default class QuickSupport extends React.Component {
 	render() {
 		return (
 			<div className="quick-support">

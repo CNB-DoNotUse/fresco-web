@@ -1,11 +1,11 @@
 import React from 'react'
 import utils from 'utils'
 
-export default class OutletNotifications extends React.Component {
+export default class Notifications extends React.Component {
 
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			notifications: []
 		}
@@ -17,7 +17,7 @@ export default class OutletNotifications extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		//Need to init everytime because of the fucking checkboxes
-		$.material.init();  
+		$.material.init();
 	}
 
 	componentDidMount() {
@@ -33,7 +33,7 @@ export default class OutletNotifications extends React.Component {
 			},
 			stateNotifications = this.state.notifications;
 
-		// Update all notifications setting in state, 
+		// Update all notifications setting in state,
 		// if update fails, loadLocations will revert the check on ajax response
 		for (let notification of stateNotifications) {
 			notification.medium[medium] = e.target.checked;
@@ -75,7 +75,7 @@ export default class OutletNotifications extends React.Component {
 			};
 
 		var stateNotifications = this.state.notifications;
-		// Update notification setting in state, 
+		// Update notification setting in state,
 		// if update fails, loadLocations will revert the check
 		for (let notification of stateNotifications) {
 			if(notification.event_type == event_type) {
@@ -121,7 +121,7 @@ export default class OutletNotifications extends React.Component {
 					return this.error(null, null, response.err);
 
 				console.log(response);
-				
+
 				//Update state
 				self.setState({ notifications: response.data });
 			},
@@ -133,7 +133,7 @@ export default class OutletNotifications extends React.Component {
 		});
 	}
 
-				
+
 	render () {
 		var allSms = 1,
 			allEmail = 1,
@@ -164,7 +164,7 @@ export default class OutletNotifications extends React.Component {
 					</div>
 				</div>
 
-				<OutletNotificationsList 
+				<OutletNotificationsList
 					notifications={this.state.notifications}
 					updateNotification={this.updateNotification} />
 
@@ -178,16 +178,16 @@ export default class OutletNotifications extends React.Component {
 									onChange={this.updateAllNotifications.bind(this, 'sms')} />
 							</label>
 						</div>
-						
+
 						<div className="checkbox check-email">
 							<label>
 								<input
-									type="checkbox" 
+									type="checkbox"
 									checked={allEmail}
 									onChange={this.updateAllNotifications.bind(this, 'email')} />
 							</label>
 						</div>
-						
+
 						<div className="checkbox check-fresco">
 							<label>
 								<input
@@ -217,7 +217,7 @@ class OutletNotificationsList extends React.Component {
 				<li className="notification" key={i}>
 					<div className="info">
 						<p className="title">{notification.title}</p>
-						
+
 						<span className="description">{notification.description}</span>
 					</div>
 
@@ -225,25 +225,25 @@ class OutletNotificationsList extends React.Component {
 						<div className="checkbox check-sms">
 							<label>
 								<input
-									type="checkbox" 
+									type="checkbox"
 									checked={medium.sms || false}
 									onChange={this.props.updateNotification.bind(this, eventType, 'sms')} />
 							</label>
 						</div>
-						
+
 						<div className="checkbox check-email">
 							<label>
 								<input
-									type="checkbox" 
+									type="checkbox"
 									checked={medium.email || false}
 									onChange={this.props.updateNotification.bind(this, eventType, 'email')}/>
 							</label>
 						</div>
-						
+
 						<div className="checkbox check-fresco">
 							<label>
 								<input
-									type="checkbox" 
+									type="checkbox"
 									checked={medium.fresco || false}
 									onChange={this.props.updateNotification.bind(this, eventType, 'fresco')} />
 							</label>
@@ -251,8 +251,8 @@ class OutletNotificationsList extends React.Component {
 					</div>
 				</li>
 			);
-		});	
-		
+		});
+
 		return (
 			<div className="outlet-notifications-container">
 				<ul className="outlet-notifications">

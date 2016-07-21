@@ -1,16 +1,11 @@
 import React from 'react';
-import OutletSidebar from './outlet-sidebar';
-
-/** //
-
-Description : Outlet screen for when outlet has not yet been verified
-
-// **/
+import Sidebar from './sidebar';
 
 /**
- * @description Displays a simple message to the user of an unverified outlet
+ * Outlet screen for when outlet has not yet been verified
+ * Displays a simple message to the user of an unverified outlet
  */
-export default class OutletBodyDemo extends React.Component {
+export default class BodyDemo extends React.Component {
     render() {
         const outlet = this.props.outlet;
 
@@ -20,7 +15,7 @@ export default class OutletBodyDemo extends React.Component {
                     <div className="container-fluid fat">
                         <div className="profile visible-xs"></div>
 
-                        <OutletSidebar outlet={outlet} />
+                        <Sidebar outlet={outlet} />
 
                         <div className="col-sm-8 tall">
                             <div className="grid">

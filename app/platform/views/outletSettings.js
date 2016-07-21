@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import clone from 'lodash/clone';
 import App from './app';
 import TopBar from '../components/topbar';
-import OutletInfo from '../components/outlet/outlet-info';
-import OutletPaymentInfo from '../components/outlet/outlet-payment-info';
+import Info from '../components/outlet/info';
+import PaymentInfo from '../components/outlet/payment-info';
+import Members from '../components/outlet/members';
+import Locations from '../components/outlet/locations';
+import Notifications from '../components/outlet/notifications';
 import QuickSupport from '../components/global/quick-support';
-import OutletMembers from '../components/outlet/outlet-members';
-import OutletLocations from '../components/outlet/locations';
-import OutletNotifications from '../components/outlet/outlet-notifications';
 import 'app/sass/platform/_outletSettings';
 
 /**
@@ -52,20 +52,20 @@ class OutletSettings extends React.Component {
                     {
                         isOwner
                             ? <div className="left">
-                                <OutletInfo
+                                <Info
                                     updateOutlet={this.updateOutlet}
                                     outlet={this.state.outlet}
                                 />
-                                <OutletPaymentInfo payment={payment} outlet={this.state.outlet} />
+                                <PaymentInfo payment={payment} outlet={this.state.outlet} />
                             </div>
                             : ''
                     }
                     <div className="right">
-                        <OutletNotifications outlet={this.state.outlet} />
-                        <OutletLocations outlet={this.state.outlet} />
+                        <Notifications outlet={this.state.outlet} />
+                        <Locations outlet={this.state.outlet} />
                         {
                             isOwner
-                                ? <OutletMembers
+                                ? <Members
                                     outlet={this.state.outlet}
                                     updateMembers={this.updateMembers}
                                     members={this.state.outlet.members}

@@ -1,11 +1,11 @@
 import React from 'react'
 import PurchasesBody from '../purchases/purchases-body'
 import PostList from '../global/post-list'
-import OutletSidebar from './outlet-sidebar'
+import Sidebar from './sidebar'
 import moment from 'moment'
 import utils from 'utils'
 
-export default class OutletBody extends React.Component {
+export default class Body extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -123,7 +123,7 @@ export default class OutletBody extends React.Component {
 					<div className="container-fluid fat">
 						<div className="profile visible-xs"></div>
 
-						<OutletSidebar outlet={outlet} />
+						<Sidebar outlet={outlet} />
 
 						<div className="col-sm-8 tall">
 							<PostList

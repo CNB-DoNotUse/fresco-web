@@ -1,7 +1,7 @@
 import React from 'react';
 import utils from 'utils';
 
-export default class OutletInfo extends React.Component {
+export default class Info extends React.Component {
     constructor(props) {
         super(props);
 
