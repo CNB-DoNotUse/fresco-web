@@ -76,7 +76,7 @@ class Dispatch extends React.Component {
 			newAssignment = null
 		} else if (location == 'new') {
 			newAssignment = 'unset';
-		} else {	
+		} else {
 			newAssignment = { location, radius, zoom };
 		}
 
@@ -133,7 +133,7 @@ class Dispatch extends React.Component {
 		} else {
 			params.sortBy = params.unrated ? 'created_at' : 'ends_at';
 			params.direction = params.active ? 'asc' : 'desc'; //Switch sort when viewing non-active `history`
-			params.limit = 10;	
+			params.limit = 10;
 		}
 
 		$.ajax({
@@ -256,12 +256,12 @@ class Dispatch extends React.Component {
 					<LocationDropdown
 						user={this.props.user}
 						outlet={this.props.outlet}
-						addLocationButton={true}
-
 						updateMapPlace={this.updateMapPlace}
-						mapPlace={this.state.mapPlace} />
+                        mapPlace={this.state.mapPlace}
+						addLocationButton
+                    />
 
-					{this.props.user.rank > 1 ? 
+					{this.props.user.rank > 1 ?
 						<button
 							className="btn btn-flat pull-right mt12 mr16"
 							onClick={this.downloadStats} >Download Stats (.xlsx)</button>
