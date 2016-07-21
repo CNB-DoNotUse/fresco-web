@@ -64,7 +64,8 @@ class Locations extends React.Component {
             this.loadLocations();
         })
         .fail((xhr, status, error) => {
-            $.snackbar({ content: utils.resolveError(error) });
+            const { responseJSON: { error: { msg = utils.resolveError(err) } } } = xhr;
+            $.snackbar({ content: msg });
         });
     }
 
