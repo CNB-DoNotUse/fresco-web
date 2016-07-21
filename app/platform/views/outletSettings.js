@@ -7,8 +7,9 @@ import OutletInfo from '../components/outlet/outlet-info';
 import OutletPaymentInfo from '../components/outlet/outlet-payment-info';
 import QuickSupport from '../components/global/quick-support';
 import OutletMembers from '../components/outlet/outlet-members';
-import OutletLocations from '../components/outlet/outlet-locations';
+import OutletLocations from '../components/outlet/locations';
 import OutletNotifications from '../components/outlet/outlet-notifications';
+import 'app/sass/platform/_outletSettings';
 
 /**
  * Outlet Settings page
@@ -40,27 +41,6 @@ class OutletSettings extends React.Component {
         const { user, payment } = this.props;
         const isOwner = user.permissions.includes('update-outlet');
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
-        let members = '';
-        let left = '';
-
-        if (isOwner) {
-            left = (
-                <div className="left">
-                    <OutletInfo
-                        updateOutlet={this.updateOutlet}
-                        outlet={this.state.outlet}
-                    />
-                    <OutletPaymentInfo payment={payment} outlet={this.state.outlet} />
-                </div>
-            );
-            members = (
-                <OutletMembers
-                    outlet={this.state.outlet}
-                    updateMembers={this.updateMembers}
-                    members={this.state.outlet.members}
-                />
-            );
-        }
 
         return (
             <App user={user}>
@@ -69,11 +49,29 @@ class OutletSettings extends React.Component {
                 />
 
                 <div className={className}>
-                    {left}
+                    {
+                        isOwner
+                            ? <div className="left">
+                                <OutletInfo
+                                    updateOutlet={this.updateOutlet}
+                                    outlet={this.state.outlet}
+                                />
+                                <OutletPaymentInfo payment={payment} outlet={this.state.outlet} />
+                            </div>
+                            : ''
+                    }
                     <div className="right">
                         <OutletNotifications outlet={this.state.outlet} />
                         <OutletLocations outlet={this.state.outlet} />
-                        {members}
+                        {
+                            isOwner
+                                ? <OutletMembers
+                                    outlet={this.state.outlet}
+                                    updateMembers={this.updateMembers}
+                                    members={this.state.outlet.members}
+                                />
+                                : ''
+                        }
                     </div>
 
                     <QuickSupport />
@@ -97,3 +95,4 @@ ReactDOM.render(
     />,
 	document.getElementById('app')
 );
+

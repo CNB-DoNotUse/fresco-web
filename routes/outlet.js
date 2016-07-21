@@ -1,6 +1,5 @@
 const express = require('express');
 const config = require('../lib/config');
-const Purchases = require('../lib/purchases');
 const router = express.Router();
 const api = require('../lib/api');
 
@@ -28,26 +27,19 @@ router.get('/', (req, res, next) => {
         url: '/outlet/',
         token,
     }).then(response => {
-        let purchases = null;
-
-        if (user.outlet.verified) {
-            purchases = Purchases.mapPurchases();
-        } else {
+        if (!user.outlet.verified) {
             req.alerts.push(user.id === user.outlet.owner
                             ? 'This outlet is in demo mode. We’ll be in touch shortly to verify your account.'
                             : 'This outlet is in demo mode. Purchases and downloads are currently disabled.');
         }
 
-        const title = 'Outlet';
         const props = {
-            title,
             user,
             outlet: response.body,
-            purchases,
         };
 
         return res.render('app', {
-            title,
+            title: 'Outlet',
             alerts: req.alerts,
             props: JSON.stringify(props),
             page: 'outlet',
