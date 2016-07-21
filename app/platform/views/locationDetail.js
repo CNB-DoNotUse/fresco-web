@@ -18,9 +18,6 @@ class LocationDetail extends React.Component {
             initialPostsLoaded: false,
             sort: 'created_at',
         };
-
-        this.updateSort	= this.updateSort.bind(this);
-        this.loadPosts 	= this.loadPosts.bind(this);
     }
 
     componentWillMount() {
@@ -42,33 +39,29 @@ class LocationDetail extends React.Component {
         }
     }
 
-    updateSort(sort) {
-        this.setState({ sort });
-    }
-
 	/**
 	 * Returns array of posts with offset and callback, used in child PostList
 	 */
-    loadPosts(passedId, callback) {
+    loadPosts(last, cb) {
+        const { location } = this.props;
         const params = {
-            id: this.props.location.id,
             limit: utils.postCount,
-            last: passedId || null,
+            last,
+            geo: location.location,
         };
 
         $.ajax({
-            url: '/api/outlet/location/posts',
+            url: '/api/post/list',
             type: 'GET',
             data: params,
             dataType: 'json',
-            success: (response) => {
-                // Send empty array, because of bad response
-                if (!response.data || response.err) callback([]);
-                else callback(response.data);
-            },
-            error: (xhr, status, error) => {
-                $.snackbar({ content: utils.resolveError(error) });
-            },
+            contentType: 'applcation/json',
+        })
+        .done((res) => {
+            cb(res);
+        })
+        .fail((xhr, status, error) => {
+            $.snackbar({ content: utils.resolveError(error) });
         });
     }
 
@@ -89,8 +82,8 @@ class LocationDetail extends React.Component {
                 </TopBar>
 
                 <PostList
-                    loadPosts={this.loadPosts}
-                    rank={this.props.user.rank}
+                    loadPosts={(last, cb) => this.loadPosts(last, cb)}
+                    rank={user.rank}
                     sort={this.state.sort}
                     size="small"
                     idOffset
