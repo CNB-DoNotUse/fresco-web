@@ -43,13 +43,11 @@ class Photos extends React.Component {
             last,
             limit: utils.postCount,
             type: 'photo',
-            sortBy: this.state.sort,
-            skipped: true,
-            verified: true,
+            sortBy: this.state.sort
         };
 
         if (this.state.showVerified) {
-            params.skipped = false;
+            params.rating = 1;
         }
 
         $.ajax({

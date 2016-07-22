@@ -51,10 +51,10 @@ class PostList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         // If we receive new posts in props while having none previously
-        var currentPostIds = this.state.posts.map(p => p.id),
-            newPostIds 		= nextProps.posts.map(p => p.id),
-            diffIds 		= _.difference(newPostIds, currentPostIds),
-            postsUpdated = false;
+        let currentPostIds = this.state.posts.map(p => p.id);
+        let newPostIds = nextProps.posts.map(p => p.id);
+        let diffIds = _.difference(newPostIds, currentPostIds);
+        let postsUpdated = false;
 
         // Check diff or if the parent tells the component to update
         if (nextProps.posts.length != this.props.posts.length || diffIds.length || nextProps.updatePosts) {
@@ -87,9 +87,9 @@ class PostList extends React.Component {
     }
 
     /**
-        * Sorts posts based on the current field in props
-    * @return {array} An array of posts now sorted
-    */
+     * Sorts posts based on the current field in props
+     * @return {array} An array of posts now sorted
+     */
     sortPosts() {
         let field = this.props.sort == 'captured_at' ? 'captured_at' : 'created_at';
 
@@ -97,8 +97,8 @@ class PostList extends React.Component {
     }
 
     /**
-        * Initial call to populate posts
-    */
+     * Initial call to populate posts
+     */
     loadInitialPosts() {
         // Access parent var load method
         this.props.loadPosts(null, (posts) => {
@@ -108,8 +108,8 @@ class PostList extends React.Component {
     }
 
     /**
-        * Scroll listener for main window
-    */
+     * Scroll listener for main window
+     */
     scroll(e) {
 
         var grid = e.target;
@@ -149,17 +149,17 @@ class PostList extends React.Component {
     }
 
     /**
-        * Sets the `selectedPosts` state property
-    * @param {array} posts The posts to set the `selectedPosts` to
-    */
+     * Sets the `selectedPosts` state property
+     * @param {array} posts The posts to set the `selectedPosts` to
+     */
     setSelectedPosts(posts) {
         this.setState({ selectedPosts: posts });
     }
 
     /**
-        * Toggles posts in stateful selected posts
-    * @param  {object} passedPost The post to toggle selected or unselected in the post-list and bulk edit
-    */
+     * Toggles posts in stateful selected posts
+     * @param  {object} passedPost The post to toggle selected or unselected in the post-list and bulk edit
+     */
     togglePost(passedPost) {
         // Check if `not` CM
         if (this.props.rank < utils.RANKS.CONTENT_MANAGER) return;
@@ -191,16 +191,16 @@ class PostList extends React.Component {
     }
 
     /**
-        * Called when PostCellAction's Edit button is clicked
-    * @param  {Object} post - Has post
-    */
+     * Called when PostCellAction's Edit button is clicked
+     * @param  {Object} post - Has post
+     */
     edit(gallery) {
         this.setState({ gallery, galleryEditToggled: true });
     }
 
     /**
-        * Called when GalleryEdit should be toggled
-    */
+     * Called when GalleryEdit should be toggled
+     */
     toggle() {
         if (this.state.galleryEditToggled) {
             this.setState({
@@ -219,6 +219,7 @@ class PostList extends React.Component {
             sort,
             onlyVerified,
             parentCaption,
+            className
         } = this.props;
         const { posts, selectedPosts } = this.state;
         let postCmps = [];
@@ -254,12 +255,10 @@ class PostList extends React.Component {
             );
         }
 
-        var className = 'container-fluid fat grid ' + this.props.className;
-
         return (
             <div>
                 <div
-                    className={className}
+                    className={'container-fluid fat grid ' + className}
                     ref="grid"
                     onScroll={this.state.scrollable ? this.props.scroll ? this.props.scroll : this.scroll : null}
                 >

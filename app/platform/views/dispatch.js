@@ -55,10 +55,10 @@ class Dispatch extends React.Component {
 	 * @description Dispatch map needs to know which assignment was clicked on the assignment
 	 * list component
 	 */
-	setActiveAssignment(assignment) {
-		this.setState({
-			activeAssignment: assignment
-		});
+	setActiveAssignment(activeAssignment) {
+		console.log(activeAssignment);
+
+		this.setState({ activeAssignment });
 	}
 
 	/**
@@ -141,15 +141,11 @@ class Dispatch extends React.Component {
 		}
 
 		$.ajax({
-			url: '/api/assignment/find',
+			url: '/api/assignment/list',
 			type: 'GET',
 			data: $.param(params),
 			success: (response, status, xhr) => {
-				if(response && !response.err) {
-					callback(map ? response  : utils.mergeAssignments(response, params.sortBy, params.direction))
-				} else {
-					callback([]);
-				}
+				callback(response && !response.err ? response : []);
 			},
 			error: (xhr, status, error) => {
 				$.snackbar({content: utils.resolveError(error)});

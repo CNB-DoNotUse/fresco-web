@@ -16,6 +16,7 @@ Description : View page for all content
  */
 
 class Archive extends React.Component {
+    
     constructor(props) {
         super(props);
 
@@ -42,7 +43,7 @@ class Archive extends React.Component {
         };
 
         if (this.state.verifiedToggle) {
-            params.verified = false;
+            params.rating = 1;
         }
 
         $.ajax({
