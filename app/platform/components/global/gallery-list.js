@@ -59,24 +59,22 @@ class GalleryList extends React.Component {
             limit: 20,
             last,
             sort,
-            skipped: true,
-            verified: true,
-            highlighted: true,
+            rating: [1, 2, 3],
         };
 
-        if(highlighted) {
+        if (highlighted) {
             endpoint = 'gallery/highlights';
         } else {
             endpoint = 'gallery/list';
 
-            if (onlyVerified) params.skipped = false;
+            if (onlyVerified) params.rating = [2, 3];
         }
 
         $.ajax({
             url: '/api/' + endpoint,
-            type: 'GET',
             data: params,
             dataType: 'json',
+            contentType: 'application/json',
             success: (data, status) => {
                 if (status === 'success') {
                     callback(data);
