@@ -137,7 +137,7 @@ class Dispatch extends React.Component {
 		} else {
 			params.sortBy = params.rating == 0 ? 'created_at' : 'ends_at';
 			params.direction = viewMode === 'active' ? 'asc' : 'desc'; //Switch sort when viewing non-active `history`
-			params.limit = 10;	
+			params.limit = 10;
 		}
 
 		$.ajax({

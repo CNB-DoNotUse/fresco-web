@@ -32,22 +32,23 @@ class Locations extends React.Component {
         const autocomplete = this.refs['outlet-location-input'];
 
         // Run checks on place and title
-        if (!place || !place.geometry) {
+        if (!place || !place.geometry || !place.geometry.viewport) {
             $.snackbar({ content: utils.resolveError('ERR_UNSUPPORTED_LOCATION') });
             return;
         } else if (!autocomplete.value) {
             $.snackbar({ content: 'Please enter a valid location title' });
         }
 
+        const bounds = place.geometry.viewport;
         const params = {
-            title: place.formatted_address,
+            title: autocomplete.value,
             // notify_fresco: this.refs['location-fresco-check'].checked,
             // notify_email: this.refs['location-email-check'].checked,
             // notify_sms: this.refs['location-sms-check'].checked,
-            geo: utils.getGeoFromCoord({
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng(),
-            }),
+            geo: {
+                type: 'Polygon',
+                coordinates: utils.generatePolygonFromBounds(bounds),
+            },
         };
 
         $.ajax({
@@ -62,9 +63,10 @@ class Locations extends React.Component {
             autocomplete.value = '';
             // Update locations
             this.loadLocations();
+            $.snackbar({ content: 'Location added' });
         })
-        .fail((xhr, status, error) => {
-            const { responseJSON: { error: { msg = utils.resolveError(err) } } } = xhr;
+        .fail((xhr = {}, status, err) => {
+            const { responseJSON: { msg = utils.resolveError(err) } } = xhr;
             $.snackbar({ content: msg });
         });
     }
