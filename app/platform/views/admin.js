@@ -101,11 +101,11 @@ class Admin extends React.Component {
                 break;
             case 'submissions':
                 endpoint = '/api/gallery/list';
-                params = { unrated: true, last, limit: 16 };
+                params = { rating: 0, last, limit: 16 };
                 break;
             case 'imports':
                 endpoint = '/api/gallery/list';
-                params = { imported: true, unrated: true, last, limit: 16 };
+                params = { rating: 0, imported: true, last, limit: 16 };
                 break;
             default:
                 break;
