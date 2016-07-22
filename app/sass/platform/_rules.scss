@@ -11,7 +11,7 @@ a {
 	font-weight: 500;
 	color: #000;
 }
-a:hover {
+a:hover, a:focus {
 	color: #000;
 	text-decoration: none;
 }
@@ -687,15 +687,20 @@ div.list {
 	height: 100%;
 	overflow-y: auto;
 
+	a {
+		text-decoration:none;
+
+		&:focus {
+			color:black;
+		}
+	}
+
 	div.list-item {
 		padding: 16px;
 		position:relative;
 
 		@include display(flex);
 
-		a & {
-			text-decoration:none;
-		}
 
 		&.assignment-list-item {
 			max-width: 368px;

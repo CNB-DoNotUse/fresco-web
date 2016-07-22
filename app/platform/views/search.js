@@ -231,7 +231,7 @@ export class Search extends Component {
 					posts = response.posts.results;
 
 					this.setState({
-						posts: force ? posts : this.state.posts.concat(stories)
+						posts: force ? posts : this.state.posts.concat(posts)
 					});
 				}
 			},

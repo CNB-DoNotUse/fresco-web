@@ -5,11 +5,13 @@ class AssignmentListItem extends React.Component {
 
     render() {
         const { assignment, setActiveAssignment } = this.props;
-        const global = typeof(assignment.location) === 'undefined';
+        const global = assignment.location === null;
         const location = global ? 'Global' : (assignment.address || 'Unknown');
         const expirationTime = new Date(assignment.ends_at);
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
         const imageUrl = '/images/placeholder-assignment.png';
+
+        console.log(global);
 
         const listItem = (
             <div
