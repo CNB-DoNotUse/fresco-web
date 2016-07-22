@@ -45,7 +45,8 @@
 }
 
 .merge-dropup--active {
-    width: 320px;
+    max-width: 320px;
+    width: 65%;
     bottom: 8px;
 
     .merge-toggle {
