@@ -47,6 +47,8 @@ class TopBarAdmin extends React.Component {
         const caption = `Gallery imported from local system on ${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
         const posts = [];
         this.setState({ loading: true });
+        if (!files.length) return;
+
 
         times(files.length, (i) => {
             posts.push({ contentType: files[i].type });
