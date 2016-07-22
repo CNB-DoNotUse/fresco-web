@@ -63,6 +63,7 @@ class Locations extends React.Component {
             autocomplete.value = '';
             // Update locations
             this.loadLocations();
+            $.snackbar({ content: 'Location added' });
         })
         .fail((xhr = {}, status, err) => {
             const { responseJSON: { msg = utils.resolveError(err) } } = xhr;

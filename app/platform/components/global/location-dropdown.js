@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 import Dropdown from './dropdown';
+import get from 'lodash/get';
 
 /**
  * Location Dropdown for saved locations
@@ -18,15 +19,20 @@ class LocationDropdown extends React.Component {
     }
 
     locationClicked(loc) {
-        if (!this.props.updateMapPlace) return;
+        if (!(get(loc, 'location.type') === 'Polygon')
+            || !this.props.updateMapPlace) return;
+
+        const polygon = loc.location.coordinates[0];
+        const bounds = new google.maps.LatLngBounds();
+
+
+        polygon.forEach((coord) => {
+            const latLng = new google.maps.LatLng(coord[1], coord[0]);
+            bounds.extend(latLng);
+        });
 
         const place = {
-            geometry: {
-                location: {
-                    lng: loc.location.coordinates[0],
-                    lat: loc.location.coordinates[1],
-                },
-            },
+            geometry: { viewport: bounds },
             description: loc.title,
         };
 
@@ -69,6 +75,7 @@ class LocationDropdown extends React.Component {
         .done(() => {
             // Update locations
             this.loadLocations();
+            $.snackbar({ content: 'Location added' });
         })
         .fail((xhr, status, err) => {
             const { responseJSON: { msg = utils.resolveError(err) } } = xhr;
