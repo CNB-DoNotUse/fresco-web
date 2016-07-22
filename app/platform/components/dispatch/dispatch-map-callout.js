@@ -18,7 +18,7 @@ export default class DispatchMapCallout extends React.Component {
 
 	render() {
 		const { assignment } = this.props;
-		const posts = assignment.posts || [];
+		const { photos, videos } = assignment.stats;
 
 		return (
 			<div className="callout">
@@ -34,9 +34,11 @@ export default class DispatchMapCallout extends React.Component {
 					<div className="assignment-callout-buttons">
 						<span className="mdi mdi-image icon assignment-callout-icon"></span>
 						
-						<span className="assignment-callout-image-counter">
-							{posts.length}
-						</span>
+						<span className="assignment-callout-image-counter">{photos}</span>
+
+						<span className="mdi mdi-movie icon assignment-callout-icon"></span>
+						
+						<span className="assignment-callout-image-counter">{videos}</span>
 						
 						<button 
 							type="button" 
