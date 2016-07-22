@@ -75,13 +75,19 @@ export class Search extends Component {
 	componentDidUpdate(prevProps, prevState) {
 		let shouldUpdate = false;
 
-		if(JSON.stringify(prevState.location.coordinates) !== JSON.stringify(this.state.location.coordinates)) {
+		const {
+			location,
+			tags,
+			verifiedToggle
+		} = this.state;
+
+		if(JSON.stringify(prevState.location.coordinates) !== JSON.stringify(location.coordinates)) {
 			shouldUpdate = true;
-		} else if(prevState.location.radius !== this.state.location.radius) {
+		} else if(prevState.location.radius !== location.radius) {
 			shouldUpdate = true;
-		} else if(JSON.stringify(prevState.tags) !== JSON.stringify(this.state.tags)){
+		} else if(JSON.stringify(prevState.tags) !== JSON.stringify(tags)){
 			shouldUpdate = true;
-		} else if(prevState.verifiedToggle !== this.state.verifiedToggle) {
+		} else if(prevState.verifiedToggle !== verifiedToggle) {
 			shouldUpdate = true;
 		}
 
@@ -97,19 +103,23 @@ export class Search extends Component {
 
 	/**
 	 * Determins title for page
-	 * @param  {BOOL} withProps To determine from props or state
+	 * @param  {BOOL} withProps If title should be determined from props or state
 	 * @return {string} Returns a title
 	 */
 	getTitle(withProps) {
-		const state = withProps ? this.props : this.state;
+		const {
+			tags,
+			location
+		} = withProps ? this.props : this.state;
+		
 		let title = '';
 
 		if(this.props.query !== '') {
 			title = 'Results for ' + this.props.query;
-		} else if(state.tags.length) {
-			title = 'Results for tags ' + state.tags.join(', ');
-		} else if(state.location && state.location.address) {
-			title = 'Results from ' + state.location.address;
+		} else if(tags.length) {
+			title = 'Results for tags ' + tags.join(', ');
+		} else if(location && location.address) {
+			title = 'Results from ' + location.address;
 		} else {
 			title = "No search query!"
 		}
@@ -248,11 +258,11 @@ export class Search extends Component {
 		const params = {
 			users: {
 				q: this.props.query,
-				last: force ? undefined : _.last(this.state.users),
+				last: force ? undefined : _.last(this.state.users).id,
 				limit: 20
 			}
 		};
-
+		
 		$.ajax({
 			url: '/api/search',
 			type: 'GET',
@@ -398,8 +408,6 @@ export class Search extends Component {
 	}
 
 	render() {
-		console.log(this.state);
-
 		return (
 			<App
 				query={this.props.query} 
