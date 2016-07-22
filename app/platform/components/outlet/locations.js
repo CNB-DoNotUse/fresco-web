@@ -32,7 +32,7 @@ class Locations extends React.Component {
         const autocomplete = this.refs['outlet-location-input'];
 
         // Run checks on place and title
-        if (!place || !place.geometry) {
+        if (!place || !place.geometry || !place.geometry.viewport) {
             $.snackbar({ content: utils.resolveError('ERR_UNSUPPORTED_LOCATION') });
             return;
         } else if (!autocomplete.value) {

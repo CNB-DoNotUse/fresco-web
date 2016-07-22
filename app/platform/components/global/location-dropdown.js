@@ -42,22 +42,21 @@ class LocationDropdown extends React.Component {
         const place = this.props.mapPlace;
 
         // Run checks on place and title
-        if (!place || !place.geometry) {
+        if (!place || !place.geometry || !place.geometry.viewport) {
             $.snackbar({ content: utils.resolveError('ERR_UNSUPPORTED_LOCATION') });
             return;
         }
 
+        const bounds = place.geometry.viewport;
         const params = {
-            title: place.formatted_address,
-            // TODO: not toggleable in ui, however should be sent up as true by default
-            //   - waiting on api
+            title: place.description,
             // notify_fresco: this.refs['location-fresco-check'].checked,
             // notify_email: this.refs['location-email-check'].checked,
             // notify_sms: this.refs['location-sms-check'].checked,
-            geo: utils.getGeoFromCoord({
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng(),
-            }),
+            geo: {
+                type: 'Polygon',
+                coordinates: utils.generatePolygonFromBounds(bounds),
+            },
         };
 
         $.ajax({
@@ -72,7 +71,7 @@ class LocationDropdown extends React.Component {
             this.loadLocations();
         })
         .fail((xhr, status, err) => {
-            const { responseJSON: { error: { msg = utils.resolveError(err) } } } = xhr;
+            const { responseJSON: { msg = utils.resolveError(err) } } = xhr;
             $.snackbar({ content: msg });
         });
     }
