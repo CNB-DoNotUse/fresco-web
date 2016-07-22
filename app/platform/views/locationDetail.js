@@ -46,8 +46,9 @@ class LocationDetail extends React.Component {
         const { location } = this.props;
         const params = {
             limit: utils.postCount,
-            last,
             geo: location.location,
+            radius: 1,
+            last,
         };
 
         $.ajax({
