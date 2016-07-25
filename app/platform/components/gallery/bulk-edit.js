@@ -1,18 +1,12 @@
 import React from 'react';
-import GalleryEditTags from '../gallery/edit-tags';
-import GalleryEditStories from '../gallery/edit-stories';
-import EditPost from './edit-post.js';
+import EditTags from './edit-tags';
+import EditStories from './edit-stories';
+import EditPost from './edit-post';
 import Slick from 'react-slick';
 import utils from 'utils';
 
-/** //
-
-Description : Component for editing multiple posts at once (from possibly
-    different galleries)
-
-// **/
-
 /**
+ * Component for editing multiple posts at once (from possibly different galleries)
  * Bulk Edit Parent Object
  */
 export default class BulkEdit extends React.Component {
@@ -277,12 +271,12 @@ export default class BulkEdit extends React.Component {
                                         onChange={this.updateCaption} />
                                 </div>
 
-                                <GalleryEditTags
+                                <EditTags
                                     ref="tags"
                                     tags={this.state.tags}
                                     updateTags={this.updateTags} />
 
-                                <GalleryEditStories
+                                <EditStories
                                     relatedStories={this.state.relatedStories}
                                     updateRelatedStories={this.updateRelatedStories}/>
                             </div>

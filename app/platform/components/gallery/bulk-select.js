@@ -1,5 +1,5 @@
 import React from 'react';
-import BulkEdit from '../editing/bulk-edit';
+import BulkEdit from './bulk-edit';
 import utils from 'utils';
 
 /**

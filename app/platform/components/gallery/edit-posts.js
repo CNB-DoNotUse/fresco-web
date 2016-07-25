@@ -1,5 +1,5 @@
 import React from 'react';
-import EditPost from '../editing/edit-post.js';
+import EditPost from './edit-post';
 import Slider from 'react-slick';
 
 /**

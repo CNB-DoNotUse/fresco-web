@@ -21,7 +21,7 @@ export default class StoryEditStats extends React.Component {
 				<div id="story-edit-caption" className="meta-description">
 					{story.description}
 				</div>
-				
+
 				<div className="meta-list">
 					<ul className="md-type-subhead">
 						<li>

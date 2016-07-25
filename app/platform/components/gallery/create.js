@@ -2,7 +2,7 @@ import React from 'react';
 import EditTags from './edit-tags';
 import EditArticles from './edit-articles';
 import EditStories from './edit-stories';
-import EditPost from '../editing/edit-post.js';
+import EditPost from './edit-post';
 import Slick from 'react-slick';
 import utils from 'utils';
 
