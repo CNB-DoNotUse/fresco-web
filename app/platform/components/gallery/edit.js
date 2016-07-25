@@ -6,7 +6,7 @@ import EditArticles from './edit-articles';
 import EditPosts from './edit-posts';
 import EditMap from './edit-map';
 import EditAssignment from './edit-assignment';
-import BylineEdit from '../editing/byline-edit.js';
+import BylineEdit from './byline-edit.js';
 import utils from 'utils';
 import _ from 'lodash';
 
@@ -18,11 +18,12 @@ class Edit extends React.Component {
 
     constructor(props) {
         super(props);
+        const { gallery } = props;
 
         this.state = {
-            gallery: null,
-            caption: '',
-            posts: null,
+            gallery,
+            caption: gallery ? gallery.caption : '',
+            posts: gallery ? gallery.posts : null,
             ratingChanged: false,
             deletePosts: [],
         };
@@ -290,76 +291,6 @@ class Edit extends React.Component {
         const { user } = this.props;
 
         return (
-            <div className="dialog-body">
-                <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    <BylineEdit ref="byline" gallery={gallery} />
-
-                    <div className="dialog-row">
-                        <textarea
-                            id="gallery-edit-caption"
-                            type="text"
-                            className="form-control floating-label"
-                            ref="gallery-caption"
-                            value={gallery.caption}
-                            placeholder="Caption"
-                            onChange={(e) => this.updateCaption(e)}
-                        />
-                    </div>
-
-                    <EditAssignment
-                        assignment={gallery.assignment}
-                        updateAssignment={(a) => this.updateAssignment(a)}
-                    />
-
-                    <EditTags
-                        tags={gallery.tags}
-                        updateTags={(t) => this.updateTags(t)}
-                    />
-
-                    <EditStories
-                        relatedStories={gallery.related_stories}
-                        updateRelatedStories={(s) => this.updateRelatedStories(s)}
-                    />
-
-                    <EditArticles
-                        articles={gallery.articles}
-                        updateArticles={(a) => this.updateArticles(a)}
-                    />
-
-                    <div className="dialog-row">
-                        <div className="checkbox">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={gallery.rating == 3}
-                                    onChange={(e) => this.toggleHighlight(e)}
-                                />
-                                Highlighted
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <EditPosts
-                    posts={gallery.posts}
-                    files={gallery.files}
-                    deletePosts={deletePosts}
-                    toggleDelete={(p) => this.toggleDeletePost(p)}
-                />
-
-                <EditMap
-                    gallery={gallery}
-                    onPlaceChange={(p) => this.onPlaceChange(p)}
-                    disabled={user.id === gallery.owner_id}
-                />
-            </div>
-        );
-    }
-
-    render() {
-        const { gallery } = this.state;
-        const { toggled } = this.props;
-        const editBody = (
             <div className="col-xs-12 col-lg-12 edit-new dialog">
                 <div className="dialog-head">
                     <span className="md-type-title">Edit Gallery</span>
@@ -369,7 +300,69 @@ class Edit extends React.Component {
                     />
                 </div>
 
-                {this.renderBody()}
+                <div className="dialog-body">
+                    <div className="dialog-col col-xs-12 col-md-7 form-group-default">
+                        <BylineEdit ref="byline" gallery={gallery} />
+
+                        <div className="dialog-row">
+                            <textarea
+                                id="gallery-edit-caption"
+                                type="text"
+                                className="form-control floating-label"
+                                ref="gallery-caption"
+                                value={gallery.caption}
+                                placeholder="Caption"
+                                onChange={(e) => this.updateCaption(e)}
+                            />
+                        </div>
+
+                        <EditAssignment
+                            assignment={gallery.assignment}
+                            updateAssignment={(a) => this.updateAssignment(a)}
+                        />
+
+                        <EditTags
+                            tags={gallery.tags}
+                            updateTags={(t) => this.updateTags(t)}
+                        />
+
+                        <EditStories
+                            relatedStories={gallery.related_stories}
+                            updateRelatedStories={(s) => this.updateRelatedStories(s)}
+                        />
+
+                        <EditArticles
+                            articles={gallery.articles}
+                            updateArticles={(a) => this.updateArticles(a)}
+                        />
+
+                        <div className="dialog-row">
+                            <div className="checkbox">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={gallery.rating == 3}
+                                        onChange={(e) => this.toggleHighlight(e)}
+                                    />
+                                    Highlighted
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <EditPosts
+                        posts={gallery.posts}
+                        files={gallery.files}
+                        deletePosts={deletePosts}
+                        toggleDelete={(p) => this.toggleDeletePost(p)}
+                    />
+
+                    <EditMap
+                        gallery={gallery}
+                        onPlaceChange={(p) => this.onPlaceChange(p)}
+                        disabled={user.id === gallery.owner_id}
+                    />
+                </div>
 
                 <EditFoot
                     gallery={this.state.gallery}
@@ -382,12 +375,17 @@ class Edit extends React.Component {
                 />
             </div>
         );
+    }
+
+    render() {
+        const { gallery } = this.state;
+        const { toggled } = this.props;
 
         return (
             <div>
                 <div className={`dim toggle-edit ${toggled ? 'toggled' : ''}`} />
                 <div className={`edit panel panel-default toggle-edit gedit ${toggled ? 'toggled' : ''}`}>
-                    {gallery ? editBody : ''}
+                    {gallery ? this.renderBody() : ''}
                 </div>
             </div>
         );

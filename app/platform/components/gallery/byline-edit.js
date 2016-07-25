@@ -6,7 +6,7 @@ import Dropdown from './../global/dropdown.js';
  * @param {object} gallery Gallery object to base byline representation off of
  */
 
-class GalleryEditByline extends React.Component {
+class BylineEdit extends React.Component {
     constructor(props) {
         super(props);
         const { gallery } = this.props;
@@ -176,8 +176,8 @@ class GalleryEditByline extends React.Component {
     }
 }
 
-GalleryEditByline.propTypes = {
-    gallery: PropTypes.object.isRequired,
+BylineEdit.propTypes = {
+    gallery: PropTypes.object,
 };
 
-export default GalleryEditByline;
+export default BylineEdit;
