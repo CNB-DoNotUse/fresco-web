@@ -5,19 +5,19 @@ import React, { PropTypes } from 'react'
  * @description Column on the left of the posts grid on the story detail page
  */
 export default class StorySidebar extends React.Component {
-	render() {	
+	render() {
 		return (
 			<div className="col-sm-4 profile hidden-xs">
 				<div className="container-fluid fat">
 					<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
 						<div className="meta">
-							<div 
-								className="meta-description" 
+							<div
+								className="meta-description"
 								id="story-description">
 									{this.props.story.caption || 'No Description'}
 							</div>
-							
-							<StoryStats 
+
+							<StoryStats
 								story={this.props.story} />
 						</div>
 					</div>
@@ -45,7 +45,7 @@ class StoryStats extends React.Component {
 				<div></div>
 			);
 		}
-		
+
 		return (
 			<div className="meta-list">
 				<ul className="md-type-subhead">
@@ -63,7 +63,7 @@ class StoryStats extends React.Component {
 					</li>
 				</ul>
 			</div>
-			
+
 		)
 	}
 }

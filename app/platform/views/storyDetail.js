@@ -1,11 +1,11 @@
-import React, { PropTypes } from 'react'
-import ReactDOM from 'react-dom'
-import App from './app'
-import TopBar from './../components/topbar'
-import PostList from './../components/global/post-list.js'
-import StorySidebar from './../components/storyDetail/story-sidebar'
-import StoryEdit from './../components/editing/story-edit.js'
-import utils from 'utils'
+import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
+import App from './app';
+import TopBar from './../components/topbar';
+import PostList from './../components/global/post-list';
+import StorySidebar from './../components/story/sidebar';
+import StoryEdit from './../components/story/edit';
+import utils from 'utils';
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
@@ -14,7 +14,7 @@ class StoryDetail extends React.Component {
 
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			storyEditToggled: false,
 			story: this.props.story,
@@ -86,7 +86,7 @@ class StoryDetail extends React.Component {
  					timeToggle={true}
  					chronToggle={true} />
 
- 				<StorySidebar 
+ 				<StorySidebar
  					story={story} />
 
  				<div className="col-sm-8 tall">
