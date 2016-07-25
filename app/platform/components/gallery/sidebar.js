@@ -10,7 +10,7 @@ Description : Column on the left of the posts grid on the gallery detail page
  * Gallery sidebar parent object
  */
 
-export default class GallerySidebar extends React.Component {
+export default class Sidebar extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -24,7 +24,7 @@ export default class GallerySidebar extends React.Component {
 					<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
 						<div className="meta">
 							<div className="meta-description" id="gallery-description">{this.props.gallery.caption}</div>
-							
+
 							<GalleryStats gallery={this.props.gallery} />
 						</div>
 					</div>
@@ -72,7 +72,7 @@ class GalleryStats extends React.Component {
 					{videos}
 				</ul>
 			</div>
-			
+
 		)
 	}
 }

@@ -1,9 +1,9 @@
-import React from 'react'
-import GalleryEditTags from './gallery-edit-tags'
-import GalleryEditStories from './gallery-edit-stories'
-import EditPost from './edit-post.js'
-import Slick from 'react-slick'
-import utils from 'utils'
+import React from 'react';
+import GalleryEditTags from '../gallery/edit-tags';
+import GalleryEditStories from '../gallery/edit-stories';
+import EditPost from './edit-post.js';
+import Slick from 'react-slick';
+import utils from 'utils';
 
 /** //
 

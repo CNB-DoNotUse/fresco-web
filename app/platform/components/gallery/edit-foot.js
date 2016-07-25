@@ -1,11 +1,11 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes } from 'react';
 
 /**
  * Gallery Edit Foot component
  * @description Contains all the interaction buttons
  */
 
-class GalleryEditFoot extends React.Component {
+class EditFoot extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -211,11 +211,11 @@ class GalleryEditFoot extends React.Component {
 }
 
 
-GalleryEditFoot.defaultProps = {
-	hide: function () { console.log('Hide not implemented in GalleryEdit'); }
+EditFoot.defaultProps = {
+	hide() { console.log('Hide not implemented in GalleryEdit'); }
 };
 
-GalleryEditFoot.propTypes = {
+EditFoot.propTypes = {
     verifyGallery: PropTypes.func.isRequired,
     unverifyGallery: PropTypes.func.isRequired,
     saveGallery: PropTypes.func.isRequired,
@@ -223,5 +223,5 @@ GalleryEditFoot.propTypes = {
     hide: PropTypes.func.isRequired,
 };
 
-export default GalleryEditFoot;
+export default EditFoot;
 

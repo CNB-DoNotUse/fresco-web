@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
-import Tag from './tag';
+import Tag from '../editing/tag';
 import utils from 'utils';
 
 /**
  * Component for managing added/removed stories
  */
 
-class GalleryEditStories extends React.Component {
+class EditStories extends React.Component {
     constructor(props) {
         super(props);
         this.state = { suggestions: [] };
@@ -131,15 +131,15 @@ class GalleryEditStories extends React.Component {
     }
 }
 
-GalleryEditStories.defaultProps = {
+EditStories.defaultProps = {
     updateRelatedStories: () => {},
     relatedStories: [],
 };
 
-GalleryEditStories.propTypes = {
+EditStories.propTypes = {
     relatedStories: PropTypes.array,
     updateRelatedStories: PropTypes.func,
 };
 
-export default GalleryEditStories;
+export default EditStories;
 

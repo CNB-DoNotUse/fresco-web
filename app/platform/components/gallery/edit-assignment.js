@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
-import Tag from './tag.js';
+import Tag from '../editing/tag.js';
 
 /**
  * Component for managing added/removed tags
  */
-class GalleryEditAssignment extends React.Component {
+class EditAssignment extends React.Component {
     constructor(props) {
         super(props);
         this.state = { suggestions: [] };
@@ -94,14 +94,14 @@ class GalleryEditAssignment extends React.Component {
     }
 }
 
-GalleryEditAssignment.defaultProps = {
+EditAssignment.defaultProps = {
     updateAssignment() {},
 };
 
-GalleryEditAssignment.propTypes = {
+EditAssignment.propTypes = {
     updateAssignment: PropTypes.func.isRequired,
     assignment: PropTypes.object,
 };
 
-export default GalleryEditAssignment;
+export default EditAssignment;
 

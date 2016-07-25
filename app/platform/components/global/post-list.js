@@ -1,19 +1,15 @@
 import _ from 'lodash';
 import React from 'react';
 import PostCell from './post-cell';
-import GalleryEdit from '../editing/gallery-edit';
-import GalleryBulkSelect from '../editing/gallery-bulk-select';
+import GalleryEdit from '../gallery/edit';
+import GalleryCreate from '../gallery/create';
+import GalleryBulkSelect from '../gallery/bulk-select';
 import utils from 'utils';
-import GalleryCreate from '../editing/gallery-create';
-
-/** //
-    Description : List for a set of posts used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
-// **/
 
 /**
-    * Post List Parent Object
+* Post List Parent Object
+* List for a set of posts used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
 */
-
 class PostList extends React.Component {
 
     constructor(props) {

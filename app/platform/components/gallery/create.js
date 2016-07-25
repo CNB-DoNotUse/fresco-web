@@ -1,10 +1,10 @@
-import React from 'react'
-import GalleryEditTags from './gallery-edit-tags'
-import GalleryEditArticles from './gallery-edit-articles'
-import GalleryEditStories from './gallery-edit-stories'
-import EditPost from './edit-post.js'
-import Slick from 'react-slick'
-import utils from 'utils'
+import React from 'react';
+import GalleryEditTags from './edit-tags';
+import GalleryEditArticles from './edit-articles';
+import GalleryEditStories from './edit-stories';
+import EditPost from '../editing/edit-post.js';
+import Slick from 'react-slick';
+import utils from 'utils';
 
 /** //
 
@@ -16,7 +16,7 @@ Description : Component for creating a gallery
  * Gallery Create Parent Object
  */
 
-export default class GalleryCreate extends React.Component {
+export default class Create extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -240,7 +240,4 @@ export default class GalleryCreate extends React.Component {
  			</div>
  		);
  	}
-
-
-
 }

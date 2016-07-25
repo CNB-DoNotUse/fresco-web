@@ -1,12 +1,12 @@
-import React from 'react'
-import Tag from './tag.js'
-import utils from 'utils'
+import React from 'react';
+import Tag from '../editing/tag.js';
+import utils from 'utils';
 
 /**
  * Component for managing added/removed articles
  */
 
-export default class GalleryEditArticles extends React.Component {
+class EditArticles extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -162,7 +162,9 @@ export default class GalleryEditArticles extends React.Component {
 
 }
 
-GalleryEditArticles.defaultProps = {
+EditArticles.defaultProps = {
 	updateArticles: () => {},
-	articles: []
-}
+	articles: [],
+};
+
+export default EditArticles;

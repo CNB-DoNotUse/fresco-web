@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import Slider from 'react-slick';
 import AutocompleteMap from '../global/autocomplete-map';
-import EditTags from './../editing/gallery-edit-tags';
-import EditStories from './../editing/gallery-edit-stories';
-import GalleryEditAssignment from './../editing/gallery-edit-assignment';
+import EditTags from './../gallery/edit-tags';
+import EditStories from './../gallery/edit-stories';
+import EditAssignment from './../gallery/edit-assignment';
 import FrescoImage from '../global/fresco-image';
 import utils from 'utils';
 
@@ -282,7 +282,7 @@ class GalleryEdit extends React.Component {
                         ref="gallery-caption"
                     />
 
-                    <GalleryEditAssignment
+                    <EditAssignment
                         assignment={assignment}
                         updateAssignment={(a) => this.updateAssignment(a)}
                     />

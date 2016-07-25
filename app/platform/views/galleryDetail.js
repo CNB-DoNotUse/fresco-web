@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TopBar from './../components/topbar';
 import PostList from './../components/global/post-list';
-import GallerySidebar from './../components/galleryDetail/gallery-sidebar';
-import GalleryEdit from './../components/editing/gallery-edit';
+import Sidebar from './../components/gallery/sidebar';
+import Edit from './../components/gallery/edit';
 import App from './app';
 import utils from 'utils';
 
@@ -74,7 +74,7 @@ class GalleryDetail extends React.Component {
                     timeToggle
                 />
 
-                <GallerySidebar gallery={this.state.gallery} />
+                <Sidebar gallery={this.state.gallery} />
 
                 <div className="col-sm-8 tall">
                     <PostList
@@ -90,7 +90,7 @@ class GalleryDetail extends React.Component {
                     />
                 </div>
 
-                <GalleryEdit
+                <Edit
                     updateGallery={this.updateGallery}
                     toggle={this.toggleGalleryEdit}
                     gallery={this.state.gallery}

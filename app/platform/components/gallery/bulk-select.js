@@ -1,18 +1,12 @@
-import React from 'react'
-import BulkEdit from './bulk-edit'
-import utils from 'utils'
-
-/** //
-
-Description : Component for bulk selecting posts
-
-// **/
+import React from 'react';
+import BulkEdit from '../editing/bulk-edit';
+import utils from 'utils';
 
 /**
  * Gallery Bulk Select Parent Object
+ * Component for bulk selecting posts
  */
-
-export default class GalleryBulkSelect extends React.Component {
+class BulkSelect extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -20,7 +14,7 @@ export default class GalleryBulkSelect extends React.Component {
 		this.edit = this.edit.bind(this);
 		this.createGallery = this.createGallery.bind(this);
 	}
-	
+
 	createGallery() {
  		$(".toggle-gcreate").toggleClass("toggled");
  	}
@@ -75,6 +69,8 @@ export default class GalleryBulkSelect extends React.Component {
  	}
 }
 
-GalleryBulkSelect.defaultProps = {
-	posts: []
-}
+BulkSelect.defaultProps = {
+	posts: [],
+};
+
+export default BulkSelect;

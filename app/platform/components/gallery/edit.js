@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
-import GalleryEditBody from './gallery-edit-body.js';
-import GalleryEditFoot from './gallery-edit-foot.js';
+import EditBody from './edit-body.js';
+import EditFoot from './edit-foot.js';
 import utils from 'utils';
 
 /** //
@@ -13,7 +13,7 @@ Description : Component for adding gallery editing to the current view
 /**
  * Gallery Edit Parent Object
  */
-class GalleryEdit extends React.Component {
+class Edit extends React.Component {
 
     constructor(props) {
         super(props);
@@ -343,7 +343,7 @@ class GalleryEdit extends React.Component {
                         <span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
                     </div>
 
-                    <GalleryEditBody
+                    <EditBody
                         ref="galleryEditBody"
                         gallery={this.state.gallery}
 
@@ -359,7 +359,7 @@ class GalleryEdit extends React.Component {
                         toggleDeletePost={this.toggleDeletePost}
                     />
 
-                    <GalleryEditFoot
+                    <EditFoot
                         gallery={this.state.gallery}
                         revert={this.revertGallery}
                         saveGallery={this.saveGallery}
@@ -385,7 +385,7 @@ class GalleryEdit extends React.Component {
     }
 }
 
-GalleryEdit.defaultProps = {
+Edit.defaultProps = {
     gallery: null,
     posts: [],
     toggled: false,
@@ -393,4 +393,4 @@ GalleryEdit.defaultProps = {
     toggle() {},
 };
 
-export default GalleryEdit;
+export default Edit;

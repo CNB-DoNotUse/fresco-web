@@ -1,13 +1,13 @@
-import _ from 'lodash'
-import React from 'react'
-import Tag from './tag.js'
-import utils from 'utils'
+import _ from 'lodash';
+import React from 'react';
+import Tag from '../editing/tag.js';
+import utils from 'utils';
 
 /**
  * Component for managing added/removed tags
  */
 
-export default class GalleryEditTags extends React.Component {
+class EditTags extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -16,7 +16,7 @@ export default class GalleryEditTags extends React.Component {
 	}
 
 	change(e) {
-		
+
 		//Check if enter
 		if(e.keyCode != 13) return;
 
@@ -26,7 +26,7 @@ export default class GalleryEditTags extends React.Component {
 		if(utils.isEmptyString(tag)) return;
 
 		e.target.value = '';
-		
+
 		//Check if tag exists
 		if(tags.indexOf(tag) != -1) return;
 
@@ -44,7 +44,7 @@ export default class GalleryEditTags extends React.Component {
 		var tags = _.clone(this.props.tags, true);
 
 		tags.splice(index, 1);
-		
+
 		this.props.updateTags(tags);
 	}
 
@@ -52,21 +52,21 @@ export default class GalleryEditTags extends React.Component {
 
 		var tags = this.props.tags.map((tag, i) => {
 			return (
-				<Tag 
-					onClick={this.removeTag.bind(null, i)} 
-					text={'#' + tag} 
+				<Tag
+					onClick={this.removeTag.bind(null, i)}
+					text={'#' + tag}
 					plus={false}
 					key={i} />
 			);
 		});
 
 		return (
-			
+
 			<div className="dialog-row split chips">
 				<div className="split-cell">
-					<input 
-						type="text" 
-						className="form-control floating-label" 
+					<input
+						type="text"
+						className="form-control floating-label"
 						placeholder="Tags"
 						onKeyUp={this.change} />
 					<ul ref="gallery-tags-list" className="chips">{tags}</ul>
@@ -82,7 +82,9 @@ export default class GalleryEditTags extends React.Component {
 
 }
 
-GalleryEditTags.defaultProps = {
+EditTags.defaultProps = {
 	tags: [],
 	updateTags: () => {}
 }
+
+export default EditTags;

@@ -1,18 +1,18 @@
 import React from 'react';
-import GalleryEditTags from './gallery-edit-tags';
-import GalleryEditStories from './gallery-edit-stories';
-import GalleryEditArticles from './gallery-edit-articles';
-import GalleryEditPosts from './gallery-edit-posts';
-import GalleryEditMap from './gallery-edit-map';
-import GalleryEditAssignment from './gallery-edit-assignment';
-import BylineEdit from './byline-edit.js';
+import EditTags from './edit-tags';
+import EditStories from './edit-stories';
+import EditArticles from './edit-articles';
+import EditPosts from './edit-posts';
+import EditMap from './edit-map';
+import EditAssignment from './edit-assignment';
+import BylineEdit from '../editing/byline-edit.js';
 
 /**
  * Gallery Edit Body, inside of the GalleryEdit class
  * @description manages all of the input fields, and speaks to parent
  */
 
-class GalleryEditBody extends React.Component {
+class EditBody extends React.Component {
     constructor(props) {
         super(props);
         this.toggleHighlight = this.toggleHighlight.bind(this);
@@ -46,22 +46,22 @@ class GalleryEditBody extends React.Component {
                         />
                     </div>
 
-                    <GalleryEditAssignment
+                    <EditAssignment
                         assignment={this.props.gallery.assignment}
                         updateAssignment={(a) => this.props.updateGalleryField('assignment', a)}
                     />
 
-                    <GalleryEditTags
+                    <EditTags
                         tags={this.props.gallery.tags}
                         updateTags={this.props.updateTags}
                     />
 
-                    <GalleryEditStories
+                    <EditStories
                         relatedStories={this.props.gallery.related_stories}
                         updateRelatedStories={this.props.updateRelatedStories}
                     />
 
-                    <GalleryEditArticles
+                    <EditArticles
                         articles={this.props.gallery.articles}
                         updateArticles={this.props.updateArticles}
                     />
@@ -80,14 +80,14 @@ class GalleryEditBody extends React.Component {
                     </div>
                 </div>
 
-                <GalleryEditPosts
+                <EditPosts
                     posts={this.props.gallery.posts}
                     files={this.props.gallery.files}
                     deletePosts={this.props.deletePosts}
                     toggleDelete={this.props.toggleDeletePost}
                 />
 
-                <GalleryEditMap
+                <EditMap
                     gallery={this.props.gallery}
                     onPlaceChange={this.props.onPlaceChange}
                 />
@@ -96,7 +96,7 @@ class GalleryEditBody extends React.Component {
     }
 }
 
-GalleryEditBody.defaultProps = {
+EditBody.defaultProps = {
     deletePosts: [],
     onPlaceChange() { console.log('GalleryEditBody missing onPlaceChange prop'); },
     toggleDeletePost() { console.log('GalleryEditBody missing toggleDeletePost prop'); },
@@ -106,5 +106,5 @@ GalleryEditBody.defaultProps = {
     updateTags() { console.log('GalleryEditBody missing updatedTags prop'); },
 };
 
-export default GalleryEditBody;
+export default EditBody;
 

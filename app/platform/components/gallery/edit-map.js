@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
 
 /**
  * Component for managing gallery map representation
  */
 
-export default class GalleryEditMap extends React.Component {
-
+class EditMap extends React.Component {
     render() {
-        const { gallery, onPlaceChange } = this.props;
+        const { gallery, onPlaceChange, disabled } = this.props;
         let location = null;
         let defaultLocation = '';
 
@@ -41,7 +40,7 @@ export default class GalleryEditMap extends React.Component {
                     location={location}
                     hasRadius={false}
                     onPlaceChange={onPlaceChange}
-                    disabled={gallery.owner}
+                    disabled={disabled}
                     rerender
                 />
             </div>
@@ -49,3 +48,14 @@ export default class GalleryEditMap extends React.Component {
     }
 }
 
+EditMap.propTypes = {
+    gallery: PropTypes.object,
+    onPlaceChange: PropTypes.func,
+    disabled: PropTypes.bool,
+};
+
+EditMap.defaultProps = {
+    disabled: true,
+};
+
+export default EditMap;

@@ -1,20 +1,12 @@
-import _ from 'lodash'
-import React from 'react'
-import EditPost from './edit-post.js'
-import Slider from 'react-slick'
+import React from 'react';
+import EditPost from '../editing/edit-post.js';
+import Slider from 'react-slick';
 
 /**
  * Component for managing gallery's posts
  */
-
-export default class GalleryEditPosts extends React.Component {
-
-	constructor(props) {
-		super(props);
-	}
-
+class EditPosts extends React.Component {
 	render() {
-
 		var k = 0;
 
 		var posts = this.props.posts.map((post) => {
@@ -46,11 +38,11 @@ export default class GalleryEditPosts extends React.Component {
 		var files = [];
 
 		for (var i = 0; i < this.props.files.length; i++){
-			
+
 			files.push(
 				<div key={++k} >
-					<EditPost 
-						file={this.props.files[i]} 
+					<EditPost
+						file={this.props.files[i]}
 						source={this.props.files.sources[i]} />
 				</div>
 			);
@@ -70,9 +62,11 @@ export default class GalleryEditPosts extends React.Component {
 	}
 }
 
-GalleryEditPosts.defaultProps = {
+EditPosts.defaultProps = {
 	deletePosts: [],
 	posts: [],
 	files: [],
-	toggleDelete: function() {}
-}
+	toggleDelete() {},
+};
+
+export default EditPosts;

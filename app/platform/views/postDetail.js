@@ -6,7 +6,7 @@ import PostInfo from './../components/postDetail/post-info';
 import PostRelated from './../components/postDetail/post-related';
 import PostRelatedTags from './../components/postDetail/post-related-tags';
 import PostDetailImage from './../components/postDetail/post-detail-image';
-import GalleryEdit from './../components/editing/gallery-edit';
+import GalleryEdit from './../components/gallery/edit';
 import utils from 'utils';
 
 /**
