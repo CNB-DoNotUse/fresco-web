@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import EditTags from './edit-tags';
 import EditStories from './edit-stories';
 import EditArticles from './edit-articles';
@@ -13,11 +13,6 @@ import BylineEdit from '../editing/byline-edit.js';
  */
 
 class EditBody extends React.Component {
-    constructor(props) {
-        super(props);
-        this.toggleHighlight = this.toggleHighlight.bind(this);
-    }
-
     componentDidMount() {
         $.material.init();
     }
@@ -27,12 +22,23 @@ class EditBody extends React.Component {
     }
 
     render() {
-        var rating = this.props.gallery.rating;
+        const {
+            gallery,
+            updateCaption,
+            updateGalleryField,
+            updateTags,
+            updateRelatedStories,
+            updateArticles,
+            deletePosts,
+            toggleDeletePost,
+            onPlaceChange,
+            userId,
+        } = this.props;
 
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    <BylineEdit ref="byline" gallery={this.props.gallery} />
+                    <BylineEdit ref="byline" gallery={gallery} />
 
                     <div className="dialog-row">
                         <textarea
@@ -40,30 +46,30 @@ class EditBody extends React.Component {
                             type="text"
                             className="form-control floating-label"
                             ref="gallery-caption"
-                            value={this.props.gallery.caption}
+                            value={gallery.caption}
                             placeholder="Caption"
-                            onChange={this.props.updateCaption}
+                            onChange={updateCaption}
                         />
                     </div>
 
                     <EditAssignment
-                        assignment={this.props.gallery.assignment}
-                        updateAssignment={(a) => this.props.updateGalleryField('assignment', a)}
+                        assignment={gallery.assignment}
+                        updateAssignment={(a) => updateGalleryField('assignment', a)}
                     />
 
                     <EditTags
-                        tags={this.props.gallery.tags}
-                        updateTags={this.props.updateTags}
+                        tags={gallery.tags}
+                        updateTags={updateTags}
                     />
 
                     <EditStories
-                        relatedStories={this.props.gallery.related_stories}
-                        updateRelatedStories={this.props.updateRelatedStories}
+                        relatedStories={gallery.related_stories}
+                        updateRelatedStories={updateRelatedStories}
                     />
 
                     <EditArticles
-                        articles={this.props.gallery.articles}
-                        updateArticles={this.props.updateArticles}
+                        articles={gallery.articles}
+                        updateArticles={updateArticles}
                     />
 
                     <div className="dialog-row">
@@ -71,8 +77,8 @@ class EditBody extends React.Component {
                             <label>
                                 <input
                                     type="checkbox"
-                                    checked={this.props.gallery.rating == 3}
-                                    onChange={this.toggleHighlight}
+                                    checked={gallery.rating == 3}
+                                    onChange={(e) => this.toggleHighlight(e)}
                                 />
                                 Highlighted
                             </label>
@@ -81,29 +87,38 @@ class EditBody extends React.Component {
                 </div>
 
                 <EditPosts
-                    posts={this.props.gallery.posts}
-                    files={this.props.gallery.files}
-                    deletePosts={this.props.deletePosts}
-                    toggleDelete={this.props.toggleDeletePost}
+                    posts={gallery.posts}
+                    files={gallery.files}
+                    deletePosts={deletePosts}
+                    toggleDelete={toggleDeletePost}
                 />
 
                 <EditMap
-                    gallery={this.props.gallery}
-                    onPlaceChange={this.props.onPlaceChange}
+                    gallery={gallery}
+                    onPlaceChange={onPlaceChange}
+                    disabled={userId === gallery.owner_id}
                 />
             </div>
         );
     }
 }
 
+EditBody.propTypes = {
+    gallery: PropTypes.object.isRequired,
+    onPlaceChange: PropTypes.func.isRequired,
+    toggleDeletePost: PropTypes.func.isRequired,
+    updateCaption: PropTypes.func.isRequired,
+    updateRelatedStories: PropTypes.func.isRequired,
+    updateArticles: PropTypes.func.isRequired,
+    updateTags: PropTypes.func.isRequired,
+    updateGalleryField: PropTypes.func.isRequired,
+    updateRating: PropTypes.func.isRequired,
+    deletePosts: PropTypes.array,
+    userId: PropTypes.number,
+};
+
 EditBody.defaultProps = {
     deletePosts: [],
-    onPlaceChange() { console.log('GalleryEditBody missing onPlaceChange prop'); },
-    toggleDeletePost() { console.log('GalleryEditBody missing toggleDeletePost prop'); },
-    updateCaption() { console.log('GalleryEditBody missing updateCaption prop'); },
-    updateRelatedStories() { console.log('GalleryEditBody missing updateRelatedStories prop'); },
-    updateArticles() { console.log('GalleryEditBody missing updateArticles prop'); },
-    updateTags() { console.log('GalleryEditBody missing updatedTags prop'); },
 };
 
 export default EditBody;

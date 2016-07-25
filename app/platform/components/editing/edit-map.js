@@ -18,7 +18,6 @@ class EditMap extends React.Component {
             marker:  null,
         };
 
-        this.getCentroid = this.getCentroid.bind(this);
         this.getBounds = this.getBounds.bind(this);
         this.initializeMap = this.initializeMap.bind(this);
     }
@@ -36,12 +35,12 @@ class EditMap extends React.Component {
         }
 
         if(this.props.disabled) {
-            this.state.map.setOptions({ 
+            this.state.map.setOptions({
                 draggable: false,
                 zoomControl: false
             })
         } else {
-            this.state.map.setOptions({ 
+            this.state.map.setOptions({
                 draggable: true,
                 zoomControl: true
             })
@@ -86,8 +85,8 @@ class EditMap extends React.Component {
                     { lat: loc[1], lng: loc[0] }
                 ));
             }
-            this.state.marker.setPosition(this.getCentroid(locationArr || this.props.location));
-            this.state.map.panTo(this.getCentroid(locationArr || this.props.location));
+            this.state.marker.setPosition(utils.getCentroid(locationArr || this.props.location));
+            this.state.map.panTo(utils.getCentroid(locationArr || this.props.location));
         }
         //Otherwise just set the marker to the passed position
         else {
@@ -104,32 +103,7 @@ class EditMap extends React.Component {
         this.props.updateCurrentBounds(this.state.map);
     }
 
-    //Returns centroid for passed polygon
-    getCentroid(polygon) {
-        if (!polygon.length) {
-            return new google.maps.LatLng(-73.9, 40);
-        }
-
-        var path, lat = 0, lng = 0;
-
-        if (Array.isArray(polygon)) {
-            var newPolygon = new google.maps.Polygon({paths: polygon});
-            path = newPolygon.getPath();
-        } else {
-            path = polygon.getPath();
-        }
-
-        for (let i = 0; i < path.getLength() - 1; ++i) {
-            lat += path.getAt(i).lat();
-            lng += path.getAt(i).lng();
-        }
-
-        lat /= path.getLength() - 1;
-        lng /= path.getLength() - 1;
-
-        return new google.maps.LatLng(lat, lng);
-    }
-
+    // Returns centroid for passed polygon
     getBounds(polygon) {
         var bounds = new google.maps.LatLngBounds();
         var paths = polygon.getPaths();
@@ -152,9 +126,9 @@ class EditMap extends React.Component {
             // If location, check if is array and get centroid of polygon, or use the point passed. Otherwise use NYC for center.
             try {
                 // TODO: make this try/catch unnecessary
-                center = this.getCentroid(location);
+                center = utils.getCentroid(location);
             } catch (e) {
-                center = this.props.location;
+                center = location;
             }
         } else {
             center = { lat: 40.7, lng: -74 };
