@@ -1,7 +1,7 @@
 import React from 'react';
-import GalleryEditTags from './edit-tags';
-import GalleryEditArticles from './edit-articles';
-import GalleryEditStories from './edit-stories';
+import EditTags from './edit-tags';
+import EditArticles from './edit-articles';
+import EditStories from './edit-stories';
 import EditPost from '../editing/edit-post.js';
 import Slick from 'react-slick';
 import utils from 'utils';
@@ -202,16 +202,16 @@ export default class Create extends React.Component {
 	 									placeholder="Caption" />
 	 							</div>
 
-	 							<GalleryEditTags
+	 							<EditTags
 	 								ref='tags'
 	 								tags={this.state.tags}
 	 								updateTags={this.updateTags} />
 
-	 							<GalleryEditStories
+	 							<EditStories
 	 								relatedStories={this.state.relatedStories}
 	 								updateRelatedStories={this.updateRelatedStories} />
 
-	 							<GalleryEditArticles
+	 							<EditArticles
 	 								articles={this.state.articles}
 	 								updateArticles={this.updateArticles} />
 

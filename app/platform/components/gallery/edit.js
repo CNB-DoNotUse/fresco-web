@@ -1,17 +1,18 @@
 import React, { PropTypes } from 'react';
-import EditBody from './edit-body.js';
 import EditFoot from './edit-foot.js';
+import EditTags from './edit-tags';
+import EditStories from './edit-stories';
+import EditArticles from './edit-articles';
+import EditPosts from './edit-posts';
+import EditMap from './edit-map';
+import EditAssignment from './edit-assignment';
+import BylineEdit from '../editing/byline-edit.js';
 import utils from 'utils';
 import _ from 'lodash';
 
-/** //
-
-Description : Component for adding gallery editing to the current view
-
-// **/
-
 /**
  * Gallery Edit Parent Object
+ * Component for adding gallery editing to the current view
  */
 class Edit extends React.Component {
 
@@ -104,10 +105,11 @@ class Edit extends React.Component {
         gallery.rating = rating;
 
         // Update new gallery
-        this.setState({
-            gallery,
-            ratingChanged: true,
-        });
+        this.setState({ gallery, ratingChanged: true });
+    }
+
+    toggleHighlight(e) {
+        this.updateRating(e.target.checked ? 3 : 2);
     }
 
     /**
@@ -152,8 +154,8 @@ class Edit extends React.Component {
         // Generate post ids for update
         const posts = _.difference(this.state.posts, this.state.deletePosts);
 
-        if (posts.length + files.length === 0 ) {
-            $.snackbar({content:"Galleries must have at least 1 post"});
+        if (posts.length + files.length === 0) {
+            $.snackbar({ content: 'Galleries must have at least 1 post' });
             return;
         }
 
@@ -174,7 +176,7 @@ class Edit extends React.Component {
         // });
 
         //Configure params for the updated gallery
-        const params = {
+        let params = {
             caption,
             // posts: posts,
             // assignment: assignment,
@@ -234,7 +236,7 @@ class Edit extends React.Component {
         })
         .done((response) => {
             // Update parent gallery
-            this.props.updateGallery(response.body);
+            this.props.onUpdateGallery(response.body);
             // Hide the modal
             this.hide();
         })
@@ -283,6 +285,77 @@ class Edit extends React.Component {
         this.props.toggle();
     }
 
+    renderBody() {
+        const { gallery, deletePosts } = this.state;
+        const { user } = this.props;
+
+        return (
+            <div className="dialog-body">
+                <div className="dialog-col col-xs-12 col-md-7 form-group-default">
+                    <BylineEdit ref="byline" gallery={gallery} />
+
+                    <div className="dialog-row">
+                        <textarea
+                            id="gallery-edit-caption"
+                            type="text"
+                            className="form-control floating-label"
+                            ref="gallery-caption"
+                            value={gallery.caption}
+                            placeholder="Caption"
+                            onChange={(e) => this.updateCaption(e)}
+                        />
+                    </div>
+
+                    <EditAssignment
+                        assignment={gallery.assignment}
+                        updateAssignment={(a) => this.updateAssignment(a)}
+                    />
+
+                    <EditTags
+                        tags={gallery.tags}
+                        updateTags={(t) => this.updateTags(t)}
+                    />
+
+                    <EditStories
+                        relatedStories={gallery.related_stories}
+                        updateRelatedStories={(s) => this.updateRelatedStories(s)}
+                    />
+
+                    <EditArticles
+                        articles={gallery.articles}
+                        updateArticles={(a) => this.updateArticles(a)}
+                    />
+
+                    <div className="dialog-row">
+                        <div className="checkbox">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={gallery.rating == 3}
+                                    onChange={(e) => this.toggleHighlight(e)}
+                                />
+                                Highlighted
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <EditPosts
+                    posts={gallery.posts}
+                    files={gallery.files}
+                    deletePosts={deletePosts}
+                    toggleDelete={(p) => this.toggleDeletePost(p)}
+                />
+
+                <EditMap
+                    gallery={gallery}
+                    onPlaceChange={(p) => this.onPlaceChange(p)}
+                    disabled={user.id === gallery.owner_id}
+                />
+            </div>
+        );
+    }
+
     render() {
         const { gallery } = this.state;
         const { toggled } = this.props;
@@ -296,21 +369,7 @@ class Edit extends React.Component {
                     />
                 </div>
 
-                <EditBody
-                    ref="galleryEditBody"
-                    gallery={this.state.gallery}
-
-                    onPlaceChange={(p) => this.onPlaceChange(p)}
-                    updateCaption={(e) => this.updateCaption(e)}
-                    updateRelatedStories={(s) => this.updateRelatedStories(s)}
-                    updateRating={(r) => this.updateRating(r)}
-                    updateArticles={(a) => this.updateArticles(a)}
-                    updateTags={(t) => this.updateTags(t)}
-                    updateGallery={(g) => this.updateGallery(g)}
-                    updateGalleryField={(k, v) => this.updateGalleryField(k, v)}
-                    deletePosts={this.state.deletePosts}
-                    toggleDeletePost={(p) => this.toggleDeletePost(p)}
-                />
+                {this.renderBody()}
 
                 <EditFoot
                     gallery={this.state.gallery}
@@ -326,7 +385,7 @@ class Edit extends React.Component {
 
         return (
             <div>
-                <div className={`dim toggle-edit ${toggled ? 'toggled' : ''}`}></div>
+                <div className={`dim toggle-edit ${toggled ? 'toggled' : ''}`} />
                 <div className={`edit panel panel-default toggle-edit gedit ${toggled ? 'toggled' : ''}`}>
                     {gallery ? editBody : ''}
                 </div>
@@ -339,13 +398,14 @@ Edit.propTypes = {
     gallery: PropTypes.object,
     toggled: PropTypes.bool,
     toggle: PropTypes.func,
+    onUpdateGallery: PropTypes.func,
 };
 
 Edit.defaultProps = {
     gallery: null,
     posts: [],
     toggled: false,
-    updateGallery() {},
+    onUpdateGallery() {},
     toggle() {},
 };
 
