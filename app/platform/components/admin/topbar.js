@@ -6,7 +6,7 @@ import request from 'superagent';
 /**
  * Description : Top for admin page
  */
-class TopBarAdmin extends React.Component {
+class TopBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = { loading: false };
@@ -202,11 +202,12 @@ class TopBarAdmin extends React.Component {
     }
 }
 
-TopBarAdmin.propTypes = {
+TopBar.propTypes = {
     activeTab: PropTypes.string.isRequired,
     setTab: PropTypes.func.isRequired,
     resetImports: PropTypes.func.isRequired,
 };
 
-export default TopBarAdmin;
+export default TopBar;
+
 

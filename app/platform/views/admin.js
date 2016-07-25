@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
-import TopBar from './../components/topbar/topbar-admin';
+import TopBar from './../components/admin/topbar';
 import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
