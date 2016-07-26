@@ -76,10 +76,10 @@ class Edit extends React.Component {
             location,
             stories,
             assignment,
-            gallery,
             postsToDeleteIds,
             postIds,
         } = this.state;
+        const { gallery } = this.props;
         const posts = _.difference(postIds, postsToDeleteIds);
 
         if (caption.length === 0) {
@@ -93,14 +93,14 @@ class Edit extends React.Component {
         }
 
         // Configure the byline's other origin
-        // var byline = utils.getBylineFromComponent(gallery, this.refs.galleryEditBody.refs.byline);
-        // _.extend(params, byline);
+        const byline = utils.getBylineFromComponent(gallery, this.refs.byline).byline || '';
 
         const params = {
             tags,
             caption,
             address,
             geo: utils.getGeoFromCoord(location),
+            byline,
             stories,
             posts,
             assignment_id: assignment ? assignment.id : null,
@@ -137,7 +137,7 @@ class Edit extends React.Component {
         const id = this.props.gallery.id;
         if (!id || this.state.loading) return;
 
-        alertify.confirm("Are you sure you want to delete this gallery?", (confirmed) => {
+        alertify.confirm('Are you sure you want to delete this gallery?', (confirmed) => {
             if (!confirmed) return;
             this.setState({ loading: true });
 
@@ -303,7 +303,7 @@ class Edit extends React.Component {
     renderFooter() {
         const { gallery, user } = this.props;
         const inputStyle = { display: 'none' };
-        if (!gallery || !user) return;
+        if (!gallery || !user) return '';
 
         return (
             <div className="dialog-foot">
