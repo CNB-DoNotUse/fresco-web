@@ -28,7 +28,7 @@ class Edit extends React.Component {
     // If props has a gallery, and GalleryEdit does not currently have a
     // gallery or the galleries are not the same
     componentWillReceiveProps(nextProps) {
-        if (this.props.gallery.id !== nextProps.gallery.id) {
+        if (!this.props.gallery || (this.props.gallery.id !== nextProps.gallery.id)) {
             this.revert();
         }
     }
@@ -48,6 +48,7 @@ class Edit extends React.Component {
      */
     getStateFromProps(props) {
         const { gallery } = props;
+        if (!gallery) return {};
 
         return {
             tags: gallery.tags || [],
@@ -229,7 +230,7 @@ class Edit extends React.Component {
 
                         <EditArticles
                             articles={articles}
-                            updateArticles={(a) => this.updateArticles({ articles: a })}
+                            updateArticles={(a) => this.setState({ articles: a })}
                         />
 
                         <div className="dialog-row">

@@ -1,166 +1,139 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Tag from '../editing/tag.js';
 import utils from 'utils';
+import remove from 'lodash/remove';
 
 /**
  * Component for managing added/removed articles
  */
 
 class EditArticles extends React.Component {
+    constructor(props) {
+        super(props);
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			suggestions: []
-		}
-		this.addArticle = this.addArticle.bind(this);
-		this.removeArticle = this.removeArticle.bind(this);
-		this.change = this.change.bind(this);
-	}
+        this.state = { suggestions: [] };
+    }
+
+    onChange(e) {
+		// Current fields input
+        const query = this.refs.autocomplete.value;
+
+        // Enter is pressed, and query is present
+        if (e.keyCode === 13 && query.length > 0) {
+            if (utils.isValidUrl(query)) {
+                this.addArticle({ link: query, new: true });
+            } else {
+                $.snackbar({ content: "Please enter a valid url!" });
+                return;
+            }
+        } else {
+			// Field is empty
+            if (query.length == 0) {
+                this.setState({ suggestions: [] });
+                this.refs.dropdown.style.display = 'none';
+            } else {
+                this.refs.dropdown.style.display = 'block';
+                $.ajax({
+                    url: '/api/search?articles=true',
+                    data: { q: query },
+                    success: (res) => {
+                        if (res.articles && res.articles.results) {
+                            this.setState({ suggestions: res.articles.results });
+                        }
+                    },
+                });
+            }
+        }
+    }
 
 	/**
 	 * Removes article with passed id
 	 */
-	removeArticle(id) {
+    removeArticle(link) {
+        const { articles, updateArticles } = this.props;
+        remove(articles, { link });
 
-		var index = -1;
-		for (var a in this.props.articles) {
-			if(this.props.articles[a].id == id) {
-				index = a;
-				break;
-			}
-		}
-
-		if(index == -1) return;
-		var articles = this.props.articles;
-			//Remove from index
-			articles.splice(index, 1);
-
-		//Update state
-		this.props.updateArticles(articles);
-	}
+        updateArticles(articles);
+    }
 
 	/**
 	 * Adds article element, returns if article exists in prop stories.
 	 */
-	addArticle(article) {
-		if(utils.isEmptyString(article.link)) return;
+    addArticle(article) {
+        if (utils.isEmptyString(article.link)) return;
 
-		//Clear the input field
-		this.refs.autocomplete.value = ''
-		this.refs.dropdown.style.display = 'none';
+        // Clear the input field
+        this.refs.autocomplete.value = '';
+        this.refs.dropdown.style.display = 'none';
 
-		var articles = this.props.articles;
+        const { articles } = this.props;
 
-		//Check if article already exists
-		for( var a in articles ) {
-			if(articles[a].link == article.link) return;
-		}
+        // Check if article already exists
+        if (articles.some((a) => a.link === article.link)) return;
 
-		articles.push(article);
+        articles.push(article);
 
-		this.props.updateArticles(articles);
-	}
+        this.props.updateArticles(articles);
+    }
 
-	change(e) {
+    renderArticles() {
+        return this.props.articles.map((a, i) => (
+            <Tag
+                onClick={() => this.removeArticle(a.link)}
+                text={a.link}
+                plus={false}
+                key={i}
+            />
+        ));
+    }
 
-		//Current fields input
-		var query = this.refs.autocomplete.value;
+    renderSuggestions() {
+		// Map suggestions for dropdown
+        return this.state.suggestions.map((article, i) => (
+            <li
+                onClick={() => this.addArticle(article)}
+                key={i}
+            >
+                {article.link}
+            </li>
+        ));
+    }
 
-		//Enter is pressed, and query is present
-		if(e.keyCode == 13 && query.length > 0){
+    render() {
+        return (
+            <div className="dialog-row split chips">
+                <div className="split-cell">
+                    <input
+                        type="text"
+                        className="form-control floating-label"
+                        placeholder="Articles"
+                        onKeyUp={(e) => this.onChange(e)}
+                        ref="autocomplete"
+                    />
 
-			if(utils.isValidUrl(query)){
-				this.addArticle({
-					link: query,
-					new: true
-				});
-			}
-			else{
-				return $.snackbar({content: "Please enter a valid url!"});
-			}
+                    <ul ref="dropdown" className="dropdown">
+                        {this.renderSuggestions()}
+                    </ul>
 
+                    <ul className="chips">
+                        {this.renderArticles()}
+                    </ul>
+                </div>
 
-		} else{
+                <div className="split-cell">
+                    <span className="md-type-body2">Add Articles</span>
 
-			//Field is empty
-			if(query.length == 0){
-				this.setState({ suggestions: [] });
-				this.refs.dropdown.style.display = 'none';
-			} else{
-
-				this.refs.dropdown.style.display = 'block';
-
-				$.ajax({
-					url: '/api/article/search',
-					data: { q: query },
-					success: (result, status, xhr) => {
-
-						if(result.data){
-
-							this.setState({ suggestions: result.data });
-
-						}
-					}
-				});
-			}
-
-		}
-	}
-
-	render() {
-
-		var articles = [];
-
-		for (var a in this.props.articles) {
-			var article = this.props.articles[a];
-			articles.push(
-				<Tag
-					onClick={this.removeArticle.bind(null, article.id)}
-					text={article.link}
-					plus={false}
-					key={a} />
-			);
-		}
-
-		//Map suggestions for dropdown
-		var suggestions = this.state.suggestions.map((article, i) => {
-
-			return <li  onClick={this.addArticle.bind(null, article)}
-						key={i}>{article.link}</li>
-
-		});
-
-		return (
-			<div className="dialog-row split chips">
-				<div className="split-cell">
-					<input
-						type="text"
-						className="form-control floating-label"
-						placeholder="Articles"
-						onKeyUp={this.change}
-						ref='autocomplete' />
-
-					<ul ref="dropdown" className="dropdown">
-						{suggestions}
-					</ul>
-
-					<ul className="chips">
-						{articles}
-					</ul>
-				</div>
-
-				<div className="split-cell">
-					<span className="md-type-body2">Add Articles</span>
-
-					<ul className="chips"></ul>
-				</div>
-			</div>
-		);
-
-	}
-
+                    <ul className="chips"></ul>
+                </div>
+            </div>
+        );
+    }
 }
+
+EditArticles.propTypes = {
+    updateArticles: PropTypes.func.isRequired,
+    articles: PropTypes.array.isRequired,
+};
 
 EditArticles.defaultProps = {
 	updateArticles: () => {},
