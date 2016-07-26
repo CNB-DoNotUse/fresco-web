@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import EditPost from './edit-post';
 import Slider from 'react-slick';
 
@@ -6,67 +6,62 @@ import Slider from 'react-slick';
  * Component for managing gallery's posts
  */
 class EditPosts extends React.Component {
-	render() {
-		var k = 0;
+    renderPosts() {
+        const { posts, postsToDeleteIds, onToggleDelete } = this.props;
 
-		var posts = this.props.posts.map((post) => {
-			var shouldDelete = this.props.deletePosts.indexOf(post.id) != -1;
-			var deleteText = '';
-			if(this.props.posts.length > 1) {
-				deleteText =
-					<a>
-						<span
-							className={"mdi mdi-close-circle icon" + (shouldDelete ? ' addback' : '')}
-							onClick={this.props.toggleDelete.bind(null, post.id)} />
-					</a>
-			}
-			return (
-				<div key={++k} className={"frick-frame" + (shouldDelete ? " frick-delete" : "")}>
-					<EditPost post={post} />
-					<div className="frick-overlay">
-						<span>
-							<span className="mdi mdi-delete icon" />
-							<div className="md-type-caption">This post will be deleted</div>
-						</span>
-					</div>
-					{deleteText}
-				</div>
-			);
+        return posts.map((p, i) => {
+            const willDelete = postsToDeleteIds.indexOf(p.id) !== -1;
+            return (
+                <div key={i} className={`frick-frame ${willDelete ? 'frick-delete' : ''}`}>
+                    <EditPost post={p} />
+                    <div className="frick-overlay">
+                        <span>
+                            <span className="mdi mdi-delete icon" />
+                            <div className="md-type-caption">This post will be deleted</div>
+                        </span>
+                    </div>
+                    {
+                        posts.length > 1
+                            ? <a>
+                                <span
+                                    className={`mdi mdi-close-circle icon ${willDelete ? 'addback' : ''}`}
+                                    onClick={() => onToggleDelete(p.id)}
+                                />
+                            </a>
+                            : ''
+                    }
+                </div>
+            );
+        });
+    }
 
-		});
+    render() {
+        const { posts } = this.props;
 
-		var files = [];
-
-		for (var i = 0; i < this.props.files.length; i++){
-
-			files.push(
-				<div key={++k} >
-					<EditPost
-						file={this.props.files[i]}
-						source={this.props.files.sources[i]} />
-				</div>
-			);
-
-		}
-
-		return (
-			<div className="dialog-col col-xs-12 col-md-5">
-				<Slider
-					dots={true}
-					infinite={posts.length + files.length > 1}>
-					{posts}{files}
-				</Slider>
-			</div>
-		);
-
-	}
+        return (
+            <div className="dialog-col col-xs-12 col-md-5">
+                <Slider
+                    infinite={posts.length > 1}
+                    dots
+                >
+					{this.renderPosts()}
+                </Slider>
+            </div>
+        );
+    }
 }
 
+EditPosts.propTypes = {
+    postsToDeleteIds: PropTypes.array.isRequired,
+    posts: PropTypes.array.isRequired,
+    onToggleDelete: PropTypes.func.isRequired,
+};
+
 EditPosts.defaultProps = {
-	deletePosts: [],
-	posts: [],
-	files: [],
-	toggleDelete() {},
+    postsToDeleteIds: [],
+    posts: [],
+    onToggleDelete() {},
 };
 
 export default EditPosts;
+

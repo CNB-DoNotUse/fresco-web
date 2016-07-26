@@ -58,7 +58,7 @@ class Edit extends React.Component {
             loading: false,
             caption: gallery.caption || 'No Caption',
             postIds: gallery.posts.map((p) => p.id),
-            postIdsToDelete: [],
+            postsToDeleteIds: [],
             articles: gallery.articles,
             rating: gallery.rating,
         };
@@ -78,10 +78,10 @@ class Edit extends React.Component {
             stories,
             assignment,
             gallery,
-            postIdsToDelete,
+            postsToDeleteIds,
             postIds,
         } = this.state;
-        const posts = _.difference(postIds, postIdsToDelete);
+        const posts = _.difference(postIds, postsToDeleteIds);
 
         if (caption.length === 0) {
             $.snackbar({ content: 'A gallery must have a caption' });
@@ -145,14 +145,14 @@ class Edit extends React.Component {
 
     // TODO: refactor
     toggleDeletePost(post) {
-        const index = this.state.postIdsToDelete.indexOf(post);
+        const index = this.state.postsToDeleteIds.indexOf(post);
 
         if (index === -1) {
-            this.setState({ postIdsToDelete: this.state.postIdsToDelete.concat(post) });
+            this.setState({ postsToDeleteIds: this.state.postsToDeleteIds.concat(post) });
         } else {
-            const posts = this.state.postIdsToDelete;
+            const posts = this.state.postsToDeleteIds;
             posts.splice(index, 1);
-            this.setState({ postIdsToDelete: posts });
+            this.setState({ postsToDeleteIds: posts });
         }
     }
 
@@ -175,7 +175,7 @@ class Edit extends React.Component {
 
     renderBody() {
         const {
-            postIdsToDelete,
+            postsToDeleteIds,
             stories,
             caption,
             assignment,
@@ -247,8 +247,8 @@ class Edit extends React.Component {
 
                     <EditPosts
                         posts={gallery.posts}
-                        deletePosts={postIdsToDelete}
-                        toggleDelete={(p) => this.toggleDeletePost(p)}
+                        postsToDeleteIds={postsToDeleteIds}
+                        onToggleDelete={(p) => this.toggleDeletePost(p)}
                     />
 
                     <EditMap
