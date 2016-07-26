@@ -34,45 +34,35 @@ export default class TagFilter extends React.Component {
 	}
 
 	render() {
-		var tags = [],
-			available = [],
-			tagList = _.clone(this.props.tagList, true),
-			filterList = _.clone(this.props.filterList, true);
+		const { tagList, filterList, text } = this.props;
 
-		for (var t in tagList) {
-			available.push(
+		const available = tagList.map((tag, i) => {
+			return (
 				<Tag 
-					onClick={this.props.onTagAdd.bind(null, tagList[t])} 
-					text={tagList[t]} key={t} />
-			);
-		}
+					onClick={this.props.onTagAdd.bind(null, tag)} 
+					plus={true}
+					text={tag} 
+					key={i} 
+				/>
+			)
+		});
 
-		for (var t in filterList) {
-			tags.push(
+		const filtered = filterList.map((tag, i) => {
+			return (
 				<Tag
-					onClick={this.props.onTagRemove.bind(null, filterList[t])} 
-					text={filterList[t]} 
-					key={t} />
-			);
-		}
-
-		var dropdownLabel = this.props.filterList.length ? 'Filtering ' + this.props.filterList.length : ('Any ' + this.props.text);
-
-		var dropdownButton = <div className="toggle" ref="toggle_button" onClick={this.toggle}>
-								<span>{dropdownLabel}</span>
-								<span className="mdi mdi-menu-down" ref="menu-icon"></span>
-							</div>;
-
-		var availableBody = '';
-		if(available.length) {
-			availableBody = <div className="split-cell">
-								<span className="md-type-body2">Available {this.props.text}</span>
-								<ul id="filter-available" className="chips">{available}</ul>
-							</div>
-		}
+					onClick={this.props.onTagRemove.bind(null, tag)} 
+					text={tag} 
+					key={i} 
+				/>
+			)
+		});
 
 		return (
-			<Dropdown inList={true} title={dropdownLabel} dropdownClass={"tags-dropdown"}>
+			<Dropdown 
+				inList={true} 
+				title={filtered.length > 0 ? 'Filtering ' + filtered.length : ('Any ' + text)} 
+				dropdownClass={"tags-dropdown"}
+			>
 				<div className="chips">
 					<div className="split-cell">
 						<div className="form-group-default">
@@ -81,18 +71,25 @@ export default class TagFilter extends React.Component {
 									id="tag-filter-input"
 									type="text" 
 									className="form-control floating-label"
-									placeholder={this.props.text}
+									placeholder={text}
 									ref="tagFilterInput"
 									onKeyUp={this.handleTagInput} />
 							</div>
 						</div>
 						
 						<ul id="tag-filter" className="chips">
-							{tags}
+							{filtered}
 						</ul>
 					</div>
 					
-					{availableBody}
+					{available.length > 0 ?
+						<div className="split-cell">
+							<span className="md-type-body2">{`Available ${text}`}</span>
+							<ul id="filter-available" className="chips">{available}</ul>
+						</div>
+						:
+						''
+					}
 				</div>
 			</Dropdown>
 		);

@@ -12,6 +12,7 @@ class Purchases extends React.Component {
 
 		this.state = {
 			outlets: [],
+			users: [],
 			availableOutlets: [],
 			updatePurchases: false,
 		}
@@ -39,13 +40,22 @@ class Purchases extends React.Component {
 				availableOutlets: []
 			});
 		} else{
-			$.get('/api/outlet/list?q=' + query, (response) => {
-				if(!response.err && response.data) {
-					this.setState({
-						availableOutlets: response.data
-					});
+			const params = {
+				q: query
+			}
+
+			$.ajax({
+				url: '/api/search',
+				type: 'GET',
+				data: $.param({ outlets: params }),
+				success: (response, status, xhr) => {
+					if(!response.error && response.outlets) {
+						this.setState({
+							availableOutlets: response.outlets.results
+						});
+					}
 				}
-			});
+			});	
 		}
 	}
 
@@ -53,14 +63,16 @@ class Purchases extends React.Component {
 	 * Adds outlet to filter
 	 */
 	addOutlet(outletToAdd) {
-		var availableOutlets = _.clone(this.state.availableOutlets, true),
-			outlets = _.clone(this.state.outlets, true),
-			outlet = null,
-			outletExists = false;
+		console.log(outletToAdd);
+
+		let availableOutlets = _.clone(this.state.availableOutlets, true);
+		let outlets = _.clone(this.state.outlets, true);
+		let outlet = null;
+		let outletExists = false;
 
 		//Find the outlet object based on the `title`, outletToAdd is just a `string`
 		for (var i = 0; i < availableOutlets.length; i++) {
-			var outlet = availableOutlets[i];
+			outlet = availableOutlets[i];
 
 			if(outlet.title == outletToAdd){
 				outlet = availableOutlets[i];
@@ -84,23 +96,15 @@ class Purchases extends React.Component {
 
 	/**
 	 * Remove outlet from filter
+	 * @param {string} outletToRemove A title string of the outlet
 	 */
 	removeOutlet(outletToRemove) {
-		var outlets = _.clone(this.state.outlets, true),
-			filterIdsArr = [];
+		const outlets = _.filter(this.state.outlets, (o) => { 
+			return o.title !== outletToRemove; 
+		});
 
-		for (var i = 0; i < outlets.length; i++) {
-			var outlet = outlets[i];
-
-			if(outlet.title == outletToRemove){
-				outlets.splice(i, 1);
-				break;
-			}
-		}
-
-		this.setState({ outlets: outlets });
+		this.setState({ outlets });
 	}
-
 
 	/**
 	 * Loads stats for purchases
@@ -119,7 +123,6 @@ class Purchases extends React.Component {
 		});
 	}
 
-
 	/**
 	 * Requests purchases from server
 	 * @return {[type]} [description]
@@ -136,7 +139,7 @@ class Purchases extends React.Component {
 			limit: 20,
 			offset: passedOffset,
 			details: true,
-			outlets: this.state.outlets.map(p => p._id)
+			outlets: this.state.outlets.map(outlet => outlet._id)
 		}, (response) => {
 			if(response.err) {
 				return $.snackbar({
@@ -159,23 +162,18 @@ class Purchases extends React.Component {
 	}
 
 	downloadExports(format) {
-		var filterOutletText = this.state.outlets.map((outlet) => {
+		const filterOutletText = this.state.outlets.map((outlet) => {
 			return 'outlet[]='+ outlet._id
 		}).join('&');
 
-		var url = "/scripts/outlet/export?format=" + format + '&' + filterOutletText;
+		const url = `/scripts/outlet/export?${filterOutletText}`;
 
 		window.open(url, '_blank');
 	}
 
 	render() {
-		var outlets = this.state.outlets.map((outlet) => {
-			return outlet.title;
-		});
-
-		var availableOutlets = this.state.availableOutlets.map((outlet) =>{
-			return outlet.title;
-		});
+		const outlets = this.state.outlets.map(outlet => outlet.title);
+		const availableOutlets = this.state.availableOutlets.map(outlet => outlet.title);
 
 		return (
 			<App user={this.props.user}>
@@ -183,7 +181,7 @@ class Purchases extends React.Component {
 					title="Purchases">
 
 					<TagFilter
-						text="Outlet"
+						text="Outlets"
 						tagList={availableOutlets}
 						filterList={outlets}
 						onTagInput={this.findOutlets}
