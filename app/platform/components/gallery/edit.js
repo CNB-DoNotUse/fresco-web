@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import EditFoot from './edit-foot.js';
 import EditTags from './edit-tags';
 import EditStories from './edit-stories';
 import EditArticles from './edit-articles';
@@ -134,6 +133,34 @@ class Edit extends React.Component {
         });
     }
 
+    remove() {
+        const id = this.props.gallery.id;
+        if (!id || this.state.loading) return;
+
+        alertify.confirm("Are you sure you want to delete this gallery?", (confirmed) => {
+            if (!confirmed) return;
+            this.setState({ loading: true });
+
+            $.ajax({
+                url: `/api/gallery/${id}/delete`,
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+            })
+            .done(() => {
+                this.props.onUpdateGallery(id);
+                $.snackbar({ content: 'Gallery deleted' });
+                location.href = document.referrer || '/highlights';
+            })
+            .fail(() => {
+                $.snackbar({ content: 'Unable to delete gallery' });
+            })
+            .always(() => {
+                this.setState({ loading: false });
+            });
+        });
+    }
+
     /**
 	 * Reverts all changes
 	 */
@@ -141,6 +168,27 @@ class Edit extends React.Component {
         if (this.state.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
+    }
+
+    addMore() {
+        this.refs.fileInput.click();
+    }
+
+    clear() {
+        if (this.state.loading) return;
+        const { gallery } = this.props;
+
+        this.setState({
+            tags: [],
+            stories: [],
+            assignment: null,
+            address: '',
+            caption: 'No Caption',
+            postIds: [],
+            postsToDeleteIds: [],
+            articles: [],
+            rating: gallery.rating,
+        });
     }
 
     // TODO: refactor
@@ -174,6 +222,7 @@ class Edit extends React.Component {
     }
 
     renderBody() {
+        const { user, gallery } = this.props;
         const {
             postsToDeleteIds,
             stories,
@@ -183,102 +232,182 @@ class Edit extends React.Component {
             rating,
             articles,
         } = this.state;
-        const { user, gallery } = this.props;
+        if (!gallery || !user) return '';
 
         return (
-            <div className="col-xs-12 col-lg-12 edit-new dialog">
-                <div className="dialog-head">
-                    <span className="md-type-title">Edit Gallery</span>
-                    <span
-                        className="mdi mdi-close pull-right icon toggle-edit toggler"
-                        onClick={() => this.hide()}
-                    />
-                </div>
+            <div className="dialog-body">
+                <div className="dialog-col col-xs-12 col-md-7 form-group-default">
+                    <BylineEdit ref="byline" gallery={gallery} />
 
-                <div className="dialog-body">
-                    <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                        <BylineEdit ref="byline" gallery={gallery} />
-
-                        <div className="dialog-row">
-                            <textarea
-                                id="gallery-edit-caption"
-                                type="text"
-                                className="form-control floating-label"
-                                ref="gallery-caption"
-                                value={caption}
-                                placeholder="Caption"
-                                onChange={(e) => this.setState({ caption: e.target.value })}
-                            />
-                        </div>
-
-                        <EditAssignment
-                            assignment={assignment}
-                            updateAssignment={(a) => this.setState({ assignment: a })}
+                    <div className="dialog-row">
+                        <textarea
+                            id="gallery-edit-caption"
+                            type="text"
+                            className="form-control floating-label"
+                            ref="gallery-caption"
+                            value={caption}
+                            placeholder="Caption"
+                            onChange={(e) => this.setState({ caption: e.target.value })}
                         />
-
-                        <EditTags
-                            tags={tags}
-                            updateTags={(t) => this.setState({ tags: t })}
-                        />
-
-                        <EditStories
-                            relatedStories={stories}
-                            updateRelatedStories={(s) => this.setState({ stories: s })}
-                        />
-
-                        <EditArticles
-                            articles={articles}
-                            updateArticles={(a) => this.setState({ articles: a })}
-                        />
-
-                        <div className="dialog-row">
-                            <div className="checkbox">
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={rating === 3}
-                                        onChange={(e) => this.toggleHighlight(e)}
-                                    />
-                                    Highlighted
-                                </label>
-                            </div>
-                        </div>
                     </div>
 
-                    <EditPosts
-                        posts={gallery.posts}
-                        postsToDeleteIds={postsToDeleteIds}
-                        onToggleDelete={(p) => this.toggleDeletePost(p)}
+                    <EditAssignment
+                        assignment={assignment}
+                        updateAssignment={(a) => this.setState({ assignment: a })}
                     />
 
-                    <EditMap
-                        gallery={gallery}
-                        onPlaceChange={(p) => this.onPlaceChange(p)}
-                        disabled={user.id !== gallery.owner_id}
+                    <EditTags
+                        tags={tags}
+                        updateTags={(t) => this.setState({ tags: t })}
                     />
+
+                    <EditStories
+                        relatedStories={stories}
+                        updateRelatedStories={(s) => this.setState({ stories: s })}
+                    />
+
+                    <EditArticles
+                        articles={articles}
+                        updateArticles={(a) => this.setState({ articles: a })}
+                    />
+
+                    <div className="dialog-row">
+                        <div className="checkbox">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={rating === 3}
+                                    onChange={(e) => this.toggleHighlight(e)}
+                                />
+                                Highlighted
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
-                <EditFoot
+                <EditPosts
+                    posts={gallery.posts}
+                    postsToDeleteIds={postsToDeleteIds}
+                    onToggleDelete={(p) => this.toggleDeletePost(p)}
+                />
+
+                <EditMap
                     gallery={gallery}
-                    revert={() => this.revert()}
-                    saveGallery={() => this.save()}
-                    verifyGallery={() => this.save(2)}
-                    unverifyGallery={() => this.unverifyGallery(1)}
-                    updateGallery={(g) => this.updateGallery(g)}
-                    hide={() => this.hide()}
+                    onPlaceChange={(p) => this.onPlaceChange(p)}
+                    disabled={user.id !== gallery.owner_id}
                 />
             </div>
         );
     }
 
+    renderFooter() {
+        const { gallery, user } = this.props;
+        const inputStyle = { display: 'none' };
+        if (!gallery || !user) return;
+
+        return (
+            <div className="dialog-foot">
+                <input
+                    id="gallery-upload-files"
+                    type="file"
+                    accept="image/*,video/*,video/mp4"
+                    ref="fileUpload"
+                    style={inputStyle}
+                    onChange={() => this.fileUploaderChanged()}
+                    multiple
+                />
+
+                <button
+                    type="button"
+                    onClick={() => this.revert()}
+                    className="btn btn-flat"
+                >
+                    Revert changes
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => this.clear()}
+                    className="btn btn-flat"
+                >
+                    Clear all
+                </button>
+
+                {
+                    // TODO: when should this be button be visible
+                    user.id === gallery.owner_id
+                        ? <button
+                            type="button"
+                            onClick={() => this.addMore()}
+                            className="btn btn-flat"
+                        >
+                            Add More
+                        </button>
+                        : ''
+                }
+
+                <button
+                    type="button"
+                    onClick={() => this.save()}
+                    className="btn btn-flat pull-right"
+                >
+                    Save
+                </button>
+
+                {
+                    gallery.rating < 2
+                        ? <button
+                            type="button"
+                            onClick={() => this.save(2)}
+                            className="btn btn-flat pull-right"
+                        >
+                            Verify
+                        </button>
+                        : <button
+                            onClick={() => this.save(1)}
+                            className="btn btn-flat pull-right"
+                        >
+                            Unverify
+                        </button>
+                }
+
+                <button
+                    type="button"
+                    onClick={() => this.remove()}
+                    className="btn btn-flat pull-right"
+                >
+                    Delete
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => this.hide()}
+                    className="btn btn-flat pull-right toggle-gedit toggler"
+                >
+                    Cancel
+                </button>
+            </div>
+        );
+    }
+
     render() {
-        const { toggled, gallery } = this.props;
+        const { toggled } = this.props;
 
         return (
             <div>
                 <div className={`dim toggle-edit ${toggled ? 'toggled' : ''}`} />
                 <div className={`edit panel panel-default toggle-edit gedit ${toggled ? 'toggled' : ''}`}>
-                    {gallery ? this.renderBody() : ''}
+                    <div className="col-xs-12 col-lg-12 edit-new dialog">
+                        <div className="dialog-head">
+                            <span className="md-type-title">Edit Gallery</span>
+                            <span
+                                className="mdi mdi-close pull-right icon toggle-edit toggler"
+                                onClick={() => this.hide()}
+                            />
+                        </div>
+                        {this.renderBody()}
+                        {this.renderFooter()}
+                    </div>
                 </div>
             </div>
         );
