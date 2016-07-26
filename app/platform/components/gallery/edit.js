@@ -82,14 +82,13 @@ class Edit extends React.Component {
             postIds,
         } = this.state;
         const posts = _.difference(postIds, postIdsToDelete);
-        const files = gallery.files ? gallery.files : [];
 
         if (caption.length === 0) {
             $.snackbar({ content: 'A gallery must have a caption' });
             return null;
         }
 
-        if (!posts.length || !files.length) {
+        if (!posts.length) {
             $.snackbar({ content: 'Galleries must have at least 1 post' });
             return null;
         }
@@ -111,7 +110,6 @@ class Edit extends React.Component {
         return params;
     }
 
-    // TODO: figure out file uploading
     save(rating) {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
@@ -123,9 +121,9 @@ class Edit extends React.Component {
             contentType: 'application/json',
             data: JSON.stringify(params),
         })
-        .done((response) => {
+        .done((res) => {
             // Update parent gallery
-            onUpdateGallery(response.body);
+            onUpdateGallery(res);
             // Hide the modal
             this.hide();
         })
@@ -249,7 +247,6 @@ class Edit extends React.Component {
 
                     <EditPosts
                         posts={gallery.posts}
-                        files={gallery.files}
                         deletePosts={postIdsToDelete}
                         toggleDelete={(p) => this.toggleDeletePost(p)}
                     />
@@ -264,7 +261,7 @@ class Edit extends React.Component {
                 <EditFoot
                     gallery={gallery}
                     revert={() => this.revert()}
-                    saveGallery={(r) => this.save(r)}
+                    saveGallery={() => this.save()}
                     verifyGallery={() => this.save(2)}
                     unverifyGallery={() => this.unverifyGallery(1)}
                     updateGallery={(g) => this.updateGallery(g)}
