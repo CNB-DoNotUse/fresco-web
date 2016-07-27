@@ -39,6 +39,7 @@
     "npm": "^3.10.2",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
+    "react-google-maps": "^4.11.0",
     "react-tools": "^0.13.3",
     "redis": "^2.6.0-1",
     "request": "~2.72.0",

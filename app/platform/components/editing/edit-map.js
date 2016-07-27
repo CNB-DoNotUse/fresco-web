@@ -2,10 +2,9 @@ import React from 'react';
 import utils from 'utils';
 
 /**
-    * Single Edit-Map Element
-* @description Map element that is found in Gallery Edit, Admin Panel, etc.
-    */
-
+ * Single Edit-Map Element
+ * @description Map element that is found in Gallery Edit, Admin Panel, etc.
+ */
 class EditMap extends React.Component {
     constructor(props) {
         super(props);
