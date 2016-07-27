@@ -198,7 +198,7 @@ class Edit extends React.Component {
         if (postsToDeleteIds.indexOf(postId) === -1) {
             this.setState({ postsToDeleteIds: postsToDeleteIds.concat(postId) });
         } else {
-            this.setState({ postsToDeleteIds: postsToDeleteIds.without(postId) });
+            this.setState({ postsToDeleteIds: without(postsToDeleteIds, postId) });
         }
     }
 
