@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { PropTypes, Component } from 'react'
 import PurchasesListItem from './purchases-list-item'
 
-export default class PurchasesList extends React.Component {
+export default class PurchasesList extends Component {
 
 	constructor(props) {
 		super(props);
@@ -28,16 +28,9 @@ export default class PurchasesList extends React.Component {
 	 */
 	loadPurchases() {
 		//Access parent var load method
-		this.props.loadPurchases(0, (purchases) => {
-			
-			//Update offset based on purchases from callaback
-			var offset = purchases ? purchases.length : 0;
-
+		this.props.loadPurchases(null, (purchases) => {
 			//Set posts & callback from successful response
-			this.setState({
-				purchases: purchases,
-				offset : offset
-			});
+			this.setState({ purchases });
 		});  
 	}
 
@@ -55,61 +48,59 @@ export default class PurchasesList extends React.Component {
 
 		if(this.state.loading) return;
 
-		// Get scroll offset and get more purchases if necessary.
-		var purchasesListDiv = document.getElementById('purchases-list');
-		var pxToBottom = purchasesListDiv.scrollHeight - (purchasesListDiv.clientHeight + purchasesListDiv.scrollTop);
-		var shouldGetMorePurchases = pxToBottom <= 96;
+		const grid = e.target;
+		const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 96);
 		
 		// Check if already getting purchases because async
-		if(shouldGetMorePurchases) {
+		if(bottomReached) {
 			this.setState({
 				loading: true
 			});
 
-
-			console.log('LOADING MORE');
-
 			// Pass current offset to getMorePurchases
-			this.props.loadPurchases(this.state.offset, (purchases) => {
-
+			this.props.loadPurchases(_.last(this.state.purchases).id, (purchases) => {
 				//Disables scroll, and returns if purchases are empty
 				if(!purchases || purchases.length == 0){ 
-					this.setState({
+					return this.setState({
 						scrollable: false
 					});
-					return;
 				}
-
-				var offset = this.state.purchases.length + purchases.length;
 
 				// Allow getting more purchases after we've gotten more purchases.
 				// Update offset to new purchases length
 				this.setState({
 					loading: false,
-					purchases: this.state.purchases.concat(purchases),
-					offset: offset
+					purchases: this.state.purchases.concat(purchases)
 				});
-
 			});
 		}
 	}
 
 	render() {
-
-		// Map purchases JSON to PurchaseListItem
-		var purchases = this.state.purchases.map((purchase, i) => {
-		
-			return <PurchasesListItem purchase={purchase} title={purchase.title} key={i} />
-		
-		});
-
 		return (
-			<div id="purchases-list" className="col-md-8 col-xs-12 list" onScroll={this.props.scrollable ? this.scroll : null}>
-				{purchases}
+			<div 
+				id="purchases-list" 
+				className="col-md-8 col-xs-12 list" 
+				onScroll={this.props.scrollable ? this.scroll : null}
+			>
+				{this.state.purchases.map((purchase, i) => {
+					return (
+						<PurchasesListItem 
+							purchase={purchase} 
+							title={purchase.title} 
+							showTitle={true}
+							key={i} />
+					);
+				})}
 			</div>
 		);
 	}
 }
+
+PurchasesList.propTypes = {
+    purchase: PropTypes.array,
+    scrollabe: PropTypes.bool,
+};
 
 PurchasesList.defaultProps= {
 	purchases: [],

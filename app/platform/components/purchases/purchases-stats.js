@@ -38,41 +38,12 @@ export default class PurchasesStats extends React.Component {
 	}
 
 	render() {
-		var buttons = [],
-			key = 0;
+		let buttons = [];
+		let key = 0;
 
-		if(this.props.downloadExports){
-			buttons.push(
-				<button 
-					id="export-xlsx"
-					type="button" 
-					className="btn"
-					key={++key}
-					onClick={this.props.downloadExports.bind(null, 'xlsx')}>Export to .xlsx</button>
-			);
-		};
+		const { downloadExports, emailStatement } = this.props;
 
-		if(this.props.downloadExports){
-			buttons.push(
-				<button 
-					id="export-csv" 
-					type="button" 
-					className="btn" 
-					key={++key}
-					onClick={this.props.downloadExports.bind(null, 'csv')}>Export to .csv</button>
-			);
-		}
-
-		if(this.props.emailStatement){
-			buttons.push(
-				<button 
-					id="email-statement-button" 
-					type="button" 
-					className="btn" 
-					key={++key}
-					onClick={this.props.emailStatement}>Email my statement</button>
-			)
-		}
+		console.log(this.state);
 
 		return (
 			<div className="col-md-4">
@@ -80,20 +51,32 @@ export default class PurchasesStats extends React.Component {
 				
 				<ul className="md-type-subhead">
 					<li>
-						<span>${this.state.day}</span>
+						<span>${this.state.last_day / 100}</span>
 						<span className="md-type-caption"> last 24 hours</span>
 					</li>
 					<li>
-						<span>${this.state.week}</span>
+						<span>${this.state.last_7days / 100}</span>
 						<span className="md-type-caption"> last 7 days</span>
 					</li>
 					<li>
-						<span>${this.state.month}</span>
+						<span>${this.state.last_30days / 100}</span>
 						<span className="md-type-caption"> last 30 days</span>
 					</li>
 				</ul>
 
-				{buttons}
+				<button 
+					id="export-csv" 
+					type="button" 
+					className="btn" 
+					key={++key}
+					onClick={downloadExports.bind(null, 'csv')}>Export to .csv</button>
+
+				<button 
+					id="email-statement-button" 
+					type="button" 
+					className="btn" 
+					key={++key}
+					onClick={emailStatement}>Email my statement</button>
 			</div>
 		);
 	}

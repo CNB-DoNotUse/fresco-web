@@ -61,36 +61,26 @@ class Purchases extends React.Component {
 
 	/**
 	 * Adds outlet to filter
+	 * @param {string} outletToAdd String title of the outlet
 	 */
 	addOutlet(outletToAdd) {
-		console.log(outletToAdd);
-
-		let availableOutlets = _.clone(this.state.availableOutlets, true);
-		let outlets = _.clone(this.state.outlets, true);
-		let outlet = null;
-		let outletExists = false;
+		const { availableOutlets, outlets } = _.clone(this.state);
 
 		//Find the outlet object based on the `title`, outletToAdd is just a `string`
-		for (var i = 0; i < availableOutlets.length; i++) {
-			outlet = availableOutlets[i];
+		for (let i = 0; i < availableOutlets.length; i++) {
+			let outlet = availableOutlets[i];
 
-			if(outlet.title == outletToAdd){
-				outlet = availableOutlets[i];
+			if(outlet.title === outletToAdd) {
+				//Check if it exists
+				if(_.find(outlets, ['title', outlet.title]) === undefined) {
+					this.setState({ 
+						outlets: _.concat(outlets, outlet) 
+					});
+				}
+
+				//Break because we found it, yo
 				break;
 			}
-		}
-
-		//Check that the outlet isn't already in the list
-		for (var i = 0; i < outlets.length; i++) {
-			if(outlets[i]._id === outlet._id){
-				outletExists = true;
-				break;
-			}
-		}
-
-		if(!outletExists && outlet !== null){
-			outlets.push(outlet);
-			this.setState({ outlets: outlets });
 		}
 	}
 
@@ -110,24 +100,31 @@ class Purchases extends React.Component {
 	 * Loads stats for purchases
 	 */
 	loadStats(callback) {
-		$.get('/api/outlet/purchases/stats', {
-			outlets: this.state.outlets.map(p => p._id)
-		}, (response) => {
-			if(response.err || !response.data) {
-				return $.snackbar({
-					content: 'There was an error receiving the purchases'
-				});
-			}
+		const params = {
+			outlets_ids: _.map(this.state.outlets, 'id')
+		}
 
-			callback(response.data);
-		});
+		$.ajax({
+			url: '/api/outlet/purchases/stats',
+			type: 'GET',
+			data: $.param(params),
+			success: (response, status, xhr) => {
+				if(response.err || !response) {
+					return $.snackbar({
+						content: 'There was an error receiving purchases!'
+					});
+				} else {
+					callback(response);
+				}
+			}
+		});	
 	}
 
 	/**
 	 * Requests purchases from server
 	 * @return {[type]} [description]
 	 */
-	loadPurchases(passedOffset, cb) {
+	loadPurchases(last = null, cb) {
 		//Update state for purchase list if needed so it doesn't loop
 		if(this.state.updatePurchases){
 			this.setState({
@@ -135,30 +132,26 @@ class Purchases extends React.Component {
 			});
 		}
 
-		$.get('/api/outlet/purchases/list', {
+		const params = {
+			outlet_ids: _.map(this.state.outlets, 'id'),
 			limit: 20,
-			offset: passedOffset,
-			details: true,
-			outlets: this.state.outlets.map(outlet => outlet._id)
-		}, (response) => {
-			if(response.err) {
-				return $.snackbar({
-					content: 'There was an error receiving the purchases'
-				});
-			} else if(!response.data){
-				return;
+			last
+		}
+
+		$.ajax({
+			url: '/api/purchase/list',
+			type: 'GET',
+			data: $.param(params),
+			success: (response, status, xhr) => {
+				if(response.err || !response) {
+					return $.snackbar({
+						content: 'There was an error receiving purchases!'
+					});
+				} else {
+					cb(response);
+				}
 			}
-
-			var purchases = response.data.map((purchaseParent) => {
-				var purchase = purchaseParent.purchase;
-					purchase.title = purchaseParent.title;
-
-				return purchase;
-			});
-
-			if(cb) cb(purchases);
-
-		});
+		});	
 	}
 
 	downloadExports(format) {
@@ -202,6 +195,6 @@ class Purchases extends React.Component {
 
 ReactDOM.render(
   <Purchases
-  	user={window.__initialProps__.user} />,
+	user={window.__initialProps__.user} />,
 	document.getElementById('app')
 );
