@@ -35,7 +35,7 @@ class GMap extends React.Component {
         // If location, get centroid of polygon, or use the point passed.
         // Otherwise use NYC for center.
         const { location } = this.props;
-        if (location) {
+        if (location && location.type) {
             if (location.type.toLowerCase() === 'polygon') {
                 return utils.getCentroid(location.coordinates);
             }
@@ -50,22 +50,22 @@ class GMap extends React.Component {
 
     renderMarker() {
         const { draggable } = this.props;
-        // Marker image
         const markerImage = {
             url: utils.assignmentImage[this.props.type],
             size: new google.maps.Size(108, 114),
             scaledSize: new google.maps.Size(36, 38),
             origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(18, 19)
+            anchor: new google.maps.Point(18, 19),
+            crossOnDrag: false,
         };
 
         return (
             <Marker
                 ref={(m) => this._marker = m}
-                position={this.getCenter()}
+                defaultPosition={this.getCenter()}
                 draggable={draggable}
                 icon={markerImage}
-                onPositionChanged={() => this.onPositionChanged()}
+                onDragend={() => this.onPositionChanged()}
             />
         );
     }
@@ -80,6 +80,7 @@ class GMap extends React.Component {
             fillColor: utils.assignmentColor[this.props.type],
             fillOpacity: 0.26,
             strokeWeight: 0,
+            draggable: false,
         };
 
         return (
