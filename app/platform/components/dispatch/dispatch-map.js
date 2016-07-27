@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/server'
 import DispatchMapCallout from './dispatch-map-callout'
 import _ from 'lodash'
-import utils from 'utils' 
+import utils from 'utils'
 
 
 /**
@@ -47,13 +47,13 @@ import utils from 'utils'
 				mapZoom: 12
 			});
 		}
-		
-		//Grab dispatch info saved in local storage	
+
+		//Grab dispatch info saved in local storage
 		const dispatch = JSON.parse(window.sessionStorage.dispatch);
-		
+
 		//Set up the map object
 		const map = new google.maps.Map(
-			document.getElementById('map-canvas'), 
+			document.getElementById('map-canvas'),
 			{
 				zoom: dispatch.mapZoom,
 				zoomControl: true,
@@ -73,7 +73,7 @@ import utils from 'utils'
 		// 	this.updateMap();
 		// }, 10000);
 
-		this.setState({ map });	
+		this.setState({ map });
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -82,7 +82,7 @@ import utils from 'utils'
 			//No current active assignment
 			if(!this.props.activeAssignment) {
 				this.focusOnAssignment(nextProps.activeAssignment);
-			} 
+			}
 			//If there is currently an active assignment and it has changed
 			else if(nextProps.activeAssignment.id !== this.props.activeAssignment.id) {
 				this.focusOnAssignment(nextProps.activeAssignment);
@@ -122,7 +122,7 @@ import utils from 'utils'
 	componentDidUpdate(prevProps, prevState) {
 		/* Event Listeners Needed in the page */
 		let selector = document.getElementById('callout-selector');
-		
+
 		if(selector) {
 			selector.addEventListener('click', (e) => {
 				window.location.assign(`/assignment/${selector.dataset.id}`);
@@ -143,10 +143,10 @@ import utils from 'utils'
 			if(newAssignmentMarker && newAssignmentCircle && prevNewAssignment){
 				//Compare to make sure we don't change the marker unless its position hasn't actually changed
 				if(JSON.stringify(newAssignment.location) !== JSON.stringify(prevNewAssignment.location)){
-					newAssignmentMarker.setPosition(newAssignment.location);	
-					newAssignmentCircle.setCenter(newAssignmentMarker.getPosition());	     
-					
-					map.setCenter(newAssignmentMarker.getPosition());	     
+					newAssignmentMarker.setPosition(newAssignment.location);
+					newAssignmentCircle.setCenter(newAssignmentMarker.getPosition());
+
+					map.setCenter(newAssignmentMarker.getPosition());
 				}
 
 				//Check if circle radius has changed
@@ -155,7 +155,7 @@ import utils from 'utils'
 						utils.milesToMeters(newAssignment.radius)
 						);
 				}
-			} 
+			}
 			//None existing, so create a new marker and circle
 			else {
 				//Create the marker with a null position
@@ -164,26 +164,26 @@ import utils from 'utils'
 				const location = {
 					lat: newAssignmentMarker.getPosition().lat(),
 					lng: newAssignmentMarker.getPosition().lng()
-				};	
+				};
 
 				//Update the maps center to reflect the new positon of the marker
-				map.setCenter(newAssignmentMarker.getPosition());	     
+				map.setCenter(newAssignmentMarker.getPosition());
 
 				google.maps.event.addListener(newAssignmentMarker, 'dragend', (ev) => {
 					//Send up location to the parent
 					updateNewAssignment({
 						lat: ev.latLng.lat(),
 						lng: ev.latLng.lng()
-					}, 
+					},
 					newAssignment.radius,
 					map.getZoom(),
 					'markerDrag'
-					);	
+					);
 				});
 
 				//Set marker to state of map so we can manage its location
 				this.setState({  newAssignmentMarker, newAssignmentCircle });
-				
+
 				//Update the position to the parent component
 				updateNewAssignment(location, null, null);
 			}
@@ -234,7 +234,7 @@ import utils from 'utils'
 	 	this.updateMap();
 	 }
 
-	/** 
+	/**
 	 * Clears callout if exists
 	 */
 	 clearCallout() {
@@ -255,12 +255,12 @@ import utils from 'utils'
 		if(!this.state.map) return;
 
 		//Send bounds for dispatch parent state
-		this.props.updateCurrentBounds(this.state.map);
+		this.props.updateCurrentBounds(this.state.map.getBounds());
 
 		//Get assignments
 		if(!this.loadingAssignments){
 			this.loadingAssignments = true;
-			
+
 			this.props.findAssignments(this.state.map, {}, (assignments) => {
 				this.loadingAssignments = false;
 
@@ -271,10 +271,10 @@ import utils from 'utils'
 		//Get users
 		if(!this.loadingUsers){
 			this.loadingUsers = true;
-			
+
 			this.props.findUsers(this.state.map, (users, error) => {
 				this.loadingUsers = false;
-				
+
 				if(users == null) return;
 
 				let formattedUsers = {};
@@ -311,7 +311,7 @@ import utils from 'utils'
 		    //If it exists, remove it from the new assignments
 		    if(_.find(assignments, ['id' , assignment.id]) || !assignment.location) {
 		    	newAssignments.splice(i, 1);
-		    } 
+		    }
 		    //If it doesn't, push it into the list of assignments in state, and keep it in new assignments
 		    else {
 		    	assignments.push(assignment);
@@ -325,7 +325,7 @@ import utils from 'utils'
 	}
 
 	/**
-	 * Adds passed array of assignments to the map, 
+	 * Adds passed array of assignments to the map,
 	 * then sets state from concatted response from `addAssignmentToMap` on each assignment
 	 */
 	 addAssignmentsToMap(assignments){
@@ -335,7 +335,7 @@ import utils from 'utils'
 		//Loop and add assignments to map
 		assignments.forEach((assignment) => {
 			const assignmentMapData = this.addAssignment(assignment, false);
-			
+
 			//Push into local marker and circles
 			markers.push(assignmentMapData.marker);
 			circles.push(assignmentMapData.circle);
@@ -356,10 +356,10 @@ import utils from 'utils'
 		//Lat/Lng will default to center if for a created assignment
 		const { map } = this.state;
 		let title = assignment.title || 'No title';
-		let zIndex; 
+		let zIndex;
 		let status;
 		let position = new google.maps.LatLng(
-			assignment.location.coordinates[1], 
+			assignment.location.coordinates[1],
 			assignment.location.coordinates[0]
 			);
 		let radius = assignment.radius;
@@ -381,26 +381,26 @@ import utils from 'utils'
 		//Create the rendered circle
 		const circle = this.createCircle(
 			map,
-			position, 
-			utils.milesToMeters(radius), 
+			position,
+			utils.milesToMeters(radius),
 			status,
 			assignment.id
 			);
 		//Create the marker
 		const marker = this.createAssignmentMarker(
 			map,
-			position, 
+			position,
 			title,
 			status,
-			zIndex, 
+			zIndex,
 			draggable,
 			assignment.id
 			);
 
 		//Add event handler to display callout when clicekd
 		google.maps.event.addListener(
-			marker, 
-			'click',  
+			marker,
+			'click',
 			this.focusOnAssignment.bind(null, assignment)
 			);
 
@@ -419,12 +419,12 @@ import utils from 'utils'
 			origin: new google.maps.Point(0, 0),
 			anchor: new google.maps.Point(18, 19)
 		};
-		
+
 		//Default to position or center of map
 		if(!position){
 			position = {lat: map.getCenter().lat(), lng: map.getCenter().lng()};
 		}
-		
+
 		return new google.maps.Marker({
 			position: position,
 			map: map,
@@ -462,7 +462,7 @@ import utils from 'utils'
 	 	var keys = Object.keys(newUsers),
 	 	markers = _.clone(this.state.userMarkers);
 
-		//Make keys after the loop, because keys may have been deleted 
+		//Make keys after the loop, because keys may have been deleted
 		var currentUsers = _.clone(this.state.users),
 		currentUserKeys = Object.keys(currentUsers);
 
@@ -482,7 +482,7 @@ import utils from 'utils'
 				}
 			}
 			//If the user doesn't exist in the new data set
-			else { 
+			else {
 				//If the marker exists, but the user doesn't, remove the marker and delete from current set
 				if(markers[key]){
 					markers[key].setMap(null);
@@ -495,7 +495,7 @@ import utils from 'utils'
 			}
 		}
 
-		//If the length changed, reset the keys to avoid 
+		//If the length changed, reset the keys to avoid
 		//iterating over keys that do no exist any more
 		if(currentUsers.length !== this.state.users.length)
 			currentUserKeys = Object.keys(currentUsers);
@@ -574,7 +574,7 @@ import utils from 'utils'
 		});
 
 		callout.open(map);
-		
+
 		this.setState({
 			activeCallout: callout
 		});

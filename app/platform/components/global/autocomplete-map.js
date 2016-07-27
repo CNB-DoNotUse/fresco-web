@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import FrescoAutocomplete from '../global/fresco-autocomplete.js';
+// import EditMap from '../editing/edit-map';
 import GMap from '../editing/gmap';
 
 class AutocompleteMap extends React.Component {
@@ -35,8 +36,8 @@ class AutocompleteMap extends React.Component {
 	/**
 	 * Updates states bounds for other components
 	 */
-    updateCurrentBounds(map) {
-        this.setState({ bounds: map.getBounds() });
+    updateCurrentBounds(bounds) {
+        this.setState({ bounds });
     }
 
     render() {

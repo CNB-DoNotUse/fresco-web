@@ -10,16 +10,25 @@ import utils from 'utils';
  * @description Map element that is found in Gallery Edit, Admin Panel, etc.
  */
 class GMap extends React.Component {
+    componentDidMount() {
+        const { updateCurrentBounds } = this.props;
+
+        updateCurrentBounds(this._map ? this._map.getBounds() : {});
+    }
 
     onPositionChanged() {
+        const { onDataChange, updateCurrentBounds } = this.props;
         const pos = this._marker.getPosition();
-        this.props.onDataChange({
+
+        onDataChange({
             location: {
                 lat: pos.lat(),
                 lng: pos.lng(),
             },
             source: 'markerDrag',
         });
+
+        updateCurrentBounds(this._map ? this._map.getBounds() : {});
     }
 
     getCenter() {
@@ -113,7 +122,8 @@ class GMap extends React.Component {
 }
 
 GMap.propTypes = {
-    onDataChange: PropTypes.func,
+    onDataChange: PropTypes.func.isRequired,
+    updateCurrentBounds: PropTypes.func.isRequired,
     radius: PropTypes.number,
     location: PropTypes.object,
     draggable: PropTypes.bool,
@@ -122,7 +132,6 @@ GMap.propTypes = {
 };
 
 GMap.defaultProps = {
-    onDataChange() {},
     radius: null,
     location: null,
     draggable: false,
