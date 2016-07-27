@@ -42,19 +42,20 @@ class GMap extends React.Component {
     renderMarker() {
         const { draggable } = this.props;
         // Marker image
-        // const markerImage = {
-        //     url: utils.assignmentImage[this.props.type],
-        //     size: new google.maps.Size(108, 114),
-        //     scaledSize: new google.maps.Size(36, 38),
-        //     origin: new google.maps.Point(0, 0),
-        //     anchor: new google.maps.Point(18, 19)
-        // };
+        const markerImage = {
+            url: utils.assignmentImage[this.props.type],
+            size: new google.maps.Size(108, 114),
+            scaledSize: new google.maps.Size(36, 38),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(18, 19)
+        };
 
         return (
             <Marker
                 ref={(m) => this._marker = m}
                 position={this.getCenter()}
                 draggable={draggable}
+                icon={markerImage}
                 onPositionChanged={() => this.onPositionChanged()}
             />
         );
@@ -96,7 +97,7 @@ class GMap extends React.Component {
                     containerElement={<div className="map-container" />}
                     googleMapElement={
                         <GoogleMap
-                            ref={(map) => this._map = map }
+                            ref={(map) => this._map = map}
                             defaultZoom={zoom}
                             defaultCenter={this.getCenter()}
                             options={mapOptions}
