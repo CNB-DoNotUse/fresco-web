@@ -281,8 +281,11 @@ app.use((req, res, next) => {
 
     // default to plain-text. send()
     res.type('txt').send('Page not found!');
+});
 
- });
+app.on('unhandledRejection', (err) => {
+    console.log('unhandledRejection', err);
+});
 
 
 module.exports = app;

@@ -7,7 +7,8 @@ import EditAssignment from './edit-assignment';
 import BylineEdit from './byline-edit.js';
 import AutocompleteMap from '../global/autocomplete-map';
 import utils from 'utils';
-import _ from 'lodash';
+import difference from 'lodash/difference';
+import without from 'lodash/remove';
 
 /**
  * Gallery Edit Parent Object
@@ -80,7 +81,7 @@ class Edit extends React.Component {
             postIds,
         } = this.state;
         const { gallery } = this.props;
-        const posts = _.difference(postIds, postsToDeleteIds);
+        const posts = difference(postIds, postsToDeleteIds);
 
         if (caption.length === 0) {
             $.snackbar({ content: 'A gallery must have a caption' });
@@ -191,16 +192,13 @@ class Edit extends React.Component {
         });
     }
 
-    // TODO: refactor
-    toggleDeletePost(post) {
-        const index = this.state.postsToDeleteIds.indexOf(post);
+    toggleDeletePost(postId) {
+        const { postsToDeleteIds } = this.state;
 
-        if (index === -1) {
-            this.setState({ postsToDeleteIds: this.state.postsToDeleteIds.concat(post) });
+        if (postsToDeleteIds.indexOf(postId) === -1) {
+            this.setState({ postsToDeleteIds: postsToDeleteIds.concat(postId) });
         } else {
-            const posts = this.state.postsToDeleteIds;
-            posts.splice(index, 1);
-            this.setState({ postsToDeleteIds: posts });
+            this.setState({ postsToDeleteIds: postsToDeleteIds.without(postId) });
         }
     }
 
@@ -351,8 +349,8 @@ class Edit extends React.Component {
                 </button>
 
                 {
-                    // TODO: when should this be button be visible
-                    user.id === gallery.owner_id
+                    // can add more posts when gallery is an import(null owner id)
+                    !gallery.owner_id
                         ? <button
                             type="button"
                             onClick={() => this.addMore()}
