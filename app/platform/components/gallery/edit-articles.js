@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Tag from '../editing/tag.js';
+import Tag from '../global/tag.js';
 import utils from 'utils';
 import remove from 'lodash/remove';
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import Tag from '../editing/tag'
+import Tag from '../global/tag'
 import Dropdown from '../global/dropdown'
 
 export default class TagFilter extends React.Component {
@@ -17,9 +17,9 @@ export default class TagFilter extends React.Component {
 		//Call on tag input function if passed as a prop
 		if(this.props.onTagInput){
 			this.props.onTagInput(this.refs.tagFilterInput.value);
-		} 
+		}
 		//Otherwise interact normally
-		else {		
+		else {
 			if(e.keyCode != 13) return;
 
 			var tagText = this.refs.tagFilterInput.value;
@@ -41,8 +41,8 @@ export default class TagFilter extends React.Component {
 
 		for (var t in tagList) {
 			available.push(
-				<Tag 
-					onClick={this.props.onTagAdd.bind(null, tagList[t])} 
+				<Tag
+					onClick={this.props.onTagAdd.bind(null, tagList[t])}
 					text={tagList[t]} key={t} />
 			);
 		}
@@ -50,8 +50,8 @@ export default class TagFilter extends React.Component {
 		for (var t in filterList) {
 			tags.push(
 				<Tag
-					onClick={this.props.onTagRemove.bind(null, filterList[t])} 
-					text={filterList[t]} 
+					onClick={this.props.onTagRemove.bind(null, filterList[t])}
+					text={filterList[t]}
 					key={t} />
 			);
 		}
@@ -79,19 +79,19 @@ export default class TagFilter extends React.Component {
 							<div className="form-control-wrapper">
 								<input
 									id="tag-filter-input"
-									type="text" 
+									type="text"
 									className="form-control floating-label"
 									placeholder={this.props.text}
 									ref="tagFilterInput"
 									onKeyUp={this.handleTagInput} />
 							</div>
 						</div>
-						
+
 						<ul id="tag-filter" className="chips">
 							{tags}
 						</ul>
 					</div>
-					
+
 					{availableBody}
 				</div>
 			</Dropdown>

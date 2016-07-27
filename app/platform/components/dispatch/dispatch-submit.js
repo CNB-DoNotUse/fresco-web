@@ -1,5 +1,5 @@
 import React from 'react';
-import GMap from '../editing/gmap';
+import GMap from '../global/gmap';
 import FrescoAutocomplete from '../global/fresco-autocomplete.js';
 import utils from 'utils';
 

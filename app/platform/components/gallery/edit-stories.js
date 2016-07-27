@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Tag from '../editing/tag';
+import Tag from '../global/tag';
 import utils from 'utils';
 
 /**

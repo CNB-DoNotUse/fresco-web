@@ -1,5 +1,5 @@
 import React from 'react';
-import Tag from 'app/platform/components/editing/tag.js';
+import Tag from '../global/tag.js';
 
 /**
  * Component for managing added/removed tags

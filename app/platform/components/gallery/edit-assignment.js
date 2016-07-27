@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Tag from '../editing/tag.js';
+import Tag from '../global/tag.js';
 
 /**
  * Component for managing added/removed tags

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import FrescoAutocomplete from '../global/fresco-autocomplete.js';
-import GMap from '../editing/gmap';
+import GMap from './gmap';
 
 class AutocompleteMap extends React.Component {
     constructor(props) {

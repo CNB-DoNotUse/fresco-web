@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import Tag from '../editing/tag.js';
+import Tag from '../global/tag.js';
 import utils from 'utils';
 
 /**
