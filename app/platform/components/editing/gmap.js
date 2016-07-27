@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
 import Marker from 'react-google-maps/lib/Marker';
+import Circle from 'react-google-maps/lib/Circle';
 import utils from 'utils';
 
 /**
@@ -59,8 +60,35 @@ class GMap extends React.Component {
         );
     }
 
+    renderCircle() {
+        const center = this._marker
+            ? this._marker.getPosition()
+            : this.getCenter();
+
+        const circleOptions = {
+            radius: utils.feetToMeters(this.props.radius) || 0,
+            fillColor: utils.assignmentColor[this.props.type],
+            fillOpacity: 0.26,
+            strokeWeight: 0,
+        };
+
+        return (
+            <Circle
+                ref={(c) => this._circle = c}
+                center={center}
+                options={circleOptions}
+            />
+        );
+    }
+
     render() {
         const { zoom, draggable } = this.props;
+        const mapOptions = {
+            mapTypeControl: false,
+            disableDoubleClickZoom: true,
+            scrollwheel: draggable,
+            draggable,
+        };
 
         return (
             <section style={{ height: '100%' }}>
@@ -71,12 +99,10 @@ class GMap extends React.Component {
                             ref={(map) => this._map = map }
                             defaultZoom={zoom}
                             defaultCenter={this.getCenter()}
-                            draggable={draggable}
-                            scrollwheel={draggable}
-                            mapTypeControl={false}
-                            disableDoubleClickZoom
+                            options={mapOptions}
                         >
                             {this.renderMarker()}
+                            {this.renderCircle()}
                         </GoogleMap>
                     }
                 />
