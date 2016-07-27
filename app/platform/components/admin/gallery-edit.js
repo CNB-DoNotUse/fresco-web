@@ -37,6 +37,7 @@ class GalleryEdit extends React.Component {
 
     getStateFromProps(props) {
         const { gallery } = props;
+        const location = gallery.location || gallery.posts ? gallery.posts[0].location : null;
 
         return {
             editButtonsEnabled: false,
@@ -46,6 +47,7 @@ class GalleryEdit extends React.Component {
             address: gallery.address,
             loading: false,
             caption: gallery.caption || 'No Caption',
+            location,
         };
     }
 

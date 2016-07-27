@@ -10,31 +10,41 @@ import utils from 'utils';
  * @description Map element that is found in Gallery Edit, Admin Panel, etc.
  */
 class GMap extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = { center: this.getCenter(props.location) };
+    }
+
     componentDidMount() {
         const { updateCurrentBounds } = this.props;
 
-        updateCurrentBounds(this._map ? this._map.getBounds() : {});
+        updateCurrentBounds(this.map ? this.map.getBounds() : {});
     }
 
-    onPositionChanged() {
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.location && (nextProps.location !== this.props.location)) {
+            this.setState({ center: this.getCenter(nextProps.location) });
+        }
+    }
+
+    onDragMarker(e) {
         const { onDataChange, updateCurrentBounds } = this.props;
-        const pos = this._marker.getPosition();
+        const location = { lng: e.latLng.lng(), lat: e.latLng.lat() };
+
+        this.setState({ center: this.getCenter(location) });
 
         onDataChange({
-            location: {
-                lat: pos.lat(),
-                lng: pos.lng(),
-            },
+            location,
             source: 'markerDrag',
         });
 
-        updateCurrentBounds(this._map ? this._map.getBounds() : {});
+        updateCurrentBounds(this.map ? this.map.getBounds() : {});
     }
 
-    getCenter() {
+    getCenter(location) {
         // If location, get centroid of polygon, or use the point passed.
         // Otherwise use NYC for center.
-        const { location } = this.props;
         if (location && location.type) {
             if (location.type.toLowerCase() === 'polygon') {
                 return utils.getCentroid(location.coordinates);
@@ -43,13 +53,16 @@ class GMap extends React.Component {
             if (location.type.toLowerCase() === 'point') {
                 return { lng: location.coordinates[0], lat: location.coordinates[1] };
             }
+        } else if (location && location.lat && location.lng) {
+            return { lng: location.lng, lat: location.lat };
         }
 
-        return { lat: 40.7, lng: -74 };
+        return { lng: -74, lat: 40.7 };
     }
 
     renderMarker() {
-        const { draggable } = this.props;
+        const { draggable, location } = this.props;
+        const { center } = this.state;
         const markerImage = {
             url: utils.assignmentImage[this.props.type],
             size: new google.maps.Size(108, 114),
@@ -61,20 +74,18 @@ class GMap extends React.Component {
 
         return (
             <Marker
-                ref={(m) => this._marker = m}
-                defaultPosition={this.getCenter()}
+                ref={(m) => this.marker = m}
+                position={center}
                 draggable={draggable}
                 icon={markerImage}
-                onDragend={() => this.onPositionChanged()}
+                onDragend={(e) => this.onDragMarker(e)}
             />
         );
     }
 
     renderCircle() {
-        const center = this._marker
-            ? this._marker.getPosition()
-            : this.getCenter();
-
+        const { location } = this.props;
+        const { center } = this.state;
         const circleOptions = {
             radius: utils.feetToMeters(this.props.radius) || 0,
             fillColor: utils.assignmentColor[this.props.type],
@@ -85,7 +96,7 @@ class GMap extends React.Component {
 
         return (
             <Circle
-                ref={(c) => this._circle = c}
+                ref={(c) => this.circle = c}
                 center={center}
                 options={circleOptions}
             />
@@ -93,7 +104,8 @@ class GMap extends React.Component {
     }
 
     render() {
-        const { zoom, draggable } = this.props;
+        const { zoom, draggable, location } = this.props;
+        const { center } = this.state;
         const mapOptions = {
             mapTypeControl: false,
             disableDoubleClickZoom: true,
@@ -107,9 +119,9 @@ class GMap extends React.Component {
                     containerElement={<div className="map-container" />}
                     googleMapElement={
                         <GoogleMap
-                            ref={(map) => this._map = map}
+                            ref={(map) => this.map = map}
                             defaultZoom={zoom}
-                            defaultCenter={this.getCenter()}
+                            center={center}
                             options={mapOptions}
                         >
                             {this.renderMarker()}
@@ -123,8 +135,8 @@ class GMap extends React.Component {
 }
 
 GMap.propTypes = {
-    onDataChange: PropTypes.func.isRequired,
-    updateCurrentBounds: PropTypes.func.isRequired,
+    onDataChange: PropTypes.func,
+    updateCurrentBounds: PropTypes.func,
     radius: PropTypes.number,
     location: PropTypes.object,
     draggable: PropTypes.bool,
@@ -133,8 +145,10 @@ GMap.propTypes = {
 };
 
 GMap.defaultProps = {
+    onDataChange() {},
+    updateCurrentBounds() {},
     radius: null,
-    location: null,
+    location: { lng: -74, lat: 40.7 },
     draggable: false,
     type: 'active',
     zoom: 12,

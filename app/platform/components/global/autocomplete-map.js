@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import FrescoAutocomplete from '../global/fresco-autocomplete.js';
-// import EditMap from '../editing/edit-map';
 import GMap from '../editing/gmap';
 
 class AutocompleteMap extends React.Component {
