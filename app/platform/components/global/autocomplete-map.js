@@ -44,7 +44,7 @@ class AutocompleteMap extends React.Component {
             hasRadius,
             radius,
             unit,
-            defaultLocation,
+            address,
             disabled,
             onPlaceChange,
             location,
@@ -72,7 +72,7 @@ class AutocompleteMap extends React.Component {
         return (
             <div className="map-group autocomplete-map form-group-default">
                 <FrescoAutocomplete
-                    inputText={defaultLocation}
+                    inputText={address}
                     disabled={disabled}
                     bounds={this.state.bounds}
                     class="form"
@@ -98,7 +98,7 @@ class AutocompleteMap extends React.Component {
 }
 
 AutocompleteMap.defaultProps = {
-    defaultLocation: null,
+    address: '',
     unit: 'Feet',
     location: null,
     radius: 250,
@@ -116,7 +116,7 @@ AutocompleteMap.propTypes = {
     hasRadius: PropTypes.bool,
     disabled: PropTypes.bool,
     onRadiusUpdate: PropTypes.func,
-    defaultLocation: PropTypes.string,
+    address: PropTypes.string,
     onPlaceChange: PropTypes.func,
     location: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.array]),
     rerender: PropTypes.bool,

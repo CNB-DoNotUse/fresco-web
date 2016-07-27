@@ -3,9 +3,9 @@ import EditTags from './edit-tags';
 import EditStories from './edit-stories';
 import EditArticles from './edit-articles';
 import EditPosts from './edit-posts';
-import EditMap from './edit-map';
 import EditAssignment from './edit-assignment';
 import BylineEdit from './byline-edit.js';
+import AutocompleteMap from '../global/autocomplete-map';
 import utils from 'utils';
 import _ from 'lodash';
 
@@ -221,6 +221,27 @@ class Edit extends React.Component {
         this.props.toggle();
     }
 
+    renderMap() {
+        const { gallery, user } = this.props;
+        const location = gallery.location
+            || gallery.posts ? gallery.posts[0].location : null;
+        const address = gallery.address
+            || gallery.posts ? gallery.posts[0].address : null;
+
+        return (
+            <div className="dialog-col col-xs-12 col-md-5 pull-right">
+                <AutocompleteMap
+                    address={address}
+                    location={location}
+                    hasRadius={false}
+                    onPlaceChange={(p) => this.onPlaceChange(p)}
+                    disabled={user.id !== gallery.owner_id}
+                    rerender
+                />
+            </div>
+        );
+    }
+
     renderBody() {
         const { user, gallery } = this.props;
         const {
@@ -291,11 +312,7 @@ class Edit extends React.Component {
                     onToggleDelete={(p) => this.toggleDeletePost(p)}
                 />
 
-                <EditMap
-                    gallery={gallery}
-                    onPlaceChange={(p) => this.onPlaceChange(p)}
-                    disabled={user.id !== gallery.owner_id}
-                />
+                {this.renderMap()}
             </div>
         );
     }

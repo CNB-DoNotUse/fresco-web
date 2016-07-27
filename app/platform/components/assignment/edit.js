@@ -225,7 +225,7 @@ class AssignmentEdit extends React.Component {
                             <div className="dialog-col col-xs-12 col-md-5">
                                 <div className="dialog-row map-group">
                                     <AutocompleteMap
-                                        defaultLocation={this.state.address}
+                                        address={this.state.address}
                                         location={this.state.location}
                                         radius={this.state.radius}
                                         onRadiusUpdate={(r) => this.updateRadius(r)}

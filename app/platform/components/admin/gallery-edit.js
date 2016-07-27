@@ -38,16 +38,17 @@ class GalleryEdit extends React.Component {
     getStateFromProps(props) {
         const { gallery } = props;
         const location = gallery.location || gallery.posts ? gallery.posts[0].location : null;
+        const address = gallery.address || gallery.posts ? gallery.posts[0].address : null;
 
         return {
             editButtonsEnabled: false,
             tags: gallery.tags || [],
             stories: gallery.stories,
             assignment: gallery.assignment,
-            address: gallery.address,
             loading: false,
             caption: gallery.caption || 'No Caption',
             location,
+            address,
         };
     }
 
@@ -301,7 +302,7 @@ class GalleryEdit extends React.Component {
 
                     <AutocompleteMap
                         location={location}
-                        defaultLocation={address}
+                        address={address}
                         onPlaceChange={(p) => this.onPlaceChange(p)}
                         disabled={galleryType === 'submissions'}
                         hasRadius={false}

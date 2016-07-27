@@ -271,7 +271,6 @@ class AssignmentEdit extends React.Component {
             showMergeDialog,
             loading,
         } = this.state;
-        const defaultLocation = address || '';
         const expirationTime = assignment ? utils.hoursToExpiration(assignment.ends_at) : null;
         const globalLocation = this.isGlobalLocation();
 
@@ -309,7 +308,7 @@ class AssignmentEdit extends React.Component {
                     {globalLocation
                         ? ''
                         : <AutocompleteMap
-                            defaultLocation={defaultLocation}
+                            address={address || ''}
                             location={location}
                             radius={Math.round(utils.milesToFeet(radius))}
                             onPlaceChange={(place) => this.onPlaceChange(place)}

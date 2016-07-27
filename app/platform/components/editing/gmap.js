@@ -104,7 +104,7 @@ class GMap extends React.Component {
     }
 
     render() {
-        const { zoom, draggable, location } = this.props;
+        const { zoom, draggable } = this.props;
         const { center } = this.state;
         const mapOptions = {
             mapTypeControl: false,

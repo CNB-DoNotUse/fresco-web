@@ -26,7 +26,7 @@ export default class LocationDropdown extends React.Component {
 								onPlaceChange={this.props.onPlaceChange}
 								onMapDataChange={this.props.onMapDataChange}
 								onRadiusUpdate={this.props.onRadiusUpdate}
-								defaultLocation={this.props.defaultLocation}
+								address={this.props.defaultLocation}
 								location={this.props.location}
 								radius={this.props.radius}
 								hasRadius={true}
