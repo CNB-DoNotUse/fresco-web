@@ -10,6 +10,17 @@ import utils from 'utils';
  */
 class GMap extends React.Component {
 
+    onPositionChanged() {
+        const pos = this._marker.getPosition();
+        this.props.onDataChange({
+            location: {
+                lat: pos.lat(),
+                lng: pos.lng(),
+            },
+            source: 'markerDrag',
+        });
+    }
+
     getCenter() {
         // If location, get centroid of polygon, or use the point passed.
         // Otherwise use NYC for center.
@@ -25,6 +36,27 @@ class GMap extends React.Component {
         }
 
         return { lat: 40.7, lng: -74 };
+    }
+
+    renderMarker() {
+        const { draggable } = this.props;
+        // Marker image
+        // const markerImage = {
+        //     url: utils.assignmentImage[this.props.type],
+        //     size: new google.maps.Size(108, 114),
+        //     scaledSize: new google.maps.Size(36, 38),
+        //     origin: new google.maps.Point(0, 0),
+        //     anchor: new google.maps.Point(18, 19)
+        // };
+
+        return (
+            <Marker
+                ref={(m) => this._marker = m}
+                position={this.getCenter()}
+                draggable={draggable}
+                onPositionChanged={() => this.onPositionChanged()}
+            />
+        );
     }
 
     render() {
@@ -44,9 +76,7 @@ class GMap extends React.Component {
                             mapTypeControl={false}
                             disableDoubleClickZoom
                         >
-                            <Marker
-                                draggable={draggable}
-                            />
+                            {this.renderMarker()}
                         </GoogleMap>
                     }
                 />
