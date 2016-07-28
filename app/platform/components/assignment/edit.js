@@ -220,12 +220,15 @@ class AssignmentEdit extends React.Component {
     }
 
     renderFooter() {
+        const { loading } = this.props;
+
         return (
             <div className="dialog-foot">
                 <button
                     id="story-edit-revert"
                     type="button"
                     className="btn btn-flat"
+                    disabled={loading}
                     onClick={() => this.revert()}
                 >
                     Revert changes
@@ -234,6 +237,7 @@ class AssignmentEdit extends React.Component {
                     id="story-edit-clear"
                     type="button"
                     className="btn btn-flat"
+                    disabled={loading}
                     onClick={() => this.clear()}
                 >
                     Clear all
@@ -242,6 +246,7 @@ class AssignmentEdit extends React.Component {
                     id="story-edit-save"
                     type="button"
                     className="btn btn-flat pull-right"
+                    disabled={loading}
                     onClick={() => this.onSave()}
                 >
                     Save
@@ -250,6 +255,7 @@ class AssignmentEdit extends React.Component {
                     id="story-edit-discard"
                     type="button"
                     className="btn btn-flat pull-right toggle-edit toggler"
+                    disabled={loading}
                     onClick={() => this.cancel()}
                 >
                     Discard

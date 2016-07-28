@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import isEmpty from 'lodash/isEmpty';
 
 /**
  * Autocomplete component
@@ -78,7 +79,7 @@ class FrescoAutocomplete extends React.Component {
     calculateCrossStreets(query) {
         const params = { address: query };
 
-        if (this.props.bounds) {
+        if (!isEmpty(this.props.bounds)) {
             params.bounds = this.props.bounds;
         }
 
@@ -111,16 +112,17 @@ class FrescoAutocomplete extends React.Component {
         };
 
         if (typeof(prediction.geometry) === 'undefined') {
-            this.placesService.getDetails({ reference: prediction.reference },
-                (details) => {
+            this.placesService.getDetails({ reference: prediction.reference }, (details) => {
+                if (details) {
                     // Inherit description from initial object
                     details.description = prediction.description;
 
                     // Set prediciton to details result
                     prediction = details;
+                }
 
-                    updateAssignment();
-                });
+                updateAssignment();
+            });
         } else {
             updateAssignment();
         }
@@ -184,6 +186,7 @@ FrescoAutocomplete.propTypes = {
     disabled: PropTypes.bool,
     transition: PropTypes.bool,
     updateAutocompleteData: PropTypes.func,
+    bounds: PropTypes.object,
 };
 
 export default FrescoAutocomplete;

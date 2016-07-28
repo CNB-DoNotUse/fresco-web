@@ -32,6 +32,8 @@ class AssignmentDetail extends React.Component {
      * Invoked from the on-page button `Expire`
      */
     expireAssignment() {
+        this.setState({ loading: true });
+
         $.ajax({
             method: 'POST',
             url: `/api/assignment/${this.state.assignment.id}/update`,
@@ -49,6 +51,9 @@ class AssignmentDetail extends React.Component {
             $.snackbar({
                 content: utils.resolveError(response.err, 'There was an error expiring this assignment!')
             });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
@@ -57,6 +62,8 @@ class AssignmentDetail extends React.Component {
 	 */
     save(id, params) {
         if (!id || !params || this.state.loading) return;
+        this.setState({ loading: true });
+
         $.ajax({
             url: `/api/assignment/${id}/update`,
             method: 'post',
