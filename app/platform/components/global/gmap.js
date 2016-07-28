@@ -34,10 +34,7 @@ class GMap extends React.Component {
 
         this.setState({ center: this.getCenter(location) });
 
-        onDataChange({
-            location,
-            source: 'markerDrag',
-        });
+        onDataChange({ location, source: 'markerDrag' });
 
         updateCurrentBounds(this.map ? this.map.getBounds() : {});
     }

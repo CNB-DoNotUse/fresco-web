@@ -1,146 +1,224 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import StoryEditStats from './edit-stats';
 
-export default class StoryEdit extends React.Component {
+class StoryEdit extends React.Component {
+    constructor(props) {
+        super(props);
 
-	constructor(props) {
-		super(props);
+        this.state = this.getStateFromProps(props);
+    }
 
-		this.hide = this.hide.bind(this);
-		this.save = this.save.bind(this);
-		this.revert = this.revert.bind(this);
-		this.cancel = this.cancel.bind(this);
-		this.delete = this.delete.bind(this);
-		this.clear = this.clear.bind(this);
+    componentDidMount() {
+        $.material.init();
+    }
 
-	}
+    getStateFromProps(props) {
+        const { story } = props;
+        if (!story) return { loading: false };
 
-	hide() {
-		this.props.toggle();
-	}
+        return {
+            loading: false,
+            title: story.title || '',
+            caption: story.caption || '',
+        };
+    }
 
-	revert() {
-		this.refs.editTitle.value = this.props.story.title;
-		this.refs.editCaption.value = this.props.story.caption;
-	}
+    hide() {
+        this.props.toggle();
+    }
 
-	clear() {
-		this.refs.editTitle.value = '';
-		this.refs.editCaption.value = '';
-	}
+    revert() {
+        if (this.state.loading) return;
+        this.setState(this.getStateFromProps);
+    }
 
-	save() {
+    clear() {
+        if (this.state.loading) return;
+        this.setState({ title: '', caption: '' });
+    }
 
-		var self = this,
-			params = {
-				id: this.props.story.id,
-				title: this.refs.editTitle.value,
-				caption: this.refs.editCaption.value
-			}
+    save() {
+        const { story, onUpdateStory } = this.props;
+        const params = {
+            title: this.refs.editTitle.value,
+            caption: this.refs.editCaption.value,
+        };
+        if (!story || !story.id || !params) return;
 
-		$.ajax("/api/story/update", {
-			method: 'post',
-			contentType: "application/json",
-			data: JSON.stringify(params),
-			success: function(result){
-				if(result.err)
-					return this.error(null, null, result.err);
-				if(!self.props.updateStory){
-					location.reload();
-				} else{
-					//Update parent story
-					self.hide();
-					self.props.updateStory(result.data);
-				}
+        $.ajax({
+            url: `/api/story/${story.id}/update`,
+            method: 'post',
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            dataType: 'json',
+        })
+        .done((res) => {
+            this.hide();
+            onUpdateStory(res);
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Unable to save story' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
+        });
+    }
 
-			},
-			error: (xhr, status, error) =>{
-				$.snackbar({content: resolveError(error)});
-			}
-		});
-	}
+    remove() {
+        const { story } = this.props;
+        if (!story || !story.id || this.state.loading) return;
 
-	delete() {
-		alertify.confirm("Are you sure you want to delete this story? This cannot be undone.", (e) => {
-			$.post('/api/story/delete',
-			{
-				id: this.props.story.id
-			}, (data) => {
-				if(data.err) {
-					return $.snackbar({ content: 'There was a problem deleting yoru story' });
-				}
+        alertify.confirm('Are you sure you want to delete this story? This cannot be undone.', (e) => {
+            $.ajax({
+                url: `/api/story/${story.id}/delete`,
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+            })
+            .done(() => {
+                $.snackbar({ content: 'Story deleted' });
+                location.href = document.referrer || '/archive/stories';
+            })
+            .fail(() => {
+                $.snackbar({ content: 'Unable to delete gallery' });
+            })
+            .always(() => {
+                this.setState({ loading: false });
+            });
+        });
+    }
 
-				window.location = '/archive/stories';
-			})
-		});
-	}
+    cancel() {
+        this.revert();
+        this.props.toggle();
+    }
 
-	cancel() {
-		this.revert();
-		this.props.toggle();
-	}
+    renderFooter() {
+        return (
+            <div className="dialog-foot">
+                <button
+                    id="story-edit-revert"
+                    type="button"
+                    className="btn btn-flat"
+                    onClick={() => this.revert()}
+                >
+                    Revert changes
+                </button>
+                <button
+                    id="story-edit-clear"
+                    type="button"
+                    className="btn btn-flat"
+                    onClick={() => this.clear()}
+                >
+                    Clear all
+                </button>
+                <button
+                    id="story-edit-save"
+                    type="button"
+                    className="btn btn-flat pull-right"
+                    onClick={() => this.save()}
+                >
+                    Save
+                </button>
+                <button
+                    id="story-edit-delete"
+                    type="button"
+                    className="btn btn-flat pull-right"
+                    onClick={() => this.remove()}
+                >
+                    Delete
+                </button>
+                <button
+                    id="story-edit-discard"
+                    type="button"
+                    className="btn btn-flat pull-right toggle-edit toggler"
+                    onClick={() => this.cancel()}
+                >
+                    Discard
+                </button>
+            </div>
+        );
+    }
 
-	render() {
+    renderBody() {
+        const { title, caption } = this.state;
 
-		var toggled = this.props.toggled ? 'toggled' : '';
+        return (
+            <div className="dialog-body">
+                <div className="dialog-col col-xs-12 form-group-default">
+                    <div className="dialog-row">
+                        <input
+                            id="story-edit-title-input"
+                            type="text"
+                            className="form-control floating-label"
+                            placeholder="Title"
+                            title="Title"
+                            value={title}
+                            onChange={(e) => this.setState({ title: e.target.value })}
+                        />
+                    </div>
+                    <div className="dialog-row">
+                        <textarea
+                            id="story-edit-caption-input"
+                            type="text"
+                            className="form-control floating-label"
+                            placeholder="Caption"
+                            title="Caption"
+                            value={caption}
+                            onChange={(e) => this.setState({ caption: e.target.value })}
+                        />
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
-		return (
-			<div>
+    renderHeader() {
+        return (
+            <div className="dialog-head">
+                <span className="md-type-title">Edit story</span>
+                <span
+                    className="mdi mdi-close pull-right icon toggle-edit toggler"
+                    onClick={() => this.hide()}
+                />
+            </div>
+        );
+    }
 
-				<div className={"dim toggle-edit " + toggled}></div>
-				<div className={"edit panel panel-default toggle-edit " + toggled}>
 
-					<div className="col-lg-4 visible-lg edit-current">
-						<StoryEditStats story={this.props.story} />
-					</div>
+    render() {
+        const { toggled, story } = this.props;
 
-					<div className="col-xs-12 col-lg-8 edit-new dialog">
+        return (
+            <div>
+                <div className={`dim toggle-edit ${toggled ? 'toggled' : ''}`} />
+                <div className={`edit panel panel-default toggle-edit ${toggled ? 'toggled' : ''}`}>
+                    <div className="col-lg-4 visible-lg edit-current">
+                        <StoryEditStats story={story} />
+                    </div>
 
-						<div className="dialog-head">
-							<span className="md-type-title">Edit story</span>
-							<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
-						</div>
-
-						<div className="dialog-foot">
-							<button id="story-edit-revert" type="button" className="btn btn-flat" onClick={this.revert}>Revert changes</button>
-							<button id="story-edit-clear" type="button" className="btn btn-flat" onClick={this.clear}>Clear all</button>
-							<button id="story-edit-save" type="button" className="btn btn-flat pull-right" onClick={this.save}>Save</button>
-							<button id="story-edit-delete" type="button" className="btn btn-flat pull-right" onClick={this.delete}>Delete</button>
-							<button id="story-edit-discard" type="button" className="btn btn-flat pull-right toggle-edit toggler" onClick={this.cancel}>Discard</button>
-						</div>
-
-						<div className="dialog-body">
-							<div className="dialog-col col-xs-12 form-group-default">
-								<div className="dialog-row">
-									<input
-										id="story-edit-title-input"
-										type="text"
-										className="form-control floating-label"
-										placeholder="Title"
-										title="Title"
-										ref="editTitle"
-										defaultValue={this.props.story.title} />
-								</div>
-								<div className="dialog-row">
-									<textarea
-										id="story-edit-caption-input"
-										type="text"
-										className="form-control floating-label"
-										placeholder="Caption"
-										title="Caption"
-										ref="editCaption"
-										defaultValue={this.props.story.caption} />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		);
-	}
+                    <div className="col-xs-12 col-lg-8 edit-new dialog">
+                        {this.renderHeader()}
+                        {this.renderBody()}
+                        {this.renderFooter()}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
+
+StoryEdit.propTypes = {
+    toggle: PropTypes.func.isRequired,
+    toggled: PropTypes.bool.isRequired,
+    story: PropTypes.object.isRequired,
+    onUpdateStory: PropTypes.func,
+};
 
 StoryEdit.defaultProps = {
-	toggled: false,
-	toggle: function () { console.log('StoryEdit missing toggle implementation'); }
-}
+    toggled: false,
+    toggle() { console.log('StoryEdit missing toggle implementation'); },
+};
+
+export default StoryEdit;
+

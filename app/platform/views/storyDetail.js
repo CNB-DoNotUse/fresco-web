@@ -12,109 +12,103 @@ import utils from 'utils';
  */
 class StoryDetail extends React.Component {
 
-	constructor(props) {
-		super(props);
+    constructor(props) {
+        super(props);
 
-		this.state = {
-			storyEditToggled: false,
-			story: this.props.story,
-			sort: this.props.sort || 'created_at'
-		}
+        this.state = {
+            editToggled: false,
+            story: props.story,
+            sort: props.sort,
+        };
+    }
 
-		this.toggleStoryEdit = this.toggleStoryEdit.bind(this);
-		this.loadPosts = this.loadPosts.bind(this);
-		this.updateStory = this.updateStory.bind(this);
-		this.updateSort = this.updateSort.bind(this);
-	}
+    updateStory(story) {
+        this.setState({ story });
+    }
 
-	updateStory(story) {
-		this.setState({
-			story: story
-		});
-	}
+    toggleStoryEdit() {
+        this.setState({ editToggled: !this.state.editToggled});
+    }
 
-	toggleStoryEdit() {
-		this.setState({
-			storyEditToggled: !this.state.storyEditToggled
-		});
-	}
+    updateSort(sort) {
+        this.setState({ sort });
+    }
 
-	updateSort(sort) {
-		this.setState({
-			sort: sort
-		})
-	}
+    /**
+     * Returns array of posts with offset and callback, used in child PostList
+     * @param {string} lastId Last post in the list
+     * @param {function} callback callback delivering posts
+     */
+    loadPosts(lastId, callback) {
+        const { story, sort } = this.state;
+        const params = {
+            lastId,
+            limit: 10,
+            sort,
+        };
 
- 	/**
- 	 * Returns array of posts with offset and callback, used in child PostList
- 	 * @param {string} lastId Last post in the list
- 	 * @param {function} callback callback delivering posts
- 	 */
- 	loadPosts(lastId, callback) {
- 		const { story } = this.state;
- 		const data = {
-			lastId,
-			limit: 10,
-			sort: this.state.sort
-		};
+        $.ajax({
+            url: `/api/story/${story.id}`,
+            type: 'GET',
+            data: JSON.stringify(params),
+            dataType: 'json',
+        })
+        .done((res) => {
+            callback(res);
+        })
+        .fail((xhr, status, error) => {
+            $.snackbar({ content: utils.resolveError(error) });
+        });
+    }
 
- 		$.ajax({
- 			url:  `/api/story/${story.id}`,
- 			type: 'GET',
- 			data,
- 			dataType: 'json',
- 			success: (response, status, xhr) => {
- 				callback(!response.data || response.err ? [] : response.body);
- 			},
- 			error: (xhr, status, error) => {
- 				$.snackbar({content: utils.resolveError(error)});
- 			}
- 		});
- 	}
+    render() {
+        const { user } = this.props;
+        const { story, sort, editToggled } = this.state;
 
- 	render() {
- 		const { user } = this.props;
- 		const { story } = this.state;
+        return (
+            <App user={user}>
+                <TopBar
+                    title={story.title}
+                    updateSort={(s) => this.updateSort(s)}
+                    edit={() => this.toggleStoryEdit()}
+                    editable
+                    timeToggle
+                    chronToggle
+                />
 
- 		return (
- 			<App user={user}>
- 				<TopBar
- 					title={story.title}
-					updateSort={this.updateSort}
- 					edit={this.toggleStoryEdit}
-					editable={true}
- 					timeToggle={true}
- 					chronToggle={true} />
+                <StorySidebar story={story} />
 
- 				<StorySidebar
- 					story={story} />
+                <div className="col-sm-8 tall">
+                    <PostList
+                        rank={user.rank}
+                        loadPosts={(id, cb) => this.loadPosts(id, cb)}
+                        editable={false}
+                        sort={sort}
+                        size="large"
+                        scrollable
+                    />
+                </div>
 
- 				<div className="col-sm-8 tall">
-	 				<PostList
-	 					rank={user.rank}
-	 					loadPosts={this.loadPosts}
-	 					scrollable={true}
-	 					editable={false}
-						sort={this.state.sort}
-	 					size='large' />
-				</div>
-
-				<StoryEdit
-					toggle={this.toggleStoryEdit}
-					story={this.state.story}
-					user={this.props.user}
-					toggled={this.state.storyEditToggled}
-					updateStory={this.updateStory} />
- 			</App>
- 		);
-
- 	}
+                <StoryEdit
+                    toggle={() => this.toggleStoryEdit()}
+                    story={story}
+                    user={user}
+                    toggled={editToggled}
+                    onUpdateStory={(s) => this.updateStory(s)}
+                />
+            </App>
+        );
+    }
 }
-
 
 StoryDetail.propTypes = {
     story: PropTypes.object,
-    user: PropTypes.object
+    user: PropTypes.object,
+    sort: PropTypes.string,
+};
+
+StoryDetail.defaultProps = {
+    sort: 'created_at',
 };
 
 ReactDOM.render(
@@ -125,3 +119,4 @@ ReactDOM.render(
   		title={window.__initialProps__.title} />,
   	document.getElementById('app')
 );
+

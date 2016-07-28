@@ -1,10 +1,10 @@
-import _ from 'lodash';
-import React from 'react';
+import React, { PropTypes } from 'react';
 import PostCell from './post-cell';
 import GalleryEdit from '../gallery/edit';
 import GalleryCreate from '../gallery/create';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import utils from 'utils';
+import _ from 'lodash';
 
 /**
 * Post List Parent Object
@@ -16,9 +16,9 @@ class PostList extends React.Component {
         super(props);
 
         this.state = {
-            posts: this.props.posts,
+            posts: props.posts,
             loading: false,
-            scrollable: this.props.scrollable,
+            scrollable: props.scrollable,
             selectedPosts: [],
             gallery: null,
             galleryEditToggled: false,
@@ -47,7 +47,7 @@ class PostList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         // If we receive new posts in props while having none previously
-        let currentPostIds = this.state.posts.map(p => p.id);
+        let currentPostIds = this.state.posts.length ? this.state.posts.map(p => p.id) : [];
         let newPostIds = nextProps.posts.map(p => p.id);
         let diffIds = _.difference(newPostIds, currentPostIds);
         let postsUpdated = false;
@@ -280,6 +280,10 @@ class PostList extends React.Component {
         );
     }
 }
+
+PostList.propTypes = {
+    posts: PropTypes.array,
+};
 
 PostList.defaultProps = {
     className: '',

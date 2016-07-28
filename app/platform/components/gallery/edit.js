@@ -135,21 +135,20 @@ class Edit extends React.Component {
     }
 
     remove() {
-        const id = this.props.gallery.id;
-        if (!id || this.state.loading) return;
+        const { gallery } = this.props;
+        if (!gallery || !gallery.id || this.state.loading) return;
 
         alertify.confirm('Are you sure you want to delete this gallery?', (confirmed) => {
             if (!confirmed) return;
-            this.setState({ loading: true });
+            this.setstate({ loading: true });
 
             $.ajax({
-                url: `/api/gallery/${id}/delete`,
+                url: `/api/gallery/${gallery.id}/delete`,
                 method: 'POST',
                 dataType: 'json',
                 contentType: 'application/json',
             })
             .done(() => {
-                this.props.onUpdateGallery(id);
                 $.snackbar({ content: 'Gallery deleted' });
                 location.href = document.referrer || '/highlights';
             })
