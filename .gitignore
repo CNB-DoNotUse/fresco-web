@@ -3,11 +3,13 @@
 dump.rdb
 node_modules
 app/server
+bower_components
 uploads
 sessions
 cert/*
 cert/DigiCertCA.crt
 public/vendor
+public/build
 public/js/pages
 public/css/page
 public/css/pages
