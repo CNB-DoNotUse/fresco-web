@@ -47,7 +47,7 @@ class Edit extends React.Component {
         remove(gallery.id);
     }
 
-    onSave(rating) {
+    onSave(rating = this.state.rating) {
         const params = this.getFormData();
         const { gallery, save, loading } = this.props;
         if (!gallery.id || !params || loading) return;
@@ -349,7 +349,7 @@ class Edit extends React.Component {
 
                 <button
                     type="button"
-                    onClick={() => this.remove()}
+                    onClick={() => this.onRemove()}
                     className="btn btn-flat pull-right"
                     disabled={loading}
                 >

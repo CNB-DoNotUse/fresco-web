@@ -75,7 +75,7 @@ class GalleryDetail extends React.Component {
 
         alertify.confirm('Are you sure you want to delete this gallery?', (confirmed) => {
             if (!confirmed) return;
-            this.setstate({ loading: true });
+            this.setState({ loading: true });
 
             $.ajax({
                 url: `/api/gallery/${id}/delete`,
