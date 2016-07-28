@@ -37,6 +37,11 @@ class Edit extends React.Component {
         this.setState({ title: '', caption: '' });
     }
 
+    cancel() {
+        this.revert();
+        this.props.onToggle();
+    }
+
     save() {
         const { story, onUpdateStory } = this.props;
         const { title, caption } = this.state;
@@ -83,11 +88,6 @@ class Edit extends React.Component {
                 this.setState({ loading: false });
             });
         });
-    }
-
-    cancel() {
-        this.revert();
-        this.props.onToggle();
     }
 
     renderFooter() {

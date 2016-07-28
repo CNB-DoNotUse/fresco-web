@@ -18,14 +18,14 @@ class AssignmentDetail extends React.Component {
         this.state = {
             assignment,
             stats: assignment.stats || { photos: 0, videos: 0 },
-            toggled: false,
+            editToggled: false,
             verifiedToggle: true,
             outlet: assignment.outlets[0],
         };
     }
 
-    onVerifiedToggled(toggled) {
-        this.setState({ verifiedToggle: toggled });
+    onVerifiedToggled(verifiedToggle) {
+        this.setState({ verifiedToggle });
     }
 
     /**
@@ -66,17 +66,15 @@ class AssignmentDetail extends React.Component {
     }
 
     /**
-     * Toggles edit modal with `s` (state) value. If `s` is not provided, negates toggled.
+     * Toggles edit modal
      */
-    toggleEdit(s) {
-        this.setState({
-            toggled: typeof s === 'undefined' ? !this.state.toggled : s,
-        });
+    toggleEdit() {
+        this.setState({ editToggled: !this.state.editToggled });
     }
 
     render() {
         const { user } = this.props;
-        const { assignment, toggled, stats, verifiedToggle, outlet } = this.state;
+        const { assignment, editToggled, stats, verifiedToggle, outlet } = this.state;
 
         return (
             <App user={user}>
@@ -85,7 +83,7 @@ class AssignmentDetail extends React.Component {
                     rank={user.rank}
                     onVerifiedToggled={(t) => this.onVerifiedToggled(t)}
                     verifiedToggle={user.rank >= utils.RANKS.CONTENT_MANAGER}
-                    edit={(b) => this.toggleEdit(b)}
+                    edit={() => this.toggleEdit()}
                     editable
                     timeToggle
                     chronToggle
@@ -109,16 +107,18 @@ class AssignmentDetail extends React.Component {
                     />
                 </div>
 
-                <Edit
-                    assignment={assignment}
-                    stats={stats}
-                    setAssignment={(a) => this.setAssignment(a)}
-                    toggled={toggled}
-                    toggle={(b) => this.toggleEdit(b)}
-                    updateOutlet={(o) => this.updateOutlet(o)}
-                    user={user}
-                    outlet={outlet}
-                />
+                {editToggled
+                    ? <Edit
+                        assignment={assignment}
+                        stats={stats}
+                        setAssignment={(a) => this.setAssignment(a)}
+                        onToggle={() => this.toggleEdit()}
+                        updateOutlet={(o) => this.updateOutlet(o)}
+                        user={user}
+                        outlet={outlet}
+                    />
+                    : ''
+                }
             </App>
         );
     }
