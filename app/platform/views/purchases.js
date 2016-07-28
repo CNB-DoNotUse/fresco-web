@@ -14,11 +14,15 @@ class Purchases extends React.Component {
 			outlets: [],
 			users: [],
 			availableOutlets: [],
+			availableUsers: [],
 			updatePurchases: false,
 		}
 
 		this.findOutlets = this.findOutlets.bind(this);
+		this.findUsers = this.findUsers.bind(this);
 		this.addOutlet = this.addOutlet.bind(this);
+		this.addUser = this.addUser.bind(this);
+		this.removeUser = this.removeUser.bind(this);
 		this.removeOutlet = this.removeOutlet.bind(this);
 		this.loadStats = this.loadStats.bind(this);
 		this.loadPurchases = this.loadPurchases.bind(this);
@@ -34,20 +38,20 @@ class Purchases extends React.Component {
 		}
 	}
 
-	findOutlets(query) {
-		if(query.length == 0) {
+	findOutlets(q) {
+		if(q.length == 0) {
 			this.setState({
 				availableOutlets: []
 			});
 		} else{
 			const params = {
-				q: query
-			}
+				outlets: { a: { title: q} }
+			};
 
 			$.ajax({
 				url: '/api/search',
 				type: 'GET',
-				data: $.param({ outlets: params }),
+				data: $.param(params),
 				success: (response, status, xhr) => {
 					if(!response.error && response.outlets) {
 						this.setState({
@@ -59,41 +63,95 @@ class Purchases extends React.Component {
 		}
 	}
 
+	findUsers(q) {
+		if(q.length == 0) {
+			this.setState({
+				availableUsers: []
+			});
+		} else{
+			const params = {
+				users: { a: { full_name : q} }
+			};
+
+			$.ajax({
+				url: '/api/search',
+				type: 'GET',
+				data: $.param(params),
+				success: (response, status, xhr) => {
+					if(!response.error && response.users) {
+						this.setState({
+							availableUsers: response.users.results
+						});
+					}
+				}
+			});	
+		}
+	}
+
+	/**
+	 * Adds user to filter
+	 * @param {string} userToAdd email of the user
+	 */
+	addUser(userToAdd, index) {
+		const { availableUsers, users } = _.clone(this.state);
+		const user = availableUsers[index];
+
+		if(user !== null) {
+			if(_.find(users, ['id', user.id]) == undefined){
+				console.log(user)
+				this.setState({ 
+					users: _.concat(users, user) 
+				});
+			}
+		}
+	}
+
+
 	/**
 	 * Adds outlet to filter
 	 * @param {string} outletToAdd String title of the outlet
 	 */
-	addOutlet(outletToAdd) {
+	addOutlet(outletToAdd, index) {
 		const { availableOutlets, outlets } = _.clone(this.state);
+		const outlet = availableOutlets[index];
 
-		//Find the outlet object based on the `title`, outletToAdd is just a `string`
-		for (let i = 0; i < availableOutlets.length; i++) {
-			let outlet = availableOutlets[i];
-
-			if(outlet.title === outletToAdd) {
-				//Check if it exists
-				if(_.find(outlets, ['title', outlet.title]) === undefined) {
-					this.setState({ 
-						outlets: _.concat(outlets, outlet) 
-					});
-				}
-
-				//Break because we found it, yo
-				break;
+		if(outlet !== null) {
+			if(_.find(outlets, ['id', outlet.id]) == undefined){
+				this.setState({ 
+					outlets: _.concat(outlets, outlet) 
+				});
 			}
 		}
+	}
+
+	/**
+	 * Remove user from filter
+	 * @param {string} userToRemove An email string of the user
+	 */
+	removeUser(userToRemove, index) {
+		const users = _.clone(this.state.users);
+
+		console.log(users.length)
+
+		console.log(users);
+
+		let newUsers = users.splice(1, 1);
+
+		console.log(newUsers);
+
+		// this.setState({ 
+		// 	users: newUsers
+		// });
 	}
 
 	/**
 	 * Remove outlet from filter
 	 * @param {string} outletToRemove A title string of the outlet
 	 */
-	removeOutlet(outletToRemove) {
-		const outlets = _.filter(this.state.outlets, (o) => { 
-			return o.title !== outletToRemove; 
+	removeOutlet(outletToRemove, index) {
+		this.setState({ 
+			outlets: _.pullAt(this.state.outlets, [index])
 		});
-
-		this.setState({ outlets });
 	}
 
 	/**
@@ -101,11 +159,12 @@ class Purchases extends React.Component {
 	 */
 	loadStats(callback) {
 		const params = {
-			outlets_ids: _.map(this.state.outlets, 'id')
+			outlet_ids: _.map(this.state.outlets, 'id'),
+			user_ids: _.map(this.state.users, 'id')
 		}
 
 		$.ajax({
-			url: '/api/outlet/purchases/stats',
+			url: '/api/purchase/stats',
 			type: 'GET',
 			data: $.param(params),
 			success: (response, status, xhr) => {
@@ -134,6 +193,7 @@ class Purchases extends React.Component {
 
 		const params = {
 			outlet_ids: _.map(this.state.outlets, 'id'),
+			user_ids: _.map(this.state.users, 'id'),
 			limit: 20,
 			last
 		}
@@ -165,8 +225,10 @@ class Purchases extends React.Component {
 	}
 
 	render() {
-		const outlets = this.state.outlets.map(outlet => outlet.title);
-		const availableOutlets = this.state.availableOutlets.map(outlet => outlet.title);
+		const outlets = _.map(this.state.outlets, 'title');
+		const availableOutlets =_.map(this.state.availableOutlets, 'title');
+		const users = _.map(this.state.users, 'full_name');
+		const availableUsers = _.map(this.state.availableUsers, 'full_name');
 
 		return (
 			<App user={this.props.user}>
@@ -181,6 +243,15 @@ class Purchases extends React.Component {
 						onTagAdd={this.addOutlet}
 						onTagRemove={this.removeOutlet}
 						key="outletsFilter" />
+
+					<TagFilter
+						text="Users"
+						tagList={availableUsers}
+						filterList={users}
+						onTagInput={this.findUsers}
+						onTagAdd={this.addUser}
+						onTagRemove={this.removeUser}
+						key="usersFilter" />
 				</TopBar>
 
 				<PurchasesBody

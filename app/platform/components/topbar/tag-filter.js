@@ -22,10 +22,10 @@ export default class TagFilter extends React.Component {
 		else {		
 			if(e.keyCode != 13) return;
 
-			var tagText = this.refs.tagFilterInput.value;
-			if(!tagText.length) return;
+			const tagText = this.refs.tagFilterInput.value;
 
-			if(this.props.filterList.indexOf(tagText) != -1) return;
+			if(!tagText.length || this.props.filterList.indexOf(tagText) !== -1) 
+				return;
 
 			this.props.onTagAdd(tagText);
 			this.refs.tagFilterInput.value = '';
@@ -39,7 +39,7 @@ export default class TagFilter extends React.Component {
 		const available = tagList.map((tag, i) => {
 			return (
 				<Tag 
-					onClick={this.props.onTagAdd.bind(null, tag)} 
+					onClick={this.props.onTagAdd.bind(null, tag, i)} 
 					plus={true}
 					text={tag} 
 					key={i} 
@@ -50,7 +50,7 @@ export default class TagFilter extends React.Component {
 		const filtered = filterList.map((tag, i) => {
 			return (
 				<Tag
-					onClick={this.props.onTagRemove.bind(null, tag)} 
+					onClick={this.props.onTagRemove.bind(null, tag, i)} 
 					text={tag} 
 					key={i} 
 				/>
