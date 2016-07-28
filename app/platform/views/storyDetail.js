@@ -16,14 +16,11 @@ class StoryDetail extends React.Component {
         super(props);
 
         this.state = {
+            loading: false,
             editToggled: false,
             story: props.story,
             sort: props.sort,
         };
-    }
-
-    updateStory(story) {
-        this.setState({ story });
     }
 
     toggleStoryEdit() {
@@ -32,6 +29,55 @@ class StoryDetail extends React.Component {
 
     updateSort(sort) {
         this.setState({ sort });
+    }
+
+    save(id, params) {
+        if (!id || !params || this.state.loading) return;
+        this.setState({ loading: true });
+
+        $.ajax({
+            url: `/api/story/${id}/update`,
+            method: 'post',
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            dataType: 'json',
+        })
+        .done((res) => {
+            this.hide();
+            this.setState({ story: res });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Unable to save story' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
+        });
+    }
+
+    remove(id) {
+        if (!id || this.state.loading) return;
+
+        alertify.confirm('Are you sure you want to delete this story? This cannot be undone.', (confirmed) => {
+            if (!confirmed) return;
+            this.setState({ loading: true });
+
+            $.ajax({
+                url: `/api/story/${id}/delete`,
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+            })
+            .done(() => {
+                $.snackbar({ content: 'Story deleted' });
+                location.href = document.referrer || '/archive/stories';
+            })
+            .fail(() => {
+                $.snackbar({ content: 'Unable to delete gallery' });
+            })
+            .always(() => {
+                this.setState({ loading: false });
+            });
+        });
     }
 
     /**
@@ -63,7 +109,7 @@ class StoryDetail extends React.Component {
 
     render() {
         const { user } = this.props;
-        const { story, sort, editToggled } = this.state;
+        const { story, sort, editToggled, loading } = this.state;
 
         return (
             <App user={user}>
@@ -92,9 +138,11 @@ class StoryDetail extends React.Component {
                 {editToggled
                     ? <Edit
                         onToggle={() => this.toggleStoryEdit()}
+                        save={(id, p) => this.save(id, p)}
+                        remove={(id) => this.remove(id)}
                         story={story}
                         user={user}
-                        onUpdateStory={(s) => this.updateStory(s)}
+                        loading={loading}
                     />
                     : ''
                 }

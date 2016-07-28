@@ -12,12 +12,26 @@ class Edit extends React.Component {
         $.material.init();
     }
 
+    onSave() {
+        const { title, caption } = this.state;
+        const { story, save } = this.props;
+        if (!story || !story.id) return;
+
+        save(story.id, {title, caption});
+    }
+
+    onRemove() {
+        const { story, remove } = this.props;
+        if (!story || !story.id) return;
+
+        remove(story.id);
+    }
+
     getStateFromProps(props) {
         const { story } = props;
-        if (!story) return { loading: false };
+        if (!story) return {};
 
         return {
-            loading: false,
             title: story.title || '',
             caption: story.caption || '',
         };
@@ -28,12 +42,12 @@ class Edit extends React.Component {
     }
 
     revert() {
-        if (this.state.loading) return;
+        if (this.props.loading) return;
         this.setState(this.getStateFromProps(this.props));
     }
 
     clear() {
-        if (this.state.loading) return;
+        if (this.props.loading) return;
         this.setState({ title: '', caption: '' });
     }
 
@@ -42,55 +56,9 @@ class Edit extends React.Component {
         this.props.onToggle();
     }
 
-    save() {
-        const { story, onUpdateStory } = this.props;
-        const { title, caption } = this.state;
-        if (!story || !story.id) return;
-
-        $.ajax({
-            url: `/api/story/${story.id}/update`,
-            method: 'post',
-            data: JSON.stringify({ title, caption }),
-            contentType: 'application/json',
-            dataType: 'json',
-        })
-        .done((res) => {
-            this.hide();
-            onUpdateStory(res);
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Unable to save story' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-    remove() {
-        const { story } = this.props;
-        if (!story || !story.id || this.state.loading) return;
-
-        alertify.confirm('Are you sure you want to delete this story? This cannot be undone.', (e) => {
-            $.ajax({
-                url: `/api/story/${story.id}/delete`,
-                method: 'POST',
-                dataType: 'json',
-                contentType: 'application/json',
-            })
-            .done(() => {
-                $.snackbar({ content: 'Story deleted' });
-                location.href = document.referrer || '/archive/stories';
-            })
-            .fail(() => {
-                $.snackbar({ content: 'Unable to delete gallery' });
-            })
-            .always(() => {
-                this.setState({ loading: false });
-            });
-        });
-    }
-
     renderFooter() {
+        const { loading } = this.props;
+
         return (
             <div className="dialog-foot">
                 <button
@@ -98,6 +66,7 @@ class Edit extends React.Component {
                     type="button"
                     className="btn btn-flat"
                     onClick={() => this.revert()}
+                    disabled={loading}
                 >
                     Revert changes
                 </button>
@@ -106,6 +75,7 @@ class Edit extends React.Component {
                     type="button"
                     className="btn btn-flat"
                     onClick={() => this.clear()}
+                    disabled={loading}
                 >
                     Clear all
                 </button>
@@ -113,7 +83,8 @@ class Edit extends React.Component {
                     id="story-edit-save"
                     type="button"
                     className="btn btn-flat pull-right"
-                    onClick={() => this.save()}
+                    onClick={() => this.onSave()}
+                    disabled={loading}
                 >
                     Save
                 </button>
@@ -121,7 +92,8 @@ class Edit extends React.Component {
                     id="story-edit-delete"
                     type="button"
                     className="btn btn-flat pull-right"
-                    onClick={() => this.remove()}
+                    onClick={() => this.onRemove()}
+                    disabled={loading}
                 >
                     Delete
                 </button>
@@ -130,6 +102,7 @@ class Edit extends React.Component {
                     type="button"
                     className="btn btn-flat pull-right toggle-edit toggler"
                     onClick={() => this.cancel()}
+                    disabled={loading}
                 >
                     Discard
                 </button>
@@ -238,8 +211,10 @@ class Edit extends React.Component {
 
 Edit.propTypes = {
     onToggle: PropTypes.func.isRequired,
+    save: PropTypes.func.isRequired,
+    remove: PropTypes.func.isRequired,
     story: PropTypes.object.isRequired,
-    onUpdateStory: PropTypes.func,
+    loading: PropTypes.bool.isRequired,
 };
 
 export default Edit;
