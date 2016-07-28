@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import App from './app';
 import TopBar from './../components/topbar';
 import PostList from './../components/global/post-list';
-import StorySidebar from './../components/story/sidebar';
-import StoryEdit from './../components/story/edit';
+import Sidebar from './../components/story/sidebar';
+import Edit from './../components/story/edit';
 import utils from 'utils';
 
 /**
@@ -76,7 +76,7 @@ class StoryDetail extends React.Component {
                     chronToggle
                 />
 
-                <StorySidebar story={story} />
+                <Sidebar story={story} />
 
                 <div className="col-sm-8 tall">
                     <PostList
@@ -89,13 +89,15 @@ class StoryDetail extends React.Component {
                     />
                 </div>
 
-                <StoryEdit
-                    toggle={() => this.toggleStoryEdit()}
-                    story={story}
-                    user={user}
-                    toggled={editToggled}
-                    onUpdateStory={(s) => this.updateStory(s)}
-                />
+                {editToggled
+                    ? <Edit
+                        onToggle={() => this.toggleStoryEdit()}
+                        story={story}
+                        user={user}
+                        onUpdateStory={(s) => this.updateStory(s)}
+                    />
+                    : ''
+                }
             </App>
         );
     }
