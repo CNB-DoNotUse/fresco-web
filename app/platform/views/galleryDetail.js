@@ -16,7 +16,7 @@ class GalleryDetail extends React.Component {
         super(props);
 
         // Check if every post in gallery is not verified and show all content
-        const unverifiedPosts = props.gallery.posts.every(post => post.approvals == 0);
+        const unverifiedPosts = props.gallery.posts.every(post => post.approvals === 0);
 
         this.state = {
             galleryEditToggled: false,
@@ -24,6 +24,7 @@ class GalleryDetail extends React.Component {
             shouldShowVerifiedToggle: unverifiedPosts,
             verifiedToggle: unverifiedPosts,
             title: props.title,
+            loading: false,
         };
     }
 
@@ -44,6 +45,57 @@ class GalleryDetail extends React.Component {
         this.setState({ gallery, title, updatePosts: true });
     }
 
+    save(id, params) {
+        if (!id || !params || this.state.loading) return;
+        this.setState({ loading: true });
+
+        $.ajax(`/api/gallery/${id}/update`, {
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(params),
+        })
+        .done((res) => {
+            // Update parent gallery
+            this.onUpdateGallery(res);
+            // Hide the modal
+            this.toggleGalleryEdit();
+        })
+        .fail((err) => {
+            $.snackbar({
+                content: utils.resolveError(err, 'There was an error saving the gallery!'),
+            });
+        })
+        .always(() => {
+            this.setState({ loading: false });
+        });
+    }
+
+    remove(id) {
+        if (!id || this.state.loading) return;
+
+        alertify.confirm('Are you sure you want to delete this gallery?', (confirmed) => {
+            if (!confirmed) return;
+            this.setstate({ loading: true });
+
+            $.ajax({
+                url: `/api/gallery/${id}/delete`,
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+            })
+            .done(() => {
+                $.snackbar({ content: 'Gallery deleted' });
+                location.href = document.referrer || '/highlights';
+            })
+            .fail(() => {
+                $.snackbar({ content: 'Unable to delete gallery' });
+            })
+            .always(() => {
+                this.setState({ loading: false });
+            });
+        });
+    }
+
     toggleGalleryEdit() {
         this.setState({ galleryEditToggled: !this.state.galleryEditToggled });
     }
@@ -57,6 +109,7 @@ class GalleryDetail extends React.Component {
             onlyVerified,
             updatePosts,
             galleryEditToggled,
+            loading
         } = this.state;
 
         return (
@@ -86,13 +139,18 @@ class GalleryDetail extends React.Component {
                     />
                 </div>
 
-                <Edit
-                    onUpdateGallery={(g) => this.onUpdateGallery(g)}
-                    toggle={() => this.toggleGalleryEdit()}
-                    gallery={gallery}
-                    toggled={galleryEditToggled}
-                    user={user}
-                />
+                {galleryEditToggled
+                    ? <Edit
+                        toggle={() => this.toggleGalleryEdit()}
+                        gallery={gallery}
+                        user={user}
+                        remove={(id) => this.remove(id)}
+                        loading={loading}
+                        save={(id, params) => this.save(id, params)}
+                    />
+                    : ''
+                }
+
             </App>
         );
     }

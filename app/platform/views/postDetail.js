@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import TopBar from './../components/topbar';
 import App from './app';
@@ -18,7 +18,7 @@ class PostDetail extends React.Component {
         super(props);
 
         this.state = {
-            toggled: false,
+            galleryEditToggled: false,
             gallery: this.props.gallery,
             post: this.props.post,
         };
@@ -28,12 +28,8 @@ class PostDetail extends React.Component {
         this.updateGallery = this.updateGallery.bind(this);
     }
 
-    hide() {
-        this.setState({ toggled: false });
-    }
-
-    toggle() {
-        this.setState({ toggled: !this.state.toggled });
+    toggleGalleryEdit() {
+        this.setState({ toggled: !this.state.galleryEditToggled });
     }
 
     updateGallery(gallery) {
@@ -53,26 +49,8 @@ class PostDetail extends React.Component {
 
     render() {
         const { user, title, verifier } = this.props;
-        const { gallery, toggled, post } = this.state;
+        const { gallery, galleryEditToggled, post } = this.state;
         let editable = user.rank >= utils.RANKS.CONTENT_MANAGER && gallery.id;
-        let galleryEdit = '';
-        let relatedPosts = '';
-        let relatedTags = '';
-
-        if (editable) {
-            galleryEdit = (
-                <GalleryEdit
-                    gallery={gallery}
-                    toggled={toggled}
-                    toggle={this.toggle}
-                    updateGallery={this.updateGallery}
-                    hide={this.hide}
-                />
-            );
-        }
-
-        relatedPosts = <PostRelated gallery={gallery} />;
-        relatedTags = <PostRelatedTags tags={gallery.tags} />;
 
         return (
             <App user={user}>
@@ -99,15 +77,29 @@ class PostDetail extends React.Component {
                             />
                         </div>
                     </div>
-                    {relatedPosts}
-                    {relatedTags}
+                    <PostRelated gallery={gallery} />
+                    <PostRelatedTags tags={gallery.tags} />
                 </div>
 
-                {galleryEdit}
+                {editable && galleryEditToggled
+                    ? <GalleryEdit
+                        gallery={gallery}
+                        toggle={() => this.toggleGalleryEdit()}
+                        updateGallery={this.updateGallery}
+                    />
+                    : ''
+                }
             </App>
         );
     }
 }
+
+PostDetail.propTypes = {
+    user: PropTypes.object,
+    gallery: PropTypes.object,
+    title: PropTypes.string,
+    verifier: PropTypes.string,
+};
 
 PostDetail.defaultProps = {
     gallery: {},

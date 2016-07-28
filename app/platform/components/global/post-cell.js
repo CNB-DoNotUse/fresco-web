@@ -42,7 +42,6 @@ class PostCell extends React.Component {
             assignment,
             rank,
             editable,
-            edit,
             parentCaption,
             size,
             sizes,
@@ -88,7 +87,6 @@ class PostCell extends React.Component {
                         onPurchase={(bool) => this.onPurchase(bool)}
                         rank={rank}
                         editable={editable}
-                        edit={edit}
                     />
 
                     <div>
@@ -125,7 +123,6 @@ PostCell.propTypes = {
     sizes: PropTypes.object,
     editable: PropTypes.bool,
     toggled: PropTypes.bool,
-    edit: PropTypes.func,
 };
 
 export default PostCell;

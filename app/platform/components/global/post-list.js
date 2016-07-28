@@ -1,8 +1,5 @@
 import React, { PropTypes } from 'react';
 import PostCell from './post-cell';
-import GalleryEdit from '../gallery/edit';
-import GalleryCreate from '../gallery/create';
-import GalleryBulkSelect from '../gallery/bulk-select';
 import utils from 'utils';
 import _ from 'lodash';
 
@@ -30,10 +27,8 @@ class PostList extends React.Component {
         }
 
         this.togglePost 		= this.togglePost.bind(this);
-        this.setSelectedPosts 	= this.setSelectedPosts.bind(this);
         this.sortPosts 		    = this.sortPosts.bind(this);
         this.scroll 			= this.scroll.bind(this);
-        this.edit 				= this.edit.bind(this);
         this.toggle				= this.toggle.bind(this);
         this.loadInitialPosts	= this.loadInitialPosts.bind(this);
     }
@@ -145,14 +140,6 @@ class PostList extends React.Component {
     }
 
     /**
-     * Sets the `selectedPosts` state property
-     * @param {array} posts The posts to set the `selectedPosts` to
-     */
-    setSelectedPosts(posts) {
-        this.setState({ selectedPosts: posts });
-    }
-
-    /**
      * Toggles posts in stateful selected posts
      * @param  {object} passedPost The post to toggle selected or unselected in the post-list and bulk edit
      */
@@ -187,14 +174,6 @@ class PostList extends React.Component {
     }
 
     /**
-     * Called when PostCellAction's Edit button is clicked
-     * @param  {Object} post - Has post
-     */
-    edit(gallery) {
-        this.setState({ gallery, galleryEditToggled: true });
-    }
-
-    /**
      * Called when GalleryEdit should be toggled
      */
     toggle() {
@@ -217,7 +196,7 @@ class PostList extends React.Component {
             parentCaption,
             className
         } = this.props;
-        const { posts, selectedPosts } = this.state;
+        const { posts, selectedPosts, galleryEditToggled } = this.state;
         let postCmps = [];
 
         for (let i = 0; i < posts.length; i++) {
@@ -246,7 +225,6 @@ class PostList extends React.Component {
                     editable={editable}
                     sort={sort}
                     togglePost={this.togglePost}
-                    edit={this.edit}
                 />
             );
         }
@@ -260,22 +238,6 @@ class PostList extends React.Component {
                 >
                     <div className="row tiles" id="posts">{postCmps}</div>
                 </div>
-
-                <GalleryBulkSelect
-                    posts={this.state.selectedPosts}
-                    setSelectedPosts={this.setSelectedPosts}
-                />
-
-                <GalleryEdit
-                    gallery={this.state.gallery}
-                    toggled={this.state.galleryEditToggled}
-                    toggle={this.toggle}
-                />
-
-                <GalleryCreate
-                    setSelectedPosts={this.setSelectedPosts}
-                    posts={this.state.selectedPosts}
-                />
             </div>
         );
     }

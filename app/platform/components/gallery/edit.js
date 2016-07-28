@@ -40,6 +40,22 @@ class Edit extends React.Component {
         this.setState({ address: place.address, location: place.location });
     }
 
+    onRemove() {
+        const { gallery, remove, loading } = this.props;
+        if (!gallery || !gallery.id || loading) return;
+
+        remove(gallery.id);
+    }
+
+    onSave(rating) {
+        const params = this.getFormData();
+        const { gallery, save, loading } = this.props;
+        if (!gallery.id || !params || loading) return;
+        params.rating = rating;
+
+        save(gallery.id, params);
+    }
+
     /**
      * getStateFromProps
      *
@@ -55,7 +71,6 @@ class Edit extends React.Component {
             stories: gallery.stories,
             assignment: gallery.assignment,
             address: gallery.address,
-            loading: false,
             caption: gallery.caption || 'No Caption',
             postIds: gallery.posts.map((p) => p.id),
             postsToDeleteIds: [],
@@ -110,62 +125,11 @@ class Edit extends React.Component {
         return params;
     }
 
-    save(rating) {
-        const params = this.getFormData();
-        const { gallery, onUpdateGallery } = this.props;
-        if (!gallery.id || !params) return;
-        params.rating = rating;
-
-        $.ajax(`/api/gallery/${gallery.id}/update`, {
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(params),
-        })
-        .done((res) => {
-            // Update parent gallery
-            onUpdateGallery(res);
-            // Hide the modal
-            this.hide();
-        })
-        .fail((err) => {
-            $.snackbar({
-                content: utils.resolveError(err, 'There was an error saving the gallery!'),
-            });
-        });
-    }
-
-    remove() {
-        const { gallery } = this.props;
-        if (!gallery || !gallery.id || this.state.loading) return;
-
-        alertify.confirm('Are you sure you want to delete this gallery?', (confirmed) => {
-            if (!confirmed) return;
-            this.setstate({ loading: true });
-
-            $.ajax({
-                url: `/api/gallery/${gallery.id}/delete`,
-                method: 'POST',
-                dataType: 'json',
-                contentType: 'application/json',
-            })
-            .done(() => {
-                $.snackbar({ content: 'Gallery deleted' });
-                location.href = document.referrer || '/highlights';
-            })
-            .fail(() => {
-                $.snackbar({ content: 'Unable to delete gallery' });
-            })
-            .always(() => {
-                this.setState({ loading: false });
-            });
-        });
-    }
-
     /**
 	 * Reverts all changes
 	 */
     revert() {
-        if (this.state.loading) return;
+        if (this.props.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
     }
@@ -175,7 +139,7 @@ class Edit extends React.Component {
     }
 
     clear() {
-        if (this.state.loading) return;
+        if (this.props.loading) return;
         const { gallery } = this.props;
 
         this.setState({
@@ -315,7 +279,7 @@ class Edit extends React.Component {
     }
 
     renderFooter() {
-        const { gallery, user } = this.props;
+        const { gallery, user, loading } = this.props;
         const inputStyle = { display: 'none' };
         if (!gallery || !user) return '';
 
@@ -328,6 +292,7 @@ class Edit extends React.Component {
                     ref="fileUpload"
                     style={inputStyle}
                     onChange={() => this.fileUploaderChanged()}
+                    disabled={loading}
                     multiple
                 />
 
@@ -335,6 +300,7 @@ class Edit extends React.Component {
                     type="button"
                     onClick={() => this.revert()}
                     className="btn btn-flat"
+                    disabled={loading}
                 >
                     Revert changes
                 </button>
@@ -343,6 +309,7 @@ class Edit extends React.Component {
                     type="button"
                     onClick={() => this.clear()}
                     className="btn btn-flat"
+                    disabled={loading}
                 >
                     Clear all
                 </button>
@@ -354,6 +321,7 @@ class Edit extends React.Component {
                             type="button"
                             onClick={() => this.addMore()}
                             className="btn btn-flat"
+                            disabled={loading}
                         >
                             Add More
                         </button>
@@ -362,8 +330,9 @@ class Edit extends React.Component {
 
                 <button
                     type="button"
-                    onClick={() => this.save()}
+                    onClick={() => this.onSave()}
                     className="btn btn-flat pull-right"
+                    disabled={loading}
                 >
                     Save
                 </button>
@@ -372,14 +341,16 @@ class Edit extends React.Component {
                     gallery.rating < 2
                         ? <button
                             type="button"
-                            onClick={() => this.save(2)}
+                            onClick={() => this.onSave(2)}
                             className="btn btn-flat pull-right"
+                            disabled={loading}
                         >
                             Verify
                         </button>
                         : <button
-                            onClick={() => this.save(1)}
+                            onClick={() => this.onSave(1)}
                             className="btn btn-flat pull-right"
+                            disabled={loading}
                         >
                             Unverify
                         </button>
@@ -389,6 +360,7 @@ class Edit extends React.Component {
                     type="button"
                     onClick={() => this.remove()}
                     className="btn btn-flat pull-right"
+                    disabled={loading}
                 >
                     Delete
                 </button>
@@ -397,6 +369,7 @@ class Edit extends React.Component {
                     type="button"
                     onClick={() => this.hide()}
                     className="btn btn-flat pull-right toggle-gedit toggler"
+                    disabled={loading}
                 >
                     Cancel
                 </button>
@@ -405,12 +378,10 @@ class Edit extends React.Component {
     }
 
     render() {
-        const { toggled } = this.props;
-
         return (
             <div>
-                <div className={`dim toggle-edit ${toggled ? 'toggled' : ''}`} />
-                <div className={`edit panel panel-default toggle-edit gedit ${toggled ? 'toggled' : ''}`}>
+                <div className="dim toggle-edit toggled" />
+                <div className={"edit panel panel-default toggle-edit gedit toggled"}>
                     <div className="col-xs-12 col-lg-12 edit-new dialog">
                         <div className="dialog-head">
                             <span className="md-type-title">Edit Gallery</span>
@@ -430,17 +401,18 @@ class Edit extends React.Component {
 
 Edit.propTypes = {
     gallery: PropTypes.object,
-    toggled: PropTypes.bool,
     toggle: PropTypes.func,
-    onUpdateGallery: PropTypes.func,
+    remove: PropTypes.func.isRequired,
+    save: PropTypes.func.isRequired,
     user: PropTypes.object,
+    loading: PropTypes.bool.isRequired,
 };
 
 Edit.defaultProps = {
     gallery: null,
-    toggled: false,
-    onUpdateGallery() {},
     toggle() {},
+    loading: false,
 };
 
 export default Edit;
+
