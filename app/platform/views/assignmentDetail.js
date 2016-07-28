@@ -17,27 +17,14 @@ class AssignmentDetail extends React.Component {
 
         this.state = {
             assignment,
-            stats: assignment.stats || { photos: 0, videos: 0 },
             editToggled: false,
             verifiedToggle: true,
-            outlet: assignment.outlets[0],
+            loading: false,
         };
     }
 
     onVerifiedToggled(verifiedToggle) {
         this.setState({ verifiedToggle });
-    }
-
-    /**
-     * Sets the stateful assignment
-     * @param {dictionary} assignment Assignment to update to
-     */
-    setAssignment(assignment) {
-        this.setState({ assignment });
-    }
-
-    updateOutlet(outlet) {
-        this.setState({ outlet });
     }
 
     /**
@@ -65,6 +52,31 @@ class AssignmentDetail extends React.Component {
         });
     }
 
+	/**
+	 * Saves the assignment from the current values in the form
+	 */
+    save(id, params) {
+        if (!id || !params || this.state.loading) return;
+        $.ajax({
+            url: `/api/assignment/${id}/update`,
+            method: 'post',
+            data: JSON.stringify(params),
+            dataType: 'json',
+            contentType: 'application/json',
+        })
+        .done((res) => {
+            $.snackbar({ content: 'Assignment saved!' });
+            this.setState({ assignment: res });
+            this.toggleEdit();
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not save assignment!' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
+        });
+    }
+
     /**
      * Toggles edit modal
      */
@@ -74,7 +86,7 @@ class AssignmentDetail extends React.Component {
 
     render() {
         const { user } = this.props;
-        const { assignment, editToggled, stats, verifiedToggle, outlet } = this.state;
+        const { assignment, editToggled, verifiedToggle, loading } = this.state;
 
         return (
             <App user={user}>
@@ -91,7 +103,6 @@ class AssignmentDetail extends React.Component {
 
                 <Sidebar
                     assignment={assignment}
-                    stats={stats}
                     expireAssignment={() => this.expireAssignment()}
                 />
 
@@ -110,12 +121,11 @@ class AssignmentDetail extends React.Component {
                 {editToggled
                     ? <Edit
                         assignment={assignment}
-                        stats={stats}
-                        setAssignment={(a) => this.setAssignment(a)}
+                        save={(id, p) => this.save(id, p)}
                         onToggle={() => this.toggleEdit()}
                         updateOutlet={(o) => this.updateOutlet(o)}
                         user={user}
-                        outlet={outlet}
+                        loading={loading}
                     />
                     : ''
                 }

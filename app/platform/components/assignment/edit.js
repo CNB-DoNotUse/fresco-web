@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
-import EditStats from './edit-stats';
 import EditOutlet from './edit-outlet';
 import AutocompleteMap from '../global/autocomplete-map';
+import moment from 'moment';
 
 class AssignmentEdit extends React.Component {
     constructor(props) {
@@ -41,58 +41,15 @@ class AssignmentEdit extends React.Component {
     }
 
     onChangeEndsAt(e) {
-        this.setState({
-            ends_at: e.target.value * 60 * 60 * 1000 + Date.now(),
-        });
-    }
-
-    getStateFromProps(props) {
-        const { assignment } = props;
-        const radius = assignment.radius || 0;
-
-        if (!assignment) return { loading: false };
-
-        return {
-            address: assignment.address,
-            caption: assignment.caption,
-            ends_at: assignment.ends_at,
-            loading: false,
-            location: assignment.location,
-            radius,
-            title: assignment.title,
-        };
-    }
-
-    revert() {
-        // Set state back to original props
-        this.setState(this.getStateFromProps(this.props));
-    }
-
-    clear() {
-        this.setState({
-            address: null,
-            caption: null,
-            ends_at: null,
-            location: null,
-            title: null,
-            radius: null,
-        });
-    }
-
-    /**
-     * Reverts fields to original state
-     */
-    cancel() {
-        this.revert();
-        this.props.onToggle();
+        this.setState({ endsAt: moment().add(e.target.value, 'h').valueOf() });
     }
 
 	/**
 	 * Saves the assignment from the current values in the form
 	 */
-    save() {
-        const { assignment, setAssignment, onToggle } = this.props;
-        const { title, caption, radius, location, address, outlet, ends_at } = this.state;
+    onSave() {
+        const { assignment, save, loading } = this.props;
+        const { title, caption, radius, location, address, outlet, endsAt } = this.state;
         const params = {
             address,
             caption,
@@ -101,10 +58,10 @@ class AssignmentEdit extends React.Component {
             outlet: outlet ? outlet.id : null,
             now: Date.now(),
             title,
-            ends_at,
+            ends_at: endsAt,
         };
 
-        if (!assignment || !assignment.id) return;
+        if (!assignment || !assignment.id || loading) return;
 
         // TODO: move to method
         if (!params.outlet) {
@@ -132,24 +89,51 @@ class AssignmentEdit extends React.Component {
             return;
         }
 
-        $.ajax({
-            url: `api/assignment/${assignment.id}/update`,
-            method: 'post',
-            data: JSON.stringify(params),
-            dataType: 'json',
-            contentType: 'application/json',
-        })
-        .done((res) => {
-            $.snackbar({ content: 'Assignment saved!' });
-            setAssignment(res);
-            onToggle();
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Could not save assignment!' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
+        save(assignment.id, params);
+    }
+
+    getStateFromProps(props) {
+        const { assignment } = props;
+        const radius = assignment.radius
+            ? utils.milesToFeet(assignment.radius)
+            : 250;
+
+        if (!assignment) return {};
+
+        return {
+            address: assignment.address,
+            caption: assignment.caption,
+            endsAt: moment(assignment.ends_at).valueOf(),
+            location: assignment.location,
+            radius,
+            title: assignment.title,
+            outlet: assignment.outlets[0],
+        };
+    }
+
+    revert() {
+        // Set state back to original props
+        this.setState(this.getStateFromProps(this.props));
+    }
+
+    clear() {
+        this.setState({
+            address: null,
+            caption: null,
+            endsAt: null,
+            location: null,
+            title: null,
+            radius: null,
+            outlet: null,
         });
+    }
+
+    /**
+     * Reverts fields to original state
+     */
+    cancel() {
+        this.revert();
+        this.props.onToggle();
     }
 
     renderHeader() {
@@ -165,8 +149,8 @@ class AssignmentEdit extends React.Component {
     }
 
     renderBody() {
-        const { title, caption, outlet, address, location, radius, ends_at } = this.state;
-        const { user, updateOutlet } = this.props;
+        const { title, caption, outlet, address, location, radius, endsAt } = this.state;
+        const { user } = this.props;
 
         return (
             <div className="dialog-body">
@@ -195,7 +179,10 @@ class AssignmentEdit extends React.Component {
                     </div>
 
                     {(user.rank >= utils.RANKS.CONTENT_MANAGER)
-                        ? <EditOutlet outlet={outlet} updateOutlet={(o) => updateOutlet(o)} />
+                        ? <EditOutlet
+                            outlet={outlet}
+                            updateOutlet={(o) => this.setState({ outlet: o })}
+                        />
                         : ''
                     }
 
@@ -222,7 +209,7 @@ class AssignmentEdit extends React.Component {
                                 className="form-control floating-label"
                                 data-hint="hours from now"
                                 placeholder="Expiration time"
-                                value={utils.hoursToExpiration(ends_at)}
+                                value={utils.hoursToExpiration(endsAt)}
                                 onChange={(e) => this.onChangeEndsAt(e)}
                             />
                         </div>
@@ -255,7 +242,7 @@ class AssignmentEdit extends React.Component {
                     id="story-edit-save"
                     type="button"
                     className="btn btn-flat pull-right"
-                    onClick={() => this.save()}
+                    onClick={() => this.onSave()}
                 >
                     Save
                 </button>
@@ -271,17 +258,58 @@ class AssignmentEdit extends React.Component {
         );
     }
 
-    render() {
-        const { stats, assignment, outlet } = this.props;
+    renderStats() {
+        const { assignment } = this.props;
+        const { outlet, endsAt, caption, title } = this.state;
+        const address = assignment.address || 'No Address';
+        const timeCreated = moment(new Date(assignment.created_at)).format('MMM Do YYYY, h:mm:ss a');
+        const expiresText = (moment().diff(endsAt) > 1 ? 'Expired ' : 'Expires ') + moment(endsAt).fromNow();
 
+        return (
+            <div className="col-lg-3 visible-lg edit-current">
+                <div className="meta">
+                    <div className="meta-user">
+                        <div>
+                            <img
+                                role="presentation"
+                                className="img-circle img-responsive"
+                                src="/images/placeholder-assignment@2x.png"
+                            />
+                        </div>
+                        <div>
+                            <span className="md-type-title">{title}</span>
+                            <span id="assignment-edit-owner" className="md-type-body1">
+                                {outlet && outlet.title ? `Posted by ${outlet.title}` : ''}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="meta-description">{caption}</div>
+                    <div className="meta-list">
+                        <ul className="md-type-subhead">
+                            <li>
+                                <span className="mdi mdi-clock icon"></span>{timeCreated}
+                            </li>
+                            <li>
+                                <span className="mdi mdi-map-marker icon"></span>{address}
+                            </li>
+                            <li>
+                                <span className="mdi mdi-alert-circle icon"></span>{expiresText}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    render() {
         return (
             <div>
                 <div className="dim toggle-edit toggled" />
                 <div className="edit panel panel-default toggle-edit toggled">
-                    <EditStats stats={stats} assignment={assignment} outlet={outlet} />
+                    {this.renderStats()}
 
                     <div className="col-xs-12 col-lg-9 edit-new dialog">
-
                         {this.renderHeader()}
                         {this.renderBody()}
                         {this.renderFooter()}
@@ -294,10 +322,8 @@ class AssignmentEdit extends React.Component {
 
 AssignmentEdit.propTypes = {
     user: PropTypes.object,
-    stats: PropTypes.object,
     assignment: PropTypes.object,
     onToggle: PropTypes.func,
-    setAssignment: PropTypes.func,
     updateOutlet: PropTypes.func,
 };
 

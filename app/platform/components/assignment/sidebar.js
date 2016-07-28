@@ -11,15 +11,12 @@ class Sidebar extends React.Component {
      * AssignmentStats stats inside the sidebar
      */
     renderStats() {
-        const { assignment, stats } = this.props;
+        const { assignment } = this.props;
         const expirationTime = new Date(assignment.ends_at);
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ')
             + moment(expirationTime).fromNow();
         const createdText = 'Created at ' + moment(assignment.created_at).format('LT');
-
-        if (!stats) {
-            return '';
-        }
+        const stats = assignment.stats || { photos: 0, videos: 0 };
 
         return (
             <div className="meta-list">
@@ -27,10 +24,9 @@ class Sidebar extends React.Component {
                     <li>
                         <span className="mdi mdi-map-marker icon"></span>
                         <span>
-                            {
-                                assignment.location
-                                    ? assignment.address || 'No Address'
-                                    : 'Global'
+                            {assignment.location
+                                ? assignment.address || 'No Address'
+                                : 'Global'
                             }
                         </span>
                     </li>
@@ -49,20 +45,18 @@ class Sidebar extends React.Component {
                     <li>
                         <span className="mdi mdi-image icon"></span>
                         <span>
-                            {
-                                stats.photos
-                                    ? stats.photos + ' photo' + (utils.isPlural(stats.photos) ? 's' : '')
-                                    : 'No photos'
+                            {stats.photos
+                                ? stats.photos + ' photo' + (utils.isPlural(stats.photos) ? 's' : '')
+                                : 'No photos'
                             }
                         </span>
                     </li>
                     <li>
                         <span className="mdi mdi-movie icon"></span>
                         <span>
-                            {
-                                stats.videos
-                                    ? stats.videos + ' video' + (utils.isPlural(stats.video) ? 's' : '')
-                                    : 'No videos'
+                            {stats.videos
+                                ? stats.videos + ' video' + (utils.isPlural(stats.video) ? 's' : '')
+                                : 'No videos'
                             }
                         </span>
                     </li>
@@ -110,7 +104,6 @@ class Sidebar extends React.Component {
 Sidebar.propTypes = {
     assignment: PropTypes.object.isRequired,
     expireAssignment: PropTypes.func.isRequired,
-    stats: PropTypes.object.isRequired,
 };
 
 export default Sidebar;
