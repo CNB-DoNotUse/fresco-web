@@ -19,7 +19,7 @@ class GalleryDetail extends React.Component {
         const unverifiedPosts = props.gallery.posts.every(post => post.approvals === 0);
 
         this.state = {
-            galleryEditToggled: false,
+            editToggled: false,
             gallery: props.gallery,
             shouldShowVerifiedToggle: unverifiedPosts,
             verifiedToggle: unverifiedPosts,
@@ -58,7 +58,7 @@ class GalleryDetail extends React.Component {
             // Update parent gallery
             this.onUpdateGallery(res);
             // Hide the modal
-            this.toggleGalleryEdit();
+            this.toggleEdit();
         })
         .fail((err) => {
             $.snackbar({
@@ -96,8 +96,8 @@ class GalleryDetail extends React.Component {
         });
     }
 
-    toggleGalleryEdit() {
-        this.setState({ galleryEditToggled: !this.state.galleryEditToggled });
+    toggleEdit() {
+        this.setState({ editToggled: !this.state.editToggled});
     }
 
     render() {
@@ -108,7 +108,7 @@ class GalleryDetail extends React.Component {
             shouldShowVerifiedToggle,
             onlyVerified,
             updatePosts,
-            galleryEditToggled,
+            editToggled,
             loading
         } = this.state;
 
@@ -118,7 +118,7 @@ class GalleryDetail extends React.Component {
                     title={title}
                     editable={user.rank >= utils.RANKS.CONTENT_MANAGER}
                     rank={user.rank}
-                    edit={() => this.toggleGalleryEdit()}
+                    edit={() => this.toggleEdit()}
                     verifiedToggle={shouldShowVerifiedToggle}
                     onVerifiedToggled={() => this.onVerifiedToggled()}
                     timeToggle
@@ -139,9 +139,9 @@ class GalleryDetail extends React.Component {
                     />
                 </div>
 
-                {galleryEditToggled
+                {editToggled
                     ? <Edit
-                        toggle={() => this.toggleGalleryEdit()}
+                        toggle={() => this.toggleEdit()}
                         gallery={gallery}
                         user={user}
                         remove={(id) => this.remove(id)}

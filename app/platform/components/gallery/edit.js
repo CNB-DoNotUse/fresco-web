@@ -169,16 +169,7 @@ class Edit extends React.Component {
         this.setState({ rating: e.target.checked ? 3 : 2 });
     }
 
-    /**
- 	 * Updates GalleryEdit Gallery
- 	 * Used by GalelryEditFoot's Add Files
- 	 */
-    updateGallery(gallery) {
-        this.setState({ gallery });
-    }
-
     hide() {
-        this.setState({ gallery: null });
         this.props.toggle();
     }
 
@@ -400,7 +391,7 @@ class Edit extends React.Component {
 }
 
 Edit.propTypes = {
-    gallery: PropTypes.object,
+    gallery: PropTypes.object.isRequired,
     toggle: PropTypes.func,
     remove: PropTypes.func.isRequired,
     save: PropTypes.func.isRequired,
@@ -409,7 +400,6 @@ Edit.propTypes = {
 };
 
 Edit.defaultProps = {
-    gallery: null,
     toggle() {},
     loading: false,
 };

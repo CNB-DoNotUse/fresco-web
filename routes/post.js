@@ -1,28 +1,14 @@
-var express    = require('express'),
-    config     = require('../lib/config'),
-    Purchases  = require('../lib/purchases'),
-    request    = require('request-json'),
-    api        = require('../lib/api'),
-    router     = express.Router();
+const express = require('express');
+const config = require('../lib/config');
+const api = require('../lib/api');
+const router = express.Router();
 
-/** //
-
-  Description : Post Specific Routes ~ prefix /gallery/~
-
-// **/
 
 /**
+ * Description : Post Specific Routes ~ prefix /gallery/~
  * Post Detail Page
  * @param Post ID
  */
-
-function render(req, res, props) {
-    res.render('app', {
-        props: JSON.stringify(props),
-        alerts: req.alerts,
-        page: 'postDetail',
-    });
-}
 
 router.get('/:id', (req, res) => {
     let post;
@@ -35,12 +21,12 @@ router.get('/:id', (req, res) => {
     // Make request for post
     api.request({
         token,
-        url: '/post/' + req.params.id,
+        url: `/post/${req.params.id}`,
     }).then(response => {
         post = response.body || {};
-        return api.request({ 
-            token, 
-            url: '/gallery/' + response.body.parent_id 
+        return api.request({
+            token,
+            url: `/gallery/${response.body.parent_id}`,
         });
     }).then(response => {
         gallery = response.body || {};
@@ -54,15 +40,18 @@ router.get('/:id', (req, res) => {
 
         verifier = post.curator ? post.curator.full_name : '';
 
-        return render(req,
-                      res,
-                      { gallery,
-                          post,
-                          title,
-                          verifier,
-                          user: req.session.user,
-                          purchases: Purchases.mapPurchases(req.session),
-                      });
+        res.render('app', {
+            props: JSON.stringify({
+                gallery,
+                post,
+                title,
+                verifier,
+                user: req.session.user,
+            }),
+            alerts: req.alerts,
+            page: 'postDetail',
+        });
+
     }).catch(() => (
         req.session.save(() => res.redirect(req.headers.Referer || config.DASH_HOME))
     ));

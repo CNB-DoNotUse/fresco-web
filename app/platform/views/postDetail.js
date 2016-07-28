@@ -19,37 +19,70 @@ class PostDetail extends React.Component {
 
         this.state = {
             galleryEditToggled: false,
-            gallery: this.props.gallery,
-            post: this.props.post,
+            gallery: props.gallery,
+            post: props.post,
+            loading: false,
         };
-
-        this.hide = this.hide.bind(this);
-        this.toggle = this.toggle.bind(this);
-        this.updateGallery = this.updateGallery.bind(this);
     }
 
     toggleGalleryEdit() {
-        this.setState({ toggled: !this.state.galleryEditToggled });
+        this.setState({ galleryEditToggled: !this.state.galleryEditToggled });
     }
 
-    updateGallery(gallery) {
-        const post = this.state.post;
+    saveGallery(id, params) {
+        if (!id || !params || this.state.loading) return;
+        this.setState({ loading: true });
 
-        if (gallery.visibility !== this.state.gallery.visibility) {
-            post.approvals = gallery.visibility;
-        }
+        $.ajax(`/api/gallery/${id}/update`, {
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(params),
+        })
+        .done((res) => {
+            // Update parent gallery
+            this.setState({ gallery: res });
+            // Hide the modal
+            this.toggleGalleryEdit();
+        })
+        .fail((err) => {
+            $.snackbar({
+                content: utils.resolveError(err, 'There was an error saving the gallery!'),
+            });
+        })
+        .always(() => {
+            this.setState({ loading: false });
+        });
+    }
 
-        // Check if address is set, then update the post's address
-        if (gallery.posts[0].location.address) {
-            post.location.address = gallery.posts[0].location.address;
-        }
+    removeGallery(id) {
+        if (!id || this.state.loading) return;
 
-        this.setState({ gallery, post });
+        alertify.confirm('Are you sure you want to delete this gallery?', (confirmed) => {
+            if (!confirmed) return;
+            this.setstate({ loading: true });
+
+            $.ajax({
+                url: `/api/gallery/${id}/delete`,
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+            })
+            .done(() => {
+                $.snackbar({ content: 'Gallery deleted' });
+                location.href = document.referrer || '/highlights';
+            })
+            .fail(() => {
+                $.snackbar({ content: 'Unable to delete gallery' });
+            })
+            .always(() => {
+                this.setState({ loading: false });
+            });
+        });
     }
 
     render() {
         const { user, title, verifier } = this.props;
-        const { gallery, galleryEditToggled, post } = this.state;
+        const { gallery, galleryEditToggled, post, loading } = this.state;
         let editable = user.rank >= utils.RANKS.CONTENT_MANAGER && gallery.id;
 
         return (
@@ -57,7 +90,7 @@ class PostDetail extends React.Component {
                 <TopBar
                     title={title}
                     editable={editable}
-                    edit={this.toggle}
+                    edit={() => this.toggleGalleryEdit()}
                 />
 
                 <div className="content">
@@ -85,7 +118,10 @@ class PostDetail extends React.Component {
                     ? <GalleryEdit
                         gallery={gallery}
                         toggle={() => this.toggleGalleryEdit()}
-                        updateGallery={this.updateGallery}
+                        save={(id, p) => this.saveGallery(id, p)}
+                        remove={(id) => this.removeGallery(id)}
+                        loading={loading}
+                        user={user}
                     />
                     : ''
                 }
@@ -97,6 +133,7 @@ class PostDetail extends React.Component {
 PostDetail.propTypes = {
     user: PropTypes.object,
     gallery: PropTypes.object,
+    post: PropTypes.object,
     title: PropTypes.string,
     verifier: PropTypes.string,
 };
