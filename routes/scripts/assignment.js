@@ -8,22 +8,13 @@ const csv = require('../../lib/csv');
 /**
  * Retrieves assignment report
  */
-router.get('/assignment/report', (req, res, next) => {
+router.get('/report', (req, res, next) => {
     API.request({
         method: 'GET',
-        url: '/assignment/report',
+        url: `/assignment${req.path}`,
         token: req.session.token
-    }).then((response) => {
-        csv(response.body)
-        .then((csv) => {
-            res.set('Content-Type', 'text/csv');
-            res.set('Content-Disposition', 'inline; filename="assignments.csv"');
-            res.send(csv).end();
-        })
-        .catch((error) => {
-            return next({ message: error, status: 500 });
-        });
     })
+    .then(response => csv.middleware(response, res, next))
     .catch((error) => {
         return next({
             message: 'Could not download report!',

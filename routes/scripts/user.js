@@ -19,7 +19,7 @@ router.post('/user/reset', (req, res, next) => {
 });
 
 
-router.post('/user/login', (req, res) => {
+router.post('/login', (req, res) => {
     API.request({
         method: 'POST',
         url: '/auth/signin',
@@ -57,7 +57,7 @@ router.post('/user/login', (req, res) => {
     });
 });
 
-router.get('/user/logout', (req, res) => {
+router.get('/logout', (req, res) => {
     const end = () => {
         req.session.destroy(() => {
             res.redirect('/');
@@ -77,7 +77,7 @@ router.get('/user/logout', (req, res) => {
     .catch(error => end());
 });
 
-router.post('/auth/register', (req, res, next) => {
+router.post('/user/register', (req, res, next) => {
     let body = {
         email: req.body.email,
         username: req.body.username,
@@ -111,7 +111,7 @@ router.post('/auth/register', (req, res, next) => {
     });
 });
 
-router.get('/user/refresh', (req, res, next) => {
+router.get('/refresh', (req, res, next) => {
     User.refresh(req, res, (err) => {
         if(err)
             return res.json({
@@ -126,7 +126,7 @@ router.get('/user/refresh', (req, res, next) => {
     });
 });
 
-router.post('/user/update', (req, res) => {
+router.post('/update', (req, res) => {
     // When no picture is uploaded, avatar gets set, which confuses the API
     if(req.body.avatar)
         delete req.body.avatar;
@@ -152,7 +152,7 @@ router.post('/user/update', (req, res) => {
     });
 });
 
-router.get('/user/verify/resend', (req, res) => {
+router.get('/verify/resend', (req, res) => {
   if (!req.session || !req.session.user) {
     return res.json({err: 'ERR_UNAUTHORIZED'}).end();
   }

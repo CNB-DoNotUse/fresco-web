@@ -1,0 +1,220 @@
+/* Sass Document */
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+/* Sass Document */
+/*-----------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+/**
+ * Border Radius
+ * @param  {[type]} $radius Radius to set to 
+ */
+/**
+ * Shadow
+ * @param  {[type]} $radius Radius to set to 
+ */
+/**
+ * CSS3 Transition
+ */
+/**
+ * Placeholder color mixin
+ */
+/**
+ * CSS3 Transform
+ */
+/* Sass Document */
+/*-----------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+/* Sass Document */
+/*-----------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+/**
+ * Border Radius
+ * @param  {[type]} $radius Radius to set to 
+ */
+/**
+ * Shadow
+ * @param  {[type]} $radius Radius to set to 
+ */
+/**
+ * CSS3 Transition
+ */
+/**
+ * Placeholder color mixin
+ */
+/**
+ * CSS3 Transform
+ */
+.left, .right {
+  float: left;
+  max-width: 590px; }
+
+.centered {
+  margin: auto;
+  max-width: 624px; }
+  .centered .left, .centered .right {
+    float: none; }
+
+/**
+ * Styles for settings containers
+ */
+@media screen and (max-width: 1406px) {
+  .outlet-settings, .user-settings {
+    max-width: 624px;
+    margin: auto; } }
+
+.quick-support {
+  margin: 24px 0 24px 40px;
+  float: left;
+  clear: both; }
+  .quick-support h3 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 12px auto 20px;
+    color: black;
+    color: rgba(0, 0, 0, 0.54); }
+  .quick-support ul {
+    list-style: none;
+    margin: 0;
+    padding: 0; }
+    .quick-support ul li span {
+      vertical-align: middle;
+      margin-right: 34px;
+      font-size: 24px;
+      color: black;
+      color: rgba(0, 0, 0, 0.54); }
+    .quick-support ul li a {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+      vertical-align: middle; }
+
+.card {
+  margin: 24px 0 0 24px;
+  width: 560px;
+  float: left;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12); }
+  .card .header {
+    height: 48px;
+    padding: 16px;
+    font-size: 14px;
+    border-bottom: 1px solid;
+    border-color: black;
+    border-color: rgba(0, 0, 0, 0.12); }
+    .card .header .title {
+      font-weight: 500;
+      text-align: left;
+      text-transform: uppercase;
+      color: black;
+      color: rgba(0, 0, 0, 0.54); }
+  .card .card-form {
+    overflow: auto; }
+    .card .card-form input, .card .card-form textarea {
+      border: none;
+      resize: none;
+      display: block;
+      padding: 14px 16px; }
+    .card .card-form button {
+      text-align: right;
+      margin: 0;
+      height: 48px;
+      padding: 14px 16px;
+      width: 100%; }
+    .card .card-form input[type="text"] {
+      height: 48px; }
+    .card .card-form input[type="file"] {
+      display: none; }
+    .card .card-form .changed {
+      color: #0047BB; }
+  .card .footer {
+    border-top: 1px solid;
+    padding: 0 16px;
+    border-color: black;
+    border-color: rgba(0, 0, 0, 0.12);
+    height: 48px; }
+    .card .footer input {
+      border: none;
+      height: 100%;
+      width: 100%; }
+  .card .empty-title {
+    font-size: 14px;
+    padding: 20px 16px;
+    font-weight: 400;
+    margin: 0;
+    color: black;
+    color: rgba(0, 0, 0, 0.54); }
+
+/**
+ * Meta Card Info for outlet
+ */
+.settings-info {
+  height: 240px; }
+  .settings-info div {
+    float: left; }
+  .settings-info .card-form {
+    width: 320px; }
+    .settings-info .card-form input, .settings-info .card-form textarea {
+      border-bottom: 1px solid;
+      border-color: black;
+      border-color: rgba(0, 0, 0, 0.12); }
+    .settings-info .card-form input, .settings-info .card-form textarea, .settings-info .card-form button {
+      width: 100%; }
+    .settings-info .card-form textarea {
+      height: 96px; }
+    .settings-info .card-form input[type="file"] {
+      display: none; }
+  .settings-info .avatar {
+    float: left;
+    width: 240px;
+    height: 240px;
+    background-repeat: no-repeat;
+    background-size: cover; }
+    .settings-info .avatar .overlay {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      cursor: pointer;
+      background: black;
+      background: rgba(0, 0, 0, 0.54);
+      position: relative; }
+      .settings-info .avatar .overlay span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFF;
+        margin: 0 auto;
+        width: 95px;
+        height: 100%;
+        font-size: 96px;
+        text-shadow: 0 2px 2px rgba(0, 0, 0, 0.24); }
+
+.user-settings {
+  padding: 64px 0 20px;
+  height: 100%;
+  overflow: auto; }
+
+.settings-info .card-form textarea {
+  height: 144px; }
+
+.settings-user-account .card-form input {
+  width: 100%;
+  border-bottom: 1px solid;
+  border-color: black;
+  border-color: rgba(0, 0, 0, 0.12); }

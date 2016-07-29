@@ -1,10 +1,12 @@
-import _ from 'lodash'
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './app'
-import TopBar from '../components/topbar'
-import PurchasesBody from '../components/purchases/purchases-body'
-import TagFilter from '../components/topbar/tag-filter'
+import _ from 'lodash';
+import React from 'react';
+import update from'react-addons-update';
+import utils from 'utils';
+import ReactDOM from 'react-dom';
+import App from './app';
+import TopBar from '../components/topbar';
+import PurchasesBody from '../components/purchases/purchases-body';
+import TagFilter from '../components/topbar/tag-filter';
 
 class Purchases extends React.Component {
 	constructor(props) {
@@ -27,15 +29,6 @@ class Purchases extends React.Component {
 		this.loadStats = this.loadStats.bind(this);
 		this.loadPurchases = this.loadPurchases.bind(this);
 		this.downloadExports = this.downloadExports.bind(this);
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-		//Check if outlets are the same
-		if (JSON.stringify(prevState.outlets) != JSON.stringify(this.state.outlets)) {
-			this.setState({
-				updatePurchases: true
-			});
-		}
 	}
 
 	findOutlets(q) {
@@ -93,14 +86,15 @@ class Purchases extends React.Component {
 	 * @param {string} userToAdd email of the user
 	 */
 	addUser(userToAdd, index) {
-		const { availableUsers, users } = _.clone(this.state);
+		const { availableUsers, users } =  this.state;
 		const user = availableUsers[index];
 
 		if(user !== null) {
 			if(_.find(users, ['id', user.id]) == undefined){
-				console.log(user)
 				this.setState({ 
-					users: _.concat(users, user) 
+					users: update(users, {$push: [user]}),
+					availableUsers: update(availableUsers, {$splice: [[index, 1]]}),
+					updatePurchases: true
 				});
 			}
 		}
@@ -112,13 +106,15 @@ class Purchases extends React.Component {
 	 * @param {string} outletToAdd String title of the outlet
 	 */
 	addOutlet(outletToAdd, index) {
-		const { availableOutlets, outlets } = _.clone(this.state);
+		const { availableOutlets, outlets } = this.state;
 		const outlet = availableOutlets[index];
 
 		if(outlet !== null) {
-			if(_.find(outlets, ['id', outlet.id]) == undefined){
+			if(_.find(outlets, ['id', outlet.id]) === undefined){
 				this.setState({ 
-					outlets: _.concat(outlets, outlet) 
+					outlets: update(outlets, {$push: [outlet]}),
+					availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
+					updatePurchases: true
 				});
 			}
 		}
@@ -127,30 +123,30 @@ class Purchases extends React.Component {
 	/**
 	 * Remove user from filter
 	 * @param {string} userToRemove An email string of the user
+	 * @param {int} index index in the array
 	 */
 	removeUser(userToRemove, index) {
-		const users = _.clone(this.state.users);
+		const user = this.state.users[index];
 
-		console.log(users.length)
-
-		console.log(users);
-
-		let newUsers = users.splice(1, 1);
-
-		console.log(newUsers);
-
-		// this.setState({ 
-		// 	users: newUsers
-		// });
+		this.setState({ 
+			users: update(this.state.users, {$splice: [[index, 1]]}), //Keep the filtered list updated
+			availableUsers: update(this.state.availableUsers, {$push: [user]}), //Add the user back to the autocomplete list
+			updatePurchases: true
+		});
 	}
 
 	/**
 	 * Remove outlet from filter
 	 * @param {string} outletToRemove A title string of the outlet
+	 * @param {int} index index in the array
 	 */
 	removeOutlet(outletToRemove, index) {
+		const outlet = this.state.outlets[index];
+
 		this.setState({ 
-			outlets: _.pullAt(this.state.outlets, [index])
+			outlets: update(this.state.outlets, {$splice: [[index, 1]]}), //Keep the filtered list updated
+			availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}), //Add the user back to the autocomplete list
+			updatePurchases: true
 		});
 	}
 
@@ -219,16 +215,17 @@ class Purchases extends React.Component {
 			return 'outlet[]='+ outlet._id
 		}).join('&');
 
-		const url = `/scripts/outlet/export?${filterOutletText}`;
+		const url = `/scripts/outlet/purchases?${filterOutletText}`;
 
 		window.open(url, '_blank');
 	}
 
 	render() {
 		const outlets = _.map(this.state.outlets, 'title');
-		const availableOutlets =_.map(this.state.availableOutlets, 'title');
 		const users = _.map(this.state.users, 'full_name');
+		const availableOutlets = _.map(this.state.availableOutlets, 'title');
 		const availableUsers = _.map(this.state.availableUsers, 'full_name');
+
 
 		return (
 			<App user={this.props.user}>

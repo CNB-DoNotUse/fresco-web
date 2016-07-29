@@ -36,21 +36,21 @@ export default class TagFilter extends React.Component {
 	render() {
 		const { tagList, filterList, text } = this.props;
 
-		const available = tagList.map((tag, i) => {
+		const filtered = filterList.map((tag, i) => {
 			return (
-				<Tag 
-					onClick={this.props.onTagAdd.bind(null, tag, i)} 
-					plus={true}
+				<Tag
+					onClick={this.props.onTagRemove.bind(null, tag, i)} 
 					text={tag} 
 					key={i} 
 				/>
 			)
 		});
 
-		const filtered = filterList.map((tag, i) => {
+		const available = tagList.map((tag, i) => {
 			return (
-				<Tag
-					onClick={this.props.onTagRemove.bind(null, tag, i)} 
+				<Tag 
+					onClick={this.props.onTagAdd.bind(null, tag, i)} 
+					plus={true}
 					text={tag} 
 					key={i} 
 				/>
