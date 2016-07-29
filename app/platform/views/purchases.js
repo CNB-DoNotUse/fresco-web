@@ -210,12 +210,18 @@ class Purchases extends React.Component {
 		});	
 	}
 
-	downloadExports(format) {
-		const filterOutletText = this.state.outlets.map((outlet) => {
-			return 'outlet[]='+ outlet._id
+	downloadExports() {
+		const oultets = this.state.outlets.map((outlet) => {
+			return 'outlet_ids[]='+ outlet.id
 		}).join('&');
 
-		const url = `/scripts/outlet/purchases?${filterOutletText}`;
+		const users = this.state.users.map((user) => {
+			return 'user_ids[]='+ user.id
+		}).join('&');
+
+		console.log(users);
+
+		const url = `/scripts/outlet/purchase/report?${oultets}${users}`;
 
 		window.open(url, '_blank');
 	}

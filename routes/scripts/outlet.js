@@ -29,12 +29,11 @@ router.post('/purchase', (req, res) => {
 router.get('/purchase/report', (req, res, next) => {
     API.request({
         method: 'GET',
-        url: '/purchase/report',
+        url: req.url,
         token: req.session.token
     })
     .then(response => csv.middleware(response, res, next))
     .catch((error) => {
-        console.log(error);
         return next({
             message: 'Could not download purchase report!',
             status: 500

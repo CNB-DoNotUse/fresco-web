@@ -98,12 +98,12 @@ export default class Body extends React.Component {
 
 	emailStatement() {
 		$.ajax({
-			url: '/scripts/outlet/export/email',
+			url: '/api/outlet/emailStatement',
 			type: 'GET',
 			dataType: 'json',
-			success: (result, status, xhr) => {
-				if (result.err) {
-					return $.snackbar({content: resolveError(result.err)});
+			success: (response, status, xhr) => {
+				if (response.err) {
+					return $.snackbar({content: resolveError(response.err)});
 				} else {
 					return $.snackbar({content: 'Account statement successfully sent! Please check your email.'});
 				}
