@@ -28,6 +28,12 @@ class GMap extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.radius !== this.props.radius) {
+            if (this.map && this.circle) this.map.fitBounds(this.circle.getBounds());
+        }
+    }
+
     onDragMarker(e) {
         const { onDataChange, updateCurrentBounds } = this.props;
         const location = { lng: e.latLng.lng(), lat: e.latLng.lat() };
@@ -81,11 +87,11 @@ class GMap extends React.Component {
     }
 
     renderCircle() {
-        const { location } = this.props;
+        const { location, radius, type } = this.props;
         const { center } = this.state;
         const circleOptions = {
-            radius: utils.feetToMeters(this.props.radius) || 0,
-            fillColor: utils.assignmentColor[this.props.type],
+            radius: utils.feetToMeters(radius) || 0,
+            fillColor: utils.assignmentColor[type],
             fillOpacity: 0.26,
             strokeWeight: 0,
             draggable: false,
