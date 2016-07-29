@@ -222,7 +222,7 @@ export default class DispatchSubmit extends React.Component {
 
         const {
             global,
-            autocompleteText
+            autocompleteText,
         } = this.state;
 
         const paymentAvailable = this.props.user.outlet && this.props.user.outlet.card;
@@ -301,12 +301,13 @@ export default class DispatchSubmit extends React.Component {
                         location={newAssignment ? newAssignment.location : null}
                         radius={utils.milesToFeet(radius)}
                         zoom={zoom}
-                        type='drafted'
+                        type="drafted"
                         disabled={global}
                         onDataChange={this.editMapChanged}
-                        draggable={true}
                         updateCurrentBounds={updateCurrentBounds}
-                        rerender={rerender} />
+                        rerender
+                        draggable
+                    />
                 </div>
 
                 <div className="form-group-default">

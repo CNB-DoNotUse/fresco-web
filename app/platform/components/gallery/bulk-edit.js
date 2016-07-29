@@ -71,10 +71,6 @@ class BulkEdit extends React.Component {
         }
     }
 
-    hide() {
-        $('.toggle-bedit').toggleClass('toggled');
-    }
-
     clear() {
         this.setState({
             caption: '',
@@ -246,7 +242,7 @@ class BulkEdit extends React.Component {
                     Save
                 </button>
                 <button
-                    onClick={() => this.hide()}
+                    onClick={this.props.onHide}
                     type="button"
                     className="btn btn-flat pull-right toggle-bedit"
                 >
@@ -259,20 +255,20 @@ class BulkEdit extends React.Component {
     render() {
         return (
             <div>
-                <div className="dim toggle-bedit" />
+                <div className="dim toggle-bedit toggled" />
 
-                <div className="edit panel panel-default toggle-bedit bedit">
+                <div className="edit panel panel-default toggle-bedit bedit toggled">
                     <div className="col-xs-12 col-lg-12 edit-new dialog">
                         <div className="dialog-head">
                             <span className="md-type-title">Bulk Edit</span>
                             <span
                                 className="mdi mdi-close pull-right icon toggle-edit toggler"
-                                onClick={() => this.hide()}
+                                onClick={this.props.onHide}
                             />
                         </div>
 
                         {this.renderBody()}
-                        {this.renderHead()}
+                        {this.renderFooter()}
                     </div>
                 </div>
             </div>
@@ -281,7 +277,8 @@ class BulkEdit extends React.Component {
 }
 
 BulkEdit.propTypes = {
-    posts: PropTypes.array,
+    posts: PropTypes.array.isRequired,
+    onHide: PropTypes.func.isRequired,
 };
 
 BulkEdit.defaultProps = {

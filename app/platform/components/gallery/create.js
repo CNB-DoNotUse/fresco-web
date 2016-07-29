@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import EditTags from './edit-tags';
 import EditArticles from './edit-articles';
 import EditStories from './edit-stories';
@@ -11,228 +11,198 @@ import utils from 'utils';
  * Gallery Create Parent Object
  */
 
-export default class Create extends React.Component {
+class Create extends React.Component {
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			tags: [],
-			relatedStories: [],
-			articles: [],
-			visibility: 0
-		}
-		this.clear = this.clear.bind(this);
-		this.create = this.create.bind(this);
-		this.toggleVisibility = this.toggleVisibility.bind(this);
-		this.updateRelatedStories = this.updateRelatedStories.bind(this);
-		this.updateArticles = this.updateArticles.bind(this);
-		this.updateTags = this.updateTags.bind(this);
-		this.updatedState = this.updateState.bind(this);
-	}
+    constructor(props) {
+        super(props);
+        this.state = {
+            tags: [],
+            relatedStories: [],
+            articles: [],
+            visibility: 0,
+        };
+    }
 
- 	/**
- 	 * Hides the window
+    /**
+     * Clears the form of inputed data
+     * @return {[type]} [description]
+     */
+    clear() {
+        this.refs.caption.value = '';
+
+        this.setState({
+            tags: [],
+            relatedStories: [],
+            articles: [],
+        });
+    }
+
+    toggleVisibility() {
+        this.setState({ visibility: this.state.visibility === 0 ? 2 : 0 });
+    }
+
+    /**
+     * Creates the gallery on button click
  	 */
- 	hide() {
- 		$(".toggle-gcreate").toggleClass("toggled");
- 	}
+    create() {
+        const caption = this.refs.caption.value;
+        const { visibility, tags, relatedStories, articles } = this.state;
+        const { posts, onHide , setSelectedPosts } = this.props;
 
- 	/**
- 	 * Clears the form of inputed data
- 	 * @return {[type]} [description]
- 	 */
- 	clear() {
+        // Generate post ids for update
+        const postIds = posts.map((p) => p.id);
 
- 		this.refs.caption.value = '';
+        if (postIds.length === 0) {
+            $.snackbar({ content: 'Galleries must have at least 1 post' });
+            return;
+        }
 
- 		this.setState({
- 			tags: [],
- 			relatedStories: [],
- 			articles: []
- 		});
+        const storyIds = relatedStories.map((s) => s.id);
+        const articleIds = articles.map((a) => a.id);
 
- 	}
+        const params = {
+            caption,
+            posts: postIds,
+            tags,
+            visibility,
+            articles: articleIds,
+            stories: storyIds,
+        };
 
- 	toggleVisibility() {
- 		this.setState({
- 			visibility: this.state.visibility == 0 ? 2 : 0
- 		})
- 	}
+        $.ajax({
+            url: '/api/gallery/create',
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(params),
+        })
+        .done((res) => {
+            onHide();
+            setSelectedPosts([]);
 
- 	updateState(field, value) {
- 		this.setState({
- 			fields: value
- 		})
- 	}
+            $.snackbar({
+                content: 'Gallery successfully saved! Click here to view it',
+                timeout: 5000,
+            }).click(() => {
+                const win = window.open(`/gallery/${res.id}`, '_blank');
+                win.focus();
+            });
+        })
+        .fail((err) => {
+            $.snackbar({
+                content: utils.resolveError(err, 'There was an error creating your gallery!'),
+            });
+        });
+    }
 
- 	updateTags(tags) {
- 		this.setState({
- 			tags: tags
- 		});
- 	}
+    render() {
+        const { posts, onHide } = this.props;
+        const { tags, relatedStories, articles } = this.state;
 
- 	updateRelatedStories(relatedStories) {
- 		this.setState({
- 			relatedStories: relatedStories
- 		});
- 	}
+        const postsJSX = posts.map((p, i) => (
+            <div key={i}>
+                <EditPost post={p} />
+            </div>
+        ));
 
- 	updateArticles(articles) {
- 		this.setState({
- 			articles: articles
- 		});
- 	}
+        return (
+            <div>
+                <div className="dim toggle-gcreate toggled" />
 
- 	/**
- 	 * Creates the gallery on button click
- 	 */
- 	create() {
+                <div className="edit panel panel-default toggle-gcreate gcreate toggled">
+                    <div className="col-xs-12 col-lg-12 edit-new dialog">
 
- 		var caption = this.refs.caption.value,
- 			tags = this.state.tags,
- 			visibility = this.state.visibility;
+                        <div className="dialog-head">
+                            <span className="md-type-title">Create Gallery</span>
+                            <span
+                                className="mdi mdi-close pull-right icon toggle-edit toggler"
+                                onClick={onHide}
+                            />
+                        </div>
 
- 		//Generate post ids for update
- 		var posts = this.props.posts.map((post) => {
- 			return post.id
- 		});
+                        <div className="dialog-foot">
+                            <button
+                                onClick={() => this.clear()}
+                                type="button"
+                                className="btn btn-flat"
+                            >
+                                Clear all
+                            </button>
+                            <button
+                                onClick={() => this.create()}
+                                type="button"
+                                className="btn btn-flat pull-right"
+                            >
+                                Save
+                            </button>
+                            <button
+                                onClick={onHide}
+                                type="button"
+                                className="btn btn-flat pull-right toggle-gcreate toggler toggled"
+                            >
+                                Discard
+                            </button>
+                        </div>
 
-		if(posts.length == 0)
-			return $.snackbar({content:"Galleries must have at least 1 post"});
+                        <div className="dialog-body">
+                            <div className="dialog-col col-xs-12 col-md-7 form-group-default">
+                                <div className="dialog-row">
+                                    <textarea
+                                        ref="caption"
+                                        type="text"
+                                        className="form-control floating-label"
+                                        placeholder="Caption"
+                                    />
+                                </div>
 
- 		//Generate stories for update
- 		var stories = this.state.relatedStories.map((story) => {
+                                <EditTags
+                                    ref="tags"
+                                    tags={tags}
+                                    updateTags={(t) => this.setState({ tags: t })}
+                                />
 
- 			if(story.new)
- 				return 'NEW=' + JSON.stringify(story);
- 			else
- 				return story.id;
+                                <EditStories
+                                    relatedStories={relatedStories}
+                                    updateRelatedStories={(s) => this.setState({ relatedStories: s })}
+                                />
 
- 		});
+                                <EditArticles
+                                    articles={articles}
+                                    updateArticles={(a) => this.setState({ articles: a })}
+                                />
 
- 		//Generate articles for update
- 		var articles = this.state.articles.map((articles) => {
+                                <div className="dialog-row">
+                                    <div className="checkbox">
+                                        <label>
+                                            <input
+                                                ref="highlight"
+                                                type="checkbox"
+                                                onChange={() => this.toggleVisibility()}
+                                            />
+                                            Highlighted
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
 
- 			if(articles.new)
- 				return 'NEW=' + JSON.stringify(articles);
- 			else
- 				return articles.id;
-
- 		});
-
- 		var params = {
- 			caption: caption,
- 			posts: posts,
- 			tags: tags,
- 			visibility: visibility,
- 			articles: articles,
- 			stories: stories,
- 		};
-
- 		$.ajax("/api/gallery/create", {
- 			method: 'post',
- 			contentType: "application/json",
- 			data: JSON.stringify(params),
- 			success: (result) => {
- 				if(result.err && !result.data){
- 					$.snackbar({
- 						content: utils.resolveError(result.err, "There was an error creating your gallery!")
- 					});
- 				}
- 				else{
- 					this.hide();
- 					this.props.setSelectedPosts([]);
-
- 					$.snackbar({
- 						content: 'Gallery successfully saved! Click here to view it',
- 						timeout: 5000
- 					}).click(() => {
-						var win = window.open('/gallery/' + result.data.id, '_blank');
-						win.focus();
-					});
- 				}
- 			}
- 		});
- 	}
-
-	render() {
-
-		//Map out posts for slick slider
-		var posts = this.props.posts.map((post, i) =>{
-
-			return <div key={i++}>
-						<EditPost post={post} />
-					</div>
-
-		});
-
- 		return (
- 			<div>
-
-	 			<div className="dim toggle-gcreate">
-	 			</div>
-
-	 			<div className="edit panel panel-default toggle-gcreate gcreate">
-
-		 			<div className="col-xs-12 col-lg-12 edit-new dialog">
-
-		 				<div className="dialog-head">
-		 					<span className="md-type-title">Create Gallery</span>
-		 					<span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
-		 				</div>
-
-	 					<div className="dialog-foot">
-	 						<button onClick={this.clear} type="button" className="btn btn-flat">Clear all</button>
-	 						<button onClick={this.create}  type="button" className="btn btn-flat pull-right">Save</button>
-	 						<button onClick={this.hide} type="button" className="btn btn-flat pull-right toggle-gcreate toggler toggled">Discard</button>
-	 					</div>
-
-	 					<div className="dialog-body">
-	 						<div className="dialog-col col-xs-12 col-md-7 form-group-default">
-	 							<div className="dialog-row">
-	 								<textarea
-	 									ref="caption"
-	 									type="text"
-	 									className="form-control floating-label"
-	 									placeholder="Caption" />
-	 							</div>
-
-	 							<EditTags
-	 								ref='tags'
-	 								tags={this.state.tags}
-	 								updateTags={this.updateTags} />
-
-	 							<EditStories
-	 								relatedStories={this.state.relatedStories}
-	 								updateRelatedStories={this.updateRelatedStories} />
-
-	 							<EditArticles
-	 								articles={this.state.articles}
-	 								updateArticles={this.updateArticles} />
-
-	 							<div className="dialog-row">
-									<div className="checkbox">
-										<label>
-											<input
-												ref="highlight"
-												type="checkbox"
-												onChange={this.toggleVisibility} /> Highlighted
-										</label>
-									</div>
-								</div>
-	 						</div>
-
-	 						<Slick
-	 							dots={true}
-	 							className="dialog-col col-xs-12 col-md-5">
-	 							{posts}
-	 						</Slick>
-
-	 					</div>
-
-	 				</div>
-	 			</div>
- 			</div>
- 		);
- 	}
+                            <Slick
+                                dots
+                                className="dialog-col col-xs-12 col-md-5"
+                            >
+                                {postsJSX}
+                            </Slick>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
+
+Create.propTypes = {
+    onHide: PropTypes.func.isRequired,
+    setSelectedPosts: PropTypes.func.isRequired,
+    posts: PropTypes.array.isRequired,
+};
+
+export default Create;
+

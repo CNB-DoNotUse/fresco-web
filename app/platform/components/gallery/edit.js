@@ -328,23 +328,22 @@ class Edit extends React.Component {
                     Save
                 </button>
 
-                {
-                    gallery.rating < 2
-                        ? <button
-                            type="button"
-                            onClick={() => this.onSave(2)}
-                            className="btn btn-flat pull-right"
-                            disabled={loading}
-                        >
-                            Verify
-                        </button>
-                        : <button
-                            onClick={() => this.onSave(1)}
-                            className="btn btn-flat pull-right"
-                            disabled={loading}
-                        >
-                            Unverify
-                        </button>
+                {gallery.rating < 2
+                    ? <button
+                        type="button"
+                        onClick={() => this.onSave(2)}
+                        className="btn btn-flat pull-right"
+                        disabled={loading}
+                    >
+                        Verify
+                    </button>
+                    : <button
+                        onClick={() => this.onSave(1)}
+                        className="btn btn-flat pull-right"
+                        disabled={loading}
+                    >
+                        Unverify
+                    </button>
                 }
 
                 <button

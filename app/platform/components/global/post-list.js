@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import PostCell from './post-cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
+import GalleryBulkEdit from '../gallery/bulk-edit';
+import GalleryCreate from '../gallery/create';
 import utils from 'utils';
 import _ from 'lodash';
 
@@ -19,6 +21,8 @@ class PostList extends React.Component {
             loading: false,
             scrollable: props.scrollable,
             selectedPosts: [],
+            galleryCreateToggled: false,
+            galleryBulkEditToggled: false,
         };
 
         // If we aren't dynamically loading posts, then sort them locally
@@ -71,12 +75,25 @@ class PostList extends React.Component {
         }
     }
 
+    onToggleGalleryBulkEdit() {
+        if (this.props.posts.length > 1) {
+            this.setState({ galleryBulkEditToggled: !this.state.galleryBulkEditToggled });
+        } else {
+            this.setState({ bulkEditToggled: false });
+            $.snackbar({ content: 'Select more than one gallery to edit' });
+        }
+    }
+
+    onToggleGalleryCreate() {
+        this.setState({ galleryCreateToggled: !this.state.galleryCreateToggled });
+    }
+
     /**
      * Sorts posts based on the current field in props
      * @return {array} An array of posts now sorted
      */
     sortPosts() {
-        const field = this.props.sort == 'captured_at' ? 'captured_at' : 'created_at';
+        const field = this.props.sort === 'captured_at' ? 'captured_at' : 'created_at';
 
         return this.state.posts.sort((post1, post2) => post2[field] - post1[field]);
     }
@@ -182,8 +199,13 @@ class PostList extends React.Component {
     }
 
     render() {
-        const { className, scroll } = this.props;
-        const { selectedPosts, scrollable } = this.state;
+        const { className, scroll, posts } = this.props;
+        const {
+            selectedPosts,
+            scrollable,
+            galleryBulkEditToggled,
+            galleryCreateToggled,
+        } = this.state;
 
         return (
             <div>
@@ -194,10 +216,29 @@ class PostList extends React.Component {
                 >
                     <div className="row tiles" id="posts">{this.renderPosts()}</div>
 
-                    {selectedPosts && selectedPosts.length > 0
+                    {selectedPosts && selectedPosts.length > 1
                         ? <GalleryBulkSelect
                             posts={selectedPosts}
                             setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
+                            onToggleEdit={() => this.onToggleGalleryBulkEdit()}
+                            onToggleCreate={() => this.onToggleGalleryCreate()}
+                        />
+                        : ''
+                    }
+
+                    {galleryBulkEditToggled
+                        ? <GalleryBulkEdit
+                            posts={posts}
+                            onHide={() => this.onToggleGalleryBulkEdit()}
+                        />
+                        : ''
+                    }
+
+                    {galleryCreateToggled
+                        ? <GalleryCreate
+                            posts={posts}
+                            setSelectedPosts={(p) => setSelectedPosts(p)}
+                            onHide={() => this.onToggleGalleryCreate()}
                         />
                         : ''
                     }

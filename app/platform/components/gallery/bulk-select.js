@@ -1,6 +1,4 @@
 import React, { PropTypes } from 'react';
-import BulkEdit from './bulk-edit';
-import Create from './create';
 import utils from 'utils';
 
 /**
@@ -8,35 +6,12 @@ import utils from 'utils';
  * Component for bulk selecting posts
  */
 class BulkSelect extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            createToggled: false,
-            bulkEditToggled: false,
-        };
-    }
-
-    onToggleCreate() {
-        this.setState({ createToggled: !this.state.createToggled });
-    }
-
-    onToggleBulkEdit() {
-        if (this.props.posts.length > 1) {
-            this.setState({ bulkEditToggled: !this.state.bulkEditToggled });
-        } else {
-            this.setState({ bulkEditToggled: false });
-            $.snackbar({ content: 'Select more than one gallery to edit' });
-        }
-    }
-
     clear() {
         this.props.setSelectedPosts([]);
     }
 
     render() {
-        const { posts, setSelectedPosts } = this.props;
-        const { createToggled, bulkEditToggled } = this.state;
+        const { posts, onToggleCreate, onToggleEdit } = this.props;
         const count = `${posts.length} post${(utils.isPlural(posts.length)) ? 's' : ''}`;
         const thumbnails = posts.map((post, i) => (
             <a className="thumb" key={i}>
@@ -64,7 +39,7 @@ class BulkSelect extends React.Component {
                         </button>
 
                         <button
-                            onClick={() => this.onToggleBulkEdit()}
+                            onClick={() => onToggleEdit()}
                             type="button"
                             className="btn btn-flat pull-right toggle-edit toggler"
                         >
@@ -72,7 +47,7 @@ class BulkSelect extends React.Component {
                         </button>
 
                         <button
-                            onClick={() => this.onToggleCreate()}
+                            onClick={() => onToggleCreate()}
                             type="button"
                             className="btn btn-flat pull-right toggle-gcreate toggler"
                         >
@@ -81,16 +56,6 @@ class BulkSelect extends React.Component {
                     </div>
 
                 </div>
-
-                {bulkEditToggled
-                    ? <BulkEdit posts={this.props.posts} />
-                    : ''
-                }
-
-                {createToggled
-                    ? <Create posts={posts} setSelectedPosts={(p) => setSelectedPosts(p)} />
-                    : ''
-                }
             </div>
         );
     }
@@ -99,6 +64,8 @@ class BulkSelect extends React.Component {
 BulkSelect.propTypes = {
     posts: PropTypes.array,
     setSelectedPosts: PropTypes.func.isRequired,
+    onToggleEdit: PropTypes.func,
+    onToggleCreate: PropTypes.func,
 };
 
 BulkSelect.defaultProps = {
