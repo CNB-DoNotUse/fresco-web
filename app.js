@@ -181,11 +181,10 @@ for (var i = 0; i < routes.public.length; i++) {
  */
 for (var i = 0; i < routes.scripts.length; i++) {
 
-  var routePrefix = routes.scripts[i] ,
-      route = require('./routes/scripts/' + routePrefix);
+  const routePrefix = routes.scripts[i];
+  const route = require(`./routes/scripts/${routePrefix}`);
 
-  app.use('/scripts' , route);
-
+  app.use(`/scripts/${routePrefix}` , route);
 }
 
 

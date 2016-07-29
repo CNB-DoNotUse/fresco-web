@@ -1,10 +1,12 @@
-import _ from 'lodash'
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './app'
-import TopBar from '../components/topbar'
-import PurchasesBody from '../components/purchases/purchases-body'
-import TagFilter from '../components/topbar/tag-filter'
+import _ from 'lodash';
+import React from 'react';
+import update from'react-addons-update';
+import utils from 'utils';
+import ReactDOM from 'react-dom';
+import App from './app';
+import TopBar from '../components/topbar';
+import PurchasesBody from '../components/purchases/purchases-body';
+import TagFilter from '../components/topbar/tag-filter';
 
 class Purchases extends React.Component {
 	constructor(props) {
@@ -12,119 +14,172 @@ class Purchases extends React.Component {
 
 		this.state = {
 			outlets: [],
+			users: [],
 			availableOutlets: [],
+			availableUsers: [],
 			updatePurchases: false,
 		}
 
 		this.findOutlets = this.findOutlets.bind(this);
+		this.findUsers = this.findUsers.bind(this);
 		this.addOutlet = this.addOutlet.bind(this);
+		this.addUser = this.addUser.bind(this);
+		this.removeUser = this.removeUser.bind(this);
 		this.removeOutlet = this.removeOutlet.bind(this);
 		this.loadStats = this.loadStats.bind(this);
 		this.loadPurchases = this.loadPurchases.bind(this);
 		this.downloadExports = this.downloadExports.bind(this);
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		//Check if outlets are the same
-		if (JSON.stringify(prevState.outlets) != JSON.stringify(this.state.outlets)) {
-			this.setState({
-				updatePurchases: true
-			});
-		}
-	}
-
-	findOutlets(query) {
-		if(query.length == 0) {
+	findOutlets(q) {
+		if(q.length == 0) {
 			this.setState({
 				availableOutlets: []
 			});
 		} else{
-			$.get('/api/outlet/list?q=' + query, (response) => {
-				if(!response.err && response.data) {
-					this.setState({
-						availableOutlets: response.data
-					});
+			const params = {
+				outlets: { a: { title: q} }
+			};
+
+			$.ajax({
+				url: '/api/search',
+				type: 'GET',
+				data: $.param(params),
+				success: (response, status, xhr) => {
+					if(!response.error && response.outlets) {
+						this.setState({
+							availableOutlets: response.outlets.results
+						});
+					}
 				}
+			});	
+		}
+	}
+
+	findUsers(q) {
+		if(q.length == 0) {
+			this.setState({
+				availableUsers: []
 			});
+		} else{
+			const params = {
+				users: { a: { full_name : q} }
+			};
+
+			$.ajax({
+				url: '/api/search',
+				type: 'GET',
+				data: $.param(params),
+				success: (response, status, xhr) => {
+					if(!response.error && response.users) {
+						this.setState({
+							availableUsers: response.users.results
+						});
+					}
+				}
+			});	
 		}
 	}
 
 	/**
-	 * Adds outlet to filter
+	 * Adds user to filter
+	 * @param {string} userToAdd email of the user
 	 */
-	addOutlet(outletToAdd) {
-		var availableOutlets = _.clone(this.state.availableOutlets, true),
-			outlets = _.clone(this.state.outlets, true),
-			outlet = null,
-			outletExists = false;
+	addUser(userToAdd, index) {
+		const { availableUsers, users } =  this.state;
+		const user = availableUsers[index];
 
-		//Find the outlet object based on the `title`, outletToAdd is just a `string`
-		for (var i = 0; i < availableOutlets.length; i++) {
-			var outlet = availableOutlets[i];
-
-			if(outlet.title == outletToAdd){
-				outlet = availableOutlets[i];
-				break;
+		if(user !== null) {
+			if(_.find(users, ['id', user.id]) == undefined){
+				this.setState({ 
+					users: update(users, {$push: [user]}),
+					availableUsers: update(availableUsers, {$splice: [[index, 1]]}),
+					updatePurchases: true
+				});
 			}
 		}
+	}
 
-		//Check that the outlet isn't already in the list
-		for (var i = 0; i < outlets.length; i++) {
-			if(outlets[i]._id === outlet._id){
-				outletExists = true;
-				break;
+
+	/**
+	 * Adds outlet to filter
+	 * @param {string} outletToAdd String title of the outlet
+	 */
+	addOutlet(outletToAdd, index) {
+		const { availableOutlets, outlets } = this.state;
+		const outlet = availableOutlets[index];
+
+		if(outlet !== null) {
+			if(_.find(outlets, ['id', outlet.id]) === undefined){
+				this.setState({ 
+					outlets: update(outlets, {$push: [outlet]}),
+					availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
+					updatePurchases: true
+				});
 			}
 		}
+	}
 
-		if(!outletExists && outlet !== null){
-			outlets.push(outlet);
-			this.setState({ outlets: outlets });
-		}
+	/**
+	 * Remove user from filter
+	 * @param {string} userToRemove An email string of the user
+	 * @param {int} index index in the array
+	 */
+	removeUser(userToRemove, index) {
+		const user = this.state.users[index];
+
+		this.setState({ 
+			users: update(this.state.users, {$splice: [[index, 1]]}), //Keep the filtered list updated
+			availableUsers: update(this.state.availableUsers, {$push: [user]}), //Add the user back to the autocomplete list
+			updatePurchases: true
+		});
 	}
 
 	/**
 	 * Remove outlet from filter
+	 * @param {string} outletToRemove A title string of the outlet
+	 * @param {int} index index in the array
 	 */
-	removeOutlet(outletToRemove) {
-		var outlets = _.clone(this.state.outlets, true),
-			filterIdsArr = [];
+	removeOutlet(outletToRemove, index) {
+		const outlet = this.state.outlets[index];
 
-		for (var i = 0; i < outlets.length; i++) {
-			var outlet = outlets[i];
-
-			if(outlet.title == outletToRemove){
-				outlets.splice(i, 1);
-				break;
-			}
-		}
-
-		this.setState({ outlets: outlets });
+		this.setState({ 
+			outlets: update(this.state.outlets, {$splice: [[index, 1]]}), //Keep the filtered list updated
+			availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}), //Add the user back to the autocomplete list
+			updatePurchases: true
+		});
 	}
-
 
 	/**
 	 * Loads stats for purchases
 	 */
 	loadStats(callback) {
-		$.get('/api/outlet/purchases/stats', {
-			outlets: this.state.outlets.map(p => p._id)
-		}, (response) => {
-			if(response.err || !response.data) {
-				return $.snackbar({
-					content: 'There was an error receiving the purchases'
-				});
+		const params = {
+			outlet_ids: _.map(this.state.outlets, 'id'),
+			user_ids: _.map(this.state.users, 'id')
+		}
+
+		$.ajax({
+			url: '/api/purchase/stats',
+			type: 'GET',
+			data: $.param(params),
+			success: (response, status, xhr) => {
+				if(response.err || !response) {
+					return $.snackbar({
+						content: 'There was an error receiving purchases!'
+					});
+				} else {
+					callback(response);
+				}
 			}
-
-			callback(response.data);
-		});
+		});	
 	}
-
 
 	/**
 	 * Requests purchases from server
 	 * @return {[type]} [description]
 	 */
-	loadPurchases(passedOffset, cb) {
+	loadPurchases(last = null, cb) {
 		//Update state for purchase list if needed so it doesn't loop
 		if(this.state.updatePurchases){
 			this.setState({
@@ -132,50 +187,51 @@ class Purchases extends React.Component {
 			});
 		}
 
-		$.get('/api/outlet/purchases/list', {
+		const params = {
+			outlet_ids: _.map(this.state.outlets, 'id'),
+			user_ids: _.map(this.state.users, 'id'),
 			limit: 20,
-			offset: passedOffset,
-			details: true,
-			outlets: this.state.outlets.map(p => p._id)
-		}, (response) => {
-			if(response.err) {
-				return $.snackbar({
-					content: 'There was an error receiving the purchases'
-				});
-			} else if(!response.data){
-				return;
+			last
+		}
+
+		$.ajax({
+			url: '/api/purchase/list',
+			type: 'GET',
+			data: $.param(params),
+			success: (response, status, xhr) => {
+				if(response.err || !response) {
+					return $.snackbar({
+						content: 'There was an error receiving purchases!'
+					});
+				} else {
+					cb(response);
+				}
 			}
-
-			var purchases = response.data.map((purchaseParent) => {
-				var purchase = purchaseParent.purchase;
-					purchase.title = purchaseParent.title;
-
-				return purchase;
-			});
-
-			if(cb) cb(purchases);
-
-		});
+		});	
 	}
 
-	downloadExports(format) {
-		var filterOutletText = this.state.outlets.map((outlet) => {
-			return 'outlet[]='+ outlet._id
+	downloadExports() {
+		const oultets = this.state.outlets.map((outlet) => {
+			return 'outlet_ids[]='+ outlet.id
 		}).join('&');
 
-		var url = "/scripts/outlet/export?format=" + format + '&' + filterOutletText;
+		const users = this.state.users.map((user) => {
+			return 'user_ids[]='+ user.id
+		}).join('&');
+
+		console.log(users);
+
+		const url = `/scripts/outlet/purchase/report?${oultets}${users}`;
 
 		window.open(url, '_blank');
 	}
 
 	render() {
-		var outlets = this.state.outlets.map((outlet) => {
-			return outlet.title;
-		});
+		const outlets = _.map(this.state.outlets, 'title');
+		const users = _.map(this.state.users, 'full_name');
+		const availableOutlets = _.map(this.state.availableOutlets, 'title');
+		const availableUsers = _.map(this.state.availableUsers, 'full_name');
 
-		var availableOutlets = this.state.availableOutlets.map((outlet) =>{
-			return outlet.title;
-		});
 
 		return (
 			<App user={this.props.user}>
@@ -183,13 +239,22 @@ class Purchases extends React.Component {
 					title="Purchases">
 
 					<TagFilter
-						text="Outlet"
+						text="Outlets"
 						tagList={availableOutlets}
 						filterList={outlets}
 						onTagInput={this.findOutlets}
 						onTagAdd={this.addOutlet}
 						onTagRemove={this.removeOutlet}
 						key="outletsFilter" />
+
+					<TagFilter
+						text="Users"
+						tagList={availableUsers}
+						filterList={users}
+						onTagInput={this.findUsers}
+						onTagAdd={this.addUser}
+						onTagRemove={this.removeUser}
+						key="usersFilter" />
 				</TopBar>
 
 				<PurchasesBody
@@ -204,6 +269,6 @@ class Purchases extends React.Component {
 
 ReactDOM.render(
   <Purchases
-  	user={window.__initialProps__.user} />,
+	user={window.__initialProps__.user} />,
 	document.getElementById('app')
 );

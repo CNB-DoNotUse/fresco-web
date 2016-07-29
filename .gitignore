@@ -10,3 +10,4 @@ cert/DigiCertCA.crt
 bower_components
 public/build/
 config/*.json
+npm-debug.log.*
