@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import BulkEdit from './bulk-edit';
+import Create from './create';
 import utils from 'utils';
 
 /**
@@ -7,70 +8,102 @@ import utils from 'utils';
  * Component for bulk selecting posts
  */
 class BulkSelect extends React.Component {
+    constructor(props) {
+        super(props);
 
-	constructor(props) {
-		super(props);
-		this.clear = this.clear.bind(this);
-		this.edit = this.edit.bind(this);
-		this.createGallery = this.createGallery.bind(this);
-	}
+        this.state = {
+            createToggled: false,
+            bulkEditToggled: false,
+        };
+    }
 
-	createGallery() {
- 		$(".toggle-gcreate").toggleClass("toggled");
- 	}
+    onToggleCreate() {
+        this.setState({ createToggled: !this.state.createToggled });
+    }
 
-	edit() {
-		if (this.props.posts.length > 1) {
-			this.refs.bulkedit.show();
-		}
-		else {
-			$.snackbar({
-				content: 'Select more than one gallery to edit'
-			});
-		}
-	}
+    onToggleBulkEdit() {
+        if (this.props.posts.length > 1) {
+            this.setState({ bulkEditToggled: !this.state.bulkEditToggled });
+        } else {
+            this.setState({ bulkEditToggled: false });
+            $.snackbar({ content: 'Select more than one gallery to edit' });
+        }
+    }
 
- 	clear() {
- 		this.props.setSelectedPosts([]);
- 	}
+    clear() {
+        this.props.setSelectedPosts([]);
+    }
 
-	render() {
+    render() {
+        const { posts, setSelectedPosts } = this.props;
+        const { createToggled, bulkEditToggled } = this.state;
+        const count = `${posts.length} post${(utils.isPlural(posts.length)) ? 's' : ''}`;
+        const thumbnails = posts.map((post, i) => (
+            <a className="thumb" key={i}>
+                <img
+                    className="img-responsive"
+                    src={utils.formatImg(post.image, 'small')}
+                    role="presentation"
+                />
+            </a>
+        ));
 
-		var postCount = this.props.posts.length,
-			toggled = postCount > 1 ? 'toggled' : '',
-			count = postCount + ' post' + (utils.isPlural(postCount) ? 's' : ''),
-			thumbnails = this.props.posts.map((post, i) => {
-				return <a className="thumb" key={i}>
-	 						<img className="img-responsive" src={utils.formatImg(post.image, 'small')} />
-	 					</a>
-			});
+        return (
+            <div>
+                <div className={'well hover bulk toggled'} id="bulk-edit">
+                    <div id="bulk-thumbs" className="thumbs">{thumbnails}</div>
 
- 		return (
- 			<div className={'well hover bulk ' + toggled} id="bulk-edit">
- 				<div id="bulk-thumbs" className="thumbs">{thumbnails}</div>
+                    <div className="row md-type-button">
+                        <button
+                            onClick={() => this.clear()}
+                            type="button"
+                            className="btn btn-flat"
+                        >
+                            Clear selection
+                            <span id="post-count"> ({count}) </span>
+                        </button>
 
- 				<div className="row md-type-button">
- 					<button onClick={this.clear} type="button" className="btn btn-flat">Clear selection
- 						<span id="post-count"> ({count}) </span>
- 					</button>
+                        <button
+                            onClick={() => this.onToggleBulkEdit()}
+                            type="button"
+                            className="btn btn-flat pull-right toggle-edit toggler"
+                        >
+                            Edit
+                        </button>
 
- 					{/*<button onClick={this.purchase} type="button" className="btn btn-flat pull-right">Purchase</button>*/}
+                        <button
+                            onClick={() => this.onToggleCreate()}
+                            type="button"
+                            className="btn btn-flat pull-right toggle-gcreate toggler"
+                        >
+                            Create gallery
+                        </button>
+                    </div>
 
- 					<button onClick={this.edit} type="button" className="btn btn-flat pull-right toggle-edit toggler">Edit</button>
+                </div>
 
- 					<button onClick={this.createGallery} type="button" className="btn btn-flat pull-right toggle-gcreate toggler">Create gallery</button>
- 				</div>
+                {bulkEditToggled
+                    ? <BulkEdit posts={this.props.posts} />
+                    : ''
+                }
 
-				<BulkEdit
-					ref='bulkedit'
-					posts={this.props.posts} />
- 			</div>
- 		);
- 	}
+                {createToggled
+                    ? <Create posts={posts} setSelectedPosts={(p) => setSelectedPosts(p)} />
+                    : ''
+                }
+            </div>
+        );
+    }
 }
 
+BulkSelect.propTypes = {
+    posts: PropTypes.array,
+    setSelectedPosts: PropTypes.func.isRequired,
+};
+
 BulkSelect.defaultProps = {
-	posts: [],
+    posts: [],
 };
 
 export default BulkSelect;
+

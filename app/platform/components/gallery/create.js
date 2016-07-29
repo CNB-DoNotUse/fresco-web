@@ -6,13 +6,8 @@ import EditPost from './edit-post';
 import Slick from 'react-slick';
 import utils from 'utils';
 
-/** //
-
-Description : Component for creating a gallery
-
-// **/
-
 /**
+ * Description : Component for creating a gallery
  * Gallery Create Parent Object
  */
 

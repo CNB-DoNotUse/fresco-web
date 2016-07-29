@@ -1,11 +1,13 @@
 import React, { PropTypes } from 'react';
 import PostCell from './post-cell';
+import GalleryBulkSelect from '../gallery/bulk-select';
 import utils from 'utils';
 import _ from 'lodash';
 
 /**
 * Post List Parent Object
-* List for a set of posts used across the site (/videos, /photos, /gallery/id, /assignment/id , etc.)
+* List for a set of posts used across the site
+* (/videos, /photos, /gallery/id, /assignment/id , etc.)
 */
 class PostList extends React.Component {
 
@@ -17,20 +19,12 @@ class PostList extends React.Component {
             loading: false,
             scrollable: props.scrollable,
             selectedPosts: [],
-            gallery: null,
-            galleryEditToggled: false,
         };
 
         // If we aren't dynamically loading posts, then sort them locally
         if (!this.props.scrollable && this.props.sort) {
             this.state.posts = this.sortPosts();
         }
-
-        this.togglePost 		= this.togglePost.bind(this);
-        this.sortPosts 		    = this.sortPosts.bind(this);
-        this.scroll 			= this.scroll.bind(this);
-        this.toggle				= this.toggle.bind(this);
-        this.loadInitialPosts	= this.loadInitialPosts.bind(this);
     }
 
     componentWillMount() {
@@ -82,7 +76,7 @@ class PostList extends React.Component {
      * @return {array} An array of posts now sorted
      */
     sortPosts() {
-        let field = this.props.sort == 'captured_at' ? 'captured_at' : 'created_at';
+        const field = this.props.sort == 'captured_at' ? 'captured_at' : 'created_at';
 
         return this.state.posts.sort((post1, post2) => post2[field] - post1[field]);
     }
@@ -134,7 +128,6 @@ class PostList extends React.Component {
                     posts: this.state.posts.concat(posts),
                     loading: false,
                 });
-
             }, this);
         }
     }
@@ -144,99 +137,80 @@ class PostList extends React.Component {
      * @param  {object} passedPost The post to toggle selected or unselected in the post-list and bulk edit
      */
     togglePost(passedPost) {
+        const { selectedPosts } = this.state;
+
         // Check if `not` CM
         if (this.props.rank < utils.RANKS.CONTENT_MANAGER) return;
 
-
         // Make sure we haven't reached the limit
         if (this.state.selectedPosts.length >= utils.limits.galleryItems) {
-            return $.snackbar({ content: 'Galleries can only contain up to 10 items!' });
+            $.snackbar({ content: 'Galleries can only contain up to 10 items!' });
+            return;
         }
 
         // Filter out anything, but ones that equal the passed post
-        var result = this.state.selectedPosts.filter((post) => {
-            return passedPost.id === post.id;
-        });
-
-
         // Post not found, so add
-        if (result.length == 0) {
+        if (!selectedPosts.some((s) => s.id === passedPost.id)) {
+            this.setState({ selectedPosts: selectedPosts.concat(passedPost) });
+        } else {
+            // No post found
             this.setState({
-                selectedPosts: this.state.selectedPosts.concat(passedPost),
-            });
-        }
-        // No post found
-        else {
-            this.setState({
-                selectedPosts: this.state.selectedPosts.filter((post) => post.id !== passedPost.id),
+                selectedPosts: selectedPosts.filter((post) => post.id !== passedPost.id),
             });
         }
     }
 
-    /**
-     * Called when GalleryEdit should be toggled
-     */
-    toggle() {
-        if (this.state.galleryEditToggled) {
-            this.setState({
-                gallery: null,
-                galleryEditToggled: false,
-            });
-        }
-    }
-
-    render() {
+    renderPosts() {
         const {
             rank,
             size,
             assignment,
             editable,
             sort,
-            onlyVerified,
             parentCaption,
-            className
         } = this.props;
-        const { posts, selectedPosts, galleryEditToggled } = this.state;
-        let postCmps = [];
+        const {
+            posts,
+            selectedPosts,
+        } = this.state;
 
-        for (let i = 0; i < posts.length; i++) {
+        return posts.map((p, i) => (
+            <PostCell
+                size={size}
+                parentCaption={parentCaption}
+                post={p}
+                rank={rank}
+                toggled={selectedPosts.some((s) => s.id === p.id)}
+                assignment={assignment}
+                key={i}
+                editable={editable}
+                sort={sort}
+                togglePost={(post) => this.togglePost(post)}
+            />
+        ));
+    }
 
-            let post = posts[i];
-
-            // Check if post should be added based on approvals and verified toggle
-            if (onlyVerified && post.approvals === 0) {
-                continue;
-            }
-
-            // Filter out this posts from the currently selected posts
-            const filteredPosts = selectedPosts.filter((currentPost) => currentPost.id === post.id);
-            // Pass down toggled if this post is inside the filtered posts
-            let toggled = filteredPosts.length > 0;
-
-            postCmps.push(
-                <PostCell
-                    size={size}
-                    parentCaption={parentCaption}
-                    post={post}
-                    rank={rank}
-                    toggled={toggled}
-                    assignment={assignment}
-                    key={i}
-                    editable={editable}
-                    sort={sort}
-                    togglePost={this.togglePost}
-                />
-            );
-        }
+    render() {
+        const { className, scroll } = this.props;
+        const { selectedPosts, scrollable } = this.state;
 
         return (
             <div>
                 <div
-                    className={'container-fluid fat grid ' + className}
+                    className={`container-fluid fat grid ${className}`}
                     ref="grid"
-                    onScroll={this.state.scrollable ? this.props.scroll ? this.props.scroll : this.scroll : null}
+                    onScroll={scrollable ? scroll || ((e) => this.scroll(e)) : null}
                 >
-                    <div className="row tiles" id="posts">{postCmps}</div>
+                    <div className="row tiles" id="posts">{this.renderPosts()}</div>
+
+                    {selectedPosts && selectedPosts.length > 0
+                        ? <GalleryBulkSelect
+                            posts={selectedPosts}
+                            setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
+                        />
+                        : ''
+                    }
+
                 </div>
             </div>
         );
@@ -245,6 +219,17 @@ class PostList extends React.Component {
 
 PostList.propTypes = {
     posts: PropTypes.array,
+    scrollable: PropTypes.bool,
+    rank: PropTypes.number,
+    size: PropTypes.string,
+    assignment: PropTypes.object,
+    editable: PropTypes.bool,
+    sort: PropTypes.string,
+    onlyVerified: PropTypes.bool,
+    parentCaption: PropTypes.string,
+    className: PropTypes.string,
+    scroll: PropTypes.func,
+    loadPosts: PropTypes.func,
 };
 
 PostList.defaultProps = {
@@ -252,7 +237,6 @@ PostList.defaultProps = {
     size: 'small',
     editable: true,
     posts: [],
-    gallery: null,
     scrollable: false,
     onlyVerified: false,
     loadPosts() {},

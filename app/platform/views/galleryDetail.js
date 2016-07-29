@@ -97,7 +97,7 @@ class GalleryDetail extends React.Component {
     }
 
     toggleEdit() {
-        this.setState({ editToggled: !this.state.editToggled});
+        this.setState({ editToggled: !this.state.editToggled });
     }
 
     render() {
@@ -109,7 +109,7 @@ class GalleryDetail extends React.Component {
             onlyVerified,
             updatePosts,
             editToggled,
-            loading
+            loading,
         } = this.state;
 
         return (

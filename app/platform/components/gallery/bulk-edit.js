@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import EditTags from './edit-tags';
 import EditStories from './edit-stories';
 import EditPost from './edit-post';
@@ -9,60 +9,16 @@ import utils from 'utils';
  * Component for editing multiple posts at once (from possibly different galleries)
  * Bulk Edit Parent Object
  */
-export default class BulkEdit extends React.Component {
+class BulkEdit extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             caption: '',
             tags: [],
-            relatedStories: [],
-            galleries: []
-        }
-        this.show = this.show.bind(this);
-        this.hide = this.hide.bind(this);
-        this.clear = this.clear.bind(this);
-        this.revert = this.revert.bind(this);
-        this.save = this.save.bind(this);
-        this.updateCaption = this.updateCaption.bind(this);
-        this.updateTags = this.updateTags.bind(this);
-        this.updateRelatedStories = this.updateRelatedStories.bind(this);
-    }
-
-    /**
-     * Show this component. Most be called to initialize the fields in the panel
-     */
-    show() {
-        this.clear();
-        $('.toggle-bedit').toggleClass('toggled');
-
-        let galleryIds = new Set(this.props.posts.map(post => { return post.parent }));
-        $.get('/api/gallery/resolve', {galleries: [...galleryIds]}, (data) => {
-            if (!data.data) {
-                this.hide();
-                $.snackbar({
-                    content: utils.resolveError(data.err, 'We were unable to edit these posts')
-                });
-                return;
-            }
-
-            this.setState({
-                galleries: data.data
-            });
-
-            this.revert();
-        });
-    }
-
-    hide() {
-        $('.toggle-bedit').toggleClass('toggled');
-    }
-
-    clear() {
-        this.setState({
-            caption: '',
-            tags: [],
-            relatedStories: []
-        })
+            stories: [],
+            galleries: [],
+        };
     }
 
     /**
@@ -115,14 +71,26 @@ export default class BulkEdit extends React.Component {
         }
     }
 
+    hide() {
+        $('.toggle-bedit').toggleClass('toggled');
+    }
+
+    clear() {
+        this.setState({
+            caption: '',
+            tags: [],
+            stories: [],
+        });
+    }
+
     /**
      * Revert the component to it's initial state (pre-edits)
      */
     revert() {
-        let stateToSet = {};
+        const stateToSet = {};
 
-        let caption = this.state.galleries[0].caption;
-        let allSame = this.state.galleries.every(gallery => {
+        const caption = this.state.galleries[0].caption;
+        const allSame = this.state.galleries.every(gallery => {
             return gallery.caption == caption;
         });
 
@@ -131,7 +99,7 @@ export default class BulkEdit extends React.Component {
         }
 
         stateToSet.tags = this.getInitialTags();
-        stateToSet.relatedStories = this.getInitialStories();
+        stateToSet.stories = this.getInitialStories();
 
         this.setState(stateToSet);
     }
@@ -141,10 +109,9 @@ export default class BulkEdit extends React.Component {
      */
     save() {
         // Only send what's changed
-
         let params = {
             galleries: this.state.galleries.map(g => { return g.id; })
-        }
+        };
 
         if (this.state.caption.length > 0) {
             params.caption = this.state.caption;
@@ -161,7 +128,7 @@ export default class BulkEdit extends React.Component {
         }
 
         // Stories
-        let stories = processStories(this.state.relatedStories)
+        let stories = processStories(this.state.stories)
         if (stories.length > 0) {
             params.stories = stories;
         }
@@ -207,87 +174,105 @@ export default class BulkEdit extends React.Component {
                     return 'NEW=' + JSON.stringify(story);
                 else
                     return story.id;
-                });
-            }
+            });
+        }
     }
 
-    updateCaption(e) {
-        let caption = e.target.value;
+    renderBody() {
+        const posts = this.props.posts.map((post, i) => (
+            <div key={i}>
+                <EditPost post={post} />
+            </div>
+        ));
 
-        this.setState({
-            caption: caption
-        });
+        return (
+            <div className="dialog-body">
+                <div className="dialog-col col-xs-12 col-md-7 form-group-default">
+                    <div className="dialog-row">
+                        <textarea
+                            ref="caption"
+                            type="text"
+                            className="form-control floating-label"
+                            placeholder="Caption"
+                            value={this.state.caption}
+                            onChange={(e) => this.setState({ caption: e.target.value })}
+                        />
+                    </div>
+
+                    <EditTags
+                        ref="tags"
+                        tags={this.state.tags}
+                        updateTags={(t) => this.setState({ tags: t })}
+                    />
+
+                    <EditStories
+                        relatedStories={this.state.stories}
+                        updateRelatedStories={(s) => this.setState({ stories: s })}
+                    />
+                </div>
+
+                <Slick
+                    className="gialog-col col-xs-12 col-md-5"
+                    dots
+                >
+                    {posts}
+                </Slick>
+            </div>
+        );
     }
 
-    updateTags(tags) {
-        this.setState({
-            tags: tags
-        });
-    }
-
-    updateRelatedStories(relatedStories) {
-        this.setState({
-            relatedStories: relatedStories
-        });
+    renderFooter() {
+        return (
+            <div className="dialog-foot">
+                <button
+                    onClick={() => this.revert()}
+                    type="button"
+                    className="btn btn-flat"
+                >
+                    Revert
+                </button>
+                <button
+                    onClick={() => this.clear()}
+                    type="button"
+                    className="btn btn-flat"
+                >
+                    Clear All
+                </button>
+                <button
+                    onClick={() => this.save()}
+                    type="button"
+                    className="btn btn-flat pull-right"
+                >
+                    Save
+                </button>
+                <button
+                    onClick={() => this.hide()}
+                    type="button"
+                    className="btn btn-flat pull-right toggle-bedit"
+                >
+                    Discard
+                </button>
+            </div>
+        );
     }
 
     render() {
-        let posts = this.props.posts.map((post, i) => {
-            return (
-                <div key={i++}>
-                    <EditPost post={post} />
-                </div>
-            )
-        });
-
         return (
             <div>
                 <div className="dim toggle-bedit" />
 
                 <div className="edit panel panel-default toggle-bedit bedit">
                     <div className="col-xs-12 col-lg-12 edit-new dialog">
-
                         <div className="dialog-head">
                             <span className="md-type-title">Bulk Edit</span>
-                            <span className="mdi mdi-close pull-right icon toggle-edit toggler" onClick={this.hide}></span>
+                            <span
+                                className="mdi mdi-close pull-right icon toggle-edit toggler"
+                                onClick={() => this.hide()}
+                            />
                         </div>
 
-                        <div className="dialog-foot">
-                            <button onClick={this.revert} type="button" className="btn btn-flat">Revert</button>
-                            <button onClick={this.clear} type="button" className="btn btn-flat">Clear All</button>
-                            <button onClick={this.save} type="button" className="btn btn-flat pull-right">Save</button>
-                            <button onClick={this.hide} type="button" className="btn btn-flat pull-right toggle-bedit">Discard</button>
-                        </div>
-
-                        <div className="dialog-body">
-                            <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                                <div className="dialog-row">
-                                    <textarea
-                                        ref="caption"
-                                        type="text"
-                                        className="form-control floating-label"
-                                        placeholder="Caption"
-                                        value={this.state.caption}
-                                        onChange={this.updateCaption} />
-                                </div>
-
-                                <EditTags
-                                    ref="tags"
-                                    tags={this.state.tags}
-                                    updateTags={this.updateTags} />
-
-                                <EditStories
-                                    relatedStories={this.state.relatedStories}
-                                    updateRelatedStories={this.updateRelatedStories}/>
-                            </div>
-
-                            <Slick
-                                dots={true}
-                                className="gialog-col col-xs-12 col-md-5">
-                                {posts}
-                            </Slick>
-                        </div>
-
+                        {this.renderBody()}
+                        {this.renderHead()}
                     </div>
                 </div>
             </div>
@@ -295,6 +280,13 @@ export default class BulkEdit extends React.Component {
     }
 }
 
+BulkEdit.propTypes = {
+    posts: PropTypes.array,
+};
+
 BulkEdit.defaultProps = {
-    posts: []
-}
+    posts: [],
+};
+
+export default BulkEdit;
+
