@@ -1,0 +1,85 @@
+/* Sass Document */
+/*-----------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+/* Sass Document */
+/*-----------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+/**
+ * Border Radius
+ * @param  {[type]} $radius Radius to set to 
+ */
+/**
+ * Shadow
+ * @param  {[type]} $radius Radius to set to 
+ */
+/**
+ * CSS3 Transition
+ */
+/**
+ * Placeholder color mixin
+ */
+/**
+ * CSS3 Transform
+ */
+.stats {
+  padding-top: 64px;
+  overflow: auto; }
+  .stats .map-wrap, .stats .info-wrap, .stats .buttons {
+    float: left;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    background: #FFF;
+    padding: 10px 20px 15px;
+    height: auto;
+    margin: 20px; }
+  .stats .map-wrap {
+    padding: 10px 20px 15px;
+    max-width: 560px; }
+    .stats .map-wrap h3 {
+      font-size: 14px;
+      font-weight: 400;
+      margin: 5px 0 12px;
+      line-height: 24px; }
+    .stats .map-wrap .kml {
+      float: none !important;
+      margin: 0 0 10px !important;
+      display: block; }
+    .stats .map-wrap input {
+      background-color: transparent;
+      color: #000;
+      0: #000001;
+      0: #000001;
+      border: none;
+      margin: 0 auto 10px;
+      border-bottom: 1px solid #DDD; }
+    .stats .map-wrap input[type="file"] {
+      display: none; }
+    .stats .map-wrap .map {
+      height: 370px;
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      -ms-border-radius: 2px;
+      border-radius: 2px;
+      -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
+      -moz-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
+      box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12); }
+  .stats .info-wrap table {
+    border-spacing: 5px; }
+    .stats .info-wrap table tr {
+      margin: 5px 0px;
+      border-bottom: 1px solid #DDD; }
+    .stats .info-wrap table td {
+      border-right: 1px solid #DDD;
+      margin-right: 15px;
+      padding: 5px; }

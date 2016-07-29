@@ -54,20 +54,20 @@ class GalleryList extends React.Component {
     // Returns array of galleries with offset and callback
     loadGalleries(last, callback) {
         const { highlighted, onlyVerified, sort } = this.props;
-        let endpoint;
         const params = {
             limit: 20,
             last,
-            sort,
-            rating: [1, 2, 3],
+            sort
         };
+
+        let endpoint = 'gallery/list';
 
         if (highlighted) {
             endpoint = 'gallery/highlights';
+        } else if(onlyVerified) {
+            params.rating = [2];
         } else {
-            endpoint = 'gallery/list';
-
-            if (onlyVerified) params.rating = [2, 3];
+            params.rating = [0, 2];
         }
 
         $.ajax({
@@ -83,14 +83,12 @@ class GalleryList extends React.Component {
             error: (xhr, status, error) => {
                 $.snackbar({content: utils.resolveError(error)});
             }
-
         });
-
     }
 
 	//Scroll listener for main window
     scroll(e) {
-        var grid = e.target;
+        const grid = e.target;
 
         if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
             this.setState({ loading : true });

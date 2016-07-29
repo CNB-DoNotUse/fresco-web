@@ -7,9 +7,7 @@ export default class PurchasesStats extends React.Component {
 		super(props);
 
 		this.state = {
-			day: 0,
-			week: 0,
-			month: 0
+			stats: this.props.stats
 		}
 
 		this.loadStats = this.loadStats.bind(this);
@@ -21,7 +19,7 @@ export default class PurchasesStats extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		//Tell the component to update it's purchases
+		//Tell the component to update its purchases
 		if(this.props.updatePurchases) {
 			this.loadStats();
 		}
@@ -33,46 +31,20 @@ export default class PurchasesStats extends React.Component {
 	loadStats() {
 		//Access parent var load method
 		this.props.loadStats((stats) => {
-			this.setState(stats);
+			if(Object.keys(stats).length === 0){
+				this.setState({ stats: this.props.stats })
+			} else {
+				this.setState({
+					stats: stats
+				});
+			}
 		});  
 	}
 
 	render() {
-		var buttons = [],
-			key = 0;
+		const { downloadExports, emailStatement } = this.props;
 
-		if(this.props.downloadExports){
-			buttons.push(
-				<button 
-					id="export-xlsx"
-					type="button" 
-					className="btn"
-					key={++key}
-					onClick={this.props.downloadExports.bind(null, 'xlsx')}>Export to .xlsx</button>
-			);
-		};
-
-		if(this.props.downloadExports){
-			buttons.push(
-				<button 
-					id="export-csv" 
-					type="button" 
-					className="btn" 
-					key={++key}
-					onClick={this.props.downloadExports.bind(null, 'csv')}>Export to .csv</button>
-			);
-		}
-
-		if(this.props.emailStatement){
-			buttons.push(
-				<button 
-					id="email-statement-button" 
-					type="button" 
-					className="btn" 
-					key={++key}
-					onClick={this.props.emailStatement}>Email my statement</button>
-			)
-		}
+		const { last_day, last_7days, last_30days } = this.state.stats;
 
 		return (
 			<div className="col-md-4">
@@ -80,21 +52,39 @@ export default class PurchasesStats extends React.Component {
 				
 				<ul className="md-type-subhead">
 					<li>
-						<span>${this.state.day}</span>
+						<span>${last_day / 100}</span>
 						<span className="md-type-caption"> last 24 hours</span>
 					</li>
 					<li>
-						<span>${this.state.week}</span>
+						<span>${last_7days / 100}</span>
 						<span className="md-type-caption"> last 7 days</span>
 					</li>
 					<li>
-						<span>${this.state.month}</span>
+						<span>${last_30days / 100}</span>
 						<span className="md-type-caption"> last 30 days</span>
 					</li>
 				</ul>
 
-				{buttons}
+				<button 
+					id="export-csv" 
+					type="button" 
+					className="btn" 
+					onClick={downloadExports.bind(null, 'csv')}>Export to .csv</button>
+
+				<button 
+					id="email-statement-button" 
+					type="button" 
+					className="btn" 
+					onClick={emailStatement}>Email my statement</button>
 			</div>
 		);
+	}
+}
+
+PurchasesStats.defaultProps = {
+	stats: {	
+		last_day: 0,
+		last_7days: 0,
+		last_30days: 0
 	}
 }

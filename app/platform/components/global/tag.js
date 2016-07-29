@@ -1,11 +1,8 @@
 import React from 'react'
 
 /**
- * Single Tag Element
- * @param {string} text Text of the tag
- * @param {bool} plus if component should show `+` or `-` on hover
+ * Single Tag element
  */
-
 export default class Tag extends React.Component {
 
 	constructor(props) {
@@ -13,26 +10,22 @@ export default class Tag extends React.Component {
 	}
 
 	render() {
-
-		var editClass = 'mdi-minus'
-
-		if(this.props.plus) editClass = 'mdi-plus';
-
+		const { plus } = this.props;
+		
 		return(
-
 			<li className="chip" onClick={this.props.onClick}>
 				<div className="chip">
 					<div className="icon">
-						<span className={'mdi ' + editClass + ' icon md-type-subhead'}></span>
+						<span 
+							className={`mdi ${plus ? 'mdi-plus' : 'mdi-minus'} icon md-type-subhead`}>
+						</span>
 					</div>
+
 					<span className="chip md-type-body1 tag">{this.props.text}</span>
 				</div>
 			</li>
-
 		);
-
 	}
-
 }
 
 Tag.defaultProps = {

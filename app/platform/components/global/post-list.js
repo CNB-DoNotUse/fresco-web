@@ -49,7 +49,7 @@ class PostList extends React.Component {
         }
 
         // Checks if the verified prop is changed `or` Checks if the sort prop is changed
-        if (nextProps.onlyVerified !== this.props.onlyVerified || nextProps.sort !== this.props.sort) {
+        if (nextProps.onlyVerified !== this.props.onlyVerified || nextProps.sortBy !== this.props.sortBy) {
             postsUpdated = true;
 
             if (nextProps.scrollable) {
@@ -96,8 +96,7 @@ class PostList extends React.Component {
      * Scroll listener for main window
      */
     scroll(e) {
-
-        var grid = e.target;
+        const grid = e.target;
 
         // Check that nothing is loading and that we're at the end of the scroll,
         // and that we have a parent bind to load  more posts
@@ -106,21 +105,13 @@ class PostList extends React.Component {
             // Set that we're loading
             this.setState({ loading: true });
 
-            // This is here for the new post-list structure, so we check to send an id or an offset integer
-
-            const lastPost = this.state.posts[this.state.posts.length - 1];
-
             // Run load on parent call
-            this.props.loadPosts(lastPost.id, (posts) => {
-
+            this.props.loadPosts(_.last(this.state.posts).id, (posts) => {
                 // Disables scroll, and returns if posts are empty
                 if (!posts || posts.length == 0) {
-
-                    this.setState({
+                    return this.setState({
                         scrollable: false,
                     });
-
-                    return;
                 }
 
                 // Set galleries from successful response, and unset loading

@@ -125,7 +125,6 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 /**
  * Styles for location dropdown
  */
-
 .location-dropdown{
 	.mdi-settings, .mdi-playlist-plus{
 		display:none;
@@ -174,7 +173,6 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 /**
  * Styles for location search dropdown
  */
-
 .location-search-dropdown{
 	&.active{
 		width:320px;
@@ -188,7 +186,6 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 /**
  * Styles for tag dropdown
  */
-
 .tags-dropdown{
 	&.active{
 		width:280px;
@@ -196,7 +193,8 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 		.dropdown-body{
 			width: 280px;
 		    padding:0px 24px 8px;
-		    max-height:500px;
+		    max-height:350%;
+		    max-height:60vh;
 		    overflow:auto;
 		}
 	}

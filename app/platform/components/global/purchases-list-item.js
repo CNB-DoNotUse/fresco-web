@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
 import utils from 'utils'
 
@@ -13,51 +13,17 @@ export default class PurchasesListItem extends React.Component {
 	 * Opens passed link
 	 */
 	openLink(link) {
-
-		console.log(link);
-
 		window.open(link, '_blank');
-
 	}
 	
 	render() {
+		const { purchase, showTitle } = this.props;
+		const {assignment, post, outlet, amount} = purchase;
 
-		var purchase = this.props.purchase,
-			post = purchase.post,
-			video = post ? post.video != null : purchase.video != null,
-			timeString = moment(purchase.timestamp).format('MMM Do, h:mma'),
-			price = '$' + (video ? '75' : '30') + '.00',
-			assignment = '',
-			user = '',
-			outlet = '';
-
-
-		if(purchase.assignment) {
-			assignment = 
-				<div onClick={this.openLink.bind(this, '/assignment/' + purchase.assignment.id)}>
-					<p className="md-type-body2" style={{lineHeight: '16px'}}>
-						{purchase.assignment.title}
-					</p>
-					
-					<p className="md-type-body1" style={{lineHeight: '24px'}}>
-						{purchase.assignment.location.address || purchase.assignment.location.googlemaps}
-					</p>
-				</div>
-		}
-
-		if(post.owner){
-			user = <div 
-						className="flexy" 
-						onClick={this.openLink.bind(this, '/user/' + post.owner.id)}>
-						<p className="md-type-body2">{post.owner.firstname + ' ' + post.owner.lastname}</p>
-					</div>
-		}
-
-		if(this.props.showTitle) {
-			outlet = <div>
-						<p className="md-type-body2 toggle-aradd  toggler">{this.props.showTitle ? this.props.title : ''}</p>
-					</div>
-		}
+		const video = post.stream != null;
+		const timeString = moment(purchase.created_at).format('MMM Do, h:mma');
+		const title = outlet.title;
+		const price = `$${(amount/100).toFixed(2)}`; //amount to 2 decimal points
 
 		return (
 			<div 
@@ -83,17 +49,43 @@ export default class PurchasesListItem extends React.Component {
 				<div className={post.owner ? '' : 'flexy'}>
 					<p className="md-type-body1">{price}</p>
 				</div>
-				{user}
+				{post.owner ? 
+					<div 
+						className="flexy" 
+						onClick={this.openLink.bind(this, '/user/' + post.owner.id)}>
+						<p className="md-type-body2">{post.owner.full_name || post.owner.username}</p>
+					</div>
+					: ''
+				}
 				
-				{assignment}
+				{purchase.assignment ? 
+					<div onClick={this.openLink.bind(this, '/assignment/' + assignment.id)}>
+						<p className="md-type-body2" style={{lineHeight: '16px'}}>
+							{assignment.title}
+						</p>
+						
+						<p className="md-type-body1" style={{lineHeight: '24px'}}>
+							{purchase.assignment.location.address || purchase.assignment.location.googlemaps}
+						</p>
+					</div>
+					: ''
+				}
 				
-				{outlet}
+				{showTitle ?
+					<div>
+						<p className="md-type-body2 toggle-aradd  toggler">{showTitle ? title : ''}</p>
+					</div>
+					: ''
+				}
 			</div>
 		);
 	}
 }
 
+PurchasesListItem.propTypes = {
+    purchase: PropTypes.object.isRequired
+};
+
 PurchasesListItem.defaultProps = {
-	showTitle: true,
-	title: ''
+	showTitle: true
 }

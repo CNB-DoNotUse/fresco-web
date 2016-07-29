@@ -19,16 +19,18 @@ class StoryDetail extends React.Component {
             loading: false,
             editToggled: false,
             story: props.story,
-            sort: props.sort,
+            sortBy: props.sortBy,
         };
+
+        this.loadPosts = this.loadPosts.bind(this);
     }
 
     toggleStoryEdit() {
         this.setState({ editToggled: !this.state.editToggled});
     }
 
-    updateSort(sort) {
-        this.setState({ sort });
+    updateSort(sortBy) {
+        this.setState({ sortBy });
     }
 
     save(id, params) {
@@ -85,18 +87,20 @@ class StoryDetail extends React.Component {
      * @param {string} lastId Last post in the list
      * @param {function} callback callback delivering posts
      */
-    loadPosts(lastId, callback) {
-        const { story, sort } = this.state;
+    loadPosts(last, callback) {
+        console.log(this.state);
+
+        const { story, sortBy } = this.state;
         const params = {
-            lastId,
+            last,
+            sortBy,
             limit: 10,
-            sort,
         };
 
         $.ajax({
-            url: `/api/story/${story.id}`,
+            url: `/api/story/${story.id}/posts`,
             type: 'GET',
-            data: JSON.stringify(params),
+            data: params,
             dataType: 'json',
         })
         .done((res) => {
@@ -109,7 +113,7 @@ class StoryDetail extends React.Component {
 
     render() {
         const { user } = this.props;
-        const { story, sort, editToggled, loading } = this.state;
+        const { story, sortBy, editToggled, loading } = this.state;
 
         return (
             <App user={user}>
@@ -122,16 +126,17 @@ class StoryDetail extends React.Component {
                     chronToggle
                 />
 
-                <Sidebar story={story} />
+                <Sidebar 
+                    story={story} />
 
                 <div className="col-sm-8 tall">
                     <PostList
                         rank={user.rank}
-                        loadPosts={(id, cb) => this.loadPosts(id, cb)}
+                        loadPosts={this.loadPosts}
                         editable={false}
-                        sort={sort}
+                        sortBy={sortBy}
                         size="large"
-                        scrollable
+                        scrollable={true}
                     />
                 </div>
 
@@ -154,11 +159,11 @@ class StoryDetail extends React.Component {
 StoryDetail.propTypes = {
     story: PropTypes.object,
     user: PropTypes.object,
-    sort: PropTypes.string,
+    sortBy: PropTypes.string,
 };
 
 StoryDetail.defaultProps = {
-    sort: 'created_at',
+    sortBy: 'created_at',
 };
 
 ReactDOM.render(

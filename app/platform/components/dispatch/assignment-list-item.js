@@ -11,8 +11,6 @@ class AssignmentListItem extends React.Component {
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ') + moment(expirationTime).fromNow();
         const imageUrl = '/images/placeholder-assignment.png';
 
-        console.log(global);
-
         const listItem = (
             <div
                 id={assignment.id}

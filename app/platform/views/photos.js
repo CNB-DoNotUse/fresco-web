@@ -21,7 +21,7 @@ class Photos extends React.Component {
 
         this.state = {
             showVerified: true,
-            sort: this.props.sort || 'created_at',
+            sortBy: this.props.sortBy || 'created_at',
         };
 
         this.loadPosts 			= this.loadPosts.bind(this);
@@ -33,8 +33,8 @@ class Photos extends React.Component {
         this.setState({ showVerified: toggled });
     }
 
-    updateSort(sort) {
-        this.setState({ sort });
+    updateSort(sortBy) {
+        this.setState({ sortBy });
     }
 
 	// Returns array of posts with last and callback, used in child PostList
@@ -43,7 +43,7 @@ class Photos extends React.Component {
             last,
             limit: utils.postCount,
             type: 'photo',
-            sortBy: this.state.sort
+            sortBy: this.state.sortBy
         };
 
         if (this.state.showVerified) {
@@ -75,7 +75,7 @@ class Photos extends React.Component {
                 <PostList
                     rank={this.props.user.rank}
                     size="small"
-                    sort={this.state.sort}
+                    sortBy={this.state.sortBy}
                     onlyVerified={this.state.showVerified}
                     loadPosts={this.loadPosts}
                     scrollable

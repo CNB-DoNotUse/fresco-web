@@ -2,6 +2,7 @@ import _ from 'lodash'
 import utils from 'utils'
 import React, { PropTypes, Component } from 'react'
 import ReactDOM from 'react-dom'
+import update from'react-addons-update';
 import App from './app'
 import TopBar from './../components/topbar'
 import LocationDropdown from '../components/topbar/location-dropdown'
@@ -314,17 +315,16 @@ export class Search extends Component {
 
 	addTag(tag) {
 		//Check if tag exists
-		if(this.state.tags.indexOf(tag) != -1) 
-			return;
+		if(this.state.tags.indexOf(tag) != -1) return;
 
 		this.setState({
-			tags: this.state.tags.concat(tag)
+			tags: update(this.state.tags, {$push: [tag]}), //Add the user back to the autocomplete list
 		});
 	}
 
-	removeTag(tag) {
+	removeTag(tag, index) {
 		this.setState({ 
-			tags: _.pull(this.state.tags, tag)
+			tags: update(this.state.tags, {$splice: [[index, 1]]}), //Keep the filtered list updated
 		});
 	}
 

@@ -22,7 +22,7 @@ class Archive extends React.Component {
 
         this.state = {
             verifiedToggle: true,
-            sort: this.props.sort || 'created_at',
+            sortBy: this.props.sortBy || 'created_at',
         };
 
         this.loadPosts = this.loadPosts.bind(this);
@@ -39,7 +39,7 @@ class Archive extends React.Component {
         const params = {
             last,
             limit: utils.postCount,
-            sortBy: this.state.sort,
+            sortBy: this.state.sortBy,
         };
 
         if (this.state.verifiedToggle) {
@@ -62,8 +62,8 @@ class Archive extends React.Component {
         });
     }
 
-    updateSort(sort) {
-        this.setState({ sort });
+    updateSort(sortBy) {
+        this.setState({ sortBy });
     }
 
     render() {
@@ -82,7 +82,7 @@ class Archive extends React.Component {
                 <PostList
                     loadPosts={this.loadPosts}
                     rank={this.props.user.rank}
-                    sort={this.state.sort}
+                    sortBy={this.state.sortBy}
                     size="small"
                     onlyVerified={this.state.verifiedToggle}
                     scrollable
