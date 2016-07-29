@@ -32,6 +32,10 @@ class GMap extends React.Component {
         if (prevProps.radius !== this.props.radius) {
             if (this.map && this.circle) this.map.fitBounds(this.circle.getBounds());
         }
+
+        if (this.map && this.props.rerender) {
+            google.maps.event.trigger(this.map.props.map, 'resize');
+        }
     }
 
     onDragMarker(e) {
@@ -64,7 +68,7 @@ class GMap extends React.Component {
     }
 
     renderMarker() {
-        const { draggable, location } = this.props;
+        const { draggable } = this.props;
         const { center } = this.state;
         const markerImage = {
             url: utils.assignmentImage[this.props.type],
@@ -87,7 +91,7 @@ class GMap extends React.Component {
     }
 
     renderCircle() {
-        const { location, radius, type } = this.props;
+        const { radius, type } = this.props;
         const { center } = this.state;
         const circleOptions = {
             radius: utils.feetToMeters(radius) || 0,
@@ -145,6 +149,7 @@ GMap.propTypes = {
     draggable: PropTypes.bool,
     type: PropTypes.string,
     zoom: PropTypes.number,
+    rerender: PropTypes.bool,
 };
 
 GMap.defaultProps = {
@@ -155,6 +160,7 @@ GMap.defaultProps = {
     draggable: false,
     type: 'active',
     zoom: 12,
+    rerender: false,
 };
 
 export default GMap;
