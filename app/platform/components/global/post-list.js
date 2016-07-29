@@ -12,7 +12,6 @@ import _ from 'lodash';
 * (/videos, /photos, /gallery/id, /assignment/id , etc.)
 */
 class PostList extends React.Component {
-
     constructor(props) {
         super(props);
 
@@ -142,7 +141,8 @@ class PostList extends React.Component {
 
     /**
      * Toggles posts in stateful selected posts
-     * @param  {object} passedPost The post to toggle selected or unselected in the post-list and bulk edit
+     * @param  {object} passedPost The post to
+     * toggle selected or unselected in the post-list and bulk edit
      */
     togglePost(passedPost) {
         const { selectedPosts } = this.state;
@@ -151,7 +151,7 @@ class PostList extends React.Component {
         if (this.props.rank < utils.RANKS.CONTENT_MANAGER) return;
 
         // Make sure we haven't reached the limit
-        if (this.state.selectedPosts.length >= utils.limits.galleryItems) {
+        if (selectedPosts.length >= utils.limits.galleryItems) {
             $.snackbar({ content: 'Galleries can only contain up to 10 items!' });
             return;
         }
@@ -182,6 +182,8 @@ class PostList extends React.Component {
             selectedPosts,
         } = this.state;
 
+        if (!posts.length) return '';
+
         return posts.map((p, i) => (
             <PostCell
                 size={size}
@@ -199,7 +201,7 @@ class PostList extends React.Component {
     }
 
     render() {
-        const { className, scroll, posts } = this.props;
+        const { className, scroll } = this.props;
         const {
             selectedPosts,
             scrollable,
@@ -228,7 +230,7 @@ class PostList extends React.Component {
 
                     {galleryBulkEditToggled
                         ? <GalleryBulkEdit
-                            posts={posts}
+                            posts={selectedPosts}
                             onHide={() => this.onToggleGalleryBulkEdit()}
                         />
                         : ''
@@ -236,8 +238,8 @@ class PostList extends React.Component {
 
                     {galleryCreateToggled
                         ? <GalleryCreate
-                            posts={posts}
-                            setSelectedPosts={(p) => setSelectedPosts(p)}
+                            posts={selectedPosts}
+                            setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
                             onHide={() => this.onToggleGalleryCreate()}
                         />
                         : ''

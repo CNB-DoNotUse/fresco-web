@@ -21,6 +21,10 @@ class BulkEdit extends React.Component {
         };
     }
 
+    componentDidMount() {
+        $.material.init();
+    }
+
     /**
      * Get the tags that are common between every gallery
      * @return {Array[string]} The common tags between each gallery

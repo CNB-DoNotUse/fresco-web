@@ -12,7 +12,6 @@ import utils from 'utils';
  */
 
 class Create extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -21,6 +20,10 @@ class Create extends React.Component {
             articles: [],
             visibility: 0,
         };
+    }
+
+    componentDidMount() {
+        $.material.init();
     }
 
     /**
@@ -47,7 +50,7 @@ class Create extends React.Component {
     create() {
         const caption = this.refs.caption.value;
         const { visibility, tags, relatedStories, articles } = this.state;
-        const { posts, onHide , setSelectedPosts } = this.props;
+        const { posts, onHide, setSelectedPosts } = this.props;
 
         // Generate post ids for update
         const postIds = posts.map((p) => p.id);
