@@ -174,7 +174,8 @@ class Dispatch extends React.Component {
                 );
             },
             error: (xhr, status, error) => {
-                $.snackbar({content: utils.resolveError(error)});
+                console.log("Can't fetch users!");
+                // $.snackbar({content: utils.resolveError(error)});
             }
         });
     }

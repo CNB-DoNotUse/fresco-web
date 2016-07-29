@@ -1,15 +1,9 @@
 import React from 'react';
 
-/** //
-
-Description : The callout that shows up on the map after selecting 
-
-// **/
-
 /**
  * Dispatch Map Callout componenent
+ * @description The callout that shows up on the map after selecting 
  */
-
 export default class DispatchMapCallout extends React.Component {
 
 	constructor(props) {
@@ -18,7 +12,7 @@ export default class DispatchMapCallout extends React.Component {
 
 	render() {
 		const { assignment } = this.props;
-		const { photos, videos } = assignment.stats;
+		const { photo_count, video_count } = assignment;
 
 		return (
 			<div className="callout">
@@ -34,11 +28,11 @@ export default class DispatchMapCallout extends React.Component {
 					<div className="assignment-callout-buttons">
 						<span className="mdi mdi-image icon assignment-callout-icon"></span>
 						
-						<span className="assignment-callout-image-counter">{photos}</span>
+						<span className="assignment-callout-image-counter">{photo_count}</span>
 
 						<span className="mdi mdi-movie icon assignment-callout-icon"></span>
 						
-						<span className="assignment-callout-image-counter">{videos}</span>
+						<span className="assignment-callout-image-counter">{video_count}</span>
 						
 						<button 
 							type="button" 

@@ -5,9 +5,9 @@ import PostCellStories from './post-cell-stories';
 import utils from 'utils';
 
 /**
-    * Single Post Cell, child of PostList
-*/
-class PostCell extends React.Component {
+ * Single Post Cell, child of PostList
+ */
+export default class PostCell extends React.Component {
 
     constructor(props) {
         super(props);
@@ -70,7 +70,8 @@ class PostCell extends React.Component {
 
                         <span className="md-type-caption">{post.byline}</span>
 
-                        <PostCellStories stories={post.stories} />
+                        <PostCellStories 
+                            stories={post.stories} />
                     </div>
 
                     <FrescoImage
@@ -124,6 +125,3 @@ PostCell.propTypes = {
     editable: PropTypes.bool,
     toggled: PropTypes.bool,
 };
-
-export default PostCell;
-

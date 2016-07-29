@@ -7,6 +7,7 @@ import moment from 'moment';
  * Description : Column on the left of the posts grid on the assignment detail page
  */
 class Sidebar extends React.Component {
+    
     /**
      * AssignmentStats stats inside the sidebar
      */
@@ -16,7 +17,7 @@ class Sidebar extends React.Component {
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ')
             + moment(expirationTime).fromNow();
         const createdText = 'Created at ' + moment(assignment.created_at).format('LT');
-        const stats = assignment.stats || { photos: 0, videos: 0 };
+        const {photo_count, video_count } = assignment;
 
         return (
             <div className="meta-list">
@@ -45,19 +46,13 @@ class Sidebar extends React.Component {
                     <li>
                         <span className="mdi mdi-image icon"></span>
                         <span>
-                            {stats.photos
-                                ? stats.photos + ' photo' + (utils.isPlural(stats.photos) ? 's' : '')
-                                : 'No photos'
-                            }
+                            {photo_count + ' photo' + (utils.isPlural(photo_count) ? 's' : '')}
                         </span>
                     </li>
                     <li>
                         <span className="mdi mdi-movie icon"></span>
                         <span>
-                            {stats.videos
-                                ? stats.videos + ' video' + (utils.isPlural(stats.video) ? 's' : '')
-                                : 'No videos'
-                            }
+                            {video_count + ' photo' + (utils.isPlural(video_count) ? 's' : '')}
                         </span>
                     </li>
                 </ul>
@@ -92,7 +87,6 @@ class Sidebar extends React.Component {
                         </div>
 
                         {this.renderStats()}
-
                     </div>
                 </div>
             </div>

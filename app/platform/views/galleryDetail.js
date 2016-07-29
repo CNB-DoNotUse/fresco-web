@@ -16,13 +16,13 @@ class GalleryDetail extends React.Component {
         super(props);
 
         // Check if every post in gallery is not verified and show all content
-        const unverifiedPosts = props.gallery.posts.every(post => post.approvals === 0);
+        const shouldShowVerifiedToggle = props.gallery.posts.every(post => post.rating < 1);
 
         this.state = {
             editToggled: false,
             gallery: props.gallery,
-            shouldShowVerifiedToggle: unverifiedPosts,
-            verifiedToggle: unverifiedPosts,
+            shouldShowVerifiedToggle,
+            verifiedToggle: shouldShowVerifiedToggle,
             title: props.title,
             loading: false,
         };
@@ -174,4 +174,3 @@ ReactDOM.render(
     />,
     document.getElementById('app')
 );
-

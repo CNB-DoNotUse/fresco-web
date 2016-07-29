@@ -39,7 +39,7 @@ export default class StoryCell extends React.Component {
 						<a href={'/story/'+ story.id} className="md-type-body2">See all</a>
 						
 						<span className="right-info">
-								{story.galleries + ' ' + (story.galleries == 1 ? 'gallery' : 'galleries')}
+								{story.gallery_count + ' ' + (story.gallery_count == 1 ? 'gallery' : 'galleries')}
 						</span>
 					</div>
 					

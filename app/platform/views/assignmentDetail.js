@@ -13,19 +13,57 @@ import utils from 'utils';
 class AssignmentDetail extends React.Component {
     constructor(props) {
         super(props);
-        const { assignment } = this.props;
 
         this.state = {
-            assignment,
+            assignment: this.props.assignment,
             editToggled: false,
             verifiedToggle: true,
-            loading: false,
+            sortBy: 'created_at',
+            loading: false
         };
+
+        this.loadPosts = this.loadPosts.bind(this);
     }
 
     onVerifiedToggled(verifiedToggle) {
         this.setState({ verifiedToggle });
     }
+
+    updateSort(sortBy) {
+        this.setState({ sortBy });
+    }
+
+    /**
+     * Returns array of posts with offset and callback, used in child PostList
+     * @param {string} lastId Last post in the list
+     * @param {function} callback callback delivering posts
+     */
+    loadPosts(last, callback) {
+        const { assignment, sortBy, verifiedToggle } = this.state;
+        const params = {
+            limit: 10,
+            sortBy,
+            last
+        };
+
+        if (verifiedToggle) {
+            params.rating = [1];
+        }
+
+        $.ajax({
+            url: `/api/assignment/${assignment.id}/posts`,
+            type: 'GET',
+            data: params,
+            dataType: 'json',
+        })
+        .done((res) => {
+            callback(res);
+        })
+        .fail((xhr, status, error) => {
+            $.snackbar({ content: utils.resolveError(error) });
+        });
+    }
+
 
     /**
      * Sets the assignment to expire
@@ -93,14 +131,21 @@ class AssignmentDetail extends React.Component {
 
     render() {
         const { user } = this.props;
-        const { assignment, editToggled, verifiedToggle, loading } = this.state;
-
+        const { 
+            assignment, 
+            editToggled, 
+            verifiedToggle, 
+            loading, 
+            sortBy 
+        } = this.state;
+        
         return (
             <App user={user}>
                 <TopBar
                     title={assignment.title}
                     rank={user.rank}
                     onVerifiedToggled={(t) => this.onVerifiedToggled(t)}
+                    updateSort={(s) => this.updateSort(s)}
                     verifiedToggle={user.rank >= utils.RANKS.CONTENT_MANAGER}
                     edit={() => this.toggleEdit()}
                     editable
@@ -116,10 +161,11 @@ class AssignmentDetail extends React.Component {
                 <div className="col-sm-8 tall">
                     <PostList
                         rank={user.rank}
-                        posts={assignment.posts}
+                        loadPosts={this.loadPosts}
+                        sortBy={sortBy}
                         onlyVerified={verifiedToggle}
                         assignment={assignment}
-                        scrollable={false}
+                        scrollable={true}
                         editable={false}
                         size="large"
                     />
