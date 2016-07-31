@@ -210,6 +210,9 @@ class Purchases extends React.Component {
 		});	
 	}
 
+	/**
+	 * Sends browser to script to generate CSV
+	 */
 	downloadExports() {
 		const oultets = this.state.outlets.map((outlet) => {
 			return 'outlet_ids[]='+ outlet.id
@@ -218,8 +221,6 @@ class Purchases extends React.Component {
 		const users = this.state.users.map((user) => {
 			return 'user_ids[]='+ user.id
 		}).join('&');
-
-		console.log(users);
 
 		const url = `/scripts/outlet/purchase/report?${oultets}${users}`;
 

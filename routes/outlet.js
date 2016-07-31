@@ -1,100 +1,47 @@
 const express = require('express');
 const config = require('../lib/config');
+const resolveError = require('../lib/resolveError');
 const router = express.Router();
-const api = require('../lib/api');
-
-/** //
-
-    Description : Outlet Specific Routes ~ prefix /outlet/endpoint
-
-// **/
+const API = require('../lib/api');
 
 /**
-    * Outlet page for currently logged in user
-*/
-
-router.get('/', (req, res, next) => {
-    let user;
-    let token;
-    if (req.session) {
-        token = req.session.token;
-        user = req.session.user;
-    }
-
-    if (!user.outlet) return res.redirect(config.DASH_HOME);
-
-    return api.request({
-        url: '/outlet/',
-        token,
-    }).then(response => {
-        if (!user.outlet.verified) {
-            req.alerts.push(user.id === user.outlet.owner
-                            ? 'This outlet is in demo mode. We’ll be in touch shortly to verify your account.'
-                            : 'This outlet is in demo mode. Purchases and downloads are currently disabled.');
-        }
-
-        const props = {
-            user,
-            outlet: response.body,
-        };
-
-        return res.render('app', {
-            title: 'Outlet',
-            alerts: req.alerts,
-            props: JSON.stringify(props),
-            page: 'outlet',
-        });
-    }).catch(() => (
-        next({
-            message: 'Outlet not found!',
-            status: 404,
-        })
-    ));
-});
-
-/**
-    *  Outlet settings page for current logged in user
-*/
-
+ *  Outlet settings page for current logged in user
+ */
 router.get('/settings', (req, res, next) => {
-    let user;
-    let token;
-    let outlet;
-    let payment;
-
-    if (req.session) {
-        token = req.session.token;
-        user = req.session.user;
-    }
+    const { user, token } = req.session
 
     if (!user.outlet) {
-        const err = new Error('No outlet found!');
-        err.status = 500;
-        return next(err);
+        return next({
+            message: 'No outlet found!',
+            status: 500
+        });
     }
 
-    return api.request({
-        url: '/outlet/',
-        token,
-    })
-    .then(response => {
-        outlet = response.body;
-        return api.request({
-            url: '/outlet/payment',
+    //Chain promises for two API calls
+    Promise.all([
+        API.request({
+            url: '/outlet',
             token,
-        });
-    })
-    .then(response => {
-        payment = response.body;
+        })
+        // API.request({
+        //     url: '/outlet/payment',
+        //     token,
+        // })
+    ])
+    .then(responses => { 
+        console.log(responses);
+
+        const outlet = responses[0];
+        // const payment = responses = [1];
+
         const title = 'Outlet Settings';
         const props = {
             title,
             user,
             outlet,
-            payment,
+            // payment,
             stripePublishableKey: config.STRIPE_PUBLISHABLE,
         };
-
 
         return res.render('app', {
             title,
@@ -104,12 +51,49 @@ router.get('/settings', (req, res, next) => {
             props: JSON.stringify(props),
         });
     })
-    .catch(() => (
+    .catch((error) => {
+        console.log(error);
+
         next({
             message: 'Outlet not found!',
-            status: 404,
+            status: error.status || 500,
         })
-    ));
+    });
 });
+
+/**
+ * Outlet page for currently logged in user or for passed outlet
+ * @description
+ */
+router.get('/:id?', (req, res, next) => {
+    const id = req.params.id || '';
+
+    //Make request for full outlet object
+    API.request({
+        method: 'GET',
+        url: `/outlet/${id}`,
+        token: req.session.token
+    })
+    .then((response) => {
+        const outlet = response.body;
+        const { user } = req.session;
+        const title = outlet.title;
+        const props = JSON.stringify({ user, title, outlet });
+
+        return res.render('app', {
+            title,
+            props,
+            alerts: req.alerts,
+            page: 'outlet',
+        });
+    })
+    .catch((error) => {
+        return next({
+            message: 'It seems like we couldn\'t locate your outlet!',
+            status: error.status || 500
+        });
+    });
+});
+
 
 module.exports = router;

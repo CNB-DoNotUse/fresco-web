@@ -1,9 +1,9 @@
-var express = require('express'),
-    config = require('../lib/config'),
-    utils = require('../lib/utils'),
-    Purchases = require('../lib/purchases'),
-    router = express.Router(),
-    API = require('../lib/api');
+const express = require('express');
+const config = require('../lib/config');
+const utils = require('../lib/utils');
+const Purchases = require('../lib/purchases');
+const router = express.Router();
+const API = require('../lib/api');
 
 /** //
 
@@ -15,7 +15,7 @@ Description : User Specific Routes ~ prefix /user/endpoint
  * User settings page
  */
 router.get('/settings', (req, res, next) => {
-    var props = {
+    const props = {
         user: req.session.user,
         title: 'User Settings'
     }

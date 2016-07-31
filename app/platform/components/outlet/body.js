@@ -17,22 +17,16 @@ export default class Body extends React.Component {
 
 		this.loadPosts = this.loadPosts.bind(this);
 		this.loadPurchases = this.loadPurchases.bind(this);
+		this.downloadExports = this.downloadExports.bind(this);
 		this.loadStats = this.loadStats.bind(this);
 		this.emailStatement = this.emailStatement.bind(this);
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.activeTab != this.props.activeTab) {
-			$('.tab').removeClass('toggled');
-			$('.tab-' + this.props.activeTab.toLowerCase()).addClass('toggled');
-		}
 	}
 
 	/**
 	 * Loads posts using purchases data enpoint
 	 */
-	loadPosts(passedOffset, cb) {
-		this.loadPurchases(passedOffset, (purchases) => {
+	loadPosts(last, cb) {
+		this.loadPurchases(last, (purchases) => {
 			var posts = purchases.map((purchase) => {
 				return purchase.post;
 			});
@@ -42,58 +36,63 @@ export default class Body extends React.Component {
 	}
 
 	/**
-	 * Loads stats for outlet
+	 * Loads stats for purchases
 	 */
 	loadStats(callback) {
-		$.get('/api/outlet/purchases/stats', {
-			outlets: [ this.props.outlet.id ]
-		}, (response) => {
-			if(response.err || !response.data) {
-				return $.snackbar({
-					content: 'There was an error receiving the purchases'
-				});
-			}
+		const params = {
+			outlet_ids: [this.props.outlet.id]
+		}
 
-			callback(response.data);
-		});
+		$.ajax({
+			url: '/api/purchase/stats',
+			type: 'GET',
+			data: $.param(params),
+			success: (response, status, xhr) => {
+				if(response.err || !response) {
+					return $.snackbar({
+						content: 'There was an error receiving purchases!'
+					});
+				} else {
+					callback(response);
+				}
+			}
+		});	
 	}
 
 	/**
 	 * Requests purchases from server
+	 * @return {[type]} [description]
 	 */
-	loadPurchases(passedOffset, cb) {
-		$.get('/api/outlet/purchases', {
+	loadPurchases(last = null, cb) {
+		const params = {
+			outlet_ids: [this.props.outlet.id],
 			limit: 20,
-			offset: passedOffset,
-			sort: true,
-			details: true,
-			id: this.props.outlet.id
-		}, (response) => {
+			last
+		}
 
-			if(response.err) {
-				if(response.err != 'ERR_UNAUTHORIZED'){
+		$.ajax({
+			url: '/api/purchase/list',
+			type: 'GET',
+			data: $.param(params),
+			success: (response, status, xhr) => {
+				if(response.err || !response) {
 					return $.snackbar({
-						content: 'There was an error receiving your purchases'
+						content: 'There was an error receiving purchases!'
 					});
+				} else {
+					cb(response);
 				}
-				return cb([]);
 			}
-			else if(!response.data){
-				return cb([]);
-			}
+		});	
+	}
 
-			var purchases = response.data.map((purchaseParent) => {
-				if(!purchaseParent.purchase) return purchaseParent;
+	downloadExports() {
+		const oultets = `outlet_ids[]=${this.props.outlet.id}`;
 
-				var purchase = purchaseParent.purchase;
-					purchase.title = purchaseParent.title;
-
-				return purchase;
-			});
-
-			cb(purchases);
-
-		});
+		window.open(
+			`/scripts/outlet/purchase/report?${oultets}`,
+			'_blank'
+		);
 	}
 
 	emailStatement() {
@@ -115,11 +114,11 @@ export default class Body extends React.Component {
 	}
 
 	render() {
-        const { outlet, user } = this.props;
+        const { outlet, user, activeTab } = this.props;
 
 		return (
 			<div className="container-fluid tabs">
-				<div className="tab tab-vault toggled">
+				<div className={`tab ${activeTab == 'Vault' ? 'toggled' : ''}`}>
 					<div className="container-fluid fat">
 						<div className="profile visible-xs"></div>
 
@@ -137,10 +136,10 @@ export default class Body extends React.Component {
 						</div>
 					</div>
 				</div>
-				<div className="tab tab-purchases">
+				<div className={`tab ${activeTab == 'Purchases' ? 'toggled' : ''}`}>
 					<PurchasesBody
-						purchases={this.state.purchases}
 						emailStatement={this.emailStatement}
+						downloadExports={this.downloadExports}
 						loadPurchases={this.loadPurchases}
 						loadStats={this.loadStats} />
 				</div>

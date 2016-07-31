@@ -10,7 +10,6 @@ var express   = require('express'),
  */
 
 router.get('/', (req, res, next) => {
-
     const title = 'Highlights';
     const props = {
         user : req.session.user,

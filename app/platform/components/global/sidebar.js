@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { Component } from 'react'
 import utils from 'utils'
 
 /**
  * Side bar object found across the site; inside of the top level App class
  */
-
-export default class Sidebar extends React.Component {
+export default class Sidebar extends Component {
 
 	constructor(props) {
 		super(props);
@@ -90,6 +89,7 @@ class SideBarListItems extends React.Component {
 		if(!this.props.user) return;
 
 		const {user} = this.props;
+		
 		let dispatch = null;
 		let outlet = null;
 		let admin = null;
@@ -110,7 +110,7 @@ class SideBarListItems extends React.Component {
 				<SidebarItem
 					link='/outlet'
 					icon='mdi-account-multiple'
-					text='Outlet'
+					text={user.outlet.title}
 				/>;
 		}
 		if(user.rank >= utils.RANKS.CONTENT_MANAGER) {

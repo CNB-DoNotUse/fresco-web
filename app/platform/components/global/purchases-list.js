@@ -9,11 +9,16 @@ export default class PurchasesList extends Component {
 		this.state = {
 			loading: false,
 			offset: 0,
-			purchases: this.props.purchases
+			purchases: []
 		}
 
 		this.loadPurchases = this.loadPurchases.bind(this);
 		this.scroll = this.scroll.bind(this);
+	}
+
+	componentDidMount() {
+	    //Load purchases when component first mounts
+	    this.loadPurchases();
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -29,23 +34,14 @@ export default class PurchasesList extends Component {
 	loadPurchases() {
 		//Access parent var load method
 		this.props.loadPurchases(null, (purchases) => {
+			console.log('LOADED');
 			//Set posts & callback from successful response
 			this.setState({ purchases });
 		});  
 	}
 
-	componentDidMount() {
-	    //Check if list is initialzied with posts or the `loadPurchases` prop is not defined, then don't load anything
-	    if(this.state.purchases.length > 0 || !this.props.loadPurchases) 
-	    	return;
-	    
-	    //Load purchases when component first mounts
-	    this.loadPurchases();
-	}
-
 	// Handle purchases div scroll
 	scroll(e) {
-
 		if(this.state.loading) return;
 
 		const grid = e.target;

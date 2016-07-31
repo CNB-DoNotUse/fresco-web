@@ -56,8 +56,11 @@ class PurchaseAction extends React.Component {
 
     render() {
         return (
-            <span className="mdi mdi-cash icon pull-right" onClick={() => this.purchase()} />
-        );
+            <span 
+                className="mdi mdi-cash icon pull-right" 
+                onClick={() => this.purchase()} 
+            />
+        )
     }
 }
 

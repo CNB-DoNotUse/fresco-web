@@ -30,5 +30,6 @@ export default class PurchasesBody extends React.Component {
 
 PurchasesBody.defaultProps = {
 	purchases: [],
+	downloadExports: () => {},
 	updatePurchases: false
 }

@@ -5,9 +5,15 @@ import TopBar from '../components/topbar';
 import Body from '../components/outlet/body';
 import BodyDemo from '../components/outlet/body-demo';
 
+/**
+ * Outlet Detail page
+ * @description Can be viewed by outlet members, and also by Fresco CMs and Admins
+ * This page is loaded via `/outlet` or by the outlet's id `/outlet/:id`
+ */
 class Outlet extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             activeTab: 'Vault',
             purchases: [],
@@ -16,8 +22,8 @@ class Outlet extends React.Component {
         this.setActiveTab = this.setActiveTab.bind(this);
     }
 
-    setActiveTab(tab) {
-        this.setState({ activeTab: tab });
+    setActiveTab(activeTab) {
+        this.setState({ activeTab });
     }
 
     edit() {
@@ -26,21 +32,12 @@ class Outlet extends React.Component {
 
     render() {
         const { user, outlet } = this.props;
+        const editable = user.outlet.id === outlet.id; //Editable if it's the session user's outlet
         let topbarTabs = [];
-        let outletBody = null;
 
-        // Only show purchases if outlet has been verified
+        // Only show tabs if outlet has been verified
         if (outlet.verified) {
             topbarTabs = ['Vault', 'Purchases'];
-            outletBody = (
-                <Body
-                    activeTab={this.state.activeTab}
-                    outlet={outlet}
-                    user={user}
-                />
-            );
-        } else {
-            outletBody = <BodyDemo outlet={outlet} />;
         }
 
         return (
@@ -53,9 +50,18 @@ class Outlet extends React.Component {
                     activeTab={this.state.activeTab}
                     setActiveTab={this.setActiveTab}
                     tabs={topbarTabs}
-                    editable
+                    editable={editable}
                 />
-                {outletBody}
+
+                {outlet.verified ? 
+                    <Body
+                        activeTab={this.state.activeTab}
+                        outlet={outlet}
+                        user={user}
+                    />
+                    :
+                    <BodyDemo outlet={outlet} />
+                }
             </App>
         );
     }

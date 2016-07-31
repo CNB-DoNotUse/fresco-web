@@ -18,7 +18,6 @@ router.post('/user/reset', (req, res, next) => {
 
 });
 
-
 router.post('/login', (req, res) => {
     API.request({
         method: 'POST',

@@ -1,5 +1,5 @@
-import React from 'react'
-import utils from 'utils'
+import React from 'react';
+import utils from 'utils';
 
 /**
  * Global download action
@@ -13,13 +13,9 @@ export default class PostEditAction extends React.Component {
 	}
 
 	render() {
-
 		return (
-
 			<span className="mdi mdi-pencil icon pull-right" onClick={this.edit}></span>
-
-		);
-		
+		)
 	} 
 	
 

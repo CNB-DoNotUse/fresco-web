@@ -73,7 +73,7 @@ app.use(
 //Set up public direc.
 app.use(
     express.static(path.join(__dirname, 'public'), {
-      maxAge: 1000 * 60 * 60 * 2
+        maxAge: 1000 * 60 * 60 * 2
     }) // 2 hour cache
 );
 

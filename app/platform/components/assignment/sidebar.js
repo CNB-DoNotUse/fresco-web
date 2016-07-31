@@ -3,7 +3,7 @@ import utils from 'utils';
 import moment from 'moment';
 
 /**
- * sidebar Component
+ * Sidebar Component
  * Description : Column on the left of the posts grid on the assignment detail page
  */
 class Sidebar extends React.Component {

@@ -4,14 +4,11 @@ import Dropdown from './../global/dropdown';
 import RadioGroup from './../global/radio-group';
 import FrescoAutocomplete from './../global/fresco-autocomplete.js';
 
-/** //
-
-Description : Top Bar for pages of the site
-The component takes optional toggles/pieces as props, and each prop is checked in the render.
-If the prop exists, then the repsective toggle/dropdown/edit/whatever is added to the navigation bar
-
-// **/
-
+/**
+ * Top Bar for pages of the site
+ * @description The component takes optional toggles/pieces as props, and each prop is checked in the render.
+ * If the prop exists, then the repsective toggle/dropdown/edit/whatever is added to the navigation bar
+ */
 class TopBar extends React.Component {
 
     constructor(props) {
@@ -32,7 +29,6 @@ class TopBar extends React.Component {
         // Update the position to the parent component
         this.props.updateMapPlace(autocompleteData.prediction);
     }
-
 
 	/**
 	 * Toggles the sidebar from hidden to showing
@@ -56,7 +52,6 @@ class TopBar extends React.Component {
     goLink() {
         window.location = this.props.link;
     }
-
 
     // Called when the user selects a time format
     timeToggleSelected(selected) {
@@ -125,7 +120,7 @@ class TopBar extends React.Component {
 		}
 
 		if (locationInput) {
-			var text = '';
+			let text = '';
 
 			if (mapPlace) {
 				text = mapPlace.description || mapPlace.formatted_address;
@@ -191,7 +186,6 @@ class TopBar extends React.Component {
             );
         }
 
-
         if (verifiedToggle && rank > utils.RANKS.BASIC) {
             topbarItems.push(
                 <Dropdown
@@ -227,7 +221,11 @@ class TopBar extends React.Component {
 
         return (
             <nav className="navbar navbar-fixed-top navbar-default">
-                <div className="dim toggle-drop toggler" id="_toggler" onClick={this.toggleDrawer} />
+                <div 
+                    className="dim toggle-drop toggler" 
+                    id="_toggler" 
+                    onClick={this.toggleDrawer} 
+                />
 
                 <button type="button" className="icon-button toggle-drawer toggler hidden-lg" onClick={this.toggleDrawer}>
                     <span className="mdi mdi-menu icon" />
@@ -235,7 +233,9 @@ class TopBar extends React.Component {
 
                 <div className="spacer"></div>
 
-                {titleCmp}
+                {title ? 
+                    <h1 className="md-type-title">{title}</h1>
+                    : ''}
                 {locationInputCmp}
                 {tabCmps}
                 {topbarItems}
@@ -257,4 +257,3 @@ TopBar.defaultProps = {
 };
 
 export default TopBar;
-
