@@ -85,19 +85,20 @@ let output = {
 module.exports = {
     entry: views(),
     watch: !argv.nowatch,
-    output: output,
+    output,
     module: {
         loaders: [
-            //Babel
+            // Babel
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/,
                 query: {
-                    presets: ['es2015', 'react']
-                }
+                    presets: ['es2015', 'react'],
+                    plugins: ['transform-object-rest-spread', 'transform-es2015-destructuring'],
+                },
             },
-            //Extract sass files
+            // Extract sass files
             {
                 test: /\.scss$/,
                 loader: ExtractTextPlugin.extract("style-loader", "!css!resolve-url!sass?sourceMap")
