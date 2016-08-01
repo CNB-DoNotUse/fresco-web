@@ -43,7 +43,7 @@ let plugins = function(env) {
         }),
         new ExtractTextPlugin('css/[name].css'),
         new AssetsPlugin({
-            path: path.join(__dirname, 'public', 'build'),
+            path: './public/build',
             filename: 'assets.json',
             prettyPrint: true
         })
