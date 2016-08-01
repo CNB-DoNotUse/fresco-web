@@ -3,7 +3,6 @@ import utils from 'utils';
 import EditOutlets from './edit-outlets';
 import AutocompleteMap from '../global/autocomplete-map';
 import moment from 'moment';
-import differenceBy from 'lodash/differenceBy';
 
 class AssignmentEdit extends React.Component {
     constructor(props) {
@@ -51,7 +50,12 @@ class AssignmentEdit extends React.Component {
     onSave() {
         const { assignment, save, loading } = this.props;
         const { title, caption, radius, location, address, endsAt, outlets } = this.state;
-        const { outlets_add, outlets_remove } = this.getOutletParams();
+        const { outlets_add, outlets_remove } = utils.getRemoveAddParams(
+            'outlets',
+            assignment.outlets.map(o => o.id),
+            outlets.map(o => o.id)
+        );
+
         const params = {
             address,
             caption,
@@ -110,16 +114,6 @@ class AssignmentEdit extends React.Component {
             title: assignment.title,
             outlets: assignment.outlets,
         };
-    }
-
-    // TODO: break out in utils fn
-    getOutletParams() {
-        const { outlets } = this.state;
-        const { assignment } = this.props;
-        const outlets_remove = differenceBy(assignment.outlets, outlets, 'id').map(o => o.id);
-        const outlets_add = differenceBy(outlets, assignment.outlets, 'id').map(o => o.id);
-
-        return { outlets_add, outlets_remove };
     }
 
     revert() {
