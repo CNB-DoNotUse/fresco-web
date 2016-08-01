@@ -36,19 +36,41 @@ class EditStories extends React.Component {
         }
     }
 
+    onKeyUpQuery(e) {
+        const query = e.target.value;
+        // Enter is pressed, and query is present
+        if (e.keyCode === 13 && query.length > 0) {
+            let matched = -1;
+
+            // Checking if what the user entered is in the suggestions
+            for (var i = 0; i < this.state.suggestions.length; i++) {
+                if (this.state.suggestions[i].title.toLowerCase() === query.toLowerCase()){
+                    // Convert to lowercase for better check
+                    matched = i;
+                    break;
+                }
+            }
+
+            if (matched >= 0) {  //If there is a match, add the existing
+                this.addStory(this.state.suggestions[matched]);
+            } else { //Not a match, add a brand new story
+                this.addStory({ title: query, new: true });
+            }
+        }
+    }
+
     /**
      * Adds story element, return if story exists in prop stories.
      */
     addStory(newStory) {
         if (utils.isEmptyString(newStory.title)) return;
-        this.setState({ query: '' });
         let { stories } = this.props;
 
         // Check if story already exists
-        if (stories.some((s) => (s.id === newStory.id))) return;
+        if (!newStory.new && stories.some((s) => (s.id === newStory.id))) return;
         stories = stories.concat(newStory);
 
-        this.props.updateStories(stories);
+        this.setState({ query: '' }, this.props.updateStories(stories));
     }
 
     /**
@@ -90,6 +112,7 @@ class EditStories extends React.Component {
                         className="form-control floating-label"
                         placeholder="Stories"
                         onChange={(e) => this.onChangeQuery(e)}
+                        onKeyUp={(e) => this.onKeyUpQuery(e)}
                         value={query}
                     />
 

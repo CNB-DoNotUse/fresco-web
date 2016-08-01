@@ -52,8 +52,8 @@ class AssignmentEdit extends React.Component {
         const { title, caption, radius, location, address, endsAt, outlets } = this.state;
         const { outlets_add, outlets_remove } = utils.getRemoveAddParams(
             'outlets',
-            assignment.outlets.map(o => o.id),
-            outlets.map(o => o.id)
+            assignment.outlets,
+            outlets
         );
 
         const params = {

@@ -101,10 +101,10 @@ class Edit extends React.Component {
             return null;
         }
 
-        const { stories_add, stories_remove } = utils.getRemoveAddParams(
+        const { stories_add, stories_remove, stories_new } = utils.getRemoveAddParams(
             'stories',
-            gallery.stories.map(s => s.id),
-            stories.map(s => s.id)
+            gallery.stories,
+            stories
         );
 
         const params = {
@@ -113,6 +113,7 @@ class Edit extends React.Component {
             address,
             stories_add,
             stories_remove,
+            stories_new,
             assignment_id: assignment ? assignment.id : null,
         };
 
