@@ -102,6 +102,21 @@ class AssignmentEdit extends React.Component {
         }
     }
 
+    onApproveAssignment() {
+        const { assignment, approveAssignment } = this.props;
+        const params = {
+            title: this.refs['assignment-title'].value,
+            caption: this.refs['assignment-description'].value,
+            address: this.state.address || undefined,
+            radius: this.isGlobalLocation() ? undefined : this.state.radius,
+            location: this.isGlobalLocation() ? null : utils.getGeoFromCoord(this.state.location),
+            // Convert to ms and current timestamp
+            ends_at: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
+        };
+
+        approveAssignment(assignment.id, params);
+    }
+
     /**
      * getStateFromProps
      *
@@ -118,7 +133,6 @@ class AssignmentEdit extends React.Component {
             location: assignment.location,
             showMergeDialog: false,
             mergeIntoAssignment: null,
-            loading: false,
         };
     }
 
@@ -138,75 +152,13 @@ class AssignmentEdit extends React.Component {
         $(this.refs['assignment-expiration']).removeClass('empty');
     }
 
-    /**
-     * approveAssignment
-     * gets form data then calls posts request to approve and update assignment
-     *
-     */
-    approveAssignment() {
-        const id = this.props.assignment.id;
-        const data = {
-            title: this.refs['assignment-title'].value,
-            caption: this.refs['assignment-description'].value,
-            address: this.state.address || undefined,
-            radius: this.isGlobalLocation() ? undefined : this.state.radius,
-            location: this.isGlobalLocation() ? null : utils.getGeoFromCoord(this.state.location),
-            // Convert to ms and current timestamp
-            ends_at: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
-        };
-
-        if (!id) return;
-        this.setState({ loading: true });
-
-        $.ajax({
-            method: 'POST',
-            url: `/api/assignment/${id}/approve`,
-            contentType: 'application/json',
-            dataType: 'json',
-            data: JSON.stringify(data),
-        })
-        .done(() => {
-            this.props.onUpdateAssignment(id);
-            this.setState({ loading: false });
-            $.snackbar({ content: 'Assignment Approved!' });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Could not approve assignment!' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-    rejectAssignment(id) {
-        if (!id) return;
-        this.setState({ loading: true });
-
-        $.ajax({
-            type: 'POST',
-            url: `/api/assignment/${id}/reject`,
-        })
-        .done(() => {
-            $.snackbar({ content: 'Assignment Rejected!' });
-            this.props.onUpdateAssignment(id);
-            this.setState({ loading: false });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Could not reject assignment!' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
     render() {
-        const { assignment } = this.props;
+        const { assignment, loading, rejectAssignment } = this.props;
         const {
             radius,
             address,
             location,
             showMergeDialog,
-            loading,
         } = this.state;
         const expirationTime = assignment ? utils.hoursToExpiration(assignment.ends_at) : null;
         const globalLocation = this.isGlobalLocation();
@@ -271,7 +223,7 @@ class AssignmentEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat assignment-approve pull-right"
-                        onClick={() => this.approveAssignment()}
+                        onClick={() => this.onApproveAssignment()}
                         disabled={loading}
                     >
                         Approve
@@ -279,7 +231,7 @@ class AssignmentEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat assignment-deny pull-right"
-                        onClick={() => this.rejectAssignment(assignment.id)}
+                        onClick={() => rejectAssignment(assignment.id)}
                         disabled={loading}
                     >
                         Reject
@@ -313,6 +265,9 @@ class AssignmentEdit extends React.Component {
 AssignmentEdit.propTypes = {
     assignment: PropTypes.object.isRequired,
     onUpdateAssignment: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    rejectAssignment: PropTypes.func.isRequired,
+    approveAssignment: PropTypes.func.isRequired,
 };
 
 export default AssignmentEdit;

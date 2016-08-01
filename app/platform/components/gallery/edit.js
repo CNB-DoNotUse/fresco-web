@@ -8,7 +8,7 @@ import BylineEdit from './byline-edit.js';
 import AutocompleteMap from '../global/autocomplete-map';
 import utils from 'utils';
 import difference from 'lodash/difference';
-import without from 'lodash/remove';
+import without from 'lodash/without';
 
 /**
  * Gallery Edit Parent Object
