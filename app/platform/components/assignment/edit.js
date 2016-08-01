@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 import EditOutlets from './edit-outlets';
 import AutocompleteMap from '../global/autocomplete-map';
+import Merge from './merge';
+import MergeDropup from './merge-dropup';
 import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
 
@@ -94,6 +96,29 @@ class AssignmentEdit extends React.Component {
         save(assignment.id, params);
     }
 
+    onCloseMerge() {
+        this.setState({ showMergeDialog: false, mergeIntoAssignment: null });
+    }
+
+    /**
+     * Called when assignment-merge-menu-item is clicked
+     * @param  {[type]} id ID of assignment to be merged into
+     */
+    onSelectMerge(assignment) {
+        this.setState({ mergeIntoAssignment: assignment, showMergeDialog: true });
+    }
+
+    /**
+     * onMergeAssignment - closes merge dialog, calls onUpdateAssignment
+     *
+     * @param {Number} id Id of inactive assignment being merged into active assignment
+     */
+    onMergeAssignment() {
+        this.onCloseMerge();
+        $.snackbar({ content: 'Assignment merged!' });
+        window.location.href = `/assignment/${this.state.mergeIntoAssignment.id}`;
+    }
+
     getStateFromProps(props) {
         const { assignment } = props;
         const radius = assignment.radius || 0;
@@ -108,6 +133,7 @@ class AssignmentEdit extends React.Component {
             radius,
             title: assignment.title,
             outlets: assignment.outlets,
+            showMergeDialog: false,
         };
     }
 
@@ -271,7 +297,8 @@ class AssignmentEdit extends React.Component {
     }
 
     renderFooter() {
-        const { loading } = this.props;
+        const { loading, assignment } = this.props;
+        const { nearbyAssignments, location } = this.state;
 
         return (
             <div className="dialog-foot">
@@ -311,6 +338,15 @@ class AssignmentEdit extends React.Component {
                 >
                     Discard
                 </button>
+                {
+                    !this.isGlobalLocation()
+                        ? <MergeDropup
+                            assignmentId={assignment.id}
+                            location={location}
+                            onSelectMerge={(a) => this.onSelectMerge(a)}
+                        />
+                        : ''
+                }
             </div>
         );
     }
@@ -360,6 +396,9 @@ class AssignmentEdit extends React.Component {
     }
 
     render() {
+        const { showMergeDialog } = this.state;
+        const { assignment } = this.props;
+
         return (
             <div>
                 <div className="dim toggle-edit toggled" />
@@ -372,6 +411,16 @@ class AssignmentEdit extends React.Component {
                         {this.renderFooter()}
                     </div>
                 </div>
+
+                {showMergeDialog
+                    ? <Merge
+                        assignment={assignment}
+                        mergeIntoAssignment={this.state.mergeIntoAssignment}
+                        onClose={() => this.onCloseMerge()}
+                        onMergeAssignment={() => this.onMergeAssignment()}
+                    />
+                    : ''
+                }
             </div>
 		);
     }

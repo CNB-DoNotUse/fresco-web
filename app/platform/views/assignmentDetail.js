@@ -6,6 +6,7 @@ import Sidebar from './../components/assignment/sidebar';
 import Edit from './../components/assignment/edit.js';
 import App from './app';
 import utils from 'utils';
+import 'app/sass/platform/_assignment';
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
@@ -19,7 +20,7 @@ class AssignmentDetail extends React.Component {
             editToggled: false,
             verifiedToggle: true,
             sortBy: 'created_at',
-            loading: false
+            loading: false,
         };
 
         this.loadPosts = this.loadPosts.bind(this);
@@ -43,7 +44,7 @@ class AssignmentDetail extends React.Component {
         const params = {
             limit: 10,
             sortBy,
-            last
+            last,
         };
 
         if (verifiedToggle) {
@@ -131,14 +132,14 @@ class AssignmentDetail extends React.Component {
 
     render() {
         const { user } = this.props;
-        const { 
-            assignment, 
-            editToggled, 
-            verifiedToggle, 
-            loading, 
-            sortBy 
+        const {
+            assignment,
+            editToggled,
+            verifiedToggle,
+            loading,
+            sortBy
         } = this.state;
-        
+
         return (
             <App user={user}>
                 <TopBar

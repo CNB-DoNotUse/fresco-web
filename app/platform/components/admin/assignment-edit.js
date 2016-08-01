@@ -1,10 +1,8 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
-import AssignmentMerge from './assignment-merge';
-import AssignmentMergeDropup from './assignment-merge-drop-up';
+import Merge from '../assignment/merge';
+import MergeDropup from '../assignment/merge-dropup';
 import utils from 'utils';
-import uniqBy from 'lodash/uniqBy';
-import reject from 'lodash/reject';
 import isEmpty from 'lodash/isEmpty';
 
 /**
@@ -22,19 +20,12 @@ class AssignmentEdit extends React.Component {
 
     componentDidMount() {
         $.material.init();
-        this.findNearbyAssignments();
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.assignment.id !== nextProps.assignment.id) {
             this.setState(this.getStateFromProps(nextProps));
             this.resetForm(nextProps.assignment);
-        }
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.location !== prevState.location) {
-            this.findNearbyAssignments();
         }
     }
 
@@ -125,11 +116,9 @@ class AssignmentEdit extends React.Component {
             address: assignment.address,
             radius,
             location: assignment.location,
-            nearbyAssignments: [],
             showMergeDialog: false,
             mergeIntoAssignment: null,
             loading: false,
-            loadingNearby: false,
         };
     }
 
@@ -210,43 +199,11 @@ class AssignmentEdit extends React.Component {
         });
     }
 
-    /**
-     * Finds nearby assignments
-     */
-    findNearbyAssignments() {
-        const { location, loadingNearby } = this.state;
-        const { assignment } = this.props;
-        if (!location || loadingNearby || !location.lat || !location.lng) return;
-        this.setState({ loadingNearby: true });
-        const data = {
-            radius: 1,
-            geo: utils.getGeoFromCoord(location),
-            limit: 5,
-        };
-
-        $.ajax({
-            url: '/api/assignment/find',
-            data,
-            dataType: 'json',
-            contentType: 'application/json',
-        })
-        .done((res) => {
-            if (res.nearby && res.global) {
-                const nearbyAssignments = uniqBy(reject(res.nearby.concat(res.global), { id: assignment.id }), 'id');
-                this.setState({ nearbyAssignments });
-            }
-        })
-        .always(() => {
-            this.setState({ loadingNearby: false });
-        });
-    }
-
     render() {
         const { assignment } = this.props;
         const {
             radius,
             address,
-            nearbyAssignments,
             location,
             showMergeDialog,
             loading,
@@ -329,24 +286,24 @@ class AssignmentEdit extends React.Component {
                     </button>
 
                     {
-                        !globalLocation && nearbyAssignments.length
-                            ? <AssignmentMergeDropup
-                                nearbyAssignments={nearbyAssignments}
+                        !globalLocation
+                            ? <MergeDropup
+                                assignmentId={assignment.id}
+                                location={location}
                                 onSelectMerge={(a) => this.onSelectMerge(a)}
                             />
                             : ''
                     }
                 </div>
 
-                {
-                    showMergeDialog
-                        ? <AssignmentMerge
-                            assignment={assignment}
-                            mergeIntoAssignment={this.state.mergeIntoAssignment}
-                            onClose={() => this.onCloseMerge()}
-                            onMergeAssignment={(id) => this.onMergeAssignment(id)}
-                        />
-                        : ''
+                {showMergeDialog
+                    ? <Merge
+                        assignment={assignment}
+                        mergeIntoAssignment={this.state.mergeIntoAssignment}
+                        onClose={() => this.onCloseMerge()}
+                        onMergeAssignment={(id) => this.onMergeAssignment(id)}
+                    />
+                    : ''
                 }
             </div>
         );
