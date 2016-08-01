@@ -104,31 +104,11 @@ class AssignmentEdit extends React.Component {
      */
     onChangeGlobal() {
         if (this.isGlobalLocation()) {
-            const { assignment } = this.props;
-            this.setState({
-                location: this.getLocationFromAssignment(assignment) || { lat: 40.7, lng: -74 },
-                address: assignment.address || '',
-            });
+            const { assignment: { location, address } } = this.props;
+            this.setState({ location, address });
         } else {
             this.setState({ location: null, address: null });
         }
-    }
-
-    /**
-     * getLocationFromAssignment
-     *
-     * @param {Object} assignment object
-     * @returns {Object} assignment Location object containing lat lng coordinates
-     */
-    getLocationFromAssignment(assignment) {
-        if (assignment && assignment.location) {
-            return {
-                lat: assignment.location.coordinates ? assignment.location.coordinates[1] : null,
-                lng: assignment.location.coordinates ? assignment.location.coordinates[0] : null,
-            };
-        }
-
-        return null;
     }
 
     /**
@@ -144,7 +124,7 @@ class AssignmentEdit extends React.Component {
         return {
             address: assignment.address,
             radius,
-            location: this.getLocationFromAssignment(assignment),
+            location: assignment.location,
             nearbyAssignments: [],
             showMergeDialog: false,
             mergeIntoAssignment: null,
