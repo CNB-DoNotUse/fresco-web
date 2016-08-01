@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
-import EditOutlet from './edit-outlet';
+import EditOutlets from './edit-outlets';
 import AutocompleteMap from '../global/autocomplete-map';
 import moment from 'moment';
+import differenceBy from 'lodash/differenceBy';
 
 class AssignmentEdit extends React.Component {
     constructor(props) {
@@ -49,23 +50,23 @@ class AssignmentEdit extends React.Component {
 	 */
     onSave() {
         const { assignment, save, loading } = this.props;
-        const { title, caption, radius, location, address, outlet, endsAt } = this.state;
+        const { title, caption, radius, location, address, endsAt, outlets } = this.state;
+        const { outlets_add, outlets_remove } = this.getOutletParams();
         const params = {
             address,
             caption,
             radius: utils.feetToMiles(radius),
             location: utils.getGeoFromCoord(location),
-            outlet: outlet ? outlet.id : null,
-            now: Date.now(),
+            outlets_add,
+            outlets_remove,
             title,
             ends_at: endsAt,
         };
 
         if (!assignment || !assignment.id || loading) return;
 
-        // TODO: move to method
-        if (!params.outlet) {
-            $.snackbar({ content: 'An assignment must have an owner!' });
+        if (!outlets || !outlets.length) {
+            $.snackbar({ content: 'An assignment must have at least one outlet!' });
             return;
         }
         if (utils.isEmptyString(params.title)) {
@@ -107,8 +108,18 @@ class AssignmentEdit extends React.Component {
             location: assignment.location,
             radius,
             title: assignment.title,
-            outlet: assignment.outlets[0],
+            outlets: assignment.outlets,
         };
+    }
+
+    // TODO: break out in utils fn
+    getOutletParams() {
+        const { outlets } = this.state;
+        const { assignment } = this.props;
+        const outlets_remove = differenceBy(assignment.outlets, outlets, 'id').map(o => o.id);
+        const outlets_add = differenceBy(outlets, assignment.outlets, 'id').map(o => o.id);
+
+        return { outlets_add, outlets_remove };
     }
 
     revert() {
@@ -149,7 +160,7 @@ class AssignmentEdit extends React.Component {
     }
 
     renderBody() {
-        const { title, caption, outlet, address, location, radius, endsAt } = this.state;
+        const { title, caption, outlets, address, location, radius, endsAt } = this.state;
         const { user } = this.props;
 
         return (
@@ -179,9 +190,9 @@ class AssignmentEdit extends React.Component {
                     </div>
 
                     {(user.rank >= utils.RANKS.CONTENT_MANAGER)
-                        ? <EditOutlet
-                            outlet={outlet}
-                            updateOutlet={(o) => this.setState({ outlet: o })}
+                        ? <EditOutlets
+                            outlets={outlets}
+                            updateOutlets={(o) => this.setState({ outlets: o })}
                         />
                         : ''
                     }
@@ -266,7 +277,7 @@ class AssignmentEdit extends React.Component {
 
     renderStats() {
         const { assignment } = this.props;
-        const { outlet, endsAt, caption, title } = this.state;
+        const { outlets, endsAt, caption, title } = this.state;
         const address = assignment.address || 'No Address';
         const timeCreated = moment(new Date(assignment.created_at)).format('MMM Do YYYY, h:mm:ss a');
         const expiresText = (moment().diff(endsAt) > 1 ? 'Expired ' : 'Expires ') + moment(endsAt).fromNow();
@@ -285,7 +296,7 @@ class AssignmentEdit extends React.Component {
                         <div>
                             <span className="md-type-title">{title}</span>
                             <span id="assignment-edit-owner" className="md-type-body1">
-                                {outlet && outlet.title ? `Posted by ${outlet.title}` : ''}
+                                {outlets[0] && outlets[0].title ? `Posted by ${outlets[0].title}` : ''}
                             </span>
                         </div>
                     </div>
@@ -331,6 +342,8 @@ AssignmentEdit.propTypes = {
     assignment: PropTypes.object,
     onToggle: PropTypes.func,
     updateOutlet: PropTypes.func,
+    save: PropTypes.func,
+    loading: PropTypes.bool,
 };
 
 export default AssignmentEdit;

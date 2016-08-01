@@ -39,16 +39,15 @@ class PostList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         // If we receive new posts in props while having none previously
-        let currentPostIds = this.state.posts.length ? this.state.posts.map(p => p.id) : [];
-        let newPostIds = nextProps.posts.map(p => p.id);
-        let diffIds = _.difference(newPostIds, currentPostIds);
+        const currentPostIds = this.state.posts.length ? this.state.posts.map(p => p.id) : [];
+        const newPostIds = nextProps.posts.map(p => p.id);
+        const diffIds = _.difference(newPostIds, currentPostIds);
         let postsUpdated = false;
 
         // Check diff or if the parent tells the component to update
         if (nextProps.posts.length != this.props.posts.length || diffIds.length || nextProps.updatePosts) {
-            return this.setState({
-                posts: nextProps.posts,
-            });
+            this.setState({ posts: nextProps.posts });
+            return;
         }
 
         // Checks if the verified prop is changed `or` Checks if the sort prop is changed
@@ -62,9 +61,7 @@ class PostList extends React.Component {
                 // Load posts from API
                 this.loadInitialPosts();
             } else {
-                this.setState({
-                    posts: this.sortPosts(),
-                });
+                this.setState({ posts: this.sortPosts() });
             }
         }
 

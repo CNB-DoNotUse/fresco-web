@@ -1,26 +1,29 @@
 import React, { PropTypes } from 'react';
 import Tag from '../global/tag.js';
+import reject from 'lodash/reject';
 
 /**
  * Component for managing added/removed tags
  */
-class EditOutlet extends React.Component {
+class EditOutlets extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { suggestions: [] };
+
+        this.state = {
+            query: '',
+            suggestions: [],
+        };
     }
 
-    change() {
+    onChangeQuery(e) {
         // Current fields input
-        const query = this.refs.autocomplete.value;
+        const query = e.target.value;
+        this.setState({ query });
 
         // Field is empty
         if (query.length === 0) {
             this.setState({ suggestions: [] });
-            this.refs.dropdown.style.display = 'none';
         } else {
-            this.refs.dropdown.style.display = 'block';
-
             $.ajax({
                 url: '/api/search?outlets=true',
                 data: { q: query },
@@ -33,33 +36,40 @@ class EditOutlet extends React.Component {
 
 	/**
 	 * Adds outlet at passed index to current outlet
+     * Clears the input field
+     * Sends outlets to parent cmp
 	 * @param {[type]} index [description]
 	 */
     addOutlet(outlet) {
-        if (this.props.outlet) {
-            $.snackbar({ content: 'Outlets can only have one owner!' });
-            return;
+        let { outlets } = this.props;
+        if (!outlets.some((o) => o.id === outlet.id)) {
+            outlets = outlets.concat(outlet);
         }
 
-        // Clear the input field
-        this.refs.autocomplete.value = '';
-        this.refs.dropdown.style.display = 'none';
+        this.setState({ query: '', outlets });
+        this.props.updateOutlets(outlets);
+    }
 
-        // Send outlet up to parent
-        this.props.updateOutlet(outlet);
+    removeOutlet(outlet) {
+        let { outlets } = this.props;
+        outlets = reject(outlets, { id: outlet.id });
+
+        this.setState({ query: '', outlets });
+        this.props.updateOutlets(outlets);
     }
 
     renderOutlet() {
-        const { outlet, updateOutlet } = this.props;
-        if (!outlet) return '';
+        const { outlets } = this.props;
+        if (!outlets || !outlets.length) return '';
 
-        return (
+        return outlets.map((o, i) => (
             <Tag
-                text={outlet.title}
-                onClick={() => updateOutlet()}
+                key={i}
+                text={o.title}
+                onClick={() => this.removeOutlet(o)}
                 plus={false}
             />
-        );
+        ));
     }
 
     // Map suggestions for dropdown
@@ -73,6 +83,11 @@ class EditOutlet extends React.Component {
     }
 
     render() {
+        const { query } = this.state;
+        const suggestionsStyle = query.length
+            ? { display: 'block' }
+            : { display: 'none' };
+
         return (
             <div className="dialog-row split chips">
                 <div className="split-cell">
@@ -80,11 +95,11 @@ class EditOutlet extends React.Component {
                         type="text"
                         className="form-control floating-label"
                         placeholder="Owner (Outlet)"
-                        onKeyUp={() => this.change()}
-                        ref="autocomplete"
+                        onChange={(e) => this.onChangeQuery(e)}
+                        value={query}
                     />
 
-                    <ul ref="dropdown" className="dropdown">
+                    <ul style={suggestionsStyle} className="dropdown">
                         {this.renderSuggestions()}
                     </ul>
 
@@ -97,14 +112,10 @@ class EditOutlet extends React.Component {
     }
 }
 
-EditOutlet.propTypes = {
-    outlet: PropTypes.object,
-    updateOutlet: PropTypes.func,
+EditOutlets.propTypes = {
+    outlets: PropTypes.array,
+    updateOutlets: PropTypes.func.isRequired,
 };
 
-EditOutlet.defaultProps = {
-    updateOutlet: () => {},
-};
-
-export default EditOutlet;
+export default EditOutlets;
 
