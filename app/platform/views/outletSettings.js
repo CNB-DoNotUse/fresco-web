@@ -18,6 +18,7 @@ import 'app/sass/platform/_outletSettings';
 class OutletSettings extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             outlet: this.props.outlet,
         };
@@ -56,21 +57,26 @@ class OutletSettings extends React.Component {
                                     updateOutlet={this.updateOutlet}
                                     outlet={this.state.outlet}
                                 />
-                                <PaymentInfo payment={payment} outlet={this.state.outlet} />
+                                
+                                <PaymentInfo 
+                                    payment={payment} 
+                                    outlet={this.state.outlet} />
                             </div>
                             : ''
                     }
                     <div className="right">
                         <Notifications outlet={this.state.outlet} />
+                        
                         <Locations outlet={this.state.outlet} />
-                        {
-                            isOwner
-                                ? <Members
-                                    outlet={this.state.outlet}
-                                    updateMembers={this.updateMembers}
-                                    members={this.state.outlet.members}
-                                />
-                                : ''
+                        
+                        {isOwner ? 
+                            <Members
+                                outlet={this.state.outlet}
+                                updateMembers={this.updateMembers}
+                                members={this.state.outlet.members}
+                            />
+                            : 
+                            ''
                         }
                     </div>
 

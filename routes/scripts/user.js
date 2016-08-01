@@ -18,7 +18,7 @@ router.post('/user/reset', (req, res, next) => {
 
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', (req, res, next) => {
     API.request({
         method: 'POST',
         url: '/auth/signin',
@@ -38,7 +38,8 @@ router.post('/login', (req, res) => {
             method: 'GET',
             url: '/user/me',
             token: body.token
-        }).then((response) => {
+        })
+        .then((response) => {
             req.session.user = response.body;
             req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
 
@@ -47,13 +48,9 @@ router.post('/login', (req, res) => {
                 return res.status(response.status).json({ success: true });
             });
         })
+        .catch(error => API.handleError(error, res));
     })
-    .catch((error) => {
-        return res.status(error.status).json({
-            error: resolveError(error.type || ''),
-            success: false
-        });
-    });
+    .catch(error => API.handleError(error, res));
 });
 
 router.get('/logout', (req, res) => {

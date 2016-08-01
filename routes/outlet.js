@@ -8,7 +8,9 @@ const API = require('../lib/api');
  *  Outlet settings page for current logged in user
  */
 router.get('/settings', (req, res, next) => {
-    const { user, token } = req.session
+    const { user, token } = req.session;
+
+    console.log(user.outlet);
 
     if (!user.outlet) {
         return next({
@@ -20,26 +22,26 @@ router.get('/settings', (req, res, next) => {
     //Chain promises for two API calls
     Promise.all([
         API.request({
-            url: '/outlet',
+            url: '/outlet/me',
+            method: 'GET',
             token,
+        }),
+        API.request({
+            url: '/outlet/payment',
+            method: 'GET',
+            token
         })
-        // API.request({
-        //     url: '/outlet/payment',
-        //     token,
-        // })
     ])
     .then(responses => { 
-        console.log(responses);
-
-        const outlet = responses[0];
-        // const payment = responses = [1];
+        const outlet = responses[0].body;
+        const payment = responses[1].body;
 
         const title = 'Outlet Settings';
         const props = {
             title,
             user,
             outlet,
-            // payment,
+            payment,
             stripePublishableKey: config.STRIPE_PUBLISHABLE,
         };
 
@@ -71,7 +73,7 @@ router.get('/:id?', (req, res, next) => {
     //Make request for full outlet object
     API.request({
         method: 'GET',
-        url: `/outlet/${id}`,
+        url: `/outlet/${id || 'me'}`,
         token: req.session.token
     })
     .then((response) => {
