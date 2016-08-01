@@ -21,7 +21,7 @@ class EditStories extends React.Component {
         this.setState({ query });
 
         // Enter is pressed, and query is present
-        if (query.length === 0) {
+        if (!query.length === 0) {
             this.setState({ suggestions: [] });
         } else {
             $.ajax({
@@ -43,8 +43,7 @@ class EditStories extends React.Component {
      * @param {object} e key up event
      */
     onKeyUpQuery(e) {
-        const query = e.target.value;
-        const { suggestions } = this.state;
+        const { suggestions, query } = this.state;
 
         if (e.keyCode === 13 && query.length > 0) {
             const matched = suggestions.find((s) => (
@@ -72,9 +71,9 @@ class EditStories extends React.Component {
     /**
      * Removes story and updates to parent
      */
-    removeStory(id) {
+    removeStory(title) {
         let { stories } = this.props;
-        stories = reject(stories, { id });
+        stories = reject(stories, { title });
 
         this.props.updateStories(stories);
     }
@@ -85,7 +84,7 @@ class EditStories extends React.Component {
             <Tag
                 text={story.title}
                 plus={false}
-                onClick={() => this.removeStory(story.id)}
+                onClick={() => this.removeStory(story.title)}
                 key={i}
             />
         ));
@@ -129,14 +128,14 @@ class EditStories extends React.Component {
     }
 }
 
-EditStories.defaultProps = {
-    updateStories: () => {},
-    stories: [],
+EditStories.propTypes = {
+    stories: PropTypes.array.isRequired,
+    updateStories: PropTypes.func.isRequired,
 };
 
-EditStories.propTypes = {
-    stories: PropTypes.array,
-    updateStories: PropTypes.func,
+EditStories.defaultProps = {
+    updateStories() {},
+    stories: [],
 };
 
 export default EditStories;

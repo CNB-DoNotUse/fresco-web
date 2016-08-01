@@ -84,6 +84,7 @@ class Edit extends React.Component {
             caption,
             address,
             stories,
+            articles,
             assignment,
             postsToDeleteIds,
             postIds,
@@ -101,19 +102,12 @@ class Edit extends React.Component {
             return null;
         }
 
-        const { stories_add, stories_remove, stories_new } = utils.getRemoveAddParams(
-            'stories',
-            gallery.stories,
-            stories
-        );
-
         const params = {
             tags,
             caption,
             address,
-            stories_add,
-            stories_remove,
-            stories_new,
+            ...utils.getRemoveAddParams('stories', gallery.stories, stories),
+            ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             assignment_id: assignment ? assignment.id : null,
         };
 
