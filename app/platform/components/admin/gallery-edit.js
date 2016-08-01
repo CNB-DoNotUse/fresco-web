@@ -35,6 +35,14 @@ class GalleryEdit extends React.Component {
         this.setState({ address: place.address, location: place.location });
     }
 
+    onVerify() {
+        const { gallery, verify } = this.props;
+        const params = this.getFormData();
+        params.rating = 2;
+
+        verify(gallery.id, params);
+    }
+
     getStateFromProps(props) {
         const { gallery } = props;
         const location = gallery.location || gallery.posts ? gallery.posts[0].location : null;
@@ -45,7 +53,6 @@ class GalleryEdit extends React.Component {
             tags: gallery.tags || [],
             stories: gallery.stories,
             assignment: gallery.assignment,
-            loading: false,
             caption: gallery.caption || 'No Caption',
             location,
             address,
@@ -85,101 +92,10 @@ class GalleryEdit extends React.Component {
     }
 
 	/**
-	 * Gets all form data and verifies gallery.
-	 */
-    verify() {
-        this.setState({ loading: true });
-        const id = this.props.gallery.id;
-        const params = this.getFormData();
-        if (!id || !params) return;
-        params.rating = 2;
-
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'POST',
-            data: JSON.stringify(params),
-            dataType: 'json',
-            contentType: 'application/json',
-        })
-        .done(() => {
-            this.props.onUpdateGallery(id);
-            $.snackbar({
-                content: 'Gallery verified! Click to open',
-                timeout: 5000,
-            }).click(() => {
-                const win = window.open(`/gallery/${id}`, '_blank');
-                win.focus();
-            });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Unable to verify gallery' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-	/**
-	 * Removes callery
-     */
-    remove() {
-        if (this.state.loading) return;
-        this.setState({ loading: true });
-        const id = this.props.gallery.id;
-
-        $.ajax({
-            url: `/api/gallery/${id}/delete`,
-            method: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-        })
-        .done(() => {
-            this.props.onUpdateGallery(id);
-            $.snackbar({ content: 'Gallery deleted' });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Unable to delete gallery' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-	/**
-     * Skips gallery
-     */
-    skip() {
-        if (this.state.loading) return;
-        this.setState({ loading: true });
-        const id = this.props.gallery.id;
-
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                rating: 1,
-            }),
-        })
-        .done(() => {
-            this.props.onUpdateGallery(id);
-            $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
-                .click(() => { window.open(`/gallery/${id}`); });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Unable to skip gallery' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-	/**
 	 * Reverts all changes
 	 */
     revert() {
-        if (this.state.loading) return;
+        if (this.props.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
         this.refs['gallery-caption'].value = this.props.gallery.caption || 'No Caption';
@@ -250,7 +166,7 @@ class GalleryEdit extends React.Component {
     }
 
     render() {
-        const { gallery, galleryType } = this.props;
+        const { gallery, galleryType, loading, skip, remove } = this.props;
         const {
             location,
             address,
@@ -314,31 +230,31 @@ class GalleryEdit extends React.Component {
                         type="button"
                         className="btn btn-flat gallery-revert"
                         onClick={() => this.revert()}
-                        disabled={this.state.loading}
+                        disabled={loading}
                     >
                         Revert changes
                     </button>
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-verify"
-                        onClick={() => this.verify()}
-                        disabled={this.state.loading}
+                        onClick={() => this.onVerify()}
+                        disabled={loading}
                     >
                         Verify
                     </button>
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-skip"
-                        onClick={() => this.skip()}
-                        disabled={this.state.loading}
+                        onClick={() => skip(gallery.id)}
+                        disabled={loading}
                     >
                         Skip
                     </button>
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-delete"
-                        onClick={() => this.remove()}
-                        disabled={this.state.loading}
+                        onClick={() => remove(gallery.id)}
+                        disabled={loading}
                     >
                         Delete
                     </button>
@@ -351,7 +267,10 @@ class GalleryEdit extends React.Component {
 GalleryEdit.propTypes = {
     gallery: PropTypes.object.isRequired,
     galleryType: PropTypes.string.isRequired,
-    onUpdateGallery: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    skip: PropTypes.func.isRequired,
+    verify: PropTypes.func.isRequired,
+    remove: PropTypes.func.isRequired,
 };
 
 export default GalleryEdit;
