@@ -36,26 +36,22 @@ class EditStories extends React.Component {
         }
     }
 
+    /**
+     * onKeyUpQuery
+     * on typing enter, checks if query is a suggestion,
+     * adds suggestion if so, new story if not
+     * @param {object} e key up event
+     */
     onKeyUpQuery(e) {
         const query = e.target.value;
-        // Enter is pressed, and query is present
+        const { suggestions } = this.state;
+
         if (e.keyCode === 13 && query.length > 0) {
-            let matched = -1;
+            const matched = suggestions.find((s) => (
+                s.title.toLowerCase() === query.toLowerCase()
+            ));
 
-            // Checking if what the user entered is in the suggestions
-            for (var i = 0; i < this.state.suggestions.length; i++) {
-                if (this.state.suggestions[i].title.toLowerCase() === query.toLowerCase()){
-                    // Convert to lowercase for better check
-                    matched = i;
-                    break;
-                }
-            }
-
-            if (matched >= 0) {  //If there is a match, add the existing
-                this.addStory(this.state.suggestions[matched]);
-            } else { //Not a match, add a brand new story
-                this.addStory({ title: query, new: true });
-            }
+            this.addStory(matched || { title: query, new: true });
         }
     }
 
