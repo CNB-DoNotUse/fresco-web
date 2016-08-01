@@ -33,13 +33,6 @@ class Edit extends React.Component {
         }
     }
 
-	/**
-	 * Updates state map location when AutocompleteMap gives new location
-	 */
-    onPlaceChange(place) {
-        this.setState({ address: place.address, location: place.location });
-    }
-
     onRemove() {
         const { gallery, remove, loading } = this.props;
         if (!gallery || !gallery.id || loading) return;
@@ -65,6 +58,7 @@ class Edit extends React.Component {
     getStateFromProps(props) {
         const { gallery } = props;
         if (!gallery) return {};
+        // const byline = utils.getBylineFromComponent(gallery, this.refs.byline).byline || '';
 
         return {
             tags: gallery.tags || [],
@@ -89,7 +83,6 @@ class Edit extends React.Component {
             tags,
             caption,
             address,
-            location,
             stories,
             assignment,
             postsToDeleteIds,
@@ -108,17 +101,18 @@ class Edit extends React.Component {
             return null;
         }
 
-        // Configure the byline's other origin
-        const byline = utils.getBylineFromComponent(gallery, this.refs.byline).byline || '';
+        const { stories_add, stories_remove } = utils.getRemoveAddParams(
+            'stories',
+            gallery.stories.map(s => s.id),
+            stories.map(s => s.id)
+        );
 
         const params = {
             tags,
             caption,
             address,
-            geo: utils.getGeoFromCoord(location),
-            byline,
-            stories,
-            posts,
+            stories_add,
+            stories_remove,
             assignment_id: assignment ? assignment.id : null,
         };
 
@@ -174,7 +168,7 @@ class Edit extends React.Component {
     }
 
     renderMap() {
-        const { gallery, user } = this.props;
+        const { gallery } = this.props;
         const location = gallery.location
             || gallery.posts ? gallery.posts[0].location : null;
         const address = gallery.address
@@ -186,8 +180,7 @@ class Edit extends React.Component {
                     address={address}
                     location={location}
                     hasRadius={false}
-                    onPlaceChange={(p) => this.onPlaceChange(p)}
-                    disabled={user.id !== gallery.owner_id}
+                    disabled
                     rerender
                 />
             </div>
@@ -235,8 +228,8 @@ class Edit extends React.Component {
                     />
 
                     <EditStories
-                        relatedStories={stories}
-                        updateRelatedStories={(s) => this.setState({ stories: s })}
+                        stories={stories}
+                        updateStories={(s) => this.setState({ stories: s })}
                     />
 
                     <EditArticles

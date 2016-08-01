@@ -164,8 +164,8 @@ class Create extends React.Component {
                                 />
 
                                 <EditStories
-                                    relatedStories={relatedStories}
-                                    updateRelatedStories={(s) => this.setState({ relatedStories: s })}
+                                    stories={relatedStories}
+                                    updateStories={(s) => this.setState({ relatedStories: s })}
                                 />
 
                                 <EditArticles

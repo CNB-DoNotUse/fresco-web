@@ -296,8 +296,8 @@ class GalleryEdit extends React.Component {
                     />
 
                     <EditStories
-                        relatedStories={stories}
-                        updateRelatedStories={(s) => this.updateStories(s)}
+                        stories={stories}
+                        updateStories={(s) => this.updateStories(s)}
                     />
 
                     <AutocompleteMap

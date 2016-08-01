@@ -57,6 +57,7 @@ class GalleryDetail extends React.Component {
         .done((res) => {
             // Update parent gallery
             this.onUpdateGallery(res);
+            $.snackbar({ content: 'Gallery saved!' });
             // Hide the modal
             this.toggleEdit();
         })

@@ -84,9 +84,6 @@ class EditOutlets extends React.Component {
 
     render() {
         const { query } = this.state;
-        const suggestionsStyle = query.length
-            ? { display: 'block' }
-            : { display: 'none' };
 
         return (
             <div className="dialog-row split chips">
@@ -99,7 +96,10 @@ class EditOutlets extends React.Component {
                         value={query}
                     />
 
-                    <ul style={suggestionsStyle} className="dropdown">
+                    <ul
+                        style={{ display: `${query.length ? 'block' : 'none'}` }}
+                        className="dropdown"
+                    >
                         {this.renderSuggestions()}
                     </ul>
 
