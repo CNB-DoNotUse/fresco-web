@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Tag from '../global/tag.js';
 import utils from 'utils';
-import remove from 'lodash/remove';
+import reject from 'lodash/reject';
 
 /**
  * Component for managing added/removed articles
@@ -11,49 +11,57 @@ class EditArticles extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { suggestions: [] };
+        this.state = {
+            suggestions: [],
+            query: '',
+        };
     }
 
-    onChange(e) {
-		// Current fields input
-        const query = this.refs.autocomplete.value;
+    onChangeQuery(e) {
+        const query = e.target.value;
+        this.setState({ query });
 
-        // Enter is pressed, and query is present
-        if (e.keyCode === 13 && query.length > 0) {
-            if (utils.isValidUrl(query)) {
-                this.addArticle({ link: query, new: true });
-            } else {
-                $.snackbar({ content: "Please enter a valid url!" });
-                return;
-            }
+        if (!query.length) {
+            this.setState({ suggestions: [] });
         } else {
-			// Field is empty
-            if (query.length == 0) {
-                this.setState({ suggestions: [] });
-                this.refs.dropdown.style.display = 'none';
-            } else {
-                this.refs.dropdown.style.display = 'block';
-                $.ajax({
-                    url: '/api/search?articles=true',
-                    data: { q: query },
-                    success: (res) => {
-                        if (res.articles && res.articles.results) {
-                            this.setState({ suggestions: res.articles.results });
-                        }
-                    },
-                });
-            }
+            $.ajax({
+                url: '/api/search?articles=true',
+                data: { q: query },
+            })
+            .done((res) => {
+                if (res.articles && res.articles.results) {
+                    this.setState({ suggestions: res.articles.results });
+                }
+            });
         }
     }
 
+    onKeyUpQuery(e) {
+        const { suggestions, query } = this.state;
+
+        if (e.keyCode === 13 && query.length > 0) {
+            const matched = suggestions.find((s) => (
+                s.title && s.title.toLowerCase() === query.toLowerCase()
+                    || s.link && s.link.toLowerCase() === query.toLowerCase()
+            ));
+
+            if (matched) {
+                this.addArticle(matched);
+            } else if (utils.isValidUrl(query)) {
+                this.addArticle({ link: query, new: true });
+            } else {
+                $.snackbar({ content: 'Please enter a valid url!' });
+            }
+        }
+    }
 	/**
 	 * Removes article with passed id
 	 */
     removeArticle(link) {
-        const { articles, updateArticles } = this.props;
-        remove(articles, { link });
+        let { articles } = this.props;
+        articles = reject(articles, { link });
 
-        updateArticles(articles);
+        this.props.updateArticles(articles);
     }
 
 	/**
@@ -61,19 +69,13 @@ class EditArticles extends React.Component {
 	 */
     addArticle(article) {
         if (utils.isEmptyString(article.link)) return;
-
-        // Clear the input field
-        this.refs.autocomplete.value = '';
-        this.refs.dropdown.style.display = 'none';
-
-        const { articles } = this.props;
+        let { articles } = this.props;
 
         // Check if article already exists
-        if (articles.some((a) => a.link === article.link)) return;
+        if (!article.new && articles.some((a) => a.link === article.link)) return;
 
-        articles.push(article);
-
-        this.props.updateArticles(articles);
+        articles = articles.concat(article);
+        this.setState({ query: '' }, this.props.updateArticles(articles));
     }
 
     renderArticles() {
@@ -100,6 +102,7 @@ class EditArticles extends React.Component {
     }
 
     render() {
+        const { query } = this.state;
         return (
             <div className="dialog-row split chips">
                 <div className="split-cell">
@@ -107,11 +110,15 @@ class EditArticles extends React.Component {
                         type="text"
                         className="form-control floating-label"
                         placeholder="Articles"
-                        onKeyUp={(e) => this.onChange(e)}
-                        ref="autocomplete"
+                        onChange={(e) => this.onChangeQuery(e)}
+                        onKeyUp={(e) => this.onKeyUpQuery(e)}
+                        value={query}
                     />
 
-                    <ul ref="dropdown" className="dropdown">
+                    <ul
+                        style={{ display: `${query.length ? 'block' : 'none'}` }}
+                        className="dropdown"
+                    >
                         {this.renderSuggestions()}
                     </ul>
 
@@ -136,8 +143,9 @@ EditArticles.propTypes = {
 };
 
 EditArticles.defaultProps = {
-	updateArticles: () => {},
-	articles: [],
+    updateArticles() {},
+    articles: [],
 };
 
 export default EditArticles;
+

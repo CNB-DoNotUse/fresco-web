@@ -1,7 +1,5 @@
 const express = require('express');
 const config = require('../lib/config');
-const utils = require('../lib/utils');
-const Purchases = require('../lib/purchases');
 const router = express.Router();
 const API = require('../lib/api');
 
@@ -84,7 +82,6 @@ function renderUserPage(user, req, res){
 
     var title = user.firstname + ' ' + user.lastname,
         props = {
-            purchases: Purchases.mapPurchases(user),
             title: title,
             user: req.session.user,
             detailUser: user,

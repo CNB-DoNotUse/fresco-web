@@ -9,5 +9,7 @@ cert/*
 cert/DigiCertCA.crt
 bower_components
 public/build/
+public/css/
+public/js/
 config/*.json
 npm-debug.log.*

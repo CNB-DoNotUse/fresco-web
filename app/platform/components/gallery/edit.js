@@ -8,7 +8,7 @@ import BylineEdit from './byline-edit.js';
 import AutocompleteMap from '../global/autocomplete-map';
 import utils from 'utils';
 import difference from 'lodash/difference';
-import without from 'lodash/remove';
+import without from 'lodash/without';
 
 /**
  * Gallery Edit Parent Object
@@ -31,13 +31,6 @@ class Edit extends React.Component {
         if (!this.props.gallery || (this.props.gallery.id !== nextProps.gallery.id)) {
             this.revert();
         }
-    }
-
-	/**
-	 * Updates state map location when AutocompleteMap gives new location
-	 */
-    onPlaceChange(place) {
-        this.setState({ address: place.address, location: place.location });
     }
 
     onRemove() {
@@ -65,6 +58,7 @@ class Edit extends React.Component {
     getStateFromProps(props) {
         const { gallery } = props;
         if (!gallery) return {};
+        // const byline = utils.getBylineFromComponent(gallery, this.refs.byline).byline || '';
 
         return {
             tags: gallery.tags || [],
@@ -89,8 +83,8 @@ class Edit extends React.Component {
             tags,
             caption,
             address,
-            location,
             stories,
+            articles,
             assignment,
             postsToDeleteIds,
             postIds,
@@ -108,17 +102,12 @@ class Edit extends React.Component {
             return null;
         }
 
-        // Configure the byline's other origin
-        const byline = utils.getBylineFromComponent(gallery, this.refs.byline).byline || '';
-
         const params = {
             tags,
             caption,
             address,
-            geo: utils.getGeoFromCoord(location),
-            byline,
-            stories,
-            posts,
+            ...utils.getRemoveAddParams('stories', gallery.stories, stories),
+            ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             assignment_id: assignment ? assignment.id : null,
         };
 
@@ -174,7 +163,7 @@ class Edit extends React.Component {
     }
 
     renderMap() {
-        const { gallery, user } = this.props;
+        const { gallery } = this.props;
         const location = gallery.location
             || gallery.posts ? gallery.posts[0].location : null;
         const address = gallery.address
@@ -186,8 +175,7 @@ class Edit extends React.Component {
                     address={address}
                     location={location}
                     hasRadius={false}
-                    onPlaceChange={(p) => this.onPlaceChange(p)}
-                    disabled={user.id !== gallery.owner_id}
+                    disabled
                     rerender
                 />
             </div>
@@ -235,8 +223,8 @@ class Edit extends React.Component {
                     />
 
                     <EditStories
-                        relatedStories={stories}
-                        updateRelatedStories={(s) => this.setState({ stories: s })}
+                        stories={stories}
+                        updateStories={(s) => this.setState({ stories: s })}
                     />
 
                     <EditArticles

@@ -1,10 +1,8 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
-import AssignmentMerge from './assignment-merge';
-import AssignmentMergeDropup from './assignment-merge-drop-up';
+import Merge from '../assignment/merge';
+import MergeDropup from '../assignment/merge-dropup';
 import utils from 'utils';
-import uniqBy from 'lodash/uniqBy';
-import reject from 'lodash/reject';
 import isEmpty from 'lodash/isEmpty';
 
 /**
@@ -22,19 +20,12 @@ class AssignmentEdit extends React.Component {
 
     componentDidMount() {
         $.material.init();
-        this.findNearbyAssignments();
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.assignment.id !== nextProps.assignment.id) {
             this.setState(this.getStateFromProps(nextProps));
             this.resetForm(nextProps.assignment);
-        }
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.location !== prevState.location) {
-            this.findNearbyAssignments();
         }
     }
 
@@ -104,31 +95,26 @@ class AssignmentEdit extends React.Component {
      */
     onChangeGlobal() {
         if (this.isGlobalLocation()) {
-            const { assignment } = this.props;
-            this.setState({
-                location: this.getLocationFromAssignment(assignment) || { lat: 40.7, lng: -74 },
-                address: assignment.address || '',
-            });
+            const { assignment: { location, address } } = this.props;
+            this.setState({ location, address });
         } else {
             this.setState({ location: null, address: null });
         }
     }
 
-    /**
-     * getLocationFromAssignment
-     *
-     * @param {Object} assignment object
-     * @returns {Object} assignment Location object containing lat lng coordinates
-     */
-    getLocationFromAssignment(assignment) {
-        if (assignment && assignment.location) {
-            return {
-                lat: assignment.location.coordinates ? assignment.location.coordinates[1] : null,
-                lng: assignment.location.coordinates ? assignment.location.coordinates[0] : null,
-            };
-        }
+    onApproveAssignment() {
+        const { assignment, approveAssignment } = this.props;
+        const params = {
+            title: this.refs['assignment-title'].value,
+            caption: this.refs['assignment-description'].value,
+            address: this.state.address || undefined,
+            radius: this.isGlobalLocation() ? undefined : this.state.radius,
+            location: this.isGlobalLocation() ? null : utils.getGeoFromCoord(this.state.location),
+            // Convert to ms and current timestamp
+            ends_at: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
+        };
 
-        return null;
+        approveAssignment(assignment.id, params);
     }
 
     /**
@@ -144,12 +130,9 @@ class AssignmentEdit extends React.Component {
         return {
             address: assignment.address,
             radius,
-            location: this.getLocationFromAssignment(assignment),
-            nearbyAssignments: [],
+            location: assignment.location,
             showMergeDialog: false,
             mergeIntoAssignment: null,
-            loading: false,
-            loadingNearby: false,
         };
     }
 
@@ -169,107 +152,13 @@ class AssignmentEdit extends React.Component {
         $(this.refs['assignment-expiration']).removeClass('empty');
     }
 
-    /**
-     * approveAssignment
-     * gets form data then calls posts request to approve and update assignment
-     *
-     */
-    approveAssignment() {
-        const id = this.props.assignment.id;
-        const data = {
-            title: this.refs['assignment-title'].value,
-            caption: this.refs['assignment-description'].value,
-            address: this.state.address || undefined,
-            radius: this.isGlobalLocation() ? undefined : this.state.radius,
-            location: this.isGlobalLocation() ? null : utils.getGeoFromCoord(this.state.location),
-            // Convert to ms and current timestamp
-            ends_at: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
-        };
-
-        if (!id) return;
-        this.setState({ loading: true });
-
-        $.ajax({
-            method: 'POST',
-            url: `/api/assignment/${id}/approve`,
-            contentType: 'application/json',
-            dataType: 'json',
-            data: JSON.stringify(data),
-        })
-        .done(() => {
-            this.props.onUpdateAssignment(id);
-            this.setState({ loading: false });
-            $.snackbar({ content: 'Assignment Approved!' });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Could not approve assignment!' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-    rejectAssignment(id) {
-        if (!id) return;
-        this.setState({ loading: true });
-
-        $.ajax({
-            type: 'POST',
-            url: `/api/assignment/${id}/reject`,
-        })
-        .done(() => {
-            $.snackbar({ content: 'Assignment Rejected!' });
-            this.props.onUpdateAssignment(id);
-            this.setState({ loading: false });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Could not reject assignment!' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-    /**
-     * Finds nearby assignments
-     */
-    findNearbyAssignments() {
-        const { location, loadingNearby } = this.state;
-        const { assignment } = this.props;
-        if (!location || loadingNearby || !location.lat || !location.lng) return;
-        this.setState({ loadingNearby: true });
-        const data = {
-            radius: 1,
-            geo: utils.getGeoFromCoord(location),
-            limit: 5,
-        };
-
-        $.ajax({
-            url: '/api/assignment/find',
-            data,
-            dataType: 'json',
-            contentType: 'application/json',
-        })
-        .done((res) => {
-            if (res.nearby && res.global) {
-                const nearbyAssignments = uniqBy(reject(res.nearby.concat(res.global), { id: assignment.id }), 'id');
-                this.setState({ nearbyAssignments });
-            }
-        })
-        .always(() => {
-            this.setState({ loadingNearby: false });
-        });
-    }
-
     render() {
-        const { assignment } = this.props;
+        const { assignment, loading, rejectAssignment } = this.props;
         const {
             radius,
             address,
-            nearbyAssignments,
             location,
             showMergeDialog,
-            loading,
         } = this.state;
         const expirationTime = assignment ? utils.hoursToExpiration(assignment.ends_at) : null;
         const globalLocation = this.isGlobalLocation();
@@ -334,7 +223,7 @@ class AssignmentEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat assignment-approve pull-right"
-                        onClick={() => this.approveAssignment()}
+                        onClick={() => this.onApproveAssignment()}
                         disabled={loading}
                     >
                         Approve
@@ -342,31 +231,31 @@ class AssignmentEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat assignment-deny pull-right"
-                        onClick={() => this.rejectAssignment(assignment.id)}
+                        onClick={() => rejectAssignment(assignment.id)}
                         disabled={loading}
                     >
                         Reject
                     </button>
 
                     {
-                        !globalLocation && nearbyAssignments.length
-                            ? <AssignmentMergeDropup
-                                nearbyAssignments={nearbyAssignments}
+                        !globalLocation
+                            ? <MergeDropup
+                                assignmentId={assignment.id}
+                                location={location}
                                 onSelectMerge={(a) => this.onSelectMerge(a)}
                             />
                             : ''
                     }
                 </div>
 
-                {
-                    showMergeDialog
-                        ? <AssignmentMerge
-                            assignment={assignment}
-                            mergeIntoAssignment={this.state.mergeIntoAssignment}
-                            onClose={() => this.onCloseMerge()}
-                            onMergeAssignment={(id) => this.onMergeAssignment(id)}
-                        />
-                        : ''
+                {showMergeDialog
+                    ? <Merge
+                        assignment={assignment}
+                        mergeIntoAssignment={this.state.mergeIntoAssignment}
+                        onClose={() => this.onCloseMerge()}
+                        onMergeAssignment={(id) => this.onMergeAssignment(id)}
+                    />
+                    : ''
                 }
             </div>
         );
@@ -376,6 +265,9 @@ class AssignmentEdit extends React.Component {
 AssignmentEdit.propTypes = {
     assignment: PropTypes.object.isRequired,
     onUpdateAssignment: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    rejectAssignment: PropTypes.func.isRequired,
+    approveAssignment: PropTypes.func.isRequired,
 };
 
 export default AssignmentEdit;

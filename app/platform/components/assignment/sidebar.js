@@ -7,7 +7,7 @@ import moment from 'moment';
  * Description : Column on the left of the posts grid on the assignment detail page
  */
 class Sidebar extends React.Component {
-    
+
     /**
      * AssignmentStats stats inside the sidebar
      */
@@ -41,7 +41,12 @@ class Sidebar extends React.Component {
                     </li>
                     <li>
                         <span className="mdi mdi-account icon"></span>
-                        <span>{assignment.outlets[0].title}</span>
+                        <span>
+                            {assignment.outlets[0]
+                                ? assignment.outlets[0].title
+                                : ''
+                            }
+                        </span>
                     </li>
                     <li>
                         <span className="mdi mdi-image icon"></span>

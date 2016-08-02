@@ -1,6 +1,14 @@
 import React, { PropTypes } from 'react';
 
 class AssignmentMerge extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            loading: false,
+        };
+    }
+
     componentDidMount() {
         $.material.init();
     }
@@ -11,8 +19,10 @@ class AssignmentMerge extends React.Component {
      * @param  {Object} data, requires mergeInto_id(id of assignment to be merged into)
      */
     postMerge(id, data) {
-        if (!id || !data.mergeInto_id) return;
+        const { loading } = this.state;
+        if (loading || !id || !data.merge_into_id) return;
 
+        this.setState({ loading: true });
         $.ajax({
             method: 'POST',
             url: `/api/assignment/${id}/merge`,
@@ -26,6 +36,9 @@ class AssignmentMerge extends React.Component {
         })
         .fail(() => {
             $.snackbar({ content: 'Could not merge assignment!' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
         });
     }
 
@@ -49,12 +62,13 @@ class AssignmentMerge extends React.Component {
         this.postMerge(assignment.id, {
             title: this.refs.title.value,
             caption: this.refs.caption.value,
-            mergeInto_id: mergeIntoAssignment.id,
+            merge_into_id: mergeIntoAssignment.id,
         });
     }
 
     render() {
         const { assignment, mergeIntoAssignment, onClose } = this.props;
+        const { loading } = this.state;
 
         return (
             <div className="assignment-merge-container">
@@ -111,6 +125,7 @@ class AssignmentMerge extends React.Component {
                                 type="button"
                                 className="btn btn-flat"
                                 onClick={onClose}
+                                disabled={loading}
                             >
                                 Cancel
                             </button>
@@ -118,6 +133,7 @@ class AssignmentMerge extends React.Component {
                                 type="button"
                                 className="btn btn-flat pull-right"
                                 onClick={() => this.merge()}
+                                disabled={loading}
                             >
                                 Merge & Update
                             </button>

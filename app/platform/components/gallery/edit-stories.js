@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import Tag from '../global/tag';
 import utils from 'utils';
+import reject from 'lodash/reject';
 
 /**
  * Component for managing added/removed stories
@@ -9,10 +10,48 @@ import utils from 'utils';
 class EditStories extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { suggestions: [] };
-        this.addStory = this.addStory.bind(this);
-        this.removeStory = this.removeStory.bind(this);
-        this.change = this.change.bind(this);
+        this.state = {
+            suggestions: [],
+            query: '',
+        };
+    }
+
+    onChangeQuery(e) {
+        const query = e.target.value;
+        this.setState({ query });
+
+        // Enter is pressed, and query is present
+        if (!query.length === 0) {
+            this.setState({ suggestions: [] });
+        } else {
+            $.ajax({
+                url: '/api/search?stories=true',
+                data: { q: query },
+                success: (res) => {
+                    if (res.stories && res.stories.results) {
+                        this.setState({ suggestions: res.stories.results });
+                    }
+                },
+            });
+        }
+    }
+
+    /**
+     * onKeyUpQuery
+     * on typing enter, checks if query is a suggestion,
+     * adds suggestion if so, new story if not
+     * @param {object} e key up event
+     */
+    onKeyUpQuery(e) {
+        const { suggestions, query } = this.state;
+
+        if (e.keyCode === 13 && query.length > 0) {
+            const matched = suggestions.find((s) => (
+                s.title.toLowerCase() === query.toLowerCase()
+            ));
+
+            this.addStory(matched || { title: query, new: true });
+        }
     }
 
     /**
@@ -20,90 +59,44 @@ class EditStories extends React.Component {
      */
     addStory(newStory) {
         if (utils.isEmptyString(newStory.title)) return;
-
-        // Clear the input field
-        this.refs.autocomplete.value = '';
-        this.refs.dropdown.style.display = 'none';
-
-        const stories = this.props.relatedStories;
+        let { stories } = this.props;
 
         // Check if story already exists
-        if (stories.some((s) => (s.id === newStory.id))) return;
+        if (!newStory.new && stories.some((s) => (s.id === newStory.id))) return;
+        stories = stories.concat(newStory);
 
-        stories.push(newStory);
-
-        this.props.updateRelatedStories(stories);
+        this.setState({ query: '' }, this.props.updateStories(stories));
     }
 
     /**
      * Removes story and updates to parent
      */
-    removeStory(index) {
-        const relatedStories = this.props.relatedStories;
+    removeStory(title) {
+        let { stories } = this.props;
+        stories = reject(stories, { title });
 
-        // Remove from index
-        relatedStories.splice(index, 1);
-
-        this.props.updateRelatedStories(relatedStories);
-    }
-
-    change(e) {
-        // Current fields input
-        const query = this.refs.autocomplete.value;
-
-        // Enter is pressed, and query is present
-        if (e.keyCode === 13 && query.length > 0){
-            let matched = -1;
-
-            // Checking if what the user entered is in the suggestions
-            for (var i = 0; i < this.state.suggestions.length; i++) {
-                if (this.state.suggestions[i].title.toLowerCase() === query.toLowerCase()){
-                    // Convert to lowercase for better check
-                    matched = i;
-                    break;
-                }
-            }
-
-            if (matched >= 0) {  //If there is a match, add the existing
-                this.addStory(this.state.suggestions[matched]);
-            } else { //Not a match, add a brand new story
-                this.addStory({ title: query, new: true });
-            }
-        } else {
-            // Field is empty
-            if (query.length == 0) {
-                this.setState({ suggestions: [] });
-                this.refs.dropdown.style.display = 'none';
-            } else {
-                this.refs.dropdown.style.display = 'block';
-
-                $.ajax({
-                    url: '/api/search?stories=true',
-                    data: { q: query },
-                    success: (res) => {
-                        if (res.stories && res.stories.results) {
-                            this.setState({ suggestions: res.stories.results });
-                        }
-                    },
-                });
-            }
-        }
+        this.props.updateStories(stories);
     }
 
     render() {
-        // Map out related stories
-        const stories = this.props.relatedStories.map((story, i) => (
+        const { query } = this.state;
+        const stories = this.props.stories.map((story, i) => (
             <Tag
                 text={story.title}
                 plus={false}
-                onClick={this.removeStory.bind(null, i)}
+                onClick={() => this.removeStory(story.title)}
                 key={i}
             />
         ));
 
         // Map suggestions for dropdown
         const suggestions = this.state.suggestions.map((story, i) => (
-            <li onClick={this.addStory.bind(null, story)} key={i}>{story.title}</li>
+            <li
+                onClick={() => this.addStory(story)}
+                key={i}
+            >
+                {story.title}
+            </li>
         ));
 
         return (
@@ -113,11 +106,15 @@ class EditStories extends React.Component {
                         type="text"
                         className="form-control floating-label"
                         placeholder="Stories"
-                        onKeyUp={this.change}
-                        ref='autocomplete'
+                        onChange={(e) => this.onChangeQuery(e)}
+                        onKeyUp={(e) => this.onKeyUpQuery(e)}
+                        value={query}
                     />
 
-                    <ul ref="dropdown" className="dropdown">
+                    <ul
+                        style={{ display: `${query.length ? 'block' : 'none'}` }}
+                        className="dropdown"
+                    >
                         {suggestions}
                     </ul>
 
@@ -131,14 +128,14 @@ class EditStories extends React.Component {
     }
 }
 
-EditStories.defaultProps = {
-    updateRelatedStories: () => {},
-    relatedStories: [],
+EditStories.propTypes = {
+    stories: PropTypes.array.isRequired,
+    updateStories: PropTypes.func.isRequired,
 };
 
-EditStories.propTypes = {
-    relatedStories: PropTypes.array,
-    updateRelatedStories: PropTypes.func,
+EditStories.defaultProps = {
+    updateStories() {},
+    stories: [],
 };
 
 export default EditStories;

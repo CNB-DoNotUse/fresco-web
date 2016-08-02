@@ -25,16 +25,16 @@ class Assignments extends React.Component {
     /**
      * onUpdateAssignment
      *
-     * @param {number} id Called on updating assignment to set next active assignment and remove updated
+     * @param {number} id Called on updating assignment
+     * to set next active assignment and remove updated
      */
     onUpdateAssignment(id) {
         const { assignments, removeAssignment } = this.props;
         const index = findIndex(assignments, { id });
-        const nextAssignment = assignments[index + 1]
-            || assignments[index - 1]
-            || null;
-        removeAssignment(id);
-        this.setActiveAssignment(nextAssignment);
+
+        removeAssignment(id, (arr) => {
+            this.setActiveAssignment(arr[index] || arr[index + 1] || arr[index - 1]);
+        });
     }
 
     setActiveAssignment(assignment) {
@@ -53,6 +53,56 @@ class Assignments extends React.Component {
             },
             null);
         }
+    }
+
+    /**
+     * approveAssignment
+     * gets form data then calls posts request to approve and update assignment
+     *
+     */
+    approveAssignment(id, params) {
+        if (!id || !params || this.state.loading) return;
+        this.setState({ loading: true });
+
+        $.ajax({
+            method: 'post',
+            url: `/api/assignment/${id}/approve`,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(params),
+        })
+        .done(() => {
+            this.onUpdateAssignment(id);
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Assignment Approved!' });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not approve assignment!' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
+        });
+    }
+
+    rejectAssignment(id) {
+        if (!id) return;
+        this.setState({ loading: true });
+
+        $.ajax({
+            method: 'post',
+            url: `/api/assignment/${id}/reject`,
+        })
+        .done(() => {
+            $.snackbar({ content: 'Assignment Rejected!' });
+            this.onUpdateAssignment(id);
+            this.setState({ loading: false });
+        })
+        .fail(() => {
+            $.snackbar({ content: 'Could not reject assignment!' });
+        })
+        .always(() => {
+            this.setState({ loading: false });
+        });
     }
 
     renderAssignments() {
@@ -80,6 +130,8 @@ class Assignments extends React.Component {
                     assignment={activeAssignment}
                     loading={loading}
                     onUpdateAssignment={(id) => this.onUpdateAssignment(id)}
+                    rejectAssignment={(id) => this.rejectAssignment(id)}
+                    approveAssignment={(id, p) => this.approveAssignment(id, p)}
                 />
             );
         }

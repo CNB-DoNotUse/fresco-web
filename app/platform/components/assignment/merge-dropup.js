@@ -1,4 +1,7 @@
 import React, { PropTypes } from 'react';
+import utils from 'utils';
+import uniqBy from 'lodash/uniqBy';
+import reject from 'lodash/reject';
 
 /**
  * AssignmentMergeDropup Dropdown(up) menu that displays list of nearby assignments
@@ -6,11 +9,12 @@ import React, { PropTypes } from 'react';
  *
  * @extends React.Component
  */
-class AssignmentMergeDropup extends React.Component {
+class MergeDropup extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             active: false,
+            nearbyAssignments: [],
         };
     }
 
@@ -22,6 +26,14 @@ class AssignmentMergeDropup extends React.Component {
                 this.setState({ active: false });
             }
         });
+
+        this.findNearbyAssignments();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.location !== nextProps.location) {
+            this.findNearbyAssignments();
+        }
     }
 
     componentWillUnmount() {
@@ -31,6 +43,39 @@ class AssignmentMergeDropup extends React.Component {
 
     onToggle() {
         this.setState({ active: !this.state.active });
+    }
+
+    /**
+     * Finds nearby assignments
+     */
+    findNearbyAssignments() {
+        const { loading } = this.state;
+        const { assignmentId, location } = this.props;
+        if (loading || !location || !location.lat || !location.lng) return;
+
+        this.setState({ loading: true });
+        const data = {
+            radius: 1,
+            geo: utils.getGeoFromCoord(location),
+            limit: 5,
+        };
+
+        $.ajax({
+            url: '/api/assignment/find',
+            data,
+            dataType: 'json',
+            contentType: 'application/json',
+        })
+        .done((res) => {
+            if (res.nearby && res.global) {
+                const nearbyAssignments =
+                    uniqBy(reject(res.nearby.concat(res.global), { id: assignmentId }), 'id');
+                this.setState({ nearbyAssignments });
+            }
+        })
+        .always(() => {
+            this.setState({ loading: false });
+        });
     }
 
     renderAssignments(assignments) {
@@ -56,10 +101,9 @@ class AssignmentMergeDropup extends React.Component {
     }
 
     render() {
-        const { nearbyAssignments } = this.props;
-        const { active } = this.state;
+        const { active, nearbyAssignments } = this.state;
 
-        if (active) {
+        if (active && nearbyAssignments.length) {
             return (
                 <div className={'merge-dropup merge-dropup--active pull-right '}>
                     <div className="merge-dropup__toggle merge-dropup__toggle--active" onClick={() => this.onToggle()} >
@@ -87,10 +131,11 @@ class AssignmentMergeDropup extends React.Component {
     }
 }
 
-AssignmentMergeDropup.propTypes = {
-    nearbyAssignments: PropTypes.array.isRequired,
+MergeDropup.propTypes = {
+    assignmentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    location: PropTypes.object.isRequired,
     onSelectMerge: PropTypes.func.isRequired,
 };
 
-export default AssignmentMergeDropup;
+export default MergeDropup;
 

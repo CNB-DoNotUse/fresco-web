@@ -89,7 +89,7 @@ let output = function(env) {
 /**
  * Exports webpack JSON config
  * @param  {String} env The environment we're in
- * @return {Object} Webpack confing 
+ * @return {Object} Webpack confing
  */
 module.exports = (env = 'dev') => {
     return {
@@ -106,7 +106,8 @@ module.exports = (env = 'dev') => {
                     loader: 'babel-loader',
                     exclude: /node_modules/,
                     query: {
-                        presets: ['es2015', 'react']
+                        presets: ['es2015', 'react'],
+                        plugins: ['transform-object-rest-spread', 'transform-es2015-destructuring'],
                     }
                 },
                 //Extract sass files

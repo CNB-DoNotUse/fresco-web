@@ -206,8 +206,8 @@ class BulkEdit extends React.Component {
                     />
 
                     <EditStories
-                        relatedStories={this.state.stories}
-                        updateRelatedStories={(s) => this.setState({ stories: s })}
+                        stories={this.state.stories}
+                        updateStories={(s) => this.setState({ stories: s })}
                     />
                 </div>
 

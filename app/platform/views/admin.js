@@ -5,7 +5,6 @@ import TopBar from './../components/admin/topbar';
 import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
-import remove from 'lodash/remove';
 import 'app/sass/platform/_admin';
 
 /**
@@ -14,48 +13,40 @@ import 'app/sass/platform/_admin';
 class Admin extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             activeTab: 'assignments',
             assignments: [],
             submissions: [],
             imports: [],
         };
-
         this.currentXHR = null;
-        this.clearXHR = this.clearXHR.bind(this);
-
-        this.getChangedData = this.getChangedData.bind(this);
-        this.getData = this.getData.bind(this);
-        this.resetAssignments = this.resetAssignments.bind(this);
-        this.resetSubmissions = this.resetSubmissions.bind(this);
-        this.resetImports = this.resetImports.bind(this);
-        this.refresh = this.refresh.bind(this);
-        this.refreshInterval = null;
     }
 
     componentDidMount() {
-        this.refreshInterval = setInterval(() => {
+        setInterval(() => {
             if (this.props.activeTab !== '') this.refresh();
         }, 5000);
         this.loadInitial();
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if ((this.state.activeTab && prevState.activeTab) && (prevState.activeTab !== this.state.activeTab)) {
+        if ((this.state.activeTab && prevState.activeTab)
+            && (prevState.activeTab !== this.state.activeTab)) {
             this.clearXHR();
 
             switch (this.state.activeTab) {
-                case 'assignments':
-                    this.resetAssignments();
-                    break;
-                case 'submissions':
-                    this.resetSubmissions();
-                    break;
-                case 'imports':
-                    this.resetImports();
-                    break;
-                default:
-                    break;
+            case 'assignments':
+                this.resetAssignments();
+                break;
+            case 'submissions':
+                this.resetSubmissions();
+                break;
+            case 'imports':
+                this.resetImports();
+                break;
+            default:
+                break;
             }
         }
     }
@@ -95,20 +86,20 @@ class Admin extends React.Component {
 
         // Set up endpoint and params depending on tab
         switch (tab) {
-            case 'assignments':
-                endpoint = '/api/assignment/list';
-                params = { rating: 0, last, limit: 16 };
-                break;
-            case 'submissions':
-                endpoint = '/api/gallery/list';
-                params = { rating: 0, last, limit: 16 };
-                break;
-            case 'imports':
-                endpoint = '/api/gallery/list';
-                params = { rating: 0, imported: true, last, limit: 16 };
-                break;
-            default:
-                break;
+        case 'assignments':
+            endpoint = '/api/assignment/list';
+            params = { rating: 0, last, limit: 16 };
+            break;
+        case 'submissions':
+            endpoint = '/api/gallery/list';
+            params = { rating: 0, last, limit: 16 };
+            break;
+        case 'imports':
+            endpoint = '/api/gallery/list';
+            params = { rating: 0, imported: true, last, limit: 16 };
+            break;
+        default:
+            break;
         }
 
         if (typeof cb !== 'function') {
@@ -161,64 +152,56 @@ class Admin extends React.Component {
         });
     }
 
-    /**
-     * Clear any pending XHR requests
-     */
-    clearXHR() {
-        if (this.currentXHR != null) {
-            this.currentXHR.abort();
-            this.currentXHR = null;
-        }
-    }
-
-    /**
-     * Query for initial data. Set the active tab to a tab with data.
-     */
-    loadInitial() {
-        let activeTab = 'submissions';
-
-        this.getData(undefined, { tab: 'assignments' }, (assignments) => {
-            activeTab = 'assignments';
-            this.setState({ assignments });
-        });
-
-        this.getData(undefined, { tab: 'submissions' }, (submissions) => {
-            activeTab = 'submissions';
-            this.setState({
-                submissions: this.state.submissions.concat(submissions),
-            });
-        });
-
-        this.getData(undefined, { tab: 'imports' }, (imports) => {
-            this.setState({
-                activeTab: imports.length ? 'imports' : activeTab,
-                imports: this.state.imports.concat(imports),
-            });
-        });
-    }
-
-    removeAssignment(id) {
+    getAssignments() {
         const { assignments } = this.state;
-        if (!id || !assignments) return;
-        remove(assignments, { id });
+        if (!assignments) return [];
+        function sortListItem(a, b) {
+            if (a.created_at > b.created_at) {
+                return -1;
+            } else if (a.created_at < b.created_at) {
+                return 1;
+            }
 
-        this.setState({ assignments });
+            return 0;
+        }
+
+        return assignments.sort(sortListItem);
     }
 
-    removeImport(id) {
+    getSubmissions() {
+        return this.state.submissions.filter((s) => (
+            s.posts && s.posts.length
+        ));
+    }
+
+    getImports() {
+        return this.state.imports.filter((s) => (
+            s.posts && s.posts.length
+        ));
+    }
+
+    removeAssignment(id, cb) {
+        const { assignments } = this.state;
+        if (!id || !assignments || !cb) return;
+
+        this.setState({ assignments: assignments.filter(a => a.id !== id) },
+            () => cb(this.state.assignments));
+    }
+
+    removeImport(id, cb) {
         const { imports } = this.state;
-        if (!id || !imports) return;
-        remove(imports, { id });
+        if (!id || !imports || !cb) return;
 
-        this.setState({ imports });
+        this.setState({ imports: imports.filter(a => a.id !== id) },
+            () => cb(this.state.imports));
     }
 
-    removeSubmission(id) {
+    removeSubmission(id, cb) {
         const { submissions } = this.state;
-        if (!id || !submissions) return;
-        remove(submissions, { id });
+        if (!id || !submissions || !cb) return;
 
-        this.setState({ submissions });
+        this.setState({ submissions: submissions.filter(a => a.id !== id) },
+            () => cb(this.state.submissions));
     }
 
     refresh() {
@@ -252,72 +235,80 @@ class Admin extends React.Component {
         });
     }
 
-    getAssignments() {
-        const { assignments } = this.state;
-        if (!assignments) return [];
-        function sortListItem(a, b) {
-            if (a.created_at > b.created_at) {
-                return -1;
-            } else if (a.created_at < b.created_at) {
-                return 1;
-            }
+    /**
+     * Query for initial data. Set the active tab to a tab with data.
+     */
+    loadInitial() {
+        let activeTab = 'submissions';
 
-            return 0;
+        this.getData(undefined, { tab: 'assignments' }, (assignments) => {
+            activeTab = 'assignments';
+            this.setState({ assignments });
+        });
+
+        this.getData(undefined, { tab: 'submissions' }, (submissions) => {
+            activeTab = 'submissions';
+            this.setState({
+                submissions: this.state.submissions.concat(submissions),
+            });
+        });
+
+        this.getData(undefined, { tab: 'imports' }, (imports) => {
+            this.setState({
+                activeTab: imports.length ? 'imports' : activeTab,
+                imports: this.state.imports.concat(imports),
+            });
+        });
+    }
+
+    /**
+     * Clear any pending XHR requests
+     */
+    clearXHR() {
+        if (this.currentXHR != null) {
+            this.currentXHR.abort();
+            this.currentXHR = null;
         }
-
-        return assignments.sort(sortListItem);
-    }
-
-    getSubmissions() {
-        return this.state.submissions.filter((s) => (
-            s.posts && s.posts.length
-        ));
-    }
-
-    getImports() {
-        return this.state.imports.filter((s) => (
-            s.posts && s.posts.length
-        ));
     }
 
     renderActiveTab() {
         let tab = '';
 
         switch (this.state.activeTab) {
-            case 'assignments':
-                tab = (
-                    <Assignments
-                        assignments={this.getAssignments()}
-                        getData={this.getData}
-                        refresh={this.refresh}
-                        removeAssignment={(id) => this.removeAssignment(id)}
-                    />
-                );
-                break;
-            case 'submissions':
-                tab = (
-                    <Galleries
-                        galleries={this.getSubmissions()}
-                        getData={this.getData}
-                        refresh={this.refresh}
-                        removeGallery={(id) => this.removeSubmission(id)}
-                        galleryType="submissions"
-                    />
-                );
-                break;
-            case 'imports':
-                tab = (
-                    <Galleries
-                        galleries={this.getImports()}
-                        getData={this.getData}
-                        refresh={this.refresh}
-                        removeGallery={(id) => this.removeImport(id)}
-                        galleryType="imports"
-                    />
-                );
-                break;
-            default:
-                break;
+        case 'assignments':
+            tab = (
+                <Assignments
+                    assignments={this.getAssignments()}
+                    getData={(l, o, cb) => this.getData(l, o, cb)}
+                    refresh={() => this.refresh()}
+                    removeAssignment={(id, cb) => this.removeAssignment(id, cb)}
+                />
+            );
+            break;
+        case 'submissions':
+            tab = (
+                <Galleries
+                    galleries={this.getSubmissions()}
+                    getData={(l, o, cb) => this.getData(l, o, cb)}
+                    refresh={() => this.refresh()}
+                    removeGallery={(id, cb) => this.removeSubmission(id, cb)}
+                    galleryType="submissions"
+                />
+            );
+            break;
+        case 'imports':
+            tab = (
+                <Galleries
+                    galleries={this.getImports()}
+                    getData={(l, o, cb) => this.getData(l, o, cb)}
+                    refresh={() => this.refresh()}
+                    removeGallery={(id, cb) => this.removeImport(id, cb)}
+                    galleryType="imports"
+                />
+            );
+            break;
+        default:
+            break;
         }
 
         return tab;
@@ -330,7 +321,7 @@ class Admin extends React.Component {
             <App user={this.props.user}>
                 <TopBar
                     activeTab={this.state.activeTab}
-                    resetImports={this.resetImports}
+                    resetImports={() => this.resetImports()}
                     setTab={(tab) => this.setTab(tab)}
                 />
 

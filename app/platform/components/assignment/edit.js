@@ -1,14 +1,21 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
-import EditOutlet from './edit-outlet';
+import EditOutlets from './edit-outlets';
 import AutocompleteMap from '../global/autocomplete-map';
+import Merge from './merge';
+import MergeDropup from './merge-dropup';
 import moment from 'moment';
+import isEmpty from 'lodash/isEmpty';
 
 class AssignmentEdit extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = this.getStateFromProps(props);
+    }
+
+    componentDidMount() {
+        $.material.init();
     }
 
     /**
@@ -44,59 +51,77 @@ class AssignmentEdit extends React.Component {
         this.setState({ endsAt: moment().add(e.target.value, 'h').valueOf() });
     }
 
+    /**
+     * Called when AutocompleteMap's radius changes.
+     * @param  {int} radius Radius in feet
+     */
+    onRadiusUpdate(radius) {
+        this.setState({ radius: utils.feetToMiles(radius) });
+    }
+
+    /**
+     * onChangeGlobal - called on global checkbox change
+     * When global is checked, location and address set to null
+     * When not checked, location and adress are set to original/default vals
+     */
+    onChangeGlobal() {
+        if (this.isGlobalLocation()) {
+            const { assignment: { location, address } } = this.props;
+            this.setState({ location: location || { lat: 40.7, lng: -74 }, address });
+        } else {
+            this.setState({ location: null, address: null });
+        }
+    }
+
 	/**
 	 * Saves the assignment from the current values in the form
 	 */
     onSave() {
         const { assignment, save, loading } = this.props;
-        const { title, caption, radius, location, address, outlet, endsAt } = this.state;
+        const { title, caption, radius, location, address, endsAt, outlets } = this.state;
+
+        if (!assignment || !assignment.id || loading) return;
+        if (this.hasFormErrors()) return;
+
         const params = {
             address,
             caption,
-            radius: utils.feetToMiles(radius),
-            location: utils.getGeoFromCoord(location),
-            outlet: outlet ? outlet.id : null,
-            now: Date.now(),
+            radius: this.isGlobalLocation() ? undefined : radius,
+            location: this.isGlobalLocation() ? null : utils.getGeoFromCoord(location),
+            ...utils.getRemoveAddParams('outlets', assignment.outlets, outlets),
             title,
             ends_at: endsAt,
         };
 
-        if (!assignment || !assignment.id || loading) return;
-
-        // TODO: move to method
-        if (!params.outlet) {
-            $.snackbar({ content: 'An assignment must have an owner!' });
-            return;
-        }
-        if (utils.isEmptyString(params.title)) {
-            $.snackbar({ content: 'An assignment must have a title!' });
-            return;
-        }
-        if (utils.isEmptyString(params.caption)) {
-            $.snackbar({ content: 'An assignment must have a caption!' });
-            return;
-        }
-        if (params.address === '') {
-            $.snackbar({ content: 'An assignment must have a location1' });
-            return;
-        }
-        if (!utils.isValidRadius(params.radius)) {
-            $.snackbar({ content: 'Radius must be at least 250ft!' });
-            return;
-        }
-        if (isNaN(params.ends_at) || params.ends_at === 0) {
-            $.snackbar({ content: 'Expiration time must be a number greater than 0!' });
-            return;
-        }
-
         save(assignment.id, params);
+    }
+
+    onCloseMerge() {
+        this.setState({ showMergeDialog: false, mergeIntoAssignment: null });
+    }
+
+    /**
+     * Called when assignment-merge-menu-item is clicked
+     * @param  {[type]} id ID of assignment to be merged into
+     */
+    onSelectMerge(assignment) {
+        this.setState({ mergeIntoAssignment: assignment, showMergeDialog: true });
+    }
+
+    /**
+     * onMergeAssignment - closes merge dialog, calls onUpdateAssignment
+     *
+     * @param {Number} id Id of inactive assignment being merged into active assignment
+     */
+    onMergeAssignment() {
+        this.onCloseMerge();
+        $.snackbar({ content: 'Assignment merged!' });
+        window.location.href = `/assignment/${this.state.mergeIntoAssignment.id}`;
     }
 
     getStateFromProps(props) {
         const { assignment } = props;
-        const radius = assignment.radius
-            ? utils.milesToFeet(assignment.radius)
-            : 250;
+        const radius = assignment.radius || 0;
 
         if (!assignment) return {};
 
@@ -107,8 +132,40 @@ class AssignmentEdit extends React.Component {
             location: assignment.location,
             radius,
             title: assignment.title,
-            outlet: assignment.outlets[0],
+            outlets: assignment.outlets,
+            showMergeDialog: false,
         };
+    }
+
+    hasFormErrors() {
+        const { title, caption, radius, address, endsAt, outlets } = this.state;
+
+        if (!outlets || !outlets.length) {
+            $.snackbar({ content: 'An assignment must have at least one outlet!' });
+            return true;
+        }
+        if (utils.isEmptyString(title)) {
+            $.snackbar({ content: 'An assignment must have a title!' });
+            return true;
+        }
+        if (utils.isEmptyString(caption)) {
+            $.snackbar({ content: 'An assignment must have a caption!' });
+            return true;
+        }
+        if (!this.isGlobalLocation() && address === '') {
+            $.snackbar({ content: 'An assignment must have a location1' });
+            return true;
+        }
+        if (!this.isGlobalLocation() && utils.milesToFeet(radius) < 250) {
+            $.snackbar({ content: 'Radius must be at least 250ft!' });
+            return true;
+        }
+        if (utils.hoursToExpiration(endsAt) < 0) {
+            $.snackbar({ content: 'Expiration time must be a number greater than 0!' });
+            return true;
+        }
+
+        return false;
     }
 
     revert() {
@@ -136,6 +193,10 @@ class AssignmentEdit extends React.Component {
         this.props.onToggle();
     }
 
+    isGlobalLocation() {
+        return !this.state.location || isEmpty(this.state.location);
+    }
+
     renderHeader() {
         return (
             <div className="dialog-head">
@@ -149,8 +210,9 @@ class AssignmentEdit extends React.Component {
     }
 
     renderBody() {
-        const { title, caption, outlet, address, location, radius, endsAt } = this.state;
+        const { title, caption, outlets, address, location, radius, endsAt } = this.state;
         const { user } = this.props;
+        const globalLocation = this.isGlobalLocation();
 
         return (
             <div className="dialog-body">
@@ -179,27 +241,42 @@ class AssignmentEdit extends React.Component {
                     </div>
 
                     {(user.rank >= utils.RANKS.CONTENT_MANAGER)
-                        ? <EditOutlet
-                            outlet={outlet}
-                            updateOutlet={(o) => this.setState({ outlet: o })}
+                        ? <EditOutlets
+                            outlets={outlets}
+                            updateOutlets={(o) => this.setState({ outlets: o })}
                         />
                         : ''
                     }
 
                 </div>
-                <div className="dialog-col col-xs-12 col-md-5">
+                <div className="dialog-col col-xs-12 col-md-5 form-group-default">
+
                     <div className="dialog-row map-group">
-                        <AutocompleteMap
-                            address={address}
-                            location={location}
-                            radius={radius}
-                            onRadiusUpdate={(r) => this.setState({ radius: r })}
-                            onPlaceChange={(p) => this.onPlaceChange(p)}
-                            onMapDataChange={(d) => this.onMapDataChange(d)}
-                            draggable
-                            rerender
-                            hasRadius
-                        />
+                        <div className="checkbox check-global form-group">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    onChange={() => this.onChangeGlobal()}
+                                    checked={globalLocation}
+                                />
+                                Global
+                            </label>
+                        </div>
+
+                        {globalLocation
+                            ? ''
+                            : <AutocompleteMap
+                                address={address}
+                                location={location}
+                                radius={Math.round(utils.milesToFeet(radius))}
+                                onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
+                                onPlaceChange={(p) => this.onPlaceChange(p)}
+                                onMapDataChange={(d) => this.onMapDataChange(d)}
+                                draggable
+                                rerender
+                                hasRadius
+                            />
+                        }
                     </div>
 
                     <div className="dialog-row">
@@ -220,7 +297,8 @@ class AssignmentEdit extends React.Component {
     }
 
     renderFooter() {
-        const { loading } = this.props;
+        const { loading, assignment } = this.props;
+        const { nearbyAssignments, location } = this.state;
 
         return (
             <div className="dialog-foot">
@@ -260,13 +338,22 @@ class AssignmentEdit extends React.Component {
                 >
                     Discard
                 </button>
+                {
+                    !this.isGlobalLocation()
+                        ? <MergeDropup
+                            assignmentId={assignment.id}
+                            location={location}
+                            onSelectMerge={(a) => this.onSelectMerge(a)}
+                        />
+                        : ''
+                }
             </div>
         );
     }
 
     renderStats() {
         const { assignment } = this.props;
-        const { outlet, endsAt, caption, title } = this.state;
+        const { outlets, endsAt, caption, title } = this.state;
         const address = assignment.address || 'No Address';
         const timeCreated = moment(new Date(assignment.created_at)).format('MMM Do YYYY, h:mm:ss a');
         const expiresText = (moment().diff(endsAt) > 1 ? 'Expired ' : 'Expires ') + moment(endsAt).fromNow();
@@ -285,7 +372,7 @@ class AssignmentEdit extends React.Component {
                         <div>
                             <span className="md-type-title">{title}</span>
                             <span id="assignment-edit-owner" className="md-type-body1">
-                                {outlet && outlet.title ? `Posted by ${outlet.title}` : ''}
+                                {outlets[0] && outlets[0].title ? `Posted by ${outlets[0].title}` : ''}
                             </span>
                         </div>
                     </div>
@@ -309,6 +396,9 @@ class AssignmentEdit extends React.Component {
     }
 
     render() {
+        const { showMergeDialog } = this.state;
+        const { assignment } = this.props;
+
         return (
             <div>
                 <div className="dim toggle-edit toggled" />
@@ -321,6 +411,16 @@ class AssignmentEdit extends React.Component {
                         {this.renderFooter()}
                     </div>
                 </div>
+
+                {showMergeDialog
+                    ? <Merge
+                        assignment={assignment}
+                        mergeIntoAssignment={this.state.mergeIntoAssignment}
+                        onClose={() => this.onCloseMerge()}
+                        onMergeAssignment={() => this.onMergeAssignment()}
+                    />
+                    : ''
+                }
             </div>
 		);
     }
@@ -331,6 +431,8 @@ AssignmentEdit.propTypes = {
     assignment: PropTypes.object,
     onToggle: PropTypes.func,
     updateOutlet: PropTypes.func,
+    save: PropTypes.func,
+    loading: PropTypes.bool,
 };
 
 export default AssignmentEdit;
