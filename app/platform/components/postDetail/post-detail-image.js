@@ -87,7 +87,7 @@ class PostDetailImage extends React.Component {
                 <div className="card panel">
                     <div className="card-foot small">
                         {actions}
-                        <span className="md-type-body1">{post.byline}</span>
+                        <span className="md-type-body1">{utils.getBylineFromPost(post)}</span>
                     </div>
                     <div className="card-body">{postMedia}</div>
                 </div>

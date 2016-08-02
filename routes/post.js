@@ -34,8 +34,6 @@ router.get('/:id', (req, res) => {
             title += 'Post by ' + (post.owner.full_name || post.owner.username);
         } else if (post.curator) {
             title += 'Imported by ' + post.curator.full_name;
-        } else {
-            title = post.byline;
         }
 
         verifier = post.curator ? post.curator.full_name : '';
