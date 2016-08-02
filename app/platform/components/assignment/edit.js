@@ -97,7 +97,7 @@ class AssignmentEdit extends React.Component {
     }
 
     onCloseMerge() {
-        this.setState({ showMergeDialog: false, mergeIntoAssignment: null });
+        this.setState({ mergeIntoAssignment: null, showMergeDialog: false });
     }
 
     /**
@@ -113,10 +113,12 @@ class AssignmentEdit extends React.Component {
      *
      * @param {Number} id Id of inactive assignment being merged into active assignment
      */
-    onMergeAssignment() {
+    onMergeAssignment(id, mergeIntoId) {
         this.onCloseMerge();
         $.snackbar({ content: 'Assignment merged!' });
-        window.location.href = `/assignment/${this.state.mergeIntoAssignment.id}`;
+        window.location.href = mergeIntoId
+            ? `/assignment/${mergeIntoId}`
+            : document.referrer || '/highlights';
     }
 
     getStateFromProps(props) {
@@ -417,7 +419,7 @@ class AssignmentEdit extends React.Component {
                         assignment={assignment}
                         mergeIntoAssignment={this.state.mergeIntoAssignment}
                         onClose={() => this.onCloseMerge()}
-                        onMergeAssignment={() => this.onMergeAssignment()}
+                        onMergeAssignment={(id, mId) => this.onMergeAssignment(id, mId)}
                     />
                     : ''
                 }

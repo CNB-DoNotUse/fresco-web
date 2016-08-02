@@ -4,7 +4,6 @@ import EditStories from './edit-stories';
 import EditArticles from './edit-articles';
 import EditPosts from './edit-posts';
 import EditAssignment from './edit-assignment';
-import BylineEdit from './byline-edit.js';
 import AutocompleteMap from '../global/autocomplete-map';
 import utils from 'utils';
 import difference from 'lodash/difference';
@@ -58,7 +57,6 @@ class Edit extends React.Component {
     getStateFromProps(props) {
         const { gallery } = props;
         if (!gallery) return {};
-        // const byline = utils.getBylineFromComponent(gallery, this.refs.byline).byline || '';
 
         return {
             tags: gallery.tags || [],
@@ -198,7 +196,15 @@ class Edit extends React.Component {
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    <BylineEdit ref="byline" gallery={gallery} />
+                    <div className="dialog-row">
+                        <textarea
+                            type="text"
+                            className="form-control"
+                            value={utils.getBylineFromGallery(gallery)}
+                            placeholder="Byline"
+                            disabled
+                        />
+                    </div>
 
                     <div className="dialog-row">
                         <textarea

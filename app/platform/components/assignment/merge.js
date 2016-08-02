@@ -31,13 +31,11 @@ class AssignmentMerge extends React.Component {
             contentType: 'application/json',
         })
         .done(() => {
-            this.props.onMergeAssignment(id);
+            this.props.onMergeAssignment(id, data.merge_into_id);
             $.snackbar({ content: 'Assignment successfully merged!' });
         })
         .fail(() => {
             $.snackbar({ content: 'Could not merge assignment!' });
-        })
-        .always(() => {
             this.setState({ loading: false });
         });
     }
