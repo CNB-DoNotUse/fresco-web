@@ -134,7 +134,7 @@ class AssignmentDetail extends React.Component {
             editToggled,
             verifiedToggle,
             loading,
-            sortBy
+            sortBy,
         } = this.state;
 
         return (

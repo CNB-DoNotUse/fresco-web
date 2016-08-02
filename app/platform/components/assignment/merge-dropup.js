@@ -15,6 +15,7 @@ class MergeDropup extends React.Component {
         this.state = {
             active: false,
             nearbyAssignments: [],
+            loading: false,
         };
     }
 
@@ -30,8 +31,8 @@ class MergeDropup extends React.Component {
         this.findNearbyAssignments();
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.location !== nextProps.location) {
+    componentDidUpdate(prevProps) {
+        if (this.props.location !== prevProps.location) {
             this.findNearbyAssignments();
         }
     }
@@ -51,12 +52,12 @@ class MergeDropup extends React.Component {
     findNearbyAssignments() {
         const { loading } = this.state;
         const { assignmentId, location } = this.props;
-        if (loading || !location || !location.lat || !location.lng) return;
+        if (loading || !location) return;
 
         this.setState({ loading: true });
         const data = {
             radius: 1,
-            geo: utils.getGeoFromCoord(location),
+            geo: location.hasOwnProperty('type') ? location : utils.getGeoFromCoord(location),
             limit: 5,
         };
 
@@ -67,11 +68,9 @@ class MergeDropup extends React.Component {
             contentType: 'application/json',
         })
         .done((res) => {
-            if (res.nearby && res.global) {
-                const nearbyAssignments =
-                    uniqBy(reject(res.nearby.concat(res.global), { id: assignmentId }), 'id');
-                this.setState({ nearbyAssignments });
-            }
+            const { nearby = [] } = res;
+            const nearbyAssignments = reject(nearby, { id: assignmentId });
+            this.setState({ nearbyAssignments });
         })
         .always(() => {
             this.setState({ loading: false });

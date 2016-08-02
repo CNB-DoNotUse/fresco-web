@@ -96,7 +96,7 @@ class AssignmentEdit extends React.Component {
     onChangeGlobal() {
         if (this.isGlobalLocation()) {
             const { assignment: { location, address } } = this.props;
-            this.setState({ location, address });
+            this.setState({ location: location || { lat: 40.7, lng: -74 }, address });
         } else {
             this.setState({ location: null, address: null });
         }
