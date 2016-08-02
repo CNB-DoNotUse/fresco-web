@@ -5,7 +5,6 @@ import TopBar from './../components/admin/topbar';
 import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
-import reject from 'lodash/reject';
 import 'app/sass/platform/_admin';
 
 /**
@@ -181,25 +180,28 @@ class Admin extends React.Component {
         ));
     }
 
-    removeAssignment(id) {
+    removeAssignment(id, cb) {
         const { assignments } = this.state;
-        if (!id || !assignments) return;
+        if (!id || !assignments || !cb) return;
 
-        this.setState({ assignments: reject(assignments, { id }) });
+        this.setState({ assignments: assignments.filter(a => a.id !== id) },
+            () => cb(this.state.assignments));
     }
 
-    removeImport(id) {
+    removeImport(id, cb) {
         const { imports } = this.state;
-        if (!id || !imports) return;
+        if (!id || !imports || !cb) return;
 
-        this.setState({ imports: reject(imports, { id }) });
+        this.setState({ imports: imports.filter(a => a.id !== id) },
+            () => cb(this.state.imports));
     }
 
-    removeSubmission(id) {
+    removeSubmission(id, cb) {
         const { submissions } = this.state;
-        if (!id || !submissions) return;
+        if (!id || !submissions || !cb) return;
 
-        this.setState({ submissions: reject(submissions, { id }) });
+        this.setState({ submissions: submissions.filter(a => a.id !== id) },
+            () => cb(this.state.submissions));
     }
 
     refresh() {
@@ -279,7 +281,7 @@ class Admin extends React.Component {
                     assignments={this.getAssignments()}
                     getData={(l, o, cb) => this.getData(l, o, cb)}
                     refresh={() => this.refresh()}
-                    removeAssignment={(id) => this.removeAssignment(id)}
+                    removeAssignment={(id, cb) => this.removeAssignment(id, cb)}
                 />
             );
             break;
@@ -289,7 +291,7 @@ class Admin extends React.Component {
                     galleries={this.getSubmissions()}
                     getData={(l, o, cb) => this.getData(l, o, cb)}
                     refresh={() => this.refresh()}
-                    removeGallery={(id) => this.removeSubmission(id)}
+                    removeGallery={(id, cb) => this.removeSubmission(id, cb)}
                     galleryType="submissions"
                 />
             );
@@ -300,7 +302,7 @@ class Admin extends React.Component {
                     galleries={this.getImports()}
                     getData={(l, o, cb) => this.getData(l, o, cb)}
                     refresh={() => this.refresh()}
-                    removeGallery={(id) => this.removeImport(id)}
+                    removeGallery={(id, cb) => this.removeImport(id, cb)}
                     galleryType="imports"
                 />
             );

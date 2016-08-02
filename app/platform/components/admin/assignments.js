@@ -25,16 +25,16 @@ class Assignments extends React.Component {
     /**
      * onUpdateAssignment
      *
-     * @param {number} id Called on updating assignment to set next active assignment and remove updated
+     * @param {number} id Called on updating assignment
+     * to set next active assignment and remove updated
      */
     onUpdateAssignment(id) {
         const { assignments, removeAssignment } = this.props;
         const index = findIndex(assignments, { id });
-        const nextAssignment = assignments[index + 1]
-            || assignments[index - 1]
-            || null;
-        removeAssignment(id);
-        this.setActiveAssignment(nextAssignment);
+
+        removeAssignment(id, (arr) => {
+            this.setActiveAssignment(arr[index] || arr[index + 1] || arr[index - 1]);
+        });
     }
 
     setActiveAssignment(assignment) {

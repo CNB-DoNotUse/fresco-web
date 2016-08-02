@@ -25,16 +25,16 @@ class Galleries extends React.Component {
     /**
      * onUpdateGallery
      *
-     * @param {number} id Called on updating gallery to set next active assignment and remove updated
+     * @param {number} id Called on updating gallery
+     * to set next active assignment and remove updated
      */
     onUpdateGallery(id) {
         const { galleries, removeGallery } = this.props;
         const index = findIndex(galleries, { id });
-        const nextGallery = galleries[index + 1]
-            || galleries[index - 1]
-            || null;
-        removeGallery(id);
-        this.setActiveGallery(nextGallery);
+
+        removeGallery(id, (arr) => {
+            this.setActiveGallery(arr[index] || arr[index + 1] || arr[index - 1]);
+        });
     }
 
     setActiveGallery(activeGallery) {
