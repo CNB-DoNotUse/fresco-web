@@ -147,20 +147,17 @@ class Index extends React.Component {
         } = this.props;
 
         if (tabs) {
-            const tabContent = tabs.map((tab) => {
-                const buttonClass =
-                    "btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (activeTab == tab ? ' toggled' : '');
-                return (
-                    <button
-                        className={buttonClass}
-                        onClick={() => setActiveTab(tab)}
-                        key={tab.toLowerCase()}
-                    >
-                        {tab}
-                        <div className="ripple-wrapper" />
-                    </button>
-                );
-            });
+            const tabContent = tabs.map((tab) => (
+                <button
+                    className={`btn btn-flat vault ${tab.toLowerCase()}-toggler
+                            ${activeTab === tab ? 'toggled' : ''}`}
+                    onClick={() => setActiveTab(tab)}
+                    key={tab.toLowerCase()}
+                >
+                    {tab}
+                    <div className="ripple-wrapper" />
+                </button>
+            ));
 
             return <div className="tab-control">{tabContent}</div>;
         }
