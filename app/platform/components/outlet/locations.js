@@ -63,7 +63,7 @@ class Locations extends React.Component {
             autocomplete.value = '';
             // Update locations
             this.loadLocations();
-            $.snackbar({ content: 'Location added' });
+            $.snackbar({ content: 'Location added!' });
         })
         .fail((xhr = {}, status, err) => {
             const { responseJSON: { msg = utils.resolveError(err) } } = xhr;
@@ -81,7 +81,7 @@ class Locations extends React.Component {
         })
         .done(() => {
             const locations = this.state.locations.filter((l) => (l.id !== id));
-            $.snackbar({ content: 'Location deleted' });
+            $.snackbar({ content: 'Location deleted!' });
             this.setState({ locations });
         })
         .fail((xhr, status, error) => {
@@ -96,7 +96,7 @@ class Locations extends React.Component {
         const { outlet: { id } } = this.props;
         if (!id) return;
 
-        $.ajax({ url: `/api/outlet/locations/${id}?limit=16` })
+        $.ajax({ url: `/api/outlet/locations?limit=400` }) //arbitrary limit of 400 because it doens't paginate
         .done((res) => {
             this.setState({ locations: res });
         })
