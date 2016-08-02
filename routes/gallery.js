@@ -7,6 +7,7 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const PublicGallery = require('../app/platform/views/publicGallery.js');
 const api = require('../lib/api');
+const has = require('lodash/has');
 
 /** //
 
@@ -22,8 +23,8 @@ const api = require('../lib/api');
 function render(gallery, user, req, res) {
     let title = 'Gallery';
 
-    if (gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
-        title += ' from ' + gallery.posts[0].location.address;
+    if (has(gallery, ['posts', '0', 'location', 'address'])) {
+        title += ` from ${gallery.posts[0].location.address}`;
     }
 
     // User is logged in, show full gallery page

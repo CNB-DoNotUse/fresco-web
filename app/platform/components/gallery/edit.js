@@ -163,9 +163,9 @@ class Edit extends React.Component {
     renderMap() {
         const { gallery } = this.props;
         const location = gallery.location
-            || gallery.posts ? gallery.posts[0].location : null;
+            || (gallery.posts[0] ? gallery.posts[0].location : null);
         const address = gallery.address
-            || gallery.posts ? gallery.posts[0].address : null;
+            || gallery.posts[0] ? gallery.posts[0].address : null;
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
