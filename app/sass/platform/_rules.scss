@@ -1014,7 +1014,7 @@ div.list {
 	}
 	> .tab-control {
 		display: inline-block;
-		position: relative;
+		position: absolute;
 		top: 24px;
 		margin: 0 24px;
 	}
@@ -1026,7 +1026,6 @@ div.list {
 		}
 	}
 	> h1 {
-		display: inline-block;
 		display: inline-block;
 		max-width: 50%;
 		white-space: nowrap;
