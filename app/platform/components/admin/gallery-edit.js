@@ -98,10 +98,8 @@ class GalleryEdit extends React.Component {
         if (this.props.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
-        this.refs['gallery-caption'].value = this.props.gallery.caption || 'No Caption';
         this.refs['gallery-caption'].className =
             this.refs['gallery-caption'].className.replace(/\bempty\b/, '');
-        $(this.refs['gallery-stories-input']).removeClass('empty');
     }
 
     /**
@@ -197,7 +195,7 @@ class GalleryEdit extends React.Component {
                         className="form-control floating-label gallery-caption"
                         placeholder="Caption"
                         onChange={(e) => this.handleChangeCaption(e)}
-                        defaultValue={caption}
+                        value={caption}
                         ref="gallery-caption"
                     />
 
