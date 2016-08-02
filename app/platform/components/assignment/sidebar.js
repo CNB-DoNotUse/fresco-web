@@ -17,7 +17,7 @@ class Sidebar extends React.Component {
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ')
             + moment(expirationTime).fromNow();
         const createdText = 'Created at ' + moment(assignment.created_at).format('LT');
-        const {photo_count, video_count } = assignment;
+        const { photo_count, video_count } = assignment;
 
         return (
             <div className="meta-list">
@@ -39,15 +39,12 @@ class Sidebar extends React.Component {
                         <span className="mdi mdi-clock icon"></span>
                         <span>{expiredText}</span>
                     </li>
-                    <li>
-                        <span className="mdi mdi-account icon"></span>
-                        <span>
-                            {assignment.outlets[0]
-                                ? assignment.outlets[0].title
-                                : ''
-                            }
-                        </span>
-                    </li>
+                    {assignment.outlets.map((o, i) => (
+                        <li key={i}>
+                            <span className="mdi mdi-account-multiple icon" />
+                            <a href={`/outlet/${o.id}`}>{o.title}</a>
+                        </li>
+                    ))}
                     <li>
                         <span className="mdi mdi-image icon"></span>
                         <span>
@@ -66,11 +63,12 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        const { assignment, expireAssignment } = this.props;
+        const { assignment, expireAssignment, loading } = this.props;
         const expireButton = (
             <button
                 className="btn fat tall btn-error assignment-expire"
                 onClick={expireAssignment}
+                disabled={loading}
             >
                 Expire
             </button>
@@ -103,6 +101,7 @@ class Sidebar extends React.Component {
 Sidebar.propTypes = {
     assignment: PropTypes.object.isRequired,
     expireAssignment: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
 };
 
 export default Sidebar;

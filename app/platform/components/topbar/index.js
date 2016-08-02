@@ -78,7 +78,7 @@ class Index extends React.Component {
 
         if (editable) {
             let className = `mdi icon pull-right hidden-xs toggle-edit
-            ${editIcon || 'mid-pencil'} toggler`;
+            ${editIcon || 'mdi-pencil'} toggler`;
 
             topbarItems.push(
                 <a className={className} key="edit" onClick={edit} />

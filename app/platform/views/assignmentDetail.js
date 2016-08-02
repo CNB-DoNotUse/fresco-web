@@ -22,8 +22,6 @@ class AssignmentDetail extends React.Component {
             sortBy: 'created_at',
             loading: false,
         };
-
-        this.loadPosts = this.loadPosts.bind(this);
     }
 
     onVerifiedToggled(verifiedToggle) {
@@ -64,7 +62,6 @@ class AssignmentDetail extends React.Component {
             $.snackbar({ content: utils.resolveError(error) });
         });
     }
-
 
     /**
      * Sets the assignment to expire
@@ -157,12 +154,13 @@ class AssignmentDetail extends React.Component {
                 <Sidebar
                     assignment={assignment}
                     expireAssignment={() => this.expireAssignment()}
+                    loading={loading}
                 />
 
                 <div className="col-sm-8 tall">
                     <PostList
                         rank={user.rank}
-                        loadPosts={this.loadPosts}
+                        loadPosts={(l, cb) => this.loadPosts(l, cb)}
                         sortBy={sortBy}
                         onlyVerified={verifiedToggle}
                         assignment={assignment}
