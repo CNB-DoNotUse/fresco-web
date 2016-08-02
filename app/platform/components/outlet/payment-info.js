@@ -1,5 +1,3 @@
-/* global Stripe:true */
-
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 
@@ -88,6 +86,7 @@ class PaymentInfo extends React.Component {
             <div className="card settings-outlet-payment">
                 <div className="header">
                     <span className="title">PAYMENT INFORMATION</span>
+                    
                     <div>
                         {currentCardText}
                         <a href="/outlet">PURCHASE HISTORY</a>
@@ -160,4 +159,3 @@ PaymentInfo.propTypes = {
 };
 
 export default PaymentInfo;
-

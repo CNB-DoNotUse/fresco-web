@@ -17,17 +17,29 @@ router.get('/settings', (req, res, next) => {
         });
     }
 
-    API.request({
-        url: `/outlet/payment/${outlet.id}`,
-        token,
-    })
-    .then(response => {
+    //Chain promises for two API calls
+    Promise.all([
+        API.request({
+            url: '/outlet/me',
+            method: 'GET',
+            token,
+        }),
+        API.request({
+            url: '/outlet/payment',
+            method: 'GET',
+            token
+        })
+    ])
+    .then(responses => { 
+        const outlet = responses[0].body;
+        const payment = responses[1].body;
+
         const title = 'Outlet Settings';
         const props = {
             title,
             user,
             outlet,
-            paymentSources: response.body || [],
+            payment,
             stripePublishableKey: config.STRIPE_PUBLISHABLE,
         };
 
@@ -59,8 +71,8 @@ router.get('/:id?', (req, res, next) => {
     // Make request for full outlet object
     API.request({
         method: 'GET',
-        url: `/outlet/${id}`,
-        token: req.session.token,
+        url: `/outlet/${id || 'me'}`,
+        token: req.session.token
     })
     .then((response) => {
         const outlet = response.body;

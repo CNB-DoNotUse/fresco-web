@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import App from './app.js'
-import TopBar from './../components/topbar'
-import QuickSupport from './../components/global/quick-support'
+import TopBar from '../components/topbar'
+import QuickSupport from '../components/global/quick-support'
 import utils from 'utils'
 import _ from 'lodash'
+import '../../sass/platform/userSettings.scss';
 
 /**
  * User Settings parent object
  */
-
 class UserSettings extends React.Component {
 
 	constructor(props) {
@@ -22,63 +22,20 @@ class UserSettings extends React.Component {
 		this.updateSettings = this.updateSettings.bind(this);
 		this.avatarInputChange = this.avatarInputChange.bind(this);
 		this.clickProfileImgInput = this.clickProfileImgInput.bind(this);
-		this.handleInputChange = this.handleInputChange.bind(this);
-	}
-
-	componentDidMount() {
-		$('input, textarea').on('keyup', this.handleInputChange);
-	}
-
-	handleInputChange() {
-
-		var newName = this.refs.name.value != (this.props.user.firstname + ' ' + this.props.user.lastname),
-			newBio = !utils.compareMultiline(this.refs.bio.value, this.props.user.bio),
-			newAvatar = this.refs.avatarFileInput.files.length > 0,
-			newEmail = this.refs.email.value != this.props.user.email,
-			newPhone = this.refs.phone.value != this.props.user.phone;
-
-		var profileSaveBtn = this.refs.profileSaveBtn,
-			accountSaveBtn = this.refs.accountSaveBtn;
-
-		// if(newName || newBio || newAvatar) {
-		// 	if(profileSaveBtn.className.indexOf(' changed ') == -1) {
-		// 		profileSaveBtn.className += ' changed ';
-		// 		profileSaveBtn.disabled = false;
-		// 	}
-		// } else {
-		// 	if(profileSaveBtn.className.indexOf(' changed ') != -1) {
-		// 		profileSaveBtn.className = profileSaveBtn.className.replace(/\bchanged\b/,'');
-		// 		profileSaveBtn.disabled = true;
-		// 	}
-		// }
-
-		// if(newEmail || newPhone) {
-		// 	if(accountSaveBtn.className.indexOf(' changed ') == -1) {
-		// 		accountSaveBtn.className += ' changed ';
-		// 		accountSaveBtn.disabled = false;
-		// 	}
-		// } else {
-		// 	if(accountSaveBtn.className.indexOf(' changed ') != -1) {
-		// 		accountSaveBtn.className = accountSaveBtn.className.replace(/\bchanged\b/,'');
-		// 		accountSaveBtn.disabled = true;
-		// 	}
-		// }
 	}
 
  	/**
  	 * Change listener for file upload input
  	 */
 	avatarInputChange(e) {
-		var profileSaveBtn = this.refs.profileSaveBtn;
+		const { profileSaveBtn } = this.refs;
 		
 		if(profileSaveBtn.className.indexOf(' changed ') == -1) {
 			profileSaveBtn.className += ' changed ';
 		}
 
-		var file = this.refs.avatarFileInput.files[0],
-			self = this;
-
-		var reader = new FileReader();
+		const file = this.refs.avatarFileInput.files[0];
+		const reader = new FileReader();
 
 		reader.onloadend = ()=>{
 		    this.setState({
@@ -90,44 +47,36 @@ class UserSettings extends React.Component {
 	}
 
 	/**
-	 * Sends update to user
+	 * Sends update to API
 	 */
  	updateSettings() {
  		if(this.updating) return;
 
  		this.updating = true;
 
- 		var userData = new FormData(),
- 			user = this.props.user,
- 			id = user.id,
- 			name = this.refs.name.value.split(' '),
- 			firstname = name[0],
- 			lastname = name.slice(1).join(' '),
- 			bio = this.refs.bio.value,
- 			email =  this.refs.email.value,
- 			phone =  this.refs.phone.value == '' ? null : this.refs.phone.value,
- 			self = this;
+ 		const userData = new FormData();
+ 		const user = this.props.user;
+ 		const full_name = this.refs.name.value;
+ 		const bio = this.refs.bio.value;
+ 		const email = this.refs.email.value;
+ 		const phone = this.refs.phone.value == '' ? null : this.refs.phone.value;
+ 		const self = this;
 
- 		if(utils.isEmptyString(firstname)){
- 			return $.snackbar({ content: 'You must have a firstname!' });
- 		}
- 		else if (utils.isEmptyString(lastname)){
- 			return $.snackbar({ content: 'You must have a lastname!' });
- 		}
- 		else if(utils.isEmptyString(email)){
+ 		if(utils.isEmptyString(full_name)){
+ 			return $.snackbar({ content: 'You must have a name!' });
+ 		} else if(utils.isEmptyString(email)){
  			return $.snackbar({ content: 'You must have an email!' });
  		}
 
- 		userData.append('id', id);
- 		userData.append('firstname', firstname);
- 		userData.append('lastname', lastname);
+ 		userData.append('id', user.id);
+ 		userData.append('full_name', full_name);
  		userData.append('bio', bio);
  		userData.append('email', email);
  		userData.append('phone', phone);
  		userData.append('avatar', this.refs.avatarFileInput.files[0]);
 
  		$.ajax({
- 			url: "/scripts/user/update",
+ 			url: "/api/user/update",
  			type: 'POST',
  			cache: false,
  			processData: false,
@@ -165,14 +114,14 @@ class UserSettings extends React.Component {
  	}
 
  	render() {
+ 		const { user } = this.state
 
- 		var user = this.state.user,
- 			removeButton = <button className="btn btn-danger">DELETE ACCOUNT</button>;
+ 		console.log(user);
 
  		return ( 
  			<App user={this.state.user}>
  				<TopBar 
- 					title={this.state.user.firstname + ' ' + this.state.user.lastname}
+ 					title={this.state.user.full_name}
 					saveButton={true}
 					updateSettings={this.updateSettings} />
 
@@ -196,16 +145,14 @@ class UserSettings extends React.Component {
 								ref="avatarFileInput"  
 								accept="image/png,image/jpeg" 
 								onChange={this.avatarInputChange} 
-								multiple 
-							/>
+								multiple={false} />
 
 							<input 
 								type="text" 
 								className="floating-label" 
 								ref="name" 
 								placeholder="Name" 
-								defaultValue={user.firstname + ' ' + user.lastname} 
-							/>
+								defaultValue={user.full_name} />
 							
 							<textarea 
 								className="floating-label" 
@@ -224,32 +171,30 @@ class UserSettings extends React.Component {
 					</div>
 
 					<div className="card settings-user-account">
-							<div className="header">
-								<span className="title">Account Information</span>
-							</div>
-							
-							<div className="card-form">
-								<input 
-									type="text" 
-									ref="email" 
-									placeholder="Email address" 
-									defaultValue={user.email} 
-								/>
+						<div className="header">
+							<span className="title">Account Information</span>
+						</div>
+						
+						<div className="card-form">
+							<input 
+								type="text" 
+								ref="email" 
+								placeholder="Email address" 
+								defaultValue={user.email} />
 
-								<input 
-									type="text" 
-									ref="phone" 
-									maxLength={15}
-									placeholder="Phone number" 
-									defaultValue={user.phone} 
-								/>
-			
-								<button 
-									className="btn btn-save changed" 
-									onClick={this.updateSettings} 
-									ref="accountSaveBtn">SAVE CHANGES</button>
-							</div>
-							
+							<input 
+								type="text" 
+								ref="phone" 
+								maxLength={15}
+								placeholder="Phone number" 
+								defaultValue={user.phone} />
+		
+							<button 
+								className="btn btn-save changed" 
+								onClick={this.updateSettings} 
+								ref="accountSaveBtn">SAVE CHANGES
+							</button>
+						</div>
 					</div>
 
 					<QuickSupport />
@@ -301,10 +246,13 @@ class ChangePasswordCard extends React.Component {
 	}
 }
 
+UserSettings.propTypes = {
+    user: PropTypes.object
+};
+
 ReactDOM.render(
   	<UserSettings 
   		user={window.__initialProps__.user} 
-  		purchases={window.__initialProps__.purchases} 
   		title={window.__initialProps__.title} />,
   	document.getElementById('app')
 );

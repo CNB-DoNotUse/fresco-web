@@ -18,12 +18,11 @@ const multer        = require('multer');
 const fs            = require('fs');
 const app           = express();
 
-
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
 // If in dev mode, use local redis server as session store
-var rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
-var redisConnection = { client: rClient };
+const rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
+const redisConnection = { client: rClient };
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,7 +39,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //Multer
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/')
     },
@@ -73,8 +72,8 @@ app.use(
 //Set up public direc.
 app.use(
     express.static(path.join(__dirname, 'public'), {
-        maxAge: 1000 * 60 * 60 * 2
-    }) // 2 hour cache
+        maxAge: 1000 * 60 * 60 * 2 // 2 hour cache
+    })
 );
 
 /**
@@ -248,7 +247,7 @@ app.use((error, req, res, next) => {
     }
 
     if(req.accepts('json')) {
-      return res.send({ error: 'Server Error' });
+        return res.send({ error: 'Server Error' });
     }
 
     res.type('txt').send('Server Error');

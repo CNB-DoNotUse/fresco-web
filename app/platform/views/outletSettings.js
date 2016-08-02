@@ -19,6 +19,10 @@ class OutletSettings extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            outlet: this.props.outlet,
+        };
+
         this.state = this.getStateFromProps(props);
     }
 
@@ -53,20 +57,26 @@ class OutletSettings extends React.Component {
                                     updateOutlet={(o) => this.updateOutlet(o)}
                                     outlet={outlet}
                                 />
-                                <PaymentInfo payment={paymentSources} outlet={outlet} />
+                                
+                                <PaymentInfo 
+                                    payment={payment} 
+                                    outlet={this.state.outlet} />
                             </div>
                             : ''
                     }
                     <div className="right">
-                        <Notifications outlet={outlet} />
-                        <Locations outlet={outlet} />
-                        {isOwner
-                            ? <Members
-                                outlet={outlet}
-                                updateMembers={(m) => this.setState({ members: m })}
-                                members={members}
+                        <Notifications outlet={this.state.outlet} />
+                        
+                        <Locations outlet={this.state.outlet} />
+                        
+                        {isOwner ? 
+                            <Members
+                                outlet={this.state.outlet}
+                                updateMembers={this.updateMembers}
+                                members={this.state.outlet.members}
                             />
-                            : ''
+                            : 
+                            ''
                         }
                     </div>
 
