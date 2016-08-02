@@ -58,16 +58,16 @@ app.use( cookieParser() );
 
 //Session config
 app.use(
-  session({
-    name: 'FRSSID' + (config.COOKIE_SUFFIX ? ('_' + config.COOKIE_SUFFIX) : ''),
-    store: new RedisStore(redisConnection),
-    secret: config.SESSION_SECRET,
-    resave: false,
-    rolling: true,
-    saveUninitialized: false,
-    cookie: { httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
-    unset: 'destroy'
-  })
+    session({
+        name: 'FRSSID' + (config.COOKIE_SUFFIX ? ('_' + config.COOKIE_SUFFIX) : ''),
+        store: new RedisStore(redisConnection),
+        secret: config.SESSION_SECRET,
+        resave: false,
+        rolling: true,
+        saveUninitialized: false,
+        cookie: { httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
+        unset: 'destroy'
+    })
 );
 
 //Set up public direc.

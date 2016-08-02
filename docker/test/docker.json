@@ -1,5 +1,0 @@
-{
-    "REDIS": {
-        "SESSIONS": "redis"
-    }
-}
