@@ -134,7 +134,7 @@ class Galleries extends React.Component {
         if (target.scrollTop === target.scrollHeight - target.offsetHeight) {
             if (!galleries || !galleries.length) return;
 
-            getData(galleries[galleries.length - 1].id, {
+            getData(_.last(galleries).id, {
                 concat: true,
                 tab: 'galleries',
             },
