@@ -38,7 +38,7 @@ class OutletSettings extends React.Component {
     }
 
     render() {
-        const { user, paymentSources } = this.props;
+        const { user, payment } = this.props;
         const isOwner = user.permissions.includes('update-outlet');
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
         const { outlet, members } = this.state;
@@ -97,7 +97,7 @@ ReactDOM.render(
     <OutletSettings
         user={window.__initialProps__.user}
         outlet={window.__initialProps__.outlet}
-        paymentSources={window.__initialProps__.paymentSources}
+        payment={window.__initialProps__.payment}
     />,
 	document.getElementById('app')
 );

@@ -12,6 +12,7 @@ import FrescoAutocomplete from './../global/fresco-autocomplete.js';
  * is added to the navigation bar
  */
 class Index extends React.Component {
+    
 	/**
 	 * Prop function called from `FrescoAutocomplete` for getting autocomplete date
 	 */
