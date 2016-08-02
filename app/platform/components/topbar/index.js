@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import utils from 'utils';
 import Dropdown from './../global/dropdown';
 import RadioGroup from './../global/radio-group';
@@ -6,28 +6,18 @@ import FrescoAutocomplete from './../global/fresco-autocomplete.js';
 
 /**
  * Top Bar for pages of the site
- * @description The component takes optional toggles/pieces as props, and each prop is checked in the render.
- * If the prop exists, then the repsective toggle/dropdown/edit/whatever is added to the navigation bar
+ * @description The component takes optional toggles/pieces as props,
+ * and each prop is checked in the render.
+ * If the prop exists, then the repsective toggle/dropdown/edit/whatever
+ * is added to the navigation bar
  */
-class TopBar extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.goLink = this.goLink.bind(this);
-        this.toggleDrawer = this.toggleDrawer.bind(this);
-        this.timeToggleSelected = this.timeToggleSelected.bind(this);
-        this.verifiedToggleSelected = this.verifiedToggleSelected.bind(this);
-        this.chronToggleSelected = this.chronToggleSelected.bind(this);
-        this.autocompleteUpdated = this.autocompleteUpdated.bind(this);
-    }
-
+class Index extends React.Component {
 	/**
 	 * Prop function called from `FrescoAutocomplete` for getting autocomplete date
 	 */
-    autocompleteUpdated(autocompleteData) {
+    onUpdateAutocomplete(data) {
         // Update the position to the parent component
-        this.props.updateMapPlace(autocompleteData.prediction);
+        this.props.updateMapPlace(data.prediction);
     }
 
 	/**
@@ -46,11 +36,6 @@ class TopBar extends React.Component {
             sidebar.className += ' toggled';
             toggler.className += ' toggled';
         }
-    }
-
-	// Called when has link prop.
-    goLink() {
-        window.location = this.props.link;
     }
 
     // Called when the user selects a time format
@@ -78,20 +63,9 @@ class TopBar extends React.Component {
         }
     }
 
-    render() {
-        let topbarItems = [];
-        let locationInputCmp = '';
-        let	saveButtonCmp = '';
-        let	titleCmp = '';
-        let tabCmps = '';
+    renderTopBarItems() {
         const {
-            title,
-            saveButton,
-            locationInput,
-            mapPlace,
             editable,
-            updateSettings,
-            bounds,
             editIcon,
             edit,
             chronToggle,
@@ -99,48 +73,12 @@ class TopBar extends React.Component {
             verifiedToggle,
             defaultVerified,
             rank,
-            tabs,
-            setActiveTab,
-            activeTab,
         } = this.props;
-
-        if (title){
-            titleCmp = <h1 className="md-type-title">{title}</h1>;
-        }
-
-        if (saveButton){
-            saveButtonCmp = (
-                <a
-                    onClick={updateSettings}
-                    className="mdi mdi-content-save icon pull-right hidden-xs"
-                >
-                    <div className="ripple-wrapper"></div>
-                </a>
-            );
-		}
-
-		if (locationInput) {
-			let text = '';
-
-			if (mapPlace) {
-				text = mapPlace.description || mapPlace.formatted_address;
-			}
-
-            locationInputCmp = (
-                <FrescoAutocomplete
-                    class="nav"
-                    inputText={text}
-                    bounds={bounds}
-                    updateAutocompleteData={this.autocompleteUpdated}
-                />
-            );
-		}
+        const topbarItems = [];
 
         if (editable) {
-            let className = 'mdi icon pull-right hidden-xs toggle-edit toggler';
-
-            if (editIcon) className += ' ' + editIcon;
-            else className += ' mdi-pencil';
+            let className = `mdi icon pull-right hidden-xs toggle-edit
+            ${editIcon || 'mid-pencil'} toggler`;
 
             topbarItems.push(
                 <a className={className} key="edit" onClick={edit} />
@@ -158,7 +96,7 @@ class TopBar extends React.Component {
                     <RadioGroup
                         options={['Relative time', 'Absolute time']}
                         selected="Relative time"
-                        onSelected={this.timeToggleSelected}
+                        onSelected={(s) => this.timeToggleSelected(s)}
                         key="timeToggle"
                     />
                 );
@@ -167,7 +105,7 @@ class TopBar extends React.Component {
                 <Dropdown
                     options={['By capture time', 'By upload time']}
                     selected="By upload time"
-                    onSelected={this.chronToggleSelected}
+                    onSelected={(s) => this.chronToggleSelected(s)}
                     key="chronToggle"
                     inList
                 >
@@ -179,7 +117,7 @@ class TopBar extends React.Component {
                 <Dropdown
                     options={['Relative time', 'Absolute time']}
                     selected="Relative time"
-                    onSelected={this.timeToggleSelected}
+                    onSelected={(s) => this.timeToggleSelected(s)}
                     key="timeToggle"
                     inList
                 />
@@ -191,23 +129,31 @@ class TopBar extends React.Component {
                 <Dropdown
                     options={['All content', 'Verified']}
                     selected={defaultVerified === 'all' ? 'All content' : 'Verified'}
-                    onSelected={this.verifiedToggleSelected}
+                    onSelected={(s) => this.verifiedToggleSelected(s)}
                     key="verifiedToggle"
                     inList
                 />
             );
         }
 
+        return topbarItems;
+    }
+
+    renderTabs() {
+        const {
+            tabs,
+            setActiveTab,
+            activeTab,
+        } = this.props;
+
         if (tabs) {
-            const tabContent = [];
-
-            tabs.map((tab) => {
-                var buttonClass = "btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (activeTab == tab ? ' toggled' : '');
-
-                tabContent.push(
+            const tabContent = tabs.map((tab) => {
+                const buttonClass =
+                    "btn btn-flat vault " + tab.toLowerCase() + "-toggler" + (activeTab == tab ? ' toggled' : '');
+                return (
                     <button
                         className={buttonClass}
-                        onClick={setActiveTab.bind(null, tab)}
+                        onClick={() => setActiveTab(tab)}
                         key={tab.toLowerCase()}
                     >
                         {tab}
@@ -216,38 +162,97 @@ class TopBar extends React.Component {
                 );
             });
 
-            tabCmps = <div className="tab-control">{tabContent}</div>;
+            return <div className="tab-control">{tabContent}</div>;
         }
+
+        return '';
+    }
+
+    render() {
+        const {
+            title,
+            saveButton,
+            locationInput,
+            mapPlace,
+            updateSettings,
+            bounds,
+            children,
+        } = this.props;
 
         return (
             <nav className="navbar navbar-fixed-top navbar-default">
-                <div 
-                    className="dim toggle-drop toggler" 
-                    id="_toggler" 
-                    onClick={this.toggleDrawer} 
+                <div
+                    className="dim toggle-drop toggler"
+                    id="_toggler"
+                    onClick={() => this.toggleDrawer()}
                 />
 
-                <button type="button" className="icon-button toggle-drawer toggler hidden-lg" onClick={this.toggleDrawer}>
+                <button
+                    type="button"
+                    className="icon-button toggle-drawer toggler hidden-lg"
+                    onClick={() => this.toggleDrawer()}
+                >
                     <span className="mdi mdi-menu icon" />
                 </button>
 
-                <div className="spacer"></div>
+                <div className="spacer" />
 
-                {title ? 
-                    <h1 className="md-type-title">{title}</h1>
-                    : ''}
-                {locationInputCmp}
-                {tabCmps}
-                {topbarItems}
-                {this.props.children}
-                {saveButtonCmp}
+                {title
+                    ? <h1 className="md-type-title">{title}</h1>
+                    : ''
+                }
+                {locationInput
+                    ? <FrescoAutocomplete
+                        class="nav"
+                        inputText={mapPlace ? mapPlace.description || mapPlace.formatted_address : ''}
+                        bounds={bounds}
+                        updateAutocompleteData={(a) => this.onUpdateAutocomplete(a)}
+                    />
+                    : ''
+                }
+                {this.renderTabs()}
+                {this.renderTopBarItems()}
+                {children}
+                {saveButton
+                    ? <a
+                        onClick={updateSettings}
+                        className="mdi mdi-content-save icon pull-right hidden-xs"
+                    >
+                        <div className="ripple-wrapper"></div>
+                    </a>
+                    : ''
+                }
+
             </nav>
         );
     }
 
 }
 
-TopBar.defaultProps = {
+Index.propTypes = {
+    title: PropTypes.string,
+    saveButton: PropTypes.bool,
+    locationInput: PropTypes.bool,
+    mapPlace: PropTypes.object,
+    editable: PropTypes.bool,
+    updateSettings: PropTypes.func,
+    bounds: PropTypes.object,
+    editIcon: PropTypes.string,
+    edit: PropTypes.func,
+    chronToggle: PropTypes.bool,
+    timeToggle: PropTypes.bool,
+    verifiedToggle: PropTypes.bool,
+    defaultVerified: PropTypes.string,
+    rank: PropTypes.number,
+    tabs: PropTypes.array,
+    setActiveTab: PropTypes.func,
+    activeTab: PropTypes.string,
+    children: PropTypes.node,
+    updateMapPlace: PropTypes.func,
+    onVerifiedToggled: PropTypes.func,
+};
+
+Index.defaultProps = {
     title: '',
     edit() {},
     hide() { console.log('Hide function not implemented in TopBar'); },
@@ -256,4 +261,5 @@ TopBar.defaultProps = {
     onOutletFilterRemove() {},
 };
 
-export default TopBar;
+export default Index;
+

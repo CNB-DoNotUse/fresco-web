@@ -165,7 +165,7 @@ class Edit extends React.Component {
         const location = gallery.location
             || (gallery.posts[0] ? gallery.posts[0].location : null);
         const address = gallery.address
-            || gallery.posts[0] ? gallery.posts[0].address : null;
+            || (gallery.posts[0] ? gallery.posts[0].address : null);
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
