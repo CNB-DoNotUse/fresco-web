@@ -8,39 +8,26 @@ const API = require('../lib/api');
  */
 router.get('/settings', (req, res, next) => {
     const { user, token } = req.session;
+    const { outlet } = user;
 
-    if (!user.outlet) {
+    if (!user || !outlet) {
         next({
             message: 'No outlet found!',
             status: 500,
         });
-
-        return;
     }
 
-    // Chain promises for two API calls
-    Promise.all([
-        API.request({
-            url: '/outlet',
-            token,
-        }),
-        // API.request({
-        //     url: '/outlet/payment',
-        //     token,
-        // })
-    ])
-    .then(responses => {
-        console.log(responses);
-
-        const outlet = responses[0];
-        // const payment = responses = [1];
-
+    API.request({
+        url: `/outlet/payment/${outlet.id}`,
+        token,
+    })
+    .then(response => {
         const title = 'Outlet Settings';
         const props = {
             title,
             user,
             outlet,
-            // payment,
+            paymentSources: response.body || [],
             stripePublishableKey: config.STRIPE_PUBLISHABLE,
         };
 
@@ -53,8 +40,6 @@ router.get('/settings', (req, res, next) => {
         });
     })
     .catch((error) => {
-        console.log(error);
-
         next({
             message: 'Outlet not found!',
             status: error.status || 500,

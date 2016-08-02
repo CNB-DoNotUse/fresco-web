@@ -17,7 +17,7 @@ class PaymentInfo extends React.Component {
         // returns active card or first card
         const { payment } = this.props;
 
-        return payment.find((p) => (p.active === true))
+        return payment.find(p => p.active)
         || payment.length ? payment[0] : null;
     }
 

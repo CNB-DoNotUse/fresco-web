@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import utils from 'utils';
 
 class Locations extends React.Component {
@@ -93,7 +93,10 @@ class Locations extends React.Component {
 	 * Loads locations for the outlet
 	 */
     loadLocations() {
-        $.ajax({ url: '/api/outlet/locations?limit=16' })
+        const { outlet: { id } } = this.props;
+        if (!id) return;
+
+        $.ajax({ url: `/api/outlet/locations/${id}?limit=16` })
         .done((res) => {
             this.setState({ locations: res });
         })
@@ -245,4 +248,9 @@ class Locations extends React.Component {
     }
 }
 
+Locations.propTypes = {
+    outlet: PropTypes.object.isRequired,
+};
+
 export default Locations;
+
