@@ -8,7 +8,7 @@ import moment from 'moment';
 /**
  * Single Post Cell, child of PostList
  */
-export default class PostCell extends React.Component {
+class PostCell extends React.Component {
     constructor(props) {
         super(props);
 
@@ -19,7 +19,6 @@ export default class PostCell extends React.Component {
 
         this.state = {
             purchased,
-            showFirstLook: true,
             firstLook: first_look_until ? moment(first_look_until) : moment().add(20, 'minutes'),
         };
     }
@@ -48,19 +47,19 @@ export default class PostCell extends React.Component {
         if (!firstLook || moment().diff(firstLook) > 1) {
             return '';
         }
-
         const remainingTime = moment(firstLook.diff(moment())).format('mm ss');
-        const style = { color: '#0047bb' };
+        const style = {
+            color: '#0047bb',
+            fontSize: '12px',
+            verticalAlign: 'middle',
+            height: '20px',
+        };
 
         return (
-            <div className="tile-foot" style={style} >
-                <div className="tile-info">
-                    <span className="md-type-body2">
-                        <span className="mdi mdi-clock-fast icon" />
-                        {`${remainingTime} remaining`}
-                    </span>
-                </div>
-            </div>
+            <span style={style} className="md-type-caption timestring">
+                <span style={{ fontSize: '16px' }} className="mdi mdi-clock-fast" />
+                <span style={{ marginLeft: '4.7px' }}>{`${remainingTime} remaining`}</span>
+            </span>
         );
     }
 
@@ -72,7 +71,7 @@ export default class PostCell extends React.Component {
             rank,
             editable,
         } = this.props;
-        const { purchased } = this.state;
+        const { purchased, firstLook } = this.state;
         let time = sort === 'captured_at' ? post.captured_at : post.created_at;
         let	timeString = typeof(time) === 'undefined' ? 'No timestamp' : utils.formatTime(time);
         let address = post.location && post.address ? post.address : 'No Address';
@@ -83,9 +82,8 @@ export default class PostCell extends React.Component {
 
 
         return (
-            <div
-                className="tile-foot"
-            >
+            <div className="tile-foot" >
+
                 <PostCellActions
                     post={post}
                     assignment={assignment}
@@ -99,9 +97,12 @@ export default class PostCell extends React.Component {
                     <div className="tile-info">
                         <span className="md-type-body2">{address}</span>
 
-                        <span className="md-type-caption timestring" data-timestamp={time}>
-                            {timeString}
-                        </span>
+                        {firstLook
+                            ? this.renderFirstLook()
+                            : <span className="md-type-caption timestring" data-timestamp={time}>
+                                {timeString}
+                            </span>
+                        }
                     </div>
 
                     <span className={statusClass} />
@@ -118,14 +119,11 @@ export default class PostCell extends React.Component {
             size,
             sizes,
         } = this.props;
-        const { showFirstLook } = this.state;
         const divSize = size === 'large' ? sizes.large : sizes.small;
 
         return (
             <div
                 className={`${divSize} tile ${toggled ? 'toggled' : ''}`}
-                onMouseOut={() => this.setState({ showFirstLook: true })}
-                onMouseOver={() => this.setState({ showFirstLook: false })}
             >
                 <div className="tile-body">
                     <div className="frame" />
@@ -148,11 +146,8 @@ export default class PostCell extends React.Component {
                         size={size}
                     />
                 </div>
+                {this.renderActions()}
 
-                {showFirstLook
-                    ? this.renderFirstLook()
-                    : this.renderActions()
-                }
             </div>
         );
     }
@@ -178,4 +173,6 @@ PostCell.propTypes = {
     editable: PropTypes.bool,
     toggled: PropTypes.bool,
 };
+
+export default PostCell;
 
