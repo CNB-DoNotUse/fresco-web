@@ -19,16 +19,18 @@ class PostCell extends React.Component {
 
         this.state = {
             purchased,
-            firstLook: first_look_until ? moment(first_look_until) : moment().add(20, 'minutes'),
+            // firstLook: first_look_until ? moment(first_look_until) : moment().add(20, 'minutes'),
+            firstLook: first_look_until ? moment(first_look_until) : null,
         };
     }
 
     componentDidMount() {
         const { firstLook } = this.state;
-
-        setInterval(() => {
-            this.setState({ firstLook: firstLook.subtract({ seconds: 1 }) });
-        }, 1000);
+        if (firstLook) {
+            setInterval(() => {
+                this.setState({ firstLook: firstLook.subtract({ seconds: 1 }) });
+            }, 1000);
+        }
     }
 
     postClicked(e) {
