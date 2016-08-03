@@ -79,6 +79,9 @@ class AssignmentEdit extends React.Component {
     onSave() {
         const { assignment, save, loading } = this.props;
         const { title, caption, radius, location, address, endsAt, outlets } = this.state;
+        const geo = location && location.hasOwnProperty('type')
+            ? location
+            : utils.getGeoFromCoord(location);
 
         if (!assignment || !assignment.id || loading) return;
         if (this.hasFormErrors()) return;
@@ -87,7 +90,7 @@ class AssignmentEdit extends React.Component {
             address,
             caption,
             radius: this.isGlobalLocation() ? undefined : radius,
-            location: this.isGlobalLocation() ? null : utils.getGeoFromCoord(location),
+            location: this.isGlobalLocation() ? null : geo,
             ...utils.getRemoveAddParams('outlets', assignment.outlets, outlets),
             title,
             ends_at: endsAt,

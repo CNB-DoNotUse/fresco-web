@@ -104,12 +104,17 @@ class AssignmentEdit extends React.Component {
 
     onApproveAssignment() {
         const { assignment, approveAssignment } = this.props;
+        const { location, address, radius } = this.sstate;
+        const geo = location && location.hasOwnProperty('type')
+            ? location
+            : utils.getGeoFromCoord(location);
+
         const params = {
             title: this.refs['assignment-title'].value,
             caption: this.refs['assignment-description'].value,
-            address: this.state.address || undefined,
-            radius: this.isGlobalLocation() ? undefined : this.state.radius,
-            location: this.isGlobalLocation() ? null : utils.getGeoFromCoord(this.state.location),
+            address: address || undefined,
+            radius: this.isGlobalLocation() ? undefined : radius,
+            location: this.isGlobalLocation() ? null : geo,
             // Convert to ms and current timestamp
             ends_at: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
         };
