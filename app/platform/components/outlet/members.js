@@ -131,14 +131,15 @@ export default class OutletMembers extends React.Component {
 		if(e.keyCode != 13) return;
 
 		const { outletInviteField } = this.refs;
-		const emails = outletInviteField.value.split(' ');
-
+		//Split by comma and map to remove spaces from all the new strigns
+		const emails = outletInviteField.value.split(',').map(e => e.replace(/\s/g, ''));
+		//Disable the field until we're done
 		outletInviteField.setAttribute('disabled', true);
 
-		if (emails == '' || (emails.length == 1 && emails[0].split() == '')){
+		if (!emails.length){
 			outletInviteField.removeAttribute('disabled');
 			
-			return $.snackbar({content:'You must invite at least 1 member!'});
+			return $.snackbar({ content:'You must invite at least 1 member!' });
 		}
 
 		$.ajax({
@@ -183,7 +184,7 @@ export default class OutletMembers extends React.Component {
 					<input type="text"
 						className="outlet-invite"
 						ref="outletInviteField"
-						placeholder="Invite users by email"
+						placeholder="Invite users by email — luke@death-star.net, hansolo64@death-star.net"
 						onKeyDown={this.inviteKeyDown} />
 				</div>
 			</div>
