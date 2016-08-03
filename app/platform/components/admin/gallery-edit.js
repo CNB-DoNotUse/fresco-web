@@ -51,8 +51,8 @@ class GalleryEdit extends React.Component {
         return {
             editButtonsEnabled: false,
             tags: gallery.tags || [],
-            stories: gallery.stories,
-            assignment: gallery.assignment,
+            stories: gallery.stories || [],
+            assignment: gallery.assignment || {},
             caption: gallery.caption || 'No Caption',
             location,
             address,
@@ -69,10 +69,11 @@ class GalleryEdit extends React.Component {
             tags,
             caption,
             address,
-            location,
+            // location,
             stories,
             assignment,
         } = this.state;
+        const { gallery } = this.props;
 
         if (caption.length === 0) {
             $.snackbar({ content: 'A gallery must have a caption' });
@@ -83,8 +84,8 @@ class GalleryEdit extends React.Component {
             tags,
             caption,
             address,
-            geo: utils.getGeoFromCoord(location),
-            stories,
+            // geo: utils.getGeoFromCoord(location),
+            ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             assignment_id: assignment ? assignment.id : null,
         };
 
