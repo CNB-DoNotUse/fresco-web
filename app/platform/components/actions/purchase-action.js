@@ -12,7 +12,7 @@ class PurchaseAction extends React.Component {
         if (assignment && assignment.id) data.assignment_id = assignment.id;
 
         $.ajax({
-            url: '/scripts/outlet/purchase',
+            url: '/api/outlet/purchase',
             dataType: 'json',
             method: 'post',
             contentType: 'application/json',
@@ -56,9 +56,9 @@ class PurchaseAction extends React.Component {
 
     render() {
         return (
-            <span 
-                className="mdi mdi-cash icon pull-right" 
-                onClick={() => this.purchase()} 
+            <span
+                className="mdi mdi-cash icon pull-right"
+                onClick={() => this.purchase()}
             />
         )
     }
