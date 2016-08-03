@@ -242,14 +242,13 @@ class AssignmentEdit extends React.Component {
                         Reject
                     </button>
 
-                    {
-                        !globalLocation
-                            ? <MergeDropup
-                                assignmentId={assignment.id}
-                                location={location}
-                                onSelectMerge={(a) => this.onSelectMerge(a)}
-                            />
-                            : ''
+                    {!globalLocation
+                        ? <MergeDropup
+                            assignmentId={assignment.id}
+                            location={location}
+                            onSelectMerge={(a) => this.onSelectMerge(a)}
+                        />
+                        : ''
                     }
                 </div>
 

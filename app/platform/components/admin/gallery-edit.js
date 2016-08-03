@@ -52,7 +52,7 @@ class GalleryEdit extends React.Component {
             editButtonsEnabled: false,
             tags: gallery.tags || [],
             stories: gallery.stories || [],
-            assignment: gallery.assignment || {},
+            assignment: gallery.assignment || null,
             caption: gallery.caption || 'No Caption',
             location,
             address,

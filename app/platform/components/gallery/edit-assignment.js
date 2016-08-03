@@ -10,6 +10,17 @@ class EditAssignment extends React.Component {
         this.state = { suggestions: [] };
     }
 
+    componentDidMount() {
+        $(document).click(() => {
+            this.refs.dropdown.style.display = 'none';
+        });
+    }
+
+    componentWillUnmount() {
+        // Clean up click event on unmount
+        $(document).unbind('click');
+    }
+
     change() {
         // Current fields input
         const query = this.refs.autocomplete.value;
@@ -37,7 +48,9 @@ class EditAssignment extends React.Component {
      * Adds assignment at passed index to current assignment
      * @param {[type]} index [description]
      */
-    addAssignment(assignment) {
+    addAssignment(e, assignment) {
+        e.stopPropagation();
+
         if (this.props.assignment) {
             $.snackbar({ content: 'Submissions can only have one assignment!' });
             return;
@@ -70,7 +83,7 @@ class EditAssignment extends React.Component {
                         {
                             suggestions && suggestions.length
                                 ? suggestions.map((s, i) => (
-                                    <li onClick={() => this.addAssignment(s)} key={i} >
+                                    <li onClick={(e) => this.addAssignment(e, s)} key={i} >
                                         {s.title}
                                     </li>
                                     ))

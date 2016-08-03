@@ -185,7 +185,7 @@ class Admin extends React.Component {
         if (!id || !assignments || !cb) return;
 
         this.setState({ assignments: assignments.filter(a => a.id !== id) },
-            () => cb(this.state.assignments));
+            () => cb(this.getAssignments()));
     }
 
     removeImport(id, cb) {
@@ -193,7 +193,7 @@ class Admin extends React.Component {
         if (!id || !imports || !cb) return;
 
         this.setState({ imports: imports.filter(a => a.id !== id) },
-            () => cb(this.state.imports));
+            () => cb(this.getImports()));
     }
 
     removeSubmission(id, cb) {
@@ -201,7 +201,7 @@ class Admin extends React.Component {
         if (!id || !submissions || !cb) return;
 
         this.setState({ submissions: submissions.filter(a => a.id !== id) },
-            () => cb(this.state.submissions));
+            () => cb(this.getSubmissions()));
     }
 
     refresh() {
