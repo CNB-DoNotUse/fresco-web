@@ -163,13 +163,13 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 					}
 				}
 
-				.delete-member, .cancel, .resend {
+				.delete-member, .owner-member, .cancel, .resend {
 					float:right;
 					position:relative;
 					font-weight:500;
 				}
 
-				.delete-member {
+				.delete-member, .owner-member {
 					font-size:24px;
 					top:24px;
 					right:10px;

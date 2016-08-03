@@ -33,15 +33,12 @@ export default class OutletMembers extends React.Component {
 	    .done((response) => { 
 	    	this.setState({
 	    		invites: response
-	    	})
+	    	});
 	    })    
 	    .fail((error) => { 
 	    	return $.snackbar({
 	    		content: utils.resolveError(error, 'We were unable to retrieve your pending invites!')
 	    	});
-	    })    
-	    .always(() => { 
-
 	    });
 	}
 
@@ -67,9 +64,6 @@ export default class OutletMembers extends React.Component {
 	    })    
 	    .fail(() => { 
 	    	return $.snackbar({ content: utils.resolveError(error) });
-	    })    
-	    .always(() => { 
-
 	    });
 	}
 
@@ -174,6 +168,7 @@ export default class OutletMembers extends React.Component {
 
 				<OutletMemberList
 					members={this.props.members}
+					outlet={this.props.outlet}
 					invites={this.state.invites}
 					removeMember={this.removeMember}
 					resendInvite={this.resendInvite}
@@ -198,6 +193,7 @@ class OutletMemberList extends React.Component {
 			return(
 				<MemberListItem 
 					member={member}
+					isOwner={member.id === this.props.outlet.owner.id}
 					removeMember={this.props.removeMember} 
 					key={i} />
 			);

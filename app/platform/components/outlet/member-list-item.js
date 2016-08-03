@@ -9,12 +9,9 @@ export default class MemberListItem extends Component {
             revokeInvite, 
             resendInvite, 
             pending, 
-            invite 
+            invite,
+            isOwner
         } = this.props;
-
-        console.log(this.props);
-
-        console.log(invite);
 
         if(pending) {
             return (
@@ -37,7 +34,7 @@ export default class MemberListItem extends Component {
             );
         } else {
             return (
-                <li className="member" key={i}>
+                <li className="member">
                     <div className="info">
                         <p className="name">{member.full_name || member.username}</p>
                         
@@ -48,10 +45,15 @@ export default class MemberListItem extends Component {
                         </span>
                     </div>
 
-                    <span
-                        onClick={removeMember.bind(null, member.id)}
-                        className="delete-member mdi mdi-delete">
-                    </span>
+                    {!isOwner ?
+                        <span
+                            onClick={removeMember.bind(null, member.id)}
+                            className="delete-member mdi mdi-delete">
+                        </span>
+                    :
+                        <span className="owner-member mdi mdi-account"></span>
+                    }
+
                 </li>
             );
         }
