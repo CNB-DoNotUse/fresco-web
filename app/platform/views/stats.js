@@ -6,9 +6,8 @@ import utils from 'utils'
 import _ from 'lodash'
 
 /**
- * Outlet Settings page
+ * Stats page
  */
-
 class Stats extends React.Component {
 
     constructor(props) {

@@ -9,7 +9,7 @@ import 'app/sass/platform/_admin';
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar)
-*/
+ */
 class Admin extends React.Component {
     constructor(props) {
         super(props);

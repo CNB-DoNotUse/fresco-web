@@ -5,16 +5,11 @@ import PostList from './../components/global/post-list.js';
 import TopBar from './../components/topbar';
 import utils from 'utils';
 
-/** //
-
-Description : View page for all content
-
-// **/
 
 /**
  * Archive Parent Object (composed of PostList and Navbar)
+ * @description View page for all content
  */
-
 class Archive extends React.Component {
     
     constructor(props) {

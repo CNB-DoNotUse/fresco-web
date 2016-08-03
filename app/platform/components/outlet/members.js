@@ -1,5 +1,6 @@
 import React from 'react'
 import utils from 'utils'
+import MemberListItem from './member-list-item';
 
 export default class OutletMembers extends React.Component {
 
@@ -7,10 +8,10 @@ export default class OutletMembers extends React.Component {
 		super(props);
 
 		this.state = {
-			pendingInvites: []
+			invites: []
 		}
 
-		this.getPendingInvites = this.getPendingInvites.bind(this);
+		this.updatePendingInvites = this.updatePendingInvites.bind(this);
 		this.removeMember = this.removeMember.bind(this);
 		this.resendInvite = this.resendInvite.bind(this);
 		this.revokeInvite = this.revokeInvite.bind(this);
@@ -18,30 +19,30 @@ export default class OutletMembers extends React.Component {
 	}
 
 	componentDidMount() {
-	 	this.getPendingInvites();
+	 	this.updatePendingInvites();
 	}
 
 	/**
 	 * Retrieves pending invites for the outlet
 	 */
-	getPendingInvites() {
-		var self = this;
-
+	updatePendingInvites() {
 		$.ajax({
 			url: "/api/outlet/invite/list",
-			method: 'get',
-			success: function(response, status, xhr) {
-				if (response.err)
-					return this.error(null, null, response.err);
+			method: 'get'
+		})    
+	    .done((response) => { 
+	    	this.setState({
+	    		invites: response
+	    	})
+	    })    
+	    .fail((error) => { 
+	    	return $.snackbar({
+	    		content: utils.resolveError(error, 'We were unable to retrieve your pending invites!')
+	    	});
+	    })    
+	    .always(() => { 
 
-				self.setState({
-					pendingInvites: response.data
-				});
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({content: utils.resolveError(error, 'We were unable to retrieve your pending invites!')});
-			}
-		});
+	    });
 	}
 
 	/**
@@ -54,26 +55,22 @@ export default class OutletMembers extends React.Component {
 			});
 		}
 
-		var self = this;
-
 		$.ajax({
-			url: "/api/outlet/invite/decline",
+			url: "/api/outlet/invite/revoke",
 			method: 'post',
-			data: {
-				token: token
-			},
-			success: function(response, status, xhr){
-				if (response.err)
-					return this.error(null, null, response.err);
+			data: { token }
+		})    
+	    .done((response) => { 
+	    	this.updatePendingInvites();
 
-				self.getPendingInvites();
+			$.snackbar({ content: 'This invitation has been successfully canceled!'});
+	    })    
+	    .fail(() => { 
+	    	return $.snackbar({ content: utils.resolveError(error) });
+	    })    
+	    .always(() => { 
 
-				$.snackbar({ content: 'This invitation has been successfully canceled!'});
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({content: utils.resolveError(error)});
-			}
-		});
+	    });
 	}
 
 	/**
@@ -86,56 +83,42 @@ export default class OutletMembers extends React.Component {
 			});
 		}
 
-		var self = this;
-
 		$.ajax({
 			url: "/api/outlet/invite/resend",
 			method: 'post',
-			data: {
-				token: token
-			},
-			success: function(response, status, xhr){
-				if (response.err)
-					return this.error(null, null, response.err);
-
-				$.snackbar({ content: 'This invitation has been successfully resent!'});
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({content: utils.resolveError(error)});
-			}
-		});
+			data: { token }
+		})    
+	    .done((response) => { 
+			$.snackbar({ content: 'This invitation has been successfully resent!'});
+	    })    
+	    .fail(() => { 
+	    	return $.snackbar({ content: utils.resolveError(error) });
+	    });
 	}
 
 	/**
 	 * Removes a member from the outlet
 	 */
-	removeMember(id) {
-		var self = this,
-			members = this.props.members;
+	removeMember(user) {
+		const { members } = this.props;
 
-		//Confirm the purchase
+		//Confirm the removal
 		alertify.confirm("Are you sure you want remove this user from your outlet?", (e) => {
-
 			if(e) {
 				$.ajax({
 					url: "/api/outlet/user/remove",
 					method: 'post',
-					data: {
-						user: id
-					},
-					success: function(result, status, xhr){
-						if (result.err)
-							return this.error(null, null, result.err);
-
-						var members = self.props.members.filter((member) => {
-							return member.id !== id;
-						});
-
-						self.props.updateMembers(members);
-					},
-					error: (xhr, status, error) => {
-						$.snackbar({content: utils.resolveError(error)});
-					}
+					data: { user }
+				})
+				.done((response) => {
+					self.props.updateMembers(
+						_.filter(members, (m) => {
+							m.id !== user;
+						})
+					);
+				})
+				.fail((jqXHR, textStatus, errorThrow) => {
+				    $.snackbar({ content: 'Unable to remove member' });
 				});
 			}
 		});
@@ -145,46 +128,40 @@ export default class OutletMembers extends React.Component {
 	 * Event lister for email invite field
 	 */
 	inviteKeyDown(e) {
-		if(e.keyCode != 13)
-			return;
+		if(e.keyCode != 13) return;
 
-		var addresses = this.refs['outlet-invite'].value.split(' '),
-			self = this;
+		const emails = this.refs['outlet-invite'].value.split(' ');
 
 		this.refs['outlet-invite'].setAttribute('disabled', true);
 
-		if (addresses == '' || (addresses.length == 1 && addresses[0].split() == '')){
-			$.snackbar({content:'You must invite at least 1 member!'});
+		if (emails == '' || (emails.length == 1 && emails[0].split() == '')){
 			this.refs['outlet-invite'].removeAttribute('disabled');
-			return false;
+			
+			return $.snackbar({content:'You must invite at least 1 member!'});
 		}
+
+		const params = { emails }
 
 		$.ajax({
 			url: "/api/outlet/invite",
 			method: 'post',
-			contentType: "application/json",
-			data: JSON.stringify({
-				emails: addresses,
-				id: this.props.outlet.id
-			}),
-			dataType: 'json',
-			success: function(result, status, xhr){
-				self.refs['outlet-invite'].removeAttribute('disabled');
+			contentType: 'application/json',
+			data: JSON.stringify(params)
+		})    
+	    .done((response) => { 
+			this.refs['outlet-invite'].value = '';
+			this.getPendingInvites();
 
-				if (result.err)
-					return this.error(null, null, result.err);
-
-				self.refs['outlet-invite'].value = '';
-				self.getPendingInvites();
-
-				$.snackbar({
-					content: (addresses.length == 1 ? 'Invitation' : 'Invitations') + ' successfully sent!'
-				});
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({content: utils.resolveError(error)});
-			}
-		});
+			$.snackbar({
+				content: (emails.length == 1 ? 'Invitation' : 'Invitations') + ' successfully sent!'
+			});
+	    })    
+	    .fail((error) => { 
+	    	return $.snackbar({ content: utils.resolveError(error) });
+	    })
+	    .always(() => {
+			this.refs['outlet-invite'].removeAttribute('disabled');
+	    })
 	}
 
 	render () {
@@ -196,10 +173,11 @@ export default class OutletMembers extends React.Component {
 
 				<OutletMemberList
 					members={this.props.members}
-					pendingInvites={this.state.pendingInvites}
+					invites={this.state.invites}
 					removeMember={this.removeMember}
 					resendInvite={this.resendInvite}
-					revokeInvite={this.revokeInvite} />
+					revokeInvite={this.revokeInvite} 
+				/>
 
 				<div className="footer">
 					<input type="text"
@@ -214,55 +192,32 @@ export default class OutletMembers extends React.Component {
 }
 
 class OutletMemberList extends React.Component {
-
 	render () {
-
-		var members = this.props.members.map((member, i) => {
-			var phone = member.phone ? ' • ' + member.phone : '';
-
+		const members = this.props.members.map((member, i) => {
 			return(
-				<li className="member" key={i}>
-					<div className="info">
-						<p className="name">{member.full_name || member.username}</p>
-						<span className="email">{member.email}</span>
-						<span className="phone">{phone}</span>
-					</div>
-
-					<span
-						onClick={this.props.removeMember.bind(null, member.id)}
-						className="delete-member mdi mdi-delete"></span>
-				</li>
+				<MemberListItem 
+					member={member}
+					removeMember={this.props.removeMember} 
+					key={i} />
 			);
 		});
 
-		var invites = this.props.pendingInvites.map((invite, i) => {
+		const invites = this.props.invites.map((invite, i) => {
 			return (
-				<li className="member" key={i}>
-					<div className="pending-info">
-						<span className="email">{invite.email}</span>
-						<span className="subtext">Pending Invitation</span>
-					</div>
-
-					<span
-						className="cancel"
-						onClick={this.props.revokeInvite.bind(null, invite.token)}>CANCEL</span>
-					<span
-						className="resend"
-						onClick={this.props.resendInvite.bind(null, invite.token)}>RESEND</span>
-				</li>
+				<MemberListItem 
+					pending={true} 
+					invite={invite}
+					revokeInvite={this.props.revokeInvite}
+					resendInvite={this.props.resendInvite}
+					key={i} />
 			);
 		});
-
-		if(members.length == 0 && invites.length == 0){
-			return (
-				<div className="outlet-members-container"></div>
-			)
-		}
 
 		return (
 			<div className="outlet-members-container">
 				<ul className="outlet-members">
 					{members}
+					
 					{invites}
 				</ul>
 			</div>
