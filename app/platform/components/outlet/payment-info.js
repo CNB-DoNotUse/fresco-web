@@ -2,18 +2,14 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 
 class PaymentInfo extends React.Component {
-    constructor(props) {
-        super(props);
-        this.save = this.save.bind(this);
-    }
-
     componentDidMount() {
         Stripe.setPublishableKey(window.__initialProps__.stripePublishableKey);
     }
 
+    // returns active card or first card
     getActiveCard() {
-        // returns active card or first card
         const { payment } = this.props;
+        if (!payment || !payment.length) return null;
 
         return payment.find(p => p.active)
         || payment.length ? payment[0] : null;
@@ -86,7 +82,7 @@ class PaymentInfo extends React.Component {
             <div className="card settings-outlet-payment">
                 <div className="header">
                     <span className="title">PAYMENT INFORMATION</span>
-                    
+
                     <div>
                         {currentCardText}
                         <a href="/outlet">PURCHASE HISTORY</a>
@@ -144,7 +140,7 @@ class PaymentInfo extends React.Component {
                         className="btn btn-flat outlet-card-save card-foot-btn"
                         ref="outlet-card-save"
                         tabIndex="6"
-                        onClick={this.save}
+                        onClick={() => this.save()}
                     >
                         SAVE CHANGES
                     </button>

@@ -2,7 +2,7 @@ import React from 'react'
 import utils from 'utils'
 import MemberListItem from './member-list-item';
 
-export default class OutletMembers extends React.Component {
+class OutletMembers extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -29,13 +29,13 @@ export default class OutletMembers extends React.Component {
 		$.ajax({
 			url: "/api/outlet/invite/list",
 			method: 'get'
-		})    
-	    .done((response) => { 
+		})
+	    .done((response) => {
 	    	this.setState({
 	    		invites: response
 	    	});
-	    })    
-	    .fail((error) => { 
+	    })
+	    .fail((error) => {
 	    	return $.snackbar({
 	    		content: utils.resolveError(error, 'We were unable to retrieve your pending invites!')
 	    	});
@@ -56,13 +56,13 @@ export default class OutletMembers extends React.Component {
 			url: "/api/outlet/invite/revoke",
 			method: 'post',
 			data: { token }
-		})    
-	    .done((response) => { 
+		})
+	    .done((response) => {
 	    	this.updatePendingInvites();
 
 			$.snackbar({ content: 'This invitation has been successfully canceled!'});
-	    })    
-	    .fail(() => { 
+	    })
+	    .fail(() => {
 	    	return $.snackbar({ content: utils.resolveError(error) });
 	    });
 	}
@@ -81,11 +81,11 @@ export default class OutletMembers extends React.Component {
 			url: "/api/outlet/invite/resend",
 			method: 'post',
 			data: { token }
-		})    
-	    .done((response) => { 
+		})
+	    .done((response) => {
 			$.snackbar({ content: 'This invitation has been successfully resent!'});
-	    })    
-	    .fail((error) => { 
+	    })
+	    .fail((error) => {
 	    	return $.snackbar({ content: utils.resolveError(error, 'We couldn\'t resend this invite!') });
 	    });
 	}
@@ -132,7 +132,7 @@ export default class OutletMembers extends React.Component {
 
 		if (!emails.length){
 			outletInviteField.removeAttribute('disabled');
-			
+
 			return $.snackbar({ content:'You must invite at least 1 member!' });
 		}
 
@@ -141,23 +141,59 @@ export default class OutletMembers extends React.Component {
 			method: 'post',
 			contentType: 'application/json',
 			data: JSON.stringify({ emails })
-		})    
-	    .done((response) => { 
+		})
+	    .done((response) => {
 			outletInviteField.value = '';
 
 			$.snackbar({
 				content : `${response.invitesSent} ${response.invitesSent == 1 ? 'invitation' : 'invitations'} successfully sent!`
 			});
-			
+
 			this.updatePendingInvites();
-	    })    
-	    .fail((error) => { 
+	    })
+	    .fail((error) => {
 	    	return $.snackbar({ content: utils.resolveError(error) });
 	    })
 	    .always(() => {
 			outletInviteField.removeAttribute('disabled');
 	    })
 	}
+
+    renderMemberList() {
+        const { members, invites, outlet } = this.props;
+
+        const membersJSX = members
+            ? members.map((member, i) => (
+                <MemberListItem
+                    member={member}
+                    isOwner={member.id === outlet.owner.id}
+                    removeMember={this.removeMember}
+                    key={i}
+                />
+            ))
+            : '';
+
+        const invitesJSX = invites
+            ? invites.map((invite, i) => (
+                <MemberListItem
+                    pending
+                    invite={invite}
+                    revokeInvite={this.revokeInvite}
+                    resendInvite={this.resendInvite}
+                    key={i}
+                />
+            ))
+            : '';
+
+        return (
+            <div className="outlet-members-container">
+                <ul className="outlet-members">
+                    {membersJSX}
+                    {invitesJSX}
+                </ul>
+            </div>
+        );
+    }
 
 	render () {
 		return (
@@ -166,14 +202,7 @@ export default class OutletMembers extends React.Component {
 					<span className="title">USERS</span>
 				</div>
 
-				<OutletMemberList
-					members={this.props.members}
-					outlet={this.props.outlet}
-					invites={this.state.invites}
-					removeMember={this.removeMember}
-					resendInvite={this.resendInvite}
-					revokeInvite={this.revokeInvite} 
-				/>
+                {this.renderMemberList()}
 
 				<div className="footer">
 					<input type="text"
@@ -187,37 +216,5 @@ export default class OutletMembers extends React.Component {
 	}
 }
 
-class OutletMemberList extends React.Component {
-	render () {
-		const members = this.props.members.map((member, i) => {
-			return(
-				<MemberListItem 
-					member={member}
-					isOwner={member.id === this.props.outlet.owner.id}
-					removeMember={this.props.removeMember} 
-					key={i} />
-			);
-		});
+export default OutletMembers;
 
-		const invites = this.props.invites.map((invite, i) => {
-			return (
-				<MemberListItem 
-					pending={true} 
-					invite={invite}
-					revokeInvite={this.props.revokeInvite}
-					resendInvite={this.props.resendInvite}
-					key={i} />
-			);
-		});
-
-		return (
-			<div className="outlet-members-container">
-				<ul className="outlet-members">
-					{members}
-					
-					{invites}
-				</ul>
-			</div>
-		)
-	}
-}
