@@ -104,7 +104,7 @@ class AssignmentEdit extends React.Component {
 
     onApproveAssignment() {
         const { assignment, approveAssignment } = this.props;
-        const { location, address, radius } = this.sstate;
+        const { location, address, radius } = this.state;
         const geo = location && location.hasOwnProperty('type')
             ? location
             : utils.getGeoFromCoord(location);

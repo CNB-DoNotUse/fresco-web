@@ -74,7 +74,8 @@ class Assignments extends React.Component {
         .done(() => {
             this.onUpdateAssignment(id);
             this.setState({ loading: false });
-            $.snackbar({ content: 'Assignment Approved!' });
+            $.snackbar({ content: 'Assignment approved! Click to open!', timeout: 5000 })
+                .click(() => { window.open(`/assignment/${id}`); });
         })
         .fail(() => {
             $.snackbar({ content: 'Could not approve assignment!' });
