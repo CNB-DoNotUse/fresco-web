@@ -45,8 +45,8 @@ class GalleryEdit extends React.Component {
 
     getStateFromProps(props) {
         const { gallery } = props;
-        const location = gallery.location || gallery.posts ? gallery.posts[0].location : null;
-        const address = gallery.address || gallery.posts ? gallery.posts[0].address : null;
+        const location = gallery.location || (gallery.posts[0] ? gallery.posts[0].location : null);
+        const address = gallery.address || (gallery.posts[0] ? gallery.posts[0].address : null);
 
         return {
             editButtonsEnabled: false,

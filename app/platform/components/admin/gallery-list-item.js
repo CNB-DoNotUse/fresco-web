@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+import 'sass/platform/_galleries';
 
 class AdminGalleryListItem extends React.Component {
     render() {
@@ -20,25 +21,11 @@ class AdminGalleryListItem extends React.Component {
             );
         }
 
-        let location = 'No Location';
+        let address = 'No Location';
         if (gallery.address) {
-            location = gallery.address;
-        } else if (gallery.location && gallery.location.coordinates) {
-            location = gallery.location.coordinates.join(', ');
-        }
-
-        let assignmentLink = <div />;
-        if (gallery.assignment) {
-            assignmentLink = (
-                <p
-                    className="md-type-body2 assignment-link"
-                    style={{ lineHeight: '18px' }}
-                >
-                    <a href={`/assignment/${gallery.assignment.id}`}>
-                        {gallery.assignment.title}
-                    </a>
-                </p>
-            );
+            address = gallery.address;
+        } else if (gallery.posts[0]) {
+            address = gallery.posts[0].address;
         }
 
         const imgUrl = gallery.posts && gallery.posts.length
@@ -66,12 +53,22 @@ class AdminGalleryListItem extends React.Component {
                     {galleryOwnerText}
                 </div>
                 <div className="list-item-assignment">
-                    {assignmentLink}
+                    {gallery.assignment
+                        ? <p
+                            className="md-type-body2 assignment-link"
+                            style={{ lineHeight: '18px' }}
+                        >
+                            <a href={`/assignment/${gallery.assignment.id}`}>
+                                {gallery.assignment.title}
+                            </a>
+                        </p>
+                        : ''
+                    }
                     <p
-                        className="md-type-body1 assignment-location"
+                        className="md-type-body1 gallery-list-item--location"
                         style={gallery.assignment ? { lineHeight: '18px' } : {}}
                     >
-                        {location}
+                        {address}
                     </p>
                 </div>
                 <div className="list-item-timestamp">

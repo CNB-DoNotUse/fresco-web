@@ -168,7 +168,7 @@ class Galleries extends React.Component {
     }
 
     render() {
-        const { activeGallery } = this.state;
+        const { activeGallery, loading } = this.state;
         let editPane = '';
 
         if (activeGallery && activeGallery.id) {
@@ -179,6 +179,7 @@ class Galleries extends React.Component {
                     skip={(id) => this.skip(id)}
                     remove={(id) => this.remove(id)}
                     verify={(id, p) => this.verify(id, p)}
+                    loading={loading}
                 />
             );
         }
