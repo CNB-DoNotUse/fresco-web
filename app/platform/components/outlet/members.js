@@ -91,8 +91,8 @@ export default class OutletMembers extends React.Component {
 	    .done((response) => { 
 			$.snackbar({ content: 'This invitation has been successfully resent!'});
 	    })    
-	    .fail(() => { 
-	    	return $.snackbar({ content: utils.resolveError(error) });
+	    .fail((error) => { 
+	    	return $.snackbar({ content: utils.resolveError(error, 'We couldn\'t resend this invite!') });
 	    });
 	}
 
@@ -125,42 +125,43 @@ export default class OutletMembers extends React.Component {
 	}
 
 	/**
-	 * Event lister for email invite field
+	 * Event lister for email invite field, sends emails by reading the input field
 	 */
 	inviteKeyDown(e) {
 		if(e.keyCode != 13) return;
 
-		const emails = this.refs['outlet-invite'].value.split(' ');
+		const { outletInviteField } = this.refs;
+		//Split by comma and map to remove spaces from all the new strigns
+		const emails = outletInviteField.value.split(',').map(e => e.replace(/\s/g, ''));
+		//Disable the field until we're done
+		outletInviteField.setAttribute('disabled', true);
 
-		this.refs['outlet-invite'].setAttribute('disabled', true);
-
-		if (emails == '' || (emails.length == 1 && emails[0].split() == '')){
-			this.refs['outlet-invite'].removeAttribute('disabled');
+		if (!emails.length){
+			outletInviteField.removeAttribute('disabled');
 			
-			return $.snackbar({content:'You must invite at least 1 member!'});
+			return $.snackbar({ content:'You must invite at least 1 member!' });
 		}
-
-		const params = { emails }
 
 		$.ajax({
 			url: "/api/outlet/invite",
 			method: 'post',
 			contentType: 'application/json',
-			data: JSON.stringify(params)
+			data: JSON.stringify({ emails })
 		})    
 	    .done((response) => { 
-			this.refs['outlet-invite'].value = '';
-			this.getPendingInvites();
+			outletInviteField.value = '';
 
 			$.snackbar({
-				content: (emails.length == 1 ? 'Invitation' : 'Invitations') + ' successfully sent!'
+				content : `${response.invitesSent} ${response.invitesSent == 1 ? 'invitation' : 'invitations'} successfully sent!`
 			});
+			
+			this.updatePendingInvites();
 	    })    
 	    .fail((error) => { 
 	    	return $.snackbar({ content: utils.resolveError(error) });
 	    })
 	    .always(() => {
-			this.refs['outlet-invite'].removeAttribute('disabled');
+			outletInviteField.removeAttribute('disabled');
 	    })
 	}
 
@@ -182,8 +183,8 @@ export default class OutletMembers extends React.Component {
 				<div className="footer">
 					<input type="text"
 						className="outlet-invite"
-						ref="outlet-invite"
-						placeholder="Invite users by email"
+						ref="outletInviteField"
+						placeholder="Invite users by email — luke@death-star.net, hansolo64@death-star.net"
 						onKeyDown={this.inviteKeyDown} />
 				</div>
 			</div>
