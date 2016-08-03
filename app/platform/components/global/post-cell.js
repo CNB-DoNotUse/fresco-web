@@ -12,13 +12,14 @@ class PostCell extends React.Component {
     constructor(props) {
         super(props);
 
-        const purchased = props.post.purchased
-            ? props.post.purchased !== 0
+        const { post } = props;
+        const purchased = post.purchased
+            ? post.purchased !== 0
             : false;
-        const { post: { first_look_until } } = props;
-        const firstLook = moment().diff(first_look_until) > 1
+        const firstLook = moment().diff(post.first_look_until) > 1
             ? null
-            : moment(first_look_until);
+            // ? moment().add(20, 'minutes')
+            : moment(post.first_look_until);
 
         this.state = {
             purchased,
@@ -51,18 +52,12 @@ class PostCell extends React.Component {
         if (!firstLook || moment().diff(firstLook) > 1) {
             return '';
         }
-        const remainingTime = moment(firstLook.diff(moment())).format('mm ss');
-        const style = {
-            color: '#0047bb',
-            fontSize: '12px',
-            verticalAlign: 'middle',
-            height: '20px',
-        };
+        const remainingTime = moment(firstLook.diff(moment())).format('mm:ss');
 
         return (
-            <span style={style} className="md-type-caption timestring">
-                <span style={{ fontSize: '16px' }} className="mdi mdi-clock-fast" />
-                <span style={{ marginLeft: '4.7px' }}>{`${remainingTime} remaining`}</span>
+            <span className="tile--first-look">
+                <i className="mdi mdi-clock-fast" />
+                <span>{`${remainingTime} remaining`}</span>
             </span>
         );
     }

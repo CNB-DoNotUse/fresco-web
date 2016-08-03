@@ -1,0 +1,19 @@
+.tile--first-look {
+    display: inline-block;
+    color: #0047bb;
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    font-weight: 400;
+
+    i, span {
+        vertical-align: middle;
+    }
+    i {
+        font-size: 17px;
+    }
+    span {
+        margin-left: 4.7px;
+    }
+
+}
