@@ -41,12 +41,12 @@ class PostDetailImage extends React.Component {
         let postMedia = '';
         let i = 0;
 
-        const assignment = window.location.search.split('assignment=')[1];
+        const assignmentId = window.location.search.split('assignment=')[1];
         const downloadAction = <DownloadAction post={post} key={i++} />;
         const purchaseAction = (
             <PurchaseAction
                 post={post}
-                assignment={assignment}
+                assignment={{ id: assignmentId }}
                 onPurchase={(bool) => this.onPurchase(bool)}
                 key={i++}
             />
