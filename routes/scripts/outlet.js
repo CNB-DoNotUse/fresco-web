@@ -20,12 +20,6 @@ function checkOutlet(req, res) {
 }
 
 //---------------------------vvv-OUTLET-ENDPOINTS-vvv---------------------------//
-router.post('/purchase', (req, res) => {
-    if (!checkOutlet(req, res)) return;
-
-    API.proxy(req, res);
-});
-
 router.get('/purchase/report', (req, res, next) => {
     API.request({
         method: 'GET',

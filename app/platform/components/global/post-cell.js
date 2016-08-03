@@ -3,20 +3,34 @@ import FrescoImage from './fresco-image';
 import PostCellActions from './post-cell-actions';
 import PostCellStories from './post-cell-stories';
 import utils from 'utils';
+import moment from 'moment';
 
 /**
  * Single Post Cell, child of PostList
  */
-export default class PostCell extends React.Component {
-
+class PostCell extends React.Component {
     constructor(props) {
         super(props);
 
         const purchased = props.post.purchased
             ? props.post.purchased !== 0
             : false;
-        this.state = { purchased };
-        this.postClicked = this.postClicked.bind(this);
+        const { post: { first_look_until } } = props;
+
+        this.state = {
+            purchased,
+            // firstLook: first_look_until ? moment(first_look_until) : moment().add(20, 'minutes'),
+            firstLook: first_look_until ? moment(first_look_until) : null,
+        };
+    }
+
+    componentDidMount() {
+        const { firstLook } = this.state;
+        if (firstLook) {
+            setInterval(() => {
+                this.setState({ firstLook: firstLook.subtract({ seconds: 1 }) });
+            }, 1000);
+        }
     }
 
     postClicked(e) {
@@ -30,48 +44,103 @@ export default class PostCell extends React.Component {
         }
     }
 
-    onPurchase() {
-        this.setState({ purchased: true });
+    renderFirstLook() {
+        const { firstLook } = this.state;
+        if (!firstLook || moment().diff(firstLook) > 1) {
+            return '';
+        }
+        const remainingTime = moment(firstLook.diff(moment())).format('mm ss');
+        const style = {
+            color: '#0047bb',
+            fontSize: '12px',
+            verticalAlign: 'middle',
+            height: '20px',
+        };
+
+        return (
+            <span style={style} className="md-type-caption timestring">
+                <span style={{ fontSize: '16px' }} className="mdi mdi-clock-fast" />
+                <span style={{ marginLeft: '4.7px' }}>{`${remainingTime} remaining`}</span>
+            </span>
+        );
+    }
+
+    renderActions() {
+        const {
+            post,
+            sort,
+            assignment,
+            rank,
+            editable,
+        } = this.props;
+        const { purchased, firstLook } = this.state;
+        let time = sort === 'captured_at' ? post.captured_at : post.created_at;
+        let	timeString = typeof(time) === 'undefined' ? 'No timestamp' : utils.formatTime(time);
+        let address = post.location && post.address ? post.address : 'No Address';
+        // Class name for post tile icon
+        let statusClass = 'mdi icon pull-right ';
+        statusClass += post.video == null ? 'mdi-image ' : 'mdi-movie ';
+        statusClass += purchased ? 'available ' : 'md-type-black-disabled ';
+
+
+        return (
+            <div className="tile-foot" >
+
+                <PostCellActions
+                    post={post}
+                    assignment={assignment}
+                    purchased={purchased}
+                    onPurchase={() => this.setState({ purchased: true })}
+                    rank={rank}
+                    editable={editable}
+                />
+
+                <div>
+                    <div className="tile-info">
+                        <span className="md-type-body2">{address}</span>
+
+                        {firstLook
+                            ? this.renderFirstLook()
+                            : <span className="md-type-caption timestring" data-timestamp={time}>
+                                {timeString}
+                            </span>
+                        }
+                    </div>
+
+                    <span className={statusClass} />
+                </div>
+            </div>
+        );
     }
 
     render() {
         const {
             post,
             toggled,
-            sort,
-            assignment,
-            rank,
-            editable,
             parentCaption,
             size,
             sizes,
         } = this.props;
-        const { purchased } = this.state;
-
-        let time = sort === 'captured_at' ? post.captured_at : post.created_at;
-        let	timeString = typeof(time) === 'undefined' ? 'No timestamp' : utils.formatTime(time);
-        let address = post.location && post.address ? post.address : 'No Address';
         const divSize = size === 'large' ? sizes.large : sizes.small;
 
-        // Class name for post tile icon
-        let statusClass = 'mdi icon pull-right ';
-        statusClass += post.video == null ? 'mdi-image ' : 'mdi-movie ';
-        statusClass += purchased ? 'available ' : 'md-type-black-disabled ';
-
         return (
-            <div className={`${divSize} tile ${toggled ? 'toggled' : ''}`} >
+            <div
+                className={`${divSize} tile ${toggled ? 'toggled' : ''}`}
+            >
                 <div className="tile-body">
                     <div className="frame" />
 
-                    <div className="hover" onClick={this.postClicked}>
+                    <div className="hover" onClick={(e) => this.postClicked(e)}>
                         <p className="md-type-body1">
-                            {post.parent && post.parent.caption ? post.parent.caption : parentCaption}
+                            {post.parent && post.parent.caption
+                                ? post.parent.caption
+                                : parentCaption
+                            }
                         </p>
 
                         <span className="md-type-caption">{post.byline}</span>
 
-                        <PostCellStories 
-                            stories={post.stories} />
+                        <PostCellStories stories={post.stories} />
                     </div>
 
                     <FrescoImage
@@ -79,27 +148,8 @@ export default class PostCell extends React.Component {
                         size={size}
                     />
                 </div>
+                {this.renderActions()}
 
-                <div className="tile-foot">
-                    <PostCellActions
-                        post={post}
-                        assignment={assignment}
-                        purchased={purchased}
-                        onPurchase={(bool) => this.onPurchase(bool)}
-                        rank={rank}
-                        editable={editable}
-                    />
-
-                    <div>
-                        <div className="tile-info">
-                            <span className="md-type-body2">{address}</span>
-
-                            <span className="md-type-caption timestring" data-timestamp={time}>{timeString}</span>
-                        </div>
-
-                        <span className={statusClass} />
-                    </div>
-                </div>
             </div>
         );
     }
@@ -125,3 +175,6 @@ PostCell.propTypes = {
     editable: PropTypes.bool,
     toggled: PropTypes.bool,
 };
+
+export default PostCell;
+
