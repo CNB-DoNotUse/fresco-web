@@ -1,30 +1,26 @@
 require('babel-core/register');
-
 const express = require('express');
 const router = express.Router();
 const utils = require('../lib/utils');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const PublicGallery = require('../app/platform/views/publicGallery.js');
-const api = require('../lib/api');
-const has = require('lodash/has');
+const API = require('../lib/api');
+const _ = require('lodash');
 
 /** //
-
 	Description : Gallery Specific Routes -- prefix /gallery/~
-
 // **/
 
 /**
  * Gallery Detail Page
  * @param Gallery ID
  */
-
 function render(gallery, user, req, res) {
     let title = 'Gallery';
 
-    if (has(gallery, ['posts', '0', 'location', 'address'])) {
-        title += ` from ${gallery.posts[0].location.address}`;
+    if (_.has(gallery, ['posts', '0', 'address'])) {
+        title += ` from ${gallery.posts[0].address}`;
     }
 
     // User is logged in, show full gallery page
@@ -68,24 +64,17 @@ function render(gallery, user, req, res) {
 }
 
 router.get('/:id', (req, res, next) => {
-    let user;
-    let token;
-    if (req.session) {
-        token = req.session.token;
-        user = req.session.user;
-    }
-
-    api.request({
-        token,
+    API.request({
+        token: req.session.token,
         url: '/gallery/' + req.params.id,
     }).then(response => {
-        render(response.body, user, req, res);
-    }).catch(() => (
+        render(response.body, req.session.user, req, res);
+    }).catch(error => {
         next({
             message: 'Gallery not found!',
             status: 404,
         })
-    ));
+    });
 });
 
 module.exports = router;
