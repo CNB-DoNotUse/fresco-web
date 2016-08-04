@@ -13,7 +13,8 @@ class PostCell extends React.Component {
 
         const { post } = props;
 
-        this.state = { purchased: post.purchased };
+        // TODO: get purchased bool to be sent down with posts in all json
+        this.state = { purchased: post.purchased || false };
     }
 
     onClickPost(e) {
@@ -37,7 +38,6 @@ class PostCell extends React.Component {
             sort,
             editable,
         } = this.props;
-
         const { purchased } = this.state;
 
         let address = post.location && post.address ? post.address : 'No Address';
@@ -135,3 +135,4 @@ PostCell.propTypes = {
 };
 
 export default PostCell;
+
