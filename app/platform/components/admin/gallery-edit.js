@@ -133,7 +133,9 @@ class GalleryEdit extends React.Component {
         if (!gallery.posts) return <div />;
         // Map gallery posts into slider elements
         return gallery.posts.map((post, i) => {
-            if (post.video) {
+            console.log(post);
+
+            if (post.stream) {
                 return (
                     <div key={i}>
                         <video
@@ -143,8 +145,8 @@ class GalleryEdit extends React.Component {
                             width="100%"
                             height="100%"
                             controls
-                            poster={post.video.replace('/videos', '/images/small').replace('.m3u8', '-thumb00001.jpg')}
-                            src={post.video.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4"
+                            poster={post.stream.replace('/videos', '/images/small').replace('.m3u8', '-thumb00001.jpg')}
+                            src={post.stream.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4"
                         >
                             Your browser does not support the video tag.
                         </video>
