@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import clone from 'lodash/clone';
 import App from './app';
 import TopBar from '../components/topbar';
 import Info from '../components/outlet/info';
@@ -18,10 +17,6 @@ import 'app/sass/platform/_outletSettings';
 class OutletSettings extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            outlet: this.props.outlet,
-        };
 
         this.state = this.getStateFromProps(props);
     }
@@ -41,7 +36,7 @@ class OutletSettings extends React.Component {
         const { user, payment } = this.props;
         const isOwner = user.permissions.includes('update-outlet');
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
-        const { outlet, members } = this.state;
+        const { outlet } = this.state;
 
         return (
             <App user={user}>
@@ -50,33 +45,32 @@ class OutletSettings extends React.Component {
                 />
 
                 <div className={className}>
-                    {
-                        isOwner
-                            ? <div className="left">
-                                <Info
-                                    updateOutlet={(o) => this.updateOutlet(o)}
-                                    outlet={outlet}
-                                />
-                                
-                                <PaymentInfo 
-                                    payment={payment} 
-                                    outlet={this.state.outlet} />
-                            </div>
-                            : ''
+                    {isOwner
+                        ? <div className="left">
+                            <Info
+                                updateOutlet={(o) => this.updateOutlet(o)}
+                                outlet={outlet}
+                            />
+
+                            <PaymentInfo
+                                payment={payment}
+                                outlet={this.state.outlet}
+                            />
+                        </div>
+                        : ''
                     }
                     <div className="right">
                         <Notifications outlet={this.state.outlet} />
-                        
+
                         <Locations outlet={this.state.outlet} />
-                        
-                        {isOwner ? 
-                            <Members
+
+                        {isOwner
+                            ? <Members
                                 outlet={this.state.outlet}
                                 updateMembers={this.updateMembers}
                                 members={this.state.outlet.members}
                             />
-                            : 
-                            ''
+                            : ''
                         }
                     </div>
 
@@ -90,7 +84,7 @@ class OutletSettings extends React.Component {
 OutletSettings.propTypes = {
     user: PropTypes.object,
     outlet: PropTypes.object,
-    paymentSources: PropTypes.array,
+    payment: PropTypes.array,
 };
 
 ReactDOM.render(
