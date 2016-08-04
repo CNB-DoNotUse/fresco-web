@@ -36,16 +36,18 @@ class PostCell extends React.Component {
         const { post } = this.props;
         let firstLook;
         let firstLookIntervalId;
+        if (!post.first_look_until) return {};
+        const diffMs = moment(post.first_look_until).diff(moment());
+        // const diffMs = moment().add(20, 'seconds').diff(moment());
 
-        if (post.first_look_until && moment().diff(post.first_look_until) < 1) {
-            firstLook = moment(post.first_look_until);
-            // firstLook = moment().add(20, 'seconds'); - use to debug
+        if (diffMs > 1) {
+            firstLook = moment.duration(diffMs);
             firstLookIntervalId = setInterval(() => {
-                if (this.state.firstLook && this.state.firstLook.isSameOrBefore(moment())) {
+                if (this.state.firstLook && this.state.firstLook.asSeconds() <= 0) {
                     clearInterval(this.state.firstLookIntervalId);
                     this.setState({ firstLook: null, firstLookIntervalId: null });
                 } else {
-                    this.setState({ firstLook: this.state.firstLook.subtract({ seconds: 1 }) });
+                    this.setState({ firstLook: this.state.firstLook.subtract(1, 's') });
                 }
             }, 1000);
         }
@@ -55,15 +57,12 @@ class PostCell extends React.Component {
 
     renderFirstLook() {
         const { firstLook } = this.state;
-        if (!firstLook || moment().diff(firstLook) > 1) {
-            return '';
-        }
-        const remainingTime = moment(firstLook.diff(moment())).format('mm:ss');
+        if (!firstLook) return '';
 
         return (
             <span className="tile--first-look">
                 <i className="mdi mdi-clock-fast" />
-                <span>{`${remainingTime} remaining`}</span>
+                <span>{`${firstLook.minutes()}:${firstLook.seconds()} remaining`}</span>
             </span>
         );
     }
