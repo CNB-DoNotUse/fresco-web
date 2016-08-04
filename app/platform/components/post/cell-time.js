@@ -43,12 +43,13 @@ class CellTime extends Component {
             ? (post.captured_at || post.created_at)
             : post.created_at;
         const timeString = typeof(time) === 'undefined' ? 'No timestamp' : utils.formatTime(time);
+        const pad = (num, size) => (`000000000${num}`).substr(-size);
 
         if (firstLook) {
             return (
                 <span className="tile--first-look">
                     <i className="mdi mdi-clock-fast" />
-                    <span>{`${firstLook.minutes()}:${firstLook.seconds()} remaining`}</span>
+                    <span>{`${pad(firstLook.minutes(), 2)}:${pad(firstLook.seconds(), 2)} remaining`}</span>
                 </span>
             );
         }
