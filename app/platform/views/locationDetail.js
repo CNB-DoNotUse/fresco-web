@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
-import PostList from './../components/global/post-list.js';
+import PostList from './../components/post/list.js';
 import TopBar from './../components/topbar';
 import utils from 'utils';
 import LocationDropdown from '../components/global/location-dropdown';

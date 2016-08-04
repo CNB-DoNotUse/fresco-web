@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import TopBar from './../components/topbar';
-import PostList from './../components/global/post-list';
+import PostList from './../components/post/list';
 import Sidebar from './../components/assignment/sidebar';
 import Edit from './../components/assignment/edit.js';
 import App from './app';

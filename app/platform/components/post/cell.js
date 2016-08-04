@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
-import FrescoImage from './fresco-image';
-import PostCellActions from './post-cell-actions';
-import PostCellStories from './post-cell-stories';
-import utils from 'utils';
-import moment from 'moment';
+import FrescoImage from '../global/fresco-image';
+import Actions from './cell-actions';
+import Stories from './cell-stories';
+import Time from './cell-time';
 
 /**
  * Single Post Cell, child of PostList
@@ -13,10 +12,9 @@ class PostCell extends React.Component {
         super(props);
 
         const { post } = props;
-        const purchased = post.purchased
-            ? post.purchased !== 0
-            : false;
-        this.state = { purchased, ...this.createFirstLook() };
+
+        // TODO: get purchased bool to be sent down with posts in all json
+        this.state = { purchased: post.purchased || false };
     }
 
     onClickPost(e) {
@@ -32,63 +30,26 @@ class PostCell extends React.Component {
         }
     }
 
-    createFirstLook() {
-        const { post } = this.props;
-        let firstLook;
-        let firstLookIntervalId;
-        if (!post.first_look_until) return {};
-        const diffMs = moment(post.first_look_until).diff(moment());
-        // const diffMs = moment().add(20, 'seconds').diff(moment());
-
-        if (diffMs > 1) {
-            firstLook = moment.duration(diffMs);
-            firstLookIntervalId = setInterval(() => {
-                if (this.state.firstLook && this.state.firstLook.asSeconds() <= 0) {
-                    clearInterval(this.state.firstLookIntervalId);
-                    this.setState({ firstLook: null, firstLookIntervalId: null });
-                } else {
-                    this.setState({ firstLook: this.state.firstLook.subtract(1, 's') });
-                }
-            }, 1000);
-        }
-
-        return { firstLook, firstLookIntervalId };
-    }
-
-    renderFirstLook() {
-        const { firstLook } = this.state;
-        if (!firstLook) return '';
-
-        return (
-            <span className="tile--first-look">
-                <i className="mdi mdi-clock-fast" />
-                <span>{`${firstLook.minutes()}:${firstLook.seconds()} remaining`}</span>
-            </span>
-        );
-    }
-
     renderActions() {
         const {
             post,
-            sort,
             assignment,
             rank,
+            sort,
             editable,
         } = this.props;
-        const { purchased, firstLook } = this.state;
-        let time = sort === 'captured_at' ? post.captured_at : post.created_at;
-        let	timeString = typeof(time) === 'undefined' ? 'No timestamp' : utils.formatTime(time);
+        const { purchased } = this.state;
+
         let address = post.location && post.address ? post.address : 'No Address';
+
         // Class name for post tile icon
         let statusClass = 'mdi icon pull-right ';
         statusClass += post.video == null ? 'mdi-image ' : 'mdi-movie ';
         statusClass += purchased ? 'available ' : 'md-type-black-disabled ';
 
-
         return (
             <div className="tile-foot" >
-
-                <PostCellActions
+                <Actions
                     post={post}
                     assignment={assignment}
                     purchased={purchased}
@@ -100,13 +61,7 @@ class PostCell extends React.Component {
                 <div>
                     <div className="tile-info">
                         <span className="md-type-body2">{address}</span>
-
-                        {firstLook
-                            ? this.renderFirstLook()
-                            : <span className="md-type-caption timestring" data-timestamp={time}>
-                                {timeString}
-                            </span>
-                        }
+                        <Time sort={sort} post={post} />
                     </div>
 
                     <span className={statusClass} />
@@ -142,7 +97,7 @@ class PostCell extends React.Component {
 
                         <span className="md-type-caption">{post.byline}</span>
 
-                        <PostCellStories stories={post.stories} />
+                        <Stories stories={post.stories} />
                     </div>
 
                     <FrescoImage

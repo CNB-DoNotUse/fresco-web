@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import PostCell from './post-cell';
+import PostCell from './cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
 import GalleryCreate from '../gallery/create';

@@ -1,9 +1,8 @@
 import React from 'react';
 
 /**
-    * Gallery Cell Stories List
-*/
-
+ * Post Cell Stories List
+ */
 class PostCellStories extends React.Component {
     render() {
         let stories;

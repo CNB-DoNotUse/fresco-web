@@ -1,6 +1,6 @@
 import React from 'react'
 import PurchasesBody from '../purchases/purchases-body'
-import PostList from '../global/post-list'
+import PostList from '../post/list'
 import Sidebar from './sidebar'
 import moment from 'moment'
 import utils from 'utils'
@@ -56,7 +56,7 @@ export default class Body extends React.Component {
 					callback(response);
 				}
 			}
-		});	
+		});
 	}
 
 	/**
@@ -83,7 +83,7 @@ export default class Body extends React.Component {
 					cb(response);
 				}
 			}
-		});	
+		});
 	}
 
 	downloadExports() {
