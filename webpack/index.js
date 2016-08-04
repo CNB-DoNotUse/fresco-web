@@ -97,7 +97,7 @@ module.exports = (env = 'dev') => {
         output: output(env),
         plugins: plugins(env),
         watch: env === 'dev',
-        devtool: env === 'dev' ? 'eval-source-map' : 'eval-source-map',
+        devtool: env === 'dev' ? 'eval-source-map' : null,
         module: {
             loaders: [
                 //Babel
