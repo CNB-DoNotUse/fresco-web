@@ -86,7 +86,7 @@ class Stats extends React.Component {
     downloadStats() {
         $.snackbar({content: 'Downloading...'});
 
-        window.location.replace("/scripts/report?u=/api/post/submissions/report");
+        window.location.replace("/scripts/report?u=/post/submissions/report");
     }
 
     /**
