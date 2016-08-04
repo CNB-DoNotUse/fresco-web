@@ -56,7 +56,7 @@ class MergeDropup extends React.Component {
 
         this.setState({ loading: true });
         const data = {
-            radius: 1,
+            radius: 100,
             geo: location.hasOwnProperty('type') ? location : utils.getGeoFromCoord(location),
             limit: 5,
         };

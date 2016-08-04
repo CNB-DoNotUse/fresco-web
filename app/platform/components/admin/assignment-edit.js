@@ -30,6 +30,23 @@ class AssignmentEdit extends React.Component {
     }
 
     /**
+     * @param {Object} props Component props
+     * @returns {Object} State object derived from component props
+     */
+    getStateFromProps(props) {
+        const { assignment } = props;
+        const radius = assignment.radius || 0;
+
+        return {
+            address: assignment.address,
+            radius,
+            location: assignment.location,
+            showMergeDialog: false,
+            mergeIntoAssignment: null,
+        };
+    }
+
+    /**
      * Updates state map location when AutocompleteMap gives new location
      */
     onPlaceChange(place) {
@@ -67,15 +84,15 @@ class AssignmentEdit extends React.Component {
     }
 
     onCloseMerge() {
-        this.setState({ showMergeDialog: false, mergeIntoAssignment: null });
+        this.setState({ showMergeDialog: false, assignmentToMergeInto: null });
     }
 
     /**
      * Called when assignment-merge-menu-item is clicked
      * @param  {[type]} id ID of assignment to be merged into
      */
-    onSelectMerge(assignment) {
-        this.setState({ mergeIntoAssignment: assignment, showMergeDialog: true });
+    onSelectMerge(assignmentToMergeInto) {
+        this.setState({ assignmentToMergeInto, showMergeDialog: true });
     }
 
     /**
@@ -120,25 +137,6 @@ class AssignmentEdit extends React.Component {
         };
 
         approveAssignment(assignment.id, params);
-    }
-
-    /**
-     * getStateFromProps
-     *
-     * @param {Object} props Component props
-     * @returns {Object} State object derived from component props
-     */
-    getStateFromProps(props) {
-        const { assignment } = props;
-        const radius = assignment.radius || 0;
-
-        return {
-            address: assignment.address,
-            radius,
-            location: assignment.location,
-            showMergeDialog: false,
-            mergeIntoAssignment: null,
-        };
     }
 
     isGlobalLocation() {
@@ -255,7 +253,7 @@ class AssignmentEdit extends React.Component {
                 {showMergeDialog
                     ? <Merge
                         assignment={assignment}
-                        mergeIntoAssignment={this.state.mergeIntoAssignment}
+                        assignmentToMergeInto={this.state.assignmentToMergeInto}
                         onClose={() => this.onCloseMerge()}
                         onMergeAssignment={(id) => this.onMergeAssignment(id)}
                     />

@@ -48,7 +48,9 @@ class AssignmentEdit extends React.Component {
     }
 
     onChangeEndsAt(e) {
-        this.setState({ endsAt: moment().add(e.target.value, 'h').valueOf() });
+        this.setState({ 
+            endsAt: moment().add(e.target.value, 'h').valueOf() 
+        });
     }
 
     /**
