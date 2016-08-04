@@ -16,15 +16,13 @@ class PostCell extends React.Component {
         const purchased = post.purchased
             ? post.purchased !== 0
             : false;
-        const firstLook = moment().diff(post.first_look_until) > 1
-            ? null
+        let firstLook;
+        if (post.first_look_until && moment().diff(post.first_look_until) > 1) {
             // ? moment().add(20, 'minutes')
-            : moment(post.first_look_until);
+            firstLook = moment(post.first_look_until);
+        }
 
-        this.state = {
-            purchased,
-            firstLook,
-        };
+        this.state = { purchased, firstLook };
     }
 
     componentDidMount() {
