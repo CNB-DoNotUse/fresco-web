@@ -44,7 +44,7 @@ export default class PurchasesStats extends React.Component {
 	render() {
 		const { downloadExports, emailStatement } = this.props;
 
-		const { last_day, last_7days, last_30days } = this.state.stats;
+		const { last_day, last_7days, last_30days, total_revenue } = this.state.stats;
 
 		return (
 			<div className="col-md-4">
@@ -62,6 +62,11 @@ export default class PurchasesStats extends React.Component {
 					<li>
 						<span>${last_30days / 100}</span>
 						<span className="md-type-caption"> last 30 days</span>
+					</li>
+
+					<li>
+						<span>${total_revenue / 100}</span>
+						<span className="md-type-caption"> total</span>
 					</li>
 				</ul>
 
@@ -85,6 +90,7 @@ PurchasesStats.defaultProps = {
 	stats: {	
 		last_day: 0,
 		last_7days: 0,
-		last_30days: 0
+		last_30days: 0,
+		total_revenue: 0
 	}
 }
