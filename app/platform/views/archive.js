@@ -38,7 +38,7 @@ class Archive extends React.Component {
         };
 
         if (this.state.verifiedToggle) {
-            params.rating = 1;
+            params.rating = 2;
         }
 
         $.ajax({

@@ -47,7 +47,7 @@ class Photos extends React.Component {
         };
 
         if (this.state.showVerified) {
-            params.rating = 1;
+            params.rating = 2;
         }
 
         $.ajax({
