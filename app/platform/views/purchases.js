@@ -222,7 +222,9 @@ class Purchases extends React.Component {
 			return 'user_ids[]='+ user.id
 		}).join('&');
 
-		const url = `/scripts/report?u=/purchase/report?${oultets}${users}&e=Failed`;
+		const u = encodeURIComponent(`/purchase/report?${oultets}${users}`);
+
+		const url = `/scripts/report?u=${u}&e=Failed`;
 
 		window.open(url, '_blank');
 	}
