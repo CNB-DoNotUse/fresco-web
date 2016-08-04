@@ -16,33 +16,41 @@ class PostCell extends React.Component {
         const purchased = post.purchased
             ? post.purchased !== 0
             : false;
-        let firstLook;
-        if (post.first_look_until && moment().diff(post.first_look_until) > 1) {
-            // ? moment().add(20, 'minutes')
-            firstLook = moment(post.first_look_until);
-        }
-
-        this.state = { purchased, firstLook };
+        this.state = { purchased, ...this.createFirstLook() };
     }
 
-    componentDidMount() {
-        const { firstLook } = this.state;
-        if (firstLook) {
-            setInterval(() => {
-                this.setState({ firstLook: firstLook.subtract({ seconds: 1 }) });
-            }, 1000);
-        }
-    }
+    onClickPost(e) {
+        const { post, togglePost } = this.props;
 
-    postClicked(e) {
         // Check if clicked with shift key
         if (e.shiftKey) {
-            this.props.togglePost(this.props.post);
+            togglePost(post);
         } else if (e.metaKey || e.ctrlKey) {
-            window.open('/post/' + this.props.post.id);
+            window.open(`/post/${post.id}`);
         } else {
-            window.open('/post/' + this.props.post.id, '_self');
+            window.open(`/post/${post.id}`, '_self');
         }
+    }
+
+    createFirstLook() {
+        const { post } = this.props;
+        let firstLook;
+        let firstLookIntervalId;
+
+        if (post.first_look_until && moment().diff(post.first_look_until) > 1) {
+            firstLook = moment(post.first_look_until);
+            // firstLook = moment().add(20, 'seconds'); - use to debug
+            firstLookIntervalId = setInterval(() => {
+                if (this.state.firstLook && this.state.firstLook.isSameOrBefore(moment())) {
+                    clearInterval(this.state.firstLookIntervalId);
+                    this.setState({ firstLook: null, firstLookIntervalId: null });
+                } else {
+                    this.setState({ firstLook: this.state.firstLook.subtract({ seconds: 1 }) });
+                }
+            }, 1000);
+        }
+
+        return { firstLook, firstLookIntervalId };
     }
 
     renderFirstLook() {
@@ -125,7 +133,7 @@ class PostCell extends React.Component {
                 <div className="tile-body">
                     <div className="frame" />
 
-                    <div className="hover" onClick={(e) => this.postClicked(e)}>
+                    <div className="hover" onClick={(e) => this.onClickPost(e)}>
                         <p className="md-type-body1">
                             {post.parent && post.parent.caption
                                 ? post.parent.caption
@@ -169,6 +177,7 @@ PostCell.propTypes = {
     sizes: PropTypes.object,
     editable: PropTypes.bool,
     toggled: PropTypes.bool,
+    togglePost: PropTypes.func,
 };
 
 export default PostCell;
