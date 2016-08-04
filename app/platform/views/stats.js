@@ -4,6 +4,7 @@ import App from './app'
 import TopBar from '../components/topbar'
 import utils from 'utils'
 import _ from 'lodash'
+import 'app/sass/platform/stats';
 
 /**
  * Stats page
@@ -85,7 +86,7 @@ class Stats extends React.Component {
     downloadStats() {
         $.snackbar({content: 'Downloading...'});
 
-        window.location.replace("/api/stats/submissions");
+        window.location.replace("/scripts/report?u=/api/post/submissions/report");
     }
 
     /**

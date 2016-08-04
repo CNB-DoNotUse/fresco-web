@@ -6,7 +6,7 @@ const router      = express.Router();
 const api         = request.createClient(config.API_URL);
 
 /**
- * Root purcahses page
+ * Root purchases page
  */
 router.get('/', (req, res, next) => {
     //Check if an Admin

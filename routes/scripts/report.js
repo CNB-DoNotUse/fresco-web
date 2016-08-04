@@ -6,21 +6,25 @@ const router = express.Router();
 const csv = require('../../lib/csv');
 
 /**
- * Retrieves assignment report
+ * Retrieves report request to generate CSV
+ * @description Uses CSV middleware to interpret API response and respond with CSV
+ * @param {string} u The url on the API to hit
+ * @param {string} e The error to display on failure to download
  */
-router.get('/report', (req, res, next) => {
+router.get('/', (req, res, next) => {
     API.request({
         method: 'GET',
-        url: `/assignment${req.path}`,
+        url: req.query.u,
         token: req.session.token
     })
     .then(response => csv.middleware(response, res, next))
     .catch((error) => {
         return next({
-            message: 'Could not download report!',
+            message: req.query.e || 'Could not download report!',
             status: 500
         });
     });
 });
+
 
 module.exports = router;

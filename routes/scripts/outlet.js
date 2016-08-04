@@ -19,21 +19,6 @@ function checkOutlet(req, res) {
     return true;
 }
 
-//---------------------------vvv-OUTLET-ENDPOINTS-vvv---------------------------//
-router.get('/purchase/report', (req, res, next) => {
-    API.request({
-        method: 'GET',
-        url: req.url,
-        token: req.session.token
-    })
-    .then(response => csv.middleware(response, res, next))
-    .catch((error) => {
-        return next({
-            message: 'Could not download purchase report!',
-            status: 500
-        });
-    });
-});
 
 router.get('/export/email', (req, res) => {
     if (!checkOutlet(req, res)) return;

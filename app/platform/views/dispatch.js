@@ -56,8 +56,6 @@ class Dispatch extends React.Component {
 	 * list component
      */
     setActiveAssignment(activeAssignment) {
-        console.log(activeAssignment);
-
         this.setState({ activeAssignment });
     }
 
@@ -195,7 +193,7 @@ class Dispatch extends React.Component {
      * Downloads stats when button is clicked
      */
     downloadStats() {
-        window.open('/scripts/assignment/report', '_blank');
+        window.open('/scripts/report?u=/assignment/report', '_blank');
     }
 
     render() {

@@ -41,7 +41,6 @@ export default class DispatchSubmit extends React.Component {
             };
 
             this.currentGeocode = geo;
-
             geocode(geo);
         }
 
@@ -155,24 +154,22 @@ export default class DispatchSubmit extends React.Component {
                     ]
                 }
             });
+
+            /* Run check only if it's not global */
+            if (utils.isEmptyString(assignment.address)){
+                return $.snackbar({content: 'Your assignment must have a location!'});
+            } else if (!utils.isValidRadius(assignment.radius)){
+                return $.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
+            }
         }
 
-        /* Run regular Checks */
+        /* Run regular checks */
         if (utils.isEmptyString(assignment.title)){
             return $.snackbar({content: 'Your assignment must have a title!'});
         } else if (utils.isEmptyString(assignment.caption)){
             return $.snackbar({content: 'Your assignment must have a caption!'});
         } else if (isNaN(expiration.value) || expiration.value < 1){
             return $.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
-        }
-
-        /* Run check only if it's not global */
-        if(!global) {
-            if (utils.isEmptyString(assignment.address)){
-                return $.snackbar({content: 'Your assignment must have a location!'});
-            } else if (!utils.isValidRadius(assignment.radius)){
-                return $.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
-            }
         }
 
         $.ajax({
@@ -190,8 +187,8 @@ export default class DispatchSubmit extends React.Component {
                     //Update view mode for all components
                     this.props.updateViewMode('pending');
 
-                    //Tell the main map to update itself, to reflect the new assignment
-                    this.props.mapShouldUpdate(true);
+                    //Update new assignment objecto to nothing
+                    this.props.updateNewAssignment();
 
                     $.snackbar({
                         content: 'Your assignment has been successfully submitted and is awaiting approval!',
