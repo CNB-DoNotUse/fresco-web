@@ -37,7 +37,7 @@ class PostCell extends React.Component {
         let firstLook;
         let firstLookIntervalId;
 
-        if (post.first_look_until && moment().diff(post.first_look_until) > 1) {
+        if (post.first_look_until && moment().diff(post.first_look_until) < 1) {
             firstLook = moment(post.first_look_until);
             // firstLook = moment().add(20, 'seconds'); - use to debug
             firstLookIntervalId = setInterval(() => {
