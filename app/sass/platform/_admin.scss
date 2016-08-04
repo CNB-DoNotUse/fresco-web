@@ -33,6 +33,11 @@
 .list-item {
 
 	.list-item-caption {
+		overflow:hidden;
+		text-overflow: ellipsis;
+	}
+
+	.list-item-caption {
 		width: 40%;
 	}
 
