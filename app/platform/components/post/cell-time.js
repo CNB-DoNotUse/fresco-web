@@ -1,20 +1,16 @@
 import React, { PropTypes, Component } from 'react';
+import moment from 'moment';
+import utils from 'utils';
 
 /**
- * Post Cell First look item
+ * Post Cell Time/First Look
  */
-class FirstLook extends Component {
+class CellTime extends Component {
 
     constructor(props) {
         super(props);
 
-        const { post } = props;
-
-        this.state = { 
-            purchased: post.purchased
-        }
-
-        this.createFirstLook = this.createFirstLook.bind(this);
+        this.state = { ...this.createFirstLook() };
     }
 
     createFirstLook() {
@@ -40,29 +36,40 @@ class FirstLook extends Component {
         return { firstLook, firstLookIntervalId };
     }
 
-    renderFirstLook() {
+    render() {
+        const { post, sort } = this.props;
         const { firstLook } = this.state;
-        if (!firstLook) return '';
+        const time = sort === 'captured_at'
+            ? (post.captured_at || post.created_at)
+            : post.created_at;
+        const timeString = typeof(time) === 'undefined' ? 'No timestamp' : utils.formatTime(time);
 
-        {firstLook
-            ? this.renderFirstLook()
-            : <span className="md-type-caption timestring" data-timestamp={time}>
-                {timeString}
-            </span>
+        if (firstLook) {
+            return (
+                <span className="tile--first-look">
+                    <i className="mdi mdi-clock-fast" />
+                    <span>{`${firstLook.minutes()}:${firstLook.seconds()} remaining`}</span>
+                </span>
+            );
         }
 
         return (
-            <span className="tile--first-look">
-                <i className="mdi mdi-clock-fast" />
-                <span>{`${firstLook.minutes()}:${firstLook.seconds()} remaining`}</span>
+            <span className="md-type-caption timestring" data-timestamp={time}>
+                {timeString}
             </span>
         );
     }
-
 }
 
-FirstLook.defaultProps = {
-    post: {},
+CellTime.propTypes = {
+    post: PropTypes.object,
+    sort: PropTypes.string,
 };
 
-export default FirstLook;
+CellTime.defaultProps = {
+    post: {},
+    sort: 'captured_at',
+};
+
+export default CellTime;
+

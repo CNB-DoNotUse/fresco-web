@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import App from './app'
 import UserSidebar from './../components/userDetail/user-sidebar'
 import TopBar from './../components/topbar'
-import PostList from './../components/global/post-list'
+import PostList from './../components/post/list'
 import utils from 'utils'
 
 /**
@@ -22,19 +22,19 @@ class UserDetail extends React.Component {
  	render() {
  		return (
  			<App user={this.props.user}>
- 				<TopBar 
+ 				<TopBar
  					title={this.props.detailUser.firstname + ' ' + this.props.detailUser.lastname}
  					timeToggle={true}
  					editIcon={"mdi-settings"}
 					editable={this.props.editable}
 					edit={this.edit} />
-				
-				<UserSidebar 
+
+				<UserSidebar
                     user={this.props.user}
 					detailUser={this.props.detailUser} />
-				
+
 				<div className="col-sm-8 tall">
-					<PostList 
+					<PostList
 						loadPosts={this.loadPosts}
 						size='large'
 						rank={this.props.user.rank}
@@ -49,7 +49,7 @@ class UserDetail extends React.Component {
  		window.location.href = "/user/settings";
  	}
 
- 	//Returns array of posts for the user 
+ 	//Returns array of posts for the user
  	//with offset and callback, used in child PostList
  	loadPosts(passedOffset, callback) {
 
@@ -85,11 +85,11 @@ class UserDetail extends React.Component {
 }
 
 ReactDOM.render(
-  	<UserDetail 
-  		user={window.__initialProps__.user} 
-  		detailUser={window.__initialProps__.detailUser} 
+  	<UserDetail
+  		user={window.__initialProps__.user}
+  		detailUser={window.__initialProps__.detailUser}
   		editable={window.__initialProps__.editable}
-  		purchases={window.__initialProps__.purchases} 
+  		purchases={window.__initialProps__.purchases}
   		title={window.__initialProps__.title} />,
   	document.getElementById('app')
 );

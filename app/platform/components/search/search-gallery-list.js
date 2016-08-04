@@ -1,13 +1,13 @@
 import React from 'react'
-import PostCell from './../global/post-cell.js'
+import PostCell from './../post/cell.js'
 
 export default class SearchGalleryList extends React.Component {
-	
+
 	render() {
 		var purchases = this.props.purchases,
 			posts = [];
 
-		
+
 		for (var i = 0; i < this.props.galleries.length; i++) {
 			var post = this.props.galleries[i]; //Actually posts, not galleries #nolan
 
@@ -17,10 +17,10 @@ export default class SearchGalleryList extends React.Component {
 			}
 
 			posts.push(
-	        	<PostCell 
-	        		size="large" 
-	        		post={post} 
-	        		rank={this.props.rank} 
+	        	<PostCell
+	        		size="large"
+	        		post={post}
+	        		rank={this.props.rank}
 	        		purchased={purchases.indexOf(post.id) != -1}
 	        		didPurchase={this.props.didPurchase}
 	        		key={i} />

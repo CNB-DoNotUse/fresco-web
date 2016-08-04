@@ -8,7 +8,7 @@ import TopBar from './../components/topbar'
 import LocationDropdown from '../components/topbar/location-dropdown'
 import TagFilter from '../components/topbar/tag-filter'
 import SearchSidebar from './../components/search/search-sidebar'
-import PostList from './../components/global/post-list.js'
+import PostList from './../components/post/list.js'
 
 export class Search extends Component {
 
@@ -55,7 +55,7 @@ export class Search extends Component {
 			document.location.reload();
 		};
 
-		// If has location in state, get address from LatLng. 
+		// If has location in state, get address from LatLng.
 		// Location dropdown will use this as it's defaultLocation
 		if(this.state.location.coordinates) {
 			const geocoder = new google.maps.Geocoder();
@@ -65,7 +65,7 @@ export class Search extends Component {
 				if(status === google.maps.GeocoderStatus.OK && results[0]){
 					location.address = results[0].formatted_address;
 
-					this.setState({ 
+					this.setState({
 						title : this.getTitle()
 					});
 				}
@@ -99,7 +99,7 @@ export class Search extends Component {
 			this.setState({
 				title : this.getTitle(false)
 			});
-		} 
+		}
 	}
 
 	/**
@@ -112,7 +112,7 @@ export class Search extends Component {
 			tags,
 			location
 		} = withProps ? this.props : this.state;
-		
+
 		let title = '';
 
 		if(this.props.query !== '') {
@@ -197,7 +197,7 @@ export class Search extends Component {
 					});
 				}
 			}
-		});	
+		});
 	}
 
 	/**
@@ -263,7 +263,7 @@ export class Search extends Component {
 				limit: 20
 			}
 		};
-		
+
 		$.ajax({
 			url: '/api/search',
 			type: 'GET',
@@ -279,7 +279,7 @@ export class Search extends Component {
 					});
 				}
 			}
-		});	
+		});
 	}
 
 	/**
@@ -310,7 +310,7 @@ export class Search extends Component {
 					});
 				}
 			}
-		});	
+		});
 	}
 
 	addTag(tag) {
@@ -323,7 +323,7 @@ export class Search extends Component {
 	}
 
 	removeTag(tag, index) {
-		this.setState({ 
+		this.setState({
 			tags: update(this.state.tags, {$splice: [[index, 1]]}), //Keep the filtered list updated
 		});
 	}
@@ -335,7 +335,7 @@ export class Search extends Component {
 		let location = _.clone(this.state.location);
 		location.radius = radius;
 
-		this.setState({ 
+		this.setState({
 			location : location
 		});
 	}
@@ -370,7 +370,7 @@ export class Search extends Component {
 		query += encodeURIComponent(this.props.query);
 
 		tags.forEach((tag) => {
-			query += '&tags[]=' + encodeURIComponent(tag);	
+			query += '&tags[]=' + encodeURIComponent(tag);
 		});
 
 		if(location.coordinates && location.radius){
@@ -389,7 +389,7 @@ export class Search extends Component {
 		const grid = e.target;
 		const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 400);
 
-		const sidebarScrolled = grid.className.indexOf('search-sidebar') > -1; 
+		const sidebarScrolled = grid.className.indexOf('search-sidebar') > -1;
 
 		//Check that nothing is loading and that we're at the end of the scroll,
 		if(!this.loadingPosts && bottomReached && !sidebarScrolled) {
@@ -410,7 +410,7 @@ export class Search extends Component {
 	render() {
 		return (
 			<App
-				query={this.props.query} 
+				query={this.props.query}
 				user={this.props.user}>
 				<TopBar
 					title={this.state.title}
@@ -422,7 +422,7 @@ export class Search extends Component {
 							onTagAdd={this.addTag}
 							onTagRemove={this.removeTag}
 							filterList={this.state.tags}
-							key="tagFilter" 
+							key="tagFilter"
 						/>
 
 						<LocationDropdown
@@ -433,7 +433,7 @@ export class Search extends Component {
 							key="locationDropdown"
 							onRadiusUpdate={this.onRadiusUpdate}
 							onPlaceChange={this.onMapDataChange}
-							onMapDataChange={this.onMapDataChange} 
+							onMapDataChange={this.onMapDataChange}
 						/>
 				</TopBar>
 
@@ -445,14 +445,14 @@ export class Search extends Component {
 	    				ref="postList"
 	    				size='large'
 	    				scroll={this.scroll}
-	    				scrollable={true} 
+	    				scrollable={true}
 	    			/>
     			</div>
 
     			<SearchSidebar
     				assignments={this.state.assignments}
     				stories={this.state.stories}
-    				users={this.state.users} 
+    				users={this.state.users}
     				scroll={this.scroll}
     			/>
 			</App>

@@ -133,8 +133,6 @@ class GalleryEdit extends React.Component {
         if (!gallery.posts) return <div />;
         // Map gallery posts into slider elements
         return gallery.posts.map((post, i) => {
-            console.log(post);
-
             if (post.stream) {
                 return (
                     <div key={i}>

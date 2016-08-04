@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
 import TopBar from './../components/topbar';
-import PostList from './../components/global/post-list';
+import PostList from './../components/post/list';
 import Sidebar from './../components/story/sidebar';
 import Edit from './../components/story/edit';
 import utils from 'utils';
@@ -126,7 +126,7 @@ class StoryDetail extends React.Component {
                     chronToggle
                 />
 
-                <Sidebar 
+                <Sidebar
                     story={story} />
 
                 <div className="col-sm-8 tall">
