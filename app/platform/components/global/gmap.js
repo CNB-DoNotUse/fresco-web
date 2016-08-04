@@ -57,6 +57,11 @@ class GMap extends React.Component {
                 return utils.getCentroid(location.coordinates);
             }
 
+            // TODO: FIX
+            if (location.type.toLowerCase() === 'multipoint') {
+                return { lng: location.coordinates[0][0], lat: location.coordinates[0][1] };
+            }
+
             if (location.type.toLowerCase() === 'point') {
                 return { lng: location.coordinates[0], lat: location.coordinates[1] };
             }
