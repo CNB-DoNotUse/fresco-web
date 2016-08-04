@@ -274,7 +274,7 @@ export default class DispatchSubmit extends React.Component {
                 <div className="map-group">
                     <div className="form-group-default">
                         <FrescoAutocomplete
-                            inputText={this.state.autocompleteText}
+                            inputText={this.state.autocompleteText || ''}
                             class="form"
                             inputClass="form-control floating-label"
                             ref="autocomplete"
