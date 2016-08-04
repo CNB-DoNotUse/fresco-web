@@ -44,7 +44,7 @@ class AssignmentMerge extends React.Component {
      * Initiates merge assignments, fails if empty form data
      */
     merge() {
-        const { mergeIntoAssignment, assignment } = this.props;
+        const { assignmentToMergeInto, assignment } = this.props;
 
         if (!this.refs.title.value.length) {
             $.snackbar({ content: 'The merged assignment\'s title cannot be empty!' });
@@ -60,33 +60,42 @@ class AssignmentMerge extends React.Component {
         this.postMerge(assignment.id, {
             title: this.refs.title.value,
             caption: this.refs.caption.value,
-            merge_into_id: mergeIntoAssignment.id,
+            merge_into_id: assignmentToMergeInto.id,
         });
     }
 
     render() {
-        const { assignment, mergeIntoAssignment, onClose } = this.props;
+        const { assignment, assignmentToMergeInto, onClose } = this.props;
         const { loading } = this.state;
 
         return (
             <div className="assignment-merge-container">
-                <div className={"dim toggle-edit toggled"} onClick={onClose}></div>
+                <div 
+                    className={"dim toggle-edit toggled"} 
+                    onClick={onClose}></div>
+                
                 <div className={"edit panel panel-default toggle-edit assignment-merge-dialog toggled"}>
                     <div className="col-lg-4 visible-lg edit-current assignment-merge-side">
                         <div className="assignment-block">
                             <span className="section-label">Active Assignment</span>
-                            <h1>{mergeIntoAssignment.title}</h1>
-                            <p>{mergeIntoAssignment.caption}</p>
+                            
+                            <h1>{assignmentToMergeInto.title}</h1>
+                            
+                            <p>{assignmentToMergeInto.caption}</p>
                         </div>
+                        
                         <div className="assignment-block">
                             <span className="section-label">Submitted Assignment</span>
+                            
                             <h1>{assignment.title}</h1>
+                            
                             <p>{assignment.caption}</p>
                         </div>
                     </div>
                     <div className="col-xs-12 col-lg-8 edit-new dialog">
                         <div className="dialog-head">
                             <span className="md-type-title">Update assignment info</span>
+                            
                             <span
                                 className="mdi mdi-close pull-right icon toggle-edit toggler"
                                 onClick={onClose}
@@ -101,7 +110,7 @@ class AssignmentMerge extends React.Component {
                                         placeholder="Title"
                                         title="Title"
                                         ref="title"
-                                        defaultValue={mergeIntoAssignment.title}
+                                        defaultValue={assignmentToMergeInto.title}
                                     />
                                 </div>
 
@@ -112,7 +121,7 @@ class AssignmentMerge extends React.Component {
                                         placeholder="Caption"
                                         title="Caption"
                                         ref="caption"
-                                        defaultValue={mergeIntoAssignment.caption}
+                                        defaultValue={assignmentToMergeInto.caption}
                                     />
                                 </div>
                             </div>
@@ -127,6 +136,7 @@ class AssignmentMerge extends React.Component {
                             >
                                 Cancel
                             </button>
+                            
                             <button
                                 type="button"
                                 className="btn btn-flat pull-right"
@@ -146,9 +156,8 @@ class AssignmentMerge extends React.Component {
 AssignmentMerge.propTypes = {
     onClose: PropTypes.func.isRequired,
     onMergeAssignment: PropTypes.func.isRequired,
-    mergeIntoAssignment: PropTypes.object,
+    assignmentToMergeInto: PropTypes.object,
     assignment: PropTypes.object,
 };
 
 export default AssignmentMerge;
-
