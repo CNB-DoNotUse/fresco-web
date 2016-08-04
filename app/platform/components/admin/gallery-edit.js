@@ -86,8 +86,8 @@ class GalleryEdit extends React.Component {
             address,
             // geo: utils.getGeoFromCoord(location),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
-            assignment_id: assignment ? assignment.id : null,
         };
+        if (assignment) params.assignment_id = assignment.id;
 
         return params;
     }
