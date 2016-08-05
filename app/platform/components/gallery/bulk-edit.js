@@ -4,6 +4,7 @@ import EditStories from './edit-stories';
 import EditPost from './edit-post';
 import Slick from 'react-slick';
 import utils from 'utils';
+import uniq from 'lodash/uniqBy';
 
 /**
  * Component for editing multiple posts at once (from possibly different galleries)
@@ -13,11 +14,14 @@ class BulkEdit extends React.Component {
     constructor(props) {
         super(props);
 
+        const galleries = this.getGalleriesFromPosts();
+        const tags = this.getTagsFromGalleries(galleries);
+        const stories = this.getStoriesFromGalleries(galleries);
         this.state = {
             caption: '',
-            tags: [],
-            stories: [],
-            galleries: [],
+            tags,
+            stories,
+            galleries,
         };
     }
 
@@ -25,55 +29,18 @@ class BulkEdit extends React.Component {
         $.material.init();
     }
 
-    /**
-     * Get the tags that are common between every gallery
-     * @return {Array[string]} The common tags between each gallery
-     */
-    getInitialTags() {
-        let tags = new Set(this.state.galleries[0].tags);
-        for (let gallery of this.state.galleries) {
-            let galleryTags = new Set(gallery.tags);
+    // getInitialState() {
 
-            //This is a set intersection. JS Sets don't have this built in
-            tags = new Set([...tags].filter(x => galleryTags.has(x)));
-        }
-        return [...tags];
+    // }
+
+    getGalleriesFromPosts() {
+        const { posts } = this.props;
+        const galleryIds = uniq(posts.map(p => p.parent.id));
     }
 
-    /**
-     * Get the stories that are common between every gallery. A Story object looks
-     * like this:
-     * {
-     *         id: string,
-     *         title: string
-     * }
-     * @return {Array[Story]} The common stories between each gallery
-     */
-    getInitialStories() {
-        // We can't use the same method that tags uses, as sets test for reference
-        // equality, not value equality. So we have to manually check each id
-
-        let stories = this.state.galleries[0].related_stories
-        for (let gallery of this.state.galleries) {
-            stories = intersectStories(gallery.related_stories, stories);
-        }
-        return stories;
-
-        function intersectStories(array1, array2) {
-            var new_array = [];
-            array2.forEach(function(item) {
-                var found = array1.some(function(item2) {
-                    return item.id == item2.id;
-                });
-
-                if (found) {
-                    new_array.push(item);
-                }
-            });
-
-            return new_array;
-        }
-    }
+    // getTagsFromGalleries(galleries) {
+    //     galleries.map(g => )
+    // }
 
     clear() {
         this.setState({
@@ -88,7 +55,6 @@ class BulkEdit extends React.Component {
      */
     revert() {
         const stateToSet = {};
-
         const caption = this.state.galleries[0].caption;
         const allSame = this.state.galleries.every(gallery => {
             return gallery.caption == caption;
@@ -108,8 +74,7 @@ class BulkEdit extends React.Component {
      * Save the edits made to each post
      */
     save() {
-        // Only send what's changed
-        let params = {
+        const params = {
             galleries: this.state.galleries.map(g => { return g.id; })
         };
 
@@ -122,22 +87,7 @@ class BulkEdit extends React.Component {
             params.tags = this.state.tags;
         }
 
-        let tagsToRemove = subtractArrays(this.getInitialTags(), this.state.tags);
-        if (tagsToRemove.length > 0) {
-            params.tags_removed = tagsToRemove;
-        }
-
-        // Stories
-        let stories = processStories(this.state.stories)
-        if (stories.length > 0) {
-            params.stories = stories;
-        }
-
-        let storiesToRemove = subtractArrays(processStories(this.getInitialStories()), stories);
-        if (storiesToRemove.length > 0) {
-            params.stories_removed = storiesToRemove;
-        }
-
+        // TODO: add support for tags, stories
         $.ajax({
             url: '/api/gallery/bulkupdate',
             type: 'post',
@@ -151,31 +101,8 @@ class BulkEdit extends React.Component {
                     return;
                 }
                 window.location.reload();
-            }
+            },
         });
-
-        function subtractArrays(array1, array2) {
-            let result = new Set(array1);
-            for (let item of array2) {
-                result.delete(item);
-            }
-            return [...result];
-        }
-
-        /**
-         * Turn an array of story objects into id & creation strings. Needed to send
-         * to the api.
-         * @param    {Array[Story]} stories The story objects to process.
-         * @return {Array[string]}                 The processed stories, ready to send
-         */
-        function processStories(stories) {
-            return stories.map((story) => {
-                if(story.new)
-                    return 'NEW=' + JSON.stringify(story);
-                else
-                    return story.id;
-            });
-        }
     }
 
     renderBody() {

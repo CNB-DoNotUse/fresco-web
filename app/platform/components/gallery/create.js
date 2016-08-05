@@ -14,11 +14,13 @@ import utils from 'utils';
 class Create extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             tags: [],
             relatedStories: [],
             articles: [],
             visibility: 0,
+            caption: '',
         };
     }
 
@@ -31,12 +33,11 @@ class Create extends React.Component {
      * @return {[type]} [description]
      */
     clear() {
-        this.refs.caption.value = '';
-
         this.setState({
             tags: [],
             relatedStories: [],
             articles: [],
+            caption: '',
         });
     }
 
@@ -48,20 +49,18 @@ class Create extends React.Component {
      * Creates the gallery on button click
  	 */
     create() {
-        const caption = this.refs.caption.value;
-        const { visibility, tags, relatedStories, articles } = this.state;
+        const { caption, visibility, tags, relatedStories, articles } = this.state;
         const { posts, onHide, setSelectedPosts } = this.props;
 
         // Generate post ids for update
         const postIds = posts.map((p) => p.id);
-
         if (postIds.length === 0) {
             $.snackbar({ content: 'Galleries must have at least 1 post' });
             return;
         }
 
-        const storyIds = relatedStories.map((s) => s.id);
-        const articleIds = articles.map((a) => a.id);
+        const storyIds = relatedStories.map(s => s.id);
+        const articleIds = articles.map(a => a.id);
 
         const params = {
             caption,
@@ -99,7 +98,7 @@ class Create extends React.Component {
 
     render() {
         const { posts, onHide } = this.props;
-        const { tags, relatedStories, articles } = this.state;
+        const { caption, tags, relatedStories, articles } = this.state;
 
         const postsJSX = posts.map((p, i) => (
             <div key={i}>
@@ -150,7 +149,7 @@ class Create extends React.Component {
                             <div className="dialog-col col-xs-12 col-md-7 form-group-default">
                                 <div className="dialog-row">
                                     <textarea
-                                        ref="caption"
+                                        value={caption}
                                         type="text"
                                         className="form-control floating-label"
                                         placeholder="Caption"

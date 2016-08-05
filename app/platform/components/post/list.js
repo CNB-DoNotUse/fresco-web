@@ -72,10 +72,10 @@ class PostList extends React.Component {
     }
 
     onToggleGalleryBulkEdit() {
-        if (this.props.posts.length > 1) {
+        if (this.state.selectedPosts.length > 1) {
             this.setState({ galleryBulkEditToggled: !this.state.galleryBulkEditToggled });
         } else {
-            this.setState({ bulkEditToggled: false });
+            this.setState({ galleryBulkEditToggled: false });
             $.snackbar({ content: 'Select more than one gallery to edit' });
         }
     }
