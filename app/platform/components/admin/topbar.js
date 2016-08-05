@@ -27,13 +27,10 @@ class TopBar extends React.Component {
         this.createGallery();
     }
 
-    uploadImages(res) {
-        const posts = res.posts;
-        const files = this.refs.uploadImportFiles.files;
-
+    uploadFiles(posts, files) {
         posts.forEach((p, i) => {
             request
-                .put(p.upload_url)
+                .put(p.url)
                 .set('Content-Type', files[i].type)
                 .send(files[i])
                 .end((err) => {
@@ -43,12 +40,11 @@ class TopBar extends React.Component {
     }
 
     createGallery() {
-        const files = this.refs.uploadImportFiles.files;
+        const files = this.importFileInput.files;
         const caption = `Gallery imported from local system on ${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
         const posts = [];
         this.setState({ loading: true });
         if (!files.length) return;
-
 
         times(files.length, (i) => {
             posts.push({ contentType: files[i].type });
@@ -57,7 +53,7 @@ class TopBar extends React.Component {
         const data = {
             caption,
             tags: [],
-            posts,
+            posts_new: posts,
         };
 
         $.ajax({
@@ -68,7 +64,7 @@ class TopBar extends React.Component {
             dataType: 'json',
         })
         .done((res) => {
-            this.uploadImages(res);
+            if (res.posts) this.uploadFiles(res.posts, this.importFileInput.files);
         })
         .fail(() => {
             $.snackbar({ content: 'Failed to import media' });
@@ -109,7 +105,7 @@ class TopBar extends React.Component {
     }
 
     clickImportFileUpload() {
-        this.refs.uploadImportFiles.click();
+        this.importFileInput.click();
     }
 
     render() {
@@ -117,7 +113,7 @@ class TopBar extends React.Component {
             <nav className="navbar navbar-fixed-top navbar-default">
                 <input
                     type="file"
-                    ref="uploadImportFiles"
+                    ref={(r) => this.importFileInput = r}
                     style={{ position: 'absolute', top: '-100px' }}
                     accept="image/*,video/*,video/mp4"
                     multiple

@@ -6,7 +6,7 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const PublicGallery = require('../app/platform/views/publicGallery.js');
 const API = require('../lib/api');
-const _ = require('lodash');
+const get = require('lodash/get');
 
 /** //
 	Description : Gallery Specific Routes -- prefix /gallery/~
@@ -19,7 +19,9 @@ const _ = require('lodash');
 function render(gallery, user, req, res) {
     let title = 'Gallery';
 
-    if (_.has(gallery, ['posts', '0', 'address'])) {
+    if (gallery.address) {
+        title += ` from ${gallery.address}`;
+    } else if (get(gallery, ['posts', '0', 'address'])) {
         title += ` from ${gallery.posts[0].address}`;
     }
 
