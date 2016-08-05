@@ -68,11 +68,11 @@ class GalleryDetail extends React.Component {
             data: JSON.stringify(params),
         })
         .done((res) => {
-            this.onUpdateGallery(res.gallery);
+            this.onUpdateGallery(res);
             $.snackbar({ content: 'Gallery saved!' });
             this.toggleEdit();
             if (res.posts_new && fileInput.files.length) {
-                this.uploadFiles(res.posts, fileInput.files);
+                this.uploadFiles(res.posts_new, fileInput.files);
             }
         })
         .fail((err) => {
