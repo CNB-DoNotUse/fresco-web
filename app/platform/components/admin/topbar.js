@@ -33,7 +33,7 @@ class TopBar extends React.Component {
 
         posts.forEach((p, i) => {
             request
-                .put(p.upload_url)
+                .put(p.url)
                 .set('Content-Type', files[i].type)
                 .send(files[i])
                 .end((err) => {
@@ -57,7 +57,7 @@ class TopBar extends React.Component {
         const data = {
             caption,
             tags: [],
-            posts,
+            posts_new: posts,
         };
 
         $.ajax({
