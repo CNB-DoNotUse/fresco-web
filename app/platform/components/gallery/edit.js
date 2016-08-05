@@ -64,8 +64,7 @@ class Edit extends React.Component {
             assignment: gallery.assignment,
             address: gallery.address,
             caption: gallery.caption || 'No Caption',
-            postIds: gallery.posts.map((p) => p.id),
-            postsToDeleteIds: [],
+            posts: gallery.posts,
             articles: gallery.articles,
             rating: gallery.rating,
         };
@@ -84,18 +83,16 @@ class Edit extends React.Component {
             stories,
             articles,
             assignment,
-            postsToDeleteIds,
-            postIds,
         } = this.state;
         const { gallery } = this.props;
-        const posts = difference(postIds, postsToDeleteIds);
+        const posts = this.getPostsFormData();
 
         if (caption.length === 0) {
             $.snackbar({ content: 'A gallery must have a caption' });
             return null;
         }
 
-        if (!posts.length) {
+        if (!posts) {
             $.snackbar({ content: 'Galleries must have at least 1 post' });
             return null;
         }
@@ -104,12 +101,21 @@ class Edit extends React.Component {
             tags,
             caption,
             address,
+            ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             assignment_id: assignment ? assignment.id : null,
         };
 
         return params;
+    }
+
+    getPostsFormData() {
+        const { gallery } = this.props;
+        let { posts } = this.state;
+        // TODO: merge in array of file objects
+
+        return utils.getRemoveAddParams('posts', gallery.posts, posts);
     }
 
     /**
@@ -119,10 +125,6 @@ class Edit extends React.Component {
         if (this.props.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
-    }
-
-    addMore() {
-        this.refs.fileInput.click();
     }
 
     clear() {
@@ -135,21 +137,10 @@ class Edit extends React.Component {
             assignment: null,
             address: '',
             caption: 'No Caption',
-            postIds: [],
-            postsToDeleteIds: [],
+            posts: [],
             articles: [],
             rating: gallery.rating,
         });
-    }
-
-    toggleDeletePost(postId) {
-        const { postsToDeleteIds } = this.state;
-
-        if (postsToDeleteIds.indexOf(postId) === -1) {
-            this.setState({ postsToDeleteIds: postsToDeleteIds.concat(postId) });
-        } else {
-            this.setState({ postsToDeleteIds: without(postsToDeleteIds, postId) });
-        }
     }
 
     toggleHighlight(e) {
@@ -253,8 +244,8 @@ class Edit extends React.Component {
                 </div>
 
                 <EditPosts
-                    posts={gallery.posts}
-                    postsToDeleteIds={postsToDeleteIds}
+                    posts={posts}
+                    gallery={gallery}
                     onToggleDelete={(p) => this.toggleDeletePost(p)}
                 />
 
@@ -274,9 +265,8 @@ class Edit extends React.Component {
                     id="gallery-upload-files"
                     type="file"
                     accept="image/*,video/*,video/mp4"
-                    ref="fileUpload"
+                    ref={(r) => this.fileInput = r}
                     style={inputStyle}
-                    onChange={() => this.fileUploaderChanged()}
                     disabled={loading}
                     multiple
                 />
@@ -304,7 +294,7 @@ class Edit extends React.Component {
                     !gallery.owner_id
                         ? <button
                             type="button"
-                            onClick={() => this.addMore()}
+                            onClick={() => this.fileInput.click()}
                             className="btn btn-flat"
                             disabled={loading}
                         >
