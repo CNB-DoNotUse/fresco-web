@@ -6,8 +6,7 @@ import EditPosts from './edit-posts';
 import EditAssignment from './edit-assignment';
 import AutocompleteMap from '../global/autocomplete-map';
 import utils from 'utils';
-import difference from 'lodash/difference';
-import without from 'lodash/without';
+import times from 'lodash/times';
 
 /**
  * Gallery Edit Parent Object
@@ -45,7 +44,7 @@ class Edit extends React.Component {
         if (!gallery.id || !params || loading) return;
         params.rating = rating;
 
-        save(gallery.id, params);
+        save(gallery.id, params, this.fileInput);
     }
 
     /**
@@ -112,8 +111,14 @@ class Edit extends React.Component {
 
     getPostsFormData() {
         const { gallery } = this.props;
-        let { posts } = this.state;
+        const { posts } = this.state;
         // TODO: merge in array of file objects
+        const files = this.fileInput.files;
+        if (files.length) {
+            times(files.length, (i) => {
+                posts.push({ contentType: files[i].type, new: true });
+            });
+        }
 
         return utils.getRemoveAddParams('posts', gallery.posts, posts);
     }
@@ -174,13 +179,13 @@ class Edit extends React.Component {
     renderBody() {
         const { user, gallery } = this.props;
         const {
-            postsToDeleteIds,
             stories,
             caption,
             assignment,
             tags,
             rating,
             articles,
+            posts,
         } = this.state;
         if (!gallery || !user) return '';
 
@@ -191,7 +196,7 @@ class Edit extends React.Component {
                         <textarea
                             type="text"
                             className="form-control"
-                            value={utils.getBylineFromGallery(gallery)}
+                            value={utils.getBylineFromGallery(gallery) || ''}
                             placeholder="Byline"
                             disabled
                         />
@@ -289,18 +294,17 @@ class Edit extends React.Component {
                     Clear all
                 </button>
 
-                {
+                {!gallery.owner_id
                     // can add more posts when gallery is an import(null owner id)
-                    !gallery.owner_id
-                        ? <button
-                            type="button"
-                            onClick={() => this.fileInput.click()}
-                            className="btn btn-flat"
-                            disabled={loading}
-                        >
-                            Add More
-                        </button>
-                        : ''
+                    ? <button
+                        type="button"
+                        onClick={() => this.fileInput.click()}
+                        className="btn btn-flat"
+                        disabled={loading}
+                    >
+                        Add More
+                    </button>
+                    : ''
                 }
 
                 <button

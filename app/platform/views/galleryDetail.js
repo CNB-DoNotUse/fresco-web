@@ -37,15 +37,27 @@ class GalleryDetail extends React.Component {
      */
     onUpdateGallery(gallery) {
         let title = 'Gallery';
-
         if (gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
-            title += ' from ' + gallery.posts[0].location.address;
+            title += ` from ${gallery.posts[0].location.address}`;
         }
 
         this.setState({ gallery, title, updatePosts: true });
     }
 
-    save(id, params) {
+    uploadFiles(posts, files) {
+        posts.forEach((p, i) => {
+            request
+                .put(p.url)
+                .set('Content-Type', files[i].type)
+                .send(files[i])
+                .end((err) => {
+                    if (!err) $.snackbar('Gallery imported!');
+                    // TODO: find way to update gallery with new posts/images
+                });
+        });
+    }
+
+    save(id, params, fileInput) {
         if (!id || !params || this.state.loading) return;
         this.setState({ loading: true });
 
@@ -55,11 +67,10 @@ class GalleryDetail extends React.Component {
             data: JSON.stringify(params),
         })
         .done((res) => {
-            // Update parent gallery
-            this.onUpdateGallery(res);
+            if (res.gallery) this.onUpdateGallery(res.gallery);
             $.snackbar({ content: 'Gallery saved!' });
-            // Hide the modal
             this.toggleEdit();
+            if (res.posts) this.uploadFiles(res.posts, fileInput.files);
         })
         .fail((err) => {
             $.snackbar({
@@ -147,7 +158,7 @@ class GalleryDetail extends React.Component {
                         user={user}
                         remove={(id) => this.remove(id)}
                         loading={loading}
-                        save={(id, params) => this.save(id, params)}
+                        save={(id, params, fileInput) => this.save(id, params, fileInput)}
                     />
                     : ''
                 }
