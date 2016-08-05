@@ -1,69 +1,69 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 
+/**
+ * Payment Info component in Outlet Settings
+ */
 class PaymentInfo extends React.Component {
+    
     componentDidMount() {
         Stripe.setPublishableKey(window.__initialProps__.stripePublishableKey);
     }
 
-    // returns active card or first card
+    //Returns active card or first card
     getActiveCard() {
         const { payment } = this.props;
+
         if (!payment || !payment.length) return null;
 
-        return payment.find(p => p.active)
-        || payment.length ? payment[0] : null;
+        return payment.find(p => p.active) || payment.length ? payment[0] : null;
     }
 
 	/**
 	 * Save function for the card
-    */
+     */
     save() {
         const exp_times = this.refs['payment-exp'].value.split('/');
         const params = {
             'number': this.refs['payment-ccn'].value,
             'cvv': this.refs['payment-cvv'].value,
-            'exp-month': exp_times[0].trim(),
-            'exp-year': (exp_times[1] || '').trim(),
+            'exp_month': exp_times[0].trim(),
+            'exp_year': (exp_times[1] || '').trim(),
             'address_zip': this.refs['payment-zip'].value,
             'name': this.refs['payment-name'].value,
             'currency': 'usd',
         };
 
-        if (!Stripe.card.validateCardNumber(params.number)) return $.snackbar({content:'Invalid credit card number'});
-        if (!Stripe.card.validateExpiry(params['exp-month'], params['exp-year'])) return $.snackbar({content:'Invalid expiration date'});
-        if (!Stripe.card.validateCVC(params.cvv)) return $.snackbar({content:'Invalid CVV number'});
+        if (!Stripe.card.validateCardNumber(params.number)) {
+            return $.snackbar({content:'Invalid credit card number!'});
+        } else if (!Stripe.card.validateExpiry(params.exp_month, params.exp_year)) {
+            return $.snackbar({content:'Invalid expiration date!'});
+        } else if (!Stripe.card.validateCVC(params.cvv)) {
+            return $.snackbar({content:'Invalid CVV number!'});
+        }
 
         const saveBtn = this.refs['outlet-card-save'];
-
         saveBtn.setAttribute('disabled', true);
 
-        const form = $('<form></form>');
-		for (let index in params) form.append('<input type="hidden" data-stripe="' + index + '" value="' + params[index] + '">');
-
-        return Stripe.card.createToken(form, (status, response) => {
+        return Stripe.card.createToken(params, (status, response) => {
             if (response.error) {
                 saveBtn.prop('disabled', false);
                 return $.snackbar({ content: response.error.message });
             }
 
             $.ajax({
-                url: '/scripts/outlet/payment/create',
-                type: 'POST',
-                data: { token: response.id },
-                success(result, status, xhr) {
-                    saveBtn.removeAttribute('disabled');
-
-                    if (result.err) {
-                        return this.error(null, null, result.err);
-                    }
-
-                    return $.snackbar({ content: 'Payment information updated!' });
-                },
-                error: (xhr, status, error) => {
-                    $.snackbar({ content: utils.resolveError(error) });
-                },
-            });
+                url: "/api/outlet/payment/create",
+                method: 'get'
+            })
+            .done((response) => {
+                return $.snackbar({ content: 'Payment information updated!' });
+            })
+            .fail((error) => {
+                return $.snackbar({ content: utils.resolveError(error) });
+            })
+            .always(() => {
+                saveBtn.removeAttribute('disabled');
+            })
         });
     }
 

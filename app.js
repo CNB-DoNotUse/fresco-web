@@ -28,15 +28,12 @@ const redisConnection = { client: rClient };
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-app.use(favicon(__dirname + '/public/favicon.ico'));
-
 // app.use(morgan('dev'));
 
 //GZIP
 app.use(compression())
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 
 //Multer
 const storage = multer.diskStorage({
@@ -127,6 +124,10 @@ app.use((req, res, next) => {
         return next();
     }
 
+    if (req.session.user && !req.session.user.rank) {
+        return User.updateRank(req, next);
+    }
+
     // Check if there is no sessioned user
     if (!req.session.user) {
         return res.redirect('/account?next=' + req.url);
@@ -140,27 +141,15 @@ app.use((req, res, next) => {
     return User.refresh(req, res, next);
 });
 
-
-/** Check if user rank exists (calc'd from permissions arr) */
-app.use((req, res, next) => {
-    if (req.session.user && !req.session.user.rank) {
-        return User.updateRank(req, next);
-    }
-
-    return next();
-});
-
 /**
  * Route config for public facing pages
  */
 app.use((req, res, next) => {
+    if(!req.fresco)
+        req.fresco = {};
 
-  if(!req.fresco)
-    req.fresco = {};
-
-  res.locals.section = 'public';
-  next();
-
+    res.locals.section = 'public';
+    next();
 });
 
 /**
@@ -191,26 +180,21 @@ for (var i = 0; i < routes.scripts.length; i++) {
  * Route config for private (platform) facing pages
  */
 app.use((req, res, next) => {
+    if(!req.fresco)
+        req.fresco = {};
 
-  if(!req.fresco)
-    req.fresco = {};
-
-  res.locals.section = 'platform';
-  next();
-
+    res.locals.section = 'platform';
+    next();
 });
-
 
 /**
  * Loop through all platform routes
  */
 for (var i = 0; i < routes.platform.length; i++) {
+    const routePrefix = routes.platform[i];
+    const route = require('./routes/' + routePrefix);
 
-  var routePrefix = routes.platform[i] ,
-      route = require('./routes/' + routePrefix);
-
-  app.use('/' + routePrefix , route);
-
+    app.use('/' + routePrefix , route);
 }
 
 /**
@@ -222,8 +206,8 @@ app.use('/api', API.proxy);
  * Error Midleware
  */
 app.use((error, req, res, next) => {
-    var err = {};
-    err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
+    //Define new error to send to `res`
+    let err = {};
 
     // Development error handle will print stacktrace
     if(config.dev) {
@@ -234,6 +218,7 @@ app.use((error, req, res, next) => {
     }
 
     err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
+    err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
 
     //Respond with code
     res.status(err.status);
@@ -247,10 +232,10 @@ app.use((error, req, res, next) => {
     }
 
     if(req.accepts('json')) {
-        return res.send({ error: 'Server Error' });
+        return res.send(err);
     }
 
-    res.type('txt').send('Server Error');
+    res.type('txt').send(err);
 });
 
 /**

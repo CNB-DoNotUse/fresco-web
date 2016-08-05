@@ -5,16 +5,31 @@ export default class Info extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            outletAvatar: this.props.outlet.avatar
+        }
+
         this.clickProfileImgInput = this.clickProfileImgInput.bind(this);
         this.avatarInputChange = this.avatarInputChange.bind(this);
         this.updateSettings = this.updateSettings.bind(this);
+        this.updateInfo = this.updateInfo.bind(this);
+        this.updateAvatar = this.updateAvatar.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        //Change avatar if it changes from the outlet prop
+        if(nextProps.outlet.avatar !== this.state.outletAvatar) {
+            this.setState({
+                outletAvatar: nextProps.outlet.avatar
+            });
+        }
     }
 
 	/**
 	 * Click event for avater
 	 */
     clickProfileImgInput() {
-        this.refs['avatarFileInput'].click();
+        this.refs.avatarFileInput.click();
     }
 
 	/**
@@ -27,7 +42,9 @@ export default class Info extends React.Component {
             const reader = new FileReader();
 
             reader.onload = (data) => {
-                this.refs['outlet-avatar-image'].style.backgroundImage = 'url(\'' + data.target.result + '\')';
+                this.setState({
+                    outletAvatar: data.target.result
+                })
             };
 
             reader.readAsDataURL(target.files[0]);
@@ -39,43 +56,81 @@ export default class Info extends React.Component {
 	 */
     updateSettings() {
         const avatarFiles = this.refs['avatarFileInput'].files;
-        const params = new FormData();
-        const self = this;
+        const params = {
+            bio: this.refs.bio.value,
+            link: this.refs['outlet-website'].value,
+            title: this.refs.name.value
+        };
 
-        // Check if there are files
-        if (avatarFiles && avatarFiles.length > 0) params.append('avatar', avatarFiles[0]);
+        if(!utils.compareObjects(params, this.props.outlet)) {
+            this.updateInfo(avatarFiles, params);
+        } else {
+            if(avatarFiles.length) {
+                this.updateAvatar(avatarFiles);
+            } else {
+                return $.snackbar({ content: 'Trying making a few changes to your outlet, then try saving!' });
+            }
+        }
+    }
 
-        params.append('bio', this.refs['bio'].value);
-        params.append('link', this.refs['outlet-website'].value);
-        params.append('title', this.refs['name'].value);
+    /**
+     * Updates the outlet with the params passed
+     */
+    updateInfo(avatarFiles, params) {        
+        $.ajax({
+            url: "/api/outlet/update",
+            method: 'POST',
+            data: JSON.stringify(params),
+            contentType: 'application/json'
+        })
+        .done((response) => {
+            if(avatarFiles.length) {
+                this.updateAvatar(avatarFiles, true);
+            } else {
+                this.props.updateOutlet(response);
+                return $.snackbar({ content: 'Your info has been successfully saved!' });
+            }
+        })
+        .fail((error) => {
+            return $.snackbar({ content: utils.resolveError(error, 'There was an error updating your settings!') });
+        });
+    }
+
+    /**
+     * Updates the outlet's avatar
+     * @param  {BOOL} calledWithInfo Context for the error message
+     */
+    updateAvatar(avatarFiles, calledWithInfo) {
+        let files = new FormData();
+        files.append('avatar', avatarFiles[0]);
 
         $.ajax({
-            url: "/scripts/outlet/update",
-            type: 'POST',
-            data: params,
-            dataType: 'json',
-            cache: false,
+            url: "/api/outlet/avatar",
+            method: 'POST',
+            data: files,
             contentType: false,
-            processData: false,
-            success(response, status, xhr){
-                if (response.err) {
-                    return this.error(null, null, response.err);
-                }
-                self.props.updateOutlet(response.data);
-                $.snackbar({ content: 'Your info has been successfully saved!' });
-            },
-            error: (xhr, status, error) => {
-                $.snackbar({ content: utils.resolveError(error, 'There was an error updating your settings!') });
-            },
+            processData: false
+        })
+        .done((response) => {
+            return $.snackbar({ 
+                content: `Your ${calledWithInfo ? 'info' : 'avatar'} has been successfully updated!`
+            });
+        })
+        .fail((error) => {
+            return $.snackbar({ content: utils.resolveError(error, 'There was an error updating your avatar!') });
         });
     }
 
     render() {
-        const outlet = this.props.outlet;
+        const { outlet } = this.props;
 
         return (
             <div className="card settings-info">
-                <div className="avatar" ref="outlet-avatar-image" style={{backgroundImage: 'url(' + outlet.avatar + ')'}} >
+                <div 
+                    className="avatar" 
+                    ref="outlet-avatar-image" 
+                    style={{backgroundImage: 'url(' + this.state.outletAvatar + ')'}} 
+                >
                     <div className="overlay" onClick={this.clickProfileImgInput}>
                         <span className="mdi mdi-upload"></span>
                     </div>
@@ -115,7 +170,9 @@ export default class Info extends React.Component {
                         defaultValue={outlet.bio}
                     />
 
-                    <button className="btn btn-flat card-foot-btn" onClick={this.updateSettings}>SAVE CHANGES</button>
+                    <button 
+                        className="btn btn-flat card-foot-btn" 
+                        onClick={this.updateSettings}>SAVE CHANGES</button>
                 </div>
             </div>
         );

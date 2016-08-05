@@ -61,13 +61,7 @@ router.get('/:id?', (req, res, next) => {
             //Render page
             renderUserPage(response.body.data, req, res)
         });
-    }
-    //Render currently logged in user otherwise
-    else{
-        //Check if user is logged in
-        if (!req.session || !req.session.user)
-            return res.redirect('/');
-
+    } else{ //Render currently logged in user otherwise
         //Render page
         renderUserPage(req.session.user, req, res)
     }

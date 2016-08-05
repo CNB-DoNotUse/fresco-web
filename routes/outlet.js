@@ -11,7 +11,7 @@ router.get('/settings', (req, res, next) => {
     const { outlet } = user;
 
     if (!user || !outlet) {
-        next({
+        return next({
             message: 'No outlet found!',
             status: 500,
         });
@@ -33,8 +33,12 @@ router.get('/settings', (req, res, next) => {
     .then(responses => { 
         const outlet = responses[0].body;
         const payment = responses[1].body;
-
         const title = 'Outlet Settings';
+
+        //Update outlet object on user session
+        req.session.user.outlet = outlet;
+        req.session.save((err) => {});
+
         const props = {
             title,
             user,
@@ -65,8 +69,7 @@ router.get('/settings', (req, res, next) => {
  */
 router.get('/:id?', (req, res, next) => {
     const { user } = req.session;
-    const id = req.params.id
-        || (user.outlet ? user.outlet.id : '');
+    const id = req.params.id || (user.outlet ? user.outlet.id : '');
 
     // Make request for full outlet object
     API.request({
@@ -77,6 +80,11 @@ router.get('/:id?', (req, res, next) => {
     .then((response) => {
         const outlet = response.body;
         const title = outlet.title;
+        
+        //Update outlet object on user session
+        req.session.user.outlet = outlet;
+        req.session.save((err) => {});
+
         const props = JSON.stringify({ user, title, outlet });
 
         return res.render('app', {
@@ -86,14 +94,13 @@ router.get('/:id?', (req, res, next) => {
             page: 'outlet',
         });
     })
-    .catch((error) => (
+    .catch(error => {
         next({
             message: 'It seems like we couldn\'t locate your outlet!',
             status: error.status || 500,
         })
-    ));
+    });
 });
 
 
 module.exports = router;
-
