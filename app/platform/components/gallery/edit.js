@@ -152,6 +152,11 @@ class Edit extends React.Component {
         this.setState({ rating: e.target.checked ? 3 : 2 });
     }
 
+    toggleDeletePost(post) {
+        const { posts } = this.state;
+        this.setState({ posts: posts.filter(p => p.id !== post.id) });
+    }
+
     hide() {
         this.props.toggle();
     }

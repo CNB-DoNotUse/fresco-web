@@ -9,7 +9,7 @@ import find from 'lodash/find';
 class EditPosts extends React.Component {
     renderDeleteButton(post, deleteToggled) {
         const { posts, onToggleDelete } = this.props;
-        if (posts.length <= 0) {
+        if (posts.length <= 1) {
             return '';
         }
 
@@ -26,8 +26,8 @@ class EditPosts extends React.Component {
     renderPosts() {
         const { posts, gallery } = this.props;
 
-        return posts.map((p, i) => {
-            const deleteToggled = !find(gallery.posts, { id: p.id });
+        return gallery.posts.map((p, i) => {
+            const deleteToggled = !find(posts, { id: p.id });
 
             return (
                 <div key={i} className={`frick-frame ${deleteToggled ? 'frick-delete' : ''}`}>

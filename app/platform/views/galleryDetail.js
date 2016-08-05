@@ -6,6 +6,7 @@ import Sidebar from './../components/gallery/sidebar';
 import Edit from './../components/gallery/edit';
 import App from './app';
 import utils from 'utils';
+import request from 'superagent';
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
@@ -67,10 +68,12 @@ class GalleryDetail extends React.Component {
             data: JSON.stringify(params),
         })
         .done((res) => {
-            if (res.gallery) this.onUpdateGallery(res.gallery);
+            this.onUpdateGallery(res.gallery);
             $.snackbar({ content: 'Gallery saved!' });
             this.toggleEdit();
-            if (res.posts) this.uploadFiles(res.posts, fileInput.files);
+            if (res.posts_new && fileInput.files.length) {
+                this.uploadFiles(res.posts, fileInput.files);
+            }
         })
         .fail((err) => {
             $.snackbar({
