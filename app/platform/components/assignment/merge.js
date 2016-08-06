@@ -70,32 +70,33 @@ class AssignmentMerge extends React.Component {
 
         return (
             <div className="assignment-merge-container">
-                <div 
-                    className={"dim toggle-edit toggled"} 
-                    onClick={onClose}></div>
-                
+                <div
+                    className={"dim toggle-edit toggled"}
+                    onClick={onClose}
+                />
+
                 <div className={"edit panel panel-default toggle-edit assignment-merge-dialog toggled"}>
                     <div className="col-lg-4 visible-lg edit-current assignment-merge-side">
                         <div className="assignment-block">
                             <span className="section-label">Active Assignment</span>
-                            
+
                             <h1>{assignmentToMergeInto.title}</h1>
-                            
+
                             <p>{assignmentToMergeInto.caption}</p>
                         </div>
-                        
+
                         <div className="assignment-block">
                             <span className="section-label">Submitted Assignment</span>
-                            
+
                             <h1>{assignment.title}</h1>
-                            
+
                             <p>{assignment.caption}</p>
                         </div>
                     </div>
                     <div className="col-xs-12 col-lg-8 edit-new dialog">
                         <div className="dialog-head">
                             <span className="md-type-title">Update assignment info</span>
-                            
+
                             <span
                                 className="mdi mdi-close pull-right icon toggle-edit toggler"
                                 onClick={onClose}
@@ -136,7 +137,7 @@ class AssignmentMerge extends React.Component {
                             >
                                 Cancel
                             </button>
-                            
+
                             <button
                                 type="button"
                                 className="btn btn-flat pull-right"

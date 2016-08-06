@@ -47,14 +47,15 @@ class GalleryDetail extends React.Component {
 
     uploadFiles(posts, files) {
         posts.forEach((p, i) => {
-            request
-                .put(p.url)
-                .set('Content-Type', files[i].type)
-                .send(files[i])
-                .end((err) => {
-                    if (!err) $.snackbar('Gallery imported!');
-                    // TODO: find way to update gallery with new posts/images
-                });
+            if (files[i]) {
+                request
+                    .put(p.url)
+                    .set('Content-Type', files[i].type)
+                    .send(files[i])
+                    .end((err) => {
+                        if (!err) $.snackbar('Gallery imported!');
+                    });
+            }
         });
     }
 
@@ -71,7 +72,7 @@ class GalleryDetail extends React.Component {
             this.onUpdateGallery(res);
             $.snackbar({ content: 'Gallery saved!' });
             this.toggleEdit();
-            if (res.posts_new && fileInput.files.length) {
+            if (res.posts_new && fileInput.files) {
                 this.uploadFiles(res.posts_new, fileInput.files);
             }
         })
