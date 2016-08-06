@@ -68,7 +68,7 @@ class UserSettings extends React.Component {
  		}
 
  		//Check if objects aren't the same
- 		if(!utils.compareObjects(params, this.props.user)) {
+ 		if(!_.isEqual(params, this.props.user)) {
  		    this.updateInfo(avatarFiles, params);
  		} else {
  		    if(avatarFiles.length) {

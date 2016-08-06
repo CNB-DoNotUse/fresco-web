@@ -7,10 +7,10 @@ import utils from 'utils';
 import _ from 'lodash';
 
 /**
-* Post List Parent Object
-* List for a set of posts used across the site
-* (/videos, /photos, /gallery/id, /assignment/id , etc.)
-*/
+ * Post List Parent Object
+ * List for a set of posts used across the site
+ * (/videos, /photos, /gallery/id, /assignment/id , etc.)
+ */
 class PostList extends React.Component {
     constructor(props) {
         super(props);
@@ -145,7 +145,7 @@ class PostList extends React.Component {
         const { selectedPosts } = this.state;
 
         // Check if `not` CM
-        if (this.props.rank < utils.RANKS.CONTENT_MANAGER) return;
+        if (!this.props.permissions.include('update-other-content')) return;
 
         // Make sure we haven't reached the limit
         if (selectedPosts.length >= utils.limits.galleryItems) {
@@ -167,7 +167,7 @@ class PostList extends React.Component {
 
     renderPosts() {
         const {
-            rank,
+            permissions,
             size,
             assignment,
             editable,
@@ -181,12 +181,31 @@ class PostList extends React.Component {
 
         if (!posts.length) return '';
 
+        return (
+            <div className="row tiles" id="posts">
+                {posts.map((p, i) => (
+                    <PostCell
+                        size={size}
+                        parentCaption={parentCaption}
+                        post={p}
+                        permissions={permissions}
+                        toggled={selectedPosts.some((s) => s.id === p.id)}
+                        assignment={assignment}
+                        key={i}
+                        editable={editable}
+                        sort={sort}
+                        togglePost={(post) => this.togglePost(post)}
+                    />
+                ))}
+            </div>
+        )
+
         return posts.map((p, i) => (
             <PostCell
                 size={size}
                 parentCaption={parentCaption}
                 post={p}
-                rank={rank}
+                permissions={permissions}
                 toggled={selectedPosts.some((s) => s.id === p.id)}
                 assignment={assignment}
                 key={i}
@@ -213,7 +232,7 @@ class PostList extends React.Component {
                     ref="grid"
                     onScroll={scrollable ? scroll || ((e) => this.scroll(e)) : null}
                 >
-                    <div className="row tiles" id="posts">{this.renderPosts()}</div>
+                    {this.renderPosts()}
 
                     {selectedPosts && selectedPosts.length > 1
                         ? <GalleryBulkSelect
@@ -241,7 +260,6 @@ class PostList extends React.Component {
                         />
                         : ''
                     }
-
                 </div>
             </div>
         );
@@ -251,7 +269,7 @@ class PostList extends React.Component {
 PostList.propTypes = {
     posts: PropTypes.array,
     scrollable: PropTypes.bool,
-    rank: PropTypes.number,
+    permissions: PropTypes.array,
     size: PropTypes.string,
     assignment: PropTypes.object,
     editable: PropTypes.bool,
@@ -274,4 +292,3 @@ PostList.defaultProps = {
 };
 
 export default PostList;
-

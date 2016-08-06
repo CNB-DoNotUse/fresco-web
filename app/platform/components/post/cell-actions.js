@@ -9,9 +9,10 @@ import utils from 'utils';
  * Description : Set of icons on the the post cell's hover
  */
 class PostCellActions extends React.Component {
+    
     render() {
         const {
-            rank,
+            permissions,
             purchased,
             editable,
             post,
@@ -23,7 +24,7 @@ class PostCellActions extends React.Component {
         let key = 0;
 
         // Check if we're CM or greater
-        if (typeof(rank) !== 'undefined' && rank >= utils.RANKS.CONTENT_MANAGER) {
+        if (permissions.includes('update-other-content')) {
             if (editable) {
                 actions.push(
                     <PostEditAction
@@ -72,12 +73,13 @@ class PostCellActions extends React.Component {
             );
         }
 
-        let link = '/post/' + post.id;
-        if (assignment) link += '?assignment=' + assignment.id;
+        let link = `/post/${post.id}`;
+        if (assignment) link += `?assignment=${assignment.id}`;
 
         return (
             <div className="hover">
                 <a className="md-type-body2 post-link" href={link}>See more</a>
+                
                 {actions}
             </div>
         );
@@ -85,7 +87,7 @@ class PostCellActions extends React.Component {
 }
 
 PostCellActions.propTypes = {
-    rank: PropTypes.number,
+    permissions: PropTypes.array,
     editable: PropTypes.bool,
     purchased: PropTypes.bool.isRequired,
     post: PropTypes.object,
@@ -94,4 +96,3 @@ PostCellActions.propTypes = {
 };
 
 export default PostCellActions;
-

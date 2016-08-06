@@ -142,10 +142,10 @@ class AssignmentDetail extends React.Component {
             <App user={user}>
                 <TopBar
                     title={assignment.title}
-                    rank={user.rank}
+                    permissions={user.permissions}
                     onVerifiedToggled={(t) => this.onVerifiedToggled(t)}
                     updateSort={(s) => this.updateSort(s)}
-                    verifiedToggle={user.rank >= utils.RANKS.CONTENT_MANAGER}
+                    verifiedToggle={true}
                     edit={() => this.toggleEdit()}
                     editable
                     timeToggle
@@ -160,7 +160,7 @@ class AssignmentDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        rank={user.rank}
+                        permissions={user.permissions}
                         loadPosts={(l, cb) => this.loadPosts(l, cb)}
                         sortBy={sortBy}
                         onlyVerified={verifiedToggle}

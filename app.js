@@ -7,7 +7,6 @@ const User          = require('./lib/user');
 const express       = require('express');
 const compression   = require('compression');
 const path          = require('path');
-const favicon       = require('serve-favicon');
 const morgan        = require('morgan');
 const session       = require('express-session');
 const redis         = require('redis');
@@ -50,7 +49,7 @@ app.use(
 );
 
 //Cookie parser
-app.use( cookieParser() );
+app.use(cookieParser());
 
 //Session config
 app.use(
@@ -108,7 +107,6 @@ app.use((req, res, next)=> {
  * Set up local head and global for all templates
  */
 app.locals.head = head;
-app.locals.utils = utils;
 app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
 app.locals.alerts = [];
 
@@ -119,13 +117,9 @@ app.use((req, res, next) => {
     const route = req.path.slice(1).split('/')[0];
     const now = Date.now();
 
-    // Check if not a platform route, then send onwwards
+    // Check if a public facing route, then send onwwards
     if (routes.platform.indexOf(route) === -1) {
         return next();
-    }
-
-    if (req.session.user && !req.session.user.rank) {
-        return User.updateRank(req, next);
     }
 
     // Check if there is no sessioned user
@@ -138,6 +132,7 @@ app.use((req, res, next) => {
         return next();
     }
 
+    //Session has expired, so refresh the user
     return User.refresh(req, res, next);
 });
 
@@ -145,9 +140,6 @@ app.use((req, res, next) => {
  * Route config for public facing pages
  */
 app.use((req, res, next) => {
-    if(!req.fresco)
-        req.fresco = {};
-
     res.locals.section = 'public';
     next();
 });
@@ -156,33 +148,26 @@ app.use((req, res, next) => {
  * Loop through all public routes
  */
 for (var i = 0; i < routes.public.length; i++) {
+    const routePrefix = routes.public[i] == 'index' ? '' : routes.public[i];
+    const route = require('./routes/' + routes.public[i]);
 
-  var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i] ,
-      route = require('./routes/' + routes.public[i]);
-
-  app.use('/' + routePrefix , route);
-
+    app.use('/' + routePrefix , route);
 }
 
 /**
  * Loop through all script routes
  */
 for (var i = 0; i < routes.scripts.length; i++) {
-
-  const routePrefix = routes.scripts[i];
-  const route = require(`./routes/scripts/${routePrefix}`);
-
-  app.use(`/scripts/${routePrefix}` , route);
+    const routePrefix = routes.scripts[i];
+    const route = require(`./routes/scripts/${routePrefix}`);
+    
+    app.use(`/scripts/${routePrefix}` , require(`./routes/scripts/${routePrefix}`));
 }
-
 
 /**
  * Route config for private (platform) facing pages
  */
 app.use((req, res, next) => {
-    if(!req.fresco)
-        req.fresco = {};
-
     res.locals.section = 'platform';
     next();
 });

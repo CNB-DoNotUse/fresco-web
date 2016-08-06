@@ -34,7 +34,7 @@ class PostCell extends React.Component {
         const {
             post,
             assignment,
-            rank,
+            permissions,
             sort,
             editable,
         } = this.props;
@@ -54,13 +54,14 @@ class PostCell extends React.Component {
                     assignment={assignment}
                     purchased={purchased}
                     onPurchase={() => this.setState({ purchased: true })}
-                    rank={rank}
+                    permissions={permissions}
                     editable={editable}
                 />
 
                 <div>
                     <div className="tile-info">
                         <span className="md-type-body2">{address}</span>
+                        
                         <Time sort={sort} post={post} />
                     </div>
 
@@ -122,7 +123,7 @@ PostCell.defaultProps = {
 };
 
 PostCell.propTypes = {
-    rank: PropTypes.number,
+    permissions: PropTypes.array,
     parentCaption: PropTypes.string,
     size: PropTypes.string,
     sort: PropTypes.string,

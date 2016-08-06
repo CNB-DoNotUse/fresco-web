@@ -183,12 +183,12 @@ Account.prototype.processSignup = function() {
  	this.signUpLoader.style.display = 'block';
 
 	$.ajax({
-		url: "/scripts/outlet/create",
+		url: "/scripts/user/register",
 		method: 'post',
 		contentType: "application/json",
 		data: JSON.stringify(newParams),
 		dataType: 'json',
-		success: function(response, status, xhr) {
+		success: (response, status, xhr) => {
 			if (response.err){
 				return this.error(null, null, response.err);
 			}
@@ -196,7 +196,7 @@ Account.prototype.processSignup = function() {
 				window.location.replace('/archive');
 			}
 		},
-		error: function(xhr, status, error) {
+		error: (xhr, status, error) => {
 			this.reEnableSignup();
 
 			return $.snackbar({

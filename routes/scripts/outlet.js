@@ -2,7 +2,6 @@ const express = require('express');
 const config = require('../../lib/config');
 const User = require('../../lib/user');
 const API = require('../../lib/api');
-const csv = require('../../lib/csv');
 const router = express.Router();
 
 /**
@@ -31,9 +30,7 @@ router.post('/invite/accept', function(req, res, next) {
 
 });
 
-router.post('/update', (req, res) => {
 
-});
 
 router.post('/payment/create', (req, res) => {
 

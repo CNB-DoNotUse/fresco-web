@@ -45,7 +45,9 @@ router.post('/login', (req, res, next) => {
 
             //Save session and return
             req.session.save(() => {
-                return res.status(response.status).json({ success: true });
+                return res
+                .status(response.status)
+                .json({ success: true });
             });
         })
         .catch(error => API.handleError(error, res));
@@ -96,13 +98,15 @@ router.post('/user/register', (req, res, next) => {
         method: 'POST',
         url: '/auth/register',
         body: body
-    }).then((response) => {
+    })
+    .then(response => {
         let { body, status } = response;
 
         req.session.save(() => {
             return res.status(status).json({ success: true });
         });
-    }).catch((error) => {
+    })
+    .catch(error => {
         return res.status(error.status).json({
             error: resolveError(error.type || ''),
             success: false

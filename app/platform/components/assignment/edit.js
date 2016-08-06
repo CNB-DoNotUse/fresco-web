@@ -247,7 +247,7 @@ class AssignmentEdit extends React.Component {
                         />
                     </div>
 
-                    {(user.rank >= utils.RANKS.CONTENT_MANAGER)
+                    {user.permissions.includes('update-other-content')
                         ? <EditOutlets
                             outlets={outlets}
                             updateOutlets={(o) => this.setState({ outlets: o })}

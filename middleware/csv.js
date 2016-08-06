@@ -6,8 +6,7 @@ module.exports = {
 };
 
 /**
- * Middleware default functionality
- * @description Sets 
+ * Middleware default functionality 
  */
 function middleware(req, res, next) {
     generateCSV(req.body)
@@ -24,14 +23,14 @@ function middleware(req, res, next) {
 /**
  * Generates a CSV from passed array
  * @param  {array} data Array of data
- * @return {string} CSV string
+ * @return {Promise} resolve CSV string, reject error
  */
 function generateCSV(array) {
     return new Promise((resolve, reject) => {
         if(array.constructor !== Array) {
             reject('Not a valid dataset', null);
         } else if (array.length == 0) {
-            return resolve('');
+            return resolve('Empty dataset');
         }
 
         let headers = Object.keys(array[0]);

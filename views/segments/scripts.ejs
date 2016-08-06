@@ -5,8 +5,8 @@
 
 <!--Remote Scripts-->
 <% if(typeof remoteScripts !== 'undefined') { %>
-    <% for(var i in remoteScripts) { %>
-        <script type="text/javascript" src="<%= remoteScripts[i] %>"></script>
+    <% for(let script of remoteScripts) { %>
+        <script type="text/javascript" src="<%= script %>"></script>
     <% } %>
 <% } %>
 
@@ -14,7 +14,6 @@
 <% if(typeof(section) !== 'undefined' && section == 'platform'){ %>
     <!--Google Maps-->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0tAylcwyLZuJwp0M9XU7p5TzVTd-p7i4=&libraries=geometry,places&"></script>
-
 <% } %>
 
 <% // Load asset based on page, check if in dev mode or not %>

@@ -67,7 +67,7 @@ class Archive extends React.Component {
                 <TopBar
                     title={this.props.title}
                     updateSort={this.updateSort}
-                    rank={this.props.user.rank}
+                    permissions={this.props.user.permissions}
                     onVerifiedToggled={this.onVerifiedToggled}
                     chronToggle
                     timeToggle
@@ -76,7 +76,7 @@ class Archive extends React.Component {
 
                 <PostList
                     loadPosts={this.loadPosts}
-                    rank={this.props.user.rank}
+                    permissions={this.props.user.permissions}
                     sortBy={this.state.sortBy}
                     size="small"
                     onlyVerified={this.state.verifiedToggle}

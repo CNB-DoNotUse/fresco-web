@@ -131,8 +131,8 @@ class GalleryDetail extends React.Component {
             <App user={user}>
                 <TopBar
                     title={title}
-                    editable={user.rank >= utils.RANKS.CONTENT_MANAGER}
-                    rank={user.rank}
+                    editable={user.permissions.includes('update-other-content')}
+                    permissions={user.permissions}
                     edit={() => this.toggleEdit()}
                     verifiedToggle={shouldShowVerifiedToggle}
                     onVerifiedToggled={() => this.onVerifiedToggled()}
@@ -143,7 +143,7 @@ class GalleryDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        rank={user.rank}
+                        permissions={user.permissions}
                         parentCaption={gallery.caption}
                         posts={gallery.posts}
                         onlyVerified={onlyVerified}

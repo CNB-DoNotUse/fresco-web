@@ -82,8 +82,6 @@ class SideBarListItems extends React.Component {
 		let purchases = null;
 		let stats = null;
 
-		console.log(user.rank);
-
 		if (user.outlet) {
 			dispatch =
 				<SidebarItem
@@ -101,7 +99,7 @@ class SideBarListItems extends React.Component {
 					text={user.outlet.title}
 				/>;
 		}
-		if(user.rank >= utils.RANKS.CONTENT_MANAGER) {
+		if(user.permissions.includes('update-other-content')) {
 			admin =
 				<SidebarItem
 					link='/admin'
@@ -109,7 +107,7 @@ class SideBarListItems extends React.Component {
 					text='Admin'
 				/>;
 		}
-		if(user.rank == utils.RANKS.ADMIN) {
+		if(user.permissions.includes('get-all-purchases')) {
 			purchases =
 				<SidebarItem
 					link='/purchases'
@@ -196,4 +194,10 @@ class SidebarItem extends React.Component {
 			</li>
 		);
 	}
+}
+
+SidebarItem.defaultProps = {
+	link: '',
+	icon: '',
+	text: ''
 }

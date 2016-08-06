@@ -10,9 +10,9 @@ router.get('/settings', (req, res, next) => {
     const { user, token } = req.session;
     const { outlet } = user;
 
-    if (!user || !outlet) {
+    if (!outlet) {
         return next({
-            message: 'No outlet found!',
+            message: 'You\'re not part of an outlet!',
             status: 500,
         });
     }
@@ -34,11 +34,6 @@ router.get('/settings', (req, res, next) => {
         const outlet = responses[0].body;
         const payment = responses[1].body;
         const title = 'Outlet Settings';
-
-        //Update outlet object on user session
-        req.session.user.outlet = outlet;
-        req.session.save((err) => {});
-
         const props = {
             title,
             user,
@@ -80,11 +75,6 @@ router.get('/:id?', (req, res, next) => {
     .then((response) => {
         const outlet = response.body;
         const title = outlet.title;
-        
-        //Update outlet object on user session
-        req.session.user.outlet = outlet;
-        req.session.save((err) => {});
-
         const props = JSON.stringify({ user, title, outlet });
 
         return res.render('app', {

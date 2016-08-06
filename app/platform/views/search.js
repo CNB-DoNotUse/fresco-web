@@ -416,7 +416,7 @@ export class Search extends Component {
 					title={this.state.title}
 					timeToggle={true}
 					verifiedToggle={true}
-					rank={this.props.user.rank}
+					permissions={this.props.user.permissions}
 					onVerifiedToggled={this.onVerifiedToggled}>
 						<TagFilter
 							onTagAdd={this.addTag}
@@ -440,7 +440,7 @@ export class Search extends Component {
 				<div className="col-sm-8 tall p0">
 	    			<PostList
 	    				posts={this.state.posts}
-	    				rank={this.props.user.rank}
+	    				permissions={this.props.user.permissions}
 	    				purchases={this.props.purchases}
 	    				ref="postList"
 	    				size='large'

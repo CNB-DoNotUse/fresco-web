@@ -15,17 +15,16 @@ export default class UserSidebar extends React.Component {
 
 	render() {	
 
-		var user = this.props.detailUser,
-			name = user.firstname + ' ' + user.lastname,
-			avatar = user.avatar || utils.defaultAvatar,
-			galleries = user.stats.galleries,
-			photos = user.stats.photos,
-			videos = user.stats.videos,
-			email = '',
-			stripe = '';
+		const user = this.props.detailUser;
+		const name = user.firstname + ' ' + user.lastname;
+		const avatar = user.avatar || utils.defaultAvatar;
+		const galleries = user.stats.galleries;
+		const photos = user.stats.photos;
+		const videos = user.stats.videos;
+		let email = '';
+		let stripe = '';
 
-		if(this.props.user.rank >= utils.RANKS.CONTENT_MANAGER){
-
+		if(this.props.user.permissions.includes('get-all-purchases')){
 			if(user.email !== null)
 				email = <li className="ellipses">
 							<span className="mdi mdi-email icon"></span>

@@ -65,7 +65,7 @@ class Photos extends React.Component {
             <App user={this.props.user}>
                 <TopBar
                     title="Photos"
-                    rank={this.props.user.rank}
+                    permissions={this.props.user.permissions}
                     updateSort={this.updateSort}
                     onVerifiedToggled={this.onVerifiedToggled}
                     chronToggle
@@ -73,7 +73,7 @@ class Photos extends React.Component {
                     verifiedToggle
                 />
                 <PostList
-                    rank={this.props.user.rank}
+                    permissions={this.props.user.permissions}
                     size="small"
                     sortBy={this.state.sortBy}
                     onlyVerified={this.state.showVerified}

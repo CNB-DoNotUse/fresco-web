@@ -84,7 +84,7 @@ class LocationDetail extends React.Component {
 
                 <PostList
                     loadPosts={(last, cb) => this.loadPosts(last, cb)}
-                    rank={user.rank}
+                    permissions={user.permissions}
                     sort={this.state.sort}
                     size="small"
                     idOffset

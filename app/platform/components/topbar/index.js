@@ -73,7 +73,7 @@ class Index extends React.Component {
             timeToggle,
             verifiedToggle,
             defaultVerified,
-            rank,
+            permissions,
         } = this.props;
         const topbarItems = [];
 
@@ -125,7 +125,7 @@ class Index extends React.Component {
             );
         }
 
-        if (verifiedToggle && rank > utils.RANKS.BASIC) {
+        if (verifiedToggle && permissions.includes('update-other-content')) {
             topbarItems.push(
                 <Dropdown
                     options={['All content', 'Verified']}
@@ -241,7 +241,7 @@ Index.propTypes = {
     timeToggle: PropTypes.bool,
     verifiedToggle: PropTypes.bool,
     defaultVerified: PropTypes.string,
-    rank: PropTypes.number,
+    permissions: PropTypes.array,
     tabs: PropTypes.array,
     setActiveTab: PropTypes.func,
     activeTab: PropTypes.string,

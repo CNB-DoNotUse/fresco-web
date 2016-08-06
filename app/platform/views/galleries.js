@@ -27,7 +27,7 @@ class Galleries extends React.Component {
             <App user={this.props.user}>
                 <TopBar
                     title="Galleries"
-                    rank={this.props.user.rank}
+                    permissions={this.props.user.permissions}
                     updateSort={this.updateSort}
                     onVerifiedToggled={this.onVerifiedToggled}
                     timeToggle

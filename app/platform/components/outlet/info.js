@@ -9,7 +9,6 @@ export default class Info extends React.Component {
             outletAvatar: this.props.outlet.avatar
         }
 
-        this.clickProfileImgInput = this.clickProfileImgInput.bind(this);
         this.avatarInputChange = this.avatarInputChange.bind(this);
         this.updateSettings = this.updateSettings.bind(this);
         this.updateInfo = this.updateInfo.bind(this);
@@ -25,12 +24,6 @@ export default class Info extends React.Component {
         }
     }
 
-	/**
-	 * Click event for avater
-	 */
-    clickProfileImgInput() {
-        this.refs.avatarFileInput.click();
-    }
 
 	/**
 	 * File lisntener for outlet avater
@@ -55,6 +48,8 @@ export default class Info extends React.Component {
 	 * Saves outlet's info
 	 */
     updateSettings() {
+        if(this.loading) return;
+
         const avatarFiles = this.refs['avatarFileInput'].files;
         const params = {
             bio: this.refs.bio.value,
@@ -62,7 +57,7 @@ export default class Info extends React.Component {
             title: this.refs.name.value
         };
 
-        if(!utils.compareObjects(params, this.props.outlet)) {
+        if(!_.isEqual(params, this.props.outlet)) {
             this.updateInfo(avatarFiles, params);
         } else {
             if(avatarFiles.length) {
@@ -76,7 +71,8 @@ export default class Info extends React.Component {
     /**
      * Updates the outlet with the params passed
      */
-    updateInfo(avatarFiles, params) {        
+    updateInfo(avatarFiles, params) {   
+        this.loading = true;     
         $.ajax({
             url: "/api/outlet/update",
             method: 'POST',
@@ -93,7 +89,10 @@ export default class Info extends React.Component {
         })
         .fail((error) => {
             return $.snackbar({ content: utils.resolveError(error, 'There was an error updating your settings!') });
-        });
+        })
+        .always(() => {
+            this.loading = false;
+        })
     }
 
     /**
@@ -103,6 +102,7 @@ export default class Info extends React.Component {
     updateAvatar(avatarFiles, calledWithInfo) {
         let files = new FormData();
         files.append('avatar', avatarFiles[0]);
+        this.loading = true;
 
         $.ajax({
             url: "/api/outlet/avatar",
@@ -118,6 +118,9 @@ export default class Info extends React.Component {
         })
         .fail((error) => {
             return $.snackbar({ content: utils.resolveError(error, 'There was an error updating your avatar!') });
+        })
+        .always(() => {
+            this.loading = false;
         });
     }
 
@@ -131,7 +134,7 @@ export default class Info extends React.Component {
                     ref="outlet-avatar-image" 
                     style={{backgroundImage: 'url(' + this.state.outletAvatar + ')'}} 
                 >
-                    <div className="overlay" onClick={this.clickProfileImgInput}>
+                    <div className="overlay" onClick={() => { this.refs.avatarFileInput.click() }}>
                         <span className="mdi mdi-upload"></span>
                     </div>
                 </div>

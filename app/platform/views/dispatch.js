@@ -258,7 +258,7 @@ class Dispatch extends React.Component {
                         addLocationButton
                     />
 
-                    {this.props.user.rank > 1 ?
+                    {this.props.user.permissions('get-all-purchases') ?
                         <button
                             className="btn btn-flat pull-right mt12 mr16"
                             onClick={this.downloadStats} >Download Stats (.xlsx)</button>
