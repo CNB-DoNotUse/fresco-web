@@ -40,9 +40,8 @@ class BulkEdit extends React.Component {
         .then((res) => {
             if (Array.isArray(res)) galleries = res;
             else galleries = [res];
-
-            this.setState(this.getStateFromGalleries(galleries));
-        }, () => this.setState(this.getStateFromGalleries(galleries)));
+        })
+        .then(() => this.setState(this.getStateFromGalleries(galleries)));
     }
 
     getStateFromGalleries(galleries) {
@@ -55,15 +54,21 @@ class BulkEdit extends React.Component {
         return { galleries, tags, stories, caption, posts };
     }
 
-    clear() {
-        this.setState({ caption: '', tags: [], stories: [] });
-    }
+    saveGallery(gallery, data) {
+        if (!gallery || !data) return null;
+        const { tags, caption, stories } = data;
 
-    /**
-     * Revert the component to it's initial state (pre-edits)
-     */
-    revert() {
-        this.setState(this.getStateFromGalleries(this.state.galleries));
+        const params = {
+            tags,
+            caption,
+            ...utils.getRemoveAddParams('stories', gallery.stories, stories),
+        };
+
+        return $.ajax(`/api/gallery/${gallery.id}/update`, {
+            data: JSON.stringify(params),
+            method: 'post',
+            contentType: 'application/json',
+        });
     }
 
     saveGalleries() {
@@ -82,26 +87,15 @@ class BulkEdit extends React.Component {
         });
     }
 
-    saveGallery(gallery, data) {
-        if (!gallery || !data) return null;
-        const { tags, caption, stories } = data;
+    clear() {
+        this.setState({ caption: '', tags: [], stories: [] });
+    }
 
-        const params = {
-            tags,
-            caption,
-            ...utils.getRemoveAddParams('stories', gallery.stories, stories),
-        };
-
-        // return fetch(`/api/gallery/${gallery.id}/update`, {
-        //     body: JSON.stringify(params),
-        //     method: 'post',
-        //     headers: { 'Content-Type': 'application/json' },
-        // });
-        return $.ajax(`/api/gallery/${gallery.id}/update`, {
-            data: JSON.stringify(params),
-            method: 'post',
-            contentType: 'application/json',
-        });
+    /**
+     * Revert the component to it's initial state (pre-edits)
+     */
+    revert() {
+        this.setState(this.getStateFromGalleries(this.state.galleries));
     }
 
     renderBody() {
@@ -151,12 +145,15 @@ class BulkEdit extends React.Component {
     }
 
     renderFooter() {
+        const { loading } = this.state;
+
         return (
             <div className="dialog-foot">
                 <button
                     onClick={() => this.revert()}
                     type="button"
                     className="btn btn-flat"
+                    disabled={loading}
                 >
                     Revert
                 </button>
@@ -164,6 +161,7 @@ class BulkEdit extends React.Component {
                     onClick={() => this.clear()}
                     type="button"
                     className="btn btn-flat"
+                    disabled={loading}
                 >
                     Clear All
                 </button>
@@ -171,6 +169,7 @@ class BulkEdit extends React.Component {
                     onClick={() => this.onClickSave()}
                     type="button"
                     className="btn btn-flat pull-right"
+                    disabled={loading}
                 >
                     Save
                 </button>
@@ -178,6 +177,7 @@ class BulkEdit extends React.Component {
                     onClick={this.props.onHide}
                     type="button"
                     className="btn btn-flat pull-right toggle-bedit"
+                    disabled={loading}
                 >
                     Discard
                 </button>
