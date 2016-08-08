@@ -1,14 +1,11 @@
-const
-    express     = require('express'),
-    validator   = require('validator'),
-    config      = require('../../lib/config'),
-    User        = require('../../lib/user'),
-    API         = require('../../lib/api'),
-    resolveError = require('../../lib/resolveError'),
-    utils      = require('../../lib/utils'),
-    router      = express.Router();
-
-//---------------------------vvv-USER-ENDPOINTS-vvv---------------------------//
+const express = require('express');
+const router = express.Router();
+const validator = require('validator');
+const config = require('../../lib/config');
+const User = require('../../lib/user');
+const API = require('../../lib/api');
+const resolveError = require('../../lib/resolveError');
+const utils = require('../../lib/utils');
 
 /**
  * Reset password endpoint
@@ -18,6 +15,9 @@ router.post('/user/reset', (req, res, next) => {
 
 });
 
+/**
+ * Processes login in for web platform users
+ */
 router.post('/login', (req, res, next) => {
     API.request({
         method: 'POST',
@@ -27,14 +27,14 @@ router.post('/login', (req, res, next) => {
             password: req.body.password
         }
     })
-    .then((response) => {
+    .then(response => {
         let { body } = response;
 
         //Save to session
         req.session.token = body.token;
 
         //Send request for user object
-        return API.request({
+        API.request({
             method: 'GET',
             url: '/user/me',
             token: body.token
@@ -45,7 +45,9 @@ router.post('/login', (req, res, next) => {
 
             //Save session and return
             req.session.save(() => {
-                return res.status(response.status).json({ success: true });
+                return res
+                .status(response.status)
+                .json({ success: true });
             });
         })
         .catch(error => API.handleError(error, res));
@@ -53,100 +55,38 @@ router.post('/login', (req, res, next) => {
     .catch(error => API.handleError(error, res));
 });
 
-router.get('/logout', (req, res) => {
-    const end = () => {
-        req.session.destroy(() => {
-            res.redirect('/');
-        });
-    }
+/**
+ * Logs the user out or redirects
+ */
+router.get('/logout', User.logout);
 
-    if (!req.session.user) {
-        return end();
-    }
-
-    API.request({
-        method: 'POST',
-        url: '/auth/logout',
-        token: req.session.token
-    })
-    .then(response => end())
-    .catch(error => end());
-});
-
-router.post('/user/register', (req, res, next) => {
-    let body = {
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
-        full_name: req.body.firstname + ' ' + req.body.lastname,
-        phone: req.body.phone,
-        outlet: req.body.outlet
-    };
-
-    if(!validator.isEmail(body.email)){
-        return res.json({
-            error: 'ERR_INVALID_EMAIL'
-        });
-    }
+/**
+ * Registers a new user account, optionally with an outlet
+ */
+router.post('/register', (req, res, next) => {
+    const { body } = req;
 
     API.request({
         method: 'POST',
         url: '/auth/register',
-        body: body
-    }).then((response) => {
+        body
+    })
+    .then(response => {
         let { body, status } = response;
 
-        req.session.save(() => {
-            return res.status(status).json({ success: true });
+        req.session.token = body.token;
+        req.session.user = body.user;
+        req.session.save((error) => {
+            if(error) {
+                return res.status(status).json({ success: false, error });
+            } else {
+                return res.status(status).json({ success: true });
+            }
         });
-    }).catch((error) => {
-        return res.status(error.status).json({
-            error: resolveError(error.type || ''),
-            success: false
-        });
-    });
+    })
+    .catch(error => API.handleError(error, res));
 });
 
-router.get('/refresh', (req, res, next) => {
-    User.refresh(req, res, (err) => {
-        if(err)
-            return res.json({
-                err: 'ERR_REFRESH_FAIL',
-                data: null
-            });
-        else
-            return res.json({
-                data: req.session.user,
-                err: null
-            });
-    });
-});
-
-router.post('/update', (req, res) => {
-    // When no picture is uploaded, avatar gets set, which confuses the API
-    if(req.body.avatar)
-        delete req.body.avatar;
-
-    req.body.parseSessionToken = req.session.parseSessionToken;
-
-    API.proxy(req, res, (body) => {
-        if(body.err) return res.send({err: body.err});
-
-        var user = body.data;
-
-        //Update all fields
-        req.session.user.firstname = user.firstname;
-        req.session.user.lastname = user.lastname;
-        req.session.user.bio = user.bio;
-        req.session.user.email = user.email;
-        req.session.user.phone = user.phone;
-        req.session.user.avatar = user.avatar;
-
-        req.session.save(() => {
-            res.json({}).end();
-        });
-    });
-});
 
 router.get('/verify/resend', (req, res) => {
   if (!req.session || !req.session.user) {
@@ -172,6 +112,6 @@ router.get('/verify/resend', (req, res) => {
     return req.session.save(end);
   });
 });
-//---------------------------^^^-USER-ENDPOINTS-^^^---------------------------//
+
 
 module.exports = router;

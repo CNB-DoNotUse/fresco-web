@@ -1,3 +1,5 @@
+import utils from 'utils';
+
 /**
  * Join prototype object
  */
@@ -17,7 +19,9 @@ let Join = function(){
 	return this;
 };
 
-
+/**
+ * Init function
+ */
 Join.prototype.init = function() {
 	this.form.addEventListener('submit', this.handleForm.bind(this));
 }
@@ -56,14 +60,15 @@ Join.prototype.registerUser = function() {
 	this.submit.value = '';
 	this.loader.style.display = 'block';
 
-	const name = this.nameField.value.split(' ');
 	const params = {
-		firstname : name[0],
-		lastname  : name.slice(1).join(' '),
-		email     : this.emailField.value,
-		password  : this.passwordField.value,
-		phone     : this.phoneField.value,
-		token
+		full_name : this.nameField.value,
+		username : name,
+		email : this.emailField.value,
+		password : this.passwordField.value,
+		phone : this.phoneField.value,
+		outlet: {
+			token
+		}
 	};
 
 	//Check all fields for input
@@ -98,7 +103,6 @@ Join.prototype.registerUser = function() {
 			this.reEnable();
 		}
 	});
-
 }
 
 /**
@@ -109,38 +113,43 @@ Join.prototype.acceptInvite = function() {
 	this.loader.style.display = 'block';
 
 	const params = {
-		password: this.passwordField.value,
-		token: token,
-		email: this.emailField.value
+		accept: {
+			password: this.passwordField.value,
+			username: this.emailField.value,
+			token
+		},
+		updates: {}
 	};
 
-	if(!/\S/.test(params.password)){
+	if(!utils.isEmptyString(this.nameField.value)){
+		updates.full_name = this.nameField.value
+	}
+	if(!utils.isEmptyString(this.phoneField.value)){
+		updates.phone = this.phoneField.value
+	}
+
+	if(utils.isEmptyString(params.accept.password)){
 		this.reEnable();
 		return $.snackbar({ content: 'Please enter in a password!' });
-	} else if(!/\S/.test(params.email)){
+	} else if(utils.isEmptyString(params.accept.email)){
 		this.reEnable();
 		return $.snackbar({ content: 'Please enter in an email!' });
 	}
-		
+
 	$.ajax({
-		url: "/scripts/outlet/invite/accept",
-		data: params,
+ 	    url: "/scripts/outlet/invite/accept",
+		data: JSON.stringify(params),
 		method: "POST",
-		success: function(response){
-			if (response.err)
-				return this.error(null, null, response.err);
-			
-			window.location.replace('/archive');
-		},
-		error: (xhr, status, error) => {
-			this.reEnable();
-			
-			$.snackbar({content: resolveError(error)});
-		},
-		complete: (jqXHR, textStatus) => {
-			this.reEnable();
-		}
-	});
+		contentType: 'application/json'
+ 	})
+ 	.done((response) => {
+		window.location.replace('/archive');
+ 	})
+ 	.fail((error) => {
+ 	    this.reEnable();
+
+ 	    $.snackbar({content: resolveError(error)});
+ 	});
 }
 
 function resolveError(err) {

@@ -18,12 +18,6 @@ class Outlet extends React.Component {
             activeTab: 'Vault',
             purchases: [],
         };
-
-        this.setActiveTab = this.setActiveTab.bind(this);
-    }
-
-    setActiveTab(activeTab) {
-        this.setState({ activeTab });
     }
 
     edit() {
@@ -44,23 +38,22 @@ class Outlet extends React.Component {
             <App user={user}>
                 <TopBar
                     title={outlet.title}
-                    rank={user.rank}
+                    permissions={user.permissions}
                     edit={this.edit}
                     editIcon={"mdi-settings"}
                     activeTab={this.state.activeTab}
-                    setActiveTab={this.setActiveTab}
+                    setActiveTab={(activeTab) => this.setState({ activeTab })}
                     tabs={topbarTabs}
                     editable={editable}
                 />
 
-                {outlet.verified ? 
-                    <Body
+                {outlet.verified
+                    ? <Body
                         activeTab={this.state.activeTab}
                         outlet={outlet}
                         user={user}
                     />
-                    :
-                    <BodyDemo outlet={outlet} />
+                    : <BodyDemo outlet={outlet} />
                 }
             </App>
         );
@@ -79,3 +72,4 @@ ReactDOM.render(
     />,
     document.getElementById('app')
 );
+

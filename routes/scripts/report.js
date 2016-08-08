@@ -2,8 +2,8 @@ const express = require('express');
 const config = require('../../lib/config');
 const utils = require('../../lib/utils');
 const API = require('../../lib/api');
+const csv = require('../../middleware/csv');
 const router = express.Router();
-const csv = require('../../lib/csv');
 
 /**
  * Retrieves report request to generate CSV

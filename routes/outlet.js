@@ -10,9 +10,9 @@ router.get('/settings', (req, res, next) => {
     const { user, token } = req.session;
     const { outlet } = user;
 
-    if (!user || !outlet) {
-        next({
-            message: 'No outlet found!',
+    if (!outlet) {
+        return next({
+            message: 'You\'re not part of an outlet!',
             status: 500,
         });
     }
@@ -33,7 +33,6 @@ router.get('/settings', (req, res, next) => {
     .then(responses => { 
         const outlet = responses[0].body;
         const payment = responses[1].body;
-
         const title = 'Outlet Settings';
         const props = {
             title,
@@ -65,8 +64,7 @@ router.get('/settings', (req, res, next) => {
  */
 router.get('/:id?', (req, res, next) => {
     const { user } = req.session;
-    const id = req.params.id
-        || (user.outlet ? user.outlet.id : '');
+    const id = req.params.id || (user.outlet ? user.outlet.id : '');
 
     // Make request for full outlet object
     API.request({
@@ -86,14 +84,13 @@ router.get('/:id?', (req, res, next) => {
             page: 'outlet',
         });
     })
-    .catch((error) => (
+    .catch(error => {
         next({
             message: 'It seems like we couldn\'t locate your outlet!',
             status: error.status || 500,
         })
-    ));
+    });
 });
 
 
 module.exports = router;
-

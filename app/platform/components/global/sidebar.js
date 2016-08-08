@@ -22,9 +22,6 @@ export default class Sidebar extends Component {
 	}
 
 	render() {
-
-		var avatar = this.props.user.avatar || 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1-small.png';
-
 		return (
 			<div className="col-lg-2 sidebar toggle-drawer" id="_sidebar">
 				<div>
@@ -44,7 +41,10 @@ export default class Sidebar extends Component {
 					<SideBarListItems user={this.props.user} />
 				</div>
 		   	 	<div>
-			    	<img className="img-circle" id="side-bar-avatar" src={avatar} />
+			    	<img 
+			    		className="img-circle" 
+			    		id="side-bar-avatar" 
+			    		src={this.props.user.avatar || utils.defaultSmallAvatar} />
 
 					<a className="md-type-title user-name-view" href="/user">
 						{this.props.user.full_name || this.props.user.username}
@@ -71,24 +71,10 @@ class SideBarListItems extends React.Component {
 		this.goLink = this.goLink.bind(this);
 	}
 
-	componentDidMount(prevProps, prevState) {
-		var sidebarTabs = document.getElementsByClassName('sidebar-tab');
-
-		//Set the current page's list item to the active state
-		for (var i = 0; i < sidebarTabs.length; i++) {
-			var tab = sidebarTabs[i],
-				anchor = tab.getElementsByTagName('a')[0];
-
-			if(anchor.pathname == window.location.pathname){
-				tab.className += ' active';
-			}
-		}
-	}
-
 	render() {
 		if(!this.props.user) return;
 
-		const {user} = this.props;
+		const { user } = this.props;
 		
 		let dispatch = null;
 		let outlet = null;
@@ -113,7 +99,7 @@ class SideBarListItems extends React.Component {
 					text={user.outlet.title}
 				/>;
 		}
-		if(user.rank >= utils.RANKS.CONTENT_MANAGER) {
+		if(user.permissions.includes('update-other-content')) {
 			admin =
 				<SidebarItem
 					link='/admin'
@@ -121,7 +107,7 @@ class SideBarListItems extends React.Component {
 					text='Admin'
 				/>;
 		}
-		if(user.rank == utils.RANKS.ADMIN) {
+		if(user.permissions.includes('get-all-purchases')) {
 			purchases =
 				<SidebarItem
 					link='/purchases'
@@ -196,9 +182,11 @@ class SideBarListItems extends React.Component {
 class SidebarItem extends React.Component {
 	render() {
 		const {link, icon, text} = this.props;
+		const active = window.location.pathname === link;
+		const className = `sidebar-tab ${active ? 'active' : ''}`
 
 		return (
-			<li className="sidebar-tab">
+			<li className={className}>
 				<a href={link}>
 					<span className={'mdi ' + icon + ' icon'}></span>
 					<span>{text}</span>
@@ -206,4 +194,10 @@ class SidebarItem extends React.Component {
 			</li>
 		);
 	}
+}
+
+SidebarItem.defaultProps = {
+	link: '',
+	icon: '',
+	text: ''
 }

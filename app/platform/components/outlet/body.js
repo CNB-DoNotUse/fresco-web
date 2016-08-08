@@ -131,7 +131,7 @@ export default class Body extends React.Component {
 								size='large'
 								editable={false}
                                 scrollable={true}
-                                rank={user.rank}
+                                permissions={user.permissions}
                             />
 						</div>
 					</div>

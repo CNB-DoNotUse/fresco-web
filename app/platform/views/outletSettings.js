@@ -13,40 +13,38 @@ import 'app/sass/platform/_outletSettings';
 /**
  * Outlet Settings page
  */
-
 class OutletSettings extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = this.getStateFromProps(props);
-    }
-
-    getStateFromProps(props) {
-        return {
+        this.state = {
             outlet: props.outlet,
+            user: props.user, //User is in state so we can change the outlet title when it's updated
             members: props.outlet.members || [],
-        };
+        }
     }
 
     updateOutlet(outlet) {
-        this.setState({ outlet });
+        this.state.user.outlet = outlet;
+        this.setState({ 
+            outlet,
+            user: this.state.user
+        });
     }
 
     render() {
-        const { user, payment } = this.props;
+        const { payment } = this.props;
+        const { outlet, user } = this.state;
         const isOwner = user.permissions.includes('update-outlet');
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
-        const { outlet } = this.state;
 
         return (
             <App user={user}>
-                <TopBar
-                    title={outlet.title}
-                />
+                <TopBar title={outlet.title} />
 
                 <div className={className}>
-                    {isOwner
-                        ? <div className="left">
+                    {isOwner? 
+                        <div className="left">
                             <Info
                                 updateOutlet={(o) => this.updateOutlet(o)}
                                 outlet={outlet}
@@ -64,8 +62,8 @@ class OutletSettings extends React.Component {
 
                         <Locations outlet={this.state.outlet} />
 
-                        {isOwner
-                            ? <Members
+                        {isOwner? 
+                            <Members
                                 outlet={this.state.outlet}
                                 updateMembers={this.updateMembers}
                                 members={this.state.outlet.members}
@@ -95,4 +93,3 @@ ReactDOM.render(
     />,
 	document.getElementById('app')
 );
-

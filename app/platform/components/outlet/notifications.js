@@ -26,12 +26,12 @@ export default class Notifications extends React.Component {
 	}
 
 	updateAllNotifications(medium, e) {
-		var self = this,
-			params = {
-				medium: medium,
-				enabled: e.target.checked
-			},
-			stateNotifications = this.state.notifications;
+		let self = this;
+		let params = {
+			medium: medium,
+			enabled: e.target.checked
+		};
+		let stateNotifications = this.state.notifications;
 
 		// Update all notifications setting in state,
 		// if update fails, loadLocations will revert the check on ajax response
@@ -42,7 +42,6 @@ export default class Notifications extends React.Component {
 		this.setState({
 			notifications: stateNotifications
 		});
-
 
 		$.ajax({
 			url: '/api/notification/settings/update/all',
@@ -120,15 +119,13 @@ export default class Notifications extends React.Component {
 				if (response.err || !response.data)
 					return this.error(null, null, response.err);
 
-				console.log(response);
-
 				//Update state
 				self.setState({ notifications: response.data });
 			},
 			error: (xhr, status, error) => {
-				$.snackbar({
-					content: utils.resolveError(error,  'We\'re unable to load your notifications at the moment! Please try again in a bit.')
-				});
+				// $.snackbar({
+				// 	content: utils.resolveError(error,  'We\'re unable to load your notifications at the moment! Please try again in a bit.')
+				// });
 			}
 		});
 	}
@@ -149,7 +146,6 @@ export default class Notifications extends React.Component {
 			if(notif.medium.fresco == 0)
 				allFresco = 0;
 		}
-
 
 		return (
 			<div className="card settings-outlet-notifications">

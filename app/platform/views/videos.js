@@ -63,7 +63,7 @@ class Videos extends React.Component {
             <App user={this.props.user}>
                 <TopBar
                     title="Videos"
-                    rank={this.props.user.rank}
+                    permissions={this.props.user.permissions}
                     updateSort={this.updateSort}
                     onVerifiedToggled={this.onVerifiedToggled}
                     chronToggle
@@ -73,7 +73,7 @@ class Videos extends React.Component {
 
                 <PostList
                     loadPosts={this.loadPosts}
-                    rank={this.props.user.rank}
+                    permissions={this.props.user.permissions}
                     size="small"
                     sortBy={this.state.sortBy}
                     onlyVerified={this.state.showVerified}

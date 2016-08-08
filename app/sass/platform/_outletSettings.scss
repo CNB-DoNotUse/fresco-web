@@ -16,27 +16,25 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	overflow:auto;
 }
 
-/*
-	Outlet Settings Wrapper
+/**
+ * Outlet Settings Wrapper
  */
-
 .outlet-settings{
 	padding:64px 0 20px;
 }
 
-/*
-	Card Overrides
-*/
+/**
+ * Card Overrides
+ */
 .card {
 	.header {
 		padding: 14px 16px;
 	}
 }
 
-/*
-	Payment Card
+/**
+ * Payment Card
  */
-
 .settings-outlet-payment{
 	// height:228px;
 
@@ -63,8 +61,13 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			overflow:auto;
 			margin:0 auto 11px;
 
+			.form-group {
+				margin:0;
+			}
+
 			input[type="text"]{
 				padding:4px 0;
+				margin:0;
 				// height:40px;
 			}
 
@@ -75,17 +78,11 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			.left{
 				padding-right:18px;
 				width:342px;
-
-				input:first-of-type{
-					margin-bottom: 18px;
-				}
 			}
 
 			.right{
 				width:182px;
-                input:first-of-type {
-                    margin-bottom: 13px;
-                }
+
                 .form-group {
                     @include clearfix;
                     display: inline-block;
@@ -109,8 +106,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 }
 
-/*
-	Members Card
+/**
+ * Members Card
  */
 .settings-outlet-members{
 
@@ -195,10 +192,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 }
 
-/*
-	Locations Card
+/**
+ * Locations Card
  */
-
 .settings-outlet-locations, .settings-outlet-notifications{
 
 	.labels{
@@ -308,7 +304,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 
 	.footer{
-
 		padding:0 16px;
 
 		.sub-title{
@@ -334,10 +329,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 }
 
-/*
-	User (Outlet) Notification Settings
+/**
+ * User (Outlet) Notification Settings
  */
-
 .settings-outlet-notifications {
 
 

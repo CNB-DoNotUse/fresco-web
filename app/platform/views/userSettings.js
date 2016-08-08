@@ -14,12 +14,15 @@ class UserSettings extends React.Component {
 
 	constructor(props) {
 		super(props);
+
 		this.state = {
-			avatar: this.props.user.avatar || utils.defaultAvatar,
-			user: this.props.user
+			avatar: props.user.avatar || utils.defaultAvatar,
+			user: props.user
 		}
 		
 		this.updateSettings = this.updateSettings.bind(this);
+		this.updateInfo = this.updateInfo.bind(this);
+		this.updateAvatar = this.updateAvatar.bind(this);
 		this.avatarInputChange = this.avatarInputChange.bind(this);
 		this.clickProfileImgInput = this.clickProfileImgInput.bind(this);
 	}
@@ -46,71 +49,94 @@ class UserSettings extends React.Component {
 		reader.readAsDataURL(file);
 	}
 
+	clickProfileImgInput() {
+ 		this.refs.avatarFileInput.click();
+ 	}
+
 	/**
 	 * Sends update to API
 	 */
  	updateSettings() {
  		if(this.updating) return;
 
- 		this.updating = true;
+ 		const avatarFiles = this.refs['avatarFileInput'].files;
+ 		const params = {
+ 			full_name: this.refs.name.value,
+ 			bio: this.refs.bio.value,
+ 			email: this.refs.email.value,
+ 			phone: this.refs.phone.value == '' ? null : this.refs.phone.value
+ 		}
 
- 		const userData = new FormData();
- 		const user = this.props.user;
- 		const full_name = this.refs.name.value;
- 		const bio = this.refs.bio.value;
- 		const email = this.refs.email.value;
- 		const phone = this.refs.phone.value == '' ? null : this.refs.phone.value;
- 		const self = this;
+ 		//Check if objects aren't the same
+ 		if(!utils.compareObjects(params, this.props.user)) {
+ 		    this.updateInfo(avatarFiles, params);
+ 		} else {
+ 		    if(avatarFiles.length) {
+ 		        this.updateAvatar(avatarFiles);
+ 		    } else {
+ 		        return $.snackbar({ content: 'Trying making a few changes to your user, then try saving!' });
+ 		    }
+ 		}
+ 	}
 
- 		if(utils.isEmptyString(full_name)){
+ 	updateInfo(avatarFiles, params) {
+ 		if(utils.isEmptyString(params.full_name)){
  			return $.snackbar({ content: 'You must have a name!' });
- 		} else if(utils.isEmptyString(email)){
+ 		} else if(utils.isEmptyString(params.email)){
  			return $.snackbar({ content: 'You must have an email!' });
  		}
 
- 		userData.append('id', user.id);
- 		userData.append('full_name', full_name);
- 		userData.append('bio', bio);
- 		userData.append('email', email);
- 		userData.append('phone', phone);
- 		userData.append('avatar', this.refs.avatarFileInput.files[0]);
+ 		this.updating = true;
 
  		$.ajax({
- 			url: "/api/user/update",
- 			type: 'POST',
- 			cache: false,
- 			processData: false,
- 			contentType: false,
- 			data : userData,
- 			success: function(response, status, xhr) {
- 				self.updating = false;
-
- 				if(response.err) {
- 					return this.error(null, null, response.err);
-	 			} 
-	 			else {
-	 				$.snackbar({ content: 'Settings successfuly saved!' });
-
-	 				//Update the user
-	 				user.firstname = firstname,
-	 				user.lastname = lastname,
-	 				user.avatar = self.state.avatar;
-
-	 				//Update state, so everything else updates
-	 				self.setState({ user: user });
-	 			}
- 			},
- 			error: function(xhr, status, error) {
- 				self.updating = false;
- 				$.snackbar({
- 					content: utils.resolveError(error, 'We couldn\'t save your settings!')
- 				});
- 			}
- 		});
+ 		    url: "/api/user/update",
+ 		    method: 'POST',
+ 		    data: JSON.stringify(params),
+ 		    contentType: 'application/json'
+ 		})
+ 		.done((response) => {
+ 		    if(avatarFiles.length) {
+ 		        this.updateAvatar(avatarFiles, true);
+ 		    } else {
+ 		        this.setState({ user: response });
+ 		        return $.snackbar({ content: 'Your info has been successfully saved!' });
+ 		    }
+ 		})
+ 		.fail((error) => {
+ 		    return $.snackbar({ content: utils.resolveError(error, 'There was an error updating your information!') });
+ 		})
+ 		.always(() => {
+ 			this.updating = false;
+ 		})
  	}
 
- 	clickProfileImgInput() {
- 		this.refs.avatarFileInput.click();
+ 	/**
+ 	 * Updates the outlet's avatar
+ 	 * @param  {BOOL} calledWithInfo Context for the error message
+ 	 */
+ 	updateAvatar(avatarFiles, calledWithInfo) {
+ 	    let files = new FormData();
+ 	    files.append('avatar', avatarFiles[0]);
+ 	    this.updating = true;
+
+ 	    $.ajax({
+ 	        url: "/api/user/avatar",
+ 	        method: 'POST',
+ 	        data: files,
+ 	        contentType: false,
+ 	        processData: false
+ 	    })
+ 	    .done((response) => {
+ 	        return $.snackbar({ 
+ 	            content: `Your ${calledWithInfo ? 'info' : 'avatar'} has been successfully updated!`
+ 	        });
+ 	    })
+ 	    .fail((error) => {
+ 	        return $.snackbar({ content: utils.resolveError(error, 'There was an error updating your avatar!') });
+ 	    })
+ 	    .always(() => {
+ 	    	this.updating = false;
+ 	    })
  	}
 
  	render() {

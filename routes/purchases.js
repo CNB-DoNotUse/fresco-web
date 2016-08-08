@@ -10,7 +10,7 @@ const api         = request.createClient(config.API_URL);
  */
 router.get('/', (req, res, next) => {
     //Check if an Admin
-    if (req.session.user.rank < utils.RANKS.ADMIN) {
+    if (!req.session.user.permissions.includes('get-all-purchases')) {
         return next({
             message: config.ERR_PAGE_MESSAGES[403],
             status: 403

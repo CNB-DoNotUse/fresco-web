@@ -1,5 +1,6 @@
 /**
- * Account prototype object
+ * Account page prototype function
+ * @param {Object} screen Screen dimensions to run against
  */
 let Account = function(screen){
 	this.screen = screen;
@@ -102,12 +103,6 @@ Account.prototype.enableSignup = function() {
 	});
 }
 
-Account.prototype.reEnableSignup = function() {	
-	this.signupProcessing = false;
-	this.signUpLoader.style.display = 'none';
-	this.signUpHeaderText.innerHTML = 'START MY DEMO';
-}
-
 /**
  * Calls signup to process
  */
@@ -117,113 +112,98 @@ Account.prototype.processSignup = function() {
 	this.signupProcessing = true;
 
 	//Set up fields
-	const params = [
-		{
+	let params = {
+		'title': {
 			value: document.getElementById('outlet-title').value,
-			name: 'Title',
-			key: 'title'
+			name: 'title'
 		},
-		{
+		'link' : {
 			value: document.getElementById('outlet-url').value,
-			name: 'URL',
-			key: 'link'
+			name: 'URL'
 		},
-		{
+		'medium' : {
 			value: document.getElementById('outlet-medium').dataset.option,
-			name: 'medium of communcation',
-			key: 'medium'
+			name: 'medium of communcation'
 		},
-		{
+		'state' : {
 			value: document.getElementById('outlet-state').dataset.option,
-			name: 'State',
-			key: 'state'
+			name: 'state'
 		},
-		{
-			value: document.getElementById('outlet-member-name').value.split(' ')[0],
-			name: 'first name',
-			key: 'contact_firstname'
+		'full_name' : {
+			value: document.getElementById('outlet-member-name').value,
+			name: 'name'
 		},
-		{
-			value: document.getElementById('outlet-member-name').value.split(' ').slice(1).join(' '),
-			name: 'last name',
-			key: 'contact_lastname'
+		'username' : {
+			value: document.getElementById('outlet-username').value
 		},
-		{
+		'phone': {
 			value: document.getElementById('outlet-phone').value,
-			name: 'phone number',
-			key: 'contact_phone'
+			name: 'phone number'
 		},
-		{
-			value: document.getElementById('outlet-email').value,
-			name: 'email',
-			key: 'contact_email'
+		'email' : {
+			value: document.getElementById('outlet-email').value
 		},
-		{
-			value: document.getElementById('outlet-password').value,
-			name: 'password',
-			key: 'contact_password'
+		'password' : {
+			value: document.getElementById('outlet-password').value
 		}
-	];
+	};
 
-	for (var i = 0; i < params.length; i++) {
-		const param = params[i];
-		const value = param.value;
-		const key = param.key;
+	//Validate params
+	for (const key in params) {
+		const value = params[key].value;
+		const name = params[key].name || key;
 
 		if(!/\S/.test(value) || typeof(value) == 'undefined'){
 			this.reEnableSignup();
 
-			if(key === 'contact_lastname' || key == 'contact_firstname'){
-				return $.snackbar({content: 'Please enter a '+ params[i].name + '!'});
-			}
-			else {
-				return $.snackbar({content: 'Please enter a '+ params[i].name + ' for your outlet!'});
-			}
-
-			return false;
+			if(['full_name','username','email'].indexOf(key) > -1)
+				return $.snackbar({content: `Please enter a ${name}!`});
+			else
+				return $.snackbar({content: `Please enter a ${name} for your outlet!`});
 		}
 	}
-	
-	let newParams = {};
 
-	params.forEach((param) => {
-		newParams[param.key] = param.value;
-	});
+	//Define updated params
+	params = {
+	    email: params.email.value,
+	    username: params.username.value,
+	    password: params.password.value,
+	    full_name: params.full_name.value,
+	    phone: params.phone.value,
+	    outlet: {
+	    	title: params.title.value,
+	    	link: params.link.value
+	    }
+	};
 
+	//Hide the text
  	this.signUpHeaderText.innerHTML = '';
+ 	//Show the spinner
  	this.signUpLoader.style.display = 'block';
 
-	$.ajax({
-		url: "/scripts/outlet/create",
-		method: 'post',
-		contentType: "application/json",
-		data: JSON.stringify(newParams),
-		dataType: 'json',
-		success: function(response, status, xhr) {
-			if (response.err){
-				return this.error(null, null, response.err);
-			}
-			else {
-				window.location.replace('/archive');
-			}
-		},
-		error: (xhr, status, error) => {
-			this.reEnableSignup();
+ 	$.ajax({
+ 	    url: "/scripts/user/register",
+ 	    method: 'POST',
+ 	    data: JSON.stringify(params),
+ 	    contentType: 'application/json'
+ 	})
+ 	.done((response) => {
+ 	   	window.location.replace('/archive');
+ 	})
+ 	.fail(response => {
+ 	    this.reEnableSignup();
 
-			return $.snackbar({
-				content: resolveError(error, 'Seems like we ran into an error registering your outlet! Please try again in a bit.')
-			});
-		}
-	});
+		return $.snackbar({
+			content: response.responseJSON.msg
+		});
+ 	});
 }
 
-/**
- * Re-enables login elements
- */
-Account.prototype.reEnableLogin = function() {	
-	this.loginProcessing = false;
-	this.loginLoader.style.display = 'none';
-	this.loginHeaderText.innerHTML = 'LOG IN';
+//Re-enables login
+Account.prototype.reEnableSignup = function() {	
+	this.signupProcessing = false;
+	this.signUpLoader.style.display = 'none';
+	this.signUpHeaderText.innerHTML = 'START MY DEMO';
 }
 
 /**
@@ -240,40 +220,42 @@ Account.prototype.processLogin = function() {
 	if(!/\S/.test(email) || !/\S/.test(password)){
 		this.reEnableLogin();
 
-		return $.snackbar({ content: 'Please enter in all fields!' });
+		return $.snackbar({ content: 'Please enter an email and password!' });
 	}
 
 	this.loginHeaderText.innerHTML = '';
 	this.loginLoader.style.display = 'block';
 
 	$.ajax({
-		url: "/scripts/user/login",
+ 	    url: "/scripts/user/login",
 		method: 'post',
 		contentType: "application/json",
-		data: JSON.stringify({
-			email: email,
-			password: password,
-		}),
-		dataType: 'json',
-		success: function(response, status, xhr){
-			if(response.err){
-				return this.error(null, null, response.err);
-			}
-			//Redirect
-			else {
-				const next = getParameterByName('next');
+		data: JSON.stringify({ email, password }),
+		dataType: 'json'
+ 	})
+ 	.done((response) => {
+ 		const next = getParameterByName('next');
+		window.location.replace(next.length ? next : '/archive');
+ 	})
+ 	.fail((error) => {
+ 	    this.reEnableLogin();
 
-				window.location.replace(next.length ? next : '/archive');
-			}
-		}, 
-		error: (xhr, status, error) => {
-			this.reEnableLogin();
+ 	    return $.snackbar({ 
+ 	    	content: resolveError(
+				error.responseJSON.error, 
+				'There was an error logging you in. Please try again in a bit.'
+			)
+ 	    });
+ 	});
+}
 
-			return $.snackbar({ 
-				content: resolveError(error, 'There was an error logging you in. Please try again in a bit.')
-			});
-		}
-	});
+/**
+ * Re-enables login elements
+ */
+Account.prototype.reEnableLogin = function() {	
+	this.loginProcessing = false;
+	this.loginLoader.style.display = 'none';
+	this.loginHeaderText.innerHTML = 'LOG IN';
 }
 
 /**
@@ -302,12 +284,11 @@ function getParameterByName(name) {
 
 function resolveError(err, _default){
 	switch(err){
-	    case 'ERR_TITLE_TAKEN':
+	    case 'title':
 	        return 'This outlet title is taken!';
-	    case 'ERR_EMAIL_TAKEN':
+	    case 'email':
 	    	return 'It seems like there\'s an account with this email already, please try a different one.'
 	    case 'Unauthorized':
-	    case 'ERR_LOGIN':
 	    	return 'The email or password you entered isn\'t correct!'
 	    default:
 	    	return _default || 'Seems like we ran into an error!'     

@@ -7,7 +7,6 @@ const User          = require('./lib/user');
 const express       = require('express');
 const compression   = require('compression');
 const path          = require('path');
-const favicon       = require('serve-favicon');
 const morgan        = require('morgan');
 const session       = require('express-session');
 const redis         = require('redis');
@@ -28,15 +27,12 @@ const redisConnection = { client: rClient };
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-app.use(favicon(__dirname + '/public/favicon.ico'));
-
 // app.use(morgan('dev'));
 
 //GZIP
 app.use(compression())
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 
 //Multer
 const storage = multer.diskStorage({
@@ -49,11 +45,13 @@ const storage = multer.diskStorage({
 });
 
 app.use(
-    multer({ storage: storage }).any()
+    multer({ 
+        storage: storage 
+    }).any()
 );
 
 //Cookie parser
-app.use( cookieParser() );
+app.use(cookieParser());
 
 //Session config
 app.use(
@@ -69,7 +67,7 @@ app.use(
     })
 );
 
-//Set up public direc.
+//Set up public directory
 app.use(
     express.static(path.join(__dirname, 'public'), {
         maxAge: 1000 * 60 * 60 * 2 // 2 hour cache
@@ -77,13 +75,13 @@ app.use(
 );
 
 /**
- * Verifications check
+ * Alert & Verifications check
  */
 app.use((req, res, next)=> {
-    req.alerts = [];
+    app.locals.alerts = [];
 
     if (req.session && req.session.user && !req.session.user.verified){
-        req.alerts.push('\
+        app.locals.alerts.push('\
             <p>Your email hasn\'t been verified.\
               <br>Please click on the link sent to your inbox to verify your email!\
             </p>\
@@ -94,15 +92,13 @@ app.use((req, res, next)=> {
     }
 
     if (req.session && req.session.alerts){
-        req.alerts = req.alerts.concat(req.session.alerts);
-        req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
+        app.locals.alerts = app.locals.alerts.concat(req.session.alerts);
+        
         delete req.session.alerts;
-        return req.session.save(() => {
-            next();
-        });
+        req.session.save(() => {});
+        
+        return next();
     }
-
-    req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
 
     next();
 });
@@ -113,7 +109,7 @@ app.use((req, res, next)=> {
 app.locals.head = head;
 app.locals.utils = utils;
 app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
-app.locals.alerts = [];
+app.locals.section = 'public';
 
 /**
  * Route session check
@@ -122,7 +118,7 @@ app.use((req, res, next) => {
     const route = req.path.slice(1).split('/')[0];
     const now = Date.now();
 
-    // Check if not a platform route, then send onwwards
+    // Check if a public facing route, then send onwwards
     if (routes.platform.indexOf(route) === -1) {
         return next();
     }
@@ -133,86 +129,50 @@ app.use((req, res, next) => {
     }
 
     // Check if the session hasn't expired
-    if (!req.session.user.TTL || req.session.user.TTL - now > 0) {
+    if (req.session.user.TTL && req.session.user.TTL - now > 0) {
         return next();
     }
 
+    //Session has expired, so refresh the user
     return User.refresh(req, res, next);
 });
 
 
-/** Check if user rank exists (calc'd from permissions arr) */
+//Route config for public facing pag
 app.use((req, res, next) => {
-    if (req.session.user && !req.session.user.rank) {
-        return User.updateRank(req, next);
-    }
-
-    return next();
+    res.locals.section = 'public';
+    next();
 });
 
-/**
- * Route config for public facing pages
- */
+//Loop through all public routes
+for(routePrefix of routes.public) {
+    routePrefix = routePrefix == 'index' ? '' : routePrefix;
+    const route = require(`./routes/${routePrefix}`);
+    app.use('/' + routePrefix , route);
+}
+
+//Loop through all script routes
+for(routePrefix of routes.scripts) {
+    const route = require(`./routes/scripts/${routePrefix}`);
+    app.use(`/scripts/${routePrefix}` , route);
+}
+
+//Route config for private (platform) facing pages
 app.use((req, res, next) => {
-
-  if(!req.fresco)
-    req.fresco = {};
-
-  res.locals.section = 'public';
-  next();
-
+    res.locals.section = 'platform';
+    next();
 });
 
-/**
- * Loop through all public routes
- */
-for (var i = 0; i < routes.public.length; i++) {
-
-  var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i] ,
-      route = require('./routes/' + routes.public[i]);
-
-  app.use('/' + routePrefix , route);
-
+//Loop through all platform routes
+for(routePrefix of routes.platform) {
+    const route = require(`./routes/${routePrefix}`);
+    app.use('/' + routePrefix , route);
 }
 
 /**
- * Loop through all script routes
+ * Webservery proxy for forwarding to the api and resetting TTL
  */
-for (var i = 0; i < routes.scripts.length; i++) {
-
-  const routePrefix = routes.scripts[i];
-  const route = require(`./routes/scripts/${routePrefix}`);
-
-  app.use(`/scripts/${routePrefix}` , route);
-}
-
-
-/**
- * Route config for private (platform) facing pages
- */
-app.use((req, res, next) => {
-
-  if(!req.fresco)
-    req.fresco = {};
-
-  res.locals.section = 'platform';
-  next();
-
-});
-
-
-/**
- * Loop through all platform routes
- */
-for (var i = 0; i < routes.platform.length; i++) {
-
-  var routePrefix = routes.platform[i] ,
-      route = require('./routes/' + routePrefix);
-
-  app.use('/' + routePrefix , route);
-
-}
-
+app.use('/api/refresh', API.ttl);
 /**
  * Webservery proxy for forwarding to the api
  */
@@ -222,8 +182,8 @@ app.use('/api', API.proxy);
  * Error Midleware
  */
 app.use((error, req, res, next) => {
-    var err = {};
-    err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
+    //Define new error to send to `res`
+    let err = {};
 
     // Development error handle will print stacktrace
     if(config.dev) {
@@ -234,6 +194,7 @@ app.use((error, req, res, next) => {
     }
 
     err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
+    err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
 
     //Respond with code
     res.status(err.status);
@@ -247,10 +208,10 @@ app.use((error, req, res, next) => {
     }
 
     if(req.accepts('json')) {
-        return res.send({ error: 'Server Error' });
+        return res.send(err);
     }
 
-    res.type('txt').send('Server Error');
+    res.type('txt').send(err);
 });
 
 /**

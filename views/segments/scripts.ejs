@@ -3,10 +3,13 @@
     <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
 <% } %>
 
+<!-- Alerts -->
+<script type="text/javascript">window.alerts = <%- JSON.stringify(alerts) %></script>
+
 <!--Remote Scripts-->
 <% if(typeof remoteScripts !== 'undefined') { %>
-    <% for(var i in remoteScripts) { %>
-        <script type="text/javascript" src="<%= remoteScripts[i] %>"></script>
+    <% for(let script of remoteScripts) { %>
+        <script type="text/javascript" src="<%= script %>"></script>
     <% } %>
 <% } %>
 
@@ -14,16 +17,12 @@
 <% if(typeof(section) !== 'undefined' && section == 'platform'){ %>
     <!--Google Maps-->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0tAylcwyLZuJwp0M9XU7p5TzVTd-p7i4=&libraries=geometry,places&"></script>
-
 <% } %>
 
 <% // Load asset based on page, check if in dev mode or not %>
 <% if(typeof(page) !== 'undefined' && typeof(assets) !== 'undefined'){ %>
     <script type="text/javascript" src="<%= assets[page]['js'] %>"></script>
 <% } %>
-
-<!--Alerts-->
-<% include alerts %>
 
 <!--Google Analytics-->
 <% include ga %>

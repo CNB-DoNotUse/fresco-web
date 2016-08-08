@@ -1,18 +1,36 @@
 import React, { PropTypes } from 'react';
 import EditPost from './edit-post';
 import Slider from 'react-slick';
+import find from 'lodash/find';
 
 /**
  * Component for managing gallery's posts
  */
 class EditPosts extends React.Component {
-    renderPosts() {
-        const { posts, postsToDeleteIds, onToggleDelete } = this.props;
+    renderDeleteButton(post, deleteToggled) {
+        const { posts, onToggleDelete } = this.props;
+        if (posts.length <= 1) {
+            return '';
+        }
 
-        return posts.map((p, i) => {
-            const willDelete = postsToDeleteIds.indexOf(p.id) !== -1;
+        return (
+            <a>
+                <span
+                    className={`mdi mdi-close-circle icon ${deleteToggled ? 'addback' : ''}`}
+                    onClick={() => onToggleDelete(post)}
+                />
+            </a>
+        );
+    }
+
+    renderPosts() {
+        const { posts, gallery } = this.props;
+
+        return gallery.posts.map((p, i) => {
+            const deleteToggled = !find(posts, { id: p.id });
+
             return (
-                <div key={i} className={`frick-frame ${willDelete ? 'frick-delete' : ''}`}>
+                <div key={i} className={`frick-frame ${deleteToggled ? 'frick-delete' : ''}`}>
                     <EditPost post={p} />
                     <div className="frick-overlay">
                         <span>
@@ -20,16 +38,7 @@ class EditPosts extends React.Component {
                             <div className="md-type-caption">This post will be deleted</div>
                         </span>
                     </div>
-                    {
-                        posts.length > 1
-                            ? <a>
-                                <span
-                                    className={`mdi mdi-close-circle icon ${willDelete ? 'addback' : ''}`}
-                                    onClick={() => onToggleDelete(p.id)}
-                                />
-                            </a>
-                            : ''
-                    }
+                    {this.renderDeleteButton(p, deleteToggled)}
                 </div>
             );
         });
@@ -40,10 +49,7 @@ class EditPosts extends React.Component {
 
         return (
             <div className="dialog-col col-xs-12 col-md-5">
-                <Slider
-                    infinite={posts.length > 1}
-                    dots
-                >
+                <Slider infinite={posts.length > 1} dots >
 					{this.renderPosts()}
                 </Slider>
             </div>
@@ -52,15 +58,9 @@ class EditPosts extends React.Component {
 }
 
 EditPosts.propTypes = {
-    postsToDeleteIds: PropTypes.array.isRequired,
+    gallery: PropTypes.object.isRequired,
     posts: PropTypes.array.isRequired,
     onToggleDelete: PropTypes.func.isRequired,
-};
-
-EditPosts.defaultProps = {
-    postsToDeleteIds: [],
-    posts: [],
-    onToggleDelete() {},
 };
 
 export default EditPosts;

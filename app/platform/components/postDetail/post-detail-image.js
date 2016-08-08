@@ -52,7 +52,7 @@ class PostDetailImage extends React.Component {
             />
         );
 
-        if (user.rank < utils.RANKS.CONTENT_MANAGER) {
+        if (user.permissions.includes('get-all-purchases')) {
             if (user.outlet && purchased) {
                 actions.push(downloadAction);
             } else if (user.outlet && post.license === 1) {

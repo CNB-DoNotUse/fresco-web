@@ -37,7 +37,7 @@ class UserDetail extends React.Component {
 					<PostList
 						loadPosts={this.loadPosts}
 						size='large'
-						rank={this.props.user.rank}
+						permissions={this.props.user.permissions}
 						scrollable={true} />
 				</div>
  			</App>

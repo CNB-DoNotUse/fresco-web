@@ -83,7 +83,7 @@ class PostDetail extends React.Component {
     render() {
         const { user, title, verifier } = this.props;
         const { gallery, galleryEditToggled, post, loading } = this.state;
-        let editable = (user.rank >= utils.RANKS.CONTENT_MANAGER) && !!gallery.id;
+        let editable = (user.permissions.includes('update-other-content')) && !!gallery.id;
 
         return (
             <App user={user}>
