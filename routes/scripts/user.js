@@ -1,11 +1,11 @@
-const express     = require('express');
-const validator   = require('validator');
-const config      = require('../../lib/config');
-const User        = require('../../lib/user');
-const API         = require('../../lib/api');
+const express = require('express');
+const router = express.Router();
+const validator = require('validator');
+const config = require('../../lib/config');
+const User = require('../../lib/user');
+const API = require('../../lib/api');
 const resolveError = require('../../lib/resolveError');
-const utils      = require('../../lib/utils');
-const router      = express.Router();
+const utils = require('../../lib/utils');
 
 /**
  * Reset password endpoint
@@ -27,7 +27,7 @@ router.post('/login', (req, res, next) => {
             password: req.body.password
         }
     })
-    .then((response) => {
+    .then(response => {
         let { body } = response;
 
         //Save to session
@@ -58,76 +58,35 @@ router.post('/login', (req, res, next) => {
 /**
  * Logs the user out or redirects
  */
-router.get('/logout', (req, res) => {
-    const end = () => {
-        req.session.destroy(() => {
-            res.redirect('/');
-        });
-    }
+router.get('/logout', User.logout);
 
-    if (!req.session.user) {
-        return end();
-    }
-
-    API.request({
-        method: 'POST',
-        url: '/auth/logout',
-        token: req.session.token
-    })
-    .then(response => end())
-    .catch(error => end());
-});
-
-router.post('/user/register', (req, res, next) => {
-    let body = {
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
-        full_name: req.body.firstname + ' ' + req.body.lastname,
-        phone: req.body.phone,
-        outlet: req.body.outlet
-    };
-
-    if(!validator.isEmail(body.email)){
-        return res.json({
-            error: 'ERR_INVALID_EMAIL'
-        });
-    }
+/**
+ * Registers a new user account, optionally with an outlet
+ */
+router.post('/register', (req, res, next) => {
+    const { body } = req;
 
     API.request({
         method: 'POST',
         url: '/auth/register',
-        body: body
+        body
     })
     .then(response => {
         let { body, status } = response;
 
-        req.session.save(() => {
-            return res.status(status).json({ success: true });
+        req.session.token = body.token;
+        req.session.user = body.user;
+        req.session.save((error) => {
+            if(error) {
+                return res.status(status).json({ success: false, error });
+            } else {
+                return res.status(status).json({ success: true });
+            }
         });
     })
-    .catch(error => {
-        return res.status(error.status).json({
-            error: resolveError(error.type || ''),
-            success: false
-        });
-    });
+    .catch(error => API.handleError(error, res));
 });
 
-router.get('/refresh', (req, res, next) => {
-    User.refresh(req, res, (err) => {
-        if(err)
-            return res.json({
-                err: 'ERR_REFRESH_FAIL',
-                data: null
-            });
-        else
-            return res.json({
-                data: req.session.user,
-                err: null
-            });
-    });
-});
 
 router.get('/verify/resend', (req, res) => {
   if (!req.session || !req.session.user) {

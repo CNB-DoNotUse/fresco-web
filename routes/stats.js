@@ -7,8 +7,8 @@ const router    = express.Router();
  * Master stats page
  */
 router.get('/', (req, res, next) => {
-    //Check if the user is part of an outlet or they are at least aa CM
-    if (req.session.user.rank < utils.RANKS.ADMIN) {
+    //Check if Admin
+    if (!req.session.user.permissions.includes('get-all-purchases')) {
         return next({
             status: 401,
             message: config.ERR_PAGE_MESSAGES[401]

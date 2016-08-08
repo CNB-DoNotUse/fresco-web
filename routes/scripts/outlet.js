@@ -19,17 +19,62 @@ function checkOutlet(req, res) {
 }
 
 
-router.get('/export/email', (req, res) => {
-    if (!checkOutlet(req, res)) return;
+router.post('/invite/accept', (req, res, next) => {
+    const { accept, updates } = req.body;
 
-    req.url = '/outlet/export/email?id=' + req.session.user.outlet.id;
-    API.proxy(req, res);
+    //Sign in user with creds first
+    API.request({
+        method: 'POST',
+        url: '/auth/signin',
+        body: {
+            username: accept.username,
+            password: accept.password
+        }
+    })
+    .then(response => {
+        let { user } = response.body;
+
+        API.request({
+            url: '/outlet/invite/accept',
+            method: 'POST',
+            token: response.body.token,
+            body: {
+                token: accept.token //Invite token
+            }
+        })
+        .then(response => {
+
+            console.log(user);
+
+            if(Object.keys(updates).length) {
+
+                API.request({
+                    url: `/user/${user.username}/update`,
+                    method: 'POST',
+                    token: response.body.token,
+                    body: {
+                        verify_password: accept.password,
+                        full_name: accept.full_name,
+                        phone: accept.phone
+                    }
+                })
+                .then(response => {
+                    console.log(response);
+                })
+                 .catch(error => API.handleError(error, res));
+
+                console.log(updates);
+
+            } else {
+
+            }
+
+        })
+        .catch(error => API.handleError(error, res));
+    })
+    .catch(error => API.handleError(error, res));
+
 });
-
-router.post('/invite/accept', function(req, res, next) {
-
-});
-
 
 
 router.post('/payment/create', (req, res) => {

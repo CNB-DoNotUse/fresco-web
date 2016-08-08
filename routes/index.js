@@ -1,16 +1,8 @@
 const express       = require('express');
 const router        = express.Router();
-const requestJson   = require('request-json');
 const config        = require('../lib/config');
 const routes        = require('../lib/routes');
-const api           = requestJson.createClient(config.API_URL);
-const superagent    = require('superagent');
-
-/** //
-
-Description : Client Index Routes
-
-// **/
+const API  = require('../lib/api');
 
 /**
  * Root index for the landing page
@@ -35,65 +27,41 @@ router.get('/:modal?', (req, res, next) => {
         loggedIn: req.session.user ? true : false,
         modal: req.params.modal,
         modals: routes.modals,
-        aliases: routes.aliases,
-        alerts: req.alerts
-    });
-});
-
-/**
- * Parse Account Management iFrame
- */
-router.get('/manage', (req, res, next) => {
-    res.render('parse/manage');
-});
-
-router.get('/parse/reset', (req, res, next) => {
-    res.render('parse/reset', {
-        page: 'index',
-        alerts: req.alerts
-    });
-});
-
-router.get('/parse/reset-success', (req, res, next) => {
-    res.render('parse/reset-success', {
-        page: 'index',
-        alerts: req.alerts
+        aliases: routes.aliases
     });
 });
 
 /**
  * Outlet join page
  */
-router.get('/join', (req, res, next) => {
-    if (!req.query.o)
+router.get('/join/:token', (req, res, next) => {
+    if (!req.params.token) {
         return res.redirect('/');
+    }
 
-    superagent
-    .get(config.API_URL + '/v1/outlet/invite/get?token=' + req.query.o)
-    .set('Accept', 'application/json')
-    .end(function(err, response){
-        if (err || !response || response.body.err) {
-
-          req.session.alerts = ['This invitation couldn\'t be loaded. Please contact support@fresconews.com'];
-
-          return req.session.save(() => {
-            res.redirect('/');
-            res.end();
-          });
-        }
-
-        var body = response.body;
+    // Make request for invite
+    API.request({
+        method: 'GET',
+        url: `/outlet/invite/${req.params.token}`,
+        token: req.session.token
+    })
+    .then((response) => {
+        const { body } = response;
 
         return res.render('index', {
             page: 'index',
-            user: body.data.user,
-            email: body.data.email,
-            token: body.data.token,
-            title: body.data.outlet_title,
-            alerts: req.alerts,
+            invite: body,
             modal: 'join',
             aliases: routes.aliases,
             modals: routes.modals.concat('join'),
+        });
+    })
+    .catch(error => {
+        req.session.alerts = ['This invitation could not be loaded! Please contact support@fresconews.com for assistance.'];
+
+        return req.session.save(() => {
+            res.redirect('/');
+            res.end();
         });
     });
 });
@@ -103,57 +71,57 @@ router.get('/join', (req, res, next) => {
  */
 router.get('/verify', (req, res, next) => {
 
-    //Check if the user is logged in already
-    if (req.session && req.session.user && req.session.user.verified) {
-        req.session.alerts = ['Your email is already verified!'];
+    // //Check if the user is logged in already
+    // if (req.session && req.session.user && req.session.user.verified) {
+    //     req.session.alerts = ['Your email is already verified!'];
 
-        return req.session.save(() => {
-            res.redirect('/');
-            res.end();
-        });
-    }
+    //     return req.session.save(() => {
+    //         res.redirect('/');
+    //         res.end();
+    //     });
+    // }
 
-    //Check if the verification link query is valid
-    if (!req.query.t) {
-        req.session.alerts = ['Invalid verification link'];
-        return req.session.save(() => {
-            res.redirect('/');
-            res.end();
-        });
-    }
+    // //Check if the verification link query is valid
+    // if (!req.query.t) {
+    //     req.session.alerts = ['Invalid verification link'];
+    //     return req.session.save(() => {
+    //         res.redirect('/');
+    //         res.end();
+    //     });
+    // }
 
-    api.post('/v1/user/verify', { token: req.query.t}, doAfterUserVerify);
+    // api.post('/v1/user/verify', { token: req.query.t}, doAfterUserVerify);
 
-    function doAfterUserVerify(error, response, body) {
-        if (error || !body) {
-          req.session.alerts = ['Error connecting to server'];
+    // function doAfterUserVerify(error, response, body) {
+    //     if (error || !body) {
+    //       req.session.alerts = ['Error connecting to server'];
 
-          return req.session.save(() => {
-            res.redirect('/');
-            res.end();
-          });
-        }
+    //       return req.session.save(() => {
+    //         res.redirect('/');
+    //         res.end();
+    //       });
+    //     }
 
-        if (body.err) {
-            req.session.alerts = [config.resolveError(body.err)];
+    //     if (body.err) {
+    //         req.session.alerts = [config.resolveError(body.err)];
 
-            return req.session.save(() => {
-                res.redirect('/');
-                res.end();
-            });
-        }
+    //         return req.session.save(() => {
+    //             res.redirect('/');
+    //             res.end();
+    //         });
+    //     }
 
-        req.session.alerts = ['Your email has been verified!'];
+    //     req.session.alerts = ['Your email has been verified!'];
 
-        if (req.session && req.session.user) {
-            req.session.user = body.data;
-        }
+    //     if (req.session && req.session.user) {
+    //         req.session.user = body.data;
+    //     }
 
-        return req.session.save(() => {
-            res.redirect('/');
-            res.end();
-        });
-    }
+    //     return req.session.save(() => {
+    //         res.redirect('/');
+    //         res.end();
+    //     });
+    // }
 });
 
 module.exports = router;

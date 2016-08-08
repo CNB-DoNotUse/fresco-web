@@ -1,19 +1,18 @@
-var express         = require('express'),
-    requestJson     = require('request-json'),
-    superagent      = require('superagent'),
-    config          = require('../../lib/config'),
-    validator       = require('validator'),
-    router          = express.Router(),
-    xml2js          = require("xml2js").parseString,
-    mandrill        = require('mandrill-api/mandrill'),
-    mandrill_client = new mandrill.Mandrill(config.MANDRILL);
+const express         = require('express');
+const requestJson     = require('request-json');
+const superagent      = require('superagent');
+const config          = require('../../lib/config');
+const validator       = require('validator');
+const router          = express.Router();
+const xml2js          = require("xml2js").parseString;
+const mandrill        = require('mandrill-api/mandrill');
+const mandrill_client = new mandrill.Mandrill(config.MANDRILL);
 
 /**
  * Adds a pro user as a lead into zoho
  */
-
 router.post('/pro/signup', (req, res, next) => {
-    var params = {
+    let params = {
         firstname : req.body.firstname,
         lastname  : req.body.lastname,
         zip       : req.body.zip,
@@ -51,7 +50,7 @@ router.post('/pro/signup', (req, res, next) => {
     }
 
     //Make the XML Data
-    var proUser = 
+    let proUser = 
         '<CustomModule1>' +
             '<row no="1">' +
                 '<FL val="CustomModule1 Name">'+ params.firstname + ' ' + params.lastname + '</FL>' +

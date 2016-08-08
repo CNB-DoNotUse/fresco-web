@@ -1,5 +1,6 @@
 import React from 'react';
 import utils from 'utils';
+import _ from 'lodash';
 
 export default class Info extends React.Component {
     constructor(props) {
@@ -57,7 +58,7 @@ export default class Info extends React.Component {
             title: this.refs.name.value
         };
 
-        if(!_.isEqual(params, this.props.outlet)) {
+        if(!utils.compareObjects(params, this.props.outlet)) {
             this.updateInfo(avatarFiles, params);
         } else {
             if(avatarFiles.length) {
@@ -74,7 +75,7 @@ export default class Info extends React.Component {
     updateInfo(avatarFiles, params) {   
         this.loading = true;     
         $.ajax({
-            url: "/api/outlet/update",
+            url: "/api/refresh/outlet/update",
             method: 'POST',
             data: JSON.stringify(params),
             contentType: 'application/json'
@@ -105,7 +106,7 @@ export default class Info extends React.Component {
         this.loading = true;
 
         $.ajax({
-            url: "/api/outlet/avatar",
+            url: "/api/refresh/outlet/avatar",
             method: 'POST',
             data: files,
             contentType: false,

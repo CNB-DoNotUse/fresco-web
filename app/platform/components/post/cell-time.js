@@ -73,4 +73,3 @@ CellTime.defaultProps = {
 };
 
 export default CellTime;
-

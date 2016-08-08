@@ -3,6 +3,9 @@
     <script type="text/javascript">window.__initialProps__ =  <%- props %></script>
 <% } %>
 
+<!-- Alerts -->
+<script type="text/javascript">window.alerts = <%- JSON.stringify(alerts) %></script>
+
 <!--Remote Scripts-->
 <% if(typeof remoteScripts !== 'undefined') { %>
     <% for(let script of remoteScripts) { %>
@@ -20,9 +23,6 @@
 <% if(typeof(page) !== 'undefined' && typeof(assets) !== 'undefined'){ %>
     <script type="text/javascript" src="<%= assets[page]['js'] %>"></script>
 <% } %>
-
-<!--Alerts-->
-<% include alerts %>
 
 <!--Google Analytics-->
 <% include ga %>

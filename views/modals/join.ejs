@@ -1,16 +1,17 @@
 <% 
-	accountExists =  typeof(user) === 'undefined' ? false : true,
-	user = typeof(user) !== 'undefined' ? user : null;
-	email = typeof(email) !== 'undefined' ? email : null;
+	accountExists =  typeof(invite.user) === 'undefined' ? false : true,
+	user = typeof(invite.user) !== 'undefined' ? invite.user : null;
+	email = typeof(invite.email) !== 'undefined' ? invite.email  : null;
+	outlet = typeof(invite.outlet) !== 'undefined' ? invite.outlet  : null;
 %>
 
-<script type="text/javascript">var token = '<%- token %>'</script>
+<script type="text/javascript">let token = '<%- invite.token %>'</script>
 
 <div class="modal join <%- active %>" id="_join">
 	<div class="body">
 		<div class="form-wrap">
 			<form id="join-form">
-				<h3>Join <%- title %> on Fresco News</h3>
+				<h3>Join <%- outlet.title %> on Fresco News</h3>
 
 				<h2>Account type</h2>
 

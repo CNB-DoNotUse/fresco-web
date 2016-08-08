@@ -150,11 +150,17 @@ export default class OutletMembers extends React.Component {
 	    .done((response) => { 
 			outletInviteField.value = '';
 
-			$.snackbar({
-				content : `${response.invitesSent} ${response.invitesSent == 1 ? 'invitation' : 'invitations'} successfully sent!`
-			});
+			if(response.invitesSent) {
+				$.snackbar({
+					content : `${response.invitesSent} ${response.invitesSent == 1 ? 'invitation' : 'invitations'} successfully sent!`
+				});
+				this.updatePendingInvites();
+			} else {
+				$.snackbar({
+					content : '0 invites were sent.'
+				});
+			}
 			
-			this.updatePendingInvites();
 	    })    
 	    .fail((error) => { 
 	    	return $.snackbar({ content: utils.resolveError(error) });

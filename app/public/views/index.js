@@ -2,6 +2,7 @@ global.jQuery = require('jquery');
 require('../../sass/public/index.scss');
 require('snackbarjs');
 require('velocity-animate');
+require('alerts');
 const Landing = require('../components/landing.js');
 
 const screen = {

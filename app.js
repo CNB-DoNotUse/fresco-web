@@ -45,7 +45,9 @@ const storage = multer.diskStorage({
 });
 
 app.use(
-    multer({ storage: storage }).any()
+    multer({ 
+        storage: storage 
+    }).any()
 );
 
 //Cookie parser
@@ -65,7 +67,7 @@ app.use(
     })
 );
 
-//Set up public direc.
+//Set up public directory
 app.use(
     express.static(path.join(__dirname, 'public'), {
         maxAge: 1000 * 60 * 60 * 2 // 2 hour cache
@@ -73,13 +75,13 @@ app.use(
 );
 
 /**
- * Verifications check
+ * Alert & Verifications check
  */
 app.use((req, res, next)=> {
-    req.alerts = [];
+    app.locals.alerts = [];
 
     if (req.session && req.session.user && !req.session.user.verified){
-        req.alerts.push('\
+        app.locals.alerts.push('\
             <p>Your email hasn\'t been verified.\
               <br>Please click on the link sent to your inbox to verify your email!\
             </p>\
@@ -90,15 +92,13 @@ app.use((req, res, next)=> {
     }
 
     if (req.session && req.session.alerts){
-        req.alerts = req.alerts.concat(req.session.alerts);
-        req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
+        app.locals.alerts = app.locals.alerts.concat(req.session.alerts);
+        
         delete req.session.alerts;
-        return req.session.save(() => {
-            next();
-        });
+        req.session.save(() => {});
+        
+        return next();
     }
-
-    req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
 
     next();
 });
@@ -107,8 +107,9 @@ app.use((req, res, next)=> {
  * Set up local head and global for all templates
  */
 app.locals.head = head;
+app.locals.utils = utils;
 app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
-app.locals.alerts = [];
+app.locals.section = 'public';
 
 /**
  * Route session check
@@ -128,7 +129,7 @@ app.use((req, res, next) => {
     }
 
     // Check if the session hasn't expired
-    if (!req.session.user.TTL || req.session.user.TTL - now > 0) {
+    if (req.session.user.TTL && req.session.user.TTL - now > 0) {
         return next();
     }
 
@@ -136,52 +137,42 @@ app.use((req, res, next) => {
     return User.refresh(req, res, next);
 });
 
-/**
- * Route config for public facing pages
- */
+
+//Route config for public facing pag
 app.use((req, res, next) => {
     res.locals.section = 'public';
     next();
 });
 
-/**
- * Loop through all public routes
- */
-for (var i = 0; i < routes.public.length; i++) {
-    const routePrefix = routes.public[i] == 'index' ? '' : routes.public[i];
-    const route = require('./routes/' + routes.public[i]);
-
+//Loop through all public routes
+for(routePrefix of routes.public) {
+    routePrefix = routePrefix == 'index' ? '' : routePrefix;
+    const route = require(`./routes/${routePrefix}`);
     app.use('/' + routePrefix , route);
 }
 
-/**
- * Loop through all script routes
- */
-for (var i = 0; i < routes.scripts.length; i++) {
-    const routePrefix = routes.scripts[i];
+//Loop through all script routes
+for(routePrefix of routes.scripts) {
     const route = require(`./routes/scripts/${routePrefix}`);
-    
-    app.use(`/scripts/${routePrefix}` , require(`./routes/scripts/${routePrefix}`));
+    app.use(`/scripts/${routePrefix}` , route);
 }
 
-/**
- * Route config for private (platform) facing pages
- */
+//Route config for private (platform) facing pages
 app.use((req, res, next) => {
     res.locals.section = 'platform';
     next();
 });
 
-/**
- * Loop through all platform routes
- */
-for (var i = 0; i < routes.platform.length; i++) {
-    const routePrefix = routes.platform[i];
-    const route = require('./routes/' + routePrefix);
-
+//Loop through all platform routes
+for(routePrefix of routes.platform) {
+    const route = require(`./routes/${routePrefix}`);
     app.use('/' + routePrefix , route);
 }
 
+/**
+ * Webservery proxy for forwarding to the api and resetting TTL
+ */
+app.use('/api/refresh', API.ttl);
 /**
  * Webservery proxy for forwarding to the api
  */
