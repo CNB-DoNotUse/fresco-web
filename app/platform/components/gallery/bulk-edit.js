@@ -15,12 +15,19 @@ class BulkEdit extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = { loading: false };
         this.getStateFromProps(props);
     }
 
     componentDidMount() {
         $.material.init();
+    }
+
+    /**
+     * Save the edits made to each gallery
+     */
+    onClickSave() {
+        this.saveGalleries();
     }
 
     getStateFromProps(props) {
@@ -40,8 +47,8 @@ class BulkEdit extends React.Component {
 
     getStateFromGalleries(galleries) {
         if (!galleries) return { galleries: [], tags: [], stories: [], caption: '' };
-        const tags = galleries.reduce((p, c) => (p.concat(c.tags)), []);
-        const stories = galleries.reduce((p, c) => (p.concat(c.stories)), []);
+        const tags = uniq(galleries.reduce((p, c) => (p.concat(c.tags)), []));
+        const stories = uniqBy(galleries.reduce((p, c) => (p.concat(c.stories)), []), 'id');
         const caption = galleries.reduce((p, c) => (p === c.caption ? p : ''), galleries[0].caption);
         const posts = uniqBy(galleries.reduce((p, c) => (p.concat(c.posts)), []), 'id');
 
@@ -59,35 +66,42 @@ class BulkEdit extends React.Component {
         this.setState(this.getStateFromGalleries(this.state.galleries));
     }
 
-    /**
-     * Save the edits made to each post
-     */
-    // TODO: add support for add/remove/new of tags, stories
-    save() {
-        const { galleries, caption, tags } = this.state;
+    saveGalleries() {
+        const { loading, galleries, caption, tags, stories } = this.state;
+        if (loading) return;
+        this.setState({ loading: true });
+
+        Promise.all(galleries.map(g => this.saveGallery(g, { caption, tags, stories })))
+        .then(() => {
+            $.snackbar({ content: 'Galleries updated!' });
+        }, () => {
+            $.snackbar({ content: 'There was an error updating galleries.' });
+        })
+        .then(() => {
+            this.setState({ loading: false });
+        });
+    }
+
+    saveGallery(gallery, data) {
+        if (!gallery || !data) return null;
+        const { tags, caption, stories } = data;
+
         const params = {
-            galleries: galleries.map(g => g.id),
             tags,
+            caption,
+            ...utils.getRemoveAddParams('stories', gallery.stories, stories),
         };
 
-        if (caption && caption.length) params.caption = caption;
-        if (tags && tags.length) params.tags = tags;
-
-        // $.ajax({
-        //     url: '/api/gallery/bulkupdate',
-        //     type: 'post',
-        //     data: JSON.stringify(params),
-        //     contentType: 'application/json',
-        //     success: (data) => {
-        //         if (data.err) {
-        //             $.snackbar({
-        //                 content: utils.resolveError(data.err, 'We were not able to save these changes')
-        //             });
-        //             return;
-        //         }
-        //         window.location.reload();
-        //     },
+        // return fetch(`/api/gallery/${gallery.id}/update`, {
+        //     body: JSON.stringify(params),
+        //     method: 'post',
+        //     headers: { 'Content-Type': 'application/json' },
         // });
+        return $.ajax(`/api/gallery/${gallery.id}/update`, {
+            data: JSON.stringify(params),
+            method: 'post',
+            contentType: 'application/json',
+        });
     }
 
     renderBody() {
@@ -154,7 +168,7 @@ class BulkEdit extends React.Component {
                     Clear All
                 </button>
                 <button
-                    onClick={() => this.save()}
+                    onClick={() => this.onClickSave()}
                     type="button"
                     className="btn btn-flat pull-right"
                 >
