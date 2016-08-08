@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import FrescoAutocomplete from '../global/fresco-autocomplete.js';
+import LocationAutocomplete from '../global/location-autocomplete.js';
 import GMap from './gmap';
 
 class AutocompleteMap extends React.Component {
@@ -71,7 +71,7 @@ class AutocompleteMap extends React.Component {
 
         return (
             <div className="map-group autocomplete-map form-group-default">
-                <FrescoAutocomplete
+                <LocationAutocomplete
                     inputText={address}
                     disabled={disabled}
                     bounds={this.state.bounds}

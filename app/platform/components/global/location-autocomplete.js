@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty';
  * Autocomplete component
  */
 
-class FrescoAutocomplete extends React.Component {
+class LocationAutocomplete extends React.Component {
     constructor(props) {
         super(props);
 
@@ -172,14 +172,14 @@ class FrescoAutocomplete extends React.Component {
     }
 }
 
-FrescoAutocomplete.defaultProps = {
+LocationAutocomplete.defaultProps = {
     updateAutocompleteData() {},
     transition: true,
     class: '',
     inputClass: '',
 };
 
-FrescoAutocomplete.propTypes = {
+LocationAutocomplete.propTypes = {
     class: PropTypes.string,
     inputText: PropTypes.string,
     inputClass: PropTypes.string,
@@ -189,5 +189,5 @@ FrescoAutocomplete.propTypes = {
     bounds: PropTypes.object,
 };
 
-export default FrescoAutocomplete;
+export default LocationAutocomplete;
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import GMap from '../global/gmap';
-import FrescoAutocomplete from '../global/fresco-autocomplete.js';
+import LocationAutocomplete from '../global/location-autocomplete.js';
 import utils from 'utils';
 
 
@@ -86,7 +86,7 @@ export default class DispatchSubmit extends React.Component {
     }
 
     /**
-     * Prop function called from `FrescoAutocomplete` for getting autocomplete date
+     * Prop function called from `LocationAutocomplete` for getting autocomplete date
      */
     autocompleteUpdated(autocompleteData) {
         //Update the position to the parent component
@@ -273,7 +273,7 @@ export default class DispatchSubmit extends React.Component {
 
                 <div className="map-group">
                     <div className="form-group-default">
-                        <FrescoAutocomplete
+                        <LocationAutocomplete
                             inputText={this.state.autocompleteText || ''}
                             class="form"
                             inputClass="form-control floating-label"
