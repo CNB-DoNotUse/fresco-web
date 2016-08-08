@@ -4,7 +4,8 @@ import EditStories from './edit-stories';
 import EditPost from './edit-post';
 import Slick from 'react-slick';
 import utils from 'utils';
-import uniq from 'lodash/uniqBy';
+import uniq from 'lodash/uniq';
+import uniqBy from 'lodash/uniqBy';
 
 /**
  * Component for editing multiple posts at once (from possibly different galleries)
@@ -42,8 +43,9 @@ class BulkEdit extends React.Component {
         const tags = galleries.reduce((p, c) => (p.concat(c.tags)), []);
         const stories = galleries.reduce((p, c) => (p.concat(c.stories)), []);
         const caption = galleries.reduce((p, c) => (p === c.caption ? p : ''), galleries[0].caption);
+        const posts = uniqBy(galleries.reduce((p, c) => (p.concat(c.posts)), []), 'id');
 
-        return { galleries, tags, stories, caption };
+        return { galleries, tags, stories, caption, posts };
     }
 
     clear() {
@@ -89,12 +91,7 @@ class BulkEdit extends React.Component {
     }
 
     renderBody() {
-        const { caption, tags, stories } = this.state;
-        const posts = this.props.posts.map((post, i) => (
-            <div key={i}>
-                <EditPost post={post} />
-            </div>
-        ));
+        const { caption, tags, stories, posts } = this.state;
 
         return (
             <div className="dialog-body">
@@ -126,7 +123,14 @@ class BulkEdit extends React.Component {
                     className="gialog-col col-xs-12 col-md-5"
                     dots
                 >
-                    {posts}
+                    {posts && posts.length
+                        ? posts.map((post, i) => (
+                            <div key={i}>
+                                <EditPost post={post} />
+                            </div>
+                        ))
+                        : <div />
+                    }
                 </Slick>
             </div>
         );
