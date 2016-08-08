@@ -1,10 +1,13 @@
-//Loops through window alerts and displays them
-$(document).ready(function() {
-    for(let alert of window.alerts) { 
-        $.snackbar({
-            content: alert, 
-            timeout: 5000,
-            htmlAllowed: true
+// Loops through window alerts and displays them
+$(document).ready(() => {
+    if (window.alerts && window.alerts.length) {
+        window.alerts.forEach((a) => {
+            $.snackbar({
+                content: a,
+                timeout: 5000,
+                htmlAllowed: true,
+            });
         });
     }
 });
+

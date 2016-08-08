@@ -75,8 +75,11 @@ export default class Info extends React.Component {
     updateInfo(avatarFiles, params) {   
         this.loading = true;     
         $.ajax({
-            url: "/api/refresh/outlet/update",
+            url: "/api/outlet/update",
             method: 'POST',
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader('TTL', '0');
+            },
             data: JSON.stringify(params),
             contentType: 'application/json'
         })
@@ -110,7 +113,10 @@ export default class Info extends React.Component {
             method: 'POST',
             data: files,
             contentType: false,
-            processData: false
+            processData: false,
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader('TTL', '0');
+            }
         })
         .done((response) => {
             return $.snackbar({ 

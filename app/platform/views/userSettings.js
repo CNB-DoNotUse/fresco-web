@@ -92,7 +92,10 @@ class UserSettings extends React.Component {
  		    url: "/api/user/update",
  		    method: 'POST',
  		    data: JSON.stringify(params),
- 		    contentType: 'application/json'
+ 		    contentType: 'application/json',
+ 		    beforeSend: (xhr) => {
+ 		        xhr.setRequestHeader('TTL', '0');
+ 		    }
  		})
  		.done((response) => {
  		    if(avatarFiles.length) {
@@ -124,7 +127,10 @@ class UserSettings extends React.Component {
  	        method: 'POST',
  	        data: files,
  	        contentType: false,
- 	        processData: false
+ 	        processData: false,
+ 	        beforeSend: (xhr) => {
+ 	            xhr.setRequestHeader('TTL', '0');
+ 	        }
  	    })
  	    .done((response) => {
  	        return $.snackbar({ 

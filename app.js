@@ -19,6 +19,15 @@ const app           = express();
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
+/**
+ * Set up local head and global for all templates
+ */
+app.locals.head = head;
+app.locals.utils = utils;
+app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
+app.locals.section = 'public';
+app.locals.alerts = [];
+
 // If in dev mode, use local redis server as session store
 const rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
 const redisConnection = { client: rClient };
@@ -74,12 +83,12 @@ app.use(
     })
 );
 
+
+
 /**
  * Alert & Verifications check
  */
 app.use((req, res, next)=> {
-    app.locals.alerts = [];
-
     if (req.session && req.session.user && !req.session.user.verified){
         app.locals.alerts.push('\
             <p>Your email hasn\'t been verified.\
@@ -100,16 +109,11 @@ app.use((req, res, next)=> {
         return next();
     }
 
+    console.log(app.locals.alerts);
+
     next();
 });
 
-/**
- * Set up local head and global for all templates
- */
-app.locals.head = head;
-app.locals.utils = utils;
-app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
-app.locals.section = 'public';
 
 /**
  * Route session check
@@ -169,10 +173,6 @@ for(routePrefix of routes.platform) {
     app.use('/' + routePrefix , route);
 }
 
-/**
- * Webservery proxy for forwarding to the api and resetting TTL
- */
-app.use('/api/refresh', API.ttl);
 /**
  * Webservery proxy for forwarding to the api
  */
