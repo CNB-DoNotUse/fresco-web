@@ -13,8 +13,8 @@ class PostCell extends React.Component {
 
         const { post } = props;
 
-        // TODO: get purchased bool to be sent down with posts in all json
         this.state = { purchased: post.purchased || false };
+        this.onClickPost = this.onClickPost.bind(this);
     }
 
     onClickPost(e) {
@@ -61,7 +61,7 @@ class PostCell extends React.Component {
                 <div>
                     <div className="tile-info">
                         <span className="md-type-body2">{address}</span>
-                        
+
                         <Time sort={sort} post={post} />
                     </div>
 
@@ -88,7 +88,7 @@ class PostCell extends React.Component {
                 <div className="tile-body">
                     <div className="frame" />
 
-                    <div className="hover" onClick={(e) => this.onClickPost(e)}>
+                    <div className="hover" onClick={this.onClickPost}>
                         <p className="md-type-body1">
                             {post.parent && post.parent.caption
                                 ? post.parent.caption

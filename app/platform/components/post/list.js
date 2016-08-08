@@ -143,9 +143,10 @@ class PostList extends React.Component {
      */
     togglePost(passedPost) {
         const { selectedPosts } = this.state;
+        const { permissions } = this.props;
 
         // Check if `not` CM
-        if (!this.props.permissions.include('update-other-content')) return;
+        if (!permissions.includes('update-other-content')) return;
 
         // Make sure we haven't reached the limit
         if (selectedPosts.length >= utils.limits.galleryItems) {
@@ -289,6 +290,8 @@ PostList.defaultProps = {
     scrollable: false,
     onlyVerified: false,
     loadPosts() {},
+    permissions: [],
 };
 
 export default PostList;
+

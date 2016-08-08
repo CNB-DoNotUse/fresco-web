@@ -14,98 +14,82 @@ class BulkEdit extends React.Component {
     constructor(props) {
         super(props);
 
-        const galleries = this.getGalleriesFromPosts();
-        const tags = this.getTagsFromGalleries(galleries);
-        const stories = this.getStoriesFromGalleries(galleries);
-        this.state = {
-            caption: '',
-            tags,
-            stories,
-            galleries,
-        };
+        this.state = {};
+        this.getStateFromProps(props);
     }
 
     componentDidMount() {
         $.material.init();
     }
 
-    // getInitialState() {
+    getStateFromProps(props) {
+        const galleryIds = uniq(props.posts.map(p => p.parent.id));
+        let galleries;
 
-    // }
+        $.ajax({
+            url: `/api/gallery/${galleryIds.join(',')}`,
+        })
+        .then((res) => {
+            if (Array.isArray(res)) galleries = res;
+            else galleries = [res];
 
-    getGalleriesFromPosts() {
-        const { posts } = this.props;
-        const galleryIds = uniq(posts.map(p => p.parent.id));
+            this.setState(this.getStateFromGalleries(galleries));
+        }, () => this.setState(this.getStateFromGalleries(galleries)));
     }
 
-    // getTagsFromGalleries(galleries) {
-    //     galleries.map(g => )
-    // }
+    getStateFromGalleries(galleries) {
+        if (!galleries) return { galleries: [], tags: [], stories: [], caption: '' };
+        const tags = galleries.reduce((p, c) => (p.concat(c.tags)), []);
+        const stories = galleries.reduce((p, c) => (p.concat(c.stories)), []);
+        const caption = galleries.reduce((p, c) => (p === c.caption ? p : ''), galleries[0].caption);
+
+        return { galleries, tags, stories, caption };
+    }
 
     clear() {
-        this.setState({
-            caption: '',
-            tags: [],
-            stories: [],
-        });
+        this.setState({ caption: '', tags: [], stories: [] });
     }
 
     /**
      * Revert the component to it's initial state (pre-edits)
      */
     revert() {
-        const stateToSet = {};
-        const caption = this.state.galleries[0].caption;
-        const allSame = this.state.galleries.every(gallery => {
-            return gallery.caption == caption;
-        });
-
-        if (allSame) {
-            stateToSet.caption = caption;
-        }
-
-        stateToSet.tags = this.getInitialTags();
-        stateToSet.stories = this.getInitialStories();
-
-        this.setState(stateToSet);
+        this.setState(this.getStateFromGalleries(this.state.galleries));
     }
 
     /**
      * Save the edits made to each post
      */
+    // TODO: add support for add/remove/new of tags, stories
     save() {
+        const { galleries, caption, tags } = this.state;
         const params = {
-            galleries: this.state.galleries.map(g => { return g.id; })
+            galleries: galleries.map(g => g.id),
+            tags,
         };
 
-        if (this.state.caption.length > 0) {
-            params.caption = this.state.caption;
-        }
+        if (caption && caption.length) params.caption = caption;
+        if (tags && tags.length) params.tags = tags;
 
-        // Tags
-        if (this.state.tags.length > 0) {
-            params.tags = this.state.tags;
-        }
-
-        // TODO: add support for tags, stories
-        $.ajax({
-            url: '/api/gallery/bulkupdate',
-            type: 'post',
-            data: JSON.stringify(params),
-            contentType: 'application/json',
-            success: (data) => {
-                if (data.err) {
-                    $.snackbar({
-                        content: utils.resolveError(data.err, 'We were not able to save these changes')
-                    });
-                    return;
-                }
-                window.location.reload();
-            },
-        });
+        // $.ajax({
+        //     url: '/api/gallery/bulkupdate',
+        //     type: 'post',
+        //     data: JSON.stringify(params),
+        //     contentType: 'application/json',
+        //     success: (data) => {
+        //         if (data.err) {
+        //             $.snackbar({
+        //                 content: utils.resolveError(data.err, 'We were not able to save these changes')
+        //             });
+        //             return;
+        //         }
+        //         window.location.reload();
+        //     },
+        // });
     }
 
     renderBody() {
+        const { caption, tags, stories } = this.state;
         const posts = this.props.posts.map((post, i) => (
             <div key={i}>
                 <EditPost post={post} />
@@ -121,19 +105,19 @@ class BulkEdit extends React.Component {
                             type="text"
                             className="form-control floating-label"
                             placeholder="Caption"
-                            value={this.state.caption}
+                            value={caption}
                             onChange={(e) => this.setState({ caption: e.target.value })}
                         />
                     </div>
 
                     <EditTags
                         ref="tags"
-                        tags={this.state.tags}
+                        tags={tags}
                         updateTags={(t) => this.setState({ tags: t })}
                     />
 
                     <EditStories
-                        stories={this.state.stories}
+                        stories={stories}
                         updateStories={(s) => this.setState({ stories: s })}
                     />
                 </div>
