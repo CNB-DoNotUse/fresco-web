@@ -8,14 +8,6 @@ const resolveError = require('../../lib/resolveError');
 const utils = require('../../lib/utils');
 
 /**
- * Reset password endpoint
- * @description Takes an email in the body
- */
-router.post('/user/reset', (req, res, next) => {
-
-});
-
-/**
  * Processes login in for web platform users
  */
 router.post('/login', (req, res, next) => {
@@ -30,11 +22,12 @@ router.post('/login', (req, res, next) => {
     .then(response => {
         let { token, user } = response.body;
 
-        User.saveSession(req, user, token)
+        User
+            .saveSession(req, user, token)
             .then(() => {
                 return res.status(response.status).json({ success: true });
             })
-            .catch((error) => {
+            .catch(error() => {
                 return res.status(response.status).json({ success: false, error });
             })
     })
@@ -79,6 +72,14 @@ router.post('/register', (req, res, next) => {
         .catch(error => API.handleError(error, res));
     })
     .catch(error => API.handleError(error, res));
+});
+
+/**
+ * Reset password endpoint
+ * @description Takes an email in the body
+ */
+router.post('/user/reset', (req, res, next) => {
+
 });
 
 /**
