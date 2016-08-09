@@ -1,6 +1,6 @@
 import React from 'react'
 import utils from 'utils'
-import RelatedPostImage from './post-related-image'
+import RelatedPostImage from './related-image'
 
 /** //
 Description : Related posts at the bottom of the PostDetail view, organized by tags
@@ -71,7 +71,7 @@ export default class PostRelatedTags extends React.Component {
 			}
 
 			console.log(tag);
-			
+
 			let posts = this.state.tags[tag].map((post, i) => {
 					return <RelatedPostImage post={post} key={i}/>
 				}),
@@ -85,10 +85,10 @@ export default class PostRelatedTags extends React.Component {
 					</div>
 				</div>;
 
-			let tabControl = <button 
-								className={"btn btn-flat " + toggled} 
-								key={tag} 
-								onClick={this.setDisplayedTag} 
+			let tabControl = <button
+								className={"btn btn-flat " + toggled}
+								key={tag}
+								onClick={this.setDisplayedTag}
 								data-tag={tag}>{'#' + tag.toUpperCase()}
 							</button>
 
