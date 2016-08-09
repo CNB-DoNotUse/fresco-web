@@ -27,7 +27,7 @@ router.post('/login', (req, res, next) => {
             .then(() => {
                 return res.status(response.status).json({ success: true });
             })
-            .catch(error() => {
+            .catch((error) => {
                 return res.status(response.status).json({ success: false, error });
             })
     })
