@@ -1,5 +1,5 @@
 import React from 'react'
-import RelatedPostImage from './post-related-image'
+import RelatedPostImage from './related-image'
 import utils from 'utils'
 
 // TODO: Figure out how to combine this and PostRelatedTags into a single reusable component

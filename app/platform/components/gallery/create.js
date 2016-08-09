@@ -21,6 +21,7 @@ class Create extends React.Component {
             articles: [],
             rating: 0,
             caption: '',
+            loading: false,
         };
     }
 
@@ -53,6 +54,7 @@ class Create extends React.Component {
      * Creates the gallery on button click
  	 */
     createGallery() {
+        if (this.state.loading) return;
         const { caption, rating, tags, stories, articles } = this.state;
         const { posts, onHide, setSelectedPosts } = this.props;
 
@@ -76,6 +78,7 @@ class Create extends React.Component {
             articles_new,
         };
 
+        this.setState({ loading: true });
         $.ajax({
             url: '/api/gallery/import',
             method: 'post',
@@ -95,6 +98,7 @@ class Create extends React.Component {
             });
         })
         .fail((err) => {
+            this.setState({ loading: false });
             $.snackbar({
                 content: utils.resolveError(err, 'There was an error creating your gallery!'),
             });
@@ -103,7 +107,7 @@ class Create extends React.Component {
 
     render() {
         const { posts, onHide } = this.props;
-        const { caption, tags, stories, articles, rating } = this.state;
+        const { caption, tags, stories, articles, rating, loading } = this.state;
 
         const postsJSX = posts.map((p, i) => (
             <div key={i}>
@@ -131,6 +135,7 @@ class Create extends React.Component {
                                 onClick={() => this.clear()}
                                 type="button"
                                 className="btn btn-flat"
+                                disabled={loading}
                             >
                                 Clear all
                             </button>
@@ -138,6 +143,7 @@ class Create extends React.Component {
                                 onClick={() => this.onCreate()}
                                 type="button"
                                 className="btn btn-flat pull-right"
+                                disabled={loading}
                             >
                                 Save
                             </button>
@@ -145,6 +151,7 @@ class Create extends React.Component {
                                 onClick={onHide}
                                 type="button"
                                 className="btn btn-flat pull-right toggle-gcreate toggler toggled"
+                                disabled={loading}
                             >
                                 Discard
                             </button>

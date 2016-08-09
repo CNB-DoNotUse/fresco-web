@@ -2,17 +2,16 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import TopBar from './../components/topbar';
 import App from './app';
-import PostInfo from './../components/postDetail/post-info';
-import PostRelated from './../components/postDetail/post-related';
-import PostRelatedTags from './../components/postDetail/post-related-tags';
-import PostDetailImage from './../components/postDetail/post-detail-image';
+import PostInfo from './../components/post/info';
+import PostRelated from './../components/post/related';
+import PostRelatedTags from './../components/post/related-tags';
+import PostDetailImage from './../components/post/detail-image';
 import GalleryEdit from './../components/gallery/edit';
 import utils from 'utils';
 
 /**
  * Post Detail Parent Object, made of a side column and PostList
  */
-
 class PostDetail extends React.Component {
     constructor(props) {
         super(props);
