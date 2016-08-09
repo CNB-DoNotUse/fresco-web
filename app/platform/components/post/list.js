@@ -199,22 +199,7 @@ class PostList extends React.Component {
                     />
                 ))}
             </div>
-        )
-
-        return posts.map((p, i) => (
-            <PostCell
-                size={size}
-                parentCaption={parentCaption}
-                post={p}
-                permissions={permissions}
-                toggled={selectedPosts.some((s) => s.id === p.id)}
-                assignment={assignment}
-                key={i}
-                editable={editable}
-                sort={sort}
-                togglePost={(post) => this.togglePost(post)}
-            />
-        ));
+        );
     }
 
     render() {

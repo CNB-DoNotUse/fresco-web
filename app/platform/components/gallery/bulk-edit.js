@@ -16,11 +16,11 @@ class BulkEdit extends React.Component {
         super(props);
 
         this.state = { loading: false };
-        this.getStateFromProps(props);
     }
 
     componentDidMount() {
         $.material.init();
+        this.getStateFromProps(this.props);
     }
 
     /**
