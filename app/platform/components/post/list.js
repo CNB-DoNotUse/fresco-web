@@ -72,10 +72,10 @@ class PostList extends React.Component {
     }
 
     onToggleGalleryBulkEdit() {
-        if (this.props.posts.length > 1) {
+        if (this.state.selectedPosts.length > 1) {
             this.setState({ galleryBulkEditToggled: !this.state.galleryBulkEditToggled });
         } else {
-            this.setState({ bulkEditToggled: false });
+            this.setState({ galleryBulkEditToggled: false });
             $.snackbar({ content: 'Select more than one gallery to edit' });
         }
     }
@@ -143,9 +143,10 @@ class PostList extends React.Component {
      */
     togglePost(passedPost) {
         const { selectedPosts } = this.state;
+        const { permissions } = this.props;
 
         // Check if `not` CM
-        if (!this.props.permissions.include('update-other-content')) return;
+        if (!permissions.includes('update-other-content')) return;
 
         // Make sure we haven't reached the limit
         if (selectedPosts.length >= utils.limits.galleryItems) {
@@ -289,6 +290,8 @@ PostList.defaultProps = {
     scrollable: false,
     onlyVerified: false,
     loadPosts() {},
+    permissions: [],
 };
 
 export default PostList;
+

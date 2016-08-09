@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import utils from 'utils';
 import Dropdown from './../global/dropdown';
 import RadioGroup from './../global/radio-group';
-import FrescoAutocomplete from './../global/fresco-autocomplete.js';
+import LocationAutocomplete from './../global/location-autocomplete.js';
+import utils from 'utils';
 
 /**
  * Top Bar for pages of the site
@@ -12,9 +12,9 @@ import FrescoAutocomplete from './../global/fresco-autocomplete.js';
  * is added to the navigation bar
  */
 class Index extends React.Component {
-    
+
 	/**
-	 * Prop function called from `FrescoAutocomplete` for getting autocomplete date
+	 * Prop function called from `LocationAutocomplete` for getting autocomplete date
 	 */
     onUpdateAutocomplete(data) {
         // Update the position to the parent component
@@ -200,7 +200,7 @@ class Index extends React.Component {
                     : ''
                 }
                 {locationInput
-                    ? <FrescoAutocomplete
+                    ? <LocationAutocomplete
                         class="nav"
                         inputText={mapPlace ? mapPlace.description || mapPlace.formatted_address : ''}
                         bounds={bounds}
