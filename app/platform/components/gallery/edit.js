@@ -47,6 +47,19 @@ class Edit extends React.Component {
         save(gallery.id, params, this.fileInput);
     }
 
+    onChangeFileInput(e) {
+        // TODO: add support for video files
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        const { uploads } = this.state;
+
+        reader.onload = (r) => {
+            uploads.unshift(r.target.result);
+            this.setState({ uploads });
+        };
+        reader.readAsDataURL(file);
+    }
+
     /**
      * getStateFromProps
      *
@@ -66,6 +79,7 @@ class Edit extends React.Component {
             posts: gallery.posts,
             articles: gallery.articles,
             rating: gallery.rating,
+            uploads: [],
         };
     }
 
@@ -112,7 +126,6 @@ class Edit extends React.Component {
     getPostsFormData() {
         const { gallery } = this.props;
         const { posts } = this.state;
-        // TODO: merge in array of file objects
         const files = this.fileInput.files;
         if (files.length) {
             times(files.length, (i) => {
@@ -191,6 +204,7 @@ class Edit extends React.Component {
             rating,
             articles,
             posts,
+            uploads,
         } = this.state;
         if (!gallery || !user) return '';
 
@@ -255,6 +269,7 @@ class Edit extends React.Component {
 
                 <EditPosts
                     posts={posts}
+                    uploads={uploads}
                     gallery={gallery}
                     onToggleDelete={(p) => this.toggleDeletePost(p)}
                 />
@@ -266,7 +281,6 @@ class Edit extends React.Component {
 
     renderFooter() {
         const { gallery, user, loading } = this.props;
-        const inputStyle = { display: 'none' };
         if (!gallery || !user) return '';
 
         return (
@@ -276,8 +290,9 @@ class Edit extends React.Component {
                     type="file"
                     accept="image/*,video/*,video/mp4"
                     ref={(r) => this.fileInput = r}
-                    style={inputStyle}
+                    style={{ display: 'none' }}
                     disabled={loading}
+                    onChange={(e) => this.onChangeFileInput(e)}
                     multiple
                 />
 

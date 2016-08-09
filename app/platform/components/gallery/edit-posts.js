@@ -44,13 +44,38 @@ class EditPosts extends React.Component {
         });
     }
 
+    renderUploads() {
+        const { uploads } = this.props;
+        // if (!uploads.length) return <div key={'null-upload'} />;
+        if (!uploads.length) return null;
+
+        return uploads.map((u, i) => (
+            <div key={`upload${i}`} className="frick-frame">
+                <img
+                    role="presentation"
+                    className="img-responsive"
+                    src={u}
+                />
+            </div>
+        ));
+    }
+
+    renderSliderImages() {
+        const uploadsJSX = this.renderUploads();
+        const postsJSX = this.renderPosts();
+
+        return uploadsJSX
+            ? (uploadsJSX.concat(postsJSX))
+            : postsJSX;
+    }
+
     render() {
         const { posts } = this.props;
 
         return (
             <div className="dialog-col col-xs-12 col-md-5">
                 <Slider infinite={posts.length > 1} dots >
-					{this.renderPosts()}
+					{this.renderSliderImages()}
                 </Slider>
             </div>
         );
@@ -60,6 +85,7 @@ class EditPosts extends React.Component {
 EditPosts.propTypes = {
     gallery: PropTypes.object.isRequired,
     posts: PropTypes.array.isRequired,
+    uploads: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     onToggleDelete: PropTypes.func.isRequired,
 };
 
