@@ -31,8 +31,7 @@ export default class StoryCell extends React.Component {
 						<p className="md-type-body1">{story.caption}</p>
 					</div>
 					
-					<StoryCellImages 
-						thumbnails={story.thumbnails} />
+					<StoryCellImages thumbnails={story.thumbnails} />
 				</div>
 				<div className="tile-foot">
 					<div className="hover">
@@ -87,7 +86,6 @@ class StoryCellImages extends React.Component {
 		}
 		else if(this.props.thumbnails.length >= 5 && this.props.thumbnails.length < 8){
 			return(
-
 				<div className="flex-row">
 					<div className="flex-col">
 						<FrescoImage post={this.props.thumbnails[0]} size="small" />
