@@ -17,15 +17,19 @@ class Create extends React.Component {
 
         this.state = {
             tags: [],
-            relatedStories: [],
+            stories: [],
             articles: [],
-            visibility: 0,
+            rating: 0,
             caption: '',
         };
     }
 
     componentDidMount() {
         $.material.init();
+    }
+
+    onCreate() {
+        this.createGallery();
     }
 
     /**
@@ -35,21 +39,21 @@ class Create extends React.Component {
     clear() {
         this.setState({
             tags: [],
-            relatedStories: [],
+            stories: [],
             articles: [],
             caption: '',
         });
     }
 
     toggleVisibility() {
-        this.setState({ visibility: this.state.visibility === 0 ? 2 : 0 });
+        this.setState({ rating: this.state.rating === 0 ? 2 : 0 });
     }
 
     /**
      * Creates the gallery on button click
  	 */
-    create() {
-        const { caption, visibility, tags, relatedStories, articles } = this.state;
+    createGallery() {
+        const { caption, rating, tags, stories, articles } = this.state;
         const { posts, onHide, setSelectedPosts } = this.props;
 
         // Generate post ids for update
@@ -58,21 +62,22 @@ class Create extends React.Component {
             $.snackbar({ content: 'Galleries must have at least 1 post' });
             return;
         }
-
-        const storyIds = relatedStories.map(s => s.id);
-        const articleIds = articles.map(a => a.id);
+        const { stories_add, stories_new } = utils.getRemoveAddParams('stories', [], stories);
+        const { articles_add, articles_new } = utils.getRemoveAddParams('articles', [], articles);
 
         const params = {
             caption,
-            posts: postIds,
+            posts_add: postIds,
             tags,
-            visibility,
-            articles: articleIds,
-            stories: storyIds,
+            // rating,
+            stories_add,
+            stories_new,
+            articles_add,
+            articles_new,
         };
 
         $.ajax({
-            url: '/api/gallery/create',
+            url: '/api/gallery/import',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify(params),
@@ -98,7 +103,7 @@ class Create extends React.Component {
 
     render() {
         const { posts, onHide } = this.props;
-        const { caption, tags, relatedStories, articles } = this.state;
+        const { caption, tags, stories, articles, rating } = this.state;
 
         const postsJSX = posts.map((p, i) => (
             <div key={i}>
@@ -130,7 +135,7 @@ class Create extends React.Component {
                                 Clear all
                             </button>
                             <button
-                                onClick={() => this.create()}
+                                onClick={() => this.onCreate()}
                                 type="button"
                                 className="btn btn-flat pull-right"
                             >
@@ -153,18 +158,18 @@ class Create extends React.Component {
                                         type="text"
                                         className="form-control floating-label"
                                         placeholder="Caption"
+                                        onChange={(e) => this.setState({ caption: e.target.value })}
                                     />
                                 </div>
 
                                 <EditTags
-                                    ref="tags"
                                     tags={tags}
                                     updateTags={(t) => this.setState({ tags: t })}
                                 />
 
                                 <EditStories
-                                    stories={relatedStories}
-                                    updateStories={(s) => this.setState({ relatedStories: s })}
+                                    stories={stories}
+                                    updateStories={(s) => this.setState({ stories: s })}
                                 />
 
                                 <EditArticles
@@ -176,8 +181,8 @@ class Create extends React.Component {
                                     <div className="checkbox">
                                         <label>
                                             <input
-                                                ref="highlight"
                                                 type="checkbox"
+                                                checked={rating === 2}
                                                 onChange={() => this.toggleVisibility()}
                                             />
                                             Highlighted
