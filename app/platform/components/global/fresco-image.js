@@ -18,7 +18,7 @@ export default class FrescoImage extends React.Component {
 		img.onerror = () => {
 		    const timeout = parseInt(img.getAttribute('data-t') || 1);
 		    const lastTimeout = parseInt(img.getAttribute('data-lt') || 1);
-		    const image = `${utils.CDN}/images/${size}/missing.png`;
+		    const image = `${utils.CDN}/images/missing.png`;
 
 		    img.setAttribute('data-lt', timeout);
 		    img.setAttribute('data-t', timeout + lastTimeout);

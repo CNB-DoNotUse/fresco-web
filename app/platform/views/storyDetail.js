@@ -88,8 +88,6 @@ class StoryDetail extends React.Component {
      * @param {function} callback callback delivering posts
      */
     loadPosts(last, callback) {
-        console.log(this.state);
-
         const { story, sortBy } = this.state;
         const params = {
             last,
