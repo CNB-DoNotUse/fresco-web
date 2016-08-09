@@ -1,73 +1,86 @@
-import React from 'react'
-import utils from 'utils'
+import React, { PropTypes } from 'react';
+import utils from 'utils';
 
 /**
  * User Sidebar parent object
  * @description Column on the left of the user page
  */
-export default class UserSidebar extends React.Component {
+class UserSidebar extends React.Component {
+    render() {
+        const { detailUser, user } = this.props;
+        const avatar = detailUser.avatar || utils.defaultAvatar;
+        const galleries = detailUser.stats ? detailUser.stats.galleries : 0;
+        const photos = detailUser.stats ? detailUser.stats.photos : 0;
+        const videos = detailUser.stats ? detailUser.stats.videos : 0;
+        let email = '';
+        let stripe = '';
 
-	render() {	
+        if (user.permissions.includes('get-all-purchases')) {
+            email = detailUser.email
+                ? <li className="ellipses">
+                    <span className="mdi mdi-email icon"></span>
+                    <a target="_top" href={`mailto:${detailUser.email}`}>
+                        {detailUser.email}
+                    </a>
+                </li>
+                : '';
 
-		const user = this.props.detailUser;
-		const name = user.firstname + ' ' + user.lastname;
-		const avatar = user.avatar || utils.defaultAvatar;
-		const galleries = user.stats.galleries;
-		const photos = user.stats.photos;
-		const videos = user.stats.videos;
-		let email = '';
-		let stripe = '';
+            stripe = detailUser.stripe
+                ? <li className="ellipses">
+                    <span className="mdi mdi-bank icon"></span>
+                    <a
+                        target="_top"
+                        href={`https://dashboard.stripe.com/${detailUser.stripe}`}
+                    >
+                        Stripe
+                    </a>
+                </li>
+                : '';
+        }
 
-		if(this.props.user.permissions.includes('get-all-purchases')){
-			if(user.email !== null)
-				email = <li className="ellipses">
-							<span className="mdi mdi-email icon"></span>
-							<a target="_top" href={'mailto:' + user.email}>
-								{user.email}
-							</a>
-						</li> 	
+        return (
+            <div className="col-sm-4 profile hidden-xs">
+                <div className="container-fluid fat">
+                    <div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+                        <img
+                            className="img-responsive img-avatar"
+                            src={avatar}
+                            role="presentation"
+                        />
 
-			if(user.stripe !== null)
-				stripe = <li className="ellipses">
-							<span className="mdi mdi-bank icon"></span>
-							<a target="_top" href={'https://dashboard.stripe.com/' + user.stripe}>Stripe</a>
-						</li> 	
-		}
+                        <div className="meta">
+                            <div className="meta-list">
+                                <ul className="md-type-subhead">
+                                    {email}
 
-		return (
+                                    {stripe}
 
-			<div className="col-sm-4 profile hidden-xs">
-				<div className="container-fluid fat">
-					<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-						<img 
-							className="img-responsive img-avatar" 
-							src={avatar} />
-						
-						<div className="meta">
-							<div className="meta-list">
-								<ul className="md-type-subhead">
-										{email}
-
-										{stripe}
-
-										<li>
-											<span className="mdi mdi-image-multiple icon"></span>{galleries + ' galleries'}
-										</li>
-									
-										<li>
-											<span className="mdi mdi-image icon"></span>{photos + ' photos'}
-										</li>
-									
-										<li>
-											<span className="mdi mdi-movie icon"></span>{videos + ' videos'}
-										</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-		);
-	}
+                                    <li>
+                                        <span className="mdi mdi-image-multiple icon" />
+                                        {`${galleries} galleries`}
+                                    </li>
+                                    <li>
+                                        <span className="mdi mdi-image icon" />
+                                        {`${photos} photos`}
+                                    </li>
+                                    <li>
+                                        <span className="mdi mdi-movie icon" />
+                                        {`${videos} videos`}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
+
+UserSidebar.propTypes = {
+    user: PropTypes.object.isRequired,
+    detailUser: PropTypes.object.isRequired,
+};
+
+export default UserSidebar;
+
