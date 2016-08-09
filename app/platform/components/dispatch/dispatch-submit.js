@@ -330,6 +330,7 @@ export default class DispatchSubmit extends React.Component {
                     <span
                         className={'mdi mdi-check ' + ( paymentAvailable ? 'available' : 'un-available')}>
                     </span>
+                    
                     {paymentAvailable ? 'Payment information available' : 'Payment information unavailable'}
                 </a>
             </div>

@@ -21,7 +21,7 @@ $bg:#FFFFFF;
     width:100%;
     z-index:2;
     border-top-right-radius:2px;
-     border-top-left-radius:2px;
+    border-top-left-radius:2px;
 }
 
 .nav-input {
@@ -119,6 +119,9 @@ $bg:#FFFFFF;
     }
 }
 
+/**
+ * Predicitions list <ul>
+ */
 .predictions {
     background:$bg;
     list-style:none;

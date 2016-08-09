@@ -9,8 +9,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 @import 'settings';
 @import "./bourbon/_bourbon";
 
-/*
-	Ugly fix for bootstrap for this specfic page
+/**
+ * Ugly fix for bootstrap for this specfic page
  */
 .col-md-12.col-lg-10{
 	overflow:auto;
@@ -311,7 +311,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			font-weight:500;
 			margin-right:20px;
 			float:right;
-			top: 13px;
+			top: 16px;
 			position: relative;
 		}
 

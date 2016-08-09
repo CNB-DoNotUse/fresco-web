@@ -8,6 +8,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 $width:250px;
 
+/**
+ * Styling for snackbar used across the site
+ */
 #snackbar-container{
     position: fixed;
     width:$width;
@@ -40,6 +43,13 @@ $width:250px;
     max-width:250px;
     opacity: 1;
     margin:5px 0 0;
+    font-weight:400;
+
+    a {
+        color:white;
+        font-weight:400;
+    }
+    
     span{
         font-weight:400;
         color:#FFF;

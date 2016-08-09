@@ -1,28 +1,54 @@
 import React, { PropTypes } from 'react'
-import utils from 'utils'
-import _ from 'lodash'
 
 export default class ChangePasswordCard extends React.Component {
+
+    onSubmit() {
+        this.props.onSubmit(this.refs.input.value)
+    }
+
     render() {
+        const { toggled } = this.props;
+
         return (
-            <div class="dialog">
-                <div class="header">
-                    <h2>Enter your password</h2>
-                </div>
+            <div className="dialog-wrap">
+                <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
+                <div className={`dialog ${toggled ? 'toggled': ''}`}>
+                    <div className="header">
+                        <h3>Enter your password</h3>
+                    </div>
 
-                <div class="body">
-                    <input 
-                        type="text" 
-                        ref="phone" 
-                        maxLength={15}
-                        placeholder="Phone number" 
-                        defaultValue={user.phone} />
-                </div>
+                    <div className="body">
+                        <div className="form-group-default">
+                            <input
+                                ref="input"
+                                type="password"
+                                className="form-control floating-label"
+                                placeholder="Password"
+                            />
+                        </div>
+                    </div>
 
-                <div class="footer">
+                    <div className="footer">
+                        <button 
+                            className="cancel"
+                            onClick={this.props.toggle}>
+                            Cancel
+                        </button>
 
+                        <button 
+                            className="primary" 
+                            onClick={this.onSubmit.bind(this)}>
+                            Save changes
+                        </button>
+                    </div>
                 </div>
             </div>
         );
     }
+}
+
+ChangePasswordCard.defaultProps = {
+    onSubmit: () => {},
+    toggle: () => {},
+    toggled: false
 }

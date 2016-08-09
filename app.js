@@ -26,7 +26,6 @@ app.locals.head = head;
 app.locals.utils = utils;
 app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
 app.locals.section = 'public';
-app.locals.alerts = [];
 
 // If in dev mode, use local redis server as session store
 const rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
@@ -88,14 +87,14 @@ app.use(
  * Alert & Verifications check
  */
 app.use((req, res, next) => {
+    app.locals.alerts = [];
+
     if (req.session && req.session.user && !req.session.user.verified){
         app.locals.alerts.push('\
             <p>Your email hasn\'t been verified.\
-              <br>Please click on the link sent to your inbox to verify your email!\
+                <br>Please click on the link sent to your inbox to verify your email!\
             </p>\
-            <div>\
-                <a href="/scripts/user/verify/resend">RESEND EMAIL</a>\
-            </div>'
+            <a href="/scripts/user/verify/resend">RESEND EMAIL</a>'
         );
     }
 
@@ -106,8 +105,6 @@ app.use((req, res, next) => {
         req.session.save(() => {
             return next();
         });
-    } else {
-        app.locals.alerts = [];
     }
 
     next();
