@@ -1,22 +1,19 @@
 const express = require('express');
-const config = require('../lib/config');
 const router = express.Router();
 const API = require('../lib/api');
 
-/** //
-
-Description : User Specific Routes ~ prefix /user/endpoint
-
-// **/
+/**
+ * Description : User Specific Routes ~ prefix /user/endpoint
+ */
 
 /**
  * User settings page
  */
-router.get('/settings', (req, res, next) => {
+router.get('/settings', (req, res) => {
     const props = {
         user: req.session.user,
-        title: 'User Settings'
-    }
+        title: 'User Settings',
+    };
 
     res.render('app', {
         props: JSON.stringify(props),
@@ -69,3 +66,4 @@ router.get('/:id?', (req, res, next) => {
 });
 
 module.exports = router;
+

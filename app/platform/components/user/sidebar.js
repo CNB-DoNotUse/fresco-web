@@ -5,7 +5,7 @@ import utils from 'utils';
  * User Sidebar parent object
  * @description Column on the left of the user page
  */
-class UserSidebar extends React.Component {
+class Sidebar extends React.Component {
     render() {
         const { detailUser, user } = this.props;
         const avatar = detailUser.avatar || utils.defaultAvatar;
@@ -77,10 +77,10 @@ class UserSidebar extends React.Component {
     }
 }
 
-UserSidebar.propTypes = {
+Sidebar.propTypes = {
     user: PropTypes.object.isRequired,
     detailUser: PropTypes.object.isRequired,
 };
 
-export default UserSidebar;
+export default Sidebar;
 

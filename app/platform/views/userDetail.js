@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
-import UserSidebar from './../components/userDetail/user-sidebar';
+import Sidebar from './../components/user/sidebar';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 
@@ -49,7 +49,7 @@ class UserDetail extends React.Component {
                     timeToggle
                 />
 
-                <UserSidebar
+                <Sidebar
                     user={user}
                     detailUser={detailUser}
                 />
