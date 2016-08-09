@@ -1,16 +1,10 @@
 import React from 'react'
 import utils from 'utils'
 
-/** //
-
-Description : Column on the left of the user page
-
-// **/
-
 /**
  * User Sidebar parent object
+ * @description Column on the left of the user page
  */
-
 export default class UserSidebar extends React.Component {
 
 	render() {	

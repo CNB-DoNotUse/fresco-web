@@ -48,6 +48,15 @@ router.get('/join/:token', (req, res, next) => {
     .then((response) => {
         const { body } = response;
 
+        if(body.status === 'used') {
+            req.session.alerts = ['This invitation has already been used!'];
+
+            return req.session.save(() => {
+                res.redirect('/');
+                res.end();
+            });
+        }
+
         return res.render('index', {
             page: 'index',
             invite: body,

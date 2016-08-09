@@ -16,5 +16,13 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	position: absolute;
 	left:0;
 	right:0;
-	
+
+    .new #join-username{
+        display:block;
+    }
+
+    .exists #join-username{
+        display:none;
+    }
 }
+

@@ -17,9 +17,10 @@ class OutletSettings extends React.Component {
     constructor(props) {
         super(props);
 
+        //User & outlet is in state so we can change the parent cmps. on update
         this.state = {
             outlet: props.outlet,
-            user: props.user, //User is in state so we can change the outlet title when it's updated
+            user: props.user,
             members: props.outlet.members || [],
         }
     }
@@ -30,6 +31,10 @@ class OutletSettings extends React.Component {
             outlet,
             user: this.state.user
         });
+    }
+
+    updateMembers(members) {
+        this.setState({ members });
     }
 
     render() {
@@ -62,11 +67,11 @@ class OutletSettings extends React.Component {
 
                         <Locations outlet={this.state.outlet} />
 
-                        {isOwner? 
+                        {isOwner ? 
                             <Members
                                 outlet={this.state.outlet}
-                                updateMembers={this.updateMembers}
-                                members={this.state.outlet.members}
+                                updateMembers={(o) => this.updateMembers(o)}
+                                members={this.state.members}
                             />
                             : ''
                         }

@@ -7,8 +7,9 @@ let Join = function(){
 	this.form = document.getElementById('join-form');
 	this.emailField = document.getElementById('join-email');
 	this.passwordField = document.getElementById('join-password');
-	this.accountType = document.getElementById('join-account-type');
+	this.accountDropdown = document.getElementById('join-account-type');
 	this.nameField = document.getElementById('join-name');
+	this.usernameField = document.getElementById('join-username');
 	this.phoneField = document.getElementById('join-phone');
 	this.disabled = false;
 	this.submit = document.getElementById('join_submit');
@@ -24,6 +25,31 @@ let Join = function(){
  */
 Join.prototype.init = function() {
 	this.form.addEventListener('submit', this.handleForm.bind(this));
+
+	window.MutationObserver = window.MutationObserver
+	    || window.WebKitMutationObserver
+	    || window.MozMutationObserver;
+
+	let observer = new MutationObserver((mutations) => {
+	    if(mutations[0].attributeName === 'data-option') {
+	    	if(this.accountDropdown.dataset.option == 'New Account') {
+	    		this.form.className = 'new';
+	    	} else if(this.accountDropdown.dataset.option == 'Existing Account'){
+	    		this.form.className = 'exists';
+	    	}
+	    }
+	});
+
+	let config = {
+	    attributes: true
+	};
+
+	// pass in the element you wanna watch as well as the options
+	observer.observe(this.accountDropdown, {
+	    attributes: true
+	});
+
+
 }
 
 /**
@@ -36,9 +62,9 @@ Join.prototype.handleForm = function(e) {
 
 	this.processing = true;
 
-	if(this.accountType.dataset.option == 'New Account'){
+	if(this.accountDropdown.dataset.option == 'New Account'){
 		this.registerUser();
-	} else if(this.accountType.dataset.option == 'Existing Account'){
+	} else if(this.accountDropdown.dataset.option == 'Existing Account'){
 		this.acceptInvite();
 	}
 }
@@ -62,13 +88,11 @@ Join.prototype.registerUser = function() {
 
 	const params = {
 		full_name : this.nameField.value,
-		username : name,
 		email : this.emailField.value,
+		username: this.usernameField.value,
 		password : this.passwordField.value,
 		phone : this.phoneField.value,
-		outlet: {
-			token
-		}
+		outlet: { token }
 	};
 
 	//Check all fields for input
@@ -86,23 +110,19 @@ Join.prototype.registerUser = function() {
 	}
 
 	$.ajax({
+ 	    url: "/scripts/user/register",
+		data: JSON.stringify(params),
 		method: "POST",
-		url: "/scripts/user/register",
-		data: params,
-		success: function(response) {
-			if (response.err)
-				return this.error(null, null, response.err);
-			
-			window.location.replace('/archive');
-		},
-		error: (xhr, status, error) => {
-			$.snackbar({content: resolveError(error)});
-		},
-		complete: (jqXHR, textStatus) => {
+		contentType: 'application/json'
+ 	})
+ 	.done((response) => {
+		window.location.replace('/archive');
+ 	})
+ 	.fail((error) => {
+ 	    this.reEnable();
 
-			this.reEnable();
-		}
-	});
+ 	    $.snackbar({content: error.responseJSON.msg});
+ 	});
 }
 
 /**
@@ -122,10 +142,10 @@ Join.prototype.acceptInvite = function() {
 	};
 
 	if(!utils.isEmptyString(this.nameField.value)){
-		updates.full_name = this.nameField.value
+		params.updates.full_name = this.nameField.value
 	}
 	if(!utils.isEmptyString(this.phoneField.value)){
-		updates.phone = this.phoneField.value
+		params.updates.phone = this.phoneField.value
 	}
 
 	if(utils.isEmptyString(params.accept.password)){
@@ -148,7 +168,7 @@ Join.prototype.acceptInvite = function() {
  	.fail((error) => {
  	    this.reEnable();
 
- 	    $.snackbar({content: resolveError(error)});
+ 	    $.snackbar({content: error.responseJSON.msg});
  	});
 }
 

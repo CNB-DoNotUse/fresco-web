@@ -28,35 +28,21 @@ router.post('/login', (req, res, next) => {
         }
     })
     .then(response => {
-        let { body } = response;
+        let { token, user } = response.body;
 
-        //Save to session
-        req.session.token = body.token;
-
-        //Send request for user object
-        API.request({
-            method: 'GET',
-            url: '/user/me',
-            token: body.token
-        })
-        .then((response) => {
-            req.session.user = response.body;
-            req.session.user.TTL = Date.now() + config.SESSION_REFRESH_MS;
-
-            //Save session and return
-            req.session.save(() => {
-                return res
-                .status(response.status)
-                .json({ success: true });
-            });
-        })
-        .catch(error => API.handleError(error, res));
+        User.saveSession(req, user, token)
+            .then(() => {
+                return res.status(response.status).json({ success: true });
+            })
+            .catch((error) => {
+                return res.status(response.status).json({ success: false, error });
+            })
     })
     .catch(error => API.handleError(error, res));
 });
 
 /**
- * Logs the user out or redirects
+ * Logs the user out and redirects
  */
 router.get('/logout', User.logout);
 
@@ -64,53 +50,42 @@ router.get('/logout', User.logout);
  * Registers a new user account, optionally with an outlet
  */
 router.post('/register', (req, res, next) => {
-    const { body } = req;
-
     API.request({
         method: 'POST',
         url: '/auth/register',
-        body
+        body: req.body
     })
     .then(response => {
-        let { body, status } = response;
+        const { token } = response.body;
 
-        req.session.token = body.token;
-        req.session.user = body.user;
-        req.session.save((error) => {
-            if(error) {
-                return res.status(status).json({ success: false, error });
-            } else {
-                return res.status(status).json({ success: true });
-            }
-        });
+        //Make request for full user object for session
+        API.request({
+            method: 'GET',
+            url: '/user/me',
+            token
+        })
+        .then(response => {
+            const user = response.body;
+
+            User
+                .saveSession(req, user, token)
+                .then(() => {
+                    return res.status(response.status).json({ success: true });
+                })
+                .catch((error) => {
+                    return res.status(response.status).json({ success: false, error });
+                });
+        })
+        .catch(error => API.handleError(error, res));
     })
     .catch(error => API.handleError(error, res));
 });
 
-
+/**
+ * Re-sends a verification email
+ */
 router.get('/verify/resend', (req, res) => {
-  if (!req.session || !req.session.user) {
-    return res.json({err: 'ERR_UNAUTHORIZED'}).end();
-  }
 
-  API.proxy(req, res, (body) => {
-    var end = () => {
-      res.redirect(req.headers['Referer'] || config.DASH_HOME);
-      res.end();
-    };
-
-    if (err) {
-      req.session.alerts = [config.resolveError(body.err)];
-      return req.session.save(end);
-    }
-    if (!body) {
-      req.session.alerts = ['Could not connect to server'];
-      return req.session.save(end);
-    }
-
-    req.session.alerts = ['A comfirmation email has been sent to your email.  Please click the link within it in order to verify your email address.'];
-    return req.session.save(end);
-  });
 });
 
 

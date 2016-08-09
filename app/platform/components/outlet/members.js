@@ -98,26 +98,24 @@ export default class OutletMembers extends React.Component {
 	/**
 	 * Removes a member from the outlet
 	 */
-	removeMember(user) {
-		const { members } = this.props;
-
+	removeMember(user_id) {
 		//Confirm the removal
 		alertify.confirm("Are you sure you want remove this user from your outlet?", (e) => {
 			if(e) {
 				$.ajax({
-					url: "/api/outlet/user/remove",
+					url: "/api/outlet/members/remove",
 					method: 'post',
-					data: { user }
+					data: { user_id }
 				})
 				.done((response) => {
-					self.props.updateMembers(
-						_.filter(members, (m) => {
-							m.id !== user;
+					this.props.updateMembers(
+						this.props.members.filter((m) => {
+							return m.id !== user_id;
 						})
 					);
 				})
 				.fail((jqXHR, textStatus, errorThrow) => {
-				    $.snackbar({ content: 'Unable to remove member' });
+				    $.snackbar({ content: 'We were unable to remove this user from your outlet!' });
 				});
 			}
 		});

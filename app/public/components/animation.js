@@ -5,51 +5,50 @@ let Animation = function(screen){
 	this.translate3dSupported = this.has3d();
 }
 
-
 /**
  * Dropdown logic and enablement
  */
 Animation.prototype.enableDropdown = function() {
 
-	var dropdowns = document.getElementsByClassName('dropdown'),
-		optionClicked = function(e){
-			var option = e.target,
-				list = option.parentElement,
-				dropdown = list.parentElement,
-				field = dropdown.children[0].children[0];
+	const dropdowns = document.getElementsByClassName('dropdown');
+	const optionClicked = function(e){
+		const option = e.target;
+		const list = option.parentElement;
+		const dropdown = list.parentElement;
+		const field = dropdown.children[0].children[0];
 
-			//Set the field
-			field.innerHTML = option.innerHTML;
-			field.style.color = 'black';
-			//Set the dropdown dataset
-			dropdown.dataset.option = option.innerHTML;
+		//Set the field
+		field.innerHTML = option.innerHTML;
+		field.style.color = 'black';
+		//Set the dropdown dataset
+		dropdown.dataset.option = option.innerHTML;
 
-			//Hide the list
+		//Hide the list
+		list.style.display = 'none';
+	};
+	const selectorClicked = function(e) {
+		//Toggle the list
+		const dropdown = e.target.parentElement;
+		const list = dropdown.children[1];
+
+		for (let i = 0; i < dropdowns.length; i++) {
+			//Hide all the lists that aren't this one
+			if(dropdowns[i].children[1] !== list)
+				dropdowns[i].children[1].style.display = 'none';
+		}
+
+		if(list.style.display == 'block')
 			list.style.display = 'none';
-		},
-		selectorClicked = function(e) {
-			//Toggle the list
-			var dropdown = e.target.parentElement,
-				list = dropdown.children[1];
+		else
+			list.style.display = 'block';
+	};
 
-			for (var i = 0; i < dropdowns.length; i++) {
-				//Hide all the lists that aren't this one
-				if(dropdowns[i].children[1] !== list)
-					dropdowns[i].children[1].style.display = 'none';
-			}
+	for (let i = 0; i < dropdowns.length; i++) {
+		const dropdown = dropdowns[i];
+		const selector = dropdown.children[0];
+		const items = dropdown.getElementsByTagName('li');
 
-			if(list.style.display == 'block')
-				list.style.display = 'none';
-			else
-				list.style.display = 'block';
-		};
-
-	for (var i = 0; i < dropdowns.length; i++) {
-		var dropdown = dropdowns[i],
-			selector = dropdown.children[0],
-			items = dropdown.getElementsByTagName('li');
-
-		for (var j = 0; j < items.length; j++) {
+		for (let j = 0; j < items.length; j++) {
 			items[j].addEventListener('click', optionClicked);
 		};
 
@@ -92,16 +91,16 @@ Animation.prototype.has3d = function() {
 }
 
 Animation.prototype.getPosition = function(element) {
-	var xPosition = 0,
-		yPosition = 0;
+	let x = 0;
+	let y = 0;
 	  
 	while (element) {
-	    xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
-	    yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
+	    x += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+	    x += (element.offsetTop - element.scrollTop + element.clientTop);
 	    element = element.offsetParent;
 	}
 
-	return { x: xPosition, y: yPosition };
+	return { x, y };
 }
 
 /**
@@ -111,7 +110,7 @@ Animation.prototype.getPosition = function(element) {
  * @param  {float} value Amount to translate
  */
 Animation.prototype.translateY3d = function(elm, value) {
-	var translate;
+	let translate;
 	
 	if(this.translate3dSupported)
 		translate = 'translate3d(0px,' + value + 'px, 0px)';

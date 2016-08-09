@@ -109,7 +109,7 @@ export default class Info extends React.Component {
         this.loading = true;
 
         $.ajax({
-            url: "/api/refresh/outlet/avatar",
+            url: "/api/outlet/avatar",
             method: 'POST',
             data: files,
             contentType: false,

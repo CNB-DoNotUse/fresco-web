@@ -18,7 +18,6 @@ function checkOutlet(req, res) {
     return true;
 }
 
-
 router.post('/invite/accept', (req, res, next) => {
     const { accept, updates } = req.body;
 
@@ -32,48 +31,63 @@ router.post('/invite/accept', (req, res, next) => {
         }
     })
     .then(response => {
-        let { user } = response.body;
+        let { user, token } = response.body;
 
+        //Accept the invite
         API.request({
             url: '/outlet/invite/accept',
             method: 'POST',
-            token: response.body.token,
+            token,
             body: {
-                token: accept.token //Invite token
+                token: accept.token //Outlet Invite token
             }
         })
         .then(response => {
+            //Attach outlet to user
+            if(response.body.outlet){
+                user.outlet = response.body.outlet
+            } else {
+                return res.status(500).send({success: false});
+            }
 
-            console.log(user);
-
+            //Send updates if there are any
             if(Object.keys(updates).length) {
-
                 API.request({
-                    url: `/user/${user.username}/update`,
+                    url: '/user/update',
                     method: 'POST',
-                    token: response.body.token,
+                    token,
                     body: {
                         verify_password: accept.password,
-                        full_name: accept.full_name,
-                        phone: accept.phone
+                        full_name: updates.full_name,
+                        phone: updates.phone
                     }
                 })
                 .then(response => {
-                    console.log(response);
+                    let updatedUser = response.body;
+                    updatedUser.permissions = user.permissions;
+
+                    end(req, updatedUser, token)
                 })
-                 .catch(error => API.handleError(error, res));
-
-                console.log(updates);
-
+                .catch(error => API.handleError(error, res));
             } else {
-
+                end(req, user, token);
             }
-
         })
         .catch(error => API.handleError(error, res));
     })
     .catch(error => API.handleError(error, res));
 
+    //Ending function
+    const end = (req, user, token) => {
+        User
+            .saveSession(req, user, token)
+            .then(() => {
+                return res.status(200).send({success: true});
+            })
+            .catch(() => {
+                return res.status(500).send({success: false});  
+            })
+    }
 });
 
 

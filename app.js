@@ -84,11 +84,10 @@ app.use(
 );
 
 
-
 /**
  * Alert & Verifications check
  */
-app.use((req, res, next)=> {
+app.use((req, res, next) => {
     if (req.session && req.session.user && !req.session.user.verified){
         app.locals.alerts.push('\
             <p>Your email hasn\'t been verified.\
@@ -104,12 +103,12 @@ app.use((req, res, next)=> {
         app.locals.alerts = app.locals.alerts.concat(req.session.alerts);
         
         delete req.session.alerts;
-        req.session.save(() => {});
-        
-        return next();
+        req.session.save(() => {
+            return next();
+        });
+    } else {
+        app.locals.alerts = [];
     }
-
-    console.log(app.locals.alerts);
 
     next();
 });
