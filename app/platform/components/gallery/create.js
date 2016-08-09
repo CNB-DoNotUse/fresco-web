@@ -32,6 +32,10 @@ class Create extends React.Component {
         this.createGallery();
     }
 
+    onChangeHighlighted() {
+        this.setState({ rating: this.state.rating === 0 ? 3 : 0 });
+    }
+
     /**
      * Clears the form of inputed data
      * @return {[type]} [description]
@@ -43,10 +47,6 @@ class Create extends React.Component {
             articles: [],
             caption: '',
         });
-    }
-
-    toggleVisibility() {
-        this.setState({ rating: this.state.rating === 0 ? 2 : 0 });
     }
 
     /**
@@ -69,7 +69,7 @@ class Create extends React.Component {
             caption,
             posts_add: postIds,
             tags,
-            // rating,
+            rating,
             stories_add,
             stories_new,
             articles_add,
@@ -182,8 +182,8 @@ class Create extends React.Component {
                                         <label>
                                             <input
                                                 type="checkbox"
-                                                checked={rating === 2}
-                                                onChange={() => this.toggleVisibility()}
+                                                checked={rating === 3}
+                                                onChange={() => this.onChangeHighlighted()}
                                             />
                                             Highlighted
                                         </label>
