@@ -146,17 +146,24 @@ class Edit extends React.Component {
     }
 
     uploadFiles(posts, files) {
-        posts.forEach((p, i) => {
+        const requests = posts.map((p, i) => {
             if (files[i]) {
-                request
-                    .put(p.url)
-                    .set('Content-Type', files[i].type)
-                    .send(files[i])
-                    .end((err) => {
-                        if (!err) $.snackbar('Gallery imported!');
-                    });
+                return new Promise((resolve, reject) => {
+                    request
+                        .put(p.url)
+                        .set('Content-Type', files[i].type)
+                        .send(files[i])
+                        .end((err) => {
+                            if (err) reject(err);
+                            else resolve();
+                        });
+                });
             }
+
+            return Promise.resolve();
         });
+
+        return Promise.all(requests);
     }
 
     save(id, params, fileInput) {
@@ -170,12 +177,18 @@ class Edit extends React.Component {
             data: JSON.stringify(params),
         })
         .done((res) => {
+            const saveCB = () => {
+                onUpdateGallery(res);
+                $.snackbar({ content: 'Gallery saved!' });
+                this.hide();
+            };
             if (res.posts_new && fileInput.files) {
-                this.uploadFiles(res.posts_new, fileInput.files);
+                this.uploadFiles(res.posts_new, fileInput.files)
+                .then(() => saveCB(),
+                    () => $.snackbar({ content: 'There was an error saving the gallery!' }));
+            } else {
+                saveCB();
             }
-            onUpdateGallery(res);
-            $.snackbar({ content: 'Gallery saved!' });
-            this.hide();
         })
         .fail((err) => {
             this.setState({ loading: false });
