@@ -44,20 +44,37 @@ class EditPosts extends React.Component {
         });
     }
 
+    renderUpload(u, i) {
+        if (!typeof(i) === 'number' || !u || !u.type || !u.url) return null;
+
+        if (u.type === 'image') {
+            return (
+                <div key={`upload${i}`} className="frick-frame">
+                    <img
+                        role="presentation"
+                        className="img-responsive"
+                        src={u.url}
+                    />
+                </div>
+            );
+        } else if (u.type === 'video') {
+            return (
+                <div key={`upload${i}`} className="frick-frame">
+                    <video width="100%" height="100%" src={u.url} controls>
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            );
+        }
+
+        return null;
+    }
+
     renderUploads() {
         const { uploads } = this.props;
-        // if (!uploads.length) return <div key={'null-upload'} />;
         if (!uploads.length) return null;
 
-        return uploads.map((u, i) => (
-            <div key={`upload${i}`} className="frick-frame">
-                <img
-                    role="presentation"
-                    className="img-responsive"
-                    src={u}
-                />
-            </div>
-        ));
+        return uploads.map((u, i) => this.renderUpload(u, i)).filter(u => !!u);
     }
 
     renderSliderImages() {
@@ -65,7 +82,7 @@ class EditPosts extends React.Component {
         const postsJSX = this.renderPosts();
 
         return uploadsJSX
-            ? (uploadsJSX.concat(postsJSX))
+            ? uploadsJSX.concat(postsJSX)
             : postsJSX;
     }
 
@@ -85,7 +102,7 @@ class EditPosts extends React.Component {
 EditPosts.propTypes = {
     gallery: PropTypes.object.isRequired,
     posts: PropTypes.array.isRequired,
-    uploads: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+    uploads: PropTypes.array.isRequired,
     onToggleDelete: PropTypes.func.isRequired,
 };
 

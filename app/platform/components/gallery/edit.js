@@ -48,16 +48,23 @@ class Edit extends React.Component {
     }
 
     onChangeFileInput(e) {
-        // TODO: add support for video files
         const file = e.target.files[0];
-        const reader = new FileReader();
+        const type = file.type.split('/')[0];
         const { uploads } = this.state;
 
-        reader.onload = (r) => {
-            uploads.unshift(r.target.result);
+        if (type === 'image') {
+            const reader = new FileReader();
+            reader.onload = (r) => {
+                uploads.unshift({ type, url: r.target.result });
+                this.setState({ uploads });
+            };
+            reader.readAsDataURL(file);
+        } else if (type === 'video') {
+            const url = URL.createObjectURL(file);
+            uploads.unshift({ type, url });
             this.setState({ uploads });
-        };
-        reader.readAsDataURL(file);
+        }
+
     }
 
     /**
