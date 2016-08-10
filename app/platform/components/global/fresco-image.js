@@ -41,7 +41,7 @@ export default class FrescoImage extends React.Component {
 
 		return (
 			<div className="img">
-				<img 
+				<img
 					className={this.props.imageClass || 'img-cover'}
 					ref='img'
 					data-src={src}
@@ -53,7 +53,7 @@ export default class FrescoImage extends React.Component {
 
 FrescoImage.propTypes = {
     size: PropTypes.string,
-    image: PropTypes.string.isRequired,
+    image: PropTypes.string,
     updateImage: PropTypes.func
 };
 

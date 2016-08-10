@@ -26,6 +26,14 @@ class GalleryDetail extends React.Component {
         };
     }
 
+    componentDidMount() {
+        setInterval(() => {
+            if (!this.state.editToggled) {
+                this.fetchGallery();
+            }
+        }, 5000);
+    }
+
     onVerifiedToggled(onlyVerified) {
         this.setState({ onlyVerified });
     }
@@ -38,8 +46,19 @@ class GalleryDetail extends React.Component {
         if (gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
             title += ` from ${gallery.posts[0].location.address}`;
         }
-
         this.setState({ gallery, title, updatePosts: true });
+    }
+
+    fetchGallery() {
+        const { gallery } = this.state;
+        if (!gallery || !gallery.id) return;
+
+        $.ajax({
+            url: `/api/gallery/${gallery.id}`,
+        })
+        .then((res) => {
+            this.setState({ gallery: res });
+        });
     }
 
     toggleEdit() {
