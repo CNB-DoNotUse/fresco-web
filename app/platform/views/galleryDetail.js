@@ -5,8 +5,6 @@ import PostList from './../components/post/list';
 import Sidebar from './../components/gallery/sidebar';
 import Edit from './../components/gallery/edit';
 import App from './app';
-import utils from 'utils';
-import request from 'superagent';
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
@@ -25,7 +23,6 @@ class GalleryDetail extends React.Component {
             shouldShowVerifiedToggle,
             verifiedToggle: shouldShowVerifiedToggle,
             title: props.title,
-            loading: false,
         };
     }
 
@@ -45,73 +42,6 @@ class GalleryDetail extends React.Component {
         this.setState({ gallery, title, updatePosts: true });
     }
 
-    uploadFiles(posts, files) {
-        posts.forEach((p, i) => {
-            if (files[i]) {
-                request
-                    .put(p.url)
-                    .set('Content-Type', files[i].type)
-                    .send(files[i])
-                    .end((err) => {
-                        if (!err) $.snackbar('Gallery imported!');
-                    });
-            }
-        });
-    }
-
-    save(id, params, fileInput) {
-        if (!id || !params || this.state.loading) return;
-        this.setState({ loading: true });
-
-        $.ajax(`/api/gallery/${id}/update`, {
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(params),
-        })
-        .done((res) => {
-            this.onUpdateGallery(res);
-            $.snackbar({ content: 'Gallery saved!' });
-            this.toggleEdit();
-            if (res.posts_new && fileInput.files) {
-                this.uploadFiles(res.posts_new, fileInput.files);
-            }
-        })
-        .fail((err) => {
-            $.snackbar({
-                content: utils.resolveError(err, 'There was an error saving the gallery!'),
-            });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-    remove(id) {
-        if (!id || this.state.loading) return;
-
-        alertify.confirm('Are you sure you want to delete this gallery?', (confirmed) => {
-            if (!confirmed) return;
-            this.setState({ loading: true });
-
-            $.ajax({
-                url: `/api/gallery/${id}/delete`,
-                method: 'POST',
-                dataType: 'json',
-                contentType: 'application/json',
-            })
-            .done(() => {
-                $.snackbar({ content: 'Gallery deleted' });
-                location.href = document.referrer || '/highlights';
-            })
-            .fail(() => {
-                $.snackbar({ content: 'Unable to delete gallery' });
-            })
-            .always(() => {
-                this.setState({ loading: false });
-            });
-        });
-    }
-
     toggleEdit() {
         this.setState({ editToggled: !this.state.editToggled });
     }
@@ -125,7 +55,6 @@ class GalleryDetail extends React.Component {
             onlyVerified,
             updatePosts,
             editToggled,
-            loading,
         } = this.state;
 
         return (
@@ -158,11 +87,9 @@ class GalleryDetail extends React.Component {
                 {editToggled
                     ? <Edit
                         toggle={() => this.toggleEdit()}
+                        onUpdateGallery={(g) => this.onUpdateGallery(g)}
                         gallery={gallery}
                         user={user}
-                        remove={(id) => this.remove(id)}
-                        loading={loading}
-                        save={(id, params, fileInput) => this.save(id, params, fileInput)}
                     />
                     : ''
                 }

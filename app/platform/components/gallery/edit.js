@@ -6,6 +6,7 @@ import EditPosts from './edit-posts';
 import EditAssignment from './edit-assignment';
 import AutocompleteMap from '../global/autocomplete-map';
 import utils from 'utils';
+import request from 'superagent';
 import times from 'lodash/times';
 
 /**
@@ -32,19 +33,19 @@ class Edit extends React.Component {
     }
 
     onRemove() {
-        const { gallery, remove, loading } = this.props;
-        if (!gallery || !gallery.id || loading) return;
+        const { gallery } = this.props;
+        if (!gallery || !gallery.id || this.state.loading) return;
 
-        remove(gallery.id);
+        this.remove(gallery.id);
     }
 
     onSave(rating = this.state.rating) {
         const params = this.getFormData();
-        const { gallery, save, loading } = this.props;
-        if (!gallery.id || !params || loading) return;
+        const { gallery } = this.props;
+        if (!gallery || !gallery.id || !params || this.state.loading) return;
         params.rating = rating;
 
-        save(gallery.id, params, this.fileInput);
+        this.save(gallery.id, params, this.fileInput);
     }
 
     onChangeFileInput(e) {
@@ -87,6 +88,7 @@ class Edit extends React.Component {
             articles: gallery.articles,
             rating: gallery.rating,
             uploads: [],
+            loading: false,
         };
     }
 
@@ -143,17 +145,83 @@ class Edit extends React.Component {
         return utils.getRemoveAddParams('posts', gallery.posts, posts);
     }
 
+    uploadFiles(posts, files) {
+        posts.forEach((p, i) => {
+            if (files[i]) {
+                request
+                    .put(p.url)
+                    .set('Content-Type', files[i].type)
+                    .send(files[i])
+                    .end((err) => {
+                        if (!err) $.snackbar('Gallery imported!');
+                    });
+            }
+        });
+    }
+
+    save(id, params, fileInput) {
+        if (!id || !params || this.state.loading) return;
+        const { onUpdateGallery } = this.props;
+        this.setState({ loading: true });
+
+        $.ajax(`/api/gallery/${id}/update`, {
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(params),
+        })
+        .done((res) => {
+            if (res.posts_new && fileInput.files) {
+                this.uploadFiles(res.posts_new, fileInput.files);
+            }
+            onUpdateGallery(res);
+            $.snackbar({ content: 'Gallery saved!' });
+            this.hide();
+        })
+        .fail((err) => {
+            this.setState({ loading: false });
+            $.snackbar({
+                content: utils.resolveError(err, 'There was an error saving the gallery!'),
+            });
+        });
+    }
+
+    remove(id) {
+        if (!id || this.state.loading) return;
+
+        alertify.confirm('Are you sure you want to delete this gallery?', (confirmed) => {
+            if (!confirmed) return;
+            this.setState({ loading: true });
+
+            $.ajax({
+                url: `/api/gallery/${id}/delete`,
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+            })
+            .done(() => {
+                $.snackbar({ content: 'Gallery deleted' });
+                location.href = document.referrer || '/highlights';
+            })
+            .fail(() => {
+                $.snackbar({ content: 'Unable to delete gallery' });
+            })
+            .always(() => {
+                this.setState({ loading: false });
+            });
+        });
+    }
+
     /**
 	 * Reverts all changes
 	 */
     revert() {
-        if (this.props.loading) return;
+        if (this.state.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
     }
 
     clear() {
-        if (this.props.loading) return;
+        if (this.state.loading) return;
         const { gallery } = this.props;
 
         this.setState({
@@ -287,7 +355,8 @@ class Edit extends React.Component {
     }
 
     renderFooter() {
-        const { gallery, user, loading } = this.props;
+        const { gallery, user } = this.props;
+        const { loading } = this.state;
         if (!gallery || !user) return '';
 
         return (
@@ -406,16 +475,9 @@ class Edit extends React.Component {
 
 Edit.propTypes = {
     gallery: PropTypes.object.isRequired,
-    toggle: PropTypes.func,
-    remove: PropTypes.func.isRequired,
-    save: PropTypes.func.isRequired,
+    toggle: PropTypes.func.isRequired,
+    onUpdateGallery: PropTypes.func.isRequired,
     user: PropTypes.object,
-    loading: PropTypes.bool.isRequired,
-};
-
-Edit.defaultProps = {
-    toggle() {},
-    loading: false,
 };
 
 export default Edit;
