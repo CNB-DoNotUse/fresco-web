@@ -18,7 +18,8 @@ router.get('/:id', (req, res, next) => {
         const assignment = response.body;
         const props = { user, assignment };
 
-        if (user.rank >= 1 || assignment.outlets.some((o) => (o.id === user.outlet.id))) {
+        if (user.permissions.includes('view-all-assignments')
+            || assignment.outlets.some((o) => (o.id === user.outlet.id))) {
             res.render('app', {
                 props: JSON.stringify(props),
                 config,

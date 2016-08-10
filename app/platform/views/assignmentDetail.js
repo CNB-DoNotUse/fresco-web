@@ -25,12 +25,32 @@ class AssignmentDetail extends React.Component {
         };
     }
 
+    componentDidMount() {
+        setInterval(() => {
+            if (!this.state.editToggled) {
+                this.fetchAssignment();
+            }
+        }, 5000);
+    }
+
     onVerifiedToggled(verifiedToggle) {
         this.setState({ verifiedToggle });
     }
 
     updateSort(sortBy) {
         this.setState({ sortBy });
+    }
+
+    fetchAssignment() {
+        const { assignment } = this.state;
+        if (!assignment || !assignment.id) return;
+
+        $.ajax({
+            url: `/api/assignment/${assignment.id}`,
+        })
+        .then((res) => {
+            this.setState({ assignment: res });
+        });
     }
 
     /**
