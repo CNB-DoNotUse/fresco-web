@@ -120,7 +120,7 @@ class AssignmentEdit extends React.Component {
     }
 
     onApproveAssignment() {
-        const { assignment, approveAssignment } = this.props;
+        const { assignment } = this.props;
         const { location, address, radius } = this.state;
         const geo = location && location.hasOwnProperty('type')
             ? location
@@ -136,7 +136,54 @@ class AssignmentEdit extends React.Component {
             ends_at: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
         };
 
-        approveAssignment(assignment.id, params);
+        this.approveAssignment(assignment.id, params);
+    }
+
+    /**
+     * approveAssignment
+     * gets form data then calls posts request to approve and update assignment
+     *
+     */
+    approveAssignment(id, params) {
+        if (!id || !params || this.state.loading) return;
+        const { onUpdateAssignment } = this.props;
+        this.setState({ loading: true });
+
+        $.ajax({
+            method: 'post',
+            url: `/api/assignment/${id}/approve`,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(params),
+        })
+        .done(() => {
+            onUpdateAssignment(id);
+            $.snackbar({ content: 'Assignment approved! Click to open!', timeout: 5000 })
+                .click(() => { window.open(`/assignment/${id}`); });
+        })
+        .fail(() => {
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Could not approve assignment!' });
+        });
+    }
+
+    rejectAssignment(id) {
+        if (!id) return;
+        this.setState({ loading: true });
+        const { onUpdateAssignment } = this.props;
+
+        $.ajax({
+            method: 'post',
+            url: `/api/assignment/${id}/reject`,
+        })
+        .done(() => {
+            $.snackbar({ content: 'Assignment Rejected!' });
+            onUpdateAssignment(id);
+        })
+        .fail(() => {
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Could not reject assignment!' });
+        });
     }
 
     isGlobalLocation() {
@@ -156,12 +203,13 @@ class AssignmentEdit extends React.Component {
     }
 
     render() {
-        const { assignment, loading, rejectAssignment } = this.props;
+        const { assignment } = this.props;
         const {
             radius,
             address,
             location,
             showMergeDialog,
+            loading,
         } = this.state;
         const expirationTime = assignment ? utils.hoursToExpiration(assignment.ends_at) : null;
         const globalLocation = this.isGlobalLocation();
@@ -234,7 +282,7 @@ class AssignmentEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat assignment-deny pull-right"
-                        onClick={() => rejectAssignment(assignment.id)}
+                        onClick={() => this.rejectAssignment(assignment.id)}
                         disabled={loading}
                     >
                         Reject
@@ -267,9 +315,6 @@ class AssignmentEdit extends React.Component {
 AssignmentEdit.propTypes = {
     assignment: PropTypes.object.isRequired,
     onUpdateAssignment: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
-    rejectAssignment: PropTypes.func.isRequired,
-    approveAssignment: PropTypes.func.isRequired,
 };
 
 export default AssignmentEdit;

@@ -18,7 +18,6 @@ class Assignments extends React.Component {
 
         this.state = {
             activeAssignment: firstAssignment,
-            loading: false,
         };
     }
 
@@ -55,57 +54,6 @@ class Assignments extends React.Component {
         }
     }
 
-    /**
-     * approveAssignment
-     * gets form data then calls posts request to approve and update assignment
-     *
-     */
-    approveAssignment(id, params) {
-        if (!id || !params || this.state.loading) return;
-        this.setState({ loading: true });
-
-        $.ajax({
-            method: 'post',
-            url: `/api/assignment/${id}/approve`,
-            contentType: 'application/json',
-            dataType: 'json',
-            data: JSON.stringify(params),
-        })
-        .done(() => {
-            this.onUpdateAssignment(id);
-            this.setState({ loading: false });
-            $.snackbar({ content: 'Assignment approved! Click to open!', timeout: 5000 })
-                .click(() => { window.open(`/assignment/${id}`); });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Could not approve assignment!' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-    rejectAssignment(id) {
-        if (!id) return;
-        this.setState({ loading: true });
-
-        $.ajax({
-            method: 'post',
-            url: `/api/assignment/${id}/reject`,
-        })
-        .done(() => {
-            $.snackbar({ content: 'Assignment Rejected!' });
-            this.onUpdateAssignment(id);
-            this.setState({ loading: false });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Could not reject assignment!' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
     renderAssignments() {
         const { activeAssignment } = this.state;
         const { assignments } = this.props;
@@ -122,17 +70,14 @@ class Assignments extends React.Component {
     }
 
     render() {
-        const { activeAssignment, loading } = this.state;
+        const { activeAssignment } = this.state;
 
         let editPane = '';
         if (activeAssignment && activeAssignment.id) {
             editPane = (
                 <AssignmentEdit
                     assignment={activeAssignment}
-                    loading={loading}
                     onUpdateAssignment={(id) => this.onUpdateAssignment(id)}
-                    rejectAssignment={(id) => this.rejectAssignment(id)}
-                    approveAssignment={(id, p) => this.approveAssignment(id, p)}
                 />
             );
         }
