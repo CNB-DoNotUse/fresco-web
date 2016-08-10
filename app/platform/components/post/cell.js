@@ -80,7 +80,6 @@ class PostCell extends React.Component {
             sizes,
         } = this.props;
         const divSize = size === 'large' ? sizes.large : sizes.small;
-
         return (
             <div
                 className={`${divSize} tile ${toggled ? 'toggled' : ''}`}

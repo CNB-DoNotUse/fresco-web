@@ -19,12 +19,10 @@ class LocationDropdown extends React.Component {
     }
 
     locationClicked(loc) {
-        if (!(get(loc, 'location.type') === 'Polygon')
-            || !this.props.updateMapPlace) return;
+        if (!(get(loc, 'location.type') === 'Polygon') || !this.props.updateMapPlace) return;
 
         const polygon = loc.location.coordinates[0];
         const bounds = new google.maps.LatLngBounds();
-
 
         polygon.forEach((coord) => {
             const latLng = new google.maps.LatLng(coord[1], coord[0]);
@@ -107,26 +105,24 @@ class LocationDropdown extends React.Component {
 
         return (
             <ul className="list">
-                {
-                    locations.map((location, i) => {
-                        const unseenCount = location.unseen_count || 0;
-                        return (
-                            <li
-                                className="location-item"
-                                key={i}
-                                onClick={() => this.locationClicked(location)}
-                            >
-                                <a href={'/location/' + location.id}>
-                                    <span className="mdi mdi-logout-variant icon" />
-                                </a>
-                                <span className="area">{location.title}</span>
-                                <span className="count">
-                                    {utils.isPlural(unseenCount) ? unseenCount + ' unseen items' : unseenCount + ' unseen item'}
-                                </span>
-                            </li>
-                        );
-                    })
-                }
+                {locations.map((location, i) => {
+                    const unseenCount = location.unseen_count || 0;
+                    return (
+                        <li
+                            className="location-item"
+                            key={i}
+                            onClick={() => this.locationClicked(location)}
+                        >
+                            <a href={'/location/' + location.id}>
+                                <span className="mdi mdi-logout-variant icon" />
+                            </a>
+                            <span className="area">{location.title}</span>
+                            <span className="count">
+                                {utils.isPlural(unseenCount) ? unseenCount + ' unseen items' : unseenCount + ' unseen item'}
+                            </span>
+                        </li>
+                    );
+                })}
             </ul>
         );
     }

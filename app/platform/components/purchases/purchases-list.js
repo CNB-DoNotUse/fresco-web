@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import PurchasesListItem from './purchases-list-item'
+import PurchasesListItem from 'purchases-list-item'
 
 export default class PurchasesList extends Component {
 

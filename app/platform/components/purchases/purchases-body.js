@@ -1,6 +1,6 @@
 import React from 'react'
-import PurchasesList from '../global/purchases-list'
-import PurchasesStats from './purchases-stats'
+import PurchasesList from 'purchases-list'
+import PurchasesStats from 'purchases-stats'
 
 export default class PurchasesBody extends React.Component {
 

@@ -5,8 +5,6 @@ import utils from 'utils'
 /**
  * Single Gallery Cell, child of GalleryList
  */
-
-
 export default class GalleryCell extends React.Component {
 	render() {
         const { half, gallery } = this.props;

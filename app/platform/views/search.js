@@ -7,7 +7,7 @@ import App from './app'
 import TopBar from './../components/topbar'
 import LocationDropdown from '../components/topbar/location-dropdown'
 import TagFilter from '../components/topbar/tag-filter'
-import SearchSidebar from './../components/search/search-sidebar'
+import SearchSidebar from './../components/search/sidebar'
 import PostList from './../components/post/list.js'
 
 export class Search extends Component {
