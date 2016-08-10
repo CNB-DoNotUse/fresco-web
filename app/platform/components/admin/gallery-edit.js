@@ -24,7 +24,9 @@ class GalleryEdit extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.gallery.id !== nextProps.gallery.id) {
-            this.revert();
+            this.setState(this.getStateFromProps(nextProps));
+            this.refs['gallery-caption'].className =
+                this.refs['gallery-caption'].className.replace(/\bempty\b/, '');
         }
     }
 
@@ -36,11 +38,11 @@ class GalleryEdit extends React.Component {
     }
 
     onVerify() {
-        const { gallery, verify } = this.props;
+        const { gallery } = this.props;
         const params = this.getFormData();
         params.rating = 2;
 
-        verify(gallery.id, params);
+        this.verify(gallery.id, params);
     }
 
     getStateFromProps(props) {
@@ -54,6 +56,7 @@ class GalleryEdit extends React.Component {
             stories: gallery.stories || [],
             assignment: gallery.assignment || null,
             caption: gallery.caption || 'No Caption',
+            loading: false,
             location,
             address,
         };
@@ -93,10 +96,93 @@ class GalleryEdit extends React.Component {
     }
 
 	/**
+	 * Gets all form data and verifies gallery.
+	 */
+    verify(id, params) {
+        if (!id || !params || this.state.loading) return;
+        const { onUpdateGallery } = this.props;
+        this.setState({ loading: true });
+
+        $.ajax({
+            url: `/api/gallery/${id}/update`,
+            method: 'POST',
+            data: JSON.stringify(params),
+            dataType: 'json',
+            contentType: 'application/json',
+        })
+        .done(() => {
+            onUpdateGallery(id);
+            $.snackbar({
+                content: 'Gallery verified! Click to open',
+                timeout: 5000,
+            }).click(() => {
+                const win = window.open(`/gallery/${id}`, '_blank');
+                win.focus();
+            });
+        })
+        .fail(() => {
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Unable to verify gallery' });
+        });
+    }
+
+	/**
+	 * Removes callery
+     */
+    remove(id) {
+        if (!id || this.state.loading) return;
+        this.setState({ loading: true });
+        const { onUpdateGallery } = this.props;
+
+        $.ajax({
+            url: `/api/gallery/${id}/delete`,
+            method: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+        })
+        .done(() => {
+            onUpdateGallery(id);
+            $.snackbar({ content: 'Gallery deleted' });
+        })
+        .fail(() => {
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Unable to delete gallery' });
+        });
+    }
+
+	/**
+     * Skips gallery
+     */
+    skip(id) {
+        if (!id || this.state.loading) return;
+        this.setState({ loading: true });
+        const { onUpdateGallery } = this.props;
+
+        $.ajax({
+            url: `/api/gallery/${id}/update`,
+            method: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                rating: 1,
+            }),
+        })
+        .done(() => {
+            onUpdateGallery(id);
+            $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
+                .click(() => { window.open(`/gallery/${id}`); });
+        })
+        .fail(() => {
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Unable to skip gallery' });
+        });
+    }
+
+	/**
 	 * Reverts all changes
 	 */
     revert() {
-        if (this.props.loading) return;
+        if (this.state.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
         this.refs['gallery-caption'].className =
@@ -165,7 +251,7 @@ class GalleryEdit extends React.Component {
     }
 
     render() {
-        const { gallery, galleryType, loading, skip, remove } = this.props;
+        const { gallery, galleryType } = this.props;
         const {
             location,
             address,
@@ -173,6 +259,7 @@ class GalleryEdit extends React.Component {
             tags,
             caption,
             assignment,
+            loading,
         } = this.state;
 
         if (!gallery) {
@@ -244,7 +331,7 @@ class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-skip"
-                        onClick={() => skip(gallery.id)}
+                        onClick={() => this.skip(gallery.id)}
                         disabled={loading}
                     >
                         Skip
@@ -252,7 +339,7 @@ class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-delete"
-                        onClick={() => remove(gallery.id)}
+                        onClick={() => this.remove(gallery.id)}
                         disabled={loading}
                     >
                         Delete
@@ -266,10 +353,7 @@ class GalleryEdit extends React.Component {
 GalleryEdit.propTypes = {
     gallery: PropTypes.object.isRequired,
     galleryType: PropTypes.string.isRequired,
-    loading: PropTypes.bool.isRequired,
-    skip: PropTypes.func.isRequired,
-    verify: PropTypes.func.isRequired,
-    remove: PropTypes.func.isRequired,
+    onUpdateGallery: PropTypes.func.isRequired,
 };
 
 export default GalleryEdit;

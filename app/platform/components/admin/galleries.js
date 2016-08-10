@@ -41,92 +41,6 @@ class Galleries extends React.Component {
         this.setState({ activeGallery });
     }
 
-	/**
-	 * Gets all form data and verifies gallery.
-	 */
-    verify(id, params) {
-        if (!id || !params || this.state.loading) return;
-        this.setState({ loading: true });
-
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'POST',
-            data: JSON.stringify(params),
-            dataType: 'json',
-            contentType: 'application/json',
-        })
-        .done(() => {
-            this.onUpdateGallery(id);
-            $.snackbar({
-                content: 'Gallery verified! Click to open',
-                timeout: 5000,
-            }).click(() => {
-                const win = window.open(`/gallery/${id}`, '_blank');
-                win.focus();
-            });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Unable to verify gallery' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-	/**
-	 * Removes callery
-     */
-    remove(id) {
-        if (!id || this.state.loading) return;
-        this.setState({ loading: true });
-
-        $.ajax({
-            url: `/api/gallery/${id}/delete`,
-            method: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-        })
-        .done(() => {
-            this.onUpdateGallery(id);
-            $.snackbar({ content: 'Gallery deleted' });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Unable to delete gallery' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
-	/**
-     * Skips gallery
-     */
-    skip(id) {
-        if (!id || this.state.loading) return;
-        this.setState({ loading: true });
-
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                rating: 1,
-            }),
-        })
-        .done(() => {
-            this.onUpdateGallery(id);
-            $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
-                .click(() => { window.open(`/gallery/${id}`); });
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Unable to skip gallery' });
-        })
-        .always(() => {
-            this.setState({ loading: false });
-        });
-    }
-
     scroll(e) {
         const { getData, galleries } = this.props;
         const target = e.target;
@@ -168,7 +82,7 @@ class Galleries extends React.Component {
     }
 
     render() {
-        const { activeGallery, loading } = this.state;
+        const { activeGallery } = this.state;
         let editPane = '';
 
         if (activeGallery && activeGallery.id) {
@@ -176,10 +90,7 @@ class Galleries extends React.Component {
                 <GalleryEdit
                     galleryType={this.props.galleryType}
                     gallery={activeGallery}
-                    skip={(id) => this.skip(id)}
-                    remove={(id) => this.remove(id)}
-                    verify={(id, p) => this.verify(id, p)}
-                    loading={loading}
+                    onUpdateGallery={(id) => this.onUpdateGallery(id)}
                 />
             );
         }
