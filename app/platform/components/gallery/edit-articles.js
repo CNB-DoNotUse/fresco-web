@@ -25,8 +25,8 @@ class EditArticles extends React.Component {
             this.setState({ suggestions: [] });
         } else {
             $.ajax({
-                url: '/api/search?articles=true',
-                data: { q: query },
+                url: '/api/search',
+                data: { 'articles[a][title]': query },
             })
             .done((res) => {
                 if (res.articles && res.articles.results) {
