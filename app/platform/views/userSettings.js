@@ -152,7 +152,9 @@ class UserSettings extends React.Component {
  		    }
  		})
  		.fail((error) => {
- 		    return $.snackbar({ content: utils.resolveError(error, 'There was an error updating your information!') });
+ 			const { responseJSON: { msg = utils.resolveError(err) } } = error;
+
+ 		    return $.snackbar({ content: msg || 'There was an error updating your information!' });
  		})
  		.always(() => {
  			this.setState({ saving: false });
