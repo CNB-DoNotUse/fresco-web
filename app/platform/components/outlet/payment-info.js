@@ -5,18 +5,17 @@ import utils from 'utils';
  * Payment Info component in Outlet Settings
  */
 class PaymentInfo extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            payment: props.payment
+        }
+    }
     
     componentDidMount() {
         Stripe.setPublishableKey(window.__initialProps__.stripePublishableKey);
-    }
-
-    //Returns active card or first card
-    getActiveCard() {
-        const { payment } = this.props;
-
-        if (!payment || !payment.length) return null;
-
-        return payment.find(p => p.active) || payment.length ? payment[0] : null;
     }
 
 	/**
@@ -25,13 +24,13 @@ class PaymentInfo extends React.Component {
     save() {
         const exp_times = this.refs['payment-exp'].value.split('/');
         const params = {
-            'number': this.refs['payment-ccn'].value,
-            'cvv': this.refs['payment-cvv'].value,
-            'exp_month': exp_times[0].trim(),
-            'exp_year': (exp_times[1] || '').trim(),
-            'address_zip': this.refs['payment-zip'].value,
-            'name': this.refs['payment-name'].value,
-            'currency': 'usd',
+            number: this.refs['payment-ccn'].value,
+            cvv: this.refs['payment-cvv'].value,
+            exp_month: exp_times[0].trim(),
+            exp_year: (exp_times[1] || '').trim(),
+            address_zip: this.refs['payment-zip'].value,
+            name: this.refs['payment-name'].value,
+            currency: 'usd',
         };
 
         if (!Stripe.card.validateCardNumber(params.number)) {
@@ -45,17 +44,27 @@ class PaymentInfo extends React.Component {
         const saveBtn = this.refs['outlet-card-save'];
         saveBtn.setAttribute('disabled', true);
 
-        return Stripe.card.createToken(params, (status, response) => {
+        Stripe.card.createToken(params, (status, response) => {
             if (response.error) {
-                saveBtn.prop('disabled', false);
+                saveBtn.removeAttribute('disabled')
                 return $.snackbar({ content: response.error.message });
             }
 
             $.ajax({
                 url: "/api/outlet/payment/create",
-                method: 'get'
+                method: 'post',
+                data: JSON.stringify({
+                    active: true,
+                    token: response.id
+                }),
+                contentType: 'application/json',
+                dataType: 'json'
             })
             .done((response) => {
+                this.setState({
+                    payment: this.state.payment.concat(response)
+                });
+
                 return $.snackbar({ content: 'Payment information updated!' });
             })
             .fail((error) => {
@@ -68,14 +77,16 @@ class PaymentInfo extends React.Component {
     }
 
     render() {
-        let card = this.getActiveCard();
-        let currentCardText = '';
+        const { payment } = this.state;
+        let card = payment.find(p => p.active) || payment[0];
+        let cardText = '';
 
         if (card) {
             if (card.brand && card.last4 != null) {
-                card = `USING ${card.brand}-${card.last4}`;
-                currentCardText = <span className="last4">{card}</span>;
+                cardText = `USING ${card.brand}-${card.last4}`;
             }
+        } else {
+            cardText = 'No active payment method.'
         }
 
         return (
@@ -84,7 +95,8 @@ class PaymentInfo extends React.Component {
                     <span className="title">PAYMENT INFORMATION</span>
 
                     <div>
-                        {currentCardText}
+                        <span className="last4">{cardText}</span>
+
                         <a href="/outlet">PURCHASE HISTORY</a>
                     </div>
                 </div>
@@ -148,6 +160,10 @@ class PaymentInfo extends React.Component {
             </div>
         );
     }
+}
+
+PaymentInfo.defaultProps = {
+    payment: []
 }
 
 PaymentInfo.propTypes = {

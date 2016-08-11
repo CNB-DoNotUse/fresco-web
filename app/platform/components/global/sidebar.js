@@ -13,12 +13,12 @@ export default class Sidebar extends Component {
 	}
 
 	handleSearchKeyDown(e) {
-		var input = this.refs.searchInput;
+		const { searchInput } = this.refs;
 
-		if(e.keyCode != 13 || input.value === '')
+		if(e.keyCode != 13 || searchInput.value === '')
 			return;
 
-		window.location ='/search?q=' + encodeURIComponent(this.refs.searchInput.value);
+		window.location ='/search?q=' + encodeURIComponent(searchInput.value);
 	}
 
 	render() {
@@ -44,7 +44,7 @@ export default class Sidebar extends Component {
 			    	<img 
 			    		className="img-circle" 
 			    		id="side-bar-avatar" 
-			    		src={this.props.user.avatar || utils.defaultSmallAvatar} />
+			    		src={utils.formatImg(this.props.user.avatar, 'small') || utils.defaultSmallAvatar} />
 
 					<a className="md-type-title user-name-view" href="/user">
 						{this.props.user.full_name || this.props.user.username}

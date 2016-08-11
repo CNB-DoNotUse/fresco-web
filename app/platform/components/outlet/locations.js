@@ -1,27 +1,66 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 
+/**
+ * Component for managing outlet locations in the outlet settings page
+ */
 class Locations extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { locations: [] };
+
+        this.state = { 
+            locations: [] 
+        };
+
+        this.updateLocation = this.updateLocation.bind(this);
+        this.removeLocation = this.removeLocation.bind(this);
     }
 
     componentDidMount() {
         // Retreive locations
         this.loadLocations();
 
+        //Set up autocomplete
         const autocomplete = new google.maps.places.Autocomplete(this.refs['outlet-location-input']);
-
         // Bind place_changed event to locationChanged
         google.maps.event.addListener(autocomplete, 'place_changed', () => {
             this.addLocation(autocomplete.getPlace());
         });
     }
 
-    componentDidUpdate() {
-        // Need to init everytime because of the fucking checkboxes
+    componentDidUpdate(prevProps, prevState) {
+        // Need to init everytime because of the checkboxes
         $.material.init();
+    }
+
+    /**
+     * Loads locations for the outlet
+     */
+    loadLocations() {
+        //Set up session storage for location
+        if(!window.sessionStorage.locations){
+            window.sessionStorage.locations = JSON.stringify({
+                since: Date.now()
+            });
+        }
+
+        const locations = JSON.parse(window.sessionStorage.locations);
+
+        $.ajax({ 
+            url: '/api/outlet/locations',
+            data: {
+                limit: 400
+                // since: locations.since //TODO
+            }
+        })
+        .done((res) => {
+            this.setState({ locations: res });
+        })
+        .fail((xhr, status, error) => {
+            $.snackbar({
+                content: utils.resolveError(error,  'We\'re unable to load your locations at the moment! Please try again in a bit.')
+            });
+        });
     }
 
     /**
@@ -39,16 +78,15 @@ class Locations extends React.Component {
             $.snackbar({ content: 'Please enter a valid location title' });
         }
 
-        const bounds = place.geometry.viewport;
         const params = {
             title: autocomplete.value,
-            // notify_fresco: this.refs['location-fresco-check'].checked,
-            // notify_email: this.refs['location-email-check'].checked,
-            // notify_sms: this.refs['location-sms-check'].checked,
+            send_email: true,
+            send_sms: true,
+            send_fresco: true,
             geo: {
                 type: 'Polygon',
-                coordinates: utils.generatePolygonFromBounds(bounds),
-            },
+                coordinates: utils.generatePolygonFromBounds(place.geometry.viewport),
+            }
         };
 
         $.ajax({
@@ -59,20 +97,24 @@ class Locations extends React.Component {
             dataType: 'json',
         })
         .done(() => {
-            // Clear field
-            autocomplete.value = '';
             // Update locations
             this.loadLocations();
-            $.snackbar({ content: 'Location added!' });
+            
+            $.snackbar({ content: `Your outlet is now tracking ${autocomplete.value}!` });
+            
+            // Clear field
+            autocomplete.value = '';
         })
         .fail((xhr = {}, status, err) => {
             const { responseJSON: { msg = utils.resolveError(err) } } = xhr;
+            
             $.snackbar({ content: msg });
         });
     }
 
 	/**
-	 * Removes a location, makes api request, removes from state on success cb
+	 * Removes a location, makes API request, removes from state on success cb
+     * @param {String} id ID of the outlet location
 	 */
     removeLocation(id) {
         $.ajax({
@@ -80,130 +122,81 @@ class Locations extends React.Component {
             url: `/api/outlet/locations/${id}/delete`,
         })
         .done(() => {
-            const locations = this.state.locations.filter((l) => (l.id !== id));
-            $.snackbar({ content: 'Location deleted!' });
-            this.setState({ locations });
-        })
-        .fail((xhr, status, error) => {
-            $.snackbar({ content: utils.resolveError(error) });
-        });
-    }
-
-    /**
-	 * Loads locations for the outlet
-	 */
-    loadLocations() {
-        const { outlet: { id } } = this.props;
-        if (!id) return;
-
-        $.ajax({ url: `/api/outlet/locations?limit=400` }) //arbitrary limit of 400 because it doens't paginate
-        .done((res) => {
-            this.setState({ locations: res });
-        })
-        .fail((xhr, status, error) => {
-            $.snackbar({
-                content: utils.resolveError(error,  'We\'re unable to load your locations at the moment! Please try again in a bit.')
+            this.setState({ 
+                locations : this.state.locations.filter((l) => (l.id !== id))
             });
+
+            $.snackbar({ content: 'Location deleted!' });
+        })
+        .fail((xhr, status, error) => {
+            $.snackbar({ content: 'We were unable to delete this locaiton. Please try again in a bit!' });
         });
     }
 
 	/**
 	 * Updates the notification type for the passed location id
+     * @param {Object} location The location object being updated
+     * @param {String} notifType [description] 
 	 */
-    updateLocationNotifications(locationId, notifType, e) {
-        // TODO: this endpoint doesnt exist in v2
-        return true;
-        // const { locations } = this.state;
+    updateLocation(notif, e, location = null, index = null) {
+        const singleLocation = (location !== null && index !== null);
+        const url = `/api/outlet/locations/${singleLocation ? `${location.id}/update` : 'update'}`;
+        
+        let oldLocations = _.cloneDeep(this.state.locations);
+        let newLocations = _.cloneDeep(this.state.locations);
 
-        // // Update notification setting in state, if update fails, loadLocations will revert the check
-        // const index = locations.findIndex((l) => (l.id === locationId));
-        // if (index && locations[index]) {
-        //     locations[index].notifications[notifType.split('_')[1]] = e.target.checked;
-        //     this.setState({ locations });
-        // }
+        if(singleLocation) {
+            newLocations[index][notif] = e.target.checked;
+        } else {
+            newLocations.forEach((location) => {
+                location[notif] = e.target.checked;
+            });
+        }
 
-        // $.ajax({
-        //     url: `/api/outlet/location/${locationId}/update`,
-        //     method: 'post',
-        //     data: { notifType: e.target.checked },
-        // })
-        // .done(() => {
-        //     // Run update to get latest data and update the checkboxes
-        //     this.loadLocations();
-        // })
-        // .fail((xhr, status, error) => {
-        //     $.snackbar({ content: utils.resolveError(error) });
-        // });
+        //Set new locations, failure will set back to original state
+        this.setState({ locations: newLocations });
+
+        $.ajax({
+            url,
+            method: 'post',
+            data: { [notif]: e.target.checked },
+        })
+        .fail((xhr, status, error) => {
+            //Set back due to failure
+            this.setState({
+                locations: oldLocations
+            });
+
+            $.snackbar({ content: 'We\'re unable to update your locations at the moment! Please try again in a bit.' });
+        });
     }
 
-    renderLocationList() {
-        const { locations } = this.state;
-
-        if (!locations || !locations.length) return <div className="outlet-locations-container" />;
-
-        const locationJSX = locations.map((location, i) => {
-            const unseenCount = location.unseen_count || 0;
-            const notifications = location.notifications || {sms: false, email: false, fresco: false};
-
-            return (
-                <li className="location" key={i}>
-                    <div className="info">
-                        <a href={`/location/${location.id}`}>
-                            <p className="area">{location.title}</p>
-
-                            <span className="count">
-                                {utils.isPlural(unseenCount) ? unseenCount + ' unseen items' : unseenCount + ' unseen item'}
-                            </span>
-                        </a>
-                    </div>
-
-                    <div className="location-options form-group-default">
-                        <span onClick={() => this.removeLocation(location.id)} className="remove-location mdi mdi-delete" />
-
-                        <div className="checkbox check-sms">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={notifications.sms || false}
-                                    onChange={() => this.updateLocationNotifications(location.id, 'notify_sms')}
-                                />
-                            </label>
-                        </div>
-
-                        <div className="checkbox check-email">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={notifications.email || false}
-                                    onChange={() => this.updateLocationNotifications(location.id, 'notify_email')}
-                                />
-                            </label>
-                        </div>
-
-                        <div className="checkbox check-fresco">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={notifications.fresco || false}
-                                    onChange={() => this.updateLocationNotifications(location.id, 'notify_fresco')}
-                                />
-                            </label>
-                        </div>
-                    </div>
-                </li>
-			);
-        });
+    renderLocationList(locations) {
+        if (!locations.length) {
+            return <div className="outlet-locations-container" />;
+        }
 
         return (
             <div className="outlet-locations-container">
                 <ul className="outlet-locations">
-                    {locationJSX}
+                    {locations.map((location, i) => {
+                        return (
+                            <LocationItem 
+                                key={i}
+                                index={i}
+                                updateLocation={this.updateLocation}
+                                removeLocation={this.removeLocation}
+                                location={location} />
+                        );
+                    })}
                 </ul>
             </div>
         );
     }
 
     render() {
+        const { locations } = this.state;
+
         return (
             <div className="card settings-outlet-locations">
                 <div className="header">
@@ -217,26 +210,40 @@ class Locations extends React.Component {
                     </div>
                 </div>
 
-                {this.renderLocationList()}
+                {this.renderLocationList(locations)}
 
                 <div className="footer">
-                    <input type="text" ref="outlet-location-input" placeholder="New location" />
+                    <input 
+                        type="text" 
+                        ref="outlet-location-input" 
+                        placeholder="New location" 
+                    />
+                    
                     <div className="location-options">
                         <div className="checkbox check-sms">
                             <label>
-                                <input ref="location-sms-check" type="checkbox" />
+                                <input 
+                                    type="checkbox"
+                                    checked={_.every(locations, 'send_sms')}
+                                    onChange={(e) => this.updateLocation('send_sms', e)} />
                             </label>
                         </div>
 
                         <div className="checkbox check-email">
                             <label>
-                                <input ref="location-email-check" type="checkbox" />
+                                <input 
+                                    type="checkbox"
+                                    checked={_.every(locations, 'send_email')}
+                                    onChange={(e) => this.updateLocation('send_email', e)} />
                             </label>
                         </div>
 
                         <div className="checkbox check-fresco">
                             <label>
-                                <input ref="location-fresco-check" type="checkbox" />
+                                <input 
+                                    type="checkbox"
+                                    checked={_.every(locations, 'send_fresco')}
+                                    onChange={(e) => this.updateLocation('send_fresco', e)} />
                             </label>
                         </div>
                     </div>
@@ -248,9 +255,75 @@ class Locations extends React.Component {
     }
 }
 
+/**
+ * Location Item inside the parent <ul>
+ */
+class LocationItem extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        const { location, updateLocation, removeLocation, index } = this.props;
+        const unseen = location.unseen_count || 0;
+
+        return (
+            <li className="location">
+                <div className="info">
+                    <a href={`/location/${location.id}`}>
+                        <p className="area">{location.title}</p>
+
+                        <span className="count">
+                            {`${unseen} unseen ${utils.isPlural(unseen) ?  'items' : 'item'}`}
+                        </span>
+                    </a>
+                </div>
+
+                <div className="location-options form-group-default">
+                    <span 
+                        onClick={() => removeLocation(location.id)} 
+                        className="remove-location mdi mdi-delete" 
+                    />
+
+                    <div className="checkbox check-sms">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={location.send_sms}
+                                onChange={(e) => updateLocation('send_sms', e, location, index)}
+                            />
+                        </label>
+                    </div>
+
+                    <div className="checkbox check-email">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={location.send_email}
+                                onChange={(e) => updateLocation('send_email', e, location, index)}
+                            />
+                        </label>
+                    </div>
+
+                    <div className="checkbox check-fresco">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={location.send_fresco}
+                                onChange={(e) => updateLocation('send_fresco', e, location, index)}
+                            />
+                        </label>
+                    </div>
+                </div>
+            </li>
+        );
+    }
+
+}
+
 Locations.propTypes = {
     outlet: PropTypes.object.isRequired,
 };
 
 export default Locations;
-

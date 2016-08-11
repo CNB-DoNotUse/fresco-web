@@ -8,7 +8,7 @@ const fileLoaderName = 'fonts/[name].[ext]';
 const hashDate = Date.now();
 
 //Generates view object for us
-let views = (env) => {
+const views = (env) => {
     let viewsToReturn = {};
 
     //Generates object mapping { dir: directory, file: file (from 'fs') }
@@ -33,7 +33,7 @@ let views = (env) => {
 };
 
 //Generates plugins for webpack
-let plugins = (env) => {
+const plugins = (env) => {
     //Base plugins
     let plugins = [
         new webpack.ProvidePlugin({
@@ -70,7 +70,7 @@ let plugins = (env) => {
 }
 
 //Define output obj. for webpack
-let output = (env) => {
+const output = (env) => {
     if(env === 'production') {
         return {
             path: `./public/build/${hashDate}/`,
