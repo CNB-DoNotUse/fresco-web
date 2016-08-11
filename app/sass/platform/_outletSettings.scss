@@ -20,7 +20,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
  * Outlet Settings Wrapper
  */
 .outlet-settings{
-	padding:64px 0 20px;
+	padding: 64px 0 24px;
+	overflow: hidden;
 }
 
 /**
@@ -57,44 +58,43 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 	.card-form{
 		.inputs{
-			padding: 15px 18px 8px 18px;
+			padding:15px 0 8px;
 			overflow:auto;
 			margin:0 auto 11px;
+			padding-right:16px;
+
+			$largeInputWidth:60%;
+			$smallInputWidth:83px;
 
 			.form-group {
 				margin:0;
+				padding:0;
+                display:block;
 			}
 
-			input[type="text"]{
-				padding:4px 0;
-				margin:0;
-				// height:40px;
-			}
-
-			.left, .right{
+			input{
 				float:left;
+				padding:4px 0;
+				margin:0 0 0 16px;
 			}
 
-			.left{
-				padding-right:18px;
-				width:342px;
+			.card, .name {
+			    max-width:$largeInputWidth;
+				height: 48px;
 			}
 
-			.right{
-				width:182px;
-
-                .form-group {
-                    @include clearfix;
-                    display: inline-block;
-                }
-				.ccv, .date {
-					width: 83px;
-					float: left;
-				}
-				.date {
-                    margin-right: 16px;
-				}
+			.ccv, .date {
+			    width:$smallInputWidth;
 			}
+
+			.zip {
+				max-width:182px;
+			}
+
+			// .ccv, .name {
+			// 	margin-right:0;
+			// }
+
 		}
 
 		button{

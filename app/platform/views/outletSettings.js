@@ -48,20 +48,22 @@ class OutletSettings extends React.Component {
                 <TopBar title={outlet.title} />
 
                 <div className={className}>
-                    {isOwner? 
-                        <div className="left">
+                    <div className="left">
+                        {isOwner ? 
                             <Info
                                 updateOutlet={(o) => this.updateOutlet(o)}
                                 outlet={outlet}
                             />
-
+                        : '' }
+                        {isOwner ? 
                             <PaymentInfo
                                 payment={payment}
                                 outlet={this.state.outlet}
                             />
-                        </div>
-                        : ''
-                    }
+                        : ''}
+
+                        <QuickSupport />
+                    </div>
                     <div className="right">
                         <Notifications outlet={this.state.outlet} />
 
@@ -73,11 +75,8 @@ class OutletSettings extends React.Component {
                                 updateMembers={(o) => this.updateMembers(o)}
                                 members={this.state.members}
                             />
-                            : ''
-                        }
+                        : ''}
                     </div>
-
-                    <QuickSupport />
                 </div>
             </App>
         );

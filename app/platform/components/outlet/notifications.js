@@ -153,7 +153,7 @@ export default class Notifications extends React.Component {
 					<span className="title">NOTIFICATIONS</span>
 
 					<div className="labels">
-						<span>NOTIFICATIONS:</span>
+						<span>SEND VIA:</span>
 						<span>SMS</span>
 						<span>EMAIL</span>
 						<span>FRESCO</span>

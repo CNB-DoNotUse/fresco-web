@@ -10,7 +10,8 @@ class PaymentInfo extends React.Component {
         super(props);
 
         this.state = {
-            payment: props.payment
+            payment: props.payment,
+            activePayment: props.payment.find(p => p.active) || props.payment[0]
         }
     }
     
@@ -62,8 +63,16 @@ class PaymentInfo extends React.Component {
             })
             .done((response) => {
                 this.setState({
-                    payment: this.state.payment.concat(response)
+                    payment: this.state.payment.concat(response),
+                    activePayment: response
                 });
+
+                //Clear input fields
+                for (let ref in this.refs) {
+                    if(this.refs[ref].value)
+                        this.refs[ref].value = '';
+                }
+
 
                 return $.snackbar({ content: 'Payment information updated!' });
             })
@@ -77,16 +86,13 @@ class PaymentInfo extends React.Component {
     }
 
     render() {
-        const { payment } = this.state;
-        let card = payment.find(p => p.active) || payment[0];
+        const { activePayment } = this.state;
         let cardText = '';
 
-        if (card) {
-            if (card.brand && card.last4 != null) {
-                cardText = `USING ${card.brand}-${card.last4}`;
-            }
+        if (activePayment && activePayment.brand && activePayment.last4 != null) {
+            cardText = `USING ${activePayment.brand}-${activePayment.last4}`;
         } else {
-            cardText = 'No active payment method.'
+            cardText = 'No active payment method!'
         }
 
         return (
@@ -103,49 +109,49 @@ class PaymentInfo extends React.Component {
 
                 <div className="card-form">
                     <div className="inputs">
-                        <div className="left">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Card number"
-                                maxLength="16"
-                                tabIndex="1"
-                                ref="payment-ccn"
-                            />
-                            <input
-                                type="text"
-                                className="form-control name"
-                                placeholder="Name on card"
-                                tabIndex="4"
-                                ref="payment-name"
-                            />
-                        </div>
-                        <div className="right">
-                            <input
-                                type="text"
-                                className="form-control date"
-                                placeholder="00 / 00"
-                                maxLength="5"
-                                tabIndex="2"
-                                ref="payment-exp"
-                            />
-                            <input
-                                type="text"
-                                className="form-control ccv"
-                                placeholder="CVV"
-                                maxLength="4"
-                                tabIndex="3"
-                                ref="payment-cvv"
-                            />
-                            <input
-                                type="text"
-                                className="form-control zip"
-                                placeholder="ZIP"
-                                maxLength="5"
-                                tabIndex="5"
-                                ref="payment-zip"
-                            />
-                        </div>
+                        <input
+                            type="text"
+                            className="form-control card"
+                            placeholder="Card number"
+                            maxLength="16"
+                            tabIndex="1"
+                            ref="payment-ccn"
+                        />
+                        <input
+                            type="text"
+                            className="form-control date"
+                            placeholder="00 / 00"
+                            maxLength="5"
+                            tabIndex="2"
+                            ref="payment-exp"
+                        />
+                        
+                        <input
+                            type="text"
+                            className="form-control ccv"
+                            placeholder="CVV"
+                            maxLength="4"
+                            tabIndex="3"
+                            ref="payment-cvv"
+                        />
+
+                        <input
+                            type="text"
+                            className="form-control name"
+                            placeholder="Name on card"
+                            tabIndex="4"
+                            ref="payment-name"
+                        />
+
+                        <input
+                            type="text"
+                            className="form-control zip"
+                            placeholder="ZIP"
+                            maxLength="5"
+                            tabIndex="5"
+                            ref="payment-zip"
+                        />
+
                     </div>
 
                     <button
