@@ -8,11 +8,12 @@ import utils from 'utils';
 class Sidebar extends React.Component {
     renderUserName(user) {
         const { username, full_name } = user;
+
         if (full_name && username) {
             return (
                 <div className="meta-user--name">
                     <span>
-                        {`@${full_name}`}
+                        {`${full_name}`}
                     </span>
                     <span>
                         {`@${username}`}
@@ -32,11 +33,33 @@ class Sidebar extends React.Component {
         }
     }
 
+    renderUserMeta(user) {
+        const newUserJSX = (
+            <div className="meta-user--stats">
+                New user!
+            </div>
+        );
+        if (!user.stats) return newUserJSX;
+
+        const { photos = 0, videos = 0 } = user.stats;
+
+        if (!photos && !videos) {
+            return newUserJSX;
+        }
+        return (
+            <div className="meta-user--stats">
+                {user.location
+                    ? `${user.location} &#183;`
+                    : ''
+                }
+                {`${photos} photos, ${videos} videos`}
+            </div>
+        );
+    }
+
     render() {
-        const { detailUser, user } = this.props;
+        const { detailUser } = this.props;
         const avatar = detailUser.avatar || utils.defaultAvatar;
-        const photoCount = detailUser.stats ? detailUser.stats.photos : 0;
-        const videoCount = detailUser.stats ? detailUser.stats.videos : 0;
 
         return (
             <div className="col-sm-4 profile hidden-xs">
@@ -54,13 +77,7 @@ class Sidebar extends React.Component {
                             </div>
                             <div className="meta-user--text">
                                 {this.renderUserName(detailUser)}
-                                <div className="meta-user--stats">
-                                    {detailUser.location
-                                        ? `${detailUser.location} &#183;`
-                                        : ''
-                                    }
-                                    {`${photoCount} photos, ${videoCount} videos`}
-                                </div>
+                                {this.renderUserMeta(detailUser)}
                             </div>
                         </div>
                     </div>
