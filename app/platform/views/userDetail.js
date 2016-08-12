@@ -4,6 +4,7 @@ import App from './app';
 import Sidebar from './../components/user/sidebar';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
+import '../../sass/platform/user.scss';
 
 /**
  * User Detail Parent Object, made of a user side column and PostList

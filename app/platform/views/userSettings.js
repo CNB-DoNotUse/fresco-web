@@ -6,7 +6,7 @@ import QuickSupport from '../components/global/quick-support'
 import PasswordDialog from '../components/dialogs/password'
 import utils from 'utils'
 import _ from 'lodash'
-import '../../sass/platform/userSettings.scss';
+import '../../sass/platform/user.scss';
 
 /**
  * User Settings parent object
@@ -23,7 +23,7 @@ class UserSettings extends React.Component {
 			verify_password: null,
 			saving: false
 		}
-		
+
 		this.updateSettings = this.updateSettings.bind(this);
 		this.updateInfo = this.updateInfo.bind(this);
 		this.updateAvatar = this.updateAvatar.bind(this);
@@ -43,7 +43,7 @@ class UserSettings extends React.Component {
  	 */
 	avatarInputChange(e) {
 		const { profileSaveBtn } = this.refs;
-		
+
 		if(profileSaveBtn.className.indexOf(' changed ') == -1) {
 			profileSaveBtn.className += ' changed ';
 		}
@@ -65,7 +65,7 @@ class UserSettings extends React.Component {
  	}
 
 	onPasswordSubmit(verify_password) {
-		this.setState({ 
+		this.setState({
 			verify_password,
 			passwordToggled: false
 		});
@@ -142,12 +142,12 @@ class UserSettings extends React.Component {
  		    } else {
  		    	const permissions = this.state.user.permissions;
  		    	response.permissions = permissions;
- 		        
- 		        this.setState({ 
+
+ 		        this.setState({
  		        	user: response,
  		        	verify_password: null
  		        });
- 		        
+
  		        return $.snackbar({ content: 'Your info has been successfully saved!' });
  		    }
  		})
@@ -184,12 +184,12 @@ class UserSettings extends React.Component {
  	    	const permissions = this.state.user.permissions;
  	    	response.permissions = permissions;
 
- 	    	this.setState({ 
+ 	    	this.setState({
  	    		user: response,
  	    		verify_password: null
  	    	});
 
- 	        return $.snackbar({ 
+ 	        return $.snackbar({
  	            content: `Your ${calledWithInfo ? 'info' : 'avatar'} has been successfully updated!`
  	        });
  	    })
@@ -204,20 +204,20 @@ class UserSettings extends React.Component {
  	render() {
  		const { user, saving } = this.state;
 
- 		return ( 
+ 		return (
  			<App user={this.state.user}>
- 				<TopBar 
+ 				<TopBar
  					title={this.state.user.full_name}
 					saveButton={true}
 					updateSettings={this.updateSettings} />
 
 				<div className="user-settings">
 					<div className="card settings-info">
-						
-						<div 
-							className="avatar" 
-							ref="outlet-avatar-image" 
-							style={{backgroundImage: 'url(' + this.state.avatar + ')'}} 
+
+						<div
+							className="avatar"
+							ref="outlet-avatar-image"
+							style={{backgroundImage: 'url(' + this.state.avatar + ')'}}
 						>
 							<div className="overlay" onClick={this.clickProfileImgInput}>
 								<span className="mdi mdi-upload"></span>
@@ -225,32 +225,32 @@ class UserSettings extends React.Component {
 						</div>
 
 						<div className="card-form">
-							<input 
-								type="file" 
-								className="outlet-avatar-input changed" 
-								ref="avatarFileInput"  
-								accept="image/png,image/jpeg" 
-								onChange={this.avatarInputChange} 
+							<input
+								type="file"
+								className="outlet-avatar-input changed"
+								ref="avatarFileInput"
+								accept="image/png,image/jpeg"
+								onChange={this.avatarInputChange}
 								multiple={false} />
 
-							<input 
-								type="text" 
-								className="floating-label" 
-								ref="name" 
-								placeholder="Name" 
+							<input
+								type="text"
+								className="floating-label"
+								ref="name"
+								placeholder="Name"
 								defaultValue={user.full_name} />
-							
-							<textarea 
-								className="floating-label" 
-								ref="bio" 
+
+							<textarea
+								className="floating-label"
+								ref="bio"
 								rows="2"
-								placeholder="Bio" 
+								placeholder="Bio"
 								defaultValue={user.bio}>
 							</textarea>
-							
-							<button 
+
+							<button
 								className={`btn btn-save changed ${saving ? 'disabled' : ''}`}
-								ref="profileSaveBtn" 
+								ref="profileSaveBtn"
 								onClick={this.updateSettings}
 								>SAVE CHANGES</button>
 						</div>
@@ -260,31 +260,31 @@ class UserSettings extends React.Component {
 						<div className="header">
 							<span className="title">Account Information</span>
 						</div>
-						
+
 						<div className="card-form">
-							<input 
-								type="text" 
-								ref="email" 
-								placeholder="Email address" 
+							<input
+								type="text"
+								ref="email"
+								placeholder="Email address"
 								defaultValue={user.email} />
 
-							<input 
-								type="text" 
-								ref="username" 
+							<input
+								type="text"
+								ref="username"
 								maxLength={40}
-								placeholder="Username" 
+								placeholder="Username"
 								defaultValue={user.username} />
 
-							<input 
-								type="text" 
-								ref="phone" 
+							<input
+								type="text"
+								ref="phone"
 								maxLength={15}
-								placeholder="Phone number" 
+								placeholder="Phone number"
 								defaultValue={user.phone} />
-		
+
 							<button
-								className={`btn btn-save changed ${saving ? 'disabled' : ''}`} 
-								onClick={this.updateSettings} 
+								className={`btn btn-save changed ${saving ? 'disabled' : ''}`}
+								onClick={this.updateSettings}
 								ref="accountSaveBtn">SAVE CHANGES
 							</button>
 						</div>
@@ -308,8 +308,8 @@ UserSettings.propTypes = {
 };
 
 ReactDOM.render(
-  	<UserSettings 
-  		user={window.__initialProps__.user} 
+  	<UserSettings
+  		user={window.__initialProps__.user}
   		title={window.__initialProps__.title} />,
   	document.getElementById('app')
 );

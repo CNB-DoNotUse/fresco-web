@@ -6,37 +6,37 @@ import utils from 'utils';
  * @description Column on the left of the user page
  */
 class Sidebar extends React.Component {
+    renderUserName(user) {
+        const { username, full_name } = user;
+        if (full_name && username) {
+            return (
+                <div className="meta-user--name">
+                    <span>
+                        {`@${full_name}`}
+                    </span>
+                    <span>
+                        {`@${username}`}
+                    </span>
+                </div>
+            );
+        }
+
+        if (username) {
+            return (
+                <div className="meta-user--name">
+                    <span>
+                        {`@${username}`}
+                    </span>
+                </div>
+            );
+        }
+    }
+
     render() {
         const { detailUser, user } = this.props;
         const avatar = detailUser.avatar || utils.defaultAvatar;
-        const galleries = detailUser.stats ? detailUser.stats.galleries : 0;
-        const photos = detailUser.stats ? detailUser.stats.photos : 0;
-        const videos = detailUser.stats ? detailUser.stats.videos : 0;
-        let email = '';
-        let stripe = '';
-
-        if (user.permissions.includes('get-all-purchases')) {
-            email = detailUser.email
-                ? <li className="ellipses">
-                    <span className="mdi mdi-email icon"></span>
-                    <a target="_top" href={`mailto:${detailUser.email}`}>
-                        {detailUser.email}
-                    </a>
-                </li>
-                : '';
-
-            stripe = detailUser.stripe
-                ? <li className="ellipses">
-                    <span className="mdi mdi-bank icon"></span>
-                    <a
-                        target="_top"
-                        href={`https://dashboard.stripe.com/${detailUser.stripe}`}
-                    >
-                        Stripe
-                    </a>
-                </li>
-                : '';
-        }
+        const photoCount = detailUser.stats ? detailUser.stats.photos : 0;
+        const videoCount = detailUser.stats ? detailUser.stats.videos : 0;
 
         return (
             <div className="col-sm-4 profile hidden-xs">
@@ -48,26 +48,19 @@ class Sidebar extends React.Component {
                             role="presentation"
                         />
 
-                        <div className="meta">
-                            <div className="meta-list">
-                                <ul className="md-type-subhead">
-                                    {email}
-
-                                    {stripe}
-
-                                    <li>
-                                        <span className="mdi mdi-image-multiple icon" />
-                                        {`${galleries} galleries`}
-                                    </li>
-                                    <li>
-                                        <span className="mdi mdi-image icon" />
-                                        {`${photos} photos`}
-                                    </li>
-                                    <li>
-                                        <span className="mdi mdi-movie icon" />
-                                        {`${videos} videos`}
-                                    </li>
-                                </ul>
+                        <div className="meta meta-user">
+                            <div className="meta-user--icon">
+                                <i className="mdi mdi-account" />
+                            </div>
+                            <div className="meta-user--text">
+                                {this.renderUserName(detailUser)}
+                                <div className="meta-user--stats">
+                                    {detailUser.location
+                                        ? `${detailUser.location} &#183;`
+                                        : ''
+                                    }
+                                    {`${photoCount} photos, ${videoCount} videos`}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,79 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+@import '../global/mixins';
+@import 'dialogs';
+@import 'settings';
+
+// settings
+.user-settings {
+	padding: 64px 0 20px;
+	height:100%;
+	overflow:auto;
+
+}
+
+.settings-info{
+	.card-form{
+		textarea{
+			height:144px;
+		}
+	}
+}
+
+.settings-user-account{
+
+	.card-form{
+		input{
+			width:100%;
+			border-bottom:1px solid;
+			@include rgba(border-color, 0, 0, 0, 0.12);
+		}
+	}
+}
+
+// detail
+.meta-user--icon {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.26);
+    border-radius: 20px;
+    display: inline-block;
+
+    i {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        font-size: 26px;
+    }
+}
+
+.meta-user--text {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 16px;
+}
+
+.meta-user--name {
+    span:first-child{
+        font-weight: 700;
+    }
+    span:last-child{
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.54);
+    }
+}
+
+.meta-user--stats {
+    vertical-align: bottom;
+    font-weight: 700;
+}
+
