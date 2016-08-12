@@ -185,23 +185,21 @@ class AssignmentDetail extends React.Component {
                         sortBy={sortBy}
                         onlyVerified={verifiedToggle}
                         assignment={assignment}
-                        scrollable={true}
                         editable={false}
                         size="large"
+                        scrollable
                     />
                 </div>
 
-                {editToggled
-                    ? <Edit
-                        assignment={assignment}
-                        save={(id, p) => this.save(id, p)}
-                        onToggle={() => this.toggleEdit()}
-                        updateOutlet={(o) => this.updateOutlet(o)}
-                        user={user}
-                        loading={loading}
-                    />
-                    : ''
-                }
+                <Edit
+                    assignment={assignment}
+                    save={(id, p) => this.save(id, p)}
+                    onToggle={() => this.toggleEdit()}
+                    updateOutlet={(o) => this.updateOutlet(o)}
+                    user={user}
+                    loading={loading}
+                    visible={editToggled}
+                />
             </App>
         );
     }

@@ -403,12 +403,12 @@ class AssignmentEdit extends React.Component {
 
     render() {
         const { showMergeDialog, assignmentToMergeInto } = this.state;
-        const { assignment } = this.props;
+        const { assignment, visible } = this.props;
 
         return (
             <div>
-                <div className="dim toggle-edit toggled" />
-                <div className="edit panel panel-default toggle-edit toggled">
+                <div className={`dim toggle-edit ${visible ? 'toggled' : ''}`} />
+                <div className={`edit panel panel-default toggle-edit ${visible ? 'toggled' : ''}`}>
                     {this.renderStats()}
 
                     <div className="col-xs-12 col-lg-9 edit-new dialog">
@@ -439,6 +439,7 @@ AssignmentEdit.propTypes = {
     updateOutlet: PropTypes.func,
     save: PropTypes.func,
     loading: PropTypes.bool,
+    visible: PropTypes.bool.isRequired,
 };
 
 export default AssignmentEdit;
