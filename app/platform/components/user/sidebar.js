@@ -32,31 +32,30 @@ class Sidebar extends React.Component {
     }
 
     renderUserMeta(user) {
-        const newUserJSX = (
-            <div className="meta-user--stats">
-                New user!
-            </div>
-        );
-        if (!user.stats) return newUserJSX;
-
-        const { photos = 0, videos = 0 } = user.stats;
+        const { photos, videos } = user;
 
         if (!photos && !videos) {
-            return newUserJSX;
+            return (
+                <div className="meta-user--stats">
+                    New user!
+                </div>
+            );
         }
+
         return (
             <div className="meta-user--stats">
                 {user.location
-                    ? `${user.location} &#183;`
+                    ? <span>{user.location}<span style={{ fontWeight: 700 }}> · </span></span>
                     : ''
                 }
+
                 {`${photos} photos, ${videos} videos`}
             </div>
         );
     }
 
     render() {
-        const { user, detailUser } = this.props;
+        const { detailUser } = this.props;
         const avatar = detailUser.avatar || utils.defaultAvatar;
 
         return (

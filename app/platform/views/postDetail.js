@@ -24,6 +24,10 @@ class PostDetail extends React.Component {
         };
     }
 
+    onUpdateGallery(gallery) {
+        this.setState({ gallery });
+    }
+
     toggleGalleryEdit() {
         this.setState({ galleryEditToggled: !this.state.galleryEditToggled });
     }
@@ -113,17 +117,16 @@ class PostDetail extends React.Component {
                     <PostRelatedTags tags={gallery.tags} />
                 </div>
 
-                {editable && galleryEditToggled
-                    ? <GalleryEdit
-                        gallery={gallery}
-                        toggle={() => this.toggleGalleryEdit()}
-                        save={(id, p) => this.saveGallery(id, p)}
-                        remove={(id) => this.removeGallery(id)}
-                        loading={loading}
-                        user={user}
-                    />
-                    : ''
-                }
+                <GalleryEdit
+                    gallery={gallery}
+                    toggle={() => this.toggleGalleryEdit()}
+                    save={(id, p) => this.saveGallery(id, p)}
+                    remove={(id) => this.removeGallery(id)}
+                    loading={loading}
+                    user={user}
+                    visible={galleryEditToggled && editable}
+                    onUpdateGallery={(g) => this.onUpdateGallery(g)}
+                />
             </App>
         );
     }
