@@ -181,6 +181,7 @@ class Edit extends React.Component {
                 onUpdateGallery(res);
                 $.snackbar({ content: 'Gallery saved!' });
                 this.hide();
+                this.setState({ loading: false });
             };
             if (res.posts_new && fileInput.files) {
                 this.uploadFiles(res.posts_new, fileInput.files)
@@ -465,10 +466,15 @@ class Edit extends React.Component {
     }
 
     render() {
+        const { visible } = this.props;
+
         return (
             <div>
-                <div className="dim toggle-edit toggled" />
-                <div className={"edit panel panel-default toggle-edit gedit toggled"}>
+                <div className={`dim toggle-edit ${visible ? 'toggled' : ''}`} />
+                <div
+                    className={`edit panel panel-default toggle-edit
+                    gedit ${visible ? 'toggled ': ''}`}
+                >
                     <div className="col-xs-12 col-lg-12 edit-new dialog">
                         <div className="dialog-head">
                             <span className="md-type-title">Edit Gallery</span>
@@ -490,6 +496,7 @@ Edit.propTypes = {
     gallery: PropTypes.object.isRequired,
     toggle: PropTypes.func.isRequired,
     onUpdateGallery: PropTypes.func.isRequired,
+    visible: PropTypes.bool.isRequired,
     user: PropTypes.object,
 };
 

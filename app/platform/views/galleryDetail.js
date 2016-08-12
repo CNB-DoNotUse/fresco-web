@@ -103,15 +103,13 @@ class GalleryDetail extends React.Component {
                     />
                 </div>
 
-                {editToggled
-                    ? <Edit
-                        toggle={() => this.toggleEdit()}
-                        onUpdateGallery={(g) => this.onUpdateGallery(g)}
-                        gallery={gallery}
-                        user={user}
-                    />
-                    : ''
-                }
+                <Edit
+                    toggle={() => this.toggleEdit()}
+                    visible={editToggled}
+                    onUpdateGallery={(g) => this.onUpdateGallery(g)}
+                    gallery={gallery}
+                    user={user}
+                />
 
             </App>
         );
