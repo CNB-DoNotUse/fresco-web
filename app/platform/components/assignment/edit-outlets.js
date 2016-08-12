@@ -25,8 +25,8 @@ class EditOutlets extends React.Component {
             this.setState({ suggestions: [] });
         } else {
             $.ajax({
-                url: '/api/search?outlets=true',
-                data: { q: query },
+                url: '/api/search',
+                data: { 'outlets[a][title]': query },
             })
             .done((res) => {
                 if (res && res.outlets) this.setState({ suggestions: res.outlets.results });

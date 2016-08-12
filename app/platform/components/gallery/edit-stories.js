@@ -26,7 +26,7 @@ class EditStories extends React.Component {
         } else {
             $.ajax({
                 url: '/api/search',
-                data: { 'stories[q]': query },
+                data: { 'stories[a][title]': query },
                 success: (res) => {
                     if (res.stories && res.stories.results) {
                         this.setState({ suggestions: res.stories.results });
