@@ -138,17 +138,15 @@ class StoryDetail extends React.Component {
                     />
                 </div>
 
-                {editToggled
-                    ? <Edit
-                        onToggle={() => this.toggleStoryEdit()}
-                        save={(id, p) => this.save(id, p)}
-                        remove={(id) => this.remove(id)}
-                        story={story}
-                        user={user}
-                        loading={loading}
-                    />
-                    : ''
-                }
+                <Edit
+                    onToggle={() => this.toggleStoryEdit()}
+                    save={(id, p) => this.save(id, p)}
+                    remove={(id) => this.remove(id)}
+                    story={story}
+                    user={user}
+                    loading={loading}
+                    visible={editToggled}
+                />
             </App>
         );
     }

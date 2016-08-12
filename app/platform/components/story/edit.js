@@ -190,10 +190,12 @@ class Edit extends React.Component {
     }
 
     render() {
+        const { visible } = this.props;
+
         return (
             <div>
-                <div className="dim toggle-edit toggled" />
-                <div className="edit panel panel-default toggle-edit toggled">
+                <div className={`dim toggle-edit ${visible ? 'toggled' : ''}`} />
+                <div className={`edit panel panel-default toggle-edit ${visible ? 'toggled' : ''}` }>
                     <div className="col-lg-4 visible-lg edit-current">
                         {this.renderStats()}
                     </div>
