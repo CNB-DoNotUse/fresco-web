@@ -217,6 +217,7 @@ Edit.propTypes = {
     remove: PropTypes.func.isRequired,
     story: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
+    visible: PropTypes.bool.isRequired,
 };
 
 export default Edit;

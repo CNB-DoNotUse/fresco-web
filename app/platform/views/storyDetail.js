@@ -26,7 +26,7 @@ class StoryDetail extends React.Component {
     }
 
     toggleStoryEdit() {
-        this.setState({ editToggled: !this.state.editToggled});
+        this.setState({ editToggled: !this.state.editToggled });
     }
 
     updateSort(sortBy) {
@@ -124,8 +124,7 @@ class StoryDetail extends React.Component {
                     chronToggle
                 />
 
-                <Sidebar
-                    story={story} />
+                <Sidebar story={story} />
 
                 <div className="col-sm-8 tall">
                     <PostList
@@ -134,7 +133,7 @@ class StoryDetail extends React.Component {
                         editable={false}
                         sortBy={sortBy}
                         size="large"
-                        scrollable={true}
+                        scrollable
                     />
                 </div>
 

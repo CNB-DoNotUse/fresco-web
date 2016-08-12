@@ -66,7 +66,6 @@ class UserDetail extends React.Component {
             </App>
         );
     }
-
 }
 
 UserDetail.propTypes = {

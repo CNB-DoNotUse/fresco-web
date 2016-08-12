@@ -12,12 +12,8 @@ class Sidebar extends React.Component {
         if (full_name && username) {
             return (
                 <div className="meta-user--name">
-                    <span>
-                        {`${full_name}`}
-                    </span>
-                    <span>
-                        {`@${username}`}
-                    </span>
+                    <span>{`${full_name}`}</span>
+                    <span>{`@${username}`}</span>
                 </div>
             );
         }
@@ -31,6 +27,8 @@ class Sidebar extends React.Component {
                 </div>
             );
         }
+
+        return <div className="meta-user--name" />;
     }
 
     renderUserMeta(user) {
@@ -58,8 +56,33 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        const { detailUser } = this.props;
+        const { user, detailUser } = this.props;
         const avatar = detailUser.avatar || utils.defaultAvatar;
+        let email = '';
+        let stripe = '';
+
+        if (user.permissions.includes('get-all-purchases')) {
+            email = detailUser.email
+                ? <li className="ellipses">
+                    <span className="mdi mdi-email icon"></span>
+                    <a target="_top" href={`mailto:${detailUser.email}`}>
+                        {detailUser.email}
+                    </a>
+                </li>
+                : '';
+
+            stripe = detailUser.stripe
+                ? <li className="ellipses">
+                    <span className="mdi mdi-bank icon"></span>
+                    <a
+                        target="_top"
+                        href={`https://dashboard.stripe.com/${detailUser.stripe}`}
+                    >
+                        Stripe
+                    </a>
+                </li>
+                : '';
+        }
 
         return (
             <div className="col-sm-4 profile hidden-xs">
@@ -78,6 +101,13 @@ class Sidebar extends React.Component {
                             <div className="meta-user--text">
                                 {this.renderUserName(detailUser)}
                                 {this.renderUserMeta(detailUser)}
+                            </div>
+                            <div className="meta-list">
+                                <ul className="md-type-subhead">
+                                    {email}
+
+                                    {stripe}
+                                </ul>
                             </div>
                         </div>
                     </div>
