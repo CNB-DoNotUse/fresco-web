@@ -33,8 +33,8 @@ class EditAssignment extends React.Component {
             this.refs.dropdown.style.display = 'block';
 
             $.ajax({
-                url: '/api/search?assignments[rating]=1',
-                data: { q: query },
+                url: '/api/search',
+                data: { 'assignments[a][title]': query },
                 success: (res) => {
                     if (res.assignments && res.assignments.results) {
                         this.setState({ suggestions: res.assignments.results });
