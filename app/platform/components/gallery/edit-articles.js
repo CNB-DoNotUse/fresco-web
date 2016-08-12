@@ -2,11 +2,11 @@ import React, { PropTypes } from 'react';
 import Tag from '../global/tag.js';
 import utils from 'utils';
 import reject from 'lodash/reject';
+import validator from 'validator';
 
 /**
  * Component for managing added/removed articles
  */
-
 class EditArticles extends React.Component {
     constructor(props) {
         super(props);
@@ -17,6 +17,7 @@ class EditArticles extends React.Component {
         };
     }
 
+    //Event handler for article input field
     onChangeQuery(e) {
         const query = e.target.value;
         this.setState({ query });
@@ -47,7 +48,7 @@ class EditArticles extends React.Component {
 
             if (matched) {
                 this.addArticle(matched);
-            } else if (utils.isValidUrl(query)) {
+            } else if (validator.isURL(query)) {
                 this.addArticle({ link: query, new: true });
             } else {
                 $.snackbar({ content: 'Please enter a valid url!' });
