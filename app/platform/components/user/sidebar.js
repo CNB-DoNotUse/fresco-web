@@ -32,9 +32,6 @@ class Sidebar extends React.Component {
     }
 
     renderUserMeta(user) {
-
-        console.log(user);
-
         const newUserJSX = (
             <div className="meta-user--stats">
                 New user!
