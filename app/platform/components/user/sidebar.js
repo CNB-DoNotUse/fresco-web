@@ -39,22 +39,23 @@ class Sidebar extends React.Component {
                 <div className="meta-user--stats">
                     New user!
                 </div>
-            )
+            );
         }
 
         return (
             <div className="meta-user--stats">
-                {user.location ? 
-                    `${user.location} &#183;`
-                : ''}
-                
+                {user.location
+                    ? <span>{user.location}<span style={{ fontWeight: 700 }}> · </span></span>
+                    : ''
+                }
+
                 {`${photos} photos, ${videos} videos`}
             </div>
         );
     }
 
     render() {
-        const { user, detailUser } = this.props;
+        const { detailUser } = this.props;
         const avatar = detailUser.avatar || utils.defaultAvatar;
 
         return (
