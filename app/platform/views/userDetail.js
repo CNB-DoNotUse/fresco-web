@@ -17,21 +17,21 @@ class UserDetail extends React.Component {
 
     // Returns array of posts for the user
     // with offset and callback, used in child PostList
-    loadPosts(passedOffset, callback) {
+    loadPosts(last, callback) {
+        const { detailUser } = this.props;
         const params = {
-            id: this.props.detailUser.id,
             limit: 15,
-            offset: passedOffset,
+            last,
         };
 
         $.ajax({
-            url: '/api/user/posts',
+            url: `/api/user/${detailUser.id}/posts`,
             type: 'GET',
             data: params,
             dataType: 'json',
         })
         .then((res) => {
-            callback(res.data);
+            callback(res);
         }, () => {
             $.snackbar({ content: 'We couldn\'t load this user\'s posts!' });
             callback([]);
