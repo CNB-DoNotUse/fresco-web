@@ -263,6 +263,25 @@ class Edit extends React.Component {
         this.props.toggle();
     }
 
+    renderAddMore() {
+        const { gallery } = this.props;
+
+        if (!gallery.owner_id && gallery.posts.every(p => !p.owner_id)) {
+            return (
+                <button
+                    type="button"
+                    onClick={() => this.fileInput.click()}
+                    className="btn btn-flat"
+                    disabled={this.state.loading}
+                >
+                    Add More
+                </button>
+            );
+        }
+
+        return '';
+    }
+
     renderMap() {
         const { gallery } = this.props;
         const location = gallery.location
@@ -404,18 +423,7 @@ class Edit extends React.Component {
                     Clear all
                 </button>
 
-                {!gallery.owner_id
-                    // can add more posts when gallery is an import(null owner id)
-                    ? <button
-                        type="button"
-                        onClick={() => this.fileInput.click()}
-                        className="btn btn-flat"
-                        disabled={loading}
-                    >
-                        Add More
-                    </button>
-                    : ''
-                }
+                {this.renderAddMore()}
 
                 <button
                     type="button"
