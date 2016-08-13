@@ -5,6 +5,7 @@ import PostList from './../components/post/list';
 import Sidebar from './../components/gallery/sidebar';
 import Edit from './../components/gallery/edit';
 import App from './app';
+import get from 'lodash/get';
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
@@ -42,10 +43,11 @@ class GalleryDetail extends React.Component {
      * Updates gallery in state
      */
     onUpdateGallery(gallery) {
-        let title = 'Gallery';
-        if (gallery.posts && gallery.posts[0].location && gallery.posts[0].location.address) {
-            title += ` from ${gallery.posts[0].location.address}`;
-        }
+        const titleFrom = (gallery.adress
+            || get(gallery.posts.find(p => !!p.address), 'address')
+            || gallery.owner.full_name
+            || gallery.owner.username);
+        const title = titleFrom ? `Gallery from ${titleFrom}` : 'Gallery';
         this.setState({ gallery, title, updatePosts: true });
     }
 
