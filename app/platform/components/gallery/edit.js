@@ -263,6 +263,25 @@ class Edit extends React.Component {
         this.props.toggle();
     }
 
+    renderByline() {
+        const { gallery } = this.props;
+        if (gallery.posts.every(p => p.owner_id === gallery.owner_id)) {
+            return (
+                <div className="dialog-row">
+                    <textarea
+                        type="text"
+                        className="form-control"
+                        value={utils.getBylineFromGallery(this.props.gallery) || ''}
+                        placeholder="Byline"
+                        disabled
+                    />
+                </div>
+            );
+        }
+
+        return null;
+    }
+
     renderAddMore() {
         const { gallery } = this.props;
 
@@ -319,15 +338,8 @@ class Edit extends React.Component {
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    <div className="dialog-row">
-                        <textarea
-                            type="text"
-                            className="form-control"
-                            value={utils.getBylineFromGallery(gallery) || ''}
-                            placeholder="Byline"
-                            disabled
-                        />
-                    </div>
+
+                    {this.renderByline()}
 
                     <div className="dialog-row">
                         <textarea
