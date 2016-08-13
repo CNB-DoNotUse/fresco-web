@@ -27,9 +27,7 @@ class Edit extends React.Component {
     // If props has a gallery, and GalleryEdit does not currently have a
     // gallery or the galleries are not the same
     componentWillReceiveProps(nextProps) {
-        if (!this.props.gallery || (this.props.gallery.id !== nextProps.gallery.id)) {
-            this.revert();
-        }
+        this.setState(this.getStateFromProps(nextProps));
     }
 
     onRemove() {
@@ -178,10 +176,12 @@ class Edit extends React.Component {
         })
         .done((res) => {
             const saveCB = () => {
-                onUpdateGallery(res);
-                $.snackbar({ content: 'Gallery saved!' });
                 this.hide();
-                this.setState({ loading: false });
+                this.setState({ loading: false, uploads: [] },
+                    () => {
+                        onUpdateGallery(res);
+                        $.snackbar({ content: 'Gallery saved!' });
+                    });
             };
             if (res.posts_new && fileInput.files) {
                 this.uploadFiles(res.posts_new, fileInput.files)
