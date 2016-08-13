@@ -30,7 +30,7 @@ class PostCell extends React.Component {
         }
     }
 
-    renderActions() {
+    renderFooter() {
         const {
             post,
             assignment,
@@ -48,7 +48,7 @@ class PostCell extends React.Component {
         statusClass += purchased ? 'available ' : 'md-type-black-disabled ';
 
         return (
-            <div className="tile-foot" >
+            <div className="tile-foot noselect" >
                 <Actions
                     post={post}
                     assignment={assignment}
@@ -84,7 +84,7 @@ class PostCell extends React.Component {
             <div
                 className={`${divSize} tile ${toggled ? 'toggled' : ''}`}
             >
-                <div className="tile-body">
+                <div className="tile-body noselect">
                     <div className="frame" />
 
                     <div className="hover" onClick={this.onClickPost}>
@@ -105,7 +105,7 @@ class PostCell extends React.Component {
                         size={size}
                     />
                 </div>
-                {this.renderActions()}
+                {this.renderFooter()}
 
             </div>
         );

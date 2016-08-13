@@ -42,6 +42,7 @@ class PostCellActions extends React.Component {
             if (editable) {
                 actions.push(
                     <span
+                        key={++key}
                         className="mdi mdi-pencil icon pull-right"
                         onClick={() => this.edit()}
                     />
