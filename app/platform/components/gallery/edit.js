@@ -8,6 +8,8 @@ import AutocompleteMap from '../global/autocomplete-map';
 import utils from 'utils';
 import request from 'superagent';
 import times from 'lodash/times';
+import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
 
 /**
  * Gallery Edit Parent Object
@@ -34,16 +36,37 @@ class Edit extends React.Component {
         const { gallery } = this.props;
         if (!gallery || !gallery.id || this.state.loading) return;
 
-        this.remove(gallery.id);
+        this.removeGallery(gallery.id);
     }
 
     onSave(rating = this.state.rating) {
         const params = this.getFormData();
-        const { gallery } = this.props;
+        const { gallery, onUpdateGallery } = this.props;
         if (!gallery || !gallery.id || !params || this.state.loading) return;
         params.rating = rating;
+        this.setState({ loading: true });
 
-        this.save(gallery.id, params, this.fileInput);
+        Promise.all([
+            this.saveGallery(gallery.id, params),
+            this.savePostsLocations(),
+        ])
+        .then((res) => {
+            if (res[0].posts_new && this.fileInput.files) {
+                this.uploadFiles(res.posts_new, this.fileInput.files)
+                .then(() => (res[0]));
+            }
+
+            return res[0];
+        })
+        .then((res) => {
+            this.setState({ uploads: [], loading: false }, onUpdateGallery(res));
+            this.hide();
+            $.snackbar({ content: 'Gallery saved!' });
+        })
+        .catch(() => {
+            $.snackbar({ content: 'There was an error saving the gallery!' });
+            this.setState({ loading: false });
+        });
     }
 
     onChangeFileInput(e) {
@@ -63,7 +86,43 @@ class Edit extends React.Component {
             uploads.unshift({ type, url });
             this.setState({ uploads });
         }
+    }
 
+    /**
+     * Updates state map location when AutocompleteMap gives new location
+     */
+    onPlaceChange(place) {
+        this.setState({ address: place.address, location: place.location });
+    }
+
+    /**
+     * Updates state map location when AutocompleteMap gives new location from drag
+     */
+    onMapDataChange(data) {
+        if (data.source === 'markerDrag') {
+            const geocoder = new google.maps.Geocoder();
+
+            geocoder.geocode({ location: {
+                lat: data.location.lat,
+                lng: data.location.lng,
+            } },
+            (results, status) => {
+                if (status === google.maps.GeocoderStatus.OK && results[0]) {
+                    this.setState({
+                        address: results[0].formatted_address,
+                        location: data.location,
+                    });
+                }
+            });
+        }
+    }
+
+    getInitialLocationData() {
+        const { gallery } = this.props;
+        const location = gallery.location || get(gallery, 'posts[0].location');
+        const address = gallery.address || get(gallery, 'posts[0].address');
+
+        return { location, address };
     }
 
     /**
@@ -80,13 +139,13 @@ class Edit extends React.Component {
             tags: gallery.tags || [],
             stories: gallery.stories,
             assignment: gallery.assignment,
-            address: gallery.address,
             caption: gallery.caption || 'No Caption',
             posts: gallery.posts,
             articles: gallery.articles,
             rating: gallery.rating,
             uploads: [],
             loading: false,
+            ...this.getInitialLocationData(),
         };
     }
 
@@ -99,7 +158,6 @@ class Edit extends React.Component {
         const {
             tags,
             caption,
-            address,
             stories,
             articles,
             assignment,
@@ -120,7 +178,6 @@ class Edit extends React.Component {
         const params = {
             tags,
             caption,
-            address,
             ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
@@ -164,42 +221,37 @@ class Edit extends React.Component {
         return Promise.all(requests);
     }
 
-    save(id, params, fileInput) {
-        if (!id || !params || this.state.loading) return;
-        const { onUpdateGallery } = this.props;
-        this.setState({ loading: true });
+    saveGallery(id, params) {
+        if (!id || !params || this.state.loading) return Promise.resolve();
 
-        $.ajax(`/api/gallery/${id}/update`, {
+        return $.ajax(`/api/gallery/${id}/update`, {
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify(params),
-        })
-        .done((res) => {
-            const saveCB = () => {
-                this.hide();
-                this.setState({ loading: false, uploads: [] },
-                    () => {
-                        onUpdateGallery(res);
-                        $.snackbar({ content: 'Gallery saved!' });
-                    });
-            };
-            if (res.posts_new && fileInput.files) {
-                this.uploadFiles(res.posts_new, fileInput.files)
-                .then(() => saveCB(),
-                    () => $.snackbar({ content: 'There was an error saving the gallery!' }));
-            } else {
-                saveCB();
-            }
-        })
-        .fail((err) => {
-            this.setState({ loading: false });
-            $.snackbar({
-                content: utils.resolveError(err, 'There was an error saving the gallery!'),
-            });
         });
     }
 
-    remove(id) {
+    savePostsLocations() {
+        const { gallery } = this.props;
+        const { address, location } = this.state;
+        // check to see if should save locations on all gallery's posts
+        if (isEqual(this.getInitialLocationData(), { address, location })) {
+            this.savePostsLocations(gallery.posts, { address, location });
+        }
+        if (!gallery.posts || !gallery.posts.length) return Promise.resolve();
+
+        return gallery.posts.map(p => (
+            $.ajax({
+                url: `/api/post/${p.id}/update`,
+                method: 'post',
+                data: JSON.stringify({ address, location }),
+                dataType: 'json',
+                contentType: 'application/json',
+            })
+        ));
+    }
+
+    removeGallery(id) {
         if (!id || this.state.loading) return;
 
         alertify.confirm('Are you sure you want to delete this gallery?', (confirmed) => {
@@ -302,19 +354,18 @@ class Edit extends React.Component {
     }
 
     renderMap() {
-        const { gallery } = this.props;
-        const location = gallery.location
-            || (gallery.posts[0] ? gallery.posts[0].location : null);
-        const address = gallery.address
-            || (gallery.posts[0] ? gallery.posts[0].address : null);
+        const { address, location } = this.state;
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
                 <AutocompleteMap
                     address={address}
                     location={location}
+                    onPlaceChange={(place) => this.onPlaceChange(place)}
+                    onMapDataChange={(data) => this.onMapDataChange(data)}
+                    onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
                     hasRadius={false}
-                    disabled
+                    draggable
                     rerender
                 />
             </div>
@@ -493,7 +544,7 @@ class Edit extends React.Component {
                 <div className={`dim toggle-edit ${visible ? 'toggled' : ''}`} />
                 <div
                     className={`edit panel panel-default toggle-edit
-                    gedit ${visible ? 'toggled ': ''}`}
+                    gedit ${visible ? 'toggled' : ''}`}
                 >
                     <div className="col-xs-12 col-lg-12 edit-new dialog">
                         <div className="dialog-head">
