@@ -57,9 +57,11 @@ class GMap extends React.Component {
             case 'polygon':
                 return utils.getCentroid(location.coordinates);
             case 'multipoint':
-                return { lng: location.coordinates[0][0], lat: location.coordinates[0][1] };
+                return utils.getAvgFromMultipoint(location);
             case 'point':
                 return { lng: location.coordinates[0], lat: location.coordinates[1] };
+            default:
+                return { lng: -74, lat: 40.7 };
             }
         } else if (location && location.lat && location.lng) {
             return { lng: location.lng, lat: location.lat };
