@@ -17,13 +17,11 @@ const get = require('lodash/get');
  * @param Gallery ID
  */
 function render(gallery, user, req, res) {
-    let title = 'Gallery';
-
-    if (gallery.address) {
-        title += ` from ${gallery.address}`;
-    } else if (get(gallery, ['posts', '0', 'address'])) {
-        title += ` from ${gallery.posts[0].address}`;
-    }
+    const titleFrom = (gallery.adress
+        || get(gallery.posts.find(p => !!p.address), 'address')
+        || gallery.owner.full_name
+        || gallery.owner.username);
+    const title = titleFrom ? `Gallery from ${titleFrom}` : 'Gallery';
 
     // User is logged in, show full gallery page
     if (user) {

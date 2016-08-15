@@ -27,9 +27,7 @@ class Edit extends React.Component {
     // If props has a gallery, and GalleryEdit does not currently have a
     // gallery or the galleries are not the same
     componentWillReceiveProps(nextProps) {
-        if (!this.props.gallery || (this.props.gallery.id !== nextProps.gallery.id)) {
-            this.revert();
-        }
+        this.setState(this.getStateFromProps(nextProps));
     }
 
     onRemove() {
@@ -178,10 +176,12 @@ class Edit extends React.Component {
         })
         .done((res) => {
             const saveCB = () => {
-                onUpdateGallery(res);
-                $.snackbar({ content: 'Gallery saved!' });
                 this.hide();
-                this.setState({ loading: false });
+                this.setState({ loading: false, uploads: [] },
+                    () => {
+                        onUpdateGallery(res);
+                        $.snackbar({ content: 'Gallery saved!' });
+                    });
             };
             if (res.posts_new && fileInput.files) {
                 this.uploadFiles(res.posts_new, fileInput.files)
@@ -263,6 +263,44 @@ class Edit extends React.Component {
         this.props.toggle();
     }
 
+    renderByline() {
+        const { gallery } = this.props;
+        if (gallery.posts.every(p => p.owner_id === gallery.owner_id)) {
+            return (
+                <div className="dialog-row">
+                    <textarea
+                        type="text"
+                        className="form-control"
+                        value={utils.getBylineFromGallery(this.props.gallery) || ''}
+                        placeholder="Byline"
+                        disabled
+                    />
+                </div>
+            );
+        }
+
+        return null;
+    }
+
+    renderAddMore() {
+        const { gallery } = this.props;
+
+        if (!gallery.owner_id && gallery.posts.every(p => !p.owner_id)) {
+            return (
+                <button
+                    type="button"
+                    onClick={() => this.fileInput.click()}
+                    className="btn btn-flat"
+                    disabled={this.state.loading}
+                >
+                    Add More
+                </button>
+            );
+        }
+
+        return '';
+    }
+
     renderMap() {
         const { gallery } = this.props;
         const location = gallery.location
@@ -300,15 +338,8 @@ class Edit extends React.Component {
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    <div className="dialog-row">
-                        <textarea
-                            type="text"
-                            className="form-control"
-                            value={utils.getBylineFromGallery(gallery) || ''}
-                            placeholder="Byline"
-                            disabled
-                        />
-                    </div>
+
+                    {this.renderByline()}
 
                     <div className="dialog-row">
                         <textarea
@@ -404,18 +435,7 @@ class Edit extends React.Component {
                     Clear all
                 </button>
 
-                {!gallery.owner_id
-                    // can add more posts when gallery is an import(null owner id)
-                    ? <button
-                        type="button"
-                        onClick={() => this.fileInput.click()}
-                        className="btn btn-flat"
-                        disabled={loading}
-                    >
-                        Add More
-                    </button>
-                    : ''
-                }
+                {this.renderAddMore()}
 
                 <button
                     type="button"

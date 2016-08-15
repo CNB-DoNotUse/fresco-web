@@ -1,15 +1,29 @@
 import React, { PropTypes } from 'react';
-import PostEditAction from './../actions/post-edit-action.js';
 import DownloadAction from './../actions/download-action.js';
 import PurchaseAction from './../actions/purchase-action.js';
-import utils from 'utils';
 
 /**
  * Post Cell Actions
  * Description : Set of icons on the the post cell's hover
  */
 class PostCellActions extends React.Component {
-    
+    /**
+     * Called when PostCellAction's Edit button is clicked
+     * @param  {Object} post - Has post
+     */
+    edit() {
+        const id = this.props.post.parent;
+        $.ajax({ url: `/api/gallery/${id}` })
+        .then((res) => {
+            this.props.post(res);
+        }, (err) => {
+            if (err) {
+                $.snackbar({ content: 'We couldn\'t find the gallery attached to this post!' });
+                return;
+            }
+        });
+    }
+
     render() {
         const {
             permissions,
@@ -27,10 +41,10 @@ class PostCellActions extends React.Component {
         if (permissions.includes('update-other-content')) {
             if (editable) {
                 actions.push(
-                    <PostEditAction
-                        post={post}
-                        edit={post}
+                    <span
                         key={++key}
+                        className="mdi mdi-pencil icon pull-right"
+                        onClick={() => this.edit()}
                     />
                 );
             }
@@ -79,7 +93,7 @@ class PostCellActions extends React.Component {
         return (
             <div className="hover">
                 <a className="md-type-body2 post-link" href={link}>See more</a>
-                
+
                 {actions}
             </div>
         );

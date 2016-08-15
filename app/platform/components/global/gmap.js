@@ -53,16 +53,12 @@ class GMap extends React.Component {
         // If location, get centroid of polygon, or use the point passed.
         // Otherwise use NYC for center.
         if (location && location.type && location.coordinates.length) {
-            if (location.type.toLowerCase() === 'polygon') {
+            switch (location.type.toLowerCase()) {
+            case 'polygon':
                 return utils.getCentroid(location.coordinates);
-            }
-
-            // TODO: FIX
-            if (location.type.toLowerCase() === 'multipoint') {
+            case 'multipoint':
                 return { lng: location.coordinates[0][0], lat: location.coordinates[0][1] };
-            }
-
-            if (location.type.toLowerCase() === 'point') {
+            case 'point':
                 return { lng: location.coordinates[0], lat: location.coordinates[1] };
             }
         } else if (location && location.lat && location.lng) {
