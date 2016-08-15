@@ -29,15 +29,24 @@ class TopBar extends React.Component {
     }
 
     uploadFiles(posts, files) {
-        posts.forEach((p, i) => {
-            request
-                .put(p.url)
-                .set('Content-Type', files[i].type)
-                .send(files[i])
-                .end((err) => {
-                    if (!err) $.snackbar('Gallery imported!');
+        const requests = posts.map((p, i) => {
+            if (files[i]) {
+                return new Promise((resolve, reject) => {
+                    request
+                        .put(p.url)
+                        .set('Content-Type', files[i].type)
+                        .send(files[i])
+                        .end((err) => {
+                            if (err) reject(err);
+                            else resolve();
+                        });
                 });
+            }
+
+            return Promise.resolve();
         });
+
+        return Promise.all(requests);
     }
 
     createGallery() {
@@ -57,21 +66,30 @@ class TopBar extends React.Component {
             posts_new: posts,
         };
 
-        $.ajax({
-            url: '/api/gallery/import',
-            type: 'POST',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            dataType: 'json',
+        const create = new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/api/gallery/import',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                dataType: 'json',
+            })
+            .done((res) => resolve(res))
+            .fail((err) => reject(err));
+        });
+
+        create
+        .then((res) => {
+            if (res.posts_new && this.importFileInput.files) {
+                return this.uploadFiles(res.posts_new, this.importFileInput.files);
+            }
+            return null;
         })
-        .done((res) => {
-            if (res.posts) this.uploadFiles(res.posts, this.importFileInput.files);
-        })
-        .fail(() => {
-            $.snackbar({ content: 'Failed to import media' });
-        })
-        .always(() => {
+        .then(() => {
             this.setState({ loading: false });
+        })
+        .catch(() => {
+            $.snackbar({ content: 'Failed to import media' });
         });
     }
 
@@ -166,30 +184,6 @@ class TopBar extends React.Component {
                 </div>
 
                 <Loader className="loader--admin" visible={this.state.loading} />
-
-                <li
-                    className="drop no-border pull-right hidden-xs"
-                    style={{ display: 'none' }}
-                >
-                    <button className="toggle-drop md-type-subhead">
-                        <span className="mdi mdi-settings icon" />
-                        <span className="mdi mdi-menu-down icon" />
-                    </button>
-
-                    <div className="drop-menu panel panel-default">
-                        <div className="toggle-drop toggler md-type-subhead">
-                            Settings
-                            <span className="mdi mdi-menu-up icon pull-right" />
-                        </div>
-
-                        <div className="drop-body">
-                            <ul className="md-type-subhead">
-                                <li>Import alternate</li>
-                                <li>Import alternate</li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
             </nav>
 		);
     }
