@@ -6,7 +6,6 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const PublicGallery = require('../app/platform/views/publicGallery.js');
 const API = require('../lib/api');
-const get = require('lodash/get');
 
 /** //
 	Description : Gallery Specific Routes -- prefix /gallery/~
@@ -17,11 +16,7 @@ const get = require('lodash/get');
  * @param Gallery ID
  */
 function render(gallery, user, req, res) {
-    const titleFrom = (gallery.adress
-        || get(gallery.posts.find(p => !!p.address), 'address')
-        || gallery.owner.full_name
-        || gallery.owner.username);
-    const title = titleFrom ? `Gallery from ${titleFrom}` : 'Gallery';
+    const title = utils.getTitleFromGallery(gallery);
 
     // User is logged in, show full gallery page
     if (user) {

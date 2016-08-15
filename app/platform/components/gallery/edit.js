@@ -52,18 +52,22 @@ class Edit extends React.Component {
         ])
         .then((res) => {
             if (res[0].posts_new && this.fileInput.files) {
-                this.uploadFiles(res.posts_new, this.fileInput.files)
-                .then(() => (res[0]));
+                return Promise.all([
+                    res[0],
+                    this.uploadFiles(res[0].posts_new, this.fileInput.files),
+                ]);
             }
 
-            return res[0];
+            return res;
         })
         .then((res) => {
-            this.setState({ uploads: [], loading: false }, onUpdateGallery(res));
             this.hide();
-            $.snackbar({ content: 'Gallery saved!' });
+            this.setState({ uploads: [], loading: false }, () => {
+                $.snackbar({ content: 'Gallery saved!' });
+                onUpdateGallery(res[0]);
+            });
         })
-        .catch(() => {
+        .catch((err) => {
             $.snackbar({ content: 'There was an error saving the gallery!' });
             this.setState({ loading: false });
         });
@@ -71,6 +75,7 @@ class Edit extends React.Component {
 
     onChangeFileInput(e) {
         const file = e.target.files[0];
+        if (!file) return;
         const type = file.type.split('/')[0];
         const { uploads } = this.state;
 
@@ -189,11 +194,12 @@ class Edit extends React.Component {
 
     getPostsFormData() {
         const { gallery } = this.props;
-        const { posts } = this.state;
         const files = this.fileInput.files;
+        let { posts } = this.state;
+
         if (files.length) {
             times(files.length, (i) => {
-                posts.push({ contentType: files[i].type, new: true });
+                posts = posts.concat({ contentType: files[i].type, new: true });
             });
         }
 
@@ -236,7 +242,7 @@ class Edit extends React.Component {
         const { address, location } = this.state;
         // check to see if should save locations on all gallery's posts
         if (isEqual(this.getInitialLocationData(), { address, location })) {
-            this.savePostsLocations(gallery.posts, { address, location });
+            return Promise.resolve();
         }
         if (!gallery.posts || !gallery.posts.length) return Promise.resolve();
 
