@@ -9,17 +9,37 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 /**
  * Reset Password Modal
  */
-
-.reset{
-	@extend .modal_window;
-
+.reset, .reset-success{
 	width:320px;
-
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	margin-top:-100px;
 	margin-left: -160px; /* Half the width */
+}
 
-	
+.reset-success {
+    text-align:center;
+   
+    .body{
+        padding:21px 31px 19px;
+        
+        h2 {
+            font-family:$nota;
+            font-size: 24px;
+            font-weight:500;
+            line-height: 1.7em;
+            text-align: center;
+            color: rgba(0, 0, 0, 0.87);
+        }
+
+        p {
+            font-family:$roboto;
+            font-size: 14px;
+            line-height: 1.4;
+            text-align: center;
+            color: rgba(0, 0, 0, 0.54);
+        }
+    }
+
 }

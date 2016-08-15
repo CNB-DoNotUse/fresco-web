@@ -6,29 +6,7 @@ const API = require('../../lib/api');
 /**
  * Processes login in for web platform users
  */
-router.post('/login', (req, res) => {
-    API.request({
-        method: 'POST',
-        url: '/auth/signin',
-        body: {
-            username: req.body.email,
-            password: req.body.password,
-        },
-    })
-    .then(response => {
-        const { token, user } = response.body;
-
-        User
-            .saveSession(req, user, token)
-            .then(() => {
-                return res.status(response.status).json({ success: true });
-            })
-            .catch(error => {
-                return res.status(response.status).json({ success: false, error });
-            });
-    })
-    .catch(error => API.handleError(error, res));
-});
+router.post('/login', User.login);
 
 /**
  * Logs the user out and redirects
@@ -72,18 +50,51 @@ router.post('/register', (req, res) => {
 
 /**
  * Reset password endpoint
- * @description Takes an email in the body
+ * @description Takes an token in the body
  */
-router.post('/user/reset', (req, res, next) => {
+router.post('/reset', (req, res, next) => {
+    API.request({
+        method: 'POST',
+        url: '/auth/reset',
+        body: {
+            password: req.body.password,
+            token: req.body.token
+        }
+    })
+    .then(response => {
+        //Check if client sends request to log in
+        if(!req.body.login) {
+            return res.send({ success: true });
+        }
 
+        const { body } = response;
+
+        //Set req.body for middleware
+        req.body.username = body.username
+
+        User.login(req, res, next);
+    })
+    .catch(error => API.handleError(error, res));
 });
 
 /**
- * Re-sends a verification email
+ * Reset request password endpoint
+ * @description Takes a username in the body to send the request for a password reset email
  */
-router.get('/verify/resend', (req, res) => {
+router.post('/reset/request', (req, res, next) => {
+    API.request({
+        method: 'POST',
+        url: '/auth/reset/request',
+        body: {
+            username: req.body.username
+        }
+    })
+    .then(response => {
+        const { body } = response;
 
+        res.status(200).json({ success: true });
+    })
+    .catch(error => API.handleError(error, res));
 });
-
 
 module.exports = router;
