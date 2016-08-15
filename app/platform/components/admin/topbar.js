@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import moment from 'moment';
 import times from 'lodash/times';
 import request from 'superagent';
+import Loader from '../global/loader';
 
 /**
  * Description : Top for admin page
@@ -120,12 +121,6 @@ class TopBar extends React.Component {
                     onChange={() => this.onImportFiles()}
                 />
 
-                <div className="dim transparent toggle-drop toggler"></div>
-
-                <button type="button" className="icon-button toggle-drawer toggler hidden-lg">
-                    <span className="mdi mdi-menu icon"></span>
-                </button>
-
                 <button
                     type="button"
                     className="icon-button hidden-xs upload-import"
@@ -169,6 +164,8 @@ class TopBar extends React.Component {
                         Imports
                     </button>
                 </div>
+
+                <Loader className="loader--admin" visible={this.state.loading} />
 
                 <li
                     className="drop no-border pull-right hidden-xs"

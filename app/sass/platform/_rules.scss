@@ -1009,17 +1009,18 @@ div.list {
 		float:left;
 	}
 	.spacer {
+        float: left;
 		display: inline-block;
 		@media (max-width: 1199px) {
 			display: none;
 		}
 		width: 24px;
+        height: 100%;
 	}
 	> .tab-control {
+        float: left;
 		display: inline-block;
-		position: absolute;
-		top: 24px;
-		margin: 0 24px;
+        margin: 24px 24px 0 24px;
 	}
 	> .form-group-default {
 		float:left;
@@ -1029,6 +1030,7 @@ div.list {
 		}
 	}
 	> h1 {
+        float: left;
 		display: inline-block;
 		max-width: 50%;
 		white-space: nowrap;
