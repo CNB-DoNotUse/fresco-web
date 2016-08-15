@@ -317,6 +317,7 @@ class Edit extends React.Component {
 
     renderByline() {
         const { gallery } = this.props;
+        if (!gallery || !gallery.posts) return null;
         if (gallery.posts.every(p => p.owner_id === gallery.owner_id)) {
             return (
                 <div className="dialog-row">
@@ -336,6 +337,7 @@ class Edit extends React.Component {
 
     renderAddMore() {
         const { gallery } = this.props;
+        if (!gallery || !gallery.posts) return null;
 
         if (!gallery.owner_id && gallery.posts.every(p => !p.owner_id)) {
             return (
@@ -350,7 +352,7 @@ class Edit extends React.Component {
             );
         }
 
-        return '';
+        return null;
     }
 
     renderMap() {
@@ -373,7 +375,7 @@ class Edit extends React.Component {
     }
 
     renderBody() {
-        const { user, gallery } = this.props;
+        const { gallery } = this.props;
         const {
             stories,
             caption,
@@ -384,7 +386,7 @@ class Edit extends React.Component {
             posts,
             uploads,
         } = this.state;
-        if (!gallery || !user) return '';
+        if (!gallery) return '';
 
         return (
             <div className="dialog-body">
@@ -438,12 +440,15 @@ class Edit extends React.Component {
                     </div>
                 </div>
 
-                <EditPosts
-                    posts={posts}
-                    uploads={uploads}
-                    gallery={gallery}
-                    onToggleDelete={(p) => this.toggleDeletePost(p)}
-                />
+                {get(posts, 'length') || get(uploads, 'length')
+                    ? <EditPosts
+                        posts={posts}
+                        uploads={uploads}
+                        gallery={gallery}
+                        onToggleDelete={(p) => this.toggleDeletePost(p)}
+                    />
+                    : null
+                }
 
                 {this.renderMap()}
             </div>
@@ -451,9 +456,9 @@ class Edit extends React.Component {
     }
 
     renderFooter() {
-        const { gallery, user } = this.props;
+        const { gallery } = this.props;
         const { loading } = this.state;
-        if (!gallery || !user) return '';
+        if (!gallery) return '';
 
         return (
             <div className="dialog-foot">
@@ -566,9 +571,12 @@ class Edit extends React.Component {
 Edit.propTypes = {
     gallery: PropTypes.object.isRequired,
     toggle: PropTypes.func.isRequired,
-    onUpdateGallery: PropTypes.func.isRequired,
+    onUpdateGallery: PropTypes.func,
     visible: PropTypes.bool.isRequired,
-    user: PropTypes.object,
+};
+
+Edit.defaultProps = {
+    onUpdateGallery: () => {},
 };
 
 export default Edit;

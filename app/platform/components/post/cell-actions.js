@@ -11,11 +11,11 @@ class PostCellActions extends React.Component {
      * Called when PostCellAction's Edit button is clicked
      * @param  {Object} post - Has post
      */
-    edit() {
-        const id = this.props.post.parent;
+    onClickEdit() {
+        const id = this.props.post.parent_id;
         $.ajax({ url: `/api/gallery/${id}` })
         .then((res) => {
-            this.props.post(res);
+            this.props.onEdit(res);
         }, (err) => {
             if (err) {
                 $.snackbar({ content: 'We couldn\'t find the gallery attached to this post!' });
@@ -44,7 +44,7 @@ class PostCellActions extends React.Component {
                     <span
                         key={++key}
                         className="mdi mdi-pencil icon pull-right"
-                        onClick={() => this.edit()}
+                        onClick={() => this.onClickEdit()}
                     />
                 );
             }
@@ -107,6 +107,7 @@ PostCellActions.propTypes = {
     post: PropTypes.object,
     assignment: PropTypes.object,
     onPurchase: PropTypes.func.isRequired,
+    onEdit: PropTypes.func,
 };
 
 export default PostCellActions;

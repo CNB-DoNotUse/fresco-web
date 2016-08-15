@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import GalleryEdit from '../gallery/edit';
 import FrescoImage from '../global/fresco-image';
 import Actions from './cell-actions';
 import Stories from './cell-stories';
@@ -12,9 +13,11 @@ class PostCell extends React.Component {
         super(props);
 
         const { post } = props;
-
-        this.state = { purchased: post.purchased || false };
-        this.onClickPost = this.onClickPost.bind(this);
+        this.state = {
+            purchased: post.purchased || false,
+            galleryEditVisible: false,
+            gallery: {},
+        };
     }
 
     onClickPost(e) {
@@ -27,6 +30,14 @@ class PostCell extends React.Component {
             window.open(`/post/${post.id}`);
         } else {
             window.open(`/post/${post.id}`, '_self');
+        }
+    }
+
+    onToggleGalleryEdit(gallery = {}) {
+        if (gallery) {
+            this.setState({ galleryEditVisible: !this.state.galleryEditVisible, gallery });
+        } else {
+            this.setState({ galleryEditVisible: !this.state.galleryEditVisible });
         }
     }
 
@@ -54,6 +65,7 @@ class PostCell extends React.Component {
                     assignment={assignment}
                     purchased={purchased}
                     onPurchase={() => this.setState({ purchased: true })}
+                    onEdit={(g) => this.onToggleGalleryEdit(g)}
                     permissions={permissions}
                     editable={editable}
                 />
@@ -79,15 +91,15 @@ class PostCell extends React.Component {
             size,
             sizes,
         } = this.props;
+        const { galleryEditVisible, gallery } = this.state;
         const divSize = size === 'large' ? sizes.large : sizes.small;
+
         return (
-            <div
-                className={`${divSize} tile ${toggled ? 'toggled' : ''}`}
-            >
+            <div className={`${divSize} tile ${toggled ? 'toggled' : ''}`}>
                 <div className="tile-body noselect">
                     <div className="frame" />
 
-                    <div className="hover" onClick={this.onClickPost}>
+                    <div className="hover" onClick={(e) => this.onClickPost(e)}>
                         <p className="md-type-body1">
                             {post.parent && post.parent.caption
                                 ? post.parent.caption
@@ -100,13 +112,19 @@ class PostCell extends React.Component {
                         <Stories stories={post.stories} />
                     </div>
 
-                    <FrescoImage
-                        image={post.image}
-                        size={size}
-                    />
+                    <FrescoImage image={post.image} size={size} />
                 </div>
+
                 {this.renderFooter()}
 
+                {gallery && galleryEditVisible
+                    ? <GalleryEdit
+                        gallery={gallery}
+                        visible={galleryEditVisible}
+                        toggle={() => this.onToggleGalleryEdit()}
+                    />
+                    : null
+                }
             </div>
         );
     }
