@@ -7,8 +7,6 @@ class AutocompleteMap extends React.Component {
         super(props);
 
         this.state = { bounds: null };
-        this.updateRadius = this.updateRadius.bind(this);
-        this.updateCurrentBounds = this.updateCurrentBounds.bind(this);
     }
 
     componentDidMount() {
@@ -24,7 +22,7 @@ class AutocompleteMap extends React.Component {
     /**
      * Updates prop radius function
      */
-    updateRadius() {
+    onChangeRadius() {
         const radius = parseFloat(this.refs.radius.value.replace(/^0-9/g, ''));
         // Check if a number
         if (!isNaN(radius)) {
@@ -63,7 +61,7 @@ class AutocompleteMap extends React.Component {
                     data-hint={unit}
                     placeholder="Radius"
                     defaultValue={Math.round(radius)}
-                    onChange={this.updateRadius}
+                    onChange={() => this.onChangeRadius()}
                     ref="radius"
                 />
             );
@@ -89,26 +87,13 @@ class AutocompleteMap extends React.Component {
                     radius={radius}
                     rerender={rerender}
                     draggable={draggable}
-                    updateCurrentBounds={this.updateCurrentBounds}
+                    updateCurrentBounds={(b) => this.updateCurrentBounds(b)}
                     onDataChange={onMapDataChange}
                 />
             </div>
         );
     }
 }
-
-AutocompleteMap.defaultProps = {
-    address: '',
-    unit: 'Feet',
-    location: null,
-    radius: 250,
-    hasRadius: false,
-    rerender: false,
-    draggable: false,
-    updateRadius() {},
-    onPlaceChange() {},
-    onRadiusUpdate() {},
-};
 
 AutocompleteMap.propTypes = {
     radius: PropTypes.number,
@@ -122,6 +107,18 @@ AutocompleteMap.propTypes = {
     rerender: PropTypes.bool,
     draggable: PropTypes.bool,
     onMapDataChange: PropTypes.func,
+};
+
+AutocompleteMap.defaultProps = {
+    address: '',
+    unit: 'Feet',
+    location: null,
+    radius: 250,
+    hasRadius: false,
+    rerender: false,
+    draggable: false,
+    onPlaceChange() {},
+    onRadiusUpdate() {},
 };
 
 export default AutocompleteMap;
