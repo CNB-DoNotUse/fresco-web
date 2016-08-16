@@ -96,7 +96,7 @@ export default class Info extends React.Component {
         })
         .always(() => {
             this.loading = false;
-        })
+        });
     }
 
     /**

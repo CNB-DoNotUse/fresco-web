@@ -173,35 +173,34 @@ export default class DispatchSubmit extends React.Component {
         }
 
         $.ajax({
-            method: 'post',
-            url: '/api/assignment/create',
+            url: "/api/assignment/create",
+            method: 'POST',
             data: JSON.stringify(assignment),
-            contentType: 'application/json',
-            success: (result) => {
-                if (result.err){
-                    return $.snackbar({content: 'There was an error submitting your assignment!'});
-                } else{
-                    //Hide the assignment card
-                    this.props.toggleSubmissionCard(false, null);
+            contentType: 'application/json'
+        })
+        .done((response) => {
+            //Hide the assignment card
+            this.props.toggleSubmissionCard(false, null);
 
-                    //Update view mode for all components
-                    this.props.updateViewMode('pending');
+            //Update view mode for all components
+            this.props.updateViewMode('pending');
 
-                    //Update new assignment objecto to nothing
-                    this.props.updateNewAssignment();
+            //Update new assignment objecto to nothing
+            this.props.updateNewAssignment();
 
-                    $.snackbar({
-                        content: 'Your assignment has been successfully submitted and is awaiting approval!',
-                        timeout: 5000
-                    });
+            $.snackbar({
+                content: 'Your assignment has been successfully submitted and is awaiting approval!',
+                timeout: 5000
+            });
 
-                    //Clear all the fields
-                    title.value = '';
-                    caption.value = '';
-                    expiration.value = '';
-                    autocomplete.value = '';
-                }
-            }
+            //Clear all the fields
+            title.value = '';
+            caption.value = '';
+            expiration.value = '';
+            autocomplete.value = '';
+        })
+        .fail((error) => {
+            return $.snackbar({content: 'There was an error submitting your assignment!'});
         });
     }
 
