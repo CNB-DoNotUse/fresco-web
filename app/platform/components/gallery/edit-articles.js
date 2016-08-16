@@ -17,7 +17,24 @@ class EditArticles extends React.Component {
         };
     }
 
-    //Event handler for article input field
+    componentWillMount() {
+        document.addEventListener('click', (e) => this.onClick(e), false);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', (e) => this.onClick(e), false);
+    }
+
+    onClick(e) {
+        // if (ReactDOM.findDOMNode(this.area).contains(e.target)) {
+        if (this.area.contains(e.target)) {
+            return;
+        }
+
+        this.setState({ query: '' });
+    }
+
+    // Event handler for article input field
     onChangeQuery(e) {
         const query = e.target.value;
         this.setState({ query });
@@ -105,7 +122,7 @@ class EditArticles extends React.Component {
     render() {
         const { query } = this.state;
         return (
-            <div className="dialog-row split chips">
+            <div ref={(r) => this.area = r} className="dialog-row split chips">
                 <div className="split-cell">
                     <input
                         type="text"
