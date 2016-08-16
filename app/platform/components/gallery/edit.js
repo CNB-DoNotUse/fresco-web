@@ -122,6 +122,21 @@ class Edit extends React.Component {
         }
     }
 
+    onClickClear() {
+        if (this.state.loading) return;
+        const { gallery } = this.props;
+
+        this.setState({
+            tags: [],
+            stories: [],
+            assignments: [],
+            address: '',
+            caption: 'No Caption',
+            articles: [],
+            rating: gallery.rating,
+        });
+    }
+
     getInitialLocationData() {
         const { gallery } = this.props;
         const location = gallery.location || get(gallery, 'posts[0].location');
@@ -143,7 +158,7 @@ class Edit extends React.Component {
         return {
             tags: gallery.tags || [],
             stories: gallery.stories,
-            assignment: gallery.assignment,
+            assignments: [],
             caption: gallery.caption || 'No Caption',
             posts: gallery.posts,
             articles: gallery.articles,
@@ -165,7 +180,7 @@ class Edit extends React.Component {
             caption,
             stories,
             articles,
-            assignment,
+            assignments,
         } = this.state;
         const { gallery } = this.props;
         const posts = this.getPostsFormData();
@@ -186,7 +201,7 @@ class Edit extends React.Component {
             ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
-            assignment_id: assignment ? assignment.id : null,
+            assignment_id: assignments.map(a => a.id),
         };
 
         return params;
@@ -294,22 +309,6 @@ class Edit extends React.Component {
         this.setState(this.getStateFromProps(this.props));
     }
 
-    clear() {
-        if (this.state.loading) return;
-        const { gallery } = this.props;
-
-        this.setState({
-            tags: [],
-            stories: [],
-            assignment: null,
-            address: '',
-            caption: 'No Caption',
-            posts: [],
-            articles: [],
-            rating: gallery.rating,
-        });
-    }
-
     toggleHighlight(e) {
         this.setState({ rating: e.target.checked ? 3 : 2 });
     }
@@ -387,7 +386,7 @@ class Edit extends React.Component {
         const {
             stories,
             caption,
-            assignment,
+            assignments,
             tags,
             rating,
             articles,
@@ -415,8 +414,8 @@ class Edit extends React.Component {
                     </div>
 
                     <EditAssignment
-                        assignment={assignment}
-                        updateAssignment={(a) => this.setState({ assignment: a })}
+                        assignments={assignments}
+                        updateAssignments={(a) => this.setState({ assignments: a })}
                     />
 
                     <EditTags
@@ -492,7 +491,7 @@ class Edit extends React.Component {
 
                 <button
                     type="button"
-                    onClick={() => this.clear()}
+                    onClick={() => this.onClickClear()}
                     className="btn btn-flat"
                     disabled={loading}
                 >

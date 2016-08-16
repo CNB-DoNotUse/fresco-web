@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import Tag from '../global/tag.js';
+import reject from 'lodash/reject';
 
 /**
  * Component for managing added/removed tags
@@ -7,31 +8,34 @@ import Tag from '../global/tag.js';
 class EditAssignment extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { suggestions: [] };
+        this.state = { suggestions: [], query: '' };
     }
 
-    componentDidMount() {
-        $(document).click(() => {
-            this.refs.dropdown.style.display = 'none';
-        });
+    componentWillMount() {
+        document.addEventListener('click', (e) => this.onClick(e), false);
     }
 
     componentWillUnmount() {
-        // Clean up click event on unmount
-        $(document).unbind('click');
+        document.removeEventListener('click', (e) => this.onClick(e), false);
     }
 
-    change() {
-        // Current fields input
-        const query = this.refs.autocomplete.value;
+    onClick(e) {
+        // if (ReactDOM.findDOMNode(this.area).contains(e.target)) {
+        if (this.area.contains(e.target)) {
+            return;
+        }
 
-        // Field is empty
-        if (query.length === 0) {
+        this.setState({ query: '' });
+    }
+
+    onChangeQuery(e) {
+        const query = e.target.value;
+        this.setState({ query });
+
+        // Enter is pressed, and query is present
+        if (!query.length === 0) {
             this.setState({ suggestions: [] });
-            this.refs.dropdown.style.display = 'none';
         } else {
-            this.refs.dropdown.style.display = 'block';
-
             $.ajax({
                 url: '/api/search',
                 data: { 'assignments[a][title]': query },
@@ -44,62 +48,79 @@ class EditAssignment extends React.Component {
         }
     }
 
+    onKeyUpQuery(e) {
+        const { suggestions, query } = this.state;
+
+        if (e.keyCode === 13 && query.length > 0) {
+            const matched = suggestions.find((s) => (
+                s.title.toLowerCase() === query.toLowerCase()
+            ));
+
+            if (matched) this.addAssignment(matched);
+        }
+    }
+
     /**
      * Adds assignment at passed index to current assignment
      * @param {[type]} index [description]
      */
-    addAssignment(e, assignment) {
-        e.stopPropagation();
+    addAssignment(assignment) {
+        let { assignments } = this.props;
+        if (assignments.some((a) => (a.id === assignment.id))) return;
+        assignments = assignments.concat(assignment);
 
-        if (this.props.assignment) {
-            $.snackbar({ content: 'Submissions can only have one assignment!' });
-            return;
-        }
+        this.setState({ query: '' }, this.props.updateAssignments(assignments));
+    }
 
-        // Clear the input field
-        this.refs.autocomplete.value = '';
-        this.refs.dropdown.style.display = 'none';
+    /**
+     * Removes story and updates to parent
+     */
+    removeAssignment(id) {
+        let { assignments } = this.props;
+        assignments = reject(assignments, { id });
 
-        // Send assignment up to parent
-        this.props.updateAssignment(assignment);
+        this.props.updateAssignments(assignments);
     }
 
     render() {
-        const { suggestions } = this.state;
-        const { assignment, updateAssignment } = this.props;
+        const { query, suggestions } = this.state;
+        const { assignments } = this.props;
+        const assignmentsJSX = assignments.map((a, i) => (
+            <Tag
+                key={i}
+                text={a.title}
+                plus={false}
+                onClick={() => this.removeAssignment(a.id)}
+            />
+        ));
+
+        const suggestionsJSX = suggestions.map((s, i) => (
+            <li onClick={() => this.addAssignment(s)} key={i}>
+                {s.title}
+            </li>
+        ));
 
         return (
-            <div className="dialog-row split chips">
+            <div ref={(r) => this.area = r} className="dialog-row split chips">
                 <div className="split-cell">
                     <input
                         type="text"
                         className="form-control floating-label"
                         placeholder="Assignment"
-                        onKeyUp={() => this.change()}
-                        ref="autocomplete"
+                        onChange={(e) => this.onChangeQuery(e)}
+                        onKeyUp={(e) => this.onKeyUpQuery(e)}
+                        value={query}
                     />
 
-                    <ul ref="dropdown" className="dropdown">
-                        {
-                            suggestions && suggestions.length
-                                ? suggestions.map((s, i) => (
-                                    <li onClick={(e) => this.addAssignment(e, s)} key={i} >
-                                        {s.title}
-                                    </li>
-                                    ))
-                                : ''
-                        }
+                    <ul
+                        style={{ display: `${query.length ? 'block' : 'none'}` }}
+                        className="dropdown"
+                    >
+                        {suggestionsJSX}
                     </ul>
 
                     <ul className="chips">
-                        {assignment
-                            ? <Tag
-                                text={assignment.title}
-                                plus={false}
-                                onClick={() => updateAssignment(null)}
-                            />
-                            : ''
-                        }
+                        {assignmentsJSX}
                     </ul>
                 </div>
             </div>
@@ -107,13 +128,9 @@ class EditAssignment extends React.Component {
     }
 }
 
-EditAssignment.defaultProps = {
-    updateAssignment() {},
-};
-
 EditAssignment.propTypes = {
-    updateAssignment: PropTypes.func.isRequired,
-    assignment: PropTypes.object,
+    updateAssignments: PropTypes.func.isRequired,
+    assignments: PropTypes.array.isRequired,
 };
 
 export default EditAssignment;

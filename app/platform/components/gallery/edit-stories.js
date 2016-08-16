@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import Tag from '../global/tag';
-import utils from 'utils';
 import reject from 'lodash/reject';
 
 /**
@@ -14,6 +13,23 @@ class EditStories extends React.Component {
             suggestions: [],
             query: '',
         };
+    }
+
+    componentWillMount() {
+        document.addEventListener('click', (e) => this.onClick(e), false);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', (e) => this.onClick(e), false);
+    }
+
+    onClick(e) {
+        // if (ReactDOM.findDOMNode(this.area).contains(e.target)) {
+        if (this.area.contains(e.target)) {
+            return;
+        }
+
+        this.setState({ query: '' });
     }
 
     onChangeQuery(e) {
@@ -58,7 +74,7 @@ class EditStories extends React.Component {
      * Adds story element, return if story exists in prop stories.
      */
     addStory(newStory) {
-        if (utils.isEmptyString(newStory.title)) return;
+        if (!newStory.title || !newStory.title.length) return;
         let { stories } = this.props;
 
         // Check if story already exists
@@ -91,16 +107,16 @@ class EditStories extends React.Component {
 
         // Map suggestions for dropdown
         const suggestions = this.state.suggestions.map((story, i) => (
-            <li
-                onClick={() => this.addStory(story)}
-                key={i}
-            >
+            <li onClick={() => this.addStory(story)} key={i}>
                 {story.title}
             </li>
         ));
 
         return (
-            <div className="dialog-row split chips form-group-default">
+            <div
+                ref={(r) => this.area = r}
+                className="dialog-row split chips form-group-default"
+            >
                 <div className="split-cell">
                     <input
                         type="text"
