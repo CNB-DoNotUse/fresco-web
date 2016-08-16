@@ -5,6 +5,7 @@ import TopBar from './../components/admin/topbar';
 import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
 import differenceBy from 'lodash/differenceBy';
+import get from 'lodash/get';
 import 'app/sass/platform/_admin';
 
 /**
@@ -157,7 +158,8 @@ class Admin extends React.Component {
 
             const updatedData = oldData.map(old => {
                 const updated = data.find(d => d.id === old.id);
-                if (updated && updated.posts.length !== old.posts.length) {
+                if (updated
+                    && get(updated, 'posts.length', 0) !== get(old, 'posts.length', 0)) {
                     return Object.assign({}, old, { posts: updated.posts });
                 }
 
