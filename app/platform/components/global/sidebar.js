@@ -145,13 +145,13 @@ class SideBarListItems extends React.Component {
 
 					<SidebarItem
 						link='/archive/videos'
-						icon='mdi-image'
+						icon='mdi-movie'
 						text='Videos'
 					/>
 
 					<SidebarItem
 						link='/archive/galleries'
-						icon='mdi-image'
+						icon='mdi-image-multiple'
 						text='Galleries'
 					/>
 

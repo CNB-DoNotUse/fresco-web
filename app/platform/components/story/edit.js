@@ -157,30 +157,29 @@ class Edit extends React.Component {
 
     renderStats() {
         const { story } = this.props;
-        if (!story || !story.stats) return <div />;
 
         return (
             <div className="meta">
                 <div id="story-edit-caption" className="meta-description">
-                    {story.description}
+                    {story.caption}
                 </div>
 
                 <div className="meta-list">
                     <ul className="md-type-subhead">
                         <li>
                             <span className="mdi mdi-clock icon" />
-                            <span id="story-edit-date">{utils.formatTime(story.created_at)}</span>
+                            <span id="story-edit-date">created {utils.formatTime(story.created_at)}</span>
                         </li>
                         <li>
                             <span className="mdi mdi-image icon" />
                             <span id="story-edit-photo-num">
-                                {story.stats.photos} {story.stats.photos === 1 ? 'photo' : 'photos'}
+                                {story.photo_count} {story.photo_count=== 1 ? 'photo' : 'photos'}
                             </span>
                         </li>
                         <li>
                             <span className="mdi mdi-movie icon" />
                             <span id="story-edit-video-num">
-                                {story.stats.videos} {story.stats.videos === 1 ? 'video' : 'videos'}
+                                {story.video_count} {story.video_count === 1 ? 'video' : 'videos'}
                             </span>
                         </li>
                     </ul>
