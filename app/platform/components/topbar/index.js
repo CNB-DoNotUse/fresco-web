@@ -199,8 +199,8 @@ class Index extends React.Component {
                     ? <h1 className="md-type-title">{title}</h1>
                     : ''
                 }
-                {locationInput
-                    ? <LocationAutocomplete
+                {locationInput ? 
+                    <LocationAutocomplete
                         class="nav"
                         inputText={mapPlace ? mapPlace.description || mapPlace.formatted_address : ''}
                         bounds={bounds}

@@ -4,7 +4,6 @@ import isEmpty from 'lodash/isEmpty';
 /**
  * Autocomplete component
  */
-
 class LocationAutocomplete extends React.Component {
     constructor(props) {
         super(props);
@@ -96,7 +95,7 @@ class LocationAutocomplete extends React.Component {
      * OnClick for selecting a prediction from the list
      */
     predictionSelected(prediction) {
-        const updateAssignment = () => {
+        const sendPrediction = () => {
             const location = {
                 lat: prediction.geometry.location.lat(),
                 lng: prediction.geometry.location.lng(),
@@ -121,10 +120,10 @@ class LocationAutocomplete extends React.Component {
                     prediction = details;
                 }
 
-                updateAssignment();
+                sendPrediction();
             });
         } else {
-            updateAssignment();
+            sendPrediction();
         }
     }
 
@@ -146,14 +145,14 @@ class LocationAutocomplete extends React.Component {
     }
 
     render() {
-        let autocompleteClass = `autocomplete ${this.props.class}`;
-
-        if (this.state.active && this.props.transition) {
-            autocompleteClass += ' active';
-        }
+        const active = this.state.active && this.props.transition;
+        const autocompleteClass = `autocomplete ${this.props.class} ${active ? 'active' :''}`;
 
         return (
-            <div className={autocompleteClass} ref="autocompleteWrap">
+            <div 
+                className={autocompleteClass} 
+                ref="autocompleteWrap"
+            >
                 <div>
                     <input
                         placeholder="Location"
@@ -177,6 +176,7 @@ LocationAutocomplete.defaultProps = {
     transition: true,
     class: '',
     inputClass: '',
+    inputText: ''
 };
 
 LocationAutocomplete.propTypes = {

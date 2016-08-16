@@ -214,56 +214,6 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	display:inline-block;
 	font-weight:400;
 
-	.form-group {
-		margin:18px 0 0;
-		padding:0;
-
-		.form-control {
-			margin:0;
-			color:#000;
-			font-size:14px;
-			padding:6px 0 0;
-			height:28px;
-		}
-
-		textarea{
-			// height:40px !important;
-			resize:vertical;
-		}
-
-		.help-block {
-			color: rgba(0, 0, 0, 0.26);
-		}
-
-		//Default style
-		.control-label{
-			color: rgba(0,0,0,.26);
-		}
-
-		//Just empty
-		&.is-empty {
-			.control-label{
-				font-size:14px !important;
-				top:-10px !important;
-			}
-		}
-
-		//Empty and not focused
-		&.is-empty, &:not(.is-focused) {
-			.control-label {
-				color: #7e7e7e;
-			}
-		}
-
-		//Empty and focused, just focused, not empty .-.
-		&.is-empty.is-focused, &.is-focused, &:not(.is-empty) {
-			.control-label{
-				font-size: 9px !important;
-				top:-22px !important;
-			}
-		}
-	}
-
 	.checkbox input[type=checkbox]:checked~.check, .checkbox input[type=checkbox]:checked~.check:before {
 		color: $color-accent-primary;
 	}
@@ -296,6 +246,56 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		}
 		li:hover{
 			background:#DDD;
+		}
+	}
+}
+
+.form-group {
+	margin:18px 0 0;
+	padding:0;
+
+	.form-control {
+		margin:0;
+		color:#000;
+		font-size:14px;
+		padding:6px 0 0;
+		height:28px;
+	}
+
+	textarea{
+		// height:40px !important;
+		resize:vertical;
+	}
+
+	.help-block {
+		color: rgba(0, 0, 0, 0.26);
+	}
+
+	//Default style
+	.control-label{
+		color: rgba(0,0,0,.26);
+	}
+
+	//Just empty
+	&.is-empty {
+		.control-label{
+			font-size:14px !important;
+			top:-10px !important;
+		}
+	}
+
+	//Empty and not focused
+	&.is-empty, &:not(.is-focused) {
+		.control-label {
+			color: #7e7e7e;
+		}
+	}
+
+	//Empty and focused, just focused, not empty .-.
+	&.is-empty.is-focused, &.is-focused, &:not(.is-empty) {
+		.control-label{
+			font-size: 9px !important;
+			top:-22px !important;
 		}
 	}
 }

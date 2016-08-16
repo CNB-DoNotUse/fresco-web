@@ -1,13 +1,15 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './app'
-import TopBar from '../components/topbar'
-import utils from 'utils'
-import _ from 'lodash'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './app';
+import TopBar from '../components/topbar';
+import LocationAutocomplete from '../components/global/location-autocomplete.js';
+import KMLInput from '../components/stats/kml-input';
+import utils from 'utils';
+import _ from 'lodash';
 import 'app/sass/platform/stats';
 
 /**
- * Stats page
+ * Admin Stats Page
  */
 class Stats extends React.Component {
 
@@ -15,24 +17,33 @@ class Stats extends React.Component {
         super(props);
 
         this.state = {
-            "counts" : {
-                "day" : null,
-                "week" : null,
-                "week2" : null,
-                "month" : null,
-                "year" : null,
-                "total" : null
-            }
+            count: { active: 0, total: 0},
+            coordinates: [],
+            autocompleteText: ''
         }
 
-        this.downloadStats = this.downloadStats.bind(this);
         this.calculateUsers = this.calculateUsers.bind(this);
+        this.configureMap = this.configureMap.bind(this);
+        this.updateMap = this.updateMap.bind(this);
+        this.updatePolygon = this.updatePolygon.bind(this);
         this.polygonChanged = this.polygonChanged.bind(this);
-        this.placeChanged = this.placeChanged.bind(this);
     }
 
     componentDidMount() {
-        var mapOptions = {
+        this.configureMap();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(!_.isEqual(prevState.coordinates, this.state.coordinates)) {
+            this.calculateUsers();
+        }
+    }
+
+    /**
+     * Configures map and polygon
+     */
+    configureMap() {
+        const mapOptions = {
             center: {lat: 40.731080, lng: -73.999365},
             zoom: 9,
             mapTypeControl: false,
@@ -43,27 +54,19 @@ class Stats extends React.Component {
         };
 
         //Instantiate google maps object
-        var map = new google.maps.Map(
-            document.getElementById('stat-map'),
-            mapOptions
-        );
-
-        var autocomplete = new google.maps.places.Autocomplete(this.refs['stats-autocomplete']);
-
-        // Bind place_changed event to placeChanged
-        google.maps.event.addListener( autocomplete, 'place_changed', this.placeChanged);
+        const map = new google.maps.Map(this.refs['stat-map'], mapOptions);
 
         //Define intitial coords
-        var polyCoords = [
-            {lat: 40.91525559999999, lng: -73.7002721},
+        const paths = [
+            {lat: 40.9152555, lng: -73.7002721},
             {lat: 40.4960439 , lng: -73.7002721},
             {lat: 40.496043, lng: -74.2557349}
         ];
 
         //Create polygon
-        var polygon = new google.maps.Polygon({
-            map: map,
-            paths: polyCoords,
+        const polygon = new google.maps.Polygon({
+            map,
+            paths,
             strokeColor: '#0047bb',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -76,128 +79,117 @@ class Stats extends React.Component {
 
         google.maps.event.addListener(polygon, 'mouseup', this.polygonChanged);
 
-        this.setState({
-            polygon: polygon,
-            map: map,
-            autocomplete: autocomplete
-        });
+        this.setState({ polygon, map });
     }
 
-    downloadStats() {
-        $.snackbar({content: 'Downloading...'});
+    updatePolygon(paths = []) {
+        this.state.polygon.setPaths(paths);
+    }
 
-        window.location.replace("/scripts/report?u=/post/submissions/report");
+    updateMap(bounds = {}) {
+        this.state.map.fitBounds(bounds);
+    }
+
+    updateCoordinates(coordinates = []) {
+        this.setState({ coordinates });
     }
 
     /**
      * Event handler for autocomplete
+     * @description Takes autocomplete data and sets polygon to state, then calculates new users
      */
-    placeChanged(event) {
-        var place = this.state.autocomplete.getPlace();
+    updateAutocompleteData(autocompleteData) {
+        const prediction = autocompleteData.prediction;
 
-        //Run checks on place and title
-        if (!place || !place.geometry || !place.geometry.viewport){
+        //Run checks on prediction and title
+        if (!prediction || !prediction.geometry || !prediction.geometry.viewport){
             return $.snackbar({content: utils.resolveError('ERR_UNSUPPORTED_LOCATION')});
-        } else if(!this.refs['stats-autocomplete'].value){
-            return $.snackbar({content: 'Please enter a valid location title'});
         }
 
-        var bounds = place.geometry.viewport,
-            locationPolygon = utils.generatePolygonFromBounds(bounds)[0],
-            latLngArray = [
-                new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getNorthEast().lng()),
-                new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getNorthEast().lng()),
-                new google.maps.LatLng(bounds.getSouthWest().lat(), bounds.getNorthEast().lng()),
-                new google.maps.LatLng(bounds.getSouthWest().lat(), bounds.getSouthWest().lng()),
-                new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getSouthWest().lng()),
-                new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getNorthEast().lng())
-            ];
+        let bounds = prediction.geometry.viewport;
+        let locationPolygon = utils.generatePolygonFromBounds(bounds)[0];
+        let latLngArray = [
+            new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getNorthEast().lng()),
+            new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getNorthEast().lng()),
+            new google.maps.LatLng(bounds.getSouthWest().lat(), bounds.getNorthEast().lng()),
+            new google.maps.LatLng(bounds.getSouthWest().lat(), bounds.getSouthWest().lng()),
+            new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getSouthWest().lng()),
+            new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getNorthEast().lng())
+        ];
 
-        this.calculateUsers(locationPolygon);
-
-        this.state.map.fitBounds(bounds);
-        this.state.polygon.setPaths(latLngArray);
+        this.updateMap(bounds);
+        this.updatePolygon(latLngArray);
+        this.setState({ 
+            coordinates: locationPolygon,
+            autocompleteText: autocompleteData.address
+        });
     }
 
     /**
-     * Event handler from google maps polygon
+     * Event handler from google maps polygon path change
      */
     polygonChanged(event) {
-        var vertices = this.state.polygon.getPath(),
-            locations = [];
+        const vertices = this.state.polygon.getPath();
+        let coordinates = [];
 
-         // Iterate over the vertices.
-        for (var i =0; i < vertices.getLength(); i++) {
-            var coord = vertices.getAt(i);
+        //Iterate over the vertices.
+        for (let i =0; i < vertices.getLength(); i++) {
+            const coord = vertices.getAt(i);
 
-            locations.push([coord.lng(), coord.lat()]);
+            coordinates.push([coord.lng(), coord.lat()]);
         }
 
         //Close-off end of polygon
-        var coord = vertices.getAt(0);
-        locations.push([coord.lng(), coord.lat()]);
+        coordinates.push([vertices.getAt(0).lng(), vertices.getAt(0).lat()]);
 
-        this.calculateUsers(locations);
+        this.setState({ coordinates });
     }
 
     /**
-     * Calculates users from passed polygon
+     * Calculates users from coordinates ins tate
      */
-    calculateUsers(locations) {
-        var query = '';
+    calculateUsers() {
+        const _this = this;
+        const day = 86400000;
+        const timeKeys = Object.keys(this.state.counts);
+        const times = [
+            Date.now() - day, //day
+            Date.now() - (day * 7), //one week
+            Date.now() - (day * 14), //two weeks
+            Date.now() - (day * 31), //one month
+            Date.now() - (day * 365), //year
+            null
+        ];
+        
+        let counts = _.clone(this.state.counts);
 
-        for (var i = 0; i < locations.length; i++) {
-            if(i > 0) query += '&';
-            query += 'coordinates[]=' + locations[i][0] + ',' + locations[i][1];
-        }
-
-        var day = 86400000,
-            times = [
-                Date.now() - day, //day
-                Date.now() - (day * 7), //one week
-                Date.now() - (day * 14), //two weeks
-                Date.now() - (day * 31), //one month
-                Date.now() - (day * 365), //year
-                null
-            ],
-            timeKeys = Object.keys(this.state.counts);
-
-        for (var i = 0; i < timeKeys.length; i++) {
-            var key = timeKeys[i],
-                self = this,
-                newQuery = query;
-
-            if(times[i] !== null){
-                newQuery += '&since=' + times[i];
+        timeKeys.forEach((timeKey, i) => {
+            const params = {
+                since: times[i] || null,
+                coordinates: [this.state.coordinates]
             }
 
             $.ajax({
-                url: '/api/stats/user?' + newQuery,
-                key: key,
-                type: 'GET',
-                success: function(response, status, xhr) {
-                    //Do nothing, because of bad response
-                    if(!response.data || response.err)
-                        $.snackbar({content: utils.resolveError(response.err)});
-                    else {
+                url: "/api/stats/user",
+                method: 'GET',
+                key: timeKey,
+                data: params
+            })
+            .done(function(response) {
+                counts[this.key] = response.count;
 
-                        var counts = _.clone(self.state.counts);
+                _this.setState({ counts });
+            })
+            .fail(function(error) {
+                counts[this.key] = 'Error';
 
-                        counts[this.key] = response.data.count;
-
-                        self.setState({ counts : counts } );
-                    }
-                },
-                error: (xhr, status, error) => {
-                    $.snackbar({content: utils.resolveError(error)});
-                }
+                _this.setState({ counts });
             });
-        }
+        });
     }
 
     render() {
-
-        var counts = this.state.counts;
+        const { count } = this.state;
 
         return (
             <App user={this.props.user}>
@@ -206,62 +198,67 @@ class Stats extends React.Component {
 
                 <div className="container-fluid stats">
                     <div className="map-wrap">
-                        <h3>Drag the polygon to calculate the number of users in an area or use the autocomplete.</h3>
+                        <h3>You can use the polygon, autocomplete, or KML importer 
+                        to calculate the number of active users in an area.</h3>
 
-                        <input type="text" ref="stats-autocomplete" placeholder="Enter a location" />
+                        <LocationAutocomplete
+                            inputText={this.state.autocompleteText}
+                            class="form"
+                            inputClass="form-control floating-label"
+                            ref="autocomplete"
+                            transition={false}
+                            updateAutocompleteData={(a) => this.updateAutocompleteData(a)} />
 
-                        <div id="stat-map" className="map"></div>
+                        <KMLInput
+                            updateCoordinates={() => this.updateCoordinates()}
+                            updatePolygon={this.updatePolygon}
+                            updateMap={this.updateMap} />
+
+                        <div ref="stat-map" className="map"></div>
                     </div>
 
                     <div className="info-wrap">
                         <table>
                             <tbody>
                                 <tr>
-                                    <td>Time Joined</td> 
-                                    <td>Active (location in the last 24 hours)</td>
+                                    <td>Users w/ location (last 24 hrs)</td>
                                     <td>Total Users</td>
                                 </tr>
                                 <tr>
-                                    <td>Last day</td>
-                                    <td>{counts.day ? counts.day.active : null}</td>
-                                    <td>{counts.day ? counts.day.total : null}</td>
-                                </tr>
-                                <tr>
-                                    <td>Last week</td> 
-                                    <td>{counts.week ? counts.week.active : null}</td>
-                                    <td>{counts.week ? counts.week.total : null}</td>
-                                </tr>
-                                <tr>
-                                    <td>Last two weeks</td>
-                                    <td>{counts.week2 ? counts.week2.active : null}</td>
-                                    <td>{counts.week2 ? counts.week2.total : null}</td>
-                                </tr>
-                                <tr>
-                                    <td>Last month</td>
-                                    <td>{counts.month ? counts.month.active : null}</td>
-                                    <td>{counts.month ? counts.month.total : null}</td>
-                                </tr>
-                                <tr>
-                                    <td>Last year</td>
-                                    <td>{counts.year ? counts.year.active : null}</td>
-                                    <td>{counts.year ? counts.year.total : null}</td>
-                                </tr>
-                                <tr>
-                                    <td>Total</td>
-                                    <td>{counts.year ? counts.year.active : null}</td>
-                                    <td>{counts.year ? counts.year.total : null}</td>
+                                    <td>{count.active}</td>
+                                    <td>{count.total}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
                     <div className="buttons">
-                        <button className="btn btn-flat pull-right mt12 mr16" onClick={this.downloadStats}>
-                            Download Submissions (.csv)
-                        </button>
+                        <DownloadSubmissions />
                     </div>
                 </div>
             </App>
+        )
+    }
+}
+
+
+/**
+ * Download submissions button
+ */
+class DownloadSubmissions extends React.Component {
+    //Download submission stats through CSV middleware
+    download() {
+        $.snackbar({content: 'Downloading...'});
+        window.location.replace("/scripts/report?u=/post/submissions/report");
+    }
+
+    render() {
+        return(
+            <button 
+                className="btn btn-flat pull-right mt12 mr16" 
+                onClick={this.download}>
+                Download Submissions (.csv)
+            </button>
         )
     }
 }

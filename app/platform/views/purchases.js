@@ -235,7 +235,6 @@ class Purchases extends React.Component {
 		const availableOutlets = _.map(this.state.availableOutlets, 'title');
 		const availableUsers = _.map(this.state.availableUsers, 'full_name');
 
-
 		return (
 			<App user={this.props.user}>
 				<TopBar 
