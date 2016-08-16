@@ -4,7 +4,6 @@ import App from './app';
 import TopBar from './../components/admin/topbar';
 import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
-import difference from 'lodash/difference';
 import differenceBy from 'lodash/differenceBy';
 import 'app/sass/platform/_admin';
 
@@ -153,9 +152,19 @@ class Admin extends React.Component {
 
     refresh() {
         this.getData(undefined, { tab: this.state.activeTab }, (data) => {
-            const newData = differenceBy(data, this.state[this.state.activeTab], 'id');
-            this.setState({ [this.state.activeTab]:
-                this.state[this.state.activeTab].concat(newData) });
+            const oldData = this.state[this.state.activeTab];
+            const newData = differenceBy(data, oldData, 'id');
+
+            const updatedData = oldData.map(old => {
+                const updated = data.find(d => d.id === old.id);
+                if (updated && updated.posts.length !== old.posts.length) {
+                    return Object.assign({}, old, { posts: updated.posts });
+                }
+
+                return old;
+            }).concat(newData);
+
+            this.setState({ [this.state.activeTab]: updatedData });
         });
     }
 
