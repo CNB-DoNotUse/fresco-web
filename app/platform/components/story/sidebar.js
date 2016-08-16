@@ -7,22 +7,16 @@ import React, { PropTypes } from 'react';
 class Sidebar extends React.Component {
     renderStats() {
         const { story } = this.props;
-        if (!story || !story.stats) return '';
-
         return (
             <div className="meta-list">
                 <ul className="md-type-subhead">
                     <li>
-                        <span className="mdi mdi-image-multiple icon story-galleries"></span>
-                        <span>{story.stats.galleries} {story.stats.galleries > 1 ? 'galleries' : 'gallery'}</span>
-                    </li>
-                    <li>
                         <span className="mdi mdi-image icon"></span>
-                        <span>{story.stats.photos} {story.stats.photos > 1 ? 'photos' : 'photo'}</span>
+                        <span>{story.photo_count} {story.photo_count > 1 ? 'photos' : 'photo'}</span>
                     </li>
                     <li>
                         <span className="mdi mdi-movie icon"></span>
-                        <span>{story.stats.videos} {story.stats.videos > 1 ? 'videos' : 'video'}</span>
+                        <span>{story.video_count} {story.video_count > 1 ? 'videos' : 'video'}</span>
                     </li>
                 </ul>
             </div>
