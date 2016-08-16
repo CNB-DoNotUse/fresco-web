@@ -47,7 +47,6 @@ class Assignments extends React.Component {
             if (!assignments || !assignments.length) return;
 
             getData(assignments[assignments.length - 1].id, {
-                concat: true,
                 tab: 'assignments',
             },
             null);

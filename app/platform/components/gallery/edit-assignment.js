@@ -9,19 +9,20 @@ class EditAssignment extends React.Component {
     constructor(props) {
         super(props);
         this.state = { suggestions: [], query: '' };
+        this.onClick = this.onClick.bind(this);
     }
 
     componentWillMount() {
-        document.addEventListener('click', (e) => this.onClick(e), false);
+        document.addEventListener('click', this.onClick);
     }
 
     componentWillUnmount() {
-        document.removeEventListener('click', (e) => this.onClick(e), false);
+        document.removeEventListener('click', this.onClick);
     }
 
     onClick(e) {
         // if (ReactDOM.findDOMNode(this.area).contains(e.target)) {
-        if (this.area.contains(e.target)) {
+        if (this.area && this.area.contains(e.target)) {
             return;
         }
 
@@ -85,20 +86,24 @@ class EditAssignment extends React.Component {
     render() {
         const { query, suggestions } = this.state;
         const { assignments } = this.props;
-        const assignmentsJSX = assignments.map((a, i) => (
-            <Tag
-                key={i}
-                text={a.title}
-                plus={false}
-                onClick={() => this.removeAssignment(a.id)}
-            />
-        ));
+        const assignmentsJSX = assignments && assignments.length
+            ? assignments.map((a, i) => (
+                <Tag
+                    key={i}
+                    text={a.title}
+                    plus={false}
+                    onClick={() => this.removeAssignment(a.id)}
+                />
+            ))
+            : null;
 
-        const suggestionsJSX = suggestions.map((s, i) => (
-            <li onClick={() => this.addAssignment(s)} key={i}>
-                {s.title}
-            </li>
-        ));
+        const suggestionsJSX = suggestions && suggestions.length
+            ? suggestions.map((s, i) => (
+                <li onClick={() => this.addAssignment(s)} key={i}>
+                    {s.title}
+                </li>
+            ))
+            : null;
 
         return (
             <div ref={(r) => this.area = r} className="dialog-row split chips">

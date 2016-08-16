@@ -54,7 +54,7 @@ class GalleryEdit extends React.Component {
             editButtonsEnabled: false,
             tags: gallery.tags || [],
             stories: gallery.stories || [],
-            assignment: gallery.assignment || null,
+            assignments: [],
             caption: gallery.caption || 'No Caption',
             loading: false,
             location,
@@ -74,7 +74,7 @@ class GalleryEdit extends React.Component {
             address,
             // location,
             stories,
-            assignment,
+            assignments,
         } = this.state;
         const { gallery } = this.props;
 
@@ -89,8 +89,8 @@ class GalleryEdit extends React.Component {
             address,
             // geo: utils.getGeoFromCoord(location),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
+            assignment_id: assignments ? assignments.map(a => a.id) : [],
         };
-        if (assignment) params.assignment_id = assignment.id;
 
         return params;
     }
@@ -203,10 +203,6 @@ class GalleryEdit extends React.Component {
         this.setState({ tags });
     }
 
-    updateAssignment(assignment) {
-        this.setState({ assignment });
-    }
-
 	/**
 	 * Called when caption input fires keyUp event
 	 */
@@ -258,7 +254,7 @@ class GalleryEdit extends React.Component {
             stories,
             tags,
             caption,
-            assignment,
+            assignments,
             loading,
         } = this.state;
 
@@ -288,8 +284,8 @@ class GalleryEdit extends React.Component {
                     />
 
                     <EditAssignment
-                        assignment={assignment}
-                        updateAssignment={(a) => this.updateAssignment(a)}
+                        assignments={assignments}
+                        updateAssignments={(a) => this.setState({ assignments: a })}
                     />
 
                     <EditTags

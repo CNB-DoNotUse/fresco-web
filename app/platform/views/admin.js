@@ -5,6 +5,7 @@ import TopBar from './../components/admin/topbar';
 import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
 import difference from 'lodash/difference';
+import differenceBy from 'lodash/differenceBy';
 import 'app/sass/platform/_admin';
 
 /**
@@ -57,31 +58,10 @@ class Admin extends React.Component {
         this.setState({ activeTab: tab });
     }
 
-    getChangedData(newGalleries, currentGalleries) {
-        const newIDs = newGalleries.map(n => n.id);
-        const curIDs = currentGalleries.map(c => c.id);
-        const diffIds = difference(newIDs, curIDs);
-        const diffGalleries = [];
-
-        for (let x in newGalleries) {
-            if (diffIds.indexOf(newGalleries[x].id) !== -1) {
-                diffGalleries.push(newGalleries[x]);
-            }
-
-            if (diffIds.length === diffGalleries.length) break;
-        }
-
-        return diffGalleries;
-    }
-
     getData(last, options, callback) {
-        const self = this;
         const tab = options.tab || this.state.activeTab;
-        const newState = {};
         let params = {};
         let endpoint = '';
-        let concat = false;
-        let unshift = false;
         let cb = callback;
 
         // Set up endpoint and params depending on tab
@@ -103,49 +83,16 @@ class Admin extends React.Component {
         }
 
         if (typeof cb !== 'function') {
-            cb = typeof(options) === 'function' ? options : () => {};
-        } else if (options.concat) {
-            concat = true;
-        } else if (options.unshift) {
-            unshift = true;
+            cb = (data) => {
+                const newData = differenceBy(data, this.state[this.state.activeTab], 'id');
+                this.setState({ [this.state.activeTab]:
+                    this.state[this.state.activeTab].concat(newData) });
+            };
         }
 
         this.currentXHR = $.get(endpoint, params, (data) => {
             if (!data) {
                 return cb([]);
-            }
-
-            let stateData = this.state[tab];
-            if (!stateData || !stateData.length) {
-                const state = {};
-                state[tab] = data;
-                if (unshift) self.setState(state);
-
-                return cb(data);
-            }
-
-            const newData = this.getChangedData(stateData.concat(data), stateData);
-            if (!newData || !newData.length) {
-                return cb([]);
-            }
-
-            if (concat || unshift) {
-                if (concat) stateData = stateData.concat(data);
-
-                if (unshift) {
-                    if (stateData.length) {
-                        // Filter posts newer than newest
-                        for (let i = 0; i < newData.length; i++) {
-                            if (newData[i].created_at < stateData[0].created_at) {
-                                newData.splice(i, 1);
-                            }
-                        }
-                    }
-                    stateData.unshift(...newData);
-                }
-
-                newState[tab] = stateData;
-                self.setState(newState);
             }
 
             return cb(data);
@@ -205,7 +152,11 @@ class Admin extends React.Component {
     }
 
     refresh() {
-        this.getData(undefined, { unshift: true, tab: this.state.activeTab }, () => {});
+        this.getData(undefined, { tab: this.state.activeTab }, (data) => {
+            const newData = differenceBy(data, this.state[this.state.activeTab], 'id');
+            this.setState({ [this.state.activeTab]:
+                this.state[this.state.activeTab].concat(newData) });
+        });
     }
 
     resetAssignments() {
@@ -280,7 +231,6 @@ class Admin extends React.Component {
                 <Assignments
                     assignments={this.getAssignments()}
                     getData={(l, o, cb) => this.getData(l, o, cb)}
-                    refresh={() => this.refresh()}
                     removeAssignment={(id, cb) => this.removeAssignment(id, cb)}
                 />
             );
@@ -290,7 +240,6 @@ class Admin extends React.Component {
                 <Galleries
                     galleries={this.getSubmissions()}
                     getData={(l, o, cb) => this.getData(l, o, cb)}
-                    refresh={() => this.refresh()}
                     removeGallery={(id, cb) => this.removeSubmission(id, cb)}
                     galleryType="submissions"
                 />
@@ -301,7 +250,6 @@ class Admin extends React.Component {
                 <Galleries
                     galleries={this.getImports()}
                     getData={(l, o, cb) => this.getData(l, o, cb)}
-                    refresh={() => this.refresh()}
                     removeGallery={(id, cb) => this.removeImport(id, cb)}
                     galleryType="imports"
                 />

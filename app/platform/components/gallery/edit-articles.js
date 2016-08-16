@@ -15,19 +15,20 @@ class EditArticles extends React.Component {
             suggestions: [],
             query: '',
         };
+        this.onClick = this.onClick.bind(this);
     }
 
     componentWillMount() {
-        document.addEventListener('click', (e) => this.onClick(e), false);
+        document.addEventListener('click', this.onClick);
     }
 
     componentWillUnmount() {
-        document.removeEventListener('click', (e) => this.onClick(e), false);
+        document.removeEventListener('click', this.onClick);
     }
 
     onClick(e) {
         // if (ReactDOM.findDOMNode(this.area).contains(e.target)) {
-        if (this.area.contains(e.target)) {
+        if (this.area && this.area.contains(e.target)) {
             return;
         }
 
