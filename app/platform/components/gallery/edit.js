@@ -238,23 +238,25 @@ class Edit extends React.Component {
     }
 
     savePostsLocations() {
-        const { gallery } = this.props;
-        const { address, location } = this.state;
-        // check to see if should save locations on all gallery's posts
-        if (isEqual(this.getInitialLocationData(), { address, location })) {
-            return Promise.resolve();
-        }
-        if (!gallery.posts || !gallery.posts.length) return Promise.resolve();
+        // TODO: waiting for api bug with post/update to be resolved
+        return Promise.resolve();
+        // const { gallery } = this.props;
+        // const { address, location } = this.state;
+        // // check to see if should save locations on all gallery's posts
+        // if (isEqual(this.getInitialLocationData(), { address, location })) {
+        //     return Promise.resolve();
+        // }
+        // if (!gallery.posts || !gallery.posts.length) return Promise.resolve();
 
-        return gallery.posts.map(p => (
-            $.ajax({
-                url: `/api/post/${p.id}/update`,
-                method: 'post',
-                data: JSON.stringify({ address, location }),
-                dataType: 'json',
-                contentType: 'application/json',
-            })
-        ));
+        // return gallery.posts.map(p => (
+        //     $.ajax({
+        //         url: `/api/post/${p.id}/update`,
+        //         method: 'post',
+        //         data: JSON.stringify({ address, location }),
+        //         dataType: 'json',
+        //         contentType: 'application/json',
+        //     })
+        // ));
     }
 
     removeGallery(id) {
