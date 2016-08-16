@@ -9,9 +9,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 /**
  * Contact `Get in Touch` Modal
  */
-
 .contact{
-	@extend .modal_window;
 	max-width:320px;
 	overflow:hidden;
 	margin-top:5%;
@@ -25,10 +23,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		@include mobile{
 			height:180px;
 		}
-	}
-
-	input[type="submit"]{
-		
 	}
 
 	.header{

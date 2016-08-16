@@ -65,7 +65,7 @@ class GalleryList extends React.Component {
         if (highlighted) {
             endpoint = 'gallery/highlights';
         } else if(onlyVerified) {
-            params.rating = [2];
+            params.rating = 2;
         } else {
             params.rating = [0, 2];
         }

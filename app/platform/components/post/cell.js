@@ -55,7 +55,7 @@ class PostCell extends React.Component {
 
         // Class name for post tile icon
         let statusClass = 'mdi icon pull-right ';
-        statusClass += post.video == null ? 'mdi-image ' : 'mdi-movie ';
+        statusClass += post.stream == null ? 'mdi-image ' : 'mdi-movie ';
         statusClass += purchased ? 'available ' : 'md-type-black-disabled ';
 
         return (

@@ -5,9 +5,9 @@
 	outlet = typeof(invite.outlet) !== 'undefined' ? invite.outlet  : null;
 %>
 
-<script type="text/javascript">let token = '<%- invite.token %>'</script>
+<script type="text/javascript">var token = '<%- invite.token %>'</script>
 
-<div class="modal join <%- active %>" id="_join">
+<div class="modal modal_window join <%- active %>" id="_join">
 	<div class="body">
 		<div class="form-wrap">
 			<form id="join-form" class="<%- accountExists ? 'exists' : 'new' %>">

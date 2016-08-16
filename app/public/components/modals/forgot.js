@@ -1,11 +1,10 @@
 /**
- * Forgot prototype object
+ * Forgot form prototype object
  */
 let Forgot = function(){
 	this.form = document.getElementById('forgot-form');
 	this.emailField = document.getElementById('forgot-email');
 	this.disabled = false;
-	
 	this.processing = false;
 
 	return this;
@@ -25,34 +24,26 @@ Forgot.prototype.handleForm = function(e) {
 
 	this.processing = true;
 
-	const email = this.emailField.value;
+	const username = this.emailField.value;
 
-	if(!/\S/.test(email)){
+	if(!/\S/.test(username)){
 		this.processing = false;
-
-		return $.snackbar({content: 'Please enter an email!'})
+		return $.snackbar({content: 'Please enter in an email!'})
 	}
 
 	$.ajax({
-		url: "/scripts/user/reset",
-		dataType: "JSON",
-		data: { email },
-		type: "POST",
-		success: (response) => {
-			if(response.err){
-				let error = response.err.charAt(0).toUpperCase() + response.err .slice(1);
-
-				$.snackbar({ content: error});
-			}
-			else{
-				$.snackbar({ content: 'Password request successfuly sent! Please check your email'});
-			}
-
-			this.processing = false;
-		},
-		error: function(xhr, status, err) {
-			$.snackbar({ content: 'An error occured and we can\'t reset your password right now. Please try again in a bit.' });
-		}
+	    url: "/scripts/user/reset/request",
+	    data: { username },
+	    method: "POST"
+	})
+	.done((response) => {
+		$.snackbar({ content: 'Please check your email for a password reset link!'});
+	})
+	.fail((error) => {
+	    $.snackbar({content: error.responseJSON.msg});
+	})
+	.always(() => {
+		this.processing = false;
 	});
 }
 

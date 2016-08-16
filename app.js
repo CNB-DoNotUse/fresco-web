@@ -87,10 +87,10 @@ app.use(
  * Alert & Verifications check
  */
 app.use((req, res, next) => {
-    app.locals.alerts = [];
+    res.locals.alerts = [];
 
     if (req.session && req.session.user && !req.session.user.verified){
-        app.locals.alerts.push('\
+        res.locals.alerts.push('\
             <p>Your email hasn\'t been verified.\
                 <br>Please click on the link sent to your inbox to verify your email!\
             </p>\
@@ -99,12 +99,10 @@ app.use((req, res, next) => {
     }
 
     if (req.session && req.session.alerts){
-        app.locals.alerts = app.locals.alerts.concat(req.session.alerts);
+        res.locals.alerts = res.locals.alerts.concat(req.session.alerts);
         
         delete req.session.alerts;
-        req.session.save(() => {
-            return next();
-        });
+        req.session.save(null);
     }
 
     next();

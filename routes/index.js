@@ -36,7 +36,7 @@ router.get('/:modal?', (req, res, next) => {
  */
 router.get('/join/:token', (req, res, next) => {
     if (!req.params.token) {
-        return res.redirect('/');
+        return next();
     }
 
     // Make request for invite
@@ -76,61 +76,50 @@ router.get('/join/:token', (req, res, next) => {
 });
 
 /**
- * Email verify page
+ * Reset password success page
  */
-router.get('/verify', (req, res, next) => {
+router.get('/reset/success', (req, res, next) => {
+    return res.render('index', {
+        page: 'index',
+        modal: 'reset-success',
+        aliases: routes.aliases,
+        modals: routes.modals
+    });
+});
 
-    // //Check if the user is logged in already
-    // if (req.session && req.session.user && req.session.user.verified) {
-    //     req.session.alerts = ['Your email is already verified!'];
+/**
+ * Reset password page
+ */
+router.get('/reset/:token', (req, res, next) => {
+    if (!req.params.token) {
+        return next();
+    }
 
-    //     return req.session.save(() => {
-    //         res.redirect('/');
-    //         res.end();
-    //     });
-    // }
+    // Make request for invite
+    API.request({
+        method: 'GET',
+        url: `/auth/reset/${req.params.token}`
+    })
+    .then((response) => {
+        const { body } = response;
 
-    // //Check if the verification link query is valid
-    // if (!req.query.t) {
-    //     req.session.alerts = ['Invalid verification link'];
-    //     return req.session.save(() => {
-    //         res.redirect('/');
-    //         res.end();
-    //     });
-    // }
+        return res.render('index', {
+            page: 'index',
+            modal: 'reset',
+            token: req.params.token,
+            hasOutlet: body.outlet !== undefined,
+            aliases: routes.aliases,
+            modals: routes.modals.concat('reset'),
+        });
+    })
+    .catch(error => {
+        req.session.alerts = ['That password reset link is invalid!'];
 
-    // api.post('/v1/user/verify', { token: req.query.t}, doAfterUserVerify);
-
-    // function doAfterUserVerify(error, response, body) {
-    //     if (error || !body) {
-    //       req.session.alerts = ['Error connecting to server'];
-
-    //       return req.session.save(() => {
-    //         res.redirect('/');
-    //         res.end();
-    //       });
-    //     }
-
-    //     if (body.err) {
-    //         req.session.alerts = [config.resolveError(body.err)];
-
-    //         return req.session.save(() => {
-    //             res.redirect('/');
-    //             res.end();
-    //         });
-    //     }
-
-    //     req.session.alerts = ['Your email has been verified!'];
-
-    //     if (req.session && req.session.user) {
-    //         req.session.user = body.data;
-    //     }
-
-    //     return req.session.save(() => {
-    //         res.redirect('/');
-    //         res.end();
-    //     });
-    // }
+        return req.session.save(() => {
+            res.redirect('/');
+            res.end();
+        });
+    });
 });
 
 module.exports = router;
