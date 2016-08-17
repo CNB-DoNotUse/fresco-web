@@ -25,18 +25,18 @@ export default class PostInfo extends React.Component {
 		let verifyClass = '';
 		let userName = '';
 
-	 	//Define verifier text based on approvals
+        //Define verifier text based on approvals
         if (post.rating >= 2) {
-			verifiedBy = 'Verified';
-			verifyClass = "mdi icon verified mdi-checkbox-marked-circle";
+            verifiedBy = 'Verified';
+            verifyClass = "mdi icon verified mdi-checkbox-marked-circle";
 
-            if (user.permissions.includes('update-other-content')) {
-				 verifiedBy += ` by ${post.curator.full_name}`;
-			}
-		} else {
-			verifiedBy = 'Not yet verified';
-			verifyClass = 'mdi mdi-alert-circle icon';
-		}
+            if (user.permissions.includes('update-other-content') && post.curator) {
+                 verifiedBy += ` by ${post.curator.full_name}`;
+            }
+        } else {
+            verifiedBy = 'Not yet verified';
+            verifyClass = 'mdi mdi-alert-circle icon';
+        }
 
         //Check to show user icon
         if(post.owner){
@@ -80,6 +80,7 @@ export default class PostInfo extends React.Component {
 					<div className="col-xs-12 col-sm-7 col-md-12">
 						<div className="meta-user">
 							{userIcon}
+
 							<div>
 								<a href={ post.owner ? "/user/" + post.owner.id : ""}>
 									<span className="md-type-title">{userName}</span>
