@@ -7,7 +7,9 @@ export default class Info extends React.Component {
         super(props);
 
         this.state = {
-            outletAvatar: this.props.outlet.avatar
+            outletAvatar: this.props.outlet.avatar,
+            changes: [],
+            disabled: true
         }
 
         this.avatarInputChange = this.avatarInputChange.bind(this);
@@ -25,6 +27,35 @@ export default class Info extends React.Component {
         }
     }
 
+
+    /**
+     * Input change event for tracking changes in state
+     * @param {String} value Value of the field
+     * @param {String} originalValue The original value to compare against
+     * @param {String} source Unique source for tracking changes
+     */
+    onInputChange(value, originalValue, source) {
+        const { changes } = this.state
+        const changed = value !== originalValue;
+
+        if(changed && !changes.includes(source)) {
+            this.setState({
+                disabled: false,
+                changes: changes.concat(source)
+            });
+        } else if(!changed) {
+            if(changes.length <= 1 && changes.includes(source)) {
+                this.setState({ 
+                    disabled: true, 
+                    changes: []
+                });
+            } else {            
+                this.setState({ 
+                    changes: changes.filter(change => change !== source)
+                });
+            }        
+        }
+    }
 
 	/**
 	 * File lisntener for outlet avater
@@ -54,17 +85,16 @@ export default class Info extends React.Component {
         const avatarFiles = this.refs['avatarFileInput'].files;
         const params = {
             bio: this.refs.bio.value,
-            link: this.refs['outlet-website'].value,
+            link: this.refs.link.value,
             title: this.refs.name.value
         };
 
+        //Check so we don't call outlet/update without needing to, and just go straight to updating the avatar
         if(!utils.compareObjects(params, this.props.outlet)) {
             this.updateInfo(avatarFiles, params);
         } else {
             if(avatarFiles.length) {
                 this.updateAvatar(avatarFiles);
-            } else {
-                return $.snackbar({ content: 'Trying making a few changes to your outlet, then try saving!' });
             }
         }
     }
@@ -133,6 +163,7 @@ export default class Info extends React.Component {
 
     render() {
         const { outlet } = this.props;
+        const { disabled } = this.state;
 
         return (
             <div className="card settings-info">
@@ -141,7 +172,7 @@ export default class Info extends React.Component {
                     ref="outlet-avatar-image" 
                     style={{backgroundImage: 'url(' + this.state.outletAvatar + ')'}} 
                 >
-                    <div className="overlay" onClick={() => { this.refs.avatarFileInput.click() }}>
+                    <div className="overlay" onClick={() => this.refs.avatarFileInput.click()}>
                         <span className="mdi mdi-upload"></span>
                     </div>
                 </div>
@@ -158,30 +189,30 @@ export default class Info extends React.Component {
 
                     <input
                         type="text"
-                        className="outlet-name"
                         ref="name"
                         placeholder="Outlet name"
+                        onKeyUp={(e) => this.onInputChange(e.target.value,  outlet.title, 'title')}
                         defaultValue={outlet.title}
                     />
 
                     <input
                         type="text"
-                        className="outlet-website"
-                        ref="outlet-website"
+                        ref="link"
                         placeholder="Website"
+                        onKeyUp={(e) => this.onInputChange(e.target.value,  outlet.link, 'link')}
                         defaultValue={outlet.link}
                     />
 
                     <textarea
-                        className="outlet-bio"
                         ref="bio"
                         rows="2"
                         placeholder="Bio"
+                        onKeyUp={(e) => this.onInputChange(e.target.value,  outlet.bio, 'bio')}
                         defaultValue={outlet.bio}
                     />
 
                     <button 
-                        className="btn btn-flat card-foot-btn" 
+                        className={`btn btn-flat changed card-foot-btn ${disabled ? 'disabled' : ''}`} 
                         onClick={this.updateSettings}>SAVE CHANGES</button>
                 </div>
             </div>
