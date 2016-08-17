@@ -32,9 +32,9 @@ class Sidebar extends React.Component {
     }
 
     renderUserMeta(user) {
-        const { photos, videos } = user;
+        const { photo_count, video_count } = user;
 
-        if (!photos && !videos) {
+        if (!photo_count && !video_count) {
             return (
                 <div className="meta-user--stats">
                     New user!
@@ -44,12 +44,12 @@ class Sidebar extends React.Component {
 
         return (
             <div className="meta-user--stats">
-                {user.location ? 
+                {user.location ?
                     <span>{user.location}<span style={{ fontWeight: 700 }}> · </span></span>
                     : ''
                 }
 
-                {`${photos} photos, ${videos} videos`}
+                {`${photo_count} photos, ${video_count} videos`}
             </div>
         );
     }
