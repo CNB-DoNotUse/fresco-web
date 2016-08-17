@@ -61,44 +61,50 @@ class Sidebar extends React.Component {
         return (
             <div className="col-sm-4 profile hidden-xs">
                 <div className="container-fluid fat">
-                    <div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-                        <img
-                            className="img-responsive img-avatar"
-                            src={avatar}
-                            role="presentation"
-                        />
+                    <div>
+                        <div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+                            <img
+                                className="img-responsive img-avatar"
+                                src={avatar}
+                                role="presentation"
+                            />
+                        </div>
+                        <div className="col-sm-11 col-md-10 col-sm-offset-1 col-md-offset-2">
 
-                        <div className="meta meta-user">
-                            <div className="meta-user--icon">
-                                <i className="mdi mdi-account" />
-                            </div>
-                            <div className="meta-user--text">
-                                {this.renderUserName(detailUser)}
-                                {this.renderUserMeta(detailUser)}
-                            </div>
-                            <div className="meta-list">
-                                <ul className="md-type-subhead">
-                                    {detailUser.email ?
-                                        <li className="ellipses">
-                                            <span className="mdi mdi-email icon"></span>
-                                            <a target="_top" href={`mailto:${detailUser.email}`}>
-                                                {detailUser.email}
-                                            </a>
-                                        </li>
-                                    : ''}
+                            <div className="meta meta-user">
+                                <div className="meta-user--icon">
+                                    <i className="mdi mdi-account" />
+                                </div>
+                                <div className="meta-user--text">
+                                    {this.renderUserName(detailUser)}
+                                    {this.renderUserMeta(detailUser)}
+                                </div>
+                                <div className="meta-list">
+                                    <ul className="md-type-subhead">
+                                        {detailUser.email
+                                            ? <li className="ellipses">
+                                                <span className="mdi mdi-email icon"></span>
+                                                <a target="_top" href={`mailto:${detailUser.email}`}>
+                                                    {detailUser.email}
+                                                </a>
+                                            </li>
+                                            : ''
+                                        }
 
-                                    {detailUser.stripe_account_id ?
-                                        <li className="ellipses">
-                                            <span className="mdi mdi-bank icon"></span>
-                                            <a
-                                                target="_top"
-                                                href={`https://dashboard.stripe.com/${detailUser.stripe}`}
-                                            >
-                                                Stripe
-                                            </a>
-                                        </li>
-                                    : ''}
-                                </ul>
+                                        {detailUser.stripe_account_id
+                                            ? <li className="ellipses">
+                                                <span className="mdi mdi-bank icon"></span>
+                                                <a
+                                                    target="_top"
+                                                    href={`https://dashboard.stripe.com/${detailUser.stripe}`}
+                                                >
+                                                    Stripe
+                                                </a>
+                                            </li>
+                                            : ''
+                                        }
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>

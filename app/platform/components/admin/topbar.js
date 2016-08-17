@@ -85,11 +85,11 @@ class TopBar extends React.Component {
             }
             return null;
         })
-        .then(() => {
-            this.setState({ loading: false });
-        })
         .catch(() => {
             $.snackbar({ content: 'Failed to import media' });
+        })
+        .then(() => {
+            this.setState({ loading: false });
         });
     }
 
