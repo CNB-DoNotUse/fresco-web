@@ -4,12 +4,12 @@ import EditStories from './edit-stories';
 import EditArticles from './edit-articles';
 import EditPosts from './edit-posts';
 import EditAssignment from './edit-assignment';
+import EditByline from './edit-byline';
 import AutocompleteMap from '../global/autocomplete-map';
 import utils from 'utils';
 import request from 'superagent';
 import times from 'lodash/times';
 import get from 'lodash/get';
-import isEqual from 'lodash/isEqual';
 
 /**
  * Gallery Edit Parent Object
@@ -134,6 +134,8 @@ class Edit extends React.Component {
             caption: 'No Caption',
             articles: [],
             rating: gallery.rating,
+            external_account_name: '',
+            external_source: '',
         });
     }
 
@@ -166,6 +168,8 @@ class Edit extends React.Component {
             uploads: [],
             loading: false,
             ...this.getInitialLocationData(),
+            external_account_name: gallery.external_account_name,
+            external_source: gallery.external_source,
         };
     }
 
@@ -181,6 +185,8 @@ class Edit extends React.Component {
             stories,
             articles,
             assignment,
+            external_account_name,
+            external_source,
         } = this.state;
         const { gallery } = this.props;
         const posts = this.getPostsFormData();
@@ -198,6 +204,8 @@ class Edit extends React.Component {
         const params = {
             tags,
             caption,
+            external_account_name,
+            external_source,
             ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
@@ -322,26 +330,6 @@ class Edit extends React.Component {
         this.props.toggle();
     }
 
-    renderByline() {
-        const { gallery } = this.props;
-        if (!gallery || !gallery.posts) return null;
-        if (gallery.posts.every(p => p.owner_id === gallery.owner_id)) {
-            return (
-                <div className="dialog-row">
-                    <textarea
-                        type="text"
-                        className="form-control"
-                        value={utils.getBylineFromGallery(this.props.gallery) || ''}
-                        placeholder="Byline"
-                        disabled
-                    />
-                </div>
-            );
-        }
-
-        return null;
-    }
-
     renderAddMore() {
         const { gallery } = this.props;
         if (!gallery || !gallery.posts) return null;
@@ -392,6 +380,8 @@ class Edit extends React.Component {
             articles,
             posts,
             uploads,
+            external_account_name,
+            external_source,
         } = this.state;
         if (!gallery) return '';
 
@@ -399,7 +389,15 @@ class Edit extends React.Component {
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
 
-                    {this.renderByline()}
+                    <EditByline
+                        gallery={gallery}
+                        external_source={external_source}
+                        external_account_name={external_account_name}
+                        onChangeExtAccountName={(a) =>
+                                this.setState({ external_account_name: a })}
+                        onChangeExtSource={(s) =>
+                                this.setState({ external_source: s })}
+                    />
 
                     <div className="dialog-row">
                         <textarea
