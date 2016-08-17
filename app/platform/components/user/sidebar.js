@@ -68,9 +68,6 @@ class Sidebar extends React.Component {
                                 src={avatar}
                                 role="presentation"
                             />
-                        </div>
-                        <div className="col-sm-11 col-md-10 col-sm-offset-1 col-md-offset-2">
-
                             <div className="meta meta-user">
                                 <div className="meta-user--icon">
                                     <i className="mdi mdi-account" />

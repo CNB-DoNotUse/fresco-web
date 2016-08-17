@@ -39,8 +39,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 // detail
 .meta-user {
-    overflow: scroll;
     white-space: nowrap;
+    width: 100%;
 }
 
 .meta-user--icon {
@@ -65,6 +65,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     display: inline-block;
     vertical-align: top;
     margin-left: 16px;
+    width: 100%;
 }
 
 .meta-user--name {
@@ -86,5 +87,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     vertical-align: bottom;
     font-size: 14px;
     color: rgba(0, 0, 0, 0.54);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
 }
 
