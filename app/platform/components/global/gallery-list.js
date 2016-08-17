@@ -57,7 +57,8 @@ class GalleryList extends React.Component {
         const params = {
             limit: 20,
             last,
-            sort
+            sort,
+            imported: false,
         };
 
         let endpoint = 'gallery/list';
