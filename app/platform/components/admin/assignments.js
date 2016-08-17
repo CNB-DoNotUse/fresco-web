@@ -36,11 +36,7 @@ class Assignments extends React.Component {
         });
     }
 
-    setActiveAssignment(assignment) {
-        this.setState({ activeAssignment: assignment });
-    }
-
-    scroll(e) {
+    onScroll(e) {
         const { assignments, getData } = this.props;
         const target = e.target;
         if (target.scrollTop === target.scrollHeight - target.offsetHeight) {
@@ -51,6 +47,10 @@ class Assignments extends React.Component {
             },
             null);
         }
+    }
+
+    setActiveAssignment(assignment) {
+        this.setState({ activeAssignment: assignment });
     }
 
     renderAssignments() {
@@ -83,7 +83,7 @@ class Assignments extends React.Component {
 
         return (
             <div className="container-fluid admin">
-                <div className="col-md-6 col-lg-7 list" onScroll={(e) => this.scroll(e)}>
+                <div className="col-md-6 col-lg-7 list" onScroll={(e) => this.onScroll(e)}>
                     {this.renderAssignments()}
                 </div>
                 <div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">

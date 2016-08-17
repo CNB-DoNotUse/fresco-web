@@ -33,7 +33,7 @@ class TopBar extends React.Component {
             if (files[i]) {
                 return new Promise((resolve, reject) => {
                     request
-                        .put(p.url)
+                        .put(p.upload_url)
                         .set('Content-Type', files[i].type)
                         .send(files[i])
                         .end((err) => {

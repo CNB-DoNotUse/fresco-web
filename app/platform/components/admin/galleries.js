@@ -37,11 +37,7 @@ class Galleries extends React.Component {
         });
     }
 
-    setActiveGallery(activeGallery) {
-        this.setState({ activeGallery });
-    }
-
-    scroll(e) {
+    onScroll(e) {
         const { getData, galleries, galleryType } = this.props;
         const target = e.target;
 
@@ -53,6 +49,10 @@ class Galleries extends React.Component {
             },
             null);
         }
+    }
+
+    setActiveGallery(activeGallery) {
+        this.setState({ activeGallery });
     }
 
     renderGalleries() {
@@ -96,7 +96,7 @@ class Galleries extends React.Component {
 
         return (
             <div className="container-fluid admin">
-                <div className="col-md-6 col-lg-7 list" onScroll={(e) => this.scroll(e)}>
+                <div className="col-md-6 col-lg-7 list" onScroll={(e) => this.onScroll(e)}>
                     {this.renderGalleries()}
                 </div>
                 <div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">
