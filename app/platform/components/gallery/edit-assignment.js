@@ -51,55 +51,37 @@ class EditAssignment extends React.Component {
 
     onKeyUpQuery(e) {
         const { suggestions, query } = this.state;
+        const { updateAssignment } = this.props;
 
         if (e.keyCode === 13 && query.length > 0) {
             const matched = suggestions.find((s) => (
                 s.title.toLowerCase() === query.toLowerCase()
             ));
 
-            if (matched) this.addAssignment(matched);
+            if (matched) updateAssignment(matched);
         }
-    }
-
-    /**
-     * Adds assignment at passed index to current assignment
-     * @param {[type]} index [description]
-     */
-    addAssignment(assignment) {
-        let { assignments } = this.props;
-        if (assignments.some((a) => (a.id === assignment.id))) return;
-        assignments = assignments.concat(assignment);
-
-        this.setState({ query: '' }, this.props.updateAssignments(assignments));
-    }
-
-    /**
-     * Removes story and updates to parent
-     */
-    removeAssignment(id) {
-        let { assignments } = this.props;
-        assignments = reject(assignments, { id });
-
-        this.props.updateAssignments(assignments);
     }
 
     render() {
         const { query, suggestions } = this.state;
-        const { assignments } = this.props;
-        const assignmentsJSX = assignments && assignments.length
-            ? assignments.map((a, i) => (
-                <Tag
-                    key={i}
-                    text={a.title}
-                    plus={false}
-                    onClick={() => this.removeAssignment(a.id)}
-                />
-            ))
+        const { assignment, updateAssignment } = this.props;
+        const assignmentsJSX = assignment
+            ? <Tag
+                text={assignment.title}
+                plus={false}
+                onClick={() => updateAssignment(null)}
+            />
             : null;
 
         const suggestionsJSX = suggestions && suggestions.length
             ? suggestions.map((s, i) => (
-                <li onClick={() => this.addAssignment(s)} key={i}>
+                <li
+                    key={i}
+                    onClick={() => {
+                        updateAssignment(s);
+                        this.setState({ query: '' });
+                    }}
+                >
                     {s.title}
                 </li>
             ))
@@ -134,8 +116,8 @@ class EditAssignment extends React.Component {
 }
 
 EditAssignment.propTypes = {
-    updateAssignments: PropTypes.func.isRequired,
-    assignments: PropTypes.array.isRequired,
+    updateAssignment: PropTypes.func.isRequired,
+    assignment: PropTypes.object,
 };
 
 export default EditAssignment;

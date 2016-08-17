@@ -129,7 +129,7 @@ class Edit extends React.Component {
         this.setState({
             tags: [],
             stories: [],
-            assignments: [],
+            assignment: null,
             address: '',
             caption: 'No Caption',
             articles: [],
@@ -158,7 +158,7 @@ class Edit extends React.Component {
         return {
             tags: gallery.tags || [],
             stories: gallery.stories,
-            assignments: [],
+            assignment: null,
             caption: gallery.caption || 'No Caption',
             posts: gallery.posts,
             articles: gallery.articles,
@@ -180,7 +180,7 @@ class Edit extends React.Component {
             caption,
             stories,
             articles,
-            assignments,
+            assignment,
         } = this.state;
         const { gallery } = this.props;
         const posts = this.getPostsFormData();
@@ -201,7 +201,7 @@ class Edit extends React.Component {
             ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
-            assignment_id: assignments.map(a => a.id),
+            assignment_id: assignment ? assignment.id : null,
         };
 
         return params;
@@ -386,7 +386,7 @@ class Edit extends React.Component {
         const {
             stories,
             caption,
-            assignments,
+            assignment,
             tags,
             rating,
             articles,
@@ -414,8 +414,8 @@ class Edit extends React.Component {
                     </div>
 
                     <EditAssignment
-                        assignments={assignments}
-                        updateAssignments={(a) => this.setState({ assignments: a })}
+                        assignment={assignment}
+                        updateAssignment={(a) => this.setState({ assignment: a })}
                     />
 
                     <EditTags
