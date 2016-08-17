@@ -16,7 +16,7 @@ export default class PostInfo extends React.Component {
 
 	render() {
 		//Init needed vars to make list
-        const { post, gallery, verifier, user } = this.props;
+        const { post, gallery, user } = this.props;
 		let userIcon = '';
 		let twitter = '';
 	    let	curator = '';
@@ -25,22 +25,14 @@ export default class PostInfo extends React.Component {
 		let verifyClass = '';
 		let userName = '';
 
-		// Define username based on post meta
-		if (post.meta && post.meta.twitter) {
-	 		userName = post.meta.twitter.user_name;
-        } else if (post.owner) {
-	 		userName = post.owner.full_name || post.owner.username;
-        }
-
 	 	//Define verifier text based on approvals
         if (post.rating >= 2) {
 			verifiedBy = 'Verified';
 			verifyClass = "mdi icon verified mdi-checkbox-marked-circle";
 
-            if (user.permissions.includes('rate-other-content') && verifier) {
-				 verifiedBy += ' by ' + verifier;
+            if (user.permissions.includes('update-other-content')) {
+				 verifiedBy += ` by ${post.curator.full_name}`;
 			}
-
 		} else {
 			verifiedBy = 'Not yet verified';
 			verifyClass = 'mdi mdi-alert-circle icon';
@@ -48,6 +40,8 @@ export default class PostInfo extends React.Component {
 
         //Check to show user icon
         if(post.owner){
+            userName = post.owner.full_name || post.owner.username;
+
             userIcon = (
                 <div>
                     <img
@@ -61,11 +55,11 @@ export default class PostInfo extends React.Component {
         }
 
 		// Check to show twitter item
-		if (post.meta && post.meta.twitter && post.meta.twitter.url){
+		if (gallery.external_source === 'twitter'){
             twitter = (
                 <li>
                     <span className="mdi mdi-twitter icon"></span>
-                    <a href={ post.meta.twitter.url } target="_blank">See original</a>
+                    <a href={gallery.external_url} target="_blank">See original</a>
                 </li>
             );
 		}
@@ -75,7 +69,7 @@ export default class PostInfo extends React.Component {
             curator = (
                 <li>
                     <span className="mdi mdi-account icon"></span>
-                    {this.props.gallery.curator.firstname + ' ' + this.props.gallery.curator.lastname}
+                    {this.props.gallery.curator.full_name}
                 </li>
             );
         }
