@@ -4,7 +4,6 @@ import App from './app.js';
 import TopBar from '../components/topbar';
 import QuickSupport from '../components/global/quick-support';
 import PasswordDialog from '../components/dialogs/password';
-import DynamicInput from '../components/global/dynamic-input';
 import utils from 'utils';
 import _ from 'lodash';
 import '../../sass/platform/user.scss';;
