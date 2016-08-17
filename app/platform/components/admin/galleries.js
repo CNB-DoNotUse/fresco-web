@@ -82,17 +82,6 @@ class Galleries extends React.Component {
 
     render() {
         const { activeGallery } = this.state;
-        let editPane = '';
-
-        if (activeGallery && activeGallery.id) {
-            editPane = (
-                <GalleryEdit
-                    galleryType={this.props.galleryType}
-                    gallery={activeGallery}
-                    onUpdateGallery={(id) => this.onUpdateGallery(id)}
-                />
-            );
-        }
 
         return (
             <div className="container-fluid admin">
@@ -100,7 +89,14 @@ class Galleries extends React.Component {
                     {this.renderGalleries()}
                 </div>
                 <div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">
-                    {editPane}
+                    {activeGallery && activeGallery.id
+                        ? <GalleryEdit
+                            galleryType={this.props.galleryType}
+                            gallery={activeGallery}
+                            onUpdateGallery={(id) => this.onUpdateGallery(id)}
+                        />
+                        : null
+                    }
                 </div>
             </div>
         );

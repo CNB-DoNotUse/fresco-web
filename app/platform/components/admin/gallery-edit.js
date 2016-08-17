@@ -4,6 +4,7 @@ import AutocompleteMap from '../global/autocomplete-map';
 import EditTags from './../gallery/edit-tags';
 import EditStories from './../gallery/edit-stories';
 import EditAssignment from './../gallery/edit-assignment';
+import EditByline from './../gallery/edit-byline';
 import FrescoImage from '../global/fresco-image';
 import utils from 'utils';
 
@@ -16,10 +17,6 @@ class GalleryEdit extends React.Component {
         super(props);
 
         this.state = this.getStateFromProps(props);
-    }
-
-    componentDidMount() {
-        $.material.init();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -57,6 +54,8 @@ class GalleryEdit extends React.Component {
             assignment: null,
             caption: gallery.caption || 'No Caption',
             loading: false,
+            external_account_name: gallery.external_account_name,
+            external_source: gallery.external_source,
             location,
             address,
         };
@@ -75,6 +74,8 @@ class GalleryEdit extends React.Component {
             // location,
             stories,
             assignment,
+            external_account_name,
+            external_source,
         } = this.state;
         const { gallery } = this.props;
 
@@ -90,6 +91,8 @@ class GalleryEdit extends React.Component {
             // geo: utils.getGeoFromCoord(location),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             assignment_id: assignment ? assignment.id : null,
+            external_account_name,
+            external_source,
         };
 
         return params;
@@ -256,6 +259,8 @@ class GalleryEdit extends React.Component {
             caption,
             assignment,
             loading,
+            external_account_name,
+            external_source,
         } = this.state;
 
         if (!gallery) {
@@ -273,6 +278,16 @@ class GalleryEdit extends React.Component {
                             {this.renderPosts()}
                         </Slider>
                     </div>
+
+                    <EditByline
+                        gallery={gallery}
+                        external_account_name={external_account_name}
+                        external_source={external_source}
+                        onChangeExtAccountName={(a) =>
+                                this.setState({ external_account_name: a })}
+                        onChangeExtSource={(s) =>
+                                this.setState({ external_source: s })}
+                    />
 
                     <textarea
                         type="text"
