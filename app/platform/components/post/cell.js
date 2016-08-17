@@ -4,6 +4,7 @@ import FrescoImage from '../global/fresco-image';
 import Actions from './cell-actions';
 import Stories from './cell-stories';
 import Time from './cell-time';
+import utils from 'utils';
 
 /**
  * Single Post Cell, child of PostList
@@ -107,7 +108,9 @@ class PostCell extends React.Component {
                             }
                         </p>
 
-                        <span className="md-type-caption">{post.byline}</span>
+                        <span className="md-type-caption">
+                            {utils.getBylineFromPost(post)}
+                        </span>
 
                         <Stories stories={post.stories} />
                     </div>
