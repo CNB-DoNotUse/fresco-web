@@ -10,6 +10,7 @@ import utils from 'utils';
 import request from 'superagent';
 import times from 'lodash/times';
 import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
 
 /**
  * Gallery Edit Parent Object
@@ -46,10 +47,7 @@ class Edit extends React.Component {
         params.rating = rating;
         this.setState({ loading: true });
 
-        Promise.all([
-            this.saveGallery(gallery.id, params),
-            this.savePostsLocations(),
-        ])
+        this.saveGallery(gallery.id, params)
         .then((res) => {
             if (res[0].posts_new && this.fileInput.files) {
                 return Promise.all([
@@ -218,7 +216,7 @@ class Edit extends React.Component {
     getPostsFormData() {
         const { gallery } = this.props;
         const files = this.fileInput.files;
-        let { posts } = this.state;
+        let { posts, location } = this.state;
 
         if (files.length) {
             times(files.length, (i) => {
@@ -226,7 +224,10 @@ class Edit extends React.Component {
             });
         }
 
-        return utils.getRemoveAddParams('posts', gallery.posts, posts);
+        return {
+            ...utils.getRemoveAddParams('posts', gallery.posts, posts),
+            ...this.getPostsLocationsParams(),
+        };
     }
 
     uploadFiles(posts, files) {
@@ -253,33 +254,34 @@ class Edit extends React.Component {
     saveGallery(id, params) {
         if (!id || !params || this.state.loading) return Promise.resolve();
 
-        return $.ajax(`/api/gallery/${id}/update`, {
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(params),
+        return new Promise((resolve, reject) => {
+            $.ajax(`/api/gallery/${id}/update`, {
+                method: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+            })
+            .done((res) => resolve(res))
+            .reject((err) => reject(err));
         });
     }
 
-    savePostsLocations() {
-        // TODO: waiting for api bug with post/update to be resolved
-        return Promise.resolve();
-        // const { gallery } = this.props;
-        // const { address, location } = this.state;
-        // // check to see if should save locations on all gallery's posts
-        // if (isEqual(this.getInitialLocationData(), { address, location })) {
-        //     return Promise.resolve();
-        // }
-        // if (!gallery.posts || !gallery.posts.length) return Promise.resolve();
+    getPostsLocationsParams() {
+        const { gallery } = this.props;
+        const { address, location } = this.state;
+        // check to see if should save locations on all gallery's posts
+        if ((isEqual(this.getInitialLocationData(), { address, location }))
+            || (!gallery.posts || !gallery.posts.length)) {
+            return Promise.resolve();
+        }
 
-        // return gallery.posts.map(p => (
-        //     $.ajax({
-        //         url: `/api/post/${p.id}/update`,
-        //         method: 'post',
-        //         data: JSON.stringify({ address, location }),
-        //         dataType: 'json',
-        //         contentType: 'application/json',
-        //     })
-        // ));
+        return {
+            posts_update: gallery.posts.map(p => ({
+                id: p.id,
+                address,
+                lat: location.lat,
+                lng: location.lng,
+            })),
+        };
     }
 
     removeGallery(id) {
