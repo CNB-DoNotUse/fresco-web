@@ -64,10 +64,10 @@ class PostDetailImage extends React.Component {
             if (!purchased) actions.push(purchaseAction);
         }
 
-        if (post.video) {
+        if (post.stream) {
             postMedia = (
                 <video width="100%" height="100%" controls onContextMenu={this.contextMenu}>
-                    <source src={utils.formatVideo(post.video)} type="video/mp4" />
+                    <source src={utils.formatVideo(post.stream)} type="video/mp4" />
                     Your browser does not support the video tag.
                 </video>
             );
