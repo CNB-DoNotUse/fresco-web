@@ -103,11 +103,11 @@ module.exports = (env = 'dev') => {
                 //Babel
                 {
                     test: /.jsx?$/,
-                    loader: 'babel-loader',
-                    exclude: /node_modules/,
+                    loader: 'babel',
+                    exclude: /(node_modules|bower_components)/,
                     query: {
                         presets: ['es2015', 'react'],
-                        plugins: ['transform-object-rest-spread', 'transform-es2015-destructuring'],
+                        plugins: ['transform-object-rest-spread', 'transform-es2015-destructuring']
                     }
                 },
                 //Extract sass files

@@ -1,12 +1,12 @@
-import React, { PropTypes } from 'react'
-import ReactDOM from 'react-dom'
-import App from './app.js'
-import TopBar from '../components/topbar'
-import QuickSupport from '../components/global/quick-support'
-import PasswordDialog from '../components/dialogs/password'
-import utils from 'utils'
-import _ from 'lodash'
-import '../../sass/platform/user.scss';
+import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
+import App from './app.js';
+import TopBar from '../components/topbar';
+import QuickSupport from '../components/global/quick-support';
+import PasswordDialog from '../components/dialogs/password';
+import utils from 'utils';
+import _ from 'lodash';
+import '../../sass/platform/user.scss';;
 
 /**
  * User Settings parent object
@@ -21,7 +21,8 @@ class UserSettings extends React.Component {
 			user: props.user,
 			passwordToggled: false,
 			verify_password: null,
-			saving: false
+			changes: [],
+			disabled: true
 		}
 
 		this.updateSettings = this.updateSettings.bind(this);
@@ -38,23 +39,48 @@ class UserSettings extends React.Component {
 		}
 	}
 
+	/**
+	 * Input change event for tracking changes in state
+	 * @param {String} value Value of the field
+	 * @param {String} originalValue The original value to compare against
+	 * @param {String} source Unique source for tracking changes
+	 */
+	onInputChange(value, originalValue, source) {
+		const { changes } = this.state
+		const changed = value !== originalValue;
+
+		if(changed && !changes.includes(source)) {
+			this.setState({
+				disabled: false,
+				changes: changes.concat(source)
+			});
+		} else if(!changed) {
+			if(changes.length <= 1 && changes.includes(source)) {
+				this.setState({ 
+					disabled: true, 
+					changes: []
+				});
+			} else {			
+				this.setState({ 
+					changes: changes.filter(change => change !== source)
+				});
+			}
+		}
+	}
+
  	/**
  	 * Change listener for file upload input
  	 */
 	avatarInputChange(e) {
-		const { profileSaveBtn } = this.refs;
-
-		if(profileSaveBtn.className.indexOf(' changed ') == -1) {
-			profileSaveBtn.className += ' changed ';
-		}
-
 		const file = this.refs.avatarFileInput.files[0];
 		const reader = new FileReader();
 
 		reader.onloadend = ()=>{
 		    this.setState({
 		    	avatar: reader.result
-		    })
+		    });
+
+		    this.onInputChange(reader.result, '', 'avatar')
 		}
 
 		reader.readAsDataURL(file);
@@ -74,33 +100,40 @@ class UserSettings extends React.Component {
 	onPasswordToggle() {
 		this.setState({
 			passwordToggled: !this.state.passwordToggled
-		})
+		});
 	}
 
 	/**
 	 * Sends update to API
 	 */
  	updateSettings() {
- 		if(this.state.saving) return;
+ 		if(this.state.disabled) return;
 
- 		const avatarFiles = this.refs['avatarFileInput'].files;
+ 		const { 
+ 			avatarFileInput, 
+ 			name, 
+ 			bio, 
+ 			email, 
+ 			username, 
+ 			phone 
+ 		} = this.refs;
+ 		
+ 		const avatarFiles = avatarFileInput.files;
  		const params = {
- 			full_name: this.refs.name.value,
- 			bio: this.refs.bio.value,
- 			email: this.refs.email.value,
- 			username: this.refs.username.value
+ 			full_name: name.value,
+ 			bio: bio.value,
+ 			email: email.value,
+ 			username: username.value
  		}
 
- 		if(this.refs.phone.value !== '') {
+ 		if(!utils.isEmptyString(phone.value)) {
 	 		params.phone = this.refs.phone.value;
  		}
 
- 		//Check if objects are the same
- 		if(utils.compareObjects(params, this.props.user)) {
+ 		//Check if objects are the same to prevent hitting user/update, and just avatar update instead
+ 		if(utils.compareObjects(params, this.state.user)) {
  		    if(avatarFiles.length) {
  		    	this.updateAvatar(avatarFiles);
- 		    } else {
- 		    	return $.snackbar({ content: 'Trying making a few changes to your user, then try saving!' });
  		    }
  		} else {
  			//Check if password isn't set
@@ -125,7 +158,7 @@ class UserSettings extends React.Component {
  			return $.snackbar({ content: 'You must have an email!' });
  		}
 
- 		this.setState({ saving: true });
+ 		this.setState({ disabled: true });
 
  		$.ajax({
  		    url: "/api/user/update",
@@ -143,10 +176,7 @@ class UserSettings extends React.Component {
  		    	const permissions = this.state.user.permissions;
  		    	response.permissions = permissions;
 
- 		        this.setState({
- 		        	user: response,
- 		        	verify_password: null
- 		        });
+ 		        this.setState({ user: response });
 
  		        return $.snackbar({ content: 'Your info has been successfully saved!' });
  		    }
@@ -154,10 +184,12 @@ class UserSettings extends React.Component {
  		.fail((error) => {
  			const { responseJSON: { msg = utils.resolveError(err) } } = error;
 
+ 			this.setState({ verify_password: null });
+
  		    return $.snackbar({ content: msg || 'There was an error updating your information!' });
  		})
  		.always(() => {
- 			this.setState({ saving: false });
+ 			this.setState({ disabled: false });
  		})
  	}
 
@@ -168,7 +200,7 @@ class UserSettings extends React.Component {
  	updateAvatar(avatarFiles, calledWithInfo) {
  	    let files = new FormData();
  	    files.append('avatar', avatarFiles[0]);
- 	    this.setState({ saving: true });
+ 	    this.setState({ disabled: true });
 
  	    $.ajax({
  	        url: "/api/user/avatar",
@@ -184,25 +216,26 @@ class UserSettings extends React.Component {
  	    	const permissions = this.state.user.permissions;
  	    	response.permissions = permissions;
 
- 	    	this.setState({
- 	    		user: response,
- 	    		verify_password: null
- 	    	});
+ 	    	this.setState({ user: response });
 
  	        return $.snackbar({
  	            content: `Your ${calledWithInfo ? 'info' : 'avatar'} has been successfully updated!`
  	        });
  	    })
  	    .fail(error => {
- 	        return $.snackbar({ content: utils.resolveError(error, 'There was an error updating your avatar!') });
+ 	    	this.setState({ verify_password: null });
+
+ 	        return $.snackbar({ 
+ 	        	content: `There was an error updating your avatar! ${calledWithInfo ? 'But we were able to update your information.' : ''}` 
+ 	        });
  	    })
  	    .always(() => {
- 	    	this.setState({ saving: false });
+ 	    	this.setState({ disabled: false });
  	    })
  	}
 
  	render() {
- 		const { user, saving } = this.state;
+ 		const { user, disabled } = this.state;
 
  		return (
  			<App user={this.state.user}>
@@ -235,6 +268,7 @@ class UserSettings extends React.Component {
 
 							<input
 								type="text"
+								onKeyUp={(e) => this.onInputChange(e.target.value,  user.full_name, 'name')}
 								className="floating-label"
 								ref="name"
 								placeholder="Name"
@@ -242,6 +276,7 @@ class UserSettings extends React.Component {
 
 							<textarea
 								className="floating-label"
+								onKeyUp={(e) => this.onInputChange(e.target.value, user.bio, 'bio')}
 								ref="bio"
 								rows="2"
 								placeholder="Bio"
@@ -249,7 +284,7 @@ class UserSettings extends React.Component {
 							</textarea>
 
 							<button
-								className={`btn btn-save changed ${saving ? 'disabled' : ''}`}
+								className={`btn btn-save changed ${disabled ? 'disabled' : ''}`}
 								ref="profileSaveBtn"
 								onClick={this.updateSettings}
 								>SAVE CHANGES</button>
@@ -265,6 +300,7 @@ class UserSettings extends React.Component {
 							<input
 								type="text"
 								ref="email"
+								onKeyUp={(e) => this.onInputChange(e.target.value, user.email, 'email')}
 								placeholder="Email address"
 								defaultValue={user.email} />
 
@@ -272,6 +308,7 @@ class UserSettings extends React.Component {
 								type="text"
 								ref="username"
 								maxLength={40}
+								onKeyUp={(e) => this.onInputChange(e.target.value, user.username, 'username')}
 								placeholder="Username"
 								defaultValue={user.username} />
 
@@ -279,11 +316,12 @@ class UserSettings extends React.Component {
 								type="text"
 								ref="phone"
 								maxLength={15}
+								onKeyUp={(e) => this.onInputChange(e.target.value, user.phone, 'phone')}
 								placeholder="Phone number"
 								defaultValue={user.phone} />
 
 							<button
-								className={`btn btn-save changed ${saving ? 'disabled' : ''}`}
+								className={`btn btn-save changed ${disabled ? 'disabled' : ''}`}
 								onClick={this.updateSettings}
 								ref="accountSaveBtn">SAVE CHANGES
 							</button>
@@ -294,8 +332,8 @@ class UserSettings extends React.Component {
 				</div>
 
 				<PasswordDialog
-					onSubmit={this.onPasswordSubmit.bind(this)}
-					toggle={this.onPasswordToggle.bind(this)}
+					onSubmit={(password) => this.onPasswordSubmit(password)}
+					toggle={() => this.onPasswordToggle()}
 					toggled={this.state.passwordToggled} />
  			</App>
  		);

@@ -1,31 +1,34 @@
 import React, { PropTypes } from 'react'
 
-export default class ChangePasswordCard extends React.Component {
+class PasswordDialog extends React.Component {
 
-    onSubmit() {
+    onSubmit(e) {
+        e.preventDefault();
+
         this.props.onSubmit(this.refs.input.value)
     }
 
     render() {
-        const { toggled } = this.props;
+        const toggled = this.props.toggled ? 'toggled' : '';
 
         return (
             <div className="dialog-wrap">
-                <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
-                <div className={`dialog ${toggled ? 'toggled': ''}`}>
+                <div className={`dim transparent ${toggled}`} />
+               
+                <div className={`dialog ${toggled}`}>
                     <div className="header">
                         <h3>Enter your password</h3>
                     </div>
 
                     <div className="body">
-                        <div className="form-group-default">
+                        <form className="form-group-default" onSubmit={(e) => this.onSubmit(e)}>
                             <input
                                 ref="input"
                                 type="password"
                                 className="form-control floating-label"
                                 placeholder="Password"
                             />
-                        </div>
+                        </form>
                     </div>
 
                     <div className="footer">
@@ -37,7 +40,7 @@ export default class ChangePasswordCard extends React.Component {
 
                         <button 
                             className="primary" 
-                            onClick={this.onSubmit.bind(this)}>
+                            onClick={(e) => this.onSubmit(e)}>
                             Save changes
                         </button>
                     </div>
@@ -47,8 +50,16 @@ export default class ChangePasswordCard extends React.Component {
     }
 }
 
-ChangePasswordCard.defaultProps = {
+PasswordDialog.propTypes = {
+    onSubmit: PropTypes.func,
+    toggle: PropTypes.func,
+    toggled: PropTypes.bool
+}
+
+PasswordDialog.defaultProps = {
     onSubmit: () => {},
     toggle: () => {},
     toggled: false
 }
+
+export default PasswordDialog;

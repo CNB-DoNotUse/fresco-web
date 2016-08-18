@@ -11,7 +11,9 @@ class PaymentInfo extends React.Component {
 
         this.state = {
             payment: props.payment,
-            activePayment: props.payment.find(p => p.active) || props.payment[0]
+            activePayment: props.payment.find(p => p.active) || props.payment[0],
+            changes: [],
+            disabled: true
         }
     }
     
@@ -19,18 +21,55 @@ class PaymentInfo extends React.Component {
         Stripe.setPublishableKey(window.__initialProps__.stripePublishableKey);
     }
 
+    /**
+     * Input change event for tracking changes in state
+     * @param {String} value Value of the field
+     * @param {String} source Unique source for tracking changes
+     */
+    onInputChange(value, source) {
+        const { changes } = this.state
+        const changed = value !== '';
+
+        if(changed && !changes.includes(source)) {
+            this.setState({
+                disabled: false,
+                changes: changes.concat(source)
+            });
+        } else if(!changed) {
+            if(changes.length <= 1 && changes.includes(source)) {
+                this.setState({ 
+                    disabled: true, 
+                    changes: []
+                });
+            } else {            
+                this.setState({ 
+                    changes: changes.filter(change => change !== source)
+                });
+            }        
+        }
+    }
+
 	/**
 	 * Save function for the card
      */
     save() {
-        const exp_times = this.refs['payment-exp'].value.split('/');
+        if(this.state.disabled) return;
+
+        const {
+            expiration,
+            cvv,
+            zip,
+            name,
+            number
+        } = this.refs;
+        const exp_times = expiration.value.split('/');
         const params = {
-            number: this.refs['payment-ccn'].value,
-            cvv: this.refs['payment-cvv'].value,
+            number: number.value,
+            cvv: cvv.value,
             exp_month: exp_times[0].trim(),
             exp_year: (exp_times[1] || '').trim(),
-            address_zip: this.refs['payment-zip'].value,
-            name: this.refs['payment-name'].value,
+            address_zip: zip.value,
+            name: name.value,
             currency: 'usd',
         };
 
@@ -42,12 +81,11 @@ class PaymentInfo extends React.Component {
             return $.snackbar({content:'Invalid CVV number!'});
         }
 
-        const saveBtn = this.refs['outlet-card-save'];
-        saveBtn.setAttribute('disabled', true);
+        this.setState({ disabled: true });
 
         Stripe.card.createToken(params, (status, response) => {
             if (response.error) {
-                saveBtn.removeAttribute('disabled')
+                this.setState({ disabled: false });
                 return $.snackbar({ content: response.error.message });
             }
 
@@ -62,31 +100,30 @@ class PaymentInfo extends React.Component {
                 dataType: 'json'
             })
             .done((response) => {
-                this.setState({
-                    payment: this.state.payment.concat(response),
-                    activePayment: response
-                });
-
                 //Clear input fields
                 for (let ref in this.refs) {
                     if(this.refs[ref].value)
                         this.refs[ref].value = '';
                 }
 
+                this.setState({
+                    payment: this.state.payment.concat(response),
+                    activePayment: response,
+                    disabled: true
+                });
 
                 return $.snackbar({ content: 'Payment information updated!' });
             })
             .fail((error) => {
-                return $.snackbar({ content: utils.resolveError(error) });
-            })
-            .always(() => {
-                saveBtn.removeAttribute('disabled');
-            })
+                return $.snackbar({ content: 'There was an issue saving your payment info!' });
+                
+                this.setState({ disabled: false });
+            });
         });
     }
 
     render() {
-        const { activePayment } = this.state;
+        const { activePayment, disabled } = this.state;
         let cardText = '';
 
         if (activePayment && activePayment.brand && activePayment.last4 != null) {
@@ -113,54 +150,58 @@ class PaymentInfo extends React.Component {
                             type="text"
                             className="form-control card"
                             placeholder="Card number"
+                            onKeyUp={(e) => this.onInputChange(e.target.value, 'number')}
                             maxLength="16"
                             tabIndex="1"
-                            ref="payment-ccn"
+                            ref="number"
                         />
+
                         <input
                             type="text"
                             className="form-control date"
                             placeholder="00 / 00"
+                            onKeyUp={(e) => this.onInputChange(e.target.value, 'date')}
                             maxLength="5"
                             tabIndex="2"
-                            ref="payment-exp"
+                            ref="expiration"
                         />
                         
                         <input
                             type="text"
                             className="form-control ccv"
                             placeholder="CVV"
+                            onKeyUp={(e) => this.onInputChange(e.target.value, 'cvv')}
                             maxLength="4"
                             tabIndex="3"
-                            ref="payment-cvv"
+                            ref="cvv"
                         />
 
                         <input
                             type="text"
                             className="form-control name"
                             placeholder="Name on card"
+                            onKeyUp={(e) => this.onInputChange(e.target.value, 'name')}
                             tabIndex="4"
-                            ref="payment-name"
+                            ref="name"
                         />
 
                         <input
                             type="text"
                             className="form-control zip"
+                            onKeyUp={(e) => this.onInputChange(e.target.value, 'zip')}
                             placeholder="ZIP"
                             maxLength="5"
                             tabIndex="5"
-                            ref="payment-zip"
+                            ref="zip"
                         />
-
                     </div>
 
                     <button
-                        className="btn btn-flat outlet-card-save card-foot-btn"
+                        className={`btn btn-save changed ${disabled ? 'disabled' : ''}`}
                         ref="outlet-card-save"
                         tabIndex="6"
                         onClick={() => this.save()}
-                    >
-                        SAVE CHANGES
+                    >SAVE CHANGES
                     </button>
                 </div>
             </div>

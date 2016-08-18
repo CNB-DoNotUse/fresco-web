@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react'
-import utils from 'utils'
 
-export default class MemberListItem extends Component {
+class MemberListItem extends Component {
     render () {
         const { 
             member, 
@@ -9,8 +8,7 @@ export default class MemberListItem extends Component {
             revokeInvite, 
             resendInvite, 
             pending, 
-            invite,
-            isOwner
+            invite
         } = this.props;
 
         if(pending) {
@@ -45,15 +43,10 @@ export default class MemberListItem extends Component {
                         </span>
                     </div>
 
-                    {!isOwner ?
-                        <span
-                            onClick={removeMember.bind(null, member.id)}
-                            className="delete-member mdi mdi-delete">
-                        </span>
-                    :
-                        <span className="owner-member mdi mdi-account"></span>
-                    }
-
+                    <span
+                        onClick={removeMember.bind(null, member.id)}
+                        className="delete-member mdi mdi-delete">
+                    </span>
                 </li>
             );
         }
@@ -68,3 +61,5 @@ MemberListItem.propTypes = {
     pending: PropTypes.bool,
     invite: PropTypes.object
 };
+
+export default MemberListItem;

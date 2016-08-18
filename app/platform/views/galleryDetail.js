@@ -112,7 +112,6 @@ class GalleryDetail extends React.Component {
                     gallery={gallery}
                     user={user}
                 />
-
             </App>
         );
     }

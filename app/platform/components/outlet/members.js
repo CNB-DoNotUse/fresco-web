@@ -28,12 +28,10 @@ export default class OutletMembers extends React.Component {
 	updatePendingInvites() {
 		$.ajax({
 			url: "/api/outlet/invite/list",
-			method: 'get'
+			method: 'GET'
 		})    
-	    .done((response) => { 
-	    	this.setState({
-	    		invites: response
-	    	});
+	    .done((invites) => { 
+	    	this.setState({ invites });
 	    })    
 	    .fail((error) => { 
 	    	return $.snackbar({
@@ -63,12 +61,13 @@ export default class OutletMembers extends React.Component {
 		})    
 	    .done((response) => { 
 	    	this.updatePendingInvites();
-	    	this.setState({ loading: false });
-
 			$.snackbar({ content: 'This invitation has been successfully canceled!'});
 	    })    
 	    .fail(() => { 
-	    	return $.snackbar({ content: utils.resolveError(error) });
+	    	$.snackbar({ content: utils.resolveError(error) });
+	    })
+	    .always(() => {
+	    	this.setState({ loading: false });
 	    });
 	}
 
@@ -158,7 +157,6 @@ export default class OutletMembers extends React.Component {
 					content : '0 invites were sent.'
 				});
 			}
-			
 	    })    
 	    .fail((error) => { 
 	    	return $.snackbar({ content: utils.resolveError(error) });
@@ -208,7 +206,6 @@ class OutletMemberList extends React.Component {
 						return(
 							<MemberListItem 
 								member={member}
-								isOwner={member.id === this.props.outlet.owner.id}
 								removeMember={this.props.removeMember} 
 								key={i} />
 						);

@@ -113,9 +113,10 @@ export default class Notifications extends React.Component {
 		var self = this;
 
 		$.ajax({
-			url: '/api/notification/settings',
+			url: '/api/user/settings',
 			method: 'GET',
 			success: function(response){
+				console.log(response);
 				if (response.err || !response.data)
 					return this.error(null, null, response.err);
 
