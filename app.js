@@ -4,12 +4,12 @@ const utils         = require('./lib/utils');
 const routes        = require('./lib/routes');
 const API           = require('./lib/api');
 const User          = require('./lib/user');
+const redis         = require('./lib/redis');
 const express       = require('express');
 const compression   = require('compression');
 const path          = require('path');
 const morgan        = require('morgan');
 const session       = require('express-session');
-const redis         = require('redis');
 const RedisStore    = require('connect-redis')(session);
 const cookieParser  = require('cookie-parser');
 const bodyParser    = require('body-parser');
@@ -27,9 +27,6 @@ app.locals.utils = utils;
 app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
 app.locals.section = 'public';
 
-// If in dev mode, use local redis server as session store
-const rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
-const redisConnection = { client: rClient };
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -65,7 +62,7 @@ app.use(cookieParser());
 app.use(
     session({
         name: 'FRSSID' + (config.COOKIE_SUFFIX ? ('_' + config.COOKIE_SUFFIX) : ''),
-        store: new RedisStore(redisConnection),
+        store: new RedisStore({ client: redis }),
         secret: config.SESSION_SECRET,
         resave: false,
         rolling: true,
