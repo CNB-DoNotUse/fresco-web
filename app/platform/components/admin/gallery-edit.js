@@ -58,12 +58,87 @@ class GalleryEdit extends React.Component {
         }
     }
 
+	/**
+	 * Gets all form data and verifies gallery.
+	 */
     onVerify() {
-        const { gallery } = this.props;
+        if (this.state.loading) return;
+        this.setState({ loading: true });
+        const { onUpdateGallery, gallery } = this.props;
         const params = this.getFormData();
-        params.rating = 2;
 
-        this.verify(gallery.id, params);
+        $.ajax({
+            url: `/api/gallery/${gallery.id}/update`,
+            method: 'POST',
+            data: JSON.stringify(params),
+            dataType: 'json',
+            contentType: 'application/json',
+        })
+        .done(() => {
+            onUpdateGallery(gallery.id);
+            $.snackbar({
+                content: 'Gallery verified! Click to open',
+                timeout: 5000,
+            }).click(() => {
+                const win = window.open(`/gallery/${gallery.id}`, '_blank');
+                win.focus();
+            });
+        })
+        .fail(() => {
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Unable to verify gallery' });
+        });
+    }
+
+	/**
+	 * Removes gallery
+     */
+    onRemove() {
+        if (this.state.loading) return;
+        this.setState({ loading: true });
+        const { onUpdateGallery, gallery } = this.props;
+
+        $.ajax({
+            url: `/api/gallery/${gallery.id}/delete`,
+            method: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+        })
+        .done(() => {
+            onUpdateGallery(gallery.id);
+            $.snackbar({ content: 'Gallery deleted' });
+        })
+        .fail(() => {
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Unable to delete gallery' });
+        });
+    }
+
+	/**
+     * Skips gallery
+     */
+    onSkip() {
+        if (this.state.loading) return;
+        this.setState({ loading: true });
+        const { onUpdateGallery, gallery } = this.props;
+        const { rating } = this.state;
+
+        $.ajax({
+            url: `/api/gallery/${gallery.id}/update`,
+            method: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({ rating }),
+        })
+        .done(() => {
+            onUpdateGallery(gallery.id);
+            $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
+                .click(() => { window.open(`/gallery/${gallery.id}`); });
+        })
+        .fail(() => {
+            this.setState({ loading: false });
+            $.snackbar({ content: 'Unable to skip gallery' });
+        });
     }
 
     getStateFromProps(props) {
@@ -78,6 +153,7 @@ class GalleryEdit extends React.Component {
             loading: false,
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
+            rating: gallery.rating,
             ...this.getInitialLocationData(),
         };
     }
@@ -96,6 +172,7 @@ class GalleryEdit extends React.Component {
             assignment,
             external_account_name,
             external_source,
+            rating,
         } = this.state;
         const { gallery } = this.props;
 
@@ -108,23 +185,29 @@ class GalleryEdit extends React.Component {
             tags,
             caption,
             address,
-            ...this.getPostsLocationsParams(),
+            ...this.getPostsUpdateParams(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             assignment_id: assignment ? assignment.id : null,
             external_account_name,
             external_source,
+            rating,
         };
 
         return params;
     }
 
-    getPostsLocationsParams() {
+    getPostsUpdateParams() {
         const { gallery } = this.props;
-        const { address, location } = this.state;
+        const { address, location, rating } = this.state;
         // check to see if should save locations on all gallery's posts
         if ((isEqual(this.getInitialLocationData(), { address, location }))
             || (!gallery.posts || !gallery.posts.length)) {
-            return null;
+                return {
+                    posts_update: gallery.posts.map(p => ({
+                        id: p.id,
+                        rating,
+                    })),
+                };
         }
 
         return {
@@ -133,6 +216,7 @@ class GalleryEdit extends React.Component {
                 address,
                 lat: location.lat,
                 lng: location.lng,
+                rating,
             })),
         };
     }
@@ -143,89 +227,6 @@ class GalleryEdit extends React.Component {
         const address = gallery.address || get(gallery, 'posts[0].address');
 
         return { location, address };
-    }
-
-	/**
-	 * Gets all form data and verifies gallery.
-	 */
-    verify(id, params) {
-        if (!id || !params || this.state.loading) return;
-        const { onUpdateGallery } = this.props;
-        this.setState({ loading: true });
-
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'POST',
-            data: JSON.stringify(params),
-            dataType: 'json',
-            contentType: 'application/json',
-        })
-        .done(() => {
-            onUpdateGallery(id);
-            $.snackbar({
-                content: 'Gallery verified! Click to open',
-                timeout: 5000,
-            }).click(() => {
-                const win = window.open(`/gallery/${id}`, '_blank');
-                win.focus();
-            });
-        })
-        .fail(() => {
-            this.setState({ loading: false });
-            $.snackbar({ content: 'Unable to verify gallery' });
-        });
-    }
-
-	/**
-	 * Removes callery
-     */
-    remove(id) {
-        if (!id || this.state.loading) return;
-        this.setState({ loading: true });
-        const { onUpdateGallery } = this.props;
-
-        $.ajax({
-            url: `/api/gallery/${id}/delete`,
-            method: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-        })
-        .done(() => {
-            onUpdateGallery(id);
-            $.snackbar({ content: 'Gallery deleted' });
-        })
-        .fail(() => {
-            this.setState({ loading: false });
-            $.snackbar({ content: 'Unable to delete gallery' });
-        });
-    }
-
-	/**
-     * Skips gallery
-     */
-    skip(id) {
-        if (!id || this.state.loading) return;
-        this.setState({ loading: true });
-        const { onUpdateGallery } = this.props;
-
-        $.ajax({
-            url: `/api/gallery/${id}/update`,
-            method: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                rating: 1,
-            }),
-        })
-        .done(() => {
-            onUpdateGallery(id);
-            $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
-                .click(() => { window.open(`/gallery/${id}`); });
-        })
-        .fail(() => {
-            this.setState({ loading: false });
-            $.snackbar({ content: 'Unable to skip gallery' });
-        });
     }
 
 	/**
@@ -346,6 +347,7 @@ class GalleryEdit extends React.Component {
                     />
 
                     <EditAssignment
+                        gallery={gallery}
                         assignment={assignment}
                         updateAssignment={(a) => this.setState({ assignment: a })}
                     />
@@ -366,8 +368,8 @@ class GalleryEdit extends React.Component {
                         onPlaceChange={(p) => this.onPlaceChange(p)}
                         onMapDataChange={(data) => this.onMapDataChange(data)}
                         disabled={galleryType === 'submissions'}
+                        draggable={galleryType !== 'submissions'}
                         hasRadius={false}
-                        draggable
                         rerender
                     />
                 </div>
@@ -383,7 +385,8 @@ class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-verify"
-                        onClick={() => this.onVerify()}
+                        onClick={() => this.setState({ rating: 2 },
+                            () => this.onVerify())}
                         disabled={loading}
                     >
                         Verify
@@ -391,7 +394,8 @@ class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-skip"
-                        onClick={() => this.skip(gallery.id)}
+                        onClick={() => this.setState({ rating: 2 },
+                            () => this.onSkip())}
                         disabled={loading}
                     >
                         Skip
@@ -399,7 +403,7 @@ class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-delete"
-                        onClick={() => this.remove(gallery.id)}
+                        onClick={() => this.onRemove()}
                         disabled={loading}
                     >
                         Delete

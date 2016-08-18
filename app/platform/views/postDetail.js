@@ -23,7 +23,9 @@ class PostDetail extends React.Component {
     }
 
     onUpdateGallery(gallery) {
-        this.setState({ gallery });
+        if (!gallery || !gallery.posts) return;
+        const post = gallery.posts.find(p => p.id === this.state.post.id);
+        this.setState({ gallery, post });
     }
 
     toggleGalleryEdit() {
@@ -46,16 +48,12 @@ class PostDetail extends React.Component {
                 <div className="content">
                     <div className="row">
                         <div className="main">
-                            <PostDetailImage
-                                post={post}
-                                user={user}
-                            />
+                            <PostDetailImage post={post} user={user} />
 
                             <PostInfo
                                 user={user}
                                 post={post}
                                 gallery={gallery}
-                                user={user}
                                 verifier={verifier}
                             />
                         </div>
