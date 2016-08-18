@@ -42,17 +42,17 @@ class Edit extends React.Component {
 
     onSave(rating = this.state.rating) {
         const params = this.getFormData();
+        params.rating = rating;
         const { gallery, onUpdateGallery } = this.props;
         if (!gallery || !gallery.id || !params || this.state.loading) return;
-        params.rating = rating;
         this.setState({ loading: true });
 
         this.saveGallery(gallery.id, params)
         .then((res) => {
-            if (res[0].posts_new && this.fileInput.files) {
+            if (get(res, 'posts_new.length' && this.fileInput.files)) {
                 return Promise.all([
-                    res[0],
-                    this.uploadFiles(res[0].posts_new, this.fileInput.files),
+                    res,
+                    this.uploadFiles(res.posts_new, this.fileInput.files),
                 ]);
             }
 
@@ -62,7 +62,7 @@ class Edit extends React.Component {
             this.hide();
             this.setState({ uploads: [], loading: false }, () => {
                 $.snackbar({ content: 'Gallery saved!' });
-                onUpdateGallery(res[0]);
+                onUpdateGallery(res);
             });
         })
         .catch((err) => {
@@ -232,6 +232,25 @@ class Edit extends React.Component {
         };
     }
 
+    getPostsLocationsParams() {
+        const { gallery } = this.props;
+        const { address, location } = this.state;
+        // check to see if should save locations on all gallery's posts
+        if ((isEqual(this.getInitialLocationData(), { address, location }))
+            || (!gallery.posts || !gallery.posts.length)) {
+            return null;
+        }
+
+        return {
+            posts_update: gallery.posts.map(p => ({
+                id: p.id,
+                address,
+                lat: location.lat,
+                lng: location.lng,
+            })),
+        };
+    }
+
     uploadFiles(posts, files) {
         const requests = posts.map((p, i) => {
             if (files[i]) {
@@ -256,34 +275,16 @@ class Edit extends React.Component {
     saveGallery(id, params) {
         if (!id || !params || this.state.loading) return Promise.resolve();
 
-        return new Promise((resolve, reject) => {
-            $.ajax(`/api/gallery/${id}/update`, {
+        return new Promise((resolve, reject) => (
+            $.ajax({
+                url: `/api/gallery/${id}/update`,
                 method: 'post',
                 contentType: 'application/json',
                 data: JSON.stringify(params),
             })
             .done((res) => resolve(res))
-            .reject((err) => reject(err));
-        });
-    }
-
-    getPostsLocationsParams() {
-        const { gallery } = this.props;
-        const { address, location } = this.state;
-        // check to see if should save locations on all gallery's posts
-        if ((isEqual(this.getInitialLocationData(), { address, location }))
-            || (!gallery.posts || !gallery.posts.length)) {
-            return null;
-        }
-
-        return {
-            posts_update: gallery.posts.map(p => ({
-                id: p.id,
-                address,
-                lat: location.lat,
-                lng: location.lng,
-            })),
-        };
+            .fail((err) => reject(err))
+        ));
     }
 
     removeGallery(id) {
@@ -511,22 +512,17 @@ class Edit extends React.Component {
                     Save
                 </button>
 
-                {gallery.rating < 2
+                {utils.isOriginalGallery(gallery)
                     ? <button
                         type="button"
-                        onClick={() => this.onSave(2)}
+                        onClick={() =>
+                                this.onSave((gallery.rating < 2) ? 2 : 1)}
                         className="btn btn-flat pull-right"
                         disabled={loading}
                     >
-                        Verify
+                        {(gallery.rating < 2) ? 'Verify' : 'Unverify'}
                     </button>
-                    : <button
-                        onClick={() => this.onSave(1)}
-                        className="btn btn-flat pull-right"
-                        disabled={loading}
-                    >
-                        Unverify
-                    </button>
+                    : null
                 }
 
                 <button
