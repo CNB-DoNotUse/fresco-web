@@ -234,17 +234,13 @@ Account.prototype.processLogin = function() {
 		dataType: 'json'
  	})
  	.done((response) => {
- 		const next = getParameterByName('next');
-		window.location.replace(next.length ? next : '/archive');
+		window.location.replace(response.redirect ? response.redirect : '/archive');
  	})
  	.fail((error) => {
  	    this.reEnableLogin();
 
  	    return $.snackbar({ 
- 	    	content: resolveError(
-				error.responseJSON.error, 
-				'There was an error logging you in. Please try again in a bit.'
-			)
+ 	    	content: error.responseJSON.msg || 'There was an error logging you in. Please try again in a bit.'
  	    });
  	});
 }
