@@ -7,6 +7,8 @@ import EditAssignment from './../gallery/edit-assignment';
 import EditByline from './../gallery/edit-byline';
 import FrescoImage from '../global/fresco-image';
 import utils from 'utils';
+import isEqual from 'lodash/isEqual';
+import get from 'lodash/get';
 
 /**
  *	Admin Gallery Edit component.
@@ -34,6 +36,28 @@ class GalleryEdit extends React.Component {
         this.setState({ address: place.address, location: place.location });
     }
 
+    /**
+     * Updates state map location when AutocompleteMap gives new location from drag
+     */
+    onMapDataChange(data) {
+        if (data.source === 'markerDrag') {
+            const geocoder = new google.maps.Geocoder();
+
+            geocoder.geocode({ location: {
+                lat: data.location.lat,
+                lng: data.location.lng,
+            } },
+            (results, status) => {
+                if (status === google.maps.GeocoderStatus.OK && results[0]) {
+                    this.setState({
+                        address: results[0].formatted_address,
+                        location: data.location,
+                    });
+                }
+            });
+        }
+    }
+
     onVerify() {
         const { gallery } = this.props;
         const params = this.getFormData();
@@ -44,8 +68,6 @@ class GalleryEdit extends React.Component {
 
     getStateFromProps(props) {
         const { gallery } = props;
-        const location = gallery.location || (gallery.posts[0] ? gallery.posts[0].location : null);
-        const address = gallery.address || (gallery.posts[0] ? gallery.posts[0].address : null);
 
         return {
             editButtonsEnabled: false,
@@ -56,8 +78,7 @@ class GalleryEdit extends React.Component {
             loading: false,
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
-            location,
-            address,
+            ...this.getInitialLocationData(),
         };
     }
 
@@ -71,11 +92,10 @@ class GalleryEdit extends React.Component {
             tags,
             caption,
             address,
-            // location,
             stories,
             assignment,
-            external_account_name,
-            external_source,
+            // external_account_name,
+            // external_source,
         } = this.state;
         const { gallery } = this.props;
 
@@ -88,14 +108,41 @@ class GalleryEdit extends React.Component {
             tags,
             caption,
             address,
-            // geo: utils.getGeoFromCoord(location),
+            ...this.getPostsLocationsParams(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             assignment_id: assignment ? assignment.id : null,
-            external_account_name,
-            external_source,
+            // external_account_name,
+            // external_source,
         };
 
         return params;
+    }
+
+    getPostsLocationsParams() {
+        const { gallery } = this.props;
+        const { address, location } = this.state;
+        // check to see if should save locations on all gallery's posts
+        if ((isEqual(this.getInitialLocationData(), { address, location }))
+            || (!gallery.posts || !gallery.posts.length)) {
+            return null;
+        }
+
+        return {
+            posts_update: gallery.posts.map(p => ({
+                id: p.id,
+                address,
+                lat: location.lat,
+                lng: location.lng,
+            })),
+        };
+    }
+
+    getInitialLocationData() {
+        const { gallery } = this.props;
+        const location = gallery.location || get(gallery, 'posts[0].location');
+        const address = gallery.address || get(gallery, 'posts[0].address');
+
+        return { location, address };
     }
 
 	/**
@@ -317,8 +364,10 @@ class GalleryEdit extends React.Component {
                         location={location}
                         address={address}
                         onPlaceChange={(p) => this.onPlaceChange(p)}
+                        onMapDataChange={(data) => this.onMapDataChange(data)}
                         disabled={galleryType === 'submissions'}
                         hasRadius={false}
+                        draggable
                         rerender
                     />
                 </div>

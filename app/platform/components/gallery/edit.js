@@ -183,8 +183,8 @@ class Edit extends React.Component {
             stories,
             articles,
             assignment,
-            external_account_name,
-            external_source,
+            // external_account_name,
+            // external_source,
         } = this.state;
         const { gallery } = this.props;
         const posts = this.getPostsFormData();
@@ -202,8 +202,8 @@ class Edit extends React.Component {
         const params = {
             tags,
             caption,
-            external_account_name,
-            external_source,
+            // external_account_name,
+            // external_source,
             ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
@@ -216,7 +216,9 @@ class Edit extends React.Component {
     getPostsFormData() {
         const { gallery } = this.props;
         const files = this.fileInput.files;
-        let { posts, location } = this.state;
+        let { posts } = this.state;
+
+        if (!files.length && !posts.length) return null;
 
         if (files.length) {
             times(files.length, (i) => {
@@ -271,7 +273,7 @@ class Edit extends React.Component {
         // check to see if should save locations on all gallery's posts
         if ((isEqual(this.getInitialLocationData(), { address, location }))
             || (!gallery.posts || !gallery.posts.length)) {
-            return Promise.resolve();
+            return null;
         }
 
         return {
