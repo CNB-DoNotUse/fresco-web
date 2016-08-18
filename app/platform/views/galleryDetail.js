@@ -11,20 +11,15 @@ import get from 'lodash/get';
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
  */
-
 class GalleryDetail extends React.Component {
     constructor(props) {
         super(props);
 
-        // Check if every post in gallery is not verified and show all content
-        const shouldShowVerifiedToggle = props.gallery.posts.every(post => post.rating < 1);
-
         this.state = {
             editToggled: false,
             gallery: props.gallery,
-            shouldShowVerifiedToggle,
-            verifiedToggle: shouldShowVerifiedToggle,
             title: props.title,
+            verifiedToggled: true,
         };
     }
 
@@ -36,10 +31,6 @@ class GalleryDetail extends React.Component {
         }, 5000);
     }
 
-    onVerifiedToggled(onlyVerified) {
-        this.setState({ onlyVerified });
-    }
-
 	/**
      * Updates gallery in state
      */
@@ -49,6 +40,14 @@ class GalleryDetail extends React.Component {
             title: utils.getTitleFromGallery(gallery),
             updatePosts: true,
         });
+    }
+
+    getPostsFromGallery() {
+        const { gallery, verifiedToggled } = this.state;
+        if (!get(gallery, 'posts.length')) return [];
+
+        if (verifiedToggled) return gallery.posts.filter(p => p.rating >= 2);
+        return gallery.posts;
     }
 
     fetchGallery() {
@@ -72,8 +71,6 @@ class GalleryDetail extends React.Component {
         const {
             gallery,
             title,
-            shouldShowVerifiedToggle,
-            onlyVerified,
             updatePosts,
             editToggled,
         } = this.state;
@@ -85,8 +82,8 @@ class GalleryDetail extends React.Component {
                     editable={user.permissions.includes('update-other-content')}
                     permissions={user.permissions}
                     edit={() => this.toggleEdit()}
-                    verifiedToggle={shouldShowVerifiedToggle}
-                    onVerifiedToggled={() => this.onVerifiedToggled()}
+                    onVerifiedToggled={(b) => this.setState({ verifiedToggled: b })}
+                    verifiedToggle
                     timeToggle
                 />
 
@@ -96,8 +93,7 @@ class GalleryDetail extends React.Component {
                     <PostList
                         permissions={user.permissions}
                         parentCaption={gallery.caption}
-                        posts={gallery.posts}
-                        onlyVerified={onlyVerified}
+                        posts={this.getPostsFromGallery()}
                         updatePosts={updatePosts}
                         scrollable={false}
                         editable={false}
