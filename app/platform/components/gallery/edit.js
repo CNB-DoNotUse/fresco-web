@@ -183,8 +183,8 @@ class Edit extends React.Component {
             stories,
             articles,
             assignment,
-            // external_account_name,
-            // external_source,
+            external_account_name,
+            external_source,
         } = this.state;
         const { gallery } = this.props;
         const posts = this.getPostsFormData();
@@ -202,8 +202,8 @@ class Edit extends React.Component {
         const params = {
             tags,
             caption,
-            // external_account_name,
-            // external_source,
+            external_account_name,
+            external_source,
             ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),

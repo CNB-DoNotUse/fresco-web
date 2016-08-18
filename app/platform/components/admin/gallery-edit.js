@@ -94,8 +94,8 @@ class GalleryEdit extends React.Component {
             address,
             stories,
             assignment,
-            // external_account_name,
-            // external_source,
+            external_account_name,
+            external_source,
         } = this.state;
         const { gallery } = this.props;
 
@@ -111,8 +111,8 @@ class GalleryEdit extends React.Component {
             ...this.getPostsLocationsParams(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             assignment_id: assignment ? assignment.id : null,
-            // external_account_name,
-            // external_source,
+            external_account_name,
+            external_source,
         };
 
         return params;
