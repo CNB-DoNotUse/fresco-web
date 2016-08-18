@@ -405,7 +405,7 @@ class Edit extends React.Component {
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    {utils.isOriginalGallery(gallery) ?                  
+                    {utils.isOriginalGallery(gallery) ?
                         <EditByline
                             gallery={gallery}
                             external_source={external_source}
@@ -469,7 +469,9 @@ class Edit extends React.Component {
                         posts={posts}
                         uploads={uploads}
                         gallery={gallery}
+                        canDelete={utils.isOriginalGallery(gallery)}
                         onToggleDelete={(p) => this.toggleDeletePost(p)}
+                        className="dialog-col col-xs-12 col-md-5"
                     />
                     : null
                 }
@@ -599,3 +601,4 @@ Edit.defaultProps = {
 };
 
 export default Edit;
+
