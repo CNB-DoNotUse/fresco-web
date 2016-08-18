@@ -136,7 +136,7 @@ class LocationAutocomplete extends React.Component {
                 {
                     predictions.map((prediction, i) => (
                         <li onClick={() => this.predictionSelected(prediction)} key={i}>
-                            <p>{prediction.description}</p>
+                            <p>{prediction.description || prediction.formatted_address}</p>
                         </li>
                     ))
                 }

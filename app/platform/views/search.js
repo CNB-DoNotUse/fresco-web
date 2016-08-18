@@ -318,7 +318,7 @@ export class Search extends Component {
 		if(this.state.tags.indexOf(tag) != -1) return;
 
 		this.setState({
-			tags: update(this.state.tags, {$push: [tag]}), //Add the user back to the autocomplete list
+			tags: this.state.tags.concat(tag), //Add the user back to the autocomplete list
 		});
 	}
 
