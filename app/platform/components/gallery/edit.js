@@ -369,6 +369,8 @@ class Edit extends React.Component {
 
     renderMap() {
         const { address, location } = this.state;
+        const { gallery } = this.props;
+        const mapDisabled = !utils.isOriginalGallery(gallery) || utils.isSubmittedGallery(gallery);
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
@@ -379,7 +381,8 @@ class Edit extends React.Component {
                     onMapDataChange={(data) => this.onMapDataChange(data)}
                     onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
                     hasRadius={false}
-                    draggable
+                    disabled={mapDisabled}
+                    draggable={!mapDisabled}
                     rerender
                 />
             </div>
@@ -405,7 +408,7 @@ class Edit extends React.Component {
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    {utils.isOriginalGallery(gallery) ?                  
+                    {utils.isOriginalGallery(gallery) ?
                         <EditByline
                             gallery={gallery}
                             external_source={external_source}
@@ -469,7 +472,9 @@ class Edit extends React.Component {
                         posts={posts}
                         uploads={uploads}
                         gallery={gallery}
+                        canDelete={utils.isOriginalGallery(gallery)}
                         onToggleDelete={(p) => this.toggleDeletePost(p)}
+                        className="dialog-col col-xs-12 col-md-5"
                     />
                     : null
                 }
@@ -599,3 +604,4 @@ Edit.defaultProps = {
 };
 
 export default Edit;
+

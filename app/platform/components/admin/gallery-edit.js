@@ -1,11 +1,10 @@
 import React, { PropTypes } from 'react';
-import Slider from 'react-slick';
 import AutocompleteMap from '../global/autocomplete-map';
 import EditTags from './../gallery/edit-tags';
 import EditStories from './../gallery/edit-stories';
+import EditPosts from './../gallery/edit-posts';
 import EditAssignment from './../gallery/edit-assignment';
 import EditByline from './../gallery/edit-byline';
-import FrescoImage from '../global/fresco-image';
 import utils from 'utils';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
@@ -261,42 +260,6 @@ class GalleryEdit extends React.Component {
         this.setState({ caption: e.target.value });
     }
 
-    renderPosts() {
-        const { gallery } = this.props;
-        if (!gallery.posts) return <div />;
-        // Map gallery posts into slider elements
-        return gallery.posts.map((post, i) => {
-            if (post.stream) {
-                return (
-                    <div key={i}>
-                        <video
-                            data-id={post.id}
-                            className="admin-video"
-                            preload="none"
-                            width="100%"
-                            height="100%"
-                            controls
-                            poster={post.stream.replace('/videos', '/images/small').replace('.m3u8', '-thumb00001.jpg')}
-                            src={post.stream.replace('/videos', '/videos/mp4').replace('.m3u8', '.mp4')} type="video/mp4"
-                        >
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                );
-            }
-
-            return (
-                <div key={i}>
-                    <FrescoImage
-                        imageClass={'img-responsive'}
-                        image={post.image}
-                        size={'medium'}
-                    />
-                </div>
-            );
-        });
-    }
-
     render() {
         const { gallery, galleryType } = this.props;
         const {
@@ -319,12 +282,11 @@ class GalleryEdit extends React.Component {
             <div className="dialog admin-edit-pane">
                 <div className="dialog-body" style={{ visibility: 'visible' }} >
                     <div className="gallery-images">
-                        <Slider
-                            dots
-                            infinite={false}
-                        >
-                            {this.renderPosts()}
-                        </Slider>
+                        <EditPosts
+                            gallery={gallery}
+                            posts={gallery.posts}
+                            canDelete={false}
+                        />
                     </div>
 
                     <EditByline
