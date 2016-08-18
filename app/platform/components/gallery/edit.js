@@ -199,6 +199,11 @@ class Edit extends React.Component {
             return null;
         }
 
+        if (rating === 0) {
+            $.snackbar({ content: 'Galleries must be verified or unverified before saving' });
+            return null;
+        }
+
         const params = {
             tags,
             caption,
@@ -523,10 +528,8 @@ class Edit extends React.Component {
                 {utils.isOriginalGallery(gallery)
                     ? <button
                         type="button"
-                        onClick={() => {
-                            this.setState({ rating: (gallery.rating < 2 ? 2 : 1) },
-                                () => this.onSave());
-                        }}
+                        onClick={() => this.setState({ rating: (gallery.rating < 2 ? 2 : 1) },
+                                () => this.onSave())}
                         className="btn btn-flat pull-right"
                         disabled={loading}
                     >
