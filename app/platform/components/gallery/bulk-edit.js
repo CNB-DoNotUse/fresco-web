@@ -31,7 +31,7 @@ class BulkEdit extends React.Component {
     }
 
     getStateFromProps(props) {
-        const galleryIds = uniq(props.posts.map(p => p.parent.id));
+        const galleryIds = uniq(props.posts.map(p => p.parent_id)).filter(id => !!id);
         let galleries;
 
         $.ajax({
