@@ -369,6 +369,8 @@ class Edit extends React.Component {
 
     renderMap() {
         const { address, location } = this.state;
+        const { gallery } = this.props;
+        const mapDisabled = !utils.isOriginalGallery(gallery) || utils.isSubmittedGallery(gallery);
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
@@ -379,7 +381,8 @@ class Edit extends React.Component {
                     onMapDataChange={(data) => this.onMapDataChange(data)}
                     onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
                     hasRadius={false}
-                    draggable
+                    disabled={mapDisabled}
+                    draggable={!mapDisabled}
                     rerender
                 />
             </div>
