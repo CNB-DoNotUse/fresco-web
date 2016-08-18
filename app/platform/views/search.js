@@ -175,27 +175,26 @@ export class Search extends Component {
 	 * Retrieves assignments based on state
 	 */
 	getAssignments(force = true) {
-		let params = {
+		const params = {
 			q: this.props.query,
 			limit: 10,
 			tags: this.state.tags,
-			rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : undefined
+			rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : undefined,
+			...this.geoParams()
 		};
 
-		params = Object.assign(params, this.geoParams());
-
 		$.ajax({
-			url: '/api/search',
+		    url: '/api/search',
 			type: 'GET',
 			data: { assignments: params },
-			success: (response, status, xhr) => {
-				if(!response.error && response.assignments && response.assignments.results.length > 0) {
-					const assignments = response.assignments.results;
+		})
+		.done(response => {
+			if(response.assignments && response.assignments.results.length > 0) {
+				const assignments = response.assignments.results;
 
-					this.setState({
-						assignments: force ? assignments : this.state.assignments.concat(assignments)
-					});
-				}
+				this.setState({
+					assignments: force ? assignments : this.state.assignments.concat(assignments)
+				});
 			}
 		});
 	}
@@ -204,51 +203,46 @@ export class Search extends Component {
 	 * Retrieves posts from API based on state
 	 */
 	getPosts(force = true) {
-		let params = {
+		const params = {
 			q: this.props.query,
 			limit: 18,
 			tags: this.state.tags,
 			sortBy: 'created_at',
-			direction: 'asc',
-			rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : undefined
+			last: this.state.posts.length ? _.last(this.state.posts).id : null,
+			...this.geoParams()
 		};
 
-		params = Object.assign(params, this.geoParams());
-
-		let posts = [];
-
 		$.ajax({
-			url: '/api/search',
+		    url: '/api/search',
 			type: 'GET',
 			data: { posts: params },
-			success: (response, status, xhr) => {
-				//If the caller of this method passes force, this means that the post list will reset
-				//So this ensures that the next time `loadingPosts` is checked, it'll be ready to be called again
-				if(force)
+		})
+		.done(response => {
+			//If the caller of this method passes force, this means that the post list will reset
+			//So this ensures that the next time `loadingPosts` is checked, it'll be ready to be called again
+			if(force)
+				this.loadingPosts = false;
+
+			if(response.posts && response.posts.results) {
+				//Check if there are any more posts
+				//If there aren't, prevent the scroll event from making the data call the next time around
+				if(response.posts.results.length > 0)
 					this.loadingPosts = false;
 
-				if(!response.error && response.posts && response.posts.results) {
-					//Check if there are any more posts
-					//If there aren't, prevent the scroll event from making the data call
-					//the next time around
-					if(response.posts.results.length > 0)
-						this.loadingPosts = false;
-
-					if(force) {
-						//Setting scroll top manually because we're not using the post-list's default data mechanism
-						this.refs.postList.refs.grid.scrollTop = 0;
-					}
-
-					posts = response.posts.results;
-
-					this.setState({
-						posts: force ? posts : this.state.posts.concat(posts)
-					});
+				if(force) {
+					//Setting scroll top manually because we're not using the post-list's default data mechanism
+					this.refs.postList.refs.grid.scrollTop = 0;
 				}
-			},
-			error: (xhr, status, error) => {
-				this.setState({ posts });
+
+				const posts = response.posts.results;
+
+				this.setState({
+					posts: force ? posts : this.state.posts.concat(posts)
+				});
 			}
+		})
+		.fail(error => {
+		    this.setState({ posts: [] });
 		});
 	}
 
@@ -257,58 +251,52 @@ export class Search extends Component {
 	 */
 	getUsers(force = true) {
 		const params = {
-			users: {
-				q: this.props.query,
-				last: force ? undefined : _.last(this.state.users).id,
-				limit: 20
-			}
+			q: this.props.query,
+			last: force ? undefined : _.last(this.state.users).id,
+			limit: 20
 		};
 
 		$.ajax({
-			url: '/api/search',
+		    url: '/api/search',
 			type: 'GET',
-			data: params,
-			success: (response, status, xhr) => {
-				if(!response.error && response.users && response.users.results.length > 0) {
-					this.loadingUsers = false;
+			data: { users: params },
+		})
+		.done(response => {
+			if(response.users && response.users.results.length > 0) {
+				const users = response.users.results;
 
-					const users = response.users.results;
-
-					this.setState({
-						users: force ? users : this.state.users.concat(users)
-					});
-				}
+				this.setState({
+					users: force ? users : this.state.users.concat(users)
+				});
 			}
-		});
+		})
+		.always(() => {
+			this.loadingUsers = false;
+		})
 	}
 
 	/**
 	 * Retrieves stories from API based on state
 	 */
 	getStories(force = true) {
-		const { location } = this.state;
-
-		let params = {
+		const params = {
 			q: this.props.query,
 			last: force ? null : _.last(this.state.stories),
-			limit: 10,
-			tags: this.state.tags
+			limit: 10
 		}
 
-		params = Object.assign(params, this.geoParams());
-
 		$.ajax({
-			url: '/api/search',
+		    url: '/api/search',
 			type: 'GET',
 			data: { stories: params },
-			success: (response, status, xhr) => {
-				if(!response.error && response.stories && response.stories.results.length > 0) {
-					const stories = response.stories.results;
+		})
+		.done(response => {
+			if(response.stories && response.stories.results.length > 0) {
+				const stories = response.stories.results;
 
-					this.setState({
-						stories: force ? stories : this.state.stories.concat(stories)
-					});
-				}
+				this.setState({
+					stories: force ? stories : this.state.stories.concat(stories)
+				});
 			}
 		});
 	}
