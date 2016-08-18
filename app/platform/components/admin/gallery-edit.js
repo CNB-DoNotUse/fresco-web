@@ -368,8 +368,8 @@ class GalleryEdit extends React.Component {
                         onPlaceChange={(p) => this.onPlaceChange(p)}
                         onMapDataChange={(data) => this.onMapDataChange(data)}
                         disabled={galleryType === 'submissions'}
+                        draggable={galleryType !== 'submissions'}
                         hasRadius={false}
-                        draggable
                         rerender
                     />
                 </div>
