@@ -1,12 +1,10 @@
 import React, { PropTypes } from 'react';
-import Slider from 'react-slick';
 import AutocompleteMap from '../global/autocomplete-map';
 import EditTags from './../gallery/edit-tags';
 import EditStories from './../gallery/edit-stories';
 import EditPosts from './../gallery/edit-posts';
 import EditAssignment from './../gallery/edit-assignment';
 import EditByline from './../gallery/edit-byline';
-import FrescoImage from '../global/fresco-image';
 import utils from 'utils';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
