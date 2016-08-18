@@ -18,7 +18,7 @@ class BylineEdit extends React.Component {
             external_source,
         } = this.props;
 
-        if (gallery.owner_id || gallery.posts.some(p => !!p.owner_id)) {
+        if (!utils.isImportedGallery(gallery) || !utils.isOriginalGallery(gallery)) {
             return (
                 <div className="dialog-row">
                     <div>
