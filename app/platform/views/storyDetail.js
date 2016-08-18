@@ -45,8 +45,8 @@ class StoryDetail extends React.Component {
             dataType: 'json',
         })
         .done((res) => {
-            this.hide();
             this.setState({ story: res });
+            this.toggleStoryEdit();
         })
         .fail(() => {
             $.snackbar({ content: 'Unable to save story' });
