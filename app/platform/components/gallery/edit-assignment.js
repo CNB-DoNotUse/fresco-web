@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import Tag from '../global/tag.js';
-import reject from 'lodash/reject';
+import utils from 'utils';
 
 /**
  * Component for managing added/removed tags
@@ -63,8 +63,10 @@ class EditAssignment extends React.Component {
     }
 
     render() {
+        const { assignment, updateAssignment, gallery } = this.props;
+        if (!utils.isOriginalGallery(gallery)) return null;
+
         const { query, suggestions } = this.state;
-        const { assignment, updateAssignment } = this.props;
         const assignmentsJSX = assignment
             ? <Tag
                 text={assignment.title}
@@ -118,6 +120,7 @@ class EditAssignment extends React.Component {
 EditAssignment.propTypes = {
     updateAssignment: PropTypes.func.isRequired,
     assignment: PropTypes.object,
+    gallery: PropTypes.object.isRequired,
 };
 
 export default EditAssignment;

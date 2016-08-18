@@ -346,6 +346,7 @@ class GalleryEdit extends React.Component {
                     />
 
                     <EditAssignment
+                        gallery={gallery}
                         assignment={assignment}
                         updateAssignment={(a) => this.setState({ assignment: a })}
                     />

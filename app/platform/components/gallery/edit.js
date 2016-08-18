@@ -424,6 +424,7 @@ class Edit extends React.Component {
                     </div>
 
                     <EditAssignment
+                        gallery={gallery}
                         assignment={assignment}
                         updateAssignment={(a) => this.setState({ assignment: a })}
                     />
