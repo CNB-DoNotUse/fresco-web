@@ -40,9 +40,8 @@ class Edit extends React.Component {
         this.removeGallery(gallery.id);
     }
 
-    onSave(rating = this.state.rating) {
+    onSave() {
         const params = this.getFormData();
-        params.rating = rating;
         const { gallery, onUpdateGallery } = this.props;
         if (!gallery || !gallery.id || !params || this.state.loading) return;
         this.setState({ loading: true });
@@ -65,7 +64,7 @@ class Edit extends React.Component {
                 onUpdateGallery(res);
             });
         })
-        .catch((err) => {
+        .catch(() => {
             $.snackbar({ content: 'There was an error saving the gallery!' });
             this.setState({ loading: false });
         });
@@ -185,6 +184,7 @@ class Edit extends React.Component {
             assignment,
             external_account_name,
             external_source,
+            rating,
         } = this.state;
         const { gallery } = this.props;
         const posts = this.getPostsFormData();
@@ -204,6 +204,7 @@ class Edit extends React.Component {
             caption,
             external_account_name,
             external_source,
+            rating,
             ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
@@ -228,17 +229,22 @@ class Edit extends React.Component {
 
         return {
             ...utils.getRemoveAddParams('posts', gallery.posts, posts),
-            ...this.getPostsLocationsParams(),
+            ...this.getPostsUpdateParams(),
         };
     }
 
-    getPostsLocationsParams() {
+    getPostsUpdateParams() {
         const { gallery } = this.props;
-        const { address, location } = this.state;
+        const { address, location, rating } = this.state;
         // check to see if should save locations on all gallery's posts
         if ((isEqual(this.getInitialLocationData(), { address, location }))
             || (!gallery.posts || !gallery.posts.length)) {
-            return null;
+                return {
+                    posts_update: gallery.posts.map(p => ({
+                        id: p.id,
+                        rating,
+                    })),
+                };
         }
 
         return {
@@ -247,6 +253,7 @@ class Edit extends React.Component {
                 address,
                 lat: location.lat,
                 lng: location.lng,
+                rating,
             })),
         };
     }
@@ -515,8 +522,10 @@ class Edit extends React.Component {
                 {utils.isOriginalGallery(gallery)
                     ? <button
                         type="button"
-                        onClick={() =>
-                                this.onSave((gallery.rating < 2) ? 2 : 1)}
+                        onClick={() => {
+                            this.setState({ rating: (gallery.rating < 2 ? 2 : 1) },
+                                () => this.onSave());
+                        }}
                         className="btn btn-flat pull-right"
                         disabled={loading}
                     >
