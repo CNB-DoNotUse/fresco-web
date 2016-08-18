@@ -116,14 +116,17 @@ app.use((req, res, next) => {
     const route = req.path.slice(1).split('/')[0];
     const now = Date.now();
 
-    // Check if a public facing route, then send onwwards
+    // Check if not a platform route, then send onwwards
     if (routes.platform.indexOf(route) === -1) {
         return next();
     }
 
     // Check if there is no sessioned user
     if (!req.session.user) {
-        return res.redirect('/account?next=' + req.url);
+        req.session.redirect = req.url;
+        return req.session.save((error) => {
+            res.redirect('/account');
+        });
     }
 
     // Check if the session hasn't expired
