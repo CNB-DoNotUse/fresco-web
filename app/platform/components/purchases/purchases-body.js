@@ -13,7 +13,6 @@ export default class PurchasesBody extends React.Component {
 		return (
 			<div className="container-fluid fat grid">
 				<PurchasesList
-					scrollable={true}
 					updatePurchases={this.props.updatePurchases}
 					purchasesAdded={this.purchasesAdded}
 					loadPurchases={this.props.loadPurchases} />

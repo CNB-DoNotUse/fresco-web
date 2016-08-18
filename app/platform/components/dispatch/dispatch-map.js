@@ -57,6 +57,11 @@ import utils from 'utils'
 			{
 				zoom: dispatch.mapZoom,
 				zoomControl: true,
+				zoomControlOptions: {
+					position: google.maps.ControlPosition.LEFT_TOP
+				},
+				streetViewControl: false,
+				fullscreenControl: true,
 				center: dispatch.mapCenter,
 				styles: utils.mapStyles
 			}

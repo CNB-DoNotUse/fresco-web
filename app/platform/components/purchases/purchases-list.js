@@ -1,7 +1,10 @@
 import React, { PropTypes, Component } from 'react'
 import PurchasesListItem from 'purchases-list-item'
 
-export default class PurchasesList extends Component {
+/**
+ * Displays a list of purchase objects
+ */
+class PurchasesList extends Component {
 
 	constructor(props) {
 		super(props);
@@ -9,11 +12,11 @@ export default class PurchasesList extends Component {
 		this.state = {
 			loading: false,
 			offset: 0,
+			scrollable: true,
 			purchases: []
 		}
 
 		this.loadPurchases = this.loadPurchases.bind(this);
-		this.scroll = this.scroll.bind(this);
 	}
 
 	componentDidMount() {
@@ -34,7 +37,6 @@ export default class PurchasesList extends Component {
 	loadPurchases() {
 		//Access parent var load method
 		this.props.loadPurchases(null, (purchases) => {
-			console.log('LOADED');
 			//Set posts & callback from successful response
 			this.setState({ purchases });
 		});  
@@ -77,7 +79,7 @@ export default class PurchasesList extends Component {
 			<div 
 				id="purchases-list" 
 				className="col-md-8 col-xs-12 list" 
-				onScroll={this.props.scrollable ? this.scroll : null}
+				onScroll={this.state.scrollable ? (e) => this.scroll(e) : null}
 			>
 				{this.state.purchases.map((purchase, i) => {
 					return (
@@ -94,11 +96,11 @@ export default class PurchasesList extends Component {
 }
 
 PurchasesList.propTypes = {
-    purchase: PropTypes.array,
-    scrollabe: PropTypes.bool,
+    purchases: PropTypes.array
 };
 
-PurchasesList.defaultProps= {
-	purchases: [],
-	scrollable: false
+PurchasesList.defaultProps = {
+	loadPurchases: () => {}
 }
+
+export default PurchasesList;

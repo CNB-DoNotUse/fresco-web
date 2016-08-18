@@ -57,9 +57,9 @@ function sendMessage(ip, req, res){
     }
 
     const client = zendesk.createClient({
-      username:  'elmir@fresconews.com',
-      token:     'P16GkstwMdW3oaQOmmim2f7mbuU7aKVO0QLclOnX',
-      remoteUri: 'https://fresco.zendesk.com/api/v2'
+        username:  'elmir@fresconews.com',
+        token:     'P16GkstwMdW3oaQOmmim2f7mbuU7aKVO0QLclOnX',
+        remoteUri: 'https://fresco.zendesk.com/api/v2'
     });
 
     const subject = req.body.inquiryType + ' Inquiry from ' + req.body.name;
@@ -78,9 +78,10 @@ function sendMessage(ip, req, res){
         }
     };
 
+    //Save IP to redis now that we're sending
+    redis.set(CONTACT_PREFIX + ip, new Date().getTime());
+    
     client.tickets.create(ticket,  (err, req, result) => {
-        //Save IP to redis now that we're sending
-        redis.set(CONTACT_PREFIX + ip, new Date().getTime());
 
         if(err){
             return res.json({

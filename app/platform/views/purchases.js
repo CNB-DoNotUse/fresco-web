@@ -8,6 +8,9 @@ import TopBar from '../components/topbar';
 import PurchasesBody from '../components/purchases/purchases-body';
 import TagFilter from '../components/topbar/tag-filter';
 
+/**
+ * Admin Purchases page
+ */
 class Purchases extends React.Component {
 	constructor(props) {
 		super(props);
@@ -195,19 +198,16 @@ class Purchases extends React.Component {
 		}
 
 		$.ajax({
-			url: '/api/purchase/list',
+		    url: '/api/purchase/list',
 			type: 'GET',
-			data: $.param(params),
-			success: (response, status, xhr) => {
-				if(response.err || !response) {
-					return $.snackbar({
-						content: 'There was an error receiving purchases!'
-					});
-				} else {
-					cb(response);
-				}
-			}
-		});	
+			data: $.param(params)
+		})
+		.done(cb)
+		.fail((error) => {
+		    return $.snackbar({
+				content: 'There was an error receiving purchases!'
+			});
+		});
 	}
 
 	/**

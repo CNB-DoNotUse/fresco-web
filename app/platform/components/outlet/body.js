@@ -44,24 +44,20 @@ export default class Body extends React.Component {
 		}
 
 		$.ajax({
-			url: '/api/purchase/stats',
-			type: 'GET',
-			data: $.param(params),
-			success: (response, status, xhr) => {
-				if(response.err || !response) {
-					return $.snackbar({
-						content: 'There was an error receiving purchases!'
-					});
-				} else {
-					callback(response);
-				}
-			}
+		    url: '/api/purchase/stats',
+		    type: 'GET',
+		    data: $.param(params),
+		})
+		.done(callback)
+		.fail((error) => {
+		    return $.snackbar({
+				content: 'There was an error receiving purchases!'
+			});
 		});
 	}
 
 	/**
 	 * Requests purchases from server
-	 * @return {[type]} [description]
 	 */
 	loadPurchases(last = null, cb) {
 		const params = {
@@ -71,28 +67,24 @@ export default class Body extends React.Component {
 		}
 
 		$.ajax({
-			url: '/api/purchase/list',
+		    url: '/api/purchase/list',
 			type: 'GET',
-			data: $.param(params),
-			success: (response, status, xhr) => {
-				if(response.err || !response) {
-					return $.snackbar({
-						content: 'There was an error receiving purchases!'
-					});
-				} else {
-					cb(response);
-				}
-			}
+			data: $.param(params)
+		})
+		.done(cb)
+		.fail((error) => {
+		    return $.snackbar({
+				content: 'There was an error receiving purchases!'
+			});
 		});
 	}
 
 	downloadExports() {
-		const oultets = `outlet_ids[]=${this.props.outlet.id}`;
+		const oultet = `outlet_ids[]=${this.props.outlet.id}`;
+		const u = encodeURIComponent(`/purchase/report?${oultet}`);
+		const url = `/scripts/report?u=${u}&e=Failed`;
 
-		window.open(
-			`/scripts/outlet/purchase/report?${oultets}`,
-			'_blank'
-		);
+		window.open(url, '_blank');
 	}
 
 	emailStatement() {
