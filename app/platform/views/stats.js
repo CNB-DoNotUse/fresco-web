@@ -17,7 +17,7 @@ class Stats extends React.Component {
         super(props);
 
         this.state = {
-            count: { active: 0, total: 0},
+            count: props.count,
             coordinates: [],
             autocompleteText: ''
         }
@@ -149,43 +149,23 @@ class Stats extends React.Component {
      * Calculates users from coordinates ins tate
      */
     calculateUsers() {
-        const _this = this;
-        const day = 86400000;
-        const timeKeys = Object.keys(this.state.counts);
-        const times = [
-            Date.now() - day, //day
-            Date.now() - (day * 7), //one week
-            Date.now() - (day * 14), //two weeks
-            Date.now() - (day * 31), //one month
-            Date.now() - (day * 365), //year
-            null
-        ];
-        
-        let counts = _.clone(this.state.counts);
-
-        timeKeys.forEach((timeKey, i) => {
-            const params = {
-                since: times[i] || null,
-                coordinates: [this.state.coordinates]
+        $.ajax({
+            url: "/api/user/locations/report",
+            method: 'GET',
+            data: {
+                since: Date.now() - 86400000,
+                geo: {
+                    type : "Polygon",
+                    coordinates :  [ this.state.coordinates ]
+                }
             }
-
-            $.ajax({
-                url: "/api/stats/user",
-                method: 'GET',
-                key: timeKey,
-                data: params
-            })
-            .done(function(response) {
-                counts[this.key] = response.count;
-
-                _this.setState({ counts });
-            })
-            .fail(function(error) {
-                counts[this.key] = 'Error';
-
-                _this.setState({ counts });
-            });
-        });
+        })
+        .done((response) => {
+            this.setState({ count: response });
+        })
+        .fail((error) => {
+            this.setState({ count: this.props.count });
+        })
     }
 
     render() {
@@ -221,7 +201,7 @@ class Stats extends React.Component {
                         <table>
                             <tbody>
                                 <tr>
-                                    <td>Users w/ location (last 24 hrs)</td>
+                                    <td>Active in the last 24 hours</td>
                                     <td>Total Users</td>
                                 </tr>
                                 <tr>
@@ -239,6 +219,10 @@ class Stats extends React.Component {
             </App>
         )
     }
+}
+
+Stats.defaultProps = {
+    count: { active: 0, total: 0}
 }
 
 

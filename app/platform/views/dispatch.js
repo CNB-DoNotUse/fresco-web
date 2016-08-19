@@ -157,8 +157,8 @@ class Dispatch extends React.Component {
     findUsers(map, callback) {
         const params = {
             geo: {
-                type : "Polygon",
-                coordinates :  utils.generatePolygonFromBounds( map.getBounds())
+                type: "Polygon",
+                coordinates:  utils.generatePolygonFromBounds(map.getBounds())
             }
         };
 
@@ -173,7 +173,6 @@ class Dispatch extends React.Component {
             },
             error: (xhr, status, error) => {
                 console.log("Can't fetch users!");
-                // $.snackbar({content: utils.resolveError(error)});
             }
         });
     }
