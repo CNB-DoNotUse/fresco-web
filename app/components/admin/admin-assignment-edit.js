@@ -43,6 +43,7 @@ export default class AdminAssignmentEdit extends React.Component {
 
         this.setState({
             radius: this.props.assignment.location ? this.props.assignment.location.radius : 0,
+            address: this.props.assignment.location.address,
             location: {
                 lat: this.props.assignment.location.geo.coordinates[1],
                 lng: this.props.assignment.location.geo.coordinates[0],
@@ -57,11 +58,11 @@ export default class AdminAssignmentEdit extends React.Component {
                 var assignment = nextProps.assignment;
 
                 this.setState({
-                    address: null,
+                    address: assignment.location ? assignment.location.address: '',
                     radius: assignment.location ? assignment.location.radius : 0,
                     location: {
                         lat: assignment.location.geo.coordinates[1],
-                        lng: assignment.location.geo.coordinates[0],
+                        lng: assignment.location.geo.coordinates[0]
                     }
                 });
 
@@ -143,31 +144,59 @@ export default class AdminAssignmentEdit extends React.Component {
     approve() {
         this.pending = true;
 
-        $.post('/api/assignment/approve',
-        {
-            id: this.props.assignment._id,
-            now: Date.now(),
-            title: this.refs['assignment-title'].value,
-            caption: this.refs['assignment-description'].value,
-            address: this.state.address || undefined,
-            googlemaps: this.state.address || undefined,
-            radius: this.state.radius,
-            lat: this.state.location.lat,
-            lon: this.state.location.lng,
-            expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now() //Convert to ms and current timestamp
-        }, (data) => {
-            this.pending = false;
-            if(data.err) {
-                $.snackbar({
-                    content: 'Could not approve assignment!'
+        let address = '';
+
+        if(this.state.address === null) {
+            var geocoder = new google.maps.Geocoder();
+
+            geocoder.geocode({'location': {
+                lat: this.state.location.lat,
+                lng: this.state.location.lng
+            }}, (results, status) => {
+                if(status === google.maps.GeocoderStatus.OK && results[0]) {
+                    approve.call(this, results[0].formatted_address);
+                }
+            });
+        } else {
+            approve.call(this, this.state.address);
+        }
+
+        function approve(address) {
+            const str = "You're about approve this assignment. The location on this assignment is " + address;
+
+            alertify.confirm(str, (e) => {
+
+                if(!e) return;
+
+                $.post('/api/assignment/approve',{
+                    id: this.props.assignment._id,
+                    now: Date.now(),
+                    title: this.refs['assignment-title'].value,
+                    caption: this.refs['assignment-description'].value,
+                    address: this.state.address || undefined,
+                    googlemaps: this.state.address || undefined,
+                    radius: this.state.radius,
+                    lat: this.state.location.lat,
+                    lon: this.state.location.lng,
+                    expiration_time: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now() //Convert to ms and current timestamp
+                }, (data) => {
+                    this.pending = false;
+                    if(data.err) {
+                        $.snackbar({
+                            content: 'Could not approve assignment!'
+                        });
+                    } else {
+                        this.props.updateAssignment(this.props.assignment._id);
+                        $.snackbar({
+                            content: 'Assignment Approved!'
+                        });
+                    }
                 });
-            } else {
-                this.props.updateAssignment(this.props.assignment._id);
-                $.snackbar({
-                    content: 'Assignment Approved!'
-                });
-            }
-        });
+                
+            });
+        }
+
+
 
     }
 
@@ -235,11 +264,11 @@ export default class AdminAssignmentEdit extends React.Component {
     render() {
         
         var radius = Math.round(global.milesToFeet(this.state.radius)),
-            address = this.state.address ? this.state.address : this.props.assignment.location ? this.props.assignment.location.address : '',
             expiration_time = this.props.assignment ? global.hoursToExpiration(this.props.assignment.expiration_time) : null;
 
         if(this.props.activeGalleryType != 'assignment' || !this.props.hasActiveGallery) 
             return (<div></div>);
+
 
         /**
          *  Merge button
@@ -266,7 +295,7 @@ export default class AdminAssignmentEdit extends React.Component {
                         defaultValue={this.props.assignment.caption}></textarea>
                     
                     <AutocompleteMap
-                        defaultLocation={address}
+                        defaultLocation={this.state.address || ''}
                         location={this.state.location}
                         radius={radius}
                         onPlaceChange={this.onPlaceChange}
