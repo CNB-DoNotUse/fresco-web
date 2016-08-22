@@ -11,6 +11,7 @@ import request from 'superagent';
 import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
+import pickBy from 'lodash/pickBy';
 
 /**
  * Gallery Edit Parent Object
@@ -199,24 +200,19 @@ class Edit extends React.Component {
             return null;
         }
 
-        if (rating === 0) {
-            $.snackbar({ content: 'Galleries must be verified or unverified before saving' });
-            return null;
-        }
-
         const params = {
             tags,
             caption,
             external_account_name,
             external_source,
-            rating,
             ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             assignment_id: assignment ? assignment.id : null,
+            rating,
         };
 
-        return params;
+        return pickBy(params, v => !!v);
     }
 
     getPostsFormData() {
@@ -241,25 +237,27 @@ class Edit extends React.Component {
     getPostsUpdateParams() {
         const { gallery } = this.props;
         const { address, location, rating } = this.state;
+        const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
+        const sameRating = rating === gallery.rating;
         // check to see if should save locations on all gallery's posts
-        if ((isEqual(this.getInitialLocationData(), { address, location }))
-            || (!gallery.posts || !gallery.posts.length)) {
-                return {
-                    posts_update: gallery.posts.map(p => ({
-                        id: p.id,
-                        rating,
-                    })),
-                };
+        if (sameLocation && sameRating) return null;
+        if (sameLocation) {
+            return {
+                posts_update: gallery.posts.map(p => (pickBy({
+                    id: p.id,
+                    rating,
+                }, v => !!v))),
+            };
         }
 
         return {
-            posts_update: gallery.posts.map(p => ({
+            posts_update: gallery.posts.map(p => (pickBy({
                 id: p.id,
                 address,
                 lat: location.lat,
                 lng: location.lng,
                 rating,
-            })),
+            }, v => !!v))),
         };
     }
 
