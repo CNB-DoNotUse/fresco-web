@@ -11,6 +11,7 @@ import request from 'superagent';
 import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
+import pickBy from 'lodash/pickBy';
 
 /**
  * Gallery Edit Parent Object
@@ -43,11 +44,15 @@ class Edit extends React.Component {
     onSave() {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
-        if (!gallery || !gallery.id || !params || this.state.loading) return;
+        if (!get(gallery, 'id') || !params || this.state.loading) return;
         this.setState({ loading: true });
 
-        this.saveGallery(gallery.id, params)
-        .then((res) => {
+        Promise.all([
+            this.saveGallery(gallery.id, params),
+            this.deletePosts(get(params, 'posts_remove')),
+        ])
+        .then((response) => {
+            const res = response[0];
             if (get(res, 'posts_new.length' && this.fileInput.files)) {
                 return Promise.all([
                     res,
@@ -199,30 +204,25 @@ class Edit extends React.Component {
             return null;
         }
 
-        if (rating === 0) {
-            $.snackbar({ content: 'Galleries must be verified or unverified before saving' });
-            return null;
-        }
-
         const params = {
             tags,
             caption,
             external_account_name,
             external_source,
-            rating,
             ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             assignment_id: assignment ? assignment.id : null,
+            rating,
         };
 
-        return params;
+        return pickBy(params, v => !!v && (Array.isArray(v) ? v.length : true));
     }
 
     getPostsFormData() {
         const { gallery } = this.props;
         const files = this.fileInput.files;
-        let { posts } = this.state;
+        let { posts, rating } = this.state;
 
         if (!files.length && !posts.length) return null;
 
@@ -232,8 +232,14 @@ class Edit extends React.Component {
             });
         }
 
+        let { posts_new, posts_add, posts_remove } =
+            utils.getRemoveAddParams('posts', gallery.posts, posts);
+        posts_new = posts_new.map(p => Object.assign({}, p, { rating }));
+
         return {
-            ...utils.getRemoveAddParams('posts', gallery.posts, posts),
+            posts_new,
+            posts_add,
+            posts_remove,
             ...this.getPostsUpdateParams(),
         };
     }
@@ -241,25 +247,27 @@ class Edit extends React.Component {
     getPostsUpdateParams() {
         const { gallery } = this.props;
         const { address, location, rating } = this.state;
+        const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
+        const sameRating = rating === gallery.rating;
         // check to see if should save locations on all gallery's posts
-        if ((isEqual(this.getInitialLocationData(), { address, location }))
-            || (!gallery.posts || !gallery.posts.length)) {
-                return {
-                    posts_update: gallery.posts.map(p => ({
-                        id: p.id,
-                        rating,
-                    })),
-                };
+        if (sameLocation && sameRating) return null;
+        if (sameLocation) {
+            return {
+                posts_update: gallery.posts.map(p => (pickBy({
+                    id: p.id,
+                    rating: rating === 3 ? 2 : rating,
+                }, v => !!v))),
+            };
         }
 
         return {
-            posts_update: gallery.posts.map(p => ({
+            posts_update: gallery.posts.map(p => (pickBy({
                 id: p.id,
                 address,
                 lat: location.lat,
                 lng: location.lng,
-                rating,
-            })),
+                rating: rating === 3 ? 2 : rating,
+            }, v => !!v))),
         };
     }
 
@@ -284,8 +292,22 @@ class Edit extends React.Component {
         return Promise.all(requests);
     }
 
+    deletePosts(postIds) {
+        if (!postIds || !postIds.length) return Promise.resolve();
+        return new Promise((resolve, reject) => (
+            $.ajax({
+                url: '/api/post/delete',
+                method: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({ post_ids: postIds }),
+            })
+            .done((res) => resolve(res))
+            .fail((err) => reject(err))
+        ));
+    }
+
     saveGallery(id, params) {
-        if (!id || !params || this.state.loading) return Promise.resolve();
+        if (!id || !params) return Promise.resolve();
 
         return new Promise((resolve, reject) => (
             $.ajax({
@@ -369,6 +391,8 @@ class Edit extends React.Component {
 
     renderMap() {
         const { address, location } = this.state;
+        const { gallery } = this.props;
+        const mapDisabled = !utils.isOriginalGallery(gallery) || utils.isSubmittedGallery(gallery);
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
@@ -379,7 +403,8 @@ class Edit extends React.Component {
                     onMapDataChange={(data) => this.onMapDataChange(data)}
                     onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
                     hasRadius={false}
-                    draggable
+                    disabled={mapDisabled}
+                    draggable={!mapDisabled}
                     rerender
                 />
             </div>
@@ -405,16 +430,17 @@ class Edit extends React.Component {
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-
-                    <EditByline
-                        gallery={gallery}
-                        external_source={external_source}
-                        external_account_name={external_account_name}
-                        onChangeExtAccountName={(a) =>
-                                this.setState({ external_account_name: a })}
-                        onChangeExtSource={(s) =>
-                                this.setState({ external_source: s })}
-                    />
+                    {utils.isOriginalGallery(gallery) ?
+                        <EditByline
+                            gallery={gallery}
+                            external_source={external_source}
+                            external_account_name={external_account_name}
+                            onChangeExtAccountName={(a) =>
+                                    this.setState({ external_account_name: a })}
+                            onChangeExtSource={(s) =>
+                                    this.setState({ external_source: s })}
+                        />
+                    : ''}
 
                     <div className="dialog-row">
                         <textarea
@@ -465,10 +491,12 @@ class Edit extends React.Component {
 
                 {get(posts, 'length') || get(uploads, 'length')
                     ? <EditPosts
-                        posts={posts}
+                        originalPosts={gallery.posts}
+                        editingPosts={posts}
                         uploads={uploads}
-                        gallery={gallery}
+                        canDelete={utils.isOriginalGallery(gallery)}
                         onToggleDelete={(p) => this.toggleDeletePost(p)}
+                        className="dialog-col col-xs-12 col-md-5"
                     />
                     : null
                 }

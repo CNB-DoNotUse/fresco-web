@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 
+/**
+ * Gallery byline component
+ */
 class BylineEdit extends React.Component {
 
     componentDidUpdate(prevProps) {
@@ -18,7 +21,7 @@ class BylineEdit extends React.Component {
             external_source,
         } = this.props;
 
-        if (!utils.isImportedGallery(gallery) || !utils.isOriginalGallery(gallery)) {
+        if (!utils.isImportedGallery(gallery)) {
             return (
                 <div className="dialog-row">
                     <div>
@@ -27,7 +30,7 @@ class BylineEdit extends React.Component {
                             className="form-control floating-label"
                             value={utils.getBylineFromGallery(gallery) || ''}
                             placeholder="Byline"
-                            disabled
+                            disabled={true}
                         />
                     </div>
                 </div>
@@ -74,4 +77,3 @@ BylineEdit.defaultProps = {
 };
 
 export default BylineEdit;
-

@@ -211,7 +211,7 @@ import utils from 'utils'
 	 * Saves the map's current location to local storage
 	 * @return {[type]} [description]
 	 */
-	 saveMapLocation() {
+	saveMapLocation() {
 		//Save new map center to storage
 		window.sessionStorage.dispatch = JSON.stringify({
 			mapCenter: this.state.map.getCenter(),
@@ -222,7 +222,7 @@ import utils from 'utils'
 	/**
 	 * Clears all relevant assignment data from the map and runs an update at the end
 	 */
-	 clearAssignments(){
+	clearAssignments(){
 	 	this.state.markers.forEach((marker) => {
 	 		marker.setMap(null);
 	 	});
@@ -242,7 +242,7 @@ import utils from 'utils'
 	/**
 	 * Clears callout if exists
 	 */
-	 clearCallout() {
+	clearCallout() {
 	 	if(this.state.activeCallout) {
 	 		this.state.activeCallout.close();
 	 		this.setState({
@@ -255,7 +255,7 @@ import utils from 'utils'
 	 * Updates the map with new users/assignments
 	 * @description Makes ajax call for both assignments and users separately
 	 */
-	 updateMap() {
+	updateMap() {
 		//Check if we have map in state or are loading
 		if(!this.state.map) return;
 
@@ -286,13 +286,15 @@ import utils from 'utils'
 
 				//Set object keys by hash
 				users.forEach((user) => {
-					formattedUsers[user.hash] = user;
+					if(user.hash){
+						formattedUsers[user.hash] = user;
+					}
 				});
 
 				//Update the user markers, then update state on callback
-				this.updateUserMarkers(formattedUsers, (markers) => {
+				this.updateUserMarkers(formattedUsers, (userMarkers) => {
 					this.setState({
-						userMarkers: markers,
+						userMarkers,
 						users: formattedUsers
 					});
 				});
@@ -304,7 +306,7 @@ import utils from 'utils'
 	 * Updates all assignment markers on the map, using the previously set ones to remove any repeats
 	 * @param {array} newAssignments List of new assignments to update
 	 */
-	 updateAssignmentMarkers(newAssignments) {
+	updateAssignmentMarkers(newAssignments) {
 	 	let assignments = _.clone(this.state.assignments);
 
 		//Iterate backwards, because we slice as we go
@@ -333,7 +335,7 @@ import utils from 'utils'
 	 * Adds passed array of assignments to the map,
 	 * then sets state from concatted response from `addAssignmentToMap` on each assignment
 	 */
-	 addAssignmentsToMap(assignments){
+	addAssignmentsToMap(assignments){
 	 	let markers = [];
 	 	let circles = [];
 
@@ -357,7 +359,7 @@ import utils from 'utils'
 	 * Makes a marker with the passed assignment and adds it to the map
 	 * @return adds a google maps marker, with the passed geo-location
 	 */
-	 addAssignment(assignment, draggable) {
+	addAssignment(assignment, draggable) {
 		//Lat/Lng will default to center if for a created assignment
 		const { map } = this.state;
 		let title = assignment.title || 'No title';
@@ -380,8 +382,8 @@ import utils from 'utils'
 			} else { //Assignment has 'active' or unchecked status
 			status = 'active'
 			zIndex = 300;
+			}
 		}
-	}
 
 		//Create the rendered circle
 		const circle = this.createCircle(
@@ -390,7 +392,7 @@ import utils from 'utils'
 			utils.milesToMeters(radius),
 			status,
 			assignment.id
-			);
+		);
 		//Create the marker
 		const marker = this.createAssignmentMarker(
 			map,
@@ -400,7 +402,7 @@ import utils from 'utils'
 			zIndex,
 			draggable,
 			assignment.id
-			);
+		);
 
 		//Add event handler to display callout when clicekd
 		google.maps.event.addListener(
@@ -415,7 +417,7 @@ import utils from 'utils'
 	/**
 	 * Creates a marker from passed params
 	 */
-	 createAssignmentMarker(map, position, title, status, zIndex, draggable, assignmentId) {
+	createAssignmentMarker(map, position, title, status, zIndex, draggable, assignmentId) {
 		//Create the marker image
 		const image = {
 			url: status ? utils.assignmentImage[status] : utils.assignmentImage.drafted,
@@ -447,7 +449,7 @@ import utils from 'utils'
 	 * @param {integer} radius Circle radius in meters
 	 * @param {Assignment status} status active/pending/expired
 	 */
-	 createCircle(map, center, radius, status, assignmentId) {
+	createCircle(map, center, radius, status, assignmentId) {
 	 	return new google.maps.Circle({
 	 		map: map,
 	 		center: center || map.getCenter(),
@@ -463,27 +465,21 @@ import utils from 'utils'
 	 * Updates all the user markers on the map
 	 * @description Compares the passed in new users, to the current state users
 	 */
-	 updateUserMarkers(newUsers, callback) {
-	 	var keys = Object.keys(newUsers),
-	 	markers = _.clone(this.state.userMarkers);
+	updateUserMarkers(newUsers, callback) {
+	 	let markers = _.clone(this.state.userMarkers);
+		let currentUsers = _.clone(this.state.users);
 
-		//Make keys after the loop, because keys may have been deleted
-		var currentUsers = _.clone(this.state.users),
-		currentUserKeys = Object.keys(currentUsers);
-
-		for (var i = 0; i < keys.length; i++) {
-			let key = keys[i];
-			let user = newUsers[key];
-			let prevUser = currentUsers[key];
+		for(let key of Object.keys(newUsers)) {
+			const user = newUsers[key];
+			const prevUser = currentUsers[key];
 
 			//If the user already exists
-			if(prevUser !== null && typeof(prevUser) !== 'undefined') {
+			if(prevUser) {
 				//If the location has changed, move it, otherwise do nothing
-				if(prevUser.curr_geo.coordinates[0] !== user.curr_geo.coordinates[0] || prevUser.curr_geo.coordinates[1] !== user.curr_geo.coordinates[1]){
-					var marker = markers[key];
-
+				if(!_.isEqual(prevUser.curr_geo, user.curr_geo)) {
 					//Update the marker's position
-					marker.setPosition(new google.maps.LatLng(user.curr_geo.coordinates[1], user.curr_geo.coordinates[0]));
+					markers[key]
+						.setPosition(new google.maps.LatLng(user.curr_geo.coordinates[1], user.curr_geo.coordinates[0]));
 				}
 			}
 			//If the user doesn't exist in the new data set
@@ -494,26 +490,20 @@ import utils from 'utils'
 					delete currentUsers[key];
 				}
 
-				const marker = this.createUserMarker(this.state.map, user.curr_geo); //Add user to map
-
-				markers[key] = marker; //Save marker to state
-			}
+				//Add user to map
+				const marker = this.createUserMarker(this.state.map, user.curr_geo);
+				//Save marker
+				markers[key] = marker;
+			}			
 		}
 
-		//If the length changed, reset the keys to avoid
-		//iterating over keys that do no exist any more
-		if(currentUsers.length !== this.state.users.length)
-			currentUserKeys = Object.keys(currentUsers);
-
 		//Loop through current users and remove them if they're not in the new set
-		for (var i = 0; i < currentUserKeys.length; i++) {
-			var key = currentUserKeys[i];
-
+		for(let key of Object.keys(currentUsers)) {
 			//Check if the user's aren't in the new set by the key
 			if(newUsers[key] == null && markers[key]) {
 				markers[key].setMap(null);
 				delete markers[key];
-			}
+			}	
 		}
 
 		callback(markers);
@@ -523,7 +513,7 @@ import utils from 'utils'
 	 * Makes a marker for a user
 	 * @return a google maps marker for a user, with the passed geo-location
 	 */
-	 createUserMarker(map, geo) {
+	createUserMarker(map, geo) {
 	 	const image = {
 	 		url: "/images/assignment-user@3x.png",
 	 		size: new google.maps.Size(30, 33),
@@ -533,7 +523,7 @@ import utils from 'utils'
 	 	};
 
 	 	return new google.maps.Marker({
-	 		position: new google.maps.LatLng(geo.coordinates[0], geo.coordinates[1]),
+	 		position: new google.maps.LatLng(geo.coordinates[1], geo.coordinates[0]),
 	 		map: map,
 	 		icon: image,
 	 		zIndex: 0,
@@ -545,7 +535,7 @@ import utils from 'utils'
 	 * Focuses on the passed assignment
 	 * @param  {Object} assignment     Assignment focus on. Assumes assignment has Lat / Lng
 	 */
-	 focusOnAssignment(assignment) {
+	focusOnAssignment(assignment) {
 	 	this.isOpeningCallout = true;
 
 	 	if(assignment.location == null) {

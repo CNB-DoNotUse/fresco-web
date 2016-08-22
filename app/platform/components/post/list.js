@@ -41,18 +41,15 @@ class PostList extends React.Component {
         // If we receive new posts in props while having none previously
         const currentPostIds = this.state.posts.length ? this.state.posts.map(p => p.id) : [];
         const newPostIds = nextProps.posts.map(p => p.id);
-        const diffIds = _.difference(newPostIds, currentPostIds);
-        let postsUpdated = false;
 
-        // Check diff or if the parent tells the component to update
-        if (nextProps.posts.length != this.props.posts.length || diffIds.length || nextProps.updatePosts) {
-            this.setState({ posts: nextProps.posts });
-            return;
+        // Check if the parent tells the component to update
+        if (_.difference(newPostIds, currentPostIds).length || nextProps.updatePosts) {
+            return this.setState({ posts: nextProps.posts });
         }
 
         // Checks if the verified prop is changed `or` Checks if the sort prop is changed
         if (nextProps.onlyVerified !== this.props.onlyVerified || nextProps.sortBy !== this.props.sortBy) {
-            postsUpdated = true;
+            this.refs.grid.scrollTop = 0;
 
             if (nextProps.scrollable) {
                 // Clear state for immediate feedback
@@ -63,11 +60,6 @@ class PostList extends React.Component {
             } else {
                 this.setState({ posts: this.sortPosts() });
             }
-        }
-
-        // Tells component to set scroll to the top
-        if (postsUpdated) {
-            this.refs.grid.scrollTop = 0;
         }
     }
 
@@ -111,10 +103,8 @@ class PostList extends React.Component {
     scroll(e) {
         const grid = e.target;
 
-        // Check that nothing is loading and that we're at the end of the scroll,
-        // and that we have a parent bind to load  more posts
-        if (!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400) && this.props.loadPosts) {
-
+        // Check that nothing is loading and that we're at the end of the scroll
+        if (!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)) {
             // Set that we're loading
             this.setState({ loading: true });
 
@@ -123,14 +113,14 @@ class PostList extends React.Component {
                 // Disables scroll, and returns if posts are empty
                 if (!posts || posts.length == 0) {
                     return this.setState({
-                        scrollable: false,
+                        scrollable: false
                     });
                 }
 
                 // Set galleries from successful response, and unset loading
                 this.setState({
                     posts: this.state.posts.concat(posts),
-                    loading: false,
+                    loading: false
                 });
             }, this);
         }

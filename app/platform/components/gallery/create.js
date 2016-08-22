@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import EditTags from './edit-tags';
 import EditArticles from './edit-articles';
 import EditStories from './edit-stories';
-import EditPost from './edit-post';
-import Slick from 'react-slick';
+import EditPosts from './edit-posts';
 import utils from 'utils';
 
 /**
@@ -19,7 +18,7 @@ class Create extends React.Component {
             tags: [],
             stories: [],
             articles: [],
-            rating: 0,
+            rating: 2,
             caption: '',
             loading: false,
         };
@@ -34,7 +33,7 @@ class Create extends React.Component {
     }
 
     onChangeHighlighted() {
-        this.setState({ rating: this.state.rating === 0 ? 3 : 0 });
+        this.setState({ rating: this.state.rating === 2 ? 3 : 2 });
     }
 
     /**
@@ -108,12 +107,6 @@ class Create extends React.Component {
     render() {
         const { posts, onHide } = this.props;
         const { caption, tags, stories, articles, rating, loading } = this.state;
-
-        const postsJSX = posts.map((p, i) => (
-            <div key={i}>
-                <EditPost post={p} />
-            </div>
-        ));
 
         return (
             <div>
@@ -198,12 +191,10 @@ class Create extends React.Component {
                                 </div>
                             </div>
 
-                            <Slick
-                                dots
+                            <EditPosts
+                                originalPosts={posts}
                                 className="dialog-col col-xs-12 col-md-5"
-                            >
-                                {postsJSX}
-                            </Slick>
+                            />
                         </div>
                     </div>
                 </div>

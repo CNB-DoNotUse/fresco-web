@@ -132,7 +132,7 @@ app.use((req, res, next) => {
     }
 
     //Session has expired, so refresh the user
-    return User.refresh(req, res, next);
+    User.refresh(req, res, next);
 });
 
 
