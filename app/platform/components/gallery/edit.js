@@ -212,7 +212,7 @@ class Edit extends React.Component {
             rating,
         };
 
-        return pickBy(params, v => !!v);
+        return pickBy(params, v => !!v && (Array.isArray(v) ? v.length : true));
     }
 
     getPostsFormData() {
