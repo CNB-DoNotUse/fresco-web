@@ -24,10 +24,6 @@ class TopBar extends React.Component {
         }
     }
 
-    onImportFiles() {
-        this.createGallery();
-    }
-
     uploadFiles(posts, files) {
         const requests = posts.map((p, i) => {
             if (files[i]) {
@@ -49,7 +45,7 @@ class TopBar extends React.Component {
         return Promise.all(requests);
     }
 
-    createGallery() {
+    onImportFiles() {
         const files = this.importFileInput.files;
         const caption = `Gallery imported from local system on ${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
         const posts = [];
@@ -66,7 +62,7 @@ class TopBar extends React.Component {
             posts_new: posts,
         };
 
-        const create = new Promise((resolve, reject) => {
+        new Promise((resolve, reject) => {
             $.ajax({
                 url: '/api/gallery/import',
                 type: 'POST',
@@ -76,9 +72,7 @@ class TopBar extends React.Component {
             })
             .done((res) => resolve(res))
             .fail((err) => reject(err));
-        });
-
-        create
+        })
         .then((res) => {
             if (res.posts_new && this.importFileInput.files) {
                 return this.uploadFiles(res.posts_new, this.importFileInput.files);
@@ -89,6 +83,7 @@ class TopBar extends React.Component {
             $.snackbar({ content: 'Failed to import media' });
         })
         .then(() => {
+            this.importFileInput.value = '';
             this.setState({ loading: false });
         });
     }
@@ -123,7 +118,8 @@ class TopBar extends React.Component {
         });
     }
 
-    clickImportFileUpload() {
+    onClickImport() {
+        if (this.state.loading) return;
         this.importFileInput.click();
     }
 
@@ -142,7 +138,7 @@ class TopBar extends React.Component {
                 <button
                     type="button"
                     className="icon-button hidden-xs upload-import"
-                    onClick={() => this.clickImportFileUpload()}
+                    onClick={() => this.onClickImport()}
                 >
                     <span className="mdi mdi-upload icon"></span>
                 </button>
