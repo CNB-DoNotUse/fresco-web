@@ -3,9 +3,9 @@ import EditPost from './edit-post';
 import Slider from 'react-slick';
 import find from 'lodash/find';
 
-const renderPosts = (posts, gallery, onToggleDelete) => (
-    gallery.posts.map((p, i) => {
-        const deleteToggled = !find(posts, { id: p.id });
+const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
+    originalPosts.map((p, i) => {
+        const deleteToggled = !find(editingPosts, { id: p.id });
 
         return (
             <div key={i} className={`frick-frame ${deleteToggled ? 'frick-delete' : ''}`}>
@@ -16,7 +16,7 @@ const renderPosts = (posts, gallery, onToggleDelete) => (
                         <div className="md-type-caption">This post will be deleted</div>
                     </span>
                 </div>
-                {posts.length > 1
+                {editingPosts.length > 1
                     ? <a>
                         <span
                             className={`mdi mdi-close-circle icon ${deleteToggled ? 'addback' : ''}`}
@@ -30,8 +30,8 @@ const renderPosts = (posts, gallery, onToggleDelete) => (
     })
 );
 
-const renderPostsNoDelete = (posts, gallery) => (
-    gallery.posts.map((p, i) => (
+const renderPostsNoDelete = (originalPosts) => (
+    originalPosts.map((p, i) => (
         <div key={i} className="frick-frame">
             <EditPost post={p} />
         </div>
@@ -67,20 +67,26 @@ const renderUpload = (u, i) => {
 /**
  * Component for managing gallery's posts
  */
-const EditPosts = ({ posts, uploads, gallery, canDelete, onToggleDelete, className }) => {
+const EditPosts = ({
+    editingPosts,
+    originalPosts,
+    uploads,
+    canDelete,
+    onToggleDelete,
+    className }) => {
     const uploadsJSX = uploads.length
         ? uploads.map((u, i) => renderUpload(u, i)).filter(u => !!u)
         : null;
     const postsJSX = canDelete
-        ? renderPosts(posts, gallery, onToggleDelete)
-        : renderPostsNoDelete(posts, gallery, onToggleDelete);
+        ? renderPosts({ editingPosts, originalPosts, onToggleDelete })
+        : renderPostsNoDelete(originalPosts);
     const sliderJSX = uploadsJSX
         ? uploadsJSX.concat(postsJSX)
         : postsJSX;
 
     return (
         <div className={className}>
-            <Slider infinite={posts.length > 1} dots >
+            <Slider infinite={originalPosts.length > 1} dots >
                 {sliderJSX}
             </Slider>
         </div>
@@ -88,18 +94,19 @@ const EditPosts = ({ posts, uploads, gallery, canDelete, onToggleDelete, classNa
 };
 
 EditPosts.propTypes = {
-    gallery: PropTypes.object.isRequired,
-    posts: PropTypes.array.isRequired,
-    canDelete: PropTypes.bool.isRequired,
+    originalPosts: PropTypes.array.isRequired,
+    editingPosts: PropTypes.array,
     className: PropTypes.string,
     uploads: PropTypes.array,
     onToggleDelete: PropTypes.func,
+    canDelete: PropTypes.bool,
 };
 
 EditPosts.defaultProps = {
-    canDelete: true,
+    canDelete: false,
     uploads: [],
-    posts: [],
+    editingPosts: [],
+    originalPosts: [],
     className: '',
 };
 

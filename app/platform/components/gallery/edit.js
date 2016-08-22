@@ -467,9 +467,9 @@ class Edit extends React.Component {
 
                 {get(posts, 'length') || get(uploads, 'length')
                     ? <EditPosts
-                        posts={posts}
+                        originalPosts={gallery.posts}
+                        editingPosts={posts}
                         uploads={uploads}
-                        gallery={gallery}
                         canDelete={utils.isOriginalGallery(gallery)}
                         onToggleDelete={(p) => this.toggleDeletePost(p)}
                         className="dialog-col col-xs-12 col-md-5"

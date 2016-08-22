@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import EditTags from './edit-tags';
 import EditArticles from './edit-articles';
 import EditStories from './edit-stories';
-import EditPost from './edit-post';
-import Slick from 'react-slick';
+import EditPosts from './edit-posts';
 import utils from 'utils';
 
 /**
@@ -109,12 +108,6 @@ class Create extends React.Component {
         const { posts, onHide } = this.props;
         const { caption, tags, stories, articles, rating, loading } = this.state;
 
-        const postsJSX = posts.map((p, i) => (
-            <div key={i}>
-                <EditPost post={p} />
-            </div>
-        ));
-
         return (
             <div>
                 <div className="dim toggle-gcreate toggled" />
@@ -198,12 +191,10 @@ class Create extends React.Component {
                                 </div>
                             </div>
 
-                            <Slick
-                                dots
+                            <EditPosts
+                                originalPosts={posts}
                                 className="dialog-col col-xs-12 col-md-5"
-                            >
-                                {postsJSX}
-                            </Slick>
+                            />
                         </div>
                     </div>
                 </div>
