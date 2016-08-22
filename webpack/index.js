@@ -46,8 +46,14 @@ const plugins = (env) => {
             path: './public/build',
             filename: 'assets.json',
             prettyPrint: true
-        })
+        }),
     ];
+
+    if (env === 'dev') {
+        plugins.push(
+            new webpack.DefinePlugin({ __DEV__: true })
+        );
+    }
 
     if(env === 'production') {
         plugins.push(
