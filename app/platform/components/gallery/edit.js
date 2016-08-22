@@ -44,11 +44,15 @@ class Edit extends React.Component {
     onSave() {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
-        if (!gallery || !gallery.id || !params || this.state.loading) return;
+        if (!get(gallery, 'id') || !params || this.state.loading) return;
         this.setState({ loading: true });
 
-        this.saveGallery(gallery.id, params)
-        .then((res) => {
+        Promise.all([
+            this.saveGallery(gallery.id, params),
+            this.deletePosts(get(params, 'posts_remove')),
+        ])
+        .then((response) => {
+            const res = response[0];
             if (get(res, 'posts_new.length' && this.fileInput.files)) {
                 return Promise.all([
                     res,
@@ -218,7 +222,7 @@ class Edit extends React.Component {
     getPostsFormData() {
         const { gallery } = this.props;
         const files = this.fileInput.files;
-        let { posts } = this.state;
+        let { posts, rating } = this.state;
 
         if (!files.length && !posts.length) return null;
 
@@ -228,8 +232,14 @@ class Edit extends React.Component {
             });
         }
 
+        let { posts_new, posts_add, posts_remove } =
+            utils.getRemoveAddParams('posts', gallery.posts, posts);
+        posts_new = posts_new.map(p => Object.assign({}, p, { rating }));
+
         return {
-            ...utils.getRemoveAddParams('posts', gallery.posts, posts),
+            posts_new,
+            posts_add,
+            posts_remove,
             ...this.getPostsUpdateParams(),
         };
     }
@@ -245,7 +255,7 @@ class Edit extends React.Component {
             return {
                 posts_update: gallery.posts.map(p => (pickBy({
                     id: p.id,
-                    rating,
+                    rating: rating === 3 ? 2 : rating,
                 }, v => !!v))),
             };
         }
@@ -256,7 +266,7 @@ class Edit extends React.Component {
                 address,
                 lat: location.lat,
                 lng: location.lng,
-                rating,
+                rating: rating === 3 ? 2 : rating,
             }, v => !!v))),
         };
     }
@@ -282,8 +292,22 @@ class Edit extends React.Component {
         return Promise.all(requests);
     }
 
+    deletePosts(postIds) {
+        if (!postIds || !postIds.length) return Promise.resolve();
+        return new Promise((resolve, reject) => (
+            $.ajax({
+                url: '/api/post/delete',
+                method: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({ post_ids: postIds }),
+            })
+            .done((res) => resolve(res))
+            .fail((err) => reject(err))
+        ));
+    }
+
     saveGallery(id, params) {
-        if (!id || !params || this.state.loading) return Promise.resolve();
+        if (!id || !params) return Promise.resolve();
 
         return new Promise((resolve, reject) => (
             $.ajax({
