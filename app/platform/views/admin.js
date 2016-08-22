@@ -102,29 +102,13 @@ class Admin extends React.Component {
     getAssignments() {
         const { assignments } = this.state;
         if (!assignments) return [];
-        function sortListItem(a, b) {
-            if (a.created_at > b.created_at) {
-                return -1;
-            } else if (a.created_at < b.created_at) {
-                return 1;
-            }
+
+        return assignments.sort((a, b) => {
+            if (a.created_at > b.created_at) return -1;
+            else if (a.created_at < b.created_at) return 1;
 
             return 0;
-        }
-
-        return assignments.sort(sortListItem);
-    }
-
-    getSubmissions() {
-        return this.state.submissions.filter((s) => (
-            s.posts && s.posts.length
-        ));
-    }
-
-    getImports() {
-        return this.state.imports.filter((s) => (
-            s.posts && s.posts.length
-        ));
+        });
     }
 
     removeAssignment(id, cb) {
@@ -140,7 +124,7 @@ class Admin extends React.Component {
         if (!id || !imports || !cb) return;
 
         this.setState({ imports: imports.filter(a => a.id !== id) },
-            () => cb(this.getImports()));
+            () => cb(this.state.imports));
     }
 
     removeSubmission(id, cb) {
@@ -148,7 +132,7 @@ class Admin extends React.Component {
         if (!id || !submissions || !cb) return;
 
         this.setState({ submissions: submissions.filter(a => a.id !== id) },
-            () => cb(this.getSubmissions()));
+            () => cb(this.state.submissions));
     }
 
     refresh() {
@@ -249,7 +233,7 @@ class Admin extends React.Component {
         case 'submissions':
             tab = (
                 <Galleries
-                    galleries={this.getSubmissions()}
+                    galleries={this.state.submissions}
                     getData={(l, o, cb) => this.getData(l, o, cb)}
                     removeGallery={(id, cb) => this.removeSubmission(id, cb)}
                     galleryType="submissions"
@@ -259,7 +243,7 @@ class Admin extends React.Component {
         case 'imports':
             tab = (
                 <Galleries
-                    galleries={this.getImports()}
+                    galleries={this.state.imports}
                     getData={(l, o, cb) => this.getData(l, o, cb)}
                     removeGallery={(id, cb) => this.removeImport(id, cb)}
                     galleryType="imports"
