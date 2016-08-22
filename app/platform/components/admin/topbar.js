@@ -24,10 +24,6 @@ class TopBar extends React.Component {
         }
     }
 
-    onImportFiles() {
-        this.createGallery();
-    }
-
     uploadFiles(posts, files) {
         const requests = posts.map((p, i) => {
             if (files[i]) {
@@ -49,7 +45,7 @@ class TopBar extends React.Component {
         return Promise.all(requests);
     }
 
-    createGallery() {
+    onImportFiles() {
         const files = this.importFileInput.files;
         const caption = `Gallery imported from local system on ${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
         const posts = [];
@@ -89,6 +85,7 @@ class TopBar extends React.Component {
             $.snackbar({ content: 'Failed to import media' });
         })
         .then(() => {
+            this.importFileInput.value = '';
             this.setState({ loading: false });
         });
     }
