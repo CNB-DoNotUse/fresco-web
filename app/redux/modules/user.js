@@ -1,7 +1,7 @@
 const UPDATE = 'user/UPDATE';
-const initialState = {};
+import { fromJS } from 'immutable';
 
-export default function reducer(state = initialState, action = {}) {
+const user = (state = fromJS({}), action = {}) => {
     switch (action.type) {
         case UPDATE:
             return state;
@@ -9,3 +9,5 @@ export default function reducer(state = initialState, action = {}) {
             return state;
     }
 }
+
+export default user;
