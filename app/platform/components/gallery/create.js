@@ -19,7 +19,7 @@ class Create extends React.Component {
             tags: [],
             stories: [],
             articles: [],
-            rating: 0,
+            rating: 2,
             caption: '',
             loading: false,
         };
@@ -34,7 +34,7 @@ class Create extends React.Component {
     }
 
     onChangeHighlighted() {
-        this.setState({ rating: this.state.rating === 0 ? 3 : 0 });
+        this.setState({ rating: this.state.rating === 2 ? 3 : 2 });
     }
 
     /**
