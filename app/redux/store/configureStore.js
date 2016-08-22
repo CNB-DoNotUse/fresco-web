@@ -19,7 +19,7 @@ export default function configureStore(initialState) {
 
         enhancer = compose(
             applyMiddleware(...middleware),
-            devToolsExtension,
+            devToolsExtension
         );
     } else {
         enhancer = applyMiddleware(...middleware);

@@ -8,6 +8,11 @@ const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
-            case SAVE
+        case SAVE:
+        case SAVE_SUCCESS:
+        case SAVE_FAIL:
+            return state;
+        default:
+            return state;
     }
 }
