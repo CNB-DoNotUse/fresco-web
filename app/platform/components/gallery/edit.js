@@ -430,17 +430,18 @@ class Edit extends React.Component {
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    {utils.isOriginalGallery(gallery) ?
-                        <EditByline
+                    {utils.isOriginalGallery(gallery)
+                        ? <EditByline
                             gallery={gallery}
                             external_source={external_source}
                             external_account_name={external_account_name}
                             onChangeExtAccountName={(a) =>
-                                    this.setState({ external_account_name: a })}
+                                this.setState({ external_account_name: a })}
                             onChangeExtSource={(s) =>
-                                    this.setState({ external_source: s })}
-                        />
-                    : ''}
+                                this.setState({ external_source: s })}
+                            />
+                            : ''
+                    }
 
                     <div className="dialog-row">
                         <textarea

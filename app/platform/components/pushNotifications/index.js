@@ -5,15 +5,32 @@ import TopBar from '../topbar';
 import DefaultTemplate from './default-template';
 import GalleryListTemplate from './gallery-list-template';
 import 'app/sass/platform/_pushNotifications.scss';
+import partial from 'lodash/partial';
 
 class PushNotifications extends React.Component {
+    componentDidMount() {
+        $.material.init();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.activeTab !== prevProps.activeTab) {
+            $.material.init();
+        }
+    }
+
     renderTemplate() {
-        switch (this.props.activeTab.toLowerCase()) {
+        const { activeTab, onChangeTemplate } = this.props;
+
+        switch (activeTab.toLowerCase()) {
             case 'gallery list':
-                return <GalleryListTemplate />;
+                return <GalleryListTemplate
+                    onChange={partial(onChangeTemplate, 'gallery list')}
+                />;
             case 'default':
             default:
-                return <DefaultTemplate />;
+                return <DefaultTemplate
+                    onChange={partial(onChangeTemplate, 'default')}
+                />;
         }
     }
 
@@ -38,6 +55,7 @@ class PushNotifications extends React.Component {
 
 PushNotifications.propTypes = {
     setActiveTab: PropTypes.func.isRequired,
+    onChangeTemplate: PropTypes.func.isRequired,
     activeTab: PropTypes.string.isRequired,
 };
 
@@ -50,5 +68,6 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
     setActiveTab: pushActions.setActiveTab,
+    onChangeTemplate: pushActions.updateTemplate,
 })(PushNotifications);
 

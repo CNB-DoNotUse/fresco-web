@@ -151,7 +151,7 @@ class Index extends React.Component {
             const tabContent = tabs.map((tab) => (
                 <button
                     className={`btn btn-flat vault ${tab.toLowerCase()}-toggler
-                            ${activeTab === tab ? 'toggled' : ''}`}
+                        ${activeTab.toLowerCase() === tab.toLowerCase() ? 'toggled' : ''}`}
                     onClick={() => setActiveTab(tab)}
                     key={tab.toLowerCase()}
                 >
