@@ -1,5 +1,5 @@
-import React from 'react';
-import Sidebar from '../components/global/sidebar';
+import React, { PropTypes } from 'react';
+import Sidebar from '../components/sidebar';
 global.jQuery = require('jquery');
 import '../../sass/platform/screen.scss';
 require('snackbarjs');
@@ -12,7 +12,7 @@ require('script!alertify.js/dist/js/alertify');
 /**
  * Root App Wrapper
  */
-export default class App extends React.Component {
+class App extends React.Component {
 
     componentDidMount() {
         $.material.init();
@@ -35,3 +35,11 @@ export default class App extends React.Component {
         );
     }
 }
+
+App.propTypes = {
+    query: PropTypes.string,
+    user: PropTypes.object,
+    children: PropTypes.node,
+};
+
+export default App;

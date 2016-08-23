@@ -20,7 +20,7 @@ const DefaultTemplate = ({
     title,
     body,
     restrictByLocation = false,
-    restrictByUser,
+    restrictByUser = false,
     restrictedLocations,
     restrictedUsers,
     onChange }) => (
@@ -43,7 +43,7 @@ const DefaultTemplate = ({
             onChange={onChangeBody(onChange)}
         />
 
-        <div className="checkbox form-group">
+        <div className="checkbox form-group push-notifications__checkbox">
             <label>
                 <input
                     type="checkbox"
@@ -54,7 +54,7 @@ const DefaultTemplate = ({
             </label>
         </div>
 
-        <div className="checkbox form-group">
+        <div className="checkbox form-group push-notifications__checkbox">
             <label>
                 <input
                     type="checkbox"
