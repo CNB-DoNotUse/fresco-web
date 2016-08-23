@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map } from 'immutable';
 import * as pushActions from 'app/redux/modules/pushNotifications';
-import TopBar from '../topbar';
-import DefaultTemplate from './default-template';
-import GalleryListTemplate from './gallery-list-template';
+import TopBar from '../components/topbar';
+import DefaultTemplate from '../components/pushNotifications/default-template';
+import GalleryListTemplate from '../components/pushNotifications/gallery-list-template';
 import 'app/sass/platform/_pushNotifications.scss';
 
 class PushNotifications extends React.Component {
