@@ -4,6 +4,7 @@ import EditOutlets from './edit-outlets';
 import AutocompleteMap from '../global/autocomplete-map';
 import Merge from './merge';
 import MergeDropup from './merge-dropup';
+import { getAddressFromLatLng } from 'app/lib/location';
 import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
 
@@ -26,31 +27,21 @@ class AssignmentEdit extends React.Component {
     }
 
     /**
-     * Listener if the google map's data changes i.e. marker moves
+     * Updates state map location when AutocompleteMap gives new location from drag
      */
     onMapDataChange(data) {
-        const geocoder = new google.maps.Geocoder();
-
-        geocoder.geocode({
-            location: {
-                lat: data.location.lat,
-                lng: data.location.lng,
-            },
-        },
-        (results, status) => {
-            if (status === google.maps.GeocoderStatus.OK && results[0]) {
+        if (data.source === 'markerDrag') {
+            getAddressFromLatLng(data.location, (address) => {
                 this.setState({
-                    address: results[0].formatted_address,
+                    address,
                     location: data.location,
                 });
-            }
-        });
+            });
+        }
     }
 
     onChangeEndsAt(e) {
-        this.setState({
-            endsAt: moment().add(e.target.value, 'h').valueOf()
-        });
+        this.setState({ endsAt: moment().add(e.target.value, 'h').valueOf() });
     }
 
     /**

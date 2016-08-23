@@ -3,6 +3,7 @@ import AutocompleteMap from '../global/autocomplete-map';
 import Merge from '../assignment/merge';
 import MergeDropup from '../assignment/merge-dropup';
 import utils from 'utils';
+import { getAddressFromLatLng } from 'app/lib/location';
 import isEmpty from 'lodash/isEmpty';
 
 /**
@@ -58,19 +59,11 @@ class AssignmentEdit extends React.Component {
      */
     onMapDataChange(data) {
         if (data.source === 'markerDrag') {
-            const geocoder = new google.maps.Geocoder();
-
-            geocoder.geocode({ location: {
-                lat: data.location.lat,
-                lng: data.location.lng,
-            } },
-            (results, status) => {
-                if (status === google.maps.GeocoderStatus.OK && results[0]) {
-                    this.setState({
-                        address: results[0].formatted_address,
-                        location: data.location,
-                    });
-                }
+            getAddressFromLatLng(data.location, (address) => {
+                this.setState({
+                    address,
+                    location: data.location,
+                });
             });
         }
     }

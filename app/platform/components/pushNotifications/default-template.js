@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import AutocompleteMap from '../global/autocomplete-map';
 
 const onChangeTitle = (onChange) => (e) => {
     onChange({ title: e.target.value });
@@ -21,12 +22,10 @@ const DefaultTemplate = ({
     body,
     restrictByLocation = false,
     restrictByUser = false,
-    restrictedLocations,
-    restrictedUsers,
+    location,
+    users,
     onChange }) => (
     <div>
-        <h2>Default Template</h2>
-
         <input
             type="text"
             className="form-control floating-label"
@@ -54,6 +53,17 @@ const DefaultTemplate = ({
             </label>
         </div>
 
+        {restrictByLocation
+            ? <AutocompleteMap
+                location={location}
+                disabled={false}
+                onPlaceChange={() => {}}
+                onLocationChange={() => {}}
+                draggable
+            />
+            : null
+        }
+
         <div className="checkbox form-group push-notifications__checkbox">
             <label>
                 <input
@@ -70,8 +80,8 @@ const DefaultTemplate = ({
 DefaultTemplate.propTypes = {
     title: PropTypes.string,
     body: PropTypes.string,
-    restrictedLocations: PropTypes.array,
-    restrictedUsers: PropTypes.array,
+    location: PropTypes.array,
+    users: PropTypes.array,
     restrictByLocation: PropTypes.bool,
     restrictByUser: PropTypes.bool,
     onChange: PropTypes.func,

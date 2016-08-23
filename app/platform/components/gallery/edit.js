@@ -6,6 +6,7 @@ import EditPosts from './edit-posts';
 import EditAssignment from './edit-assignment';
 import EditByline from './edit-byline';
 import AutocompleteMap from '../global/autocomplete-map';
+import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import request from 'superagent';
 import times from 'lodash/times';
@@ -107,19 +108,11 @@ class Edit extends React.Component {
      */
     onMapDataChange(data) {
         if (data.source === 'markerDrag') {
-            const geocoder = new google.maps.Geocoder();
-
-            geocoder.geocode({ location: {
-                lat: data.location.lat,
-                lng: data.location.lng,
-            } },
-            (results, status) => {
-                if (status === google.maps.GeocoderStatus.OK && results[0]) {
-                    this.setState({
-                        address: results[0].formatted_address,
-                        location: data.location,
-                    });
-                }
+            getAddressFromLatLng(data.location, (address) => {
+                this.setState({
+                    address,
+                    location: data.location,
+                });
             });
         }
     }
