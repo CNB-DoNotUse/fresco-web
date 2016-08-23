@@ -314,7 +314,7 @@ export default class DispatchSubmit extends React.Component {
                         ref="expiration"
                         placeholder="Expiration time" />
 
-                    <div className="checkbox check-global form-group">
+                    <div className="checkbox form-group">
                         <label>
                             <input
                                 type="checkbox"
@@ -329,7 +329,7 @@ export default class DispatchSubmit extends React.Component {
                     <span
                         className={'mdi mdi-check ' + ( paymentAvailable ? 'available' : 'un-available')}>
                     </span>
-                    
+
                     {paymentAvailable ? 'Payment information available' : 'Payment information unavailable'}
                 </a>
             </div>

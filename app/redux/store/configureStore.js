@@ -27,15 +27,10 @@ export default function configureStore(initialState) {
 
         middleware.push(logger);
 
-        // https://github.com/zalmoxisus/redux-devtools-extension#redux-devtools-extension
-        let devToolsExtension = f => f;
-        if (process.env.BROWSER && window.devToolsExtension) {
-            devToolsExtension = window.devToolsExtension();
-        }
-
         enhancer = compose(
             applyMiddleware(...middleware),
-            devToolsExtension
+            // https://github.com/zalmoxisus/redux-devtools-extension#redux-devtools-extension
+            window.devToolsExtension ? window.devToolsExtension() : f => f
         );
     } else {
         enhancer = applyMiddleware(...middleware);

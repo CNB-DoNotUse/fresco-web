@@ -234,7 +234,7 @@ class AssignmentEdit extends React.Component {
                     />
 
 
-                    <div className="checkbox check-global form-group">
+                    <div className="checkbox form-group">
                         <label>
                             <input
                                 type="checkbox"

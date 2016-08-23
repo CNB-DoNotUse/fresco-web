@@ -259,7 +259,7 @@ class AssignmentEdit extends React.Component {
                 <div className="dialog-col col-xs-12 col-md-5 form-group-default">
 
                     <div className="dialog-row map-group">
-                        <div className="checkbox check-global form-group">
+                        <div className="checkbox form-group">
                             <label>
                                 <input
                                     type="checkbox"

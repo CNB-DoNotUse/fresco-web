@@ -8,11 +8,21 @@ const onChangeBody = (onChange) => (e) => {
     onChange({ body: e.target.value });
 };
 
+const onChangeRestrictByLocation = (onChange) => (e) => {
+    onChange({ restrictByLocation: e.target.checked });
+};
+
+const onChangeRestrictByUser = (onChange) => (e) => {
+    onChange({ restrictByUser: e.target.checked });
+};
+
 const DefaultTemplate = ({
     title,
     body,
-    // restrictedLocations,
-    // restrictedUsers,
+    restrictByLocation = false,
+    restrictByUser,
+    restrictedLocations,
+    restrictedUsers,
     onChange }) => (
     <div>
         <h2>Default Template</h2>
@@ -32,6 +42,28 @@ const DefaultTemplate = ({
             value={body}
             onChange={onChangeBody(onChange)}
         />
+
+        <div className="checkbox form-group">
+            <label>
+                <input
+                    type="checkbox"
+                    checked={restrictByLocation}
+                    onChange={onChangeRestrictByLocation(onChange)}
+                />
+                Restrict by location
+            </label>
+        </div>
+
+        <div className="checkbox form-group">
+            <label>
+                <input
+                    type="checkbox"
+                    checked={restrictByUser}
+                    onChange={onChangeRestrictByUser(onChange)}
+                />
+                Restrict by users
+            </label>
+        </div>
     </div>
 );
 
@@ -40,6 +72,8 @@ DefaultTemplate.propTypes = {
     body: PropTypes.string,
     restrictedLocations: PropTypes.array,
     restrictedUsers: PropTypes.array,
+    restrictByLocation: PropTypes.bool,
+    restrictByUser: PropTypes.bool,
     onChange: PropTypes.func,
 };
 
