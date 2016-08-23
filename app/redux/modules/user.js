@@ -8,6 +8,7 @@ const user = (state = fromJS({}), action = {}) => {
         default:
             return state;
     }
-}
+};
 
 export default user;
+

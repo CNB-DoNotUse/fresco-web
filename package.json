@@ -46,6 +46,7 @@
     "react-tools": "^0.13.3",
     "redis": "^2.6.0-1",
     "redux": "^3.5.2",
+    "redux-immutable": "^3.0.8",
     "redux-logger": "^2.6.1",
     "request": "~2.74.0",
     "request-json": "~0.6.1",
