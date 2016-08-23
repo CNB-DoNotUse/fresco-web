@@ -26,7 +26,8 @@ class Outlet extends React.Component {
 
     render() {
         const { user, outlet } = this.props;
-        const editable = user.outlet.id === outlet.id; //Editable if it's the session user's outlet
+        // Editable if it's the session user's outlet
+        const editable = user.outlet.id === outlet.id;
         let topbarTabs = [];
 
         // Only show tabs if outlet has been verified

@@ -23,7 +23,7 @@ const pushNotifications = (state = fromJS({
         // case SAVE_FAIL:
         //     return state.set('loading', false).set('error', action.payload.error);
         case SET_ACTIVE_TAB:
-            return state.set('ACTIVE_TAB', action.activeTab);
+            return state.set('activeTab', action.activeTab);
         default:
             return state;
     }
