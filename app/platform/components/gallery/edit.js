@@ -234,7 +234,7 @@ class Edit extends React.Component {
 
         let { posts_new, posts_add, posts_remove } =
             utils.getRemoveAddParams('posts', gallery.posts, posts);
-        posts_new = posts_new.map(p => Object.assign({}, p, { rating }));
+        posts_new = posts_new ? posts_new.map(p => Object.assign({}, p, { rating })) : null;
 
         return {
             posts_new,
