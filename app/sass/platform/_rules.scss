@@ -654,6 +654,7 @@ div.chips {
 		border-bottom: 1px solid $color-black-4;
 		line-height: 25px;
 		color: $color-black-2 !important;
+        outline: 0;
 	}
 	> button:last-child {
 	}
@@ -662,6 +663,11 @@ div.chips {
 		line-height: 25px;
 		color: $color-black-1 !important;
 	}
+    > .btn {
+        &:active, &:hover, &:focus, &:visited {
+            outline: 0;
+        }
+    }
 }
 .tab-control.full {
 	@include display(flex);

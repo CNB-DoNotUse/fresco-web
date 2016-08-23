@@ -65,7 +65,7 @@ class AdminGalleryListItem extends React.Component {
                         : ''
                     }
                     <p
-                        className="md-type-body1 gallery-list-item--location"
+                        className="md-type-body1 gallery-list-item__location"
                         style={gallery.assignment ? { lineHeight: '18px' } : {}}
                     >
                         {address}
