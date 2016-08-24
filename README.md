@@ -2,7 +2,7 @@
 
 #### This is a node-based webserver using [`express`]('https://github.com/expressjs/express') as the web framework
 
-The site uses [`webpack`](https://github.com/webpack/webpack) to compile assets, and [`bower`](https://github.com/bower/bower) for some third-party dependecies. The platform is built in [`react`](https://github.com/facebook/react) for our front-end framework, with ['redux']('https://github.com/reactjs/redux') for the [`flux`](https://facebook.github.io/flux/) implentation.
+The site uses [`webpack`](https://github.com/webpack/webpack) to compile assets, and [`bower`](https://github.com/bower/bower) for some third-party dependecies. The platform is built in [`react`](https://github.com/facebook/react) for our front-end framework, with [`redux`]('https://github.com/reactjs/redux') for the [`flux`](https://facebook.github.io/flux/) implentation.
 
 Refer to the Fresco [`Javascript`](https://github.com/fresconews/fresco-style/tree/master/javascript) and [`React`](https://github.com/fresconews/fresco-style/tree/master/react) style guide for proper coding & commenting practices in the webserver.
 
