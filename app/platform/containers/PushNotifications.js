@@ -6,6 +6,8 @@ import * as pushActions from 'app/redux/modules/pushNotifications';
 import TopBar from '../components/topbar';
 import DefaultTemplate from '../components/pushNotifications/default-template';
 import GalleryListTemplate from '../components/pushNotifications/gallery-list-template';
+import Recommend from '../components/pushNotifications/recommend';
+import Assignment from '../components/pushNotifications/assignment';
 import 'app/sass/platform/_pushNotifications.scss';
 
 class PushNotifications extends React.Component {
@@ -28,6 +30,16 @@ class PushNotifications extends React.Component {
                     {...templates.get('gallery list', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'gallery list')}
                 />;
+            case 'assignment':
+                return <Assignment
+                    {...templates.get('assignment', Map()).toJS()}
+                    onChange={partial(onChangeTemplate, 'assignment')}
+                />;
+            case 'recommend':
+                return <Recommend
+                    {...templates.get('recommend', Map()).toJS()}
+                    onChange={partial(onChangeTemplate, 'recommend')}
+                />;
             case 'default':
             default:
                 return <DefaultTemplate
@@ -44,7 +56,7 @@ class PushNotifications extends React.Component {
             <div className="container-fluid">
                 <TopBar
                     title="Push"
-                    tabs={['Default', 'Gallery List']}
+                    tabs={['Default', 'Gallery List', 'Recommend', 'Assignment']}
                     setActiveTab={setActiveTab}
                     activeTab={activeTab}
                 />
@@ -65,7 +77,6 @@ PushNotifications.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        // notifications: state.getIn(['pushNotifications', 'pending']),
         activeTab: state.getIn(['pushNotifications', 'activeTab']),
         templates: state.getIn(['pushNotifications', 'templates']),
     };
