@@ -52,7 +52,7 @@ class Admin extends React.Component {
         }
     }
 
-    setTab(tab) {
+    setTab = (tab) => {
         if (tab === this.state.activeTab) return;
 
         this.setState({ activeTab: tab });
@@ -135,7 +135,7 @@ class Admin extends React.Component {
             () => cb(this.state.submissions));
     }
 
-    refresh() {
+    refresh = () => {
         this.getData(undefined, { tab: this.state.activeTab }, (data) => {
             const oldData = this.state[this.state.activeTab];
             const newData = differenceBy(data, oldData, 'id');
@@ -265,7 +265,8 @@ class Admin extends React.Component {
                 <TopBar
                     activeTab={this.state.activeTab}
                     resetImports={() => this.resetImports()}
-                    setTab={(tab) => this.setTab(tab)}
+                    setTab={this.setTab}
+                    refresh={this.refresh}
                 />
 
                 {activeTab}

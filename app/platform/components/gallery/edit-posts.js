@@ -1,15 +1,38 @@
 import React, { PropTypes } from 'react';
-import EditPost from './edit-post';
+import FrescoImage from '../global/fresco-image';
 import Slider from 'react-slick';
 import find from 'lodash/find';
+import utils from 'utils';
 
-const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
+const renderPost = (post, refreshInterval) => {
+    if (post.video) {
+        return (
+            <video width="100%" height="100%" data-id={post.id} controls>
+                <source
+                    src={utils.formatVideo(post.video)}
+                    type="video/mp4"
+                />
+                Your browser does not support the video tag.
+            </video>
+        );
+    }
+
+    return (
+        <FrescoImage
+            refreshInterval={refreshInterval}
+            src={post.image}
+            size="medium"
+        />
+    );
+};
+
+const renderPosts = ({ editingPosts, originalPosts, onToggleDelete, refreshInterval }) => (
     originalPosts.map((p, i) => {
         const deleteToggled = !find(editingPosts, { id: p.id });
 
         return (
-            <div key={i} className={`frick-frame ${deleteToggled ? 'frick-delete' : ''}`}>
-                <EditPost post={p} />
+            <div key={`post${i}`} className={`frick-frame ${deleteToggled ? 'frick-delete' : ''}`}>
+                {renderPost(p, refreshInterval)}
                 <div className="frick-overlay">
                     <span>
                         <span className="mdi mdi-delete icon" />
@@ -30,10 +53,10 @@ const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
     })
 );
 
-const renderPostsNoDelete = (originalPosts) => (
+const renderPostsNoDelete = (originalPosts, refreshInterval) => (
     originalPosts.map((p, i) => (
-        <div key={i} className="frick-frame">
-            <EditPost post={p} />
+        <div key={`post${i}`} className="frick-frame">
+            {renderPost(p, refreshInterval)}
         </div>
     ))
 );
@@ -73,23 +96,29 @@ const EditPosts = ({
     uploads,
     canDelete,
     onToggleDelete,
-    className }) => {
+    className,
+    refreshInterval }) => {
     const uploadsJSX = uploads.length
         ? uploads.map((u, i) => renderUpload(u, i)).filter(u => !!u)
         : null;
     const postsJSX = canDelete
-        ? renderPosts({ editingPosts, originalPosts, onToggleDelete })
-        : renderPostsNoDelete(originalPosts);
+        ? renderPosts({ editingPosts, originalPosts, onToggleDelete, refreshInterval })
+        : renderPostsNoDelete(originalPosts, refreshInterval);
     const sliderJSX = uploadsJSX
         ? uploadsJSX.concat(postsJSX)
         : postsJSX;
 
     return (
-        <div className={className}>
-            <Slider infinite={originalPosts.length > 1} dots >
-                {sliderJSX}
-            </Slider>
-        </div>
+        <Slider
+            className={className}
+            infinite={originalPosts.length > 1}
+            adaptiveHeight
+            swipeToSlide
+            draggable
+            dots
+        >
+            {sliderJSX}
+        </Slider>
     );
 };
 
@@ -100,6 +129,7 @@ EditPosts.propTypes = {
     uploads: PropTypes.array,
     onToggleDelete: PropTypes.func,
     canDelete: PropTypes.bool,
+    refreshInterval: PropTypes.bool,
 };
 
 EditPosts.defaultProps = {

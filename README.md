@@ -1,8 +1,8 @@
 ## The Fresco Website
 
-#### This is a node-based webserver
+#### This is a node-based webserver using [`express`](https://github.com/expressjs/express) as the web framework
 
-The site uses [`webpack`](https://github.com/webpack/webpack), [`gulp`](https://github.com/gulpjs/gulp), and [`bower`](https://github.com/bower/bower) to compile assets, and the platform is built in [`react`](https://github.com/facebook/react) for the front-end framework.
+The site uses [`webpack`](https://github.com/webpack/webpack) to compile assets, and [`bower`](https://github.com/bower/bower) for some third-party dependecies. The platform is built in [`react`](https://github.com/facebook/react) for our front-end framework, with [`redux`](https://github.com/reactjs/redux) for the [`flux`](https://facebook.github.io/flux/) implentation.
 
 Refer to the Fresco [`Javascript`](https://github.com/fresconews/fresco-style/tree/master/javascript) and [`React`](https://github.com/fresconews/fresco-style/tree/master/react) style guide for proper coding & commenting practices in the webserver.
 
@@ -18,11 +18,11 @@ Configuration is done by merging the json files in `./config/` in alphabetical o
 
 #### Steps to get webserver running -
 
-1. `npm install` to set up all npm dependencies
+1. Set up the configuration (see above)
+2. `npm install` to set up all npm dependencies
 2. `bower install` to download assets
 3. `npm run build` to compile site assets; `npm run build --production` to minify and dedup
-4. Set up the configuration (see below)
-5. `npm start`
+4. `npm start`
 
 #### Steps to get Dockerized version running -
 

@@ -8,10 +8,14 @@ import Loader from '../global/loader';
  * Description : Top for admin page
  */
 class TopBar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { loading: false };
-    }
+    static propTypes = {
+        activeTab: PropTypes.string.isRequired,
+        setTab: PropTypes.func.isRequired,
+        resetImports: PropTypes.func.isRequired,
+        refresh: PropTypes.func.isRequired,
+    };
+
+    state = { loading: false };
 
     componentDidMount() {
         $('[data-tab="' + this.props.activeTab + '"]').addClass('toggled');
@@ -24,28 +28,7 @@ class TopBar extends React.Component {
         }
     }
 
-    uploadFiles(posts, files) {
-        const requests = posts.map((p, i) => {
-            if (files[i]) {
-                return new Promise((resolve, reject) => {
-                    request
-                        .put(p.upload_url)
-                        .set('Content-Type', files[i].type)
-                        .send(files[i])
-                        .end((err) => {
-                            if (err) reject(err);
-                            else resolve();
-                        });
-                });
-            }
-
-            return Promise.resolve();
-        });
-
-        return Promise.all(requests);
-    }
-
-    onImportFiles() {
+    onImportFiles = () => {
         const files = this.importFileInput.files;
         const caption = `Gallery imported from local system on ${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
         const posts = [];
@@ -85,10 +68,11 @@ class TopBar extends React.Component {
         .then(() => {
             this.importFileInput.value = '';
             this.setState({ loading: false });
+            this.props.refresh();
         });
     }
 
-    handleTwitterInputKeyDown(e) {
+    onKeyDownTwitter = (e) => {
         const tweet = this.refs['twitter-import-input'].value;
         const twitterId = tweet.split('/').pop();
         if (e.keyCode !== 13 || this.state.loading || !tweet.length) return;
@@ -123,6 +107,27 @@ class TopBar extends React.Component {
         this.importFileInput.click();
     }
 
+    uploadFiles(posts, files) {
+        const requests = posts.map((p, i) => {
+            if (files[i]) {
+                return new Promise((resolve, reject) => {
+                    request
+                        .put(p.upload_url)
+                        .set('Content-Type', files[i].type)
+                        .send(files[i])
+                        .end((err) => {
+                            if (err) reject(err);
+                            else resolve();
+                        });
+                });
+            }
+
+            return Promise.resolve();
+        });
+
+        return Promise.all(requests);
+    }
+
     render() {
         return (
             <nav className="navbar navbar-fixed-top navbar-default">
@@ -132,7 +137,7 @@ class TopBar extends React.Component {
                     style={{ position: 'absolute', top: '-100px' }}
                     accept="image/*,video/*,video/mp4"
                     multiple
-                    onChange={() => this.onImportFiles()}
+                    onChange={this.onImportFiles}
                 />
 
                 <button
@@ -149,7 +154,7 @@ class TopBar extends React.Component {
                         className="form-control twitter-import floating-label"
                         placeholder="Link"
                         ref="twitter-import-input"
-                        onKeyDown={(e) => this.handleTwitterInputKeyDown(e)}
+                        onKeyDown={this.onKeyDownTwitter}
                     />
                 </div>
 
@@ -185,12 +190,5 @@ class TopBar extends React.Component {
     }
 }
 
-TopBar.propTypes = {
-    activeTab: PropTypes.string.isRequired,
-    setTab: PropTypes.func.isRequired,
-    resetImports: PropTypes.func.isRequired,
-};
-
 export default TopBar;
-
 

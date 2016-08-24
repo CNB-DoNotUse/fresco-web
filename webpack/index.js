@@ -106,20 +106,24 @@ module.exports = (env = 'dev') => {
         devtool: env === 'dev' ? 'eval-source-map' : null,
         module: {
             loaders: [
-                //Babel
+                // Babel
                 {
                     test: /.jsx?$/,
                     loader: 'babel',
                     exclude: /(node_modules|bower_components)/,
                     query: {
                         presets: ['es2015', 'react'],
-                        plugins: ['transform-object-rest-spread', 'transform-es2015-destructuring']
-                    }
+                        plugins: [
+                            'transform-object-rest-spread',
+                            'transform-es2015-destructuring',
+                            'transform-class-properties',
+                        ],
+                    },
                 },
-                //Extract sass files
+                // Extract sass files
                 {
                     test: /\.scss$/,
-                    loader: ExtractTextPlugin.extract("style-loader", "!css!resolve-url!sass?sourceMap")
+                    loader: ExtractTextPlugin.extract("style-loader", "!css!resolve-url!sass?sourceMap"),
                 },
                 {
                     test: /.(woff(2)?)(\?[a-z0-9=\.]+)?$/,
@@ -127,8 +131,8 @@ module.exports = (env = 'dev') => {
                     query: {
                         limit: '10000',
                         mimetype: 'application/font-woff',
-                        name: fileLoaderName
-                    }
+                        name: fileLoaderName,
+                    },
                 },
                 {
                     test: /.(ttf)(\?[a-z0-9=\.]+)?$/,

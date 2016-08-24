@@ -12,24 +12,22 @@ import get from 'lodash/get';
  * Gallery Detail Parent Object, made of a side column and PostList
  */
 class GalleryDetail extends React.Component {
-    constructor(props) {
-        super(props);
+    static propTypes = {
+        user: PropTypes.object,
+        gallery: PropTypes.object,
+        title: PropTypes.string,
+    };
 
-        this.state = {
-            editToggled: false,
-            gallery: props.gallery,
-            title: props.title,
-            verifiedToggled: true,
-        };
-    }
+    static defaultProps = {
+        gallery: {},
+    };
 
-    componentDidMount() {
-        setInterval(() => {
-            if (!this.state.editToggled) {
-                this.fetchGallery();
-            }
-        }, 5000);
-    }
+    state = {
+        editToggled: false,
+        gallery: this.props.gallery,
+        title: this.props.title,
+        verifiedToggled: true,
+    };
 
 	/**
      * Updates gallery in state
@@ -113,16 +111,6 @@ class GalleryDetail extends React.Component {
     }
 }
 
-GalleryDetail.propTypes = {
-    user: PropTypes.object,
-    gallery: PropTypes.object,
-    title: PropTypes.string,
-};
-
-GalleryDetail.defaultProps = {
-    gallery: {},
-};
-
 ReactDOM.render(
     <GalleryDetail
         user={window.__initialProps__.user}
@@ -131,3 +119,4 @@ ReactDOM.render(
     />,
     document.getElementById('app')
 );
+

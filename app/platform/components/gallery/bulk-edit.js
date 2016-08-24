@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import EditTags from './edit-tags';
 import EditStories from './edit-stories';
-import EditPost from './edit-post';
-import Slick from 'react-slick';
+import EditPosts from './edit-posts';
 import utils from 'utils';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
@@ -127,19 +126,11 @@ class BulkEdit extends React.Component {
                     />
                 </div>
 
-                <Slick
+                <EditPosts
                     className="gialog-col col-xs-12 col-md-5"
-                    dots
-                >
-                    {posts && posts.length
-                        ? posts.map((post, i) => (
-                            <div key={i}>
-                                <EditPost post={post} />
-                            </div>
-                        ))
-                        : <div />
-                    }
-                </Slick>
+                    canDelete={false}
+                    originalPosts={posts}
+                />
             </div>
         );
     }
