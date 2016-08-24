@@ -35,14 +35,16 @@ class FrescoImage extends React.Component {
 
     // async load image
     loadImage = () => {
+        let attempts = 0;
         const { image, size, refreshInterval } = this.props;
         const formattedSrc = utils.formatImg(image, size);
         const imageObj = new Image();
         const intervalCB = () => {
-            if (this.img && this.img.src === this.missingImageUrl) {
-                imageObj.src = formattedSrc;
-            } else {
+            attempts += 1;
+            if (attempts >= 5 || !this.img || this.img.src === formattedSrc) {
                 clearInterval(this.loadInterval);
+            } else {
+                imageObj.src = formattedSrc;
             }
         };
         const onloadCB = () => {

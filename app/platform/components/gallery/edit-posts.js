@@ -111,6 +111,7 @@ const EditPosts = ({
     return (
         <Slider
             className={className}
+            infinite={originalPosts.length > 1}
             dots
         >
             {sliderJSX}
