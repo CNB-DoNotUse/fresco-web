@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import FrescoImage from '../global/fresco-image';
 import utils from 'utils';
 
 /**
@@ -15,10 +16,10 @@ class BulkSelect extends React.Component {
         const count = `${posts.length} post${(utils.isPlural(posts.length)) ? 's' : ''}`;
         const thumbnails = posts.map((post, i) => (
             <a className="thumb" key={i}>
-                <img
+                <FrescoImage
                     className="img-responsive"
-                    src={utils.formatImg(post.image, 'small')}
-                    role="presentation"
+                    src={post.image}
+                    size="small"
                 />
             </a>
         ));

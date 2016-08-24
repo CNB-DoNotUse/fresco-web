@@ -20,7 +20,7 @@ const renderPost = (post, refreshInterval) => {
     return (
         <FrescoImage
             refreshInterval={refreshInterval}
-            image={post.image}
+            src={post.image}
             size="medium"
         />
     );

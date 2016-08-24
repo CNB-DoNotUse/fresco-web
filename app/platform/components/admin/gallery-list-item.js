@@ -32,11 +32,10 @@ const AdminGalleryListItem = ({ gallery, active, onClick }) => {
             <div>
                 <a href={`/gallery/${gallery.id}`} target="_blank">
                     <FrescoImage
-                        imageClass="img-circle"
-                        imageStyle={{ width: '40px', height: '40px' }}
-                        image={get(gallery, 'posts[0].image', '')}
+                        className="img-circle"
+                        style={{ width: '40px', height: '40px' }}
+                        src={get(gallery, 'posts[0].image', '')}
                         size="thumb"
-                        role="presentation"
                         refreshInterval
                     />
                 </a>

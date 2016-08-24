@@ -8,11 +8,11 @@ import utils from 'utils';
 class FrescoImage extends React.Component {
     static propTypes = {
         size: PropTypes.string,
-        image: PropTypes.string,
+        src: PropTypes.string,
         updateImage: PropTypes.func,
-        imageClass: PropTypes.string,
+        className: PropTypes.string,
+        style: PropTypes.object,
         refreshInterval: PropTypes.bool,
-        imageStyle: PropTypes.object,
     };
 
     static defaultProps = {
@@ -26,7 +26,8 @@ class FrescoImage extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.image !== prevProps.image) {
+        const { src, size } = this.props;
+        if ((src !== prevProps.src)|| (size !== prevProps.size)) {
             this.loadImage();
         }
     }
@@ -36,8 +37,8 @@ class FrescoImage extends React.Component {
     // async load image
     loadImage = () => {
         let attempts = 0;
-        const { image, size, refreshInterval } = this.props;
-        const formattedSrc = utils.formatImg(image, size);
+        const { src, size, refreshInterval } = this.props;
+        const formattedSrc = utils.formatImg(src, size);
         const imageObj = new Image();
         const intervalCB = () => {
             attempts += 1;
@@ -67,15 +68,13 @@ class FrescoImage extends React.Component {
 
     render() {
         return (
-            <div className="img">
-                <img
-                    className={this.props.imageClass || 'img-cover'}
-                    style={this.props.imageStyle || {}}
-                    role="presentation"
-                    ref={(r) => this.img = r}
-                    src={this.missingImageUrl}
-                />
-            </div>
+            <img
+                className={this.props.className || 'img-cover'}
+                style={this.props.style || {}}
+                role="presentation"
+                ref={(r) => this.img = r}
+                src={this.missingImageUrl}
+            />
         );
     }
 }

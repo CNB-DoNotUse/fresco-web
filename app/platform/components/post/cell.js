@@ -115,7 +115,9 @@ class PostCell extends React.Component {
                         <Stories stories={post.stories} />
                     </div>
 
-                    <FrescoImage image={post.image} size={size} />
+                    <div className="img">
+                        <FrescoImage src={post.image} size={size} />
+                    </div>
                 </div>
 
                 {this.renderFooter()}
