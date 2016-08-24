@@ -65,7 +65,7 @@ class FrescoImage extends React.Component {
 
     render() {
         return (
-            <div className="img img__async">
+            <div className="img">
                 <img
                     className={this.props.imageClass || 'img-cover'}
                     style={this.props.imageStyle || {}}

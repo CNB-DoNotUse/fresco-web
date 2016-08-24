@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import EditTags from './edit-tags';
 import EditStories from './edit-stories';
 import EditPosts from './edit-posts';
-import Slick from 'react-slick';
 import utils from 'utils';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';

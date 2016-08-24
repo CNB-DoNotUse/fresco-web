@@ -282,7 +282,7 @@ class GalleryEdit extends React.Component {
             <div className="dialog admin-edit-pane">
                 <div className="dialog-body" style={{ visibility: 'visible' }} >
                     <div className="gallery-images">
-                        <EditPosts originalPosts={gallery.posts} />
+                        <EditPosts originalPosts={gallery.posts} refreshInterval />
                     </div>
 
                     <EditByline
