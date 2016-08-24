@@ -6,56 +6,71 @@ import utils from 'utils';
  * @description Will set a timeout to keep loading the image if it 404s
  */
 class FrescoImage extends React.Component {
+    static propTypes = {
+        size: PropTypes.string,
+        image: PropTypes.string,
+        updateImage: PropTypes.func,
+        imageClass: PropTypes.string,
+    };
+
+    static defaultProps = {
+        size: 'small',
+        updateImage: () => {},
+    };
+
     componentDidMount() {
-        const { img } = this.refs;
+        this.loadImage();
+    }
 
-        img.onerror = () => {
-            const timeout = parseInt(img.getAttribute('data-t') || 1, 10);
-            const lastTimeout = parseInt(img.getAttribute('data-lt') || 1, 10);
-            const image = `${utils.CDN}/images/missing.png`;
+    componentDidUpdate(prevProps) {
+        if (this.props.image !== prevProps.image) {
+            this.loadImage();
+        }
+    }
 
-            img.setAttribute('data-lt', timeout);
-            img.setAttribute('data-t', timeout + lastTimeout);
-            img.setAttribute('data-src', img.getAttribute('src'));
-            img.setAttribute('src', image);
+    missingImageUrl = `${utils.CDN}/images/missing.png`;
 
-            setTimeout(() => {
-                img.setAttribute('src', img.getAttribute('data-src'));
-            }, timeout * 1000);
-
-            this.props.updateImage(image);
+    // async load image
+    loadImage = () => {
+        const { image, size } = this.props;
+        const formattedSrc = utils.formatImg(image, size);
+        const imageObj = new Image();
+        const intervalCB = () => {
+            if (this.img && this.img.src === this.missingImageUrl) {
+                imageObj.src = formattedSrc;
+            } else {
+                clearInterval(this.loadInterval);
+            }
         };
+        const onloadCB = () => {
+            if (this.img) this.img.src = formattedSrc;
+        };
+        const onerrorCB = () => {
+            if (this.img) this.img.src = this.missingImageUrl;
+            this.props.updateImage(this.missingImageUrl);
+
+            this.loadInterval = setInterval(intervalCB.bind(this), 2000);
+        };
+
+        imageObj.onload = onloadCB.bind(this);
+        imageObj.onerror = onerrorCB.bind(this);
+
+        imageObj.src = formattedSrc;
     }
 
     render() {
-        const { image, size } = this.props;
-        const src = utils.formatImg(image, size);
-
         return (
-            <div className="img">
+            <div className="img img__async">
                 <img
                     className={this.props.imageClass || 'img-cover'}
                     role="presentation"
-                    ref="img"
-                    data-src={src}
-                    src={src}
+                    ref={(r) => this.img = r}
+                    src={this.missingImageUrl}
                 />
             </div>
         );
     }
 }
-
-FrescoImage.propTypes = {
-    size: PropTypes.string,
-    image: PropTypes.string,
-    updateImage: PropTypes.func,
-    imageClass: PropTypes.string,
-};
-
-FrescoImage.defaultProps = {
-    size: 'small',
-    updateImage: () => {},
-};
 
 export default FrescoImage;
 
