@@ -112,6 +112,9 @@ const EditPosts = ({
         <Slider
             className={className}
             infinite={originalPosts.length > 1}
+            adaptiveHeight
+            swipeToSlide
+            draggable
             dots
         >
             {sliderJSX}

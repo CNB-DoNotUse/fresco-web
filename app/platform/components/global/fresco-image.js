@@ -27,7 +27,7 @@ class FrescoImage extends React.Component {
 
     componentDidUpdate(prevProps) {
         const { src, size } = this.props;
-        if ((src !== prevProps.src)|| (size !== prevProps.size)) {
+        if ((src !== prevProps.src) || (size !== prevProps.size)) {
             this.loadImage();
         }
     }
