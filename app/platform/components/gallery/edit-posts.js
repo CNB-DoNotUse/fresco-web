@@ -1,7 +1,26 @@
 import React, { PropTypes } from 'react';
-import EditPost from './edit-post';
+import FrescoImage from '../global/fresco-image';
 import Slider from 'react-slick';
 import find from 'lodash/find';
+import utils from 'utils';
+
+const renderPost = (post) => {
+    if (post.video) {
+        return (
+            <video width="100%" height="100%" data-id={post.id} controls>
+                <source
+                    src={utils.formatVideo(post.video)}
+                    type="video/mp4"
+                />
+                Your browser does not support the video tag.
+            </video>
+        );
+    }
+
+    return (
+        <FrescoImage image={post.image} size="medium" />
+    );
+};
 
 const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
     originalPosts.map((p, i) => {
@@ -9,7 +28,7 @@ const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
 
         return (
             <div key={i} className={`frick-frame ${deleteToggled ? 'frick-delete' : ''}`}>
-                <EditPost post={p} />
+                {renderPost(p)}
                 <div className="frick-overlay">
                     <span>
                         <span className="mdi mdi-delete icon" />
@@ -33,7 +52,7 @@ const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
 const renderPostsNoDelete = (originalPosts) => (
     originalPosts.map((p, i) => (
         <div key={i} className="frick-frame">
-            <EditPost post={p} />
+            {renderPost(p)}
         </div>
     ))
 );
