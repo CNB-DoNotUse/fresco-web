@@ -11,10 +11,13 @@ class FrescoImage extends React.Component {
         image: PropTypes.string,
         updateImage: PropTypes.func,
         imageClass: PropTypes.string,
+        refreshInterval: PropTypes.bool,
+        imageStyle: PropTypes.object,
     };
 
     static defaultProps = {
         size: 'small',
+        refreshInterval: false,
         updateImage: () => {},
     };
 
@@ -32,7 +35,7 @@ class FrescoImage extends React.Component {
 
     // async load image
     loadImage = () => {
-        const { image, size } = this.props;
+        const { image, size, refreshInterval } = this.props;
         const formattedSrc = utils.formatImg(image, size);
         const imageObj = new Image();
         const intervalCB = () => {
@@ -49,7 +52,9 @@ class FrescoImage extends React.Component {
             if (this.img) this.img.src = this.missingImageUrl;
             this.props.updateImage(this.missingImageUrl);
 
-            this.loadInterval = setInterval(intervalCB.bind(this), 2000);
+            if (refreshInterval) {
+                this.loadInterval = setInterval(intervalCB.bind(this), 2000);
+            }
         };
 
         imageObj.onload = onloadCB.bind(this);
@@ -63,6 +68,7 @@ class FrescoImage extends React.Component {
             <div className="img img__async">
                 <img
                     className={this.props.imageClass || 'img-cover'}
+                    style={this.props.imageStyle || {}}
                     role="presentation"
                     ref={(r) => this.img = r}
                     src={this.missingImageUrl}
