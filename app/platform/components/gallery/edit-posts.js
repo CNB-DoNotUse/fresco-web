@@ -40,7 +40,7 @@ const renderPosts = ({ editingPosts, originalPosts, onToggleDelete, refreshInter
                     </span>
                 </div>
                 {editingPosts.length > 1
-                    ? <a>
+                    ? <a className="frick-frame__delete-btn">
                         <span
                             className={`mdi mdi-close-circle icon ${deleteToggled ? 'addback' : ''}`}
                             onClick={() => onToggleDelete(p)}

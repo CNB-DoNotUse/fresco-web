@@ -50,8 +50,8 @@ const storage = multer.diskStorage({
 });
 
 app.use(
-    multer({ 
-        storage: storage 
+    multer({
+        storage: storage
     }).any()
 );
 
@@ -97,7 +97,7 @@ app.use((req, res, next) => {
 
     if (req.session && req.session.alerts){
         res.locals.alerts = res.locals.alerts.concat(req.session.alerts);
-        
+
         delete req.session.alerts;
         req.session.save(null);
     }
@@ -193,7 +193,7 @@ app.use((error, req, res, next) => {
     //Respond with code
     res.status(err.status);
 
-    if(req.accepts('html')) {
+    if (req.accepts('html')) {
         return res.render('error', {
             err: err,
             section: 'public',

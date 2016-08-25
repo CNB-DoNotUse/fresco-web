@@ -42,7 +42,7 @@ class Edit extends React.Component {
         this.removeGallery(gallery.id);
     }
 
-    onSave() {
+    onSave = () => {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
         if (!get(gallery, 'id') || !params || this.state.loading) return;
@@ -54,11 +54,8 @@ class Edit extends React.Component {
         ])
         .then((response) => {
             const res = response[0];
-            if (get(res, 'posts_new.length' && this.fileInput.files)) {
-                return Promise.all([
-                    res,
-                    this.uploadFiles(res.posts_new, this.fileInput.files),
-                ]);
+            if (get(res, 'posts_new.length')) {
+                return this.uploadFiles(res.posts_new, this.fileInput.files);
             }
 
             return res;
@@ -265,11 +262,12 @@ class Edit extends React.Component {
     }
 
     uploadFiles(posts, files) {
+        if (!posts || !files || !files.length) return Promise.resolve;
         const requests = posts.map((p, i) => {
             if (files[i]) {
                 return new Promise((resolve, reject) => {
                     request
-                        .put(p.url)
+                        .put(p.upload_url)
                         .set('Content-Type', files[i].type)
                         .send(files[i])
                         .end((err) => {
@@ -542,7 +540,7 @@ class Edit extends React.Component {
 
                 <button
                     type="button"
-                    onClick={() => this.onSave()}
+                    onClick={this.onSave}
                     className="btn btn-flat pull-right"
                     disabled={loading}
                 >
@@ -552,8 +550,8 @@ class Edit extends React.Component {
                 {utils.isOriginalGallery(gallery)
                     ? <button
                         type="button"
-                        onClick={() => this.setState({ rating: (gallery.rating < 2 ? 2 : 1) },
-                                () => this.onSave())}
+                        onClick={() =>
+                            this.setState({ rating: (gallery.rating < 2 ? 2 : 1) }, this.onSave)}
                         className="btn btn-flat pull-right"
                         disabled={loading}
                     >
