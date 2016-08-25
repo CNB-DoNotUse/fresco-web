@@ -2,11 +2,11 @@
 import { fromJS } from 'immutable';
 
 // constants
-// const SAVE = 'pushNotifications/SAVE';
-// const SAVE_SUCCESS = 'pushNotifications/SAVE_SUCCESS';
-// const SAVE_FAIL = 'pushNotifications/SAVE_FAIL';
-const SET_ACTIVE_TAB = 'pushNotifications/SET_ACTIVE_TAB';
-const UPDATE_TEMPLATE = 'pushNotifications/UPDATE_TEMPLATE';
+// const SAVE = 'pushNotifs/SAVE';
+// const SAVE_SUCCESS = 'pushNotifs/SAVE_SUCCESS';
+// const SAVE_FAIL = 'pushNotifs/SAVE_FAIL';
+const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
+const UPDATE_TEMPLATE = 'pushNotifs/UPDATE_TEMPLATE';
 
 // actions
 export const setActiveTab = (activeTab) => ({
@@ -21,7 +21,7 @@ export const updateTemplate = (template, data) => ({
 });
 
 // reducer
-const pushNotifications = (state = fromJS({
+const pushNotifs = (state = fromJS({
     activeTab: 'default',
     templates: {},
     loading: false,
@@ -42,5 +42,5 @@ const pushNotifications = (state = fromJS({
     }
 };
 
-export default pushNotifications;
+export default pushNotifs;
 

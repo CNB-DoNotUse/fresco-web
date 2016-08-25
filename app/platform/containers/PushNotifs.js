@@ -2,15 +2,15 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map } from 'immutable';
-import * as pushActions from 'app/redux/modules/pushNotifications';
+import * as pushActions from 'app/redux/modules/pushNotifs';
 import TopBar from '../components/topbar';
-import DefaultTemplate from '../components/pushNotifications/default-template';
-import GalleryListTemplate from '../components/pushNotifications/gallery-list-template';
-import Recommend from '../components/pushNotifications/recommend';
-import Assignment from '../components/pushNotifications/assignment';
-import 'app/sass/platform/_pushNotifications.scss';
+import DefaultTemplate from '../components/pushNotifs/default-template';
+import GalleryListTemplate from '../components/pushNotifs/gallery-list-template';
+import Recommend from '../components/pushNotifs/recommend';
+import Assignment from '../components/pushNotifs/assignment';
+import 'app/sass/platform/_pushNotifs.scss';
 
-class PushNotifications extends React.Component {
+class PushNotifs extends React.Component {
     static propTypes = {
         setActiveTab: PropTypes.func.isRequired,
         onChangeTemplate: PropTypes.func.isRequired,
@@ -62,12 +62,12 @@ class PushNotifications extends React.Component {
         return (
             <div className="container-fluid">
                 <TopBar
-                    title="Push"
+                    title="Push Notifications"
                     tabs={['Default', 'Gallery List', 'Recommend', 'Assignment']}
                     setActiveTab={setActiveTab}
                     activeTab={activeTab}
                 />
-                <div className="push-notifications__tab row">
+                <div className="push-notifs__tab row">
                     <div className="col-sm-8">
                         {this.renderTemplate()}
                     </div>
@@ -79,13 +79,13 @@ class PushNotifications extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        activeTab: state.getIn(['pushNotifications', 'activeTab']),
-        templates: state.getIn(['pushNotifications', 'templates']),
+        activeTab: state.getIn(['pushNotifs', 'activeTab']),
+        templates: state.getIn(['pushNotifs', 'templates']),
     };
 }
 
 export default connect(mapStateToProps, {
     setActiveTab: pushActions.setActiveTab,
     onChangeTemplate: pushActions.updateTemplate,
-})(PushNotifications);
+})(PushNotifs);
 

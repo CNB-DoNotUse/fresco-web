@@ -61,7 +61,7 @@ const DefaultTemplate = ({
             onChange={onChangeBody(onChange)}
         />
 
-        <div className="checkbox form-group push-notifications__checkbox">
+        <div className="checkbox form-group push-notifs__checkbox">
             <label>
                 <input
                     type="checkbox"
@@ -84,7 +84,7 @@ const DefaultTemplate = ({
             : null
         }
 
-        <div className="checkbox form-group push-notifications__checkbox">
+        <div className="checkbox form-group push-notifs__checkbox">
             <label>
                 <input
                     type="checkbox"

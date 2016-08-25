@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux-immutable';
 
-import pushNotifications from './pushNotifications';
+import pushNotifs from './pushNotifs';
 import user from './user';
 
 export default combineReducers({
-    pushNotifications,
+    pushNotifs,
     user,
 });
 

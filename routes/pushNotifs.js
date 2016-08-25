@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-// const API = require('../lib/api');
 
 router.get('/', (req, res) => {
     const props = {
@@ -10,7 +9,7 @@ router.get('/', (req, res) => {
     res.render('app', {
         title: 'Push Notifications',
         alerts: req.alerts,
-        page: 'pushNotifications',
+        page: 'pushNotifs',
         props: JSON.stringify(props),
     });
 });
