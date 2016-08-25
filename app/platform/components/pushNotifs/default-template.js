@@ -101,6 +101,7 @@ const DefaultTemplate = ({
                 attr="username"
                 items={users}
                 updateItems={onChangeUsers(onChange)}
+                className="push-notifs__users"
                 initMaterial
             />
             : null

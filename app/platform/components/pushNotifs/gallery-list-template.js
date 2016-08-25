@@ -1,17 +1,58 @@
 import React, { PropTypes } from 'react';
+import AutocompletChipInput from '../global/autocomplete-chip-input';
 
-const GalleryListTemplate = ({ title, body, restrictedLocations, restrictedUsers }) => (
+const onChangeTitle = (onChange) => (e) => {
+    onChange({ title: e.target.value });
+};
+
+const onChangeBody = (onChange) => (e) => {
+    onChange({ body: e.target.value });
+};
+
+const onChangeGalleries = (onChange) => (galleries) => {
+    onChange({ galleries });
+};
+
+const Template = ({
+    title,
+    body,
+    galleries,
+    onChange }) => (
     <div>
-        Gallery List Template
+        <input
+            type="text"
+            className="form-control floating-label"
+            placeholder="Title"
+            value={title}
+            onChange={onChangeTitle(onChange)}
+        />
+
+        <textarea
+            type="text"
+            className="form-control floating-label"
+            placeholder="Body"
+            value={body}
+            onChange={onChangeBody(onChange)}
+        />
+
+        <AutocompletChipInput
+            model="galleries"
+            attr="caption"
+            items={galleries}
+            updateItems={onChangeGalleries(onChange)}
+            className="push-notifs__galleries"
+            initMaterial
+        />
+
     </div>
 );
 
-GalleryListTemplate.propTypes = {
+Template.propTypes = {
     title: PropTypes.string,
     body: PropTypes.string,
-    restrictedLocations: PropTypes.array,
-    restrictedUsers: PropTypes.array,
+    galleries: PropTypes.array,
+    onChange: PropTypes.func,
 };
 
-export default GalleryListTemplate;
+export default Template;
 
