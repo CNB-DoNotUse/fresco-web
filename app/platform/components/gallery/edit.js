@@ -52,10 +52,12 @@ class Edit extends React.Component {
             this.saveGallery(gallery.id, params),
             this.deletePosts(get(params, 'posts_remove')),
         ])
-        .then((response) => {
-            const res = response[0];
-            if (get(res, 'posts_new.length')) {
-                return this.uploadFiles(res.posts_new, this.fileInput.files);
+        .then((res) => {
+            if (get(res[0], 'posts_new.length')) {
+                return Promise.all([
+                    res[0],
+                    this.uploadFiles(res[0].posts_new, this.fileInput.files),
+                ]);
             }
 
             return res;
@@ -64,7 +66,7 @@ class Edit extends React.Component {
             this.hide();
             this.setState({ uploads: [], loading: false }, () => {
                 $.snackbar({ content: 'Gallery saved!' });
-                onUpdateGallery(res);
+                onUpdateGallery(res[0]);
             });
         })
         .catch(() => {
