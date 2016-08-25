@@ -195,7 +195,7 @@ app.use((error, req, res, next) => {
 
     if (req.accepts('html')) {
         return res.render('error', {
-            err: err,
+            err,
             section: 'public',
             page: 'error'
         });
