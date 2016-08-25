@@ -464,6 +464,7 @@ class Edit extends React.Component {
                         attr="title"
                         items={stories}
                         updateItems={(s) => this.setState({ stories: s })}
+                        className="dialog-row"
                     />
 
                     <EditArticles

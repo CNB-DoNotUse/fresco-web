@@ -314,6 +314,7 @@ class GalleryEdit extends React.Component {
                         attr="title"
                         items={stories}
                         updateItems={this.updateStories}
+                        className="dialog-row"
                     />
 
                     <AutocompleteMap

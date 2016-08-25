@@ -16,11 +16,13 @@ class AutocompletChipInput extends React.Component {
         attr: PropTypes.string.isRequired,
         model: PropTypes.string.isRequired,
         initMaterial: PropTypes.bool,
+        className: PropTypes.string,
     };
 
     static defaultProps = {
         items: [],
         initMaterial: false,
+        className: '',
     };
 
     state = {
@@ -135,7 +137,7 @@ class AutocompletChipInput extends React.Component {
         return (
             <div
                 ref={(r) => this.area = r}
-                className="dialog-row split chips form-group-default"
+                className={`split chips form-group-default ${this.props.className}`}
             >
                 <div className="split-cell">
                     <input
