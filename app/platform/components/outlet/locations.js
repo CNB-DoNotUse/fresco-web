@@ -6,15 +6,9 @@ import every from 'lodash/every';
  * Component for managing outlet locations in the outlet settings page
  */
 class Locations extends React.Component {
-    constructor(props) {
-        super(props);
 
-        this.state = { 
-            locations: [] 
-        };
-
-        this.updateLocation = this.updateLocation.bind(this);
-        this.removeLocation = this.removeLocation.bind(this);
+    state = {
+        locations: []
     }
 
     componentDidMount() {
@@ -117,7 +111,7 @@ class Locations extends React.Component {
 	 * Removes a location, makes API request, removes from state on success cb
      * @param {String} id ID of the outlet location
 	 */
-    removeLocation(id) {
+    removeLocation = (id) => (e) => {
         $.ajax({
             method: 'post',
             url: `/api/outlet/locations/${id}/delete`,
@@ -139,23 +133,23 @@ class Locations extends React.Component {
      * @param {Object} location The location object being updated
      * @param {String} notifType [description] 
 	 */
-    updateLocation(notif, e, location = null, index = null) {
+    updateLocation = (notif, location = null, index = null) => (e) => {
         const singleLocation = (location !== null && index !== null);
         const url = `/api/outlet/locations/${singleLocation ? `${location.id}/update` : 'update'}`;
         
         let oldLocations = _.cloneDeep(this.state.locations);
-        let newLocations = _.cloneDeep(this.state.locations);
+        let locations = _.cloneDeep(this.state.locations);
 
         if(singleLocation) {
-            newLocations[index][notif] = e.target.checked;
+            locations[index][notif] = e.target.checked;
         } else {
-            newLocations.forEach((location) => {
+            locations.forEach((location) => {
                 location[notif] = e.target.checked;
             });
         }
 
         //Set new locations, failure will set back to original state
-        this.setState({ locations: newLocations });
+        this.setState({ locations });
 
         $.ajax({
             url,
@@ -226,7 +220,7 @@ class Locations extends React.Component {
                                 <input 
                                     type="checkbox"
                                     checked={every(locations, 'send_sms')}
-                                    onChange={(e) => this.updateLocation('send_sms', e)} />
+                                    onChange={this.updateLocation('send_sms')} />
                             </label>
                         </div>
 
@@ -235,7 +229,7 @@ class Locations extends React.Component {
                                 <input 
                                     type="checkbox"
                                     checked={every(locations, 'send_email')}
-                                    onChange={(e) => this.updateLocation('send_email', e)} />
+                                    onChange={this.updateLocation('send_email')} />
                             </label>
                         </div>
 
@@ -244,7 +238,7 @@ class Locations extends React.Component {
                                 <input 
                                     type="checkbox"
                                     checked={every(locations, 'send_fresco')}
-                                    onChange={(e) => this.updateLocation('send_fresco', e)} />
+                                    onChange={this.updateLocation('send_fresco')} />
                             </label>
                         </div>
                     </div>
@@ -259,68 +253,59 @@ class Locations extends React.Component {
 /**
  * Location Item inside the parent <ul>
  */
-class LocationItem extends React.Component {
+const LocationItem = ({ location, updateLocation, removeLocation, index }) => {
+    const unseen = location.unseen_count || 0;
 
-    constructor(props) {
-        super(props);
-    }
+    return (
+        <li className="location">
+            <div className="info">
+                <a href={`/location/${location.id}`}>
+                    <p className="area">{location.title}</p>
 
-    render() {
-        const { location, updateLocation, removeLocation, index } = this.props;
-        const unseen = location.unseen_count || 0;
+                    <span className="count">
+                        {`${unseen} unseen ${utils.isPlural(unseen) ?  'items' : 'item'}`}
+                    </span>
+                </a>
+            </div>
 
-        return (
-            <li className="location">
-                <div className="info">
-                    <a href={`/location/${location.id}`}>
-                        <p className="area">{location.title}</p>
+            <div className="location-options form-group-default">
+                <span 
+                    onClick={removeLocation(location.id)} 
+                    className="remove-location mdi mdi-delete" 
+                />
 
-                        <span className="count">
-                            {`${unseen} unseen ${utils.isPlural(unseen) ?  'items' : 'item'}`}
-                        </span>
-                    </a>
+                <div className="checkbox check-sms">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={location.send_sms}
+                            onChange={updateLocation('send_sms', location, index)}
+                        />
+                    </label>
                 </div>
 
-                <div className="location-options form-group-default">
-                    <span 
-                        onClick={() => removeLocation(location.id)} 
-                        className="remove-location mdi mdi-delete" 
-                    />
-
-                    <div className="checkbox check-sms">
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={location.send_sms}
-                                onChange={(e) => updateLocation('send_sms', e, location, index)}
-                            />
-                        </label>
-                    </div>
-
-                    <div className="checkbox check-email">
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={location.send_email}
-                                onChange={(e) => updateLocation('send_email', e, location, index)}
-                            />
-                        </label>
-                    </div>
-
-                    <div className="checkbox check-fresco">
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={location.send_fresco}
-                                onChange={(e) => updateLocation('send_fresco', e, location, index)}
-                            />
-                        </label>
-                    </div>
+                <div className="checkbox check-email">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={location.send_email}
+                            onChange={updateLocation('send_email', location, index)}
+                        />
+                    </label>
                 </div>
-            </li>
-        );
-    }
 
+                <div className="checkbox check-fresco">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={location.send_fresco}
+                            onChange={updateLocation('send_fresco', location, index)}
+                        />
+                    </label>
+                </div>
+            </div>
+        </li>
+    );
 }
 
 export default Locations;

@@ -84,6 +84,27 @@ class Notifications extends React.Component {
 		});
 	}
 
+	renderNotificationList (notifications) {
+	    if (!notifications.length) {
+	        return <div className="outlet-locations-container" />;
+	    }
+
+	    return (
+	        <div className="outlet-notifications-container">
+	            <ul className="outlet-notifications">
+	                {notifications.map((n, i) => {
+	                    return (
+	                    	<NotificaitonItem
+	                    		key={i}
+	                    		index={i}
+	                    		notification={n}
+	                    		updateNotification={this.updateNotification} />
+	                    );
+	                })}
+	            </ul>
+	        </div>
+	    );
+	}
 
 	render () {
 		const { notifications } = this.state;
@@ -101,9 +122,7 @@ class Notifications extends React.Component {
 					</div>
 				</div>
 
-				<OutletNotificationsList
-					notifications={this.state.notifications}
-					updateNotification={this.updateNotification} />
+				{this.renderNotificationList(notifications)}
 
 				<div className="footer">
 					<div className="notification-options">
@@ -142,54 +161,51 @@ class Notifications extends React.Component {
 	}
 }
 
-const OutletNotificationsList = ({ notifications, updateNotification }) => (
-	<div className="outlet-notifications-container">
-		<ul className="outlet-notifications">
-			{notifications.map((notification, i) => {
-				const { options, type } = notification;
+/**
+ * Single notification item
+ */
+const NotificaitonItem = ({ notification, updateNotification, index }) => {
+	const { title, description, options} = notification;
 
-				return(
-					<li className="notification" key={i}>
-						<div className="info">
-							<p className="title">{notification.title}</p>
+	return ( 
+		<li className="notification">
+			<div className="info">
+				<p className="title">{title}</p>
 
-							<span className="description">{notification.description}</span>
-						</div>
+				<span className="description">{description}</span>
+			</div>
 
-						<div className="notification-options form-group-default">
-							<div className="checkbox check-sms">
-								<label>
-									<input
-										type="checkbox"
-										checked={options.send_sms || false}
-										onChange={updateNotification('send_sms', i)} />
-								</label>
-							</div>
+			<div className="notification-options form-group-default">
+				<div className="checkbox check-sms">
+					<label>
+						<input
+							type="checkbox"
+							checked={options.send_sms || false}
+							onChange={updateNotification('send_sms', index)} />
+					</label>
+				</div>
 
-							<div className="checkbox check-email">
-								<label>
-									<input
-										type="checkbox"
-										checked={options.send_email || false}
-										onChange={updateNotification('send_email', i)} />
-								</label>
-							</div>
+				<div className="checkbox check-email">
+					<label>
+						<input
+							type="checkbox"
+							checked={options.send_email || false}
+							onChange={updateNotification('send_email', index)} />
+					</label>
+				</div>
 
-							<div className="checkbox check-fresco">
-								<label>
-									<input
-										type="checkbox"
-										checked={options.send_fresco || false}
-										onChange={updateNotification('send_fresco', i)} />
-								</label>
-							</div>
-						</div>
-					</li>
-				)
-			})}
-		</ul>
-	</div>	
-);
+				<div className="checkbox check-fresco">
+					<label>
+						<input
+							type="checkbox"
+							checked={options.send_fresco || false}
+							onChange={updateNotification('send_fresco', index)} />
+					</label>
+				</div>
+			</div>
+		</li> 
+	);
+}
 
 
 export default Notifications;
