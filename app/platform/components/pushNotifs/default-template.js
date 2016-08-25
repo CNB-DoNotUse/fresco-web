@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
-import AutocompletChipInput from '../global/autocomplete-chip-input';
+import ChipInput from '../global/chip-input';
 import { getAddressFromLatLng } from 'app/lib/location';
 
 const onChangeTitle = (onChange) => (e) => {
@@ -96,12 +96,13 @@ const DefaultTemplate = ({
         </div>
 
         {restrictByUser
-            ? <AutocompletChipInput
+            ? <ChipInput
                 model="users"
                 attr="username"
                 items={users}
                 updateItems={onChangeUsers(onChange)}
                 className="push-notifs__users"
+                autocomplete
                 initMaterial
             />
             : null

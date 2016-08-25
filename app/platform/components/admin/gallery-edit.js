@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
-import AutocompleteChipInput from '../global/autocomplete-chip-input';
+import ChipInput from '../global/chip-input';
 import EditTags from './../gallery/edit-tags';
 import EditPosts from './../gallery/edit-posts';
 import EditAssignment from './../gallery/edit-assignment';
@@ -309,12 +309,13 @@ class GalleryEdit extends React.Component {
                         tags={tags}
                     />
 
-                    <AutocompleteChipInput
+                    <ChipInput
                         model="stories"
                         attr="title"
                         items={stories}
                         updateItems={this.updateStories}
                         className="dialog-row"
+                        autocomplete
                     />
 
                     <AutocompleteMap

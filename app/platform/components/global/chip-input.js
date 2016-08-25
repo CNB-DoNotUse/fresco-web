@@ -8,7 +8,7 @@ import capitalize from 'lodash/capitalize';
  *
  * @extends React.Component
  */
-class AutocompletChipInput extends React.Component {
+class ChipInput extends React.Component {
 
     static propTypes = {
         items: PropTypes.array.isRequired,
@@ -17,12 +17,14 @@ class AutocompletChipInput extends React.Component {
         model: PropTypes.string.isRequired,
         initMaterial: PropTypes.bool,
         className: PropTypes.string,
+        autocomplete: PropTypes.bool,
     };
 
     static defaultProps = {
         items: [],
         initMaterial: false,
         className: '',
+        autocomplete: false,
     };
 
     state = {
@@ -54,8 +56,9 @@ class AutocompletChipInput extends React.Component {
 
     onChangeQuery = (e) => {
         const query = e.target.value;
-        const { model, attr } = this.props;
+        const { model, attr, autocomplete } = this.props;
         this.setState({ query });
+        if (!autocomplete) return;
 
         // Enter is pressed, and query is present
         if (!query.length === 0) {
@@ -80,11 +83,11 @@ class AutocompletChipInput extends React.Component {
      * @param {object} e key up event
      */
     onKeyUpQuery = (e) => {
-        const { attr } = this.props;
+        const { attr, autocomplete } = this.props;
         const { suggestions, query } = this.state;
 
         if (e.keyCode === 13 && query.length > 0) {
-            const matched = suggestions.find((s) => (
+            const matched = autocomplete && suggestions.find((s) => (
                 s.title.toLowerCase() === query.toLowerCase()
             ));
 
@@ -136,7 +139,7 @@ class AutocompletChipInput extends React.Component {
 
         return (
             <div
-                ref={(r) => this.area = r}
+                ref={r => this.area = r}
                 className={`split chips form-group-default ${this.props.className}`}
             >
                 <div className="split-cell">
@@ -161,10 +164,9 @@ class AutocompletChipInput extends React.Component {
                     </ul>
                 </div>
             </div>
-
         );
     }
 }
 
-export default AutocompletChipInput;
+export default ChipInput;
 

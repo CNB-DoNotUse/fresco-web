@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import AutocompletChipInput from '../global/autocomplete-chip-input';
+import ChipInput from '../global/chip-input';
 
 const onChangeTitle = (onChange) => (e) => {
     onChange({ title: e.target.value });
@@ -35,12 +35,13 @@ const Template = ({
             onChange={onChangeBody(onChange)}
         />
 
-        <AutocompletChipInput
+        <ChipInput
             model="galleries"
             attr="caption"
             items={galleries}
             updateItems={onChangeGalleries(onChange)}
             className="push-notifs__galleries"
+            autocomplete={false}
             initMaterial
         />
 

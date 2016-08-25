@@ -5,7 +5,7 @@ import EditPosts from './edit-posts';
 import EditAssignment from './edit-assignment';
 import EditByline from './edit-byline';
 import AutocompleteMap from '../global/autocomplete-map';
-import AutocompleteChipInput from '../global/autocomplete-chip-input';
+import ChipInput from '../global/chip-input';
 import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import request from 'superagent';
@@ -459,12 +459,13 @@ class Edit extends React.Component {
                         updateTags={(t) => this.setState({ tags: t })}
                     />
 
-                    <AutocompleteChipInput
+                    <ChipInput
                         model="stories"
                         attr="title"
                         items={stories}
                         updateItems={(s) => this.setState({ stories: s })}
                         className="dialog-row"
+                        autocomplete
                     />
 
                     <EditArticles
