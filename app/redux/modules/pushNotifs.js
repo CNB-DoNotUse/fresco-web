@@ -1,12 +1,16 @@
 // https://github.com/erikras/ducks-modular-redux
-import { fromJS } from 'immutable';
+import api from 'app/lib/api';
+import { fromJS, Map } from 'immutable';
 
 // constants
-// const SAVE = 'pushNotifs/SAVE';
-// const SAVE_SUCCESS = 'pushNotifs/SAVE_SUCCESS';
-// const SAVE_FAIL = 'pushNotifs/SAVE_FAIL';
+const SEND = 'pushNotifs/SEND';
+const SEND_SUCCESS = 'pushNotifs/SEND_SUCCESS';
+const SEND_FAIL = 'pushNotifs/SEND_FAIL';
 const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
 const UPDATE_TEMPLATE = 'pushNotifs/UPDATE_TEMPLATE';
+
+// keys irrelevant to api
+const nonDataKeys = ['restrictByUser', 'restrictByLocation'];
 
 // actions
 export const setActiveTab = (activeTab) => ({
@@ -20,6 +24,19 @@ export const updateTemplate = (template, data) => ({
     data,
 });
 
+export const send = (template) => (dispatch, getState) => {
+    dispatch({ type: SEND, template });
+    const data = getState()
+        .getIn(['pushNotifs', template], Map())
+        .filterNot((v, k) => (nonDataKeys.includes(k)))
+        .toJS();
+
+    return api
+        .post('push/create', data)
+        .then(res => dispatch({ type: SEND_SUCCESS, data: res }))
+        .catch(err => dispatch({ type: SEND_FAIL, data: err }));
+};
+
 // reducer
 const pushNotifs = (state = fromJS({
     activeTab: 'default',
@@ -27,12 +44,12 @@ const pushNotifs = (state = fromJS({
     loading: false,
     error: null }), action = {}) => {
     switch (action.type) {
-        // case SAVE:
-        //     return state.set('loading', true);
-        // case SAVE_SUCCESS:
-        //     return state.set('loading', false).merge('pending', action.payload.notification);
-        // case SAVE_FAIL:
-        //     return state.set('loading', false).set('error', action.payload.error);
+        case SEND:
+            return state.set('loading', true);
+        case SEND_SUCCESS:
+            return state.set('loading', false)
+        case SEND_FAIL:
+            return state.set('loading', false).set('error', action.data);
         case SET_ACTIVE_TAB:
             return state.set('activeTab', action.activeTab.toLowerCase());
         case UPDATE_TEMPLATE:
