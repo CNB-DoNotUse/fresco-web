@@ -28,7 +28,8 @@ export const send = (template) => (dispatch, getState) => {
     dispatch({ type: SEND, template });
     const data = getState()
         .getIn(['pushNotifs', template], Map())
-        .filterNot((v, k) => (nonDataKeys.includes(k)));
+        .filterNot((v, k) => (nonDataKeys.includes(k)))
+        .toJS();
 
     return api
         .post('push/create', data)
