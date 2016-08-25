@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
+import AutocompleteChipInput from '../global/autocomplete-chip-input';
 import EditTags from './../gallery/edit-tags';
-import EditStories from './../gallery/edit-stories';
 import EditPosts from './../gallery/edit-posts';
 import EditAssignment from './../gallery/edit-assignment';
 import EditByline from './../gallery/edit-byline';
@@ -236,7 +236,7 @@ class GalleryEdit extends React.Component {
     /**
      * Updates state with new stories
      */
-    updateStories(stories) {
+    updateStories = (stories) => {
         this.setState({ stories });
     }
 
@@ -309,9 +309,11 @@ class GalleryEdit extends React.Component {
                         tags={tags}
                     />
 
-                    <EditStories
-                        stories={stories}
-                        updateStories={(s) => this.updateStories(s)}
+                    <AutocompleteChipInput
+                        model="stories"
+                        attr="title"
+                        items={stories}
+                        updateItems={this.updateStories}
                     />
 
                     <AutocompleteMap

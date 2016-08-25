@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import EditTags from './edit-tags';
 import EditArticles from './edit-articles';
-import EditStories from './edit-stories';
 import EditPosts from './edit-posts';
+import AutocompleteChipInput from '../global/autocomplete-chip-input';
 import utils from 'utils';
 
 /**
@@ -167,9 +167,11 @@ class Create extends React.Component {
                                     updateTags={(t) => this.setState({ tags: t })}
                                 />
 
-                                <EditStories
-                                    stories={stories}
-                                    updateStories={(s) => this.setState({ stories: s })}
+                                <AutocompleteChipInput
+                                    model="stories"
+                                    attr="title"
+                                    items={stories}
+                                    updateItems={(s) => this.setState({ stories: s })}
                                 />
 
                                 <EditArticles
