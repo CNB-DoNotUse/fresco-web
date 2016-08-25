@@ -14,8 +14,10 @@ class PushNotifs extends React.Component {
     static propTypes = {
         setActiveTab: PropTypes.func.isRequired,
         onChangeTemplate: PropTypes.func.isRequired,
+        send: PropTypes.func.isRequired,
         activeTab: PropTypes.string.isRequired,
-        templates: PropTypes.object,
+        loading: PropTypes.bool.isRequired,
+        templates: PropTypes.object.isRequired,
     };
 
     componentDidMount() {
@@ -57,7 +59,12 @@ class PushNotifs extends React.Component {
     }
 
     render() {
-        const { setActiveTab, activeTab } = this.props;
+        const {
+            setActiveTab,
+            activeTab,
+            send,
+            loading,
+        } = this.props;
 
         return (
             <div className="container-fluid">
@@ -70,6 +77,14 @@ class PushNotifs extends React.Component {
                 <div className="push-notifs__tab row">
                     <div className="col-sm-8">
                         {this.renderTemplate()}
+                        <button
+                            type="button"
+                            onClick={partial(send, activeTab)}
+                            className="btn btn-flat pull-right"
+                            disabled={loading}
+                        >
+                            Send
+                        </button>
                     </div>
                 </div>
             </div>
@@ -81,11 +96,13 @@ function mapStateToProps(state) {
     return {
         activeTab: state.getIn(['pushNotifs', 'activeTab']),
         templates: state.getIn(['pushNotifs', 'templates']),
+        loading: state.getIn(['pushNotifs', 'loading']),
     };
 }
 
 export default connect(mapStateToProps, {
     setActiveTab: pushActions.setActiveTab,
     onChangeTemplate: pushActions.updateTemplate,
+    send: pushActions.send,
 })(PushNotifs);
 
