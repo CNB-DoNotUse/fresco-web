@@ -15,10 +15,12 @@ class AutocompletChipInput extends React.Component {
         updateItems: PropTypes.func.isRequired,
         attr: PropTypes.string.isRequired,
         model: PropTypes.string.isRequired,
+        initMaterial: PropTypes.bool,
     };
 
     static defaultProps = {
         items: [],
+        initMaterial: false,
     };
 
     state = {
@@ -28,6 +30,12 @@ class AutocompletChipInput extends React.Component {
 
     componentWillMount() {
         document.addEventListener('click', this.onClick);
+    }
+
+    componentDidMount() {
+        if (this.props.initMaterial) {
+            $.material.init();
+        }
     }
 
     componentWillUnmount() {

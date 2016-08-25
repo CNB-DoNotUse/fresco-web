@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
+import AutocompletChipInput from '../global/autocomplete-chip-input';
 import { getAddressFromLatLng } from 'app/lib/location';
 
 const onChangeTitle = (onChange) => (e) => {
@@ -28,6 +29,10 @@ const onMapDataChange = (onChange) => (data) => {
             onChange({ address, location: data.location });
         });
     }
+};
+
+const onChangeUsers = (onChange) => (users) => {
+    onChange({ users });
 };
 
 const DefaultTemplate = ({
@@ -89,13 +94,26 @@ const DefaultTemplate = ({
                 Restrict by users
             </label>
         </div>
+
+        {restrictByUser
+            ? <AutocompletChipInput
+                model="users"
+                attr="username"
+                items={users}
+                updateItems={onChangeUsers(onChange)}
+                initMaterial
+            />
+            : null
+        }
+
     </div>
 );
 
 DefaultTemplate.propTypes = {
     title: PropTypes.string,
     body: PropTypes.string,
-    location: PropTypes.array,
+    location: PropTypes.object,
+    address: PropTypes.string,
     users: PropTypes.array,
     restrictByLocation: PropTypes.bool,
     restrictByUser: PropTypes.bool,
