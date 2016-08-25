@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import utils from 'utils';
+import every from 'lodash/every';
 
 /**
  * Component for managing outlet locations in the outlet settings page
@@ -224,7 +225,7 @@ class Locations extends React.Component {
                             <label>
                                 <input 
                                     type="checkbox"
-                                    checked={_.every(locations, 'send_sms')}
+                                    checked={every(locations, 'send_sms')}
                                     onChange={(e) => this.updateLocation('send_sms', e)} />
                             </label>
                         </div>
@@ -233,7 +234,7 @@ class Locations extends React.Component {
                             <label>
                                 <input 
                                     type="checkbox"
-                                    checked={_.every(locations, 'send_email')}
+                                    checked={every(locations, 'send_email')}
                                     onChange={(e) => this.updateLocation('send_email', e)} />
                             </label>
                         </div>
@@ -242,7 +243,7 @@ class Locations extends React.Component {
                             <label>
                                 <input 
                                     type="checkbox"
-                                    checked={_.every(locations, 'send_fresco')}
+                                    checked={every(locations, 'send_fresco')}
                                     onChange={(e) => this.updateLocation('send_fresco', e)} />
                             </label>
                         </div>
@@ -321,9 +322,5 @@ class LocationItem extends React.Component {
     }
 
 }
-
-Locations.propTypes = {
-    outlet: PropTypes.object.isRequired,
-};
 
 export default Locations;

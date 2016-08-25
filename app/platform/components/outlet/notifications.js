@@ -1,22 +1,18 @@
-import React from 'react'
-import utils from 'utils'
+import React from 'react';
+import utils from 'utils';
+import every from 'lodash/every';
 
-export default class Notifications extends React.Component {
+/**
+ * Outlet notifications component for managing notification settings
+ */
+class Notifications extends React.Component {
 
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			notifications: []
-		}
-
-		this.loadNotifications = this.loadNotifications.bind(this);
-		this.updateAllNotifications = this.updateAllNotifications.bind(this);
-		this.updateNotification = this.updateNotification.bind(this);
+	state = {
+		notifications: []
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		//Need to init everytime because of the fucking checkboxes
+		//Need to init everytime because of the checkboxes
 		$.material.init();
 	}
 
@@ -25,128 +21,72 @@ export default class Notifications extends React.Component {
 		this.loadNotifications();
 	}
 
-	updateAllNotifications(medium, e) {
-		let self = this;
-		let params = {
-			medium: medium,
-			enabled: e.target.checked
-		};
-		let stateNotifications = this.state.notifications;
-
-		// Update all notifications setting in state,
-		// if update fails, loadLocations will revert the check on ajax response
-		for (let notification of stateNotifications) {
-			notification.medium[medium] = e.target.checked;
-		}
-
-		this.setState({
-			notifications: stateNotifications
-		});
-
-		$.ajax({
-			url: '/api/notification/settings/update/all',
-			method: 'post',
-			data: params,
-			success: function(response) {
-				if (response.err)
-					return this.error(null, null, response.err);
-
-				//Run update to get latest data and update the checkboxes
-				self.loadNotifications();
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({
-					content: utils.resolveError(error, 'We ran into an error updating your notifications! Please try again in a bit.')
-				});
-			}
-		});
-	}
-
 	/**
-	 * Updates specific notficaiton by event key
+	 * Updates specific notification by event key, or all locations if no index is passed
+	 * @param {String} option The option that is being modified
+	 * @param {Integer} index The index of the notificaton object to find in the array of notifs
 	 */
-	updateNotification(event_type, medium, e) {
-		var self = this,
-			params = {
-				event_type: event_type,
-				medium: medium,
-				enabled: e.target.checked
-			};
+	updateNotification = (option, index = null) => (e) => {
+		const singleNotification = index !== null;
+		let params = {};
+		let notifications = _.cloneDeep(this.state.notifications);
+		let oldNotifications = _.cloneDeep(this.state.notifications);
 
-		var stateNotifications = this.state.notifications;
-		// Update notification setting in state,
-		// if update fails, loadLocations will revert the check
-		for (let notification of stateNotifications) {
-			if(notification.event_type == event_type) {
+		if(singleNotification) {
+		    notifications[index].options[option] = e.target.checked;
 
-				notification.medium[medium] = e.target.checked;
-
-				this.setState({
-					notifications: stateNotifications
-				});
-
-				break; // Break ya legs
+		    params = { 
+		    	[notifications[index].type] : {
+		    		[option]: e.target.checked
+		    	} 
+		    }
+		} else {
+			for (let notif of notifications) {
+		        notif['options'][option] = e.target.checked;
+		        params[notif.type] = {
+		        	[option]: e.target.checked
+		        }
 			}
 		}
 
-		$.ajax({
-			url: '/api/notification/settings/update',
-			method: 'post',
-			data: params,
-			success: function(response) {
-				if (response.err)
-					return this.error(null, null, response.err);
+		//Set new notifications, failure will set back to original state
+		this.setState({ notifications });
 
-				//Run update to get latest data and update the checkboxes
-				self.loadNotifications();
-			},
-			error: (xhr, status, error) => {
-				$.snackbar({content: utils.resolveError(error)});
-			}
+		$.ajax({
+		    url: '/api/user/settings/update',
+		    method: 'post',
+		    contentType: 'application/json',
+		    dataType: 'json',
+		    data: JSON.stringify(params),
+		})
+		.fail((xhr, status, error) => {
+		    //Set back due to failure
+		    this.setState({
+		        notifications: oldNotifications
+		    });
+
+		    $.snackbar({ content: 'We\'re unable to update your notifications at the moment! Please try again in a bit.' });
 		});
 	}
 
 	/**
 	 * Loads notifications for the outlet
 	 */
-	loadNotifications(){
-		var self = this;
-
-		$.ajax({
-			url: '/api/user/settings',
-			method: 'GET',
-			success: function(response){
-				console.log(response);
-				if (response.err || !response.data)
-					return this.error(null, null, response.err);
-
-				//Update state
-				self.setState({ notifications: response.data });
-			},
-			error: (xhr, status, error) => {
-				// $.snackbar({
-				// 	content: utils.resolveError(error,  'We\'re unable to load your notifications at the moment! Please try again in a bit.')
-				// });
-			}
+	loadNotifications = () => {
+		$.ajax({ 
+		    url: '/api/user/settings',
+		    data: {
+		    	types_like: 'notify-outlet%'
+		    }
+		})
+		.done((res) => {
+		    this.setState({ notifications: res });
 		});
 	}
 
 
 	render () {
-		var allSms = 1,
-			allEmail = 1,
-			allFresco = 1;
-
-		for (var i = 0; i < this.state.notifications.length; i++) {
-			var notif = this.state.notifications[i];
-
-			if(notif.medium.sms == 0)
-				allSms = 0;
-			if(notif.medium.email == 0)
-				allEmail = 0;
-			if(notif.medium.fresco == 0)
-				allFresco = 0;
-		}
+		const { notifications } = this.state;
 
 		return (
 			<div className="card settings-outlet-notifications">
@@ -171,8 +111,8 @@ export default class Notifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
-									checked={allSms}
-									onChange={this.updateAllNotifications.bind(this, 'sms')} />
+									checked={every(notifications, 'options.send_sms')}
+									onChange={this.updateNotification('send_sms')} />
 							</label>
 						</div>
 
@@ -180,8 +120,8 @@ export default class Notifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
-									checked={allEmail}
-									onChange={this.updateAllNotifications.bind(this, 'email')} />
+									checked={every(notifications, 'options.send_email')}
+									onChange={this.updateNotification('send_email')} />
 							</label>
 						</div>
 
@@ -189,8 +129,8 @@ export default class Notifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
-									checked={allFresco}
-									onChange={this.updateAllNotifications.bind(this, 'fresco')} />
+									checked={every(notifications, 'options.send_fresco')}
+									onChange={this.updateNotification('send_fresco')} />
 							</label>
 						</div>
 					</div>
@@ -202,60 +142,54 @@ export default class Notifications extends React.Component {
 	}
 }
 
-class OutletNotificationsList extends React.Component {
+const OutletNotificationsList = ({ notifications, updateNotification }) => (
+	<div className="outlet-notifications-container">
+		<ul className="outlet-notifications">
+			{notifications.map((notification, i) => {
+				const { options, type } = notification;
 
-	render () {
+				return(
+					<li className="notification" key={i}>
+						<div className="info">
+							<p className="title">{notification.title}</p>
 
-		var notifications = this.props.notifications.map((notification, i) => {
-			var medium = notification.medium,
-				eventType = notification.event_type;
-
-			return(
-				<li className="notification" key={i}>
-					<div className="info">
-						<p className="title">{notification.title}</p>
-
-						<span className="description">{notification.description}</span>
-					</div>
-
-					<div className="notification-options form-group-default">
-						<div className="checkbox check-sms">
-							<label>
-								<input
-									type="checkbox"
-									checked={medium.sms || false}
-									onChange={this.props.updateNotification.bind(this, eventType, 'sms')} />
-							</label>
+							<span className="description">{notification.description}</span>
 						</div>
 
-						<div className="checkbox check-email">
-							<label>
-								<input
-									type="checkbox"
-									checked={medium.email || false}
-									onChange={this.props.updateNotification.bind(this, eventType, 'email')}/>
-							</label>
-						</div>
+						<div className="notification-options form-group-default">
+							<div className="checkbox check-sms">
+								<label>
+									<input
+										type="checkbox"
+										checked={options.send_sms || false}
+										onChange={updateNotification('send_sms', i)} />
+								</label>
+							</div>
 
-						<div className="checkbox check-fresco">
-							<label>
-								<input
-									type="checkbox"
-									checked={medium.fresco || false}
-									onChange={this.props.updateNotification.bind(this, eventType, 'fresco')} />
-							</label>
-						</div>
-					</div>
-				</li>
-			);
-		});
+							<div className="checkbox check-email">
+								<label>
+									<input
+										type="checkbox"
+										checked={options.send_email || false}
+										onChange={updateNotification('send_email', i)} />
+								</label>
+							</div>
 
-		return (
-			<div className="outlet-notifications-container">
-				<ul className="outlet-notifications">
-					{notifications}
-				</ul>
-			</div>
-		)
-	}
-}
+							<div className="checkbox check-fresco">
+								<label>
+									<input
+										type="checkbox"
+										checked={options.send_fresco || false}
+										onChange={updateNotification('send_fresco', i)} />
+								</label>
+							</div>
+						</div>
+					</li>
+				)
+			})}
+		</ul>
+	</div>	
+);
+
+
+export default Notifications;
