@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import EditTags from './edit-tags';
-import EditStories from './edit-stories';
 import EditArticles from './edit-articles';
 import EditPosts from './edit-posts';
 import EditAssignment from './edit-assignment';
 import EditByline from './edit-byline';
 import AutocompleteMap from '../global/autocomplete-map';
+import AutocompleteChipInput from '../global/autocomplete-chip-input';
 import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import request from 'superagent';
@@ -459,9 +459,11 @@ class Edit extends React.Component {
                         updateTags={(t) => this.setState({ tags: t })}
                     />
 
-                    <EditStories
-                        stories={stories}
-                        updateStories={(s) => this.setState({ stories: s })}
+                    <AutocompleteChipInput
+                        model="stories"
+                        attr="title"
+                        items={stories}
+                        updateItems={(s) => this.setState({ stories: s })}
                     />
 
                     <EditArticles

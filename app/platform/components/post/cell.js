@@ -21,7 +21,7 @@ class PostCell extends React.Component {
         };
     }
 
-    onClickPost(e) {
+    onClickPost = (e) => {
         const { post, togglePost } = this.props;
 
         // Check if clicked with shift key
@@ -100,7 +100,7 @@ class PostCell extends React.Component {
                 <div className="tile-body noselect">
                     <div className="frame" />
 
-                    <div className="hover" onClick={(e) => this.onClickPost(e)}>
+                    <div className="hover" onClick={this.onClickPost}>
                         <p className="md-type-body1">
                             {post.parent && post.parent.caption
                                 ? post.parent.caption
