@@ -11,6 +11,13 @@ import Assignment from '../components/pushNotifications/assignment';
 import 'app/sass/platform/_pushNotifications.scss';
 
 class PushNotifications extends React.Component {
+    static propTypes = {
+        setActiveTab: PropTypes.func.isRequired,
+        onChangeTemplate: PropTypes.func.isRequired,
+        activeTab: PropTypes.string.isRequired,
+        templates: PropTypes.object,
+    };
+
     componentDidMount() {
         $.material.init();
     }
@@ -60,20 +67,15 @@ class PushNotifications extends React.Component {
                     setActiveTab={setActiveTab}
                     activeTab={activeTab}
                 />
-                <div className="push-notifications__tab">
-                    {this.renderTemplate()}
+                <div className="push-notifications__tab row">
+                    <div className="col-sm-8">
+                        {this.renderTemplate()}
+                    </div>
                 </div>
             </div>
         );
     }
 }
-
-PushNotifications.propTypes = {
-    setActiveTab: PropTypes.func.isRequired,
-    onChangeTemplate: PropTypes.func.isRequired,
-    activeTab: PropTypes.string.isRequired,
-    templates: PropTypes.object,
-};
 
 function mapStateToProps(state) {
     return {

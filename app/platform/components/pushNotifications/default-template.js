@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
+import { getAddressFromLatLng } from 'app/lib/location';
 
 const onChangeTitle = (onChange) => (e) => {
     onChange({ title: e.target.value });
@@ -17,12 +18,25 @@ const onChangeRestrictByUser = (onChange) => (e) => {
     onChange({ restrictByUser: e.target.checked });
 };
 
+const onPlaceChange = (onChange) => (place) => {
+    onChange({ address: place.address, location: place.location });
+};
+
+const onMapDataChange = (onChange) => (data) => {
+    if (data.source === 'markerDrag') {
+        getAddressFromLatLng(data.location, (address) => {
+            onChange({ address, location: data.location });
+        });
+    }
+};
+
 const DefaultTemplate = ({
     title,
     body,
     restrictByLocation = false,
     restrictByUser = false,
     location,
+    address,
     users,
     onChange }) => (
     <div>
@@ -56,9 +70,10 @@ const DefaultTemplate = ({
         {restrictByLocation
             ? <AutocompleteMap
                 location={location}
+                address={address}
                 disabled={false}
-                onPlaceChange={() => {}}
-                onLocationChange={() => {}}
+                onPlaceChange={onPlaceChange(onChange)}
+                onMapDataChange={onMapDataChange(onChange)}
                 draggable
             />
             : null
