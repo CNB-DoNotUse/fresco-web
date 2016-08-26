@@ -1,17 +1,22 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    const props = {
-        user: req.session.user,
-    };
+router.get('/', (req, res, next) => {
+    const { user } = req.session;
 
-    res.render('app', {
-        title: 'Push Notifications',
-        alerts: req.alerts,
-        page: 'pushNotifs',
-        props: JSON.stringify(props),
-    });
+    if (user.permissions.includes('update-other-content')) {
+        res.render('app', {
+            title: 'Push Notifications',
+            alerts: req.alerts,
+            page: 'pushNotifs',
+            props: JSON.stringify({ user }),
+        });
+    } else {
+        next({
+            message: 'Not authorized to create push notifications.',
+            status: 401,
+        });
+    }
 });
 
 module.exports = router;
