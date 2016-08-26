@@ -1,22 +1,20 @@
 const fs = require('fs');
 const webpack = require('webpack');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
-const AssetsPlugin = require('assets-webpack-plugin')
-const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const AssetsPlugin = require('assets-webpack-plugin');
 const fileLoaderName = 'fonts/[name].[ext]';
 const hashDate = Date.now();
 
-//Generates view object for us
+// Generates view object for us
 const views = (env) => {
-    let viewsToReturn = {};
+    const viewsToReturn = {};
 
-    //Generates object mapping { dir: directory, file: file (from 'fs') }
+    // Generates object mapping { dir: directory, file: file (from 'fs') }
     function genViewsFromDir(dir) {
-        return fs.readdirSync(dir).map((file) => {
-            return {dir: dir, file};
-        });
-    };
+        return fs.readdirSync(dir).map((file) => (
+            { dir, file }
+        ));
+    }
 
     const viewFiles = [].concat(
         genViewsFromDir('./app/platform/views/'),
@@ -24,9 +22,9 @@ const views = (env) => {
     );
 
     viewFiles.forEach((view) => {
-        if(['app.js', '.DS_Store'].indexOf(view.file) != -1) return;
+        if (['app.js', '.DS_Store'].indexOf(view.file) !== -1) return;
 
-        viewsToReturn[view.file.replace('.js', '')] = [view.dir + view.file];
+        viewsToReturn[view.file.replace('.js', '')] = [view.dir + view.file, 'babel-polyfill'];
     });
 
     return viewsToReturn;
