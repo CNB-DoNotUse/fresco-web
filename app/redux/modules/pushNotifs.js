@@ -50,7 +50,7 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
         return verifyGallery(newGallery)
         .then(() => dispatch(success))
         .catch(() =>
-            dispatch(Object.assign({}, error, { data: 'Invalid gallery id.' })));
+            dispatch(Object.assign({}, error, { data: 'Invalid gallery id' })));
     }
 
     return dispatch(success);
@@ -69,9 +69,7 @@ export const send = (template) => (dispatch, getState) => {
         .catch(err => dispatch({
             type: SEND_FAIL,
             template,
-            // data: get(err, 'responseJSON.msg', 'API error'),
-            // TODO: temp for demo purposes
-            data: JSON.stringify(data, null, '\t'),
+            data: get(err, 'responseJSON.msg', 'API error'),
         }));
 };
 

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import TopBar from '../components/topbar';
-import Dialog from '../components/global/dialog';
+import { Snackbar } from '../components/dialogs';
 import DefaultTemplate from '../components/pushNotifs/default-template';
 import GalleryListTemplate from '../components/pushNotifs/gallery-list-template';
 import Recommend from '../components/pushNotifs/recommend';
@@ -81,7 +81,7 @@ class PushNotifs extends React.Component {
                 />
                 <div className="push-notifs__tab row">
                     <div className="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-                        <Dialog text={error} onConfirm={onConfirmError} />
+                        <Snackbar text={error} onShow={onConfirmError} />
                         {this.renderTemplate()}
                         <button
                             type="button"
