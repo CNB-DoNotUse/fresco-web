@@ -80,6 +80,7 @@ const DefaultTemplate = ({
                 onPlaceChange={onPlaceChange(onChange)}
                 onMapDataChange={onMapDataChange(onChange)}
                 draggable
+                hasRadius
             />
             : null
         }

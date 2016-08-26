@@ -75,12 +75,12 @@ class PushNotifs extends React.Component {
                     activeTab={activeTab}
                 />
                 <div className="push-notifs__tab row">
-                    <div className="col-sm-8">
+                    <div className="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
                         {this.renderTemplate()}
                         <button
                             type="button"
                             onClick={partial(send, activeTab)}
-                            className="btn btn-flat pull-right"
+                            className="btn btn-raised btn-primary pull-right push-notifs__send"
                             disabled={loading}
                         >
                             Send

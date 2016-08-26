@@ -1,3 +1,7 @@
+@import '../global/colors';
+
+$color-btn-primary-bg: $fresco-blue;
+
 .push-notifs__tab {
     position: relative;
     top: 64px;
@@ -21,3 +25,8 @@
     margin-bottom: 40px;
 }
 
+.push-notifs__send{
+    background-color: $fresco-blue !important;
+    padding: 0 8px;
+    height: 36px;
+}
