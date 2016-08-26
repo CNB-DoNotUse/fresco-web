@@ -13,12 +13,11 @@ export default {
         });
     },
 
-    get(url) {
+    get(url, data = {}) {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: `/api/${url}`,
-                dataType: 'json',
-                contentType: 'application/json',
+                data,
             })
             .done(resolve)
             .fail(reject);

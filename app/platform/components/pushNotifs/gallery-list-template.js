@@ -37,7 +37,7 @@ const Template = ({
 
         <ChipInput
             model="galleries"
-            attr="caption"
+            attr="id"
             items={galleries}
             updateItems={onChangeGalleries(onChange)}
             className="push-notifs__galleries"
