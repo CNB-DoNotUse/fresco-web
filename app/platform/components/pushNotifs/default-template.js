@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
+import Dialog from '../global/dialog';
 import { getAddressFromLatLng } from 'app/lib/location';
 
 const onChangeTitle = (onChange) => (e) => {
@@ -35,6 +36,10 @@ const onChangeUsers = (onChange) => (users) => {
     onChange({ users });
 };
 
+const onConfirmError = (onChange) => () => {
+    onChange({ error: null });
+};
+
 const DefaultTemplate = ({
     title,
     body,
@@ -43,6 +48,7 @@ const DefaultTemplate = ({
     location,
     address,
     users,
+    error,
     onChange }) => (
     <div>
         <input
@@ -109,6 +115,7 @@ const DefaultTemplate = ({
             : null
         }
 
+        <Dialog text={error} onConfirm={onConfirmError(onChange)} />
     </div>
 );
 
@@ -118,6 +125,7 @@ DefaultTemplate.propTypes = {
     location: PropTypes.object,
     address: PropTypes.string,
     users: PropTypes.array,
+    error: PropTypes.string,
     restrictByLocation: PropTypes.bool,
     restrictByUser: PropTypes.bool,
     onChange: PropTypes.func,

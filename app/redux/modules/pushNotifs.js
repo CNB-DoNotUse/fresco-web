@@ -58,11 +58,14 @@ export const send = (template) => (dispatch, getState) => {
         .filterNot((v, k) => nonDataKeys.includes(k))
         .toJS();
 
-    console.log('json:', data);
     return api
         .post('push/create', data)
-        .then(res => dispatch({ type: SEND_SUCCESS, data: res }))
-        .catch(err => dispatch({ type: SEND_FAIL, data: err }));
+        .then(res => dispatch({ type: SEND_SUCCESS, template, data: res }))
+        .catch(err => dispatch({
+            type: SEND_FAIL,
+            template,
+            data: get(err, 'responseJSON.msg', 'API error'),
+        }));
 };
 
 // reducer
@@ -77,7 +80,9 @@ const pushNotifs = (state = fromJS({
         case SEND_SUCCESS:
             return state.set('loading', false)
         case SEND_FAIL:
-            return state.set('loading', false).set('error', action.data);
+            return state
+                .set('loading', false)
+                .setIn(['templates', action.template, 'error'], action.data);
         case SET_ACTIVE_TAB:
             return state.set('activeTab', action.activeTab.toLowerCase());
         case UPDATE_TEMPLATE_SUCCESS:
