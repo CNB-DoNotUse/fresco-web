@@ -10,7 +10,7 @@ const SEND = 'pushNotifs/SEND';
 const SEND_SUCCESS = 'pushNotifs/SEND_SUCCESS';
 const SEND_FAIL = 'pushNotifs/SEND_FAIL';
 const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
-const UPDATE_TEMPLATE = 'pushNotifs/UPDATE_TEMPLATE';
+// const UPDATE_TEMPLATE = 'pushNotifs/UPDATE_TEMPLATE';
 const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
 const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
 
@@ -48,16 +48,17 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
             dispatch(Object.assign({}, error, { data: { error: 'Invalid gallery id.' } })));
     }
 
-    return success;
+    return dispatch(success);
 };
 
 export const send = (template) => (dispatch, getState) => {
     dispatch({ type: SEND, template });
     const data = getState()
-        .getIn(['pushNotifs', template], Map())
+        .getIn(['pushNotifs', 'templates', template], Map())
         .filterNot((v, k) => nonDataKeys.includes(k))
         .toJS();
 
+    console.log('json:', data);
     return api
         .post('push/create', data)
         .then(res => dispatch({ type: SEND_SUCCESS, data: res }))
@@ -79,16 +80,12 @@ const pushNotifs = (state = fromJS({
             return state.set('loading', false).set('error', action.data);
         case SET_ACTIVE_TAB:
             return state.set('activeTab', action.activeTab.toLowerCase());
-        case UPDATE_TEMPLATE:
-            return state.set('loading', true)
         case UPDATE_TEMPLATE_SUCCESS:
             return state
                 .mergeIn(['templates', action.template], action.data)
-                .set('loading', false);
         case UPDATE_TEMPLATE_ERROR:
             return state
                 .mergeIn(['templates', action.template], action.data)
-                .set('loading', false);
         default:
             return state;
     }
