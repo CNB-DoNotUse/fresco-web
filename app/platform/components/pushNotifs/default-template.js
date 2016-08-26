@@ -32,7 +32,7 @@ const onMapDataChange = (onChange) => (data) => {
 };
 
 const onChangeUsers = (onChange) => (users) => {
-    onChange({ users });
+    onChange({ users: users.map(u => ({ id: u.id, username: u.username })) });
 };
 
 const DefaultTemplate = ({
@@ -80,6 +80,7 @@ const DefaultTemplate = ({
                 onPlaceChange={onPlaceChange(onChange)}
                 onMapDataChange={onMapDataChange(onChange)}
                 draggable
+                hasRadius
             />
             : null
         }
@@ -107,7 +108,6 @@ const DefaultTemplate = ({
             />
             : null
         }
-
     </div>
 );
 

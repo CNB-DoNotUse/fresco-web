@@ -1,7 +1,10 @@
+@import '../global/colors';
+
 .push-notifs__tab {
     position: relative;
     top: 64px;
     overflow-y: scroll;
+    padding-bottom: 100px !important;
 }
 
 .push-notifs__checkbox {
@@ -20,3 +23,8 @@
     margin-bottom: 40px;
 }
 
+.push-notifs__send{
+    background-color: $fresco-blue !important;
+    padding: 0 8px;
+    height: 36px;
+}

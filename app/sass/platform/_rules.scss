@@ -1806,3 +1806,20 @@ div.time {}
 	bottom: 0;
 	width: 100%;
 }
+
+.form-group.is-focused label{
+    color: $fresco-blue;
+}
+
+.checkbox input[type=checkbox]:checked + .checkbox-material .check, label.checkbox-inline input[type=checkbox]:checked + .checkbox-material .check {
+    border-color: $fresco-blue;
+}
+
+.alertify {
+    .dialog {
+        .msg {
+            overflow-wrap: break-word;
+        }
+    }
+}
+

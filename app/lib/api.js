@@ -8,20 +8,19 @@ export default {
                 dataType: 'json',
                 contentType: 'application/json',
             })
-            .done(res => resolve(res))
-            .fail(err => reject(err));
+            .done(resolve)
+            .fail(reject);
         });
     },
 
-    get(url) {
+    get(url, data = {}) {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: `/api/${url}`,
-                dataType: 'json',
-                contentType: 'application/json',
+                data,
             })
-            .done(res => resolve(res))
-            .fail(err => reject(err));
+            .done(resolve)
+            .fail(reject);
         });
     },
 };
