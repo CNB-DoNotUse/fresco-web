@@ -16,7 +16,7 @@ const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
 const CONFIRM_ERROR = 'pushNotifs/CONFIRM_ERROR';
 
 // keys irrelevant to api
-const nonDataKeys = ['restrictByUser', 'restrictByLocation'];
+const nonDataKeys = ['restrictByUser', 'restrictByLocation', 'error'];
 
 // actions
 export const setActiveTab = (activeTab) => ({
@@ -37,7 +37,7 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
     const error = {
         type: UPDATE_TEMPLATE_ERROR,
         template,
-        data: { error: 'There was an error updating the template' },
+        data: 'There was an error updating the template',
     };
 
     if (data.hasOwnProperty('galleries')) {
@@ -50,7 +50,7 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
         return verifyGallery(newGallery)
         .then(() => dispatch(success))
         .catch(() =>
-            dispatch(Object.assign({}, error, { data: { error: 'Invalid gallery id.' } })));
+            dispatch(Object.assign({}, error, { data: 'Invalid gallery id.' })));
     }
 
     return dispatch(success);
@@ -71,7 +71,7 @@ export const send = (template) => (dispatch, getState) => {
             template,
             // data: get(err, 'responseJSON.msg', 'API error'),
             // TODO: temp for demo purposes
-            data: JSON.stringify(data),
+            data: JSON.stringify(data, null, '\t'),
         }));
 };
 
@@ -93,11 +93,9 @@ const pushNotifs = (state = fromJS({
         case CONFIRM_ERROR:
             return state.set('error', null);
         case UPDATE_TEMPLATE_SUCCESS:
-            return state
-                .mergeIn(['templates', action.template], action.data)
+            return state.mergeIn(['templates', action.template], action.data)
         case UPDATE_TEMPLATE_ERROR:
-            return state
-                .mergeIn(['templates', action.template], action.data)
+            return state.set('error', action.data);
         default:
             return state;
     }
