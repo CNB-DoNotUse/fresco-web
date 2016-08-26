@@ -1811,3 +1811,11 @@ div.time {}
     border-color: $fresco-blue;
 }
 
+.alertify {
+    .dialog {
+        .msg {
+            overflow-wrap: break-word;
+        }
+    }
+}
+

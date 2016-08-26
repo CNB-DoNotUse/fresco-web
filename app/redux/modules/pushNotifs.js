@@ -13,6 +13,7 @@ const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
 // const UPDATE_TEMPLATE = 'pushNotifs/UPDATE_TEMPLATE';
 const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
 const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
+const CONFIRM_ERROR = 'pushNotifs/CONFIRM_ERROR';
 
 // keys irrelevant to api
 const nonDataKeys = ['restrictByUser', 'restrictByLocation'];
@@ -21,6 +22,10 @@ const nonDataKeys = ['restrictByUser', 'restrictByLocation'];
 export const setActiveTab = (activeTab) => ({
     type: SET_ACTIVE_TAB,
     activeTab,
+});
+
+export const confirmError = () => ({
+    type: CONFIRM_ERROR,
 });
 
 export const updateTemplate = (template, data) => (dispatch, getState) => {
@@ -64,7 +69,9 @@ export const send = (template) => (dispatch, getState) => {
         .catch(err => dispatch({
             type: SEND_FAIL,
             template,
-            data: get(err, 'responseJSON.msg', 'API error'),
+            // data: get(err, 'responseJSON.msg', 'API error'),
+            // TODO: temp for demo purposes
+            data: JSON.stringify(data),
         }));
 };
 
@@ -80,11 +87,11 @@ const pushNotifs = (state = fromJS({
         case SEND_SUCCESS:
             return state.set('loading', false)
         case SEND_FAIL:
-            return state
-                .set('loading', false)
-                .setIn(['templates', action.template, 'error'], action.data);
+            return state.set('loading', false).set('error', action.data);
         case SET_ACTIVE_TAB:
             return state.set('activeTab', action.activeTab.toLowerCase());
+        case CONFIRM_ERROR:
+            return state.set('error', null);
         case UPDATE_TEMPLATE_SUCCESS:
             return state
                 .mergeIn(['templates', action.template], action.data)

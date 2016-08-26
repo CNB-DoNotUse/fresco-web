@@ -1,23 +1,26 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import partial from 'lodash/partial';
-import { Map } from 'immutable';
-import * as pushActions from 'app/redux/modules/pushNotifs';
 import TopBar from '../components/topbar';
+import Dialog from '../components/global/dialog';
 import DefaultTemplate from '../components/pushNotifs/default-template';
 import GalleryListTemplate from '../components/pushNotifs/gallery-list-template';
 import Recommend from '../components/pushNotifs/recommend';
 import Assignment from '../components/pushNotifs/assignment';
+import * as pushActions from 'app/redux/modules/pushNotifs';
+import { connect } from 'react-redux';
+import partial from 'lodash/partial';
+import { Map } from 'immutable';
 import 'app/sass/platform/_pushNotifs.scss';
 
 class PushNotifs extends React.Component {
     static propTypes = {
-        setActiveTab: PropTypes.func.isRequired,
+        onSetActiveTab: PropTypes.func.isRequired,
         onChangeTemplate: PropTypes.func.isRequired,
-        send: PropTypes.func.isRequired,
+        onConfirmError: PropTypes.func.isRequired,
+        onSend: PropTypes.func.isRequired,
         activeTab: PropTypes.string.isRequired,
         loading: PropTypes.bool.isRequired,
         templates: PropTypes.object.isRequired,
+        error: PropTypes.string,
     };
 
     componentDidMount() {
@@ -60,10 +63,12 @@ class PushNotifs extends React.Component {
 
     render() {
         const {
-            setActiveTab,
+            onSetActiveTab,
+            onConfirmError,
             activeTab,
-            send,
+            onSend,
             loading,
+            error,
         } = this.props;
 
         return (
@@ -71,15 +76,16 @@ class PushNotifs extends React.Component {
                 <TopBar
                     title="Push Notifications"
                     tabs={['Default', 'Gallery List', 'Recommend', 'Assignment']}
-                    setActiveTab={setActiveTab}
+                    setActiveTab={onSetActiveTab}
                     activeTab={activeTab}
                 />
                 <div className="push-notifs__tab row">
                     <div className="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                        <Dialog text={error} onConfirm={onConfirmError} />
                         {this.renderTemplate()}
                         <button
                             type="button"
-                            onClick={partial(send, activeTab)}
+                            onClick={partial(onSend, activeTab)}
                             className="btn btn-raised btn-primary pull-right push-notifs__send"
                             disabled={loading}
                         >
@@ -97,12 +103,14 @@ function mapStateToProps(state) {
         activeTab: state.getIn(['pushNotifs', 'activeTab']),
         templates: state.getIn(['pushNotifs', 'templates']),
         loading: state.getIn(['pushNotifs', 'loading']),
+        error: state.getIn(['pushNotifs', 'error']),
     };
 }
 
 export default connect(mapStateToProps, {
-    setActiveTab: pushActions.setActiveTab,
+    onSetActiveTab: pushActions.setActiveTab,
     onChangeTemplate: pushActions.updateTemplate,
-    send: pushActions.send,
+    onConfirmError: pushActions.confirmError,
+    onSend: pushActions.send,
 })(PushNotifs);
 
