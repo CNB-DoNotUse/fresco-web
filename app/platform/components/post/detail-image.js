@@ -1,16 +1,13 @@
 import React, { PropTypes } from 'react';
 import PurchaseAction from '../actions/purchase-action.js';
 import DownloadAction from '../actions/download-action.js';
+import FrescoImage from '../global/fresco-image.js';
+import FrescoVideo from '../global/fresco-video.js';
 import utils from 'utils';
-
-/** //
-
-Description : Image of the PostDetail page, contains image/video, byline and actions
-
-// **/
 
 /**
  * Post Detail Image parent object
+ * @description Image of the PostDetail page, contains image/video, byline and actions
  */
 class PostDetailImage extends React.Component {
     constructor(props) {
@@ -66,18 +63,18 @@ class PostDetailImage extends React.Component {
 
         if (post.stream) {
             postMedia = (
-                <video width="100%" height="100%" controls onContextMenu={this.contextMenu}>
-                    <source src={utils.formatVideo(post.stream)} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
+                <FrescoVideo
+                    video={post.stream}
+                    thumbnail={post.image}
+                />
             );
         } else {
             postMedia = (
-                <img
-                    role="presentation"
-                    className="img-responsive"
-                    onContextMenu={this.contextMenu}
-                    src={utils.formatImg(post.image, 'large')}
+                <FrescoImage
+                    refreshInterval
+                    src={post.image}
+                    class="img-responsive"
+                    size="large"
                 />
             );
         }
@@ -103,4 +100,3 @@ PostDetailImage.propTypes = {
 };
 
 export default PostDetailImage;
-
