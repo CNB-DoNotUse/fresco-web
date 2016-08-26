@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import FrescoImage from '../global/fresco-image';
+import FrescoVideo from '../global/fresco-video';
 import Slider from 'react-slick';
 import find from 'lodash/find';
 import utils from 'utils';
@@ -19,7 +20,7 @@ const renderPost = (post, refreshInterval) => {
 
     return (
         <FrescoImage
-            refreshInterval={refreshInterval}
+            refreshInterval={true}
             src={post.image}
             size="medium"
         />
@@ -90,55 +91,71 @@ const renderUpload = (u, i) => {
 /**
  * Component for managing gallery's posts
  */
-const EditPosts = ({
-    editingPosts,
-    originalPosts,
-    uploads,
-    canDelete,
-    onToggleDelete,
-    className,
-    refreshInterval }) => {
-    const uploadsJSX = uploads.length
-        ? uploads.map((u, i) => renderUpload(u, i)).filter(u => !!u)
-        : null;
-    const postsJSX = canDelete
-        ? renderPosts({ editingPosts, originalPosts, onToggleDelete, refreshInterval })
-        : renderPostsNoDelete(originalPosts, refreshInterval);
-    const sliderJSX = uploadsJSX
-        ? uploadsJSX.concat(postsJSX)
-        : postsJSX;
+class EditPosts extends React.Component {
 
-    return (
-        <Slider
-            className={className}
-            infinite={originalPosts.length > 1}
-            adaptiveHeight
-            swipeToSlide
-            draggable
-            dots
-        >
-            {sliderJSX}
-        </Slider>
-    );
-};
+    static propTypes = {
+        originalPosts: PropTypes.array.isRequired,
+        editingPosts: PropTypes.array,
+        className: PropTypes.string,
+        uploads: PropTypes.array,
+        onToggleDelete: PropTypes.func,
+        canDelete: PropTypes.bool,
+        refreshInterval: PropTypes.bool,
+    }
 
-EditPosts.propTypes = {
-    originalPosts: PropTypes.array.isRequired,
-    editingPosts: PropTypes.array,
-    className: PropTypes.string,
-    uploads: PropTypes.array,
-    onToggleDelete: PropTypes.func,
-    canDelete: PropTypes.bool,
-    refreshInterval: PropTypes.bool,
-};
+    static defaultProps = {
+        canDelete: false,
+        uploads: [],
+        editingPosts: [],
+        originalPosts: [],
+        className: ''
+    }
 
-EditPosts.defaultProps = {
-    canDelete: false,
-    uploads: [],
-    editingPosts: [],
-    originalPosts: [],
-    className: '',
-};
+    componentDidUpdate(prevProps, prevState) {
+        //Reset slick to first index of we have different posts
+        if(prevProps.originalPosts[0].id !== this.props.originalPosts[0].id) {
+            console.log('GOTO');
+            this.refs.slider.slickGoTo(0);
+        }
+    }
+
+    render() {
+        const { 
+            editingPosts,
+            originalPosts,
+            uploads,
+            canDelete,
+            onToggleDelete,
+            className,
+            refreshInterval 
+        } = this.props;
+
+        const uploadsJSX = uploads.length
+            ? uploads.map((u, i) => renderUpload(u, i)).filter(u => !!u)
+            : null;
+        
+        const postsJSX = canDelete
+            ? renderPosts({ editingPosts, originalPosts, onToggleDelete, refreshInterval })
+            : renderPostsNoDelete(originalPosts, refreshInterval);
+        
+        const sliderJSX = uploadsJSX
+            ? uploadsJSX.concat(postsJSX)
+            : postsJSX;
+
+        return (
+            <Slider
+                className={className}
+                ref='slider'
+                infinite={originalPosts.length > 1}
+                adaptiveHeight
+                swipeToSlide
+                draggable
+                dots
+            >
+                {sliderJSX}
+            </Slider>
+        );
+    }
+}
 
 export default EditPosts;
-
