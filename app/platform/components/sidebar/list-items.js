@@ -17,7 +17,7 @@ const ListItems = ({ user }) => {
     }
     if (user.permissions.includes('update-other-content')) {
         admin = <Item link="/admin" icon="mdi-dots-horizontal" text="Admin" />;
-        push = <Item link="/pushNotifs" icon="mdi-message-plus" text="Push Notifications" />;
+        push = <Item link="/push" icon="mdi-message-plus" text="Push" />;
     }
     if (user.permissions.includes('get-all-purchases')) {
         purchases = <Item link="/purchases" icon="mdi-currency-usd" text="Purchases" />;

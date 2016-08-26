@@ -6,7 +6,7 @@ const fileLoaderName = 'fonts/[name].[ext]';
 const hashDate = Date.now();
 
 // Generates view object for us
-const views = (env) => {
+const views = () => {
     const viewsToReturn = {};
 
     // Generates object mapping { dir: directory, file: file (from 'fs') }
@@ -30,9 +30,9 @@ const views = (env) => {
     return viewsToReturn;
 };
 
-//Generates plugins for webpack
+// Generates plugins for webpack
 const plugins = (env) => {
-    //Base plugins
+    // Base plugins
     let plugins = [
         new webpack.ProvidePlugin({
             $: "jquery",
