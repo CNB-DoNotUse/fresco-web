@@ -8,8 +8,8 @@ export default {
                 dataType: 'json',
                 contentType: 'application/json',
             })
-            .done(res => resolve(res))
-            .fail(err => reject(err));
+            .done(resolve)
+            .fail(reject);
         });
     },
 
@@ -20,8 +20,8 @@ export default {
                 dataType: 'json',
                 contentType: 'application/json',
             })
-            .done(res => resolve(res))
-            .fail(err => reject(err));
+            .done(resolve)
+            .fail(reject);
         });
     },
 };
