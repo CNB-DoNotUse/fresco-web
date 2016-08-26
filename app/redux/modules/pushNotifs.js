@@ -45,7 +45,7 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
             .getIn(['pushNotifs', 'templates', template, 'galleries'], List())
             .toJS();
         const newGallery = get(differenceBy(data.galleries, galleries, 'id'), '[0]');
-        if (!newGallery) return dispatch(error);
+        if (!newGallery) return dispatch(success);
 
         return verifyGallery(newGallery)
         .then(() => dispatch(success))
