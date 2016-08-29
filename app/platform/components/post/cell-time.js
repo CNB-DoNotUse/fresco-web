@@ -47,7 +47,7 @@ class CellTime extends Component {
 
         if (firstLook) {
             return (
-                <span className="tile--first-look">
+                <span className="tile__first-look">
                     <i className="mdi mdi-clock-fast" />
                     <span>{`${pad(firstLook.minutes(), 2)}:${pad(firstLook.seconds(), 2)} remaining`}</span>
                 </span>
