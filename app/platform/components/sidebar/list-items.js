@@ -65,11 +65,11 @@ const ListItems = ({ user }) => {
             </ul>
 
             {dispatch}
-            {outlet}
+            {push}
             {admin}
             {purchases}
             {stats}
-            {push}
+            {outlet}
         </ul>
     );
 };
