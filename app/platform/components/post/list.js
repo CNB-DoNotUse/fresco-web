@@ -63,7 +63,7 @@ class PostList extends React.Component {
         }
     }
 
-    onToggleGalleryBulkEdit() {
+    onToggleGalleryBulkEdit = () => {
         if (this.state.selectedPosts.length > 1) {
             this.setState({ galleryBulkEditToggled: !this.state.galleryBulkEditToggled });
         } else {
@@ -72,7 +72,7 @@ class PostList extends React.Component {
         }
     }
 
-    onToggleGalleryCreate() {
+    onToggleGalleryCreate = () => {
         this.setState({ galleryCreateToggled: !this.state.galleryCreateToggled });
     }
 
@@ -131,7 +131,7 @@ class PostList extends React.Component {
      * @param  {object} passedPost The post to
      * toggle selected or unselected in the post-list and bulk edit
      */
-    togglePost(passedPost) {
+    togglePost = (passedPost) => {
         const { selectedPosts } = this.state;
         const { permissions } = this.props;
 
@@ -185,7 +185,7 @@ class PostList extends React.Component {
                         key={i}
                         editable={editable}
                         sort={sort}
-                        togglePost={(post) => this.togglePost(post)}
+                        togglePost={this.togglePost}
                     />
                 ))}
             </div>
@@ -214,8 +214,8 @@ class PostList extends React.Component {
                         ? <GalleryBulkSelect
                             posts={selectedPosts}
                             setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
-                            onToggleEdit={() => this.onToggleGalleryBulkEdit()}
-                            onToggleCreate={() => this.onToggleGalleryCreate()}
+                            onToggleEdit={this.onToggleGalleryBulkEdit}
+                            onToggleCreate={this.onToggleGalleryCreate}
                         />
                         : ''
                     }
@@ -223,7 +223,7 @@ class PostList extends React.Component {
                     {galleryBulkEditToggled
                         ? <GalleryBulkEdit
                             posts={selectedPosts}
-                            onHide={() => this.onToggleGalleryBulkEdit()}
+                            onHide={this.onToggleGalleryBulkEdit}
                         />
                         : ''
                     }
@@ -232,7 +232,7 @@ class PostList extends React.Component {
                         ? <GalleryCreate
                             posts={selectedPosts}
                             setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
-                            onHide={() => this.onToggleGalleryCreate()}
+                            onHide={this.onToggleGalleryCreate}
                         />
                         : ''
                     }

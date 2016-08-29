@@ -100,7 +100,7 @@ const pushNotifs = (state = fromJS({
         case SEND:
             return state.set('loading', true);
         case SEND_SUCCESS:
-            return state.set('loading', false)
+            return state.set('loading', false);
         case SEND_FAIL:
             return state.set('loading', false).set('error', action.data);
         case SET_ACTIVE_TAB:
@@ -108,7 +108,7 @@ const pushNotifs = (state = fromJS({
         case CONFIRM_ERROR:
             return state.set('error', null);
         case UPDATE_TEMPLATE_SUCCESS:
-            return state.mergeIn(['templates', action.template], action.data)
+            return state.mergeIn(['templates', action.template], action.data);
         case UPDATE_TEMPLATE_ERROR:
             return state.set('error', action.data);
         default:
