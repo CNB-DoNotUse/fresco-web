@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
-import FrescoImage from '../global/fresco-image';
-import FrescoVideo from '../global/fresco-video';
 import Slider from 'react-slick';
 import find from 'lodash/find';
+import get from 'lodash/get';
 import utils from 'utils';
+import FrescoImage from '../global/fresco-image';
 
-const renderPost = (post, refreshInterval) => {
+const renderPost = (post) => {
     if (post.video) {
         return (
             <video width="100%" height="100%" data-id={post.id} controls>
@@ -20,20 +20,20 @@ const renderPost = (post, refreshInterval) => {
 
     return (
         <FrescoImage
-            refreshInterval={true}
             src={post.image}
             size="medium"
+            refreshInterval
         />
     );
 };
 
-const renderPosts = ({ editingPosts, originalPosts, onToggleDelete, refreshInterval }) => (
+const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
     originalPosts.map((p, i) => {
         const deleteToggled = !find(editingPosts, { id: p.id });
 
         return (
             <div key={`post${i}`} className={`frick-frame ${deleteToggled ? 'frick-delete' : ''}`}>
-                {renderPost(p, refreshInterval)}
+                {renderPost(p)}
                 <div className="frick-overlay">
                     <span>
                         <span className="mdi mdi-delete icon" />
@@ -54,16 +54,16 @@ const renderPosts = ({ editingPosts, originalPosts, onToggleDelete, refreshInter
     })
 );
 
-const renderPostsNoDelete = (originalPosts, refreshInterval) => (
+const renderPostsNoDelete = (originalPosts) => (
     originalPosts.map((p, i) => (
         <div key={`post${i}`} className="frick-frame">
-            {renderPost(p, refreshInterval)}
+            {renderPost(p)}
         </div>
     ))
 );
 
 const renderUpload = (u, i) => {
-    if (!typeof(i) === 'number' || !u || !u.type || !u.url) return null;
+    if ((!typeof i === 'number') || !u || !u.type || !u.url) return null;
 
     if (u.type === 'image') {
         return (
@@ -100,7 +100,6 @@ class EditPosts extends React.Component {
         uploads: PropTypes.array,
         onToggleDelete: PropTypes.func,
         canDelete: PropTypes.bool,
-        refreshInterval: PropTypes.bool,
     }
 
     static defaultProps = {
@@ -108,36 +107,34 @@ class EditPosts extends React.Component {
         uploads: [],
         editingPosts: [],
         originalPosts: [],
-        className: ''
+        className: '',
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        //Reset slick to first index of we have different posts
-        if(prevProps.originalPosts[0].id !== this.props.originalPosts[0].id) {
-            console.log('GOTO');
-            this.refs.slider.slickGoTo(0);
+    componentDidUpdate(prevProps) {
+        // Reset slick to first index of we have different posts
+        if (get(prevProps, 'originalPosts[0].id') !== get(this.props, 'originalPosts[0].id')) {
+            this.slider.slickGoTo(0);
         }
     }
 
     render() {
-        const { 
+        const {
             editingPosts,
             originalPosts,
             uploads,
             canDelete,
             onToggleDelete,
             className,
-            refreshInterval 
         } = this.props;
 
         const uploadsJSX = uploads.length
             ? uploads.map((u, i) => renderUpload(u, i)).filter(u => !!u)
             : null;
-        
+
         const postsJSX = canDelete
-            ? renderPosts({ editingPosts, originalPosts, onToggleDelete, refreshInterval })
-            : renderPostsNoDelete(originalPosts, refreshInterval);
-        
+            ? renderPosts({ editingPosts, originalPosts, onToggleDelete })
+            : renderPostsNoDelete(originalPosts);
+
         const sliderJSX = uploadsJSX
             ? uploadsJSX.concat(postsJSX)
             : postsJSX;
@@ -145,9 +142,8 @@ class EditPosts extends React.Component {
         return (
             <Slider
                 className={className}
-                ref='slider'
+                ref={r => this.slider = r}
                 infinite={originalPosts.length > 1}
-                adaptiveHeight
                 swipeToSlide
                 draggable
                 dots
@@ -159,3 +155,4 @@ class EditPosts extends React.Component {
 }
 
 export default EditPosts;
+

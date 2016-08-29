@@ -34,7 +34,7 @@ class PostCell extends React.Component {
         }
     }
 
-    onToggleGalleryEdit(gallery = {}) {
+    onToggleGalleryEdit = (gallery = {}) => {
         if (gallery) {
             this.setState({ galleryEditVisible: !this.state.galleryEditVisible, gallery });
         } else {
@@ -51,8 +51,7 @@ class PostCell extends React.Component {
             editable,
         } = this.props;
         const { purchased } = this.state;
-
-        let address = post.location && post.address ? post.address : 'No Address';
+        const address = post.location && post.address ? post.address : 'No Address';
 
         // Class name for post tile icon
         let statusClass = 'mdi icon pull-right ';
@@ -66,7 +65,7 @@ class PostCell extends React.Component {
                     assignment={assignment}
                     purchased={purchased}
                     onPurchase={() => this.setState({ purchased: true })}
-                    onEdit={(g) => this.onToggleGalleryEdit(g)}
+                    onEdit={this.onToggleGalleryEdit}
                     permissions={permissions}
                     editable={editable}
                 />
@@ -126,7 +125,7 @@ class PostCell extends React.Component {
                     ? <GalleryEdit
                         gallery={gallery}
                         visible={galleryEditVisible}
-                        toggle={() => this.onToggleGalleryEdit()}
+                        toggle={this.onToggleGalleryEdit}
                     />
                     : null
                 }

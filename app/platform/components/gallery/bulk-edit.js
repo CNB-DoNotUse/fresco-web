@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
-import EditTags from './edit-tags';
-import EditPosts from './edit-posts';
-import ChipInput from '../global/chip-input';
 import utils from 'utils';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
+import EditTags from './edit-tags';
+import EditPosts from './edit-posts';
+import ChipInput from '../global/chip-input';
 
 /**
  * Component for editing multiple posts at once (from possibly different galleries)
@@ -131,7 +131,7 @@ class BulkEdit extends React.Component {
                 </div>
 
                 <EditPosts
-                    className="gialog-col col-xs-12 col-md-5"
+                    className="dialog-col col-xs-12 col-md-5"
                     canDelete={false}
                     originalPosts={posts}
                 />

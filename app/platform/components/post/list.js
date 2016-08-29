@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
+import utils from 'utils';
+import _ from 'lodash';
 import PostCell from './cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
 import GalleryCreate from '../gallery/create';
-import utils from 'utils';
-import _ from 'lodash';
 
 /**
  * Post List Parent Object
