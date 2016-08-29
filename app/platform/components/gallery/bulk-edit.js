@@ -105,7 +105,6 @@ class BulkEdit extends React.Component {
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
                     <div className="dialog-row">
                         <textarea
-                            ref="caption"
                             type="text"
                             className="form-control floating-label"
                             placeholder="Caption"
@@ -115,7 +114,6 @@ class BulkEdit extends React.Component {
                     </div>
 
                     <EditTags
-                        ref="tags"
                         tags={tags}
                         updateTags={(t) => this.setState({ tags: t })}
                     />

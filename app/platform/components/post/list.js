@@ -44,12 +44,14 @@ class PostList extends React.Component {
 
         // Check if the parent tells the component to update
         if (_.difference(newPostIds, currentPostIds).length || nextProps.updatePosts) {
-            return this.setState({ posts: nextProps.posts });
+            this.setState({ posts: nextProps.posts });
+            return;
         }
 
         // Checks if the verified prop is changed `or` Checks if the sort prop is changed
-        if (nextProps.onlyVerified !== this.props.onlyVerified || nextProps.sortBy !== this.props.sortBy) {
-            this.refs.grid.scrollTop = 0;
+        if (nextProps.onlyVerified !== this.props.onlyVerified
+            || nextProps.sortBy !== this.props.sortBy) {
+            this.grid.scrollTop = 0;
 
             if (nextProps.scrollable) {
                 // Clear state for immediate feedback
@@ -205,7 +207,7 @@ class PostList extends React.Component {
             <div>
                 <div
                     className={`container-fluid fat grid ${className}`}
-                    ref="grid"
+                    ref={r = this.grid = r}
                     onScroll={scrollable ? scroll || ((e) => this.scroll(e)) : null}
                 >
                     {this.renderPosts()}
@@ -252,6 +254,7 @@ PostList.propTypes = {
     sort: PropTypes.string,
     onlyVerified: PropTypes.bool,
     parentCaption: PropTypes.string,
+    sortBy: PropTypes.string,
     className: PropTypes.string,
     scroll: PropTypes.func,
     loadPosts: PropTypes.func,
