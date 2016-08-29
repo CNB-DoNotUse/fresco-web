@@ -5,7 +5,7 @@ import { fromJS, Map, List } from 'immutable';
 import differenceBy from 'lodash/differenceBy';
 import get from 'lodash/get';
 
-// constants
+// constants/action types
 const SEND = 'pushNotifs/SEND';
 const SEND_SUCCESS = 'pushNotifs/SEND_SUCCESS';
 const SEND_FAIL = 'pushNotifs/SEND_FAIL';
@@ -15,10 +15,30 @@ const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
 const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
 const CONFIRM_ERROR = 'pushNotifs/CONFIRM_ERROR';
 
-// keys irrelevant to api
-const nonDataKeys = ['restrictByUser', 'restrictByLocation'];
+// helpers
+const getDataFromTemplate = (template, getState) => {
+    const templateData = getState()
+        .getIn(['pushNotifs', 'templates', template], Map());
 
-// actions
+    switch (template) {
+        case 'gallery list':
+            return templateData.toJS();
+        case 'default':
+        default:
+            const restrictByUser = templateData.get('restrictByUser', false);
+            const restrictByLocation = templateData.get('restrictByLocation', false);
+            return templateData
+                .filterNot((v, k) => ['restrictByUser', 'restrictByLocation'].includes(k))
+                .filterNot((v, k) => {
+                    if (!restrictByUser) return k === 'users';
+                    if (!restrictByLocation) return ['location', 'address'].includes(k);
+                    return false;
+                })
+                .toJS();
+    }
+};
+
+// action creators
 export const setActiveTab = (activeTab) => ({
     type: SET_ACTIVE_TAB,
     activeTab,
@@ -58,11 +78,8 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
 
 export const send = (template) => (dispatch, getState) => {
     dispatch({ type: SEND, template });
-    const data = getState()
-        .getIn(['pushNotifs', 'templates', template], Map())
-        .filterNot((v, k) => nonDataKeys.includes(k))
-        .toJS();
 
+    const data = getDataFromTemplate(template, getState);
     return api
         .post('push/create', data)
         .then(res => dispatch({ type: SEND_SUCCESS, template, data: res }))
