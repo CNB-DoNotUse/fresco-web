@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import 'app/sass/platform/_posts';
 import TopBar from './../components/topbar';
 import App from './app';
 import PostInfo from './../components/post/info';
@@ -35,7 +36,7 @@ class PostDetail extends React.Component {
     render() {
         const { user, title, verifier } = this.props;
         const { gallery, galleryEditToggled, post } = this.state;
-        let editable = (user.permissions.includes('update-other-content')) && !!gallery.id;
+        const editable = (user.permissions.includes('update-other-content')) && !!gallery.id;
 
         return (
             <App user={user}>

@@ -443,32 +443,6 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	border-radius: 0px 0px 2px 2px;
 }
 
-// related
-.related > div.tabs > div.tab {
-	height: auto;
-	width: 100%;
-	background-color: $color-shade-2;
-	white-space: nowrap;
-	overflow-x: auto;
-	> div.tab-inner {
-		display: table;
-		> a.btn {
-			margin: 0;
-			padding: 0;
-			width: 192px;
-			min-width: 192px;
-			height: 100%;
-			background-color: $color-shade-4;
-			display: table-cell;
-		}
-		> img {
-			display: inline-block;
-			margin-left: -3px;
-			height: 144px;
-		}
-	}
-}
-
 .toggle-edit {
 	.meta-description {
 		max-height: 300px;

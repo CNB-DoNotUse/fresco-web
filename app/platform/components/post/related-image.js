@@ -16,7 +16,8 @@ export default class PostRelatedImage extends React.Component {
             <a href={"/post/" + this.props.post.id}>
                 <FrescoImage
                     className="img-link"
-                    src={utils.formatImg(this.props.post.image, 'small')}
+                    src={this.props.post.image}
+                    size="small"
                 />
             </a>
         );
