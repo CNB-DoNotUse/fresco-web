@@ -63,17 +63,15 @@ const plugins = (env) => {
         );
         plugins.push(
             new webpack.DefinePlugin({
-                'process.env': {
-                    NODE_ENV: JSON.stringify("production")
-                }
+                'process.env': { NODE_ENV: JSON.stringify('production') }
             })
         );
     }
 
     return plugins;
-}
+};
 
-//Define output obj. for webpack
+// Define output obj. for webpack
 const output = (env) => {
     if(env === 'production') {
         return {
@@ -88,7 +86,83 @@ const output = (env) => {
             publicPath: '/build/'
         }
     }
-}
+};
+
+const loaders = (env) => {
+    let arr = [
+        // Babel
+        {
+            test: /.jsx?$/,
+            loader: 'babel',
+            exclude: /(node_modules|bower_components)/,
+            query: {
+                presets: ['es2015', 'react'],
+                plugins: [
+                    'transform-object-rest-spread',
+                    'transform-es2015-destructuring',
+                    'transform-class-properties',
+                ],
+            },
+        },
+        {
+            test: /.(woff(2)?)(\?[a-z0-9=\.]+)?$/,
+            loader: 'url',
+            query: {
+                limit: '10000',
+                mimetype: 'application/font-woff',
+                name: fileLoaderName,
+            },
+        },
+        {
+            test: /.(ttf)(\?[a-z0-9=\.]+)?$/,
+            loader: 'url',
+            query: {
+                limit: '10000',
+                mimetype: 'application/octet-stream',
+                name: fileLoaderName
+            }
+        },
+        {
+            test: /.(svg)(\?[a-z0-9=\.]+)?$/,
+            loader: 'url',
+            query: {
+                limit: '10000',
+                mimetype: 'image/svg+xml',
+                name: fileLoaderName
+            }
+        },
+        {
+            test: /.(eot)(\?[a-z0-9=\.]+)?$/,
+            loader: 'file',
+            query: {
+                name: fileLoaderName
+            }
+        },
+        {
+            test: /\.(eot|ttf|svg|gif|png)$/,
+            loader: 'file-loader',
+            query: {
+                name: fileLoaderName
+            }
+        }
+    ]
+    // Extract sass files
+    if (env === 'dev') {
+        // https://github.com/jtangelder/sass-loader/issues/7
+        arr = arr.concat({
+            test: /\.scss$/,
+            loader: ExtractTextPlugin.extract('style-loader',
+                'css?sourceMap!resolve-url!sass?outputStyle=expanded&sourceMap=true&sourceMapContents=true')
+        });
+    } else {
+        arr = arr.concat({
+            test: /\.scss$/,
+            loader: ExtractTextPlugin.extract('style-loader', '!css!resolve-url!sass'),
+        });
+    }
+
+    return arr;
+};
 
 /**
  * Exports webpack JSON config
@@ -102,70 +176,7 @@ module.exports = (env = 'dev') => {
         plugins: plugins(env),
         watch: env === 'dev',
         devtool: env === 'dev' ? 'eval-source-map' : null,
-        module: {
-            loaders: [
-                // Babel
-                {
-                    test: /.jsx?$/,
-                    loader: 'babel',
-                    exclude: /(node_modules|bower_components)/,
-                    query: {
-                        presets: ['es2015', 'react'],
-                        plugins: [
-                            'transform-object-rest-spread',
-                            'transform-es2015-destructuring',
-                            'transform-class-properties',
-                        ],
-                    },
-                },
-                // Extract sass files
-                {
-                    test: /\.scss$/,
-                    loader: ExtractTextPlugin.extract("style-loader", "!css!resolve-url!sass?sourceMap"),
-                },
-                {
-                    test: /.(woff(2)?)(\?[a-z0-9=\.]+)?$/,
-                    loader: 'url',
-                    query: {
-                        limit: '10000',
-                        mimetype: 'application/font-woff',
-                        name: fileLoaderName,
-                    },
-                },
-                {
-                    test: /.(ttf)(\?[a-z0-9=\.]+)?$/,
-                    loader: 'url',
-                    query: {
-                        limit: '10000',
-                        mimetype: 'application/octet-stream',
-                        name: fileLoaderName
-                    }
-                },
-                {
-                    test: /.(svg)(\?[a-z0-9=\.]+)?$/,
-                    loader: 'url',
-                    query: {
-                        limit: '10000',
-                        mimetype: 'image/svg+xml',
-                        name: fileLoaderName
-                    }
-                },
-                {
-                    test: /.(eot)(\?[a-z0-9=\.]+)?$/,
-                    loader: 'file',
-                    query: {
-                        name: fileLoaderName
-                    }
-                },
-                {
-                    test: /\.(eot|ttf|svg|gif|png)$/,
-                    loader: 'file-loader',
-                    query: {
-                        name: fileLoaderName
-                    }
-                }
-            ]
-        },
+        module: { loaders: loaders(env) },
         resolve: {
             //All these extensions will be resolved without specifying extension in the `require` function
             extensions: ['', '.js', '.scss'],
@@ -178,4 +189,4 @@ module.exports = (env = 'dev') => {
             ]
         }
     }
-}
+};
