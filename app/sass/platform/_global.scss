@@ -90,6 +90,13 @@ img {
   }
 }
 
+// override bootstrap style
+.btn {
+    &:focus, &:active:focus{
+        outline: 0;
+    }
+}
+
 /**
  * Radio button coloring
  */
