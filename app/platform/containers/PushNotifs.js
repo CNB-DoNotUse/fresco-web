@@ -1,15 +1,15 @@
 import React, { PropTypes } from 'react';
-import TopBar from '../components/topbar';
-import { Snackbar } from '../components/dialogs';
-import DefaultTemplate from '../components/pushNotifs/default-template';
-import GalleryListTemplate from '../components/pushNotifs/gallery-list-template';
-import Recommend from '../components/pushNotifs/recommend';
-import Assignment from '../components/pushNotifs/assignment';
 import * as pushActions from 'app/redux/modules/pushNotifs';
+import 'app/sass/platform/_pushNotifs.scss';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map } from 'immutable';
-import 'app/sass/platform/_pushNotifs.scss';
+import TopBar from '../components/topbar';
+import { Snackbar } from '../components/dialogs';
+import Default from '../components/pushNotifs/default';
+import GalleryList from '../components/pushNotifs/gallery-list';
+import Recommend from '../components/pushNotifs/recommend';
+import Assignment from '../components/pushNotifs/assignment';
 
 class PushNotifs extends React.Component {
     static propTypes = {
@@ -38,7 +38,7 @@ class PushNotifs extends React.Component {
 
         switch (activeTab.toLowerCase()) {
             case 'gallery list':
-                return <GalleryListTemplate
+                return <GalleryList
                     {...templates.get('gallery list', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'gallery list')}
                 />;
@@ -54,7 +54,7 @@ class PushNotifs extends React.Component {
                 />;
             case 'default':
             default:
-                return <DefaultTemplate
+                return <Default
                     {...templates.get('default', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'default')}
                 />;
