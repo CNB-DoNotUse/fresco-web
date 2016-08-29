@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
+import { getAddressFromLatLng } from 'app/lib/location';
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
-import { getAddressFromLatLng } from 'app/lib/location';
 
 const onChangeTitle = (onChange) => (e) => {
     onChange({ title: e.target.value });
@@ -12,11 +12,17 @@ const onChangeBody = (onChange) => (e) => {
 };
 
 const onChangeRestrictByLocation = (onChange) => (e) => {
-    onChange({ restrictByLocation: e.target.checked });
+    onChange({
+        restrictByLocation: e.target.checked,
+        restrictByUser: false,
+    });
 };
 
 const onChangeRestrictByUser = (onChange) => (e) => {
-    onChange({ restrictByUser: e.target.checked });
+    onChange({
+        restrictByUser: e.target.checked,
+        restrictByLocation: false,
+    });
 };
 
 const onPlaceChange = (onChange) => (place) => {

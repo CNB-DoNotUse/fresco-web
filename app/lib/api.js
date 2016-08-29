@@ -3,7 +3,7 @@ export default {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: `/api/${url}`,
-                data,
+                data: JSON.stringify(data),
                 method: 'post',
                 dataType: 'json',
                 contentType: 'application/json',

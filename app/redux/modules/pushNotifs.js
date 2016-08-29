@@ -16,7 +16,7 @@ const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
 const CONFIRM_ERROR = 'pushNotifs/CONFIRM_ERROR';
 
 // keys irrelevant to api
-const nonDataKeys = ['restrictByUser', 'restrictByLocation', 'error'];
+const nonDataKeys = ['restrictByUser', 'restrictByLocation'];
 
 // actions
 export const setActiveTab = (activeTab) => ({
@@ -29,31 +29,31 @@ export const confirmError = () => ({
 });
 
 export const updateTemplate = (template, data) => (dispatch, getState) => {
-    const success = {
+    const successAction = {
         type: UPDATE_TEMPLATE_SUCCESS,
         template,
         data,
     };
-    const error = {
+    const errorAction = {
         type: UPDATE_TEMPLATE_ERROR,
         template,
         data: 'There was an error updating the template',
     };
 
-    if (data.hasOwnProperty('galleries')) {
+    if (get(data, 'galleries')) {
         const galleries = getState()
             .getIn(['pushNotifs', 'templates', template, 'galleries'], List())
             .toJS();
         const newGallery = get(differenceBy(data.galleries, galleries, 'id'), '[0]');
-        if (!newGallery) return dispatch(success);
+        if (!newGallery) return dispatch(successAction);
 
         return verifyGallery(newGallery)
-        .then(() => dispatch(success))
+        .then(() => dispatch(successAction))
         .catch(() =>
-            dispatch(Object.assign({}, error, { data: 'Invalid gallery id' })));
+            dispatch(Object.assign({}, errorAction, { data: 'Invalid gallery id' })));
     }
 
-    return dispatch(success);
+    return dispatch(successAction);
 };
 
 export const send = (template) => (dispatch, getState) => {
