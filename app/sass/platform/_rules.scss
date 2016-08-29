@@ -1767,6 +1767,10 @@ div.time {}
   cursor: pointer;
 }
 
+.mdi.icon {
+	position: relative;
+}
+
 /** Move to Frick */
 .mdi-close-circle {
   transition: transform 300ms;
