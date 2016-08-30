@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import Tag from '../global/tag';
 import reject from 'lodash/reject';
 import capitalize from 'lodash/capitalize';
+import Tag from '../global/tag';
 
 /**
  * AutocompletChipInput
@@ -18,6 +18,8 @@ class ChipInput extends React.Component {
         initMaterial: PropTypes.bool,
         className: PropTypes.string,
         autocomplete: PropTypes.bool,
+        multiple: PropTypes.bool,
+        placeholder: PropTypes.string,
     };
 
     static defaultProps = {
@@ -25,6 +27,7 @@ class ChipInput extends React.Component {
         initMaterial: false,
         className: '',
         autocomplete: false,
+        multiple: true,
     };
 
     state = {
@@ -99,12 +102,13 @@ class ChipInput extends React.Component {
      * Adds story element, return if story exists in prop stories.
      */
     addItem(newItem) {
-        let { items, attr } = this.props;
+        let { items, attr, multiple } = this.props;
         if (!newItem[attr] || !newItem[attr].length) return;
 
         // Check if story already exists
         if (!newItem.newModel && items.some((i) => (i.id === newItem.id))) return;
-        items = items.concat(newItem);
+        if (multiple) items = items.concat(newItem);
+        else items = [newItem];
 
         this.setState({ query: '' }, this.props.updateItems(items));
     }
@@ -121,7 +125,7 @@ class ChipInput extends React.Component {
 
     render() {
         const { query, suggestions } = this.state;
-        const { items, attr, model } = this.props;
+        const { items, attr, model, placeholder } = this.props;
         const itemsJSX = items.map((item, i) => (
             <Tag
                 text={item[attr]}
@@ -146,7 +150,7 @@ class ChipInput extends React.Component {
                     <input
                         type="text"
                         className="form-control floating-label"
-                        placeholder={capitalize(model)}
+                        placeholder={placeholder || capitalize(model)}
                         onChange={this.onChangeQuery}
                         onKeyUp={this.onKeyUpQuery}
                         value={query}

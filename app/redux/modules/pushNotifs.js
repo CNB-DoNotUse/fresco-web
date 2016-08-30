@@ -21,10 +21,7 @@ const getDataFromTemplate = (template, getState) => {
         .getIn(['pushNotifs', 'templates', template], Map());
 
     switch (template) {
-        case 'gallery list':
-            return templateData.toJS();
         case 'default':
-        default:
             const restrictByUser = templateData.get('restrictByUser', false);
             const restrictByLocation = templateData.get('restrictByLocation', false);
             return templateData
@@ -35,6 +32,11 @@ const getDataFromTemplate = (template, getState) => {
                     return false;
                 })
                 .toJS();
+        case 'recommend':
+        case 'assignment':
+        case 'gallery list':
+        default:
+            return templateData.toJS();
     }
 };
 

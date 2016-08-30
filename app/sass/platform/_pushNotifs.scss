@@ -19,8 +19,10 @@
     margin-bottom: 40px;
 }
 
-.push-notifs__galleries {
-    margin-bottom: 40px;
+.push-notifs__chip-input{
+    &:last-child {
+        margin-bottom: 40px;
+    }
 }
 
 .push-notifs__send{
