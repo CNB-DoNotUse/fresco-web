@@ -44,6 +44,7 @@ class AssignmentEdit extends React.Component {
             location: assignment.location,
             showMergeDialog: false,
             mergeIntoAssignment: null,
+            loading: false,
         };
     }
 
