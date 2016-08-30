@@ -40,6 +40,11 @@
 	.list-item-caption {
 		width: 40%;
 	}
+}
 
+.twitter-import, .upload-import {
+    &:disabled {
+        opacity: 0.26;
+    }
 }
 

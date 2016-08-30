@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
+import 'app/sass/platform/_loader';
 
-const Loader = ({ visible, className }) => (
+
+export const Loader = ({ visible = false, className = '' }) => (
     <div
         className={`${className} loader`}
         style={{ display: visible ? 'inline-block' : 'none' }}
@@ -24,10 +26,9 @@ Loader.propTypes = {
     className: PropTypes.string,
 };
 
-Loader.defaultProps = {
-    visible: false,
-    className: '',
-};
-
-export default Loader;
+export const LoaderOpacity = (props) => (
+    <div className="loader__opacity-ctr">
+        <Loader className="loader--opacity" {...props} />
+    </div>
+);
 

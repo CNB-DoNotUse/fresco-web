@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import moment from 'moment';
 import times from 'lodash/times';
 import request from 'superagent';
-import Loader from '../global/loader';
+import { Loader } from '../global/loader';
 
 /**
  * Description : Top for admin page
@@ -73,7 +73,7 @@ class TopBar extends React.Component {
     }
 
     onKeyDownTwitter = (e) => {
-        const tweet = this.refs['twitter-import-input'].value;
+        const tweet = this.twitterImport.value;
         const twitterId = tweet.split('/').pop();
         if (e.keyCode !== 13 || this.state.loading || !tweet.length) return;
         this.setState({ loading: true });
@@ -90,7 +90,7 @@ class TopBar extends React.Component {
         })
         .done(() => {
             $.snackbar({ content: 'Gallery Imported!' });
-            this.refs['twitter-import-input'].value = '';
+            this.twitterImport.value = '';
             this.props.setTab('imports');
             this.props.resetImports();
         })
@@ -102,7 +102,7 @@ class TopBar extends React.Component {
         });
     }
 
-    onClickImport() {
+    onClickImport = () => {
         if (this.state.loading) return;
         this.importFileInput.click();
     }
@@ -129,6 +129,8 @@ class TopBar extends React.Component {
     }
 
     render() {
+        const { loading } = this.state;
+
         return (
             <nav className="navbar navbar-fixed-top navbar-default">
                 <input
@@ -143,7 +145,8 @@ class TopBar extends React.Component {
                 <button
                     type="button"
                     className="icon-button hidden-xs upload-import"
-                    onClick={() => this.onClickImport()}
+                    onClick={this.onClickImport}
+                    disabled={loading}
                 >
                     <span className="mdi mdi-upload icon"></span>
                 </button>
@@ -153,8 +156,9 @@ class TopBar extends React.Component {
                         type="text"
                         className="form-control twitter-import floating-label"
                         placeholder="Link"
-                        ref="twitter-import-input"
+                        ref={r => this.twitterImport = r}
                         onKeyDown={this.onKeyDownTwitter}
+                        disabled={loading}
                     />
                 </div>
 
