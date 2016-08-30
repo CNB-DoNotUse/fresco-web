@@ -207,7 +207,7 @@ class PostList extends React.Component {
             <div>
                 <div
                     className={`container-fluid fat grid ${className}`}
-                    ref={r = this.grid = r}
+                    ref={r => this.grid = r}
                     onScroll={scrollable ? scroll || ((e) => this.scroll(e)) : null}
                 >
                     {this.renderPosts()}
