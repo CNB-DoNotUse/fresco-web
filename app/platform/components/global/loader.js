@@ -26,9 +26,13 @@ Loader.propTypes = {
     className: PropTypes.string,
 };
 
-export const LoaderOpacity = (props) => (
-    <div className="loader__opacity-ctr">
-        <Loader className="loader--opacity" {...props} />
+export const LoaderOpacity = ({ visible }) => (
+    <div style={{ display: visible ? 'block' : 'none' }}>
+        <div className="loader__opacity-bg" />
+        <Loader className="loader--opacity" visible={visible} />
     </div>
 );
 
+Loader.propTypes = {
+    visible: PropTypes.bool.isRequired,
+};

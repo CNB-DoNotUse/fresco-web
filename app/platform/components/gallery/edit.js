@@ -1,11 +1,4 @@
 import React, { PropTypes } from 'react';
-import EditTags from './edit-tags';
-import EditArticles from './edit-articles';
-import EditPosts from './edit-posts';
-import EditAssignment from './edit-assignment';
-import EditByline from './edit-byline';
-import AutocompleteMap from '../global/autocomplete-map';
-import ChipInput from '../global/chip-input';
 import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import request from 'superagent';
@@ -13,6 +6,14 @@ import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
+import EditTags from './edit-tags';
+import EditArticles from './edit-articles';
+import EditPosts from './edit-posts';
+import EditAssignment from './edit-assignment';
+import EditByline from './edit-byline';
+import AutocompleteMap from '../global/autocomplete-map';
+import ChipInput from '../global/chip-input';
+import { LoaderOpacity } from '../global/loader';
 
 /**
  * Gallery Edit Parent Object
@@ -587,6 +588,7 @@ class Edit extends React.Component {
 
     render() {
         const { visible } = this.props;
+        const { loading } = this.state;
 
         return (
             <div>
@@ -606,6 +608,7 @@ class Edit extends React.Component {
                         {this.renderBody()}
                         {this.renderFooter()}
                     </div>
+                    <LoaderOpacity visible={loading} />
                 </div>
             </div>
         );

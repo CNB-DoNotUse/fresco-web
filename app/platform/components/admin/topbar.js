@@ -148,7 +148,7 @@ class TopBar extends React.Component {
                     onClick={this.onClickImport}
                     disabled={loading}
                 >
-                    <span className="mdi mdi-upload icon"></span>
+                    <span className="mdi mdi-upload icon" />
                 </button>
 
                 <div className="form-group-default">
