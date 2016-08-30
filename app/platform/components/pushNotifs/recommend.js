@@ -14,7 +14,7 @@ const onChangeGalleries = (onChange) => (galleries) => {
 };
 
 const onChangeStories = (onChange) => (stories) => {
-    onChange({ stories });
+    onChange({ stories: stories.map(s => ({ id: s.id, title: s.title })) });
 };
 
 const Template = ({
@@ -43,7 +43,7 @@ const Template = ({
         <ChipInput
             model="galleries"
             attr="id"
-            placeholder="Gallery id"
+            placeholder="Gallery"
             items={galleries}
             updateItems={onChangeGalleries(onChange)}
             autocomplete={false}
@@ -54,13 +54,13 @@ const Template = ({
 
         <ChipInput
             model="stories"
-            attr="id"
-            placeholder="Story id"
+            attr="title"
+            placeholder="Story"
             items={stories}
             updateItems={onChangeStories(onChange)}
-            autocomplete={false}
             multiple={false}
             className="push-notifs__chip-input"
+            autocomplete
             initMaterial
         />
 

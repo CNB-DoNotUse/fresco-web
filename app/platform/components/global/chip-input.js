@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import Tag from '../global/tag';
 import reject from 'lodash/reject';
 import capitalize from 'lodash/capitalize';
+import Tag from '../global/tag';
 
 /**
  * AutocompletChipInput
