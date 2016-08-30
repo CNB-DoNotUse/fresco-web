@@ -59,6 +59,12 @@ export default class DispatchMap extends React.Component {
 			document.getElementById('map-canvas'), 
 			{
 				zoom: dispatch.mapZoom,
+				zoomControl: true,
+				zoomControlOptions: {
+					position: google.maps.ControlPosition.LEFT_TOP
+				},
+				streetViewControl: false,
+				fullscreenControl: true,
 				center: dispatch.mapCenter,
 				styles: global.mapStyles
 			}
