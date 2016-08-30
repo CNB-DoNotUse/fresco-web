@@ -33,6 +33,6 @@ export const LoaderOpacity = ({ visible }) => (
     </div>
 );
 
-Loader.propTypes = {
+LoaderOpacity.propTypes = {
     visible: PropTypes.bool.isRequired,
 };
