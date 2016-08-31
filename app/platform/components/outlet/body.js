@@ -1,5 +1,5 @@
 import React from 'react';
-import Purchases from '../purchases';
+import Purchases from '../purchases/list-with-stats';
 import PostList from '../post/list';
 import Sidebar from './sidebar';
 

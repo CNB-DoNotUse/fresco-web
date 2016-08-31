@@ -5,8 +5,10 @@ import find from 'lodash/find';
 import map from 'lodash/map';
 import App from './app';
 import TopBar from '../components/topbar';
-import Summary from '../components/purchases';
+import ListWithStats from '../components/purchases/list-with-stats';
+import Outlets from '../components/purchases/outlets';
 import TagFilter from '../components/topbar/tag-filter';
+import Dropdown from '../components/global/dropdown';
 
 /**
  * Admin Purchases page
@@ -23,6 +25,7 @@ class Purchases extends React.Component {
         availableUsers: [],
         updatePurchases: false,
         activeTab: 'Summary',
+        outletStatsTime: 'today so far',
     }
 
     findOutlets = (q) => {
@@ -193,11 +196,11 @@ class Purchases extends React.Component {
 	 */
     downloadExports = () => {
         const oultets = this.state.outlets
-            .map((outlet) => 'outlet_ids[]=' + outlet.id)
+            .map((outlet) => `outlet_ids[]=${outlet.id}`)
             .join('&');
 
         const users = this.state.users
-            .map(user => 'user_ids[]=' + user.id).join('&');
+            .map(user => `user_ids[]=${user.id}`).join('&');
 
         const u = encodeURIComponent(`/purchase/report?${oultets}${users}`);
 
@@ -210,13 +213,16 @@ class Purchases extends React.Component {
         const { activeTab, updatePurchases } = this.state;
         switch (activeTab.toLowerCase()) {
             case 'outlets':
-                // return (
-                //     <Outlets />
-                // );
+                return (
+                    <Outlets
+                        outletIds={this.state.outlets.map(o => o._id)}
+                        statsTime={this.state.outletStatsTime}
+                    />
+                );
             case 'summary':
             default:
                 return (
-                    <Summary
+                    <ListWithStats
                         updatePurchases={updatePurchases}
                         downloadExports={this.downloadExports}
                         loadPurchases={this.loadPurchases}
@@ -233,6 +239,7 @@ class Purchases extends React.Component {
             availableOutlets,
             availableUsers,
             activeTab,
+            outletStatsTime,
         } = this.state;
 
         return (
@@ -263,6 +270,23 @@ class Purchases extends React.Component {
                         onTagRemove={this.removeUser}
                         key="usersFilter"
                     />
+
+                    {(activeTab === 'Outlets') &&
+                        <Dropdown
+                            options={[
+                                'today so far',
+                                'last 24 hours',
+                                'last 7 days',
+                                'last 30 days',
+                                'this year',
+                                'all time',
+                            ]}
+                            selected={outletStatsTime}
+                            onSelected={(b) => this.setState({ outletStatsTime: b })}
+                            key="timeToggle"
+                            inList
+                        />
+                    }
                 </TopBar>
 
                 {this.renderTab()}
