@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ChipInput from '../global/chip-input';
+import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
 const onChangeTitle = (onChange) => (e) => {
     onChange({ title: e.target.value });
@@ -22,7 +23,8 @@ const Template = ({
     body,
     galleries,
     stories,
-    onChange }) => (
+    onChange,
+    ...props }) => (
     <div>
         <input
             type="text"
@@ -64,6 +66,8 @@ const Template = ({
             initMaterial
         />
 
+        <RestrictByLocation onChange={onChange} {...props} />
+        <RestrictByUser onChange={onChange} {...props} />
     </div>
 );
 
