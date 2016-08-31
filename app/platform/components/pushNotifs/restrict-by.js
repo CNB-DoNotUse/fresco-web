@@ -1,15 +1,7 @@
 import React, { PropTypes } from 'react';
 import { getAddressFromLatLng } from 'app/lib/location';
-import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
-
-const onChangeTitle = (onChange) => (e) => {
-    onChange({ title: e.target.value });
-};
-
-const onChangeBody = (onChange) => (e) => {
-    onChange({ body: e.target.value });
-};
+import AutocompleteMap from '../global/autocomplete-map';
 
 const onChangeRestrictByLocation = (onChange) => (e) => {
     onChange({
@@ -41,32 +33,12 @@ const onChangeUsers = (onChange) => (users) => {
     onChange({ users: users.map(u => ({ id: u.id, username: u.username })) });
 };
 
-const DefaultTemplate = ({
-    title,
-    body,
+export const RestrictByLocation = ({
     restrictByLocation = false,
-    restrictByUser = false,
+    onChange,
     location,
-    address,
-    users,
-    onChange }) => (
-    <div>
-        <input
-            type="text"
-            className="form-control floating-label"
-            placeholder="Title"
-            value={title}
-            onChange={onChangeTitle(onChange)}
-        />
-
-        <textarea
-            type="text"
-            className="form-control floating-label"
-            placeholder="Body"
-            value={body}
-            onChange={onChangeBody(onChange)}
-        />
-
+    address }) => (
+    <span>
         <div className="checkbox form-group push-notifs__checkbox">
             <label>
                 <input
@@ -79,7 +51,7 @@ const DefaultTemplate = ({
         </div>
 
         {restrictByLocation
-            ? <AutocompleteMap
+            && <AutocompleteMap
                 location={location}
                 address={address}
                 disabled={false}
@@ -88,9 +60,24 @@ const DefaultTemplate = ({
                 draggable
                 hasRadius
             />
-            : null
         }
+    </span>
+);
 
+RestrictByLocation.propTypes = {
+    restrictByLocation: PropTypes.bool,
+    onChange: PropTypes.func.isRequired,
+    location: PropTypes.object,
+    address: PropTypes.string,
+};
+
+// TODO test propTypes above
+
+export const RestrictByUser = ({
+    restrictByUser = false,
+    onChange,
+    users }) => (
+    <span>
         <div className="checkbox form-group push-notifs__checkbox">
             <label>
                 <input
@@ -103,7 +90,7 @@ const DefaultTemplate = ({
         </div>
 
         {restrictByUser
-            ? <ChipInput
+            && <ChipInput
                 model="users"
                 attr="username"
                 items={users}
@@ -112,21 +99,13 @@ const DefaultTemplate = ({
                 autocomplete
                 initMaterial
             />
-            : null
         }
-    </div>
+    </span>
 );
 
-DefaultTemplate.propTypes = {
-    title: PropTypes.string,
-    body: PropTypes.string,
-    location: PropTypes.object,
-    address: PropTypes.string,
-    users: PropTypes.array,
-    restrictByLocation: PropTypes.bool,
+RestrictByUser.propTypes = {
+    onChange: PropTypes.func.isRequired,
     restrictByUser: PropTypes.bool,
-    onChange: PropTypes.func,
+    users: PropTypes.array,
 };
-
-export default DefaultTemplate;
 

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ChipInput from '../global/chip-input';
+import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
 const onChangeAssignments = (onChange) => (assignments) => {
     onChange({ assignments: assignments.map(a => ({ id: a.id, title: a.title })) });
@@ -7,7 +8,8 @@ const onChangeAssignments = (onChange) => (assignments) => {
 
 const Template = ({
     assignments,
-    onChange }) => (
+    onChange,
+    ...props }) => (
     <div>
         <ChipInput
             model="assignments"
@@ -20,12 +22,14 @@ const Template = ({
             autocomplete
             initMaterial
         />
+
+        <RestrictByLocation onChange={onChange} {...props} />
+        <RestrictByUser onChange={onChange} {...props} />
     </div>
 );
 
+
 Template.propTypes = {
-    title: PropTypes.string,
-    body: PropTypes.string,
     assignments: PropTypes.array,
     onChange: PropTypes.func,
 };

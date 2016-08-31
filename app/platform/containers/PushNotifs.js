@@ -6,10 +6,10 @@ import partial from 'lodash/partial';
 import { Map } from 'immutable';
 import TopBar from '../components/topbar';
 import { Snackbar } from '../components/dialogs';
-import Default from '../components/pushNotifs/default';
-import GalleryList from '../components/pushNotifs/gallery-list';
-import Recommend from '../components/pushNotifs/recommend';
-import Assignment from '../components/pushNotifs/assignment';
+import Default from '../components/pushNotifs/default-template';
+import GalleryList from '../components/pushNotifs/gallery-list-template';
+import Recommend from '../components/pushNotifs/recommend-template';
+import Assignment from '../components/pushNotifs/assignment-template';
 
 class PushNotifs extends React.Component {
     static propTypes = {
