@@ -1,5 +1,5 @@
-import React, { PropTypes, Component } from 'react'
-import PurchasesListItem from 'purchases-list-item'
+import React, { PropTypes, Component } from 'react';
+import ListItem from './list-item';
 
 /**
  * Displays a list of purchase objects
@@ -39,7 +39,7 @@ class PurchasesList extends Component {
 		this.props.loadPurchases(null, (purchases) => {
 			//Set posts & callback from successful response
 			this.setState({ purchases });
-		});  
+		});
 	}
 
 	// Handle purchases div scroll
@@ -48,7 +48,7 @@ class PurchasesList extends Component {
 
 		const grid = e.target;
 		const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight ) - 96);
-		
+
 		// Check if already getting purchases because async
 		if(bottomReached) {
 			this.setState({
@@ -58,7 +58,7 @@ class PurchasesList extends Component {
 			// Pass current offset to getMorePurchases
 			this.props.loadPurchases(_.last(this.state.purchases).id, (purchases) => {
 				//Disables scroll, and returns if purchases are empty
-				if(!purchases || purchases.length == 0){ 
+				if(!purchases || purchases.length == 0){
 					return this.setState({
 						scrollable: false
 					});
@@ -76,16 +76,15 @@ class PurchasesList extends Component {
 
 	render() {
 		return (
-			<div 
-				id="purchases-list" 
-				className="col-md-8 col-xs-12 list" 
+			<div
+				className="col-md-8 col-xs-12 list"
 				onScroll={this.state.scrollable ? (e) => this.scroll(e) : null}
 			>
 				{this.state.purchases.map((purchase, i) => {
 					return (
-						<PurchasesListItem 
-							purchase={purchase} 
-							title={purchase.title} 
+						<ListItem
+							purchase={purchase}
+							title={purchase.title}
 							showTitle={true}
 							key={i} />
 					);

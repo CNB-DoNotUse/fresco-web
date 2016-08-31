@@ -1,31 +1,19 @@
-import React from 'react'
-import PurchasesBody from '../purchases/purchases-body'
-import PostList from '../post/list'
-import Sidebar from './sidebar'
-import moment from 'moment'
-import utils from 'utils'
+import React from 'react';
+import Purchases from '../purchases';
+import PostList from '../post/list';
+import Sidebar from './sidebar';
 
 export default class Body extends React.Component {
 
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			posts: [],
-			purchases: []
-		}
-
-		this.loadPosts = this.loadPosts.bind(this);
-		this.loadPurchases = this.loadPurchases.bind(this);
-		this.downloadExports = this.downloadExports.bind(this);
-		this.loadStats = this.loadStats.bind(this);
-		this.emailStatement = this.emailStatement.bind(this);
-	}
+    state = {
+        posts: [],
+        purchases: [],
+    };
 
 	/**
 	 * Loads posts using purchases data enpoint
 	 */
-	loadPosts(last, cb) {
+    loadPosts = (last, cb) => {
 		this.loadPurchases(last, (purchases) => {
 			var posts = purchases.map((purchase) => {
 				return purchase.post;
@@ -38,7 +26,7 @@ export default class Body extends React.Component {
 	/**
 	 * Loads stats for purchases
 	 */
-	loadStats(callback) {
+    loadStats = (callback) => {
 		const params = {
 			outlet_ids: [this.props.outlet.id]
 		}
@@ -59,7 +47,7 @@ export default class Body extends React.Component {
 	/**
 	 * Requests purchases from server
 	 */
-	loadPurchases(last = null, cb) {
+    loadPurchases = (last = null, cb) => {
 		const params = {
 			outlet_ids: [this.props.outlet.id],
 			limit: 20,
@@ -79,7 +67,7 @@ export default class Body extends React.Component {
 		});
 	}
 
-	downloadExports() {
+    downloadExports = () => {
 		const oultet = `outlet_ids[]=${this.props.outlet.id}`;
 		const u = encodeURIComponent(`/purchase/report?${oultet}`);
 		const url = `/scripts/report?u=${u}&e=Failed`;
@@ -87,7 +75,7 @@ export default class Body extends React.Component {
 		window.open(url, '_blank');
 	}
 
-	emailStatement() {
+    emailStatement = () => {
 		$.ajax({
 			url: '/api/outlet/emailStatement',
 			type: 'GET',
@@ -129,11 +117,12 @@ export default class Body extends React.Component {
 					</div>
 				</div>
 				<div className={`tab ${activeTab == 'Purchases' ? 'toggled' : ''}`}>
-					<PurchasesBody
+					<Purchases
 						emailStatement={this.emailStatement}
 						downloadExports={this.downloadExports}
 						loadPurchases={this.loadPurchases}
-						loadStats={this.loadStats} />
+                        loadStats={this.loadStats}
+                    />
 				</div>
 			</div>
 		);

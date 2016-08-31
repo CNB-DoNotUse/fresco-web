@@ -15,7 +15,7 @@ export default class PurchasesStats extends React.Component {
 
 	componentDidMount() {
 	    //Load stats when component first mounts
-	    this.loadStats();  
+	    this.loadStats();
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -38,7 +38,7 @@ export default class PurchasesStats extends React.Component {
 					stats: stats
 				});
 			}
-		});  
+		});
 	}
 
 	render() {
@@ -49,7 +49,7 @@ export default class PurchasesStats extends React.Component {
 		return (
 			<div className="col-md-4">
 				<h3 className="md-type-button md-type-black-secondary">Total purchases</h3>
-				
+
 				<ul className="md-type-subhead">
 					<li>
 						<span>${last_day / 100}</span>
@@ -70,16 +70,16 @@ export default class PurchasesStats extends React.Component {
 					</li>
 				</ul>
 
-				<button 
-					id="export-csv" 
-					type="button" 
-					className="btn" 
+				<button
+					id="export-csv"
+					type="button"
+					className="btn"
 					onClick={downloadExports.bind(null, 'csv')}>Export to .csv</button>
 
-				<button 
-					id="email-statement-button" 
-					type="button" 
-					className="btn" 
+				<button
+					id="email-statement-button"
+					type="button"
+					className="btn"
 					onClick={emailStatement}>Email my statement</button>
 			</div>
 		);
@@ -87,7 +87,7 @@ export default class PurchasesStats extends React.Component {
 }
 
 PurchasesStats.defaultProps = {
-	stats: {	
+	stats: {
 		last_day: 0,
 		last_7days: 0,
 		last_30days: 0,
