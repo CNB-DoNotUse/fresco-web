@@ -4,17 +4,14 @@ import find from 'lodash/find';
 import get from 'lodash/get';
 import utils from 'utils';
 import FrescoImage from '../global/fresco-image';
+import FrescoVideo from '../global/fresco-video';
 
 const renderPost = (post) => {
-    if (post.video) {
+    if (post.stream) {
         return (
-            <video width="100%" height="100%" data-id={post.id} controls>
-                <source
-                    src={utils.formatVideo(post.video)}
-                    type="video/mp4"
-                />
-                Your browser does not support the video tag.
-            </video>
+            <FrescoVideo 
+                video={post.stream} 
+                thumbnail={post.image} />
         );
     }
 
@@ -40,47 +37,50 @@ const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
                         <div className="md-type-caption">This post will be deleted</div>
                     </span>
                 </div>
-                {editingPosts.length > 1
-                    ? <a className="frick-frame__delete-btn">
+                {editingPosts.length > 1 ? (
+                    <a className="frick-frame__delete-btn">
                         <span
                             className={`mdi mdi-close-circle icon ${deleteToggled ? 'addback' : ''}`}
                             onClick={() => onToggleDelete(p)}
                         />
                     </a>
-                    : null
-                }
+                ) : null}
             </div>
         );
     })
 );
 
-const renderPostsNoDelete = (originalPosts) => (
-    originalPosts.map((p, i) => (
-        <div key={`post${i}`} className="frick-frame">
-            {renderPost(p)}
-        </div>
-    ))
-);
+const renderPostsNoDelete = (originalPosts) => {
+    return (
+        originalPosts.map((p, i) => (
+            <div key={`post${i}`} className="frick-frame">
+                {renderPost(p)}
+            </div>
+        ))
+    )
+}
 
-const renderUpload = (u, i) => {
-    if ((!typeof i === 'number') || !u || !u.type || !u.url) return null;
+const renderUpload = (upload, i) => {
+    if ((!typeof i === 'number') || !upload || !upload.type || !upload.url) return null;
 
-    if (u.type === 'image') {
+    console.log('UPLOAD', upload);
+
+    if (upload.type.indexOf('image') > -1) {
         return (
             <div key={`upload${i}`} className="frick-frame">
                 <img
                     role="presentation"
                     className="img-responsive"
-                    src={u.url}
+                    src={upload.url}
                 />
             </div>
         );
-    } else if (u.type === 'video') {
+    } else if (upload.type.indexOf('video') > -1) {
         return (
             <div key={`upload${i}`} className="frick-frame">
-                <video width="100%" height="100%" src={u.url} controls>
-                    Your browser does not support the video tag.
-                </video>
+                <FrescoVideo 
+                    type={upload.type}
+                    video={upload.url} />
             </div>
         );
     }
@@ -111,10 +111,10 @@ class EditPosts extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        // Reset slick to first index of we have different posts
-        if (get(prevProps, 'originalPosts[0].id') !== get(this.props, 'originalPosts[0].id')) {
-            this.slider.slickGoTo(0);
-        }
+        // // Reset slick to first index of we have different posts
+        // if (get(prevProps, 'originalPosts[0].id') !== get(this.props, 'originalPosts[0].id')) {
+        //     this.slider.slickGoTo(0);
+        // }
     }
 
     render() {
@@ -135,10 +135,6 @@ class EditPosts extends React.Component {
             ? renderPosts({ editingPosts, originalPosts, onToggleDelete })
             : renderPostsNoDelete(originalPosts);
 
-        const sliderJSX = uploadsJSX
-            ? uploadsJSX.concat(postsJSX)
-            : postsJSX;
-
         return (
             <Slider
                 className={className}
@@ -148,7 +144,10 @@ class EditPosts extends React.Component {
                 draggable
                 dots
             >
-                {sliderJSX}
+                {uploadsJSX 
+                    ? uploadsJSX.concat(postsJSX) 
+                    : postsJSX
+                }
             </Slider>
         );
     }

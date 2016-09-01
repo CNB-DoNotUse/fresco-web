@@ -1,16 +1,9 @@
-import React from 'react'
-import utils from 'utils'
-
-/** //
-
-Description : Suggestion Column
-
-// **/
+import React from 'react';
 
 /**
  * Suggestion List Parent Object
+ * @description Suggestion Column
  */
-
 export default class SuggestionList extends React.Component {
 
 	constructor(props) {

@@ -66,6 +66,7 @@ class PostDetailImage extends React.Component {
                 <FrescoVideo
                     video={post.stream}
                     thumbnail={post.image}
+                    autoplay
                 />
             );
         } else {
