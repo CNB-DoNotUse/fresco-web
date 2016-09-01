@@ -36,6 +36,33 @@ class Edit extends React.Component {
         this.setState(this.getStateFromProps(nextProps));
     }
 
+    /**
+     * getStateFromProps
+     *
+     * @param {object} props
+     * @returns {object} initial state from passed props
+     */
+    getStateFromProps(props) {
+        const { gallery } = props;
+        if (!gallery) return {};
+
+        return {
+            tags: gallery.tags || [],
+            stories: gallery.stories,
+            assignment: null,
+            caption: gallery.caption || 'No Caption',
+            posts: gallery.posts,
+            articles: gallery.articles,
+            rating: gallery.rating,
+            isOriginalGallery: utils.isOriginalGallery(this.props.gallery),
+            uploads: [],
+            loading: false,
+            ...this.getInitialLocationData(),
+            external_account_name: gallery.external_account_name,
+            external_source: gallery.external_source,
+        };
+    }
+
     onRemove() {
         const { gallery } = this.props;
         if (!gallery || !gallery.id || this.state.loading) return;
@@ -79,19 +106,23 @@ class Edit extends React.Component {
     onChangeFileInput(e) {
         const file = e.target.files[0];
         if (!file) return;
-        const type = file.type.split('/')[0];
+
+        const type = file.type;
         const { uploads } = this.state;
 
-        if (type === 'image') {
+        if(type.indexOf('image') > -1) {
             const reader = new FileReader();
             reader.onload = (r) => {
-                uploads.unshift({ type, url: r.target.result });
+                uploads.unshift({ type, url: r.target.result })
                 this.setState({ uploads });
             };
-            reader.readAsDataURL(file);
-        } else if (type === 'video') {
-            const url = URL.createObjectURL(file);
-            uploads.unshift({ type, url });
+            reader.readAsDataURL(file);        
+        } else if(type.indexOf('video') > -1){
+            uploads.unshift({ 
+                type, 
+                url: URL.createObjectURL(file)
+            });
+
             this.setState({ uploads });
         }
     }
@@ -125,6 +156,7 @@ class Edit extends React.Component {
             tags: [],
             stories: [],
             assignment: null,
+            uploads: [],
             address: '',
             caption: 'No Caption',
             articles: [],
@@ -140,32 +172,6 @@ class Edit extends React.Component {
         const address = gallery.address || get(gallery, 'posts[0].address');
 
         return { location, address };
-    }
-
-    /**
-     * getStateFromProps
-     *
-     * @param {object} props
-     * @returns {object} initial state from passed props
-     */
-    getStateFromProps(props) {
-        const { gallery } = props;
-        if (!gallery) return {};
-
-        return {
-            tags: gallery.tags || [],
-            stories: gallery.stories,
-            assignment: null,
-            caption: gallery.caption || 'No Caption',
-            posts: gallery.posts,
-            articles: gallery.articles,
-            rating: gallery.rating,
-            uploads: [],
-            loading: false,
-            ...this.getInitialLocationData(),
-            external_account_name: gallery.external_account_name,
-            external_source: gallery.external_source,
-        };
     }
 
     /**
@@ -355,8 +361,9 @@ class Edit extends React.Component {
     }
 
     toggleDeletePost(post) {
-        const { posts } = this.state;
-        this.setState({ posts: posts.filter(p => p.id !== post.id) });
+        this.setState({ 
+            posts: this.state.posts.filter(p => p.id !== post.id) 
+        });
     }
 
     hide() {
@@ -367,7 +374,7 @@ class Edit extends React.Component {
         const { gallery } = this.props;
         if (!gallery || !gallery.posts) return null;
 
-        if (utils.isImportedGallery(gallery) && utils.isOriginalGallery(gallery)) {
+        if (utils.isImportedGallery(gallery)) {
             return (
                 <button
                     type="button"
@@ -384,9 +391,9 @@ class Edit extends React.Component {
     }
 
     renderMap() {
-        const { address, location } = this.state;
+        const { address, location, isOriginalGallery } = this.state;
         const { gallery } = this.props;
-        const mapDisabled = !utils.isOriginalGallery(gallery) || utils.isSubmittedGallery(gallery);
+        const mapDisabled = !isOriginalGallery || utils.isSubmittedGallery(gallery);
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
@@ -416,6 +423,7 @@ class Edit extends React.Component {
             articles,
             posts,
             uploads,
+            isOriginalGallery,
             external_account_name,
             external_source,
         } = this.state;
@@ -424,18 +432,19 @@ class Edit extends React.Component {
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    {utils.isOriginalGallery(gallery)
-                        ? <EditByline
+                    {isOriginalGallery ? (
+                        <EditByline
                             gallery={gallery}
                             external_source={external_source}
                             external_account_name={external_account_name}
                             onChangeExtAccountName={(a) =>
-                                this.setState({ external_account_name: a })}
+                                this.setState({ external_account_name: a })
+                            }
                             onChangeExtSource={(s) =>
-                                this.setState({ external_source: s })}
-                            />
-                            : ''
-                    }
+                                this.setState({ external_source: s })
+                            }
+                        />
+                    ) : ''}
 
                     <div className="dialog-row">
                         <textarea
@@ -488,26 +497,25 @@ class Edit extends React.Component {
                     </div>
                 </div>
 
-                {get(posts, 'length') || get(uploads, 'length')
-                    ? <EditPosts
+                {get(posts, 'length') || get(uploads, 'length') ? (
+                    <EditPosts
                         originalPosts={gallery.posts}
                         editingPosts={posts}
                         uploads={uploads}
-                        canDelete={utils.isOriginalGallery(gallery)}
+                        canDelete={isOriginalGallery}
                         onToggleDelete={(p) => this.toggleDeletePost(p)}
                         className="dialog-col col-xs-12 col-md-5"
-                    />
-                    : null
-                }
+                    /> 
+                ) : null}
 
-                {this.renderMap()}
+                {this.renderMap(isOriginalGallery)}
             </div>
         );
     }
 
     renderFooter() {
         const { gallery } = this.props;
-        const { loading } = this.state;
+        const { loading, isOriginalGallery } = this.state;
         if (!gallery) return '';
 
         return (
@@ -552,8 +560,8 @@ class Edit extends React.Component {
                     Save
                 </button>
 
-                {utils.isOriginalGallery(gallery)
-                    ? <button
+                {isOriginalGallery ? (
+                    <button
                         type="button"
                         onClick={() =>
                             this.setState({ rating: (gallery.rating < 2 ? 2 : 1) }, this.onSave)}
@@ -562,8 +570,7 @@ class Edit extends React.Component {
                     >
                         {(gallery.rating < 2) ? 'Verify' : 'Unverify'}
                     </button>
-                    : null
-                }
+                ) : null}
 
                 <button
                     type="button"
@@ -605,9 +612,12 @@ class Edit extends React.Component {
                                 onClick={() => this.hide()}
                             />
                         </div>
+                        
                         {this.renderBody()}
+                        
                         {this.renderFooter()}
                     </div>
+
                     <LoaderOpacity visible={loading} />
                 </div>
             </div>

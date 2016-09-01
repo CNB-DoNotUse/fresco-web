@@ -1,8 +1,19 @@
 import React, { PropTypes } from 'react'
 
 class PasswordDialog extends React.Component {
+    static propTypes = {
+        onSubmit: PropTypes.func,
+        toggle: PropTypes.func,
+        toggled: PropTypes.bool
+    }
 
-    onSubmit(e) {
+    static defaultProps = {
+        onSubmit: () => {},
+        toggle: () => {},
+        toggled: false
+    }
+
+    onSubmit = (e) => {
         e.preventDefault();
 
         this.props.onSubmit(this.refs.input.value)
@@ -21,7 +32,10 @@ class PasswordDialog extends React.Component {
                     </div>
 
                     <div className="body">
-                        <form className="form-group-default" onSubmit={(e) => this.onSubmit(e)}>
+                        <form 
+                            className="form-group-default" 
+                            onSubmit={this.onSubmit}
+                        >
                             <input
                                 ref="input"
                                 type="password"
@@ -48,18 +62,6 @@ class PasswordDialog extends React.Component {
             </div>
         );
     }
-}
-
-PasswordDialog.propTypes = {
-    onSubmit: PropTypes.func,
-    toggle: PropTypes.func,
-    toggled: PropTypes.bool
-}
-
-PasswordDialog.defaultProps = {
-    onSubmit: () => {},
-    toggle: () => {},
-    toggled: false
 }
 
 export default PasswordDialog;

@@ -212,7 +212,7 @@ export default class Info extends React.Component {
                     />
 
                     <button 
-                        className={`btn btn-flat changed card-foot-btn ${disabled ? 'disabled' : ''}`} 
+                        className={`btn btn-flat card-foot-btn ${disabled ? 'disabled' : 'changed'}`} 
                         onClick={this.updateSettings}>SAVE CHANGES</button>
                 </div>
             </div>

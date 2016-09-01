@@ -284,7 +284,7 @@ class UserSettings extends React.Component {
 							</textarea>
 
 							<button
-								className={`btn btn-save changed ${disabled ? 'disabled' : ''}`}
+								className={`btn btn-save ${disabled ? 'disabled' : 'changed'}`}
 								ref="profileSaveBtn"
 								onClick={this.updateSettings}
 								>SAVE CHANGES</button>
@@ -321,7 +321,7 @@ class UserSettings extends React.Component {
 								defaultValue={user.phone} />
 
 							<button
-								className={`btn btn-save changed ${disabled ? 'disabled' : ''}`}
+								className={`btn btn-save ${disabled ? 'disabled' : 'changed'}`}
 								onClick={this.updateSettings}
 								ref="accountSaveBtn">SAVE CHANGES
 							</button>

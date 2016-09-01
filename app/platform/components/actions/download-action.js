@@ -3,8 +3,7 @@ import React from 'react';
 /**
  * Global download action
  */
-
-export default class DownloadAction extends React.Component {
+class DownloadAction extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -50,3 +49,6 @@ export default class DownloadAction extends React.Component {
 	}
 
 }
+
+
+export default DownloadAction;

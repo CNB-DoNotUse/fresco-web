@@ -272,4 +272,3 @@ PostList.defaultProps = {
 };
 
 export default PostList;
-

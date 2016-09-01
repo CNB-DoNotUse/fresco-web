@@ -1,30 +1,60 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+require('script!video.js/dist/video.js')
+require('script!videojs-contrib-hls/dist/videojs-contrib-hls.js')
+import '../../../sass/platform/video.scss';
 
 /**
- * Stateless video that sets up a JWPlayer video
+ * Stateless video that sets up an HTML video or Video.JS player for m3u8
  */
 class FrescoVideo extends React.Component {
     static propTypes = {
         video: PropTypes.string,
         thumbnail: PropTypes.string,
         className: PropTypes.string,
-        style: PropTypes.object
+        style: PropTypes.object,
+        autoplay: PropTypes.boolean
     };
 
-    componentDidMount() {
-        console.log(this.props);
+    types = {
+        'm3u8' : 'application/x-mpegURL',
+        'mp4' : 'video/mp4',
+        'webm' : 'video/webm',
+        'ogg' : 'video/ogg'
+    }
 
-        jwplayer('fresco-video').setup({ 
-            width: 640,
-            height: 360,
-            file: "https://d2pcejopg5lhf7.cloudfront.net/streams/40607bc14481e7475025119f3eb5454d_1472161189400_submission.m3u8"
-        });
+    componentDidMount() {
+        if(this.props.autoplay) {
+            const player = videojs('fresco-video');
+            player.play();
+        }
     }
 
     render() {
+        const { video, thumbnail } = this.props;
+        let { type } = this.props;
+
+        if(!type) {
+            const parts = video.split('.');
+            type = this.types[parts[parts.length - 1]];
+        }
+
+        //Video.JS if an m3u8 file
+        const className = `${type.indexOf(this.types['m3u8']) > -1 ? 'video-js vjs-default-skin' : ''}`;
+
         return (
-            <div id="fresco-video" style={{ width: '240px' }} />
+            <video 
+                id="fresco-video" 
+                className={className}
+                autoPlay={this.props.autoplay}
+                controls={true}
+                data-setup='{}'>
+                <source
+                    src={this.props.video}
+                    poster={this.props.thumbnail}
+                    type={type} 
+                />
+            </video>
         );
     }
 }
