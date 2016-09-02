@@ -6,8 +6,6 @@ import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
-import EditTags from './edit-tags';
-import EditArticles from './edit-articles';
 import EditPosts from './edit-posts';
 import EditAssignment from './edit-assignment';
 import EditByline from './edit-byline';
@@ -116,10 +114,10 @@ class Edit extends React.Component {
                 uploads.unshift({ type, url: r.target.result })
                 this.setState({ uploads });
             };
-            reader.readAsDataURL(file);        
+            reader.readAsDataURL(file);
         } else if(type.indexOf('video') > -1){
-            uploads.unshift({ 
-                type, 
+            uploads.unshift({
+                type,
                 url: URL.createObjectURL(file)
             });
 
@@ -361,8 +359,8 @@ class Edit extends React.Component {
     }
 
     toggleDeletePost(post) {
-        this.setState({ 
-            posts: this.state.posts.filter(p => p.id !== post.id) 
+        this.setState({
+            posts: this.state.posts.filter(p => p.id !== post.id)
         });
     }
 
@@ -464,9 +462,11 @@ class Edit extends React.Component {
                         updateAssignment={(a) => this.setState({ assignment: a })}
                     />
 
-                    <EditTags
-                        tags={tags}
-                        updateTags={(t) => this.setState({ tags: t })}
+                    <ChipInput
+                        model="tags"
+                        items={tags}
+                        updateItems={(t) => this.setState({ tags: t })}
+                        autocomplete={false}
                     />
 
                     <ChipInput
@@ -478,9 +478,12 @@ class Edit extends React.Component {
                         autocomplete
                     />
 
-                    <EditArticles
-                        articles={articles}
-                        updateArticles={(a) => this.setState({ articles: a })}
+                    <ChipInput
+                        model="articles"
+                        attr="title"
+                        items={articles}
+                        updateItems={(a) => this.setState({ articles: a })}
+                        autocomplete
                     />
 
                     <div className="dialog-row">
@@ -505,7 +508,7 @@ class Edit extends React.Component {
                         canDelete={isOriginalGallery}
                         onToggleDelete={(p) => this.toggleDeletePost(p)}
                         className="dialog-col col-xs-12 col-md-5"
-                    /> 
+                    />
                 ) : null}
 
                 {this.renderMap(isOriginalGallery)}
@@ -612,9 +615,9 @@ class Edit extends React.Component {
                                 onClick={() => this.hide()}
                             />
                         </div>
-                        
+
                         {this.renderBody()}
-                        
+
                         {this.renderFooter()}
                     </div>
 

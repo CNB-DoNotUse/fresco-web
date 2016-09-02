@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
-import EditTags from './edit-tags';
 import EditPosts from './edit-posts';
 import ChipInput from '../global/chip-input';
 
@@ -113,9 +112,11 @@ class BulkEdit extends React.Component {
                         />
                     </div>
 
-                    <EditTags
-                        tags={tags}
-                        updateTags={(t) => this.setState({ tags: t })}
+                    <ChipInput
+                        model="tags"
+                        items={tags}
+                        updateItems={(t) => this.setState({ tags: t })}
+                        autocomplete={false}
                     />
 
                     <ChipInput

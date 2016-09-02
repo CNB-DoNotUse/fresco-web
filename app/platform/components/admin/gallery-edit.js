@@ -1,14 +1,13 @@
 import React, { PropTypes } from 'react';
-import AutocompleteMap from '../global/autocomplete-map';
-import ChipInput from '../global/chip-input';
-import EditTags from './../gallery/edit-tags';
-import EditPosts from './../gallery/edit-posts';
-import EditAssignment from './../gallery/edit-assignment';
-import EditByline from './../gallery/edit-byline';
 import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
+import AutocompleteMap from '../global/autocomplete-map';
+import ChipInput from '../global/chip-input';
+import EditPosts from './../gallery/edit-posts';
+import EditAssignment from './../gallery/edit-assignment';
+import EditByline from './../gallery/edit-byline';
 
 /**
  *	Admin Gallery Edit component.
@@ -241,13 +240,6 @@ class GalleryEdit extends React.Component {
     }
 
 	/**
-	 * Updates state with new tags
-	 */
-    updateTags(tags) {
-        this.setState({ tags });
-    }
-
-	/**
 	 * Called when caption input fires keyUp event
 	 */
     handleChangeCaption(e) {
@@ -276,8 +268,8 @@ class GalleryEdit extends React.Component {
             <div className="dialog admin-edit-pane">
                 <div className="dialog-body" style={{ visibility: 'visible' }} >
                     <div className="gallery-images">
-                        <EditPosts 
-                            originalPosts={gallery.posts} 
+                        <EditPosts
+                            originalPosts={gallery.posts}
                             refreshInterval />
                     </div>
 
@@ -306,9 +298,11 @@ class GalleryEdit extends React.Component {
                         updateAssignment={(a) => this.setState({ assignment: a })}
                     />
 
-                    <EditTags
-                        updateTags={(t) => this.updateTags(t)}
-                        tags={tags}
+                    <ChipInput
+                        model="tags"
+                        items={tags}
+                        updateItems={(t) => this.setState({ tags: t })}
+                        autocomplete={false}
                     />
 
                     <ChipInput
