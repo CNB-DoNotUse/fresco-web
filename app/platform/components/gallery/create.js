@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
-import EditArticles from './edit-articles';
 import EditPosts from './edit-posts';
 import ChipInput from '../global/chip-input';
 
@@ -166,6 +165,7 @@ class Create extends React.Component {
                                     items={tags}
                                     updateItems={(t) => this.setState({ tags: t })}
                                     autocomplete={false}
+                                    className="dialog-row"
                                 />
 
                                 <ChipInput
@@ -177,9 +177,13 @@ class Create extends React.Component {
                                     autocomplete
                                 />
 
-                                <EditArticles
-                                    articles={articles}
-                                    updateArticles={(a) => this.setState({ articles: a })}
+                                <ChipInput
+                                    model="articles"
+                                    attr="title"
+                                    items={articles}
+                                    updateItems={(a) => this.setState({ articles: a })}
+                                    className="dialog-row"
+                                    autocomplete
                                 />
 
                                 <div className="dialog-row">

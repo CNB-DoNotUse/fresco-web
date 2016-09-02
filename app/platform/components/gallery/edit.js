@@ -470,6 +470,7 @@ class Edit extends React.Component {
                         items={tags}
                         updateItems={(t) => this.setState({ tags: t })}
                         autocomplete={false}
+                        className="dialog-row"
                     />
 
                     <ChipInput
@@ -486,6 +487,7 @@ class Edit extends React.Component {
                         attr="title"
                         items={articles}
                         updateItems={(a) => this.setState({ articles: a })}
+                        className="dialog-row"
                         autocomplete
                     />
 
