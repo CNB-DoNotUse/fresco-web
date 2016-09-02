@@ -6,7 +6,6 @@ import get from 'lodash/get';
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
 import EditPosts from './../gallery/edit-posts';
-import EditAssignment from './../gallery/edit-assignment';
 import EditByline from './../gallery/edit-byline';
 
 /**
@@ -292,11 +291,17 @@ class GalleryEdit extends React.Component {
                         ref="gallery-caption"
                     />
 
-                    <EditAssignment
-                        gallery={gallery}
-                        assignment={assignment}
-                        updateAssignment={(a) => this.setState({ assignment: a })}
+                    <ChipInput
+                        model="assignments"
+                        placeholder="Assignment"
+                        attr="title"
+                        items={assignment ? [assignment] : []}
+                        updateItems={(a) => this.setState({ assignment: a[0] })}
+                        multiple={false}
+                        className="dialog-row"
+                        autocomplete
                     />
+
 
                     <ChipInput
                         model="tags"

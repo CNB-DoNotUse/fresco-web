@@ -7,7 +7,6 @@ import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import EditPosts from './edit-posts';
-import EditAssignment from './edit-assignment';
 import EditByline from './edit-byline';
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
@@ -449,17 +448,21 @@ class Edit extends React.Component {
                             id="gallery-edit-caption"
                             type="text"
                             className="form-control floating-label"
-                            ref="gallery-caption"
                             value={caption}
                             placeholder="Caption"
                             onChange={(e) => this.setState({ caption: e.target.value })}
                         />
                     </div>
 
-                    <EditAssignment
-                        gallery={gallery}
-                        assignment={assignment}
-                        updateAssignment={(a) => this.setState({ assignment: a })}
+                    <ChipInput
+                        model="assignments"
+                        placeholder="Assignment"
+                        attr="title"
+                        items={assignment ? [assignment] : []}
+                        updateItems={(a) => this.setState({ assignment: a[0] })}
+                        multiple={false}
+                        className="dialog-row"
+                        autocomplete
                     />
 
                     <ChipInput
