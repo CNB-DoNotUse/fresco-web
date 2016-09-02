@@ -28,6 +28,7 @@ export default class OutletColumn extends React.Component {
         purchaseStats: {},
         dailyVideoCount: 0,
         purchases: [],
+        loading: false,
     }
 
     componentDidMount() {
@@ -184,7 +185,7 @@ export default class OutletColumn extends React.Component {
     scroll = (e) => {
         const grid = e.target;
         const scrollTop = grid.scrollTop;
-        const head = this.refs.columnHead.refs.head;
+        const head = this.columnHead.head;
         const headClass = head.className;
 
         if (scrollTop <= 0) {
@@ -195,25 +196,25 @@ export default class OutletColumn extends React.Component {
 
         // Check that nothing is loading and that we're at the end of the scroll,
         // and that we have a parent bind to load  more posts
-        if (!this.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 200)) {
+        if (!this.state.loading &&
+            grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 200)) {
             // Set that we're loading
-            this.loading = true;
+            this.setState({ loading: true });
 
-            //Run load on parent call
+            // Run load on parent call
             this.getPurchases(this.state.offset, (purchases) => {
                 this.loading = false;
 
-                //Disables scroll, and returns if posts are empty
-                if(!purchases || purchases.length == 0){
-                    return this.setState({
-                        scrollable: false
-                    });
+                // Disables scroll, and returns if posts are empty
+                if (!purchases || !purchases.length) {
+                    this.setState({ scrollable: false });
+                    return;
                 }
 
-                //Set galleries from successful response, and unset loading
+                // Set galleries from successful response, and unset loading
                 this.setState({
                     purchases: this.state.purchases.concat(purchases),
-                    offset : this.state.purchases.length + purchases.length
+                    offset: this.state.purchases.length + purchases.length,
                 });
             });
         }
@@ -223,16 +224,18 @@ export default class OutletColumn extends React.Component {
         return (
             <div className="outletColumn" draggable>
                 <OutletColumnHead
-                    ref="columnHead"
+                    ref={r => this.columnHead = r}
                     adjustGoal={this.adjustGoal}
                     userStats={this.state.userStats}
                     purchaseStats={this.state.purchaseStats}
                     dailyVideoCount={this.state.dailyVideoCount}
-                    outlet={this.state.outlet} />
+                    outlet={this.state.outlet}
+                />
 
                 <OutletColumnList
                     scroll={this.scroll}
-                    purchases={this.state.purchases} />
+                    purchases={this.state.purchases}
+                />
             </div>
         );
     }

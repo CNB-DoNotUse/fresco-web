@@ -1,35 +1,44 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import utils from 'utils';
 
 export default class OutletColumnHead extends React.Component {
+    static propTypes = {
+        outlet: PropTypes.object,
+        userStats: PropTypes.object,
+        purchaseStats: PropTypes.object,
+        dailyVideoCount: PropTypes.number,
+        adjustGoal: PropTypes.func,
+    };
+
     render() {
-        var outlet = this.props.outlet,
-            userStats = this.props.userStats,
-            purchaseStats = this.props.purchaseStats,
-            videoCount = this.props.dailyVideoCount,
-            percentage = Math.round((videoCount / outlet.goal) * 100);
+        const outlet = this.props.outlet;
+        // const userStats = this.props.userStats;
+        const purchaseStats = this.props.purchaseStats;
+        const videoCount = this.props.dailyVideoCount;
+        const percentage = Math.round((videoCount / outlet.goal) * 100);
 
-        var circleColor = 'red';
-
-        if(videoCount >= outlet.goal)
-            circleColor = 'green';
-        else if(videoCount > (.25 * outlet.goal))
-            circleColor = 'orange';
+        let circleColor = 'red';
+        if (videoCount >= outlet.goal) circleColor = 'green';
+        else if (videoCount > (0.25 * outlet.goal)) circleColor = 'orange';
 
         return (
-            <div className="head" ref="head">
+            <div
+                className="head"
+                ref={r => this.head = r}
+            >
                 <div className="title">
                     <div>
                         <h3>{outlet.title}</h3>
                         <a href={'/outlet/' + outlet._id}>
-                            <span className="mdi mdi-logout-variant launch"></span>
+                            <span className="mdi mdi-logout-variant launch"/>
                         </a>
                     </div>
 
                     <span
                         className="mdi mdi-drag-vertical drag"
                         ondrag={this.drag}
-                        draggable={true}></span>
+                        draggable
+                    />
                 </div>
 
                 {/*<div className="users">
@@ -77,25 +86,29 @@ export default class OutletColumnHead extends React.Component {
                 <div className="goal">
                     <div className={"c100 p" + percentage + " circle small " + circleColor}>
                         <p className="fraction">
-                           <span className="numerator">{this.props.dailyVideoCount}</span>
-                           <span className="denominator">{'/' + (outlet.goal || 0)}</span>
+                            <span className="numerator">
+                                {this.props.dailyVideoCount}
+                            </span>
+                            <span className="denominator">
+                               {'/' + (outlet.goal || 0)}
+                           </span>
                         </p>
 
                         <div className="slice">
-                            <div className="bar"></div>
-                            <div className="fill"></div>
+                            <div className="bar" />
+                            <div className="fill" />
                         </div>
                     </div>
 
                     <div className="actions">
                         <span
                             className="mdi mdi-minus"
-                            onClick={this.props.adjustGoal.bind(null, -1)}>
-                        </span>
+                            onClick={() => this.props.adjustGoal(-1)}
+                        />
                         <span
                             className="mdi mdi-plus"
-                            onClick={this.props.adjustGoal.bind(null, 1)}>
-                        </span>
+                            onClick={() => this.props.adjustGoal(1)}
+                        />
                     </div>
                 </div>
             </div>

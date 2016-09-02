@@ -142,17 +142,17 @@ const loaders = (env) => {
             test: /\.(eot|ttf|svg|gif|png)$/,
             loader: 'file-loader',
             query: {
-                name: fileLoaderName
-            }
-        }
-    ]
+                name: fileLoaderName,
+            },
+        },
+    ];
     // Extract sass files
     if (env === 'dev') {
         // https://github.com/jtangelder/sass-loader/issues/7
         arr = arr.concat({
             test: /\.scss$/,
             loader: ExtractTextPlugin.extract('style-loader',
-                'css?sourceMap!resolve-url!sass?outputStyle=expanded&sourceMap=true&sourceMapContents=true')
+                'css?sourceMap!resolve-url!sass?outputStyle=expanded&sourceMap=true&sourceMapContents=true'),
         });
     } else {
         arr = arr.concat({

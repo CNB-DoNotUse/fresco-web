@@ -27,7 +27,6 @@ export default class OutletColumnPurchase extends React.Component {
         } else {
             video.pause();
         }
-
     }
 
     toggleVolume() {
