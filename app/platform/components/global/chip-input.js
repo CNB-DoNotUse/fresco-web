@@ -13,8 +13,8 @@ class ChipInput extends React.Component {
     static propTypes = {
         items: PropTypes.array.isRequired,
         updateItems: PropTypes.func.isRequired,
-        attr: PropTypes.string.isRequired,
         model: PropTypes.string.isRequired,
+        attr: PropTypes.string,
         initMaterial: PropTypes.bool,
         className: PropTypes.string,
         autocomplete: PropTypes.bool,
@@ -61,7 +61,7 @@ class ChipInput extends React.Component {
         const query = e.target.value;
         const { model, attr, autocomplete } = this.props;
         this.setState({ query });
-        if (!autocomplete) return;
+        if (!autocomplete || !attr) return;
 
         // Enter is pressed, and query is present
         if (!query.length === 0) {
@@ -94,6 +94,8 @@ class ChipInput extends React.Component {
                 s.title.toLowerCase() === query.toLowerCase()
             ));
 
+            if (!attr) this.addItem(query);
+
             this.addItem(matched || { [attr]: query, newModel: true });
         }
     }
@@ -103,7 +105,7 @@ class ChipInput extends React.Component {
      */
     addItem(newItem) {
         let { items, attr, multiple } = this.props;
-        if (!newItem[attr] || !newItem[attr].length) return;
+        if (attr && !newItem[attr] || !newItem[attr].length) return;
 
         // Check if story already exists
         if (!newItem.newModel && items.some((i) => (i.id === newItem.id))) return;
@@ -118,7 +120,8 @@ class ChipInput extends React.Component {
      */
     removeItem(item) {
         let { items, attr } = this.props;
-        items = reject(items, { [attr]: item[attr] });
+        if (!attr) items = reject(items, item);
+        else items = reject(items, { [attr]: item[attr] });
 
         this.props.updateItems(items);
     }
@@ -128,7 +131,7 @@ class ChipInput extends React.Component {
         const { items, attr, model, placeholder } = this.props;
         const itemsJSX = items.map((item, i) => (
             <Tag
-                text={item[attr]}
+                text={attr ? item[attr] : item}
                 plus={false}
                 onClick={() => this.removeItem(item)}
                 key={i}

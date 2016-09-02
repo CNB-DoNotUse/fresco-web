@@ -6,10 +6,7 @@ import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
-import EditTags from './edit-tags';
-import EditArticles from './edit-articles';
 import EditPosts from './edit-posts';
-import EditAssignment from './edit-assignment';
 import EditByline from './edit-byline';
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
@@ -118,7 +115,7 @@ class Edit extends React.Component {
                     uploads: this.state.uploads.concat(upload)
                 });
             };
-            reader.readAsDataURL(file);        
+            reader.readAsDataURL(file);
         } else if(type.indexOf('video') > -1){
             const upload = ({ 
                 type, 
@@ -363,8 +360,8 @@ class Edit extends React.Component {
     }
 
     toggleDeletePost(post) {
-        this.setState({ 
-            posts: this.state.posts.filter(p => p.id !== post.id) 
+        this.setState({
+            posts: this.state.posts.filter(p => p.id !== post.id)
         });
     }
 
@@ -453,22 +450,29 @@ class Edit extends React.Component {
                             id="gallery-edit-caption"
                             type="text"
                             className="form-control floating-label"
-                            ref="gallery-caption"
                             value={caption}
                             placeholder="Caption"
                             onChange={(e) => this.setState({ caption: e.target.value })}
                         />
                     </div>
 
-                    <EditAssignment
-                        gallery={gallery}
-                        assignment={assignment}
-                        updateAssignment={(a) => this.setState({ assignment: a })}
+                    <ChipInput
+                        model="assignments"
+                        placeholder="Assignment"
+                        attr="title"
+                        items={assignment ? [assignment] : []}
+                        updateItems={(a) => this.setState({ assignment: a[0] })}
+                        multiple={false}
+                        className="dialog-row"
+                        autocomplete
                     />
 
-                    <EditTags
-                        tags={tags}
-                        updateTags={(t) => this.setState({ tags: t })}
+                    <ChipInput
+                        model="tags"
+                        items={tags}
+                        updateItems={(t) => this.setState({ tags: t })}
+                        autocomplete={false}
+                        className="dialog-row"
                     />
 
                     <ChipInput
@@ -480,9 +484,13 @@ class Edit extends React.Component {
                         autocomplete
                     />
 
-                    <EditArticles
-                        articles={articles}
-                        updateArticles={(a) => this.setState({ articles: a })}
+                    <ChipInput
+                        model="articles"
+                        attr="title"
+                        items={articles}
+                        updateItems={(a) => this.setState({ articles: a })}
+                        className="dialog-row"
+                        autocomplete
                     />
 
                     <div className="dialog-row">
@@ -507,7 +515,7 @@ class Edit extends React.Component {
                         canDelete={isOriginalGallery}
                         onToggleDelete={(p) => this.toggleDeletePost(p)}
                         className="dialog-col col-xs-12 col-md-5"
-                    /> 
+                    />
                 ) : null}
 
                 {this.renderMap(isOriginalGallery)}
@@ -614,9 +622,9 @@ class Edit extends React.Component {
                                 onClick={() => this.hide()}
                             />
                         </div>
-                        
+
                         {this.renderBody()}
-                        
+
                         {this.renderFooter()}
                     </div>
 

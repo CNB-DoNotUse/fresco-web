@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react';
-import EditTags from './edit-tags';
-import EditArticles from './edit-articles';
+import utils from 'utils';
 import EditPosts from './edit-posts';
 import ChipInput from '../global/chip-input';
-import utils from 'utils';
 
 /**
  * Description : Component for creating a gallery
@@ -162,9 +160,12 @@ class Create extends React.Component {
                                     />
                                 </div>
 
-                                <EditTags
-                                    tags={tags}
-                                    updateTags={(t) => this.setState({ tags: t })}
+                                <ChipInput
+                                    model="tags"
+                                    items={tags}
+                                    updateItems={(t) => this.setState({ tags: t })}
+                                    autocomplete={false}
+                                    className="dialog-row"
                                 />
 
                                 <ChipInput
@@ -176,9 +177,13 @@ class Create extends React.Component {
                                     autocomplete
                                 />
 
-                                <EditArticles
-                                    articles={articles}
-                                    updateArticles={(a) => this.setState({ articles: a })}
+                                <ChipInput
+                                    model="articles"
+                                    attr="title"
+                                    items={articles}
+                                    updateItems={(a) => this.setState({ articles: a })}
+                                    className="dialog-row"
+                                    autocomplete
                                 />
 
                                 <div className="dialog-row">
