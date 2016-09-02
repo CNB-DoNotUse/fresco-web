@@ -215,7 +215,7 @@ class Purchases extends React.Component {
             case 'outlets':
                 return (
                     <Outlets
-                        outletIds={this.state.outlets.map(o => o._id)}
+                        outletIds={this.state.outlets.map(o => o.id)}
                         statsTime={this.state.outletStatsTime}
                     />
                 );
@@ -261,15 +261,17 @@ class Purchases extends React.Component {
                         key="outletsFilter"
                     />
 
-                    <TagFilter
-                        text="Users"
-                        tagList={map(availableUsers, 'full_name')}
-                        filterList={map(users, 'full_name')}
-                        onTagInput={this.findUsers}
-                        onTagAdd={this.addUser}
-                        onTagRemove={this.removeUser}
-                        key="usersFilter"
-                    />
+                    {(activeTab === 'Summary') &&
+                        <TagFilter
+                            text="Users"
+                            tagList={map(availableUsers, 'full_name')}
+                            filterList={map(users, 'full_name')}
+                            onTagInput={this.findUsers}
+                            onTagAdd={this.addUser}
+                            onTagRemove={this.removeUser}
+                            key="usersFilter"
+                        />
+                    }
 
                     {(activeTab === 'Outlets') &&
                         <Dropdown

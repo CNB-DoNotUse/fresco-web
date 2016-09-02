@@ -49,12 +49,7 @@ export default class PurchasesOutlets extends React.Component {
     loadOutlets(outletIds = []) {
         // Loop through, and update state on each response
         outletIds.forEach((id) => {
-            $.ajax({
-                url: '/api/outlet/get',
-                type: 'GET',
-                data: { id },
-                dataType: 'json',
-            })
+            $.ajax(`/api/outlet/${id}`)
             .done(response => {
                 this.setState({
                     outlets: update(this.state.outlets, { [id]: { $set: response.data } }),
