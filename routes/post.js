@@ -3,14 +3,12 @@ const config = require('../lib/config');
 const api = require('../lib/api');
 const router = express.Router();
 
-
 /**
  * Description : Post Specific Routes ~ prefix /gallery/~
  * Post Detail Page
  * @param Post ID
  */
-
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
     let post;
     let gallery;
     let title = '';
@@ -50,9 +48,13 @@ router.get('/:id', (req, res) => {
             page: 'postDetail',
         });
 
-    }).catch(() => (
-        req.session.save(() => res.redirect(req.headers.Referer || config.DASH_HOME))
-    ));
+    }).catch(error => {
+        next({
+            message: error.status === 404 ? 'Post not found!' : 'Unable to load post!',
+            status: error.status,
+            stack: error.stack
+        });
+    });
 });
 
 module.exports = router;

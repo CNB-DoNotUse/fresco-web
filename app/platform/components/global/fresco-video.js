@@ -13,8 +13,13 @@ class FrescoVideo extends React.Component {
         thumbnail: PropTypes.string,
         className: PropTypes.string,
         style: PropTypes.object,
-        autoplay: PropTypes.boolean
+        autoplay: PropTypes.bool
     };
+
+    static defaultProps = {
+        autoplay: false,
+        muted: false
+    }
 
     types = {
         'm3u8' : 'application/x-mpegURL',
@@ -24,9 +29,21 @@ class FrescoVideo extends React.Component {
     }
 
     componentDidMount() {
+        const player = videojs('fresco-video', {
+            width: 640,
+            muted: this.props.muted
+        });
+
+        this.setState({ player });
+
         if(this.props.autoplay) {
-            const player = videojs('fresco-video');
             player.play();
+        }   
+    }
+
+    componentWillUnmount() {
+        if (this.state.player) {
+            this.state.player.pause();
         }
     }
 
@@ -43,18 +60,19 @@ class FrescoVideo extends React.Component {
         const className = `${type.indexOf(this.types['m3u8']) > -1 ? 'video-js vjs-default-skin' : ''}`;
 
         return (
-            <video 
-                id="fresco-video" 
-                className={className}
-                autoPlay={this.props.autoplay}
-                controls={true}
-                data-setup='{}'>
-                <source
-                    src={this.props.video}
-                    poster={this.props.thumbnail}
-                    type={type} 
-                />
-            </video>
+            <div className="fresco-video-wrap">
+                <video 
+                    id='fresco-video' 
+                    className={className}
+                    autoPlay={this.props.autoplay}
+                    controls={true}>
+                    <source
+                        src={this.props.video}
+                        poster={this.props.thumbnail}
+                        type={type} 
+                    />
+                </video>
+            </div>
         );
     }
 }

@@ -67,6 +67,7 @@ class PostDetailImage extends React.Component {
                     video={post.stream}
                     thumbnail={post.image}
                     autoplay
+                    muted
                 />
             );
         } else {
