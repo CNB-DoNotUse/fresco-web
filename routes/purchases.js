@@ -1,6 +1,5 @@
 const express = require('express');
 const config = require('../lib/config');
-const get = require('lodash/get');
 
 const router = express.Router();
 
@@ -8,8 +7,7 @@ const router = express.Router();
  * Root purchases page
  */
 router.get('/', (req, res, next) => {
-    // Check if an Admin
-    if (!get(req, 'session.user.permissions.get-all-purchases')) {
+    if (!req.session.user.permissions.includes('get-all-purchases')) {
         next({
             message: config.ERR_PAGE_MESSAGES[403],
             status: 403,
