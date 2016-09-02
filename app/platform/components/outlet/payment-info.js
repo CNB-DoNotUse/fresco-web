@@ -197,7 +197,7 @@ class PaymentInfo extends React.Component {
                     </div>
 
                     <button
-                        className={`btn btn-save changed ${disabled ? 'disabled' : ''}`}
+                        className={`btn btn-save ${disabled ? 'disabled' : 'changed'}`}
                         ref="outlet-card-save"
                         tabIndex="6"
                         onClick={() => this.save()}

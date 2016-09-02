@@ -49,18 +49,19 @@ class OutletSettings extends React.Component {
 
                 <div className={className}>
                     <div className="left">
-                        {isOwner ? 
+                        {isOwner ? (
                             <Info
                                 updateOutlet={(o) => this.updateOutlet(o)}
                                 outlet={outlet}
                             />
-                        : '' }
-                        {isOwner ? 
+                        ) : '' }
+                        
+                        {isOwner ? (
                             <PaymentInfo
                                 payment={payment}
                                 outlet={this.state.outlet}
                             />
-                        : ''}
+                        ) : ''}
 
                         <QuickSupport />
                     </div>
@@ -69,13 +70,13 @@ class OutletSettings extends React.Component {
 
                         <Locations outlet={this.state.outlet} />
 
-                        {isOwner ? 
+                        {isOwner ? (
                             <Members
                                 outlet={this.state.outlet}
                                 updateMembers={(o) => this.updateMembers(o)}
                                 members={this.state.members}
                             />
-                        : ''}
+                        ) : ''}
                     </div>
                 </div>
             </App>
