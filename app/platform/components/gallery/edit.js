@@ -108,22 +108,24 @@ class Edit extends React.Component {
         if (!file) return;
 
         const type = file.type;
-        const { uploads } = this.state;
 
         if(type.indexOf('image') > -1) {
             const reader = new FileReader();
             reader.onload = (r) => {
-                uploads.unshift({ type, url: r.target.result })
-                this.setState({ uploads });
+                const upload = { type, url: r.target.result };
+
+                this.setState({ 
+                    uploads: this.state.uploads.concat(upload)
+                });
             };
             reader.readAsDataURL(file);        
         } else if(type.indexOf('video') > -1){
-            uploads.unshift({ 
+            const upload = ({ 
                 type, 
                 url: URL.createObjectURL(file)
             });
 
-            this.setState({ uploads });
+            this.setState({ uploads: this.state.uploads.concat(upload) });
         }
     }
 

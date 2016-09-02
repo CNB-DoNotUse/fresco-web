@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+import uniqueId from 'lodash/uniqueId';
 require('script!video.js/dist/video.js')
 require('script!videojs-contrib-hls/dist/videojs-contrib-hls.js')
 import '../../../sass/platform/video.scss';
@@ -18,7 +19,13 @@ class FrescoVideo extends React.Component {
 
     static defaultProps = {
         autoplay: false,
-        muted: false
+        muted: false,
+        video: ''
+    }
+
+    state = {
+        id: uniqueId(),
+        isStream: this.props.video.indexOf('m3u8') > -1
     }
 
     types = {
@@ -29,10 +36,20 @@ class FrescoVideo extends React.Component {
     }
 
     componentDidMount() {
-        const player = videojs('fresco-video', {
-            width: 640,
+        if(this.state.isStream) {
+            this.setUpPlayer();
+        }
+    }
+
+    setUpPlayer = () => {
+        const options = {
             muted: this.props.muted
-        });
+        };
+
+        if (this.props.width)
+            options.width = this.props.width;
+
+        const player = videojs(this.state.id, options);
 
         this.setState({ player });
 
@@ -44,6 +61,7 @@ class FrescoVideo extends React.Component {
     componentWillUnmount() {
         if (this.state.player) {
             this.state.player.pause();
+            this.state.player.dispose();
         }
     }
 
@@ -57,12 +75,14 @@ class FrescoVideo extends React.Component {
         }
 
         //Video.JS if an m3u8 file
-        const className = `${type.indexOf(this.types['m3u8']) > -1 ? 'video-js vjs-default-skin' : ''}`;
+        let className = `${this.state.isStream ? 'video-js vjs-default-skin' : ''}`;
+
+        className += !this.props.width ? ' full-width' : '';
 
         return (
             <div className="fresco-video-wrap">
                 <video 
-                    id='fresco-video' 
+                    id={this.state.id}
                     className={className}
                     autoPlay={this.props.autoplay}
                     controls={true}>

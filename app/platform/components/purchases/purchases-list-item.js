@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react'
-import moment from 'moment'
-import utils from 'utils'
+import moment from 'moment';
+import utils from 'utils';
+import FrescoImage from '../global/fresco-image';
 
-export default class PurchasesListItem extends React.Component {
+class PurchasesListItem extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -28,14 +29,15 @@ export default class PurchasesListItem extends React.Component {
 			<a href={`/post/${post.id}`}>
 				<div className="list-item">
 					<div>
-						<img
-							className="img-circle"
-							src={post ? utils.formatImg(post.image, 'small') : ''}
+						<FrescoImage
+							className='img-circle'
+							src={post.image}
+							size='small'
 							style={{
 								margin: '-2px 0',
 							    width: '40px',
 							    height: '40px'
-							}}/>
+							}} />
 					</div>
 					<div>
 						<p className="md-type-body1">{timeString}</p>
@@ -46,16 +48,15 @@ export default class PurchasesListItem extends React.Component {
 					<div className={post.owner ? '' : 'flexy'}>
 						<p className="md-type-body1">{price}</p>
 					</div>
-					{post.owner ? 
+					{post.owner ? (
 						<div className="flexy" >
 							<a href={`/user/${post.owner.id}`}>
 								<p className="md-type-body2">{post.owner.full_name || post.owner.username}</p>
 							</a>
 						</div>
-						: ''
-					}
+					) : ''}
 					
-					{purchase.assignment ? 
+					{purchase.assignment ? (
 						<div onClick={this.openLink.bind(this, '/assignment/' + assignment.id)}>
 							<p className="md-type-body2" style={{lineHeight: '16px'}}>
 								{assignment.title}
@@ -65,17 +66,15 @@ export default class PurchasesListItem extends React.Component {
 								{purchase.assignment.location.address || purchase.assignment.location.googlemaps}
 							</p>
 						</div>
-						: ''
-					}
+					) : ''}
 					
-					{showTitle ?
+					{showTitle ? (
 						<div>
 							<a href={`/outlet/${outlet.id}`}>
 								<p className="md-type-body2 toggle-aradd  toggler">{showTitle ? outlet.title : ''}</p>
 							</a>
 						</div>
-						: ''
-					}
+					) : ''}
 				</div>
 			</a>
 		);
@@ -89,3 +88,5 @@ PurchasesListItem.propTypes = {
 PurchasesListItem.defaultProps = {
 	showTitle: true
 }
+
+export default PurchasesListItem;

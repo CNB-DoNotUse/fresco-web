@@ -60,27 +60,25 @@ const renderPostsNoDelete = (originalPosts) => {
     )
 }
 
-const renderUpload = (upload, i) => {
-    if ((!typeof i === 'number') || !upload || !upload.type || !upload.url) return null;
+const renderUpload = (u, i) => {
+    if ((!typeof i === 'number') || !u || !u.type || !u.url) return null;
 
-    console.log('UPLOAD', upload);
-
-    if (upload.type.indexOf('image') > -1) {
+    if (u.type.indexOf('image') > -1) {
         return (
             <div key={`upload${i}`} className="frick-frame">
                 <img
                     role="presentation"
                     className="img-responsive"
-                    src={upload.url}
+                    src={u.url}
                 />
             </div>
         );
-    } else if (upload.type.indexOf('video') > -1) {
+    } else if (u.type.indexOf('video') > -1) {
         return (
             <div key={`upload${i}`} className="frick-frame">
                 <FrescoVideo 
-                    type={upload.type}
-                    video={upload.url} />
+                    type={u.type}
+                    video={u.url} />
             </div>
         );
     }
@@ -111,10 +109,10 @@ class EditPosts extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        // // Reset slick to first index of we have different posts
-        // if (get(prevProps, 'originalPosts[0].id') !== get(this.props, 'originalPosts[0].id')) {
-        //     this.slider.slickGoTo(0);
-        // }
+        // Reset slick to first index of we have different posts
+        if (get(prevProps, 'originalPosts[0].id') !== get(this.props, 'originalPosts[0].id')) {
+            this.slider.slickGoTo(0);
+        }
     }
 
     render() {
@@ -145,7 +143,7 @@ class EditPosts extends React.Component {
                 dots
             >
                 {uploadsJSX 
-                    ? uploadsJSX.concat(postsJSX) 
+                    ? postsJSX.concat(uploadsJSX) 
                     : postsJSX
                 }
             </Slider>
