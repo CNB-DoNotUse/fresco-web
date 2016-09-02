@@ -14,6 +14,10 @@ export default class OutletColumn extends React.Component {
         since: PropTypes.object,
     };
 
+    static defaultProps = {
+        outlet: {},
+    };
+
     state = {
         userStats: {
             mau: 0,
@@ -217,7 +221,7 @@ export default class OutletColumn extends React.Component {
 
     render() {
         return (
-            <div className="outletColumn" draggable={true}>
+            <div className="outletColumn" draggable>
                 <OutletColumnHead
                     ref="columnHead"
                     adjustGoal={this.adjustGoal}
@@ -234,7 +238,3 @@ export default class OutletColumn extends React.Component {
     }
 }
 
-
-OutletColumn.defaultProps = {
-    outlet: {}
-}

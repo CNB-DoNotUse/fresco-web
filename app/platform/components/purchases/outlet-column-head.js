@@ -1,15 +1,7 @@
-import React from 'react'
-import global from '../../../lib/global'
-import moment from 'moment'
+import React from 'react';
+import utils from 'utils';
 
-/**
- *
- */
 export default class OutletColumnHead extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         var outlet = this.props.outlet,
             userStats = this.props.userStats,
@@ -61,11 +53,11 @@ export default class OutletColumnHead extends React.Component {
                     <ul>
                         <li>
                             <span className="count">{purchaseStats.photos}</span>
-                            <span>{global.isPlural(purchaseStats.photos) ? 'photos' : 'photo'}</span>
+                            <span>{utils.isPlural(purchaseStats.photos) ? 'photos' : 'photo'}</span>
                         </li>
                         <li>
                             <span className="count">{purchaseStats.videos}</span>
-                            <span>{global.isPlural(purchaseStats.photos) ? 'videos' : 'video'}</span>
+                            <span>{utils.isPlural(purchaseStats.photos) ? 'videos' : 'video'}</span>
                         </li>
                         <li>
                             <span className="count">{purchaseStats.revenue}</span>
@@ -111,6 +103,3 @@ export default class OutletColumnHead extends React.Component {
     }
 }
 
-OutletColumnHead.deafultProps = {
-    outlet: {}
-}
