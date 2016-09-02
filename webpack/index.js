@@ -2,6 +2,7 @@ const fs = require('fs');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const AssetsPlugin = require('assets-webpack-plugin');
+const autoprefixer = require('autoprefixer');
 const fileLoaderName = 'fonts/[name].[ext]';
 const hashDate = Date.now();
 
@@ -53,7 +54,7 @@ const plugins = (env) => {
         );
     }
 
-    if(env === 'production') {
+    if (env === 'production') {
         plugins.push(
             new webpack.optimize.UglifyJsPlugin({
                 compress: {
@@ -105,6 +106,10 @@ const loaders = (env) => {
             },
         },
         {
+            test: /\.scss$/,
+            loader: ExtractTextPlugin.extract('style-loader', 'css?sourceMap!resolve-url!sass?sourceMap!postcss'),
+        },
+        {
             test: /.(woff(2)?)(\?[a-z0-9=\.]+)?$/,
             loader: 'url',
             query: {
@@ -119,8 +124,8 @@ const loaders = (env) => {
             query: {
                 limit: '10000',
                 mimetype: 'application/octet-stream',
-                name: fileLoaderName
-            }
+                name: fileLoaderName,
+            },
         },
         {
             test: /.(svg)(\?[a-z0-9=\.]+)?$/,
@@ -128,38 +133,20 @@ const loaders = (env) => {
             query: {
                 limit: '10000',
                 mimetype: 'image/svg+xml',
-                name: fileLoaderName
-            }
+                name: fileLoaderName,
+            },
         },
         {
             test: /.(eot)(\?[a-z0-9=\.]+)?$/,
             loader: 'file',
-            query: {
-                name: fileLoaderName
-            }
+            query: { name: fileLoaderName },
         },
         {
             test: /\.(eot|ttf|svg|gif|png)$/,
             loader: 'file-loader',
-            query: {
-                name: fileLoaderName
-            }
-        }
-    ]
-    // Extract sass files
-    if (env === 'dev') {
-        // https://github.com/jtangelder/sass-loader/issues/7
-        arr = arr.concat({
-            test: /\.scss$/,
-            loader: ExtractTextPlugin.extract('style-loader',
-                'css?sourceMap!resolve-url!sass?outputStyle=expanded&sourceMap=true&sourceMapContents=true')
-        });
-    } else {
-        arr = arr.concat({
-            test: /\.scss$/,
-            loader: ExtractTextPlugin.extract('style-loader', '!css!resolve-url!sass'),
-        });
-    }
+            query: { name: fileLoaderName },
+        },
+    ];
 
     return arr;
 };
@@ -169,24 +156,25 @@ const loaders = (env) => {
  * @param  {String} env The environment we're in
  * @return {Object} Webpack confing
  */
-module.exports = (env = 'dev') => {
-    return {
-        entry: views(env),
-        output: output(env),
-        plugins: plugins(env),
-        watch: env === 'dev',
-        devtool: env === 'dev' ? 'eval-source-map' : null,
-        module: { loaders: loaders(env) },
-        resolve: {
-            //All these extensions will be resolved without specifying extension in the `require` function
-            extensions: ['', '.js', '.scss'],
-            //Files in these directory can be required without a relative path
-            modulesDirectories: [
-                'node_modules',
-                'bower_components',
-                'lib',
-                './',
-            ]
-        }
-    }
-};
+module.exports = (env = 'dev') => ({
+    entry: views(env),
+    output: output(env),
+    plugins: plugins(env),
+    watch: env === 'dev',
+    devtool: env === 'dev' ? 'eval-source-map' : null,
+    module: {
+        loaders: loaders(env),
+        postcss: () => [autoprefixer],
+    },
+    resolve: {
+        // All these extensions will be resolved without specifying extension in the `require` function
+        extensions: ['', '.js', '.scss'],
+        // Files in these directory can be required without a relative path
+        modulesDirectories: [
+            'node_modules',
+            'bower_components',
+            'lib',
+            './',
+        ],
+    },
+});
