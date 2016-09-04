@@ -177,4 +177,10 @@ module.exports = (env = 'dev') => ({
             './',
         ],
     },
+    externals: {
+        // http://airbnb.io/enzyme/docs/guides/webpack.html
+        'react/addons': true,
+        'react/lib/ExecutionEnvironment': true,
+        'react/lib/ReactContext': true
+    },
 });
