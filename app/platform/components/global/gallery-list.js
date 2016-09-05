@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import utils from 'utils';
+import api from 'app/lib/api';
 import SuggestionList from '../highlights/suggestion-list';
 import GalleryCell from './gallery-cell';
-import utils from 'utils';
 
 /** //
 
@@ -14,19 +15,16 @@ Description : List for a gallery used across the site (/highlights, /content/gal
  */
 
 class GalleryList extends React.Component {
-    constructor(props) {
-        super(props);
+    static propTypes = {
+        onlyVerified: PropTypes.bool,
+        highlighted: PropTypes.bool,
+    };
 
-        this.state = {
-            galleries: [],
-            loading : false,
-            tags :[]
-        }
-
-        this.loadGalleries = this.loadGalleries.bind(this);
-        this.loadInitalGalleries = this.loadInitalGalleries.bind(this);
-        this.scroll = this.scroll.bind(this);
-    }
+    state = {
+        galleries: [],
+        loading: false,
+        tags: [],
+    };
 
     componentDidMount() {
         this.loadInitalGalleries();
@@ -34,9 +32,7 @@ class GalleryList extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.onlyVerified !== this.props.onlyVerified) {
-            this.setState({
-                galleries: []
-            });
+            this.setState({ galleries: [] });
 
             this.loadInitalGalleries();
 
@@ -44,7 +40,7 @@ class GalleryList extends React.Component {
         }
     }
 
-    loadInitalGalleries() {
+    loadInitalGalleries = () => {
         this.loadGalleries(null, (galleries) => {
             // Set galleries from successful response
             this.setState({ galleries });
@@ -52,7 +48,7 @@ class GalleryList extends React.Component {
     }
 
     // Returns array of galleries with offset and callback
-    loadGalleries(last, callback) {
+    loadGalleries = (last, callback) => {
         const { highlighted, onlyVerified, sort } = this.props;
         const params = {
             limit: 20,
@@ -64,30 +60,22 @@ class GalleryList extends React.Component {
 
         if (highlighted) {
             endpoint = 'gallery/highlights';
-        } else if(onlyVerified) {
+        } else if (onlyVerified) {
             params.rating = 2;
         } else {
-            params.rating = [0, 2];
+            params.rating = [0, 1, 2];
         }
 
-        $.ajax({
-            url: '/api/' + endpoint,
-            data: params,
-            dataType: 'json',
-            contentType: 'application/json',
-            success: (data, status) => {
-                if (status === 'success') {
-                    callback(data);
-                }
-            },
-            error: (xhr, status, error) => {
-                $.snackbar({content: utils.resolveError(error)});
-            }
+        api
+        .get(endpoint, params)
+        .then(res => { callback(res); })
+        .catch(() => {
+            $.snackbar({ content: 'Failed to load galleries' });
         });
     }
 
 	//Scroll listener for main window
-    scroll(e) {
+    scroll = (e) => {
         const grid = e.target;
 
         if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){

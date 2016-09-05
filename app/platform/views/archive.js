@@ -42,7 +42,7 @@ class Archive extends React.Component {
         .get('post/list', params)
         .then(res => { callback(res); })
         .catch(() => {
-            $.snackbar({ content: 'Failed to load posts' });
+            $.snackbar({ content: 'Failed to load archive' });
         });
     }
 
