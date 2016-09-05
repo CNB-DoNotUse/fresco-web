@@ -1,4 +1,3 @@
-/* setup.js */
 import jsdom from 'jsdom';
 import chai from 'chai';
 import chaiImmutable from 'chai-immutable';
@@ -17,7 +16,7 @@ Object.keys(document.defaultView).forEach((property) => {
 });
 
 global.navigator = {
-  userAgent: 'node.js'
+    userAgent: 'node.js',
 };
 
 chai.use(chaiImmutable);
