@@ -35,14 +35,19 @@ class FrescoImage extends React.Component {
                 image: utils.formatImg(nextProps.src, nextProps.size),
                 timeout: 0
             });
-        }   
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        //Timeout has changed, attempt setting image back
-        if(this.state.timeout > prevState.timeout || prevState.image !== this.state.image) {
+        // Timeout has changed, attempt setting image back
+        if (this.state.timeout > prevState.timeout
+            || prevState.image !== this.state.image) {
             this.updateImage(this.state.image);
         }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeoutId);
     }
 
     /**
@@ -51,13 +56,13 @@ class FrescoImage extends React.Component {
      */
     onTimeout = (timeout) => {
         this.setState({
-            timeout: (timeout || 1) + this.state.timeout
+            timeout: (timeout || 1) + this.state.timeout,
         });
     }
 
-    //Updates image and sends image up to prop
+    // Updates image and sends image up to prop
     updateImage = (src) => {
-        this.refs.image.src = src;
+        this.image.src = src;
         this.props.updateImage(src);
     }
 
@@ -68,9 +73,9 @@ class FrescoImage extends React.Component {
     onError = () => {
         this.updateImage(this.missingImageUrl);
 
-        if(this.props.refreshInterval) {
-            setTimeout(() => {
-                this.onTimeout(this.state.timeout)
+        if (this.props.refreshInterval) {
+            this.timeoutId = setTimeout(() => {
+                this.onTimeout(this.state.timeout);
             }, this.state.timeout * 1000);
         }
     }
@@ -81,7 +86,7 @@ class FrescoImage extends React.Component {
                 className={this.props.className || 'img-cover'}
                 style={this.props.style}
                 role="presentation"
-                ref='image'
+                ref={r => { this.image = r; }}
                 onError={this.onError}
                 src={this.state.image}
             />

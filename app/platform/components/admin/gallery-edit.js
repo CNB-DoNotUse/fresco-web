@@ -306,6 +306,7 @@ class GalleryEdit extends React.Component {
                         items={tags}
                         updateItems={(t) => this.setState({ tags: t })}
                         autocomplete={false}
+                        multiple
                     />
 
                     <ChipInput
