@@ -70,7 +70,7 @@ class Edit extends React.Component {
     onSave = () => {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
-        const { loading, uploads } = this.state;
+        let { loading, uploads } = this.state;
 
         if (!get(gallery, 'id') || !params || loading) return;
         this.setState({ loading: true });
@@ -83,7 +83,7 @@ class Edit extends React.Component {
             if (get(res[0], 'posts_new.length')) {
                 return Promise.all([
                     res[0],
-                    this.uploadFiles(res[0].posts_new, uploads.map(u => u.file)),
+                    this.uploadFiles(res[0].posts_new, this.getFilesFromUploads()),
                 ]);
             }
 
@@ -227,10 +227,14 @@ class Edit extends React.Component {
         return pickBy(params, v => !!v && (Array.isArray(v) ? v.length : true));
     }
 
+    getFilesFromUploads() {
+        return this.state.uploads.filter(u => !get(u, 'deleteToggled')).map(u => u.file);
+    }
+
     getPostsFormData() {
         const { gallery } = this.props;
-        let { posts, rating, uploads } = this.state;
-        const files = uploads.map(u => u.file);
+        const files = this.getFilesFromUploads();
+        let { posts, rating } = this.state;
 
         if (!files.length && !posts.length) return null;
 
@@ -369,7 +373,7 @@ class Edit extends React.Component {
         this.setState({ rating: e.target.checked ? 3 : 2 });
     }
 
-    toggleDeletePost(post) {
+    onToggleDeletePost(post) {
         let { posts } = this.state;
         if (posts.some(p => p.id === post.id)) {
             posts = posts.filter(p => p.id !== post.id);
@@ -378,6 +382,14 @@ class Edit extends React.Component {
         }
 
         this.setState({ posts });
+    }
+
+    onToggleDeleteUpload(upload, i) {
+        const { uploads } = this.state;
+        const deleteToggled = !get(upload, 'deleteToggled', false);
+        uploads[i] = Object.assign({}, upload, { deleteToggled });
+
+        this.setState({ uploads });
     }
 
     hide() {
@@ -528,12 +540,13 @@ class Edit extends React.Component {
                         editingPosts={posts}
                         uploads={uploads}
                         canDelete={isOriginalGallery}
-                        onToggleDelete={(p) => this.toggleDeletePost(p)}
+                        onToggleDeletePost={p => this.onToggleDeletePost(p)}
+                        onToggleDeleteUpload={(u, i) => this.onToggleDeleteUpload(u, i)}
                         className="dialog-col col-xs-12 col-md-5"
                     />
                 ) : null}
 
-                {this.renderMap(isOriginalGallery)}
+                {this.renderMap()}
             </div>
         );
     }
@@ -549,7 +562,7 @@ class Edit extends React.Component {
                     id="gallery-upload-files"
                     type="file"
                     accept="image/*,video/*,video/mp4"
-                    ref={(r) => this.fileInput = r}
+                    ref={(r) => { this.fileInput = r; }}
                     style={{ display: 'none' }}
                     disabled={loading}
                     onChange={(e) => this.onChangeFileInput(e)}
