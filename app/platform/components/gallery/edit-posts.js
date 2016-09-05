@@ -9,9 +9,10 @@ import FrescoVideo from '../global/fresco-video';
 const renderPost = (post) => {
     if (post.stream) {
         return (
-            <FrescoVideo 
-                video={post.stream} 
-                thumbnail={post.image} />
+            <FrescoVideo
+                video={post.stream}
+                thumbnail={post.image}
+            />
         );
     }
 
@@ -76,7 +77,7 @@ const renderUpload = (u, i) => {
     } else if (u.type.indexOf('video') > -1) {
         return (
             <div key={`upload${i}`} className="frick-frame">
-                <FrescoVideo 
+                <FrescoVideo
                     type={u.type}
                     video={u.url} />
             </div>
@@ -142,8 +143,8 @@ class EditPosts extends React.Component {
                 draggable
                 dots
             >
-                {uploadsJSX 
-                    ? postsJSX.concat(uploadsJSX) 
+                {uploadsJSX
+                    ? postsJSX.concat(uploadsJSX)
                     : postsJSX
                 }
             </Slider>

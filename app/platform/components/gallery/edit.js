@@ -106,20 +106,20 @@ class Edit extends React.Component {
 
         const type = file.type;
 
-        if(type.indexOf('image') > -1) {
+        if (type.indexOf('image') > -1) {
             const reader = new FileReader();
             reader.onload = (r) => {
                 const upload = { type, url: r.target.result };
 
-                this.setState({ 
-                    uploads: this.state.uploads.concat(upload)
+                this.setState({
+                    uploads: this.state.uploads.concat(upload),
                 });
             };
             reader.readAsDataURL(file);
-        } else if(type.indexOf('video') > -1){
-            const upload = ({ 
-                type, 
-                url: URL.createObjectURL(file)
+        } else if (type.indexOf('video') > -1) {
+            const upload = ({
+                type,
+                url: URL.createObjectURL(file),
             });
 
             this.setState({ uploads: this.state.uploads.concat(upload) });
@@ -360,9 +360,14 @@ class Edit extends React.Component {
     }
 
     toggleDeletePost(post) {
-        this.setState({
-            posts: this.state.posts.filter(p => p.id !== post.id)
-        });
+        let { posts } = this.state;
+        if (posts.some(p => p.id === post.id)) {
+            posts = posts.filter(p => p.id !== post.id);
+        } else {
+            posts = posts.concat(post);
+        }
+
+        this.setState({ posts });
     }
 
     hide() {
