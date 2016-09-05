@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import Slider from 'react-slick';
 import find from 'lodash/find';
 import get from 'lodash/get';
-import utils from 'utils';
 import FrescoImage from '../global/fresco-image';
 import FrescoVideo from '../global/fresco-video';
 
@@ -51,15 +50,13 @@ const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
     })
 );
 
-const renderPostsNoDelete = (originalPosts) => {
-    return (
-        originalPosts.map((p, i) => (
-            <div key={`post${i}`} className="frick-frame">
-                {renderPost(p)}
-            </div>
-        ))
-    )
-}
+const renderPostsNoDelete = (originalPosts) => (
+    originalPosts.map((p, i) => (
+        <div key={`post${i}`} className="frick-frame">
+            {renderPost(p)}
+        </div>
+    ))
+);
 
 const renderUpload = (u, i) => {
     if ((!typeof i === 'number') || !u || !u.type || !u.url) return null;
@@ -77,9 +74,7 @@ const renderUpload = (u, i) => {
     } else if (u.type.indexOf('video') > -1) {
         return (
             <div key={`upload${i}`} className="frick-frame">
-                <FrescoVideo
-                    type={u.type}
-                    video={u.url} />
+                <FrescoVideo type={u.type} video={u.url} />
             </div>
         );
     }
@@ -137,7 +132,7 @@ class EditPosts extends React.Component {
         return (
             <Slider
                 className={className}
-                ref={r => this.slider = r}
+                ref={r => { this.slider = r; }}
                 infinite={originalPosts.length > 1}
                 swipeToSlide
                 draggable

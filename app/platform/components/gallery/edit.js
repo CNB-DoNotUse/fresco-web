@@ -60,7 +60,7 @@ class Edit extends React.Component {
         };
     }
 
-    onRemove() {
+    onRemove = () => {
         const { gallery } = this.props;
         if (!gallery || !gallery.id || this.state.loading) return;
 
@@ -70,7 +70,9 @@ class Edit extends React.Component {
     onSave = () => {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
-        if (!get(gallery, 'id') || !params || this.state.loading) return;
+        const { loading, uploads } = this.state;
+
+        if (!get(gallery, 'id') || !params || loading) return;
         this.setState({ loading: true });
 
         Promise.all([
@@ -81,7 +83,7 @@ class Edit extends React.Component {
             if (get(res[0], 'posts_new.length')) {
                 return Promise.all([
                     res[0],
-                    this.uploadFiles(res[0].posts_new, this.fileInput.files),
+                    this.uploadFiles(res[0].posts_new, uploads.map(u => u.file)),
                 ]);
             }
 
@@ -101,29 +103,37 @@ class Edit extends React.Component {
     }
 
     onChangeFileInput(e) {
-        const file = e.target.files[0];
-        if (!file) return;
+        const files = e.target.files;
+        if (!files || !files.length) return;
 
-        const type = file.type;
+        times(files.length, (i) => {
+            const file = files[i];
+            const type = file.type;
 
-        if (type.indexOf('image') > -1) {
-            const reader = new FileReader();
-            reader.onload = (r) => {
-                const upload = { type, url: r.target.result };
+            if (type.indexOf('image') > -1) {
+                const reader = new FileReader();
+                reader.onload = (r) => {
+                    const upload = {
+                        type,
+                        url: r.target.result,
+                        file,
+                    };
 
-                this.setState({
-                    uploads: this.state.uploads.concat(upload),
+                    this.setState({ uploads: this.state.uploads.concat(upload) });
+                };
+                reader.readAsDataURL(file);
+            } else if (type.indexOf('video') > -1) {
+                const upload = ({
+                    type,
+                    url: URL.createObjectURL(file),
+                    file,
                 });
-            };
-            reader.readAsDataURL(file);
-        } else if (type.indexOf('video') > -1) {
-            const upload = ({
-                type,
-                url: URL.createObjectURL(file),
-            });
 
-            this.setState({ uploads: this.state.uploads.concat(upload) });
-        }
+                this.setState({ uploads: this.state.uploads.concat(upload) });
+            }
+        });
+
+        this.fileInput.value = '';
     }
 
     /**
@@ -219,14 +229,14 @@ class Edit extends React.Component {
 
     getPostsFormData() {
         const { gallery } = this.props;
-        const files = this.fileInput.files;
-        let { posts, rating } = this.state;
+        let { posts, rating, uploads } = this.state;
+        const files = uploads.map(u => u.file);
 
         if (!files.length && !posts.length) return null;
 
         if (files.length) {
-            times(files.length, (i) => {
-                posts = posts.concat({ contentType: files[i].type, new: true });
+            files.forEach((file) => {
+                posts = posts.concat({ contentType: file.type, new: true });
             });
         }
 
@@ -275,13 +285,13 @@ class Edit extends React.Component {
             if (files[i]) {
                 return new Promise((resolve, reject) => {
                     request
-                        .put(p.upload_url)
-                        .set('Content-Type', files[i].type)
-                        .send(files[i])
-                        .end((err) => {
-                            if (err) reject(err);
-                            else resolve();
-                        });
+                    .put(p.upload_url)
+                    .set('Content-Type', files[i].type)
+                    .send(files[i])
+                    .end((err) => {
+                        if (err) reject(err);
+                        else resolve();
+                    });
                 });
             }
 
@@ -589,7 +599,7 @@ class Edit extends React.Component {
 
                 <button
                     type="button"
-                    onClick={() => this.onRemove()}
+                    onClick={this.onRemove}
                     className="btn btn-flat pull-right"
                     disabled={loading}
                 >
