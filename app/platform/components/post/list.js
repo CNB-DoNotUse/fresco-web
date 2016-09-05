@@ -92,11 +92,7 @@ class PostList extends React.Component {
      * Initial call to populate posts
      */
     loadInitialPosts() {
-        // Access parent var load method
-        this.props.loadPosts(null, (posts) => {
-            // Set posts & callback from successful response
-            this.setState({ posts });
-        });
+        this.props.loadPosts(null, (posts) => { this.setState({ posts }) });
     }
 
     /**

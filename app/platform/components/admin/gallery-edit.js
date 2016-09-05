@@ -300,7 +300,6 @@ class GalleryEdit extends React.Component {
                         autocomplete
                     />
 
-
                     <ChipInput
                         model="tags"
                         items={tags}

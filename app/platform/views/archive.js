@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import utils from 'utils';
+import api from 'app/lib/api';
 import App from './app';
 import PostList from './../components/post/list.js';
 import TopBar from './../components/topbar';
-import utils from 'utils';
 
 
 /**
@@ -11,53 +12,41 @@ import utils from 'utils';
  * @description View page for all content
  */
 class Archive extends React.Component {
+    static propTypes = {
+        sortBy: PropTypes.string,
+    };
 
-    constructor(props) {
-        super(props);
+    state = {
+        verifiedToggle: true,
+        sortBy: this.props.sortBy || 'created_at',
+    };
 
-        this.state = {
-            verifiedToggle: true,
-            sortBy: this.props.sortBy || 'created_at',
-        };
-
-        this.loadPosts = this.loadPosts.bind(this);
-        this.updateSort = this.updateSort.bind(this);
-        this.onVerifiedToggled 	= this.onVerifiedToggled.bind(this);
-    }
-
-    onVerifiedToggled(toggled) {
+    onVerifiedToggled = (toggled) => {
         this.setState({ verifiedToggle: toggled });
     }
 
 	// Returns array of posts with last and callback, used in child PostList
-    loadPosts(last, callback) {
+    loadPosts = (last, callback) => {
         const params = {
             last,
             limit: utils.postCount,
             sortBy: this.state.sortBy,
+            rating: [0, 1, 2],
         };
 
         if (this.state.verifiedToggle) {
             params.rating = 2;
         }
 
-        $.ajax({
-            url: '/api/post/list',
-            type: 'GET',
-            data: params,
-            dataType: 'json',
-            success: (posts, status) => {
-                if (status === 'success') {
-                    callback(posts);
-                }
-            },
-            error: (xhr, status, error) => {
-                $.snackbar({ content: utils.resolveError(error) });
-            },
+        api
+        .get('post/list', params)
+        .then(res => { callback(res); })
+        .catch(() => {
+            $.snackbar({ content: 'Failed to load posts' });
         });
     }
 
-    updateSort(sortBy) {
+    updateSort = (sortBy) => {
         this.setState({ sortBy });
     }
 
