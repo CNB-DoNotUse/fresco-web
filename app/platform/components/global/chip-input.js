@@ -99,7 +99,7 @@ class ChipInput extends React.Component {
                 return;
             }
 
-            this.addItem(matched || { [attr]: query, newModel: true });
+            this.addItem(matched || { [attr]: query });
         }
     }
 
@@ -111,7 +111,7 @@ class ChipInput extends React.Component {
 
         if (attr) {
             if (!newItem[attr] || !newItem[attr].length) return;
-            if (!newItem.newModel && items.some((i) => (i.id === newItem.id))) return;
+            if (newItem.id && items.some((i) => (i.id === newItem.id))) return;
         } else if (items.some(i => i === newItem)) return;
 
         if (multiple) items = items.concat(newItem);
@@ -125,7 +125,9 @@ class ChipInput extends React.Component {
      */
     removeItem(item) {
         let { items, attr } = this.props;
+
         if (!attr) items = items.filter(i => i !== item);
+        else if (item.id) items = reject(items, { id: item.id });
         else items = reject(items, { [attr]: item[attr] });
 
         this.props.updateItems(items);

@@ -1,6 +1,6 @@
 // https://github.com/erikras/ducks-modular-redux
 import api from 'app/lib/api';
-import { verifyGallery } from 'app/lib/gallery';
+import { verifyGallery, verifyUser, verifyAssignment } from 'app/lib/models';
 import { fromJS, Map, List } from 'immutable';
 import differenceBy from 'lodash/differenceBy';
 import get from 'lodash/get';
@@ -46,9 +46,15 @@ const getDataFromTemplate = (template, getState) => {
     });
 
     formData = mapValues(formData, (v, k) => {
-        if (k === 'geo') return { type: 'Point', coordinates: [v.lng, v.lat] };
-        if (k === 'user_ids') return v.map(u => u.id);
-        return v;
+        switch (k) {
+            case ('geo'): return { type: 'Point', coordinates: [v.lng, v.lat] };
+            case ('user_ids'): return v.map(u => u.id);
+            case ('gallery_ids'): return v.map(g => g.id);
+            case ('gallery_id'): return v.id
+            case ('story_id'): return v.id
+            default:
+                return v;
+        }
     });
 
     let templateKey;
@@ -110,6 +116,33 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
         .catch(() =>
             dispatch(Object.assign({}, errorAction, { data: 'Invalid gallery id' })));
     }
+
+    if (get(data, 'users')) {
+        const users = getState()
+            .getIn(['pushNotifs', 'templates', template, 'users'], List())
+            .toJS();
+        const newUser = get(differenceBy(data.users, users, 'id'), '[0]');
+        if (!newUser) return dispatch(successAction);
+
+        return verifyUser(newUser)
+        .then(() => dispatch(successAction))
+        .catch(() =>
+            dispatch(Object.assign({}, errorAction, { data: 'Invalid user' })));
+    }
+
+    if (get(data, 'assignments')) {
+        const assignments = getState()
+            .getIn(['pushNotifs', 'templates', template, 'assignments'], List())
+            .toJS();
+        const newAssignment = get(differenceBy(data.assignments, assignments, 'id'), '[0]');
+        if (!newAssignment) return dispatch(successAction);
+
+        return verifyAssignment(newAssignment)
+        .then(() => dispatch(successAction))
+        .catch(() =>
+            dispatch(Object.assign({}, errorAction, { data: 'Invalid assignment' })));
+    }
+
 
     return dispatch(successAction);
 };
