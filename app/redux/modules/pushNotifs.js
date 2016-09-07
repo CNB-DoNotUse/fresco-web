@@ -20,67 +20,75 @@ const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
 const CONFIRM_ERROR = 'pushNotifs/CONFIRM_ERROR';
 
 // helpers
-const getDataFromTemplate = (template, getState) => {
-    const templateData = getState()
-        .getIn(['pushNotifs', 'templates', template], Map());
-    const restrictByUser = templateData.get('restrictByUser', false);
-    const restrictByLocation = templateData.get('restrictByLocation', false);
-    let formData = templateData
-        .filterNot((v, k) => ['restrictByUser', 'restrictByLocation', 'address'].includes(k))
-        .filterNot((v, k) => {
-            if (!restrictByUser) return k === 'users';
-            if (!restrictByLocation) return ['location', 'address'].includes(k);
-            return false;
-        }).toJS();
+const getDataFromTemplate = (template, getState) => (
+    new Promise((resolve, reject) => {
+        let errors = [];
+        const templateData = getState()
+            .getIn(['pushNotifs', 'templates', template], Map());
 
-    formData = mapKeys(formData, (v, k) => {
-        switch (k) {
-            case ('location'): return 'geo';
-            case('users'): return 'user_ids';
-            case('galleries'): return 'gallery_ids';
-            case('gallery'): 'gallery_id';
-            case ('story'): return 'story_id';
+        if (!templateData.get('title')) errors = errors.concat('Missing required field: title');
+        if (!templateData.get('body')) errors = errors.concat('Missing required field: body');
+        if (errors.length) return reject(errors);
+
+        const restrictByUser = templateData.get('restrictByUser', false);
+        const restrictByLocation = templateData.get('restrictByLocation', false);
+        let formData = templateData
+            .filterNot((v, k) => ['restrictByUser', 'restrictByLocation', 'address'].includes(k))
+            .filterNot((v, k) => {
+                if (!restrictByUser) return k === 'users';
+                if (!restrictByLocation) return ['location', 'address'].includes(k);
+                return false;
+            }).toJS();
+
+        formData = mapKeys(formData, (v, k) => {
+            switch (k) {
+                case ('location'): return 'geo';
+                case('users'): return 'user_ids';
+                case('galleries'): return 'gallery_ids';
+                case('gallery'): 'gallery_id';
+                case ('story'): return 'story_id';
+                default:
+                    return k;
+            }
+        });
+
+        formData = mapValues(formData, (v, k) => {
+            switch (k) {
+                case ('geo'): return { type: 'Point', coordinates: [v.lng, v.lat] };
+                case ('user_ids'): return v.map(u => u.id);
+                case ('gallery_ids'): return v.map(g => g.id);
+                case ('gallery_id'): return v.id
+                case ('story_id'): return v.id
+                default:
+                    return v;
+            }
+        });
+
+        let templateKey;
+        switch (template) {
+            case 'recommend':
+                if (get(formData, 'gallery_id')) templateKey = 'user-news-gallery';
+                else if (get(formData, 'story_id')) templateKey = 'user-news-story';
+                break;
+            case 'assignment':
+                templateKey = 'user-dispatch-new-assignment';
+                break;
+            case 'gallery list':
+                templateKey = 'user-news-today-in-news';
+                break;
+            case 'default':
             default:
-                return k;
+                templateKey = 'user-news-custom-push';
         }
-    });
 
-    formData = mapValues(formData, (v, k) => {
-        switch (k) {
-            case ('geo'): return { type: 'Point', coordinates: [v.lng, v.lat] };
-            case ('user_ids'): return v.map(u => u.id);
-            case ('gallery_ids'): return v.map(g => g.id);
-            case ('gallery_id'): return v.id
-            case ('story_id'): return v.id
-            default:
-                return v;
-        }
-    });
+        const templateFormData = { notification:
+            { [templateKey]: omit(formData, ['geo', 'radius', 'user_ids']) },
+        };
+        const otherFormData = pick(formData, ['geo', 'radius', 'user_ids']);
 
-    let templateKey;
-    switch (template) {
-        case 'recommend':
-            if (get(formData, 'gallery_id')) templateKey = 'user-news-gallery';
-            else if (get(formData, 'story_id')) templateKey = 'user-news-story';
-            break;
-        case 'assignment':
-            templateKey = 'user-dispatch-new-assignment';
-            break;
-        case 'gallery list':
-            templateKey = 'user-news-today-in-news';
-            break;
-        case 'default':
-        default:
-            templateKey = 'user-news-custom-push';
-    }
-
-    const templateFormData = { notification:
-        { [templateKey]: omit(formData, ['geo', 'radius', 'user_ids']) },
-    };
-    const otherFormData = pick(formData, ['geo', 'radius', 'user_ids']);
-
-    return Object.assign({}, templateFormData, { ...otherFormData });
-};
+        return resolve(Object.assign({}, templateFormData, { ...otherFormData }));
+    })
+);
 
 // action creators
 export const setActiveTab = (activeTab) => ({
@@ -143,22 +151,30 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
             dispatch(Object.assign({}, errorAction, { data: 'Invalid assignment' })));
     }
 
-
     return dispatch(successAction);
 };
 
 export const send = (template) => (dispatch, getState) => {
     dispatch({ type: SEND, template });
 
-    const data = getDataFromTemplate(template, getState);
-    return api
+    getDataFromTemplate(template, getState)
+    .then((data) => (
+        api
         .post('notifications/create', data)
         .then(res => dispatch({ type: SEND_SUCCESS, template, data: res }))
         .catch(err => dispatch({
             type: SEND_FAIL,
             template,
             data: get(err, 'responseJSON.msg', 'API error'),
-        }));
+        }))
+    ))
+    .catch((err) => (
+        dispatch({
+            type: SEND_FAIL,
+            template,
+            data: err && err.length ? err.join('\n') : 'Error',
+        })
+    ));
 };
 
 // reducer
