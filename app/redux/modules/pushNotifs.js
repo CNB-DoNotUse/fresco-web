@@ -29,7 +29,7 @@ const getTemplateErrors = (template, templateData) => {
             if (!templateData.get('assignment')) errors.push('Missing required field: assignment');
             break;
         case 'recommend':
-            if (!get(templateData, 'gallery') && !get(templateData, 'story')) {
+            if (!templateData.get('gallery') && !templateData.get('story')) {
                 errors.push('Missing required field: gallery or story');
             }
             break;

@@ -8,7 +8,7 @@ const onChangeGalleries = (onChange) => (gallery) => {
 };
 
 const onChangeStories = (onChange) => (story) => {
-    onChange({ story: { id: story[0].id, title: story.title } });
+    onChange({ story: story[0] ? { id: story[0].id, title: story[0].title } : null });
 };
 
 const Template = ({

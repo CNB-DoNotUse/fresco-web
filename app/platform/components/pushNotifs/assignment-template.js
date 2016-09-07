@@ -4,7 +4,10 @@ import TitleBody from './title-body';
 import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
 const onChangeAssignments = (onChange) => (assignments) => {
-    onChange({ assignment: { id: assignments[0].id, title: assignments[0].title } });
+    onChange({ assignment: assignments[0]
+        ? { id: assignments[0].id, title: assignments[0].title }
+        : null,
+    });
 };
 
 const Template = ({
