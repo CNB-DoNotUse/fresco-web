@@ -38,7 +38,7 @@ class GMap extends React.Component {
         }
     }
 
-    onDragMarker(e) {
+    onDragend(e) {
         const { onDataChange, updateCurrentBounds } = this.props;
         const location = { lng: e.latLng.lng(), lat: e.latLng.lat() };
 
@@ -88,7 +88,7 @@ class GMap extends React.Component {
                 position={center}
                 draggable={draggable}
                 icon={markerImage}
-                onDragend={(e) => this.onDragMarker(e)}
+                onDragend={(e) => this.onDragend(e)}
             />
         );
     }
