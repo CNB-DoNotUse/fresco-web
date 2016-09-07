@@ -17,17 +17,35 @@ const SEND_FAIL = 'pushNotifs/SEND_FAIL';
 const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
 const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
 const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
-const CONFIRM_ERROR = 'pushNotifs/CONFIRM_ERROR';
+const CONFIRM_DIALOG = 'pushNotifs/CONFIRM_DIALOG';
 
 // helpers
+const getTemplateErrors = (template, templateData) => {
+    const errors = [];
+    if (!templateData.get('title')) errors.push('Missing required field: title');
+    if (!templateData.get('body')) errors.push('Missing required field: body');
+    switch (template) {
+        case 'assignment':
+            if (!templateData.get('assignment')) errors.push('Missing required field: assignment');
+            break;
+        case 'recommend':
+            if (!get(templateData, 'gallery') && !get(templateData, 'story')) {
+                errors.push('Missing required field: gallery or story');
+            }
+            break;
+        case 'gallery list':
+            if (!templateData.get('galleries')) errors.push('Missing required field: galleries');
+            break;
+    }
+
+    return errors;
+};
+
 const getDataFromTemplate = (template, getState) => (
     new Promise((resolve, reject) => {
-        let errors = [];
-        const templateData = getState()
-            .getIn(['pushNotifs', 'templates', template], Map());
+        const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
 
-        if (!templateData.get('title')) errors = errors.concat('Missing required field: title');
-        if (!templateData.get('body')) errors = errors.concat('Missing required field: body');
+        const errors = getTemplateErrors(template, templateData);
         if (errors.length) return reject(errors);
 
         const restrictByUser = templateData.get('restrictByUser', false);
@@ -43,10 +61,11 @@ const getDataFromTemplate = (template, getState) => (
         formData = mapKeys(formData, (v, k) => {
             switch (k) {
                 case ('location'): return 'geo';
-                case('users'): return 'user_ids';
-                case('galleries'): return 'gallery_ids';
-                case('gallery'): 'gallery_id';
+                case ('users'): return 'user_ids';
+                case ('galleries'): return 'gallery_ids';
+                case ('gallery'): 'gallery_id';
                 case ('story'): return 'story_id';
+                case ('assignment'): return 'assignment_id';
                 default:
                     return k;
             }
@@ -59,6 +78,7 @@ const getDataFromTemplate = (template, getState) => (
                 case ('gallery_ids'): return v.map(g => g.id);
                 case ('gallery_id'): return v.id
                 case ('story_id'): return v.id
+                case ('assignment_id'): return v.id
                 default:
                     return v;
             }
@@ -96,8 +116,8 @@ export const setActiveTab = (activeTab) => ({
     activeTab,
 });
 
-export const confirmError = () => ({
-    type: CONFIRM_ERROR,
+export const confirmDialog = () => ({
+    type: CONFIRM_DIALOG,
 });
 
 export const updateTemplate = (template, data) => (dispatch, getState) => {
@@ -112,7 +132,7 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
         data: 'There was an error updating the template',
     };
 
-    if (get(data, 'galleries')) {
+    if (data.galleries) {
         const galleries = getState()
             .getIn(['pushNotifs', 'templates', template, 'galleries'], List())
             .toJS();
@@ -125,7 +145,7 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
             dispatch(Object.assign({}, errorAction, { data: 'Invalid gallery id' })));
     }
 
-    if (get(data, 'users')) {
+    if (data.users) {
         const users = getState()
             .getIn(['pushNotifs', 'templates', template, 'users'], List())
             .toJS();
@@ -138,7 +158,7 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
             dispatch(Object.assign({}, errorAction, { data: 'Invalid user' })));
     }
 
-    if (get(data, 'assignments')) {
+    if (data.assignments) {
         const assignments = getState()
             .getIn(['pushNotifs', 'templates', template, 'assignments'], List())
             .toJS();
@@ -187,17 +207,17 @@ const pushNotifs = (state = fromJS({
         case SEND:
             return state.set('loading', true);
         case SEND_SUCCESS:
-            return state.set('loading', false);
+            return state.set('loading', false).setIn(['templates', action.template], Map());
         case SEND_FAIL:
-            return state.set('loading', false).set('error', action.data);
+            return state.set('loading', false).set('dialog', action.data);
         case SET_ACTIVE_TAB:
-            return state.set('activeTab', action.activeTab.toLowerCase());
-        case CONFIRM_ERROR:
-            return state.set('error', null);
+            return state.set('activeTab', action.activeTab.toLowerCase()).set('dialog', null);
+        case CONFIRM_DIALOG:
+            return state.set('dialog', null);
         case UPDATE_TEMPLATE_SUCCESS:
             return state.mergeIn(['templates', action.template], action.data);
         case UPDATE_TEMPLATE_ERROR:
-            return state.set('error', action.data);
+            return state.set('dialog', action.data);
         default:
             return state;
     }

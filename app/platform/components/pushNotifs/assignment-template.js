@@ -1,21 +1,24 @@
 import React, { PropTypes } from 'react';
 import ChipInput from '../global/chip-input';
+import TitleBody from './title-body';
 import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
 const onChangeAssignments = (onChange) => (assignments) => {
-    onChange({ assignments: assignments.map(a => ({ id: a.id, title: a.title })) });
+    onChange({ assignment: { id: assignments[0].id, title: assignments[0].title } });
 };
 
 const Template = ({
-    assignments,
+    assignment,
     onChange,
     ...props }) => (
     <div>
+        <TitleBody onChange={onChange} {...props} />
+
         <ChipInput
             model="assignments"
             attr="title"
             placeholder="Assignment"
-            items={assignments}
+            items={(assignment && [assignment]) || []}
             updateItems={onChangeAssignments(onChange)}
             multiple={false}
             className="push-notifs__chip-input"
@@ -30,7 +33,7 @@ const Template = ({
 
 
 Template.propTypes = {
-    assignments: PropTypes.array,
+    assignment: PropTypes.object,
     onChange: PropTypes.func,
 };
 
