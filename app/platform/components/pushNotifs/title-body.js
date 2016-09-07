@@ -18,7 +18,7 @@ const TitleBody = ({
             type="text"
             className="form-control floating-label"
             placeholder="Title"
-            defaultValue={title}
+            value={title || ''}
             onChange={onChangeTitle(onChange)}
         />
 
@@ -26,7 +26,7 @@ const TitleBody = ({
             type="text"
             className="form-control floating-label"
             placeholder="Body"
-            defaultValue={body}
+            value={body || ''}
             onChange={onChangeBody(onChange)}
         />
     </span>

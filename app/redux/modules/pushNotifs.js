@@ -207,7 +207,10 @@ const pushNotifs = (state = fromJS({
         case SEND:
             return state.set('loading', true);
         case SEND_SUCCESS:
-            return state.set('loading', false).setIn(['templates', action.template], Map());
+            return state
+                .set('loading', false)
+                .set('dialog', 'Notification sent!')
+                .setIn(['templates', action.template], Map());
         case SEND_FAIL:
             return state.set('loading', false).set('dialog', action.data);
         case SET_ACTIVE_TAB:
