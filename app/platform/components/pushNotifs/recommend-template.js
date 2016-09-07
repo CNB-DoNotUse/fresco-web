@@ -10,19 +10,19 @@ const onChangeBody = (onChange) => (e) => {
     onChange({ body: e.target.value });
 };
 
-const onChangeGalleries = (onChange) => (galleries) => {
-    onChange({ galleries });
+const onChangeGalleries = (onChange) => (gallery) => {
+    onChange({ gallery: gallery[0] });
 };
 
-const onChangeStories = (onChange) => (stories) => {
-    onChange({ stories: stories.map(s => ({ id: s.id, title: s.title })) });
+const onChangeStories = (onChange) => (story) => {
+    onChange({ story: { id: story[0].id, title: story.title } });
 };
 
 const Template = ({
     title,
     body,
-    galleries,
-    stories,
+    gallery,
+    story,
     onChange,
     ...props }) => (
     <div>
@@ -46,7 +46,7 @@ const Template = ({
             model="galleries"
             attr="id"
             placeholder="Gallery"
-            items={galleries}
+            items={(gallery && [gallery]) || []}
             updateItems={onChangeGalleries(onChange)}
             autocomplete={false}
             multiple={false}
@@ -58,7 +58,7 @@ const Template = ({
             model="stories"
             attr="title"
             placeholder="Story"
-            items={stories}
+            items={(story && [story]) || []}
             updateItems={onChangeStories(onChange)}
             multiple={false}
             className="push-notifs__chip-input"

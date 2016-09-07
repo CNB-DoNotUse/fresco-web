@@ -4,13 +4,17 @@ import { verifyGallery } from 'app/lib/gallery';
 import { fromJS, Map, List } from 'immutable';
 import differenceBy from 'lodash/differenceBy';
 import get from 'lodash/get';
+import omit from 'lodash/omit';
+import pick from 'lodash/pick';
+import mapKeys from 'lodash/mapKeys';
+import mapValues from 'lodash/mapValues';
 
-// constants/action types
+// constants
+// action types
 const SEND = 'pushNotifs/SEND';
 const SEND_SUCCESS = 'pushNotifs/SEND_SUCCESS';
 const SEND_FAIL = 'pushNotifs/SEND_FAIL';
 const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
-// const UPDATE_TEMPLATE = 'pushNotifs/UPDATE_TEMPLATE';
 const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
 const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
 const CONFIRM_ERROR = 'pushNotifs/CONFIRM_ERROR';
@@ -19,25 +23,57 @@ const CONFIRM_ERROR = 'pushNotifs/CONFIRM_ERROR';
 const getDataFromTemplate = (template, getState) => {
     const templateData = getState()
         .getIn(['pushNotifs', 'templates', template], Map());
+    const restrictByUser = templateData.get('restrictByUser', false);
+    const restrictByLocation = templateData.get('restrictByLocation', false);
+    let formData = templateData
+        .filterNot((v, k) => ['restrictByUser', 'restrictByLocation', 'address'].includes(k))
+        .filterNot((v, k) => {
+            if (!restrictByUser) return k === 'users';
+            if (!restrictByLocation) return ['location', 'address'].includes(k);
+            return false;
+        }).toJS();
 
+    formData = mapKeys(formData, (v, k) => {
+        switch (k) {
+            case ('location'): return 'geo';
+            case('users'): return 'user_ids';
+            case('galleries'): return 'gallery_ids';
+            case('gallery'): 'gallery_id';
+            case ('story'): return 'story_id';
+            default:
+                return k;
+        }
+    });
+
+    formData = mapValues(formData, (v, k) => {
+        if (k === 'geo') return { type: 'Point', coordinates: [v.lng, v.lat] };
+        if (k === 'user_ids') return v.map(u => u.id);
+        return v;
+    });
+
+    let templateKey;
     switch (template) {
-        case 'default':
-            const restrictByUser = templateData.get('restrictByUser', false);
-            const restrictByLocation = templateData.get('restrictByLocation', false);
-            return templateData
-                .filterNot((v, k) => ['restrictByUser', 'restrictByLocation'].includes(k))
-                .filterNot((v, k) => {
-                    if (!restrictByUser) return k === 'users';
-                    if (!restrictByLocation) return ['location', 'address'].includes(k);
-                    return false;
-                })
-                .toJS();
         case 'recommend':
+            if (get(formData, 'gallery_id')) templateKey = 'user-news-gallery';
+            else if (get(formData, 'story_id')) templateKey = 'user-news-story';
+            break;
         case 'assignment':
+            templateKey = 'user-dispatch-new-assignment';
+            break;
         case 'gallery list':
+            templateKey = 'user-news-today-in-news';
+            break;
+        case 'default':
         default:
-            return templateData.toJS();
+            templateKey = 'user-news-custom-push';
     }
+
+    const templateFormData = { notification:
+        { [templateKey]: omit(formData, ['geo', 'radius', 'user_ids']) },
+    };
+    const otherFormData = pick(formData, ['geo', 'radius', 'user_ids']);
+
+    return Object.assign({}, templateFormData, { ...otherFormData });
 };
 
 // action creators
@@ -83,7 +119,7 @@ export const send = (template) => (dispatch, getState) => {
 
     const data = getDataFromTemplate(template, getState);
     return api
-        .post('push/create', data)
+        .post('notifications/create', data)
         .then(res => dispatch({ type: SEND_SUCCESS, template, data: res }))
         .catch(err => dispatch({
             type: SEND_FAIL,
