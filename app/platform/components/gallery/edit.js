@@ -172,6 +172,16 @@ class Edit extends React.Component {
         });
     }
 
+    /**
+     * onScroll - stopPropagation of event
+     * (prevents post/list and other parent cmp scroll listeners from triggering)
+     *
+     * @param {object} e event
+     */
+    onScroll = (e) => {
+        e.stopPropagation();
+    }
+
     getInitialLocationData() {
         const { gallery } = this.props;
         const location = gallery.location || get(gallery, 'posts[0].location');
@@ -633,7 +643,7 @@ class Edit extends React.Component {
         const { loading } = this.state;
 
         return (
-            <div>
+            <div onScroll={this.onScroll}>
                 <div className={`dim toggle-edit ${visible ? 'toggled' : ''}`} />
                 <div
                     className={`edit panel panel-default toggle-edit
