@@ -6,7 +6,7 @@ require('script!video.js/dist/video');
 require('script!videojs-contrib-hls/dist/videojs-contrib-hls');
 
 /**
- * Stateless video that sets up an HTML video or Video.JS player for m3u8
+ * Stateless video that sets up an HTML video or Video.JS videoJSPlayer for m3u8
  */
 class FrescoVideo extends React.Component {
     static propTypes = {
@@ -37,18 +37,22 @@ class FrescoVideo extends React.Component {
         }
     }
 
-    // componentDidUpdate(prevProps) {
-    //     if ((prevProps.video !== this.props.video) && this.state.isStream) {
-    //         // this.state.player.src(this.props.video);
-    //         this.state.player.pause();
-    //         this.state.player.dispose();
-    //     }
-    // }
+    componentDidUpdate(prevProps) {
+        const { video } = this.props;
+        const { videoJSPlayer } = this.state;
+
+        if ((prevProps.video !== video) && videoJSPlayer) {
+            videoJSPlayer.src({
+                src: video,
+                type: this.getType(video),
+            });
+        }
+    }
 
     componentWillUnmount() {
-        if (this.state.player) {
-            this.state.player.pause();
-            this.state.player.dispose();
+        if (this.state.videoJSPlayer) {
+            this.state.videoJSPlayer.pause();
+            this.state.videoJSPlayer.dispose();
         }
     }
 
@@ -59,13 +63,18 @@ class FrescoVideo extends React.Component {
 
         if (this.props.width) options.width = this.props.width;
 
-        const player = videojs(this.state.id, options);
+        const videoJSPlayer = videojs(this.state.id, options);
 
-        this.setState({ player });
+        this.setState({ videoJSPlayer });
 
         if (this.props.autoplay) {
-            player.play();
+            videoJSPlayer.play();
         }
+    }
+
+    getType(video) {
+        const parts = video.split('.');
+        return this.types[parts[parts.length - 1]];
     }
 
     types = {
@@ -77,12 +86,7 @@ class FrescoVideo extends React.Component {
 
     render() {
         const { video } = this.props;
-        let { type } = this.props;
-
-        if (!type) {
-            const parts = video.split('.');
-            type = this.types[parts[parts.length - 1]];
-        }
+        const { type } = this.props;
 
         // Video.JS if an m3u8 file
         let className = `${this.state.isStream ? 'video-js vjs-default-skin' : ''}`;
@@ -100,7 +104,7 @@ class FrescoVideo extends React.Component {
                     <source
                         src={this.props.video}
                         poster={this.props.thumbnail}
-                        type={type}
+                        type={type || this.getType(video)}
                     />
                 </video>
             </div>
