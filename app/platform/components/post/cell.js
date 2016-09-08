@@ -1,24 +1,41 @@
 import React, { PropTypes } from 'react';
+import utils from 'utils';
 import GalleryEdit from '../gallery/edit';
 import FrescoImage from '../global/fresco-image';
 import Actions from './cell-actions';
 import Stories from './cell-stories';
 import Time from './cell-time';
-import utils from 'utils';
 
 /**
  * Single Post Cell, child of PostList
  */
 class PostCell extends React.Component {
-    constructor(props) {
-        super(props);
+    static propTypes = {
+        permissions: PropTypes.array,
+        parentCaption: PropTypes.string,
+        size: PropTypes.string,
+        sort: PropTypes.string,
+        assignment: PropTypes.object,
+        post: PropTypes.object,
+        sizes: PropTypes.object,
+        editable: PropTypes.bool,
+        toggled: PropTypes.bool,
+        togglePost: PropTypes.func,
+    };
 
-        const { post } = props;
-        this.state = {
-            purchased: post.purchased || false,
-            galleryEditVisible: false,
-            gallery: {},
-        };
+    static defaultProps = {
+        sizes: {
+            large: 'col-xs-12 col-sm-6 col-lg-4',
+            small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2',
+        },
+        togglePost: () => {},
+        toggled: false,
+    };
+
+    state = {
+        purchased: !!this.props.post.purchased || false,
+        galleryEditVisible: false,
+        gallery: {},
     }
 
     onClickPost = (e) => {
@@ -133,28 +150,6 @@ class PostCell extends React.Component {
         );
     }
 }
-
-PostCell.defaultProps = {
-    sizes: {
-        large: 'col-xs-12 col-sm-6 col-lg-4',
-        small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2',
-    },
-    togglePost: () => {},
-    toggled: false,
-};
-
-PostCell.propTypes = {
-    permissions: PropTypes.array,
-    parentCaption: PropTypes.string,
-    size: PropTypes.string,
-    sort: PropTypes.string,
-    assignment: PropTypes.object,
-    post: PropTypes.object,
-    sizes: PropTypes.object,
-    editable: PropTypes.bool,
-    toggled: PropTypes.bool,
-    togglePost: PropTypes.func,
-};
 
 export default PostCell;
 
