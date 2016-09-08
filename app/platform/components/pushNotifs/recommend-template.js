@@ -1,52 +1,29 @@
 import React, { PropTypes } from 'react';
 import ChipInput from '../global/chip-input';
+import TitleBody from './title-body';
 import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
-const onChangeTitle = (onChange) => (e) => {
-    onChange({ title: e.target.value });
+const onChangeGalleries = (onChange) => (gallery) => {
+    onChange({ gallery: gallery[0] });
 };
 
-const onChangeBody = (onChange) => (e) => {
-    onChange({ body: e.target.value });
-};
-
-const onChangeGalleries = (onChange) => (galleries) => {
-    onChange({ galleries });
-};
-
-const onChangeStories = (onChange) => (stories) => {
-    onChange({ stories: stories.map(s => ({ id: s.id, title: s.title })) });
+const onChangeStories = (onChange) => (story) => {
+    onChange({ story: story[0] ? { id: story[0].id, title: story[0].title } : null });
 };
 
 const Template = ({
-    title,
-    body,
-    galleries,
-    stories,
+    gallery,
+    story,
     onChange,
     ...props }) => (
     <div>
-        <input
-            type="text"
-            className="form-control floating-label"
-            placeholder="Title"
-            value={title}
-            onChange={onChangeTitle(onChange)}
-        />
-
-        <textarea
-            type="text"
-            className="form-control floating-label"
-            placeholder="Body"
-            value={body}
-            onChange={onChangeBody(onChange)}
-        />
+        <TitleBody onChange={onChange} {...props} />
 
         <ChipInput
             model="galleries"
             attr="id"
             placeholder="Gallery"
-            items={galleries}
+            items={(gallery && [gallery]) || []}
             updateItems={onChangeGalleries(onChange)}
             autocomplete={false}
             multiple={false}
@@ -58,7 +35,7 @@ const Template = ({
             model="stories"
             attr="title"
             placeholder="Story"
-            items={stories}
+            items={(story && [story]) || []}
             updateItems={onChangeStories(onChange)}
             multiple={false}
             className="push-notifs__chip-input"
@@ -72,10 +49,8 @@ const Template = ({
 );
 
 Template.propTypes = {
-    title: PropTypes.string,
-    body: PropTypes.string,
-    galleries: PropTypes.array,
-    stories: PropTypes.array,
+    gallery: PropTypes.object,
+    story: PropTypes.object,
     onChange: PropTypes.func,
 };
 

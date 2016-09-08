@@ -60,7 +60,7 @@ class Edit extends React.Component {
         };
     }
 
-    onRemove() {
+    onRemove = () => {
         const { gallery } = this.props;
         if (!gallery || !gallery.id || this.state.loading) return;
 
@@ -70,7 +70,9 @@ class Edit extends React.Component {
     onSave = () => {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
-        if (!get(gallery, 'id') || !params || this.state.loading) return;
+        let { loading, uploads } = this.state;
+
+        if (!get(gallery, 'id') || !params || loading) return;
         this.setState({ loading: true });
 
         Promise.all([
@@ -81,7 +83,7 @@ class Edit extends React.Component {
             if (get(res[0], 'posts_new.length')) {
                 return Promise.all([
                     res[0],
-                    this.uploadFiles(res[0].posts_new, this.fileInput.files),
+                    this.uploadFiles(res[0].posts_new, this.getFilesFromUploads()),
                 ]);
             }
 
@@ -101,29 +103,37 @@ class Edit extends React.Component {
     }
 
     onChangeFileInput(e) {
-        const file = e.target.files[0];
-        if (!file) return;
+        const files = e.target.files;
+        if (!files || !files.length) return;
 
-        const type = file.type;
+        times(files.length, (i) => {
+            const file = files[i];
+            const type = file.type;
 
-        if(type.indexOf('image') > -1) {
-            const reader = new FileReader();
-            reader.onload = (r) => {
-                const upload = { type, url: r.target.result };
+            if (type.indexOf('image') > -1) {
+                const reader = new FileReader();
+                reader.onload = (r) => {
+                    const upload = {
+                        type,
+                        url: r.target.result,
+                        file,
+                    };
 
-                this.setState({ 
-                    uploads: this.state.uploads.concat(upload)
+                    this.setState({ uploads: this.state.uploads.concat(upload) });
+                };
+                reader.readAsDataURL(file);
+            } else if (type.indexOf('video') > -1) {
+                const upload = ({
+                    type,
+                    url: URL.createObjectURL(file),
+                    file,
                 });
-            };
-            reader.readAsDataURL(file);
-        } else if(type.indexOf('video') > -1){
-            const upload = ({ 
-                type, 
-                url: URL.createObjectURL(file)
-            });
 
-            this.setState({ uploads: this.state.uploads.concat(upload) });
-        }
+                this.setState({ uploads: this.state.uploads.concat(upload) });
+            }
+        });
+
+        this.fileInput.value = '';
     }
 
     /**
@@ -139,10 +149,7 @@ class Edit extends React.Component {
     onMapDataChange(data) {
         if (data.source === 'markerDrag') {
             getAddressFromLatLng(data.location, (address) => {
-                this.setState({
-                    address,
-                    location: data.location,
-                });
+                this.setState({ address, location: data.location });
             });
         }
     }
@@ -163,6 +170,16 @@ class Edit extends React.Component {
             external_account_name: '',
             external_source: '',
         });
+    }
+
+    /**
+     * onScroll - stopPropagation of event
+     * (prevents post/list and other parent cmp scroll listeners from triggering)
+     *
+     * @param {object} e event
+     */
+    onScroll = (e) => {
+        e.stopPropagation();
     }
 
     getInitialLocationData() {
@@ -217,16 +234,20 @@ class Edit extends React.Component {
         return pickBy(params, v => !!v && (Array.isArray(v) ? v.length : true));
     }
 
+    getFilesFromUploads() {
+        return this.state.uploads.filter(u => !get(u, 'deleteToggled')).map(u => u.file);
+    }
+
     getPostsFormData() {
         const { gallery } = this.props;
-        const files = this.fileInput.files;
+        const files = this.getFilesFromUploads();
         let { posts, rating } = this.state;
 
         if (!files.length && !posts.length) return null;
 
         if (files.length) {
-            times(files.length, (i) => {
-                posts = posts.concat({ contentType: files[i].type, new: true });
+            files.forEach((file) => {
+                posts = posts.concat({ contentType: file.type, new: true });
             });
         }
 
@@ -275,13 +296,13 @@ class Edit extends React.Component {
             if (files[i]) {
                 return new Promise((resolve, reject) => {
                     request
-                        .put(p.upload_url)
-                        .set('Content-Type', files[i].type)
-                        .send(files[i])
-                        .end((err) => {
-                            if (err) reject(err);
-                            else resolve();
-                        });
+                    .put(p.upload_url)
+                    .set('Content-Type', files[i].type)
+                    .send(files[i])
+                    .end((err) => {
+                        if (err) reject(err);
+                        else resolve();
+                    });
                 });
             }
 
@@ -359,10 +380,23 @@ class Edit extends React.Component {
         this.setState({ rating: e.target.checked ? 3 : 2 });
     }
 
-    toggleDeletePost(post) {
-        this.setState({
-            posts: this.state.posts.filter(p => p.id !== post.id)
-        });
+    onToggleDeletePost(post) {
+        let { posts } = this.state;
+        if (posts.some(p => p.id === post.id)) {
+            posts = posts.filter(p => p.id !== post.id);
+        } else {
+            posts = posts.concat(post);
+        }
+
+        this.setState({ posts });
+    }
+
+    onToggleDeleteUpload(upload, i) {
+        const { uploads } = this.state;
+        const deleteToggled = !get(upload, 'deleteToggled', false);
+        uploads[i] = Object.assign({}, upload, { deleteToggled });
+
+        this.setState({ uploads });
     }
 
     hide() {
@@ -513,12 +547,13 @@ class Edit extends React.Component {
                         editingPosts={posts}
                         uploads={uploads}
                         canDelete={isOriginalGallery}
-                        onToggleDelete={(p) => this.toggleDeletePost(p)}
+                        onToggleDeletePost={p => this.onToggleDeletePost(p)}
+                        onToggleDeleteUpload={(u, i) => this.onToggleDeleteUpload(u, i)}
                         className="dialog-col col-xs-12 col-md-5"
                     />
                 ) : null}
 
-                {this.renderMap(isOriginalGallery)}
+                {this.renderMap()}
             </div>
         );
     }
@@ -534,7 +569,7 @@ class Edit extends React.Component {
                     id="gallery-upload-files"
                     type="file"
                     accept="image/*,video/*,video/mp4"
-                    ref={(r) => this.fileInput = r}
+                    ref={(r) => { this.fileInput = r; }}
                     style={{ display: 'none' }}
                     disabled={loading}
                     onChange={(e) => this.onChangeFileInput(e)}
@@ -584,7 +619,7 @@ class Edit extends React.Component {
 
                 <button
                     type="button"
-                    onClick={() => this.onRemove()}
+                    onClick={this.onRemove}
                     className="btn btn-flat pull-right"
                     disabled={loading}
                 >
@@ -608,7 +643,7 @@ class Edit extends React.Component {
         const { loading } = this.state;
 
         return (
-            <div>
+            <div onScroll={this.onScroll}>
                 <div className={`dim toggle-edit ${visible ? 'toggled' : ''}`} />
                 <div
                     className={`edit panel panel-default toggle-edit

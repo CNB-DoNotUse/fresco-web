@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const API = require('../lib/api');
+
+const router = express.Router();
 
 /**
  * Description : User Specific Routes ~ prefix /user/endpoint
@@ -61,7 +62,8 @@ router.get('/:id?', (req, res, next) => {
         });
     } else {
         // Render currently logged in user otherwise
-        renderUserDetail(req.session.user, req, res);
+        const user = req.session.user;
+        renderUserDetail(user, user, res);
     }
 });
 

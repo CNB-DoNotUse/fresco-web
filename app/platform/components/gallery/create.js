@@ -35,6 +35,16 @@ class Create extends React.Component {
     }
 
     /**
+     * onScroll - stopPropagation of event
+     * (prevents post/list and other parent cmp scroll listeners from triggering)
+     *
+     * @param {object} e event
+     */
+    onScroll = (e) => {
+        e.stopPropagation();
+    }
+
+    /**
      * Clears the form of inputed data
      * @return {[type]} [description]
      */
@@ -107,7 +117,7 @@ class Create extends React.Component {
         const { caption, tags, stories, articles, rating, loading } = this.state;
 
         return (
-            <div>
+            <div onScroll={this.onScroll}>
                 <div className="dim toggle-gcreate toggled" />
 
                 <div className="edit panel panel-default toggle-gcreate gcreate toggled">

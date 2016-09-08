@@ -28,6 +28,16 @@ class BulkEdit extends React.Component {
         this.saveGalleries();
     }
 
+    /**
+     * onScroll - stopPropagation of event
+     * (prevents post/list and other parent cmp scroll listeners from triggering)
+     *
+     * @param {object} e event
+     */
+    onScroll = (e) => {
+        e.stopPropagation();
+    }
+
     getStateFromProps(props) {
         const galleryIds = uniq(props.posts.map(p => p.parent_id)).filter(id => !!id);
         let galleries;
@@ -181,7 +191,7 @@ class BulkEdit extends React.Component {
 
     render() {
         return (
-            <div>
+            <div onScroll={this.onScroll}>
                 <div className="dim toggle-bedit toggled" />
 
                 <div className="edit panel panel-default toggle-bedit bedit toggled">

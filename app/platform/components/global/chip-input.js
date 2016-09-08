@@ -94,9 +94,12 @@ class ChipInput extends React.Component {
                 s.title.toLowerCase() === query.toLowerCase()
             ));
 
-            if (!attr) this.addItem(query);
+            if (!attr) {
+                this.addItem(query);
+                return;
+            }
 
-            this.addItem(matched || { [attr]: query, newModel: true });
+            this.addItem(matched || { [attr]: query });
         }
     }
 
@@ -105,10 +108,12 @@ class ChipInput extends React.Component {
      */
     addItem(newItem) {
         let { items, attr, multiple } = this.props;
-        if (attr && !newItem[attr] || !newItem[attr].length) return;
 
-        // Check if story already exists
-        if (!newItem.newModel && items.some((i) => (i.id === newItem.id))) return;
+        if (attr) {
+            if (!newItem[attr] || !newItem[attr].length) return;
+            if (newItem.id && items.some((i) => (i.id === newItem.id))) return;
+        } else if (items.some(i => i === newItem)) return;
+
         if (multiple) items = items.concat(newItem);
         else items = [newItem];
 
@@ -120,7 +125,9 @@ class ChipInput extends React.Component {
      */
     removeItem(item) {
         let { items, attr } = this.props;
-        if (!attr) items = reject(items, item);
+
+        if (!attr) items = items.filter(i => i !== item);
+        else if (item.id) items = reject(items, { id: item.id });
         else items = reject(items, { [attr]: item[attr] });
 
         this.props.updateItems(items);

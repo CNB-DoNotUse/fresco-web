@@ -1,95 +1,110 @@
 import React, { PropTypes } from 'react';
-import utils from 'utils';
 import uniqueId from 'lodash/uniqueId';
-require('script!video.js/dist/video.js')
-require('script!videojs-contrib-hls/dist/videojs-contrib-hls.js')
 import '../../../sass/platform/video.scss';
 
+require('script!video.js/dist/video');
+require('script!videojs-contrib-hls/dist/videojs-contrib-hls');
+
 /**
- * Stateless video that sets up an HTML video or Video.JS player for m3u8
+ * Stateless video that sets up an HTML video or Video.JS videoJSPlayer for m3u8
  */
 class FrescoVideo extends React.Component {
     static propTypes = {
         video: PropTypes.string,
         thumbnail: PropTypes.string,
         className: PropTypes.string,
+        width: PropTypes.string,
+        type: PropTypes.string,
         style: PropTypes.object,
-        autoplay: PropTypes.bool
+        autoplay: PropTypes.bool,
+        muted: PropTypes.bool,
     };
 
     static defaultProps = {
         autoplay: false,
         muted: false,
-        video: ''
+        video: '',
     }
 
     state = {
         id: uniqueId(),
-        isStream: this.props.video.indexOf('m3u8') > -1
-    }
-
-    types = {
-        'm3u8' : 'application/x-mpegURL',
-        'mp4' : 'video/mp4',
-        'webm' : 'video/webm',
-        'ogg' : 'video/ogg'
+        isStream: this.props.video.indexOf('m3u8') > -1,
     }
 
     componentDidMount() {
-        if(this.state.isStream) {
+        if (this.state.isStream) {
             this.setUpPlayer();
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { video } = this.props;
+        const { videoJSPlayer } = this.state;
+
+        if ((prevProps.video !== video) && videoJSPlayer) {
+            videoJSPlayer.src({
+                src: video,
+                type: this.getType(video),
+            });
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.state.videoJSPlayer) {
+            this.state.videoJSPlayer.pause();
+            this.state.videoJSPlayer.dispose();
         }
     }
 
     setUpPlayer = () => {
         const options = {
-            muted: this.props.muted
+            muted: this.props.muted,
         };
 
-        if (this.props.width)
-            options.width = this.props.width;
+        if (this.props.width) options.width = this.props.width;
 
-        const player = videojs(this.state.id, options);
+        const videoJSPlayer = videojs(this.state.id, options);
 
-        this.setState({ player });
+        this.setState({ videoJSPlayer });
 
-        if(this.props.autoplay) {
-            player.play();
-        }   
+        if (this.props.autoplay) {
+            videoJSPlayer.play();
+        }
     }
 
-    componentWillUnmount() {
-        if (this.state.player) {
-            this.state.player.pause();
-            this.state.player.dispose();
-        }
+    getType(video) {
+        const parts = video.split('.');
+        return this.types[parts[parts.length - 1]];
+    }
+
+    types = {
+        m3u8: 'application/x-mpegURL',
+        mp4: 'video/mp4',
+        webm: 'video/webm',
+        ogg: 'video/ogg',
     }
 
     render() {
-        const { video, thumbnail } = this.props;
-        let { type } = this.props;
+        const { video } = this.props;
+        const { type } = this.props;
 
-        if(!type) {
-            const parts = video.split('.');
-            type = this.types[parts[parts.length - 1]];
-        }
-
-        //Video.JS if an m3u8 file
+        // Video.JS if an m3u8 file
         let className = `${this.state.isStream ? 'video-js vjs-default-skin' : ''}`;
 
         className += !this.props.width ? ' full-width' : '';
 
         return (
             <div className="fresco-video-wrap">
-                <video 
+                <video
                     id={this.state.id}
                     className={className}
                     autoPlay={this.props.autoplay}
-                    controls={true}>
+                    controls
+                >
                     <source
                         src={this.props.video}
                         poster={this.props.thumbnail}
-                        type={type} 
+                        type={type || this.getType(video)}
                     />
                 </video>
             </div>
@@ -98,3 +113,4 @@ class FrescoVideo extends React.Component {
 }
 
 export default FrescoVideo;
+

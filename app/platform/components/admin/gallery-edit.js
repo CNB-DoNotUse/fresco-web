@@ -267,9 +267,7 @@ class GalleryEdit extends React.Component {
             <div className="dialog admin-edit-pane">
                 <div className="dialog-body" style={{ visibility: 'visible' }} >
                     <div className="gallery-images">
-                        <EditPosts
-                            originalPosts={gallery.posts}
-                            refreshInterval />
+                        <EditPosts originalPosts={gallery.posts} refreshInterval />
                     </div>
 
                     <EditByline
@@ -302,12 +300,12 @@ class GalleryEdit extends React.Component {
                         autocomplete
                     />
 
-
                     <ChipInput
                         model="tags"
                         items={tags}
                         updateItems={(t) => this.setState({ tags: t })}
                         autocomplete={false}
+                        multiple
                     />
 
                     <ChipInput

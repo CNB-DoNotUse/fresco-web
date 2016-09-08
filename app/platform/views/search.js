@@ -432,7 +432,7 @@ export class Search extends Component {
 	    				purchases={this.props.purchases}
 	    				ref="postList"
 	    				size='large'
-	    				scroll={this.scroll}
+	    				onScroll={this.scroll}
 	    				scrollable={true}
 	    			/>
     			</div>

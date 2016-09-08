@@ -2,16 +2,16 @@ import React, { PropTypes } from 'react';
 import Slider from 'react-slick';
 import find from 'lodash/find';
 import get from 'lodash/get';
-import utils from 'utils';
 import FrescoImage from '../global/fresco-image';
 import FrescoVideo from '../global/fresco-video';
 
 const renderPost = (post) => {
     if (post.stream) {
         return (
-            <FrescoVideo 
-                video={post.stream} 
-                thumbnail={post.image} />
+            <FrescoVideo
+                video={post.stream}
+                thumbnail={post.image}
+            />
         );
     }
 
@@ -50,41 +50,56 @@ const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
     })
 );
 
-const renderPostsNoDelete = (originalPosts) => {
-    return (
-        originalPosts.map((p, i) => (
-            <div key={`post${i}`} className="frick-frame">
-                {renderPost(p)}
-            </div>
-        ))
-    )
-}
+const renderPostsNoDelete = (originalPosts) => (
+    originalPosts.map((p, i) => (
+        <div key={`post${i}`} className="frick-frame">
+            {renderPost(p)}
+        </div>
+    ))
+);
 
-const renderUpload = (u, i) => {
-    if ((!typeof i === 'number') || !u || !u.type || !u.url) return null;
-
-    if (u.type.indexOf('image') > -1) {
+const renderUpload = (upload) => {
+    if (upload.type.indexOf('image') > -1) {
         return (
-            <div key={`upload${i}`} className="frick-frame">
-                <img
-                    role="presentation"
-                    className="img-responsive"
-                    src={u.url}
-                />
-            </div>
+            <img
+                role="presentation"
+                className="img-responsive"
+                src={upload.url}
+            />
         );
-    } else if (u.type.indexOf('video') > -1) {
-        return (
-            <div key={`upload${i}`} className="frick-frame">
-                <FrescoVideo 
-                    type={u.type}
-                    video={u.url} />
-            </div>
-        );
+    } else if (upload.type.indexOf('video') > -1) {
+        return <FrescoVideo type={upload.type} video={upload.url} />;
     }
 
     return null;
 };
+
+const renderUploads = ({ uploads, onToggleDelete }) => (
+    uploads.map((u, i) => {
+        const deleteToggled = u.deleteToggled;
+
+        return (
+            <div
+                key={`upload${i}`}
+                className={`frick-frame ${deleteToggled ? 'frick-delete' : ''}`}
+            >
+                {renderUpload(u, i)}
+                <div className="frick-overlay">
+                    <span>
+                        <span className="mdi mdi-delete icon" />
+                        <div className="md-type-caption">This post will be deleted</div>
+                    </span>
+                </div>
+                <a className="frick-frame__delete-btn">
+                    <span
+                        className={`mdi mdi-close-circle icon ${deleteToggled ? 'addback' : ''}`}
+                        onClick={() => onToggleDelete(u, i)}
+                    />
+                </a>
+            </div>
+        );
+    })
+);
 
 /**
  * Component for managing gallery's posts
@@ -96,7 +111,8 @@ class EditPosts extends React.Component {
         editingPosts: PropTypes.array,
         className: PropTypes.string,
         uploads: PropTypes.array,
-        onToggleDelete: PropTypes.func,
+        onToggleDeletePost: PropTypes.func,
+        onToggleDeleteUpload: PropTypes.func,
         canDelete: PropTypes.bool,
     }
 
@@ -121,29 +137,30 @@ class EditPosts extends React.Component {
             originalPosts,
             uploads,
             canDelete,
-            onToggleDelete,
+            onToggleDeletePost,
+            onToggleDeleteUpload,
             className,
         } = this.props;
 
         const uploadsJSX = uploads.length
-            ? uploads.map((u, i) => renderUpload(u, i)).filter(u => !!u)
+            ? renderUploads({ uploads, onToggleDelete: onToggleDeleteUpload })
             : null;
 
         const postsJSX = canDelete
-            ? renderPosts({ editingPosts, originalPosts, onToggleDelete })
+            ? renderPosts({ editingPosts, originalPosts, onToggleDelete: onToggleDeletePost })
             : renderPostsNoDelete(originalPosts);
 
         return (
             <Slider
                 className={className}
-                ref={r => this.slider = r}
+                ref={r => { this.slider = r; }}
                 infinite={originalPosts.length > 1}
                 swipeToSlide
                 draggable
                 dots
             >
-                {uploadsJSX 
-                    ? postsJSX.concat(uploadsJSX) 
+                {uploadsJSX
+                    ? postsJSX.concat(uploadsJSX)
                     : postsJSX
                 }
             </Slider>
