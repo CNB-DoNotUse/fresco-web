@@ -202,7 +202,8 @@ const pushNotifs = (state = fromJS({
     activeTab: 'default',
     templates: {},
     loading: false,
-    error: null }), action = {}) => {
+    error: null,
+    dialog: null }), action = {}) => {
     switch (action.type) {
         case SEND:
             return state.set('loading', true);
