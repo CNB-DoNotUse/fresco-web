@@ -11,13 +11,13 @@ import mapValues from 'lodash/mapValues';
 
 // constants
 // action types
-const SEND = 'pushNotifs/SEND';
-const SEND_SUCCESS = 'pushNotifs/SEND_SUCCESS';
-const SEND_FAIL = 'pushNotifs/SEND_FAIL';
-const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
-const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
-const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
-const CONFIRM_DIALOG = 'pushNotifs/CONFIRM_DIALOG';
+export const SEND = 'pushNotifs/SEND';
+export const SEND_SUCCESS = 'pushNotifs/SEND_SUCCESS';
+export const SEND_FAIL = 'pushNotifs/SEND_FAIL';
+export const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
+export const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
+export const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
+export const CONFIRM_DIALOG = 'pushNotifs/CONFIRM_DIALOG';
 
 // helpers
 const getTemplateErrors = (template, templateData) => {
