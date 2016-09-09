@@ -38,15 +38,17 @@ const getTemplateErrors = (template, templateData) => {
             break;
     }
 
-    return `Missing required fields: ${missing.join(', ')}`;
+    return missing.length
+        ? `Missing required fields: ${missing.join(', ')}`
+        : null;
 };
 
 const getDataFromTemplate = (template, getState) => (
     new Promise((resolve, reject) => {
         const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
 
-        const errors = getTemplateErrors(template, templateData);
-        if (errors.length) return reject(errors);
+        const error = getTemplateErrors(template, templateData);
+        if (error) return reject(error);
 
         const restrictByUser = templateData.get('restrictByUser', false);
         const restrictByLocation = templateData.get('restrictByLocation', false);
