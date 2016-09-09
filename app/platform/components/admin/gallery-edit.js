@@ -349,7 +349,7 @@ class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-skip"
-                        onClick={() => this.setState({ rating: 2 },
+                        onClick={() => this.setState({ rating: 1 },
                             () => this.onSkip())}
                         disabled={loading}
                     >
