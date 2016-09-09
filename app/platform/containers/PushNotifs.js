@@ -4,8 +4,8 @@ import 'app/sass/platform/_pushNotifs.scss';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map } from 'immutable';
+import Snackbar from 'material-ui/Snackbar';
 import TopBar from '../components/topbar';
-import { Snackbar } from '../components/dialogs';
 import Default from '../components/pushNotifs/default-template';
 import GalleryList from '../components/pushNotifs/gallery-list-template';
 import Recommend from '../components/pushNotifs/recommend-template';
@@ -81,7 +81,12 @@ class PushNotifs extends React.Component {
                 />
                 <div className="push-notifs__tab row">
                     <div className="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-                        <Snackbar text={dialog} onShow={onConfirmDialog} />
+                        <Snackbar
+                            message={dialog || ''}
+                            open={!!dialog}
+                            autoHideDuration={5000}
+                            onRequestClose={onConfirmDialog}
+                        />
                         {this.renderTemplate()}
                         <button
                             type="button"

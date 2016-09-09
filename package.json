@@ -11,12 +11,14 @@
     "buildProd": "NODE_ENV=production webpack --progress --colors --display-error-details -p --config webpack/webpack.production.config.js"
   },
   "babel": {
-      "presets": ["es2015"],
-      "plugins": [
-          "transform-object-rest-spread",
-          "transform-es2015-destructuring",
-          "transform-class-properties"
-      ]
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "transform-object-rest-spread",
+      "transform-es2015-destructuring",
+      "transform-class-properties"
+    ]
   },
   "dependencies": {
     "async": "~2.0.0-rc.3",
@@ -38,6 +40,7 @@
     "jquery": "^2.1.4",
     "lodash": "^4.0.1",
     "mandrill-api": "^1.0.45",
+    "material-ui": "^0.15.4",
     "mdi": "^1.6.50",
     "merge-stream": "^1.0.0",
     "moment": "^2.10.6",
@@ -55,6 +58,7 @@
     "react-google-maps": "^4.11.0",
     "react-redux": "^4.4.5",
     "react-slick": "^0.13.2",
+    "react-tap-event-plugin": "^1.0.0",
     "react-tools": "^0.13.3",
     "redis": "^2.6.0-1",
     "redux": "^3.5.2",

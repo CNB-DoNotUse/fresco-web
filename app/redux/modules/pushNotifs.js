@@ -21,24 +21,24 @@ export const CONFIRM_DIALOG = 'pushNotifs/CONFIRM_DIALOG';
 
 // helpers
 const getTemplateErrors = (template, templateData) => {
-    const errors = [];
-    if (!templateData.get('title')) errors.push('Missing required field: title');
-    if (!templateData.get('body')) errors.push('Missing required field: body');
+    const missing = [];
+    if (!templateData.get('title')) missing.push('Title');
+    if (!templateData.get('body')) missing.push('Body');
     switch (template) {
         case 'assignment':
-            if (!templateData.get('assignment')) errors.push('Missing required field: assignment');
+            if (!templateData.get('assignment')) missing.push('Assignment');
             break;
         case 'recommend':
             if (!templateData.get('gallery') && !templateData.get('story')) {
-                errors.push('Missing required field: gallery or story');
+                missing.push('Gallery or Story');
             }
             break;
         case 'gallery list':
-            if (!templateData.get('galleries')) errors.push('Missing required field: galleries');
+            if (!templateData.get('galleries')) missing.push('Galleries');
             break;
     }
 
-    return errors;
+    return `Missing required fields: ${missing.join(', ')}`;
 };
 
 const getDataFromTemplate = (template, getState) => (
@@ -192,7 +192,7 @@ export const send = (template) => (dispatch, getState) => {
         dispatch({
             type: SEND_FAIL,
             template,
-            data: err && err.length ? err.join('\n') : 'Error',
+            data: err || 'Error',
         })
     ));
 };
