@@ -86,6 +86,8 @@ class PushNotifs extends React.Component {
                             open={!!dialog}
                             autoHideDuration={5000}
                             onRequestClose={onConfirmDialog}
+                            onActionTouchTap={onConfirmDialog}
+                            onClick={onConfirmDialog}
                         />
                         {this.renderTemplate()}
                         <button
