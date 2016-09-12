@@ -27,7 +27,6 @@ app.locals.utils = utils;
 app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
 app.locals.section = 'public';
 
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -176,19 +175,20 @@ app.use('/api', API.proxy);
  * Error Midleware
  */
 app.use((error, req, res, next) => {
-    //Define new error to send to `res`
-    let err = {};
-
     // Development error handle will print stacktrace
-    if(config.dev) {
+    if(config.DEV) {
         console.log('Method:', req.method,
                     '\nPath:', req.path,
                     '\nBody', req.body,
                     '\nError: ', error.message + '\n');
     }
 
-    err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
-    err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
+    //Define new error to send to `res`
+    const err = {
+        message: error.message || config.ERR_PAGE_MESSAGES[error.status || 500],
+        status: typeof(error.status) == 'undefined' ? 500 : error.status,
+        stack: config.DEV ? error.stack : null
+    }
 
     //Respond with code
     res.status(err.status);

@@ -4,8 +4,8 @@ import 'app/sass/platform/_pushNotifs.scss';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map } from 'immutable';
+import Snackbar from 'material-ui/Snackbar';
 import TopBar from '../components/topbar';
-import { Snackbar } from '../components/dialogs';
 import Default from '../components/pushNotifs/default-template';
 import GalleryList from '../components/pushNotifs/gallery-list-template';
 import Recommend from '../components/pushNotifs/recommend-template';
@@ -15,12 +15,12 @@ class PushNotifs extends React.Component {
     static propTypes = {
         onSetActiveTab: PropTypes.func.isRequired,
         onChangeTemplate: PropTypes.func.isRequired,
-        onConfirmError: PropTypes.func.isRequired,
+        onConfirmDialog: PropTypes.func.isRequired,
         onSend: PropTypes.func.isRequired,
         activeTab: PropTypes.string.isRequired,
         loading: PropTypes.bool.isRequired,
         templates: PropTypes.object.isRequired,
-        error: PropTypes.string,
+        dialog: PropTypes.string,
     };
 
     componentDidMount() {
@@ -64,11 +64,11 @@ class PushNotifs extends React.Component {
     render() {
         const {
             onSetActiveTab,
-            onConfirmError,
+            onConfirmDialog,
             activeTab,
             onSend,
             loading,
-            error,
+            dialog,
         } = this.props;
 
         return (
@@ -81,7 +81,14 @@ class PushNotifs extends React.Component {
                 />
                 <div className="push-notifs__tab row">
                     <div className="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-                        <Snackbar text={error} onShow={onConfirmError} />
+                        <Snackbar
+                            message={dialog || ''}
+                            open={!!dialog}
+                            autoHideDuration={5000}
+                            onRequestClose={onConfirmDialog}
+                            onActionTouchTap={onConfirmDialog}
+                            onClick={onConfirmDialog}
+                        />
                         {this.renderTemplate()}
                         <button
                             type="button"
@@ -103,14 +110,14 @@ function mapStateToProps(state) {
         activeTab: state.getIn(['pushNotifs', 'activeTab']),
         templates: state.getIn(['pushNotifs', 'templates']),
         loading: state.getIn(['pushNotifs', 'loading']),
-        error: state.getIn(['pushNotifs', 'error']),
+        dialog: state.getIn(['pushNotifs', 'dialog']),
     };
 }
 
 export default connect(mapStateToProps, {
     onSetActiveTab: pushActions.setActiveTab,
     onChangeTemplate: pushActions.updateTemplate,
-    onConfirmError: pushActions.confirmError,
+    onConfirmDialog: pushActions.confirmDialog,
     onSend: pushActions.send,
 })(PushNotifs);
 

@@ -1,36 +1,12 @@
 import React, { PropTypes } from 'react';
+import TitleBody from './title-body';
 import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
-const onChangeTitle = (onChange) => (e) => {
-    onChange({ title: e.target.value });
-};
-
-const onChangeBody = (onChange) => (e) => {
-    onChange({ body: e.target.value });
-};
-
 const DefaultTemplate = ({
-    title,
-    body,
     onChange,
     ...props }) => (
     <div>
-        <input
-            type="text"
-            className="form-control floating-label"
-            placeholder="Title"
-            value={title}
-            onChange={onChangeTitle(onChange)}
-        />
-
-        <textarea
-            type="text"
-            className="form-control floating-label"
-            placeholder="Body"
-            value={body}
-            onChange={onChangeBody(onChange)}
-        />
-
+        <TitleBody onChange={onChange} {...props} />
         <RestrictByLocation onChange={onChange} {...props} />
         <RestrictByUser onChange={onChange} {...props} />
     </div>

@@ -7,13 +7,27 @@ const ReactDOMServer = require('react-dom/server');
 const PublicGallery = require('../app/platform/views/publicGallery.js');
 const API = require('../lib/api');
 
-/** //
-	Description : Gallery Specific Routes -- prefix /gallery/~
-// **/
+/**
+ * Gallery page, passed a unique gallery id
+ */
+router.get('/:id', (req, res, next) => {
+    API.request({
+        token: req.session.token,
+        url: `/gallery/${req.params.id}`
+    }).then(response => {
+        render(response.body, req.session.user, req, res);
+    }).catch(error => {
+        next({
+            message: error.status === 404 ? 'Gallery not found!' : 'Unable to load gallery!',
+            status: error.status,
+            stack: error.stack
+        });
+    });
+});
+
 
 /**
- * Gallery Detail Page
- * @param Gallery ID
+ * Renders gallery from route
  */
 function render(gallery, user, req, res) {
     const title = utils.getTitleFromGallery(gallery);
@@ -57,19 +71,5 @@ function render(gallery, user, req, res) {
         });
     }
 }
-
-router.get('/:id', (req, res, next) => {
-    API.request({
-        token: req.session.token,
-        url: '/gallery/' + req.params.id,
-    }).then(response => {
-        render(response.body, req.session.user, req, res);
-    }).catch(error => {
-        next({
-            message: 'Gallery not found!',
-            status: 404,
-        })
-    });
-});
 
 module.exports = router;

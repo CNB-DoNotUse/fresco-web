@@ -16,7 +16,7 @@ class Admin extends React.Component {
         super(props);
 
         this.state = {
-            activeTab: 'assignments',
+            activeTab: 'submissions',
             assignments: [],
             submissions: [],
             imports: [],
@@ -185,23 +185,21 @@ class Admin extends React.Component {
      * Query for initial data. Set the active tab to a tab with data.
      */
     loadInitial() {
-        let activeTab = 'submissions';
-
-        this.getData(undefined, { tab: 'assignments' }, (assignments) => {
-            activeTab = 'assignments';
-            this.setState({ assignments });
-        });
-
         this.getData(undefined, { tab: 'submissions' }, (submissions) => {
-            activeTab = 'submissions';
             this.setState({
                 submissions: this.state.submissions.concat(submissions),
             });
         });
 
+        this.getData(undefined, { tab: 'assignments' }, (assignments) => {
+            this.setState({ assignments });
+        });
+
         this.getData(undefined, { tab: 'imports' }, (imports) => {
             this.setState({
-                activeTab: imports.length ? 'imports' : activeTab,
+                activeTab: (imports.length && !this.state.submissions.length)
+                    ? 'imports'
+                    : 'submissions',
                 imports: this.state.imports.concat(imports),
             });
         });
@@ -258,8 +256,6 @@ class Admin extends React.Component {
     }
 
     render() {
-        let activeTab = this.renderActiveTab();
-
         return (
             <App user={this.props.user}>
                 <TopBar
@@ -269,7 +265,7 @@ class Admin extends React.Component {
                     refresh={this.refresh}
                 />
 
-                {activeTab}
+                {this.renderActiveTab()}
             </App>
         );
     }

@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
-import utils from 'utils';
-import EditOutlets from './edit-outlets';
-import AutocompleteMap from '../global/autocomplete-map';
-import Merge from './merge';
-import MergeDropup from './merge-dropup';
 import { getAddressFromLatLng } from 'app/lib/location';
 import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
+import utils from 'utils';
+import ChipInput from '../global/chip-input';
+import AutocompleteMap from '../global/autocomplete-map';
+import Merge from './merge';
+import MergeDropup from './merge-dropup';
 
 class AssignmentEdit extends React.Component {
     constructor(props) {
@@ -239,9 +239,13 @@ class AssignmentEdit extends React.Component {
                     </div>
 
                     {user.permissions.includes('update-other-content')
-                        ? <EditOutlets
-                            outlets={outlets}
-                            updateOutlets={(o) => this.setState({ outlets: o })}
+                        ? <ChipInput
+                            model="outlets"
+                            attr="title"
+                            className="dialog-row"
+                            items={outlets}
+                            updateItems={(o) => this.setState({ outlets: o })}
+                            autocomplete
                         />
                         : ''
                     }

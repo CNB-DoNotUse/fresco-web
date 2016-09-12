@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
-import EditTags from './edit-tags';
 import EditPosts from './edit-posts';
 import ChipInput from '../global/chip-input';
 
@@ -27,6 +26,16 @@ class BulkEdit extends React.Component {
      */
     onClickSave() {
         this.saveGalleries();
+    }
+
+    /**
+     * onScroll - stopPropagation of event
+     * (prevents post/list and other parent cmp scroll listeners from triggering)
+     *
+     * @param {object} e event
+     */
+    onScroll = (e) => {
+        e.stopPropagation();
     }
 
     getStateFromProps(props) {
@@ -113,9 +122,11 @@ class BulkEdit extends React.Component {
                         />
                     </div>
 
-                    <EditTags
-                        tags={tags}
-                        updateTags={(t) => this.setState({ tags: t })}
+                    <ChipInput
+                        model="tags"
+                        items={tags}
+                        updateItems={(t) => this.setState({ tags: t })}
+                        autocomplete={false}
                     />
 
                     <ChipInput
@@ -180,7 +191,7 @@ class BulkEdit extends React.Component {
 
     render() {
         return (
-            <div>
+            <div onScroll={this.onScroll}>
                 <div className="dim toggle-bedit toggled" />
 
                 <div className="edit panel panel-default toggle-bedit bedit toggled">

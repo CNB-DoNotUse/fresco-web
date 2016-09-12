@@ -79,6 +79,43 @@ class PostList extends React.Component {
     }
 
     /**
+     * Initial call to populate posts
+     */
+    loadInitialPosts() {
+        this.props.loadPosts(null, (posts) => { this.setState({ posts }) });
+    }
+
+    /**
+     * Scroll listener for main window
+     */
+    onScroll(e) {
+        const grid = e.target;
+        if (!this.area || !this.area.contains(e.target)) {
+            return;
+        }
+
+        const endOfScroll = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
+
+        // Check that nothing is loading and that we're at the end of the scroll
+        if (!this.state.loading && endOfScroll) {
+            // Set that we're loading
+            this.setState({ loading: true });
+
+            // Run load on parent call
+            this.props.loadPosts(_.last(this.state.posts).id, (posts) => {
+                // Disables scroll, and returns if posts are empty
+                if (!posts || posts.length === 0) {
+                    this.setState({ scrollable: false });
+                    return;
+                }
+
+                // Set galleries from successful response, and unset loading
+                this.setState({ posts: this.state.posts.concat(posts), loading: false });
+            }, this);
+        }
+    }
+
+    /**
      * Sorts posts based on the current field in props
      * @return {array} An array of posts now sorted
      */
@@ -86,46 +123,6 @@ class PostList extends React.Component {
         const field = this.props.sort === 'captured_at' ? 'captured_at' : 'created_at';
 
         return this.state.posts.sort((post1, post2) => post2[field] - post1[field]);
-    }
-
-    /**
-     * Initial call to populate posts
-     */
-    loadInitialPosts() {
-        // Access parent var load method
-        this.props.loadPosts(null, (posts) => {
-            // Set posts & callback from successful response
-            this.setState({ posts });
-        });
-    }
-
-    /**
-     * Scroll listener for main window
-     */
-    scroll(e) {
-        const grid = e.target;
-
-        // Check that nothing is loading and that we're at the end of the scroll
-        if (!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)) {
-            // Set that we're loading
-            this.setState({ loading: true });
-
-            // Run load on parent call
-            this.props.loadPosts(_.last(this.state.posts).id, (posts) => {
-                // Disables scroll, and returns if posts are empty
-                if (!posts || posts.length == 0) {
-                    return this.setState({
-                        scrollable: false
-                    });
-                }
-
-                // Set galleries from successful response, and unset loading
-                this.setState({
-                    posts: this.state.posts.concat(posts),
-                    loading: false
-                });
-            }, this);
-        }
     }
 
     /**
@@ -195,7 +192,7 @@ class PostList extends React.Component {
     }
 
     render() {
-        const { className, scroll } = this.props;
+        const { className, onScroll } = this.props;
         const {
             selectedPosts,
             scrollable,
@@ -204,11 +201,11 @@ class PostList extends React.Component {
         } = this.state;
 
         return (
-            <div>
+            <div ref={r => { this.area = r; }}>
                 <div
                     className={`container-fluid fat grid ${className}`}
-                    ref={r => this.grid = r}
-                    onScroll={scrollable ? scroll || ((e) => this.scroll(e)) : null}
+                    ref={r => { this.grid = r; }}
+                    onScroll={scrollable ? onScroll || ((e) => this.onScroll(e)) : null}
                 >
                     {this.renderPosts()}
 
@@ -256,7 +253,7 @@ PostList.propTypes = {
     parentCaption: PropTypes.string,
     sortBy: PropTypes.string,
     className: PropTypes.string,
-    scroll: PropTypes.func,
+    onScroll: PropTypes.func,
     loadPosts: PropTypes.func,
 };
 

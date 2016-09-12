@@ -34,7 +34,7 @@ class PostCellActions extends React.Component {
             onPurchase,
         } = this.props;
 
-        let actions = [];
+        const actions = [];
         let key = 0;
 
         // Check if we're CM or greater

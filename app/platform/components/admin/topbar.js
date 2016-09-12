@@ -94,8 +94,10 @@ class TopBar extends React.Component {
             this.props.setTab('imports');
             this.props.resetImports();
         })
-        .fail(() => {
-            $.snackbar({ content: 'Failed to import media' });
+        .fail((error) => {
+            $.snackbar({ 
+                content: error.responseJSON.msg || 'Failed to import media' 
+            });
         })
         .always(() => {
             this.setState({ loading: false });
