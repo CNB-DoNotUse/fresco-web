@@ -50,40 +50,14 @@ const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
     })
 );
 
-const renderPostsNoDelete = (originalPosts) => {
-    return (
-        originalPosts.map((p, i) => (
-            <div key={`post${i}`} className="frick-frame">
-                {renderPost(p)}
-            </div>
-        ))
-    )
-}
+const renderPostsNoDelete = (originalPosts) => (
+    originalPosts.map((p, i) => (
+        <div key={`post${i}`} className="frick-frame">
+            {renderPost(p)}
+        </div>
+    ))
+);
 
-const renderUpload = (upload, i) => {
-    if ((!typeof i === 'number') || !upload || !upload.type || !upload.url) return null;
-
-<<<<<<< HEAD
-    console.log('UPLOAD', upload);
-
-    if (upload.type.indexOf('image') > -1) {
-        return (
-            <div key={`upload${i}`} className="frick-frame">
-                <img
-                    role="presentation"
-                    className="img-responsive"
-                    src={upload.url}
-                />
-            </div>
-        );
-    } else if (upload.type.indexOf('video') > -1) {
-        return (
-            <div key={`upload${i}`} className="frick-frame">
-                <FrescoVideo
-                    type={upload.type}
-                    video={upload.url} />
-            </div>
-=======
 const renderUpload = (upload) => {
     if (upload.type.indexOf('image') > -1) {
         return (
@@ -92,7 +66,6 @@ const renderUpload = (upload) => {
                 className="img-responsive"
                 src={upload.url}
             />
->>>>>>> dev-V2API
         );
     } else if (upload.type.indexOf('video') > -1) {
         return <FrescoVideo type={upload.type} video={upload.url} />;
@@ -152,10 +125,10 @@ class EditPosts extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        // // Reset slick to first index of we have different posts
-        // if (get(prevProps, 'originalPosts[0].id') !== get(this.props, 'originalPosts[0].id')) {
-        //     this.slider.slickGoTo(0);
-        // }
+        // Reset slick to first index of we have different posts
+        if (get(prevProps, 'originalPosts[0].id') !== get(this.props, 'originalPosts[0].id')) {
+            this.slider.slickGoTo(0);
+        }
     }
 
     render() {
