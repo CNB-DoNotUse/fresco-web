@@ -553,7 +553,7 @@ class Edit extends React.Component {
                     />
                 ) : null}
 
-                {this.renderMap(isOriginalGallery)}
+                {this.renderMap()}
             </div>
         );
     }

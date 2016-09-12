@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Purchases from '../purchases/list-with-stats';
 import PostList from '../post/list';
 import Sidebar from './sidebar';
