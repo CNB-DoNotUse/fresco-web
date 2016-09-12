@@ -3,6 +3,7 @@ import update from 'react-addons-update';
 import ReactDOM from 'react-dom';
 import find from 'lodash/find';
 import map from 'lodash/map';
+import 'app/sass/platform/_purchases.scss';
 import App from './app';
 import TopBar from '../components/topbar';
 import ListWithStats from '../components/purchases/list-with-stats';

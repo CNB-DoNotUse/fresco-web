@@ -23,7 +23,7 @@ export default class OutletColumnHead extends React.Component {
 
         return (
             <div
-                className="head"
+                className="outlet__column-head"
                 ref={r => this.head = r}
             >
                 <div className="title">
@@ -36,7 +36,7 @@ export default class OutletColumnHead extends React.Component {
 
                     <span
                         className="mdi mdi-drag-vertical drag"
-                        ondrag={this.drag}
+                        onDrag={this.drag}
                         draggable
                     />
                 </div>

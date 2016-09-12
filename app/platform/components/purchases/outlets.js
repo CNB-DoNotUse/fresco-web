@@ -60,7 +60,7 @@ export default class PurchasesOutlets extends React.Component {
 
     render() {
         return (
-            <div className="outletStats">
+            <div className="purchases__outlets">
                 {Object.keys(this.state.outlets).map((outlet, i) => (
                     <OutletColumn
                         outlet={this.state.outlets[outlet]}

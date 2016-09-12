@@ -222,7 +222,7 @@ export default class OutletColumn extends React.Component {
 
     render() {
         return (
-            <div className="outletColumn" draggable>
+            <div className="outlet-column" draggable>
                 <OutletColumnHead
                     ref={r => this.columnHead = r}
                     adjustGoal={this.adjustGoal}
