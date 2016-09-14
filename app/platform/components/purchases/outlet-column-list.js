@@ -4,8 +4,8 @@ import OutletColumnPurchase from './outlet-column-purchase';
 /**
  * Outlet Column Purchase List parent component
  */
-const OutletColumnList = ({ scroll, purchases }) => (
-    <ul className="outlet-column__list" onScroll={scroll}>
+const OutletColumnList = ({ onScroll, purchases }) => (
+    <ul className="outlet-column__list" onScroll={onScroll}>
         {purchases.map((purchase, i) => (
             <OutletColumnPurchase purchase={purchase} key={i} />
         ))}
@@ -13,7 +13,7 @@ const OutletColumnList = ({ scroll, purchases }) => (
 );
 
 OutletColumnList.propTypes = {
-    scroll: PropTypes.func.isRequired,
+    onScroll: PropTypes.func.isRequired,
     purchases: PropTypes.array.isRequired,
 };
 

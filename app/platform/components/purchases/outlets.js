@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
 import update from 'react-addons-update';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import api from 'app/lib/api';
 import OutletColumn from './outlet-column.js';
 
-export default class PurchasesOutlets extends React.Component {
+class PurchasesOutlets extends React.Component {
     static propTypes = {
         statsTime: PropTypes.string.isRequired,
         outletIds: PropTypes.array.isRequired,
@@ -14,7 +17,7 @@ export default class PurchasesOutlets extends React.Component {
     }
 
     componentDidMount() {
-        this.loadOutlets();
+        this.loadOutlets(this.props.outletIds);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -49,11 +52,14 @@ export default class PurchasesOutlets extends React.Component {
     loadOutlets(outletIds = []) {
         // Loop through, and update state on each response
         outletIds.forEach((id) => {
-            $.ajax(`/api/outlet/${id}`)
-            .done(response => {
+            api.get(`outlet/${id}`)
+            .then(res => {
                 this.setState({
-                    outlets: update(this.state.outlets, { [id]: { $set: response.data } }),
+                    outlets: update(this.state.outlets, { [id]: { $set: res } }),
                 });
+            })
+            .catch(() => {
+                $.snackbar({ content: 'There was an error loading outlets' });
             });
         });
     }
@@ -61,15 +67,18 @@ export default class PurchasesOutlets extends React.Component {
     render() {
         return (
             <div className="purchases__outlets">
-                {Object.keys(this.state.outlets).map((outlet, i) => (
+                {Object.keys(this.state.outlets).map((outletId, i) => (
                     <OutletColumn
-                        outlet={this.state.outlets[outlet]}
+                        outlet={this.state.outlets[outletId]}
                         since={this.getTimeInterval(this.props.statsTime)}
                         key={i}
+                        draggable
                     />
                 ))}
             </div>
         );
     }
 }
+
+export default DragDropContext(HTML5Backend)(PurchasesOutlets);
 

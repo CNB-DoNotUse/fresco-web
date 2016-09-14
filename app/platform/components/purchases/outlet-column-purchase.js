@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
-import utils from 'utils';
 import moment from 'moment';
+import FrescoImage from '../global/fresco-image';
+import FrescoVideo from '../global/fresco-video';
 
 /**
  * Purchase list item inside an outlet column
@@ -46,32 +47,10 @@ export default class OutletColumnPurchase extends React.Component {
             : post.byline;
         name = name.replace('via Fresco News', '');
 
-        if (post.video !== null) {
-            let source = '';
-
-            if (utils.isSafari(navigator.userAgent)) source = post.video;
-            else source = utils.formatVideo(post.video);
-
-            media = [
-                <span
-                    ref={r => this.volumeToggle = r}
-                    className="mdi mdi-volume-off volume-toggle"
-                    onClick={this.toggleVolume}
-                    key={0}
-                />,
-                <video
-                    ref={r => this.video = r}
-                    src={source}
-                    autoPlay={false}
-                    controls={false}
-                    onClick={this.toggleVideo}
-                    key={1}
-                    loop
-                    muted
-                />,
-            ];
+        if (post.stream) {
+            media = <FrescoVideo video={post.stream} thumbnail={post.image} />;
         } else {
-            media = <img src={utils.formatImg(post.image, 'small')} />;
+            media = <FrescoImage src={post.image} size="small" />
         }
 
         if (purchase.timestamp < lastDay) {
@@ -83,7 +62,7 @@ export default class OutletColumnPurchase extends React.Component {
         if (purchase.assignment) {
             assignmentMeta = (
                 <div className="meta-assignment">
-                    <a href={'/assignment/' + purchase.assignment._id}>
+                    <a href={'/assignment/' + purchase.assignment.id}>
                         <span className="mdi mdi-logout-variant" />
 
                         <span className="title">{purchase.assignment.title}</span>

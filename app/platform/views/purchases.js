@@ -3,6 +3,8 @@ import update from 'react-addons-update';
 import ReactDOM from 'react-dom';
 import find from 'lodash/find';
 import map from 'lodash/map';
+import api from 'app/lib/api';
+import differenceBy from 'lodash/differenceBy';
 import 'app/sass/platform/_purchases.scss';
 import App from './app';
 import TopBar from '../components/topbar';
@@ -22,7 +24,7 @@ class Purchases extends React.Component {
     state = {
         outlets: [],
         users: [],
-        availableOutlets: [],
+        searchOutlets: [],
         availableUsers: [],
         updatePurchases: false,
         activeTab: 'Summary',
@@ -31,21 +33,17 @@ class Purchases extends React.Component {
 
     findOutlets = (q) => {
         if (q.length === 0) {
-            this.setState({ availableOutlets: [] });
+            this.setState({ searchOutlets: [] });
         } else {
             const params = { outlets: { a: { title: q } } };
 
-            $.ajax({
-                url: '/api/search',
-                type: 'GET',
-                data: $.param(params),
-                success: response => {
-                    if (response.outlets) {
-                        this.setState({
-                            availableOutlets: response.outlets.results,
-                        });
-                    }
-                },
+            api.get('search', $.param(params))
+            .then(res => {
+                if (res.outlets) {
+                    const searchOutlets =
+                        differenceBy(res.outlets.results, this.state.outlets, 'id');
+                    this.setState({ searchOutlets });
+                }
             });
         }
     }
@@ -96,14 +94,14 @@ class Purchases extends React.Component {
 	 * @param {string} outletToAdd String title of the outlet
 	 */
     addOutlet = (outletToAdd, index) => {
-        const { availableOutlets, outlets } = this.state;
-        const outlet = availableOutlets[index];
+        const { searchOutlets, outlets } = this.state;
+        const outlet = searchOutlets[index];
 
         if (outlet !== null) {
             if (find(outlets, ['id', outlet.id]) === undefined) {
                 this.setState({
                     outlets: update(outlets, { $push: [outlet] }),
-                    availableOutlets: update(availableOutlets, { $splice: [[index, 1]] }),
+                    searchOutlets: update(searchOutlets, { $splice: [[index, 1]] }),
                     updatePurchases: true,
                 });
             }
@@ -119,9 +117,7 @@ class Purchases extends React.Component {
         const user = this.state.users[index];
 
         this.setState({
-            // Keep the filtered list updated
             users: update(this.state.users, { $splice: [[index, 1]] }),
-            // Add the user back to the autocomplete list
             availableUsers: update(this.state.availableUsers, { $push: [user] }),
             updatePurchases: true,
         });
@@ -133,13 +129,12 @@ class Purchases extends React.Component {
 	 * @param {int} index index in the array
 	 */
     removeOutlet = (outletToRemove, index) => {
-        const outlet = this.state.outlets[index];
+        const { outlets, searchOutlets } = this.state;
+        const outlet = outlets[index];
 
         this.setState({
-            // Keep the filtered list updated
-            outlets: update(this.state.outlets, { $splice: [[index, 1]] }),
-            // Add the user back to the autocomplete list
-            availableOutlets: update(this.state.availableOutlets, { $push: [outlet] }),
+            outlets: update(outlets, { $splice: [[index, 1]] }),
+            searchOutlets: update(searchOutlets, { $push: [outlet] }),
             updatePurchases: true,
         });
     }
@@ -237,7 +232,7 @@ class Purchases extends React.Component {
         const {
             outlets,
             users,
-            availableOutlets,
+            searchOutlets,
             availableUsers,
             activeTab,
             outletStatsTime,
@@ -254,7 +249,7 @@ class Purchases extends React.Component {
 
                     <TagFilter
                         text="Outlets"
-                        tagList={map(availableOutlets, 'title')}
+                        tagList={map(searchOutlets, 'title')}
                         filterList={map(outlets, 'title')}
                         onTagInput={this.findOutlets}
                         onTagAdd={this.addOutlet}

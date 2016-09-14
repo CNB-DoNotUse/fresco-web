@@ -1,16 +1,28 @@
 import React, { PropTypes } from 'react';
 import last from 'lodash/last';
 import api from 'app/lib/api';
+import { DragSource } from 'react-dnd';
 import OutletColumnHead from './outlet-column-head';
 import OutletColumnList from './outlet-column-list';
+
+const columnSource = {
+    beginDrag(props) {
+        return props.outlet.id;
+    },
+};
+
+const collect = (connect, monitor) => ({
+    isDragging: monitor.isDragging(),
+});
 
 /**
  * Outlet Column Component
  * @description Column for an indivdual outlet in outlet purchases page
  */
-export default class OutletColumn extends React.Component {
+class OutletColumn extends React.Component {
     static propTypes = {
-        outlet: PropTypes.object,
+        outlet: PropTypes.object.isRequired,
+        isDragging: PropTypes.bool.isRequired,
         since: PropTypes.object,
     };
 
@@ -32,7 +44,7 @@ export default class OutletColumn extends React.Component {
     }
 
     componentDidMount() {
-        this.loadPurchaseStats();
+        // this.loadPurchaseStats();
         // this.loadGoal();
 
         this.loadPurchases(null, (purchases) => {
@@ -40,12 +52,12 @@ export default class OutletColumn extends React.Component {
         });
     }
 
-    componentDidUpdate(prevProps) {
-        // console.log('SINCE', prevProps.since !== this.props.since)
-        if (prevProps.since !== this.props.since) {
-            this.loadPurchaseStats();
-        }
-    }
+    // componentDidUpdate(prevProps) {
+    //     // console.log('SINCE', prevProps.since !== this.props.since)
+    //     // if (prevProps.since !== this.props.since) {
+    //     //     this.loadPurchaseStats();
+    //     // }
+    // }
 
     /**
      * Scroll listener for main window
@@ -209,8 +221,16 @@ export default class OutletColumn extends React.Component {
     // }
 
     render() {
+        const { isDragging } = this.props;
+
         return (
-            <div className="outlet-column" draggable>
+            <div
+                draggable
+                className="outlet-column"
+                style={{
+                    opacity: isDragging ? 0.5 : 1,
+                }}
+            >
                 <OutletColumnHead
                     ref={r => { this.columnHead = r; }}
                     adjustGoal={this.adjustGoal}
@@ -228,4 +248,6 @@ export default class OutletColumn extends React.Component {
         );
     }
 }
+
+export default DragSource('outletColumn', columnSource, collect)(OutletColumn);
 
