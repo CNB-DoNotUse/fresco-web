@@ -1,4 +1,5 @@
 @import '../global/mixins';
+@import 'circle';
 
 /**
  * Outlet Stats wrapper class
@@ -146,7 +147,6 @@
         .circle{
             margin:0 0 10px;
             position:relative;
-            flex-basis:100%;
             align-self:flex-end;
             font-size: 56px !important;
 

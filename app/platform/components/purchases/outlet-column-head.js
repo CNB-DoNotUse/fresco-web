@@ -11,19 +11,17 @@ export default class OutletColumnHead extends React.Component {
     };
 
     render() {
-        const outlet = this.props.outlet;
-        // const userStats = this.props.userStats;
-        const purchaseStats = this.props.purchaseStats;
-        const videoCount = this.props.dailyVideoCount;
-        const percentage = Math.round((videoCount / outlet.goal) * 100);
+        const { outlet, dailyVideoCount, purchaseStats, userStats } = this.props;
+        // const percentage = Math.round((dailyVideoCount / (outlet.goal)) * 100);
+        const percentage = 50;
 
         let circleColor = 'red';
-        if (videoCount >= outlet.goal) circleColor = 'green';
-        else if (videoCount > (0.25 * outlet.goal)) circleColor = 'orange';
+        if (dailyVideoCount >= outlet.goal) circleColor = 'green';
+        else if (dailyVideoCount > (0.25 * outlet.goal)) circleColor = 'orange';
 
         return (
             <div
-                className="outlet__column-head"
+                className="outlet-column__head"
                 ref={r => this.head = r}
             >
                 <div className="title">
