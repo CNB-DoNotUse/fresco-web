@@ -15,41 +15,46 @@ const collect = (connect, monitor) => ({
     isDragging: monitor.isDragging(),
 });
 
+const initialState = {
+    userStats: {
+        mau: 0,
+        dau: 0,
+        galleryCount: 0,
+    },
+    purchaseStats: {},
+    dailyVideoCount: 0,
+    purchases: [],
+    loading: false,
+    outlet: {},
+};
+
 /**
  * Outlet Column Component
  * @description Column for an indivdual outlet in outlet purchases page
  */
 class OutletColumn extends React.Component {
     static propTypes = {
-        outlet: PropTypes.object.isRequired,
+        outletId: PropTypes.string.isRequired,
         isDragging: PropTypes.bool.isRequired,
         since: PropTypes.object,
     };
 
-    static defaultProps = {
-        outlet: {},
-    };
-
-    state = {
-        userStats: {
-            mau: 0,
-            dau: 0,
-            galleryCount: 0,
-        },
-        outlet: this.props.outlet,
-        purchaseStats: {},
-        dailyVideoCount: 0,
-        purchases: [],
-        loading: false,
-    }
+    state = initialState;
 
     componentDidMount() {
+        this.loadOutlet();
         // this.loadPurchaseStats();
         // this.loadGoal();
 
         this.loadPurchases(null, (purchases) => {
             this.setState({ purchases });
         });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.outletId !== this.props.outletId) {
+            this.setState(initialState);
+        }
     }
 
     // componentDidUpdate(prevProps) {
@@ -93,24 +98,34 @@ class OutletColumn extends React.Component {
         }
     }
 
+    loadOutlet() {
+        const id = this.props.outletId;
+
+        api.get(`outlet/${id}`)
+        .then(res => {
+            this.setState({ outlet: res });
+        })
+        .catch(() => {
+            $.snackbar({ content: `There was an error loading outlet with id ${id}` });
+        });
+    }
+
     /**
      * Requests purchases for a passed outlet
      */
     loadPurchases(lastPurchase = null, cb) {
-        const { outlet: { id } } = this.state;
-        if (!id) return;
-
+        const { outletId } = this.props;
         this.setState({ loading: true });
 
         api.get('purchase/list', {
-            outlet_ids: [id],
+            outlet_ids: [outletId],
             limit: 5,
             last: lastPurchase,
         })
         .then(cb)
         .catch(() => {
             $.snackbar({
-                content: `There was an error getting outlet(${id}) purchases list`,
+                content: `There was an error getting outlet(${outletId}) purchases list`,
             });
         })
         .then(() => {
@@ -143,17 +158,17 @@ class OutletColumn extends React.Component {
             } });
         };
 
-        const { outlet: { id } } = this.state;
+        const { outletId } = this.props;
 
         api.get('purchase/stats', {
-            outlet_ids: [id],
+            outlet_ids: [outletId],
             limit: 5,
             last: lastPurchase,
         })
         .then(calculateStats)
         .catch(() => {
             $.snackbar({
-                content: `There was an error getting outlet(${id}) purchase stats`,
+                content: `There was an error getting outlet(${outletId}) purchase stats`,
             });
         });
     }

@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
-import update from 'react-addons-update';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import api from 'app/lib/api';
 import OutletColumn from './outlet-column.js';
 
 class PurchasesOutlets extends React.Component {
@@ -11,20 +9,6 @@ class PurchasesOutlets extends React.Component {
         statsTime: PropTypes.string.isRequired,
         outletIds: PropTypes.array.isRequired,
     };
-
-    state = {
-        outlets: {},
-    }
-
-    componentDidMount() {
-        this.loadOutlets(this.props.outletIds);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (JSON.stringify(nextProps.outletIds) !== JSON.stringify(this.props.outletIds)) {
-            this.loadOutlets(nextProps.outletIds);
-        }
-    }
 
     /**
      * Updates the time interval the outelt data is loaded in
@@ -49,30 +33,15 @@ class PurchasesOutlets extends React.Component {
         }
     }
 
-    loadOutlets(outletIds = []) {
-        // Loop through, and update state on each response
-        outletIds.forEach((id) => {
-            api.get(`outlet/${id}`)
-            .then(res => {
-                this.setState({
-                    outlets: update(this.state.outlets, { [id]: { $set: res } }),
-                });
-            })
-            .catch(() => {
-                $.snackbar({ content: 'There was an error loading outlets' });
-            });
-        });
-    }
-
     render() {
+        const { outletIds } = this.props;
         return (
             <div className="purchases__outlets">
-                {Object.keys(this.state.outlets).map((outletId, i) => (
+                {outletIds.map((outletId, i) => (
                     <OutletColumn
-                        outlet={this.state.outlets[outletId]}
+                        outletId={outletId}
                         since={this.getTimeInterval(this.props.statsTime)}
                         key={i}
-                        draggable
                     />
                 ))}
             </div>
