@@ -1,19 +1,27 @@
 import React, { PropTypes } from 'react';
 import last from 'lodash/last';
+import flow from 'lodash/flow';
 import api from 'app/lib/api';
-import { DragSource } from 'react-dnd';
+import { DragSource, DropTarget } from 'react-dnd';
 import OutletColumnHead from './outlet-column-head';
 import OutletColumnList from './outlet-column-list';
 
 const columnSource = {
     beginDrag(props) {
-        return props.outlet.id;
+        console.log('begin dragging column', props.outletId);
+
+        return { outletId: props.outletId };
     },
 };
 
-const collect = (connect, monitor) => ({
-    isDragging: monitor.isDragging(),
-});
+const columnTarget = {
+    hover(targetProps, monitor) {
+        const sourceProps = monitor.getItem();
+
+        console.log('dragging column', sourceProps, targetProps);
+    },
+};
+
 
 const initialState = {
     userStats: {
@@ -34,9 +42,14 @@ const initialState = {
  */
 class OutletColumn extends React.Component {
     static propTypes = {
-        outletId: PropTypes.string.isRequired,
         isDragging: PropTypes.bool.isRequired,
+        connectDragSource: PropTypes.func.isRequired,
+        outletId: PropTypes.string.isRequired,
         since: PropTypes.object,
+    };
+
+    static defaultProps = {
+        isDragging: false,
     };
 
     state = initialState;
@@ -235,9 +248,9 @@ class OutletColumn extends React.Component {
     // }
 
     render() {
-        const { isDragging } = this.props;
+        const { isDragging, connectDragSource, connectDropTarget } = this.props;
 
-        return (
+        return flow(connectDragSource, connectDropTarget)(
             <div
                 draggable
                 className="outlet-column"
@@ -263,5 +276,13 @@ class OutletColumn extends React.Component {
     }
 }
 
-export default DragSource('outletColumn', columnSource, collect)(OutletColumn);
+export default flow(
+    DragSource('outletColumn', columnSource, (connect, monitor) => ({
+        connectDragSource: connect.dragSource(),
+        isDragging: monitor.isDragging(),
+    })),
+    DropTarget('outletColumn', columnTarget, connect => ({
+        connectDropTarget: connect.dropTarget(),
+    }))
+)(OutletColumn);
 
