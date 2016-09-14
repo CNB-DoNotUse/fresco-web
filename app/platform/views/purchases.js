@@ -25,7 +25,7 @@ class Purchases extends React.Component {
         outlets: [],
         users: [],
         searchOutlets: [],
-        availableUsers: [],
+        searchUsers: [],
         updatePurchases: false,
         activeTab: 'Summary',
         outletStatsTime: 'today so far',
@@ -40,9 +40,9 @@ class Purchases extends React.Component {
             api.get('search', $.param(params))
             .then(res => {
                 if (res.outlets) {
-                    const searchOutlets =
-                        differenceBy(res.outlets.results, this.state.outlets, 'id');
-                    this.setState({ searchOutlets });
+                    this.setState({
+                        searchOutlets: differenceBy(res.outlets.results, this.state.outlets, 'id'),
+                    });
                 }
             });
         }
@@ -50,7 +50,7 @@ class Purchases extends React.Component {
 
     findUsers = (q) => {
         if (q.length === 0) {
-            this.setState({ availableUsers: [] });
+            this.setState({ searchUsers: [] });
         } else {
             const params = { users: { a: { full_name: q } } };
 
@@ -58,10 +58,10 @@ class Purchases extends React.Component {
                 url: '/api/search',
                 type: 'GET',
                 data: $.param(params),
-                success: response => {
-                    if (response.users) {
+                success: res => {
+                    if (res.users) {
                         this.setState({
-                            availableUsers: response.users.results,
+                            searchUsers: differenceBy(res.users.results, this.state.users, 'id'),
                         });
                     }
                 },
@@ -74,14 +74,14 @@ class Purchases extends React.Component {
 	 * @param {string} userToAdd email of the user
 	 */
     addUser = (userToAdd, index) => {
-        const { availableUsers, users } = this.state;
-        const user = availableUsers[index];
+        const { searchUsers, users } = this.state;
+        const user = searchUsers[index];
 
         if (user !== null) {
             if (find(users, ['id', user.id]) === undefined) {
                 this.setState({
                     users: update(users, { $push: [user] }),
-                    availableUsers: update(availableUsers, { $splice: [[index, 1]] }),
+                    searchUsers: update(searchUsers, { $splice: [[index, 1]] }),
                     updatePurchases: true,
                 });
             }
@@ -118,7 +118,7 @@ class Purchases extends React.Component {
 
         this.setState({
             users: update(this.state.users, { $splice: [[index, 1]] }),
-            availableUsers: update(this.state.availableUsers, { $push: [user] }),
+            searchUsers: update(this.state.searchUsers, { $push: [user] }),
             updatePurchases: true,
         });
     }
@@ -233,7 +233,7 @@ class Purchases extends React.Component {
             outlets,
             users,
             searchOutlets,
-            availableUsers,
+            searchUsers,
             activeTab,
             outletStatsTime,
         } = this.state;
@@ -260,7 +260,7 @@ class Purchases extends React.Component {
                     {(activeTab === 'Summary') &&
                         <TagFilter
                             text="Users"
-                            tagList={map(availableUsers, 'full_name')}
+                            tagList={map(searchUsers, 'full_name')}
                             filterList={map(users, 'full_name')}
                             onTagInput={this.findUsers}
                             onTagAdd={this.addUser}

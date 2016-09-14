@@ -8,7 +8,7 @@ import OutletColumnList from './outlet-column-list';
 
 const columnSource = {
     beginDrag(props) {
-        console.log('begin dragging column', props.outletId);
+        // console.log('begin dragging column', props.outletId);
 
         return { outletId: props.outletId };
     },
@@ -16,9 +16,14 @@ const columnSource = {
 
 const columnTarget = {
     hover(targetProps, monitor) {
+        const targetOutletId = targetProps.outletId;
         const sourceProps = monitor.getItem();
+        const sourceOutletId = sourceProps.outletId;
 
-        console.log('dragging column', sourceProps, targetProps);
+        // console.log('dragging column', sourceProps, targetProps);
+        if (sourceOutletId !== targetOutletId) {
+            targetProps.onMove({ sourceOutletId, targetOutletId });
+        }
     },
 };
 
@@ -33,7 +38,6 @@ const initialState = {
     dailyVideoCount: 0,
     purchases: [],
     loading: false,
-    outlet: {},
 };
 
 /**
@@ -44,7 +48,8 @@ class OutletColumn extends React.Component {
     static propTypes = {
         isDragging: PropTypes.bool.isRequired,
         connectDragSource: PropTypes.func.isRequired,
-        outletId: PropTypes.string.isRequired,
+        connectDropTarget: PropTypes.func.isRequired,
+        outlet: PropTypes.object.isRequired,
         since: PropTypes.object,
     };
 
@@ -55,7 +60,6 @@ class OutletColumn extends React.Component {
     state = initialState;
 
     componentDidMount() {
-        this.loadOutlet();
         // this.loadPurchaseStats();
         // this.loadGoal();
 
@@ -65,7 +69,7 @@ class OutletColumn extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.outletId !== this.props.outletId) {
+        if (nextProps.outlet.id !== this.props.outlet.id) {
             this.setState(initialState);
         }
     }
@@ -111,34 +115,22 @@ class OutletColumn extends React.Component {
         }
     }
 
-    loadOutlet() {
-        const id = this.props.outletId;
-
-        api.get(`outlet/${id}`)
-        .then(res => {
-            this.setState({ outlet: res });
-        })
-        .catch(() => {
-            $.snackbar({ content: `There was an error loading outlet with id ${id}` });
-        });
-    }
-
     /**
      * Requests purchases for a passed outlet
      */
     loadPurchases(lastPurchase = null, cb) {
-        const { outletId } = this.props;
+        const { outlet: { id } } = this.props;
         this.setState({ loading: true });
 
         api.get('purchase/list', {
-            outlet_ids: [outletId],
+            outlet_ids: [id],
             limit: 5,
             last: lastPurchase,
         })
         .then(cb)
         .catch(() => {
             $.snackbar({
-                content: `There was an error getting outlet(${outletId}) purchases list`,
+                content: `There was an error getting outlet(${id}) purchases list`,
             });
         })
         .then(() => {
@@ -170,17 +162,17 @@ class OutletColumn extends React.Component {
             } });
         };
 
-        const { outletId } = this.props;
+        const { outlet: { id } } = this.props;
 
         api.get('purchase/stats', {
-            outlet_ids: [outletId],
+            outlet_ids: [id],
             limit: 5,
             last: lastPurchase,
         })
         .then(calculateStats)
         .catch(() => {
             $.snackbar({
-                content: `There was an error getting outlet(${outletId}) purchase stats`,
+                content: `There was an error getting outlet(${id}) purchase stats`,
             });
         });
     }
@@ -248,7 +240,12 @@ class OutletColumn extends React.Component {
     // }
 
     render() {
-        const { isDragging, connectDragSource, connectDropTarget } = this.props;
+        const {
+            isDragging,
+            connectDragSource,
+            connectDropTarget,
+            outlet,
+        } = this.props;
 
         return flow(connectDragSource, connectDropTarget)(
             <div
@@ -264,7 +261,7 @@ class OutletColumn extends React.Component {
                     userStats={this.state.userStats}
                     purchaseStats={this.state.purchaseStats}
                     dailyVideoCount={this.state.dailyVideoCount}
-                    outlet={this.state.outlet}
+                    outlet={outlet}
                 />
 
                 <OutletColumnList
