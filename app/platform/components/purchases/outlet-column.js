@@ -84,7 +84,7 @@ class OutletColumn extends React.Component {
         // Check that nothing is loading and that we're at the end of the scroll,
         // and that we have a parent bind to load  more posts
         if (!this.state.loading && endOfScroll) {
-            this.loadPurchases(last(this.state.purchases), (purchases) => {
+            this.loadPurchases(last(this.state.purchases).id, (purchases) => {
                 if (!purchases || !purchases.length) {
                     this.setState({ scrollable: false });
                     return;
@@ -129,7 +129,6 @@ class OutletColumn extends React.Component {
             });
         })
         .then(() => {
-            // Set that we're loading
             this.setState({ loading: false });
         });
     }

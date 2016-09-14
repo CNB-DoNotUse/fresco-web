@@ -11,29 +11,6 @@ export default class OutletColumnPurchase extends React.Component {
         purchase: PropTypes.object,
     }
 
-    toggleVideo = () => {
-        const video = this.video;
-        const allVideos = document.getElementsByTagName('video');
-
-        if (video.paused) {
-            allVideos.forEach(v => {
-                if (!v.paused) v.pause();
-            });
-            video.play();
-        } else {
-            video.pause();
-        }
-    }
-
-    toggleVolume = () => {
-        const video = this.video;
-
-        this.volumeToggle.className = video.muted
-            ? 'mdi mdi-volume-high volume-toggle'
-            : 'mdi mdi-volume-off volume-toggle';
-        video.muted = !video.muted;
-    }
-
     render() {
         const purchase = this.props.purchase;
         const post = purchase.post;
@@ -42,19 +19,18 @@ export default class OutletColumnPurchase extends React.Component {
         let media = '';
         let timestampText = '';
 
-        let name = post.owner
+        const name = post.owner
             ? post.owner.full_name
-            : post.byline;
-        name = name.replace('via Fresco News', '');
+            : '';
 
         if (post.stream) {
             media = <FrescoVideo video={post.stream} thumbnail={post.image} />;
         } else {
-            media = <FrescoImage src={post.image} size="small" />
+            media = <FrescoImage src={post.image} size="small" />;
         }
 
         if (purchase.timestamp < lastDay) {
-            timestampText = moment(purchase.timestamp).format('MMMM Do, YYYY')
+            timestampText = moment(purchase.timestamp).format('MMMM Do, YYYY');
         } else {
             timestampText = moment(purchase.timestamp).format('h:mm A') + ' UTC';
         }
