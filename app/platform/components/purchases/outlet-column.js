@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import last from 'lodash/last';
 import flow from 'lodash/flow';
 import api from 'app/lib/api';
 import { DragSource, DropTarget } from 'react-dnd';
@@ -49,6 +48,7 @@ class OutletColumn extends React.Component {
         isDragging: PropTypes.bool.isRequired,
         connectDragSource: PropTypes.func.isRequired,
         connectDropTarget: PropTypes.func.isRequired,
+        onScrollPurchases: PropTypes.func.isRequired,
         outlet: PropTypes.object.isRequired,
         since: PropTypes.object,
     };
@@ -62,10 +62,6 @@ class OutletColumn extends React.Component {
     componentDidMount() {
         // this.loadPurchaseStats();
         // this.loadGoal();
-
-        this.loadPurchases(null, (purchases) => {
-            this.setState({ purchases });
-        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -85,6 +81,7 @@ class OutletColumn extends React.Component {
      * Scroll listener for main window
      */
     onScroll = (e) => {
+        const { outlet, onScrollPurchases } = this.props;
         const grid = e.target;
         const scrollTop = grid.scrollTop;
         const head = this.columnHead.head;
@@ -100,42 +97,9 @@ class OutletColumn extends React.Component {
 
         // Check that nothing is loading and that we're at the end of the scroll,
         // and that we have a parent bind to load  more posts
-        if (!this.state.loading && endOfScroll) {
-            this.loadPurchases(last(this.state.purchases).id, (purchases) => {
-                if (!purchases || !purchases.length) {
-                    this.setState({ scrollable: false });
-                    return;
-                }
-
-                // Set galleries from successful response, and unset loading
-                this.setState({
-                    purchases: this.state.purchases.concat(purchases),
-                });
-            });
+        if (endOfScroll) {
+            onScrollPurchases(outlet);
         }
-    }
-
-    /**
-     * Requests purchases for a passed outlet
-     */
-    loadPurchases(lastPurchase = null, cb) {
-        const { outlet: { id } } = this.props;
-        this.setState({ loading: true });
-
-        api.get('purchase/list', {
-            outlet_ids: [id],
-            limit: 5,
-            last: lastPurchase,
-        })
-        .then(cb)
-        .catch(() => {
-            $.snackbar({
-                content: `There was an error getting outlet(${id}) purchases list`,
-            });
-        })
-        .then(() => {
-            this.setState({ loading: false });
-        });
     }
 
     /**
@@ -148,34 +112,34 @@ class OutletColumn extends React.Component {
     /**
      * Loads stats for purchases
      */
-    loadPurchaseStats = (lastPurchase = null) => {
-        const calculateStats = ({ total_revenue = 0 }) => {
-            if (!total_revenue) return;
+    // loadPurchaseStats = (lastPurchase = null) => {
+    //     const calculateStats = ({ total_revenue = 0 }) => {
+    //         if (!total_revenue) return;
 
-            const stripeFee = (0.029 * total_revenue) + 0.30;
-            const userFee = 0.67 * total_revenue;
-            const margin = total_revenue - stripeFee - userFee;
+    //         const stripeFee = (0.029 * total_revenue) + 0.30;
+    //         const userFee = 0.67 * total_revenue;
+    //         const margin = total_revenue - stripeFee - userFee;
 
-            this.setState({ purchaseStats: {
-                margin: `$${Math.round(margin * 100) / 100}`,
-                revenue: `$${total_revenue}`,
-            } });
-        };
+    //         this.setState({ purchaseStats: {
+    //             margin: `$${Math.round(margin * 100) / 100}`,
+    //             revenue: `$${total_revenue}`,
+    //         } });
+    //     };
 
-        const { outlet: { id } } = this.props;
+    //     const { outlet: { id } } = this.props;
 
-        api.get('purchase/stats', {
-            outlet_ids: [id],
-            limit: 5,
-            last: lastPurchase,
-        })
-        .then(calculateStats)
-        .catch(() => {
-            $.snackbar({
-                content: `There was an error getting outlet(${id}) purchase stats`,
-            });
-        });
-    }
+    //     api.get('purchase/stats', {
+    //         outlet_ids: [id],
+    //         limit: 5,
+    //         last: lastPurchase,
+    //     })
+    //     .then(calculateStats)
+    //     .catch(() => {
+    //         $.snackbar({
+    //             content: `There was an error getting outlet(${id}) purchase stats`,
+    //         });
+    //     });
+    // }
 
     // loadGoal = () => {
     //     $.ajax({
@@ -266,7 +230,7 @@ class OutletColumn extends React.Component {
 
                 <OutletColumnList
                     onScroll={this.onScroll}
-                    purchases={this.state.purchases}
+                    purchases={outlet.purchases || []}
                 />
             </div>
         );
