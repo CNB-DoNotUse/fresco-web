@@ -10,6 +10,7 @@ import OutletColumn from './outlet-column.js';
 
 // TODO: use update on outlets object in onMove cb function
 // TODO: fix draggable style (not showing dragged column with purchases)
+// TODO: fix bad loading state in loadOutlets
 // TODO: add horizontal scroll
 class PurchasesOutlets extends React.Component {
     static propTypes = {

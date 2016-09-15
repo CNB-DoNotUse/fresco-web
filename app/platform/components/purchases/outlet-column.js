@@ -11,7 +11,7 @@ const columnSource = {
 };
 
 const columnTarget = {
-    hover(props, monitor) {
+    drop(props, monitor) {
         const targetOutletId = props.outlet.id;
         const sourceProps = monitor.getItem();
         const sourceOutletId = sourceProps.outletId;
