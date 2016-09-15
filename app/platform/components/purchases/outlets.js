@@ -40,7 +40,15 @@ class PurchasesOutlets extends React.Component {
     }
 
     onMove = ({ sourceOutletId, targetOutletId }) => {
-        console.log('moving from', sourceOutletId, 'to', targetOutletId);
+        let { outlets = [] } = this.state;
+        const sourceOutletIdx = outlets.findIndex(o => o.id === sourceOutletId);
+        const targetOutletIdx = outlets.findIndex(o => o.id === targetOutletId);
+        const sourceOutlet = outlets[sourceOutletIdx];
+        const targetOutlet = outlets[targetOutletIdx];
+
+        outlets = update(outlets, { [targetOutletIdx]: { $set: sourceOutlet } });
+        outlets = update(outlets, { [sourceOutletIdx]: { $set: targetOutlet } });
+        this.setState({ outlets });
     }
 
     /**
@@ -148,6 +156,7 @@ class PurchasesOutlets extends React.Component {
                         outlet={outlet}
                         since={this.getTimeInterval(this.props.statsTime)}
                         loadMorePurchases={this.loadMorePurchases}
+                        onMove={this.onMove}
                         draggable
                     />
                 ))}

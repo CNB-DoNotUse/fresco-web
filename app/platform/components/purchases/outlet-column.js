@@ -6,21 +6,19 @@ import OutletColumnPurchase from './outlet-column-purchase';
 
 const columnSource = {
     beginDrag(props) {
-        // console.log('begin dragging column', props.outletId);
-
-        return { outletId: props.outletId };
+        return { outletId: props.outlet.id };
     },
 };
 
 const columnTarget = {
-    hover(targetProps, monitor) {
-        const targetOutletId = targetProps.outletId;
+    hover(props, monitor) {
+        const targetOutletId = props.outlet.id;
         const sourceProps = monitor.getItem();
         const sourceOutletId = sourceProps.outletId;
 
         // console.log('dragging column', sourceProps, targetProps);
         if (sourceOutletId !== targetOutletId) {
-            targetProps.onMove({ sourceOutletId, targetOutletId });
+            props.onMove({ sourceOutletId, targetOutletId });
         }
     },
 };
