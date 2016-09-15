@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import flow from 'lodash/flow';
-import api from 'app/lib/api';
 import { DragSource, DropTarget } from 'react-dnd';
 import OutletColumnHead from './outlet-column-head';
-import OutletColumnList from './outlet-column-list';
+import OutletColumnPurchase from './outlet-column-purchase';
 
 const columnSource = {
     beginDrag(props) {
@@ -48,7 +47,7 @@ class OutletColumn extends React.Component {
         isDragging: PropTypes.bool.isRequired,
         connectDragSource: PropTypes.func.isRequired,
         connectDropTarget: PropTypes.func.isRequired,
-        onScrollPurchases: PropTypes.func.isRequired,
+        loadMorePurchases: PropTypes.func.isRequired,
         outlet: PropTypes.object.isRequired,
         since: PropTypes.object,
     };
@@ -80,8 +79,8 @@ class OutletColumn extends React.Component {
     /**
      * Scroll listener for main window
      */
-    onScroll = (e) => {
-        const { outlet, onScrollPurchases } = this.props;
+    onScrollPurchases = (e) => {
+        const { outlet, loadMorePurchases } = this.props;
         const grid = e.target;
         const scrollTop = grid.scrollTop;
         const head = this.columnHead.head;
@@ -98,7 +97,7 @@ class OutletColumn extends React.Component {
         // Check that nothing is loading and that we're at the end of the scroll,
         // and that we have a parent bind to load  more posts
         if (endOfScroll) {
-            onScrollPurchases(outlet);
+            loadMorePurchases(outlet.id);
         }
     }
 
@@ -203,6 +202,17 @@ class OutletColumn extends React.Component {
     //     setTimeout(() => updateGoal(params), 1000);
     // }
 
+    renderPurchasesList = ({ onScroll, purchases = [] }) => (
+        <ul className="outlet-column__list" onScroll={onScroll}>
+            {purchases
+                ? purchases.map((purchase, i) => (
+                    <OutletColumnPurchase purchase={purchase} key={i} />
+                ))
+                : null
+            }
+        </ul>
+    )
+
     render() {
         const {
             isDragging,
@@ -228,10 +238,10 @@ class OutletColumn extends React.Component {
                     outlet={outlet}
                 />
 
-                <OutletColumnList
-                    onScroll={this.onScroll}
-                    purchases={outlet.purchases || []}
-                />
+                {this.renderPurchasesList({
+                    onScroll: this.onScrollPurchases,
+                    purchases: outlet.purchases,
+                })}
             </div>
         );
     }

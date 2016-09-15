@@ -9,9 +9,6 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import api from 'app/lib/api';
 import OutletColumn from './outlet-column.js';
 
-// TODO: bring back map of outlets here
-// TODO: move purchase loading here, make part of outlets map
-// TODO: only load new outlets on outletId prop change
 // TODO: use update on outlets object in onMove cb function
 // TODO: fix draggable style (not showing dragged column with purchases)
 // TODO: add horizontal scroll
@@ -23,6 +20,7 @@ class PurchasesOutlets extends React.Component {
 
     state = {
         outlets: {},
+        loading: false,
     }
 
     componentDidMount() {
@@ -40,16 +38,6 @@ class PurchasesOutlets extends React.Component {
 
     onMove = ({ sourceOutletId, targetOutletId }) => {
         console.log('moving from', sourceOutletId, 'to', targetOutletId);
-    }
-
-    onScrollPurchases = (outlet) => {
-        let { outlets = {} } = this.state;
-
-        this.loadPurchases(last(outlet.purchases).id, (res) => {
-            outlets = update(outlets, {
-                [outlet.id]: { purchases: { $push: res } },
-            });
-        });
     }
 
     /**
@@ -82,12 +70,14 @@ class PurchasesOutlets extends React.Component {
      * @param {array} outletIds array of outlet ids
      */
     loadOutlets = (outletIds) => {
-        let { outlets = {} } = this.state;
+        let { outlets = {}, loading } = this.state;
+        if (loading || !outletIds || !outletIds.length) return;
+        this.setState({ loading: true });
+
         let newOutletIds = outletIds;
         if (Object.keys(outlets).length) {
             newOutletIds = difference(outletIds, Object.keys(outlets));
         }
-        if (!newOutletIds || !newOutletIds.length) return;
 
         Promise.all(newOutletIds.map((id) => api.get(`outlet/${id}`)))
         .then(res => {
@@ -98,16 +88,17 @@ class PurchasesOutlets extends React.Component {
         .catch(() => {
             $.snackbar({ content: 'There was an error loading outlets' });
         })
-        .then(() => this.setState({ outlets }, () => this.loadPurchases(newOutletIds)));
+        .then(() => this.setState({ outlets, loading: false }, () => this.loadInitialPurchases(newOutletIds)));
     }
 
-    loadPurchases = (outletIds, lastPurchase) => {
-        let { outlets = {} } = this.state;
+    loadInitialPurchases = (outletIds) => {
+        let { outlets = {}, loading } = this.state;
+        if (loading || !outletIds || !outletIds.length) return;
+        this.setState({ loading: true });
 
         Promise.all(outletIds.map((id) => api.get('purchase/list', {
             outlet_ids: [id],
             limit: 5,
-            last: lastPurchase,
         })))
         .then(res => {
             res.forEach((purchases) => {
@@ -118,13 +109,38 @@ class PurchasesOutlets extends React.Component {
                 }
             });
         })
-        .catch((err) => {
-            if (err) debugger;
+        .catch(() => {
             $.snackbar({
                 content: `There was an error getting outlets(${outletIds.join(', ')}) purchases!`,
             });
         })
-        .then(() => this.setState({ outlets }));
+        .then(() => this.setState({ outlets, loading: false }));
+    }
+
+    loadMorePurchases = (outletId) => {
+        let { outlets = {}, loading } = this.state;
+        if (loading || !outletId) return;
+        const outlet = outlets[outletId];
+        this.setState({ loading: true });
+
+        api.get('purchase/list', {
+            outlet_ids: [outletId],
+            last: last(outlet.purchases).id,
+            limit: 5,
+        })
+        .then(res => {
+            if (res && res.length) {
+                outlets = update(outlets, {
+                    [outletId]: { purchases: { $push: res } },
+                });
+            }
+        })
+        .catch(() => {
+            $.snackbar({
+                content: `There was an error getting outlet(${outletId}) purchases!`,
+            });
+        })
+        .then(() => this.setState({ outlets, loading: false }));
     }
 
     render() {
@@ -136,7 +152,7 @@ class PurchasesOutlets extends React.Component {
                         key={i}
                         outlet={outlets[outletId]}
                         since={this.getTimeInterval(this.props.statsTime)}
-                        onScrollPurchases={this.onScrollPurchases}
+                        loadMorePurchases={this.loadMorePurchases}
                         draggable
                     />
                 ))}
