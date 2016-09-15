@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import moment from 'moment';
 import update from 'react-addons-update';
 import { DragDropContext } from 'react-dnd';
-import pickBy from 'lodash/pickBy';
 import difference from 'lodash/difference';
 import last from 'lodash/last';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -19,7 +18,7 @@ class PurchasesOutlets extends React.Component {
     };
 
     state = {
-        outlets: {},
+        outlets: [],
         loading: false,
     }
 
@@ -29,10 +28,14 @@ class PurchasesOutlets extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const { outletIds } = nextProps;
+        let { outlets } = this.state;
 
         if (JSON.stringify(outletIds) !== JSON.stringify(this.props.outletIds)) {
-            const outlets = pickBy(this.state.outlets, o => outletIds.includes(o.id));
-            this.setState({ outlets }, () => this.loadOutlets(outletIds));
+            // get newly added outlet ids to then load them
+            outlets = outlets.filter(o => outletIds.includes(o.id));
+            let newOutletIds = outletIds;
+            if (outlets.length) newOutletIds = difference(outletIds, outlets.map(o => o.id));
+            this.setState({ outlets }, () => this.loadOutlets(newOutletIds));
         }
     }
 
@@ -70,29 +73,23 @@ class PurchasesOutlets extends React.Component {
      * @param {array} outletIds array of outlet ids
      */
     loadOutlets = (outletIds) => {
-        let { outlets = {}, loading } = this.state;
+        let { outlets = [], loading } = this.state;
         if (loading || !outletIds || !outletIds.length) return;
+
         this.setState({ loading: true });
-
-        let newOutletIds = outletIds;
-        if (Object.keys(outlets).length) {
-            newOutletIds = difference(outletIds, Object.keys(outlets));
-        }
-
-        Promise.all(newOutletIds.map((id) => api.get(`outlet/${id}`)))
+        Promise.all(outletIds.map((id) => api.get(`outlet/${id}`)))
         .then(res => {
-            res.forEach((o) => {
-                outlets = update(outlets, { [o.id]: { $set: o } });
-            });
+            res.forEach(o => { outlets = update(outlets, { $push: [o] }); });
         })
         .catch(() => {
             $.snackbar({ content: 'There was an error loading outlets' });
         })
-        .then(() => this.setState({ outlets, loading: false }, () => this.loadInitialPurchases(newOutletIds)));
+        .then(() => this.setState({ outlets, loading: false },
+            () => this.loadInitialPurchases(outletIds)));
     }
 
     loadInitialPurchases = (outletIds) => {
-        let { outlets = {}, loading } = this.state;
+        let { outlets = [], loading } = this.state;
         if (loading || !outletIds || !outletIds.length) return;
         this.setState({ loading: true });
 
@@ -103,9 +100,8 @@ class PurchasesOutlets extends React.Component {
         .then(res => {
             res.forEach((purchases) => {
                 if (purchases && purchases.length) {
-                    outlets = update(outlets, {
-                        [purchases[0].outlet_id]: { $merge: { purchases } },
-                    });
+                    const outletIdx = outlets.findIndex(o => o.id === purchases[0].outlet_id);
+                    outlets = update(outlets, { [outletIdx]: { $merge: { purchases } } });
                 }
             });
         })
@@ -118,10 +114,11 @@ class PurchasesOutlets extends React.Component {
     }
 
     loadMorePurchases = (outletId) => {
-        let { outlets = {}, loading } = this.state;
+        let { outlets = [], loading } = this.state;
         if (loading || !outletId) return;
-        const outlet = outlets[outletId];
         this.setState({ loading: true });
+        const outletIdx = outlets.findIndex(o => o.id === outletId);
+        const outlet = outlets[outletIdx];
 
         api.get('purchase/list', {
             outlet_ids: [outletId],
@@ -130,9 +127,7 @@ class PurchasesOutlets extends React.Component {
         })
         .then(res => {
             if (res && res.length) {
-                outlets = update(outlets, {
-                    [outletId]: { purchases: { $push: res } },
-                });
+                outlets = update(outlets, { [outletIdx]: { purchases: { $push: res } } });
             }
         })
         .catch(() => {
@@ -147,10 +142,10 @@ class PurchasesOutlets extends React.Component {
         const { outlets } = this.state;
         return (
             <div className="purchases__outlets">
-                {Object.keys(outlets).map((outletId, i) => (
+                {outlets.map((outlet, i) => (
                     <OutletColumn
                         key={i}
-                        outlet={outlets[outletId]}
+                        outlet={outlet}
                         since={this.getTimeInterval(this.props.statsTime)}
                         loadMorePurchases={this.loadMorePurchases}
                         draggable
