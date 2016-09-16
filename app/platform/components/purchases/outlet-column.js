@@ -5,6 +5,9 @@ import { DragSource, DropTarget } from 'react-dnd';
 import OutletColumnHead from './outlet-column-head';
 import OutletColumnPurchase from './outlet-column-purchase';
 
+// based on following example
+// https://github.com/gaearon/react-dnd/blob/master/examples/04%20Sortable/Simple/Card.js
+
 const columnSource = {
     beginDrag(props) {
         return { id: props.id, index: props.index };
@@ -45,6 +48,12 @@ const columnTarget = {
         }
 
         props.onMove(dragIndex, hoverIndex);
+
+        // Note: we're mutating the monitor item here!
+        // Generally it's better to avoid mutations,
+        // but it's good here for the sake of performance
+        // to avoid expensive index searches.
+        monitor.getItem().index = hoverIndex;
     },
 };
 
@@ -69,6 +78,7 @@ class OutletColumn extends React.Component {
     static propTypes = {
         isDragging: PropTypes.bool.isRequired,
         connectDragSource: PropTypes.func.isRequired,
+        connectDragPreview: PropTypes.func.isRequired,
         connectDropTarget: PropTypes.func.isRequired,
         loadMorePurchases: PropTypes.func.isRequired,
         outlet: PropTypes.object.isRequired,
@@ -241,10 +251,11 @@ class OutletColumn extends React.Component {
             isDragging,
             connectDragSource,
             connectDropTarget,
+            connectDragPreview,
             outlet,
         } = this.props;
 
-        return flow(connectDragSource, connectDropTarget)(
+        return connectDragSource(connectDropTarget(
             <div
                 draggable
                 className="outlet-column"
@@ -252,27 +263,32 @@ class OutletColumn extends React.Component {
                     opacity: isDragging ? 0 : 1,
                 }}
             >
-                <OutletColumnHead
-                    ref={r => { this.columnHead = r; }}
-                    adjustGoal={this.adjustGoal}
-                    userStats={this.state.userStats}
-                    purchaseStats={this.state.purchaseStats}
-                    dailyVideoCount={this.state.dailyVideoCount}
-                    outlet={outlet}
-                />
+                {connectDragPreview(
+                    <div>
+                        <OutletColumnHead
+                            ref={r => { this.columnHead = r; }}
+                            adjustGoal={this.adjustGoal}
+                            userStats={this.state.userStats}
+                            purchaseStats={this.state.purchaseStats}
+                            dailyVideoCount={this.state.dailyVideoCount}
+                            outlet={outlet}
+                        />
+                    </div>
+                )}
 
                 {this.renderPurchasesList({
                     onScroll: this.onScrollPurchases,
                     purchases: outlet.purchases,
                 })}
             </div>
-        );
+        ));
     }
 }
 
 export default flow(
     DragSource('outletColumn', columnSource, (connect, monitor) => ({
         connectDragSource: connect.dragSource(),
+        connectDragPreview: connect.dragPreview(),
         isDragging: monitor.isDragging(),
     })),
     DropTarget('outletColumn', columnTarget, connect => ({
