@@ -1,25 +1,50 @@
 import React, { PropTypes } from 'react';
 import flow from 'lodash/flow';
+import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
 import OutletColumnHead from './outlet-column-head';
 import OutletColumnPurchase from './outlet-column-purchase';
 
 const columnSource = {
     beginDrag(props) {
-        return { outletId: props.outlet.id };
+        return { id: props.id, index: props.index };
     },
 };
 
 const columnTarget = {
-    drop(props, monitor) {
-        const targetOutletId = props.outlet.id;
-        const sourceProps = monitor.getItem();
-        const sourceOutletId = sourceProps.outletId;
+    hover(props, monitor, component) {
+        const dragIndex = monitor.getItem().index;
+        const hoverIndex = props.index;
 
-        // console.log('dragging column', sourceProps, targetProps);
-        if (sourceOutletId !== targetOutletId) {
-            props.onMove({ sourceOutletId, targetOutletId });
+        if (dragIndex === hoverIndex) return;
+
+        // Determine rectangle on screen
+        const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
+
+        // Get horizontal middle
+        const hoverMiddleX = (hoverBoundingRect.right - hoverBoundingRect.left) / 2;
+
+        // Determine mouse position
+        const clientOffset = monitor.getClientOffset();
+
+        // Get pixels to the left
+        const hoverClientX = clientOffset.x - hoverBoundingRect.left;
+
+        // Only perform the move when the mouse has crossed half of the items height
+        // When dragging rightwards, only move when the cursor is right 50%
+        // When dragging upwards, only move when the cursor is above 50%
+
+        // // Dragging rightwards
+        if (dragIndex < hoverIndex && hoverClientX < hoverMiddleX) {
+            return;
         }
+
+        // // Dragging leftwards
+        if (dragIndex > hoverIndex && hoverClientX > hoverMiddleX) {
+            return;
+        }
+
+        props.onMove(dragIndex, hoverIndex);
     },
 };
 
@@ -224,7 +249,7 @@ class OutletColumn extends React.Component {
                 draggable
                 className="outlet-column"
                 style={{
-                    opacity: isDragging ? 0.5 : 1,
+                    opacity: isDragging ? 0 : 1,
                 }}
             >
                 <OutletColumnHead

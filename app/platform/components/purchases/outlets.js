@@ -8,7 +8,6 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import api from 'app/lib/api';
 import OutletColumn from './outlet-column.js';
 
-// TODO: use update on outlets object in onMove cb function
 // TODO: fix draggable style (not showing dragged column with purchases)
 // TODO: fix bad loading state in loadOutlets
 // TODO: add horizontal scroll
@@ -40,16 +39,18 @@ class PurchasesOutlets extends React.Component {
         }
     }
 
-    onMove = ({ sourceOutletId, targetOutletId }) => {
-        let { outlets = [] } = this.state;
-        const sourceOutletIdx = outlets.findIndex(o => o.id === sourceOutletId);
-        const targetOutletIdx = outlets.findIndex(o => o.id === targetOutletId);
-        const sourceOutlet = outlets[sourceOutletIdx];
-        const targetOutlet = outlets[targetOutletIdx];
+    onMove = (dragIndex, hoverIndex) => {
+        const { outlets } = this.state;
+        const dragOutlet = outlets[dragIndex];
 
-        outlets = update(outlets, { [targetOutletIdx]: { $set: sourceOutlet } });
-        outlets = update(outlets, { [sourceOutletIdx]: { $set: targetOutlet } });
-        this.setState({ outlets });
+        this.setState(update(this.state, {
+            outlets: {
+                $splice: [
+                    [dragIndex, 1],
+                    [hoverIndex, 0, dragOutlet],
+                ],
+            },
+        }));
     }
 
     /**
@@ -153,7 +154,9 @@ class PurchasesOutlets extends React.Component {
             <div className="purchases__outlets">
                 {outlets.map((outlet, i) => (
                     <OutletColumn
-                        key={i}
+                        key={outlet.id}
+                        id={outlet.id}
+                        index={i}
                         outlet={outlet}
                         since={this.getTimeInterval(this.props.statsTime)}
                         loadMorePurchases={this.loadMorePurchases}
