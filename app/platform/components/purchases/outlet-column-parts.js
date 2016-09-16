@@ -20,7 +20,13 @@ export const UserStats = ({ mau, dau, galleryCount }) => (
     </div>
 );
 
-export const PurchaseStats = ({ photos, videos, margin, revenue }) => (
+UserStats.propTypes = {
+    mau: PropTypes.string,
+    dau: PropTypes.string,
+    galleryCount: PropTypes.number,
+};
+
+export const PurchaseStats = ({ photos = 0, videos = 0, margin = 0, revenue = 0 }) => (
     <div className="revenue">
         <ul>
             <li>
@@ -46,6 +52,13 @@ export const PurchaseStats = ({ photos, videos, margin, revenue }) => (
         </ul>
     </div>
 );
+
+PurchaseStats.propTypes = {
+    photos: PropTypes.number,
+    videos: PropTypes.number,
+    margin: PropTypes.number,
+    revenue: PropTypes.number,
+};
 
 export const OutletGoal = ({ dailyVideoCount, adjustGoal, goal }) =>  {
     const percentage = 50;
@@ -84,5 +97,11 @@ export const OutletGoal = ({ dailyVideoCount, adjustGoal, goal }) =>  {
             </div>
         </div>
     );
+};
+
+OutletGoal.propTypes = {
+    dailyVideoCount: PropTypes.number,
+    goal: PropTypes.number,
+    adjustGoal: PropTypes.func,
 };
 
