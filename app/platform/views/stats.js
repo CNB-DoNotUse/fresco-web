@@ -159,7 +159,7 @@ class Stats extends React.Component {
         };
 
         api
-        .get('user/locations/report', data)
+        .post('user/locations/report', data)
         .then((res) => {
             this.setState({ count: res });
         })
