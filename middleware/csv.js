@@ -30,7 +30,7 @@ function generateCSV(array) {
         if(array.constructor !== Array) {
             reject('Not a valid dataset', null);
         } else if (array.length == 0) {
-            return resolve('Empty dataset');
+            return resolve('No results were returned from the API!');
         }
 
         let headers = Object.keys(array[0]);
