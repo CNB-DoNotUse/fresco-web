@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import utils from 'utils';
+import api from 'app/lib/api';
+import isEqual from 'lodash/isEqual';
+import 'app/sass/platform/stats';
 import App from './app';
 import TopBar from '../components/topbar';
 import LocationAutocomplete from '../components/global/location-autocomplete.js';
 import KMLInput from '../components/stats/kml-input';
-import utils from 'utils';
-import _ from 'lodash';
-import 'app/sass/platform/stats';
 
 /**
  * Admin Stats Page
@@ -34,7 +35,7 @@ class Stats extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(!_.isEqual(prevState.coordinates, this.state.coordinates)) {
+        if(!isEqual(prevState.coordinates, this.state.coordinates)) {
             this.calculateUsers();
         }
     }
@@ -119,7 +120,7 @@ class Stats extends React.Component {
 
         this.updateMap(bounds);
         this.updatePolygon(latLngArray);
-        this.setState({ 
+        this.setState({
             coordinates: locationPolygon,
             autocompleteText: autocompleteData.address
         });
@@ -149,23 +150,22 @@ class Stats extends React.Component {
      * Calculates users from coordinates ins tate
      */
     calculateUsers() {
-        $.ajax({
-            url: "/api/user/locations/report",
-            method: 'GET',
-            data: {
-                since: Date.now() - 86400000,
-                geo: {
-                    type : "Polygon",
-                    coordinates :  [ this.state.coordinates ]
-                }
-            }
+        const data = {
+            since: Date.now() - 86400000,
+            geo: {
+                type: 'Polygon',
+                coordinates: [this.state.coordinates],
+            },
+        };
+
+        api
+        .post('user/locations/report', data)
+        .then((res) => {
+            this.setState({ count: res });
         })
-        .done((response) => {
-            this.setState({ count: response });
-        })
-        .fail((error) => {
+        .catch(() => {
             this.setState({ count: this.props.count });
-        })
+        });
     }
 
     render() {
@@ -178,7 +178,7 @@ class Stats extends React.Component {
 
                 <div className="container-fluid stats">
                     <div className="map-wrap">
-                        <h3>You can use the polygon, autocomplete, or KML importer 
+                        <h3>You can use the polygon, autocomplete, or KML importer
                         to calculate the number of active users in an area.</h3>
 
                         <LocationAutocomplete
@@ -238,8 +238,8 @@ class DownloadSubmissions extends React.Component {
 
     render() {
         return(
-            <button 
-                className="btn btn-flat pull-right mt12 mr16" 
+            <button
+                className="btn btn-flat pull-right mt12 mr16"
                 onClick={this.download}>
                 Download Submissions (.csv)
             </button>
