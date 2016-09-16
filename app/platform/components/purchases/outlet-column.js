@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import flow from 'lodash/flow';
 import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
-import OutletColumnHead from './outlet-column-head';
+import { UserStats, PurchaseStats, OutletGoal } from './outlet-column-parts';
 import OutletColumnPurchase from './outlet-column-purchase';
 
 // based on following example
@@ -91,10 +91,10 @@ class OutletColumn extends React.Component {
 
     state = initialState;
 
-    componentDidMount() {
+    // componentDidMount() {
         // this.loadPurchaseStats();
         // this.loadGoal();
-    }
+    // }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.outlet.id !== this.props.outlet.id) {
@@ -116,7 +116,7 @@ class OutletColumn extends React.Component {
         const { outlet, loadMorePurchases } = this.props;
         const grid = e.target;
         const scrollTop = grid.scrollTop;
-        const head = this.columnHead.head;
+        const head = this.head;
         const headClass = head.className;
 
         if (scrollTop <= 0) {
@@ -254,8 +254,9 @@ class OutletColumn extends React.Component {
             connectDragPreview,
             outlet,
         } = this.props;
+        const { userStats, purchaseStats, dailyVideoCount } = this.state;
 
-        return connectDragSource(connectDropTarget(
+        return connectDropTarget(
             <div
                 draggable
                 className="outlet-column"
@@ -264,14 +265,27 @@ class OutletColumn extends React.Component {
                 }}
             >
                 {connectDragPreview(
-                    <div>
-                        <OutletColumnHead
-                            ref={r => { this.columnHead = r; }}
+                    <div
+                        className="outlet-column__head"
+                        ref={r => { this.head = r; }}
+                    >
+                        <div className="title">
+                            <div>
+                                <h3>{outlet.title}</h3>
+                                <a href={`/outlet/${outlet.id}`}>
+                                    <span className="mdi mdi-logout-variant launch" />
+                                </a>
+                            </div>
+
+                            {connectDragSource(<span className="mdi mdi-drag-vertical drag" />)}
+                        </div>
+
+                        <UserStats {...userStats} />
+                        <PurchaseStats {...purchaseStats} />
+                        <OutletGoal
+                            dailyVideoCount={dailyVideoCount}
                             adjustGoal={this.adjustGoal}
-                            userStats={this.state.userStats}
-                            purchaseStats={this.state.purchaseStats}
-                            dailyVideoCount={this.state.dailyVideoCount}
-                            outlet={outlet}
+                            goal={outlet.goal || 0}
                         />
                     </div>
                 )}
@@ -281,7 +295,7 @@ class OutletColumn extends React.Component {
                     purchases: outlet.purchases,
                 })}
             </div>
-        ));
+        );
     }
 }
 
