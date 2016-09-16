@@ -201,7 +201,6 @@ class Edit extends React.Component {
             caption,
             stories,
             articles,
-            assignment,
             external_account_name,
             external_source,
             rating,
@@ -227,7 +226,6 @@ class Edit extends React.Component {
             ...this.getPostsFormData(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
-            assignment_id: assignment ? assignment.id : null,
             rating,
         };
 
@@ -241,7 +239,7 @@ class Edit extends React.Component {
     getPostsFormData() {
         const { gallery } = this.props;
         const files = this.getFilesFromUploads();
-        let { posts, rating } = this.state;
+        let { posts, rating, assignment } = this.state;
 
         if (!files.length && !posts.length) return null;
 
@@ -253,7 +251,13 @@ class Edit extends React.Component {
 
         let { posts_new, posts_add, posts_remove } =
             utils.getRemoveAddParams('posts', gallery.posts, posts);
-        posts_new = posts_new ? posts_new.map(p => Object.assign({}, p, { rating })) : null;
+        posts_new = posts_new
+            ? posts_new.map(p =>
+                Object.assign({}, p, {
+                    rating,
+                    assignment_id: assignment ? assignment.id : null,
+                }))
+            : null;
 
         return {
             posts_new,
@@ -265,16 +269,16 @@ class Edit extends React.Component {
 
     getPostsUpdateParams() {
         const { gallery } = this.props;
-        const { address, location, rating } = this.state;
+        const { address, location, rating, assignment } = this.state;
+        // check to see if should save locations on all gallery's posts
         const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
         const sameRating = rating === gallery.rating;
-        // check to see if should save locations on all gallery's posts
-        if (sameLocation && sameRating) return null;
         if (sameLocation) {
             return {
                 posts_update: gallery.posts.map(p => (pickBy({
                     id: p.id,
                     rating: rating === 3 ? 2 : rating,
+                    assignment_id: assignment ? assignment.id : null,
                 }, v => !!v))),
             };
         }
@@ -286,6 +290,7 @@ class Edit extends React.Component {
                 lat: location.lat,
                 lng: location.lng,
                 rating: rating === 3 ? 2 : rating,
+                assignment_id: assignment ? assignment.id : null,
             }, v => !!v))),
         };
     }

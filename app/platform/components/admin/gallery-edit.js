@@ -160,7 +160,6 @@ class GalleryEdit extends React.Component {
             caption,
             address,
             stories,
-            assignment,
             external_account_name,
             external_source,
             rating,
@@ -178,7 +177,6 @@ class GalleryEdit extends React.Component {
             address,
             ...this.getPostsUpdateParams(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
-            assignment_id: assignment ? assignment.id : null,
             external_account_name,
             external_source,
             rating,
@@ -189,16 +187,18 @@ class GalleryEdit extends React.Component {
 
     getPostsUpdateParams() {
         const { gallery } = this.props;
-        const { address, location, rating } = this.state;
+        const { address, location, rating, assignment } = this.state;
         // check to see if should save locations on all gallery's posts
-        if ((isEqual(this.getInitialLocationData(), { address, location }))
-            || (!gallery.posts || !gallery.posts.length)) {
-                return {
-                    posts_update: gallery.posts.map(p => ({
-                        id: p.id,
-                        rating,
-                    })),
-                };
+        const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
+
+        if (sameLocation || (!gallery.posts || !gallery.posts.length)) {
+            return {
+                posts_update: gallery.posts.map(p => ({
+                    id: p.id,
+                    rating,
+                    assignment_id: assignment ? assignment.id : null,
+                })),
+            };
         }
 
         return {
@@ -208,6 +208,7 @@ class GalleryEdit extends React.Component {
                 lat: location.lat,
                 lng: location.lng,
                 rating,
+                assignment_id: assignment ? assignment.id : null,
             })),
         };
     }
