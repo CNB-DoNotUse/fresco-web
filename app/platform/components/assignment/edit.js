@@ -8,12 +8,18 @@ import AutocompleteMap from '../global/autocomplete-map';
 import Merge from './merge';
 import MergeDropup from './merge-dropup';
 
-class AssignmentEdit extends React.Component {
-    constructor(props) {
-        super(props);
+export default class AssignmentEdit extends React.Component {
+    static propTypes = {
+        user: PropTypes.object,
+        assignment: PropTypes.object,
+        onToggle: PropTypes.func,
+        updateOutlet: PropTypes.func,
+        save: PropTypes.func,
+        loading: PropTypes.bool,
+        visible: PropTypes.bool.isRequired,
+    };
 
-        this.state = this.getStateFromProps(props);
-    }
+    state = this.getStateFromProps(this.props)
 
     componentDidMount() {
         $.material.init();
@@ -72,7 +78,7 @@ class AssignmentEdit extends React.Component {
     onSave() {
         const { assignment, save, loading } = this.props;
         const { title, caption, radius, location, address, endsAt, outlets } = this.state;
-        const geo = location && location.hasOwnProperty('type')
+        const geo = location && Object.prototype.hasOwnProperty.call(location, 'type')
             ? location
             : utils.getGeoFromCoord(location);
 
@@ -171,13 +177,13 @@ class AssignmentEdit extends React.Component {
         this.setState(this.getStateFromProps(this.props));
     }
 
-    clear() {
+    clear = () => {
         this.setState({
+            caption: '',
+            title: '',
             address: null,
-            caption: null,
             endsAt: null,
             location: null,
-            title: null,
             radius: null,
             outlet: null,
         });
@@ -221,7 +227,6 @@ class AssignmentEdit extends React.Component {
                             className="form-control floating-label"
                             placeholder="Title"
                             title="Title"
-                            ref="title"
                             value={title}
                             onChange={(e) => this.setState({ title: e.target.value })}
                         />
@@ -318,7 +323,7 @@ class AssignmentEdit extends React.Component {
                     type="button"
                     className="btn btn-flat"
                     disabled={loading}
-                    onClick={() => this.clear()}
+                    onClick={this.clear}
                 >
                     Clear all
                 </button>
@@ -427,15 +432,4 @@ class AssignmentEdit extends React.Component {
     }
 }
 
-AssignmentEdit.propTypes = {
-    user: PropTypes.object,
-    assignment: PropTypes.object,
-    onToggle: PropTypes.func,
-    updateOutlet: PropTypes.func,
-    save: PropTypes.func,
-    loading: PropTypes.bool,
-    visible: PropTypes.bool.isRequired,
-};
-
-export default AssignmentEdit;
 
