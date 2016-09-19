@@ -120,4 +120,3 @@ export default connect(mapStateToProps, {
     onConfirmDialog: pushActions.confirmDialog,
     onSend: pushActions.send,
 })(PushNotifs);
-
