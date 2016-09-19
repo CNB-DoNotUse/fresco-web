@@ -1,34 +1,37 @@
-import React from 'react'
-import PurchasesList from 'purchases-list'
-import PurchasesStats from 'purchases-stats'
+import React, { PropTypes } from 'react';
+import PurchasesList from './purchases-list';
+import PurchasesStats from './purchases-stats';
 
-export default class PurchasesBody extends React.Component {
+const PurchasesBody = ({
+    updatePurchases,
+    loadPurchases,
+    downloadExports,
+    loadStats }) => (
+    <div className="container-fluid fat grid">
+        <PurchasesList
+            updatePurchases={updatePurchases}
+            loadPurchases={loadPurchases}
+        />
 
-	constructor(props) {
-		super(props);
-	}
+        <PurchasesStats
+            downloadExports={downloadExports}
+            loadStats={loadStats}
+            updatePurchases={updatePurchases}
+        />
+    </div>
+);
 
-	render() {
-
-		return (
-			<div className="container-fluid fat grid">
-				<PurchasesList
-					updatePurchases={this.props.updatePurchases}
-					purchasesAdded={this.purchasesAdded}
-					loadPurchases={this.props.loadPurchases} />
-				
-				<PurchasesStats 
-					emailStatement={this.props.emailStatement}
-					downloadExports={this.props.downloadExports}
-					loadStats={this.props.loadStats}
-					updatePurchases={this.props.updatePurchases} />
-			</div>
-		);
-	}
-}
+PurchasesBody.propTypes = {
+    updatePurchases: PropTypes.bool,
+    loadPurchases: PropTypes.func,
+    downloadExports: PropTypes.func,
+    loadStats: PropTypes.func,
+};
 
 PurchasesBody.defaultProps = {
-	purchases: [],
-	downloadExports: () => {},
-	updatePurchases: false
-}
+    downloadExports: () => {},
+    updatePurchases: false,
+};
+
+export default PurchasesBody;
+
