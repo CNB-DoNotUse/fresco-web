@@ -8,19 +8,17 @@ import { fromJS } from 'immutable';
 import PushNotifs from 'app/platform/containers/PushNotifs';
 import DefaultTemplate from 'app/platform/components/pushNotifs/default-template';
 
+
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
-// const storeStateMock = {
-//   myReducer:{
-//     someState: 'ABC'
-//   }
-// };
 const storeStateMock = fromJS({
-    activeTab: 'default',
-    templates: {},
-    loading: false,
-    error: null,
-    dialog: null,
+    pushNotifs: {
+        activeTab: 'default',
+        templates: {},
+        loading: false,
+        error: null,
+        dialog: null,
+    },
 });
 
 let store;
@@ -28,25 +26,21 @@ let component;
 describe('<PushNotifs />', () => {
     beforeEach(() => {
         store = mockStore(storeStateMock);
-        component = mount(
-            <Provider store={store}>
-                <PushNotifs />
-            </Provider>
-        );
-        // component = shallow(
-        //     <Provider store={store}>
-        //         <PushNotifs />
-        //     </Provider>
-        // ).shallow();
-        // component = shallow(<PushNotifs store={store} />).shallow();
+        component = shallow(
+            <PushNotifs store={store} />
+        ).shallow();
     });
 
     it('should render', () => {
-        expect(component).length.toBeTruthy();
+        expect(component).to.have.length(1);
     });
 
-    // it('should render <DefaultTemplate /> by default', () => {
-    //     expect(component.find(DefaultTemplate)).to.have.length(1);
-    // });
+    it('should render a `push-notifs__tab` by default', () => {
+        expect(component.find('div.push-notifs__tab')).to.have.length(1);
+    });
+
+    it('should render <DefaultTemplate /> by default', () => {
+        expect(component.find('DefaultTemplate')).to.have.length(1);
+    });
 });
 
