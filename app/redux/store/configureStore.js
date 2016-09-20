@@ -39,13 +39,6 @@ export default function configureStore(initialState) {
     // See https://github.com/rackt/redux/releases/tag/v3.1.0
     const store = createStore(rootReducer, fromJS(initialState), enhancer);
 
-    // Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
-    if (process.env.__DEV__ && module.hot) {
-        module.hot.accept('../reducers', () =>
-            store.replaceReducer(require('../reducers').default) // eslint-disable-line global-require
-        );
-    }
-
     return store;
 }
 

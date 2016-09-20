@@ -7,6 +7,9 @@ import PushNotifs from 'app/platform/containers/PushNotifs';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import DefaultTemplate from 'app/platform/components/pushNotifs/default-template';
 import GalleryListTemplate from 'app/platform/components/pushNotifs/gallery-list-template';
+import TitleBody from 'app/platform/components/pushNotifs/title-body';
+import { RestrictByLocation, RestrictByUser } from 'app/platform/components/pushNotifs/restrict-by';
+import ChipInput from 'app/platform/components/global/chip-input';
 
 let store;
 let component;
@@ -30,11 +33,26 @@ describe('<PushNotifs />', () => {
 
     it('should render <DefaultTemplate /> by default', () => {
         expect(component.find(DefaultTemplate)).to.have.length(1);
+        expect(component.find(TitleBody)).to.have.length(1);
+        expect(component.find(RestrictByLocation)).to.have.length(1);
+        expect(component.find(RestrictByUser)).to.have.length(1);
     });
 
-    it('should render <GalleryListTemplate /> when set in store', () => {
+    it('should render <GalleryListTemplate /> when set as active tab', () => {
         store.dispatch(pushActions.setActiveTab('gallery list'));
         expect(component.find(GalleryListTemplate)).to.have.length(1);
+        expect(component.find(TitleBody)).to.have.length(1);
+        expect(component.find(RestrictByLocation)).to.have.length(1);
+        expect(component.find(RestrictByUser)).to.have.length(1);
+        expect(component.find(ChipInput)).to.have.length(1);
     });
+
+    // describe('<DefaultTemplate />', () => {
+    // });
+
+    // describe('<GalleryListTemplate />', () => {
+        // console.log('component props', component.instance().props);
+        // console.log('component debug', component.debug());
+    // });
 });
 
