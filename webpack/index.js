@@ -50,7 +50,9 @@ const plugins = (env) => {
 
     if (env === 'dev') {
         plugins.push(
-            new webpack.DefinePlugin({ __DEV__: true })
+            new webpack.DefinePlugin({
+                'process.env': { __DEV__: true },
+            })
         );
     }
 

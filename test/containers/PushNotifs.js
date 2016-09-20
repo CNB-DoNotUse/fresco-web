@@ -1,34 +1,23 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { expect } from 'chai';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { Provider } from 'react-redux';
-import { fromJS } from 'immutable';
+import configureStore from 'app/redux/store/configureStore';
+import * as pushActions from 'app/redux/modules/pushNotifs';
 import PushNotifs from 'app/platform/containers/PushNotifs';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import DefaultTemplate from 'app/platform/components/pushNotifs/default-template';
-
-
-const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
-const storeStateMock = fromJS({
-    pushNotifs: {
-        activeTab: 'default',
-        templates: {},
-        loading: false,
-        error: null,
-        dialog: null,
-    },
-});
+import GalleryListTemplate from 'app/platform/components/pushNotifs/gallery-list-template';
 
 let store;
 let component;
 describe('<PushNotifs />', () => {
     beforeEach(() => {
-        store = mockStore(storeStateMock);
-        component = shallow(
-            <PushNotifs store={store} />
-        ).shallow();
+        store = configureStore();
+        component = mount(
+            <MuiThemeProvider>
+                <PushNotifs store={store} />
+            </MuiThemeProvider>
+        );
     });
 
     it('should render', () => {
@@ -40,7 +29,12 @@ describe('<PushNotifs />', () => {
     });
 
     it('should render <DefaultTemplate /> by default', () => {
-        expect(component.find('DefaultTemplate')).to.have.length(1);
+        expect(component.find(DefaultTemplate)).to.have.length(1);
+    });
+
+    it('should render <GalleryListTemplate /> when set in store', () => {
+        store.dispatch(pushActions.setActiveTab('gallery list'));
+        expect(component.find(GalleryListTemplate)).to.have.length(1);
     });
 });
 
