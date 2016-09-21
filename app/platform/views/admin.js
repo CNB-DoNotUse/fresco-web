@@ -187,6 +187,7 @@ class Admin extends React.Component {
     loadInitial() {
         this.getData(undefined, { tab: 'submissions' }, (submissions) => {
             this.setState({
+                activeTab: submissions.length ? 'submissions' : 'imports',
                 submissions: this.state.submissions.concat(submissions),
             });
         });
