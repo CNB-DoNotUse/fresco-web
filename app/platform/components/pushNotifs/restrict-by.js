@@ -71,8 +71,6 @@ RestrictByLocation.propTypes = {
     address: PropTypes.string,
 };
 
-// TODO test propTypes above
-
 export const RestrictByUser = ({
     restrictByUser = false,
     onChange,
