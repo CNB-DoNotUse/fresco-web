@@ -107,7 +107,10 @@ class PostList extends React.Component {
                 }
 
                 // Set galleries from successful response, and unset loading
-                this.setState({ posts: this.state.posts.concat(posts), loading: false });
+                this.setState({ 
+                    posts: this.state.posts.concat(posts), 
+                    loading: false 
+                });
             }, this);
         }
     }
@@ -213,32 +216,29 @@ class PostList extends React.Component {
                 >
                     {this.renderPosts()}
 
-                    {selectedPosts && selectedPosts.length > 1
-                        ? <GalleryBulkSelect
+                    {selectedPosts && selectedPosts.length > 1 ? 
+                        <GalleryBulkSelect
                             posts={selectedPosts}
                             setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
                             onToggleEdit={this.onToggleGalleryBulkEdit}
                             onToggleCreate={this.onToggleGalleryCreate}
                         />
-                        : ''
-                    }
+                    : ''}
 
-                    {galleryBulkEditToggled
-                        ? <GalleryBulkEdit
+                    {galleryBulkEditToggled ? 
+                        <GalleryBulkEdit
                             posts={selectedPosts}
                             onHide={this.onToggleGalleryBulkEdit}
                         />
-                        : ''
-                    }
+                    : ''}
 
-                    {galleryCreateToggled
-                        ? <GalleryCreate
+                    {galleryCreateToggled ? 
+                        <GalleryCreate
                             posts={selectedPosts}
                             setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
                             onHide={this.onToggleGalleryCreate}
                         />
-                        : ''
-                    }
+                    : ''}
                 </div>
             </div>
         );

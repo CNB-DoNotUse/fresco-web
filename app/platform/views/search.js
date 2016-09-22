@@ -231,7 +231,7 @@ export class Search extends Component {
 
 				if(force) {
 					//Setting scroll top manually because we're not using the post-list's default data mechanism
-					this.refs.postList.refs.grid.scrollTop = 0;
+					this.refs.postList.grid.scrollTop = 0;
 				}
 
 				const posts = response.posts.results;

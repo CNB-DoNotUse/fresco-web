@@ -2,16 +2,9 @@ const express = require('express');
 const config = require('../lib/config');
 const router = express.Router();
 
-/** //
-
-	Description : Content Specific Routes ~ prefix /content/~
-
-// **/
-
 /**
  * Index Content Page
  */
-
 router.get('/', (req, res) => {
     const title = 'Archive';
     const props = { user: req.session.user, title };
@@ -27,7 +20,6 @@ router.get('/', (req, res) => {
 /**
  * Page for all galleries
  */
-
 router.get('/galleries', (req, res) => {
     const title = 'Galleries';
     const props = { user: req.session.user, title };
@@ -45,7 +37,6 @@ router.get('/galleries', (req, res) => {
 /**
  * Page for all stories
  */
-
 router.get('/stories', (req, res) => {
     const title = 'Stories';
     const props = { user: req.session.user };
@@ -63,7 +54,6 @@ router.get('/stories', (req, res) => {
  * Filters between photos or videos
  * @param {string} filter Filter of content type i.e. videos/photos
  */
-
 router.get('/:filter', (req, res) => {
     const filters = ['photos', 'videos'];
 
@@ -84,4 +74,3 @@ router.get('/:filter', (req, res) => {
 });
 
 module.exports = router;
-

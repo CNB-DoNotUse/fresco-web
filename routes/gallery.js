@@ -1,4 +1,6 @@
-require('babel-core/register');
+require('babel-core/register')({
+    presets: ['es2015', 'react']
+});
 const express = require('express');
 const router = express.Router();
 const utils = require('../lib/utils');
@@ -44,6 +46,7 @@ function render(gallery, user, req, res) {
             props: JSON.stringify(props),
         });
     } else {
+
         // User is not logged in, show public gallery page
         const props = {
             gallery,

@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import PurchasesListItem from 'purchases-list-item'
+import last from 'lodash/last';
 
 /**
  * Displays a list of purchase objects
@@ -56,7 +57,7 @@ class PurchasesList extends Component {
 			});
 
 			// Pass current offset to getMorePurchases
-			this.props.loadPurchases(_.last(this.state.purchases).id, (purchases) => {
+			this.props.loadPurchases(last(this.state.purchases).id, (purchases) => {
 				//Disables scroll, and returns if purchases are empty
 				if(!purchases || purchases.length == 0){ 
 					return this.setState({

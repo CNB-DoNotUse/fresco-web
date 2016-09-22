@@ -3,14 +3,13 @@
 // import App from './app.js'
 // import Slider from 'react-slick'
 // import Footer from '../components/global/footer'
-// import utils from 'utils'
+// import utils from '../../../lib/utils'
 // import moment from 'moment'
 // import isNode from 'detect-node'
 
 // /**
 //  * Public Gallery Page
 //  */
-
 // class PublicGallery extends React.Component {
 
 //  	constructor(props) {
@@ -58,16 +57,16 @@
 
 //  		for (var i = 0; i < gallery.posts.length; i++) {
 
-//  			var galleryMedia,
-//  				post = gallery.posts[i],
-//  				avatar = post.owner ? post.owner.avatar ? post.owner.avatar : utils.defaultAvatar : utils.defaultAvatar,
-//  				address = post.location ? post.location.address != null ? post.location.address : 'No location' : 'No location',
-// 				timestampText = moment(post.created_at).format('MMM Do YYYY, h:mm:ss a'),
-// 				image = utils.formatImg(post.image, 'medium'),
-// 				style = {
-// 					backgroundImage: 'url(' + image + ')'
-// 				},
-// 				video = '';
+//  			let galleryMedia;
+//  			let post = gallery.posts[i];
+//  			let avatar = post.owner ? post.owner.avatar ? post.owner.avatar : utils.defaultAvatar : utils.defaultAvatar;
+//  			let address = post.location ? post.location.address != null ? post.location.address : 'No location' : 'No location';
+// 			let timestampText = moment(post.created_at).format('MMM Do YYYY, h:mm:ss a');
+// 			let image = utils.formatImg(post.image, 'medium');
+// 			let style = {
+//                 backgroundImage: 'url(' + image + ')'
+//             };
+// 			let video = '';
 
 // 			if(post.video){
 // 				var autoPlay = i == 0,
@@ -82,7 +81,7 @@
 // 				video =  <video autoPlay={autoPlay} onClick={this.toggleVideo}>
 // 								<source src={source} type="video/mp4" />
 // 								Your browser does not support the video tag.
-// 							</video>
+// 						</video>
 // 				style = '';
 // 			}
 
@@ -137,6 +136,7 @@
 // 									<img src="https://d1dw1p6sgigznj.cloudfront.net/images/store-apple.svg" />
 // 								</a>
 // 							</div>
+
 // 							<PublicGalleryInfo
 // 								gallery={gallery} />
 // 						</div>
