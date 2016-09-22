@@ -85,7 +85,7 @@ class LocationDetail extends React.Component {
                 <PostList
                     loadPosts={(last, cb) => this.loadPosts(last, cb)}
                     permissions={user.permissions}
-                    sort={this.state.sort}
+                    sortBy={this.state.sort}
                     size="small"
                     idOffset
                     scrollable

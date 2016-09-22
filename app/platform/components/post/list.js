@@ -16,7 +16,7 @@ class PostList extends React.Component {
         super(props);
 
         this.state = {
-            posts: props.posts,
+            posts: props.posts || [],
             loading: false,
             scrollable: props.scrollable,
             selectedPosts: [],
@@ -25,7 +25,7 @@ class PostList extends React.Component {
         };
 
         // If we aren't dynamically loading posts, then sort them locally
-        if (!this.props.scrollable && this.props.sort) {
+        if (!this.props.scrollable && this.props.sortBy) {
             this.state.posts = this.sortPosts();
         }
     }
@@ -38,19 +38,23 @@ class PostList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        // If we receive new posts in props while having none previously
-        const currentPostIds = this.state.posts.length ? this.state.posts.map(p => p.id) : [];
-        const newPostIds = nextProps.posts.map(p => p.id);
+        // If we receive new posts in props
+        if (nextProps.posts) {
+            const currentPostIds = this.state.posts.length ? this.state.posts.map(p => p.id) : [];
+            const newPostIds = nextProps.posts.map(p => p.id);
+            const differentPosts = (JSON.stringify(currentPostIds) !== JSON.stringify(newPostIds));
 
-        // Check if the parent tells the component to update
-        if (JSON.stringify(currentPostIds) !== JSON.stringify(newPostIds) || nextProps.updatePosts) {
-            this.setState({ posts: nextProps.posts });
-            return;
+            // Check if the parent tells the component to update
+            if (differentPosts || nextProps.updatePosts) {
+                this.setState({ posts: nextProps.posts });
+                return;
+            }
         }
 
-        // Checks if the verified prop is changed `or` Checks if the sort prop is changed
-        if (nextProps.onlyVerified !== this.props.onlyVerified
-            || nextProps.sortBy !== this.props.sortBy) {
+        // Checks if the verified prop is changed `or` Checks if the sortBy prop is changed
+        const verifiedChanged = nextProps.onlyVerified !== this.props.onlyVerified;
+        const sortByChanged = nextProps.sortBy !== this.props.sortBy;
+        if (verifiedChanged || sortByChanged) {
             this.grid.scrollTop = 0;
 
             if (nextProps.scrollable) {
@@ -76,13 +80,6 @@ class PostList extends React.Component {
 
     onToggleGalleryCreate = () => {
         this.setState({ galleryCreateToggled: !this.state.galleryCreateToggled });
-    }
-
-    /**
-     * Initial call to populate posts
-     */
-    loadInitialPosts() {
-        this.props.loadPosts(null, (posts) => { this.setState({ posts }) });
     }
 
     /**
@@ -116,11 +113,18 @@ class PostList extends React.Component {
     }
 
     /**
+     * Initial call to populate posts
+     */
+    loadInitialPosts() {
+        this.props.loadPosts(null, (posts) => { this.setState({ posts }) });
+    }
+
+    /**
      * Sorts posts based on the current field in props
      * @return {array} An array of posts now sorted
      */
     sortPosts() {
-        const field = this.props.sort === 'captured_at' ? 'captured_at' : 'created_at';
+        const field = this.props.sortBy === 'captured_at' ? 'captured_at' : 'created_at';
 
         return this.state.posts.sort((post1, post2) => post2[field] - post1[field]);
     }
@@ -161,7 +165,7 @@ class PostList extends React.Component {
             size,
             assignment,
             editable,
-            sort,
+            sortBy,
             parentCaption,
         } = this.props;
         const {
@@ -183,7 +187,7 @@ class PostList extends React.Component {
                         assignment={assignment}
                         key={i}
                         editable={editable}
-                        sort={sort}
+                        sort={sortBy}
                         togglePost={this.togglePost}
                     />
                 ))}
@@ -248,7 +252,6 @@ PostList.propTypes = {
     size: PropTypes.string,
     assignment: PropTypes.object,
     editable: PropTypes.bool,
-    sort: PropTypes.string,
     onlyVerified: PropTypes.bool,
     parentCaption: PropTypes.string,
     sortBy: PropTypes.string,
@@ -261,7 +264,6 @@ PostList.defaultProps = {
     className: '',
     size: 'small',
     editable: true,
-    posts: [],
     scrollable: false,
     onlyVerified: false,
     loadPosts() {},
