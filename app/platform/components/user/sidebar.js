@@ -78,18 +78,17 @@ class Sidebar extends React.Component {
                                 </div>
                                 <div className="meta-list">
                                     <ul className="md-type-subhead">
-                                        {detailUser.email
-                                            ? <li className="ellipses">
+                                        {detailUser.email ? 
+                                            <li className="ellipses">
                                                 <span className="mdi mdi-email icon"></span>
                                                 <a target="_top" href={`mailto:${detailUser.email}`}>
                                                     {detailUser.email}
                                                 </a>
                                             </li>
-                                            : ''
-                                        }
+                                        : ''}
 
-                                        {detailUser.stripe_account_id
-                                            ? <li className="ellipses">
+                                        {detailUser.stripe_account_id ? 
+                                            <li className="ellipses">
                                                 <span className="mdi mdi-bank icon"></span>
                                                 <a
                                                     target="_top"
@@ -98,8 +97,7 @@ class Sidebar extends React.Component {
                                                     Stripe
                                                 </a>
                                             </li>
-                                            : ''
-                                        }
+                                        : ''}
                                     </ul>
                                 </div>
                             </div>
