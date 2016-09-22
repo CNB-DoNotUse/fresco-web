@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
-import _ from 'lodash';
+import last from 'lodash/last';
 import PostCell from './cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
@@ -43,7 +43,7 @@ class PostList extends React.Component {
         const newPostIds = nextProps.posts.map(p => p.id);
 
         // Check if the parent tells the component to update
-        if (_.difference(newPostIds, currentPostIds).length || nextProps.updatePosts) {
+        if (JSON.stringify(currentPostIds) !== JSON.stringify(newPostIds) || nextProps.updatePosts) {
             this.setState({ posts: nextProps.posts });
             return;
         }
@@ -102,7 +102,7 @@ class PostList extends React.Component {
             this.setState({ loading: true });
 
             // Run load on parent call
-            this.props.loadPosts(_.last(this.state.posts).id, (posts) => {
+            this.props.loadPosts(last(this.state.posts).id, (posts) => {
                 // Disables scroll, and returns if posts are empty
                 if (!posts || posts.length === 0) {
                     this.setState({ scrollable: false });

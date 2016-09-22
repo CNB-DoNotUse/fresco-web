@@ -59,21 +59,21 @@ export default class DispatchRequest extends React.Component {
 					<span className="md-type-title">Request access to Dispatch</span>
 					<span id="close-request-access-window" className="mdi mdi-close pull-right icon toggle-card toggler"></span>
 				</div>
-				
+
 				<div className="card-foot center">
-					<button 
-						id="request-dispatch-submit" 
-						type="button" 
+					<button
+						id="request-dispatch-submit"
+						type="button"
 						className="btn btn-flat toggle-card toggler"
 						onClick={this.submitRequest}>Submit</button>
 				</div>
-				
+
 				<div className="card-body">
 					<div className="form-group-default">
-						<textarea 
-							ref="comment" 
-							type="text" 
-							className="form-control floating-label" 
+						<textarea
+							ref="comment"
+							type="text"
+							className="form-control floating-label"
 							placeholder="Comments (optional)"></textarea>
 					</div>
 				</div>
@@ -81,4 +81,4 @@ export default class DispatchRequest extends React.Component {
 		);
 	}
 
-}	
+}

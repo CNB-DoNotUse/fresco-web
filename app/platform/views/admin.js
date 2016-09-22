@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import differenceBy from 'lodash/differenceBy';
+import get from 'lodash/get';
+import 'app/sass/platform/_admin';
 import App from './app';
 import TopBar from './../components/admin/topbar';
 import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
-import differenceBy from 'lodash/differenceBy';
-import get from 'lodash/get';
-import 'app/sass/platform/_admin';
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar)
