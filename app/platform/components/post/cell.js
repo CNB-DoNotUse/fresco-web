@@ -14,7 +14,7 @@ class PostCell extends React.Component {
         permissions: PropTypes.array,
         parentCaption: PropTypes.string,
         size: PropTypes.string,
-        sort: PropTypes.string,
+        sortBy: PropTypes.string,
         assignment: PropTypes.object,
         post: PropTypes.object,
         sizes: PropTypes.object,
@@ -64,7 +64,7 @@ class PostCell extends React.Component {
             post,
             assignment,
             permissions,
-            sort,
+            sortBy,
             editable,
         } = this.props;
         const { purchased } = this.state;
@@ -91,7 +91,7 @@ class PostCell extends React.Component {
                     <div className="tile-info">
                         <span className="md-type-body2">{address}</span>
 
-                        <Time sort={sort} post={post} />
+                        <Time sortBy={sortBy} post={post} />
                     </div>
 
                     <span className={statusClass} />

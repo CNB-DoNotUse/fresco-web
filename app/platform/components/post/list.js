@@ -187,7 +187,7 @@ class PostList extends React.Component {
                         assignment={assignment}
                         key={i}
                         editable={editable}
-                        sort={sortBy}
+                        sortBy={sortBy}
                         togglePost={this.togglePost}
                     />
                 ))}

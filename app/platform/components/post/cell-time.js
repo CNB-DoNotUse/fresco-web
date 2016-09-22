@@ -7,11 +7,7 @@ import utils from 'utils';
  */
 class CellTime extends Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = { ...this.createFirstLook() };
-    }
+    state = { ...this.createFirstLook() };
 
     createFirstLook() {
         const { post } = this.props;
@@ -37,9 +33,9 @@ class CellTime extends Component {
     }
 
     render() {
-        const { post, sort } = this.props;
+        const { post, sortBy } = this.props;
         const { firstLook } = this.state;
-        const time = sort === 'captured_at'
+        const time = sortBy === 'captured_at'
             ? (post.captured_at || post.created_at)
             : post.created_at;
         const timeString = typeof(time) === 'undefined' ? 'No timestamp' : utils.formatTime(time);
@@ -64,12 +60,12 @@ class CellTime extends Component {
 
 CellTime.propTypes = {
     post: PropTypes.object,
-    sort: PropTypes.string,
+    sortBy: PropTypes.string,
 };
 
 CellTime.defaultProps = {
     post: {},
-    sort: 'captured_at',
+    sortBy: 'captured_at',
 };
 
 export default CellTime;
