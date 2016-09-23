@@ -107,9 +107,9 @@ class PostList extends React.Component {
                 }
 
                 // Set galleries from successful response, and unset loading
-                this.setState({ 
-                    posts: this.state.posts.concat(posts), 
-                    loading: false 
+                this.setState({
+                    posts: this.state.posts.concat(posts),
+                    loading: false,
                 });
             }, this);
         }
@@ -119,7 +119,7 @@ class PostList extends React.Component {
      * Initial call to populate posts
      */
     loadInitialPosts() {
-        this.props.loadPosts(null, (posts) => { this.setState({ posts }) });
+        this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
     }
 
     /**
@@ -216,7 +216,7 @@ class PostList extends React.Component {
                 >
                     {this.renderPosts()}
 
-                    {selectedPosts && selectedPosts.length > 1 ? 
+                    {selectedPosts && selectedPosts.length > 1 ?
                         <GalleryBulkSelect
                             posts={selectedPosts}
                             setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
@@ -225,14 +225,14 @@ class PostList extends React.Component {
                         />
                     : ''}
 
-                    {galleryBulkEditToggled ? 
+                    {galleryBulkEditToggled ?
                         <GalleryBulkEdit
                             posts={selectedPosts}
                             onHide={this.onToggleGalleryBulkEdit}
                         />
                     : ''}
 
-                    {galleryCreateToggled ? 
+                    {galleryCreateToggled ?
                         <GalleryCreate
                             posts={selectedPosts}
                             setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
