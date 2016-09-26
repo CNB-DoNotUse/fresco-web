@@ -10,17 +10,6 @@
     "build": "webpack --progress --colors --display-error-details --config webpack/webpack.config.js",
     "buildProd": "NODE_ENV=production webpack --progress --colors --display-error-details -p --config webpack/webpack.production.config.js"
   },
-  "babel": {
-    "presets": [
-      "es2015",
-      "react"
-    ],
-    "plugins": [
-      "transform-object-rest-spread",
-      "transform-es2015-destructuring",
-      "transform-class-properties"
-    ]
-  },
   "dependencies": {
     "async": "~2.0.0-rc.3",
     "babel": "^6.3.13",
@@ -80,6 +69,7 @@
     "autoprefixer": "^6.4.1",
     "babel-core": "^6.1.2",
     "babel-loader": "^6.0.1",
+    "babel-plugin-module-resolver": "^2.2.0",
     "babel-plugin-transform-class-properties": "^6.11.5",
     "babel-plugin-transform-es2015-destructuring": "^6.9.0",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",

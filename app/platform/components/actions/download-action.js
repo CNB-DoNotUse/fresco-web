@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import utils from 'utils';
 
 /**
  * Global download action
@@ -27,7 +28,7 @@ class DownloadAction extends React.Component {
         }
 
         const href = post.stream
-            ? post.stream.replace(/streams\/|videos\//, 'videos/mp4/').replace('.m3u8', '.mp4')
+            ? utils.streamToMp4(post.stream)
             : post.image;
 
         const link = document.createElement('a');

@@ -1,32 +1,12 @@
-require('babel-core/register')({
-    presets: ['es2015', 'react']
-});
+require('babel-core/register');
 const express = require('express');
-const router = express.Router();
 const utils = require('../lib/utils');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-const PublicGallery = require('../app/platform/views/publicGallery.js');
+const PublicGallery = require('../app/platform/views/publicGallery');
 const API = require('../lib/api');
 
-/**
- * Gallery page, passed a unique gallery id
- */
-router.get('/:id', (req, res, next) => {
-    API.request({
-        token: req.session.token,
-        url: `/gallery/${req.params.id}`
-    }).then(response => {
-        render(response.body, req.session.user, req, res);
-    }).catch(error => {
-        next({
-            message: error.status === 404 ? 'Gallery not found!' : 'Unable to load gallery!',
-            status: error.status,
-            stack: error.stack
-        });
-    });
-});
-
+const router = express.Router();
 
 /**
  * Renders gallery from route
@@ -46,7 +26,6 @@ function render(gallery, user, req, res) {
             props: JSON.stringify(props),
         });
     } else {
-
         // User is not logged in, show public gallery page
         const props = {
             gallery,
@@ -74,5 +53,23 @@ function render(gallery, user, req, res) {
         });
     }
 }
+
+/**
+ * Gallery page, passed a unique gallery id
+ */
+router.get('/:id', (req, res, next) => {
+    API.request({
+        token: req.session.token,
+        url: `/gallery/${req.params.id}`,
+    }).then(response => {
+        render(response.body, req.session.user, req, res);
+    }).catch(error => {
+        next({
+            message: error.status === 404 ? 'Gallery not found!' : 'Unable to load gallery!',
+            status: error.status,
+            stack: error.stack
+        });
+    });
+});
 
 module.exports = router;

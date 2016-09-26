@@ -92,20 +92,12 @@ const output = (env) => {
 };
 
 const loaders = (env) => {
-    let arr = [
+    const arr = [
         // Babel
         {
             test: /.jsx?$/,
             loader: 'babel',
             exclude: /(node_modules|bower_components)/,
-            query: {
-                presets: ['es2015', 'react'],
-                plugins: [
-                    'transform-object-rest-spread',
-                    'transform-es2015-destructuring',
-                    'transform-class-properties',
-                ],
-            },
         },
         {
             test: /\.scss$/,
