@@ -1,13 +1,3 @@
-/* Sass Document */
-
-/*------------------------------------------------------------------------------------
-
-Copyright 2015 Fresco News, Inc. All Rights Reserved.
-
--------------------------------------------------------------------------------------*/
-
-@import "../../../public/vendor/slick-carousel/slick/slick.scss";
-@import "../../../public/vendor/slick-carousel/slick/slick-theme.scss";
 @import "../global/_global.scss";
 @import "../global/fresco-slick.scss";
 
@@ -52,11 +42,11 @@ $mobileHeight:280px;
 			overflow:hidden;
 	     	height:768px;
 	     	min-height:650px;
-	     	
+
 	     	@include tablet{
 	     		height:576px;
 	     	}
-			
+
 			@include mobile{
 				background-position:center;
 				background-size:auto 100%;

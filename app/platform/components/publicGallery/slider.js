@@ -7,7 +7,7 @@ import get from 'lodash/get';
 import utils from 'utils';
 import FrescoVideo from '../global/fresco-video';
 
-const Slider = ({ posts = [] }) => {
+const Slider = ({ posts = [], userAgent }) => {
     if (!posts.length) return <div />;
 
     const slickContent = posts.map((p, i) => {
@@ -23,7 +23,7 @@ const Slider = ({ posts = [] }) => {
         if (p.stream) {
             style = '';
 
-            if (!this.props.userAgent.match(/iPad/i) && !this.props.userAgent.match(/iPhone/i)) {
+            if (!userAgent.match(/iPad/i) && !userAgent.match(/iPhone/i)) {
                 video = (
                     <FrescoVideo
                         autoplay={i === 0}
@@ -75,6 +75,7 @@ const Slider = ({ posts = [] }) => {
 
 Slider.propTypes = {
     posts: PropTypes.array,
+    userAgent: PropTypes.string,
 };
 
 export default Slider;

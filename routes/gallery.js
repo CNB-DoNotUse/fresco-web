@@ -1,9 +1,5 @@
-require('babel-core/register');
 const express = require('express');
 const utils = require('../lib/utils');
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const PublicGallery = require('../app/platform/views/publicGallery');
 const API = require('../lib/api');
 
 const router = express.Router();
@@ -32,11 +28,9 @@ function render(gallery, user, req, res) {
             title,
             userAgent: req.headers['user-agent'],
         };
-        const element = React.createElement(PublicGallery, props);
-        const react = ReactDOMServer.renderToString(element);
 
         res.render('app', {
-            title, gallery, react,
+            title,
             og: {
                 title,
                 image: utils.formatImg(gallery.posts[0].image, 'large'),

@@ -29,7 +29,8 @@ export default class Info extends React.Component {
 
     componentDidMount() {
         this.loadRelatedGalleries();
-        if (this.props.gallery.related_stories.length > 0) this.loadRelatedStory();
+        const { gallery: { related_stories = [] }} = this.props;
+        if (related_stories.length > 0) this.loadRelatedStory();
     }
 
 	/**

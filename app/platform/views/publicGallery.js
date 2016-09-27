@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
-// import ReactDOM from 'react-dom';
-// import App from './app.js';
+import ReactDOM from 'react-dom';
+import 'app/sass/platform/screen.scss';
+import 'app/sass/platform/_publicGallery.scss';
 import PublicGallerySlider from '../components/publicGallery/slider';
 import PublicGalleryInfo from '../components/publicGallery/info';
 import Footer from '../components/global/footer';
@@ -8,7 +9,7 @@ import Footer from '../components/global/footer';
 /**
  * Public Gallery Page
  */
-const PublicGallery = ({ gallery }) => {
+const PublicGallery = ({ gallery, userAgent, title }) => {
     if (gallery.posts.length === 0) return <div />;
 
     return (
@@ -21,7 +22,7 @@ const PublicGallery = ({ gallery }) => {
 
             <div className="page">
                 <div className="gallery-slick-wrap">
-                    <PublicGallerySlider posts={gallery.posts} />
+                    <PublicGallerySlider posts={gallery.posts} userAgent={userAgent} />
                 </div>
 
                 <div className="gallery-info-wrap">
@@ -53,15 +54,14 @@ const PublicGallery = ({ gallery }) => {
 
 PublicGallery.propTypes = {
     gallery: PropTypes.object,
+    userAgent: PropTypes.string,
+    title: PropTypes.string,
 };
 
-// if(isNode){
-module.exports = PublicGallery;
-// } else{
-// 	ReactDOM.render(
-// 	 	<PublicGallery
-// 	 		gallery={window.__initialProps__.gallery}
-// 	 		userAgent={window.__initialProps__.userAgent} />,
-// 	 	document.getElementById('app')
-// 	);
-// }
+ReactDOM.render(
+    <PublicGallery
+        gallery={window.__initialProps__.gallery}
+        userAgent={window.__initialProps__.userAgent}
+    />,
+    document.getElementById('app')
+);
