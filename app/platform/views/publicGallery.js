@@ -9,7 +9,7 @@ import Footer from '../components/global/footer';
 /**
  * Public Gallery Page
  */
-const PublicGallery = ({ gallery, userAgent, title }) => {
+const PublicGallery = ({ gallery, userAgent }) => {
     if (gallery.posts.length === 0) return <div />;
 
     return (
@@ -55,7 +55,6 @@ const PublicGallery = ({ gallery, userAgent, title }) => {
 PublicGallery.propTypes = {
     gallery: PropTypes.object,
     userAgent: PropTypes.string,
-    title: PropTypes.string,
 };
 
 ReactDOM.render(

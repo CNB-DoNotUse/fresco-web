@@ -41,13 +41,12 @@ export default class Info extends React.Component {
         // todo: switch to search
         const data = {
             limit: 10,
-            offset: 0,
-            verified: 'true',
             tags: this.props.gallery.tags.join(','),
+            galleries: {q: 'a'},
         };
 
         api
-        .get('gallery/list', data)
+        .get('search/', data)
         .then((res) => {
             this.setState({ relatedGalleries: res });
         });

@@ -23,16 +23,12 @@ const Slider = ({ posts = [], userAgent }) => {
         if (p.stream) {
             style = '';
 
-            if (!userAgent.match(/iPad/i) && !userAgent.match(/iPhone/i)) {
-                video = (
-                    <FrescoVideo
-                        autoplay={i === 0}
-                        video={utils.streamToMp4(p.stream)}
-                    />
-                );
-            } else {
-                video = <FrescoVideo autoplay={i === 0} video={p.stream} />;
-            }
+            video = (
+                <FrescoVideo
+                    autoplay={i === 0}
+                    video={p.stream}
+                />
+            );
         }
 
         return (
