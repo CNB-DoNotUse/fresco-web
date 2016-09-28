@@ -22,6 +22,14 @@ class FrescoImage extends React.Component {
         updateImage: () => {},
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            missingImageStyle: this.getMissingImageStyle(),
+        }
+    }
+
     missingImageUrl = `${utils.CDN}/images/missing.png`;
 
     componentDidMount() {
@@ -57,6 +65,7 @@ class FrescoImage extends React.Component {
 
         const onloadCB = () => {
             if (this.img) this.img.src = imageObj.src;
+            this.setState({ missingImageStyle: {} });
         };
 
         const onerrorCB = () => {
@@ -74,11 +83,27 @@ class FrescoImage extends React.Component {
         imageObj.src = formattedSrc;
     }
 
+    getMissingImageStyle = () => {
+        switch (this.props.size) {
+            case 'large':
+                return { height: '1000px', width: '1000px' };
+            case 'medium':
+                return { height: '700px', width: '700px' };
+            case 'thumb':
+                return { height: '50px', width: '50px' };
+            case 'small':
+            default:
+                return { height: '200px', width: '200px' };
+        }
+    }
+
     render() {
+        const style = Object.assign({}, this.props.style, this.state.missingImageStyle);
+
         return (
             <img
                 className={this.props.className || 'img-cover'}
-                style={this.props.style}
+                style={style}
                 role="presentation"
                 ref={r => { this.img = r; }}
                 onError={this.onError}
