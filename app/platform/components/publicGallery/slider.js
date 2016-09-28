@@ -27,6 +27,7 @@ const Slider = ({ posts = [], userAgent }) => {
                 <FrescoVideo
                     autoplay={i === 0}
                     video={p.stream}
+                    hideControls
                 />
             );
         }
