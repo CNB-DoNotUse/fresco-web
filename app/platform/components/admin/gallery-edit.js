@@ -19,9 +19,9 @@ class GalleryEdit extends React.Component {
         this.state = this.getStateFromProps(props);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.gallery.id !== nextProps.gallery.id) {
-            this.setState(this.getStateFromProps(nextProps));
+    componentDidUpdate(prevProps) {
+        if (this.props.gallery.id !== prevProps.gallery.id) {
+            this.setState(this.getStateFromProps(this.props));
             this.refs['gallery-caption'].className =
                 this.refs['gallery-caption'].className.replace(/\bempty\b/, '');
         }
