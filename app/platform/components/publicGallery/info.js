@@ -42,7 +42,7 @@ export default class Info extends React.Component {
         const data = {
             limit: 10,
             tags: this.props.gallery.tags.join(','),
-            galleries: {q: 'a'},
+            galleries: true,
         };
 
         api
