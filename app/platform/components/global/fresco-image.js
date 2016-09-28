@@ -6,13 +6,6 @@ import utils from 'utils';
  * @description Will set a timeout to keep loading the image if it 404s
  */
 class FrescoImage extends React.Component {
-    missingImageUrl = `${utils.CDN}/images/missing.png`;
-
-    state = {
-        image: utils.formatImg(this.props.src, this.props.size),
-        timeout: 0
-    }
-
     static propTypes = {
         size: PropTypes.string,
         src: PropTypes.string,
@@ -26,58 +19,59 @@ class FrescoImage extends React.Component {
         size: 'small',
         refreshInterval: false,
         style: {},
-        updateImage: () => {}
+        updateImage: () => {},
     };
 
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.src !== this.props.src) {
-            this.setState({
-                image: utils.formatImg(nextProps.src, nextProps.size),
-                timeout: 0
-            });
-        }
+    missingImageUrl = `${utils.CDN}/images/missing.png`;
+
+    componentDidMount() {
+        this.loadImage();
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        // Timeout has changed, attempt setting image back
-        if (this.state.timeout > prevState.timeout
-            || prevState.image !== this.state.image) {
-            this.updateImage(this.state.image);
+    componentDidUpdate(prevProps) {
+        const { src, size } = this.props;
+        if ((src !== prevProps.src) || (size !== prevProps.size)) {
+            this.loadImage();
         }
     }
 
     componentWillUnmount() {
-        clearTimeout(this.timeoutId);
+        clearTimeout(this.loadTimeout);
     }
 
-    /**
-     * On the timeout event, update the state timeout in a fibonacci sequence
-     * On the `componentDidUpdate` call, the regular image will be set back
-     */
-    onTimeout = (timeout) => {
-        this.setState({
-            timeout: (timeout || 1) + this.state.timeout,
-        });
-    }
+    // async load image
+    loadImage = () => {
+        const { src, size, refreshInterval } = this.props;
+        const formattedSrc = utils.formatImg(src, size);
+        const imageObj = new Image();
+        let timeout = 1000;
 
-    // Updates image and sends image up to prop
-    updateImage = (src) => {
-        this.image.src = src;
-        this.props.updateImage(src);
-    }
+        const timeoutCB = () => {
+            if (!this.img || this.img.src === formattedSrc) {
+                clearTimeout(this.loadTimeout);
+            } else {
+                imageObj.src = formattedSrc;
+                timeout += timeout;
+            }
+        };
 
-    /**
-     * If the image fails to load, set a missing image and re-attempt to load the image
-     * after the timeout
-     */
-    onError = () => {
-        this.updateImage(this.missingImageUrl);
+        const onloadCB = () => {
+            if (this.img) this.img.src = imageObj.src;
+        };
 
-        if (this.props.refreshInterval) {
-            this.timeoutId = setTimeout(() => {
-                this.onTimeout(this.state.timeout);
-            }, this.state.timeout * 1000);
-        }
+        const onerrorCB = () => {
+            if (this.img) this.img.src = this.missingImageUrl;
+            this.props.updateImage(this.missingImageUrl);
+
+            if (refreshInterval) {
+                this.loadTimeout = setTimeout(timeoutCB.bind(this), timeout);
+            }
+        };
+
+        imageObj.onload = onloadCB.bind(this);
+        imageObj.onerror = onerrorCB.bind(this);
+
+        imageObj.src = formattedSrc;
     }
 
     render() {
@@ -86,12 +80,13 @@ class FrescoImage extends React.Component {
                 className={this.props.className || 'img-cover'}
                 style={this.props.style}
                 role="presentation"
-                ref={r => { this.image = r; }}
+                ref={r => { this.img = r; }}
                 onError={this.onError}
-                src={this.state.image}
+                src={this.missingImageUrl}
             />
         );
     }
 }
 
 export default FrescoImage;
+
