@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
+import Confirm from '../components/dialogs/confirm';
 import TopBar from '../components/topbar';
 import Default from '../components/pushNotifs/default-template';
 import GalleryList from '../components/pushNotifs/gallery-list-template';
@@ -15,7 +16,7 @@ class PushNotifs extends React.Component {
     static propTypes = {
         onSetActiveTab: PropTypes.func.isRequired,
         onChangeTemplate: PropTypes.func.isRequired,
-        onConfirmDialog: PropTypes.func.isRequired,
+        onConfirmAlert: PropTypes.func.isRequired,
         onSend: PropTypes.func.isRequired,
         activeTab: PropTypes.string.isRequired,
         loading: PropTypes.bool.isRequired,
@@ -61,12 +62,16 @@ class PushNotifs extends React.Component {
         }
     }
 
+    onClickSend = () => {
+        const { onSend, activeTab } = this.props;
+        onSend(activeTab);
+    }
+
     render() {
         const {
             onSetActiveTab,
-            onConfirmDialog,
+            onConfirmAlert,
             activeTab,
-            onSend,
             loading,
             dialog,
         } = this.props;
@@ -85,14 +90,14 @@ class PushNotifs extends React.Component {
                             message={dialog || ''}
                             open={!!dialog}
                             autoHideDuration={5000}
-                            onRequestClose={onConfirmDialog}
-                            onActionTouchTap={onConfirmDialog}
-                            onClick={onConfirmDialog}
+                            onRequestClose={onConfirmAlert}
+                            onActionTouchTap={onConfirmAlert}
+                            onClick={onConfirmAlert}
                         />
                         {this.renderTemplate()}
                         <button
                             type="button"
-                            onClick={partial(onSend, activeTab)}
+                            onClick={this.onClickSend}
                             className="btn btn-raised btn-primary pull-right push-notifs__send"
                             disabled={loading}
                         >
@@ -117,7 +122,7 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
     onSetActiveTab: pushActions.setActiveTab,
     onChangeTemplate: pushActions.updateTemplate,
-    onConfirmDialog: pushActions.confirmDialog,
+    onConfirmAlert: pushActions.confirmAlert,
     onSend: pushActions.send,
 })(PushNotifs);
 

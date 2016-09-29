@@ -25,15 +25,15 @@ class PasswordDialog extends React.Component {
         return (
             <div className="dialog-wrap">
                 <div className={`dim transparent ${toggled}`} />
-               
+
                 <div className={`dialog ${toggled}`}>
                     <div className="header">
                         <h3>Enter your password</h3>
                     </div>
 
                     <div className="body">
-                        <form 
-                            className="form-group-default" 
+                        <form
+                            className="form-group-default"
                             onSubmit={this.onSubmit}
                         >
                             <input
@@ -46,14 +46,14 @@ class PasswordDialog extends React.Component {
                     </div>
 
                     <div className="footer">
-                        <button 
+                        <button
                             className="cancel"
                             onClick={this.props.toggle}>
                             Cancel
                         </button>
 
-                        <button 
-                            className="primary" 
+                        <button
+                            className="primary"
                             onClick={(e) => this.onSubmit(e)}>
                             Save changes
                         </button>

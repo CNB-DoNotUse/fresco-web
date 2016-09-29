@@ -17,7 +17,7 @@ export const SEND_FAIL = 'pushNotifs/SEND_FAIL';
 export const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
 export const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
 export const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
-export const CONFIRM_DIALOG = 'pushNotifs/CONFIRM_DIALOG';
+export const CONFIRM_ALERT = 'pushNotifs/CONFIRM_ALERT';
 
 // helpers
 const getTemplateErrors = (template, templateData) => {
@@ -118,8 +118,8 @@ export const setActiveTab = (activeTab) => ({
     activeTab,
 });
 
-export const confirmDialog = () => ({
-    type: CONFIRM_DIALOG,
+export const confirmAlert = () => ({
+    type: CONFIRM_ALERT,
 });
 
 export const updateTemplate = (template, data) => (dispatch, getState) => {
@@ -205,25 +205,25 @@ const pushNotifs = (state = fromJS({
     templates: {},
     loading: false,
     error: null,
-    dialog: null }), action = {}) => {
+    alert: null }), action = {}) => {
     switch (action.type) {
         case SEND:
             return state.set('loading', true);
         case SEND_SUCCESS:
             return state
                 .set('loading', false)
-                .set('dialog', 'Notification sent!')
+                .set('alert', 'Notification sent!')
                 .setIn(['templates', action.template], Map());
         case SEND_FAIL:
-            return state.set('loading', false).set('dialog', action.data);
+            return state.set('loading', false).set('alert', action.data);
         case SET_ACTIVE_TAB:
-            return state.set('activeTab', action.activeTab.toLowerCase()).set('dialog', null);
-        case CONFIRM_DIALOG:
-            return state.set('dialog', null);
+            return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
+        case CONFIRM_ALERT:
+            return state.set('alert', null);
         case UPDATE_TEMPLATE_SUCCESS:
             return state.mergeIn(['templates', action.template], action.data);
         case UPDATE_TEMPLATE_ERROR:
-            return state.set('dialog', action.data);
+            return state.set('alert', action.data);
         default:
             return state;
     }

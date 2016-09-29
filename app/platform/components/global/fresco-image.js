@@ -27,7 +27,7 @@ class FrescoImage extends React.Component {
 
         this.state = {
             missingImageStyle: this.getMissingImageStyle(),
-        }
+        };
     }
 
     missingImageUrl = `${utils.CDN}/images/missing.png`;

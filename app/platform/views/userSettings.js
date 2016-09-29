@@ -1,12 +1,11 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import utils from 'utils';
+import 'app/sass/platform/user.scss';
 import App from './app.js';
 import TopBar from '../components/topbar';
 import QuickSupport from '../components/global/quick-support';
 import PasswordDialog from '../components/dialogs/password';
-import utils from 'utils';
-import _ from 'lodash';
-import '../../sass/platform/user.scss';;
 
 /**
  * User Settings parent object
@@ -56,12 +55,12 @@ class UserSettings extends React.Component {
 			});
 		} else if(!changed) {
 			if(changes.length <= 1 && changes.includes(source)) {
-				this.setState({ 
-					disabled: true, 
+				this.setState({
+					disabled: true,
 					changes: []
 				});
-			} else {			
-				this.setState({ 
+			} else {
+				this.setState({
 					changes: changes.filter(change => change !== source)
 				});
 			}
@@ -109,15 +108,15 @@ class UserSettings extends React.Component {
  	updateSettings() {
  		if(this.state.disabled) return;
 
- 		const { 
- 			avatarFileInput, 
- 			name, 
- 			bio, 
- 			email, 
- 			username, 
- 			phone 
+ 		const {
+ 			avatarFileInput,
+ 			name,
+ 			bio,
+ 			email,
+ 			username,
+ 			phone
  		} = this.refs;
- 		
+
  		const avatarFiles = avatarFileInput.files;
  		const params = {
  			full_name: name.value,
@@ -225,8 +224,8 @@ class UserSettings extends React.Component {
  	    .fail(error => {
  	    	this.setState({ verify_password: null });
 
- 	        return $.snackbar({ 
- 	        	content: `There was an error updating your avatar! ${calledWithInfo ? 'But we were able to update your information.' : ''}` 
+ 	        return $.snackbar({
+ 	        	content: `There was an error updating your avatar! ${calledWithInfo ? 'But we were able to update your information.' : ''}`
  	        });
  	    })
  	    .always(() => {
@@ -334,7 +333,8 @@ class UserSettings extends React.Component {
 				<PasswordDialog
 					onSubmit={(password) => this.onPasswordSubmit(password)}
 					toggle={() => this.onPasswordToggle()}
-					toggled={this.state.passwordToggled} />
+                    toggled={this.state.passwordToggled}
+                />
  			</App>
  		);
  	}

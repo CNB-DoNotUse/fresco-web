@@ -9,7 +9,7 @@ describe('push notifs reducer', () => {
             templates: {},
             loading: false,
             error: null,
-            dialog: null,
+            alert: null,
         }));
     });
 
@@ -23,7 +23,7 @@ describe('push notifs reducer', () => {
             templates: {},
             loading: true,
             error: null,
-            dialog: null,
+            alert: null,
         }));
     });
 
@@ -40,7 +40,7 @@ describe('push notifs reducer', () => {
             templates: { default: {} },
             loading: false,
             error: null,
-            dialog: 'Notification sent!',
+            alert: 'Notification sent!',
         }));
     });
 
@@ -57,7 +57,7 @@ describe('push notifs reducer', () => {
             templates: {},
             loading: false,
             error: null,
-            dialog: 'Fail',
+            alert: 'Fail',
         }));
     });
 
@@ -71,16 +71,16 @@ describe('push notifs reducer', () => {
             templates: {},
             loading: false,
             error: null,
-            dialog: null,
+            alert: null,
         }));
     });
 
-    it('handles CONFIRM_DIALOG', () => {
+    it('handles CONFIRM_ALERT', () => {
         const initialState = reducer(undefined, {
             type: pushActions.SEND_FAIL,
             data: 'Fail!',
         });
-        const action = pushActions.confirmDialog();
+        const action = pushActions.confirmAlert();
         const nextState = reducer(initialState, action);
 
         expect(nextState).to.equal(fromJS({
@@ -88,7 +88,7 @@ describe('push notifs reducer', () => {
             templates: {},
             loading: false,
             error: null,
-            dialog: null,
+            alert: null,
         }));
     });
 
@@ -107,7 +107,7 @@ describe('push notifs reducer', () => {
             templates: { default: { title: 'I\'m a title!' } },
             loading: false,
             error: null,
-            dialog: null,
+            alert: null,
         }));
     });
 
@@ -124,7 +124,7 @@ describe('push notifs reducer', () => {
             templates: {},
             loading: false,
             error: null,
-            dialog: 'Error updating template',
+            alert: 'Error updating template',
         }));
     });
 });
