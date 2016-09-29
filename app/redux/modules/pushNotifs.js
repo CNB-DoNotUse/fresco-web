@@ -18,6 +18,7 @@ export const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
 export const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
 export const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
 export const CONFIRM_ALERT = 'pushNotifs/CONFIRM_ALERT';
+export const TOGGLE_CONFIRM_SEND = 'pushNotifs/TOGGLE_CONFIRM_SEND';
 
 // helpers
 const getTemplateErrors = (template, templateData) => {
@@ -122,6 +123,10 @@ export const confirmAlert = () => ({
     type: CONFIRM_ALERT,
 });
 
+export const toggleConfirmSend = () => ({
+    type: TOGGLE_CONFIRM_SEND,
+});
+
 export const updateTemplate = (template, data) => (dispatch, getState) => {
     const successAction = {
         type: UPDATE_TEMPLATE_SUCCESS,
@@ -204,22 +209,29 @@ const pushNotifs = (state = fromJS({
     activeTab: 'default',
     templates: {},
     loading: false,
+    confirmSendToggled: false,
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {
         case SEND:
-            return state.set('loading', true);
+            return state
+                .set('loading', true)
+                .set('confirmSendToggled', false);
         case SEND_SUCCESS:
             return state
                 .set('loading', false)
                 .set('alert', 'Notification sent!')
                 .setIn(['templates', action.template], Map());
         case SEND_FAIL:
-            return state.set('loading', false).set('alert', action.data);
+            return state
+                .set('loading', false)
+                .set('alert', action.data);
         case SET_ACTIVE_TAB:
             return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
         case CONFIRM_ALERT:
             return state.set('alert', null);
+        case TOGGLE_CONFIRM_SEND:
+            return state.set('confirmSendToggled', !state.get('confirmSendToggled'));
         case UPDATE_TEMPLATE_SUCCESS:
             return state.mergeIn(['templates', action.template], action.data);
         case UPDATE_TEMPLATE_ERROR:

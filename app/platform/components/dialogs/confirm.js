@@ -2,32 +2,33 @@ import React, { PropTypes } from 'react';
 
 export default class Confirm extends React.Component {
     static propTypes = {
-        onSubmit: PropTypes.func,
-        toggle: PropTypes.func,
+        onConfirm: PropTypes.func,
+        onCancel: PropTypes.func,
         toggled: PropTypes.bool,
         hasInput: PropTypes.bool,
         text: PropTypes.string,
     }
 
     static defaultProps = {
-        onSubmit: () => {},
-        toggle: () => {},
+        onConfirm: () => {},
+        onCancel: () => {},
         toggled: false,
         text: '',
         hasInput: false,
     }
 
-    onSubmit = (e) => {
+    onConfirm = (e) => {
         e.preventDefault();
-
-        this.props.onSubmit(this.input.value);
+        const { hasInput, onConfirm } = this.props;
+        if (hasInput) onConfirm(this.input.value);
+        else onConfirm();
     }
 
     renderInput = () => (
         <div className="body">
             <form
                 className="form-group-default"
-                onSubmit={this.onSubmit}
+                onConfirm={this.onConfirm}
             >
                 <input
                     ref={r => { this.input = r; }}
@@ -40,13 +41,13 @@ export default class Confirm extends React.Component {
     )
 
     render() {
-        const { toggled, text, hasInput } = this.props;
+        const { toggled, text, hasInput, onCancel } = this.props;
 
         return (
             <div className="dialog-wrap">
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
 
-                <div className={`dialog ${toggled ? 'toggled' : ''}`}>
+                <div className={`dialog ${toggled ? 'toggled' : ''} ${hasInput ? '' : 'no-input'}`}>
                     <div className="header">
                         <h3>{text}</h3>
                     </div>
@@ -56,16 +57,16 @@ export default class Confirm extends React.Component {
                     <div className="footer">
                         <button
                             className="cancel"
-                            onClick={this.props.toggle}
+                            onClick={onCancel}
                         >
                             Cancel
                         </button>
 
                         <button
                             className="primary"
-                            onClick={(e) => this.onSubmit(e)}
+                            onClick={this.onConfirm}
                         >
-                            Save changes
+                            Confirm
                         </button>
                     </div>
                 </div>

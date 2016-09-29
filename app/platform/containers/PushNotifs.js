@@ -21,7 +21,7 @@ class PushNotifs extends React.Component {
         activeTab: PropTypes.string.isRequired,
         loading: PropTypes.bool.isRequired,
         templates: PropTypes.object.isRequired,
-        dialog: PropTypes.string,
+        alert: PropTypes.string,
     };
 
     componentDidMount() {
@@ -62,18 +62,16 @@ class PushNotifs extends React.Component {
         }
     }
 
-    onClickSend = () => {
-        const { onSend, activeTab } = this.props;
-        onSend(activeTab);
-    }
-
     render() {
         const {
             onSetActiveTab,
             onConfirmAlert,
+            onToggleConfirmSend,
+            onSend,
             activeTab,
             loading,
-            dialog,
+            alert,
+            confirmSendToggled,
         } = this.props;
 
         return (
@@ -87,8 +85,8 @@ class PushNotifs extends React.Component {
                 <div className="push-notifs__tab row">
                     <div className="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
                         <Snackbar
-                            message={dialog || ''}
-                            open={!!dialog}
+                            message={alert || ''}
+                            open={!!alert}
                             autoHideDuration={5000}
                             onRequestClose={onConfirmAlert}
                             onActionTouchTap={onConfirmAlert}
@@ -97,7 +95,7 @@ class PushNotifs extends React.Component {
                         {this.renderTemplate()}
                         <button
                             type="button"
-                            onClick={this.onClickSend}
+                            onClick={onToggleConfirmSend}
                             className="btn btn-raised btn-primary pull-right push-notifs__send"
                             disabled={loading}
                         >
@@ -105,6 +103,13 @@ class PushNotifs extends React.Component {
                         </button>
                     </div>
                 </div>
+                <Confirm
+                    text={"Send notificaiton?"}
+                    onConfirm={partial(onSend, activeTab)}
+                    onCancel={onToggleConfirmSend}
+                    toggled={confirmSendToggled}
+                    hasInput={false}
+                />
             </div>
         );
     }
@@ -115,7 +120,8 @@ function mapStateToProps(state) {
         activeTab: state.getIn(['pushNotifs', 'activeTab']),
         templates: state.getIn(['pushNotifs', 'templates']),
         loading: state.getIn(['pushNotifs', 'loading']),
-        dialog: state.getIn(['pushNotifs', 'dialog']),
+        alert: state.getIn(['pushNotifs', 'alert']),
+        confirmSendToggled: state.getIn(['pushNotifs', 'confirmSendToggled']),
     };
 }
 
@@ -123,6 +129,7 @@ export default connect(mapStateToProps, {
     onSetActiveTab: pushActions.setActiveTab,
     onChangeTemplate: pushActions.updateTemplate,
     onConfirmAlert: pushActions.confirmAlert,
+    onToggleConfirmSend: pushActions.toggleConfirmSend,
     onSend: pushActions.send,
 })(PushNotifs);
 
