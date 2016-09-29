@@ -26,7 +26,7 @@ class PasswordDialog extends React.Component {
             <div className="dialog-wrap">
                 <div className={`dim transparent ${toggled}`} />
 
-                <div className={`dialog ${toggled}`}>
+                <div className={`confirm-dialog ${toggled}`}>
                     <div className="header">
                         <h3>Enter your password</h3>
                     </div>

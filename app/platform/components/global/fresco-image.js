@@ -62,8 +62,10 @@ class FrescoImage extends React.Component {
         };
 
         const onloadCB = () => {
-            if (this.img) this.img.src = imageObj.src;
-            this.setState({ placeholderStyle: {} });
+            if (this.img) {
+                this.img.src = imageObj.src;
+                this.setState({ placeholderStyle: {} });
+            }
         };
 
         const onerrorCB = () => {

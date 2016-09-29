@@ -47,7 +47,7 @@ export default class Confirm extends React.Component {
             <div className="dialog-wrap">
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
 
-                <div className={`dialog ${toggled ? 'toggled' : ''} ${hasInput ? '' : 'no-input'}`}>
+                <div className={`confirm-dialog ${toggled ? 'toggled' : ''} ${hasInput ? '' : 'no-input'}`}>
                     <div className="header">
                         <h3>{text}</h3>
                     </div>
