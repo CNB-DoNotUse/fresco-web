@@ -18,6 +18,7 @@ export default class PostRelatedImage extends React.Component {
                     className="img-link"
                     src={this.props.post.image}
                     size="small"
+                    placeholderStyle={{ height: "300px" }}
                 />
             </a>
         );
