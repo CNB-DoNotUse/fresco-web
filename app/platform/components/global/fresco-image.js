@@ -12,6 +12,7 @@ class FrescoImage extends React.Component {
         updateImage: PropTypes.func,
         className: PropTypes.string,
         style: PropTypes.object,
+        placeholderStyle: PropTypes.object,
         refreshInterval: PropTypes.bool,
     };
 
@@ -19,18 +20,15 @@ class FrescoImage extends React.Component {
         size: 'small',
         refreshInterval: false,
         style: {},
+        placeholderStyle: {},
         updateImage: () => {},
     };
 
-    constructor(props) {
-        super(props);
+    placeholderUrl = `${utils.CDN}/images/missing.png`;
 
-        this.state = {
-            missingImageStyle: this.getMissingImageStyle(),
-        };
+    state = {
+        placeholderStyle: this.props.placeholderStyle,
     }
-
-    missingImageUrl = `${utils.CDN}/images/missing.png`;
 
     componentDidMount() {
         this.loadImage();
@@ -65,12 +63,12 @@ class FrescoImage extends React.Component {
 
         const onloadCB = () => {
             if (this.img) this.img.src = imageObj.src;
-            this.setState({ missingImageStyle: {} });
+            this.setState({ placeholderStyle: {} });
         };
 
         const onerrorCB = () => {
-            if (this.img) this.img.src = this.missingImageUrl;
-            this.props.updateImage(this.missingImageUrl);
+            if (this.img) this.img.src = this.placeholderUrl;
+            this.props.updateImage(this.placeholderUrl);
 
             if (refreshInterval) {
                 this.loadTimeout = setTimeout(timeoutCB.bind(this), timeout);
@@ -83,22 +81,8 @@ class FrescoImage extends React.Component {
         imageObj.src = formattedSrc;
     }
 
-    getMissingImageStyle = () => {
-        switch (this.props.size) {
-            case 'large':
-                return { height: '1000px', width: '1000px' };
-            case 'medium':
-                return { height: '700px', width: '700px' };
-            case 'thumb':
-                return { height: '50px', width: '50px' };
-            case 'small':
-            default:
-                return { height: '200px', width: '200px' };
-        }
-    }
-
     render() {
-        const style = Object.assign({}, this.props.style, this.state.missingImageStyle);
+        const style = Object.assign({}, this.props.style, this.state.placeholderStyle);
 
         return (
             <img
@@ -107,7 +91,7 @@ class FrescoImage extends React.Component {
                 role="presentation"
                 ref={r => { this.img = r; }}
                 onError={this.onError}
-                src={this.missingImageUrl}
+                src={this.placeholderUrl}
             />
         );
     }
