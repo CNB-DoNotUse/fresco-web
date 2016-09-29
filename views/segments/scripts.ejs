@@ -19,6 +19,7 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0tAylcwyLZuJwp0M9XU7p5TzVTd-p7i4=&libraries=geometry,places"></script>
 <% } %>
 
+<script type="text/javascript" src="/build/commons.js"></script>
 <% // Load asset based on page, check if in dev mode or not %>
 <% if(typeof(page) !== 'undefined' && typeof(assets) !== 'undefined'){ %>
     <script type="text/javascript" src="<%= assets[page]['js'] %>"></script>

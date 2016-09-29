@@ -46,6 +46,13 @@ const plugins = (env) => {
             filename: 'assets.json',
             prettyPrint: true
         }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: "commons",
+            filename: "commons.js",
+            minChunks: 2,
+            // chunks: ["pageA", "pageB"],
+            // (Only use these entries)
+        })
     ];
 
     if (env === 'dev') {
@@ -64,6 +71,7 @@ const plugins = (env) => {
                 }
             })
         );
+        plugins.push(new webpack.optimize.DedupePlugin());
         plugins.push(
             new webpack.DefinePlugin({
                 'process.env': { NODE_ENV: JSON.stringify('production') }
