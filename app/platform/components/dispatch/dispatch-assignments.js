@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import AssignmentListItem from './assignment-list-item';
-import _ from 'lodash';
+import last from 'lodash/last';
 
 
 /**
@@ -11,7 +11,7 @@ export default class DispatchAssignments extends React.Component {
 
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			assignments: [],
 			loading: false
@@ -51,14 +51,14 @@ export default class DispatchAssignments extends React.Component {
 		else if (type == 'expired')
 			grid = this.refs.expiredList;
 
-		//Check that nothing is loading and that we're at the end of the scroll, 
+		//Check that nothing is loading and that we're at the end of the scroll,
 		//and that we have a parent bind to load  more posts
 		if(!loading && grid.scrollTop === (grid.scrollHeight - grid.offsetHeight) && assignments.length > 0){
 			//Set that we're loading
 			this.setState({ loading : true });
 
 			const params = {
-				last: _.last(assignments).id
+				last: last(assignments).id
 			};
 
 			//Access parent var load method
@@ -104,7 +104,7 @@ export default class DispatchAssignments extends React.Component {
 
 		let AssignmentList = this.state.assignments.map((assignment, i)  => {
 			return (
-				<AssignmentListItem 
+				<AssignmentListItem
 					assignment={assignment}
 					setActiveAssignment={this.props.setActiveAssignment}
 					key={i} />
@@ -115,34 +115,34 @@ export default class DispatchAssignments extends React.Component {
 			<div className="card panel assignments-panel">
 				<div className="card-head small">
 					<div className="tab-control full">
-						<button 
-							ref="active-button"  
-							className={viewMode == 'active' ? buttonClass + ' toggled' : buttonClass} 
+						<button
+							ref="active-button"
+							className={viewMode == 'active' ? buttonClass + ' toggled' : buttonClass}
 							onClick={this.toggleList.bind(null, 'active')}>
 								Active
 						</button>
-						
-						<button 
-							ref="pending-button" 
-							className={viewMode == 'pending' ? buttonClass + ' toggled' : buttonClass} 
+
+						<button
+							ref="pending-button"
+							className={viewMode == 'pending' ? buttonClass + ' toggled' : buttonClass}
 							onClick={this.toggleList.bind(null, 'pending')}>
 							Pending
 						</button>
-						
-						<button ref="expired-button" 
-							className={viewMode == 'expired' ? buttonClass + ' toggled' : buttonClass} 
+
+						<button ref="expired-button"
+							className={viewMode == 'expired' ? buttonClass + ' toggled' : buttonClass}
 							onClick={this.toggleList.bind(null, 'expired')}>
 							History
 						</button>
 					</div>
 				</div>
-				
+
 				<div className="card-foot center toggle-card">
-					<button 
-						type="button" 
-						id="open-assignment-window" 
-						className="btn btn-flat toggle-card toggler" 
-						disabled={!(this.props.user.outlet && this.props.user.outlet.verified)} 
+					<button
+						type="button"
+						id="open-assignment-window"
+						className="btn btn-flat toggle-card toggler"
+						disabled={!(this.props.user.outlet && this.props.user.outlet.verified)}
 						onClick={this.props.toggleSubmissionCard.bind(null, true)}>
 							Post an assignment
 					</button>
@@ -151,29 +151,29 @@ export default class DispatchAssignments extends React.Component {
 				<div className="card-body">
 					<div className="tabs full">
 						<div className="tab toggled">
-							<div 
-								ref="activeList" 
+							<div
+								ref="activeList"
 								className="list"
 								onScroll={this.scroll.bind(null, 'active')}>{AssignmentList}</div>
 						</div>
 						<div className="tab">
-							<div 
-								ref="pendingList" 
+							<div
+								ref="pendingList"
 								className="list"
 								onScroll={this.scroll.bind(null, 'pending')}></div>
 						</div>
 						<div className="tab">
-							<div 
-								ref="historyList" 
+							<div
+								ref="historyList"
 								className="list"
 								onScroll={this.scroll.bind(null, 'expired')}></div>
 						</div>
 					</div>
 				</div>
-			</div>	
+			</div>
 		);
 	}
-}	
+}
 
 DispatchAssignments.propTypes = {
     findAssignments: PropTypes.func.isRequired

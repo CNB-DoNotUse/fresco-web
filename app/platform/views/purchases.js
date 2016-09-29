@@ -1,8 +1,8 @@
-import _ from 'lodash';
 import React from 'react';
-import update from'react-addons-update';
-import utils from 'utils';
+import update from 'react-addons-update';
 import ReactDOM from 'react-dom';
+import find from 'lodash/find';
+import map from 'lodash/map';
 import App from './app';
 import TopBar from '../components/topbar';
 import PurchasesBody from '../components/purchases/purchases-body';
@@ -55,7 +55,7 @@ class Purchases extends React.Component {
 						});
 					}
 				}
-			});	
+			});
 		}
 	}
 
@@ -80,7 +80,7 @@ class Purchases extends React.Component {
 						});
 					}
 				}
-			});	
+			});
 		}
 	}
 
@@ -93,8 +93,8 @@ class Purchases extends React.Component {
 		const user = availableUsers[index];
 
 		if(user !== null) {
-			if(_.find(users, ['id', user.id]) == undefined){
-				this.setState({ 
+			if(find(users, ['id', user.id]) == undefined){
+				this.setState({
 					users: update(users, {$push: [user]}),
 					availableUsers: update(availableUsers, {$splice: [[index, 1]]}),
 					updatePurchases: true
@@ -113,8 +113,8 @@ class Purchases extends React.Component {
 		const outlet = availableOutlets[index];
 
 		if(outlet !== null) {
-			if(_.find(outlets, ['id', outlet.id]) === undefined){
-				this.setState({ 
+			if(find(outlets, ['id', outlet.id]) === undefined){
+				this.setState({
 					outlets: update(outlets, {$push: [outlet]}),
 					availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
 					updatePurchases: true
@@ -131,7 +131,7 @@ class Purchases extends React.Component {
 	removeUser(userToRemove, index) {
 		const user = this.state.users[index];
 
-		this.setState({ 
+		this.setState({
 			users: update(this.state.users, {$splice: [[index, 1]]}), //Keep the filtered list updated
 			availableUsers: update(this.state.availableUsers, {$push: [user]}), //Add the user back to the autocomplete list
 			updatePurchases: true
@@ -146,7 +146,7 @@ class Purchases extends React.Component {
 	removeOutlet(outletToRemove, index) {
 		const outlet = this.state.outlets[index];
 
-		this.setState({ 
+		this.setState({
 			outlets: update(this.state.outlets, {$splice: [[index, 1]]}), //Keep the filtered list updated
 			availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}), //Add the user back to the autocomplete list
 			updatePurchases: true
@@ -158,8 +158,8 @@ class Purchases extends React.Component {
 	 */
 	loadStats(callback) {
 		const params = {
-			outlet_ids: _.map(this.state.outlets, 'id'),
-			user_ids: _.map(this.state.users, 'id')
+			outlet_ids: map(this.state.outlets, 'id'),
+			user_ids: map(this.state.users, 'id')
 		}
 
 		$.ajax({
@@ -175,7 +175,7 @@ class Purchases extends React.Component {
 					callback(response);
 				}
 			}
-		});	
+		});
 	}
 
 	/**
@@ -191,8 +191,8 @@ class Purchases extends React.Component {
 		}
 
 		const params = {
-			outlet_ids: _.map(this.state.outlets, 'id'),
-			user_ids: _.map(this.state.users, 'id'),
+			outlet_ids: map(this.state.outlets, 'id'),
+			user_ids: map(this.state.users, 'id'),
 			limit: 20,
 			last
 		}
@@ -237,7 +237,7 @@ class Purchases extends React.Component {
 
 		return (
 			<App user={this.props.user}>
-				<TopBar 
+				<TopBar
 					title="Purchases">
 
 					<TagFilter

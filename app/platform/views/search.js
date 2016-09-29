@@ -1,8 +1,9 @@
-import _ from 'lodash'
-import utils from 'utils'
 import React, { PropTypes, Component } from 'react'
 import ReactDOM from 'react-dom'
+import utils from 'utils'
 import update from'react-addons-update';
+import clone from 'lodash/clone';
+import last from 'lodash/last';
 import App from './app'
 import TopBar from './../components/topbar'
 import LocationDropdown from '../components/topbar/location-dropdown'
@@ -208,7 +209,7 @@ export class Search extends Component {
 			limit: 18,
 			tags: this.state.tags,
 			sortBy: 'created_at',
-			last: this.state.posts.length ? _.last(this.state.posts).id : null,
+			last: this.state.posts.length ? last(this.state.posts).id : null,
 			...this.geoParams()
 		};
 
@@ -252,7 +253,7 @@ export class Search extends Component {
 	getUsers(force = true) {
 		const params = {
 			q: this.props.query,
-			last: force ? undefined : _.last(this.state.users).id,
+			last: force ? undefined : last(this.state.users).id,
 			limit: 20
 		};
 
@@ -281,7 +282,7 @@ export class Search extends Component {
 	getStories(force = true) {
 		const params = {
 			q: this.props.query,
-			last: force ? null : _.last(this.state.stories),
+			last: force ? null : last(this.state.stories),
 			limit: 10
 		}
 
@@ -320,7 +321,7 @@ export class Search extends Component {
 	 * When radius changes
 	 */
 	onRadiusUpdate(radius) {
-		let location = _.clone(this.state.location);
+		let location = clone(this.state.location);
 		location.radius = radius;
 
 		this.setState({
@@ -332,7 +333,7 @@ export class Search extends Component {
 	 * Called when AutocompleteMap data changes
 	 */
 	onMapDataChange(data) {
-		let location = _.clone(this.state.location);
+		let location = clone(this.state.location);
 
 		location.coordinates = data.location;
 		location.address = data.address;

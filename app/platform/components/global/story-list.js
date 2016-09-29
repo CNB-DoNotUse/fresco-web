@@ -1,6 +1,6 @@
 import React from 'react';
+import last from 'lodash/last';
 import StoryCell from './story-cell.js';
-import _ from 'lodash';
 
 /**
  * List for a set of stories used across the site
@@ -33,7 +33,7 @@ export default class StoryList extends React.Component {
             this.setState({ loading: true })
 
             // Run load on parent call
-            this.props.loadStories(_.last(this.state.stories).id, (stories) => {
+            this.props.loadStories(last(this.state.stories).id, (stories) => {
                 if(!stories) return;
 
                 // Set galleries from successful response, and unset loading
