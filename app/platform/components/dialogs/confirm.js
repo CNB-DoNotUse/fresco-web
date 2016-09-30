@@ -7,6 +7,7 @@ export default class Confirm extends React.Component {
         toggled: PropTypes.bool,
         hasInput: PropTypes.bool,
         text: PropTypes.string,
+        confirmText: PropTypes.string,
     }
 
     static defaultProps = {
@@ -14,6 +15,7 @@ export default class Confirm extends React.Component {
         onCancel: () => {},
         toggled: false,
         text: '',
+        confirmText: 'Confirm',
         hasInput: false,
     }
 
@@ -28,7 +30,7 @@ export default class Confirm extends React.Component {
         <div className="body">
             <form
                 className="form-group-default"
-                onConfirm={this.onConfirm}
+                onSubmit={this.onConfirm}
             >
                 <input
                     ref={r => { this.input = r; }}
@@ -41,7 +43,7 @@ export default class Confirm extends React.Component {
     )
 
     render() {
-        const { toggled, text, hasInput, onCancel } = this.props;
+        const { toggled, text, confirmText, hasInput, onCancel } = this.props;
 
         return (
             <div className="dialog-wrap">
@@ -66,7 +68,7 @@ export default class Confirm extends React.Component {
                             className="primary"
                             onClick={this.onConfirm}
                         >
-                            Confirm
+                            {confirmText}
                         </button>
                     </div>
                 </div>
