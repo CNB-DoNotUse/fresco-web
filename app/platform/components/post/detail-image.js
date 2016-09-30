@@ -77,7 +77,7 @@ class PostDetailImage extends React.Component {
                     refreshInterval
                     src={post.image}
                     class="img-responsive"
-                    size="large"
+                    size="original"
                 />
             );
         }
