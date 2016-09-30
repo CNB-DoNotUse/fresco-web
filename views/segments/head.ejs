@@ -63,6 +63,7 @@
     <meta name="twitter:app:id:iphone"   content="<%= twitter['app:id:iphone']   || head.twitter['app:id:iphone']   %>">
     <meta name="twitter:app:url:iphone"  content="<%= twitter['app:url:iphone']  || head.twitter['app:url:iphone']  %>">
 
+    <link rel="stylesheet" type="text/css" href="/build/css/commons.css"></link>
     <% // Load asset based on page, check if in dev mode or not %>
     <% if(typeof(page) !== 'undefined' && typeof(assets) !== 'undefined'){ %>
         <link rel="stylesheet" type="text/css" href="<%= assets[page]['css'] %>">
