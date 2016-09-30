@@ -34,29 +34,52 @@ const views = () => {
 // Generates plugins for webpack
 const plugins = (env) => {
     // Base plugins
-    let plugins = [
+    const arr = [
         new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery"
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery',
         }),
         new ExtractTextPlugin('css/[name].css'),
         new AssetsPlugin({
             path: './public/build',
             filename: 'assets.json',
-            prettyPrint: true
+            prettyPrint: true,
         }),
         new webpack.optimize.CommonsChunkPlugin({
-            name: "commons",
-            filename: "commons.js",
+            name: 'commons',
+            filename: 'commons.js',
             minChunks: 8,
-            // chunks: ["pageA", "pageB"],
             // (Only use these entries)
-        })
+            chunks: [
+                'admin',
+                'app',
+                'archive',
+                'assignmentDetail',
+                'dispatch',
+                'galleries',
+                'galleryDetail',
+                'highlights',
+                'locationDetail',
+                'outlet',
+                'outletSettings',
+                'photos',
+                'postDetail',
+                'publicGallery',
+                'purchases',
+                'pushNotifs',
+                'search',
+                'stories',
+                'storyDetail',
+                'userDetail',
+                'userSettings',
+                'videos',
+            ],
+        }),
     ];
 
     if (env === 'dev') {
-        plugins.push(
+        arr.push(
             new webpack.DefinePlugin({
                 'process.env': { __DEV__: true },
             })
@@ -64,22 +87,20 @@ const plugins = (env) => {
     }
 
     if (env === 'production') {
-        plugins.push(
+        arr.push(
             new webpack.optimize.UglifyJsPlugin({
-                compress: {
-                    warnings: false
-                }
+                compress: { warnings: false },
             })
         );
-        plugins.push(new webpack.optimize.DedupePlugin());
-        plugins.push(
+        arr.push(new webpack.optimize.DedupePlugin());
+        arr.push(
             new webpack.DefinePlugin({
-                'process.env': { NODE_ENV: JSON.stringify('production') }
+                'process.env': { NODE_ENV: JSON.stringify('production') },
             })
         );
     }
 
-    return plugins;
+    return arr;
 };
 
 // Define output obj. for webpack
