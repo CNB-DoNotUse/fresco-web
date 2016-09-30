@@ -29,8 +29,7 @@ class PurchaseAction extends React.Component {
         })
         .fail((xhr, status, error) => {
             $.snackbar({
-                content: xhr.responseJSON.msg ||
-                    utils.resolveError(error, 'There was an error while completing your purchase!'),
+                content: 'There was an error while completing your purchase!'
             });
         });
     }

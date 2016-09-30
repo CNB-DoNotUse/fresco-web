@@ -19,7 +19,7 @@ class PurchasesListItem extends React.Component {
 	
 	render() {
 		const { purchase, showTitle } = this.props;
-		const {assignment, post, outlet, amount} = purchase;
+		const { assignment, post, outlet, amount } = purchase;
 		const video = post.stream != null;
 		const timeString = moment(purchase.created_at).format('MMM Do, h:mma');
 		const title = outlet.title;
