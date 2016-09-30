@@ -46,8 +46,7 @@ class Sidebar extends React.Component {
             <div className="meta-user--stats">
                 {user.location ?
                     <span>{user.location}<span style={{ fontWeight: 700 }}> · </span></span>
-                    : ''
-                }
+                : ''}
 
                 {`${photo_count} photos, ${video_count} videos`}
             </div>
