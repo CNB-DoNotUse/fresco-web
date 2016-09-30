@@ -18,6 +18,7 @@ const renderPost = (post) => {
     return (
         <FrescoImage
             src={post.image}
+            loadWithPlaceholder={true}
             size="medium"
             refreshInterval
         />

@@ -49,7 +49,7 @@ const plugins = (env) => {
         new webpack.optimize.CommonsChunkPlugin({
             name: "commons",
             filename: "commons.js",
-            minChunks: 2,
+            minChunks: 8,
             // chunks: ["pageA", "pageB"],
             // (Only use these entries)
         })
