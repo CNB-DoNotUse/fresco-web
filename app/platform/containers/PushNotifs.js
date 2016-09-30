@@ -102,14 +102,15 @@ class PushNotifs extends React.Component {
                             Send
                         </button>
                     </div>
+
+                    <Confirm
+                        text={"Send notificaiton?"}
+                        onConfirm={partial(onSend, activeTab)}
+                        onCancel={onToggleConfirmSend}
+                        toggled={confirmSendToggled}
+                        hasInput={false}
+                    />
                 </div>
-                <Confirm
-                    text={"Send notificaiton?"}
-                    onConfirm={partial(onSend, activeTab)}
-                    onCancel={onToggleConfirmSend}
-                    toggled={confirmSendToggled}
-                    hasInput={false}
-                />
             </div>
         );
     }
