@@ -137,7 +137,7 @@ class Dispatch extends React.Component {
             params.limit = 10;
         }
 
-        api.get('assignment/list')
+        api.get('assignment/list', params)
         .then(res => callback(res))
         .catch(() => $.snackbar({ content: 'Couldn\'t fetch assignments' }));
     }

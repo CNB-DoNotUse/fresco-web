@@ -132,7 +132,11 @@ class PostCell extends React.Component {
                     </div>
 
                     <div className="img">
-                        <FrescoImage src={post.image} size={size} />
+                        <FrescoImage 
+                            src={post.image}
+                            refreshInterval={true}
+                            size={size} 
+                        />
                     </div>
                 </div>
 

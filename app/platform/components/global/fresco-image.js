@@ -2,8 +2,10 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 
 /**
- * Stateless image that manages an image error handler
+ * Fresco mage that manages an image error handler
  * @description Will set a timeout to keep loading the image if it 404s
+ * @param {Prop} loadWithPlaceHolder If you'd like the image to load with a placeholder first then pass this. Applicable in cases where you need
+ * a set height and you don't want your image objecto collapse if the 404s
  */
 class FrescoImage extends React.Component {
     static propTypes = {
@@ -20,6 +22,7 @@ class FrescoImage extends React.Component {
         size: 'small',
         refreshInterval: false,
         style: {},
+        loadWithPlaceholder: false,
         placeholderStyle: {},
         updateImage: () => {},
     };
@@ -28,6 +31,11 @@ class FrescoImage extends React.Component {
 
     state = {
         placeholderStyle: this.props.placeholderStyle,
+        timeout: 1000
+    }
+
+    componentWillMount() {
+        this.setInitialSource();
     }
 
     componentDidMount() {
@@ -37,6 +45,7 @@ class FrescoImage extends React.Component {
     componentDidUpdate(prevProps) {
         const { src, size } = this.props;
         if ((src !== prevProps.src) || (size !== prevProps.size)) {
+            this.setInitialSource();
             this.loadImage();
         }
     }
@@ -45,42 +54,63 @@ class FrescoImage extends React.Component {
         clearTimeout(this.loadTimeout);
     }
 
+    setInitialSource = () => {
+        const formattedSrc = utils.formatImg(this.props.src, this.props.size);
+        this.setState({
+            src: this.props.loadWithPlaceholder ? this.placeholderUrl : formattedSrc,
+            formattedSrc
+        });
+    }
+
     // async load image
     loadImage = () => {
-        const { src, size, refreshInterval } = this.props;
-        const formattedSrc = utils.formatImg(src, size);
-        const imageObj = new Image();
-        let timeout = 1000;
+        //If the prop is passed to load with the placeholder first, then create the custom image object
+        //Otherwise don't do anything here
+        if(this.props.loadWithPlaceholder) {
+            const imageObj = new Image();
+            imageObj.src = this.state.formattedSrc;
+            imageObj.onload = this.onload;
+        }
+    }
 
-        const timeoutCB = () => {
-            if (!this.img || this.img.src === formattedSrc) {
-                clearTimeout(this.loadTimeout);
-            } else {
-                imageObj.src = formattedSrc;
-                timeout += timeout;
-            }
-        };
+    /**
+     * When our custom image loads successfully, set the new source on the state
+     */
+    onload = () => {
+        if (this.img) {
+            this.setState({
+                src: this.state.formattedSrc,
+                placeholderStyle: {}
+            })
+        }   
+    }
 
-        const onloadCB = () => {
-            if (this.img) {
-                this.img.src = imageObj.src;
-                this.setState({ placeholderStyle: {} });
-            }
-        };
+    /**
+     * On the timeout interval, either clear it, or try updating the image again to see if it'll be able to resolve
+     */
+    onTimeout = () => {
+        if (!this.img || this.state.src === this.state.formattedSrc) {
+            clearTimeout(this.loadTimeout);
+        } else {
+            this.setState({ 
+                src: this.state.formattedSrc, 
+                timeout: this.state.timeout + this.state.timeout
+            });
+        }
+    }
 
-        const onerrorCB = () => {
-            if (this.img) this.img.src = this.placeholderUrl;
-            this.props.updateImage(this.placeholderUrl);
+    /**
+     * On image error, set the image as the placeholder and a set a timeout to try again later
+     */
+    onError = () => {
+        if (this.img) {
+            this.setState({ src: this.placeholderUrl })
+        }
+        this.props.updateImage(this.placeholderUrl);
 
-            if (refreshInterval) {
-                this.loadTimeout = setTimeout(timeoutCB.bind(this), timeout);
-            }
-        };
-
-        imageObj.onload = onloadCB.bind(this);
-        imageObj.onerror = onerrorCB.bind(this);
-
-        imageObj.src = formattedSrc;
+        if (this.props.refreshInterval) {
+            this.loadTimeout = setTimeout(this.onTimeout, this.state.timeout);
+        }
     }
 
     render() {
@@ -93,7 +123,7 @@ class FrescoImage extends React.Component {
                 role="presentation"
                 ref={r => { this.img = r; }}
                 onError={this.onError}
-                src={this.placeholderUrl}
+                src={this.state.src}
             />
         );
     }
