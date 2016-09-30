@@ -34,7 +34,7 @@ const views = () => {
 // Generates plugins for webpack
 const plugins = (env) => {
     // Base plugins
-    const arr = [
+    let arr = [
         new webpack.ProvidePlugin({
             $: 'jquery',
             jQuery: 'jquery',
