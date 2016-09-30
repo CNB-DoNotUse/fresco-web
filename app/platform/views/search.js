@@ -97,6 +97,8 @@ export class Search extends Component {
 		if(shouldUpdate) {
 			this.refreshData(false);
 
+			console.log('UPDATE');
+
 			this.setState({
 				title : this.getTitle(false)
 			});
@@ -323,10 +325,7 @@ export class Search extends Component {
 	onRadiusUpdate(radius) {
 		let location = clone(this.state.location);
 		location.radius = radius;
-
-		this.setState({
-			location : location
-		});
+		this.setState({ location });
 	}
 
 	/**
@@ -334,6 +333,8 @@ export class Search extends Component {
 	 */
 	onMapDataChange(data) {
 		let location = clone(this.state.location);
+
+		console.log(data);
 
 		location.coordinates = data.location;
 		location.address = data.address;

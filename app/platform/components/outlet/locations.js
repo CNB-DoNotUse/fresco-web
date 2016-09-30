@@ -1,6 +1,7 @@
 import React from 'react';
 import utils from 'utils';
 import every from 'lodash/every';
+import cloneDeep from 'lodash/cloneDeep';
 
 /**
  * Component for managing outlet locations in the outlet settings page
@@ -75,9 +76,6 @@ class Locations extends React.Component {
 
         const params = {
             title: autocomplete.value,
-            send_email: true,
-            send_sms: true,
-            send_fresco: true,
             geo: {
                 type: 'Polygon',
                 coordinates: utils.generatePolygonFromBounds(place.geometry.viewport),
@@ -135,16 +133,16 @@ class Locations extends React.Component {
 	 */
     updateLocation = (notif, location = null, index = null) => (e) => {
         const singleLocation = (location !== null && index !== null);
-        const url = `/api/outlet/locations/${singleLocation ? `${location.id}/update` : 'update'}`;
+        const url = `/api/outlet/locations/${singleLocation ? location.id : this.state.locations.map(l => l.id).join(',')}/settings/update`;
         
-        let oldLocations = _.cloneDeep(this.state.locations);
-        let locations = _.cloneDeep(this.state.locations);
+        let oldLocations = cloneDeep(this.state.locations);
+        let locations = cloneDeep(this.state.locations);
 
         if(singleLocation) {
-            locations[index][notif] = e.target.checked;
+            locations[index]['settings'][notif] = e.target.checked;
         } else {
             locations.forEach((location) => {
-                location[notif] = e.target.checked;
+                location['settings'][notif] = e.target.checked;
             });
         }
 
@@ -219,7 +217,7 @@ class Locations extends React.Component {
                             <label>
                                 <input 
                                     type="checkbox"
-                                    checked={every(locations, 'send_sms')}
+                                    checked={every(locations, 'settings.send_sms')}
                                     onChange={this.updateLocation('send_sms')} />
                             </label>
                         </div>
@@ -228,7 +226,7 @@ class Locations extends React.Component {
                             <label>
                                 <input 
                                     type="checkbox"
-                                    checked={every(locations, 'send_email')}
+                                    checked={every(locations, 'settings.send_email')}
                                     onChange={this.updateLocation('send_email')} />
                             </label>
                         </div>
@@ -237,7 +235,7 @@ class Locations extends React.Component {
                             <label>
                                 <input 
                                     type="checkbox"
-                                    checked={every(locations, 'send_fresco')}
+                                    checked={every(locations, 'settings.send_fresco')}
                                     onChange={this.updateLocation('send_fresco')} />
                             </label>
                         </div>
@@ -278,7 +276,7 @@ const LocationItem = ({ location, updateLocation, removeLocation, index }) => {
                     <label>
                         <input
                             type="checkbox"
-                            checked={location.send_sms}
+                            checked={location.settings.send_sms}
                             onChange={updateLocation('send_sms', location, index)}
                         />
                     </label>
@@ -288,7 +286,7 @@ const LocationItem = ({ location, updateLocation, removeLocation, index }) => {
                     <label>
                         <input
                             type="checkbox"
-                            checked={location.send_email}
+                            checked={location.settings.send_email}
                             onChange={updateLocation('send_email', location, index)}
                         />
                     </label>
@@ -298,7 +296,7 @@ const LocationItem = ({ location, updateLocation, removeLocation, index }) => {
                     <label>
                         <input
                             type="checkbox"
-                            checked={location.send_fresco}
+                            checked={location.settings.send_fresco}
                             onChange={updateLocation('send_fresco', location, index)}
                         />
                     </label>

@@ -48,13 +48,14 @@ class Outlet extends React.Component {
                     editable={editable}
                 />
 
-                {outlet.verified
-                    ? <Body
+                {outlet.verified ? 
+                    <Body
                         activeTab={this.state.activeTab}
                         outlet={outlet}
                         user={user}
                     />
-                    : <BodyDemo outlet={outlet} />
+                : 
+                    <BodyDemo outlet={outlet} /> 
                 }
             </App>
         );

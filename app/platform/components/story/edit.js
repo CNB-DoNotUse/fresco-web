@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 
+/**
+ * Story Edit Component
+ */
 class Edit extends React.Component {
     constructor(props) {
         super(props);
@@ -168,7 +171,11 @@ class Edit extends React.Component {
                     <ul className="md-type-subhead">
                         <li>
                             <span className="mdi mdi-clock icon" />
-                            <span id="story-edit-date">created {utils.formatTime(story.created_at)}</span>
+                            <span id="story-edit-date">Created {utils.formatTime(story.created_at)}</span>
+                        </li>
+                        <li>
+                            <span className="mdi mdi-clock icon" />
+                            <span id="story-edit-date">Updated {utils.formatTime(story.updated_at)}</span>
                         </li>
                         <li>
                             <span className="mdi mdi-image icon" />

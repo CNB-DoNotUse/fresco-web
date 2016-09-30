@@ -40,7 +40,7 @@ class OutletSettings extends React.Component {
     render() {
         const { payment } = this.props;
         const { outlet, user } = this.state;
-        const isOwner = user.permissions.includes('update-outlet');
+        const isOwner = outlet.owner.id === user.id;
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
 
         return (
@@ -49,34 +49,40 @@ class OutletSettings extends React.Component {
 
                 <div className={className}>
                     <div className="left">
-                        {isOwner ? (
+                        {isOwner ?
                             <Info
                                 updateOutlet={(o) => this.updateOutlet(o)}
                                 outlet={outlet}
                             />
-                        ) : '' }
+                        : '' }
                         
-                        {isOwner ? (
+                        {isOwner ?
                             <PaymentInfo
                                 payment={payment}
                                 outlet={this.state.outlet}
                             />
-                        ) : ''}
+                        : ''}
 
-                        <QuickSupport />
+                        {isOwner ? 
+                            <QuickSupport />
+                        : ''}
                     </div>
                     <div className="right">
                         <Notifications outlet={this.state.outlet} />
 
                         <Locations outlet={this.state.outlet} />
 
-                        {isOwner ? (
+                        {isOwner ? 
                             <Members
                                 outlet={this.state.outlet}
                                 updateMembers={(o) => this.updateMembers(o)}
                                 members={this.state.members}
                             />
-                        ) : ''}
+                        : ''}
+
+                        {!isOwner ? 
+                            <QuickSupport />
+                        : ''}
                     </div>
                 </div>
             </App>
