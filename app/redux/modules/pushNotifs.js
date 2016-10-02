@@ -224,7 +224,7 @@ const pushNotifs = (state = fromJS({
     activeTab: 'default',
     templates: {},
     loading: false,
-    confirmSendToggled: false,
+    requestConfirmSend: false,
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {

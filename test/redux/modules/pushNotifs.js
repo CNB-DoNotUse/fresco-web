@@ -10,6 +10,7 @@ describe('push notifs reducer', () => {
             loading: false,
             error: null,
             alert: null,
+            requestConfirmSend: false,
         }));
     });
 
@@ -24,6 +25,7 @@ describe('push notifs reducer', () => {
             loading: true,
             error: null,
             alert: null,
+            requestConfirmSend: true,
         }));
     });
 
@@ -41,6 +43,7 @@ describe('push notifs reducer', () => {
             loading: false,
             error: null,
             alert: 'Notification sent!',
+            requestConfirmSend: false,
         }));
     });
 
@@ -58,6 +61,7 @@ describe('push notifs reducer', () => {
             loading: false,
             error: null,
             alert: 'Fail',
+            requestConfirmSend: false,
         }));
     });
 
@@ -72,6 +76,7 @@ describe('push notifs reducer', () => {
             loading: false,
             error: null,
             alert: null,
+            requestConfirmSend: false,
         }));
     });
 
@@ -89,6 +94,7 @@ describe('push notifs reducer', () => {
             loading: false,
             error: null,
             alert: null,
+            requestConfirmSend: false,
         }));
     });
 
@@ -108,6 +114,7 @@ describe('push notifs reducer', () => {
             loading: false,
             error: null,
             alert: null,
+            requestConfirmSend: false,
         }));
     });
 
@@ -125,6 +132,7 @@ describe('push notifs reducer', () => {
             loading: false,
             error: null,
             alert: 'Error updating template',
+            requestConfirmSend: false,
         }));
     });
 });
