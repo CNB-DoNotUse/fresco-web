@@ -66,12 +66,13 @@ class PushNotifs extends React.Component {
         const {
             onSetActiveTab,
             onConfirmAlert,
-            onToggleConfirmSend,
             onSend,
             activeTab,
             loading,
             alert,
-            confirmSendToggled,
+            requestConfirmSend,
+            cancelSend,
+            confirmSend,
         } = this.props;
 
         return (
@@ -95,7 +96,7 @@ class PushNotifs extends React.Component {
                         {this.renderTemplate()}
                         <button
                             type="button"
-                            onClick={onToggleConfirmSend}
+                            onClick={partial(onSend, activeTab)}
                             className="btn btn-raised btn-primary pull-right push-notifs__send"
                             disabled={loading}
                         >
@@ -105,9 +106,9 @@ class PushNotifs extends React.Component {
 
                     <Confirm
                         text={"Send notificaiton?"}
-                        onConfirm={partial(onSend, activeTab)}
-                        onCancel={onToggleConfirmSend}
-                        toggled={confirmSendToggled}
+                        onConfirm={partial(confirmSend, activeTab)}
+                        onCancel={cancelSend}
+                        toggled={requestConfirmSend}
                         hasInput={false}
                     />
                 </div>
@@ -122,7 +123,7 @@ function mapStateToProps(state) {
         templates: state.getIn(['pushNotifs', 'templates']),
         loading: state.getIn(['pushNotifs', 'loading']),
         alert: state.getIn(['pushNotifs', 'alert']),
-        confirmSendToggled: state.getIn(['pushNotifs', 'confirmSendToggled']),
+        requestConfirmSend: state.getIn(['pushNotifs', 'requestConfirmSend']),
     };
 }
 
@@ -130,7 +131,8 @@ export default connect(mapStateToProps, {
     onSetActiveTab: pushActions.setActiveTab,
     onChangeTemplate: pushActions.updateTemplate,
     onConfirmAlert: pushActions.confirmAlert,
-    onToggleConfirmSend: pushActions.toggleConfirmSend,
     onSend: pushActions.send,
+    confirmSend: pushActions.confirmSend,
+    cancelSend: pushActions.cancelSend,
 })(PushNotifs);
 

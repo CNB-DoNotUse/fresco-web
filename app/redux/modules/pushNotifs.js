@@ -9,6 +9,8 @@ import pick from 'lodash/pick';
 import mapKeys from 'lodash/mapKeys';
 import mapValues from 'lodash/mapValues';
 
+// TODO switch confirmAlert do dismissAlert
+
 // constants
 // action types
 export const SEND = 'pushNotifs/SEND';
@@ -18,11 +20,14 @@ export const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
 export const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
 export const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
 export const CONFIRM_ALERT = 'pushNotifs/CONFIRM_ALERT';
-export const TOGGLE_CONFIRM_SEND = 'pushNotifs/TOGGLE_CONFIRM_SEND';
+export const CONFIRM_SEND = 'pushNotifs/CONFIRM_SEND';
+export const CANCEL_SEND = 'pushNotifs/CANCEL_SEND';
 
 // helpers
-const getTemplateErrors = (template, templateData) => {
+const getTemplateErrors = (template, getState) => {
+    const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
     const missing = [];
+
     if (!templateData.get('title')) missing.push('Title');
     if (!templateData.get('body')) missing.push('Body');
     switch (template) {
@@ -44,12 +49,9 @@ const getTemplateErrors = (template, templateData) => {
         : null;
 };
 
-const getDataFromTemplate = (template, getState) => (
-    new Promise((resolve, reject) => {
+const getFormDataFromTemplate = (template, getState) => (
+    new Promise((resolve) => {
         const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
-
-        const error = getTemplateErrors(template, templateData);
-        if (error) return reject(error);
 
         const restrictByUser = templateData.get('restrictByUser', false);
         const restrictByLocation = templateData.get('restrictByLocation', false);
@@ -123,10 +125,6 @@ export const confirmAlert = () => ({
     type: CONFIRM_ALERT,
 });
 
-export const toggleConfirmSend = () => ({
-    type: TOGGLE_CONFIRM_SEND,
-});
-
 export const updateTemplate = (template, data) => (dispatch, getState) => {
     const successAction = {
         type: UPDATE_TEMPLATE_SUCCESS,
@@ -184,7 +182,20 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
 export const send = (template) => (dispatch, getState) => {
     dispatch({ type: SEND, template });
 
-    getDataFromTemplate(template, getState)
+    const error = getTemplateErrors(template, getState);
+    if (error) {
+        dispatch({
+            type: SEND_FAIL,
+            template,
+            data: error || 'Error',
+        });
+
+        return;
+    }
+};
+
+export const confirmSend = (template) => (dispatch, getState) => {
+    getFormDataFromTemplate(template, getState)
     .then((data) => (
         api
         .post('notifications/create', data)
@@ -204,6 +215,10 @@ export const send = (template) => (dispatch, getState) => {
     ));
 };
 
+export const cancelSend = () => ({
+    type: CANCEL_SEND,
+});
+
 // reducer
 const pushNotifs = (state = fromJS({
     activeTab: 'default',
@@ -216,22 +231,26 @@ const pushNotifs = (state = fromJS({
         case SEND:
             return state
                 .set('loading', true)
-                .set('confirmSendToggled', false);
+                .set('requestConfirmSend', true);
         case SEND_SUCCESS:
             return state
                 .set('loading', false)
+                .set('requestConfirmSend', false)
                 .set('alert', 'Notification sent!')
                 .setIn(['templates', action.template], Map());
         case SEND_FAIL:
             return state
                 .set('loading', false)
+                .set('requestConfirmSend', false)
                 .set('alert', action.data);
         case SET_ACTIVE_TAB:
             return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
         case CONFIRM_ALERT:
             return state.set('alert', null);
-        case TOGGLE_CONFIRM_SEND:
-            return state.set('confirmSendToggled', !state.get('confirmSendToggled'));
+        case CANCEL_SEND:
+            return state
+                .set('requestConfirmSend', false)
+                .set('loading', false);
         case UPDATE_TEMPLATE_SUCCESS:
             return state.mergeIn(['templates', action.template], action.data);
         case UPDATE_TEMPLATE_ERROR:
