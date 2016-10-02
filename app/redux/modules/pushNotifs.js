@@ -9,7 +9,7 @@ import pick from 'lodash/pick';
 import mapKeys from 'lodash/mapKeys';
 import mapValues from 'lodash/mapValues';
 
-// TODO switch confirmAlert do dismissAlert
+// TODO switch dismissAlert do dismissAlert
 
 // constants
 // action types
@@ -19,7 +19,7 @@ export const SEND_FAIL = 'pushNotifs/SEND_FAIL';
 export const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
 export const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
 export const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
-export const CONFIRM_ALERT = 'pushNotifs/CONFIRM_ALERT';
+export const DISMISS_ALERT = 'pushNotifs/DISMISS_ALERT';
 export const CONFIRM_SEND = 'pushNotifs/CONFIRM_SEND';
 export const CANCEL_SEND = 'pushNotifs/CANCEL_SEND';
 
@@ -121,8 +121,8 @@ export const setActiveTab = (activeTab) => ({
     activeTab,
 });
 
-export const confirmAlert = () => ({
-    type: CONFIRM_ALERT,
+export const dismissAlert = () => ({
+    type: DISMISS_ALERT,
 });
 
 export const updateTemplate = (template, data) => (dispatch, getState) => {
@@ -245,7 +245,7 @@ const pushNotifs = (state = fromJS({
                 .set('alert', action.data);
         case SET_ACTIVE_TAB:
             return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
-        case CONFIRM_ALERT:
+        case DISMISS_ALERT:
             return state.set('alert', null);
         case CANCEL_SEND:
             return state

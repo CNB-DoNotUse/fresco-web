@@ -16,7 +16,7 @@ class PushNotifs extends React.Component {
     static propTypes = {
         onSetActiveTab: PropTypes.func.isRequired,
         onChangeTemplate: PropTypes.func.isRequired,
-        onConfirmAlert: PropTypes.func.isRequired,
+        onDismissAlert: PropTypes.func.isRequired,
         onSend: PropTypes.func.isRequired,
         activeTab: PropTypes.string.isRequired,
         loading: PropTypes.bool.isRequired,
@@ -65,7 +65,7 @@ class PushNotifs extends React.Component {
     render() {
         const {
             onSetActiveTab,
-            onConfirmAlert,
+            onDismissAlert,
             onSend,
             activeTab,
             loading,
@@ -89,9 +89,9 @@ class PushNotifs extends React.Component {
                             message={alert || ''}
                             open={!!alert}
                             autoHideDuration={5000}
-                            onRequestClose={onConfirmAlert}
-                            onActionTouchTap={onConfirmAlert}
-                            onClick={onConfirmAlert}
+                            onRequestClose={onDismissAlert}
+                            onActionTouchTap={onDismissAlert}
+                            onClick={onDismissAlert}
                         />
                         {this.renderTemplate()}
                         <button
@@ -130,7 +130,7 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
     onSetActiveTab: pushActions.setActiveTab,
     onChangeTemplate: pushActions.updateTemplate,
-    onConfirmAlert: pushActions.confirmAlert,
+    onDismissAlert: pushActions.dismissAlert,
     onSend: pushActions.send,
     confirmSend: pushActions.confirmSend,
     cancelSend: pushActions.cancelSend,
