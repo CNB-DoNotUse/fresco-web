@@ -230,10 +230,10 @@ class Purchases extends React.Component {
 	}
 
 	render() {
-		const outlets = _.map(this.state.outlets, 'title');
-		const users = _.map(this.state.users, 'full_name');
-		const availableOutlets = _.map(this.state.availableOutlets, 'title');
-		const availableUsers = _.map(this.state.availableUsers, 'full_name');
+		const outlets = map(this.state.outlets, 'title');
+		const users = map(this.state.users, 'full_name');
+		const availableOutlets = map(this.state.availableOutlets, 'title');
+		const availableUsers = map(this.state.availableUsers, 'full_name');
 
 		return (
 			<App user={this.props.user}>
