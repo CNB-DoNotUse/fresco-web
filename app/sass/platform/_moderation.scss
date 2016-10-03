@@ -1,0 +1,35 @@
+.moderation-topbar__filters {
+    float: right;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.moderation-topbar__filter {
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 14px;
+    margin-left: 20px;
+    color: rgba(0, 0, 0, 0.26);
+
+    &.active, &:hover {
+        color: #0047bb;
+    }
+}
+
+.moderation-topbar__suspended {
+    float: right;
+    font-size: 14px;
+    color: #fff !important;
+    text-align: center;
+    text-transform: uppercase;
+    margin-left: 24px;
+    margin-right: 16px;
+    width: 107px;
+	height: 36px;
+	background-color: #0047bb !important;
+	background-color: var(--color-b);
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+}

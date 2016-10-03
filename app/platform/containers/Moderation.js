@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import 'app/sass/platform/_moderation.scss';
 import * as moderationActions from 'app/redux/modules/moderation';
 import { connect } from 'react-redux';
-import TopBar from '../components/topbar';
+import TopBar from '../components/moderation/topbar';
 
 class Moderation extends React.Component {
     static propTypes = {
@@ -39,6 +39,7 @@ class Moderation extends React.Component {
                     tabs={['GALLERIES', 'USERS']}
                     setActiveTab={onSetActiveTab}
                     activeTab={activeTab}
+                    onFilter={() => {}}
                 />
             </div>
         );
