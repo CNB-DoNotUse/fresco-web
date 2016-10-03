@@ -8,6 +8,7 @@ export const SET_ACTIVE_TAB = 'moderation/SET_ACTIVE_TAB';
 export const DISMISS_ALERT = 'moderation/DISMISS_ALERT';
 export const SET_ALERT = 'moderation/DISMISS_ALERT';
 export const FETCH_GALLERIES_SUCCESS = 'moderation/FETCH_GALLERIES_SUCCESS';
+export const FETCH_USERS_SUCCESS = 'moderation/FETCH_USER_SUCCESS';
 
 // action creators
 export const setActiveTab = (activeTab) => ({
@@ -33,15 +34,36 @@ export const fetchGalleries = (params = {}) => (dispatch, getState) => {
     });
 };
 
+export const fetchUsers = (params = {}) => (dispatch, getState) => {
+    const last = getState().getIn(['moderation', 'users']).last();
+    api
+    .get('user/reported', Object.assign(params, { last: last ? last.id : null }))
+    .then(res => {
+        dispatch({
+            type: FETCH_USERS_SUCCESS,
+            data: res,
+        });
+    })
+    .catch(() => {
+        dispatch({
+            type: SET_ALERT,
+            data: 'Could not fetch users.',
+        });
+    });
+};
+
 const moderation = (state = fromJS({
     activeTab: 'GALLERIES',
     galleries: OrderedSet(),
+    users: OrderedSet(),
     loading: false,
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {
         case FETCH_GALLERIES_SUCCESS:
             return state.update('galleries', g => g.concat(action.data));
+        case FETCH_USERS_SUCCESS:
+            return state.update('users', u => u.concat(action.data));
         case SET_ACTIVE_TAB:
             return state
                 .set('activeTab', action.activeTab.toLowerCase())
@@ -56,3 +78,4 @@ const moderation = (state = fromJS({
 };
 
 export default moderation;
+

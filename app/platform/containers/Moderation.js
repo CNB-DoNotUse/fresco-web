@@ -9,6 +9,7 @@ class Moderation extends React.Component {
         activeTab: PropTypes.string.isRequired,
         onSetActiveTab: PropTypes.func.isRequired,
         fetchGalleries: PropTypes.func.isRequired,
+        fetchUsers: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
         alert: PropTypes.string,
     };
@@ -16,6 +17,7 @@ class Moderation extends React.Component {
     componentDidMount() {
         $.material.init();
         this.props.fetchGalleries();
+        this.props.fetchUsers();
     }
 
     componentDidUpdate(prevProps) {
