@@ -7,9 +7,9 @@ router.get('/', (req, res, next) => {
     // TODO is this the correct permission
     if (user.permissions.includes('update-other-content')) {
         res.render('app', {
-            title: 'Moderate Content',
+            title: 'Moderation',
             alerts: req.alerts,
-            page: 'moderate',
+            page: 'moderation',
             props: JSON.stringify({ user }),
         });
     } else {

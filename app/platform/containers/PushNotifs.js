@@ -21,6 +21,9 @@ class PushNotifs extends React.Component {
         activeTab: PropTypes.string.isRequired,
         loading: PropTypes.bool.isRequired,
         templates: PropTypes.object.isRequired,
+        requestConfirmSend: PropTypes.bool.isRequired,
+        cancelSend: PropTypes.func.isRequired,
+        confirmSend: PropTypes.func.isRequired,
         alert: PropTypes.string,
     };
 
