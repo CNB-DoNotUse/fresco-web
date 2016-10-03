@@ -8,12 +8,14 @@ class Moderation extends React.Component {
     static propTypes = {
         activeTab: PropTypes.string.isRequired,
         onSetActiveTab: PropTypes.func.isRequired,
+        fetchGalleries: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
         alert: PropTypes.string,
     };
 
     componentDidMount() {
         $.material.init();
+        this.props.fetchGalleries();
     }
 
     componentDidUpdate(prevProps) {
@@ -52,5 +54,7 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
     onSetActiveTab: moderationActions.setActiveTab,
+    fetchGalleries: moderationActions.fetchGalleries,
+    fetchUsers: moderationActions.fetchUsers,
 })(Moderation);
 
