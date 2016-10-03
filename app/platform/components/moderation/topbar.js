@@ -1,14 +1,16 @@
 import React, { PropTypes } from 'react';
 import partial from 'lodash/partial';
+import { Set } from 'immutable';
 
 class TopBar extends React.Component {
 
     static propTypes = {
         title: PropTypes.string.isRequired,
         tabs: PropTypes.array.isRequired,
+        filters: PropTypes.instanceOf(Set).isRequired,
         setActiveTab: PropTypes.func.isRequired,
         activeTab: PropTypes.string.isRequired,
-        onFilter: PropTypes.func.isRequired,
+        onClickFilter: PropTypes.func.isRequired,
     };
 
 	/**
@@ -44,7 +46,7 @@ class TopBar extends React.Component {
                     onClick={() => setActiveTab(tab)}
                     key={tab.toLowerCase()}
                 >
-                    {tab}
+                    {tab.toUpperCase()}
                     <div className="ripple-wrapper" />
                 </button>
             ));
@@ -56,31 +58,35 @@ class TopBar extends React.Component {
     }
 
     renderFilters() {
-        const { onFilter } = this.props;
+        const { onClickFilter, filters } = this.props;
+
+        const isActiveFilter = filter => filters.includes(filter);
+        const filterClassName = filter =>
+            `moderation-topbar__filter ${isActiveFilter(filter) ? 'active' : ''}`;
 
         return (
             <div className="moderation-topbar__filters">
                 <span
-                    className="moderation-topbar__filter"
-                    onClick={partial(onFilter, 'spam')}
+                    className={filterClassName('spam')}
+                    onClick={partial(onClickFilter, 'spam')}
                 >
                     spam
                 </span>
                 <span
-                    className="moderation-topbar__filter"
-                    onClick={partial(onFilter, 'abusive')}
+                    className={filterClassName('abusive')}
+                    onClick={partial(onClickFilter, 'abusive')}
                 >
                     abusive
                 </span>
                 <span
-                    className="moderation-topbar__filter"
-                    onClick={partial(onFilter, 'graphic')}
+                    className={filterClassName('graphic')}
+                    onClick={partial(onClickFilter, 'graphic')}
                 >
                     graphic
                 </span>
                 <span
-                    className="moderation-topbar__filter"
-                    onClick={partial(onFilter, 'stolen')}
+                    className={filterClassName('stolen')}
+                    onClick={partial(onClickFilter, 'stolen')}
                 >
                     stolen
                 </span>
@@ -121,7 +127,6 @@ class TopBar extends React.Component {
             </nav>
         );
     }
-
 }
 
 export default TopBar;

@@ -13,9 +13,14 @@
     font-size: 14px;
     margin-left: 20px;
     color: rgba(0, 0, 0, 0.26);
+    user-select: none;
 
-    &.active, &:hover {
+    &.active, &.active:hover {
         color: #0047bb;
+    }
+
+    &:hover {
+        color: rgba(0, 0, 0, 0.35);
     }
 }
 
