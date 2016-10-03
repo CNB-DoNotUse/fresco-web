@@ -1,11 +1,6 @@
 const express = require('express');
 const API = require('../lib/api');
-
 const router = express.Router();
-
-/**
- * Description : User Specific Routes ~ prefix /user/endpoint
- */
 
 /**
  * User settings page

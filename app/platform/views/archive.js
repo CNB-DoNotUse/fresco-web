@@ -6,7 +6,6 @@ import App from './app';
 import PostList from './../components/post/list.js';
 import TopBar from './../components/topbar';
 
-
 /**
  * Archive Parent Object (composed of PostList and Navbar)
  * @description View page for all content
@@ -35,14 +34,14 @@ class Archive extends React.Component {
         };
 
         if (this.state.verifiedToggle) {
-            params.rating = 2;
+            params.rating = [2];
         }
 
         api
         .get('post/list', params)
         .then(res => { callback(res); })
         .catch(() => {
-            $.snackbar({ content: 'Failed to load archive' });
+            $.snackbar({ content: 'We\'re unable to load the archive right now!' });
         });
     }
 

@@ -20,11 +20,10 @@ class DownloadAction extends React.Component {
         };
 
         if (!post) {
-            $.snackbar({
+            return $.snackbar({
                 content: 'We couldn\'t find this post!',
                 timeout: 0,
             });
-            return;
         }
 
         const href = post.stream

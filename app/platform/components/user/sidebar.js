@@ -1,57 +1,12 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+import UserItem from 'platform/components/global/user-item';
 
 /**
  * User Sidebar parent object
  * @description Column on the left of the user page
  */
 class Sidebar extends React.Component {
-    renderUserName(user) {
-        const { username, full_name } = user;
-
-        if (full_name && username) {
-            return (
-                <div className="meta-user--name">
-                    <span>{`${full_name}`}</span>
-                    <span>{`@${username}`}</span>
-                </div>
-            );
-        }
-
-        if (username) {
-            return (
-                <div className="meta-user--name">
-                    <span>
-                        {`@${username}`}
-                    </span>
-                </div>
-            );
-        }
-
-        return <div className="meta-user--name" />;
-    }
-
-    renderUserMeta(user) {
-        const { photo_count, video_count } = user;
-
-        if (!photo_count && !video_count) {
-            return (
-                <div className="meta-user--stats">
-                    New user!
-                </div>
-            );
-        }
-
-        return (
-            <div className="meta-user--stats">
-                {user.location ?
-                    <span>{user.location}<span style={{ fontWeight: 700 }}> · </span></span>
-                : ''}
-
-                {`${photo_count} photos, ${video_count} videos`}
-            </div>
-        );
-    }
 
     render() {
         const { detailUser } = this.props;
@@ -67,14 +22,10 @@ class Sidebar extends React.Component {
                                 src={avatar}
                                 role="presentation"
                             />
-                            <div className="meta meta-user">
-                                <div className="meta-user--icon">
-                                    <i className="mdi mdi-account" />
-                                </div>
-                                <div className="meta-user--text">
-                                    {this.renderUserName(detailUser)}
-                                    {this.renderUserMeta(detailUser)}
-                                </div>
+
+                            <UserItem user={detailUser} />
+
+                            <div className="meta">
                                 <div className="meta-list">
                                     <ul className="md-type-subhead">
                                         {detailUser.email ? 
@@ -114,4 +65,3 @@ Sidebar.propTypes = {
 };
 
 export default Sidebar;
-

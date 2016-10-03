@@ -3,9 +3,8 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 
 /**
- * Global purchase actions
+ * Global purchase action
  */
-
 class PurchaseAction extends React.Component {
     requestPurchase(post, assignment) {
         const data = { post_ids: [post.id] };

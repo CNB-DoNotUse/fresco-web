@@ -68,7 +68,6 @@ class PostCell extends React.Component {
             editable,
         } = this.props;
         const { purchased } = this.state;
-        const address = post.location && post.address ? post.address : 'No Address';
 
         // Class name for post tile icon
         let statusClass = 'mdi icon pull-right ';
@@ -89,7 +88,7 @@ class PostCell extends React.Component {
 
                 <div>
                     <div className="tile-info">
-                        <span className="md-type-body2">{address}</span>
+                        <span className="md-type-body2">{post.address || 'No Address'}</span>
 
                         <Time sortBy={sortBy} post={post} />
                     </div>
