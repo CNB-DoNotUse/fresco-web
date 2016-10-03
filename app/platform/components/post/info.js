@@ -1,17 +1,12 @@
 import React from 'react'
 import utils from 'utils'
+import UserItem from 'platform/components/global/user-item';
 
-
-/** //
-
-Description : Column on the right of the detail post showing all the post's info
-
-// **/
 
 /**
  * PostInfo parent object
+ * @description Column on the right of the detail post showing all the post's info
  */
-
 export default class PostInfo extends React.Component {
 
 	render() {
@@ -42,16 +37,7 @@ export default class PostInfo extends React.Component {
         if(post.owner){
             userName = post.owner.full_name || post.owner.username;
 
-            userIcon = (
-                <div>
-                    <img
-                        className="img-circle img-responsive"
-                        src={(post.owner && post.owner.avatar)
-                            ? post.owner.avatar
-                            : 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png'}
-                        />
-                    </div>
-            );
+            userIcon = <UserItem user={post.owner} />
         }
 
 		// Check to show twitter item
@@ -78,17 +64,8 @@ export default class PostInfo extends React.Component {
 			<div className="col-xs-12 col-md-4 meta">
 				<div className="row">
 					<div className="col-xs-12 col-sm-7 col-md-12">
-						<div className="meta-user">
-							{userIcon}
-
-							<div>
-								<a href={ post.owner ? "/user/" + post.owner.id : ""}>
-									<span className="md-type-title">{userName}</span>
-								</a>
-
-								<span className="md-type-body1">{this.props.post.affiliation}</span>
-							</div>
-						</div>
+                        {userIcon}
+                        
 						<div className="meta-description">{this.props.gallery.caption}</div>
 					</div>
 					<div className="col-xs-12 col-sm-5 col-md-12 meta-list">
@@ -100,7 +77,7 @@ export default class PostInfo extends React.Component {
 
 							<li>
 								<span className="mdi mdi-map-marker icon"></span>
-								{(post.location && post.address) ? post.address : 'No Location'}
+								{post.address || 'No Location'}
 							</li>
 
 							{twitter}

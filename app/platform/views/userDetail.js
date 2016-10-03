@@ -9,7 +9,6 @@ import '../../sass/platform/user.scss';
 /**
  * User Detail Parent Object, made of a user side column and PostList
  */
-
 class UserDetail extends React.Component {
     edit() {
         window.location.href = '/user/settings';

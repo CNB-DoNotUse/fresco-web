@@ -59,7 +59,9 @@ class PostDetail extends React.Component {
                             />
                         </div>
                     </div>
+                    
                     <PostRelated gallery={gallery} />
+                    
                     <PostRelatedTags tags={gallery.tags} />
                 </div>
 
