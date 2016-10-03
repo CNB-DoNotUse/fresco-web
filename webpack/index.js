@@ -61,6 +61,7 @@ const plugins = (env) => {
                 'galleryDetail',
                 'highlights',
                 'locationDetail',
+                'moderate',
                 'outlet',
                 'outletSettings',
                 'photos',

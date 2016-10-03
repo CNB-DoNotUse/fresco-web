@@ -9,8 +9,6 @@ import pick from 'lodash/pick';
 import mapKeys from 'lodash/mapKeys';
 import mapValues from 'lodash/mapValues';
 
-// TODO switch dismissAlert do dismissAlert
-
 // constants
 // action types
 export const SEND = 'pushNotifs/SEND';
