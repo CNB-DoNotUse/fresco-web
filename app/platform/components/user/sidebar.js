@@ -28,11 +28,11 @@ class Sidebar extends React.Component {
                             <div className="meta">
                                 <div className="meta-list">
                                     <ul className="md-type-subhead">
-                                        {detailUser.avatar ? 
+                                        {detailUser.email ? 
                                             <li className="ellipses">
                                                 <span className="mdi mdi-email icon"></span>
-                                                <a target="_top" href={`mailto:${'halo13245@gmail.com'}`}>
-                                                    {'halo13245@gmail.com'}
+                                                <a target="_top" href={`mailto:${detailUser.email}`}>
+                                                    {detailUser.email}
                                                 </a>
                                             </li>
                                         : ''}
