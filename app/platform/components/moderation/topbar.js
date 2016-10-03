@@ -58,7 +58,7 @@ class TopBar extends React.Component {
     }
 
     renderFilters() {
-        const { onClickFilter, filters } = this.props;
+        const { onClickFilter, filters, activeTab } = this.props;
 
         const isActiveFilter = filter => filters.includes(filter);
         const filterClassName = filter =>
@@ -78,12 +78,16 @@ class TopBar extends React.Component {
                 >
                     abusive
                 </span>
-                <span
-                    className={filterClassName('graphic')}
-                    onClick={partial(onClickFilter, 'graphic')}
-                >
-                    graphic
-                </span>
+
+                {(activeTab === 'galleries') &&
+                    <span
+                        className={filterClassName('graphic')}
+                        onClick={partial(onClickFilter, 'graphic')}
+                    >
+                        graphic
+                    </span>
+                }
+
                 <span
                     className={filterClassName('stolen')}
                     onClick={partial(onClickFilter, 'stolen')}
