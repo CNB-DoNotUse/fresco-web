@@ -49,16 +49,18 @@ class PostDetailImage extends React.Component {
             />
         );
 
+        console.log(purchased);
+
         if (user.permissions.includes('get-all-purchases')) {
-            if (user.outlet && purchased) {
-                actions.push(downloadAction);
-            } else if (user.outlet && post.license === 1) {
-                // Check if the post is licensed
+            actions.push(downloadAction);
+            // Check if the post is purchased
+            if (user.outlet && !purchased) {
                 actions.push(purchaseAction);
             }
         } else {
             actions.push(downloadAction);
-            if (!purchased) actions.push(purchaseAction);
+            if (!purchased) 
+                actions.push(purchaseAction);
         }
 
         if (post.stream) {

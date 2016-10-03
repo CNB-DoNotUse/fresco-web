@@ -53,7 +53,7 @@ const UserMeta = ({ photo_count, video_count, location }) => {
             : null}
 
             <span className="meta-user-counts">
-                {`${photo_count} photos, ${video_count} videos`}
+                {`${photo_count} ${(utils.isPlural(photo_count) ? 'photos' : 'photo')}, ${video_count} ${utils.isPlural(video_count) ? 'videos' : 'video'}`}
             </span>
         </div>
     );
