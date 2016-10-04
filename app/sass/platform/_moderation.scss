@@ -38,3 +38,30 @@
 	background-color: var(--color-b);
 	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 }
+
+.moderation-cards-ctr {
+    position: relative;
+    top: 64px;
+    overflow-y: scroll;
+    height: calc(100% - 64px) !important;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.moderation-card {
+    width: 373px;
+    background-color: #fafafa;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+    margin: 24.2px 24.2px 24.2px 0;
+
+    &:first-child {
+        margin-left: 24.2px;
+    }
+}
+
+.moderation-card__image {
+    width: 100%;
+    height: auto;
+}

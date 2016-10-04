@@ -16,6 +16,7 @@ class FrescoImage extends React.Component {
         style: PropTypes.object,
         placeholderStyle: PropTypes.object,
         refreshInterval: PropTypes.bool,
+        loadWithPlaceHolder: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -31,7 +32,7 @@ class FrescoImage extends React.Component {
 
     state = {
         placeholderStyle: this.props.placeholderStyle,
-        timeout: 1000
+        timeout: 1000,
     }
 
     componentWillMount() {
@@ -82,7 +83,7 @@ class FrescoImage extends React.Component {
                 src: this.state.formattedSrc,
                 placeholderStyle: {}
             })
-        }   
+        }
     }
 
     /**
@@ -92,8 +93,8 @@ class FrescoImage extends React.Component {
         if (!this.img || this.state.src === this.state.formattedSrc) {
             clearTimeout(this.loadTimeout);
         } else {
-            this.setState({ 
-                src: this.state.formattedSrc, 
+            this.setState({
+                src: this.state.formattedSrc,
                 timeout: this.state.timeout + this.state.timeout
             });
         }
