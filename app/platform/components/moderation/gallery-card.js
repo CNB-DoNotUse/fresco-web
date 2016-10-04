@@ -18,6 +18,14 @@ const GalleryCard = ({ posts, report_reasons, owner, caption="No caption" }) => 
         <CardBadges strings={report_reasons} />
 
         {owner && <CardUser user={owner} />}
+
+        <div className="moderation-card__gallery-actions-ctr">
+            <span className="moderation-card__gallery-action">skip</span>
+            <div>
+                <span className="moderation-card__gallery-action">suspend user</span>
+                <span className="moderation-card__gallery-action">delete</span>
+            </div>
+        </div>
     </div>
 );
 
