@@ -109,13 +109,12 @@ $mobileHeight:280px;
 /**
  * Bottom Half of page, `gallery info`
  */
-
 .gallery-info-wrap{
 	background:#F2F2ED;
 
 	.gallery-info{
 		width:70%;
-		margin:0 auto;
+		margin:0 auto 20px;
 		overflow:hidden;
 
 		@include mobileAndTablet{

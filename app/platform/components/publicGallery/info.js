@@ -2,19 +2,10 @@ import React, { PropTypes } from 'react';
 import api from 'app/lib/api';
 import utils from 'utils';
 
-const InfoSection = ({ title, list }) => (
-    <div className="gallery-info-section">
-        <h2>{title}</h2>
-        <ul>{list}</ul>
-    </div>
-);
-
-InfoSection.propTypes = {
-    title: PropTypes.string,
-    list: PropTypes.node,
-};
-
-export default class Info extends React.Component {
+/**
+ * Public gallery info aea
+ */
+class Info extends React.Component {
     static propTypes = {
         gallery: PropTypes.object,
     }
@@ -29,8 +20,7 @@ export default class Info extends React.Component {
 
     componentDidMount() {
         this.loadRelatedGalleries();
-        const { gallery: { related_stories = [] }} = this.props;
-        if (related_stories.length > 0) this.loadRelatedStory();
+        this.loadRelatedStory();
     }
 
 	/**
@@ -61,7 +51,7 @@ export default class Info extends React.Component {
         if (!story) return;
 
         api
-        .get(`story/${gallery.id}/galleries`)
+        .get(`story/${story.id}/galleries`)
         .then(res => {
             this.setState({
                 relatedStory: {
@@ -122,9 +112,7 @@ export default class Info extends React.Component {
                         src={utils.getFaviconForUrl(article.link)}
                         role="presentation"
                     />
-                    <a href={article.link}>
-                        {article.title || article.link}
-                    </a>
+                    <a href={article.link}>{article.title || article.link}</a>
                 </li>
             ));
 
@@ -141,3 +129,16 @@ export default class Info extends React.Component {
     }
 }
 
+const InfoSection = ({ title, list }) => (
+    <div className="gallery-info-section">
+        <h2>{title}</h2>
+        <ul>{list}</ul>
+    </div>
+);
+
+InfoSection.propTypes = {
+    title: PropTypes.string,
+    list: PropTypes.node,
+};
+
+export default Info;

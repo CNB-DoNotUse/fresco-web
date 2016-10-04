@@ -57,10 +57,20 @@ class FrescoVideo extends React.Component {
         }
     }
 
-    onClickVideo = () => {
+    toggleVideo = () => {
         const { videoJSPlayer } = this.state;
-        if (videoJSPlayer.paused()) videoJSPlayer.play();
-        else videoJSPlayer.pause();
+        if (videoJSPlayer.paused()) 
+            videoJSPlayer.play();
+        else 
+            videoJSPlayer.pause();
+    }
+
+    pause = () => {
+        this.state.videoJSPlayer.pause();
+    }
+
+    play = () => {
+        this.state.videoJSPlayer.play();   
     }
 
     setUpPlayer = () => {
@@ -106,7 +116,7 @@ class FrescoVideo extends React.Component {
                     className={className}
                     autoPlay={autoplay}
                     controls={!hideControls}
-                    onClick={this.onClickVideo}
+                    onClick={this.toggleVideo}
                 >
                     <source
                         src={video}
