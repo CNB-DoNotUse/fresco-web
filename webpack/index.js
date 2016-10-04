@@ -185,10 +185,8 @@ module.exports = (env = 'dev') => ({
     plugins: plugins(env),
     watch: env === 'dev',
     devtool: env === 'dev' ? 'eval-source-map' : null,
-    module: {
-        loaders: loaders(env),
-        postcss: () => [autoprefixer],
-    },
+    module: { loaders: loaders(env) },
+    postcss: () => [autoprefixer],
     resolve: {
         // All these extensions will be resolved without specifying extension in the `require` function
         extensions: ['', '.js', '.scss'],
