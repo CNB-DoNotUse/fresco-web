@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import get from 'lodash/get';
 import FrescoImage from '../global/fresco-image';
-import { CardBadges } from './card-parts';
+import { CardBadges, CardUser } from './card-parts';
 
-const GalleryCard = ({ posts, report_reasons }) => (
+const GalleryCard = ({ posts, report_reasons, owner }) => (
     <div className="moderation-card moderation-card__gallery">
         <FrescoImage
             className="moderation-card__image"
@@ -11,6 +11,7 @@ const GalleryCard = ({ posts, report_reasons }) => (
             loadWithPlaceHolder
         />
         <CardBadges strings={report_reasons} />
+        {owner && <CardUser user={owner} />}
     </div>
 );
 
