@@ -7,8 +7,8 @@
 	font-style: normal;
 	font-weight:300;
 	src:url(Nota-Light.eot);
-	src:url(Nota-Light.eot?#iefix) format("embedded-opentype"), 
-		url(Nota-Light.woff) format("woff"), 
+	src:url(Nota-Light.eot?#iefix) format("embedded-opentype"),
+		url(Nota-Light.woff) format("woff"),
 		url(Nota-Light.ttf) format("truetype");
 }
 
@@ -17,8 +17,8 @@
 	font-style: normal;
 	font-weight:400;
 	src:url(Nota-Normal.eot);
-	src:url(Nota-Normal.eot?#iefix) format("embedded-opentype"), 
-		url(Nota-Normal.woff) format("woff"), 
+	src:url(Nota-Normal.eot?#iefix) format("embedded-opentype"),
+		url(Nota-Normal.woff) format("woff"),
 		url(Nota-Normal.ttf) format("truetype");
 }
 
@@ -27,8 +27,8 @@
 	font-style: normal;
 	font-weight:500;
 	src:url(Nota-Bold.eot);
-	src:url(Nota-Bold.eot?#iefix) format("embedded-opentype"), 
-		url(Nota-Bold.woff) format("woff"), 
+	src:url(Nota-Bold.eot?#iefix) format("embedded-opentype"),
+		url(Nota-Bold.woff) format("woff"),
 		url(Nota-Bold.ttf) format("truetype");
 }
 
@@ -37,8 +37,8 @@
 	font-style: normal;
 	font-weight:700;
 	src:url(Nota-Xbold.eot);
-	src:url(Nota-Xbold.eot?#iefix) format("embedded-opentype"), 
-		url(Nota-Xbold.woff) format("woff"), 
+	src:url(Nota-Xbold.eot?#iefix) format("embedded-opentype"),
+		url(Nota-Xbold.woff) format("woff"),
 		url(Nota-Xbold.ttf) format("truetype");
 }
 
