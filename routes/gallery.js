@@ -1,7 +1,6 @@
 const express = require('express');
 const utils = require('../lib/utils');
 const API = require('../lib/api');
-
 const router = express.Router();
 
 /**

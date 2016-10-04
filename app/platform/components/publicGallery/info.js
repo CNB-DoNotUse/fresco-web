@@ -20,8 +20,7 @@ class Info extends React.Component {
 
     componentDidMount() {
         this.loadRelatedGalleries();
-        const { gallery: { related_stories = [] }} = this.props;
-        if (related_stories.length > 0) this.loadRelatedStory();
+        this.loadRelatedStory();
     }
 
 	/**
@@ -52,7 +51,7 @@ class Info extends React.Component {
         if (!story) return;
 
         api
-        .get(`story/${gallery.id}/galleries`)
+        .get(`story/${story.id}/galleries`)
         .then(res => {
             this.setState({
                 relatedStory: {
@@ -113,9 +112,7 @@ class Info extends React.Component {
                         src={utils.getFaviconForUrl(article.link)}
                         role="presentation"
                     />
-                    <a href={article.link}>
-                        {article.title || article.link}
-                    </a>
+                    <a href={article.link}>{article.title || article.link}</a>
                 </li>
             ));
 
