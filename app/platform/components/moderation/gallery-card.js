@@ -23,13 +23,13 @@ const GalleryCard = ({
 
         {owner && <CardUser user={owner} />}
 
-        <div className="moderation-card__gallery-actions-ctr">
-            <span className="moderation-card__gallery-action">skip</span>
+        <div className="moderation-card__actions-ctr">
+            <span className="moderation-card__action">skip</span>
             <div>
                 {report_reasons.includes('graphic') &&
-                    <span className="moderation-card__gallery-action">mark graphic</span>}
-                <span className="moderation-card__gallery-action">suspend user</span>
-                <span className="moderation-card__gallery-action">delete</span>
+                    <span className="moderation-card__action">mark graphic</span>}
+                <span className="moderation-card__action">suspend user</span>
+                <span className="moderation-card__action">delete</span>
             </div>
         </div>
     </div>

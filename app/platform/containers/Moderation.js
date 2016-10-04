@@ -44,7 +44,7 @@ class Moderation extends React.Component {
                 }
 
                 {(activeTab === 'users' && users.size > 0) &&
-                    users.map(u => <UserCard key={u.id} {...u} />)
+                    users.map(u => <UserCard key={u.id} user={u} />)
                 }
             </div>
         );
