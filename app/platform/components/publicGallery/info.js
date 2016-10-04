@@ -2,19 +2,10 @@ import React, { PropTypes } from 'react';
 import api from 'app/lib/api';
 import utils from 'utils';
 
-const InfoSection = ({ title, list }) => (
-    <div className="gallery-info-section">
-        <h2>{title}</h2>
-        <ul>{list}</ul>
-    </div>
-);
-
-InfoSection.propTypes = {
-    title: PropTypes.string,
-    list: PropTypes.node,
-};
-
-export default class Info extends React.Component {
+/**
+ * Public gallery info aea
+ */
+class Info extends React.Component {
     static propTypes = {
         gallery: PropTypes.object,
     }
@@ -141,3 +132,16 @@ export default class Info extends React.Component {
     }
 }
 
+const InfoSection = ({ title, list }) => (
+    <div className="gallery-info-section">
+        <h2>{title}</h2>
+        <ul>{list}</ul>
+    </div>
+);
+
+InfoSection.propTypes = {
+    title: PropTypes.string,
+    list: PropTypes.node,
+};
+
+export default Info;
