@@ -40,11 +40,11 @@ class Moderation extends React.Component {
         return (
             <div className="moderation-cards-ctr">
                 {activeTab === 'galleries' && galleries.size &&
-                    galleries.map(g => <GalleryCard key={g.id} gallery={g} />)
+                    galleries.map(g => <GalleryCard key={g.id} {...g} />)
                 }
 
                 {activeTab === 'users' && users.size &&
-                    users.map(u => <UserCard key={u.id} user={u} />)
+                    users.map(u => <UserCard key={u.id} {...u} />)
                 }
             </div>
         );
