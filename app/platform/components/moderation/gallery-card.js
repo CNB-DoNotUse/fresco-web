@@ -3,14 +3,20 @@ import get from 'lodash/get';
 import FrescoImage from '../global/fresco-image';
 import { CardBadges, CardUser } from './card-parts';
 
-const GalleryCard = ({ posts, report_reasons, owner }) => (
+const GalleryCard = ({ posts, report_reasons, owner, caption="No caption" }) => (
     <div className="moderation-card moderation-card__gallery">
         <FrescoImage
             className="moderation-card__image"
             src={get(posts, '[0].image')}
             loadWithPlaceHolder
         />
+
+        <div className="moderation-card__gallery-caption">
+            {caption}
+        </div>
+
         <CardBadges strings={report_reasons} />
+
         {owner && <CardUser user={owner} />}
     </div>
 );
@@ -18,6 +24,8 @@ const GalleryCard = ({ posts, report_reasons, owner }) => (
 GalleryCard.propTypes = {
     posts: PropTypes.array.isRequired,
     report_reasons: PropTypes.array.isRequired,
+    owner: PropTypes.object,
+    caption: PropTypes.string,
 };
 
 export default GalleryCard;
