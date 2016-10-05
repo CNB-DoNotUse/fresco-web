@@ -25,3 +25,20 @@ CardUser.propTypes = {
     user: PropTypes.object.isRequired,
 };
 
+export const CardReports = ({ reports, index = 0 }) => {
+    const report = reports[index];
+
+    return (
+        <div className="moderation-card__reports-ctr">
+            <div className="moderation-card__report">
+                {report.message}
+            </div>
+            <CardUser user={report.user} />
+        </div>
+    );
+};
+
+CardReports.propTypes = {
+    reports: PropTypes.array.isRequired,
+    index: PropTypes.number.isRequired,
+};

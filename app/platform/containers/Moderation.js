@@ -91,6 +91,7 @@ export default connect(mapStateToProps, {
     onClickFilter: moderationActions.toggleFilter,
     onSetActiveTab: moderationActions.setActiveTab,
     fetchGalleries: moderationActions.fetchGalleries,
+    // fetchReports: moderationActions.fetchReports,
     fetchUsers: moderationActions.fetchUsers,
 })(Moderation);
 
