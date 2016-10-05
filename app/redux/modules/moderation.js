@@ -14,17 +14,19 @@ export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
 export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
 export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
 
+const REPORTS_PAGE_LIMIT = 10;
+
 // action creators
 export const setActiveTab = (activeTab) => ({
     type: SET_ACTIVE_TAB,
     activeTab,
 });
 
-export const fetchReports = ({ id, type }) => (dispatch, getState) => {
-    const last = getState().getIn(['moderation', 'reports', type, id], List()).last();
+export const fetchReports = ({ id, type, last }) => (dispatch) => {
     const urlBase = type === 'galleries' ? 'gallery' : 'user';
+
     api
-    .get(`${urlBase}/${id}/reports`, { last: last ? last.id : null, limit: 10 })
+    .get(`${urlBase}/${id}/reports`, { last: last ? last.id : null, limit: REPORTS_PAGE_LIMIT })
     .then(res => {
         dispatch({
             type: FETCH_REPORTS_SUCCESS,
@@ -103,15 +105,27 @@ export const dismissAlert = () => ({
     type: DISMISS_ALERT,
 });
 
-export const updateReportsIndex = (reportsType, id, change) => (dispatch, getState) => {
-    const reportData = getState().getIn(['moderation', 'reports', reportsType, id], Map());
+export const updateReportsIndex = (type, id, change) => (dispatch, getState) => {
+    const reportData = getState().getIn(['moderation', 'reports', type, id], Map());
     const newIndex = (reportData.get('index', 0) + change) || 0;
-    if (newIndex >= reportData.get('reports', OrderedSet()).size || newIndex < 0) return;
+    const reportsSize = reportData.get('reports', OrderedSet()).size;
+
+    if (newIndex < 0) return;
+    if (newIndex >= reportsSize && reportsSize < REPORTS_PAGE_LIMIT) return;
+    if (newIndex >= reportsSize && newIndex >= REPORTS_PAGE_LIMIT && reportsSize % 10 === 0) {
+        dispatch(fetchReports({
+            id,
+            type,
+            last: reportData.get('reports', OrderedSet()).last(),
+        }));
+
+        return;
+    }
 
     dispatch({
         type: SET_REPORTS_INDEX,
         data: {
-            reportsType,
+            reportsType: type,
             ownerId: id,
             index: newIndex,
         },
