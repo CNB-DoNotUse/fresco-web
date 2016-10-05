@@ -10,6 +10,7 @@ export const SET_ALERT = 'moderation/SET_ALERT';
 export const FETCH_GALLERIES_SUCCESS = 'moderation/FETCH_GALLERIES_SUCCESS';
 export const FETCH_USERS_SUCCESS = 'moderation/FETCH_USER_SUCCESS';
 export const FETCH_REPORTS_SUCCESS = 'moderation/FETCH_REPORTS_SUCCESS';
+export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
 export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
 export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
 
@@ -102,6 +103,21 @@ export const dismissAlert = () => ({
     type: DISMISS_ALERT,
 });
 
+export const updateReportsIndex = (reportsType, id, change) => (dispatch, getState) => {
+    const reportData = getState().getIn(['moderation', 'reports', reportsType, id], Map());
+    const newIndex = (reportData.get('index', 0) + change) || 0;
+    if (newIndex >= reportData.get('reports', OrderedSet()).size || newIndex < 0) return;
+
+    dispatch({
+        type: SET_REPORTS_INDEX,
+        data: {
+            reportsType,
+            ownerId: id,
+            index: newIndex,
+        },
+    });
+};
+
 const moderation = (state = fromJS({
     activeTab: 'galleries',
     galleries: OrderedSet(),
@@ -125,6 +141,9 @@ const moderation = (state = fromJS({
                         reports: r.get('reports', OrderedSet()).concat(reports),
                     })
                 ));
+        case SET_REPORTS_INDEX:
+            const { reportsType, ownerId, index } = action.data;
+            return state.setIn(['reports', reportsType, ownerId, 'index'], index);
         case ENABLE_FILTER:
             return state.updateIn(['filters', action.tab], f => f.add(action.filter));
         case DISABLE_FILTER:

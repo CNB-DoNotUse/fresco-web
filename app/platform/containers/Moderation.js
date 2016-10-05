@@ -17,6 +17,7 @@ class Moderation extends React.Component {
         fetchGalleries: PropTypes.func.isRequired,
         onDismissAlert: PropTypes.func.isRequired,
         fetchUsers: PropTypes.func.isRequired,
+        onClickReportsIndex: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
         galleries: PropTypes.instanceOf(OrderedSet).isRequired,
@@ -38,7 +39,7 @@ class Moderation extends React.Component {
     }
 
     renderContent() {
-        const { activeTab, galleries, reports, users } = this.props;
+        const { activeTab, galleries, reports, users, onClickReportsIndex } = this.props;
 
         return (
             <div className="moderation-cards-ctr">
@@ -48,6 +49,7 @@ class Moderation extends React.Component {
                             key={g.id}
                             {...g}
                             reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
+                            onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
                         />
                     ))
                 }
@@ -58,6 +60,7 @@ class Moderation extends React.Component {
                             key={u.id}
                             user={u}
                             reportData={reports.getIn(['users', u.id], Map()).toJS()}
+                            onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
                         />
                     ))
                 }
@@ -122,5 +125,6 @@ export default connect(mapStateToProps, {
     fetchGalleries: moderationActions.fetchGalleries,
     // fetchReports: moderationActions.fetchReports,
     fetchUsers: moderationActions.fetchUsers,
+    onClickReportsIndex: moderationActions.updateReportsIndex,
 })(Moderation);
 

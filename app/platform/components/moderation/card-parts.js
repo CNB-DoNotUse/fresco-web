@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import UserItem from '../global/user-item';
+import partial from 'lodash/partial';
 
 export const CardBadges = ({ strings }) => (
     <div className="moderation-card__badges-ctr">
@@ -25,7 +26,7 @@ CardUser.propTypes = {
     user: PropTypes.object.isRequired,
 };
 
-export const CardReports = ({ reports, index = 0 }) => {
+export const CardReports = ({ reports, index = 0, onClickIndex }) => {
     if (!reports || !reports.length) return null;
     const report = reports[index];
 
@@ -34,9 +35,9 @@ export const CardReports = ({ reports, index = 0 }) => {
             <div className="moderation-card__reports-header">
                 <span>Reports</span>
                 <span className="moderation-card__reports-page-count">
-                    <i className="mdi mdi-chevron-left" />
+                    <i onClick={partial(onClickIndex, -1)} className="mdi mdi-chevron-left" />
                     <span>{`${index + 1} / ${reports.length}`}</span>
-                    <i className="mdi mdi-chevron-right" />
+                    <i onClick={partial(onClickIndex, 1)} className="mdi mdi-chevron-right" />
                 </span>
             </div>
             <div className="moderation-card__report-message">

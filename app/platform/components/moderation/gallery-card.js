@@ -8,7 +8,8 @@ const GalleryCard = ({
     report_reasons,
     owner,
     caption = 'No caption',
-    reportData }) => (
+    reportData,
+    onClickReportsIndex }) => (
     <div className="moderation-card moderation-card__gallery">
         <FrescoImage
             className="moderation-card__image"
@@ -24,7 +25,7 @@ const GalleryCard = ({
 
         {owner && <CardUser user={owner} />}
 
-        {reportData && <CardReports {...reportData} />}
+        {reportData && <CardReports {...reportData} onClickIndex={onClickReportsIndex} />}
 
         <div className="moderation-card__actions-ctr">
             <span className="moderation-card__action">skip</span>
@@ -42,6 +43,7 @@ GalleryCard.propTypes = {
     posts: PropTypes.array.isRequired,
     report_reasons: PropTypes.array.isRequired,
     reportData: PropTypes.object.isRequired,
+    onClickReportsIndex: PropTypes.func.isRequired,
     owner: PropTypes.object,
     caption: PropTypes.string,
 };
