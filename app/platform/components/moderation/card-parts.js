@@ -49,7 +49,7 @@ export const CardReports = ({ reports, index = 0 }) => {
 };
 
 CardReports.propTypes = {
-    reports: PropTypes.array.isRequired,
-    index: PropTypes.number.isRequired,
+    reports: PropTypes.array,
+    index: PropTypes.number,
 };
 

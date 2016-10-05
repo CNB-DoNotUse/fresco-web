@@ -1,5 +1,5 @@
 // https://github.com/erikras/ducks-modular-redux
-import { fromJS, OrderedSet, Set, List } from 'immutable';
+import { fromJS, OrderedSet, Set, List, Map } from 'immutable';
 import api from 'app/lib/api';
 
 // constants
@@ -119,7 +119,12 @@ const moderation = (state = fromJS({
         case FETCH_REPORTS_SUCCESS:
             const { type, reports, id } = action.data;
             return state
-                .updateIn(['reports', type, id], OrderedSet(), r => r.concat(reports));
+                .updateIn(['reports', type, id], Map(), r => (
+                    fromJS({
+                        index: r.get('index', 0),
+                        reports: r.get('reports', OrderedSet()).concat(reports),
+                    })
+                ));
         case ENABLE_FILTER:
             return state.updateIn(['filters', action.tab], f => f.add(action.filter));
         case DISABLE_FILTER:

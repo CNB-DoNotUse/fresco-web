@@ -47,7 +47,7 @@ class Moderation extends React.Component {
                         <GalleryCard
                             key={g.id}
                             {...g}
-                            reports={reports.getIn(['galleries', g.id], OrderedSet()).toJS()}
+                            reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
                         />
                     ))
                 }
@@ -57,7 +57,7 @@ class Moderation extends React.Component {
                         <UserCard
                             key={u.id}
                             user={u}
-                            reports={reports.getIn(['users', u.id], OrderedSet).toJS()}
+                            reportData={reports.getIn(['users', u.id], Map()).toJS()}
                         />
                     ))
                 }

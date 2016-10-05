@@ -8,7 +8,7 @@ const GalleryCard = ({
     report_reasons,
     owner,
     caption = 'No caption',
-    reports }) => (
+    reportData }) => (
     <div className="moderation-card moderation-card__gallery">
         <FrescoImage
             className="moderation-card__image"
@@ -24,7 +24,7 @@ const GalleryCard = ({
 
         {owner && <CardUser user={owner} />}
 
-        {reports && <CardReports reports={reports} />}
+        {reportData && <CardReports {...reportData} />}
 
         <div className="moderation-card__actions-ctr">
             <span className="moderation-card__action">skip</span>
@@ -41,7 +41,7 @@ const GalleryCard = ({
 GalleryCard.propTypes = {
     posts: PropTypes.array.isRequired,
     report_reasons: PropTypes.array.isRequired,
-    reports: PropTypes.array.isRequired,
+    reportData: PropTypes.object.isRequired,
     owner: PropTypes.object,
     caption: PropTypes.string,
 };
