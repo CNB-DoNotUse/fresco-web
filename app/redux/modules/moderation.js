@@ -1,6 +1,7 @@
 // https://github.com/erikras/ducks-modular-redux
-import { fromJS, OrderedSet, Set, List, Map } from 'immutable';
+import { fromJS, Set, List, Map } from 'immutable';
 import api from 'app/lib/api';
+import moment from 'moment';
 
 // constants
 // action types
@@ -13,6 +14,7 @@ export const FETCH_REPORTS_SUCCESS = 'moderation/FETCH_REPORTS_SUCCESS';
 export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
 export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
 export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
+export const TOGGLE_SUSPEND_USER = 'moderation/TOGGLE_SUSPEND_USER';
 
 const REPORTS_PAGE_LIMIT = 10;
 
@@ -20,6 +22,10 @@ const REPORTS_PAGE_LIMIT = 10;
 export const setActiveTab = (activeTab) => ({
     type: SET_ACTIVE_TAB,
     activeTab,
+});
+
+export const dismissAlert = () => ({
+    type: DISMISS_ALERT,
 });
 
 export const fetchReports = ({ id, type, last }) => (dispatch) => {
@@ -101,14 +107,10 @@ export const toggleFilter = (tab, filter) => (dispatch, getState) => {
     }
 };
 
-export const dismissAlert = () => ({
-    type: DISMISS_ALERT,
-});
-
 export const updateReportsIndex = (type, id, change) => (dispatch, getState) => {
     const reportData = getState().getIn(['moderation', 'reports', type, id], Map());
     const newIndex = (reportData.get('index', 0) + change) || 0;
-    const reportsSize = reportData.get('reports', OrderedSet()).size;
+    const reportsSize = reportData.get('reports', List()).size;
 
     if (newIndex < 0) return;
     if (newIndex >= reportsSize && reportsSize < REPORTS_PAGE_LIMIT) return;
@@ -116,7 +118,7 @@ export const updateReportsIndex = (type, id, change) => (dispatch, getState) => 
         dispatch(fetchReports({
             id,
             type,
-            last: reportData.get('reports', OrderedSet()).last(),
+            last: reportData.get('reports', List()).last(),
         }));
 
         return;
@@ -132,10 +134,49 @@ export const updateReportsIndex = (type, id, change) => (dispatch, getState) => 
     });
 };
 
+export const toggleSuspendUser = (id) => (dispatch, getState) => {
+    const user = getState().getIn(['moderation', 'users']).find(u => u.id === id);
+    if (user.suspended_until) {
+        const suspended_until = null;
+        api
+        .post(`user/${id}/unsuspend`)
+        .then(() => dispatch({
+            type: TOGGLE_SUSPEND_USER,
+            data: {
+                suspended_until,
+                id,
+            },
+        }))
+        .catch(() => {
+            dispatch({
+                type: SET_ALERT,
+                data: 'Could not unsuspend user',
+            });
+        });
+    } else {
+        const suspended_until = moment().add(1, 'week').toISOString();
+        api
+        .post(`user/${id}/suspend`, { suspended_until })
+        .then(() => dispatch({
+            type: TOGGLE_SUSPEND_USER,
+            data: {
+                suspended_until,
+                id,
+            },
+        }))
+        .catch(() => {
+            dispatch({
+                type: SET_ALERT,
+                data: 'Could not unsuspend user',
+            });
+        });
+    }
+};
+
 const moderation = (state = fromJS({
     activeTab: 'galleries',
-    galleries: OrderedSet(),
-    users: OrderedSet(),
+    galleries: List(),
+    users: List(),
     reports: fromJS({ galleries: {}, users: {} }),
     filters: fromJS({ galleries: Set(), users: Set() }),
     loading: false,
@@ -152,12 +193,18 @@ const moderation = (state = fromJS({
                 .updateIn(['reports', type, id], Map(), r => (
                     fromJS({
                         index: r.get('index', 0),
-                        reports: r.get('reports', OrderedSet()).concat(reports),
+                        reports: r.get('reports', List()).concat(reports),
                     })
                 ));
         case SET_REPORTS_INDEX:
             const { reportsType, ownerId, index } = action.data;
             return state.setIn(['reports', reportsType, ownerId, 'index'], index);
+        case TOGGLE_SUSPEND_USER:
+            const userIndex = state.get('users').findIndex(u => u.id === action.data.id);
+            return state
+                .updateIn(['users', userIndex], u => (
+                    Object.assign({}, u, { suspended_until: action.data.suspended_until })
+                ));
         case ENABLE_FILTER:
             return state.updateIn(['filters', action.tab], f => f.add(action.filter));
         case DISABLE_FILTER:

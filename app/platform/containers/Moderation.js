@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import 'app/sass/platform/_moderation.scss';
 import * as moderationActions from 'app/redux/modules/moderation';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
-import { Map, OrderedSet } from 'immutable';
+import { Map, List } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
 import TopBar from '../components/moderation/topbar';
 import GalleryCard from '../components/moderation/gallery-card';
@@ -18,11 +19,12 @@ class Moderation extends React.Component {
         onDismissAlert: PropTypes.func.isRequired,
         fetchUsers: PropTypes.func.isRequired,
         onClickReportsIndex: PropTypes.func.isRequired,
+        onSuspendUser: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
-        galleries: PropTypes.instanceOf(OrderedSet).isRequired,
+        galleries: PropTypes.instanceOf(List).isRequired,
         reports: PropTypes.instanceOf(Map).isRequired,
-        users: PropTypes.instanceOf(OrderedSet).isRequired,
+        users: PropTypes.instanceOf(List).isRequired,
         alert: PropTypes.string,
     };
 
@@ -32,6 +34,8 @@ class Moderation extends React.Component {
         this.props.fetchUsers();
     }
 
+    shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+
     componentDidUpdate(prevProps) {
         if (this.props.activeTab !== prevProps.activeTab) {
             $.material.init();
@@ -39,7 +43,14 @@ class Moderation extends React.Component {
     }
 
     renderContent() {
-        const { activeTab, galleries, reports, users, onClickReportsIndex } = this.props;
+        const {
+            activeTab,
+            galleries,
+            reports,
+            users,
+            onClickReportsIndex,
+            onSuspendUser,
+        } = this.props;
 
         return (
             <div className="moderation-cards-ctr">
@@ -50,6 +61,7 @@ class Moderation extends React.Component {
                             {...g}
                             reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
                             onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
+                            onSuspendUser={partial(onSuspendUser, g.owner && g.owner.id)}
                         />
                     ))
                 }
@@ -61,6 +73,7 @@ class Moderation extends React.Component {
                             user={u}
                             reportData={reports.getIn(['users', u.id], Map()).toJS()}
                             onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
+                            onSuspendUser={partial(onSuspendUser, u.id)}
                         />
                     ))
                 }
@@ -123,8 +136,8 @@ export default connect(mapStateToProps, {
     onDismissAlert: moderationActions.dismissAlert,
     onSetActiveTab: moderationActions.setActiveTab,
     fetchGalleries: moderationActions.fetchGalleries,
-    // fetchReports: moderationActions.fetchReports,
     fetchUsers: moderationActions.fetchUsers,
     onClickReportsIndex: moderationActions.updateReportsIndex,
+    onSuspendUser: moderationActions.toggleSuspendUser,
 })(Moderation);
 
