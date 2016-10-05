@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import { CardBadges, CardUser } from './card-parts';
+import { CardBadges, CardUser, CardReports } from './card-parts';
 
-const UserCard = ({ user }) => (
+const UserCard = ({ user, reportData }) => (
     <div className="moderation-card moderation-card__gallery">
         <CardBadges strings={user.report_reasons} />
 
@@ -17,6 +17,8 @@ const UserCard = ({ user }) => (
                 <span className="moderation-card__user-link">blocks</span>
             </div>
         </div>
+
+        {reportData && <CardReports {...reportData} />}
 
         <div className="moderation-card__actions-ctr">
             <span className="moderation-card__action">skip</span>
