@@ -98,6 +98,10 @@ export const toggleFilter = (tab, filter) => (dispatch, getState) => {
     }
 };
 
+export const dismissAlert = () => ({
+    type: DISMISS_ALERT,
+});
+
 const moderation = (state = fromJS({
     activeTab: 'galleries',
     galleries: OrderedSet(),
