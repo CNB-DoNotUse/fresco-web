@@ -32,6 +32,7 @@ const UserCard = ({ user, reportData }) => (
 
 UserCard.propTypes = {
     user: PropTypes.object.isRequired,
+    reportData: PropTypes.object.isRequired,
 };
 
 export default UserCard;

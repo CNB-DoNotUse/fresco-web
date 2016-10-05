@@ -8,12 +8,16 @@ const UserName = ({ id, username, full_name }) => (
     <div className="meta-user-name">
         {full_name &&
             <a href={`/user/${id}`}>
-                <span className="full_name">{`${full_name}`}</span>
+                <span className="meta-user-name__primary">{`${full_name}`}</span>
             </a>
         }
 
         {(username && full_name) &&
-            <a href={`/user/${id}`} className="username">{`@${username}`}</a>
+            <a href={`/user/${id}`} className="meta-user-name__secondary">{`@${username}`}</a>
+        }
+
+        {(!full_name && username) &&
+            <a href={`/user/${id}`} className="meta-user-name__primary">{`@${username}`}</a>
         }
     </div>
 );
