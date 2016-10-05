@@ -47,7 +47,7 @@ class Moderation extends React.Component {
                         <GalleryCard
                             key={g.id}
                             {...g}
-                            reports={reports.getIn(['galleries', g.id])}
+                            reports={reports.getIn(['galleries', g.id], OrderedSet()).toJS()}
                         />
                     ))
                 }
@@ -57,7 +57,7 @@ class Moderation extends React.Component {
                         <UserCard
                             key={u.id}
                             user={u}
-                            reports={reports.getIn(['users', u.id])}
+                            reports={reports.getIn(['users', u.id], OrderedSet).toJS()}
                         />
                     ))
                 }
@@ -85,16 +85,18 @@ class Moderation extends React.Component {
                     onClickFilter={partial(onClickFilter, activeTab)}
                     filters={filters.get(activeTab)}
                 />
-                <Snackbar
-                    message={alert || ''}
-                    open={!!alert}
-                    autoHideDuration={5000}
-                    onRequestClose={onDismissAlert}
-                    onActionTouchTap={onDismissAlert}
-                    onClick={onDismissAlert}
-                />
+                <div>
+                    <Snackbar
+                        message={alert || ''}
+                        open={!!alert}
+                        autoHideDuration={5000}
+                        onRequestClose={onDismissAlert}
+                        onActionTouchTap={onDismissAlert}
+                        onClick={onDismissAlert}
+                    />
 
-                {this.renderContent()}
+                    {this.renderContent()}
+                </div>
             </div>
         );
     }

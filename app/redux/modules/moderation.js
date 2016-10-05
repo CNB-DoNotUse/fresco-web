@@ -34,7 +34,7 @@ export const fetchReports = ({ id, type }) => (dispatch, getState) => {
             },
         });
     })
-    .catch((err) => {
+    .catch(() => {
         dispatch({
             type: SET_ALERT,
             data: 'Could not fetch reports',

@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react';
 import get from 'lodash/get';
 import FrescoImage from '../global/fresco-image';
-import { CardBadges, CardUser } from './card-parts';
+import { CardBadges, CardUser, CardReports } from './card-parts';
 
 const GalleryCard = ({
     posts,
     report_reasons,
     owner,
-    caption = 'No caption' }) => (
+    caption = 'No caption',
+    reports }) => (
     <div className="moderation-card moderation-card__gallery">
         <FrescoImage
             className="moderation-card__image"
@@ -22,6 +23,8 @@ const GalleryCard = ({
         <CardBadges strings={report_reasons} />
 
         {owner && <CardUser user={owner} />}
+
+        {reports && <CardReports reports={reports} />}
 
         <div className="moderation-card__actions-ctr">
             <span className="moderation-card__action">skip</span>
@@ -38,6 +41,7 @@ const GalleryCard = ({
 GalleryCard.propTypes = {
     posts: PropTypes.array.isRequired,
     report_reasons: PropTypes.array.isRequired,
+    reports: PropTypes.array.isRequired,
     owner: PropTypes.object,
     caption: PropTypes.string,
 };
