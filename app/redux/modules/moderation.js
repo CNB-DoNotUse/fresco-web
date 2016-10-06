@@ -190,9 +190,12 @@ export const skipCard = (type, id) => (dispatch) => (
     }))
 );
 
-export const deleteCard = (type, id) => (dispatch) => (
+export const deleteCard = (type, id) => (dispatch) => {
+    const params = type === 'user' ? { user_id: id } : {};
+    const url = type === 'user' ? 'user/disable' : `gallery/${id}/delete`;
+
     api
-    .post(`${type}/${id}/${type === 'user' ? 'disable' : 'delete'}`)
+    .post(url, params)
     .then(() => dispatch({
         type: type === 'user' ? DISABLE_USER : DELETE_GALLERY,
         data: id,
@@ -200,8 +203,8 @@ export const deleteCard = (type, id) => (dispatch) => (
     .catch(() => dispatch({
         type: SET_ALERT,
         data: (type === 'gallery') ? 'Could not delete gallery' : 'Could not disable user',
-    }))
-);
+    }));
+};
 
 const moderation = (state = fromJS({
     activeTab: 'galleries',
