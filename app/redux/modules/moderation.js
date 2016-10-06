@@ -57,8 +57,9 @@ export const fetchReports = ({ id, type, last }) => (dispatch) => {
 
 export const fetchGalleries = (params = {}) => (dispatch, getState) => {
     const last = getState().getIn(['moderation', 'galleries']).last();
+
     api
-    .get('gallery/reported', Object.assign(params, { last: last ? last.id : null }))
+    .get('gallery/reported', Object.assign(params, { last: last ? last.id : null, limit: 10 }))
     .then(res => {
         res.forEach(g => dispatch(fetchReports({ id: g.id, type: 'galleries' })));
         dispatch({
@@ -77,7 +78,7 @@ export const fetchGalleries = (params = {}) => (dispatch, getState) => {
 export const fetchUsers = (params = {}) => (dispatch, getState) => {
     const last = getState().getIn(['moderation', 'users']).last();
     api
-    .get('user/reported', Object.assign(params, { last: last ? last.id : null }))
+    .get('user/reported', Object.assign(params, { last: last ? last.id : null, limit: 10 }))
     .then(res => {
         res.forEach(u => dispatch(fetchReports({ id: u.id, type: 'users' })));
         dispatch({

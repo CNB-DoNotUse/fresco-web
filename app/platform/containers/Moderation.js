@@ -33,8 +33,7 @@ class Moderation extends React.Component {
 
     componentDidMount() {
         $.material.init();
-        this.props.fetchGalleries();
-        this.props.fetchUsers();
+        this.fetchCurrentTab();
 
         window.addEventListener('resize', function() {
             this.masonry && this.masonry.layout();
@@ -45,7 +44,25 @@ class Moderation extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.activeTab !== prevProps.activeTab) {
+            this.fetchCurrentTab();
             $.material.init();
+        }
+    }
+
+    onScrollGrid = () => {
+        const grid = this.grid;
+        const endOfScroll = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
+        if (endOfScroll) {
+            this.fetchCurrentTab();
+        }
+    }
+
+    fetchCurrentTab() {
+        const { fetchGalleries, fetchUsers, activeTab } = this.props;
+        if (activeTab === 'galleries') {
+            fetchGalleries();
+        } else if (activeTab === 'users') {
+            fetchUsers();
         }
     }
 
@@ -120,7 +137,11 @@ class Moderation extends React.Component {
                     onClickFilter={partial(onClickFilter, activeTab)}
                     filters={filters.get(activeTab)}
                 />
-                <div className="moderation-content-ctr row">
+                <div
+                    className="moderation-content-ctr row"
+                    ref={(r) => { this.grid = r; }}
+                    onScroll={this.onScrollGrid}
+                >
                     <Snackbar
                         message={alert || ''}
                         open={!!alert}
