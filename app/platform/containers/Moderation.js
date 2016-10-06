@@ -52,6 +52,7 @@ class Moderation extends React.Component {
             onClickReportsIndex,
             onSuspend,
             onSkip,
+            onDelete,
         } = this.props;
 
         return (
@@ -65,6 +66,7 @@ class Moderation extends React.Component {
                             onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
                             onSuspend={partial(onSuspend, g.owner && g.owner.id)}
                             onSkip={partial(onSkip, 'gallery', g.id)}
+                            onDelete={partial(onDelete, 'gallery', g.id)}
                         />
                     ))
                 }
@@ -78,6 +80,7 @@ class Moderation extends React.Component {
                             onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
                             onSuspend={partial(onSuspend, u.id)}
                             onSkip={partial(onSkip, 'user', u.id)}
+                            onDisable={partial(onDelete, 'user', u.id)}
                         />
                     ))
                 }
@@ -144,5 +147,6 @@ export default connect(mapStateToProps, {
     onClickReportsIndex: moderationActions.updateReportsIndex,
     onSuspend: moderationActions.toggleSuspendUser,
     onSkip: moderationActions.skipCard,
+    onDelete: moderationActions.deleteCard,
 })(Moderation);
 

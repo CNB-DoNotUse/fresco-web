@@ -6,7 +6,8 @@ const UserCard = ({
     reportData,
     onClickReportsIndex,
     onSuspend,
-    onSkip }) => (
+    onSkip,
+    onDisable }) => (
     <div className="moderation-card moderation-card__gallery">
         <CardBadges strings={user.report_reasons} />
 
@@ -39,7 +40,12 @@ const UserCard = ({
                 >
                     {user.suspended_until ? 'unsuspend user' : 'suspend user'}
                 </span>
-                <span className="moderation-card__action">disable</span>
+                <span
+                    className="moderation-card__action"
+                    onClick={onDisable}
+                >
+                    disable
+                </span>
             </div>
         </div>
     </div>
@@ -51,6 +57,7 @@ UserCard.propTypes = {
     onClickReportsIndex: PropTypes.func.isRequired,
     onSuspend: PropTypes.func.isRequired,
     onSkip: PropTypes.func.isRequired,
+    onDisable: PropTypes.func.isRequired,
 };
 
 export default UserCard;
