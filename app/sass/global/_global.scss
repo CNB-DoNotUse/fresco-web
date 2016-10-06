@@ -29,7 +29,7 @@ $roboto:Roboto, sans-serif;
 }
 
 html, body {
-    font-family:Nota, sans-serif;
+    font-family:$roboto;
     font-weight:400;
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;

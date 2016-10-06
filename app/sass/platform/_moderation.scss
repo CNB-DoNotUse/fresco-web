@@ -42,24 +42,29 @@
 	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 }
 
+.moderation-content-ctr {
+    overflow-y: scroll;
+}
+
 .moderation-cards-ctr {
     position: relative;
     top: 64px;
-    overflow-y: scroll;
-    height: calc(100% - 64px) !important;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    padding: 12.1px !important;
+    column-gap: 24.2px;
+    padding: 24.2px !important;
+    column-count: auto;
+    column-width: 373px;
 }
 
 .moderation-card {
+    box-sizing: border-box;
+    display: inline-block;
+    break-inside: avoid;
+    width: 100%;
+    margin: 0 0 24px;
     position: relative;
-    width: 373px;
     background-color: #fafafa;
     border-radius: 2px;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
-    margin: 12.1px;
 }
 
 .moderation-card__image {

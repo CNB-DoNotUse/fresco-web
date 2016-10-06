@@ -105,7 +105,7 @@ class Moderation extends React.Component {
                     onClickFilter={partial(onClickFilter, activeTab)}
                     filters={filters.get(activeTab)}
                 />
-                <div>
+                <div className="moderation-content-ctr">
                     <Snackbar
                         message={alert || ''}
                         open={!!alert}
