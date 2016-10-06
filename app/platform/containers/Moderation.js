@@ -19,7 +19,8 @@ class Moderation extends React.Component {
         onDismissAlert: PropTypes.func.isRequired,
         fetchUsers: PropTypes.func.isRequired,
         onClickReportsIndex: PropTypes.func.isRequired,
-        onSuspendUser: PropTypes.func.isRequired,
+        onSuspend: PropTypes.func.isRequired,
+        onSkip: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
         galleries: PropTypes.instanceOf(List).isRequired,
@@ -49,7 +50,8 @@ class Moderation extends React.Component {
             reports,
             users,
             onClickReportsIndex,
-            onSuspendUser,
+            onSuspend,
+            onSkip,
         } = this.props;
 
         return (
@@ -61,7 +63,8 @@ class Moderation extends React.Component {
                             {...g}
                             reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
                             onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
-                            onSuspendUser={partial(onSuspendUser, g.owner && g.owner.id)}
+                            onSuspend={partial(onSuspend, g.owner && g.owner.id)}
+                            onSkip={partial(onSkip, 'gallery', g.id)}
                         />
                     ))
                 }
@@ -73,7 +76,8 @@ class Moderation extends React.Component {
                             user={u}
                             reportData={reports.getIn(['users', u.id], Map()).toJS()}
                             onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
-                            onSuspendUser={partial(onSuspendUser, u.id)}
+                            onSuspend={partial(onSuspend, u.id)}
+                            onSkip={partial(onSkip, 'user', u.id)}
                         />
                     ))
                 }
@@ -138,6 +142,7 @@ export default connect(mapStateToProps, {
     fetchGalleries: moderationActions.fetchGalleries,
     fetchUsers: moderationActions.fetchUsers,
     onClickReportsIndex: moderationActions.updateReportsIndex,
-    onSuspendUser: moderationActions.toggleSuspendUser,
+    onSuspend: moderationActions.toggleSuspendUser,
+    onSkip: moderationActions.skipCard,
 })(Moderation);
 

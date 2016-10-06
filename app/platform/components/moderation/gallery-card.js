@@ -10,7 +10,8 @@ const GalleryCard = ({
     caption = 'No caption',
     reportData,
     onClickReportsIndex,
-    onSuspendUser }) => (
+    onSuspend,
+    onSkip }) => (
     <div className="moderation-card moderation-card__gallery">
         <FrescoImage
             className="moderation-card__image"
@@ -29,7 +30,12 @@ const GalleryCard = ({
         {reportData && <CardReports {...reportData} onClickIndex={onClickReportsIndex} />}
 
         <div className="moderation-card__actions-ctr">
-            <span className="moderation-card__action">skip</span>
+            <span
+                className="moderation-card__action"
+                onClick={onSkip}
+            >
+                skip
+            </span>
             <div>
                 {report_reasons.includes('graphic') &&
                     <span className="moderation-card__action">mark graphic</span>
@@ -37,7 +43,7 @@ const GalleryCard = ({
                 {owner &&
                     <span
                         className="moderation-card__action"
-                        onClick={onSuspendUser}
+                        onClick={onSuspend}
                     >
                         {owner.suspended_until ? 'unsuspend user' : 'suspend user'}
                     </span>
@@ -53,7 +59,8 @@ GalleryCard.propTypes = {
     report_reasons: PropTypes.array.isRequired,
     reportData: PropTypes.object.isRequired,
     onClickReportsIndex: PropTypes.func.isRequired,
-    onSuspendUser: PropTypes.func.isRequired,
+    onSuspend: PropTypes.func.isRequired,
+    onSkip: PropTypes.func.isRequired,
     owner: PropTypes.object,
     caption: PropTypes.string,
 };

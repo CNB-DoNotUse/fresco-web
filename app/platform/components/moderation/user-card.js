@@ -1,7 +1,12 @@
 import React, { PropTypes } from 'react';
 import { CardBadges, CardUser, CardReports } from './card-parts';
 
-const UserCard = ({ user, reportData, onClickReportsIndex, onSuspendUser }) => (
+const UserCard = ({
+    user,
+    reportData,
+    onClickReportsIndex,
+    onSuspend,
+    onSkip }) => (
     <div className="moderation-card moderation-card__gallery">
         <CardBadges strings={user.report_reasons} />
 
@@ -21,11 +26,16 @@ const UserCard = ({ user, reportData, onClickReportsIndex, onSuspendUser }) => (
         {reportData && <CardReports {...reportData} onClickIndex={onClickReportsIndex} />}
 
         <div className="moderation-card__actions-ctr">
-            <span className="moderation-card__action">skip</span>
+            <span
+                className="moderation-card__action"
+                onClick={onSkip}
+            >
+                skip
+            </span>
             <div>
                 <span
                     className="moderation-card__action"
-                    onClick={onSuspendUser}
+                    onClick={onSuspend}
                 >
                     {user.suspended_until ? 'unsuspend user' : 'suspend user'}
                 </span>
@@ -39,7 +49,8 @@ UserCard.propTypes = {
     user: PropTypes.object.isRequired,
     reportData: PropTypes.object.isRequired,
     onClickReportsIndex: PropTypes.func.isRequired,
-    onSuspendUser: PropTypes.func.isRequired,
+    onSuspend: PropTypes.func.isRequired,
+    onSkip: PropTypes.func.isRequired,
 };
 
 export default UserCard;

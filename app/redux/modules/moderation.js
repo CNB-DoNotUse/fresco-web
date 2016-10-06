@@ -15,6 +15,8 @@ export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
 export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
 export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
 export const TOGGLE_SUSPEND_USER = 'moderation/TOGGLE_SUSPEND_USER';
+export const SKIP_USER = 'moderation/SKIP_USER';
+export const SKIP_GALLERY = 'moderation/SKIP_GALLERY';
 
 const REPORTS_PAGE_LIMIT = 10;
 
@@ -173,6 +175,19 @@ export const toggleSuspendUser = (id) => (dispatch, getState) => {
     }
 };
 
+export const skipCard = (type, id) => (dispatch) => (
+    api
+    .post(`${type}/${id}/report/skip`)
+    .then(() => dispatch({
+        type: type === 'user' ? SKIP_USER : SKIP_GALLERY,
+        data: id,
+    }))
+    .catch(() => dispatch({
+        type: SET_ALERT,
+        data: `Could not skip ${gallery}`,
+    }))
+);
+
 const moderation = (state = fromJS({
     activeTab: 'galleries',
     galleries: List(),
@@ -200,11 +215,17 @@ const moderation = (state = fromJS({
             const { reportsType, ownerId, index } = action.data;
             return state.setIn(['reports', reportsType, ownerId, 'index'], index);
         case TOGGLE_SUSPEND_USER:
-            const userIndex = state.get('users').findIndex(u => u.id === action.data.id);
+            const suspendIndex = state.get('users').findIndex(u => u.id === action.data.id);
             return state
-                .updateIn(['users', userIndex], u => (
+                .updateIn(['users', suspendIndex], u => (
                     Object.assign({}, u, { suspended_until: action.data.suspended_until })
                 ));
+        case SKIP_USER:
+            return state
+                .deleteIn(['users', state.get('users').findIndex(u => u.id === action.data)]);
+        case SKIP_GALLERY:
+            return state
+                .deleteIn(['galleries', state.get('galleries').findIndex(g => g.id === action.data)]);
         case ENABLE_FILTER:
             return state.updateIn(['filters', action.tab], f => f.add(action.filter));
         case DISABLE_FILTER:
