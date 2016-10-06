@@ -47,6 +47,7 @@
     "react-addons-update": "^15.2.1",
     "react-dom": "^15.0.1",
     "react-google-maps": "^4.11.0",
+    "react-masonry-component": "^4.2.1",
     "react-redux": "^4.4.5",
     "react-slick": "^0.13.2",
     "react-tap-event-plugin": "^1.0.0",
