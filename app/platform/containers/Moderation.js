@@ -126,15 +126,26 @@ class Moderation extends React.Component {
 }
 
 function mapStateToProps(state) {
+    const filters = state.getIn(['moderation', 'filters']);
+    const galleryFilters = filters.get('galleries');
+    const userFilters = filters.get('users');
+    const galleries = state
+        .getIn(['moderation', 'galleries'])
+        .filter(g => (
+            galleryFilters.size === 0 || g.report_reasons.some(r => galleryFilters.includes(r)))
+        );
+    const users = state
+        .getIn(['moderation', 'users'])
+        .filter(g => userFilters.size === 0 || g.report_reasons.some(r => userFilters.includes(r)));
+
     return {
         activeTab: state.getIn(['moderation', 'activeTab']),
         loading: state.getIn(['moderation', 'loading']),
         alert: state.getIn(['moderation', 'alert']),
-        // TODO: replace with reducer scopes?
-        galleries: state.getIn(['moderation', 'galleries']),
-        users: state.getIn(['moderation', 'users']),
         reports: state.getIn(['moderation', 'reports']),
-        filters: state.getIn(['moderation', 'filters']),
+        galleries,
+        users,
+        filters,
     };
 }
 

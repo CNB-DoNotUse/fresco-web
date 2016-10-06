@@ -1,16 +1,24 @@
 import React, { PropTypes } from 'react';
-import UserItem from '../global/user-item';
 import partial from 'lodash/partial';
+import UserItem from '../global/user-item';
 
-export const CardBadges = ({ strings }) => (
-    <div className="moderation-card__badges-ctr">
-        {strings.map((s, i) => (
-            <span key={i} className="moderation-card__badge">
-                {s.toUpperCase()}
-            </span>
-        ))}
-    </div>
-);
+export const CardBadges = ({ strings }) => {
+    const badgeLookup = {
+        nsfw: 'graphic',
+        abuse: 'abusive',
+        spam: 'spam',
+        stolen: 'stolen',
+    };
+    return (
+        <div className="moderation-card__badges-ctr">
+            {strings.map((s, i) => (
+                <span key={i} className="moderation-card__badge">
+                    {badgeLookup[s].toUpperCase()}
+                </span>
+            ))}
+        </div>
+    );
+};
 
 CardBadges.propTypes = {
     strings: PropTypes.array.isRequired,

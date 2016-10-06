@@ -73,16 +73,16 @@ class TopBar extends React.Component {
                     spam
                 </span>
                 <span
-                    className={filterClassName('abusive')}
-                    onClick={partial(onClickFilter, 'abusive')}
+                    className={filterClassName('abuse')}
+                    onClick={partial(onClickFilter, 'abuse')}
                 >
                     abusive
                 </span>
 
                 {(activeTab === 'galleries') &&
                     <span
-                        className={filterClassName('graphic')}
-                        onClick={partial(onClickFilter, 'graphic')}
+                        className={filterClassName('nsfw')}
+                        onClick={partial(onClickFilter, 'nsfw')}
                     >
                         graphic
                     </span>
