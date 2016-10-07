@@ -8,6 +8,7 @@ import moment from 'moment';
 export const SET_ACTIVE_TAB = 'moderation/SET_ACTIVE_TAB';
 export const DISMISS_ALERT = 'moderation/DISMISS_ALERT';
 export const SET_ALERT = 'moderation/SET_ALERT';
+export const TOGGLE_SUSPENDED_DIALOG = 'moderation/TOGGLE_SUSPENDED_DIALOG';
 export const FETCH_GALLERIES = 'moderation/FETCH_GALLERIES';
 export const FETCH_GALLERIES_SUCCESS = 'moderation/FETCH_GALLERIES_SUCCESS';
 export const FETCH_GALLERIES_FAIL = 'moderation/FETCH_GALLERIES_FAIL';
@@ -202,7 +203,7 @@ export const toggleSuspendUser = (id) => (dispatch, getState) => {
 };
 
 export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
-    const nsfw = getState().getIn(['moderation', 'galleries']).find(g => g.id === id).get('nsfw');
+    const nsfw = getState().getIn(['moderation', 'galleries']).find(g => g.id === id).is_nsfw;
 
     api
     .post(`gallery/${id}/${nsfw ? 'sfw' : 'nsfw'}`)
@@ -248,6 +249,10 @@ export const deleteCard = (type, id) => (dispatch) => {
     }));
 };
 
+export const toggleSuspendedDialog = () => ({
+    type: TOGGLE_SUSPENDED_DIALOG,
+});
+
 const moderation = (state = fromJS({
     activeTab: 'galleries',
     galleries: List(),
@@ -256,6 +261,7 @@ const moderation = (state = fromJS({
     reports: fromJS({ galleries: {}, users: {} }),
     filters: fromJS({ galleries: Set(), users: Set() }),
     loading: false,
+    suspendedDialog: false,
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {
@@ -289,6 +295,8 @@ const moderation = (state = fromJS({
                 .updateIn(['users', suspendIndex], u => (
                     Object.assign({}, u, { suspended_until: action.data.suspended_until })
                 ));
+        case TOGGLE_SUSPENDED_DIALOG:
+            return state.update('suspendedDialog', !state.get('suspendedDialog'));
         case SKIP_USER:
         case DISABLE_USER:
             return state
@@ -296,8 +304,8 @@ const moderation = (state = fromJS({
         case TOGGLE_GALLERY_GRAPHIC:
             const graphicIndex = state.get('galleries').findIndex(u => u.id === action.data.id);
             return state
-                .updateIn(['galleries', suspendIndex], u => (
-                    Object.assign({}, u, { nsfw: action.data.nsfw })
+                .updateIn(['galleries', graphicIndex], u => (
+                    Object.assign({}, u, { is_nsfw: action.data.nsfw })
                 ));
         case SKIP_GALLERY:
         case DELETE_GALLERY:
