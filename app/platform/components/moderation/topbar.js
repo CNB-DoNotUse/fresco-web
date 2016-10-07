@@ -11,6 +11,7 @@ class TopBar extends React.Component {
         setActiveTab: PropTypes.func.isRequired,
         activeTab: PropTypes.string.isRequired,
         onClickFilter: PropTypes.func.isRequired,
+        suspendedCount: PropTypes.number.isRequired,
     };
 
 	/**
@@ -58,7 +59,7 @@ class TopBar extends React.Component {
     }
 
     renderFilters() {
-        const { onClickFilter, filters, activeTab } = this.props;
+        const { onClickFilter, filters, activeTab, suspendedCount } = this.props;
 
         const isActiveFilter = filter => filters.includes(filter);
         const filterClassName = filter =>
@@ -96,7 +97,7 @@ class TopBar extends React.Component {
                 </span>
 
                 <button className="btn btn-raised moderation-topbar__suspended">
-                    suspended
+                    {`suspended (${suspendedCount})`}
                 </button>
             </div>
         );

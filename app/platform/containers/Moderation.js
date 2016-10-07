@@ -18,6 +18,7 @@ class Moderation extends React.Component {
         fetchGalleries: PropTypes.func.isRequired,
         onDismissAlert: PropTypes.func.isRequired,
         fetchUsers: PropTypes.func.isRequired,
+        fetchSuspendedUsers: PropTypes.func.isRequired,
         onClickReportsIndex: PropTypes.func.isRequired,
         onDelete: PropTypes.func.isRequired,
         onSuspend: PropTypes.func.isRequired,
@@ -27,12 +28,14 @@ class Moderation extends React.Component {
         galleries: PropTypes.instanceOf(List).isRequired,
         reports: PropTypes.instanceOf(Map).isRequired,
         users: PropTypes.instanceOf(List).isRequired,
+        suspendedUsers: PropTypes.instanceOf(List).isRequired,
         alert: PropTypes.string,
     };
 
     componentDidMount() {
         $.material.init();
         this.fetchCurrentTab();
+        this.props.fetchSuspendedUsers();
     }
 
     shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
@@ -116,6 +119,7 @@ class Moderation extends React.Component {
             filters,
             alert,
             onDismissAlert,
+            suspendedUsers
         } = this.props;
 
         return (
@@ -127,6 +131,7 @@ class Moderation extends React.Component {
                     activeTab={activeTab}
                     onClickFilter={partial(onClickFilter, activeTab)}
                     filters={filters.get(activeTab)}
+                    suspendedCount={suspendedUsers.size}
                 />
                 <div
                     className="moderation-content-ctr row"
@@ -167,6 +172,7 @@ function mapStateToProps(state) {
         loading: state.getIn(['moderation', 'loading']),
         alert: state.getIn(['moderation', 'alert']),
         reports: state.getIn(['moderation', 'reports']),
+        suspendedUsers: state.getIn(['moderation', 'suspendedUsers']),
         galleries,
         users,
         filters,
@@ -179,6 +185,7 @@ export default connect(mapStateToProps, {
     onSetActiveTab: moderationActions.setActiveTab,
     fetchGalleries: moderationActions.fetchGalleries,
     fetchUsers: moderationActions.fetchUsers,
+    fetchSuspendedUsers: moderationActions.fetchSuspendedUsers,
     onClickReportsIndex: moderationActions.updateReportsIndex,
     onSuspend: moderationActions.toggleSuspendUser,
     onSkip: moderationActions.skipCard,

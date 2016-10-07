@@ -6,14 +6,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: $nota;
+    font-weight: 700;
+    font-size: 14px;
 }
 
 .moderation-topbar__filter {
     cursor: pointer;
     text-transform: uppercase;
-    font-family: $nota;
-    font-weight: 700;
-    font-size: 14px;
     margin-left: 20px;
     color: rgba(0, 0, 0, 0.26);
     user-select: none;
@@ -38,7 +38,6 @@
     width: 107px;
 	height: 36px;
 	background-color: $color-accent-primary !important;
-	background-color: var(--color-b);
 	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 }
 

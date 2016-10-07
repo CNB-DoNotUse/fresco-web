@@ -9,11 +9,12 @@ export const SET_ACTIVE_TAB = 'moderation/SET_ACTIVE_TAB';
 export const DISMISS_ALERT = 'moderation/DISMISS_ALERT';
 export const SET_ALERT = 'moderation/SET_ALERT';
 export const FETCH_GALLERIES = 'moderation/FETCH_GALLERIES';
-export const FETCH_USERS = 'moderation/FETCH_USERS';
 export const FETCH_GALLERIES_SUCCESS = 'moderation/FETCH_GALLERIES_SUCCESS';
-export const FETCH_USERS_SUCCESS = 'moderation/FETCH_USER_SUCCESS';
 export const FETCH_GALLERIES_FAIL = 'moderation/FETCH_GALLERIES_FAIL';
+export const FETCH_USERS = 'moderation/FETCH_USERS';
+export const FETCH_USERS_SUCCESS = 'moderation/FETCH_USER_SUCCESS';
 export const FETCH_USERS_FAIL = 'moderation/FETCH_USER_FAIL';
+export const FETCH_SUSPENDED_USERS_SUCCESS = 'moderation/FETCH_SUSPENDED_USERS_SUCCESS';
 export const FETCH_REPORTS_SUCCESS = 'moderation/FETCH_REPORTS_SUCCESS';
 export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
 export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
@@ -35,6 +36,17 @@ export const setActiveTab = (activeTab) => ({
 export const dismissAlert = () => ({
     type: DISMISS_ALERT,
 });
+
+export const fetchSuspendedUsers = (last) => (dispatch) => {
+    api
+    .get('user/suspended', { last: last ? last.id : null })
+    .then(res => (
+        dispatch({
+            type: FETCH_SUSPENDED_USERS_SUCCESS,
+            data: res,
+        })
+    ));
+};
 
 export const fetchReports = ({ id, type, last }) => (dispatch) => {
     const urlBase = type === 'galleries' ? 'gallery' : 'user';
@@ -221,6 +233,7 @@ const moderation = (state = fromJS({
     activeTab: 'galleries',
     galleries: List(),
     users: List(),
+    suspendedUsers: List(),
     reports: fromJS({ galleries: {}, users: {} }),
     filters: fromJS({ galleries: Set(), users: Set() }),
     loading: false,
@@ -246,6 +259,8 @@ const moderation = (state = fromJS({
                         reports: r.get('reports', OrderedSet()).concat(fromJS(reports)),
                     })
                 ));
+        case FETCH_SUSPENDED_USERS_SUCCESS:
+            return state.update('suspendedUsers', s => s.concat(action.data));
         case SET_REPORTS_INDEX:
             const { reportsType, ownerId, index } = action.data;
             return state.setIn(['reports', reportsType, ownerId, 'index'], index);
