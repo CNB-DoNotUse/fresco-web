@@ -6,6 +6,7 @@ import { CardBadges, CardUser, CardReports } from './card-parts';
 const GalleryCard = ({
     posts,
     report_reasons,
+    report_count,
     owner,
     caption = 'No caption',
     reportData,
@@ -28,7 +29,13 @@ const GalleryCard = ({
 
         {owner && <CardUser user={owner} />}
 
-        {reportData && <CardReports {...reportData} onClickIndex={onClickReportsIndex} />}
+        {reportData &&
+            <CardReports
+                {...reportData}
+                report_count={report_count}
+                onClickIndex={onClickReportsIndex}
+            />
+        }
 
         <div className="moderation-card__actions-ctr">
             <span

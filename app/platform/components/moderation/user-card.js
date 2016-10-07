@@ -24,7 +24,13 @@ const UserCard = ({
             </div>
         </div>
 
-        {reportData && <CardReports {...reportData} onClickIndex={onClickReportsIndex} />}
+        {reportData &&
+            <CardReports
+                {...reportData}
+                report_count={user.report_count}
+                onClickIndex={onClickReportsIndex}
+            />
+        }
 
         <div className="moderation-card__actions-ctr">
             <span

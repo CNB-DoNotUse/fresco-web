@@ -34,7 +34,7 @@ CardUser.propTypes = {
     user: PropTypes.object.isRequired,
 };
 
-export const CardReports = ({ reports, index = 0, onClickIndex }) => {
+export const CardReports = ({ reports, index = 0, onClickIndex, report_count }) => {
     if (!reports || !reports.length) return null;
     const report = reports[index];
 
@@ -44,7 +44,7 @@ export const CardReports = ({ reports, index = 0, onClickIndex }) => {
                 <span>Reports</span>
                 <span className="moderation-card__reports-page-count">
                     <i onClick={partial(onClickIndex, -1)} className="mdi mdi-chevron-left" />
-                    <span>{`${index + 1} / ${reports.length}`}</span>
+                    <span>{`${index + 1} / ${report_count}`}</span>
                     <i onClick={partial(onClickIndex, 1)} className="mdi mdi-chevron-right" />
                 </span>
             </div>

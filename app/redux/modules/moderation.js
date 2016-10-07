@@ -1,5 +1,5 @@
 // https://github.com/erikras/ducks-modular-redux
-import { fromJS, Set, List, Map } from 'immutable';
+import { fromJS, Set, OrderedSet, List, Map } from 'immutable';
 import api from 'app/lib/api';
 import moment from 'moment';
 
@@ -24,7 +24,7 @@ export const SKIP_GALLERY = 'moderation/SKIP_GALLERY';
 export const DISABLE_USER = 'moderation/DISABLE_USER';
 export const DELETE_GALLERY = 'moderation/DELETE_GALLERY';
 
-const REPORTS_PAGE_LIMIT = 10;
+const REPORTS_LIMIT = 10;
 
 // action creators
 export const setActiveTab = (activeTab) => ({
@@ -40,7 +40,7 @@ export const fetchReports = ({ id, type, last }) => (dispatch) => {
     const urlBase = type === 'galleries' ? 'gallery' : 'user';
 
     api
-    .get(`${urlBase}/${id}/reports`, { last: last ? last.id : null, limit: REPORTS_PAGE_LIMIT })
+    .get(`${urlBase}/${id}/reports`, { last: last ? last.get('id') : null, limit: REPORTS_LIMIT })
     .then(res => {
         dispatch({
             type: FETCH_REPORTS_SUCCESS,
@@ -127,12 +127,13 @@ export const updateReportsIndex = (type, id, change) => (dispatch, getState) => 
     const reportsSize = reportData.get('reports', List()).size;
 
     if (newIndex < 0) return;
-    if (newIndex >= reportsSize && reportsSize < REPORTS_PAGE_LIMIT) return;
-    if (newIndex >= reportsSize && newIndex >= REPORTS_PAGE_LIMIT && reportsSize % 10 === 0) {
+    if (newIndex >= reportsSize && reportsSize < REPORTS_LIMIT) return;
+    if (newIndex >= reportsSize && reportsSize % 10 !== 0) return;
+    if (newIndex >= reportsSize && newIndex >= REPORTS_LIMIT) {
         dispatch(fetchReports({
             id,
             type,
-            last: reportData.get('reports', List()).last(),
+            last: reportData.get('reports', OrderedSet()).last(),
         }));
 
         return;
@@ -242,7 +243,7 @@ const moderation = (state = fromJS({
                 .updateIn(['reports', type, id], Map(), r => (
                     fromJS({
                         index: r.get('index', 0),
-                        reports: r.get('reports', List()).concat(reports),
+                        reports: r.get('reports', OrderedSet()).concat(fromJS(reports)),
                     })
                 ));
         case SET_REPORTS_INDEX:
