@@ -398,7 +398,7 @@ class Edit extends React.Component {
         this.setState({ rating: e.target.checked ? 3 : 2 });
     }
 
-    toggle_is_nsfw() {
+    toggle_is_nsfw = () => {
         this.setState({ is_nsfw: !this.state.is_nsfw });
     }
 

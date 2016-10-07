@@ -150,15 +150,27 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 }
 
 .checkbox input[type=checkbox]:checked~.check:before, .checkbox input[type=checkbox]:checked~.check{
-  color: #0047bb;
+	color: $fresco-blue;
+
+	.explicit & {
+		color:$color-error;
+	}
 }
 
 .checkbox input[type=checkbox]:checked + .checkbox-material .check, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check {
-	color:#0047bb;
+	color: $fresco-blue;
+
+	.explicit & {
+		color:$color-error;
+	}
 }
 
 .checkbox input[type=checkbox]:checked + .checkbox-material .check:before, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check:before{
-	color:#0047bb;
+	color: $fresco-blue;
+
+	.explicit & {
+		color:$color-error;
+	}
 }
 
 
