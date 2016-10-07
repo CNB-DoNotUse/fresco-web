@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map, List } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
-import Masonry from 'react-masonry-component';
 import TopBar from '../components/moderation/topbar';
 import GalleryCard from '../components/moderation/gallery-card';
 import UserCard from '../components/moderation/user-card';
@@ -34,10 +33,6 @@ class Moderation extends React.Component {
     componentDidMount() {
         $.material.init();
         this.fetchCurrentTab();
-
-        window.addEventListener('resize', function() {
-            this.masonry && this.masonry.layout();
-        }.bind(this));
     }
 
     shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
@@ -80,14 +75,8 @@ class Moderation extends React.Component {
             onDelete,
         } = this.props;
 
-        const masonryOptions = { transitionDuration: 0 };
-
         return (
-            <Masonry
-                className="moderation-cards-ctr col-sm-12"
-                options={masonryOptions}
-                ref={(r) => { this.masonry = r && r.masonry; }}
-            >
+            <div className="moderation-cards-ctr" >
                 {(activeTab === 'galleries' && galleries.size > 0) &&
                     galleries.map(g => (
                         <GalleryCard
@@ -103,19 +92,19 @@ class Moderation extends React.Component {
                 }
 
                 {(activeTab === 'users' && users.size > 0) &&
-                    users.map(u => (
-                        <UserCard
-                            key={u.id}
-                            user={u}
-                            reportData={reports.getIn(['users', u.id], Map()).toJS()}
-                            onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
-                            onSuspend={partial(onSuspend, u.id)}
-                            onSkip={partial(onSkip, 'user', u.id)}
-                            onDisable={partial(onDelete, 'user', u.id)}
-                        />
-                    ))
+                        users.map(u => (
+                            <UserCard
+                                key={u.id}
+                                user={u}
+                                reportData={reports.getIn(['users', u.id], Map()).toJS()}
+                                onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
+                                onSuspend={partial(onSuspend, u.id)}
+                                onSkip={partial(onSkip, 'user', u.id)}
+                                onDisable={partial(onDelete, 'user', u.id)}
+                            />
+                        ))
                 }
-            </Masonry>
+            </div>
         );
     }
 
