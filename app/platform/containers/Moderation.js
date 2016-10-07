@@ -52,14 +52,14 @@ class Moderation extends React.Component {
         }
     }
 
-    fetchCurrentTab() {
+    fetchCurrentTab(more = false) {
         const { fetchGalleries, fetchUsers, activeTab, loading } = this.props;
 
         if (loading) return;
         if (activeTab === 'galleries') {
-            fetchGalleries();
+            fetchGalleries(more);
         } else if (activeTab === 'users') {
-            fetchUsers();
+            fetchUsers(more);
         }
     }
 
@@ -78,7 +78,7 @@ class Moderation extends React.Component {
 
         return (
             <FrescoMasonry
-                loadMore={this.fetchCurrentTab}
+                loadMore={() => this.fetchCurrentTab(true)}
                 forceUpdate={galleries.size > 0}
                 className="moderation-masonry"
             >

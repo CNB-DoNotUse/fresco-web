@@ -27,9 +27,12 @@ export default class FrescoMasonry extends Component {
         sizes: [
             { columns: 1, gutter: 20 },
             { mq: '768px', columns: 2, gutter: 20 },
-            { mq: '1024px', columns: 3, gutter: 20 }
+            { mq: '1024px', columns: 3, gutter: 20 },
         ],
-        style: {}
+        style: {},
+        useWindow: false,
+        initialLoad: false,
+        hasMore: true,
     }
 
     componentDidMount() {
@@ -37,9 +40,9 @@ export default class FrescoMasonry extends Component {
 
         const instance = Bricks({
             container: this.masonryContainer,
-            packed: packed,
-            sizes: sizes,
-            position: position
+            packed,
+            sizes,
+            position,
         });
 
         instance.resize(true);
@@ -75,15 +78,26 @@ export default class FrescoMasonry extends Component {
     }
 
     render() {
-        const { className, style, children, pageStart, loadMore, hasMore, loader, threshold, useWindow } = this.props;
+        const {
+            className,
+            style,
+            children,
+            pageStart,
+            loadMore,
+            hasMore,
+            loader,
+            useWindow,
+            initialLoad,
+        } = this.props;
+
         return (
             <InfiniteScroll
                 pageStart={pageStart}
                 loadMore={loadMore}
-                hasMore={hasMore}
                 loader={loader}
-                threshold={threshold}
                 useWindow={useWindow}
+                initialLoad={initialLoad}
+                hasMore={hasMore}
             >
                 <div
                     ref={(component) => this.masonryContainer = component}
