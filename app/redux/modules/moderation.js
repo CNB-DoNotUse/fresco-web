@@ -163,16 +163,23 @@ export const updateReportsIndex = (type, id, change) => (dispatch, getState) => 
     });
 };
 
-export const toggleSuspendUser = (id) => (dispatch, getState) => {
-    const user = getState().getIn(['moderation', 'users']).find(u => u.id === id);
+export const toggleSuspendUser = (type, id) => (dispatch, getState) => {
+    let user;
+    if (type === 'gallery') {
+        user = getState().getIn(['moderation', 'galleries']).find(g => g.id === id).owner;
+    } else {
+        user = getState().getIn(['moderation', 'users']).find(u => u.id === id);
+    }
+
     if (user.suspended_until) {
         const suspended_until = null;
         api
-        .post(`user/${id}/unsuspend`)
+        .post(`user/${user.id}/unsuspend`)
         .then(() => dispatch({
             type: TOGGLE_SUSPEND_USER,
             data: {
                 suspended_until,
+                type,
                 id,
             },
         }))
@@ -185,11 +192,12 @@ export const toggleSuspendUser = (id) => (dispatch, getState) => {
     } else {
         const suspended_until = moment().add(1, 'week').toISOString();
         api
-        .post(`user/${id}/suspend`, { suspended_until })
+        .post(`user/${user.id}/suspend`, { suspended_until })
         .then(() => dispatch({
             type: TOGGLE_SUSPEND_USER,
             data: {
                 suspended_until,
+                type,
                 id,
             },
         }))
@@ -290,11 +298,19 @@ const moderation = (state = fromJS({
             const { reportsType, ownerId, index } = action.data;
             return state.setIn(['reports', reportsType, ownerId, 'index'], index);
         case TOGGLE_SUSPEND_USER:
-            const suspendIndex = state.get('users').findIndex(u => u.id === action.data.id);
-            return state
-                .updateIn(['users', suspendIndex], u => (
-                    Object.assign({}, u, { suspended_until: action.data.suspended_until })
-                ));
+            if (action.data.type === 'user') {
+                return state
+                    .updateIn(['users', state.get('users').findIndex(u => u.id === action.data.id)], u => (
+                        Object.assign({}, u, { suspended_until: action.data.suspended_until })
+                    ));
+            } else if (action.data.type === 'gallery') {
+                return state
+                    .updateIn(['galleries', state.get('galleries').findIndex(g => g.id === action.data.id)], g => (
+                        Object.assign({}, g, {
+                            owner: Object.assign(g.owner, { suspended_until: action.data.suspended_until })
+                        })
+                    ));
+            }
         case TOGGLE_SUSPENDED_DIALOG:
             return state.update('suspendedDialog', !state.get('suspendedDialog'));
         case SKIP_USER:

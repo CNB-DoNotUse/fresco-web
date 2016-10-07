@@ -92,7 +92,7 @@ class Moderation extends React.Component {
                             {...g}
                             reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
                             onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
-                            onSuspend={partial(onSuspend, g.owner && g.owner.id)}
+                            onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
                             onSkip={partial(onSkip, 'gallery', g.id)}
                             onDelete={partial(onDelete, 'gallery', g.id)}
                             onToggleGraphic={partial(onToggleGraphic, g.id)}
@@ -107,7 +107,7 @@ class Moderation extends React.Component {
                                 user={u}
                                 reportData={reports.getIn(['users', u.id], Map()).toJS()}
                                 onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
-                                onSuspend={partial(onSuspend, u.id)}
+                                onSuspend={partial(onSuspend, 'user', u.id)}
                                 onSkip={partial(onSkip, 'user', u.id)}
                                 onDisable={partial(onDelete, 'user', u.id)}
                             />
