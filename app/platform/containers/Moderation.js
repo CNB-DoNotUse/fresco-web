@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map, List } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
+import MasonryInfiniteScroller from 'react-masonry-infinite';
 import TopBar from '../components/moderation/topbar';
 import GalleryCard from '../components/moderation/gallery-card';
 import UserCard from '../components/moderation/user-card';
@@ -79,11 +80,11 @@ class Moderation extends React.Component {
         } = this.props;
 
         return (
-            <div className="moderation-cards-ctr" >
-                {(activeTab === 'galleries' && galleries.size > 0) &&
-                    galleries.map(g => (
+            <MasonryInfiniteScroller>
+                {
+                    galleries.map((g, i)=> (
                         <GalleryCard
-                            key={g.id}
+                            key={i}
                             {...g}
                             reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
                             onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
@@ -93,21 +94,7 @@ class Moderation extends React.Component {
                         />
                     ))
                 }
-
-                {(activeTab === 'users' && users.size > 0) &&
-                        users.map(u => (
-                            <UserCard
-                                key={u.id}
-                                user={u}
-                                reportData={reports.getIn(['users', u.id], Map()).toJS()}
-                                onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
-                                onSuspend={partial(onSuspend, u.id)}
-                                onSkip={partial(onSkip, 'user', u.id)}
-                                onDisable={partial(onDelete, 'user', u.id)}
-                            />
-                        ))
-                }
-            </div>
+            </MasonryInfiniteScroller>
         );
     }
 

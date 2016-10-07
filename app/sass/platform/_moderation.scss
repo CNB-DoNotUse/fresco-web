@@ -57,17 +57,10 @@
     top: 64px;
     column-gap: 24.2px;
     padding: 24.2px !important;
-    column-count: auto;
-    column-width: 373px;
 }
 
 .moderation-card {
-    box-sizing: border-box;
-    display: inline-block;
-    break-inside: avoid;
-    width: 100%;
-    margin: 0 0 24px;
-    position: relative;
+    width: 373px;
     background-color: #fafafa;
     border-radius: 2px;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
