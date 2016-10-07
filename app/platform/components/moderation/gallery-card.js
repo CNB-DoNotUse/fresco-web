@@ -7,12 +7,14 @@ const GalleryCard = ({
     posts,
     report_reasons,
     report_count,
+    is_nsfw,
     owner,
     caption = 'No caption',
     reportData,
     onClickReportsIndex,
     onSuspend,
     onSkip,
+    onToggleGraphic,
     onDelete }) => (
     <div className="moderation-card moderation-card__gallery">
         <FrescoImage
@@ -45,8 +47,13 @@ const GalleryCard = ({
                 skip
             </span>
             <div>
-                {report_reasons.includes('graphic') &&
-                    <span className="moderation-card__action">mark graphic</span>
+                {report_reasons.includes('nsfw') &&
+                    <span
+                        className="moderation-card__action"
+                        onClick={onToggleGraphic}
+                    >
+                        {is_nsfw ? 'unmark' : 'mark graphic'}
+                    </span>
                 }
                 {owner &&
                     <span
@@ -70,10 +77,13 @@ const GalleryCard = ({
 GalleryCard.propTypes = {
     posts: PropTypes.array.isRequired,
     report_reasons: PropTypes.array.isRequired,
+    report_count: PropTypes.number.isRequired,
+    is_nsfw: PropTypes.bool.isRequired,
     reportData: PropTypes.object.isRequired,
     onClickReportsIndex: PropTypes.func.isRequired,
     onSuspend: PropTypes.func.isRequired,
     onSkip: PropTypes.func.isRequired,
+    onToggleGraphic: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     owner: PropTypes.object,
     caption: PropTypes.string,

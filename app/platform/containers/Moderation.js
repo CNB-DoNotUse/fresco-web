@@ -10,6 +10,7 @@ import MasonryInfiniteScroller from 'react-masonry-infinite';
 import TopBar from '../components/moderation/topbar';
 import GalleryCard from '../components/moderation/gallery-card';
 import UserCard from '../components/moderation/user-card';
+import InfoDialog from '../components/dialogs/info';
 
 class Moderation extends React.Component {
     static propTypes = {
@@ -24,6 +25,9 @@ class Moderation extends React.Component {
         onDelete: PropTypes.func.isRequired,
         onSuspend: PropTypes.func.isRequired,
         onSkip: PropTypes.func.isRequired,
+        onToggleGraphic: PropTypes.func.isRequired,
+        onToggleSuspendedDialog: PropTypes.func.isRequired,
+        suspendedDialog: PropTypes.bool.isRequired,
         loading: PropTypes.bool.isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
         galleries: PropTypes.instanceOf(List).isRequired,
@@ -77,6 +81,7 @@ class Moderation extends React.Component {
             onSuspend,
             onSkip,
             onDelete,
+            onToggleGraphic,
         } = this.props;
 
         return (
@@ -88,9 +93,10 @@ class Moderation extends React.Component {
                             {...g}
                             reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
                             onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
-                            onSuspend={partial(onSuspend, g.owner && g.owner.id)}
+                            onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
                             onSkip={partial(onSkip, 'gallery', g.id)}
                             onDelete={partial(onDelete, 'gallery', g.id)}
+                            onToggleGraphic={partial(onToggleGraphic, g.id)}
                         />
                     ))
                 }
@@ -106,7 +112,9 @@ class Moderation extends React.Component {
             filters,
             alert,
             onDismissAlert,
-            suspendedUsers
+            suspendedUsers,
+            suspendedDialog,
+            onToggleSuspendedDialog,
         } = this.props;
 
         return (
@@ -119,7 +127,9 @@ class Moderation extends React.Component {
                     onClickFilter={partial(onClickFilter, activeTab)}
                     filters={filters.get(activeTab)}
                     suspendedCount={suspendedUsers.size}
+                    onToggleSuspendedDialog={onToggleSuspendedDialog}
                 />
+
                 <div
                     className="moderation-content-ctr row"
                     ref={(r) => { this.grid = r; }}
@@ -132,6 +142,12 @@ class Moderation extends React.Component {
                         onRequestClose={onDismissAlert}
                         onActionTouchTap={onDismissAlert}
                         onClick={onDismissAlert}
+                    />
+
+                    <InfoDialog
+                        toggled={suspendedDialog}
+                        onClose={onToggleSuspendedDialog}
+                        header="Suspended users"
                     />
 
                     {this.renderContent()}
@@ -160,6 +176,7 @@ function mapStateToProps(state) {
         alert: state.getIn(['moderation', 'alert']),
         reports: state.getIn(['moderation', 'reports']),
         suspendedUsers: state.getIn(['moderation', 'suspendedUsers']),
+        suspendedDialog: state.getIn(['moderation', 'suspendedDialog']),
         galleries,
         users,
         filters,
@@ -177,5 +194,7 @@ export default connect(mapStateToProps, {
     onSuspend: moderationActions.toggleSuspendUser,
     onSkip: moderationActions.skipCard,
     onDelete: moderationActions.deleteCard,
+    onToggleGraphic: moderationActions.toggleGalleryGraphic,
+    onToggleSuspendedDialog: moderationActions.toggleSuspendedDialog,
 })(Moderation);
 

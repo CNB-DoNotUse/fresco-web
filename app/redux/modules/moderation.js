@@ -8,6 +8,7 @@ import moment from 'moment';
 export const SET_ACTIVE_TAB = 'moderation/SET_ACTIVE_TAB';
 export const DISMISS_ALERT = 'moderation/DISMISS_ALERT';
 export const SET_ALERT = 'moderation/SET_ALERT';
+export const TOGGLE_SUSPENDED_DIALOG = 'moderation/TOGGLE_SUSPENDED_DIALOG';
 export const FETCH_GALLERIES = 'moderation/FETCH_GALLERIES';
 export const FETCH_GALLERIES_SUCCESS = 'moderation/FETCH_GALLERIES_SUCCESS';
 export const FETCH_GALLERIES_FAIL = 'moderation/FETCH_GALLERIES_FAIL';
@@ -20,6 +21,7 @@ export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
 export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
 export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
 export const TOGGLE_SUSPEND_USER = 'moderation/TOGGLE_SUSPEND_USER';
+export const TOGGLE_GALLERY_GRAPHIC = 'moderation/TOGGLE_GALLERY_GRAPHIC';
 export const SKIP_USER = 'moderation/SKIP_USER';
 export const SKIP_GALLERY = 'moderation/SKIP_GALLERY';
 export const DISABLE_USER = 'moderation/DISABLE_USER';
@@ -161,16 +163,23 @@ export const updateReportsIndex = (type, id, change) => (dispatch, getState) => 
     });
 };
 
-export const toggleSuspendUser = (id) => (dispatch, getState) => {
-    const user = getState().getIn(['moderation', 'users']).find(u => u.id === id);
+export const toggleSuspendUser = (type, id) => (dispatch, getState) => {
+    let user;
+    if (type === 'gallery') {
+        user = getState().getIn(['moderation', 'galleries']).find(g => g.id === id).owner;
+    } else {
+        user = getState().getIn(['moderation', 'users']).find(u => u.id === id);
+    }
+
     if (user.suspended_until) {
         const suspended_until = null;
         api
-        .post(`user/${id}/unsuspend`)
+        .post(`user/${user.id}/unsuspend`)
         .then(() => dispatch({
             type: TOGGLE_SUSPEND_USER,
             data: {
                 suspended_until,
+                type,
                 id,
             },
         }))
@@ -183,11 +192,12 @@ export const toggleSuspendUser = (id) => (dispatch, getState) => {
     } else {
         const suspended_until = moment().add(1, 'week').toISOString();
         api
-        .post(`user/${id}/suspend`, { suspended_until })
+        .post(`user/${user.id}/suspend`, { suspended_until })
         .then(() => dispatch({
             type: TOGGLE_SUSPEND_USER,
             data: {
                 suspended_until,
+                type,
                 id,
             },
         }))
@@ -198,6 +208,24 @@ export const toggleSuspendUser = (id) => (dispatch, getState) => {
             });
         });
     }
+};
+
+export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
+    const nsfw = getState().getIn(['moderation', 'galleries']).find(g => g.id === id).is_nsfw;
+
+    api
+    .post(`gallery/${id}/${nsfw ? 'sfw' : 'nsfw'}`)
+    .then(() => dispatch({
+        type: TOGGLE_GALLERY_GRAPHIC,
+        data: {
+            id,
+            nsfw: !nsfw,
+        },
+    }))
+    .catch(() => dispatch({
+        type: SET_ALERT,
+        data: 'Could not toggle graphic',
+    }));
 };
 
 export const skipCard = (type, id) => (dispatch) => (
@@ -229,6 +257,10 @@ export const deleteCard = (type, id) => (dispatch) => {
     }));
 };
 
+export const toggleSuspendedDialog = () => ({
+    type: TOGGLE_SUSPENDED_DIALOG,
+});
+
 const moderation = (state = fromJS({
     activeTab: 'galleries',
     galleries: List(),
@@ -237,6 +269,7 @@ const moderation = (state = fromJS({
     reports: fromJS({ galleries: {}, users: {} }),
     filters: fromJS({ galleries: Set(), users: Set() }),
     loading: false,
+    suspendedDialog: false,
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {
@@ -265,15 +298,31 @@ const moderation = (state = fromJS({
             const { reportsType, ownerId, index } = action.data;
             return state.setIn(['reports', reportsType, ownerId, 'index'], index);
         case TOGGLE_SUSPEND_USER:
-            const suspendIndex = state.get('users').findIndex(u => u.id === action.data.id);
-            return state
-                .updateIn(['users', suspendIndex], u => (
-                    Object.assign({}, u, { suspended_until: action.data.suspended_until })
-                ));
+            if (action.data.type === 'user') {
+                return state
+                    .updateIn(['users', state.get('users').findIndex(u => u.id === action.data.id)], u => (
+                        Object.assign({}, u, { suspended_until: action.data.suspended_until })
+                    ));
+            } else if (action.data.type === 'gallery') {
+                return state
+                    .updateIn(['galleries', state.get('galleries').findIndex(g => g.id === action.data.id)], g => (
+                        Object.assign({}, g, {
+                            owner: Object.assign(g.owner, { suspended_until: action.data.suspended_until })
+                        })
+                    ));
+            }
+        case TOGGLE_SUSPENDED_DIALOG:
+            return state.update('suspendedDialog', !state.get('suspendedDialog'));
         case SKIP_USER:
         case DISABLE_USER:
             return state
                 .deleteIn(['users', state.get('users').findIndex(u => u.id === action.data)]);
+        case TOGGLE_GALLERY_GRAPHIC:
+            const graphicIndex = state.get('galleries').findIndex(u => u.id === action.data.id);
+            return state
+                .updateIn(['galleries', graphicIndex], u => (
+                    Object.assign({}, u, { is_nsfw: action.data.nsfw })
+                ));
         case SKIP_GALLERY:
         case DELETE_GALLERY:
             return state
