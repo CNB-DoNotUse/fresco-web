@@ -23,6 +23,7 @@ class Moderation extends React.Component {
         onDelete: PropTypes.func.isRequired,
         onSuspend: PropTypes.func.isRequired,
         onSkip: PropTypes.func.isRequired,
+        onToggleGraphic: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
         galleries: PropTypes.instanceOf(List).isRequired,
@@ -76,6 +77,7 @@ class Moderation extends React.Component {
             onSuspend,
             onSkip,
             onDelete,
+            onToggleGraphic,
         } = this.props;
 
         return (
@@ -90,6 +92,7 @@ class Moderation extends React.Component {
                             onSuspend={partial(onSuspend, g.owner && g.owner.id)}
                             onSkip={partial(onSkip, 'gallery', g.id)}
                             onDelete={partial(onDelete, 'gallery', g.id)}
+                            onToggleGraphic={partial(onToggleGraphic, g.id)}
                         />
                     ))
                 }
@@ -119,7 +122,7 @@ class Moderation extends React.Component {
             filters,
             alert,
             onDismissAlert,
-            suspendedUsers
+            suspendedUsers,
         } = this.props;
 
         return (
@@ -190,5 +193,6 @@ export default connect(mapStateToProps, {
     onSuspend: moderationActions.toggleSuspendUser,
     onSkip: moderationActions.skipCard,
     onDelete: moderationActions.deleteCard,
+    onToggleGraphic: moderationActions.toggleGalleryGraphic,
 })(Moderation);
 

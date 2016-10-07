@@ -20,6 +20,7 @@ export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
 export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
 export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
 export const TOGGLE_SUSPEND_USER = 'moderation/TOGGLE_SUSPEND_USER';
+export const TOGGLE_GALLERY_GRAPHIC = 'moderation/TOGGLE_GALLERY_GRAPHIC';
 export const SKIP_USER = 'moderation/SKIP_USER';
 export const SKIP_GALLERY = 'moderation/SKIP_GALLERY';
 export const DISABLE_USER = 'moderation/DISABLE_USER';
@@ -200,6 +201,24 @@ export const toggleSuspendUser = (id) => (dispatch, getState) => {
     }
 };
 
+export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
+    const nsfw = getState().getIn(['moderation', 'galleries']).find(g => g.id === id).get('nsfw');
+
+    api
+    .post(`gallery/${id}/${nsfw ? 'sfw' : 'nsfw'}`)
+    .then(() => dispatch({
+        type: TOGGLE_GALLERY_GRAPHIC,
+        data: {
+            id,
+            nsfw: !nsfw,
+        },
+    }))
+    .catch(() => dispatch({
+        type: SET_ALERT,
+        data: 'Could not toggle graphic',
+    }));
+};
+
 export const skipCard = (type, id) => (dispatch) => (
     api
     .post(`${type}/${id}/report/skip`)
@@ -274,6 +293,12 @@ const moderation = (state = fromJS({
         case DISABLE_USER:
             return state
                 .deleteIn(['users', state.get('users').findIndex(u => u.id === action.data)]);
+        case TOGGLE_GALLERY_GRAPHIC:
+            const graphicIndex = state.get('galleries').findIndex(u => u.id === action.data.id);
+            return state
+                .updateIn(['galleries', suspendIndex], u => (
+                    Object.assign({}, u, { nsfw: action.data.nsfw })
+                ));
         case SKIP_GALLERY:
         case DELETE_GALLERY:
             return state

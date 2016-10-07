@@ -13,6 +13,7 @@ const GalleryCard = ({
     onClickReportsIndex,
     onSuspend,
     onSkip,
+    onToggleGraphic,
     onDelete }) => (
     <div className="moderation-card moderation-card__gallery">
         <FrescoImage
@@ -45,8 +46,13 @@ const GalleryCard = ({
                 skip
             </span>
             <div>
-                {report_reasons.includes('graphic') &&
-                    <span className="moderation-card__action">mark graphic</span>
+                {report_reasons.includes('nsfw') &&
+                    <span
+                        className="moderation-card__action"
+                        onClick={onToggleGraphic}
+                    >
+                        mark graphic
+                    </span>
                 }
                 {owner &&
                     <span
@@ -70,10 +76,12 @@ const GalleryCard = ({
 GalleryCard.propTypes = {
     posts: PropTypes.array.isRequired,
     report_reasons: PropTypes.array.isRequired,
+    report_count: PropTypes.array.isRequired,
     reportData: PropTypes.object.isRequired,
     onClickReportsIndex: PropTypes.func.isRequired,
     onSuspend: PropTypes.func.isRequired,
     onSkip: PropTypes.func.isRequired,
+    onToggleGraphic: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     owner: PropTypes.object,
     caption: PropTypes.string,
