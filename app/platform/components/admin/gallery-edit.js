@@ -4,6 +4,7 @@ import utils from 'utils';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
 import AutocompleteMap from '../global/autocomplete-map';
+import ExplicitCheckbox from '../global/explicit-checkbox';
 import ChipInput from '../global/chip-input';
 import EditPosts from './../gallery/edit-posts';
 import EditByline from './../gallery/edit-byline';
@@ -163,6 +164,7 @@ class GalleryEdit extends React.Component {
             external_account_name,
             external_source,
             rating,
+            is_nsfw
         } = this.state;
         const { gallery } = this.props;
 
@@ -175,6 +177,7 @@ class GalleryEdit extends React.Component {
             tags,
             caption,
             address,
+            is_nsfw,
             ...this.getPostsUpdateParams(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             external_account_name,
@@ -239,6 +242,10 @@ class GalleryEdit extends React.Component {
         this.setState({ stories });
     }
 
+    toggle_is_nsfw = () => {
+        this.setState({ is_nsfw: !this.state.is_nsfw });
+    }
+
 	/**
 	 * Called when caption input fires keyUp event
 	 */
@@ -258,6 +265,7 @@ class GalleryEdit extends React.Component {
             loading,
             external_account_name,
             external_source,
+            is_nsfw
         } = this.state;
 
         if (!gallery) {
@@ -317,6 +325,10 @@ class GalleryEdit extends React.Component {
                         className="dialog-row"
                         autocomplete
                     />
+
+                    <ExplicitCheckbox 
+                        is_nsfw={is_nsfw} 
+                        onChange={this.toggle_is_nsfw} />
 
                     <AutocompleteMap
                         location={location}

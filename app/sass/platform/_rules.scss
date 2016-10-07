@@ -1769,10 +1769,18 @@ div.time {}
 
 .form-group.is-focused label{
     color: $fresco-blue;
+
+    .explicit & {
+    	color:$color-error !important;
+    }
 }
 
 .checkbox input[type=checkbox]:checked + .checkbox-material .check, label.checkbox-inline input[type=checkbox]:checked + .checkbox-material .check {
     border-color: $fresco-blue;
+
+    .explicit &  {
+    	border-color:$color-error !important;
+    }
 }
 
 .alertify {
