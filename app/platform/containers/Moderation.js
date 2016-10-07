@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map, List } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
-import MasonryInfiniteScroller from 'react-masonry-infinite';
+import FrescoMasonry from '../components/global/fresco-masonry';
 import TopBar from '../components/moderation/topbar';
 import GalleryCard from '../components/moderation/gallery-card';
 import UserCard from '../components/moderation/user-card';
@@ -52,14 +52,6 @@ class Moderation extends React.Component {
         }
     }
 
-    onScrollGrid = () => {
-        const grid = this.grid;
-        const endOfScroll = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
-        if (endOfScroll) {
-            this.fetchCurrentTab();
-        }
-    }
-
     fetchCurrentTab() {
         const { fetchGalleries, fetchUsers, activeTab, loading } = this.props;
 
@@ -85,9 +77,13 @@ class Moderation extends React.Component {
         } = this.props;
 
         return (
-            <MasonryInfiniteScroller>
-                {
-                    galleries.map((g, i)=> (
+            <FrescoMasonry
+                loadMore={this.fetchCurrentTab}
+                forceUpdate={galleries.size > 0}
+                className="moderation-masonry"
+            >
+                {(activeTab === 'galleries' && galleries.size > 0) &&
+                    galleries.map((g, i) => (
                         <GalleryCard
                             key={i}
                             {...g}
@@ -100,7 +96,21 @@ class Moderation extends React.Component {
                         />
                     ))
                 }
-            </MasonryInfiniteScroller>
+
+                {(activeTab === 'users' && users.size > 0) &&
+                        users.map(u => (
+                            <UserCard
+                                key={u.id}
+                                user={u}
+                                reportData={reports.getIn(['users', u.id], Map()).toJS()}
+                                onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
+                                onSuspend={partial(onSuspend, 'user', u.id)}
+                                onSkip={partial(onSkip, 'user', u.id)}
+                                onDisable={partial(onDelete, 'user', u.id)}
+                            />
+                        ))
+                }
+            </FrescoMasonry>
         );
     }
 
@@ -118,7 +128,7 @@ class Moderation extends React.Component {
         } = this.props;
 
         return (
-            <div className="moderation-content container-fluid">
+            <div className="moderation container-fluid">
                 <TopBar
                     title="Moderation"
                     tabs={['galleries', 'users']}
@@ -130,11 +140,7 @@ class Moderation extends React.Component {
                     onToggleSuspendedDialog={onToggleSuspendedDialog}
                 />
 
-                <div
-                    className="moderation-content-ctr row"
-                    ref={(r) => { this.grid = r; }}
-                    onScroll={this.onScrollGrid}
-                >
+                <div className="moderation__content row">
                     <Snackbar
                         message={alert || ''}
                         open={!!alert}

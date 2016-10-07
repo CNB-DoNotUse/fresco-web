@@ -41,22 +41,21 @@
 	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 }
 
-.moderation-content {
+.moderation {
     &.container-fluid {
         padding: 0 15px;
     }
 }
 
-.moderation-content-ctr {
+.moderation__content {
     overflow-y: scroll;
     overflow-x: hidden;
 }
 
-.moderation-cards-ctr {
+.moderation-masonry{
     position: relative;
     top: 64px;
-    column-gap: 24.2px;
-    padding: 24.2px !important;
+    margin: 24px auto;
 }
 
 .moderation-card {
