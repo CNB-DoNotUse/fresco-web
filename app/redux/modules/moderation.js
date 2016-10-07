@@ -8,8 +8,12 @@ import moment from 'moment';
 export const SET_ACTIVE_TAB = 'moderation/SET_ACTIVE_TAB';
 export const DISMISS_ALERT = 'moderation/DISMISS_ALERT';
 export const SET_ALERT = 'moderation/SET_ALERT';
+export const FETCH_GALLERIES = 'moderation/FETCH_GALLERIES';
+export const FETCH_USERS = 'moderation/FETCH_USERS';
 export const FETCH_GALLERIES_SUCCESS = 'moderation/FETCH_GALLERIES_SUCCESS';
 export const FETCH_USERS_SUCCESS = 'moderation/FETCH_USER_SUCCESS';
+export const FETCH_GALLERIES_FAIL = 'moderation/FETCH_GALLERIES_FAIL';
+export const FETCH_USERS_FAIL = 'moderation/FETCH_USER_FAIL';
 export const FETCH_REPORTS_SUCCESS = 'moderation/FETCH_REPORTS_SUCCESS';
 export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
 export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
@@ -56,6 +60,8 @@ export const fetchReports = ({ id, type, last }) => (dispatch) => {
 };
 
 export const fetchGalleries = (params = {}) => (dispatch, getState) => {
+    if (getState().getIn(['moderation', 'loading'])) return;
+    dispatch({ type: FETCH_GALLERIES });
     const last = getState().getIn(['moderation', 'galleries']).last();
 
     api
@@ -69,14 +75,17 @@ export const fetchGalleries = (params = {}) => (dispatch, getState) => {
     })
     .catch(() => {
         dispatch({
-            type: SET_ALERT,
+            type: FETCH_GALLERIES_FAIL,
             data: 'Could not fetch galleries.',
         });
     });
 };
 
 export const fetchUsers = (params = {}) => (dispatch, getState) => {
+    if (getState().getIn(['moderation', 'loading'])) return;
+    dispatch({ type: FETCH_USERS });
     const last = getState().getIn(['moderation', 'users']).last();
+
     api
     .get('user/reported', Object.assign(params, { last: last ? last.id : null, limit: 10 }))
     .then(res => {
@@ -88,7 +97,7 @@ export const fetchUsers = (params = {}) => (dispatch, getState) => {
     })
     .catch(() => {
         dispatch({
-            type: SET_ALERT,
+            type: FETCH_USERS_FAIL,
             data: 'Could not fetch users.',
         });
     });
@@ -217,10 +226,16 @@ const moderation = (state = fromJS({
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {
+        case FETCH_GALLERIES:
+        case FETCH_USERS:
+            return state.set('loading', true);
         case FETCH_GALLERIES_SUCCESS:
-            return state.update('galleries', g => g.concat(action.data));
+            return state.update('galleries', g => g.concat(action.data)).set('loading', false);
         case FETCH_USERS_SUCCESS:
-            return state.update('users', u => u.concat(action.data));
+            return state.update('users', u => u.concat(action.data)).set('loading', false);
+        case FETCH_GALLERIES_FAIL:
+        case FETCH_USERS_FAIL:
+            return state.set('loading', false);
         case FETCH_REPORTS_SUCCESS:
             const { type, reports, id } = action.data;
             return state
