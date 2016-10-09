@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map, List } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
-import FrescoMasonry from '../components/global/fresco-masonry';
+// import FrescoMasonry from '../components/global/fresco-masonry';
+import Masonry from 'react-masonry-component';
 import TopBar from '../components/moderation/topbar';
 import GalleryCard from '../components/moderation/gallery-card';
 import UserCard from '../components/moderation/user-card';
@@ -76,41 +77,49 @@ class Moderation extends React.Component {
             onToggleGraphic,
         } = this.props;
 
-        return (
-            <FrescoMasonry
-                loadMore={() => this.fetchCurrentTab(true)}
-                forceUpdate={galleries.size > 0}
-                className="moderation-masonry"
-            >
-                {(activeTab === 'galleries' && galleries.size > 0) &&
-                    galleries.map((g, i) => (
-                        <GalleryCard
-                            key={i}
-                            {...g}
-                            reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
-                            onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
-                            onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
-                            onSkip={partial(onSkip, 'gallery', g.id)}
-                            onDelete={partial(onDelete, 'gallery', g.id)}
-                            onToggleGraphic={partial(onToggleGraphic, g.id)}
-                        />
-                    ))
-                }
+        const masonryOptions = {
+            fitWidth: true,
+            gutter: 24,
+            // columnWidth: '33%',
+        };
 
-                {(activeTab === 'users' && users.size > 0) &&
-                        users.map(u => (
-                            <UserCard
-                                key={u.id}
-                                user={u}
-                                reportData={reports.getIn(['users', u.id], Map()).toJS()}
-                                onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
-                                onSuspend={partial(onSuspend, 'user', u.id)}
-                                onSkip={partial(onSkip, 'user', u.id)}
-                                onDisable={partial(onDelete, 'user', u.id)}
+        return (
+            <div className="moderation-masonry__ctr">
+                <Masonry
+                    options={masonryOptions}
+                    className="moderation-masonry"
+                    updateOnEachImageLoad
+                >
+                    {(activeTab === 'galleries' && galleries.size > 0) &&
+                        galleries.map((g, i) => (
+                            <GalleryCard
+                                key={i}
+                                {...g}
+                                reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
+                                onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
+                                onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
+                                onSkip={partial(onSkip, 'gallery', g.id)}
+                                onDelete={partial(onDelete, 'gallery', g.id)}
+                                onToggleGraphic={partial(onToggleGraphic, g.id)}
                             />
                         ))
-                }
-            </FrescoMasonry>
+                    }
+
+                    {(activeTab === 'users' && users.size > 0) &&
+                            users.map(u => (
+                                <UserCard
+                                    key={u.id}
+                                    user={u}
+                                    reportData={reports.getIn(['users', u.id], Map()).toJS()}
+                                    onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
+                                    onSuspend={partial(onSuspend, 'user', u.id)}
+                                    onSkip={partial(onSkip, 'user', u.id)}
+                                    onDisable={partial(onDelete, 'user', u.id)}
+                                />
+                            ))
+                    }
+                </Masonry>
+            </div>
         );
     }
 
