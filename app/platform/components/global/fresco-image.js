@@ -4,7 +4,7 @@ import utils from 'utils';
 /**
  * Fresco mage that manages an image error handler
  * @description Will set a timeout to keep loading the image if it 404s
- * @param {Prop} loadWithPlaceHolder If you'd like the image to load with a placeholder first then pass this. Applicable in cases where you need
+ * @param {Prop} loadWithPlaceholder If you'd like the image to load with a placeholder first then pass this. Applicable in cases where you need
  * a set height and you don't want your image objecto collapse if the 404s
  */
 class FrescoImage extends React.Component {
@@ -16,7 +16,7 @@ class FrescoImage extends React.Component {
         style: PropTypes.object,
         placeholderStyle: PropTypes.object,
         refreshInterval: PropTypes.bool,
-        loadWithPlaceHolder: PropTypes.bool,
+        loadWithPlaceholder: PropTypes.bool,
     };
 
     static defaultProps = {

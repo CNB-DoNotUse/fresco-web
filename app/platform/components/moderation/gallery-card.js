@@ -20,7 +20,7 @@ const GalleryCard = ({
         <FrescoImage
             className="moderation-card__image"
             src={get(posts, '[0].image')}
-            loadWithPlaceHolder
+            loadWithPlaceholder
         />
 
         <div className="moderation-card__gallery-caption">

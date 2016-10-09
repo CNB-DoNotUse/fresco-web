@@ -100,7 +100,7 @@ export default class FrescoMasonry extends Component {
                 hasMore={hasMore}
             >
                 <div
-                    ref={(component) => this.masonryContainer = component}
+                    ref={(component) => { this.masonryContainer = component; }}
                     className={className}
                     style={style}
                 >
