@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import get from 'lodash/get';
+import partial from 'lodash/partial';
 import FrescoImage from '../global/fresco-image';
 import { CardBadges, CardUser, CardReports } from './card-parts';
 
@@ -12,6 +13,7 @@ const GalleryCard = ({
     caption = 'No caption',
     reportData,
     onClickReportsIndex,
+    onRemove,
     onSuspend,
     onSkip,
     onToggleGraphic,
@@ -42,7 +44,7 @@ const GalleryCard = ({
         <div className="moderation-card__actions-ctr">
             <span
                 className="moderation-card__action"
-                onClick={onSkip}
+                onClick={partial(onRemove, onSkip)}
             >
                 skip
             </span>
@@ -65,7 +67,7 @@ const GalleryCard = ({
                 }
                 <span
                     className="moderation-card__action"
-                    onClick={onDelete}
+                    onClick={partial(onRemove, onDelete)}
                 >
                     delete
                 </span>
@@ -85,6 +87,7 @@ GalleryCard.propTypes = {
     onSkip: PropTypes.func.isRequired,
     onToggleGraphic: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
     owner: PropTypes.object,
     caption: PropTypes.string,
 };

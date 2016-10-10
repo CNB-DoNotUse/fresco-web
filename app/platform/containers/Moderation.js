@@ -76,40 +76,42 @@ class Moderation extends React.Component {
             onToggleGraphic,
         } = this.props;
 
+        const galleriesJSX = (activeTab === 'galleries' && galleries.size > 0) ? (
+            galleries.map((g, i) => (
+                <GalleryCard
+                    key={i}
+                    {...g}
+                    reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
+                    onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
+                    onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
+                    onSkip={partial(onSkip, 'gallery', g.id)}
+                    onDelete={partial(onDelete, 'gallery', g.id)}
+                    onToggleGraphic={partial(onToggleGraphic, g.id)}
+                />
+            ))
+        ) : List();
+
+        const usersJSX = (activeTab === 'users' && users.size > 0) ? (
+            users.map(u => (
+                <UserCard
+                    key={u.id}
+                    user={u}
+                    reportData={reports.getIn(['users', u.id], Map()).toJS()}
+                    onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
+                    onSuspend={partial(onSuspend, 'user', u.id)}
+                    onSkip={partial(onSkip, 'user', u.id)}
+                    onDisable={partial(onDelete, 'user', u.id)}
+                />
+            ))
+        ) : List();
+
         return (
             <FrescoMasonry
                 className="moderation-masonry"
                 ctrClassName="moderation-masonry__ctr"
                 loadMore={() => this.fetchCurrentTab(true)}
             >
-                {(activeTab === 'galleries' && galleries.size > 0) &&
-                    galleries.map((g, i) => (
-                        <GalleryCard
-                            key={i}
-                            {...g}
-                            reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
-                            onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
-                            onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
-                            onSkip={partial(onSkip, 'gallery', g.id)}
-                            onDelete={partial(onDelete, 'gallery', g.id)}
-                            onToggleGraphic={partial(onToggleGraphic, g.id)}
-                        />
-                    ))
-                }
-
-                {(activeTab === 'users' && users.size > 0) &&
-                        users.map(u => (
-                            <UserCard
-                                key={u.id}
-                                user={u}
-                                reportData={reports.getIn(['users', u.id], Map()).toJS()}
-                                onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
-                                onSuspend={partial(onSuspend, 'user', u.id)}
-                                onSkip={partial(onSkip, 'user', u.id)}
-                                onDisable={partial(onDelete, 'user', u.id)}
-                            />
-                        ))
-                }
+                {galleriesJSX.concat(usersJSX).toJS()}
             </FrescoMasonry>
         );
     }

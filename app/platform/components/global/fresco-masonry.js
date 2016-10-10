@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, Component, cloneElement } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import Masonry from 'react-masonry-component';
 
@@ -33,53 +33,24 @@ export default class FrescoMasonry extends Component {
         hasMore: true,
     }
 
-    componentDidMount() {
-        // const { packed, sizes, children, position } = this.props;
-
-        // const instance = Bricks({
-        //     container: this.masonryContainer,
-        //     packed,
-        //     sizes,
-        //     position,
-        // });
-
-        // instance.resize(true);
-
-        // if (children.length > 0) {
-        //     instance.pack();
-        // }
-
-        // this.setState({ instance });
+    onRemoveChild = (cb) => {
+        console.log('child removed from masonry');
+        cb();
     }
 
-    componentDidUpdate(prevProps) {
-        // const { children } = this.props;
-        // const { instance } = this.state;
+    renderChildrenWithProps() {
+        const children = this.props.children.filter(c => !!c);
+        if (!children || !children.length) return null;
 
-        // if (this.props.forceUpdate) instance.pack();
-
-        // if (prevProps.children.length === 0 && children.length === 0) {
-        //     return;
-        // }
-
-        // if (prevProps.children.length === 0 && children.length > 0) {
-        //     return instance.pack();
-        // }
-
-        // if (prevProps.children.length !== children.length) {
-        //     return instance.update();
-        // }
-    }
-
-    componentWillUnmount() {
-        // this.state.instance.resize(false);
+        return children.map(c => (
+            cloneElement(c, { onRemove: this.onRemoveChild })
+        ));
     }
 
     render() {
         const {
             className,
             ctrClassName,
-            children,
             pageStart,
             loadMore,
             hasMore,
@@ -107,8 +78,9 @@ export default class FrescoMasonry extends Component {
                         options={masonryOptions}
                         className={className}
                         updateOnEachImageLoad
+                        ref={(r) => { this.masonry = r ? r.masonry : null; }}
                     >
-                        {children}
+                        {this.renderChildrenWithProps()}
                     </Masonry>
                 </div>
             </InfiniteScroll>

@@ -7,6 +7,7 @@ const UserCard = ({
     onClickReportsIndex,
     onSuspend,
     onSkip,
+    onRemove,
     onDisable }) => (
     <div className="moderation-card moderation-card__gallery">
         <CardBadges strings={user.report_reasons} />
@@ -61,6 +62,7 @@ UserCard.propTypes = {
     user: PropTypes.object.isRequired,
     reportData: PropTypes.object.isRequired,
     onClickReportsIndex: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
     onSuspend: PropTypes.func.isRequired,
     onSkip: PropTypes.func.isRequired,
     onDisable: PropTypes.func.isRequired,
