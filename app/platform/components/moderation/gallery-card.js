@@ -6,6 +6,7 @@ import { CardBadges, CardUser, CardReports } from './card-parts';
 
 export default class GalleryCard extends Component {
     static propTypes = {
+        id: PropTypes.number.isRequired,
         posts: PropTypes.array.isRequired,
         report_reasons: PropTypes.array.isRequired,
         report_count: PropTypes.number.isRequired,
@@ -21,13 +22,25 @@ export default class GalleryCard extends Component {
     };
 
     state = {
-        opacity: 0,
+        opacity: 1,
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.id !== this.props.id) {
+            this.setState({ opacity: 1 });
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.timer) clearTimeout(this.timer);
     }
 
     onRemove = (cb) => {
         this.setState({ opacity: 1 }, () => {
             this.timer = setTimeout(() => {
-                this.setState({ opacity: 0 }, cb);
+                this.setState({ opacity: 0 }, () => {
+                    this.timer = setTimeout(cb, 300);
+                });
             }, 300);
         });
     }
@@ -78,7 +91,7 @@ export default class GalleryCard extends Component {
                 <div className="moderation-card__actions-ctr">
                     <span
                         className="moderation-card__action"
-                        onClick={onSkip}
+                        onClick={partial(this.onRemove, onSkip)}
                     >
                         skip
                     </span>
