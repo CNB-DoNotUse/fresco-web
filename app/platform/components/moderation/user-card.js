@@ -1,70 +1,103 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
+import partial from 'lodash/partial';
 import { CardBadges, CardUser, CardReports } from './card-parts';
 
-const UserCard = ({
-    user,
-    reportData,
-    onClickReportsIndex,
-    onSuspend,
-    onSkip,
-    onDisable }) => (
-    <div className="moderation-card moderation-card__gallery">
-        <CardBadges strings={user.report_reasons} />
+export default class UserCard extends Component {
+    static propTypes = {
+        user: PropTypes.object.isRequired,
+        reportData: PropTypes.object.isRequired,
+        onClickReportsIndex: PropTypes.func.isRequired,
+        onSuspend: PropTypes.func.isRequired,
+        onSkip: PropTypes.func.isRequired,
+        onDisable: PropTypes.func.isRequired,
+    };
 
-        <div className="moderation-card__user-info">
-            <CardUser user={user} />
+    state = {
+        opacity: 1,
+    }
 
-            <div className="moderation-card__user-bio">
-                {user.bio}
-            </div>
-
-            <div>
-                <span className="moderation-card__user-link">activity</span>
-                <span className="moderation-card__user-link">blocks</span>
-            </div>
-        </div>
-
-        {reportData &&
-            <CardReports
-                {...reportData}
-                report_count={user.report_count}
-                onClickIndex={onClickReportsIndex}
-            />
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.user.id !== this.props.user.id) {
+            this.setState({ opacity: 1 });
         }
+    }
 
-        <div className="moderation-card__actions-ctr">
-            <span
-                className="moderation-card__action"
-                onClick={onSkip}
+    componentWillUnmount() {
+        if (this.timer) clearTimeout(this.timer);
+    }
+
+    onRemove = (cb) => {
+        this.setState({ opacity: 1 }, () => {
+            this.timer = setTimeout(() => {
+                this.setState({ opacity: 0 }, () => {
+                    this.timer = setTimeout(cb, 300);
+                });
+            }, 300);
+        });
+    }
+
+    render() {
+        const {
+            user,
+            reportData,
+            onClickReportsIndex,
+            onSuspend,
+            onSkip,
+            onDisable,
+        } = this.props;
+
+        return (
+            <div
+                style={{ opacity: this.state.opacity }}
+                className="moderation-card moderation-card__gallery"
             >
-                skip
-            </span>
-            <div>
-                <span
-                    className="moderation-card__action"
-                    onClick={onSuspend}
-                >
-                    {user.suspended_until ? 'unsuspend user' : 'suspend user'}
-                </span>
-                <span
-                    className="moderation-card__action"
-                    onClick={onDisable}
-                >
-                    disable
-                </span>
+                <CardBadges strings={user.report_reasons} />
+
+                <div className="moderation-card__user-info">
+                    <CardUser user={user} />
+
+                    <div className="moderation-card__user-bio">
+                        {user.bio}
+                    </div>
+
+                    <div>
+                        <span className="moderation-card__user-link">activity</span>
+                        <span className="moderation-card__user-link">blocks</span>
+                    </div>
+                </div>
+
+                {reportData &&
+                    <CardReports
+                        {...reportData}
+                        report_count={user.report_count}
+                        onClickIndex={onClickReportsIndex}
+                    />
+                }
+
+                <div className="moderation-card__actions-ctr">
+                    <span
+                        className="moderation-card__action"
+                        onClick={partial(this.onRemove, onSkip)}
+                    >
+                        skip
+                    </span>
+                    <div>
+                        <span
+                            className="moderation-card__action"
+                            onClick={onSuspend}
+                        >
+                            {user.suspended_until ? 'unsuspend user' : 'suspend user'}
+                        </span>
+                        <span
+                            className="moderation-card__action"
+                            onClick={partial(this.onRemove, onDisable)}
+                        >
+                            disable
+                        </span>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-);
-
-UserCard.propTypes = {
-    user: PropTypes.object.isRequired,
-    reportData: PropTypes.object.isRequired,
-    onClickReportsIndex: PropTypes.func.isRequired,
-    onSuspend: PropTypes.func.isRequired,
-    onSkip: PropTypes.func.isRequired,
-    onDisable: PropTypes.func.isRequired,
-};
-
-export default UserCard;
+        );
+    }
+}
 

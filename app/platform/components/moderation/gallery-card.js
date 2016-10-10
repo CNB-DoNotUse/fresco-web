@@ -6,7 +6,7 @@ import { CardBadges, CardUser, CardReports } from './card-parts';
 
 export default class GalleryCard extends Component {
     static propTypes = {
-        id: PropTypes.number.isRequired,
+        id: PropTypes.string.isRequired,
         posts: PropTypes.array.isRequired,
         report_reasons: PropTypes.array.isRequired,
         report_count: PropTypes.number.isRequired,
