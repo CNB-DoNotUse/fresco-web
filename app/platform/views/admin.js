@@ -186,23 +186,21 @@ class Admin extends React.Component {
      */
     loadInitial() {
         this.getData(undefined, { tab: 'submissions' }, (submissions) => {
-            this.setState({
-                activeTab: submissions.length ? 'submissions' : 'imports',
-                submissions: this.state.submissions.concat(submissions),
-            });
-        });
-
-        this.getData(undefined, { tab: 'assignments' }, (assignments) => {
-            this.setState({ assignments });
-        });
-
-        this.getData(undefined, { tab: 'imports' }, (imports) => {
-            this.setState({
-                activeTab: (imports.length && !this.state.submissions.length)
-                    ? 'imports'
-                    : 'submissions',
-                imports: this.state.imports.concat(imports),
-            });
+            if(submissions.length) {
+                this.setState({
+                    activeTab: 'submissions',
+                    submissions: this.state.submissions.concat(submissions)
+                });
+            } else { 
+                this.getData(undefined, { tab: 'imports' }, (imports) => {
+                    this.setState({
+                        activeTab: (imports.length && !this.state.submissions.length)
+                            ? 'imports'
+                            : 'submissions',
+                        imports: this.state.imports.concat(imports),
+                    });
+                });
+            }
         });
     }
 

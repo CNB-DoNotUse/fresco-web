@@ -8,6 +8,7 @@ import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import EditPosts from './edit-posts';
 import EditByline from './edit-byline';
+import ExplicitCheckbox from '../global/explicit-checkbox'
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
 import { LoaderOpacity } from '../global/loader';
@@ -51,6 +52,7 @@ class Edit extends React.Component {
             posts: gallery.posts,
             articles: gallery.articles,
             rating: gallery.rating,
+            is_nsfw: gallery.is_nsfw,
             isOriginalGallery: utils.isOriginalGallery(this.props.gallery),
             uploads: [],
             loading: false,
@@ -75,11 +77,14 @@ class Edit extends React.Component {
         if (!get(gallery, 'id') || !params || loading) return;
         this.setState({ loading: true });
 
+        console.log(params);
+
         Promise.all([
             this.saveGallery(gallery.id, params),
             this.deletePosts(get(params, 'posts_remove')),
         ])
-        .then((res) => {
+        .then(res => {
+            console.log(res)
             if (get(res[0], 'posts_new.length')) {
                 return Promise.all([
                     res[0],
@@ -89,14 +94,15 @@ class Edit extends React.Component {
 
             return res;
         })
-        .then((res) => {
+        .then(res => {
             this.hide();
             this.setState({ uploads: [], loading: false }, () => {
                 $.snackbar({ content: 'Gallery saved!' });
                 onUpdateGallery(res[0]);
             });
         })
-        .catch(() => {
+        .catch(err => {
+            console.log(err);
             $.snackbar({ content: 'There was an error saving the gallery!' });
             this.setState({ loading: false });
         });
@@ -167,6 +173,7 @@ class Edit extends React.Component {
             caption: 'No Caption',
             articles: [],
             rating: gallery.rating,
+            is_nsfw: false,
             external_account_name: '',
             external_source: '',
         });
@@ -204,6 +211,7 @@ class Edit extends React.Component {
             external_account_name,
             external_source,
             rating,
+            is_nsfw
         } = this.state;
         const { gallery } = this.props;
         const posts = this.getPostsFormData();
@@ -227,9 +235,14 @@ class Edit extends React.Component {
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             rating,
+            is_nsfw
         };
 
-        return pickBy(params, v => !!v && (Array.isArray(v) ? v.length : true));
+        //Make sure our params are valid types and don't have any empty arrays
+        //Special exception if the param is a `bool`
+        return pickBy(params, v => {
+            return (typeof(v) === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
+        });
     }
 
     getFilesFromUploads() {
@@ -341,8 +354,8 @@ class Edit extends React.Component {
                 contentType: 'application/json',
                 data: JSON.stringify(params),
             })
-            .done((res) => resolve(res))
-            .fail((err) => reject(err))
+            .done(resolve)
+            .fail(reject)
         ));
     }
 
@@ -383,6 +396,10 @@ class Edit extends React.Component {
 
     toggleHighlight(e) {
         this.setState({ rating: e.target.checked ? 3 : 2 });
+    }
+
+    toggle_is_nsfw() {
+        this.setState({ is_nsfw: !this.state.is_nsfw });
     }
 
     onToggleDeletePost(post) {
@@ -458,6 +475,7 @@ class Edit extends React.Component {
             assignment,
             tags,
             rating,
+            is_nsfw,
             articles,
             posts,
             uploads,
@@ -544,6 +562,10 @@ class Edit extends React.Component {
                             </label>
                         </div>
                     </div>
+
+                    <ExplicitCheckbox 
+                        is_nsfw={is_nsfw} 
+                        onChange={this.toggle_is_nsfw} />
                 </div>
 
                 {get(posts, 'length') || get(uploads, 'length') ? (
