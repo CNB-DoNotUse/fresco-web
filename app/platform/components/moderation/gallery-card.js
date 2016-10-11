@@ -35,6 +35,12 @@ export default class GalleryCard extends Component {
         if (this.timer) clearTimeout(this.timer);
     }
 
+    /**
+     * onRemove - uses setTimeout to to set opacity style
+     * on moderation-card which has a transition: opacity 0.3s
+     *
+     * @param {function} cb callback
+     */
     onRemove = (cb) => {
         this.setState({ opacity: 1 }, () => {
             this.timer = setTimeout(() => {

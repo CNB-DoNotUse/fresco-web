@@ -59,11 +59,6 @@ export default class UserCard extends Component {
                     <div className="moderation-card__user-bio">
                         {user.bio}
                     </div>
-
-                    <div>
-                        <span className="moderation-card__user-link">activity</span>
-                        <span className="moderation-card__user-link">blocks</span>
-                    </div>
                 </div>
 
                 {reportData &&
