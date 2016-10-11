@@ -85,14 +85,14 @@ app.use(
 app.use((req, res, next) => {
     res.locals.alerts = [];
 
-    if (req.session && req.session.user && !req.session.user.verified){
-        res.locals.alerts.push('\
-            <p>Your email hasn\'t been verified.\
-                <br>Please click on the link sent to your inbox to verify your email!\
-            </p>\
-            <a href="/scripts/user/verify/resend">RESEND EMAIL</a>'
-        );
-    }
+    // if (req.session && req.session.user && !req.session.user.verified){
+    //     res.locals.alerts.push('\
+    //         <p>Your email hasn\'t been verified.\
+    //             <br>Please click on the link sent to your inbox to verify your email!\
+    //         </p>\
+    //         <a href="/scripts/user/verify/resend">RESEND EMAIL</a>'
+    //     );
+    // }
 
     if (req.session && req.session.alerts){
         res.locals.alerts = res.locals.alerts.concat(req.session.alerts);
