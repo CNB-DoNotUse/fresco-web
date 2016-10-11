@@ -100,6 +100,13 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
   @include transform(translateY(-50%));
 }
 
+@mixin vertical-horizontal-align($position: absolute) {
+  position: $position;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 @mixin vertical-align-flex {
     display: flex;
     justify-content: center;

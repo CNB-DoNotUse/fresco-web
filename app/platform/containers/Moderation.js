@@ -10,7 +10,8 @@ import FrescoMasonry from '../components/global/fresco-masonry';
 import TopBar from '../components/moderation/topbar';
 import GalleryCard from '../components/moderation/gallery-card';
 import UserCard from '../components/moderation/user-card';
-import InfoDialog from '../components/dialogs/info';
+import ItemsDialog from '../components/dialogs/items';
+import SuspendedUser from '../components/moderation/suspended-user';
 
 class Moderation extends React.Component {
     static propTypes = {
@@ -152,14 +153,13 @@ class Moderation extends React.Component {
                         onClick={onDismissAlert}
                     />
 
-                    <InfoDialog
+                    <ItemsDialog
                         toggled={suspendedDialog}
                         onClose={onToggleSuspendedDialog}
                         header="Suspended users"
-                        minHeight={204}
-                        maxHeight={512}
-                        width={640}
-                    />
+                    >
+                        {suspendedUsers.map((s, i) => <SuspendedUser key={i} user={s} />)}
+                    </ItemsDialog>
 
                     {this.renderContent()}
                 </div>
