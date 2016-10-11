@@ -58,7 +58,7 @@ class Admin extends React.Component {
         this.setState({ activeTab: tab });
     }
 
-    getData(last, options, callback) {
+    getData(options, callback, last = null) {
         const tab = options.tab || this.state.activeTab;
         let params = {};
         let endpoint = '';
@@ -155,7 +155,7 @@ class Admin extends React.Component {
     }
 
     resetAssignments() {
-        this.getData(undefined, { tab: 'assignments' }, (assignments) => {
+        this.getData({ tab: 'assignments' }, (assignments) => {
             this.setState({
                 activeTab: 'assignments',
                 assignments: assignments.length ? assignments : this.state.assignments,
@@ -164,7 +164,7 @@ class Admin extends React.Component {
     }
 
     resetSubmissions() {
-        this.getData(undefined, { tab: 'submissions' }, (submissions) => {
+        this.getData({ tab: 'submissions' }, (submissions) => {
             this.setState({
                 activeTab: 'submissions',
                 submissions: submissions.length ? submissions : this.state.submissions,
@@ -173,7 +173,9 @@ class Admin extends React.Component {
     }
 
     resetImports() {
-        this.getData(undefined, { tab: 'imports' }, (imports) => {
+
+        this.getData({ tab: 'imports' }, (imports) => {
+            console.log(imports);
             this.setState({
                 activeTab: 'imports',
                 imports: imports.length ? imports : this.state.imports,
@@ -185,14 +187,14 @@ class Admin extends React.Component {
      * Query for initial data. Set the active tab to a tab with data.
      */
     loadInitial() {
-        this.getData(undefined, { tab: 'submissions' }, (submissions) => {
+        this.getData({ tab: 'submissions' }, (submissions) => {
             if(submissions.length) {
                 this.setState({
                     activeTab: 'submissions',
                     submissions: this.state.submissions.concat(submissions)
                 });
             } else { 
-                this.getData(undefined, { tab: 'imports' }, (imports) => {
+                this.getData({ tab: 'imports' }, (imports) => {
                     this.setState({
                         activeTab: (imports.length && !this.state.submissions.length)
                             ? 'imports'
@@ -222,7 +224,7 @@ class Admin extends React.Component {
             tab = (
                 <Assignments
                     assignments={this.getAssignments()}
-                    getData={(l, o, cb) => this.getData(l, o, cb)}
+                    getData={(l, o, cb) => this.getData(o, cb, l)}
                     removeAssignment={(id, cb) => this.removeAssignment(id, cb)}
                 />
             );
@@ -231,7 +233,7 @@ class Admin extends React.Component {
             tab = (
                 <Galleries
                     galleries={this.state.submissions}
-                    getData={(l, o, cb) => this.getData(l, o, cb)}
+                    getData={(l, o, cb) => this.getData(o, cb, l)}
                     removeGallery={(id, cb) => this.removeSubmission(id, cb)}
                     galleryType="submissions"
                 />
@@ -241,7 +243,7 @@ class Admin extends React.Component {
             tab = (
                 <Galleries
                     galleries={this.state.imports}
-                    getData={(l, o, cb) => this.getData(l, o, cb)}
+                    getData={(l, o, cb) => this.getData(o, cb, l)}
                     removeGallery={(id, cb) => this.removeImport(id, cb)}
                     galleryType="imports"
                 />
