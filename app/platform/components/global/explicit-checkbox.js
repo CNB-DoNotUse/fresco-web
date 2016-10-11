@@ -4,8 +4,8 @@ import React, { PropTypes } from 'react';
  * Stateless explicit checkbox
  */
 const ExplicitCheckbox = ({ is_nsfw, onChange }) => (
-    <div className="dialog-row">
-        <div className="checkbox explicit">
+    <div className="dialog-row explicit">
+        <div className="checkbox">
             <label>
                 <input
                     type="checkbox"

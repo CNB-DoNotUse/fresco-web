@@ -32,22 +32,19 @@ class FrescoImage extends React.Component {
 
     state = {
         placeholderStyle: this.props.placeholderStyle,
-        timeout: 1000,
+        hidePlaceholder: false,
+        timeout: 1000
     }
 
     componentWillMount() {
         this.setInitialSource();
     }
 
-    componentDidMount() {
-        this.loadImage();
-    }
-
     componentDidUpdate(prevProps) {
         const { src, size } = this.props;
+
         if ((src !== prevProps.src) || (size !== prevProps.size)) {
-            this.setInitialSource();
-            this.loadImage();
+            this.setInitialSource(src);
         }
     }
 
@@ -59,30 +56,19 @@ class FrescoImage extends React.Component {
         const formattedSrc = utils.formatImg(this.props.src, this.props.size);
         this.setState({
             src: this.props.loadWithPlaceholder ? this.placeholderUrl : formattedSrc,
-            formattedSrc
+            formattedSrc,
+            hidePlaceholder: false
         });
     }
 
-    // async load image
-    loadImage = () => {
-        //If the prop is passed to load with the placeholder first, then create the custom image object
-        //Otherwise don't do anything here
-        if(this.props.loadWithPlaceholder) {
-            const imageObj = new Image();
-            imageObj.src = this.state.formattedSrc;
-            imageObj.onload = this.onload;
-        }
-    }
-
     /**
-     * When our custom image loads successfully, set the new source on the state
+     * When our hidden image loads successfully, hide the `missing` placeholder one
      */
-    onload = () => {
-        if (this.img) {
+    onLoad = () => {
+        if (this.props.loadWithPlaceholder) {
             this.setState({
-                src: this.state.formattedSrc,
-                placeholderStyle: {}
-            })
+                hidePlaceholder: true
+            });
         }
     }
 
@@ -107,6 +93,7 @@ class FrescoImage extends React.Component {
         if (this.img) {
             this.setState({ src: this.placeholderUrl })
         }
+
         this.props.updateImage(this.placeholderUrl);
 
         if (this.props.refreshInterval) {
@@ -117,16 +104,34 @@ class FrescoImage extends React.Component {
     render() {
         const style = Object.assign({}, this.props.style, this.state.placeholderStyle);
 
-        return (
-            <img
-                className={this.props.className || 'img-cover'}
-                style={style}
-                role="presentation"
-                ref={r => { this.img = r; }}
-                onError={this.onError}
-                src={this.state.src}
-            />
-        );
+        if(this.props.loadWithPlaceholder) {
+            return <div>
+                <img
+                    className={this.props.className || 'img-cover'}
+                    style={{ display: this.state.hidePlaceholder ? 'block' : 'none' }}
+                    role="presentation"
+                    onLoad={this.onLoad}
+                    onError={this.onError}
+                    src={this.state.formattedSrc}
+                />
+                <img
+                    className={this.props.className || 'img-cover'}
+                    style={{ display: this.state.hidePlaceholder ? 'none' : 'block' }}
+                    src={this.placeholderUrl}
+                />
+            </div>
+        } else {
+            return (
+                <img
+                    className={this.props.className || 'img-cover'}
+                    style={style}
+                    role="presentation"
+                    ref={r => { this.img = r; }}
+                    onError={this.onError}
+                    src={this.state.src}
+                />
+            );
+        }
     }
 }
 

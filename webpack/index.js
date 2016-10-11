@@ -5,21 +5,17 @@ const AssetsPlugin = require('assets-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const fileLoaderName = 'fonts/[name].[ext]';
 const hashDate = Date.now();
+const appDirectory = './app';
+const platformDirectory = `${appDirectory}/platform/views/`
+const publicDirectory = `${appDirectory}/public/views/`
 
 // Generates view object for us
 const views = () => {
     const viewsToReturn = {};
 
-    // Generates object mapping { dir: directory, file: file (from 'fs') }
-    function genViewsFromDir(dir) {
-        return fs.readdirSync(dir).map((file) => (
-            { dir, file }
-        ));
-    }
-
     const viewFiles = [].concat(
-        genViewsFromDir('./app/platform/views/'),
-        genViewsFromDir('./app/public/views/')
+        genViewsFromDir(platformDirectory),
+        genViewsFromDir(publicDirectory)
     );
 
     viewFiles.forEach((view) => {
@@ -30,6 +26,13 @@ const views = () => {
 
     return viewsToReturn;
 };
+
+// Generates object mapping { dir: directory, file: file (from 'fs') }
+const genViewsFromDir = (dir) => {
+    return fs.readdirSync(dir).map((file) => (
+        { dir, file }
+    ));
+}
 
 // Generates plugins for webpack
 const plugins = (env) => {
@@ -48,34 +51,10 @@ const plugins = (env) => {
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'commons',
-            filename: 'commons.js',
+            filename: 'js/commons.js',
             minChunks: 8,
             // (Only use these entries)
-            chunks: [
-                'admin',
-                'app',
-                'archive',
-                'assignmentDetail',
-                'dispatch',
-                'galleries',
-                'galleryDetail',
-                'highlights',
-                'locationDetail',
-                'moderation',
-                'outlet',
-                'outletSettings',
-                'photos',
-                'postDetail',
-                'publicGallery',
-                'purchases',
-                'pushNotifs',
-                'search',
-                'stories',
-                'storyDetail',
-                'userDetail',
-                'userSettings',
-                'videos',
-            ],
+            chunks: genViewsFromDir(platformDirectory).map(obj => obj.file.replace('.js', '')),
         }),
     ];
 
