@@ -12,6 +12,7 @@ class TopBar extends React.Component {
         activeTab: PropTypes.string.isRequired,
         onClickFilter: PropTypes.func.isRequired,
         suspendedCount: PropTypes.number.isRequired,
+        onToggleSuspendedDialog: PropTypes.func.isRequired,
     };
 
 	/**
@@ -59,7 +60,13 @@ class TopBar extends React.Component {
     }
 
     renderFilters() {
-        const { onClickFilter, filters, activeTab, suspendedCount } = this.props;
+        const {
+            onClickFilter,
+            filters,
+            activeTab,
+            suspendedCount,
+            onToggleSuspendedDialog,
+        } = this.props;
 
         const isActiveFilter = filter => filters.includes(filter);
         const filterClassName = filter =>
@@ -96,7 +103,10 @@ class TopBar extends React.Component {
                     stolen
                 </span>
 
-                <button className="btn btn-raised moderation-topbar__suspended">
+                <button
+                    className="btn btn-raised moderation-topbar__suspended"
+                    onClick={onToggleSuspendedDialog}
+                >
                     {`suspended (${suspendedCount})`}
                 </button>
             </div>

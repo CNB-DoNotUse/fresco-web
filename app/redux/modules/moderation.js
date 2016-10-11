@@ -314,7 +314,7 @@ const moderation = (state = fromJS({
                     ));
             }
         case TOGGLE_SUSPENDED_DIALOG:
-            return state.update('suspendedDialog', !state.get('suspendedDialog'));
+            return state.update('suspendedDialog', s => !s);
         case SKIP_USER:
         case DISABLE_USER:
             return state
