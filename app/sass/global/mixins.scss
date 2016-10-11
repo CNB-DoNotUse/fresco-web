@@ -8,7 +8,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 /**
  * Border Radius
- * @param  {[type]} $radius Radius to set to 
+ * @param  {[type]} $radius Radius to set to
  */
 
 @mixin border-radius($radius) {
@@ -20,12 +20,12 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 /**
  * Shadow
- * @param  {[type]} $radius Radius to set to 
+ * @param  {[type]} $radius Radius to set to
  */
 
 @mixin box-shadow($shadow1, $shadow2:false, $shadow3:false, $shadow4:false, $shadow5:false) {
   $params: $shadow1;
-   @if $shadow2 
+   @if $shadow2
      { $params: $shadow1, $shadow2; }
      @if $shadow3 != false
        { $params: $shadow1, $shadow2, $shadow3; }
@@ -47,7 +47,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 @mixin transition($transition1, $transition2:false, $transition3:false, $transition4:false, $transition5:false) {
 
   $params: $transition1;
-   @if $transition2 
+   @if $transition2
      { $params: $transition1, $transition2; }
      @if $transition3 != false
        { $params: $transition1, $transition2, $transition3; }
@@ -70,7 +70,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     ::-webkit-input-placeholder {@content}
     :-moz-placeholder           {@content}
     ::-moz-placeholder          {@content}
-    :-ms-input-placeholder      {@content}  
+    :-ms-input-placeholder      {@content}
 }
 
 /**
@@ -98,4 +98,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
   position: $position;
   top: 50%;
   @include transform(translateY(-50%));
+}
+
+@mixin vertical-align-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

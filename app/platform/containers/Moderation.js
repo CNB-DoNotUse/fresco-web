@@ -156,6 +156,9 @@ class Moderation extends React.Component {
                         toggled={suspendedDialog}
                         onClose={onToggleSuspendedDialog}
                         header="Suspended users"
+                        minHeight={204}
+                        maxHeight={512}
+                        width={640}
                     />
 
                     {this.renderContent()}

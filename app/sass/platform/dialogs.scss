@@ -11,6 +11,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
  * Dialog Element
  */
 .info-dialog {
+    font-family: $nota;
     background-color: #fafafa;
     position:fixed;
     top:0; bottom:0; left:0; right:0;
@@ -29,36 +30,37 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
     .header {
         height: 52px;
-        padding:18px 24px;
-        border-bottom:solid 1px rgba(0, 0, 0, 0.12);
+        padding:0 24px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        border-top: 1px solid transparent;
+        @include vertical-align-flex;
 
-        h3 {
-            margin:0;
-            padding:0;
+        span {
             font-size: 20px;
             font-weight: 500;
-            line-height: 1.4;
+            margin-right: auto;
             @include rgba(0, 0, 0, 0.87);
         }
     }
 
     .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
         height: 52px;
         font-size: 14px;
         font-weight: 500;
         padding:24px 0;
         border-top:solid 1px rgba(0, 0, 0, 0.12);
+        @include vertical-align-flex;
 
         button {
             border:none;
-            margin:0;
             padding:0 24px;
-            display: inline-block;
-            text-align: justify;
             background:none;
-            float:right;
             text-transform:uppercase;
             color:#0047bb;
+            margin-left: auto;
 
             &:focus {
                 outline: none;
