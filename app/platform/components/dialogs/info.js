@@ -1,14 +1,12 @@
 import React, { PropTypes } from 'react';
 
-export default class Items extends React.Component {
+export default class Info extends React.Component {
     static propTypes = {
         onClose: PropTypes.func,
         toggled: PropTypes.bool,
         header: PropTypes.string,
+        body: PropTypes.string,
         children: PropTypes.node,
-        minHeight: PropTypes.number,
-        maxHeight: PropTypes.number,
-        width: PropTypes.number,
     }
 
     static defaultProps = {
@@ -19,33 +17,25 @@ export default class Items extends React.Component {
 
     render() {
         const {
-            minHeight,
-            maxHeight,
-            width,
             toggled,
             header,
+            body,
             onClose,
             children,
         } = this.props;
-
-        const infoStyle = {
-            height: children && children.length > 1 ? maxHeight : minHeight,
-            width,
-        };
 
         return (
             <div className="dialog-wrap">
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
 
-                <div
-                    className={`info-dialog ${toggled ? 'toggled' : ''}`}
-                    style={infoStyle}
-                >
+                <div className={`info-dialog ${toggled ? 'toggled' : ''}`}>
                     <div className="header">
                         <span>{header}</span>
                     </div>
 
-                    {children}
+                    <div className="body">
+                        {body}
+                    </div>
 
                     <div className="footer">
                         <button

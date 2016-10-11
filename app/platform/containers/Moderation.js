@@ -11,6 +11,7 @@ import TopBar from '../components/moderation/topbar';
 import GalleryCard from '../components/moderation/gallery-card';
 import UserCard from '../components/moderation/user-card';
 import ItemsDialog from '../components/dialogs/items';
+import InfoDialog from '../components/dialogs/info';
 import SuspendedUser from '../components/moderation/suspended-user';
 
 class Moderation extends React.Component {
@@ -27,7 +28,9 @@ class Moderation extends React.Component {
         onSuspend: PropTypes.func.isRequired,
         onSkip: PropTypes.func.isRequired,
         onToggleGraphic: PropTypes.func.isRequired,
+        onRestoreUser: PropTypes.func.isRequired,
         onToggleSuspendedDialog: PropTypes.func.isRequired,
+        onToggleInfoDialog: PropTypes.func.isRequired,
         suspendedDialog: PropTypes.bool.isRequired,
         loading: PropTypes.bool.isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
@@ -128,7 +131,9 @@ class Moderation extends React.Component {
             suspendedUsers,
             suspendedDialog,
             onToggleSuspendedDialog,
+            onToggleInfoDialog,
             onRestoreUser,
+            infoDialog,
         } = this.props;
 
         return (
@@ -168,6 +173,13 @@ class Moderation extends React.Component {
                         )}
                     </ItemsDialog>
 
+                    <InfoDialog
+                        toggled={infoDialog.get('open')}
+                        onClose={onToggleInfoDialog}
+                        header={infoDialog.get('header')}
+                        body={infoDialog.get('body')}
+                    />
+
                     {this.renderContent()}
                 </div>
             </div>
@@ -195,6 +207,7 @@ function mapStateToProps(state) {
         reports: state.getIn(['moderation', 'reports']),
         suspendedUsers: state.getIn(['moderation', 'suspendedUsers']),
         suspendedDialog: state.getIn(['moderation', 'suspendedDialog']),
+        infoDialog: state.getIn(['moderation', 'infoDialog']),
         galleries,
         users,
         filters,
@@ -214,6 +227,7 @@ export default connect(mapStateToProps, {
     onDelete: moderationActions.deleteCard,
     onToggleGraphic: moderationActions.toggleGalleryGraphic,
     onToggleSuspendedDialog: moderationActions.toggleSuspendedDialog,
+    onToggleInfoDialog: moderationActions.toggleInfoDialog,
     onRestoreUser: moderationActions.restoreSuspendedUser,
 })(Moderation);
 

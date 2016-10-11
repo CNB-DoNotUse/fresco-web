@@ -115,7 +115,7 @@ export default class GalleryCard extends Component {
                                 className="moderation-card__action"
                                 onClick={onSuspend}
                             >
-                                {owner.suspended_until ? 'unsuspend user' : 'suspend user'}
+                                {!!owner.suspended_until ? 'unsuspend user' : 'suspend user'}
                             </span>
                         }
                         <span
