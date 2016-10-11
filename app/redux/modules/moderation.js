@@ -41,6 +41,17 @@ export const dismissAlert = () => ({
     type: DISMISS_ALERT,
 });
 
+export const toggleSuspendedDialog = () => ({
+    type: TOGGLE_SUSPENDED_DIALOG,
+});
+
+export const toggleInfoDialog = ({ open = false, header = '', body = '' }) => ({
+    type: TOGGLE_INFO_DIALOG,
+    open,
+    header,
+    body,
+});
+
 export const fetchSuspendedUsers = (last) => (dispatch) => {
     api
     .get('user/suspended', { last: last ? last.id : null })
@@ -191,15 +202,24 @@ export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
         }))
         .then(() => dispatch(fetchSuspendedUsers()));
     } else {
-        suspended_until = moment().add(1, 'week').toISOString();
+        suspended_until = moment().add(2, 'week').toISOString();
         api
         .post(`user/${user.id}/suspend`, { suspended_until })
-        .then(() => dispatch({
-            type: TOGGLE_SUSPEND_USER,
-            suspended_until,
-            entity,
-            id,
-        }))
+        .then(() => {
+            dispatch({
+                type: TOGGLE_SUSPEND_USER,
+                suspended_until,
+                entity,
+                id,
+            });
+
+            const name = user.username ? `@${user.username}` : user.full_name;
+            dispatch(toggleInfoDialog({
+                open: true,
+                header: `Suspend ${name}`,
+                body: `${name} will be given a 14-day suspension, which can be canceled at any time.`,
+            }));
+        })
         .catch(() => dispatch({
             type: SET_ALERT,
             data: 'Could not unsuspend user',
@@ -269,17 +289,6 @@ export const deleteCard = (type, id) => (dispatch) => {
         data: (type === 'gallery') ? 'Could not delete gallery' : 'Could not disable user',
     }));
 };
-
-export const toggleSuspendedDialog = () => ({
-    type: TOGGLE_SUSPENDED_DIALOG,
-});
-
-export const toggleInfoDialog = ({ open, header = '', body = '' }) => ({
-    type: TOGGLE_INFO_DIALOG,
-    open,
-    header,
-    body,
-});
 
 const user = (state, action) => {
     switch (action.type) {
@@ -352,9 +361,9 @@ const moderation = (state = fromJS({
         case TOGGLE_SUSPENDED_DIALOG:
             return state.update('suspendedDialog', s => !s);
         case TOGGLE_INFO_DIALOG:
-            return state.updateIn('infoDialog', s => ({
-                open: !s.open, header: action.data.header, body: acation.data.body
-            }));
+            return state.update('infoDialog', s => (fromJS({
+                open: !s.get('open'), header: action.header, body: action.body
+            })));
         case SKIP_USER:
         case DISABLE_USER:
             return state

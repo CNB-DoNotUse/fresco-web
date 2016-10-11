@@ -78,6 +78,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     display:none;
     opacity:0;
     z-index: $z-dim + 1;
+    width: 384px;
     @include vertical-horizontal-align;
     @include box-shadow(0 16px 16px 0 rgba(0, 0, 0, 0.24), 0 0 16px 0 rgba(0, 0, 0, 0.12));
     @include border-radius(2px);
@@ -92,8 +93,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
         font-family: $nota;
         height: 64px;
         padding:0 24px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-        border-top: 1px solid transparent;
         @include vertical-align-flex;
 
         span {
@@ -116,7 +115,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
         font-size: 14px;
         font-weight: 500;
         padding:24px 0;
-        border-top:solid 1px rgba(0, 0, 0, 0.12);
         @include vertical-align-flex;
 
         button {
