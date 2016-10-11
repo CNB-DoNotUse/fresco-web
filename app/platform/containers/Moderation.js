@@ -128,6 +128,7 @@ class Moderation extends React.Component {
             suspendedUsers,
             suspendedDialog,
             onToggleSuspendedDialog,
+            onRestoreUser,
         } = this.props;
 
         return (
@@ -158,7 +159,13 @@ class Moderation extends React.Component {
                         onClose={onToggleSuspendedDialog}
                         header="Suspended users"
                     >
-                        {suspendedUsers.map((s, i) => <SuspendedUser key={i} user={s} />)}
+                        {suspendedUsers.map((s, i) =>
+                            <SuspendedUser
+                                key={i}
+                                user={s}
+                                onClickRestore={partial(onRestoreUser, s.id)}
+                            />
+                        )}
                     </ItemsDialog>
 
                     {this.renderContent()}
@@ -207,5 +214,6 @@ export default connect(mapStateToProps, {
     onDelete: moderationActions.deleteCard,
     onToggleGraphic: moderationActions.toggleGalleryGraphic,
     onToggleSuspendedDialog: moderationActions.toggleSuspendedDialog,
+    onRestoreUser: moderationActions.restoreSuspendedUser,
 })(Moderation);
 

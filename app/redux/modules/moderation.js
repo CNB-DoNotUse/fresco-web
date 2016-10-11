@@ -26,6 +26,7 @@ export const SKIP_USER = 'moderation/SKIP_USER';
 export const SKIP_GALLERY = 'moderation/SKIP_GALLERY';
 export const DISABLE_USER = 'moderation/DISABLE_USER';
 export const DELETE_GALLERY = 'moderation/DELETE_GALLERY';
+export const RESTORE_SUSPENDED_USER = 'moderation/RESTORE_SUSPENDED_USER';
 
 const REPORTS_LIMIT = 10;
 
@@ -185,12 +186,11 @@ export const toggleSuspendUser = (type, id) => (dispatch, getState) => {
                 id,
             },
         }))
-        .catch(() => {
-            dispatch({
-                type: SET_ALERT,
-                data: 'Could not unsuspend user',
-            });
-        });
+        .catch(() => dispatch({
+            type: SET_ALERT,
+            data: 'Could not unsuspend user',
+        }))
+        .then(() => dispatch(fetchSuspendedUsers()));
     } else {
         const suspended_until = moment().add(1, 'week').toISOString();
         api
@@ -203,14 +203,28 @@ export const toggleSuspendUser = (type, id) => (dispatch, getState) => {
                 id,
             },
         }))
-        .catch(() => {
-            dispatch({
-                type: SET_ALERT,
-                data: 'Could not unsuspend user',
-            });
-        });
+        .catch(() => dispatch({
+            type: SET_ALERT,
+            data: 'Could not unsuspend user',
+        }))
+        .then(() => dispatch(fetchSuspendedUsers()));
     }
 };
+
+export const restoreSuspendedUser = (id) => (dispatch, getState) => {
+    const user = getState().getIn(['moderation', 'suspendedUsers']).find(u => u.id === id);
+
+    api
+    .post(`user/${user.id}/unsuspend`)
+    .then(() => dispatch({
+        type: RESTORE_SUSPENDED_USER,
+        data: id,
+    }))
+    .catch(() => dispatch({
+        type: SET_ALERT,
+        data: 'Could not restore user',
+    }));
+}
 
 export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
     const nsfw = getState().getIn(['moderation', 'galleries']).find(g => g.id === id).is_nsfw;
@@ -295,7 +309,7 @@ const moderation = (state = fromJS({
                     })
                 ));
         case FETCH_SUSPENDED_USERS_SUCCESS:
-            return state.update('suspendedUsers', s => s.concat(action.data));
+            return state.set('suspendedUsers', List(action.data));
         case SET_REPORTS_INDEX:
             const { reportsType, ownerId, index } = action.data;
             return state.setIn(['reports', reportsType, ownerId, 'index'], index);
@@ -319,6 +333,10 @@ const moderation = (state = fromJS({
         case DISABLE_USER:
             return state
                 .deleteIn(['users', state.get('users').findIndex(u => u.id === action.data)]);
+        case RESTORE_SUSPENDED_USER:
+            return state
+                .deleteIn(['suspendedUsers',
+                    state.get('suspendedUsers').findIndex(u => u.id === action.data)]);
         case TOGGLE_GALLERY_GRAPHIC:
             const graphicIndex = state.get('galleries').findIndex(u => u.id === action.data.id);
             return state
