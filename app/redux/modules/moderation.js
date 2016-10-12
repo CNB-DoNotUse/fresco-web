@@ -1,4 +1,5 @@
 // https://github.com/erikras/ducks-modular-redux
+import { combineReducers } from 'redux-immutable';
 import { fromJS, Set, OrderedSet, List, Map } from 'immutable';
 import api from 'app/lib/api';
 import moment from 'moment';
@@ -27,11 +28,6 @@ export const RESTORE_SUSPENDED_USER = 'moderation/RESTORE_SUSPENDED_USER';
 export const DELETE_CARD = 'moderation/DELETE_CARD';
 
 const REPORTS_LIMIT = 10;
-
-const entityToPlural = {
-    gallery: 'galleries',
-    user: 'users',
-};
 
 // action creators
 export const setActiveTab = (activeTab) => ({
@@ -65,19 +61,17 @@ export const fetchSuspendedUsers = (last) => (dispatch) => {
     ));
 };
 
-export const fetchReports = ({ id, type, last }) => (dispatch) => {
-    const urlBase = type === 'galleries' ? 'gallery' : 'user';
+export const fetchReports = ({ id, entity, last }) => (dispatch) => {
+    const urlBase = entity === 'galleries' ? 'gallery' : 'user';
 
     api
     .get(`${urlBase}/${id}/reports`, { last: last ? last.get('id') : null, limit: REPORTS_LIMIT })
     .then(res => {
         dispatch({
             type: FETCH_REPORTS_SUCCESS,
-            data: {
-                reports: res,
-                type,
-                id,
-            },
+            reports: res,
+            entity,
+            id,
         });
     })
     .catch(() => {
@@ -89,10 +83,12 @@ export const fetchReports = ({ id, type, last }) => (dispatch) => {
 };
 
 export const fetchGalleries = (loadMore) => (dispatch, getState) => {
-    if (getState().getIn(['moderation', 'loading'])) return;
+    const state = getState().getIn(['moderation', 'galleries']);
+    if (state.get('loading')) return;
     dispatch({ type: FETCH_GALLERIES });
+
     let last;
-    if (loadMore) last = getState().getIn(['moderation', 'galleries']).last();
+    if (loadMore) last = state.get('entities').last();
 
     api
     .get('gallery/reported', { last: last ? last.id : null, limit: 10 })
@@ -112,10 +108,12 @@ export const fetchGalleries = (loadMore) => (dispatch, getState) => {
 };
 
 export const fetchUsers = (loadMore) => (dispatch, getState) => {
-    if (getState().getIn(['moderation', 'loading'])) return;
+    const state = getState().getIn(['moderation', 'users']);
+    if (state.get('loading')) return;
     dispatch({ type: FETCH_USERS });
+
     let last;
-    if (loadMore) last = getState().getIn(['moderation', 'users']).last();
+    if (loadMore) last = state.get('entities').last();
 
     api
     .get('user/reported', { last: last ? last.id : null, limit: 10 })
@@ -172,11 +170,9 @@ export const updateReportsIndex = (type, id, change) => (dispatch, getState) => 
 
     dispatch({
         type: SET_REPORTS_INDEX,
-        data: {
-            reportsType: type,
-            ownerId: id,
-            index: newIndex,
-        },
+        reportsType: type,
+        ownerId: id,
+        index: newIndex,
     });
 };
 
@@ -288,20 +284,8 @@ export const deleteCard = (entity, id) => (dispatch) => {
     }))
     .catch(() => dispatch({
         type: SET_ALERT,
-        data: (type === 'gallery') ? 'Could not delete gallery' : 'Could not disable user',
+        data: (entity === 'gallery') ? 'Could not delete gallery' : 'Could not disable user',
     }));
-};
-
-const user = (state, action) => {
-    switch (action.type) {
-        case TOGGLE_SUSPEND_USER:
-            if (state.id !== action.id) {
-                return state;
-            }
-            return Object.assign(state, { suspended_until: action.suspended_until });
-        default:
-            return state;
-    }
 };
 
 const gallery = (state, action) => {
@@ -309,84 +293,138 @@ const gallery = (state, action) => {
         return state;
     }
     switch (action.type) {
-        case TOGGLE_SUSPEND_USER:
-            const owner = Object.assign(state.owner, {suspended_until: action.suspended_until});
-            return Object.assign(state, { owner });
-        case TOGGLE_GALLERY_GRAPHIC:
-            return Object.assign({}, state, { is_nsfw: action.nsfw })
-        default:
-            return state;
+    case TOGGLE_SUSPEND_USER:
+        return Object.assign(state, {
+            owner: Object.assign(state.owner, { suspended_until: action.suspended_until }),
+        });
+    case TOGGLE_GALLERY_GRAPHIC:
+        return Object.assign({}, state, { is_nsfw: action.nsfw });
+    default:
+        return state;
     }
 };
 
-const moderation = (state = fromJS({
-    activeTab: 'galleries',
-    galleries: List(),
-    users: List(),
-    suspendedUsers: List(),
-    reports: fromJS({ galleries: {}, users: {} }),
-    filters: fromJS({ galleries: Set(), users: Set() }),
+const galleries = (state = fromJS({
+    entities: List(),
     loading: false,
+}), action = {}) => {
+    if (action.entity && action.entity !== 'gallery') return state;
+
+    switch (action.type) {
+    case FETCH_GALLERIES_SUCCESS:
+        return state.update('entities', g => g.concat(action.data));
+    case FETCH_GALLERIES_FAIL:
+        return state.set('loading', false);
+    case TOGGLE_GALLERY_GRAPHIC:
+        return state.update('entities', es => es.map(e => gallery(e, action)));
+    case TOGGLE_SUSPEND_USER:
+        return state.update('entities', es => es.map(e => gallery(e, action)));
+    case DELETE_CARD:
+        return state.update('entities', es => es.filterNot(e => e.id === action.id));
+    default:
+        return state;
+    }
+};
+
+const user = (state, action) => {
+    switch (action.type) {
+    case TOGGLE_SUSPEND_USER:
+        if (state.id !== action.id) {
+            return state;
+        }
+        return Object.assign(state, { suspended_until: action.suspended_until });
+    default:
+        return state;
+    }
+};
+
+const users = (state = fromJS({
+    entities: List(),
+    loading: false,
+}), action = {}) => {
+    if (action.entity && action.entity !== 'user') return state;
+
+    switch (action.type) {
+    case FETCH_USERS_SUCCESS:
+        return state.update('entities', u => u.concat(action.data));
+    case FETCH_USERS_FAIL:
+        return state.set('loading', false);
+    case TOGGLE_SUSPEND_USER:
+        return state.update('entities', es => es.map(e => user(e, action)));
+    case DELETE_CARD:
+        return state.update('entities', es => es.filterNot(e => e.id === action.id));
+    default:
+        return state;
+    }
+};
+
+const suspendedUsers = (state = fromJS({
+    entities: List(),
+    loading: false,
+}), action = {}) => {
+    switch (action.type) {
+    case FETCH_SUSPENDED_USERS_SUCCESS:
+        return state.set('entities', List(action.data));
+    case RESTORE_SUSPENDED_USER:
+        return state.update('entities', es => es.filterNot(s => s.id === action.id));
+    default:
+        return state;
+    }
+};
+
+const reports = (state = fromJS({
+    galleries: {},
+    users: {},
+    loading: false,
+}), action = {}) => {
+    switch (action.type) {
+    case FETCH_REPORTS_SUCCESS:
+        return state.updateIn([action.entity, action.id, action.reports], r => r.concat(reports));
+    case SET_REPORTS_INDEX:
+        return state.setIn([action.reportsType, action.ownerId, 'index'], action.index);
+    default:
+        return state;
+    }
+};
+
+const ui = (state = fromJS({
+    activeTab: 'galleries',
+    filters: fromJS({ galleries: Set(), users: Set() }),
     suspendedDialog: false,
     infoDialog: fromJS({ open: false, header: '', body: '' }),
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {
-        case FETCH_GALLERIES_SUCCESS:
-            return state.update('galleries', g => g.concat(action.data)).set('loading', false);
-        case FETCH_USERS_SUCCESS:
-            return state.update('users', u => u.concat(action.data)).set('loading', false);
-        case FETCH_GALLERIES_FAIL:
-        case FETCH_USERS_FAIL:
-            return state.set('loading', false);
-        case FETCH_REPORTS_SUCCESS:
-            const { type, reports, id } = action.data;
-            return state
-                .updateIn(['reports', type, id], Map(), r => (
-                    fromJS({
-                        index: r.get('index', 0),
-                        reports: r.get('reports', OrderedSet()).concat(fromJS(reports)),
-                    })
-                ));
-        case FETCH_SUSPENDED_USERS_SUCCESS:
-            return state.set('suspendedUsers', List(action.data));
-        case SET_REPORTS_INDEX:
-            const { reportsType, ownerId, index } = action.data;
-            return state.setIn(['reports', reportsType, ownerId, 'index'], index);
-        case TOGGLE_SUSPEND_USER:
-            if (action.entity === 'user') {
-                return state.update('users', u => u.map(u => user(u, action)));
-            } else if (action.entity === 'gallery') {
-                return state.update('galleries', g => g.map(g => gallery(g, action)));
-            }
-        case TOGGLE_SUSPENDED_DIALOG:
-            return state.update('suspendedDialog', s => !s);
-        case TOGGLE_INFO_DIALOG:
-            return state.update('infoDialog', s => (fromJS({
-                open: !s.get('open'), header: action.header, body: action.body
-            })));
-        case DELETE_CARD:
-            return state.update(entityToPlural[action.entity], e => e.filterNot(e => e.id === action.id));
-        case RESTORE_SUSPENDED_USER:
-            return state.update('suspendedUsers', s => s.filterNot(s => s.id === action.id));
-        case TOGGLE_GALLERY_GRAPHIC:
-            return state.update('galleries', g => g.map(g => gallery(g, action)));
-        case ENABLE_FILTER:
-            return state.updateIn(['filters', action.tab], f => f.add(action.filter));
-        case DISABLE_FILTER:
-            return state.updateIn(['filters', action.tab], f => f.delete(action.filter));
-        case SET_ACTIVE_TAB:
-            return state
-                .set('activeTab', action.activeTab.toLowerCase())
-                .set('alert', null);
-        case SET_ALERT:
-            return state.set('alert', action.data);
-        case DISMISS_ALERT:
-            return state.set('alert', null);
-        default:
-            return state;
+    case TOGGLE_SUSPENDED_DIALOG:
+        return state.update('suspendedDialog', s => !s);
+    case TOGGLE_INFO_DIALOG:
+        return state.update('infoDialog', s => fromJS({
+            open: !s.get('open'),
+            header: action.header,
+            body: action.body,
+        }));
+    case ENABLE_FILTER:
+        return state.updateIn(['filters', action.tab], f => f.add(action.filter));
+    case DISABLE_FILTER:
+        return state.updateIn(['filters', action.tab], f => f.delete(action.filter));
+    case SET_ACTIVE_TAB:
+        return state
+            .set('activeTab', action.activeTab.toLowerCase())
+            .set('alert', null);
+    case SET_ALERT:
+        return state.set('alert', action.data);
+    case DISMISS_ALERT:
+        return state.set('alert', null);
+    default:
+        return state;
     }
 };
 
-export default moderation;
+export default combineReducers({
+    galleries,
+    users,
+    suspendedUsers,
+    reports,
+    ui,
+});
 

@@ -32,7 +32,6 @@ class Moderation extends React.Component {
         onToggleSuspendedDialog: PropTypes.func.isRequired,
         onToggleInfoDialog: PropTypes.func.isRequired,
         suspendedDialog: PropTypes.bool.isRequired,
-        loading: PropTypes.bool.isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
         galleries: PropTypes.instanceOf(List).isRequired,
         reports: PropTypes.instanceOf(Map).isRequired,
@@ -57,9 +56,8 @@ class Moderation extends React.Component {
     }
 
     fetchCurrentTab(more = false) {
-        const { fetchGalleries, fetchUsers, activeTab, loading } = this.props;
+        const { fetchGalleries, fetchUsers, activeTab } = this.props;
 
-        if (loading) return;
         if (activeTab === 'galleries') {
             fetchGalleries(more);
         } else if (activeTab === 'users') {
@@ -188,26 +186,26 @@ class Moderation extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const filters = state.getIn(['moderation', 'filters']);
+    const moderation = state.get('moderation');
+    const filters = moderation.getIn(['ui', 'filters']);
     const galleryFilters = filters.get('galleries');
     const userFilters = filters.get('users');
-    const galleries = state
-        .getIn(['moderation', 'galleries'])
+    const galleries = moderation
+        .getIn(['galleries', 'entities'])
         .filter(g => (
             galleryFilters.size === 0 || g.report_reasons.some(r => galleryFilters.includes(r)))
         );
-    const users = state
-        .getIn(['moderation', 'users'])
+    const users = moderation
+        .getIn(['users', 'entities'])
         .filter(g => userFilters.size === 0 || g.report_reasons.some(r => userFilters.includes(r)));
 
     return {
-        activeTab: state.getIn(['moderation', 'activeTab']),
-        loading: state.getIn(['moderation', 'loading']),
-        alert: state.getIn(['moderation', 'alert']),
-        reports: state.getIn(['moderation', 'reports']),
-        suspendedUsers: state.getIn(['moderation', 'suspendedUsers']),
-        suspendedDialog: state.getIn(['moderation', 'suspendedDialog']),
-        infoDialog: state.getIn(['moderation', 'infoDialog']),
+        activeTab: moderation.getIn(['ui', 'activeTab']),
+        alert: moderation.getIn(['ui', 'alert']),
+        reports: moderation.get('reports'),
+        suspendedUsers: moderation.getIn(['suspendedUsers', 'entities']),
+        suspendedDialog: moderation.getIn(['ui', 'suspendedDialog']),
+        infoDialog: moderation.getIn(['ui', 'infoDialog']),
         galleries,
         users,
         filters,
