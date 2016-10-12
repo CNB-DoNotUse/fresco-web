@@ -83,7 +83,7 @@ class Moderation extends React.Component {
         const galleriesJSX = (activeTab === 'galleries' && galleries.size > 0) ? (
             galleries.map((g, i) => (
                 <GalleryCard
-                    key={i}
+                    key={`gallery-card-${i}`}
                     {...g}
                     reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
                     onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
@@ -96,9 +96,9 @@ class Moderation extends React.Component {
         ) : List();
 
         const usersJSX = (activeTab === 'users' && users.size > 0) ? (
-            users.map(u => (
+            users.map((u, i) => (
                 <UserCard
-                    key={u.id}
+                    key={`user-card-${i}`}
                     user={u}
                     reportData={reports.getIn(['users', u.id], Map()).toJS()}
                     onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}

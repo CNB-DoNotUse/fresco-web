@@ -85,7 +85,7 @@ describe('push notifs reducer', () => {
             type: pushActions.SEND_FAIL,
             data: 'Fail!',
         });
-        const action = pushActions.confirmAlert();
+        const action = pushActions.dismissAlert();
         const nextState = reducer(initialState, action);
 
         expect(nextState).to.equal(fromJS({

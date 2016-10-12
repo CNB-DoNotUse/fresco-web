@@ -332,9 +332,6 @@ const moderation = (state = fromJS({
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {
-        case FETCH_GALLERIES:
-        case FETCH_USERS:
-            return state.set('loading', true);
         case FETCH_GALLERIES_SUCCESS:
             return state.update('galleries', g => g.concat(action.data)).set('loading', false);
         case FETCH_USERS_SUCCESS:
