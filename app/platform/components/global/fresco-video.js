@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import uniqueId from 'lodash/uniqueId';
 import '../../../sass/platform/video.scss';
-
-require('script!video.js/dist/video');
-require('script!videojs-contrib-hls/dist/videojs-contrib-hls');
+require('script!video.js/dist/video.min.js');
+require('script!videojs-contrib-hls/dist/videojs-contrib-hls.min.js');
 
 /**
  * Stateless video that sets up an HTML video or Video.JS videoJSPlayer for m3u8

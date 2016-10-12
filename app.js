@@ -37,6 +37,12 @@ app.set('view engine', 'ejs');
 app.use(compression())
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
+//Set up public directory
+app.use(
+    express.static(path.join(__dirname, 'public'), {
+        maxAge: 1000 * 60 * 60 * 24  // 1 day cache
+    })
+);
 
 //Multer
 const storage = multer.diskStorage({
@@ -48,11 +54,9 @@ const storage = multer.diskStorage({
     }
 });
 
-app.use(
-    multer({
-        storage: storage
-    }).any()
-);
+app.use(multer({
+    storage: storage
+}).any());
 
 //Cookie parser
 app.use(cookieParser());
@@ -70,14 +74,6 @@ app.use(
         unset: 'destroy'
     })
 );
-
-//Set up public directory
-app.use(
-    express.static(path.join(__dirname, 'public'), {
-        maxAge: 1000 * 60 * 60 * 2 // 2 hour cache
-    })
-);
-
 
 /**
  * Alert & Verifications check
