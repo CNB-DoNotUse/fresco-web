@@ -64,11 +64,8 @@ class AssignmentDetail extends React.Component {
             limit: 10,
             sortBy,
             last,
+            rating: verifiedToggle ? 2 : 1,
         };
-
-        if (verifiedToggle) {
-            params.rating = [1];
-        }
 
         $.ajax({
             url: `/api/assignment/${assignment.id}/posts`,
