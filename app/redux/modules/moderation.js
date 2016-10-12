@@ -237,7 +237,7 @@ export const restoreSuspendedUser = (id) => (dispatch, getState) => {
     .post(`user/${user.id}/unsuspend`)
     .then(() => dispatch({
         type: RESTORE_SUSPENDED_USER,
-        data: id,
+        id,
     }))
     .catch(() => dispatch({
         type: SET_ALERT,
@@ -252,10 +252,8 @@ export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
     .post(`gallery/${id}/${nsfw ? 'sfw' : 'nsfw'}`)
     .then(() => dispatch({
         type: TOGGLE_GALLERY_GRAPHIC,
-        data: {
-            id,
-            nsfw: !nsfw,
-        },
+        id,
+        nsfw: !nsfw,
     }))
     .catch(() => dispatch({
         type: SET_ALERT,
@@ -307,13 +305,15 @@ const user = (state, action) => {
 };
 
 const gallery = (state, action) => {
+    if (state.id !== action.id) {
+        return state;
+    }
     switch (action.type) {
         case TOGGLE_SUSPEND_USER:
-            if (state.id !== action.id) {
-                return state;
-            }
             const owner = Object.assign(state.owner, {suspended_until: action.suspended_until});
             return Object.assign(state, { owner });
+        case TOGGLE_GALLERY_GRAPHIC:
+            return Object.assign({}, state, { is_nsfw: action.nsfw })
         default:
             return state;
     }
@@ -371,15 +371,9 @@ const moderation = (state = fromJS({
         case DELETE_CARD:
             return state.update(entityToPlural[action.entity], e => e.filterNot(e => e.id === action.id));
         case RESTORE_SUSPENDED_USER:
-            return state
-                .deleteIn(['suspendedUsers',
-                    state.get('suspendedUsers').findIndex(u => u.id === action.data)]);
+            return state.update('suspendedUsers', s => s.filterNot(s => s.id === action.id));
         case TOGGLE_GALLERY_GRAPHIC:
-            const graphicIndex = state.get('galleries').findIndex(u => u.id === action.data.id);
-            return state
-                .updateIn(['galleries', graphicIndex], u => (
-                    Object.assign({}, u, { is_nsfw: action.data.nsfw })
-                ));
+            return state.update('galleries', g => g.map(g => gallery(g, action)));
         case ENABLE_FILTER:
             return state.updateIn(['filters', action.tab], f => f.add(action.filter));
         case DISABLE_FILTER:
