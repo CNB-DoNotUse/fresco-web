@@ -11,6 +11,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 @import "mixins";
 @import "snackbar";
 @import "~mdi/scss/materialdesignicons.scss";
+@import "../../fonts/nota/nota";
+@import "../../fonts/roboto/roboto";
+@import "../../fonts/roboto";
 @import "../../fonts/icomoon/style";
 
 /*
@@ -29,7 +32,7 @@ $roboto:Roboto, sans-serif;
 }
 
 html, body {
-    font-family:$roboto;
+    font-family:$nota;
     font-weight:400;
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
