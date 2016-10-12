@@ -93,7 +93,7 @@ export const fetchGalleries = (loadMore) => (dispatch, getState) => {
     api
     .get('gallery/reported', { last: last ? last.id : null, limit: 10 })
     .then(res => {
-        res.forEach(g => dispatch(fetchReports({ id: g.id, type: 'galleries' })));
+        res.forEach(g => dispatch(fetchReports({ id: g.id, entity: 'galleries' })));
         dispatch({
             type: FETCH_GALLERIES_SUCCESS,
             data: res,
@@ -118,7 +118,7 @@ export const fetchUsers = (loadMore) => (dispatch, getState) => {
     api
     .get('user/reported', { last: last ? last.id : null, limit: 10 })
     .then(res => {
-        res.forEach(u => dispatch(fetchReports({ id: u.id, type: 'users' })));
+        res.forEach(u => dispatch(fetchReports({ id: u.id, entity: 'users' })));
         dispatch({
             type: FETCH_USERS_SUCCESS,
             data: res,
@@ -150,8 +150,8 @@ export const toggleFilter = (tab, filter) => (dispatch, getState) => {
     }
 };
 
-export const updateReportsIndex = (type, id, change) => (dispatch, getState) => {
-    const reportData = getState().getIn(['moderation', 'reports', type, id], Map());
+export const updateReportsIndex = (entity, id, change) => (dispatch, getState) => {
+    const reportData = getState().getIn(['moderation', 'reports', entity, id], Map());
     const newIndex = (reportData.get('index', 0) + change) || 0;
     const reportsSize = reportData.get('reports', List()).size;
 
@@ -161,7 +161,7 @@ export const updateReportsIndex = (type, id, change) => (dispatch, getState) => 
     if (newIndex >= reportsSize && newIndex >= REPORTS_LIMIT) {
         dispatch(fetchReports({
             id,
-            type,
+            entity,
             last: reportData.get('reports', OrderedSet()).last(),
         }));
 
@@ -170,7 +170,7 @@ export const updateReportsIndex = (type, id, change) => (dispatch, getState) => 
 
     dispatch({
         type: SET_REPORTS_INDEX,
-        reportsType: type,
+        reportsType: entity,
         ownerId: id,
         index: newIndex,
     });
@@ -379,7 +379,10 @@ const reports = (state = fromJS({
 }), action = {}) => {
     switch (action.type) {
     case FETCH_REPORTS_SUCCESS:
-        return state.updateIn([action.entity, action.id, action.reports], r => r.concat(reports));
+        return state.updateIn([action.entity, action.id], Map(), r => fromJS({
+            reports: r.get('reports', List()).concat(action.reports),
+            index: r.get('index', 0),
+        }));
     case SET_REPORTS_INDEX:
         return state.setIn([action.reportsType, action.ownerId, 'index'], action.index);
     default:
