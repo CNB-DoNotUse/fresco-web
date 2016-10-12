@@ -23,13 +23,15 @@ export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
 export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
 export const TOGGLE_SUSPEND_USER = 'moderation/TOGGLE_SUSPEND_USER';
 export const TOGGLE_GALLERY_GRAPHIC = 'moderation/TOGGLE_GALLERY_GRAPHIC';
-export const SKIP_USER = 'moderation/SKIP_USER';
-export const SKIP_GALLERY = 'moderation/SKIP_GALLERY';
-export const DISABLE_USER = 'moderation/DISABLE_USER';
-export const DELETE_GALLERY = 'moderation/DELETE_GALLERY';
 export const RESTORE_SUSPENDED_USER = 'moderation/RESTORE_SUSPENDED_USER';
+export const DELETE_CARD = 'moderation/DELETE_CARD';
 
 const REPORTS_LIMIT = 10;
+
+const entityToPlural = {
+    gallery: 'galleries',
+    user: 'users',
+};
 
 // action creators
 export const setActiveTab = (activeTab) => ({
@@ -241,7 +243,7 @@ export const restoreSuspendedUser = (id) => (dispatch, getState) => {
         type: SET_ALERT,
         data: 'Could not restore user',
     }));
-}
+};
 
 export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
     const nsfw = getState().getIn(['moderation', 'galleries']).find(g => g.id === id).is_nsfw;
@@ -261,28 +263,30 @@ export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
     }));
 };
 
-export const skipCard = (type, id) => (dispatch) => (
+export const skipCard = (entity, id) => (dispatch) => (
     api
-    .post(`${type}/${id}/report/skip`)
+    .post(`${entity}/${id}/report/skip`)
     .then(() => dispatch({
-        type: type === 'user' ? SKIP_USER : SKIP_GALLERY,
-        data: id,
+        type: DELETE_CARD,
+        id,
+        entity,
     }))
     .catch(() => dispatch({
         type: SET_ALERT,
-        data: `Could not skip ${type}`,
+        data: `Could not skip ${entity}`,
     }))
 );
 
-export const deleteCard = (type, id) => (dispatch) => {
-    const params = type === 'user' ? { user_id: id } : {};
-    const url = type === 'user' ? 'user/disable' : `gallery/${id}/delete`;
+export const deleteCard = (entity, id) => (dispatch) => {
+    const params = entity === 'user' ? { user_id: id } : {};
+    const url = entity === 'user' ? 'user/disable' : `gallery/${id}/delete`;
 
     api
     .post(url, params)
     .then(() => dispatch({
-        type: type === 'user' ? DISABLE_USER : DELETE_GALLERY,
-        data: id,
+        type: DELETE_CARD,
+        id,
+        entity,
     }))
     .catch(() => dispatch({
         type: SET_ALERT,
@@ -364,10 +368,8 @@ const moderation = (state = fromJS({
             return state.update('infoDialog', s => (fromJS({
                 open: !s.get('open'), header: action.header, body: action.body
             })));
-        case SKIP_USER:
-        case DISABLE_USER:
-            return state
-                .deleteIn(['users', state.get('users').findIndex(u => u.id === action.data)]);
+        case DELETE_CARD:
+            return state.update(entityToPlural[action.entity], e => e.filterNot(e => e.id === action.id));
         case RESTORE_SUSPENDED_USER:
             return state
                 .deleteIn(['suspendedUsers',
@@ -378,12 +380,6 @@ const moderation = (state = fromJS({
                 .updateIn(['galleries', graphicIndex], u => (
                     Object.assign({}, u, { is_nsfw: action.data.nsfw })
                 ));
-        case SKIP_GALLERY:
-        case DELETE_GALLERY:
-            return state
-                .deleteIn([
-                    'galleries', state.get('galleries').findIndex(g => g.id === action.data),
-                ]);
         case ENABLE_FILTER:
             return state.updateIn(['filters', action.tab], f => f.add(action.filter));
         case DISABLE_FILTER:
