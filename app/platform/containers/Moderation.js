@@ -4,7 +4,7 @@ import * as moderationActions from 'app/redux/modules/moderation';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
-import { Map, List } from 'immutable';
+import { Map, List, OrderedSet } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
 import FrescoMasonry from '../components/global/fresco-masonry';
 import TopBar from '../components/moderation/topbar';
@@ -33,10 +33,10 @@ class Moderation extends React.Component {
         onToggleInfoDialog: PropTypes.func.isRequired,
         suspendedDialog: PropTypes.bool.isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
-        galleries: PropTypes.instanceOf(List).isRequired,
+        galleries: PropTypes.instanceOf(OrderedSet).isRequired,
         reports: PropTypes.instanceOf(Map).isRequired,
-        users: PropTypes.instanceOf(List).isRequired,
-        suspendedUsers: PropTypes.instanceOf(List).isRequired,
+        users: PropTypes.instanceOf(OrderedSet).isRequired,
+        suspendedUsers: PropTypes.instanceOf(OrderedSet).isRequired,
         alert: PropTypes.string,
     };
 
@@ -79,9 +79,9 @@ class Moderation extends React.Component {
         } = this.props;
 
         const galleriesJSX = (activeTab === 'galleries' && galleries.size > 0) ? (
-            galleries.map((g, i) => (
+            galleries.toJS().map(g => (
                 <GalleryCard
-                    key={`gallery-card-${i}`}
+                    key={`gallery-card-${g.id}`}
                     {...g}
                     reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
                     onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
@@ -91,12 +91,12 @@ class Moderation extends React.Component {
                     onToggleGraphic={partial(onToggleGraphic, g.id)}
                 />
             ))
-        ) : List();
+        ) : [];
 
         const usersJSX = (activeTab === 'users' && users.size > 0) ? (
-            users.map((u, i) => (
+            users.toJS().map(u => (
                 <UserCard
-                    key={`user-card-${i}`}
+                    key={`user-card-${u.id}`}
                     user={u}
                     reportData={reports.getIn(['users', u.id], Map()).toJS()}
                     onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
@@ -105,7 +105,7 @@ class Moderation extends React.Component {
                     onDisable={partial(onDelete, 'user', u.id)}
                 />
             ))
-        ) : List();
+        ) : [];
 
         return (
             <FrescoMasonry
@@ -113,7 +113,7 @@ class Moderation extends React.Component {
                 ctrClassName="moderation-masonry__ctr"
                 loadMore={() => this.fetchCurrentTab(true)}
             >
-                {galleriesJSX.concat(usersJSX).toJS()}
+                {galleriesJSX.concat(usersJSX)}
             </FrescoMasonry>
         );
     }
@@ -162,9 +162,9 @@ class Moderation extends React.Component {
                         onClose={onToggleSuspendedDialog}
                         header="Suspended users"
                     >
-                        {suspendedUsers.map((s, i) =>
+                        {suspendedUsers.toJS().map(s =>
                             <SuspendedUser
-                                key={i}
+                                key={`suspended-user-${s.id}`}
                                 user={s}
                                 onClickRestore={partial(onRestoreUser, s.id)}
                             />

@@ -177,12 +177,13 @@ export const updateReportsIndex = (entity, id, change) => (dispatch, getState) =
 };
 
 export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
+    const state = getState().get('moderation');
     let user;
     let suspended_until = null;
     if (entity === 'gallery') {
-        user = getState().getIn(['moderation', 'galleries']).find(g => g.id === id).owner;
+        user = state.getIn(['galleries', 'entities']).find(g => g.id === id).owner;
     } else {
-        user = getState().getIn(['moderation', 'users']).find(u => u.id === id);
+        user = state.getIn(['users', 'entities']).find(u => u.id === id);
     }
 
     if (user.suspended_until) {
@@ -227,7 +228,7 @@ export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
 };
 
 export const restoreSuspendedUser = (id) => (dispatch, getState) => {
-    const user = getState().getIn(['moderation', 'suspendedUsers']).find(u => u.id === id);
+    const user = getState().getIn(['moderation', 'suspendedUsers', 'entities']).find(u => u.id === id);
 
     api
     .post(`user/${user.id}/unsuspend`)
@@ -242,7 +243,7 @@ export const restoreSuspendedUser = (id) => (dispatch, getState) => {
 };
 
 export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
-    const nsfw = getState().getIn(['moderation', 'galleries']).find(g => g.id === id).is_nsfw;
+    const nsfw = getState().getIn(['moderation', 'galleries', 'entities']).find(g => g.id === id).is_nsfw;
 
     api
     .post(`gallery/${id}/${nsfw ? 'sfw' : 'nsfw'}`)
@@ -305,14 +306,14 @@ const gallery = (state, action) => {
 };
 
 const galleries = (state = fromJS({
-    entities: List(),
+    entities: OrderedSet(),
     loading: false,
 }), action = {}) => {
     if (action.entity && action.entity !== 'gallery') return state;
 
     switch (action.type) {
     case FETCH_GALLERIES_SUCCESS:
-        return state.update('entities', g => g.concat(action.data));
+        return state.update('entities', g => g.concat(fromJS(action.data)));
     case FETCH_GALLERIES_FAIL:
         return state.set('loading', false);
     case TOGGLE_GALLERY_GRAPHIC:
@@ -339,14 +340,14 @@ const user = (state, action) => {
 };
 
 const users = (state = fromJS({
-    entities: List(),
+    entities: OrderedSet(),
     loading: false,
 }), action = {}) => {
     if (action.entity && action.entity !== 'user') return state;
 
     switch (action.type) {
     case FETCH_USERS_SUCCESS:
-        return state.update('entities', u => u.concat(action.data));
+        return state.update('entities', u => u.concat(fromJS(action.data)));
     case FETCH_USERS_FAIL:
         return state.set('loading', false);
     case TOGGLE_SUSPEND_USER:
@@ -359,12 +360,12 @@ const users = (state = fromJS({
 };
 
 const suspendedUsers = (state = fromJS({
-    entities: List(),
+    entities: OrderedSet(),
     loading: false,
 }), action = {}) => {
     switch (action.type) {
     case FETCH_SUSPENDED_USERS_SUCCESS:
-        return state.set('entities', List(action.data));
+        return state.set('entities', OrderedSet(fromJS(action.data)));
     case RESTORE_SUSPENDED_USER:
         return state.update('entities', es => es.filterNot(s => s.id === action.id));
     default:
