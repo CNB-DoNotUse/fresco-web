@@ -141,14 +141,13 @@ class PostCell extends React.Component {
 
                 {this.renderFooter()}
 
-                {gallery && galleryEditVisible
-                    ? <GalleryEdit
+                {gallery && galleryEditVisible ? 
+                    <GalleryEdit
                         gallery={gallery}
                         visible={galleryEditVisible}
                         toggle={this.onToggleGalleryEdit}
                     />
-                    : null
-                }
+                : null }
             </div>
         );
     }
