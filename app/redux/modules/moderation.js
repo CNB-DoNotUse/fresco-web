@@ -181,14 +181,17 @@ export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
     let user;
     let suspended_until = null;
     if (entity === 'gallery') {
-        user = state.getIn(['galleries', 'entities']).find(g => g.id === id).owner;
+        user = state
+            .getIn(['galleries', 'entities'])
+            .find(g => g.get('id') === id)
+            .get('owner');
     } else {
-        user = state.getIn(['users', 'entities']).find(u => u.id === id);
+        user = state.getIn(['users', 'entities']).find(u => u.get('id') === id);
     }
 
-    if (user.suspended_until) {
+    if (user.get('suspended_until')) {
         api
-        .post(`user/${user.id}/unsuspend`)
+        .post(`user/${user.get('id')}/unsuspend`)
         .then(() => dispatch({
             type: TOGGLE_SUSPEND_USER,
             suspended_until,
@@ -203,7 +206,7 @@ export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
     } else {
         suspended_until = moment().add(2, 'week').toISOString();
         api
-        .post(`user/${user.id}/suspend`, { suspended_until })
+        .post(`user/${user.get('id')}/suspend`, { suspended_until })
         .then(() => {
             dispatch({
                 type: TOGGLE_SUSPEND_USER,
@@ -212,7 +215,7 @@ export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
                 id,
             });
 
-            const name = user.username ? `@${user.username}` : user.full_name;
+            const name = user.get('username') ? `@${user.get('username')}` : user.get('full_name');
             dispatch(toggleInfoDialog({
                 open: true,
                 header: `Suspend ${name}`,
@@ -228,10 +231,12 @@ export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
 };
 
 export const restoreSuspendedUser = (id) => (dispatch, getState) => {
-    const user = getState().getIn(['moderation', 'suspendedUsers', 'entities']).find(u => u.id === id);
+    const user = getState()
+        .getIn(['moderation', 'suspendedUsers', 'entities'])
+        .find(u => u.id === id);
 
     api
-    .post(`user/${user.id}/unsuspend`)
+    .post(`user/${user.get('id')}/unsuspend`)
     .then(() => dispatch({
         type: RESTORE_SUSPENDED_USER,
         id,
@@ -290,16 +295,14 @@ export const deleteCard = (entity, id) => (dispatch) => {
 };
 
 const gallery = (state, action) => {
-    if (state.id !== action.id) {
+    if (state.get('id') !== action.id) {
         return state;
     }
     switch (action.type) {
     case TOGGLE_SUSPEND_USER:
-        return Object.assign(state, {
-            owner: Object.assign(state.owner, { suspended_until: action.suspended_until }),
-        });
+        return state.mergeIn(['owner'], { suspended_until: action.suspended_until });
     case TOGGLE_GALLERY_GRAPHIC:
-        return Object.assign({}, state, { is_nsfw: action.nsfw });
+        return state.set('is_nsfw', action.nsfw);
     default:
         return state;
     }
@@ -321,7 +324,7 @@ const galleries = (state = fromJS({
     case TOGGLE_SUSPEND_USER:
         return state.update('entities', es => es.map(e => gallery(e, action)));
     case DELETE_CARD:
-        return state.update('entities', es => es.filterNot(e => e.id === action.id));
+        return state.update('entities', es => es.filterNot(e => e.get('id') === action.id));
     default:
         return state;
     }
@@ -333,7 +336,7 @@ const user = (state, action) => {
         if (state.id !== action.id) {
             return state;
         }
-        return Object.assign(state, { suspended_until: action.suspended_until });
+        return state.set('suspended_until', action.suspended_until);
     default:
         return state;
     }
@@ -353,7 +356,7 @@ const users = (state = fromJS({
     case TOGGLE_SUSPEND_USER:
         return state.update('entities', es => es.map(e => user(e, action)));
     case DELETE_CARD:
-        return state.update('entities', es => es.filterNot(e => e.id === action.id));
+        return state.update('entities', es => es.filterNot(e => e.get('id') === action.id));
     default:
         return state;
     }
@@ -367,7 +370,7 @@ const suspendedUsers = (state = fromJS({
     case FETCH_SUSPENDED_USERS_SUCCESS:
         return state.set('entities', OrderedSet(fromJS(action.data)));
     case RESTORE_SUSPENDED_USER:
-        return state.update('entities', es => es.filterNot(s => s.id === action.id));
+        return state.update('entities', es => es.filterNot(s => s.get('id') === action.id));
     default:
         return state;
     }
