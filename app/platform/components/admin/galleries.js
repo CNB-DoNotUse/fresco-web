@@ -67,7 +67,7 @@ class Galleries extends React.Component {
                 type="gallery"
                 gallery={gallery}
                 key={i}
-                active={activeGallery && activeGallery.id === gallery.id}
+                active={!!activeGallery && activeGallery.id === gallery.id}
                 onClick={() => this.setActiveGallery(gallery)}
             />
         ));
