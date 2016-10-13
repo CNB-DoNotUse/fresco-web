@@ -197,7 +197,7 @@ function mapStateToProps(state) {
         );
     const users = moderation
         .getIn(['users', 'entities'])
-        .filter(g => userFilters.size === 0 || g.report_reasons.some(r => userFilters.includes(r)));
+        .filter(g => userFilters.size === 0 || g.get('report_reasons').some(r => userFilters.includes(r)));
 
     return {
         activeTab: moderation.getIn(['ui', 'activeTab']),

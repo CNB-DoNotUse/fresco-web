@@ -133,7 +133,7 @@ export const fetchUsers = (loadMore) => (dispatch, getState) => {
 };
 
 export const toggleFilter = (tab, filter) => (dispatch, getState) => {
-    const activeFilters = getState().getIn(['moderation', 'filters', tab]);
+    const activeFilters = getState().getIn(['moderation', 'ui', 'filters', tab]);
 
     if (activeFilters.includes(filter)) {
         dispatch({
