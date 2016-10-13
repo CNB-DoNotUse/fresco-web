@@ -192,12 +192,12 @@ function mapStateToProps(state) {
     const userFilters = filters.get('users');
     const galleries = moderation
         .getIn(['galleries', 'entities'])
-        .filter(g => (
-            galleryFilters.size === 0 || g.report_reasons.some(r => galleryFilters.includes(r)))
-        );
+        .filter(g => (galleryFilters.size === 0 ||
+            g.get('report_reasons').some(r => galleryFilters.includes(r))));
     const users = moderation
         .getIn(['users', 'entities'])
-        .filter(g => userFilters.size === 0 || g.get('report_reasons').some(r => userFilters.includes(r)));
+        .filter(g => userFilters.size === 0 ||
+            g.get('report_reasons').some(r => userFilters.includes(r)));
 
     return {
         activeTab: moderation.getIn(['ui', 'activeTab']),

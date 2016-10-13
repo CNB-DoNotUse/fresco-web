@@ -93,13 +93,16 @@ export const fetchGalleries = () => (dispatch, getState) => {
     api
     .get('gallery/reported', { last: last ? last.get('id') : null, limit: 10 })
     .then(res => {
-        res.forEach(g => dispatch(fetchReports({ id: g.id, entity: 'galleries' })));
+        const curIds = state.get('entities').map(e => e.get('id')).toJS();
+        const newObjs = res.filter(r => !curIds.includes(r.id));
+        newObjs.forEach(r => dispatch(fetchReports({ id: r.id, entity: 'galleries' })));
+
         dispatch({
             type: FETCH_GALLERIES_SUCCESS,
-            data: res,
+            data: newObjs,
         });
     })
-    .catch(() => {
+    .catch((err) => {
         dispatch({
             type: FETCH_GALLERIES_FAIL,
             data: 'Could not fetch galleries.',
@@ -118,10 +121,13 @@ export const fetchUsers = (loadMore) => (dispatch, getState) => {
     api
     .get('user/reported', { last: last ? last.id : null, limit: 10 })
     .then(res => {
-        res.forEach(u => dispatch(fetchReports({ id: u.id, entity: 'users' })));
+        const curIds = state.get('entities').map(e => e.get('id')).toJS();
+        const newObjs = res.filter(r => !curIds.includes(r.id));
+        newObjs.forEach(r => dispatch(fetchReports({ id: r.id, entity: 'users' })));
+
         dispatch({
             type: FETCH_USERS_SUCCESS,
-            data: res,
+            data: newObjs,
         });
     })
     .catch(() => {
@@ -315,8 +321,12 @@ const galleries = (state = fromJS({
     if (action.entity && action.entity !== 'gallery') return state;
 
     switch (action.type) {
+    case FETCH_GALLERIES:
+        return state.set('loading', true);
     case FETCH_GALLERIES_SUCCESS:
-        return state.update('entities', g => g.concat(fromJS(action.data)));
+        return state
+            .update('entities', g => g.concat(fromJS(action.data)))
+            .set('loading', false);
     case FETCH_GALLERIES_FAIL:
         return state.set('loading', false);
     case TOGGLE_GALLERY_GRAPHIC:
@@ -349,8 +359,12 @@ const users = (state = fromJS({
     if (action.entity && action.entity !== 'user') return state;
 
     switch (action.type) {
+    case FETCH_USERS:
+        return state.set('loading', true);
     case FETCH_USERS_SUCCESS:
-        return state.update('entities', u => u.concat(fromJS(action.data)));
+        return state
+            .update('entities', u => u.concat(fromJS(action.data)))
+            .set('loading', false);
     case FETCH_USERS_FAIL:
         return state.set('loading', false);
     case TOGGLE_SUSPEND_USER:
