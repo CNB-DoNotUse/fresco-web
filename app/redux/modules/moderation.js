@@ -11,7 +11,7 @@ export const DISMISS_ALERT = 'moderation/DISMISS_ALERT';
 export const SET_ALERT = 'moderation/SET_ALERT';
 export const TOGGLE_SUSPENDED_DIALOG = 'moderation/TOGGLE_SUSPENDED_DIALOG';
 export const TOGGLE_INFO_DIALOG = 'moderation/TOGGLE_INFO_DIALOG';
-export const FETCH_GALLERIES = 'moderation/FETCH_GALLERIES';
+export const FETCH_GALLERIES_REQUEST= 'moderation/FETCH_GALLERIES';
 export const FETCH_GALLERIES_SUCCESS = 'moderation/FETCH_GALLERIES_SUCCESS';
 export const FETCH_GALLERIES_FAIL = 'moderation/FETCH_GALLERIES_FAIL';
 export const FETCH_USERS = 'moderation/FETCH_USERS';
@@ -84,13 +84,13 @@ export const fetchReports = ({ id, entity, last }) => (dispatch) => {
 
 export const fetchGalleries = () => (dispatch, getState) => {
     const state = getState().getIn(['moderation', 'galleries']);
-    if (state.get('loading')) return;
-    dispatch({ type: FETCH_GALLERIES });
+    if (state.get('loading')) return Promise.reject();
+    dispatch({ type: FETCH_GALLERIES_REQUEST });
 
     let last;
     if (state.get('entities').size > 0) last = state.get('entities').last();
 
-    api
+    return api
     .get('gallery/reported', { last: last ? last.get('id') : null, limit: 10 })
     .then(res => {
         const curIds = state.get('entities').map(e => e.get('id')).toJS();
@@ -106,6 +106,7 @@ export const fetchGalleries = () => (dispatch, getState) => {
         dispatch({
             type: FETCH_GALLERIES_FAIL,
             data: 'Could not fetch galleries.',
+            err,
         });
     });
 };
@@ -321,7 +322,7 @@ const galleries = (state = fromJS({
     if (action.entity && action.entity !== 'gallery') return state;
 
     switch (action.type) {
-    case FETCH_GALLERIES:
+    case FETCH_GALLERIES_REQUEST:
         return state.set('loading', true);
     case FETCH_GALLERIES_SUCCESS:
         return state
