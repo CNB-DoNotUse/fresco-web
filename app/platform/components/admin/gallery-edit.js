@@ -13,12 +13,14 @@ import EditByline from './../gallery/edit-byline';
  *	Admin Gallery Edit component.
  *	Delete, Skip, Verify galleries
  */
-class GalleryEdit extends React.Component {
-    constructor(props) {
-        super(props);
+export default class GalleryEdit extends React.Component {
+    static propTypes = {
+        gallery: PropTypes.object.isRequired,
+        galleryType: PropTypes.string.isRequired,
+        onUpdateGallery: PropTypes.func.isRequired,
+    };
 
-        this.state = this.getStateFromProps(props);
-    }
+    state = this.getStateFromProps(this.props);
 
     componentDidUpdate(prevProps) {
         if (this.props.gallery.id !== prevProps.gallery.id) {
@@ -326,9 +328,10 @@ class GalleryEdit extends React.Component {
                         autocomplete
                     />
 
-                    <ExplicitCheckbox 
-                        is_nsfw={is_nsfw} 
-                        onChange={this.toggle_is_nsfw} />
+                    <ExplicitCheckbox
+                        is_nsfw={is_nsfw}
+                        onChange={this.toggle_is_nsfw}
+                    />
 
                     <AutocompleteMap
                         location={location}
@@ -353,21 +356,21 @@ class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-verify"
-                        onClick={() => this.setState({ rating: 2 },
-                            () => this.onVerify())}
+                        onClick={() => this.setState({ rating: 2 }, () => this.onVerify())}
                         disabled={loading}
                     >
                         Verify
                     </button>
-                    <button
-                        type="button"
-                        className="btn btn-flat pull-right gallery-skip"
-                        onClick={() => this.setState({ rating: 1 },
-                            () => this.onSkip())}
-                        disabled={loading}
-                    >
-                        Skip
-                    </button>
+                    {galleryType === 'submissions' && (
+                        <button
+                            type="button"
+                            className="btn btn-flat pull-right gallery-skip"
+                            onClick={() => this.setState({ rating: 1 }, () => this.onSkip())}
+                            disabled={loading}
+                        >
+                            Skip
+                        </button>
+                    )}
                     <button
                         type="button"
                         className="btn btn-flat pull-right gallery-delete"
@@ -381,12 +384,4 @@ class GalleryEdit extends React.Component {
 		);
     }
 }
-
-GalleryEdit.propTypes = {
-    gallery: PropTypes.object.isRequired,
-    galleryType: PropTypes.string.isRequired,
-    onUpdateGallery: PropTypes.func.isRequired,
-};
-
-export default GalleryEdit;
 

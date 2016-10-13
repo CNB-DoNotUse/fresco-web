@@ -58,7 +58,7 @@ class Admin extends React.Component {
         this.setState({ activeTab: tab });
     }
 
-    getData(options, callback, last = null) {
+    getData = (options, callback, last = null) => {
         const tab = options.tab || this.state.activeTab;
         let params = {};
         let endpoint = '';
@@ -136,7 +136,7 @@ class Admin extends React.Component {
     }
 
     refresh = () => {
-        this.getData(undefined, { tab: this.state.activeTab }, (data) => {
+        this.getData({ tab: this.state.activeTab }, (data) => {
             const oldData = this.state[this.state.activeTab];
             const newData = differenceBy(data, oldData, 'id');
 
@@ -173,9 +173,7 @@ class Admin extends React.Component {
     }
 
     resetImports() {
-
         this.getData({ tab: 'imports' }, (imports) => {
-            console.log(imports);
             this.setState({
                 activeTab: 'imports',
                 imports: imports.length ? imports : this.state.imports,
@@ -193,7 +191,7 @@ class Admin extends React.Component {
                     activeTab: 'submissions',
                     submissions: this.state.submissions.concat(submissions)
                 });
-            } else { 
+            } else {
                 this.getData({ tab: 'imports' }, (imports) => {
                     this.setState({
                         activeTab: (imports.length && !this.state.submissions.length)
@@ -224,7 +222,7 @@ class Admin extends React.Component {
             tab = (
                 <Assignments
                     assignments={this.getAssignments()}
-                    getData={(l, o, cb) => this.getData(o, cb, l)}
+                    getData={this.getData}
                     removeAssignment={(id, cb) => this.removeAssignment(id, cb)}
                 />
             );
@@ -233,7 +231,7 @@ class Admin extends React.Component {
             tab = (
                 <Galleries
                     galleries={this.state.submissions}
-                    getData={(l, o, cb) => this.getData(o, cb, l)}
+                    getData={this.getData}
                     removeGallery={(id, cb) => this.removeSubmission(id, cb)}
                     galleryType="submissions"
                 />
@@ -243,7 +241,7 @@ class Admin extends React.Component {
             tab = (
                 <Galleries
                     galleries={this.state.imports}
-                    getData={(l, o, cb) => this.getData(o, cb, l)}
+                    getData={this.getData}
                     removeGallery={(id, cb) => this.removeImport(id, cb)}
                     galleryType="imports"
                 />
