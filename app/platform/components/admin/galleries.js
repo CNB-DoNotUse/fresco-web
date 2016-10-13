@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
+import findIndex from 'lodash/findIndex';
 import GalleryListItem from './gallery-list-item';
 import GalleryEdit from './gallery-edit';
-import findIndex from 'lodash/findIndex';
 
 /**
  * Galleries - component for managing submissions
@@ -10,11 +10,7 @@ import findIndex from 'lodash/findIndex';
  * @extends React.Component
  */
 class Galleries extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = { activeGallery: null, loading: false };
-    }
+    state = { activeGallery: null, loading: false };
 
     componentWillReceiveProps(nextProps) {
         if (this.props.galleryType !== nextProps.galleryType) {
@@ -71,7 +67,7 @@ class Galleries extends React.Component {
                 type="gallery"
                 gallery={gallery}
                 key={i}
-                active={(activeGallery && activeGallery.id === gallery.id) || false}
+                active={activeGallery && activeGallery.id === gallery.id}
                 onClick={() => this.setActiveGallery(gallery)}
             />
         ));
