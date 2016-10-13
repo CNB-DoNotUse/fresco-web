@@ -25,6 +25,12 @@ export default class FrescoMasonry extends Component {
         hasMore: true,
     }
 
+    // componentDidUpdate(prevProps) {
+    //     if (prevProps.children.length !== this.props.children.length) {
+    //         this.masonry.performLayout();
+    //     }
+    // }
+
     render() {
         const {
             className,

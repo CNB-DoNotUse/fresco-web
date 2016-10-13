@@ -55,13 +55,13 @@ class Moderation extends React.Component {
         }
     }
 
-    fetchCurrentTab(more = false) {
+    fetchCurrentTab() {
         const { fetchGalleries, fetchUsers, activeTab } = this.props;
 
         if (activeTab === 'galleries') {
-            fetchGalleries(more);
+            fetchGalleries();
         } else if (activeTab === 'users') {
-            fetchUsers(more);
+            fetchUsers();
         }
     }
 

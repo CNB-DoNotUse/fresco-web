@@ -25,9 +25,11 @@ CardBadges.propTypes = {
 };
 
 export const CardUser = ({ user }) => (
-    <div className="moderation-card__user-item-ctr">
-        <UserItem user={user} metaType="flags" />
-    </div>
+    user ? (
+        <div className="moderation-card__user-item-ctr">
+            <UserItem user={user} metaType="flags" />
+        </div>
+    ) : null
 );
 
 CardUser.propTypes = {
@@ -60,5 +62,7 @@ export const CardReports = ({ reports, index = 0, onClickIndex, report_count }) 
 CardReports.propTypes = {
     reports: PropTypes.array,
     index: PropTypes.number,
+    onClickIndex: PropTypes.func,
+    report_count: PropTypes.number,
 };
 
