@@ -107,7 +107,6 @@ router.post('/pro/signup', (req, res, next) => {
 /**
  * Sends response email to the pro user
  */
-
 function sendEmail(params, callback) {
     mandrill_client.messages.sendTemplate({
         template_name: 'notification-prouser-signup',
@@ -158,7 +157,6 @@ function sendEmail(params, callback) {
 /**
  * Updates a pro user on zoho
  */
-
 router.post('/pro/update', (req, res, next) => { 
     var params = {
             day     : req.body.day,

@@ -82,12 +82,9 @@ class Sidebar extends React.Component {
                             {assignment.caption || 'No Description'}
                         </div>
 
-                        <div className="meta-user">
-                            {moment().diff(assignment.ends_at) < 1
-                                ? expireButton
-                                : ''
-                            }
-                        </div>
+                        {moment().diff(assignment.ends_at) < 1 ?                        
+                            <div className="meta-user">{expireButton}</div>
+                        : ''}
 
                         {this.renderStats()}
                     </div>

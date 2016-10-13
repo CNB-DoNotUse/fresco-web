@@ -61,10 +61,6 @@ class PurchasesListItem extends React.Component {
 							<p className="md-type-body2" style={{lineHeight: '16px'}}>
 								{assignment.title}
 							</p>
-							
-							<p className="md-type-body1" style={{lineHeight: '24px'}}>
-								{purchase.assignment.location.address || purchase.assignment.location.googlemaps}
-							</p>
 						</div>
 					) : ''}
 					
