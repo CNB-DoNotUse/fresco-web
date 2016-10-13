@@ -1,25 +1,52 @@
-import { fromJS, List, Set } from 'immutable';
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk';
+import fetchMock from 'fetch-mock';
+import { fromJS, Set, OrderedSet } from 'immutable';
 import { expect } from 'chai';
-import reducer, * as moderationActions from 'app/redux/modules/moderation';
+import reducer, * as actions from 'app/redux/modules/moderation';
+import 'isomorphic-fetch';
+
+const middleware = [thunk];
+const mockStore = configureMockStore(middleware);
+
+const initialState = fromJS({
+    galleries: fromJS({ entities: OrderedSet(), loading: false }),
+    users: fromJS({ entities: OrderedSet(), loading: false }),
+    suspendedUsers: fromJS({ entities: OrderedSet(), loading: false }),
+    reports: fromJS({ galleries: {}, users: {}, loading: false }),
+    ui: fromJS({
+        activeTab: 'galleries',
+        filters: fromJS({ galleries: Set(), users: Set() }),
+        suspendedDialog: false,
+        infoDialog: fromJS({ open: false, header: '', body: '' }),
+        error: null,
+        alert: null,
+    }),
+});
 
 describe('moderation reducer', () => {
+    afterEach(fetchMock.restore);
+
     it('returns the initial state', () => {
-        expect(reducer(undefined, {})).to.equal(fromJS({
-            activeTab: 'galleries',
-            galleries: List(),
-            users: List(),
-            suspendedUsers: List(),
-            reports: fromJS({ galleries: {}, users: {} }),
-            filters: fromJS({ galleries: Set(), users: Set() }),
-            loading: false,
-            suspendedDialog: false,
-            infoDialog: fromJS({ open: false, header: '', body: '' }),
-            error: null,
-            alert: null,
-        }));
+        expect(reducer(undefined, {})).to.equal(initialState);
     });
 
-    // it('handles FETCH_GALLERIES', () => {
+    it('creates FETCH_GALLERIES_SUCCESS when fetching galleries has been done', () => {
+        fetchMock
+        .mock('/api/gallery/reported?last=&limit=10', { body: [{ id: '1' }, { id: '2' }] });
+        fetchMock
+        .mock(/\/api\/gallery\/\d+\/reports+/, { body: [{ id: '1' }, { id: '2' }] });
 
-    // })
+        const expectedActions = [
+            { type: actions.FETCH_GALLERIES_REQUEST },
+        ];
+        // const store = mockStore({ galleries: [] });
+        const store = mockStore(fromJS({ moderation: initialState }));
+
+        return store.dispatch(actions.fetchGalleries())
+        .then(() => {
+            expect(store.getActions()).to.equal(expectedActions);
+        });
+    });
 });
+
