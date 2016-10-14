@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import reject from 'lodash/reject';
 import capitalize from 'lodash/capitalize';
+import api from 'app/lib/api';
 import Tag from '../global/tag';
 
 /**
@@ -67,14 +68,12 @@ class ChipInput extends React.Component {
         if (!query.length === 0) {
             this.setState({ suggestions: [] });
         } else {
-            $.ajax({
-                url: '/api/search',
-                data: { [`${model}[a][${attr}]`]: query },
-                success: (res) => {
-                    if (res[model] && res[model].results) {
-                        this.setState({ suggestions: res[model].results });
-                    }
-                },
+            api
+            .get('api/search', { [`${model}[a][${attr}]`]: query })
+            .then(res => {
+                if (res[model] && res[model].results) {
+                    this.setState({ suggestions: res[model].results });
+                }
             });
         }
     }
