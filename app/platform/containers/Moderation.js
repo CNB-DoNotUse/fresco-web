@@ -160,6 +160,7 @@ class Moderation extends React.Component {
                     <ItemsDialog
                         toggled={suspendedDialog}
                         onClose={onToggleSuspendedDialog}
+                        emptyMessage="No suspended users"
                         header="Suspended users"
                     >
                         {suspendedUsers.toJS().map(s =>

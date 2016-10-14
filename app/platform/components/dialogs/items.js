@@ -5,6 +5,7 @@ export default class Items extends React.Component {
         onClose: PropTypes.func,
         toggled: PropTypes.bool,
         header: PropTypes.string,
+        emptyMessage: PropTypes.string,
         children: PropTypes.node,
     }
 
@@ -12,6 +13,11 @@ export default class Items extends React.Component {
         onClose: () => {},
         toggled: false,
         header: '',
+        emptyMessage: 'No items',
+    }
+
+    renderEmptyMessage() {
+        return <div style={{ textAlign: 'center' }}>{this.props.emptyMessage}</div>;
     }
 
     render() {
@@ -20,6 +26,7 @@ export default class Items extends React.Component {
             header,
             onClose,
             children,
+            emptyMessage,
         } = this.props;
 
         return (
@@ -36,7 +43,7 @@ export default class Items extends React.Component {
                     <div
                         className="items"
                     >
-                        {children}
+                        {children.length ? children : this.renderEmptyMessage()}
                     </div>
 
                     <div className="footer">
