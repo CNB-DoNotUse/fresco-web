@@ -19,8 +19,7 @@ export const FETCH_USERS = 'moderation/FETCH_USERS';
 export const FETCH_USERS_SUCCESS = 'moderation/FETCH_USER_SUCCESS';
 export const FETCH_USERS_FAIL = 'moderation/FETCH_USER_FAIL';
 export const FETCH_SUSPENDED_USERS_SUCCESS = 'moderation/FETCH_SUSPENDED_USERS_SUCCESS';
-export const FETCH_ENTITY_REPORTS_SUCCESS = 'moderation/FETCH_ENTITY_REPORTS_SUCCESS';
-export const FETCH_ENTITIES_REPORTS_SUCCESS = 'moderation/FETCH_ENTITIES_REPORTS_SUCCESS';
+export const FETCH_REPORTS_SUCCESS = 'moderation/FETCH_REPORTS_SUCCESS';
 export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
 export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
 export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
@@ -70,29 +69,10 @@ export const fetchEntityReports = ({ id, entityType, last }) => (dispatch) => {
     .get(`${urlBase}/${id}/reports`, { last: last ? last.get('id') : null, limit: REPORTS_LIMIT })
     .then(res => {
         dispatch({
-            type: FETCH_ENTITY_REPORTS_SUCCESS,
+            type: FETCH_REPORTS_SUCCESS,
             reports: res,
             entityType,
             id,
-        });
-    })
-    .catch(() => dispatch({
-        type: SET_ALERT,
-        data: 'Could not fetch reports',
-    }));
-};
-
-export const fetchEntitiesReports = (ids, entityType) => (dispatch) => {
-    const urlBase = entityType === 'galleries' ? 'gallery' : 'user';
-
-    Promise.all(ids.map(id => api.get(`${urlBase}/${id}/reports`, {
-        limit: REPORTS_LIMIT,
-    })))
-    .then(res => {
-        dispatch({
-            type: FETCH_ENTITIES_REPORTS_SUCCESS,
-            data: mapKeys(res, r => r.id),
-            entityType,
         });
     })
     .catch(() => dispatch({
@@ -139,7 +119,7 @@ export const fetchUsers = (loadMore) => (dispatch, getState) => {
     if (loadMore) last = state.get('entities').last();
 
     api
-    .get('user/reported', { last: last ? last.id : null, limit: 10 })
+    .get('user/reported', { last: last ? last.get('id') : null, limit: 10 })
     .then(res => {
         const curIds = state.get('entities').map(e => e.get('id')).toJS();
         const newObjs = res.filter(r => !curIds.includes(r.id));
@@ -419,13 +399,11 @@ const reports = (state = fromJS({
     loading: false,
 }), action = {}) => {
     switch (action.type) {
-    case FETCH_ENTITY_REPORTS_SUCCESS:
+    case FETCH_REPORTS_SUCCESS:
         return state.updateIn([action.entityType, action.id], Map(), r => fromJS({
             reports: r.get('reports', List()).concat(action.reports),
             index: r.get('index', 0),
         }));
-    // case FETCH_ENTITIES_REPORTS_SUCCESS:
-        // return state.set([action.entityType], action.data);
     case SET_REPORTS_INDEX:
         return state.setIn([action.reportsType, action.ownerId, 'index'], action.index);
     default:
