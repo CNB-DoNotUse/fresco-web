@@ -14,7 +14,7 @@ export const TOGGLE_INFO_DIALOG = 'moderation/TOGGLE_INFO_DIALOG';
 export const FETCH_GALLERIES_REQUEST = 'moderation/FETCH_GALLERIES_REQUEST';
 export const FETCH_GALLERIES_SUCCESS = 'moderation/FETCH_GALLERIES_SUCCESS';
 export const FETCH_GALLERIES_FAIL = 'moderation/FETCH_GALLERIES_FAIL';
-export const FETCH_USERS = 'moderation/FETCH_USERS';
+export const FETCH_USERS_REQUEST = 'moderation/FETCH_USERS_REQUEST';
 export const FETCH_USERS_SUCCESS = 'moderation/FETCH_USER_SUCCESS';
 export const FETCH_USERS_FAIL = 'moderation/FETCH_USER_FAIL';
 export const FETCH_SUSPENDED_USERS_SUCCESS = 'moderation/FETCH_SUSPENDED_USERS_SUCCESS';
@@ -112,14 +112,14 @@ export const fetchGalleries = () => (dispatch, getState) => {
 
 export const fetchUsers = () => (dispatch, getState) => {
     const state = getState().getIn(['moderation', 'users']);
-    if (state.get('loading')) return;
-    dispatch({ type: FETCH_USERS });
+    if (state.get('loading')) return Promise.resolve();
+    dispatch({ type: FETCH_USERS_REQUEST });
 
     const entities = state.get('entities');
     let last;
     if (entities.size > 0) last = entities.last();
 
-    api
+    return api
     .get('user/reported', { last: last ? last.get('id') : null, limit: 10 })
     .then(res => {
         const curIds = state.get('entities').map(e => e.get('id')).toJS();
@@ -363,7 +363,7 @@ const users = (state = fromJS({
     if (action.entityType && action.entityType !== 'user') return state;
 
     switch (action.type) {
-    case FETCH_USERS:
+    case FETCH_USERS_REQUEST:
         return state.set('loading', true);
     case FETCH_USERS_SUCCESS:
         return state

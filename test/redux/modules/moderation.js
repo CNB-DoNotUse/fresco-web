@@ -25,16 +25,32 @@ const initialState = fromJS({
 });
 
 describe('moderation reducer', () => {
-    afterEach(fetchMock.restore);
-
     it('returns the initial state', () => {
         expect(reducer(undefined, {})).to.equal(initialState);
     });
 
+    it('should handle TOGGLE_SUSPENDED_DIALOG', () => {
+        expect(reducer(undefined, actions.toggleSuspendedDialog()).toJS())
+        .to.have.deep.property('ui.suspendedDialog', true);
+    });
+
+    it('should handle TOGGLE_INFO_DIALOG', () => {
+        const state = reducer(undefined, actions.toggleInfoDialog({
+            open: true, header: 'Fresco header', body: 'Fresco body',
+        })).toJS();
+
+        expect(state).to.have.deep.property('ui.infoDialog.open', true);
+        expect(state).to.have.deep.property('ui.infoDialog.header', 'Fresco header');
+        expect(state).to.have.deep.property('ui.infoDialog.body', 'Fresco body');
+    });
+});
+
+describe('moderation async action creators', () => {
+    afterEach(fetchMock.restore);
+
     it('creates FETCH_GALLERIES_SUCCESS when fetching galleries has been done', () => {
         fetchMock
         .mock('/api/gallery/reported?last=&limit=10', { body: [{ id: '1' }, { id: '2' }] });
-        // TODO make initial reports fetch one single promise all with one emitted action
         fetchMock
         .mock(/\/api\/gallery\/\d+\/reports+/, { body: [{ id: '1' }, { id: '2' }] });
 
@@ -59,6 +75,24 @@ describe('moderation reducer', () => {
             expect(store.getActions()).to.include({ type: actions.FETCH_GALLERIES_REQUEST });
             expect(store.getActions()).to.include({
                 type: actions.FETCH_GALLERIES_SUCCESS,
+                data: [{ id: '1' }, { id: '2' }],
+            });
+        });
+    });
+
+    it('creates FETCH_USERS_SUCCESS when fetching users has been done', () => {
+        fetchMock
+        .mock('/api/user/reported?last=&limit=10', { body: [{ id: '1' }, { id: '2' }] });
+        fetchMock
+        .mock(/\/api\/user\/\d+\/reports+/, { body: [{ id: '1' }, { id: '2' }] });
+
+        const store = mockStore(fromJS({ moderation: initialState }));
+
+        return store.dispatch(actions.fetchUsers())
+        .then(() => {
+            expect(store.getActions()).to.include({ type: actions.FETCH_USERS_REQUEST });
+            expect(store.getActions()).to.include({
+                type: actions.FETCH_USERS_SUCCESS,
                 data: [{ id: '1' }, { id: '2' }],
             });
         });
