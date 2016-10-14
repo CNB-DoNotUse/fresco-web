@@ -1,7 +1,6 @@
 // https://github.com/erikras/ducks-modular-redux
 import { combineReducers } from 'redux-immutable';
 import { fromJS, Set, OrderedSet, List, Map } from 'immutable';
-import mapKeys from 'lodash/mapKeys';
 import api from 'app/lib/api';
 import moment from 'moment';
 
@@ -12,7 +11,7 @@ export const DISMISS_ALERT = 'moderation/DISMISS_ALERT';
 export const SET_ALERT = 'moderation/SET_ALERT';
 export const TOGGLE_SUSPENDED_DIALOG = 'moderation/TOGGLE_SUSPENDED_DIALOG';
 export const TOGGLE_INFO_DIALOG = 'moderation/TOGGLE_INFO_DIALOG';
-export const FETCH_GALLERIES_REQUEST = 'moderation/FETCH_GALLERIES';
+export const FETCH_GALLERIES_REQUEST = 'moderation/FETCH_GALLERIES_REQUEST';
 export const FETCH_GALLERIES_SUCCESS = 'moderation/FETCH_GALLERIES_SUCCESS';
 export const FETCH_GALLERIES_FAIL = 'moderation/FETCH_GALLERIES_FAIL';
 export const FETCH_USERS = 'moderation/FETCH_USERS';

@@ -79,34 +79,38 @@ class Moderation extends React.Component {
             onToggleGraphic,
         } = this.props;
 
-        const galleriesJSX = (activeTab === 'galleries' && galleries.size > 0) ? (
-            galleries.toJS().map(g => (
-                <GalleryCard
-                    key={`gallery-card-${g.id}`}
-                    {...g}
-                    reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
-                    onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
-                    onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
-                    onSkip={partial(onSkip, 'gallery', g.id)}
-                    onDelete={partial(onDelete, 'gallery', g.id)}
-                    onToggleGraphic={partial(onToggleGraphic, g.id)}
-                />
-            ))
-        ) : [];
+        let entitiesJSX;
 
-        const usersJSX = (activeTab === 'users' && users.size > 0) ? (
-            users.toJS().map(u => (
-                <UserCard
-                    key={`user-card-${u.id}`}
-                    user={u}
-                    reportData={reports.getIn(['users', u.id], Map()).toJS()}
-                    onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
-                    onSuspend={partial(onSuspend, 'user', u.id)}
-                    onSkip={partial(onSkip, 'user', u.id)}
-                    onDisable={partial(onDelete, 'user', u.id)}
-                />
-            ))
-        ) : [];
+        if (activeTab === 'galleries') {
+            entitiesJSX = galleries.size > 0 ? (
+                galleries.toJS().map(g => (
+                    <GalleryCard
+                        key={`gallery-card-${g.id}`}
+                        {...g}
+                        reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
+                        onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
+                        onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
+                        onSkip={partial(onSkip, 'gallery', g.id)}
+                        onDelete={partial(onDelete, 'gallery', g.id)}
+                        onToggleGraphic={partial(onToggleGraphic, g.id)}
+                    />
+                ))
+            ) : [];
+        } else if (activeTab === 'users') {
+            entitiesJSX = users.size > 0 ? (
+                users.toJS().map(u => (
+                    <UserCard
+                        key={`user-card-${u.id}`}
+                        user={u}
+                        reportData={reports.getIn(['users', u.id], Map()).toJS()}
+                        onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
+                        onSuspend={partial(onSuspend, 'user', u.id)}
+                        onSkip={partial(onSkip, 'user', u.id)}
+                        onDisable={partial(onDelete, 'user', u.id)}
+                    />
+                ))
+            ) : [];
+        }
 
         return (
             <FrescoMasonry
@@ -114,7 +118,7 @@ class Moderation extends React.Component {
                 ctrClassName="moderation-masonry__ctr"
                 loadMore={() => this.fetchCurrentTab(true)}
             >
-                {galleriesJSX.concat(usersJSX)}
+                {entitiesJSX}
             </FrescoMasonry>
         );
     }

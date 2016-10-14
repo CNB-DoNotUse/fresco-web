@@ -38,15 +38,29 @@ describe('moderation reducer', () => {
         fetchMock
         .mock(/\/api\/gallery\/\d+\/reports+/, { body: [{ id: '1' }, { id: '2' }] });
 
-        const expectedActions = [
-            { type: actions.FETCH_GALLERIES_REQUEST },
-        ];
-        // const store = mockStore({ galleries: [] });
+        // const expectedActions = [
+        //     {
+        //         entityType: 'galleries',
+        //         id: '1',
+        //         reports: [{ id: '1' }, { id: '2' }],
+        //         type: actions.FETCH_REPORTS_SUCCESS,
+        //     },
+        //     {
+        //         entityType: 'galleries',
+        //         id: '2',
+        //         reports: [{ id: '1' }, { id: '2' }],
+        //         type: actions.FETCH_REPORTS_SUCCESS,
+        //     },
+        // ];
         const store = mockStore(fromJS({ moderation: initialState }));
 
         return store.dispatch(actions.fetchGalleries())
         .then(() => {
-            expect(store.getActions()).to.equal(expectedActions);
+            expect(store.getActions()).to.include({ type: actions.FETCH_GALLERIES_REQUEST });
+            expect(store.getActions()).to.include({
+                type: actions.FETCH_GALLERIES_SUCCESS,
+                data: [{ id: '1' }, { id: '2' }],
+            });
         });
     });
 });
