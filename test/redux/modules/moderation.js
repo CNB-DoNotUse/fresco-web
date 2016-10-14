@@ -1,4 +1,4 @@
-import configureMockStore from 'redux-mock-store'
+import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
 import { fromJS, Set, OrderedSet } from 'immutable';
@@ -34,6 +34,7 @@ describe('moderation reducer', () => {
     it('creates FETCH_GALLERIES_SUCCESS when fetching galleries has been done', () => {
         fetchMock
         .mock('/api/gallery/reported?last=&limit=10', { body: [{ id: '1' }, { id: '2' }] });
+        // TODO make initial reports fetch one single promise all with one emitted action
         fetchMock
         .mock(/\/api\/gallery\/\d+\/reports+/, { body: [{ id: '1' }, { id: '2' }] });
 

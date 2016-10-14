@@ -1,6 +1,7 @@
 // https://github.com/erikras/ducks-modular-redux
 import { combineReducers } from 'redux-immutable';
 import { fromJS, Set, OrderedSet, List, Map } from 'immutable';
+import mapKeys from 'lodash/mapKeys';
 import api from 'app/lib/api';
 import moment from 'moment';
 
@@ -11,14 +12,15 @@ export const DISMISS_ALERT = 'moderation/DISMISS_ALERT';
 export const SET_ALERT = 'moderation/SET_ALERT';
 export const TOGGLE_SUSPENDED_DIALOG = 'moderation/TOGGLE_SUSPENDED_DIALOG';
 export const TOGGLE_INFO_DIALOG = 'moderation/TOGGLE_INFO_DIALOG';
-export const FETCH_GALLERIES_REQUEST= 'moderation/FETCH_GALLERIES';
+export const FETCH_GALLERIES_REQUEST = 'moderation/FETCH_GALLERIES';
 export const FETCH_GALLERIES_SUCCESS = 'moderation/FETCH_GALLERIES_SUCCESS';
 export const FETCH_GALLERIES_FAIL = 'moderation/FETCH_GALLERIES_FAIL';
 export const FETCH_USERS = 'moderation/FETCH_USERS';
 export const FETCH_USERS_SUCCESS = 'moderation/FETCH_USER_SUCCESS';
 export const FETCH_USERS_FAIL = 'moderation/FETCH_USER_FAIL';
 export const FETCH_SUSPENDED_USERS_SUCCESS = 'moderation/FETCH_SUSPENDED_USERS_SUCCESS';
-export const FETCH_REPORTS_SUCCESS = 'moderation/FETCH_REPORTS_SUCCESS';
+export const FETCH_ENTITY_REPORTS_SUCCESS = 'moderation/FETCH_ENTITY_REPORTS_SUCCESS';
+export const FETCH_ENTITIES_REPORTS_SUCCESS = 'moderation/FETCH_ENTITIES_REPORTS_SUCCESS';
 export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
 export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
 export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
@@ -61,30 +63,47 @@ export const fetchSuspendedUsers = (last) => (dispatch) => {
     ));
 };
 
-export const fetchReports = ({ id, entity, last }) => (dispatch) => {
-    const urlBase = entity === 'galleries' ? 'gallery' : 'user';
+export const fetchEntityReports = ({ id, entityType, last }) => (dispatch) => {
+    const urlBase = entityType === 'galleries' ? 'gallery' : 'user';
 
     api
     .get(`${urlBase}/${id}/reports`, { last: last ? last.get('id') : null, limit: REPORTS_LIMIT })
     .then(res => {
         dispatch({
-            type: FETCH_REPORTS_SUCCESS,
+            type: FETCH_ENTITY_REPORTS_SUCCESS,
             reports: res,
-            entity,
+            entityType,
             id,
         });
     })
-    .catch(() => {
+    .catch(() => dispatch({
+        type: SET_ALERT,
+        data: 'Could not fetch reports',
+    }));
+};
+
+export const fetchEntitiesReports = (ids, entityType) => (dispatch) => {
+    const urlBase = entityType === 'galleries' ? 'gallery' : 'user';
+
+    Promise.all(ids.map(id => api.get(`${urlBase}/${id}/reports`, {
+        limit: REPORTS_LIMIT,
+    })))
+    .then(res => {
         dispatch({
-            type: SET_ALERT,
-            data: 'Could not fetch reports',
+            type: FETCH_ENTITIES_REPORTS_SUCCESS,
+            data: mapKeys(res, r => r.id),
+            entityType,
         });
-    });
+    })
+    .catch(() => dispatch({
+        type: SET_ALERT,
+        data: 'Could not fetch reports',
+    }));
 };
 
 export const fetchGalleries = () => (dispatch, getState) => {
     const state = getState().getIn(['moderation', 'galleries']);
-    if (state.get('loading')) return Promise.reject();
+    if (state.get('loading')) return Promise.resolve();
     dispatch({ type: FETCH_GALLERIES_REQUEST });
 
     let last;
@@ -95,7 +114,7 @@ export const fetchGalleries = () => (dispatch, getState) => {
     .then(res => {
         const curIds = state.get('entities').map(e => e.get('id')).toJS();
         const newObjs = res.filter(r => !curIds.includes(r.id));
-        newObjs.forEach(r => dispatch(fetchReports({ id: r.id, entity: 'galleries' })));
+        newObjs.forEach(r => dispatch(fetchEntityReports({ id: r.id, entityType: 'galleries' })));
 
         dispatch({
             type: FETCH_GALLERIES_SUCCESS,
@@ -124,7 +143,7 @@ export const fetchUsers = (loadMore) => (dispatch, getState) => {
     .then(res => {
         const curIds = state.get('entities').map(e => e.get('id')).toJS();
         const newObjs = res.filter(r => !curIds.includes(r.id));
-        newObjs.forEach(r => dispatch(fetchReports({ id: r.id, entity: 'users' })));
+        newObjs.forEach(r => dispatch(fetchEntityReports({ id: r.id, entityType: 'users' })));
 
         dispatch({
             type: FETCH_USERS_SUCCESS,
@@ -157,8 +176,8 @@ export const toggleFilter = (tab, filter) => (dispatch, getState) => {
     }
 };
 
-export const updateReportsIndex = (entity, id, change) => (dispatch, getState) => {
-    const reportData = getState().getIn(['moderation', 'reports', entity, id], Map());
+export const updateReportsIndex = (entityType, id, change) => (dispatch, getState) => {
+    const reportData = getState().getIn(['moderation', 'reports', entityType, id], Map());
     const newIndex = (reportData.get('index', 0) + change) || 0;
     const reportsSize = reportData.get('reports', List()).size;
 
@@ -166,9 +185,9 @@ export const updateReportsIndex = (entity, id, change) => (dispatch, getState) =
     if (newIndex >= reportsSize && reportsSize < REPORTS_LIMIT) return;
     if (newIndex >= reportsSize && reportsSize % 10 !== 0) return;
     if (newIndex >= reportsSize && newIndex >= REPORTS_LIMIT) {
-        dispatch(fetchReports({
+        dispatch(fetchEntityReports({
             id,
-            entity,
+            entityType,
             last: reportData.get('reports', OrderedSet()).last(),
         }));
 
@@ -177,17 +196,17 @@ export const updateReportsIndex = (entity, id, change) => (dispatch, getState) =
 
     dispatch({
         type: SET_REPORTS_INDEX,
-        reportsType: entity,
+        reportsType: entityType,
         ownerId: id,
         index: newIndex,
     });
 };
 
-export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
+export const toggleSuspendUser = (entityType, id) => (dispatch, getState) => {
     const state = getState().get('moderation');
     let user;
     let suspended_until = null;
-    if (entity === 'gallery') {
+    if (entityType === 'gallery') {
         user = state
             .getIn(['galleries', 'entities'])
             .find(g => g.get('id') === id)
@@ -202,7 +221,7 @@ export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
         .then(() => dispatch({
             type: TOGGLE_SUSPEND_USER,
             suspended_until,
-            entity,
+            entityType,
             id,
         }))
         .catch(() => dispatch({
@@ -218,7 +237,7 @@ export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
             dispatch({
                 type: TOGGLE_SUSPEND_USER,
                 suspended_until,
-                entity,
+                entityType,
                 id,
             });
 
@@ -240,7 +259,7 @@ export const toggleSuspendUser = (entity, id) => (dispatch, getState) => {
 export const restoreSuspendedUser = (id) => (dispatch, getState) => {
     const user = getState()
         .getIn(['moderation', 'suspendedUsers', 'entities'])
-        .find(u => u.id === id);
+        .find(u => u.get('id') === id);
 
     api
     .post(`user/${user.get('id')}/unsuspend`)
@@ -255,7 +274,10 @@ export const restoreSuspendedUser = (id) => (dispatch, getState) => {
 };
 
 export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
-    const nsfw = getState().getIn(['moderation', 'galleries', 'entities']).find(g => g.id === id).is_nsfw;
+    const nsfw = getState()
+        .getIn(['moderation', 'galleries', 'entities'])
+        .find(g => g.id === id)
+        .get('is_nsfw');
 
     api
     .post(`gallery/${id}/${nsfw ? 'sfw' : 'nsfw'}`)
@@ -270,34 +292,34 @@ export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
     }));
 };
 
-export const skipCard = (entity, id) => (dispatch) => (
+export const skipCard = (entityType, id) => (dispatch) => (
     api
-    .post(`${entity}/${id}/report/skip`)
+    .post(`${entityType}/${id}/report/skip`)
     .then(() => dispatch({
         type: DELETE_CARD,
         id,
-        entity,
+        entityType,
     }))
     .catch(() => dispatch({
         type: SET_ALERT,
-        data: `Could not skip ${entity}`,
+        data: `Could not skip ${entityType}`,
     }))
 );
 
-export const deleteCard = (entity, id) => (dispatch) => {
-    const params = entity === 'user' ? { user_id: id } : {};
-    const url = entity === 'user' ? 'user/disable' : `gallery/${id}/delete`;
+export const deleteCard = (entityType, id) => (dispatch) => {
+    const params = entityType === 'user' ? { user_id: id } : {};
+    const url = entityType === 'user' ? 'user/disable' : `gallery/${id}/delete`;
 
     api
     .post(url, params)
     .then(() => dispatch({
         type: DELETE_CARD,
         id,
-        entity,
+        entityType,
     }))
     .catch(() => dispatch({
         type: SET_ALERT,
-        data: (entity === 'gallery') ? 'Could not delete gallery' : 'Could not disable user',
+        data: (entityType === 'gallery') ? 'Could not delete gallery' : 'Could not disable user',
     }));
 };
 
@@ -319,7 +341,7 @@ const galleries = (state = fromJS({
     entities: OrderedSet(),
     loading: false,
 }), action = {}) => {
-    if (action.entity && action.entity !== 'gallery') return state;
+    if (action.entityType && action.entityType !== 'gallery') return state;
 
     switch (action.type) {
     case FETCH_GALLERIES_REQUEST:
@@ -357,7 +379,7 @@ const users = (state = fromJS({
     entities: OrderedSet(),
     loading: false,
 }), action = {}) => {
-    if (action.entity && action.entity !== 'user') return state;
+    if (action.entityType && action.entityType !== 'user') return state;
 
     switch (action.type) {
     case FETCH_USERS:
@@ -397,11 +419,13 @@ const reports = (state = fromJS({
     loading: false,
 }), action = {}) => {
     switch (action.type) {
-    case FETCH_REPORTS_SUCCESS:
-        return state.updateIn([action.entity, action.id], Map(), r => fromJS({
+    case FETCH_ENTITY_REPORTS_SUCCESS:
+        return state.updateIn([action.entityType, action.id], Map(), r => fromJS({
             reports: r.get('reports', List()).concat(action.reports),
             index: r.get('index', 0),
         }));
+    // case FETCH_ENTITIES_REPORTS_SUCCESS:
+        // return state.set([action.entityType], action.data);
     case SET_REPORTS_INDEX:
         return state.setIn([action.reportsType, action.ownerId, 'index'], action.index);
     default:
