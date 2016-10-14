@@ -86,8 +86,9 @@ export const fetchGalleries = () => (dispatch, getState) => {
     if (state.get('loading')) return Promise.resolve();
     dispatch({ type: FETCH_GALLERIES_REQUEST });
 
+    const entities = state.get('entities');
     let last;
-    if (state.get('entities').size > 0) last = state.get('entities').last();
+    if (entities.size > 0) last = entities.last();
 
     return api
     .get('gallery/reported', { last: last ? last.get('id') : null, limit: 10 })
@@ -110,13 +111,14 @@ export const fetchGalleries = () => (dispatch, getState) => {
     });
 };
 
-export const fetchUsers = (loadMore) => (dispatch, getState) => {
+export const fetchUsers = () => (dispatch, getState) => {
     const state = getState().getIn(['moderation', 'users']);
     if (state.get('loading')) return;
     dispatch({ type: FETCH_USERS });
 
+    const entities = state.get('entities');
     let last;
-    if (loadMore) last = state.get('entities').last();
+    if (entities.size > 0) last = entities.last();
 
     api
     .get('user/reported', { last: last ? last.get('id') : null, limit: 10 })

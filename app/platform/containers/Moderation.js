@@ -4,7 +4,7 @@ import * as moderationActions from 'app/redux/modules/moderation';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
-import { Map, List, OrderedSet } from 'immutable';
+import { Map, OrderedSet } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
 import FrescoMasonry from '../components/global/fresco-masonry';
 import TopBar from '../components/moderation/topbar';
@@ -32,6 +32,7 @@ class Moderation extends React.Component {
         onToggleSuspendedDialog: PropTypes.func.isRequired,
         onToggleInfoDialog: PropTypes.func.isRequired,
         suspendedDialog: PropTypes.bool.isRequired,
+        infoDialog: PropTypes.object.isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
         galleries: PropTypes.instanceOf(OrderedSet).isRequired,
         reports: PropTypes.instanceOf(Map).isRequired,
