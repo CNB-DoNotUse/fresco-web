@@ -257,7 +257,7 @@ export const restoreSuspendedUser = (id) => (dispatch, getState) => {
 export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
     const nsfw = getState()
         .getIn(['moderation', 'galleries', 'entities'])
-        .find(g => g.id === id)
+        .find(g => g.get('id') === id)
         .get('is_nsfw');
 
     api
