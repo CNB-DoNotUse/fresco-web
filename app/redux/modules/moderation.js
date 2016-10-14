@@ -347,7 +347,7 @@ const galleries = (state = fromJS({
 const user = (state, action) => {
     switch (action.type) {
     case TOGGLE_SUSPEND_USER:
-        if (state.id !== action.id) {
+        if (state.get('id') !== action.id) {
             return state;
         }
         return state.set('suspended_until', action.suspended_until);
