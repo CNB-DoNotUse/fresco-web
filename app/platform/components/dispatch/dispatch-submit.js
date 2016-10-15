@@ -3,7 +3,6 @@ import GMap from '../global/gmap';
 import LocationAutocomplete from '../global/location-autocomplete.js';
 import utils from 'utils';
 
-
 /**
  * Assignment Form parent component
  * @description Submit form for an assignemnt

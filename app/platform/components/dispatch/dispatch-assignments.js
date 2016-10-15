@@ -142,7 +142,7 @@ export default class DispatchAssignments extends React.Component {
 						type="button"
 						id="open-assignment-window"
 						className="btn btn-flat toggle-card toggler"
-						disabled={!(this.props.user.outlet && this.props.user.outlet.verified)}
+						disabled={!(this.props.user.outlet && this.props.user.outlet.dispatch_enabled)}
 						onClick={this.props.toggleSubmissionCard.bind(null, true)}>
 							Post an assignment
 					</button>

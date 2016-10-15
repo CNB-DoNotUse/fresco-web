@@ -72,19 +72,22 @@ export default class GalleryCard extends Component {
                 style={{ opacity: this.state.opacity }}
                 className="moderation-card moderation-card__gallery"
             >
+                <CardBadges strings={report_reasons} />
+
                 <FrescoImage
                     className="moderation-card__image"
                     src={get(posts, '[0].image')}
                     loadWithPlaceholder
                 />
 
-                <div className="moderation-card__gallery-caption">
-                    {caption}
+                <div className="moderation-card__gallery-meta-wrap">
+                    <div className="moderation-card__gallery-caption">
+                        {caption}
+                    </div>
+
+
+                    {owner && <CardUser user={owner} />}
                 </div>
-
-                <CardBadges strings={report_reasons} />
-
-                {owner && <CardUser user={owner} />}
 
                 {reportData &&
                     <CardReports

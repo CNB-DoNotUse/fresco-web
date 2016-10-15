@@ -52,7 +52,7 @@ export default class UserCard extends Component {
                 className="moderation-card moderation-card__gallery"
             >
                 <CardBadges strings={user.report_reasons} />
-
+                
                 <div className="moderation-card__user-info">
                     <CardUser user={user} />
 
