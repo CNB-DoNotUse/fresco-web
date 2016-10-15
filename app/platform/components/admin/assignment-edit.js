@@ -12,12 +12,13 @@ import isEmpty from 'lodash/isEmpty';
  *
  * @extends React.Component
  */
-class AssignmentEdit extends React.Component {
-    constructor(props) {
-        super(props);
+export default class AssignmentEdit extends React.Component {
+    static propTypes = {
+        assignment: PropTypes.object.isRequired,
+        onUpdateAssignment: PropTypes.func.isRequired,
+    };
 
-        this.state = this.getStateFromProps(props);
-    }
+    state = this.getStateFromProps(this.props);
 
     componentDidMount() {
         $.material.init();
@@ -305,11 +306,4 @@ class AssignmentEdit extends React.Component {
         );
     }
 }
-
-AssignmentEdit.propTypes = {
-    assignment: PropTypes.object.isRequired,
-    onUpdateAssignment: PropTypes.func.isRequired,
-};
-
-export default AssignmentEdit;
 

@@ -42,10 +42,7 @@ class Assignments extends React.Component {
         if (target.scrollTop === target.scrollHeight - target.offsetHeight) {
             if (!assignments || !assignments.length) return;
 
-            getData(assignments[assignments.length - 1].id, {
-                tab: 'assignments',
-            },
-            null);
+            getData({ tab: 'assignments' }, null, assignments[assignments.length - 1].id);
         }
     }
 

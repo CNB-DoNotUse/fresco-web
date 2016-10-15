@@ -4,7 +4,7 @@ import * as moderationActions from 'app/redux/modules/moderation';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
-import { Map, List, OrderedSet } from 'immutable';
+import { Map, OrderedSet } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
 import FrescoMasonry from '../components/global/fresco-masonry';
 import TopBar from '../components/moderation/topbar';
@@ -32,6 +32,7 @@ class Moderation extends React.Component {
         onToggleSuspendedDialog: PropTypes.func.isRequired,
         onToggleInfoDialog: PropTypes.func.isRequired,
         suspendedDialog: PropTypes.bool.isRequired,
+        infoDialog: PropTypes.object.isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
         galleries: PropTypes.instanceOf(OrderedSet).isRequired,
         reports: PropTypes.instanceOf(Map).isRequired,
@@ -55,13 +56,13 @@ class Moderation extends React.Component {
         }
     }
 
-    fetchCurrentTab(more = false) {
+    fetchCurrentTab() {
         const { fetchGalleries, fetchUsers, activeTab } = this.props;
 
         if (activeTab === 'galleries') {
-            fetchGalleries(more);
+            fetchGalleries();
         } else if (activeTab === 'users') {
-            fetchUsers(more);
+            fetchUsers();
         }
     }
 
@@ -78,34 +79,38 @@ class Moderation extends React.Component {
             onToggleGraphic,
         } = this.props;
 
-        const galleriesJSX = (activeTab === 'galleries' && galleries.size > 0) ? (
-            galleries.toJS().map(g => (
-                <GalleryCard
-                    key={`gallery-card-${g.id}`}
-                    {...g}
-                    reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
-                    onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
-                    onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
-                    onSkip={partial(onSkip, 'gallery', g.id)}
-                    onDelete={partial(onDelete, 'gallery', g.id)}
-                    onToggleGraphic={partial(onToggleGraphic, g.id)}
-                />
-            ))
-        ) : [];
+        let entitiesJSX;
 
-        const usersJSX = (activeTab === 'users' && users.size > 0) ? (
-            users.toJS().map(u => (
-                <UserCard
-                    key={`user-card-${u.id}`}
-                    user={u}
-                    reportData={reports.getIn(['users', u.id], Map()).toJS()}
-                    onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
-                    onSuspend={partial(onSuspend, 'user', u.id)}
-                    onSkip={partial(onSkip, 'user', u.id)}
-                    onDisable={partial(onDelete, 'user', u.id)}
-                />
-            ))
-        ) : [];
+        if (activeTab === 'galleries') {
+            entitiesJSX = galleries.size > 0 ? (
+                galleries.toJS().map(g => (
+                    <GalleryCard
+                        key={`gallery-card-${g.id}`}
+                        {...g}
+                        reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
+                        onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
+                        onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
+                        onSkip={partial(onSkip, 'gallery', g.id)}
+                        onDelete={partial(onDelete, 'gallery', g.id)}
+                        onToggleGraphic={partial(onToggleGraphic, g.id)}
+                    />
+                ))
+            ) : [];
+        } else if (activeTab === 'users') {
+            entitiesJSX = users.size > 0 ? (
+                users.toJS().map(u => (
+                    <UserCard
+                        key={`user-card-${u.id}`}
+                        user={u}
+                        reportData={reports.getIn(['users', u.id], Map()).toJS()}
+                        onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
+                        onSuspend={partial(onSuspend, 'user', u.id)}
+                        onSkip={partial(onSkip, 'user', u.id)}
+                        onDisable={partial(onDelete, 'user', u.id)}
+                    />
+                ))
+            ) : [];
+        }
 
         return (
             <FrescoMasonry
@@ -113,7 +118,7 @@ class Moderation extends React.Component {
                 ctrClassName="moderation-masonry__ctr"
                 loadMore={() => this.fetchCurrentTab(true)}
             >
-                {galleriesJSX.concat(usersJSX)}
+                {entitiesJSX}
             </FrescoMasonry>
         );
     }
@@ -160,6 +165,7 @@ class Moderation extends React.Component {
                     <ItemsDialog
                         toggled={suspendedDialog}
                         onClose={onToggleSuspendedDialog}
+                        emptyMessage="No suspended users"
                         header="Suspended users"
                     >
                         {suspendedUsers.toJS().map(s =>
@@ -192,12 +198,12 @@ function mapStateToProps(state) {
     const userFilters = filters.get('users');
     const galleries = moderation
         .getIn(['galleries', 'entities'])
-        .filter(g => (
-            galleryFilters.size === 0 || g.report_reasons.some(r => galleryFilters.includes(r)))
-        );
+        .filter(g => (galleryFilters.size === 0 ||
+            g.get('report_reasons').some(r => galleryFilters.includes(r))));
     const users = moderation
         .getIn(['users', 'entities'])
-        .filter(g => userFilters.size === 0 || g.report_reasons.some(r => userFilters.includes(r)));
+        .filter(g => userFilters.size === 0 ||
+            g.get('report_reasons').some(r => userFilters.includes(r)));
 
     return {
         activeTab: moderation.getIn(['ui', 'activeTab']),
