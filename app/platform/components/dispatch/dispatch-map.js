@@ -185,11 +185,6 @@ import DispatchMapCallout from './dispatch-map-callout';
 		}
 	}
 
-	handleNewAssignment() {
-
-
-	}
-
 	/**
 	 * Saves the map's current location to local storage
 	 * @return {[type]} [description]

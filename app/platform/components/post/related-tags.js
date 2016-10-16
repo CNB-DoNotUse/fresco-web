@@ -1,28 +1,16 @@
 import React from 'react'
 import utils from 'utils'
+import api from 'app/lib/api';
 import RelatedPostImage from './related-image'
-
-/** //
-Description : Related posts at the bottom of the PostDetail view, organized by tags
-// **/
 
 /**
  * PostRelatedTags parent object
  * @description Contains a set of related posts, determined by having shared tags
  */
-
 export default class PostRelatedTags extends React.Component {
-
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			tags: {},
-			selectedTag : this.props.tags ? this.props.tags[0] : null
-		};
-
-		this.getTags = this.getTags.bind(this);
-		this.setDisplayedTag = this.setDisplayedTag.bind(this);
+	state = {
+		tags: {},
+		selectedTag : this.props.tags ? this.props.tags[0] : null
 	}
 
 	componentDidMount() {
@@ -32,69 +20,64 @@ export default class PostRelatedTags extends React.Component {
 	/**
 	 * Retrieves tags for the post
 	 */
-	getTags() {
+	getTags = () => {
 		for (let tag of this.props.tags) {
-			$.get('/api/gallery/search', {
-				limit: 10,
-				q: '',
-				tags: [tag]
-			}, (response) => {
-				if(!response.err && response.data) {
-					this.state.tags[tag] = response.data;
-					this.setState(this.state);
-				}
-			});
+			api.get('/search', {
+				limit: 5,
+				posts: {
+					tags: [tag]
+				}				
+			})
+			.then(res => {	
+				this.setState({
+					tags: Object.assign({ [tag]: res.posts.results}, this.state.tags)
+				});
+			})
+			.catch(() => {})
 		}
 	}
 
-	setDisplayedTag(event) {
-		if (this.state.selectedTag === event.currentTarget.dataset.tag) {
-			return;
+	setDisplayedTag = (selectedTag) => {
+		if (this.state.selectedTag !== selectedTag) {
+			this.setState({ selectedTag });
 		}
-
-		this.setState({
-			selectedTag: event.currentTarget.dataset.tag
-		});
 	}
 
 	render() {
-		if (this.props.tags.length === 0) {
-			return null;
-		}
+		let tagTabs = [];
+		let tagTabControls = [];
 
-		let tagTabs = [],
-			tagTabControls = [];
+		console.log(this.state.selectedTag);
 
-		for (let tag of this.props.tags) {
-			if (!this.state.tags[tag]) {
-				break;
-			}
+		for (let tag in this.state.tags) {
+			const posts = this.state.tags[tag];
+			if(!posts.length) continue;
 
-			console.log(tag);
+			const toggled = tag === this.state.selectedTag ? 'toggled' : '';
 
-			let posts = this.state.tags[tag].map((post, i) => {
-					return <RelatedPostImage post={post} key={i}/>
-				}),
-				toggled = (tag === this.state.selectedTag ? 'toggled' : '');
-
-			let tab =
-				<div className={"tab " + toggled} key={tag}>
+			tagTabs.push(
+				<div 
+					className={`tab ${toggled}`} 
+					key={tag}
+				>
 					<div className="tab-inner">
-						<a className="btn btn-flat" href={"/search?q=&tags[]=" + tag}>See all</a>
-						{posts}
+						<a className="btn btn-flat" href={`/search?q=&tags[]=${tag}`}>See all</a>
+							
+						{this.state.tags[tag].map((post, i) => {
+							return <RelatedPostImage post={post} key={i}/>
+						})}
 					</div>
-				</div>;
+				</div>
+			);
 
-			let tabControl = <button
-								className={"btn btn-flat " + toggled}
-								key={tag}
-								onClick={this.setDisplayedTag}
-								data-tag={tag}>{'#' + tag.toUpperCase()}
-							</button>
-
-
-			tagTabs.push(tab);
-			tagTabControls.push(tabControl);
+			tagTabControls.push(
+				<button
+					className={`btn btn-flat ${toggled}`}
+					key={tag}
+					onClick={() => { this.setDisplayedTag(tag) }}
+					data-tag={tag}>{`#${tag.toUpperCase()}`}
+				</button>
+			);
 		}
 
 		return (
