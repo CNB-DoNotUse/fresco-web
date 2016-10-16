@@ -75,7 +75,7 @@ class PostCellActions extends React.Component {
                     key={++key}
                 />
             );
-        } else if (!purchased && post.license === 1) {
+        } else if (!purchased) {
             // Check if the post is not purhcased, and it is purchasble from the license
             actions.push(
                 <PurchaseAction
