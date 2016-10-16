@@ -194,7 +194,7 @@ import DispatchMapCallout from './dispatch-map-callout';
 	 * Saves the map's current location to local storage
 	 * @return {[type]} [description]
 	 */
-     saveMapLocation = () => {
+    saveMapLocation = () => {
 		//Save new map center to storage
 		window.sessionStorage.dispatch = JSON.stringify({
 			mapCenter: this.state.map.getCenter(),
@@ -205,7 +205,7 @@ import DispatchMapCallout from './dispatch-map-callout';
 	/**
 	 * Clears all relevant assignment data from the map and runs an update at the end
 	 */
-     clearAssignments = () => {
+    clearAssignments = () => {
 	 	this.state.markers.forEach((marker) => {
 	 		marker.setMap(null);
 	 	});
@@ -238,7 +238,7 @@ import DispatchMapCallout from './dispatch-map-callout';
 	 * Updates the map with new users/assignments
 	 * @description Makes ajax call for both assignments and users separately
 	 */
-     updateMap = () => {
+    updateMap = () => {
 		//Check if we have map in state or are loading
 		if(!this.state.map) return;
 
@@ -257,38 +257,37 @@ import DispatchMapCallout from './dispatch-map-callout';
 		}
 
          // Get users
-         // if (!this.loadingUsers){
-         //     this.loadingUsers = true;
+         if (!this.loadingUsers){
+             this.loadingUsers = true;
 
-         //     this.props.findUsers(this.state.map, (users, error) => {
-         //         this.loadingUsers = false;
-         //         if(!users) return;
+             this.props.findUsers(this.state.map, (users, error) => {
+                 this.loadingUsers = false;
+                 if(!users) return;
 
-         //         const formattedUsers = mapKeys(users, u => u.id);
+                 const formattedUsers = mapKeys(users, u => u.hash);
 
-         //         // Update the user markers, then update state on callback
-         //         this.updateUserMarkers(formattedUsers, (userMarkers) => {
-         //             this.setState({
-         //                 userMarkers,
-         //                 users: formattedUsers,
-         //             });
-         //         });
-         //     });
-         // }
+                 // Update the user markers, then update state on callback
+                 this.updateUserMarkers(formattedUsers, (userMarkers) => {
+                     this.setState({
+                         userMarkers,
+                         users: formattedUsers,
+                     });
+                 });
+             });
+         }
      }
 
 	/**
 	 * Updates all assignment markers on the map, using the previously set ones to remove any repeats
 	 * @param {array} newAssignments List of new assignments to update
 	 */
-     updateAssignmentMarkers = (newAssignments) => {
+    updateAssignmentMarkers = (newAssignments) => {
 	 	let assignments = clone(this.state.assignments);
 
 		//Iterate backwards, because we slice as we go
 		let i = newAssignments.length;
 		while (i--) {
 			const assignment = newAssignments[i];
-
 
 		    //If it exists, remove it from the new assignments
 		    if(find(assignments, ['id' , assignment.id]) || !assignment.location) {
@@ -310,7 +309,7 @@ import DispatchMapCallout from './dispatch-map-callout';
 	 * Adds passed array of assignments to the map,
 	 * then sets state from concatted response from `addAssignmentToMap` on each assignment
 	 */
-     addAssignmentsToMap = (assignments) => {
+    addAssignmentsToMap = (assignments) => {
 	 	let markers = [];
 	 	let circles = [];
 
@@ -334,7 +333,7 @@ import DispatchMapCallout from './dispatch-map-callout';
 	 * Makes a marker with the passed assignment and adds it to the map
 	 * @return adds a google maps marker, with the passed geo-location
 	 */
-     addAssignment = (assignment, draggable) => {
+    addAssignment = (assignment, draggable) => {
 		//Lat/Lng will default to center if for a created assignment
 		const { map } = this.state;
 		let title = assignment.title || 'No title';
@@ -456,8 +455,8 @@ import DispatchMapCallout from './dispatch-map-callout';
                      markers[key]
                      .setPosition(new google.maps.LatLng(user.curr_geo.coordinates[1], user.curr_geo.coordinates[0]));
                  }
-             } else {
-                 //If the user doesn't exist in the new data set
+             } else { //If the user doesn't exist in the new data set
+                 
 
                  //If the marker exists, but the user doesn't, remove the marker and delete from current set
                  if (markers[key]){
@@ -466,7 +465,7 @@ import DispatchMapCallout from './dispatch-map-callout';
                  }
 
                  // Add user to map
-                 const marker = this.createUserMarker(this.state.map, user.location);
+                 const marker = this.createUserMarker(this.state.map, user.geo);
                  //Save marker
                  markers[key] = marker;
              }
