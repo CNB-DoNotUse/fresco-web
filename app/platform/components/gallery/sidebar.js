@@ -6,7 +6,6 @@ import utils from 'utils';
  * @description Column on the left of the posts grid on the gallery detail page
  */
 const GallerySidebar = ({ gallery }) => {
-	console.log(gallery);
 	return (
 		<div className="col-sm-4 profile hidden-xs">
 			<div className="container-fluid fat">
