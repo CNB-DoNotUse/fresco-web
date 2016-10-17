@@ -6,7 +6,6 @@ export default class Info extends React.Component {
         toggled: PropTypes.bool,
         header: PropTypes.string,
         body: PropTypes.string,
-        children: PropTypes.node,
     }
 
     static defaultProps = {
@@ -21,11 +20,10 @@ export default class Info extends React.Component {
             header,
             body,
             onClose,
-            children,
         } = this.props;
 
         return (
-            <div className="dialog-wrap">
+            <div className={`dialog-wrap ${toggled ? 'toggled' : ''}`}>
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
 
                 <div className={`info-dialog ${toggled ? 'toggled' : ''}`}>
