@@ -26,11 +26,10 @@ export default class Items extends React.Component {
             header,
             onClose,
             children,
-            emptyMessage,
         } = this.props;
 
         return (
-            <div className="dialog-wrap">
+            <div className={`dialog-wrap ${toggled ? 'toggled' : ''}`}>
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
 
                 <div
