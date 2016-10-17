@@ -41,27 +41,35 @@ class PushNotifs extends React.Component {
         const { activeTab, onChangeTemplate, templates } = this.props;
 
         switch (activeTab.toLowerCase()) {
-            case 'gallery list':
-                return <GalleryList
+        case 'gallery list':
+            return (
+                <GalleryList
                     {...templates.get('gallery list', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'gallery list')}
-                />;
-            case 'assignment':
-                return <Assignment
+                />
+            );
+        case 'assignment':
+            return (
+                <Assignment
                     {...templates.get('assignment', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'assignment')}
-                />;
-            case 'recommend':
-                return <Recommend
+                />
+            );
+        case 'recommend':
+            return (
+                <Recommend
                     {...templates.get('recommend', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'recommend')}
-                />;
-            case 'default':
-            default:
-                return <Default
+                />
+            );
+        case 'default':
+        default:
+            return (
+                <Default
                     {...templates.get('default', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'default')}
-                />;
+                />
+            );
         }
     }
 

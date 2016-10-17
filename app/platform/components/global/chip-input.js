@@ -19,6 +19,7 @@ class ChipInput extends React.Component {
         initMaterial: PropTypes.bool,
         className: PropTypes.string,
         autocomplete: PropTypes.bool,
+        createNew: PropTypes.bool,
         multiple: PropTypes.bool,
         placeholder: PropTypes.string,
     };
@@ -28,6 +29,7 @@ class ChipInput extends React.Component {
         initMaterial: false,
         className: '',
         autocomplete: false,
+        createNew: true,
         multiple: true,
     };
 
@@ -69,7 +71,7 @@ class ChipInput extends React.Component {
             this.setState({ suggestions: [] });
         } else {
             api
-            .get('api/search', { [`${model}[a][${attr}]`]: query })
+            .get('search', { [`${model}[a][${attr}]`]: query })
             .then(res => {
                 if (res[model] && res[model].results) {
                     this.setState({ suggestions: res[model].results });
@@ -85,7 +87,7 @@ class ChipInput extends React.Component {
      * @param {object} e key up event
      */
     onKeyUpQuery = (e) => {
-        const { attr, autocomplete } = this.props;
+        const { attr, autocomplete, createNew } = this.props;
         const { suggestions, query } = this.state;
 
         if (e.keyCode === 13 && query.length > 0) {
@@ -97,6 +99,8 @@ class ChipInput extends React.Component {
                 this.addItem(query);
                 return;
             }
+
+            if (!matched && !createNew) return;
 
             this.addItem(matched || { [attr]: query });
         }
