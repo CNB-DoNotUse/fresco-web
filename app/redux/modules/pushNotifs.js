@@ -25,26 +25,35 @@ export const CANCEL_SEND = 'pushNotifs/CANCEL_SEND';
 const getTemplateErrors = (template, getState) => {
     const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
     const missing = [];
+    const errors = [];
+    let msg = '';
 
     if (!templateData.get('title')) missing.push('Title');
     if (!templateData.get('body')) missing.push('Body');
     switch (template) {
-        case 'assignment':
-            if (!templateData.get('assignment')) missing.push('Assignment');
-            break;
-        case 'recommend':
-            if (!templateData.get('gallery') && !templateData.get('story')) {
-                missing.push('Gallery or Story');
-            }
-            break;
-        case 'gallery list':
-            if (!templateData.get('galleries')) missing.push('Galleries');
-            break;
+    case 'assignment':
+        if (!templateData.get('assignment')) missing.push('Assignment');
+        break;
+    case 'recommend':
+        if (!templateData.get('gallery') && !templateData.get('story')) {
+            missing.push('Gallery or Story');
+        }
+        break;
+    case 'gallery list':
+        if (!templateData.get('galleries')) missing.push('Galleries');
+        break;
+    default:
+        break;
     }
 
-    return missing.length
-        ? `Missing required fields: ${missing.join(', ')}`
-        : null;
+    if (templateData.get('restrictByLocation') && templateData.get('radius') < 250) {
+        errors.push('Radius must be at least 250ft');
+    }
+
+    if (missing.length) msg = `Missing required fields: ${missing.join(', ')}`;
+    errors.forEach(e => { msg = msg.concat(`\n${e}`); });
+
+    return msg;
 };
 
 const getFormDataFromTemplate = (template, getState) => (
@@ -63,45 +72,45 @@ const getFormDataFromTemplate = (template, getState) => (
 
         formData = mapKeys(formData, (v, k) => {
             switch (k) {
-                case ('location'): return 'geo';
-                case ('users'): return 'user_ids';
-                case ('galleries'): return 'gallery_ids';
-                case ('gallery'): 'gallery_id';
-                case ('story'): return 'story_id';
-                case ('assignment'): return 'assignment_id';
-                default:
-                    return k;
+            case ('location'): return 'geo';
+            case ('users'): return 'user_ids';
+            case ('galleries'): return 'gallery_ids';
+            case ('gallery'): return 'gallery_id';
+            case ('story'): return 'story_id';
+            case ('assignment'): return 'assignment_id';
+            default:
+                return k;
             }
         });
 
         formData = mapValues(formData, (v, k) => {
             switch (k) {
-                case ('geo'): return { type: 'Point', coordinates: [v.lng, v.lat] };
-                case ('user_ids'): return v.map(u => u.id);
-                case ('gallery_ids'): return v.map(g => g.id);
-                case ('gallery_id'): return v.id
-                case ('story_id'): return v.id
-                case ('assignment_id'): return v.id
-                default:
-                    return v;
+            case ('geo'): return { type: 'Point', coordinates: [v.lng, v.lat] };
+            case ('user_ids'): return v.map(u => u.id);
+            case ('gallery_ids'): return v.map(g => g.id);
+            case ('gallery_id'): return v.id;
+            case ('story_id'): return v.id;
+            case ('assignment_id'): return v.id;
+            default:
+                return v;
             }
         });
 
         let templateKey;
         switch (template) {
-            case 'recommend':
-                if (get(formData, 'gallery_id')) templateKey = 'user-news-gallery';
-                else if (get(formData, 'story_id')) templateKey = 'user-news-story';
-                break;
-            case 'assignment':
-                templateKey = 'user-dispatch-new-assignment';
-                break;
-            case 'gallery list':
-                templateKey = 'user-news-today-in-news';
-                break;
-            case 'default':
-            default:
-                templateKey = 'user-news-custom-push';
+        case 'recommend':
+            if (get(formData, 'gallery_id')) templateKey = 'user-news-gallery';
+            else if (get(formData, 'story_id')) templateKey = 'user-news-story';
+            break;
+        case 'assignment':
+            templateKey = 'user-dispatch-new-assignment';
+            break;
+        case 'gallery list':
+            templateKey = 'user-news-today-in-news';
+            break;
+        case 'default':
+        default:
+            templateKey = 'user-news-custom-push';
         }
 
         const templateFormData = { notification:
@@ -178,8 +187,6 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
 };
 
 export const send = (template) => (dispatch, getState) => {
-    dispatch({ type: SEND, template });
-
     const error = getTemplateErrors(template, getState);
     if (error) {
         dispatch({
@@ -190,6 +197,8 @@ export const send = (template) => (dispatch, getState) => {
 
         return;
     }
+
+    dispatch({ type: SEND, template });
 };
 
 export const confirmSend = (template) => (dispatch, getState) => {
@@ -226,35 +235,35 @@ const pushNotifs = (state = fromJS({
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {
-        case SEND:
-            return state
-                .set('loading', true)
-                .set('requestConfirmSend', true);
-        case SEND_SUCCESS:
-            return state
-                .set('loading', false)
-                .set('requestConfirmSend', false)
-                .set('alert', 'Notification sent!')
-                .setIn(['templates', action.template], Map());
-        case SEND_FAIL:
-            return state
-                .set('loading', false)
-                .set('requestConfirmSend', false)
-                .set('alert', action.data);
-        case SET_ACTIVE_TAB:
-            return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
-        case DISMISS_ALERT:
-            return state.set('alert', null);
-        case CANCEL_SEND:
-            return state
-                .set('requestConfirmSend', false)
-                .set('loading', false);
-        case UPDATE_TEMPLATE_SUCCESS:
-            return state.mergeIn(['templates', action.template], action.data);
-        case UPDATE_TEMPLATE_ERROR:
-            return state.set('alert', action.data);
-        default:
-            return state;
+    case SEND:
+        return state
+            .set('loading', true)
+            .set('requestConfirmSend', true);
+    case SEND_SUCCESS:
+        return state
+            .set('loading', false)
+            .set('requestConfirmSend', false)
+            .set('alert', 'Notification sent!')
+            .setIn(['templates', action.template], Map());
+    case SEND_FAIL:
+        return state
+            .set('loading', false)
+            .set('requestConfirmSend', false)
+            .set('alert', action.data);
+    case SET_ACTIVE_TAB:
+        return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
+    case DISMISS_ALERT:
+        return state.set('alert', null);
+    case CANCEL_SEND:
+        return state
+            .set('requestConfirmSend', false)
+            .set('loading', false);
+    case UPDATE_TEMPLATE_SUCCESS:
+        return state.mergeIn(['templates', action.template], action.data);
+    case UPDATE_TEMPLATE_ERROR:
+        return state.set('alert', action.data);
+    default:
+        return state;
     }
 };
 

@@ -8,7 +8,7 @@ import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import EditPosts from './edit-posts';
 import EditByline from './edit-byline';
-import ExplicitCheckbox from '../global/explicit-checkbox'
+import ExplicitCheckbox from '../global/explicit-checkbox';
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
 import { LoaderOpacity } from '../global/loader';
@@ -519,8 +519,9 @@ class Edit extends React.Component {
                         attr="title"
                         items={assignment ? [assignment] : []}
                         updateItems={(a) => this.setState({ assignment: a[0] })}
-                        multiple={false}
                         className="dialog-row"
+                        multiple={false}
+                        createNew={false}
                         autocomplete
                     />
 
@@ -547,6 +548,7 @@ class Edit extends React.Component {
                         items={articles}
                         updateItems={(a) => this.setState({ articles: a })}
                         className="dialog-row"
+                        createNew={false}
                         autocomplete
                     />
 
@@ -563,8 +565,8 @@ class Edit extends React.Component {
                         </div>
                     </div>
 
-                    <ExplicitCheckbox 
-                        is_nsfw={is_nsfw} 
+                    <ExplicitCheckbox
+                        is_nsfw={is_nsfw}
                         onChange={this.toggle_is_nsfw} />
                 </div>
 

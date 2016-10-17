@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import api from 'app/lib/api';
 import App from './app';
 import Sidebar from './../components/user/sidebar';
 import TopBar from './../components/topbar';
@@ -20,18 +21,16 @@ class UserDetail extends React.Component {
         const { detailUser } = this.props;
         const params = {
             limit: 15,
+            rating: 2,
             last,
         };
 
-        $.ajax({
-            url: `/api/user/${detailUser.id}/posts`,
-            type: 'GET',
-            data: params,
-            dataType: 'json',
-        })
+        api
+        .get(`user/${detailUser.id}/posts`, params)
         .then((res) => {
             callback(res);
-        }, () => {
+        })
+        .catch(() => {
             $.snackbar({ content: 'We couldn\'t load this user\'s posts!' });
             callback([]);
         });

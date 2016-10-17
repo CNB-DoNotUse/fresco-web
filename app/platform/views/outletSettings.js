@@ -27,7 +27,7 @@ class OutletSettings extends React.Component {
 
     updateOutlet(outlet) {
         this.state.user.outlet = outlet;
-        this.setState({ 
+        this.setState({
             outlet,
             user: this.state.user
         });
@@ -55,7 +55,7 @@ class OutletSettings extends React.Component {
                                 outlet={outlet}
                             />
                         : '' }
-                        
+
                         {isOwner ?
                             <PaymentInfo
                                 payment={payment}
@@ -63,7 +63,7 @@ class OutletSettings extends React.Component {
                             />
                         : ''}
 
-                        {isOwner ? 
+                        {isOwner ?
                             <QuickSupport />
                         : ''}
                     </div>
@@ -72,7 +72,7 @@ class OutletSettings extends React.Component {
 
                         <Locations outlet={this.state.outlet} />
 
-                        {isOwner ? 
+                        {isOwner ?
                             <Members
                                 outlet={this.state.outlet}
                                 updateMembers={(o) => this.updateMembers(o)}
@@ -80,7 +80,7 @@ class OutletSettings extends React.Component {
                             />
                         : ''}
 
-                        {!isOwner ? 
+                        {!isOwner ?
                             <QuickSupport />
                         : ''}
                     </div>

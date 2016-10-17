@@ -33,11 +33,16 @@ const onChangeUsers = (onChange) => (users) => {
     onChange({ users: users.map(u => ({ id: u.id, username: u.username })) });
 };
 
+const onRadiusChange = (onChange) => (radius) => {
+    onChange({ radius });
+};
+
 export const RestrictByLocation = ({
     restrictByLocation = false,
     onChange,
     location,
-    address }) => (
+    address,
+    radius }) => (
     <span>
         <div className="checkbox form-group push-notifs__checkbox">
             <label>
@@ -54,9 +59,11 @@ export const RestrictByLocation = ({
             && <AutocompleteMap
                 location={location}
                 address={address}
+                radius={radius}
                 disabled={false}
                 onPlaceChange={onPlaceChange(onChange)}
                 onMapDataChange={onMapDataChange(onChange)}
+                onRadiusUpdate={onRadiusChange(onChange)}
                 draggable
                 hasRadius
             />
@@ -69,6 +76,7 @@ RestrictByLocation.propTypes = {
     onChange: PropTypes.func.isRequired,
     location: PropTypes.object,
     address: PropTypes.string,
+    radius: PropTypes.number,
 };
 
 export const RestrictByUser = ({
