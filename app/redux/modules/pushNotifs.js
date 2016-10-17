@@ -25,26 +25,35 @@ export const CANCEL_SEND = 'pushNotifs/CANCEL_SEND';
 const getTemplateErrors = (template, getState) => {
     const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
     const missing = [];
+    const errors = [];
+    let msg = '';
 
     if (!templateData.get('title')) missing.push('Title');
     if (!templateData.get('body')) missing.push('Body');
     switch (template) {
-        case 'assignment':
-            if (!templateData.get('assignment')) missing.push('Assignment');
-            break;
-        case 'recommend':
-            if (!templateData.get('gallery') && !templateData.get('story')) {
-                missing.push('Gallery or Story');
-            }
-            break;
-        case 'gallery list':
-            if (!templateData.get('galleries')) missing.push('Galleries');
-            break;
+    case 'assignment':
+        if (!templateData.get('assignment')) missing.push('Assignment');
+        break;
+    case 'recommend':
+        if (!templateData.get('gallery') && !templateData.get('story')) {
+            missing.push('Gallery or Story');
+        }
+        break;
+    case 'gallery list':
+        if (!templateData.get('galleries')) missing.push('Galleries');
+        break;
+    default:
+        break;
     }
 
-    return missing.length
-        ? `Missing required fields: ${missing.join(', ')}`
-        : null;
+    if (templateData.get('restrictByLocation') && templateData.get('radius') < 250) {
+        errors.push('Radius must be at least 250ft');
+    }
+
+    if (missing.length) msg = `Missing required fields: ${missing.join(', ')}`;
+    errors.forEach(e => { msg = msg.concat(`${e}`); });
+
+    return msg;
 };
 
 const getFormDataFromTemplate = (template, getState) => (
@@ -178,8 +187,6 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
 };
 
 export const send = (template) => (dispatch, getState) => {
-    dispatch({ type: SEND, template });
-
     const error = getTemplateErrors(template, getState);
     if (error) {
         dispatch({
@@ -190,6 +197,8 @@ export const send = (template) => (dispatch, getState) => {
 
         return;
     }
+
+    dispatch({ type: SEND, template });
 };
 
 export const confirmSend = (template) => (dispatch, getState) => {
