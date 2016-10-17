@@ -539,7 +539,6 @@ class Edit extends React.Component {
                         items={stories}
                         updateItems={(s) => this.setState({ stories: s })}
                         className="dialog-row"
-                        createNew={false}
                         autocomplete
                     />
 
@@ -549,6 +548,7 @@ class Edit extends React.Component {
                         items={articles}
                         updateItems={(a) => this.setState({ articles: a })}
                         className="dialog-row"
+                        createNew={false}
                         autocomplete
                     />
 

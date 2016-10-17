@@ -102,7 +102,7 @@ class ChipInput extends React.Component {
 
             if (!matched && !createNew) return;
 
-            this.addItem(matched || { [attr]: query });
+            this.addItem(matched || { [attr]: query, new: true });
         }
     }
 
