@@ -4,6 +4,7 @@
 
     "API_URL": "https://api.dev.fresconews.com",
     "API_TOKEN" : "MTMzNzp0aGlzaXNhc2VjcmV0",
+    "API_VERSION": "v2",
     "WEB_ROOT": "http://dev.fresconews.com",
     "STRIPE_SECRET": "sk_test_3gia4iCZFnNXl0tQyGwEggVM",
     "STRIPE_PUBLISHABLE": "pk_test_o4pMXyj95Vqe5NgV3hb7qmdo",
