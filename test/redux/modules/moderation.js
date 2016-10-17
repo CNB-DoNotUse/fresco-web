@@ -97,5 +97,21 @@ describe('moderation async action creators', () => {
             });
         });
     });
+
+    it('creates FETCH_SUSPENDED_USERS_SUCCESS when fetching suspended users has been done', () => {
+        fetchMock
+        .mock('/api/user/suspended?', { body: [{ id: '1' }, { id: '2' }] });
+
+        const store = mockStore(fromJS({ moderation: initialState }));
+
+        return store.dispatch(actions.fetchSuspendedUsers())
+        .then(() => {
+            expect(store.getActions()).to.include({ type: actions.FETCH_SUSPENDED_USERS_REQUEST });
+            expect(store.getActions()).to.include({
+                type: actions.FETCH_SUSPENDED_USERS_SUCCESS,
+                data: [{ id: '1' }, { id: '2' }],
+            });
+        });
+    });
 });
 

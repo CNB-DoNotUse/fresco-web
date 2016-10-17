@@ -17,6 +17,7 @@ export const FETCH_GALLERIES_FAIL = 'moderation/FETCH_GALLERIES_FAIL';
 export const FETCH_USERS_REQUEST = 'moderation/FETCH_USERS_REQUEST';
 export const FETCH_USERS_SUCCESS = 'moderation/FETCH_USER_SUCCESS';
 export const FETCH_USERS_FAIL = 'moderation/FETCH_USER_FAIL';
+export const FETCH_SUSPENDED_USERS_REQUEST = 'moderation/FETCH_SUSPENDED_USERS_REQUEST';
 export const FETCH_SUSPENDED_USERS_SUCCESS = 'moderation/FETCH_SUSPENDED_USERS_SUCCESS';
 export const FETCH_REPORTS_SUCCESS = 'moderation/FETCH_REPORTS_SUCCESS';
 export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
@@ -50,9 +51,13 @@ export const toggleInfoDialog = ({ open = false, header = '', body = '' }) => ({
     body,
 });
 
-export const fetchSuspendedUsers = (last) => (dispatch) => {
-    api
-    .get('user/suspended', { last: last ? last.id : null })
+export const fetchSuspendedUsers = () => (dispatch, getState) => {
+    const state = getState().getIn(['moderation', 'galleries']);
+    if (state.get('loading')) return Promise.resolve();
+    dispatch({ type: FETCH_SUSPENDED_USERS_REQUEST });
+
+    return api
+    .get('user/suspended')
     .then(res => (
         dispatch({
             type: FETCH_SUSPENDED_USERS_SUCCESS,
@@ -385,8 +390,12 @@ const suspendedUsers = (state = fromJS({
     loading: false,
 }), action = {}) => {
     switch (action.type) {
+    case FETCH_SUSPENDED_USERS_REQUEST:
+        return state.set('loading', true);
     case FETCH_SUSPENDED_USERS_SUCCESS:
-        return state.set('entities', OrderedSet(fromJS(action.data)));
+        return state
+            .set('entities', OrderedSet(fromJS(action.data)))
+            .set('loading', false);
     case RESTORE_SUSPENDED_USER:
         return state.update('entities', es => es.filterNot(s => s.get('id') === action.id));
     default:
