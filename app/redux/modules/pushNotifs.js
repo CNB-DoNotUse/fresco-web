@@ -51,7 +51,7 @@ const getTemplateErrors = (template, getState) => {
     }
 
     if (missing.length) msg = `Missing required fields: ${missing.join(', ')}`;
-    errors.forEach(e => { msg = msg.concat(`${e}`); });
+    errors.forEach(e => { msg = msg.concat(`\n${e}`); });
 
     return msg;
 };

@@ -95,6 +95,7 @@ class PushNotifs extends React.Component {
                             onRequestClose={onDismissAlert}
                             onActionTouchTap={onDismissAlert}
                             onClick={onDismissAlert}
+                            bodyStyle={{ height: 'auto', whiteSpace: 'pre-line' }}
                         />
                         {this.renderTemplate()}
                         <button
