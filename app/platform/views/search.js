@@ -134,20 +134,20 @@ class Search extends Component {
     geoParams() {
         const { location } = this.state;
 
-        if(location.coordinates && location.radius) {
+        if (location.coordinates && location.radius) {
             return {
                 geo: {
                     type: 'Point',
                     coordinates: [
-                        location.coordinates.lat,
                         location.coordinates.lng,
-                    ]
+                        location.coordinates.lat,
+                    ],
                 },
-                radius: utils.feetToMiles(location.radius)
-            }
-        } else {
-            return {};
+                radius: utils.feetToMiles(location.radius),
+            };
         }
+
+        return {};
     }
 
 	/**

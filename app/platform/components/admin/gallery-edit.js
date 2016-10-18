@@ -142,7 +142,7 @@ export default class GalleryEdit extends React.Component {
             editButtonsEnabled: false,
             tags: gallery.tags || [],
             stories: gallery.stories || [],
-            assignment: null,
+            assignment: get(gallery, 'assignments[0]'),
             caption: gallery.caption || 'No Caption',
             loading: false,
             external_account_name: gallery.external_account_name,
