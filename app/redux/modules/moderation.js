@@ -52,7 +52,7 @@ export const toggleInfoDialog = ({ open = false, header = '', body = '' }) => ({
 });
 
 export const fetchSuspendedUsers = () => (dispatch, getState) => {
-    const state = getState().getIn(['moderation', 'galleries']);
+    const state = getState().getIn(['moderation', 'suspendedUsers']);
     if (state.get('loading')) return Promise.resolve();
     dispatch({ type: FETCH_SUSPENDED_USERS_REQUEST });
 
@@ -66,10 +66,10 @@ export const fetchSuspendedUsers = () => (dispatch, getState) => {
     ));
 };
 
-export const fetchEntityReports = ({ id, entityType, last }) => (dispatch) => {
+export const fetchReports = ({ id, entityType, last }) => (dispatch) => {
     const urlBase = entityType === 'galleries' ? 'gallery' : 'user';
 
-    api
+    return api
     .get(`${urlBase}/${id}/reports`, { last: last ? last.get('id') : null, limit: REPORTS_LIMIT })
     .then(res => {
         dispatch({
@@ -99,7 +99,7 @@ export const fetchGalleries = () => (dispatch, getState) => {
     .then(res => {
         const curIds = state.get('entities').map(e => e.get('id')).toJS();
         const newObjs = res.filter(r => !curIds.includes(r.id));
-        newObjs.forEach(r => dispatch(fetchEntityReports({ id: r.id, entityType: 'galleries' })));
+        newObjs.forEach(r => dispatch(fetchReports({ id: r.id, entityType: 'galleries' })));
 
         dispatch({
             type: FETCH_GALLERIES_SUCCESS,
@@ -129,7 +129,7 @@ export const fetchUsers = () => (dispatch, getState) => {
     .then(res => {
         const curIds = state.get('entities').map(e => e.get('id')).toJS();
         const newObjs = res.filter(r => !curIds.includes(r.id));
-        newObjs.forEach(r => dispatch(fetchEntityReports({ id: r.id, entityType: 'users' })));
+        newObjs.forEach(r => dispatch(fetchReports({ id: r.id, entityType: 'users' })));
 
         dispatch({
             type: FETCH_USERS_SUCCESS,
@@ -171,7 +171,7 @@ export const updateReportsIndex = (entityType, id, change) => (dispatch, getStat
     if (newIndex >= reportsSize && reportsSize < REPORTS_LIMIT) return;
     if (newIndex >= reportsSize && reportsSize % 10 !== 0) return;
     if (newIndex >= reportsSize && newIndex >= REPORTS_LIMIT) {
-        dispatch(fetchEntityReports({
+        dispatch(fetchReports({
             id,
             entityType,
             last: reportData.get('reports', OrderedSet()).last(),

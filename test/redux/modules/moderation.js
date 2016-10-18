@@ -113,5 +113,22 @@ describe('moderation async action creators', () => {
             });
         });
     });
+
+    it('creates FETCH_REPORTS_SUCCESS  when fetching reports has been done', () => {
+        fetchMock
+        .mock('/api/user/1/reports?last=&limit=10', { body: { text: 'report text' } });
+
+        const store = mockStore(fromJS({ moderation: initialState }));
+
+        return store.dispatch(actions.fetchReports({ id: '1', entityType: 'user' }))
+        .then(() => {
+            expect(store.getActions()).to.include({
+                type: actions.FETCH_REPORTS_SUCCESS,
+                reports: { text: 'report text' },
+                entityType: 'user',
+                id: '1',
+            });
+        });
+    });
 });
 
