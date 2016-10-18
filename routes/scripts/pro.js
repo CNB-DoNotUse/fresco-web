@@ -16,7 +16,7 @@ router.post('/pro/signup', (req, res, next) => {
         firstname : req.body.firstname,
         lastname  : req.body.lastname,
         zip       : req.body.zip,
-        phone     : req.body.phone,
+        phone     : req.body.phone.replace(/\D/g,''),
         email     : req.body.email,
         time      : req.body.time,
         adid      : typeof(req.body.adid) === 'undefined' ? '' : req.body.adid,
