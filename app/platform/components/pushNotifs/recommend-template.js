@@ -4,7 +4,7 @@ import TitleBody from './title-body';
 import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
 const onChangeGalleries = (onChange) => (gallery) => {
-    onChange({ gallery: gallery[0] });
+    onChange({ gallery: gallery[0] || null });
 };
 
 const onChangeStories = (onChange) => (story) => {

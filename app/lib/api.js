@@ -1,6 +1,14 @@
 import 'isomorphic-fetch';
 import qs from 'qs';
 
+const fetchStatusHandler = (response) => {
+    if (response.status === 200) {
+        return response;
+    }
+
+    throw new Error(response.statusText);
+};
+
 export default {
     post(url, body) {
         const headers = new Headers();
@@ -13,7 +21,9 @@ export default {
             credentials: 'include',
             headers,
         })
-        .then(res => res.json());
+        .then(fetchStatusHandler)
+        .then(res => res.json())
+        .catch(Promise.reject);
     },
 
     get(url, body = {}) {
@@ -27,7 +37,9 @@ export default {
             credentials: 'include',
             headers,
         })
-        .then(res => res.json());
+        .then(fetchStatusHandler)
+        .then(res => res.json())
+        .catch(Promise.reject);
     },
 };
 

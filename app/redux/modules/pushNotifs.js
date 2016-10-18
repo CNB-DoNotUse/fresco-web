@@ -170,19 +170,23 @@ const verifyTemplateUpdate = ({ data, state }) => {
 
 const verifyRecommendUpdate = ({ data, state }) => {
     return new Promise((resolve, reject) => {
+        if (!data.story && !data.gallery) resolve();
         if (data.gallery) {
             if (state.get('story')) {
                 reject('Can only recommend one of gallery or story');
             }
+
+            verifyGallery(data.gallery)
+                .then(() => resolve())
+                .catch(() => reject('Invalid gallery id'));
         }
 
         if (data.story) {
             if (state.get('gallery')) {
                 reject('Can only recommend one of gallery or story');
             }
+            resolve();
         }
-
-        resolve();
     });
 };
 
@@ -207,19 +211,15 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
         return verifyRecommendUpdate(params)
         .then(() => verifyTemplateUpdate(params))
         .then(() => {
-            dispatch(successAction)
+            dispatch(successAction);
         })
         .catch(msg => {
-            dispatch(Object.assign({}, errorAction, { msg }))
+            dispatch(Object.assign({}, errorAction, { msg }));
         });
     default:
         return verifyTemplateUpdate(params)
-        .then(() => {
-            dispatch(successAction)
-        })
-        .catch(msg => {
-            dispatch(Object.assign({}, errorAction, { msg }))
-        });
+        .then(() => dispatch(successAction))
+        .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
     }
 };
 
