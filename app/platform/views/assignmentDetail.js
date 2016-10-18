@@ -60,7 +60,7 @@ class AssignmentDetail extends React.Component {
             limit: 10,
             sortBy,
             last,
-            rating: verifiedToggle ? 2 : 1,
+            rating: verifiedToggle ? 2 : [1, 2],
         };
 
         $.ajax({

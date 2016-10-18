@@ -432,9 +432,9 @@ class Search extends Component {
                         permissions={this.props.user.permissions}
                         purchases={this.props.purchases}
                         ref="postList"
-                        size='large'
+                        size="large"
                         onScroll={this.scroll}
-                        scrollable={true}
+                        scrollable
                     />
                 </div>
 
@@ -460,6 +460,7 @@ Search.propTypes = {
     query: PropTypes.string,
     tags: PropTypes.array,
     location: PropTypes.object,
+    user: PropTypes.object,
 };
 
 ReactDOM.render(
