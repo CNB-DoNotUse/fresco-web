@@ -4,6 +4,8 @@ import utils from 'utils';
 import update from 'react-addons-update';
 import clone from 'lodash/clone';
 import last from 'lodash/last';
+import pick from 'lodash/pick';
+import pull from 'lodash/pull';
 import App from './app';
 import TopBar from './../components/topbar';
 import LocationDropdown from '../components/topbar/location-dropdown';
@@ -24,6 +26,7 @@ class Search extends Component {
             stories: [],
             title: this.getTitle(true),
             verifiedToggle: true,
+            currentPostParams: {},
             tags: this.props.tags,
             purchases: this.props.purchases,
         };
@@ -76,11 +79,13 @@ class Search extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         let shouldUpdate = false;
+        let onlyTitle = false;
 
         const {
             location,
             tags,
-            verifiedToggle
+            verifiedToggle,
+            numberOfPostResults
         } = this.state;
 
         if(JSON.stringify(prevState.location.coordinates) !== JSON.stringify(location.coordinates)) {
@@ -91,14 +96,26 @@ class Search extends Component {
             shouldUpdate = true;
         } else if(prevState.verifiedToggle !== verifiedToggle) {
             shouldUpdate = true;
+        } else if(prevState.numberOfPostResults !== this.state.numberOfPostResults) {
+            onlyTitle = true;
+        }
+
+        if(prevState.numberOfPostResults !== numberOfPostResults) {
+            onlyTitle = true;
         }
 
         //Update if any of the conditions are true
         if(shouldUpdate) {
             this.refreshData(false);
+        }
 
-            console.log('UPDATE');
+        if(shouldUpdate || onlyTitle) {
+            this.setState({
+                title : this.getTitle(false)
+            });
+        }
 
+        if(shouldUpdate || onlyTitle) {
             this.setState({
                 title : this.getTitle(false)
             });
@@ -113,17 +130,20 @@ class Search extends Component {
     getTitle(withProps) {
         const {
             tags,
-            location
+            location,
+            numberOfPostResults
         } = withProps ? this.props : this.state;
 
         let title = '';
 
+        const count = typeof(numberOfPostResults) !== 'undefined' ? `${numberOfPostResults.toLocaleString()} results` : 'Results';
+
         if(this.props.query !== '') {
-            title = 'Results for ' + this.props.query;
+            title = `${count} for ${this.props.query}`;
         } else if(tags.length) {
-            title = 'Results for tags ' + tags.join(', ');
+            title = `${count} for ${utils.isPlural(tags.length) ? 'tags' : 'tag'} ${tags.join(', ')}`;
         } else if(location && location.address) {
-            title = 'Results from ' + location.address;
+            title = `${count} from ${location.address}`;
         } else {
             title = "No search query!"
         }
@@ -140,8 +160,8 @@ class Search extends Component {
                     type: 'Point',
                     coordinates: [
                         location.coordinates.lng,
-                        location.coordinates.lat,
-                    ],
+                        location.coordinates.lat
+                    ]
                 },
                 radius: utils.feetToMiles(location.radius),
             };
@@ -178,11 +198,12 @@ class Search extends Component {
      * Retrieves assignments based on state
      */
     getAssignments(force = true) {
+        if(utils.isEmptyString(this.props.query)) return;
+
         const params = {
             q: this.props.query,
             limit: 10,
-            tags: this.state.tags,
-            rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : undefined,
+            rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : null,
             ...this.geoParams()
         };
 
@@ -206,14 +227,16 @@ class Search extends Component {
 	 * Retrieves posts from API based on state
 	 */
     getPosts(force = true, lastId) {
+        const { currentPostParams, tags, verifiedToggle } = this.state;
+
         const params = {
             q: this.props.query,
             limit: 18,
-            tags: this.state.tags,
+            tags,
             sortBy: 'created_at',
             last: lastId,
-            rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : undefined,
-            ...this.geoParams(),
+            rating: verifiedToggle ? utils.RATINGS.VERIFIED : null,
+            ...this.geoParams()
         };
 
         $.ajax({
@@ -240,8 +263,17 @@ class Search extends Component {
 
                 const posts = response.posts.results;
 
+                //Compare params to determine if we should update the result count
+                //Temp solution because the API returns `0` on count if there are no results at all
+                const newParams = pick(params, pull(Object.keys(params), 'last'));
+                const oldParams = pick(currentPostParams, pull(Object.keys(currentPostParams), 'last'));
+
+                const numberOfPostResults = JSON.stringify(newParams) !== JSON.stringify(oldParams) ? response.posts.count : this.state.numberOfPostResults
+
                 this.setState({
-                    posts: force ? posts : this.state.posts.concat(posts)
+                    posts: force ? posts : this.state.posts.concat(posts),
+                    numberOfPostResults,
+                    currentPostParams: params
                 });
             }
         })
@@ -254,6 +286,8 @@ class Search extends Component {
      * Retrieves users from API based on state
      */
     getUsers(force = true) {
+        if(utils.isEmptyString(this.props.query)) return;
+
         const params = {
             q: this.props.query,
             last: force ? undefined : last(this.state.users).id,
@@ -283,6 +317,8 @@ class Search extends Component {
      * Retrieves stories from API based on state
      */
     getStories(force = true) {
+        if(utils.isEmptyString(this.props.query)) return;
+
         const params = {
             q: this.props.query,
             last: force ? null : last(this.state.stories),
@@ -334,8 +370,6 @@ class Search extends Component {
      */
     onMapDataChange(data) {
         let location = clone(this.state.location);
-
-        console.log(data);
 
         location.coordinates = data.location;
         location.address = data.address;
@@ -407,6 +441,7 @@ class Search extends Component {
                     verifiedToggle={true}
                     permissions={this.props.user.permissions}
                     onVerifiedToggled={this.onVerifiedToggled}>
+                    
                     <TagFilter
                         onTagAdd={this.addTag}
                         onTagRemove={this.removeTag}
