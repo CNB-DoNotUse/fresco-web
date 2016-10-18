@@ -8,6 +8,7 @@ import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import EditPosts from './edit-posts';
 import EditByline from './edit-byline';
+import EditAssignment from './edit-assignment';
 import ExplicitCheckbox from '../global/explicit-checkbox';
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
@@ -18,11 +19,8 @@ import { LoaderOpacity } from '../global/loader';
  * Component for adding gallery editing to the current view
  */
 class Edit extends React.Component {
-    constructor(props) {
-        super(props);
 
-        this.state = this.getStateFromProps(props);
-    }
+    state = this.getStateFromProps(this.props);
 
     componentDidMount() {
         $.material.init();
@@ -47,7 +45,7 @@ class Edit extends React.Component {
         return {
             tags: gallery.tags || [],
             stories: gallery.stories,
-            assignment: null,
+            assignments: gallery.assignments,
             caption: gallery.caption || 'No Caption',
             posts: gallery.posts,
             articles: gallery.articles,
@@ -72,19 +70,16 @@ class Edit extends React.Component {
     onSave = () => {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
-        let { loading, uploads } = this.state;
+        let { loading, uploads, assignments } = this.state;
 
         if (!get(gallery, 'id') || !params || loading) return;
         this.setState({ loading: true });
-
-        console.log(params);
 
         Promise.all([
             this.saveGallery(gallery.id, params),
             this.deletePosts(get(params, 'posts_remove')),
         ])
         .then(res => {
-            console.log(res)
             if (get(res[0], 'posts_new.length')) {
                 return Promise.all([
                     res[0],
@@ -98,11 +93,10 @@ class Edit extends React.Component {
             this.hide();
             this.setState({ uploads: [], loading: false }, () => {
                 $.snackbar({ content: 'Gallery saved!' });
-                onUpdateGallery(res[0]);
+                onUpdateGallery(Object.assign(res[0], { assignments }));
             });
         })
         .catch(err => {
-            console.log(err);
             $.snackbar({ content: 'There was an error saving the gallery!' });
             this.setState({ loading: false });
         });
@@ -167,7 +161,7 @@ class Edit extends React.Component {
         this.setState({
             tags: [],
             stories: [],
-            assignment: null,
+            assignments: [],
             uploads: [],
             address: '',
             caption: 'No Caption',
@@ -211,7 +205,7 @@ class Edit extends React.Component {
             external_account_name,
             external_source,
             rating,
-            is_nsfw
+            is_nsfw,
         } = this.state;
         const { gallery } = this.props;
         const posts = this.getPostsFormData();
@@ -235,7 +229,7 @@ class Edit extends React.Component {
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             rating,
-            is_nsfw
+            is_nsfw,
         };
 
         //Make sure our params are valid types and don't have any empty arrays
@@ -247,6 +241,17 @@ class Edit extends React.Component {
 
     getFilesFromUploads() {
         return this.state.uploads.filter(u => !get(u, 'deleteToggled')).map(u => u.file);
+    }
+
+    // only set assignment on new posts if gallery isn't
+    // curated and all posts belong to same assignment
+    getAssignmentParam() {
+        const { assignments } = this.state;
+        if (assignments.length === 1) {
+            return assignments[0].id;
+        }
+
+        return null;
     }
 
     getPostsFormData() {
@@ -264,11 +269,12 @@ class Edit extends React.Component {
 
         let { posts_new, posts_add, posts_remove } =
             utils.getRemoveAddParams('posts', gallery.posts, posts);
+
         posts_new = posts_new
             ? posts_new.map(p =>
                 Object.assign({}, p, {
                     rating,
-                    assignment_id: assignment ? assignment.id : null,
+                    assignment_id: this.getAssignmentParam(),
                 }))
             : null;
 
@@ -282,16 +288,15 @@ class Edit extends React.Component {
 
     getPostsUpdateParams() {
         const { gallery } = this.props;
-        const { address, location, rating, assignment } = this.state;
+        const { address, location, rating, assignments } = this.state;
         // check to see if should save locations on all gallery's posts
         const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
-        const sameRating = rating === gallery.rating;
         if (sameLocation) {
             return {
                 posts_update: gallery.posts.map(p => (pickBy({
                     id: p.id,
                     rating: rating === 3 ? 2 : rating,
-                    assignment_id: assignment ? assignment.id : null,
+                    assignment_id: this.getAssignmentParam(),
                 }, v => !!v))),
             };
         }
@@ -303,7 +308,7 @@ class Edit extends React.Component {
                 lat: location.lat,
                 lng: location.lng,
                 rating: rating === 3 ? 2 : rating,
-                assignment_id: assignment ? assignment.id : null,
+                assignment_id: this.getAssignmentParam(),
             }, v => !!v))),
         };
     }
@@ -398,7 +403,7 @@ class Edit extends React.Component {
         this.setState({ rating: e.target.checked ? 3 : 2 });
     }
 
-    toggle_is_nsfw = () => {
+    toggleIsNSFW = () => {
         this.setState({ is_nsfw: !this.state.is_nsfw });
     }
 
@@ -472,7 +477,7 @@ class Edit extends React.Component {
         const {
             stories,
             caption,
-            assignment,
+            assignments,
             tags,
             rating,
             is_nsfw,
@@ -513,16 +518,9 @@ class Edit extends React.Component {
                         />
                     </div>
 
-                    <ChipInput
-                        model="assignments"
-                        placeholder="Assignment"
-                        attr="title"
-                        items={assignment ? [assignment] : []}
-                        updateItems={(a) => this.setState({ assignment: a[0] })}
-                        className="dialog-row"
-                        multiple={false}
-                        createNew={false}
-                        autocomplete
+                    <EditAssignment
+                        onChange={a => this.setState({ assignments: a })}
+                        assignments={assignments}
                     />
 
                     <ChipInput
@@ -567,7 +565,8 @@ class Edit extends React.Component {
 
                     <ExplicitCheckbox
                         is_nsfw={is_nsfw}
-                        onChange={this.toggle_is_nsfw} />
+                        onChange={this.toggleIsNSFW}
+                    />
                 </div>
 
                 {get(posts, 'length') || get(uploads, 'length') ? (
