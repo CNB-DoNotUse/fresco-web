@@ -102,6 +102,7 @@ export const RestrictByUser = ({
                 items={users}
                 updateItems={onChangeUsers(onChange)}
                 className="push-notifs__users"
+                createNew={false}
                 autocomplete
                 initMaterial
             />

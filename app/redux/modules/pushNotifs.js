@@ -132,6 +132,60 @@ export const dismissAlert = () => ({
     type: DISMISS_ALERT,
 });
 
+const verifyTemplateUpdate = ({ data, state }) => {
+    return new Promise((resolve, reject) => {
+        if (data.galleries) {
+            const galleries = state.get('galleries', List()).toJS();
+            const newGallery = get(differenceBy(data.galleries, galleries, 'id'), '[0]');
+            if (!newGallery) resolve();
+
+            verifyGallery(newGallery)
+                .then(() => resolve())
+                .catch(() => reject('Invalid gallery id'));
+        }
+
+        if (data.users) {
+            const users = state.get('users', List()).toJS();
+            const newUser = get(differenceBy(data.users, users, 'id'), '[0]');
+            if (!newUser) resolve();
+
+            verifyUser(newUser)
+                .then(() => resolve())
+                .catch(() => reject('Invalid user'));
+        }
+
+        if (data.assignments) {
+            const assignments = state.get('assignments', List()).toJS();
+            const newAssignment = get(differenceBy(data.assignments, assignments, 'id'), '[0]');
+            if (!newAssignment) resolve();
+
+            verifyAssignment(newAssignment)
+                .then(() => resolve())
+                .catch(() => reject('Invalid assignment'));
+        }
+
+        resolve();
+    });
+};
+
+const verifyRecommendUpdate = ({ data, state }) => {
+    return new Promise((resolve, reject) => {
+        if (data.gallery) {
+            if (state.get('story')) {
+                reject('Can only recommend one of gallery or story');
+            }
+        }
+
+        if (data.story) {
+            if (state.get('gallery')) {
+                reject('Can only recommend one of gallery or story');
+            }
+        }
+
+        resolve();
+    });
+};
+
 export const updateTemplate = (template, data) => (dispatch, getState) => {
     const successAction = {
         type: UPDATE_TEMPLATE_SUCCESS,
@@ -141,49 +195,32 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
     const errorAction = {
         type: UPDATE_TEMPLATE_ERROR,
         template,
-        data: 'There was an error updating the template',
+        msg: 'There was an error updating the template',
     };
 
-    if (data.galleries) {
-        const galleries = getState()
-            .getIn(['pushNotifs', 'templates', template, 'galleries'], List())
-            .toJS();
-        const newGallery = get(differenceBy(data.galleries, galleries, 'id'), '[0]');
-        if (!newGallery) return dispatch(successAction);
+    const state = getState().getIn(['pushNotifs', 'templates', template], Map());
 
-        return verifyGallery(newGallery)
-        .then(() => dispatch(successAction))
-        .catch(() =>
-            dispatch(Object.assign({}, errorAction, { data: 'Invalid gallery id' })));
+    const params = { state, template, data, dispatch, errorAction, successAction };
+
+    switch (template) {
+    case 'recommend':
+        return verifyRecommendUpdate(params)
+        .then(() => verifyTemplateUpdate(params))
+        .then(() => {
+            dispatch(successAction)
+        })
+        .catch(msg => {
+            dispatch(Object.assign({}, errorAction, { msg }))
+        });
+    default:
+        return verifyTemplateUpdate(params)
+        .then(() => {
+            dispatch(successAction)
+        })
+        .catch(msg => {
+            dispatch(Object.assign({}, errorAction, { msg }))
+        });
     }
-
-    if (data.users) {
-        const users = getState()
-            .getIn(['pushNotifs', 'templates', template, 'users'], List())
-            .toJS();
-        const newUser = get(differenceBy(data.users, users, 'id'), '[0]');
-        if (!newUser) return dispatch(successAction);
-
-        return verifyUser(newUser)
-        .then(() => dispatch(successAction))
-        .catch(() =>
-            dispatch(Object.assign({}, errorAction, { data: 'Invalid user' })));
-    }
-
-    if (data.assignments) {
-        const assignments = getState()
-            .getIn(['pushNotifs', 'templates', template, 'assignments'], List())
-            .toJS();
-        const newAssignment = get(differenceBy(data.assignments, assignments, 'id'), '[0]');
-        if (!newAssignment) return dispatch(successAction);
-
-        return verifyAssignment(newAssignment)
-        .then(() => dispatch(successAction))
-        .catch(() =>
-            dispatch(Object.assign({}, errorAction, { data: 'Invalid assignment' })));
-    }
-
-    return dispatch(successAction);
 };
 
 export const send = (template) => (dispatch, getState) => {
@@ -261,7 +298,7 @@ const pushNotifs = (state = fromJS({
     case UPDATE_TEMPLATE_SUCCESS:
         return state.mergeIn(['templates', action.template], action.data);
     case UPDATE_TEMPLATE_ERROR:
-        return state.set('alert', action.data);
+        return state.set('alert', action.msg);
     default:
         return state;
     }
