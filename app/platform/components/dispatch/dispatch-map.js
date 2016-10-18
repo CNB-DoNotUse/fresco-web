@@ -159,13 +159,14 @@ import DispatchMapCallout from './dispatch-map-callout';
 
 				google.maps.event.addListener(newAssignmentMarker, 'dragend', (ev) => {
 					//Send up location to the parent
-					updateNewAssignment({
-						lat: ev.latLng.lat(),
-						lng: ev.latLng.lng()
-					},
-					newAssignment.radius,
-					map.getZoom(),
-					'markerDrag'
+					updateNewAssignment(
+                        {
+    						lat: ev.latLng.lat(),
+    						lng: ev.latLng.lng()
+    					},
+    					newAssignment.radius,
+    					map.getZoom(),
+    					'markerDrag'
 					);
 				});
 

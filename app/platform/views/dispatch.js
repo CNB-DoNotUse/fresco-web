@@ -139,7 +139,7 @@ class Dispatch extends React.Component {
 
         api.get('assignment/list', params)
         .then(res => callback(res))
-        .catch(() => $.snackbar({ content: 'Couldn\'t fetch assignments' }));
+        .catch(() => $.snackbar({ content: 'Couldn\'t fetch assignments!' }));
     }
 
     /**
@@ -157,7 +157,8 @@ class Dispatch extends React.Component {
 
         api
         .get('user/locations/find', params)
-        .then(res => cb(res));
+        .then(res => cb(res))
+        .catch(res => cb([]));
     }
 
     /**
