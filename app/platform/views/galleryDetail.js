@@ -45,6 +45,7 @@ class GalleryDetail extends React.Component {
         if (!get(gallery, 'posts.length')) return [];
 
         if (verifiedToggled) return gallery.posts.filter(p => p.rating >= 2);
+        
         return gallery.posts;
     }
 
