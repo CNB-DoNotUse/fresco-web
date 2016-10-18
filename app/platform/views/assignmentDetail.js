@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import utils from 'utils';
+import 'app/sass/platform/_assignment';
+import 'app/sass/platform/_posts';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/assignment/sidebar';
 import Edit from './../components/assignment/edit.js';
 import App from './app';
-import utils from 'utils';
-import 'app/sass/platform/_assignment';
-import 'app/sass/platform/_posts';
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
