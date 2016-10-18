@@ -21,7 +21,7 @@ const views = () => {
     viewFiles.forEach((view) => {
         if (['app.js', '.DS_Store'].indexOf(view.file) !== -1) return;
 
-        viewsToReturn[view.file.replace('.js', '')] = [view.dir + view.file, 'babel-polyfill'];
+        viewsToReturn[view.file.replace('.js', '')] = ['babel-polyfill', view.dir + view.file];
     });
 
     return viewsToReturn;

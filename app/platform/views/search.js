@@ -154,7 +154,7 @@ class Search extends Component {
     geoParams() {
         const { location } = this.state;
 
-        if(location.coordinates && location.radius) {
+        if (location.coordinates && location.radius) {
             return {
                 geo: {
                     type: 'Point',
@@ -163,11 +163,11 @@ class Search extends Component {
                         location.coordinates.lat
                     ]
                 },
-                radius: utils.feetToMiles(location.radius)
-            }
-        } else {
-            return {};
+                radius: utils.feetToMiles(location.radius),
+            };
         }
+
+        return {};
     }
 
 	/**
@@ -492,6 +492,7 @@ Search.defaultProps = {
 
 Search.propTypes = {
     q: PropTypes.string,
+    query: PropTypes.string,
     tags: PropTypes.array,
     location: PropTypes.object,
 };

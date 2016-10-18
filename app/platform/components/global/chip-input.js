@@ -21,6 +21,7 @@ class ChipInput extends React.Component {
         autocomplete: PropTypes.bool,
         createNew: PropTypes.bool,
         multiple: PropTypes.bool,
+        disabled: PropTypes.bool,
         placeholder: PropTypes.string,
     };
 
@@ -31,6 +32,7 @@ class ChipInput extends React.Component {
         autocomplete: false,
         createNew: true,
         multiple: true,
+        disabled: false,
     };
 
     state = {
@@ -126,7 +128,8 @@ class ChipInput extends React.Component {
     /**
      * Removes story and updates to parent
      */
-    removeItem(item) {
+    onClickTag(item) {
+        if (this.props.disabled) return;
         let { items, attr } = this.props;
 
         if (!attr) items = items.filter(i => i !== item);
@@ -138,12 +141,12 @@ class ChipInput extends React.Component {
 
     render() {
         const { query, suggestions } = this.state;
-        const { items, attr, model, placeholder } = this.props;
+        const { items, attr, model, placeholder, disabled } = this.props;
         const itemsJSX = items.map((item, i) => (
             <Tag
                 text={attr ? item[attr] : item}
                 plus={false}
-                onClick={() => this.removeItem(item)}
+                onClick={() => this.onClickTag(item)}
                 key={i}
             />
         ));
@@ -167,6 +170,7 @@ class ChipInput extends React.Component {
                         onChange={this.onChangeQuery}
                         onKeyUp={this.onKeyUpQuery}
                         value={query}
+                        disabled={disabled}
                     />
 
                     <ul
