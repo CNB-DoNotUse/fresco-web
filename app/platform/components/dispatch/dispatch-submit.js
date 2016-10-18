@@ -2,6 +2,7 @@ import React from 'react';
 import GMap from '../global/gmap';
 import LocationAutocomplete from '../global/location-autocomplete.js';
 import utils from 'utils';
+import assign from 'lodash/assign';
 
 /**
  * Assignment Form parent component
@@ -142,7 +143,7 @@ export default class DispatchSubmit extends React.Component {
         };
 
         if(!global) {
-            _.assign(assignment, {
+            assign(assignment, {
                 radius: utils.feetToMiles(parseInt(radius.value)),
                 address: autocomplete.refs.inputField.value,
                 location: {

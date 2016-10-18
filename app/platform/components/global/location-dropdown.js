@@ -90,9 +90,9 @@ class LocationDropdown extends React.Component {
             this.setState({ locations: res });
         })
         .fail((xhr, status, error) => {
-            $.snackbar({
-                content: utils.resolveError(error,  'We\'re unable to load your locations at the moment! Please try again in a bit.')
-            });
+            // $.snackbar({
+            //     content: utils.resolveError(error,  'We\'re unable to load your locations at the moment! Please try again in a bit.')
+            // });
         });
     }
 

@@ -50,7 +50,7 @@ router.get('/settings', (req, res, next) => {
             props: JSON.stringify(props),
         });
     })
-    .catch((error) => {
+    .catch(error => {
         next({
             message: 'Outlet not found!',
             status: error.status || 500,
