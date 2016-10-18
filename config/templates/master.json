@@ -4,6 +4,7 @@
 
     "API_URL": "https://api.fresconews.com",
     "WEB_ROOT" : "https://fresconews.com",
+    "API_VERSION": "v1",
     "STRIPE_SECRET": "sk_live_QKR23bLkkyHQPF75o6EE36Rp",
     "STRIPE_PUBLISHABLE": "pk_live_saSjliYnCbjFwYfriTzhTQiO",
     "PARSE_APPid": "XYBXNv2HLxukd5JGbE6bK4vXy1JlwUVjeTKQEzZU",
