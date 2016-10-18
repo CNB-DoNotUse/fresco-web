@@ -212,8 +212,8 @@ class Search extends Component {
             tags: this.state.tags,
             sortBy: 'created_at',
             last: lastId,
-            // rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : undefined,
-            ...this.geoParams()
+            rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : undefined,
+            ...this.geoParams(),
         };
 
         $.ajax({
@@ -457,6 +457,7 @@ Search.defaultProps = {
 
 Search.propTypes = {
     q: PropTypes.string,
+    query: PropTypes.string,
     tags: PropTypes.array,
     location: PropTypes.object,
 };
