@@ -91,13 +91,13 @@ class Search extends Component {
             shouldUpdate = true;
         } else if(prevState.verifiedToggle !== verifiedToggle) {
             shouldUpdate = true;
+        } else if(prevState.numberOfPostResults !== this.state.numberOfPostResults) {
+            shouldUpdate = true;
         }
 
         //Update if any of the conditions are true
         if(shouldUpdate) {
             this.refreshData(false);
-
-            console.log('UPDATE');
 
             this.setState({
                 title : this.getTitle(false)
@@ -113,17 +113,20 @@ class Search extends Component {
     getTitle(withProps) {
         const {
             tags,
-            location
+            location,
+            numberOfPostResults
         } = withProps ? this.props : this.state;
 
         let title = '';
 
+        const count = typeof(numberOfPostResults) !== 'undefined' ? `${numberOfPostResults.toLocaleString()} results` : 'Results';
+
         if(this.props.query !== '') {
-            title = 'Results for ' + this.props.query;
+            title = `${count} for ${this.props.query}`;
         } else if(tags.length) {
-            title = 'Results for tags ' + tags.join(', ');
+            title = `${count} for ${utils.isPlural(tags.length) ? 'tags' : 'tag'} ${tags.join(', ')}`;
         } else if(location && location.address) {
-            title = 'Results from ' + location.address;
+            title = `${count} from ${location.address}`;
         } else {
             title = "No search query!"
         }
@@ -139,8 +142,8 @@ class Search extends Component {
                 geo: {
                     type: 'Point',
                     coordinates: [
-                        location.coordinates.lat,
                         location.coordinates.lng,
+                        location.coordinates.lat
                     ]
                 },
                 radius: utils.feetToMiles(location.radius)
@@ -178,6 +181,8 @@ class Search extends Component {
      * Retrieves assignments based on state
      */
     getAssignments(force = true) {
+        if(utils.isEmptyString(this.props.query)) return;
+
         const params = {
             q: this.props.query,
             limit: 10,
@@ -241,7 +246,8 @@ class Search extends Component {
                 const posts = response.posts.results;
 
                 this.setState({
-                    posts: force ? posts : this.state.posts.concat(posts)
+                    posts: force ? posts : this.state.posts.concat(posts),
+                    numberOfPostResults: response.posts.count
                 });
             }
         })
@@ -254,6 +260,8 @@ class Search extends Component {
      * Retrieves users from API based on state
      */
     getUsers(force = true) {
+        if(utils.isEmptyString(this.props.query)) return;
+
         const params = {
             q: this.props.query,
             last: force ? undefined : last(this.state.users).id,
@@ -283,6 +291,8 @@ class Search extends Component {
      * Retrieves stories from API based on state
      */
     getStories(force = true) {
+        if(utils.isEmptyString(this.props.query)) return;
+
         const params = {
             q: this.props.query,
             last: force ? null : last(this.state.stories),
