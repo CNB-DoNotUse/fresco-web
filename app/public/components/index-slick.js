@@ -1,4 +1,5 @@
 import moment from 'moment';
+import utils from 'utils';
 require('script!slick-carousel/slick/slick.min.js');
 
 /**
@@ -20,17 +21,15 @@ Slick.prototype.loadHighlights = function(callback) {
 	if(this.highlightsLoaded) return;
 
 	$.ajax({
-		url: "/api/gallery/highlights",
+		url: "/api/gallery/highlights?limit=5",
 		dataType: "JSON",
 		type: "GET",
 		success: (response) => {
-			if(typeof(response.data) === 'undefined' || response.data.length == 0)
+			if(typeof(response) === 'undefined' || response.length == 0)
 				return;
 
-			let highlights = response.data;
-
-			for (let i = 0; i < highlights.length; i++) {
-				this.slickHighlights.innerHTML += this.createGalleryView(highlights[i]);
+			for (let i = 0; i < response.length; i++) {
+				this.slickHighlights.innerHTML += this.createGalleryView(response[i]);
 			}
 
 			this.init();
@@ -91,37 +90,36 @@ Slick.prototype.init = function() {
  * @return {string}	HTML element
  */
 Slick.prototype.createGalleryView = function(gallery) {
-	const link = 'https://fresconews.com/gallery/' + gallery._id;
-	
+	const link = 'https://fresconews.com/gallery/' + gallery.id;
+
 	let posts = gallery.posts.map((post) => {
 		const defaultAvatar = 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png';
-		const avatar = post.owner ? post.owner.avatar ? post.owner.avatar : defaultAvatar :defaultAvatar;
-		const address = post.location.address != null ? post.location.address : 'No location';
+		const avatar = post.owner && post.owner.avatar ? post.owner.avatar : defaultAvatar;
+		const address = post.address != null ? post.address : 'No location';
 		const timestampText = moment(post.time_created).format('h:mm A');
-		const byline = post.byline.replace('via Fresco News', '');
-			
-		return '<div class="post-slide" style="background-image:url('+ post.image +')">\
-		            <table class="slick-meta">\
-		                <tbody>\
-		                    <tr class="user">\
-		                        <td class="avatar">\
-		                            <img src="https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png" />\
-		                        </td>\
-		                        <td class="byline">' + byline + '</td>\
-		                    </tr>\
-		                    \
-		                    <tr>\
-		                        <td><span class="mdi mdi-map-marker"></span></td>\
-		                        <td class="meta-text">' + address +'</td>\
-		                    </tr>\
-		                    \
-		                    <tr>\
-		                        <td><span class="mdi mdi-clock"></span></td>\
-		                        <td class="meta-text">' + timestampText + '</td>\
-		                    </tr>\
-		                </tbody>\
-		            </table>\
-		        </div>';
+
+		return `<div class="post-slide" style="background-image:url('${post.image}')">
+		            <table class="slick-meta">
+		                <tbody>
+		                    <tr class="user">
+		                        <td class="avatar">
+		                            <img src="${avatar}" />
+		                        </td>
+		                        <td class="byline">${utils.getBylineFromPost(post)}</td>
+		                    </tr>
+		                    
+		                    <tr>
+		                        <td><span class="mdi mdi-map-marker"></span></td>
+		                        <td class="meta-text">${address}</td>
+		                    </tr>
+		                    
+		                    <tr>
+		                        <td><span class="mdi mdi-clock"></span></td>
+		                        <td class="meta-text">${timestampText}</td>
+		                    </tr>
+		                </tbody>
+		            </table>
+		        </div>`;
 
 	});
 

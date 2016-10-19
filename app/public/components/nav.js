@@ -1,14 +1,12 @@
-//Context require for modal directory
-var req = require.context("./modals", true, /^\.\/.*\.js$/);
-
 /**
  * Nav object contrusctor
  * @description Manages transitions between landing and modals
  * @param {object} screen Screen property containing pixel widths for specific devices
  */
 let Nav = function(screen){
-    this.modal = null;
     this.modalElm = null;
+
+    this.loadedModals = [];
 
 	this.screen = screen;
 	this.modalTransitionLength = 300;
@@ -109,17 +107,51 @@ Nav.prototype.returnToLanding = function(pushState, callback = () => {}){
 /**
  * Loads modal through require context and inits it using prototype method
  */
-Nav.prototype.loadModal = function(modal) {
-    const modalFile = './' + modal + '.js';
+Nav.prototype.loadModal = function(m) {
+    if(this.loadedModals.indexOf(m) > -1) {
+        return;
+    }
 
-    //Check if the modal exists before trying to load it
-    if(req.keys().indexOf(modalFile) == -1) return;
+    this.loadedModals.push(m);
 
-    const requiredModal = new req(modalFile);
+    switch(m) {
+        case 'account':
+            require.ensure(['./modals/account'], (require) => {
+                this.handleModal(require("./modals/account"));
+            }, 'account');
+            break;
+        case 'legal':
+            require.ensure(['./modals/legal'], (require) => {
+                this.handleModal(require("./modals/legal"));
+            }, 'legal');
+            break;
+        case 'join':
+            require.ensure(['./modals/join'], (require) => {
+                this.handleModal(require("./modals/join"));
+            }, 'join');
+            break;
+        case 'reset':
+            require.ensure(['./modals/reset'], (require) => {
+                this.handleModal(require("./modals/reset"));
+            }, 'reset');
+            break;
+        case 'forgot':
+            require.ensure(['./modals/forgot'], (require) => {
+                this.handleModal(require("./modals/forgot"));
+            }, 'forgot');
+            break;
+        case 'contact':
+            require.ensure(['./modals/contact'], (require) => {
+                this.handleModal(require("./modals/contact"));
+            }, 'contact');
+            break;
+    }
+}
 
-    //Require and init Modal through prototype
-    this.modal = new requiredModal(this.screen);
-    this.modal.init();
+Nav.prototype.handleModal = function(passedPrototype) {
+    //Require and init modal through prototype
+    const modal = new passedPrototype(this.screen);
+    modal.init();
 }
 
 /**
