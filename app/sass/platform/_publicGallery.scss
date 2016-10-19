@@ -121,12 +121,12 @@ $mobileHeight:280px;
 		}
 
 		.column{
-			width:50%;
+			width:100%;
 			float:left;
 			margin:24px 0 0;
 
-			@include mobile{
-				width:100%;
+			@include desktop{
+				width:50%;
 			}
 
 			.caption{
