@@ -217,7 +217,7 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
     case 'recommend':
         return verifyDefaultUpdate({ data, state })
         .then(() => verifyRecommendUpdate({ data, state }))
-        .then(dispatch(successAction))
+        .then(() => dispatch(successAction))
         .catch(msg => {
             dispatch(Object.assign({}, errorAction, { msg }));
         });
@@ -233,7 +233,7 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
     case 'gallery list':
         return verifyDefaultUpdate({ data, state })
         .then(() => verifyGalleryListUpdate({ data, state }))
-        .then(dispatch(successAction))
+        .then(() => dispatch(successAction))
         .catch(msg => {
             dispatch(Object.assign({}, errorAction, { msg }));
         });
