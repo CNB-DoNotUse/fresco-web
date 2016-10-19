@@ -25,7 +25,6 @@ const Template = ({
             updateItems={onChangeAssignments(onChange)}
             multiple={false}
             className="push-notifs__chip-input"
-            createNew={false}
             autocomplete
             initMaterial
         />

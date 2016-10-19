@@ -10,4 +10,5 @@ export const verifyUser = (user) => (
 
 export const verifyAssignment = (assignment) => (
     api.get(`assignment/${assignment.id}`)
+    .then(r => ({ title: r.title, id: r.id }))
 );
