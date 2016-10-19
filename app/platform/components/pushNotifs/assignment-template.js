@@ -5,7 +5,7 @@ import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
 const onChangeAssignments = (onChange) => (assignments) => {
     onChange({ assignment: assignments[0]
-        ? { id: assignments[0].id, title: assignments[0].title }
+        ? { id: assignments[0].id, title: assignments[0].title, body: assignments[0].caption }
         : null,
     });
 };
