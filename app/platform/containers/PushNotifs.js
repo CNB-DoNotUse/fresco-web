@@ -94,7 +94,7 @@ class PushNotifs extends React.Component {
                     setActiveTab={onSetActiveTab}
                     activeTab={activeTab}
                 />
-                <div className="push-notifs__tab row">
+                <div className="push-notifs__tab">
                     <div className="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
                         <Snackbar
                             message={alert || ''}

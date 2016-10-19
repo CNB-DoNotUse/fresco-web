@@ -83,6 +83,7 @@
     "bluebird": "^3.4.1",
     "chai": "^3.5.0",
     "chai-immutable": "^1.6.0",
+    "cheerio": "^0.20.0",
     "colors": "^1.1.2",
     "css-loader": "^0.23.0",
     "enzyme": "^2.4.1",

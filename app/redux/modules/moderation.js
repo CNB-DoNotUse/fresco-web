@@ -148,18 +148,17 @@ export const toggleFilter = (tab, filter) => (dispatch, getState) => {
     const activeFilters = getState().getIn(['moderation', 'ui', 'filters', tab]);
 
     if (activeFilters.includes(filter)) {
-        dispatch({
+        return ({
             type: DISABLE_FILTER,
             tab,
             filter,
         });
-    } else {
-        dispatch({
-            type: ENABLE_FILTER,
-            tab,
-            filter,
-        });
     }
+    return ({
+        type: ENABLE_FILTER,
+        tab,
+        filter,
+    });
 };
 
 export const updateReportsIndex = (entityType, id, change) => (dispatch, getState) => {

@@ -98,7 +98,6 @@ describe('push notifs reducer', () => {
         }));
     });
 
-
     it('handles UPDATE_TEMPLATE_SUCCESS', () => {
         const initialState = reducer(undefined, {});
         const action = {
@@ -122,7 +121,7 @@ describe('push notifs reducer', () => {
         const initialState = reducer(undefined, {});
         const action = {
             type: pushActions.UPDATE_TEMPLATE_ERROR,
-            data: 'Error updating template',
+            msg: 'Error updating template',
         };
         const nextState = reducer(initialState, action);
 

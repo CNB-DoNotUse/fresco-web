@@ -43,6 +43,17 @@ describe('moderation reducer', () => {
         expect(state).to.have.deep.property('ui.infoDialog.header', 'Fresco header');
         expect(state).to.have.deep.property('ui.infoDialog.body', 'Fresco body');
     });
+
+    // it('should handle ENABLE_FILTER and DISABLE_FILTER', () => {
+    //     const action = {
+    //         type: actions.ENABLE_FILTER,
+    //         tab: 'galleries',
+    //         filter: 'abuse',
+    //     };
+    //     const state = reducer(undefined, action).toJS();
+    //     console.log('state', state);
+    //     expect(state).to.have.deep.property('ui.filters.galleries', ['abuse']);
+    // });
 });
 
 describe('moderation async action creators', () => {
