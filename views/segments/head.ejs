@@ -63,7 +63,7 @@
     <meta name="twitter:app:id:iphone"   content="<%= twitter['app:id:iphone']   || head.twitter['app:id:iphone']   %>">
     <meta name="twitter:app:url:iphone"  content="<%= twitter['app:url:iphone']  || head.twitter['app:url:iphone']  %>">
 
-    <% if(typeof(page) !== 'undefined' && !['index', 'pro', 'error'].includes(page)){ %>
+    <% if(typeof(section) !== 'undefined' && section == 'platform'){ %>
         <link rel="stylesheet" type="text/css" href="<%= assets['commons']['css'] %>">
     <% } %>
 

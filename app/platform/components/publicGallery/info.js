@@ -28,17 +28,15 @@ class Info extends React.Component {
 	 * @return {[type]} [description]
 	 */
     loadRelatedGalleries = () => {
-        // todo: switch to search
-        const data = {
-            limit: 10,
-            tags: this.props.gallery.tags.join(','),
-            galleries: true,
-        };
-
         api
-        .get('search/', data)
+        .get('search', {
+            galleries: {
+                limit: 10,
+                tags: this.props.gallery.tags.join(',')
+            }
+        })
         .then((res) => {
-            this.setState({ relatedGalleries: res });
+            this.setState({ relatedGalleries: res.galleries.results });
         });
     }
 
@@ -68,6 +66,8 @@ class Info extends React.Component {
         let relatedGalleriesJSX = '';
         let relatedStoriesJSX = '';
         let relatedArticlesJSX = '';
+
+        console.log(relatedGalleries);
 
         if (relatedStory.galleries.length > 0) {
             const galleries = relatedStory.galleries.map((g, i) => (
