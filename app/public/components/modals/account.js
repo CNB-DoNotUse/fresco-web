@@ -28,7 +28,7 @@ let Account = function(screen){
 
 Account.prototype.init = function() {
 	//Run on load
-	this.updatePosition(window.innerWidth);
+	// this.updatePosition(window.innerWidth);
 
 	window.addEventListener('resize', () => {
 		this.updatePosition(window.innerWidth);

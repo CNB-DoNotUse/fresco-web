@@ -85,16 +85,20 @@ const plugins = (env) => {
 
 // Define output obj. for webpack
 const output = (env) => {
+    const jsPath = `js/[name].js`;
+
     if(env === 'production') {
         return {
             path: `./public/build/${hashDate}/`,
-            filename: 'js/[name].js',
+            filename: jsPath,
+            chunkFilename: jsPath,
             publicPath: `/build/${hashDate}/`
         }
     } else {
         return {
             path: './public/build/',
-            filename: 'js/[name].js',
+            filename: jsPath,
+            chunkFilename: jsPath,
             publicPath: '/build/'
         }
     }

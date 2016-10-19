@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import 'app/sass/platform/screen.scss';
 import 'app/sass/platform/_publicGallery.scss';
-import PublicGallerySlider from '../components/publicGallery/slider';
-import PublicGalleryInfo from '../components/publicGallery/info';
-import Footer from '../components/global/footer';
+import PublicGallerySlider from 'app/platform/components/publicGallery/slider';
+import PublicGalleryInfo from 'app/platform/components/publicGallery/info';
+import Footer from 'app/platform/components/global/footer';
 
 /**
  * Public Gallery Page

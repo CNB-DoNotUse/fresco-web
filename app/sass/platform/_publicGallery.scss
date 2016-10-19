@@ -66,8 +66,33 @@ $mobileHeight:280px;
 		}
 	}
 
-	.slick-prev, .slick-next{
+	.slick-arrow {
 		top:45%;
+		display: block;
+		background:transparent;
+		position: absolute;
+		left: -5%;
+
+		&:before {
+			color:#FFF;
+			font-size:40px;
+		}
+	}
+	
+	.slick-prev{
+	    left: -6%;
+
+	    @include desktop-large{
+	    	left:-12%;
+	    }
+
+	}
+	.slick-next{
+		left: 103%;
+
+	    @include desktop-large{
+	    	left:109%;
+	    }
 	}
 
 	@include mobileAndTablet{
@@ -76,33 +101,7 @@ $mobileHeight:280px;
 		}
 	}
 
-	/* Slick Arrow Styles */
-	.slick-prev{
-	    left: -6%;
 
-	    @include desktop-large{
-	    	left:-12%;
-	    }
-
-		&:before {
-		  content: "\2039";
-		  color:white;
-		  font-size:120px;
-		}
-	}
-	.slick-next{
-		left: 103%;
-
-	    @include desktop-large{
-	    	left:109%;
-	    }
-
-		&:before {
-			content: "\203A";
-			color:white;
-			font-size:120px;
-		}
-	}
 
 }
 
@@ -122,12 +121,12 @@ $mobileHeight:280px;
 		}
 
 		.column{
-			width:50%;
+			width:100%;
 			float:left;
 			margin:24px 0 0;
 
-			@include mobile{
-				width:100%;
+			@include desktop{
+				width:50%;
 			}
 
 			.caption{
@@ -142,6 +141,7 @@ $mobileHeight:280px;
 				margin:0 0 24px 0;
 
 				h2{
+					font-family:$nota;
 					font-weight:500;
 					margin:0 0 12px 0;
 				}
@@ -150,15 +150,17 @@ $mobileHeight:280px;
 					list-style:none;
 
 					li.gallery{
-						max-width:180px;
-						margin:0 1px 12px 0;
-						height:90px;
+						max-width:250px;
+						margin:0 6px 2px 0;
+						height:102px;
 						overflow:hidden;
 						display:inline-block;
+						box-shadow: 0 2px 2px 0 rgba(0,0,0,.24),0 0 2px 0 rgba(0,0,0,.12);
 
 						img{
 							width:auto;
 							height:100%;
+							border-radius:2px;
 						}
 					}
 

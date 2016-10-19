@@ -32,7 +32,7 @@ class PublicGallerySlider extends React.Component {
             const avatar = get(p, 'owner.avatar', utils.defaultAvatar);
             const address = get(p, 'address', 'No location');
             const timestampText = moment(p.created_at).format('MMM Do YYYY, h:mm:ss a');
-            const image = utils.formatImg(p.image, 'medium');
+            const image = utils.formatImg(p.image, 'large');
             let style = {
                 backgroundImage: `url(${image})`,
             };
@@ -78,16 +78,36 @@ class PublicGallerySlider extends React.Component {
             arrows: true,
             infinite: false,
             beforeChange: this.beforeChange,
-            afterChange: this.afterChange
+            afterChange: this.afterChange,
+            nextArrow: <NextArrow />,
+            prevArrow: <PrevArrow />
         };
 
         return (
-            <Slick {...settings}  className="slick">
+            <Slick {...settings} className="slick">
                 {slickContent}
             </Slick>
         );
     }
 }
+
+var NextArrow = React.createClass({
+  render: function () {
+    return (
+      <span {...this.props} className="mdi mdi-chevron-right slick-arrow slick-next"></span>
+    );
+  }
+});
+
+
+var PrevArrow = React.createClass({
+  render: function () {
+    return (
+      <span {...this.props} className="mdi mdi-chevron-left slick-arrow slick-prev"></span>
+    );
+  }
+});
+
 
 PublicGallerySlider.propTypes = {
     posts: PropTypes.array,

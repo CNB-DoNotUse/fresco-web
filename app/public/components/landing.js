@@ -12,7 +12,7 @@ let Landing = function(screen){
     this.screen = screen;
 
     this.slick = new Slick(this.screen);
-    this.nav = new Nav(this.screen, this);
+    this.nav = new Nav(this.screen);
 
     this.ticking = false;
     this.bottom = document.getElementById('_bottom');
@@ -31,11 +31,11 @@ Landing.prototype = new Animation();
  * Full landing init function for page
  */
 Landing.prototype.init = function() {
+    this.nav.init();
     Waves.attach('.button', [ 'waves-block', 'waves-classic']);
     Waves.init();
     this.resize();
     this.enableDropdown();
-    this.nav.init();
 
     if(window.location.pathname === '/') { 
         this.indexInit(); 
