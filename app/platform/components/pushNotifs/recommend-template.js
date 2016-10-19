@@ -27,7 +27,7 @@ const Template = ({
             updateItems={onChangeGalleries(onChange)}
             autocomplete={false}
             multiple={false}
-            className="push-notifs__chip-input"
+            className="push-notifs__chip-input chips--autocomplete"
             initMaterial
         />
 
@@ -38,7 +38,7 @@ const Template = ({
             items={(story && [story]) || []}
             updateItems={onChangeStories(onChange)}
             multiple={false}
-            className="push-notifs__chip-input"
+            className="push-notifs__chip-input chips--autocomplete"
             autocomplete
             initMaterial
         />

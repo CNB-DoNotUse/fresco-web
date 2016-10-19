@@ -101,7 +101,7 @@ export const RestrictByUser = ({
                 attr="username"
                 items={users}
                 updateItems={onChangeUsers(onChange)}
-                className="push-notifs__users"
+                className="push-notifs__users chips--autocomplete"
                 createNew={false}
                 autocomplete
                 initMaterial

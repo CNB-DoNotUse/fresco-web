@@ -19,7 +19,7 @@ const Template = ({
             attr="id"
             items={galleries}
             updateItems={onChangeGalleries(onChange)}
-            className="push-notifs__chip-input"
+            className="push-notifs__chip-input chips--autocomplete"
             autocomplete={false}
             initMaterial
         />
