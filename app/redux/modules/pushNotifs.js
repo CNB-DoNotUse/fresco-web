@@ -225,7 +225,8 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
             dispatch({
                 type: UPDATE_TEMPLATE_SUCCESS,
                 template,
-                data: { title: get(data, 'assignment.title'), body: get(data, 'assignment.body') } });
+                data: { title: get(data, 'assignment.title'), body: get(data, 'assignment.body') },
+            });
         })
         .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
     case 'gallery list':
