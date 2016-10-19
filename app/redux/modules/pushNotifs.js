@@ -169,7 +169,7 @@ const verifyAssignmentUpdate = ({ data }) => {
         if (data.assignment) {
             if (data.assignment.id && data.assignment.title) return resolve();
             verifyAssignment({ id: data.assignment.title })
-                .then(r => resolve(Object.assign(data, { assignment: r })))
+                .then((r) => resolve(Object.assign(data, { assignment: r })))
                 .catch(() => reject('Invalid assignment'));
         }
     });
@@ -218,25 +218,24 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
         return verifyDefaultUpdate({ data, state })
         .then(() => verifyRecommendUpdate({ data, state }))
         .then(() => dispatch(successAction))
-        .catch(msg => {
-            dispatch(Object.assign({}, errorAction, { msg }));
-        });
+        .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
     case 'assignment':
         return verifyDefaultUpdate({ data, state })
         .then(() => verifyAssignmentUpdate({ data }))
         .then((mergeData = data) => {
+            const { assignment } = mergeData;
             dispatch(Object.assign(successAction, { data: mergeData }));
+            dispatch({
+                type: UPDATE_TEMPLATE_SUCCESS,
+                template,
+                data: { title: get(assignment, 'title'), body: get(assignment, 'body') } });
         })
-        .catch(msg => {
-            dispatch(Object.assign({}, errorAction, { msg }));
-        });
+        .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
     case 'gallery list':
         return verifyDefaultUpdate({ data, state })
         .then(() => verifyGalleryListUpdate({ data, state }))
         .then(() => dispatch(successAction))
-        .catch(msg => {
-            dispatch(Object.assign({}, errorAction, { msg }));
-        });
+        .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
     default:
         return verifyDefaultUpdate({ data, state })
         .then(() => dispatch(successAction))
