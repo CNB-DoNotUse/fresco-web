@@ -605,6 +605,12 @@ div.chips {
 	}
 }
 
+.chips--autocomplete {
+    .chip {
+        font-weight: 500;
+        opacity: 0.87;
+    }
+}
 
 // tabs
 .tab-control {
