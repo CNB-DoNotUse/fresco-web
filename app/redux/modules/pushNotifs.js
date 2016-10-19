@@ -15,8 +15,8 @@ export const SEND = 'pushNotifs/SEND';
 export const SEND_SUCCESS = 'pushNotifs/SEND_SUCCESS';
 export const SEND_FAIL = 'pushNotifs/SEND_FAIL';
 export const SET_ACTIVE_TAB = 'pushNotifs/SET_ACTIVE_TAB';
-export const UPDATE_TEMPLATE_SUCCESS = 'pusnNotifs/UPDATE_TEMPLATE_SUCCESS';
-export const UPDATE_TEMPLATE_ERROR = 'pusnNotifs/UPDATE_TEMPLATE_ERROR';
+export const UPDATE_TEMPLATE_SUCCESS = 'pushNotifs/UPDATE_TEMPLATE_SUCCESS';
+export const UPDATE_TEMPLATE_ERROR = 'pushNotifs/UPDATE_TEMPLATE_ERROR';
 export const DISMISS_ALERT = 'pushNotifs/DISMISS_ALERT';
 export const CONFIRM_SEND = 'pushNotifs/CONFIRM_SEND';
 export const CANCEL_SEND = 'pushNotifs/CANCEL_SEND';
@@ -132,48 +132,55 @@ export const dismissAlert = () => ({
     type: DISMISS_ALERT,
 });
 
-const verifyTemplateUpdate = ({ data, state }) => {
+const verifyDefaultUpdate = ({ data, state }) => {
     return new Promise((resolve, reject) => {
-        if (data.galleries) {
-            const galleries = state.get('galleries', List()).toJS();
-            const newGallery = get(differenceBy(data.galleries, galleries, 'id'), '[0]');
-            if (!newGallery) resolve();
-
-            verifyGallery(newGallery)
-                .then(() => resolve())
-                .catch(() => reject('Invalid gallery id'));
-        }
-
+        if (!data.users) return resolve();
         if (data.users) {
             const users = state.get('users', List()).toJS();
             const newUser = get(differenceBy(data.users, users, 'id'), '[0]');
-            if (!newUser) resolve();
+            if (!newUser) return resolve();
 
             verifyUser(newUser)
                 .then(() => resolve())
                 .catch(() => reject('Invalid user'));
         }
+    });
+};
 
-        if (data.assignments) {
-            const assignments = state.get('assignments', List()).toJS();
-            const newAssignment = get(differenceBy(data.assignments, assignments, 'id'), '[0]');
-            if (!newAssignment) resolve();
+const verifyGalleryListUpdate = ({ data, state }) => {
+    return new Promise((resolve, reject) => {
+        if (!data.galleries) return resolve();
+        if (data.galleries) {
+            const galleries = state.get('galleries', List()).toJS();
+            const newGallery = get(differenceBy(data.galleries, galleries, 'id'), '[0]');
+            if (!newGallery) return resolve();
 
-            verifyAssignment(newAssignment)
+            verifyGallery(newGallery)
                 .then(() => resolve())
+                .catch(() => reject('Invalid gallery id'));
+        }
+    });
+};
+
+const verifyAssignmentUpdate = ({ data }) => {
+    return new Promise((resolve, reject) => {
+        if (!data.assignment) return resolve();
+
+        if (data.assignment) {
+            if (data.assignment.id && data.assignment.title) return resolve();
+            verifyAssignment({ id: data.assignment.title })
+                .then(resolve)
                 .catch(() => reject('Invalid assignment'));
         }
-
-        resolve();
     });
 };
 
 const verifyRecommendUpdate = ({ data, state }) => {
     return new Promise((resolve, reject) => {
-        if (!data.story && !data.gallery) resolve();
+        if (!data.story && !data.gallery) return resolve();
         if (data.gallery) {
             if (state.get('story')) {
-                reject('Can only recommend one of gallery or story');
+                return reject('Can only recommend one of gallery or story');
             }
 
             verifyGallery(data.gallery)
@@ -183,9 +190,9 @@ const verifyRecommendUpdate = ({ data, state }) => {
 
         if (data.story) {
             if (state.get('gallery')) {
-                reject('Can only recommend one of gallery or story');
+                return reject('Can only recommend one of gallery or story');
             }
-            resolve();
+            return resolve();
         }
     });
 };
@@ -204,20 +211,31 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
 
     const state = getState().getIn(['pushNotifs', 'templates', template], Map());
 
-    const params = { state, template, data, dispatch, errorAction, successAction };
-
     switch (template) {
     case 'recommend':
-        return verifyRecommendUpdate(params)
-        .then(() => verifyTemplateUpdate(params))
+        return verifyDefaultUpdate({ data, state })
+        .then(() => verifyRecommendUpdate({ data, state }))
+        .then(() => dispatch(successAction))
+        .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
+    case 'assignment':
+        return verifyDefaultUpdate({ data, state })
+        .then(() => verifyAssignmentUpdate({ data }))
         .then(() => {
             dispatch(successAction);
+            dispatch({
+                type: UPDATE_TEMPLATE_SUCCESS,
+                template,
+                data: { title: get(data, 'assignment.title'), body: get(data, 'assignment.body') },
+            });
         })
-        .catch(msg => {
-            dispatch(Object.assign({}, errorAction, { msg }));
-        });
+        .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
+    case 'gallery list':
+        return verifyDefaultUpdate({ data, state })
+        .then(() => verifyGalleryListUpdate({ data, state }))
+        .then(() => dispatch(successAction))
+        .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
     default:
-        return verifyTemplateUpdate(params)
+        return verifyDefaultUpdate({ data, state })
         .then(() => dispatch(successAction))
         .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
     }
