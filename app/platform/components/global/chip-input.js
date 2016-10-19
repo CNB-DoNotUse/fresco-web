@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import reject from 'lodash/reject';
 import capitalize from 'lodash/capitalize';
+import utils from 'utils';
+import get from 'lodash/get';
 import api from 'app/lib/api';
 import Tag from '../global/tag';
 
@@ -21,6 +23,7 @@ class ChipInput extends React.Component {
         autocomplete: PropTypes.bool,
         createNew: PropTypes.bool,
         multiple: PropTypes.bool,
+        idLookup: PropTypes.bool,
         disabled: PropTypes.bool,
         placeholder: PropTypes.string,
     };
@@ -64,22 +67,25 @@ class ChipInput extends React.Component {
 
     onChangeQuery = (e) => {
         const query = e.target.value;
-        const { model, attr, autocomplete } = this.props;
+        const { model, attr, autocomplete, idLookup } = this.props;
         this.setState({ query });
         if (!autocomplete || !attr) return;
 
         // Enter is pressed, and query is present
         if (!query.length === 0) {
             this.setState({ suggestions: [] });
-        } else {
-            api
-            .get('search', { [`${model}[a][${attr}]`]: query })
-            .then(res => {
-                if (res[model] && res[model].results) {
-                    this.setState({ suggestions: res[model].results });
-                }
-            });
+            return;
         }
+
+        api
+        .get('search', { [`${model}[a][${attr}]`]: query })
+        .then(res => {
+            if (get(res, `${model}.results.length`)) {
+                this.setState({ suggestions: res[model].results });
+            } else if (idLookup) {
+                this.getModelById(query);
+            }
+        });
     }
 
     /**
@@ -106,6 +112,18 @@ class ChipInput extends React.Component {
 
             this.addItem(matched || { [attr]: query, new: true });
         }
+    }
+
+    getModelById(id) {
+        const { model } = this.props;
+        api
+        .get(`${utils.pluralToSingularModel(model)}/${id}`)
+        .then(res => {
+            if (res) {
+                this.setState({ suggestions: [res] });
+            }
+        })
+        .catch(err => err);
     }
 
     /**

@@ -169,7 +169,7 @@ const verifyAssignmentUpdate = ({ data }) => {
         if (data.assignment) {
             if (data.assignment.id && data.assignment.title) return resolve();
             verifyAssignment({ id: data.assignment.title })
-                .then((r) => resolve(Object.assign(data, { assignment: r })))
+                .then(resolve)
                 .catch(() => reject('Invalid assignment'));
         }
     });
@@ -184,9 +184,7 @@ const verifyRecommendUpdate = ({ data, state }) => {
             }
 
             verifyGallery(data.gallery)
-                .then(r => {
-                    return resolve(Object.assign(data, { gallery: r }));
-                })
+                .then(() => resolve())
                 .catch(() => reject('Invalid gallery id'));
         }
 
@@ -222,13 +220,12 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
     case 'assignment':
         return verifyDefaultUpdate({ data, state })
         .then(() => verifyAssignmentUpdate({ data }))
-        .then((mergeData = data) => {
-            const { assignment } = mergeData;
-            dispatch(Object.assign(successAction, { data: mergeData }));
+        .then(() => {
+            dispatch(successAction);
             dispatch({
                 type: UPDATE_TEMPLATE_SUCCESS,
                 template,
-                data: { title: get(assignment, 'title'), body: get(assignment, 'body') } });
+                data: { title: get(data, 'assignment.title'), body: get(data, 'assignment.body') } });
         })
         .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
     case 'gallery list':
