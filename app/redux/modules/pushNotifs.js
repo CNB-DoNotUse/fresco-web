@@ -89,7 +89,7 @@ const getFormDataFromTemplate = (template, getState) => (
             case ('user_ids'): return v.map(u => u.id);
             case ('gallery_ids'): return v.map(g => g.id);
             case ('gallery_id'): return v.id;
-            case ('story_id'): return v.id;
+            case ('story_id'): return v.title;
             case ('assignment_id'): return v.id;
             default:
                 return v;
