@@ -260,7 +260,7 @@ class Edit extends React.Component {
     getPostsFormData() {
         const { gallery } = this.props;
         const files = this.getFilesFromUploads();
-        let { posts, rating, assignment } = this.state;
+        let { posts, rating } = this.state;
 
         if (!files.length && !posts.length) return null;
 

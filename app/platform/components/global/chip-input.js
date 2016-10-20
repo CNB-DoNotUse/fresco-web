@@ -24,15 +24,19 @@ class ChipInput extends React.Component {
         createNew: PropTypes.bool,
         multiple: PropTypes.bool,
         idLookup: PropTypes.bool,
+        search: PropTypes.bool,
         disabled: PropTypes.bool,
         placeholder: PropTypes.string,
+        params: PropTypes.object,
     };
 
     static defaultProps = {
         items: [],
+        params: {},
         initMaterial: false,
         className: '',
         autocomplete: false,
+        search: false,
         createNew: true,
         multiple: true,
         disabled: false,
@@ -67,25 +71,13 @@ class ChipInput extends React.Component {
 
     onChangeQuery = (e) => {
         const query = e.target.value;
-        const { model, attr, autocomplete, idLookup } = this.props;
         this.setState({ query });
-        if (!autocomplete || !attr) return;
-
-        // Enter is pressed, and query is present
         if (!query.length === 0) {
             this.setState({ suggestions: [] });
             return;
         }
 
-        api
-        .get('search', { [`${model}[a][${attr}]`]: query })
-        .then(res => {
-            if (get(res, `${model}.results.length`)) {
-                this.setState({ suggestions: res[model].results });
-            } else if (idLookup) {
-                this.getModelById(query);
-            }
-        });
+        this.getSuggestions();
     }
 
     /**
@@ -95,11 +87,12 @@ class ChipInput extends React.Component {
      * @param {object} e key up event
      */
     onKeyUpQuery = (e) => {
-        const { attr, autocomplete, createNew } = this.props;
+        const { attr, createNew } = this.props;
         const { suggestions, query } = this.state;
 
+        // Enter is pressed, and query is present
         if (e.keyCode === 13 && query.length > 0) {
-            const matched = autocomplete && suggestions.find((s) => (
+            const matched = suggestions.find((s) => (
                 s.title.toLowerCase() === query.toLowerCase()
             ));
 
@@ -112,6 +105,42 @@ class ChipInput extends React.Component {
 
             this.addItem(matched || { [attr]: query, new: true });
         }
+    }
+
+    getSuggestions = () => {
+        const {
+            model,
+            attr,
+            autocomplete,
+            idLookup,
+            search,
+            params,
+        } = this.props;
+        const { query } = this.state;
+        if (![autocomplete, search, attr].some(b => !!b)) return;
+
+        if (search) {
+            api
+            .get('search', { [`${model}[q]`]: query, ...params })
+            .then(res => {
+                if (get(res, `${model}.results.length`)) {
+                    this.setState({ suggestions: res[model].results });
+                } else if (idLookup) {
+                    this.getModelById(query);
+                }
+            });
+            return;
+        }
+
+        api
+        .get('search', { [`${model}[a][${attr}]`]: query, ...params })
+        .then(res => {
+            if (get(res, `${model}.results.length`)) {
+                this.setState({ suggestions: res[model].results });
+            } else if (idLookup) {
+                this.getModelById(query);
+            }
+        });
     }
 
     getModelById(id) {

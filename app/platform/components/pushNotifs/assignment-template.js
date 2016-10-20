@@ -25,8 +25,9 @@ const Template = ({
             updateItems={onChangeAssignments(onChange)}
             multiple={false}
             className="push-notifs__chip-input chips--autocomplete"
-            idLookup
+            params={{ rating: '1' }}
             autocomplete
+            idLookup
             initMaterial
         />
 
