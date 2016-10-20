@@ -47,8 +47,6 @@ export default class PostRelatedTags extends React.Component {
 		let tagTabs = [];
 		let tagTabControls = [];
 
-		console.log(this.state.selectedTag);
-
 		for (let tag in this.state.tags) {
 			const posts = this.state.tags[tag];
 			if(!posts.length) continue;

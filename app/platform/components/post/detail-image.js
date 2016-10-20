@@ -49,8 +49,6 @@ class PostDetailImage extends React.Component {
             />
         );
 
-        console.log(purchased);
-
         if (user.permissions.includes('get-all-purchases')) {
             actions.push(downloadAction);
             // Check if the post is purchased
