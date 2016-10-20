@@ -222,11 +222,14 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
         .then(() => verifyAssignmentUpdate({ data }))
         .then(() => {
             dispatch(successAction);
-            dispatch({
-                type: UPDATE_TEMPLATE_SUCCESS,
-                template,
-                data: { title: get(data, 'assignment.title'), body: get(data, 'assignment.body') },
-            });
+            // use title and body from assignment if in data
+            if (data.assignment) {
+                dispatch({
+                    type: UPDATE_TEMPLATE_SUCCESS,
+                    template,
+                    data: { title: get(data, 'assignment.title'), body: get(data, 'assignment.body') },
+                });
+            }
         })
         .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
     case 'gallery list':
