@@ -56,9 +56,9 @@ const getTemplateErrors = (template, getState) => {
     return msg;
 };
 
-const getFormDataFromTemplate = (template, getState) => (
+const getFormDataFromTemplate = (template, state) => (
     new Promise((resolve) => {
-        const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
+        const templateData = state.getIn(['templates', template], Map());
 
         const restrictByUser = templateData.get('restrictByUser', false);
         const restrictByLocation = templateData.get('restrictByLocation', false);
@@ -224,10 +224,11 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
             dispatch(successAction);
             // use title and body from assignment if in data
             if (data.assignment) {
+                const { title, body } = data.assignment;
                 dispatch({
                     type: UPDATE_TEMPLATE_SUCCESS,
                     template,
-                    data: { title: get(data, 'assignment.title'), body: get(data, 'assignment.body') },
+                    data: { title, body },
                 });
             }
         })
@@ -260,7 +261,11 @@ export const send = (template) => (dispatch, getState) => {
 };
 
 export const confirmSend = (template) => (dispatch, getState) => {
-    getFormDataFromTemplate(template, getState)
+    const state = getState().get('pushNotifs');
+    if (state.get('loading')) return;
+    dispatch({ type: CONFIRM_SEND });
+
+    getFormDataFromTemplate(template, state)
     .then((data) => (
         api
         .post('notifications/create', data)
@@ -294,9 +299,9 @@ const pushNotifs = (state = fromJS({
     alert: null }), action = {}) => {
     switch (action.type) {
     case SEND:
-        return state
-            .set('loading', true)
-            .set('requestConfirmSend', true);
+        return state.set('requestConfirmSend', true);
+    case CONFIRM_SEND:
+        return state.set('loading', true);
     case SEND_SUCCESS:
         return state
             .set('loading', false)
