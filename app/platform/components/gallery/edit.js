@@ -313,7 +313,7 @@ class Edit extends React.Component {
                         lat: location.lat,
                         lng: location.lng,
                         rating: rating === 3 ? 2 : rating }, v => !!v),
-                    this.getAssignmentParam(),
+                    this.getAssignmentParam()
                 );
             });
         }

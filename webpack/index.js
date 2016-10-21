@@ -52,7 +52,6 @@ const plugins = (env) => {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'commons',
             filename: 'js/commons.js',
-            minChunks: 8,
             // (Only use these entries)
             chunks: genViewsFromDir(platformDirectory).map(obj => obj.file.replace('.js', '')),
         }),
@@ -158,6 +157,19 @@ const loaders = (env) => {
     return arr;
 };
 
+const externals = (env) => {
+    if(env === 'dev') {
+        return {
+            // http://airbnb.io/enzyme/docs/guides/webpack.html
+            'react/addons': true,
+            'react/lib/ExecutionEnvironment': true,
+            'react/lib/ReactContext': true
+        }
+    } else {
+        return {};
+    }
+}
+
 /**
  * Exports webpack JSON config
  * @param  {String} env The environment we're in
@@ -182,10 +194,5 @@ module.exports = (env = 'dev') => ({
             './',
         ],
     },
-    externals: {
-        // http://airbnb.io/enzyme/docs/guides/webpack.html
-        'react/addons': true,
-        'react/lib/ExecutionEnvironment': true,
-        'react/lib/ReactContext': true
-    },
+    externals: externals(env),
 });
