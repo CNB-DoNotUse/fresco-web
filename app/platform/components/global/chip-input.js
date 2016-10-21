@@ -92,18 +92,17 @@ class ChipInput extends React.Component {
 
         // Enter is pressed, and query is present
         if (e.keyCode === 13 && query.length > 0) {
-            const matched = suggestions.find((s) => (
-                s.title.toLowerCase() === query.toLowerCase()
-            ));
-
             if (!queryAttr) {
                 this.addItem(query);
                 return;
             }
 
-            if (!matched && !createNew) return;
+            const matched = suggestions.find((s) => (
+                s.title.toLowerCase() === query.toLowerCase()
+            )) || suggestions[0];
 
-            this.addItem(matched || { [queryAttr]: query, new: true });
+            if (matched) this.addItem(matched);
+            else if (createNew) this.addItem({ [queryAttr]: query, new: true });
         }
     }
 
