@@ -20,6 +20,7 @@ export const UPDATE_TEMPLATE_ERROR = 'pushNotifs/UPDATE_TEMPLATE_ERROR';
 export const DISMISS_ALERT = 'pushNotifs/DISMISS_ALERT';
 export const CONFIRM_SEND = 'pushNotifs/CONFIRM_SEND';
 export const CANCEL_SEND = 'pushNotifs/CANCEL_SEND';
+export const CLOSE_INFO_DIALOG = 'pushNotifs/CLOSE_INFO_DIALOG';
 
 // helpers
 const getTemplateErrors = (template, getState) => {
@@ -260,6 +261,11 @@ export const send = (template) => (dispatch, getState) => {
     dispatch({ type: SEND, template });
 };
 
+const getSuccessMsg = (count) => {
+    if (count === 1) return `${count} push`;
+    return `${count} pushes`;
+};
+
 export const confirmSend = (template) => (dispatch, getState) => {
     const state = getState().get('pushNotifs');
     if (state.get('loading')) return;
@@ -269,7 +275,14 @@ export const confirmSend = (template) => (dispatch, getState) => {
     .then((data) => (
         api
         .post('notifications/create', data)
-        .then(res => dispatch({ type: SEND_SUCCESS, template, data: res }))
+        .then(res => {
+            dispatch({
+                type: SEND_SUCCESS,
+                template,
+                header: 'Notification sent',
+                body: getSuccessMsg(res.count),
+            });
+        })
         .catch(err => dispatch({
             type: SEND_FAIL,
             template,
@@ -289,10 +302,15 @@ export const cancelSend = () => ({
     type: CANCEL_SEND,
 });
 
+export const closeInfoDialog = () => ({
+    type: CLOSE_INFO_DIALOG,
+});
+
 // reducer
 const pushNotifs = (state = fromJS({
     activeTab: 'default',
     templates: {},
+    infoDialog: {},
     loading: false,
     requestConfirmSend: false,
     error: null,
@@ -307,7 +325,14 @@ const pushNotifs = (state = fromJS({
             .set('loading', false)
             .set('requestConfirmSend', false)
             .set('alert', 'Notification sent!')
-            .setIn(['templates', action.template], Map());
+            .setIn(['templates', action.template], Map())
+            .set('infoDialog', fromJS({
+                visible: true,
+                header: action.header,
+                body: action.body,
+            }));
+    case CLOSE_INFO_DIALOG:
+        return state.set('infoDialog', fromJS({ visible: false }));
     case SEND_FAIL:
         return state
             .set('loading', false)
