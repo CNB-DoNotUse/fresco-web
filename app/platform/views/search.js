@@ -434,7 +434,8 @@ class Search extends Component {
         return (
             <App
                 query={this.props.query}
-                user={this.props.user}>
+                user={this.props.user}
+            >
                 <TopBar
                     title={this.state.title}
                     timeToggle={true}
@@ -446,7 +447,7 @@ class Search extends Component {
                         onTagAdd={this.addTag}
                         onTagRemove={this.removeTag}
                         filterList={this.state.tags}
-                        attr=''
+                        attr=""
                         key="tagFilter"
                     />
 

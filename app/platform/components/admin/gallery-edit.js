@@ -347,7 +347,7 @@ export default class GalleryEdit extends React.Component {
                 <div className="dialog-foot">
                     <button
                         type="button"
-                        className="btn btn-flat gallery-revert"
+                        className="btn btn-flat"
                         onClick={() => this.revert()}
                         disabled={loading}
                     >
@@ -355,7 +355,7 @@ export default class GalleryEdit extends React.Component {
                     </button>
                     <button
                         type="button"
-                        className="btn btn-flat pull-right gallery-verify"
+                        className="btn btn-flat pull-right"
                         onClick={() => this.setState({ rating: 2 }, () => this.onVerify())}
                         disabled={loading}
                     >
@@ -364,7 +364,7 @@ export default class GalleryEdit extends React.Component {
                     {galleryType === 'submissions' && (
                         <button
                             type="button"
-                            className="btn btn-flat pull-right gallery-skip"
+                            className="btn btn-flat pull-right"
                             onClick={() => this.setState({ rating: 1 }, () => this.onSkip())}
                             disabled={loading}
                         >
@@ -373,7 +373,7 @@ export default class GalleryEdit extends React.Component {
                     )}
                     <button
                         type="button"
-                        className="btn btn-flat pull-right gallery-delete"
+                        className="btn btn-flat pull-right"
                         onClick={() => this.onRemove()}
                         disabled={loading}
                     >

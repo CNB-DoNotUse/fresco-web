@@ -7,7 +7,7 @@ export default class Confirm extends React.Component {
         toggled: PropTypes.bool,
         hasInput: PropTypes.bool,
         text: PropTypes.string,
-        loading: PropTypes.bool,
+        disabled: PropTypes.bool,
         confirmText: PropTypes.string,
     }
 
@@ -18,7 +18,7 @@ export default class Confirm extends React.Component {
         text: '',
         confirmText: 'Confirm',
         hasInput: false,
-        loading: false,
+        disabled: false,
     }
 
     onConfirm = (e) => {
@@ -45,7 +45,7 @@ export default class Confirm extends React.Component {
     )
 
     render() {
-        const { toggled, text, confirmText, hasInput, onCancel, loading } = this.props;
+        const { toggled, text, confirmText, hasInput, onCancel, disabled } = this.props;
 
         return (
             <div className={`dialog-wrap ${toggled ? 'toggled' : ''}`}>
@@ -62,7 +62,7 @@ export default class Confirm extends React.Component {
                         <button
                             className="cancel btn"
                             onClick={onCancel}
-                            disabled={loading}
+                            disabled={disabled}
                         >
                             Cancel
                         </button>
@@ -70,7 +70,7 @@ export default class Confirm extends React.Component {
                         <button
                             className="primary btn"
                             onClick={this.onConfirm}
-                            disabled={loading}
+                            disabled={disabled}
                         >
                             {confirmText}
                         </button>
