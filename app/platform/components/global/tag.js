@@ -10,7 +10,7 @@ const Tag = ({ plus, onClick, text, altText, hasAlt }) => (
                 <span className={`mdi ${plus ? 'mdi-plus' : 'mdi-minus'} icon md-type-subhead`} />
             </div>
 
-            {(hasAlt && altText) ? (
+            {hasAlt ? (
                 <span className="chip md-type-body1 tag">
                     <span className="chip__primary-text">
                         {`${text} `}

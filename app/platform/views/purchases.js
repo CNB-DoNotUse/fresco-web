@@ -3,6 +3,7 @@ import update from 'react-addons-update';
 import ReactDOM from 'react-dom';
 import find from 'lodash/find';
 import map from 'lodash/map';
+import api from 'app/lib/api';
 import App from './app';
 import TopBar from '../components/topbar';
 import PurchasesBody from '../components/purchases/purchases-body';
@@ -12,75 +13,45 @@ import TagFilter from '../components/topbar/tag-filter';
  * Admin Purchases page
  */
 class Purchases extends React.Component {
-    constructor(props) {
-        super(props);
+    state = {
+        outlets: [],
+        users: [],
+        availableOutlets: [],
+        availableUsers: [],
+        updatePurchases: false,
+    };
 
-        this.state = {
-            outlets: [],
-            users: [],
-            availableOutlets: [],
-            availableUsers: [],
-            updatePurchases: false,
-        }
+    findOutlets = (q) => {
+        if (q.length === 0) {
+            this.setState({ availableOutlets: [] });
+        } else {
+            const params = { outlets: { a: { title: q } } };
 
-        this.findOutlets = this.findOutlets.bind(this);
-        this.findUsers = this.findUsers.bind(this);
-        this.addOutlet = this.addOutlet.bind(this);
-        this.addUser = this.addUser.bind(this);
-        this.removeUser = this.removeUser.bind(this);
-        this.removeOutlet = this.removeOutlet.bind(this);
-        this.loadStats = this.loadStats.bind(this);
-        this.loadPurchases = this.loadPurchases.bind(this);
-        this.downloadExports = this.downloadExports.bind(this);
-    }
-
-    findOutlets(q) {
-        if(q.length == 0) {
-            this.setState({
-                availableOutlets: []
-            });
-        } else{
-            const params = {
-                outlets: { a: { title: q} }
-            };
-
-            $.ajax({
-                url: '/api/search',
-                type: 'GET',
-                data: $.param(params),
-                success: (response, status, xhr) => {
-                    if(!response.error && response.outlets) {
-                        this.setState({
-                            availableOutlets: response.outlets.results
-                        });
-                    }
-                }
-            });
+            api
+            .get('search', params)
+            .then(res => {
+                this.setState({
+                    availableOutlets: res.outlets.results,
+                });
+            })
+            .catch(err => err);
         }
     }
 
-    findUsers(q) {
-        if(q.length == 0) {
-            this.setState({
-                availableUsers: []
-            });
-        } else{
-            const params = {
-                users: { a: { full_name : q} }
-            };
+    findUsers = (q) => {
+        if (q.length === 0) {
+            this.setState({ availableUsers: [] });
+        } else {
+            const params = { users: { a: { full_name: q } } };
 
-            $.ajax({
-                url: '/api/search',
-                type: 'GET',
-                data: $.param(params),
-                success: (response, status, xhr) => {
-                    if(!response.error && response.users) {
-                        this.setState({
-                            availableUsers: response.users.results
-                        });
-                    }
-                }
-            });
+            api
+            .get('search', params)
+            .then(res => {
+                this.setState({
+                    availableUsers: res.users.results,
+                });
+            })
+            .catch(err => err);
         }
     }
 
@@ -88,11 +59,11 @@ class Purchases extends React.Component {
      * Adds user to filter
      * @param {string} userToAdd email of the user
      */
-    addUser(userToAdd, index) {
-        const { availableUsers, users } =  this.state;
+    addUser = (userToAdd, index) => {
+        const { availableUsers, users } = this.state;
         const user = availableUsers[index];
 
-        if(user !== null) {
+        if (user !== null) {
             if(find(users, ['id', user.id]) == undefined){
                 this.setState({
                     users: update(users, {$push: [user]}),
@@ -108,7 +79,7 @@ class Purchases extends React.Component {
      * Adds outlet to filter
      * @param {string} outletToAdd String title of the outlet
      */
-    addOutlet(outletToAdd, index) {
+    addOutlet = (outletToAdd, index) => {
         const { availableOutlets, outlets } = this.state;
         const outlet = availableOutlets[index];
 
@@ -128,7 +99,7 @@ class Purchases extends React.Component {
      * @param {string} userToRemove An email string of the user
      * @param {int} index index in the array
      */
-    removeUser(userToRemove, index) {
+    removeUser = (userToRemove, index) => {
         const user = this.state.users[index];
 
         this.setState({
@@ -143,20 +114,22 @@ class Purchases extends React.Component {
      * @param {string} outletToRemove A title string of the outlet
      * @param {int} index index in the array
      */
-    removeOutlet(outletToRemove, index) {
+    removeOutlet = (outletToRemove, index) => {
         const outlet = this.state.outlets[index];
 
         this.setState({
-            outlets: update(this.state.outlets, {$splice: [[index, 1]]}), //Keep the filtered list updated
-            availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}), //Add the user back to the autocomplete list
-            updatePurchases: true
+            // Keep the filtered list updated
+            outlets: update(this.state.outlets, {$splice: [[index, 1]]}),
+            // Add the user back to the autocomplete list
+            availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}),
+            updatePurchases: true,
         });
     }
 
     /**
      * Loads stats for purchases
      */
-    loadStats(callback) {
+    loadStats = (callback) => {
         const params = {
             outlet_ids: map(this.state.outlets, 'id'),
             user_ids: map(this.state.users, 'id')
@@ -182,7 +155,7 @@ class Purchases extends React.Component {
      * Requests purchases from server
      * @return {[type]} [description]
      */
-    loadPurchases(last = null, cb) {
+    loadPurchases = (last = null, cb) => {
         //Update state for purchase list if needed so it doesn't loop
         if(this.state.updatePurchases){
             this.setState({
@@ -202,18 +175,18 @@ class Purchases extends React.Component {
             type: 'GET',
             data: $.param(params)
         })
-            .done(cb)
-            .fail((error) => {
-                return $.snackbar({
-                    content: 'There was an error receiving purchases!'
-                });
+        .done(cb)
+        .fail((error) => {
+            return $.snackbar({
+                content: 'There was an error receiving purchases!'
             });
+        });
     }
 
 	/**
 	 * Sends browser to script to generate CSV
      */
-    downloadExports() {
+    downloadExports = () => {
         const oultets = this.state.outlets.map((outlet) => {
             return 'outlet_ids[]='+ outlet.id
         }).join('&');
@@ -230,34 +203,31 @@ class Purchases extends React.Component {
     }
 
     render() {
-        const outlets = map(this.state.outlets, 'title');
-        const users = map(this.state.users, 'full_name');
-        const availableOutlets = map(this.state.availableOutlets, 'title');
-        const availableUsers = map(this.state.availableUsers, 'full_name');
-
         return (
             <App user={this.props.user}>
-                <TopBar
-                    title="Purchases">
-
+                <TopBar title="Purchases">
                     <TagFilter
                         text="Outlets"
-                        tagList={availableOutlets}
-                        filterList={outlets}
+                        tagList={this.state.availableOutlets}
+                        filterList={this.state.outlets}
                         onTagInput={this.findOutlets}
                         onTagAdd={this.addOutlet}
                         onTagRemove={this.removeOutlet}
                         key="outletsFilter"
+                        attr={'title'}
                     />
 
                     <TagFilter
                         text="Users"
-                        tagList={availableUsers}
-                        filterList={users}
+                        tagList={this.state.availableUsers}
+                        filterList={this.state.users}
                         onTagInput={this.findUsers}
                         onTagAdd={this.addUser}
                         onTagRemove={this.removeUser}
                         key="usersFilter"
+                        attr={'full_name'}
+                        altAttr={'username'}
+                        hasAlt
                     />
                 </TopBar>
 

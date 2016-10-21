@@ -441,11 +441,12 @@ class Search extends Component {
                     verifiedToggle={true}
                     permissions={this.props.user.permissions}
                     onVerifiedToggled={this.onVerifiedToggled}>
-                    
+
                     <TagFilter
                         onTagAdd={this.addTag}
                         onTagRemove={this.removeTag}
                         filterList={this.state.tags}
+                        attr=''
                         key="tagFilter"
                     />
 
