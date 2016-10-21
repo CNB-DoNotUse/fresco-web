@@ -246,7 +246,7 @@ export default class AssignmentEdit extends React.Component {
                     {user.permissions.includes('update-other-content')
                         ? <ChipInput
                             model="outlets"
-                            attr="title"
+                            queryAttr="title"
                             className="dialog-row"
                             items={outlets}
                             updateItems={(o) => this.setState({ outlets: o })}

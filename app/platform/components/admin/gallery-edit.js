@@ -303,7 +303,7 @@ export default class GalleryEdit extends React.Component {
                     <ChipInput
                         model="assignments"
                         placeholder="Assignment"
-                        attr="title"
+                        queryAttr="title"
                         items={assignment ? [assignment] : []}
                         updateItems={(a) => this.setState({ assignment: a[0] })}
                         multiple={false}
@@ -321,7 +321,7 @@ export default class GalleryEdit extends React.Component {
 
                     <ChipInput
                         model="stories"
-                        attr="title"
+                        queryAttr="title"
                         items={stories}
                         updateItems={this.updateStories}
                         className="dialog-row"

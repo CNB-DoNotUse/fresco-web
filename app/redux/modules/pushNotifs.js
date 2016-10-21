@@ -20,6 +20,7 @@ export const UPDATE_TEMPLATE_ERROR = 'pushNotifs/UPDATE_TEMPLATE_ERROR';
 export const DISMISS_ALERT = 'pushNotifs/DISMISS_ALERT';
 export const CONFIRM_SEND = 'pushNotifs/CONFIRM_SEND';
 export const CANCEL_SEND = 'pushNotifs/CANCEL_SEND';
+export const CLOSE_INFO_DIALOG = 'pushNotifs/CLOSE_INFO_DIALOG';
 
 // helpers
 const getTemplateErrors = (template, getState) => {
@@ -56,9 +57,9 @@ const getTemplateErrors = (template, getState) => {
     return msg;
 };
 
-const getFormDataFromTemplate = (template, getState) => (
+const getFormDataFromTemplate = (template, state) => (
     new Promise((resolve) => {
-        const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
+        const templateData = state.getIn(['templates', template], Map());
 
         const restrictByUser = templateData.get('restrictByUser', false);
         const restrictByLocation = templateData.get('restrictByLocation', false);
@@ -89,7 +90,7 @@ const getFormDataFromTemplate = (template, getState) => (
             case ('user_ids'): return v.map(u => u.id);
             case ('gallery_ids'): return v.map(g => g.id);
             case ('gallery_id'): return v.id;
-            case ('story_id'): return v.title;
+            case ('story_id'): return v.id;
             case ('assignment_id'): return v.id;
             default:
                 return v;
@@ -180,7 +181,7 @@ const verifyRecommendUpdate = ({ data, state }) => {
         if (!data.story && !data.gallery) return resolve();
         if (data.gallery) {
             if (state.get('story')) {
-                return reject('Can only recommend one of gallery or story');
+                return reject('Can only recommend one gallery or story');
             }
 
             verifyGallery(data.gallery)
@@ -222,11 +223,15 @@ export const updateTemplate = (template, data) => (dispatch, getState) => {
         .then(() => verifyAssignmentUpdate({ data }))
         .then(() => {
             dispatch(successAction);
-            dispatch({
-                type: UPDATE_TEMPLATE_SUCCESS,
-                template,
-                data: { title: get(data, 'assignment.title'), body: get(data, 'assignment.body') },
-            });
+            // use title and body from assignment if in data
+            if (data.assignment) {
+                const { title, body } = data.assignment;
+                dispatch({
+                    type: UPDATE_TEMPLATE_SUCCESS,
+                    template,
+                    data: { title, body },
+                });
+            }
         })
         .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
     case 'gallery list':
@@ -256,12 +261,28 @@ export const send = (template) => (dispatch, getState) => {
     dispatch({ type: SEND, template });
 };
 
+const getSuccessMsg = (count) => {
+    if (count === 1) return `${count} push`;
+    return `${count} pushes`;
+};
+
 export const confirmSend = (template) => (dispatch, getState) => {
-    getFormDataFromTemplate(template, getState)
+    const state = getState().get('pushNotifs');
+    if (state.get('loading')) return;
+    dispatch({ type: CONFIRM_SEND });
+
+    getFormDataFromTemplate(template, state)
     .then((data) => (
         api
         .post('notifications/create', data)
-        .then(res => dispatch({ type: SEND_SUCCESS, template, data: res }))
+        .then(res => {
+            dispatch({
+                type: SEND_SUCCESS,
+                template,
+                header: 'Notification sent',
+                body: getSuccessMsg(res.count),
+            });
+        })
         .catch(err => dispatch({
             type: SEND_FAIL,
             template,
@@ -281,25 +302,37 @@ export const cancelSend = () => ({
     type: CANCEL_SEND,
 });
 
+export const closeInfoDialog = () => ({
+    type: CLOSE_INFO_DIALOG,
+});
+
 // reducer
 const pushNotifs = (state = fromJS({
     activeTab: 'default',
     templates: {},
+    infoDialog: {},
     loading: false,
     requestConfirmSend: false,
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {
     case SEND:
-        return state
-            .set('loading', true)
-            .set('requestConfirmSend', true);
+        return state.set('requestConfirmSend', true);
+    case CONFIRM_SEND:
+        return state.set('loading', true);
     case SEND_SUCCESS:
         return state
             .set('loading', false)
             .set('requestConfirmSend', false)
             .set('alert', 'Notification sent!')
-            .setIn(['templates', action.template], Map());
+            .setIn(['templates', action.template], Map())
+            .set('infoDialog', fromJS({
+                visible: true,
+                header: action.header,
+                body: action.body,
+            }));
+    case CLOSE_INFO_DIALOG:
+        return state.set('infoDialog', fromJS({ visible: false }));
     case SEND_FAIL:
         return state
             .set('loading', false)

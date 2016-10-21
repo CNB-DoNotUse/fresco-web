@@ -21,24 +21,24 @@ const Template = ({
 
         <ChipInput
             model="galleries"
-            attr="id"
+            queryAttr="id"
             placeholder="Gallery"
             items={(gallery && [gallery]) || []}
             updateItems={onChangeGalleries(onChange)}
             autocomplete={false}
             multiple={false}
-            className="push-notifs__chip-input chips--autocomplete"
+            className="push-notifs__chip-input"
             initMaterial
         />
 
         <ChipInput
             model="stories"
-            attr="title"
+            queryAttr="title"
             placeholder="Story"
             items={(story && [story]) || []}
             updateItems={onChangeStories(onChange)}
             multiple={false}
-            className="push-notifs__chip-input chips--autocomplete"
+            className="push-notifs__chip-input"
             autocomplete
             initMaterial
         />

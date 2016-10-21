@@ -605,11 +605,14 @@ div.chips {
 	}
 }
 
-.chips--autocomplete {
-    .chip {
-        font-weight: 500;
-        opacity: 0.87;
-    }
+.chip__primary-text {
+    font-weight: 500;
+    opacity: 0.87;
+}
+
+.chip__alt-text {
+    font-weight: 300;
+    opacity: 0.54;
 }
 
 // tabs

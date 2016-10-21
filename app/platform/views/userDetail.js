@@ -11,17 +11,22 @@ import '../../sass/platform/user.scss';
  * User Detail Parent Object, made of a user side column and PostList
  */
 class UserDetail extends React.Component {
+    state = {
+        verifiedToggled: true,
+    };
+
     edit() {
         window.location.href = '/user/settings';
     }
 
     // Returns array of posts for the user
     // with offset and callback, used in child PostList
-    loadPosts(last, callback) {
+    loadPosts = (last, callback) => {
+        const { verifiedToggled } = this.state;
         const { detailUser } = this.props;
         const params = {
             limit: 15,
-            rating: 2,
+            rating: verifiedToggled ? 2 : [0, 1, 2],
             last,
         };
 
@@ -45,6 +50,9 @@ class UserDetail extends React.Component {
                     editIcon={"mdi-settings"}
                     editable={editable}
                     edit={() => this.edit()}
+                    onVerifiedToggled={(b) => this.setState({ verifiedToggled: b })}
+                    permissions={user.permissions}
+                    verifiedToggle
                     timeToggle
                 />
 
@@ -55,10 +63,11 @@ class UserDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        loadPosts={(p, c) => this.loadPosts(p, c)}
+                        loadPosts={this.loadPosts}
                         size="large"
                         permissions={user.permissions}
                         scrollable
+                        onlyVerified={this.state.verifiedToggled}
                     />
                 </div>
             </App>

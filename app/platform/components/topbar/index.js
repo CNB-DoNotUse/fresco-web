@@ -195,10 +195,10 @@ class TopBar extends React.Component {
 
                 <div className="spacer" />
 
-                {title ? 
+                {title ?
                     <h1 className="md-type-title">{title}</h1>
                 : ''}
-                
+
                 {locationInput ?
                     <LocationAutocomplete
                         class="nav"
@@ -257,6 +257,7 @@ TopBar.defaultProps = {
     onVerifiedToggled() {},
     onOutletFilterAdd() {},
     onOutletFilterRemove() {},
+    permissions: [],
 };
 
 export default TopBar;

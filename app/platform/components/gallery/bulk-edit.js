@@ -131,7 +131,7 @@ class BulkEdit extends React.Component {
 
                     <ChipInput
                         model="stories"
-                        attr="title"
+                        queryAttr="title"
                         items={stories}
                         updateItems={(s) => this.setState({ stories: s })}
                         className="dialog-row"

@@ -7,7 +7,7 @@ const EditAssignment = ({ assignments = [], onChange }) => {
             <ChipInput
                 model="assignments"
                 placeholder="Assignment"
-                attr="title"
+                queryAttr="title"
                 items={assignments}
                 updateItems={onChange}
                 className="dialog-row"
@@ -22,7 +22,7 @@ const EditAssignment = ({ assignments = [], onChange }) => {
         <ChipInput
             model="assignments"
             placeholder="Assignment"
-            attr="title"
+            queryAttr="title"
             items={assignments}
             updateItems={onChange}
             className="dialog-row"

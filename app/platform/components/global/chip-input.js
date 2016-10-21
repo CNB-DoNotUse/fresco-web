@@ -17,22 +17,27 @@ class ChipInput extends React.Component {
         items: PropTypes.array.isRequired,
         updateItems: PropTypes.func.isRequired,
         model: PropTypes.string.isRequired,
-        attr: PropTypes.string,
+        queryAttr: PropTypes.string,
+        altAttr: PropTypes.string,
         initMaterial: PropTypes.bool,
         className: PropTypes.string,
         autocomplete: PropTypes.bool,
         createNew: PropTypes.bool,
         multiple: PropTypes.bool,
         idLookup: PropTypes.bool,
+        search: PropTypes.bool,
         disabled: PropTypes.bool,
         placeholder: PropTypes.string,
+        params: PropTypes.object,
     };
 
     static defaultProps = {
         items: [],
+        params: {},
         initMaterial: false,
         className: '',
         autocomplete: false,
+        search: false,
         createNew: true,
         multiple: true,
         disabled: false,
@@ -67,25 +72,12 @@ class ChipInput extends React.Component {
 
     onChangeQuery = (e) => {
         const query = e.target.value;
-        const { model, attr, autocomplete, idLookup } = this.props;
-        this.setState({ query });
-        if (!autocomplete || !attr) return;
-
-        // Enter is pressed, and query is present
         if (!query.length === 0) {
             this.setState({ suggestions: [] });
             return;
         }
 
-        api
-        .get('search', { [`${model}[a][${attr}]`]: query })
-        .then(res => {
-            if (get(res, `${model}.results.length`)) {
-                this.setState({ suggestions: res[model].results });
-            } else if (idLookup) {
-                this.getModelById(query);
-            }
-        });
+        this.setState({ query }, this.getSuggestions);
     }
 
     /**
@@ -95,23 +87,60 @@ class ChipInput extends React.Component {
      * @param {object} e key up event
      */
     onKeyUpQuery = (e) => {
-        const { attr, autocomplete, createNew } = this.props;
+        const { queryAttr, createNew } = this.props;
         const { suggestions, query } = this.state;
 
+        // Enter is pressed, and query is present
         if (e.keyCode === 13 && query.length > 0) {
-            const matched = autocomplete && suggestions.find((s) => (
-                s.title.toLowerCase() === query.toLowerCase()
-            ));
-
-            if (!attr) {
+            if (!queryAttr) {
                 this.addItem(query);
                 return;
             }
 
-            if (!matched && !createNew) return;
+            const matched = suggestions.find((s) => (
+                s.title.toLowerCase() === query.toLowerCase()
+            )) || suggestions[0];
 
-            this.addItem(matched || { [attr]: query, new: true });
+            if (matched) this.addItem(matched);
+            else if (createNew) this.addItem({ [queryAttr]: query, new: true });
         }
+    }
+
+    getSuggestions = () => {
+        const {
+            model,
+            queryAttr,
+            altAttr,
+            autocomplete,
+            idLookup,
+            search,
+            params,
+        } = this.props;
+        const { query } = this.state;
+        if (!autocomplete && !search) return;
+
+        if (search) {
+            api
+            .get('search', { [`${model}[q]`]: query, ...params })
+            .then(res => {
+                if (get(res, `${model}.results.length`)) {
+                    this.setState({ suggestions: res[model].results });
+                } else if (idLookup) {
+                    this.getModelById(query);
+                }
+            });
+            return;
+        }
+
+        api
+        .get('search', { [`${model}[a][${queryAttr}]`]: query, ...params })
+        .then(res => {
+            if (get(res, `${model}.results.length`)) {
+                this.setState({ suggestions: res[model].results });
+            } else if (idLookup) {
+                this.getModelById(query);
+            }
+        });
     }
 
     getModelById(id) {
@@ -130,10 +159,10 @@ class ChipInput extends React.Component {
      * Adds story element, return if story exists in prop stories.
      */
     addItem(newItem) {
-        let { items, attr, multiple } = this.props;
+        let { items, queryAttr, multiple, altAttr } = this.props;
 
-        if (attr) {
-            if (!newItem[attr] || !newItem[attr].length) return;
+        if (queryAttr) {
+            if (!newItem[queryAttr] && !newItem[altAttr]) return;
             if (newItem.id && items.some((i) => (i.id === newItem.id))) return;
         } else if (items.some(i => i === newItem)) return;
 
@@ -148,36 +177,64 @@ class ChipInput extends React.Component {
      */
     onClickTag(item) {
         if (this.props.disabled) return;
-        let { items, attr } = this.props;
+        let { items, queryAttr } = this.props;
 
-        if (!attr) items = items.filter(i => i !== item);
+        if (!queryAttr) items = items.filter(i => i !== item);
         else if (item.id) items = reject(items, { id: item.id });
-        else items = reject(items, { [attr]: item[attr] });
+        else items = reject(items, { [queryAttr]: item[queryAttr] });
 
         this.props.updateItems(items);
     }
 
+    renderSuggestion(suggestion, key) {
+        const { queryAttr, altAttr } = this.props;
+        let text;
+        if (!altAttr) text = suggestion[queryAttr];
+        else if (suggestion[queryAttr]) {
+            text = (
+                <span className="chip__primary-text">
+                    {`${suggestion[queryAttr]} `}
+                    <span className="chip__alt-text">
+                        {suggestion[altAttr] || ''}
+                    </span>
+                </span>
+            );
+        } else if (suggestion[altAttr]) {
+            text = (
+                <span className="chips__primary-text" >
+                    suggestion[altAttr]
+                </span>
+            );
+        }
+
+        return (
+            <li onClick={() => this.addItem(suggestion)} key={key}>
+                {text}
+            </li>
+        );
+    }
+
     render() {
         const { query, suggestions } = this.state;
-        const { items, attr, model, placeholder, disabled } = this.props;
+        const { items, queryAttr, altAttr, model, placeholder, disabled } = this.props;
         const itemsJSX = items.map((item, i) => (
             <Tag
-                text={attr ? item[attr] : item}
+                text={queryAttr ? item[queryAttr] : item}
+                altText={altAttr ? item[altAttr] : ''}
                 plus={false}
                 onClick={() => this.onClickTag(item)}
                 key={i}
+                hasAlt
             />
         ));
 
         const suggestionsJSX = suggestions.map((suggestion, i) => (
-            <li onClick={() => this.addItem(suggestion)} key={i}>
-                {suggestion[attr]}
-            </li>
+            this.renderSuggestion(suggestion, i)
         ));
 
         return (
             <div
-                ref={r => this.area = r}
+                ref={r => { this.area = r; }}
                 className={`split chips form-group-default ${this.props.className}`}
             >
                 <div className="split-cell">

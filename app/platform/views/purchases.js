@@ -247,7 +247,6 @@ class Purchases extends React.Component {
                         onTagInput={this.findOutlets}
                         onTagAdd={this.addOutlet}
                         onTagRemove={this.removeOutlet}
-                        className="chips--autocomplete"
                         key="outletsFilter"
                     />
 
@@ -258,7 +257,6 @@ class Purchases extends React.Component {
                         onTagInput={this.findUsers}
                         onTagAdd={this.addUser}
                         onTagRemove={this.removeUser}
-                        className="chips--autocomplete"
                         key="usersFilter"
                     />
                 </TopBar>

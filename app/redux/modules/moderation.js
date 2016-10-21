@@ -26,7 +26,10 @@ export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
 export const TOGGLE_SUSPEND_USER = 'moderation/TOGGLE_SUSPEND_USER';
 export const TOGGLE_GALLERY_GRAPHIC = 'moderation/TOGGLE_GALLERY_GRAPHIC';
 export const RESTORE_SUSPENDED_USER = 'moderation/RESTORE_SUSPENDED_USER';
-export const DELETE_CARD = 'moderation/DELETE_CARD';
+export const CONFIRM_DELETE_CARD = 'moderation/CONFIRM_DELETE_CARD';
+export const REQUEST_DELETE_CARD = 'moderation/REQUEST_DELETE_CARD';
+export const CANCEL_DELETE_CARD = 'moderation/CANCEL_DELETE_CARD';
+export const SET_CARD_OPACITY = 'moderation/SET_CARD_OPACITY';
 
 const REPORTS_LIMIT = 10;
 
@@ -277,11 +280,31 @@ export const toggleGalleryGraphic = (id) => (dispatch, getState) => {
     }));
 };
 
+export const fadeOutCard = (entityType, id, cb) => (dispatch) => {
+    let opacity = 1;
+    dispatch({
+        type: SET_CARD_OPACITY,
+        entityType,
+        opacity,
+        id,
+    });
+    setTimeout(() => {
+        opacity = 0;
+        setTimeout(() => cb(entityType, id), 300);
+        dispatch({
+            type: SET_CARD_OPACITY,
+            entityType,
+            opacity,
+            id,
+        });
+    }, 300);
+};
+
 export const skipCard = (entityType, id) => (dispatch) => (
     api
     .post(`${entityType}/${id}/report/skip`)
     .then(() => dispatch({
-        type: DELETE_CARD,
+        type: CONFIRM_DELETE_CARD,
         id,
         entityType,
     }))
@@ -291,14 +314,24 @@ export const skipCard = (entityType, id) => (dispatch) => (
     }))
 );
 
-export const deleteCard = (entityType, id) => (dispatch) => {
+export const requestDeleteCard = (entityType, id) => ({
+    type: REQUEST_DELETE_CARD,
+    entityType,
+    id,
+});
+
+export const cancelDeleteCard = () => ({
+    type: CANCEL_DELETE_CARD,
+});
+
+export const confirmDeleteCard = (entityType, id) => (dispatch) => {
     const params = entityType === 'user' ? { user_id: id } : {};
     const url = entityType === 'user' ? 'user/disable' : `gallery/${id}/delete`;
 
     api
     .post(url, params)
     .then(() => dispatch({
-        type: DELETE_CARD,
+        type: CONFIRM_DELETE_CARD,
         id,
         entityType,
     }))
@@ -317,6 +350,8 @@ const gallery = (state, action) => {
         return state.mergeIn(['owner'], { suspended_until: action.suspended_until });
     case TOGGLE_GALLERY_GRAPHIC:
         return state.set('is_nsfw', action.nsfw);
+    case SET_CARD_OPACITY:
+        return state.set('opacity', action.opacity);
     default:
         return state;
     }
@@ -337,11 +372,11 @@ const galleries = (state = fromJS({
             .set('loading', false);
     case FETCH_GALLERIES_FAIL:
         return state.set('loading', false);
+    case SET_CARD_OPACITY:
     case TOGGLE_GALLERY_GRAPHIC:
-        return state.update('entities', es => es.map(e => gallery(e, action)));
     case TOGGLE_SUSPEND_USER:
         return state.update('entities', es => es.map(e => gallery(e, action)));
-    case DELETE_CARD:
+    case CONFIRM_DELETE_CARD:
         return state.update('entities', es => es.filterNot(e => e.get('id') === action.id));
     default:
         return state;
@@ -349,12 +384,14 @@ const galleries = (state = fromJS({
 };
 
 const user = (state, action) => {
+    if (state.get('id') !== action.id) {
+        return state;
+    }
     switch (action.type) {
     case TOGGLE_SUSPEND_USER:
-        if (state.get('id') !== action.id) {
-            return state;
-        }
         return state.set('suspended_until', action.suspended_until);
+    case SET_CARD_OPACITY:
+        return state.set('opacity', action.opacity);
     default:
         return state;
     }
@@ -375,9 +412,10 @@ const users = (state = fromJS({
             .set('loading', false);
     case FETCH_USERS_FAIL:
         return state.set('loading', false);
+    case SET_CARD_OPACITY:
     case TOGGLE_SUSPEND_USER:
         return state.update('entities', es => es.map(e => user(e, action)));
-    case DELETE_CARD:
+    case CONFIRM_DELETE_CARD:
         return state.update('entities', es => es.filterNot(e => e.get('id') === action.id));
     default:
         return state;
@@ -424,6 +462,7 @@ const ui = (state = fromJS({
     activeTab: 'galleries',
     filters: fromJS({ galleries: Set(), users: Set() }),
     suspendedDialog: false,
+    requestDeleted: Map(),
     infoDialog: fromJS({ open: false, header: '', body: '' }),
     error: null,
     alert: null }), action = {}) => {
@@ -448,6 +487,13 @@ const ui = (state = fromJS({
         return state.set('alert', action.data);
     case DISMISS_ALERT:
         return state.set('alert', null);
+    case REQUEST_DELETE_CARD:
+        return state.set('requestDeleted', fromJS(
+            { entityType: action.entityType, id: action.id }
+        ));
+    case CANCEL_DELETE_CARD:
+    case CONFIRM_DELETE_CARD:
+        return state.set('requestDeleted', Map());
     default:
         return state;
     }

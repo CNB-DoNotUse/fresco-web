@@ -12,6 +12,7 @@ import GalleryCard from '../components/moderation/gallery-card';
 import UserCard from '../components/moderation/user-card';
 import ItemsDialog from '../components/dialogs/items';
 import InfoDialog from '../components/dialogs/info';
+import ConfirmDialog from '../components/dialogs/confirm';
 import SuspendedUser from '../components/moderation/suspended-user';
 
 class Moderation extends React.Component {
@@ -24,15 +25,19 @@ class Moderation extends React.Component {
         fetchUsers: PropTypes.func.isRequired,
         fetchSuspendedUsers: PropTypes.func.isRequired,
         onClickReportsIndex: PropTypes.func.isRequired,
-        onDelete: PropTypes.func.isRequired,
+        onRequestDelete: PropTypes.func.isRequired,
+        onConfirmDelete: PropTypes.func.isRequired,
+        onCancelDelete: PropTypes.func.isRequired,
         onSuspend: PropTypes.func.isRequired,
         onSkip: PropTypes.func.isRequired,
         onToggleGraphic: PropTypes.func.isRequired,
         onRestoreUser: PropTypes.func.isRequired,
         onToggleSuspendedDialog: PropTypes.func.isRequired,
         onToggleInfoDialog: PropTypes.func.isRequired,
+        fadeOutCard: PropTypes.func.isRequired,
         suspendedDialog: PropTypes.bool.isRequired,
         infoDialog: PropTypes.object.isRequired,
+        requestDeleted: PropTypes.instanceOf(Map).isRequired,
         filters: PropTypes.instanceOf(Map).isRequired,
         galleries: PropTypes.instanceOf(OrderedSet).isRequired,
         reports: PropTypes.instanceOf(Map).isRequired,
@@ -75,8 +80,10 @@ class Moderation extends React.Component {
             onClickReportsIndex,
             onSuspend,
             onSkip,
-            onDelete,
+            onRequestDelete,
+            onConfirmDelete,
             onToggleGraphic,
+            fadeOutCard,
         } = this.props;
 
         let entitiesJSX;
@@ -90,8 +97,8 @@ class Moderation extends React.Component {
                         reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
                         onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
                         onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
-                        onSkip={partial(onSkip, 'gallery', g.id)}
-                        onDelete={partial(onDelete, 'gallery', g.id)}
+                        onSkip={partial(fadeOutCard, 'gallery', g.id, onSkip)}
+                        onDelete={partial(onRequestDelete, 'gallery', g.id)}
                         onToggleGraphic={partial(onToggleGraphic, g.id)}
                     />
                 ))
@@ -101,12 +108,12 @@ class Moderation extends React.Component {
                 users.toJS().map(u => (
                     <UserCard
                         key={`user-card-${u.id}`}
-                        user={u}
+                        {...u}
                         reportData={reports.getIn(['users', u.id], Map()).toJS()}
                         onClickReportsIndex={partial(onClickReportsIndex, 'users', u.id)}
                         onSuspend={partial(onSuspend, 'user', u.id)}
-                        onSkip={partial(onSkip, 'user', u.id)}
-                        onDisable={partial(onDelete, 'user', u.id)}
+                        onSkip={partial(fadeOutCard, 'user', u.id, onSkip)}
+                        onDisable={partial(fadeOutCard, 'user', u.id, onConfirmDelete)}
                     />
                 ))
             ) : [];
@@ -136,6 +143,10 @@ class Moderation extends React.Component {
             onToggleSuspendedDialog,
             onToggleInfoDialog,
             onRestoreUser,
+            onCancelDelete,
+            onConfirmDelete,
+            requestDeleted,
+            fadeOutCard,
             infoDialog,
         } = this.props;
 
@@ -184,6 +195,18 @@ class Moderation extends React.Component {
                         body={infoDialog.get('body')}
                     />
 
+                    <ConfirmDialog
+                        onConfirm={partial(
+                            fadeOutCard,
+                            requestDeleted.get('entityType'),
+                            requestDeleted.get('id'),
+                            onConfirmDelete
+                        )}
+                        onCancel={onCancelDelete}
+                        toggled={!!requestDeleted.get('id')}
+                        text={'Confirm delete?'}
+                    />
+
                     {this.renderContent()}
                 </div>
             </div>
@@ -212,6 +235,7 @@ function mapStateToProps(state) {
         suspendedUsers: moderation.getIn(['suspendedUsers', 'entities']),
         suspendedDialog: moderation.getIn(['ui', 'suspendedDialog']),
         infoDialog: moderation.getIn(['ui', 'infoDialog']),
+        requestDeleted: moderation.getIn(['ui', 'requestDeleted']),
         galleries,
         users,
         filters,
@@ -228,10 +252,13 @@ export default connect(mapStateToProps, {
     onClickReportsIndex: moderationActions.updateReportsIndex,
     onSuspend: moderationActions.toggleSuspendUser,
     onSkip: moderationActions.skipCard,
-    onDelete: moderationActions.deleteCard,
     onToggleGraphic: moderationActions.toggleGalleryGraphic,
     onToggleSuspendedDialog: moderationActions.toggleSuspendedDialog,
     onToggleInfoDialog: moderationActions.toggleInfoDialog,
     onRestoreUser: moderationActions.restoreSuspendedUser,
+    onRequestDelete: moderationActions.requestDeleteCard,
+    onConfirmDelete: moderationActions.confirmDeleteCard,
+    onCancelDelete: moderationActions.cancelDeleteCard,
+    fadeOutCard: moderationActions.fadeOutCard,
 })(Moderation);
 

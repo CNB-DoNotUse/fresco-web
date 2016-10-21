@@ -247,8 +247,11 @@ class Edit extends React.Component {
     // curated and all posts belong to same assignment
     getAssignmentParam() {
         const { assignments } = this.state;
+        if (!assignments.length) {
+            return { assignment_id: null };
+        }
         if (assignments.length === 1) {
-            return assignments[0].id;
+            return { assignment_id: assignments[0].id };
         }
 
         return null;
@@ -257,7 +260,7 @@ class Edit extends React.Component {
     getPostsFormData() {
         const { gallery } = this.props;
         const files = this.getFilesFromUploads();
-        let { posts, rating, assignment } = this.state;
+        let { posts, rating } = this.state;
 
         if (!files.length && !posts.length) return null;
 
@@ -274,7 +277,7 @@ class Edit extends React.Component {
             ? posts_new.map(p =>
                 Object.assign({}, p, {
                     rating,
-                    assignment_id: this.getAssignmentParam(),
+                    ...this.getAssignmentParam(),
                 }))
             : null;
 
@@ -288,29 +291,34 @@ class Edit extends React.Component {
 
     getPostsUpdateParams() {
         const { gallery } = this.props;
-        const { address, location, rating, assignments } = this.state;
+        const { address, location, rating } = this.state;
         // check to see if should save locations on all gallery's posts
         const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
+        let params;
         if (sameLocation) {
-            return {
-                posts_update: gallery.posts.map(p => (pickBy({
-                    id: p.id,
-                    rating: rating === 3 ? 2 : rating,
-                    assignment_id: this.getAssignmentParam(),
-                }, v => !!v))),
-            };
+            params = gallery.posts.map(p => {
+                return Object.assign(
+                    pickBy({
+                        id: p.id,
+                        rating: rating === 3 ? 2 : rating }, v => !!v),
+                    this.getAssignmentParam()
+                );
+            });
+        } else {
+            params = gallery.posts.map(p => {
+                return Object.assign(
+                    pickBy({
+                        id: p.id,
+                        address,
+                        lat: location.lat,
+                        lng: location.lng,
+                        rating: rating === 3 ? 2 : rating }, v => !!v),
+                    this.getAssignmentParam(),
+                );
+            });
         }
 
-        return {
-            posts_update: gallery.posts.map(p => (pickBy({
-                id: p.id,
-                address,
-                lat: location.lat,
-                lng: location.lng,
-                rating: rating === 3 ? 2 : rating,
-                assignment_id: this.getAssignmentParam(),
-            }, v => !!v))),
-        };
+        return { posts_update: params };
     }
 
     uploadFiles(posts, files) {
@@ -533,7 +541,7 @@ class Edit extends React.Component {
 
                     <ChipInput
                         model="stories"
-                        attr="title"
+                        queryAttr="title"
                         items={stories}
                         updateItems={(s) => this.setState({ stories: s })}
                         className="dialog-row"
@@ -542,7 +550,7 @@ class Edit extends React.Component {
 
                     <ChipInput
                         model="articles"
-                        attr="title"
+                        queryAttr="title"
                         items={articles}
                         updateItems={(a) => this.setState({ articles: a })}
                         className="dialog-row"

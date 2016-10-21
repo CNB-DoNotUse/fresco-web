@@ -30,7 +30,9 @@ const onMapDataChange = (onChange) => (data) => {
 };
 
 const onChangeUsers = (onChange) => (users) => {
-    onChange({ users: users.map(u => ({ id: u.id, username: u.username })) });
+    onChange({
+        users: users.map(u => ({ id: u.id, full_name: u.full_name, username: u.username })),
+    });
 };
 
 const onRadiusChange = (onChange) => (radius) => {
@@ -98,12 +100,13 @@ export const RestrictByUser = ({
         {restrictByUser
             && <ChipInput
                 model="users"
-                attr="username"
+                queryAttr="full_name"
+                altAttr="username"
                 items={users}
                 updateItems={onChangeUsers(onChange)}
-                className="push-notifs__users chips--autocomplete"
+                className="push-notifs__users"
                 createNew={false}
-                autocomplete
+                search
                 initMaterial
             />
         }

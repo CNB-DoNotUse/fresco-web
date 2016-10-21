@@ -19,14 +19,15 @@ const Template = ({
 
         <ChipInput
             model="assignments"
-            attr="title"
+            queryAttr="title"
             placeholder="Assignment"
             items={(assignment && [assignment]) || []}
             updateItems={onChangeAssignments(onChange)}
             multiple={false}
-            className="push-notifs__chip-input chips--autocomplete"
-            idLookup
+            className="push-notifs__chip-input"
+            params={{ rating: '1' }}
             autocomplete
+            idLookup
             initMaterial
         />
 

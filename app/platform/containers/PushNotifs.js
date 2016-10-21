@@ -6,6 +6,7 @@ import partial from 'lodash/partial';
 import { Map } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
 import Confirm from '../components/dialogs/confirm';
+import Info from '../components/dialogs/info';
 import TopBar from '../components/topbar';
 import Default from '../components/pushNotifs/default-template';
 import GalleryList from '../components/pushNotifs/gallery-list-template';
@@ -78,12 +79,14 @@ class PushNotifs extends React.Component {
             onSetActiveTab,
             onDismissAlert,
             onSend,
+            onCloseInfoDialog,
             activeTab,
             loading,
             alert,
             requestConfirmSend,
             cancelSend,
             confirmSend,
+            infoDialog,
         } = this.props;
 
         return (
@@ -117,11 +120,19 @@ class PushNotifs extends React.Component {
                     </div>
 
                     <Confirm
-                        text={"Send notificaiton?"}
+                        text={"Send notification?"}
                         onConfirm={partial(confirmSend, activeTab)}
                         onCancel={cancelSend}
                         toggled={requestConfirmSend}
+                        disabled={loading}
                         hasInput={false}
+                    />
+
+                    <Info
+                        onClose={onCloseInfoDialog}
+                        header={infoDialog.get('header')}
+                        body={infoDialog.get('body')}
+                        toggled={infoDialog.get('visible')}
                     />
                 </div>
             </div>
@@ -136,6 +147,7 @@ function mapStateToProps(state) {
         loading: state.getIn(['pushNotifs', 'loading']),
         alert: state.getIn(['pushNotifs', 'alert']),
         requestConfirmSend: state.getIn(['pushNotifs', 'requestConfirmSend']),
+        infoDialog: state.getIn(['pushNotifs', 'infoDialog']),
     };
 }
 
@@ -146,5 +158,6 @@ export default connect(mapStateToProps, {
     onSend: pushActions.send,
     confirmSend: pushActions.confirmSend,
     cancelSend: pushActions.cancelSend,
+    onCloseInfoDialog: pushActions.closeInfoDialog,
 })(PushNotifs);
 
