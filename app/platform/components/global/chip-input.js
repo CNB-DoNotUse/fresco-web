@@ -159,10 +159,10 @@ class ChipInput extends React.Component {
      * Adds story element, return if story exists in prop stories.
      */
     addItem(newItem) {
-        let { items, queryAttr, multiple } = this.props;
+        let { items, queryAttr, multiple, altAttr } = this.props;
 
         if (queryAttr) {
-            if (!newItem[queryAttr] || !newItem[queryAttr].length) return;
+            if (!newItem[queryAttr] && !newItem[altAttr]) return;
             if (newItem.id && items.some((i) => (i.id === newItem.id))) return;
         } else if (items.some(i => i === newItem)) return;
 
@@ -186,22 +186,50 @@ class ChipInput extends React.Component {
         this.props.updateItems(items);
     }
 
+    renderSuggestion(suggestion, key) {
+        const { queryAttr, altAttr } = this.props;
+        let text;
+        if (!altAttr) text = suggestion[queryAttr];
+        else if (suggestion[queryAttr]) {
+            text = (
+                <span className="chip__primary-text">
+                    {`${suggestion[queryAttr]} `}
+                    <span className="chip__alt-text">
+                        {suggestion[altAttr] || ''}
+                    </span>
+                </span>
+            );
+        } else if (suggestion[altAttr]) {
+            text = (
+                <span className="chips__primary-text" >
+                    suggestion[altAttr]
+                </span>
+            );
+        }
+
+        return (
+            <li onClick={() => this.addItem(suggestion)} key={key}>
+                {text}
+            </li>
+        );
+    }
+
     render() {
         const { query, suggestions } = this.state;
         const { items, queryAttr, altAttr, model, placeholder, disabled } = this.props;
         const itemsJSX = items.map((item, i) => (
             <Tag
                 text={queryAttr ? item[queryAttr] : item}
+                altText={altAttr ? item[altAttr] : ''}
                 plus={false}
                 onClick={() => this.onClickTag(item)}
                 key={i}
+                hasAlt
             />
         ));
 
         const suggestionsJSX = suggestions.map((suggestion, i) => (
-            <li onClick={() => this.addItem(suggestion)} key={i}>
-                {suggestion[queryAttr] || suggestion[altAttr]}
-            </li>
+            this.renderSuggestion(suggestion, i)
         ));
 
         return (

@@ -26,7 +26,7 @@ export default class TagFilter extends React.Component {
     }
 
     render() {
-        const { tagList, filterList, text, className } = this.props;
+        const { tagList, filterList, text } = this.props;
 
         const filtered = filterList.map((tag, i) => {
             return (
@@ -55,7 +55,7 @@ export default class TagFilter extends React.Component {
                 dropdownClass="tags-dropdown"
                 inList
             >
-                <div className={`chips ${className}`}>
+                <div className="chips">
                     <div className="split-cell">
                         <div className="form-group-default">
                             <div className="form-control-wrapper">

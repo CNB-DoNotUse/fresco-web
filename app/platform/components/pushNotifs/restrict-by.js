@@ -30,7 +30,9 @@ const onMapDataChange = (onChange) => (data) => {
 };
 
 const onChangeUsers = (onChange) => (users) => {
-    onChange({ users: users.map(u => ({ id: u.id, full_name: u.full_name })) });
+    onChange({
+        users: users.map(u => ({ id: u.id, full_name: u.full_name, username: u.username })),
+    });
 };
 
 const onRadiusChange = (onChange) => (radius) => {
@@ -102,7 +104,7 @@ export const RestrictByUser = ({
                 altAttr="username"
                 items={users}
                 updateItems={onChangeUsers(onChange)}
-                className="push-notifs__users chips--autocomplete"
+                className="push-notifs__users"
                 createNew={false}
                 search
                 initMaterial
