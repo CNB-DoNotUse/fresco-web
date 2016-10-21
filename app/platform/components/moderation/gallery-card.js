@@ -5,7 +5,7 @@ import FrescoImage from '../global/fresco-image';
 import { CardBadges, CardUser, CardReports } from './card-parts';
 
 export default class GalleryCard extends Component {
-    
+
     static propTypes = {
         id: PropTypes.string.isRequired,
         posts: PropTypes.array.isRequired,

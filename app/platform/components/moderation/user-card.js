@@ -52,7 +52,7 @@ export default class UserCard extends Component {
                 className="moderation-card moderation-card__gallery"
             >
                 <CardBadges strings={user.report_reasons} />
-                
+
                 <div className="moderation-card__user-info">
                     <CardUser user={user} />
 
@@ -82,12 +82,6 @@ export default class UserCard extends Component {
                             onClick={onSuspend}
                         >
                             {user.suspended_until ? 'unsuspend user' : 'suspend user'}
-                        </span>
-                        <span
-                            className="moderation-card__action"
-                            onClick={partial(this.onRemove, onDisable)}
-                        >
-                            disable
                         </span>
                     </div>
                 </div>
