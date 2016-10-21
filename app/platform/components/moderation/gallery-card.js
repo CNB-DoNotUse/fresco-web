@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import get from 'lodash/get';
-import partial from 'lodash/partial';
 import FrescoImage from '../global/fresco-image';
 import { CardBadges, CardUser, CardReports } from './card-parts';
 
@@ -20,37 +19,12 @@ export default class GalleryCard extends Component {
         onDelete: PropTypes.func.isRequired,
         owner: PropTypes.object,
         caption: PropTypes.string,
+        opacity: PropTypes.number,
     };
 
-    state = {
+    static defaultProps = {
         opacity: 1,
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.id !== this.props.id) {
-            this.setState({ opacity: 1 });
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.timer) clearTimeout(this.timer);
-    }
-
-    /**
-     * onRemove - uses setTimeout to to set opacity style
-     * on moderation-card which has a transition: opacity 0.3s
-     *
-     * @param {function} cb callback
-     */
-    onRemove = (cb) => {
-        this.setState({ opacity: 1 }, () => {
-            this.timer = setTimeout(() => {
-                this.setState({ opacity: 0 }, () => {
-                    this.timer = setTimeout(cb, 300);
-                });
-            }, 300);
-        });
-    }
+    };
 
     render() {
         const {
@@ -66,11 +40,12 @@ export default class GalleryCard extends Component {
             onSkip,
             onToggleGraphic,
             onDelete,
+            opacity,
         } = this.props;
 
         return (
             <div
-                style={{ opacity: this.state.opacity }}
+                style={{ opacity }}
                 className="moderation-card moderation-card__gallery"
             >
                 <CardBadges strings={report_reasons} />
@@ -101,7 +76,7 @@ export default class GalleryCard extends Component {
                 <div className="moderation-card__actions-ctr">
                     <span
                         className="moderation-card__action"
-                        onClick={partial(this.onRemove, onSkip)}
+                        onClick={onSkip}
                     >
                         skip
                     </span>
@@ -124,7 +99,7 @@ export default class GalleryCard extends Component {
                         }
                         <span
                             className="moderation-card__action"
-                            onClick={partial(this.onRemove, onDelete)}
+                            onClick={onDelete}
                         >
                             delete
                         </span>
