@@ -541,7 +541,7 @@ class Edit extends React.Component {
 
                     <ChipInput
                         model="stories"
-                        attr="title"
+                        queryAttr="title"
                         items={stories}
                         updateItems={(s) => this.setState({ stories: s })}
                         className="dialog-row"
@@ -550,7 +550,7 @@ class Edit extends React.Component {
 
                     <ChipInput
                         model="articles"
-                        attr="title"
+                        queryAttr="title"
                         items={articles}
                         updateItems={(a) => this.setState({ articles: a })}
                         className="dialog-row"

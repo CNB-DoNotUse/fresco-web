@@ -19,7 +19,7 @@ const Template = ({
 
         <ChipInput
             model="assignments"
-            attr="title"
+            queryAttr="title"
             placeholder="Assignment"
             items={(assignment && [assignment]) || []}
             updateItems={onChangeAssignments(onChange)}

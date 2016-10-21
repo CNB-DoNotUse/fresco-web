@@ -17,7 +17,8 @@ class ChipInput extends React.Component {
         items: PropTypes.array.isRequired,
         updateItems: PropTypes.func.isRequired,
         model: PropTypes.string.isRequired,
-        attr: PropTypes.string,
+        queryAttr: PropTypes.string,
+        altAttr: PropTypes.string,
         initMaterial: PropTypes.bool,
         className: PropTypes.string,
         autocomplete: PropTypes.bool,
@@ -71,13 +72,12 @@ class ChipInput extends React.Component {
 
     onChangeQuery = (e) => {
         const query = e.target.value;
-        this.setState({ query });
         if (!query.length === 0) {
             this.setState({ suggestions: [] });
             return;
         }
 
-        this.getSuggestions();
+        this.setState({ query }, this.getSuggestions);
     }
 
     /**
@@ -87,7 +87,7 @@ class ChipInput extends React.Component {
      * @param {object} e key up event
      */
     onKeyUpQuery = (e) => {
-        const { attr, createNew } = this.props;
+        const { queryAttr, createNew } = this.props;
         const { suggestions, query } = this.state;
 
         // Enter is pressed, and query is present
@@ -96,28 +96,29 @@ class ChipInput extends React.Component {
                 s.title.toLowerCase() === query.toLowerCase()
             ));
 
-            if (!attr) {
+            if (!queryAttr) {
                 this.addItem(query);
                 return;
             }
 
             if (!matched && !createNew) return;
 
-            this.addItem(matched || { [attr]: query, new: true });
+            this.addItem(matched || { [queryAttr]: query, new: true });
         }
     }
 
     getSuggestions = () => {
         const {
             model,
-            attr,
+            queryAttr,
+            altAttr,
             autocomplete,
             idLookup,
             search,
             params,
         } = this.props;
         const { query } = this.state;
-        if (![autocomplete, search, attr].some(b => !!b)) return;
+        if (!autocomplete && !search) return;
 
         if (search) {
             api
@@ -133,7 +134,7 @@ class ChipInput extends React.Component {
         }
 
         api
-        .get('search', { [`${model}[a][${attr}]`]: query, ...params })
+        .get('search', { [`${model}[a][${queryAttr}]`]: query, ...params })
         .then(res => {
             if (get(res, `${model}.results.length`)) {
                 this.setState({ suggestions: res[model].results });
@@ -159,10 +160,10 @@ class ChipInput extends React.Component {
      * Adds story element, return if story exists in prop stories.
      */
     addItem(newItem) {
-        let { items, attr, multiple } = this.props;
+        let { items, queryAttr, multiple } = this.props;
 
-        if (attr) {
-            if (!newItem[attr] || !newItem[attr].length) return;
+        if (queryAttr) {
+            if (!newItem[queryAttr] || !newItem[queryAttr].length) return;
             if (newItem.id && items.some((i) => (i.id === newItem.id))) return;
         } else if (items.some(i => i === newItem)) return;
 
@@ -177,21 +178,21 @@ class ChipInput extends React.Component {
      */
     onClickTag(item) {
         if (this.props.disabled) return;
-        let { items, attr } = this.props;
+        let { items, queryAttr } = this.props;
 
-        if (!attr) items = items.filter(i => i !== item);
+        if (!queryAttr) items = items.filter(i => i !== item);
         else if (item.id) items = reject(items, { id: item.id });
-        else items = reject(items, { [attr]: item[attr] });
+        else items = reject(items, { [queryAttr]: item[queryAttr] });
 
         this.props.updateItems(items);
     }
 
     render() {
         const { query, suggestions } = this.state;
-        const { items, attr, model, placeholder, disabled } = this.props;
+        const { items, queryAttr, altAttr, model, placeholder, disabled } = this.props;
         const itemsJSX = items.map((item, i) => (
             <Tag
-                text={attr ? item[attr] : item}
+                text={queryAttr ? item[queryAttr] : item}
                 plus={false}
                 onClick={() => this.onClickTag(item)}
                 key={i}
@@ -200,13 +201,13 @@ class ChipInput extends React.Component {
 
         const suggestionsJSX = suggestions.map((suggestion, i) => (
             <li onClick={() => this.addItem(suggestion)} key={i}>
-                {suggestion[attr]}
+                {suggestion[queryAttr] || suggestion[altAttr]}
             </li>
         ));
 
         return (
             <div
-                ref={r => this.area = r}
+                ref={r => { this.area = r; }}
                 className={`split chips form-group-default ${this.props.className}`}
             >
                 <div className="split-cell">

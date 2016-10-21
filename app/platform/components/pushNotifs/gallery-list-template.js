@@ -16,7 +16,7 @@ const Template = ({
 
         <ChipInput
             model="galleries"
-            attr="id"
+            queryAttr="id"
             items={galleries}
             updateItems={onChangeGalleries(onChange)}
             className="push-notifs__chip-input chips--autocomplete"
