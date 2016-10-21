@@ -29,7 +29,8 @@ class PublicGallerySlider extends React.Component {
         if (!posts.length) return <div />;
 
         const slickContent = posts.map((p, i) => {
-            const avatar = get(p, 'owner.avatar', null) !== null ? post.owner.avatar : utils.defaultSmallAvatar;
+            console.log(p);
+            const avatar = get(p, 'owner.avatar', null) !== null ? p.owner.avatar : utils.defaultSmallAvatar;
             const address = get(p, 'address', 'No location');
             const timestampText = moment(p.created_at).format('MMM Do YYYY, h:mm:ss a');
             const image = utils.formatImg(p.image, 'large');
