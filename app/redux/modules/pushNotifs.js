@@ -180,7 +180,7 @@ const verifyRecommendUpdate = ({ data, state }) => {
         if (!data.story && !data.gallery) return resolve();
         if (data.gallery) {
             if (state.get('story')) {
-                return reject('Can only recommend one of gallery or story');
+                return reject('Can only recommend one gallery or story');
             }
 
             verifyGallery(data.gallery)
