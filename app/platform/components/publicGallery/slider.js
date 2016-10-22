@@ -29,7 +29,6 @@ class PublicGallerySlider extends React.Component {
         if (!posts.length) return <div />;
 
         const slickContent = posts.map((p, i) => {
-            console.log(p);
             const avatar = get(p, 'owner.avatar', null) !== null ? p.owner.avatar : utils.defaultSmallAvatar;
             const address = get(p, 'address', 'No location');
             const timestampText = moment(p.created_at).format('MMM Do YYYY, h:mm:ss a');
@@ -48,6 +47,7 @@ class PublicGallerySlider extends React.Component {
                             autoplay={i === 0}
                             video={p.stream}
                             ref={`video${i}`}
+                            clickToPause={true}
                             userAgent={userAgent}
                             hideControls
                         />
@@ -77,7 +77,7 @@ class PublicGallerySlider extends React.Component {
         const settings = {
             dots: posts.length > 1,
             arrows: true,
-            infinite: false,
+            draggable: true,
             beforeChange: this.beforeChange,
             afterChange: this.afterChange,
             nextArrow: <NextArrow />,

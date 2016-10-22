@@ -1,37 +1,60 @@
 @import "../global/_global.scss";
 @import "../global/fresco-slick.scss";
 
+
+.gallery-detail-wrap {
+
+}
+
 /**
  * Slick Wrapper Parent
  */
 
 $mobileHeight:280px;
 
-.gallery-slick-wrap{
-	background:#1E1E1D;
-	overflow:hidden;
+$desktopLargeWidth:1024px;
+$desktopLargeHeight:768px;
+
+$desktopWidth:832px;
+$desktopHeight:624px;
+
+$mobileAndTabletWidth:100%;
+$mobileAndTabletHeight:576px;
+
+$mobileHeight:240px;
+
+.slick, .slick-slide, .gallery-info-wrap {
+	max-width:$desktopLargeWidth;
+	height:$desktopLargeHeight;
+
+	@include desktop {
+		max-width: $desktopWidth;
+		height:$desktopHeight;
+	}
+
+	@include mobileAndTablet{
+		height:$mobileAndTabletHeight;
+		width:$mobileAndTabletWidth;
+	}
 
 	@include mobile{
 		height:$mobileHeight;
 	}
+}
+
+.gallery-info-wrap {
+	height:auto !important;
+}
+
+.gallery-slick-wrap{
+	background:#1E1E1D;
+	overflow:hidden;
 
 	/* Slick Component */
 	.slick{
-		width:71%;
 		display:block;
 		margin:0 auto;
 
-		@include desktop{
-			width:83%;
-		}
-
-		@include mobileAndTablet{
-			width:100%;
-		}
-
-		@include mobile{
-			height:$mobileHeight;
-		}
 
 		/* Individual Slick Slide */
 		.slick-slide{
@@ -40,18 +63,11 @@ $mobileHeight:280px;
 			background-position:center;
 			background-size:auto 100%;
 			overflow:hidden;
-	     	height:768px;
-	     	min-height:650px;
-
-	     	@include tablet{
-	     		height:576px;
-	     	}
 
 			@include mobile{
 				background-position:center;
 				background-size:auto 100%;
 				min-height:initial;
-		     	height:$mobileHeight;
 			}
 
 			.fresco-video-wrap, .video-js{
@@ -110,23 +126,28 @@ $mobileHeight:280px;
  */
 .gallery-info-wrap{
 	background:#F2F2ED;
+	margin: 0 auto;
 
 	.gallery-info{
-		width:70%;
-		margin:24px auto 0;
+		margin:24px auto;
 		overflow:hidden;
-		padding: 0px 10px;
+		padding: 0px 5px;
 
-		@include mobileAndTablet{
-			width:93%;
+		@include mobileAndTablet {
+			padding:0 16px;
 		}
 
 		.column{
 			width:100%;
 			float:left;
 
-			@include desktop{
-				width:50%;
+			@include desktop-large{
+				width: calc(40% - 32px);
+
+				&.column__caption {
+					width: calc(60% - 32px);
+					margin-right: 32px;
+				}
 			}
 
 			.caption{
@@ -134,11 +155,6 @@ $mobileHeight:280px;
 				line-height:20px;
 				font-size: 16px;
 				font-family:$roboto;
-
-				@include mobileAndTablet {
-					margin-right:20px;
-				}
-
 				@include rgbaWithHex(color, 0, 0, 0, 0.87, #292929);
 			}
 
@@ -149,7 +165,7 @@ $mobileHeight:280px;
 					margin:48px auto 24px;
 				}
 
-				@include desktop {
+				@include desktop-large {
 					&:first-of-type {
 						margin:0px auto 0;
 					}

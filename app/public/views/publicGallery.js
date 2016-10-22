@@ -20,14 +20,14 @@ const PublicGallery = ({ gallery, userAgent }) => {
                 </a>
             </div>
 
-            <div className="page">
+            <div className="gallery-detail-wrap page">
                 <div className="gallery-slick-wrap">
                     <PublicGallerySlider posts={gallery.posts} userAgent={userAgent} />
                 </div>
 
                 <div className="gallery-info-wrap">
                     <div className="gallery-info">
-                        <div className="column">
+                        <div className="column column__caption">
                             <p className="caption">{gallery.caption}</p>
                         </div>
 

@@ -24,6 +24,7 @@ class FrescoVideo extends React.Component {
         autoplay: false,
         muted: false,
         video: '',
+        clickToPause: true
     }
 
     state = {
@@ -101,7 +102,7 @@ class FrescoVideo extends React.Component {
     }
 
     render() {
-        const { video, type, width, thumbnail, autoplay, hideControls } = this.props;
+        const { video, type, width, thumbnail, autoplay, hideControls, clickToPause } = this.props;
         const { id, isStream } = this.state;
 
         // Video.JS if an m3u8 file
@@ -115,7 +116,7 @@ class FrescoVideo extends React.Component {
                     className={className}
                     autoPlay={autoplay}
                     controls={!hideControls}
-                    onClick={this.toggleVideo}
+                    onClick={clickToPause ? this.toggleVideo : null}
                 >
                     <source
                         src={video}
