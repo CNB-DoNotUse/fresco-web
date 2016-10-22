@@ -16,7 +16,7 @@ class ChipInput extends React.Component {
     static propTypes = {
         items: PropTypes.array.isRequired,
         updateItems: PropTypes.func.isRequired,
-        modifyChipText: PropTypes.func,
+        modifyText: PropTypes.func,
         model: PropTypes.string.isRequired,
         queryAttr: PropTypes.string,
         altAttr: PropTypes.string,
@@ -42,6 +42,7 @@ class ChipInput extends React.Component {
         createNew: true,
         multiple: true,
         disabled: false,
+        modifyText(t) { return t; },
     };
 
     state = {
@@ -88,7 +89,7 @@ class ChipInput extends React.Component {
      * @param {object} e key up event
      */
     onKeyUpQuery = (e) => {
-        const { queryAttr, createNew } = this.props;
+        const { queryAttr, altAttr, createNew } = this.props;
         const { suggestions, query } = this.state;
 
         // Enter is pressed, and query is present
@@ -99,11 +100,14 @@ class ChipInput extends React.Component {
             }
 
             const matched = suggestions.find((s) => (
-                s.title.toLowerCase() === query.toLowerCase()
+                s[queryAttr] && (s[queryAttr].toLowerCase() === query.toLowerCase())
             )) || suggestions[0];
 
-            if (matched) this.addItem(matched);
-            else if (createNew) this.addItem({ [queryAttr]: query, new: true });
+            if (createNew && altAttr) {
+                this.addItem({ [queryAttr]: query, [altAttr]: query, new: true });
+            } else if (createNew) {
+                this.addItem({ [queryAttr]: query, new: true });
+            } else if (matched) this.addItem(matched);
         }
     }
 
@@ -111,7 +115,6 @@ class ChipInput extends React.Component {
         const {
             model,
             queryAttr,
-            altAttr,
             autocomplete,
             idLookup,
             search,
@@ -187,6 +190,10 @@ class ChipInput extends React.Component {
         this.props.updateItems(items);
     }
 
+    modifyText(text) {
+        return this.props.modifyText(text);
+    }
+
     renderSuggestion(suggestion, key) {
         const { queryAttr, altAttr } = this.props;
         let text;
@@ -217,20 +224,20 @@ class ChipInput extends React.Component {
 
     render() {
         const { query, suggestions } = this.state;
-        const { items, queryAttr, altAttr, model, placeholder, disabled, modifyChipText } = this.props;
+        const { items, queryAttr, altAttr, model, placeholder, disabled } = this.props;
         const itemsJSX = items.map((item, i) => {
             const text = queryAttr ? item[queryAttr] : item;
 
             return (
                 <Tag
-                    text={modifyChipText ? modifyChipText(text) : text}
+                    text={this.modifyText(text)}
                     altText={altAttr ? item[altAttr] : ''}
                     plus={false}
                     onClick={() => this.onClickTag(item)}
                     key={i}
-                    hasAlt={altAttr === true}
+                    hasAlt={!!altAttr}
                 />
-            )
+            );
         });
 
         const suggestionsJSX = suggestions.map((suggestion, i) => (

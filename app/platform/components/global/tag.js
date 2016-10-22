@@ -13,7 +13,7 @@ const Tag = ({ plus, onClick, text, altText, hasAlt }) => (
             {hasAlt ? (
                 <span className="chip md-type-body1 tag">
                     <span className="chip__primary-text">
-                        <span>{text}</span>
+                        {`${text} `}
                         <span className="chip__alt-text">
                             {altText}
                         </span>

@@ -534,9 +534,7 @@ class Edit extends React.Component {
                     <ChipInput
                         model="tags"
                         items={tags}
-                        modifyChipText={(t) => {
-                            return `#${t}`
-                        }}
+                        modifyText={(t) => `#${t}`}
                         updateItems={(t) => this.setState({ tags: t })}
                         autocomplete={false}
                         className="dialog-row"
@@ -548,17 +546,19 @@ class Edit extends React.Component {
                         items={stories}
                         updateItems={(s) => this.setState({ stories: s })}
                         className="dialog-row"
+                        createNew={false}
                         autocomplete
                     />
 
                     <ChipInput
                         model="articles"
-                        queryAttr="title"
+                        queryAttr="link"
+                        altAttr="title"
                         items={articles}
                         updateItems={(a) => this.setState({ articles: a })}
                         className="dialog-row"
-                        createNew={false}
-                        autocomplete
+                        createNew
+                        search
                     />
 
                     <div className="dialog-row">
