@@ -3,15 +3,9 @@
     "COOKIE_SUFFIX": false,
 
     "API_URL": "https://api.fresconews.com",
+    "API_TOKEN" : "RzJLY3Y3bFptR1QxaDJHcGlVdWF4bW0ySWU0WjBsakx1eDhjdTlhTWpmMHU4dHgyT3NBN2pIQmdFN2NFOnczTGNPMFVWOGtqelhWM0ZpQklldUFQYWloTVpGTWFQT1hYQjRJWlpWdFhNclFTWVo2enFqWlJIZ3RRMjNYNHpJbjE0eXlDWEdybks3a1pzNHFQaFlwa3FTZ0JsVFlxNFpFeW45dlhEVlBqaDVSTkhlaWNrdVBLdG9jcnlvMjhyT29hWmE2bVFIbzNuUjVrYW5TOTZYRU82R1JVWkRtQXpsS3c1clRZMzl0Z3RNM0R4UTN5MXQ0V3pTS0prTjM=",
     "WEB_ROOT" : "https://fresconews.com",
-    "API_VERSION": "v1",
-    "STRIPE_SECRET": "sk_live_QKR23bLkkyHQPF75o6EE36Rp",
-    "STRIPE_PUBLISHABLE": "pk_live_saSjliYnCbjFwYfriTzhTQiO",
-    "PARSE_APPid": "XYBXNv2HLxukd5JGbE6bK4vXy1JlwUVjeTKQEzZU",
-    "PARSE_API_KEY": "tpZzCZJCTCk5IJNmNsEMSgxT3nqT4TCjOsZltI0C",
-
-    "PRICE_VIDEO": 7500,
-    "PRICE_IMAGE": 3000,
+    "API_VERSION": "v2",
 
     "REDIS": {
       "SESSIONS": "localhost"
