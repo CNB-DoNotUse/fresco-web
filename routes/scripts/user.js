@@ -70,7 +70,7 @@ router.post('/reset', (req, res, next) => {
         const { body } = response;
 
         //Set req.body for middleware
-        req.body.username = body.username
+        req.body.username = body.username || body.email
 
         User.login(req, res, next);
     })
