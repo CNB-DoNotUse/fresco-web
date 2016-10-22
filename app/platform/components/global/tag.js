@@ -13,7 +13,7 @@ const Tag = ({ plus, onClick, text, altText, hasAlt }) => (
             {hasAlt ? (
                 <span className="chip md-type-body1 tag">
                     <span className="chip__primary-text">
-                        {`${text} `}
+                        <span>{text}</span>
                         <span className="chip__alt-text">
                             {altText}
                         </span>
@@ -37,6 +37,7 @@ Tag.propTypes = {
 Tag.defaultProps = {
     text: '',
     plus: false,
+    hasAlt: false
 };
 
 export default Tag;

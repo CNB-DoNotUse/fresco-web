@@ -534,6 +534,10 @@ class Edit extends React.Component {
                     <ChipInput
                         model="tags"
                         items={tags}
+                        modifyChipText={(t) => {
+                            console.log(t);
+                            return `#${t}`
+                        }}
                         updateItems={(t) => this.setState({ tags: t })}
                         autocomplete={false}
                         className="dialog-row"

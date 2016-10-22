@@ -16,6 +16,7 @@ class ChipInput extends React.Component {
     static propTypes = {
         items: PropTypes.array.isRequired,
         updateItems: PropTypes.func.isRequired,
+        modifyChipText: PropTypes.func,
         model: PropTypes.string.isRequired,
         queryAttr: PropTypes.string,
         altAttr: PropTypes.string,
@@ -202,35 +203,37 @@ class ChipInput extends React.Component {
         } else if (suggestion[altAttr]) {
             text = (
                 <span className="chips__primary-text" >
-                    suggestion[altAttr]
+                    {suggestion[altAttr]}
                 </span>
             );
         }
 
         return (
             <li onClick={() => this.addItem(suggestion)} key={key}>
-                {text}
+                {suggestion}
             </li>
         );
     }
 
     render() {
         const { query, suggestions } = this.state;
-        const { items, queryAttr, altAttr, model, placeholder, disabled } = this.props;
-        const itemsJSX = items.map((item, i) => (
-            <Tag
-                text={queryAttr ? item[queryAttr] : item}
-                altText={altAttr ? item[altAttr] : ''}
-                plus={false}
-                onClick={() => this.onClickTag(item)}
-                key={i}
-                hasAlt
-            />
-        ));
+        const { items, queryAttr, altAttr, model, placeholder, disabled, modifyChipText } = this.props;
+        const itemsJSX = items.map((item, i) => {
+            const text = queryAttr ? item[queryAttr] : item;
 
-        const suggestionsJSX = suggestions.map((suggestion, i) => (
-            this.renderSuggestion(suggestion, i)
-        ));
+            return (
+                <Tag
+                    text={modifyChipText ? modifyChipText(text) : text}
+                    altText={altAttr ? item[altAttr] : ''}
+                    plus={false}
+                    onClick={() => this.onClickTag(item)}
+                    key={i}
+                    hasAlt={altAttr === true}
+                />
+            )
+        });
+
+        const suggestionsJSX = suggestions.map((suggestion, i) => this.renderSuggestion);
 
         return (
             <div
@@ -265,4 +268,3 @@ class ChipInput extends React.Component {
 }
 
 export default ChipInput;
-
