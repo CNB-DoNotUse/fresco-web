@@ -37,7 +37,7 @@ export default class Info extends React.Component {
 
                     <div className="footer">
                         <button
-                            className="cancel"
+                            className="btn"
                             onClick={onClose}
                         >
                            Close

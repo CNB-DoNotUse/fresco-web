@@ -127,12 +127,11 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
         height: 52px;
         font-size: 14px;
         font-weight: 500;
-        padding:24px 0;
+        padding: 12px;
         @include vertical-align-flex;
 
         button {
             border:none;
-            padding:0 24px;
             background:none;
             text-transform:uppercase;
             color:#0047bb;
