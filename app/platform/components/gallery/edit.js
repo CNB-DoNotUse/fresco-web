@@ -535,7 +535,6 @@ class Edit extends React.Component {
                         model="tags"
                         items={tags}
                         modifyChipText={(t) => {
-                            console.log(t);
                             return `#${t}`
                         }}
                         updateItems={(t) => this.setState({ tags: t })}

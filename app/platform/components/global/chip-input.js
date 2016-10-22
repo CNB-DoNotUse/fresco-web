@@ -203,14 +203,14 @@ class ChipInput extends React.Component {
         } else if (suggestion[altAttr]) {
             text = (
                 <span className="chips__primary-text" >
-                    {suggestion[altAttr]}
+                    suggestion[altAttr]
                 </span>
             );
         }
 
         return (
             <li onClick={() => this.addItem(suggestion)} key={key}>
-                {suggestion}
+                {text}
             </li>
         );
     }
@@ -233,7 +233,9 @@ class ChipInput extends React.Component {
             )
         });
 
-        const suggestionsJSX = suggestions.map((suggestion, i) => this.renderSuggestion);
+        const suggestionsJSX = suggestions.map((suggestion, i) => (
+            this.renderSuggestion(suggestion, i)
+        ));
 
         return (
             <div

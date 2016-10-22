@@ -203,7 +203,7 @@ class Search extends Component {
         const params = {
             q: this.props.query,
             limit: 10,
-            rating: this.state.verifiedToggle ? utils.RATINGS.VERIFIED : null,
+            rating: this.state.verifiedToggle ? 1 : null,
             ...this.geoParams()
         };
 
