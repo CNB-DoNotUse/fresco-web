@@ -67,8 +67,6 @@ class Info extends React.Component {
         let relatedStoriesJSX = '';
         let relatedArticlesJSX = '';
 
-        console.log(relatedGalleries);
-
         if (relatedStory.galleries.length > 0) {
             const galleries = relatedStory.galleries.map((g, i) => (
                 <li key={i} className="gallery">
@@ -107,11 +105,13 @@ class Info extends React.Component {
         if (gallery.articles.length > 0) {
             const articles = gallery.articles.map((article, i) => (
                 <li key={i} className="article">
-                    <img
-                        className="favicon"
-                        src={utils.getFaviconForUrl(article.link)}
-                        role="presentation"
-                    />
+                    <a href={article.link}>
+                        <img
+                            className="favicon"
+                            src={utils.getFaviconForUrl(article.link)}
+                            role="presentation"
+                        />
+                    </a>
                     <a href={article.link}>{article.title || article.link}</a>
                 </li>
             ));

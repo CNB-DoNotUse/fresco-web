@@ -29,18 +29,6 @@ const PublicGallery = ({ gallery, userAgent }) => {
                     <div className="gallery-info">
                         <div className="column">
                             <p className="caption">{gallery.caption}</p>
-
-                            <br />
-
-                            <a
-                                href="https://itunes.apple.com/app/apple-store/id872040692?pt=83522801&ct=GalleryPostBtn&mt=8"
-                                target="_blank"
-                            >
-                                <img
-                                    src="https://d1dw1p6sgigznj.cloudfront.net/images/store-apple.svg"
-                                    role="presentation"
-                                />
-                            </a>
                         </div>
 
                         <PublicGalleryInfo gallery={gallery} />
