@@ -285,18 +285,19 @@ class Edit extends React.Component {
             posts_new,
             posts_add,
             posts_remove,
-            ...this.getPostsUpdateParams(),
+            ...this.getPostsUpdateParams(posts_remove),
         };
     }
 
-    getPostsUpdateParams() {
+    getPostsUpdateParams(removed = []) {
         const { gallery } = this.props;
+        const posts = gallery.posts.filter(p => removed.includes(p));
         const { address, location, rating } = this.state;
         // check to see if should save locations on all gallery's posts
         const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
         let params;
         if (sameLocation) {
-            params = gallery.posts.map(p => {
+            params = posts.map(p => {
                 return Object.assign(
                     pickBy({
                         id: p.id,
@@ -305,7 +306,7 @@ class Edit extends React.Component {
                 );
             });
         } else {
-            params = gallery.posts.map(p => {
+            params = posts.map(p => {
                 return Object.assign(
                     pickBy({
                         id: p.id,
