@@ -167,6 +167,7 @@ class Purchases extends React.Component {
             outlet_ids: map(this.state.outlets, 'id'),
             user_ids: map(this.state.users, 'id'),
             limit: 20,
+            sortBy: 'created_at',
             last
         }
 
