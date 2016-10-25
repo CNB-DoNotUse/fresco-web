@@ -208,14 +208,14 @@ class Edit extends React.Component {
             is_nsfw,
         } = this.state;
         const { gallery } = this.props;
-        const posts = this.getPostsFormData();
+        const postsFormData = this.getPostsFormData();
 
         if (caption.length === 0) {
             $.snackbar({ content: 'A gallery must have a caption' });
             return null;
         }
 
-        if (!posts) {
+        if (!postsFormData) {
             $.snackbar({ content: 'Galleries must have at least 1 post' });
             return null;
         }
@@ -225,15 +225,15 @@ class Edit extends React.Component {
             caption,
             external_account_name,
             external_source,
-            ...this.getPostsFormData(),
+            ...postsFormData,
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             rating,
             is_nsfw,
         };
 
-        //Make sure our params are valid types and don't have any empty arrays
-        //Special exception if the param is a `bool`
+        // Make sure our params are valid types and don't have any empty arrays
+        // Special exception if the param is a `bool`
         return pickBy(params, v => {
             return (typeof(v) === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
         });
@@ -291,7 +291,7 @@ class Edit extends React.Component {
 
     getPostsUpdateParams(removed = []) {
         const { gallery } = this.props;
-        const posts = gallery.posts.filter(p => removed.includes(p));
+        const posts = gallery.posts.filter(p => !removed.includes(p));
         const { address, location, rating } = this.state;
         // check to see if should save locations on all gallery's posts
         const sameLocation = isEqual(this.getInitialLocationData(), { address, location });

@@ -227,15 +227,16 @@ function mapStateToProps(state) {
         .getIn(['users', 'entities'])
         .filter(g => userFilters.size === 0 ||
             g.get('report_reasons').some(r => userFilters.includes(r)));
+    const activeTab = moderation.getIn(['ui', 'activeTab']);
 
     return {
-        activeTab: moderation.getIn(['ui', 'activeTab']),
         alert: moderation.getIn(['ui', 'alert']),
         reports: moderation.get('reports'),
         suspendedUsers: moderation.getIn(['suspendedUsers', 'entities']),
         suspendedDialog: moderation.getIn(['ui', 'suspendedDialog']),
         infoDialog: moderation.getIn(['ui', 'infoDialog']),
-        requestDeleted: moderation.getIn(['ui', 'requestDeleted']),
+        requestDeleted: moderation.getIn([activeTab, 'requestDeleted']),
+        activeTab,
         galleries,
         users,
         filters,
