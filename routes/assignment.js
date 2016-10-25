@@ -1,64 +1,44 @@
-var express    = require('express'),
-    config     = require('../lib/config'),
-    Purchases  = require('../lib/purchases'),
-    request    = require('request'),
-    router     = express.Router(),
-    global     = require('../lib/global');
+const express = require('express');
+const config = require('../lib/config');
+const router = express.Router();
+const api = require('../lib/api');
 
 router.get('/:id', (req, res, next) => {
-
-  request({
-      url: config.API_URL + '/v1/assignment/get?id=' + req.params.id,
-      json: true
-    }, doWithGetAssignments);
-
-  function doWithGetAssignments(err, response, body) {
-    var error = new Error(config.ERR_PAGE_MESSAGES[404]);
-    error.status = 404;
-
-    if (err || !body || body.err){
-        return next(error);
+    let user;
+    let token;
+    if (req.session) {
+        token = req.session.token;
+        user = req.session.user;
     }
 
-    let notFoundUserID = true, 
-        outlet = body.data.outlet;
+    api.request({
+        token,
+        url: `/assignment/${req.params.id}`,
+    }).then(response => {
+        const assignment = response.body;
+        const props = { user, assignment };
 
-    for(let outlet of body.data.outlets) {
-        if(outlet.id == req.session.user.outlet.id) {
-            outlet = outlet;
-            notFoundUserID = false;
-            break;
+        if (user.permissions.includes('view-all-assignments')
+            || assignment.outlets.some((o) => (o.id === user.outlet.id))) {
+            res.render('app', {
+                props: JSON.stringify(props),
+                config,
+                alerts: req.alerts,
+                title: assignment.title,
+                page: 'assignmentDetail',
+            });
+        } else {
+            next({
+                message: 'Not authorized to view assignment.',
+                status: 401,
+            });
         }
-    }
-
-    //Check if the assignment is the user's and they're not a CM or Admin
-    if(notFoundUserID && req.session.user.rank <= global.RANKS.CONTENT_MANAGER){
-        return next(error);
-    }
-
-    // Don't show info of other outlets
-    delete body.data.outlets;
-
-    // Use the outlet of the requesting outlet, or the default one if a CM.
-    body.data.outlet = outlet;
-
-    var assignment = body.data,
-        title = assignment.title,
-        props = {
-          user: req.session.user,
-          purchases: Purchases.mapPurchases(req.session),
-          title: title,
-          assignment: assignment
-        };
-
-    res.render('app', {
-      props: JSON.stringify(props),
-      config: config,
-      alerts: req.alerts,
-      page: 'assignmentDetail',
-      title : title
-    });
-  }
+    }).catch(() => (
+        next({
+            message: 'Assignment not found!',
+            status: 404,
+        })
+    ));
 });
 
 module.exports = router;

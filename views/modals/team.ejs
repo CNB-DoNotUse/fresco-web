@@ -48,14 +48,27 @@
 					'title'  : 'Sr. Software Engineer - Full Stack'
 				},
 				{
-					'avatar' : 'nolan.jpg',
-					'name'   : 'Nolan Leung',
-					'title'  : 'Software Engineer - Full Stack'
+					'name'   : 'Ryan McVeety',
+					'title'  : 'Software Engineer — Full Stack',
+					'avatar' : 'ryan.jpg'
+				},
+				{
+					'name'   : 'Evan Rubinton',
+					'title'  : 'Sr. Software Engineer - Front-end'
 				},
 				{
 					'name'   : 'Philip Bernstein',
 					'title'  : 'Sr. iOS Engineer',
 					'avatar' : 'phil.jpg'
+				},
+				{
+					'name'   : 'Blaze Gawlik',
+					'title'  : 'Android Engineer',
+					'avatar' : 'blaze.jpg'
+				},
+				{
+					'name'   : 'Maurice Wu',
+					'title'  : 'Android & iOS Engineer'
 				},
 				{
 					'avatar' : 'omar.jpg',
@@ -64,13 +77,8 @@
 					'handle' : 'elfanek'
 				},
 				{
-					'name'   : 'Ryan McVeety',
-					'title'  : 'Android Engineer'
-				},
-				{
-					'avatar' : 'tim.jpg',
-					'name'   : 'Tim Reynolds',
-					'title'  : 'Android Engineer'
+					'name'   : 'Arthur Araujo',
+					'title'  : 'iOS Intern'
 				}
 			]
 		},
@@ -84,9 +92,14 @@
 					'handle' : '_bookofmorgan_'
 				},
 				{
-					'avatar' : 'trushaa.jpg',
-					'name'   : 'Trushaa Castelino',
+					'avatar' : 'scott.jpg',
+					'name'   : 'Scott Mullen',
 					'title'  : 'Managing Editor'
+				},
+				{
+					'avatar' : 'grace.jpg',
+					'name'   : 'Grace Plihal',
+					'title'  : 'Social Media Manager'
 				},
 				{
 					'avatar' : 'alberto.jpg',
@@ -94,33 +107,13 @@
 					'title'  : 'Video Editor'
 				},
 				{
-					'avatar' : 'grace.jpg',
-					'name'   : 'Grace Plihal',
-					'title'  : 'Content Manager'
-				},
-				{
 					'avatar' : 'ash.jpg',
 					'name'   : 'Ashley Meyer',
 					'title'  : 'Content Manager'
 				},
 				{
-					'avatar' : 'nityasya.jpg',
-					'name'   : 'Nityasya Belapurkar',
-					'title'  : 'Content Manager'
-				},
-				{
-					'avatar' : 'francesca.jpg',
-					'name'   : 'Francesca Duncan',
-					'title'  : 'Content Manager'
-				},
-				{
 					'avatar' : 'tosi.jpg',
 					'name'   : 'Tosi Solomon',
-					'title'  : 'Content Manager'
-				},
-				{
-					'avatar' : 'christina.jpg',
-					'name'   : 'Christina Williams',
 					'title'  : 'Content Manager'
 				},
 				{
@@ -139,17 +132,8 @@
 					'title'  : 'Content Manager'
 				},
 				{
-					'avatar' : 'scott.jpg',
-					'name'   : 'Scott Mullen',
-					'title'  : 'Content Manager'
-				},
-				{
 					'avatar' : 'kelsie.jpg',
 					'name'   : 'Kelsie Blazer',
-					'title'  : 'Content Manager'
-				},
-				{
-					'name'   : 'Nicolette Acosta',
 					'title'  : 'Content Manager'
 				},
 				{
@@ -173,20 +157,26 @@
 					'title'  : 'Head of Community and Marketing'
 				},
 				{
-					'avatar' : 'froelich.jpg',
 					'name'   : 'Chris Froelich',
-					'title'  : 'Account Manager'
+					'title'  : 'Account Manager',
+					'avatar' : 'froelich.jpg'
 				},
 				{
 					'name'   : 'Gustavo Leal',
+					'title'  : 'Account Manager',
+					'avatar' : 'gustavo.jpg'
+				},
+				{
+					'avatar' : 'francesca.jpg',
+					'name'   : 'Francesca Duncan',
 					'title'  : 'Account Manager'
-				}
+				},
 			]
 		}
 	];
 %>
 
-<div class="modal team xs <%- active %>" id="_team">
+<div class="modal modal_window team xs <%- active %>" id="_team">
 	<div class="header">
 		<h2>Team</h2>
 		
@@ -195,7 +185,7 @@
 	
 	<div class="body">
 		<div class="banner">
-			<img src="<%= global.CDN %>/index/team.jpg">
+			<img src="<%= utils.CDN %>/index/team.jpg">
 		</div>
 
 		<div class="team-rows">
@@ -257,7 +247,7 @@
 			var image = listItems[k].getElementsByTagName('img')[0];
 
 			if(typeof(image) !== 'undefined')
-				image.src = '<%= global.CDN %>/index/team/' + member.avatar;
+				image.src = '<%= utils.CDN %>/index/team/' + member.avatar;
 		}
 	}
 </script>

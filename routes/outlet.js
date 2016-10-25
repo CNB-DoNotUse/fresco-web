@@ -1,178 +1,96 @@
-var express     = require('express'),
-    config      = require('../lib/config'),
-    Purchases   = require('../lib/purchases'),
-    global      = require('../lib/global'),
-    request     = require('request-json'),
-    config      = require('../lib/config'),
-    client      = request.createClient(config.API_URL),
-    router      = express.Router();
-
-/** //
-
-     Description : Outlet Specific Routes ~ prefix /outlet/endpoint
-
-// **/
-
-/**
- * Outlet page for currently logged in user
- */
-
- router.get('/', (req, res, next) => {
-
-  //Check if the user has an outlet
-  if (!req.session.user.outlet)
-    return res.redirect(config.DASH_HOME);
-
-  //Retrieve outlet object from api
-  client.get('/v1/outlet/get?id=' + req.session.user.outlet.id, doWithOutletInfo);
-
-     function doWithOutletInfo(error, response, body) {
-        if (error || !body || body.err){
-           return next({
-             message: config.ERR_PAGE_MESSAGES[500],
-             status: 500
-           });
-        }
-
-        var purchases = null;
-
-        if (req.session.user.outlet.verified) {
-
-           purchases = Purchases.mapPurchases();
-
-        } else {
-           req.alerts.push(req.session.user.id == req.session.user.outlet.owner ?
-             'This outlet is in demo mode. We’ll be in touch shortly to verify your account.' :
-             'This outlet is in demo mode. Purchases and downloads are currently disabled.');
-        }
-
-        var title = 'Outlet',
-            props = {
-                title: title,
-                user: req.session.user,
-                outlet: body.data,
-                purchases: purchases
-            };
-
-        res.render('app', {
-           title: title,
-           alerts: req.alerts,
-           props: JSON.stringify(props),
-           page: 'outlet'
-        });
-    }
-});
-
-// /**
-//  * Displays galleries for a specified outlet
-//  */
-
-// router.get('/:id/galleries', (req, res, next) => {
-
-//   client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);
-
-//   function doWithOutletInfo(error, response, body) {
-
-//     if (error || !body || body.err){
-//       var err = new Error(config.ERR_PAGE_MESSAGES[404]);
-//       err.status = 403;
-//       return next(err);
-//     }
-
-//     var purchases = null;
-
-//     if (req.session && req.session.user && req.session.user.outlet && req.session.user.outlet.verified) {
-//       purchases = req.session.user.outlet.purchases || [];
-//       purchases = purchases.map((purchase) => {
-//         return purchase.post;
-//       });
-//     }
-
-//     res.render('outlet-galleries', {
-//       user: req.session.user,
-//       title: 'Outlet',
-//       outlet: body.data,
-//       purchases: purchases,
-//       config: config,
-//       alerts: req.alerts,
-//       page: 'outlet-galleries'
-//     });
-
-//   }
-
-// });
+const express = require('express');
+const config = require('../lib/config');
+const router = express.Router();
+const API = require('../lib/api');
 
 /**
  *  Outlet settings page for current logged in user
  */
-
 router.get('/settings', (req, res, next) => {
+    const { user, token } = req.session;
+    const { outlet } = user;
 
-  if (!req.session.user.outlet){
-
-    var err = new Error('No outlet found!');
-    err.status = 500;
-    return next(err);
-
-  }
-  client.get('/v1/outlet/get?id=' + req.session.user.outlet.id, doWithOutletInfo);
-
-  function doWithOutletInfo(error, response, body) {
-
-    if (error || !body || body.err){
-      var err = new Error('Unauthorized');
-      err.status = 403;
-      return next(err);
+    if (!outlet) {
+        return next({
+            message: 'You\'re not part of an outlet!',
+            status: 500,
+        });
     }
 
-    var title = 'Outlet Settings',
-        props = {
-          title: title,
-          user: req.session.user,
-          outlet: body.data,
-          stripePublishableKey: config.STRIPE_PUBLISHABLE
+    //Chain promises for two API calls
+    Promise.all([
+        API.request({
+            url: '/outlet/me',
+            method: 'GET',
+            token,
+        }),
+        API.request({
+            url: '/outlet/payment',
+            method: 'GET',
+            token
+        })
+    ])
+    .then(responses => { 
+        const outlet = responses[0].body;
+        const payment = responses[1].body;
+        const title = 'Outlet Settings';
+        const props = {
+            title,
+            user,
+            outlet,
+            payment,
+            stripePublishableKey: config.STRIPE_PUBLISHABLE,
         };
 
-    res.render('app', {
-      title: title,
-      page: 'outletSettings',
-      alerts: req.alerts,
-      remoteScripts: ['https://js.stripe.com/v2/'],
-      props: JSON.stringify(props)
+        return res.render('app', {
+            title,
+            page: 'outletSettings',
+            alerts: req.alerts,
+            remoteScripts: ['https://js.stripe.com/v2/'],
+            props: JSON.stringify(props),
+        });
+    })
+    .catch(error => {
+        next({
+            message: 'Outlet not found!',
+            status: error.status || 500,
+        });
     });
-  }
 });
 
-// /**
-//  *  Outlet page for specified outlet
-//  */
+/**
+ * Outlet page for currently logged in user or for passed outlet
+ * @description
+ */
+router.get('/:id?', (req, res, next) => {
+    const { user } = req.session;
 
-//  router.get('/:id', (req, res, next) => {
-//   if (!req.session || !req.session.user || req.session.user.rank < global.RANKS.CONTENT_MANAGER)
-//     return res.redirect('/outlet');
+    // Make request for full outlet object
+    API.request({
+        method: 'GET',
+        url: `/outlet/${req.params.id || 'me'}`,
+        token: req.session.token
+    })
+    .then(response => {
+        const outlet = response.body;
+        const title = outlet.title;
+        const props = JSON.stringify({ user, title, outlet });
 
-//   client.get('/v1/outlet/get?id=' + req.params.id, doWithOutletInfo);
+        return res.render('app', {
+            title,
+            props,
+            alerts: req.alerts,
+            page: 'outlet',
+        });
+    })
+    .catch(error => {
+        next({
+            message: 'It seems like we couldn\'t locate your outlet!',
+            status: error.status || 500,
+            stack: error.stack
+        })
+    });
+});
 
-//   function doWithOutletInfo(error, response, body) {
-//     if (error || !body || body.err){
-
-//       var err = new Error(config.ERR_PAGE_MESSAGES[404]);
-//       err.status = 404;
-//       return next(err);
-
-//     }
-
-//     res.render('outlet', {
-//       user: req.session.user,
-//       title: 'Outlet',
-//       outlet: body.data,
-//       purchases:  Purchases.mapPurchases(),
-//       config: config,
-//       alerts: req.alerts
-//     });
-
-//   }
-
-// });
 
 module.exports = router;

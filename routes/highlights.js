@@ -10,20 +10,20 @@ var express   = require('express'),
  */
 
 router.get('/', (req, res, next) => {
-
-  var title = 'Highlights',
-      props = {
+    const title = 'Highlights';
+    const props = {
         user : req.session.user,
         title: title
-      };
+    };
 
-  res.render('app', {
-    alerts: req.alerts,
-    page : 'highlights',
-    title : title,
-    props : JSON.stringify(props)
-  });
+    console.log('Highlights');
 
+    res.render('app', {
+        alerts: req.alerts,
+        page : 'highlights',
+        title : title,
+        props : JSON.stringify(props)
+    });
 });
 
 module.exports = router;

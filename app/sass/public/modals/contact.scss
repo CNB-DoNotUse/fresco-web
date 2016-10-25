@@ -1,0 +1,31 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+/**
+ * Contact `Get in Touch` Modal
+ */
+.contact{
+	max-width:320px;
+	overflow:hidden;
+	margin-top:5%;
+
+	@include mobile{
+		margin:0 auto;
+		max-width:100%;
+	}
+
+	textarea{
+		@include mobile{
+			height:180px;
+		}
+	}
+
+	.header{
+		border:none;
+	}
+}

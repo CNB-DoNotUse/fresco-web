@@ -1,0 +1,80 @@
+/* Sass Document */
+
+/*------------------------------------------------------------------------------------
+
+Copyright 2016 Fresco News, Inc. All Rights Reserved.
+
+-------------------------------------------------------------------------------------*/
+
+/**
+ * Root SASS file for public index page and the modals it displays
+ */
+@import "~slick-carousel/slick/slick.scss";
+@import "~slick-carousel/slick/slick-theme.scss";
+@import "~node-waves/dist/waves.css";
+@import "../global/_global";
+@import "../global/fresco-slick";
+@import "landing";
+@import "modals/modal";
+@import "modals/team";
+@import "modals/account";
+@import "modals/press";
+@import "modals/contact";
+@import "modals/faq";
+@import "modals/legal";
+@import "modals/forgot";
+@import "modals/join";
+@import "modals/reset";
+
+.wrapper{
+	height:auto;
+	overflow:hidden;
+
+	&.full {
+		min-height: 100%;
+	}
+}
+
+/**
+ * Landing Wrapper, contains the top part of the landing page
+ */
+.landing-wrap.index{
+    height:100%;
+    margin-top:40vh;
+
+    @include mobile{
+        margin-top:20vh;
+    }
+}
+
+/*
+    Generic text banner, shows up on reset password page
+ */
+.text-banner {      
+    text-shadow:0 2px 2px #000;     
+    text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);      
+    text-align: center;     
+    color: #FFF;        
+    font-weight: 700;       
+    line-height:1.5em;      
+    font-size:30px;     
+    max-width:500px;        
+    margin:0 auto;      
+    position:absolute;      
+    top:40%;        
+    left:0; right:0;        
+}
+
+.nav{
+    @include transform(translate3d(0, -128px, 0));
+}
+
+ @keyframes animateBackground {
+ 	from { 
+ 		@include transform(scale(2, 2) translate(0px, 46px));
+ 	}
+ 	to   { 
+ 		@include transform( scale(1,1) translate(0px, 0px));
+ 	}
+}
+

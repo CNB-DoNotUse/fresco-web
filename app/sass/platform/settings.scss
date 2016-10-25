@@ -117,6 +117,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		.changed{
 			color:#0047BB;
 		}
+		
+		.disabled {
+		    color: rgba(0,0,0, 0.54);
+		}
 	}
 
 	.footer {
@@ -145,7 +149,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 /**
  * Meta Card Info for outlet
  */
-
 .settings-info{
 	height:240px;
 
@@ -164,6 +167,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		}
 
 		textarea{
+			overflow:auto;
 			height:96px;
 		}
 
@@ -181,6 +185,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		height:240px;
 		background-repeat:no-repeat;
 		background-size: cover;
+		background-position: center;
 
 		.overlay{
 			width:100%;

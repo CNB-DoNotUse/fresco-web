@@ -1,9 +1,7 @@
 /* Sass Document */
 
 /*-----------------------------------------------------------------------------------
-
 Copyright 2016 Fresco News, Inc. All Rights Reserved.
-
 -------------------------------------------------------------------------------------*/
 
 @import '../global/mixins';
@@ -33,14 +31,14 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
             line-height:24px;
         }
 
-        input{
-            background-color: transparent;
-            color: #000;
-            @include rgba(0, 0, 0, 0.87);
-            border:none;
-            margin:0 auto 10px;
-            border-bottom:1px solid #DDD;
-
+        .kml {
+            float:none !important;
+            margin:0 0 10px !important;
+            display:block;
+        }
+        
+        input[type="file"]{
+            display:none;
         }
 
         .map{

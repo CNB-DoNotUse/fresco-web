@@ -5,11 +5,6 @@ img {
 	}
 }
 
-.u-15 {
-  top: -15px !important;
-  position: relative;
-}
-
 .m-t-15 {
   margin-top: 15px;
 }
@@ -86,13 +81,6 @@ img {
   width: 100%;
 }
 
-.btn, .btn-flat {
-  &:hover {
-    background: #ffffff !important;
-    // box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.1);
-  }
-}
-
 .tab-control {
   .btn, .btn-flat {
     &:hover {
@@ -100,6 +88,13 @@ img {
       box-shadow: none;
     }
   }
+}
+
+// override bootstrap style
+.btn {
+    &:focus, &:active:focus{
+        outline: 0;
+    }
 }
 
 /**
@@ -132,4 +127,14 @@ li.radio > label {
 
 .list > li.header:hover {
 	background: inherit !important;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
 }

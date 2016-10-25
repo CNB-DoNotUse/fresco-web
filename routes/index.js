@@ -1,16 +1,8 @@
-var express       = require('express'),
-    router        = express.Router(),
-    requestJson   = require('request-json'),
-    config        = require('../lib/config'),
-    routes        = require('../lib/routes'),
-    api           = requestJson.createClient(config.API_URL),
-    superagent    = require('superagent');
-
-/** //
-
-Description : Client Index Routes
-
-// **/
+const express       = require('express');
+const router        = express.Router();
+const config        = require('../lib/config');
+const routes        = require('../lib/routes');
+const API  = require('../lib/api');
 
 /**
  * Root index for the landing page
@@ -25,7 +17,7 @@ router.get('/:modal?', (req, res, next) => {
             return next();
         }
     }
-    //Redirect to dashboard home if the user is already logged in, instead of the landing page 
+    //Redirect to dashboard home if the user is already logged in, instead of the landing page
     else if(req.session.user !== null && typeof(req.session.user) !== 'undefined') {
         return res.redirect('/highlights');
     }
@@ -35,107 +27,29 @@ router.get('/:modal?', (req, res, next) => {
         loggedIn: req.session.user ? true : false,
         modal: req.params.modal,
         modals: routes.modals,
-        aliases: routes.aliases,
-        alerts: req.alerts
-    });
-});
-
-/**
- * Parse Account Management iFrame
- */
-router.get('/manage', (req, res, next) => {
-    res.render('parse/manage');
-});
-
-router.get('/parse/reset', (req, res, next) => {
-    res.render('parse/reset', {
-        page: 'index',
-        alerts: req.alerts
-    });
-});
-
-router.get('/parse/reset-success', (req, res, next) => {
-    res.render('parse/reset-success', {
-        page: 'index',
-        alerts: req.alerts
+        aliases: routes.aliases
     });
 });
 
 /**
  * Outlet join page
  */
-router.get('/join', (req, res, next) => {
-    if (!req.query.o)
-        return res.redirect('/');
-
-    superagent
-    .get(config.API_URL + '/v1/outlet/invite/get?token=' + req.query.o)
-    .set('Accept', 'application/json')
-    .end(function(err, response){
-        if (err || !response || response.body.err) {
-
-          req.session.alerts = ['This invitation couldn\'t be loaded. Please contact support@fresconews.com'];
-
-          return req.session.save(() => {
-            res.redirect('/');
-            res.end();
-          });
-        }
-
-        var body = response.body;
-
-        return res.render('index', {
-            page: 'index',
-            user: body.data.user,
-            email: body.data.email,
-            token: body.data.token,
-            title: body.data.outlet_title,
-            alerts: req.alerts,
-            modal: 'join',
-            aliases: routes.aliases,
-            modals: routes.modals.concat('join'),
-        });
-    });
-});
-
-/**
- * Email verify page
- */
-router.get('/verify', (req, res, next) => {
-
-    //Check if the user is logged in already
-    if (req.session && req.session.user && req.session.user.verified) {
-        req.session.alerts = ['Your email is already verified!'];
-
-        return req.session.save(() => {
-            res.redirect('/');
-            res.end();
-        });
+router.get('/join/:token', (req, res, next) => {
+    if (!req.params.token) {
+        return next();
     }
 
-    //Check if the verification link query is valid
-    if (!req.query.t) {
-        req.session.alerts = ['Invalid verification link'];
-        return req.session.save(() => {
-            res.redirect('/');
-            res.end();
-        });
-    }
+    // Make request for invite
+    API.request({
+        method: 'GET',
+        url: `/outlet/invite/${req.params.token}`,
+        token: req.session.token
+    })
+    .then((response) => {
+        const { body } = response;
 
-    api.post('/v1/user/verify', { token: req.query.t}, doAfterUserVerify);
-
-    function doAfterUserVerify(error, response, body) {
-        if (error || !body) {
-          req.session.alerts = ['Error connecting to server'];
-          
-          return req.session.save(() => {
-            res.redirect('/');
-            res.end();
-          });
-        }
-
-        if (body.err) {
-            req.session.alerts = [config.resolveError(body.err)];
+        if(body.status === 'used') {
+            req.session.alerts = ['This invitation has already been used!'];
 
             return req.session.save(() => {
                 res.redirect('/');
@@ -143,17 +57,69 @@ router.get('/verify', (req, res, next) => {
             });
         }
 
-        req.session.alerts = ['Your email has been verified!'];
-
-        if (req.session && req.session.user) {
-            req.session.user = body.data;
-        }
+        return res.render('index', {
+            page: 'index',
+            invite: body,
+            modal: 'join',
+            aliases: routes.aliases,
+            modals: routes.modals.concat('join'),
+        });
+    })
+    .catch(error => {
+        req.session.alerts = ['This invitation could not be loaded! Please contact support@fresconews.com for assistance.'];
 
         return req.session.save(() => {
             res.redirect('/');
             res.end();
         });
+    });
+});
+
+/**
+ * Reset password success page
+ */
+router.get('/reset/success', (req, res, next) => {
+    return res.render('index', {
+        page: 'index',
+        modal: 'reset-success',
+        aliases: routes.aliases,
+        modals: routes.modals
+    });
+});
+
+/**
+ * Reset password page
+ */
+router.get('/reset/:token', (req, res, next) => {
+    if (!req.params.token) {
+        return next();
     }
+
+    // Make request for invite
+    API.request({
+        method: 'GET',
+        url: `/auth/reset/${req.params.token}`
+    })
+    .then((response) => {
+        const { body } = response;
+
+        return res.render('index', {
+            page: 'index',
+            modal: 'reset',
+            token: req.params.token,
+            hasOutlet: body.outlet !== undefined,
+            aliases: routes.aliases,
+            modals: routes.modals.concat('reset'),
+        });
+    })
+    .catch(error => {
+        req.session.alerts = ['That password reset link is invalid!'];
+
+        return req.session.save(() => {
+            res.redirect('/');
+            res.end();
+        });
+    });
 });
 
 module.exports = router;

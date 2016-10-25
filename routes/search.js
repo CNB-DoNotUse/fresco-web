@@ -1,18 +1,16 @@
-var express = require('express'),
-    Purchases = require('../lib/purchases'),
-    router = express.Router();
+const express = require('express');
+const router = express.Router();
 
+/**
+ * Search page
+ * @description Can take query, tags or location in the url
+ */
 router.get('/', (req, res, next) => {
-    var purchases = null;
+    const query = req.query.q || '';
+    const tags = req.query.tags || [];
+    let location = {};
 
-    if (req.session.user.outlet && req.session.user.outlet.verified) {
-        purchases = Purchases.mapPurchases(req.session);
-    }
-
-    var query = req.query.q || '',
-        tags = req.query.tags || [],
-        location = {};
-
+    //Check if location is vali
     if (!isNaN(req.query.lat) && !isNaN(req.query.lon) && !isNaN(req.query.radius)){
         location = {
             coordinates: {
@@ -23,13 +21,12 @@ router.get('/', (req, res, next) => {
         };
     }
 
-    var props = {
+    const props = {
         user: req.session.user,
-        location: location,
-        tags: tags,
-        purchases: purchases,
-        query: query
-    }
+        location,
+        tags,
+        query
+    };
 
     res.render('app', {
         title: 'Search',

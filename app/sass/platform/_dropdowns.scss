@@ -9,7 +9,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 /**
  * Dropdown Element
  */
-
 $radius:2px;
 $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 
@@ -86,7 +85,6 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 		padding:0;
 		background:#FFF;
 		@include box-shadow($dropShadow);
-
 		border-bottom-right-radius:$radius;
 		border-bottom-left-radius:$radius;
 
@@ -126,7 +124,6 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 /**
  * Styles for location dropdown
  */
-
 .location-dropdown{
 	.mdi-settings, .mdi-playlist-plus{
 		display:none;
@@ -175,13 +172,12 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 /**
  * Styles for location search dropdown
  */
-
 .location-search-dropdown{
 	&.active{
 		width:320px;
 
 		.dropdown-body{
-		    padding:20px 24px 8px;
+		    padding:0 24px 8px;
 		}
 	}
 }
@@ -189,15 +185,15 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 /**
  * Styles for tag dropdown
  */
-
 .tags-dropdown{
 	&.active{
 		width:280px;
 
 		.dropdown-body{
 			width: 280px;
-		    padding:17px 24px 8px;
-		    max-height:500px;
+		    padding:0px 24px 8px;
+		    max-height:350%;
+		    max-height:60vh;
 		    overflow:auto;
 		}
 	}

@@ -1,0 +1,33 @@
+@import '../global/colors';
+
+.push-notifs__tab {
+    position: relative;
+    top: 64px;
+    overflow-y: scroll;
+    padding-bottom: 100px !important;
+    height: calc(100% - 64px) !important;
+}
+
+.push-notifs__checkbox {
+    margin-bottom: 20px;
+
+    .checkbox-material {
+        margin-right: 10px;
+    }
+}
+
+.push-notifs__users {
+    margin-bottom: 40px;
+}
+
+.push-notifs__chip-input{
+    &:last-child {
+        margin-bottom: 40px;
+    }
+}
+
+.push-notifs__send{
+    background-color: $fresco-blue !important;
+    padding: 0 8px;
+    height: 36px;
+}

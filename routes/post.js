@@ -1,79 +1,60 @@
-var express    = require('express'),
-    config     = require('../lib/config'),
-    Purchases  = require('../lib/purchases'),
-    request    = require('request-json'),
-    api        = require('../lib/api'),
-    router     = express.Router();
-
-/** //
-
-  Description : Post Specific Routes ~ prefix /gallery/~
-
-// **/
+const express = require('express');
+const config = require('../lib/config');
+const api = require('../lib/api');
+const router = express.Router();
 
 /**
+ * Description : Post Specific Routes ~ prefix /gallery/~
  * Post Detail Page
  * @param Post ID
  */
-
 router.get('/:id', (req, res, next) => {
-
-    var post = {},
-        title = '',
-        gallery = {},
-        purchases = [],
-        verifier = '';
+    let post;
+    let gallery;
+    let title = '';
+    let verifier;
 
     const token = req.session.token;
 
-    //Make request for post
-    const postPromise = api.request({
+    // Make request for post
+    api.request({
         token,
-        url: '/post/' + req.params.id,
+        url: `/post/${req.params.id}`,
     }).then(response => {
-        post = response.body;
-        gallery = post.gallery;
+        post = response.body || {};
+        return api.request({
+            token,
+            url: `/gallery/${response.body.parent_id}`,
+        });
+    }).then(response => {
+        gallery = response.body || {};
         if (post.owner) {
-            title += 'Post by ' + post.owner.full_name;
+            title += 'Post by ' + (post.owner.full_name || post.owner.username);
         } else if (post.curator) {
             title += 'Imported by ' + post.curator.full_name;
-        } else {
-            title = post.byline;
         }
 
-      const curatorId = post.curator_id;
-
-      if (!curatorId) return render();
-
-      return api.request({ token, url: '/user/' + curatorId }).then(user => {
-        verifier = user.full_name;
-        return render();
-      });
-    }).catch(e => {
-        console.log(e)
-        return req.session.save(() => {
-            res.redirect(req.headers.Referer || config.DASH_HOME);
-        });
-    });
-
-    function render() {
-        var props = {
-            user: req.session.user,
-            post: post,
-            gallery: gallery,
-            verifier: verifier,
-            title: title,
-            purchases: Purchases.mapPurchases(req.session)
-        };
+        verifier = post.curator ? post.curator.full_name : '';
 
         res.render('app', {
-            props: JSON.stringify(props),
-            title: title,
-            config: config,
+            props: JSON.stringify({
+                gallery,
+                post,
+                title,
+                verifier,
+                user: req.session.user,
+            }),
             alerts: req.alerts,
             page: 'postDetail',
         });
-    }
+
+    }).catch(error => {
+        next({
+            message: error.status === 404 ? 'Post not found!' : 'Unable to load post!',
+            status: error.status,
+            stack: error.stack
+        });
+    });
 });
 
 module.exports = router;

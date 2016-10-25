@@ -1,26 +1,31 @@
-var config        = require('./lib/config'),
-    head          = require('./lib/head'),
-    global        = require('./lib/global'),
-    routes        = require('./lib/routes'),
-    API           = require('./lib/api'),
-    User          = require('./lib/user'),
-    express       = require('express'),
-    compression   = require('compression'),
-    path          = require('path'),
-    favicon       = require('serve-favicon'),
-    morgan        = require('morgan'),
-    session       = require('express-session'),
-    redis         = require('redis'),
-    RedisStore    = require('connect-redis')(session),
-    cookieParser  = require('cookie-parser'),
-    bodyParser    = require('body-parser'),
-    multer        = require('multer'),
-    fs            = require('fs'),
-    app           = express();
+const config        = require('./lib/config');
+const head          = require('./lib/head');
+const utils         = require('./lib/utils');
+const routes        = require('./lib/routes');
+const API           = require('./lib/api');
+const User          = require('./lib/user');
+const redis         = require('./lib/redis');
+const express       = require('express');
+const compression   = require('compression');
+const path          = require('path');
+const morgan        = require('morgan');
+const session       = require('express-session');
+const RedisStore    = require('connect-redis')(session);
+const cookieParser  = require('cookie-parser');
+const bodyParser    = require('body-parser');
+const multer        = require('multer');
+const fs            = require('fs');
+const app           = express();
 
-// If in dev mode, use local redis server as session store
-var rClient = redis.createClient(6379, config.REDIS.SESSIONS, { enable_offline_queue: false });
-var redisConnection = { client: rClient };
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+
+/**
+ * Set up local head and global for all templates
+ */
+app.locals.head = head;
+app.locals.utils = utils;
+app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
+app.locals.section = 'public';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,11 +35,17 @@ app.set('view engine', 'ejs');
 
 //GZIP
 app.use(compression())
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
+//Set up public directory
+app.use(
+    express.static(path.join(__dirname, 'public'), {
+        maxAge: 1000 * 60 * 60 * 24  // 1 day cache
+    })
+);
 
 //Multer
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/')
     },
@@ -43,206 +54,159 @@ var storage = multer.diskStorage({
     }
 });
 
-app.use(
-    multer({ storage: storage }).any()
-);
+app.use(multer({
+    storage: storage
+}).any());
 
 //Cookie parser
-app.use(
-    cookieParser()
-);
+app.use(cookieParser());
 
 //Session config
 app.use(
-  session({
-    name: 'FRSSID' + (config.COOKIE_SUFFIX ? ('_' + config.COOKIE_SUFFIX) : ''),
-    store: new RedisStore(redisConnection),
-    secret: config.SESSION_SECRET,
-    resave: false,
-    rolling: true,
-    saveUninitialized: false,
-    cookie: { httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
-    unset: 'destroy'
-  })
-);
-
-//Set up public direc.
-app.use(
-  express.static(path.join(__dirname, 'public'), {
-    maxAge: 1000 * 60 * 60 * 2
-  }) // 2 hour cache
+    session({
+        name: 'FRSSID' + (config.COOKIE_SUFFIX ? ('_' + config.COOKIE_SUFFIX) : ''),
+        store: new RedisStore({ client: redis }),
+        secret: config.SESSION_SECRET,
+        resave: false,
+        rolling: true,
+        saveUninitialized: false,
+        cookie: { httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
+        unset: 'destroy'
+    })
 );
 
 /**
- * Verifications check
+ * Alert & Verifications check
  */
-app.use((req, res, next)=> {
-    req.alerts = [];
+app.use((req, res, next) => {
+    res.locals.alerts = [];
 
-    if (req.session && req.session.user && !req.session.user.verified){
-        req.alerts.push('\
-            <p>Your email hasn\'t been verified.\
-              <br>Please click on the link sent to your inbox to verify your email!\
-            </p>\
-            <div>\
-                <a href=\\"/scripts/user/verify/resend\\">RESEND EMAIL</a>\
-            </div>'
-        );
-    }
+    // if (req.session && req.session.user && !req.session.user.verified){
+    //     res.locals.alerts.push('\
+    //         <p>Your email hasn\'t been verified.\
+    //             <br>Please click on the link sent to your inbox to verify your email!\
+    //         </p>\
+    //         <a href="/scripts/user/verify/resend">RESEND EMAIL</a>'
+    //     );
+    // }
 
     if (req.session && req.session.alerts){
-        req.alerts = req.alerts.concat(req.session.alerts);
-        req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
-        delete req.session.alerts;
-        return req.session.save(() => {
-            next();
-        });
-    }
+        res.locals.alerts = res.locals.alerts.concat(req.session.alerts);
 
-    req.alerts = req.alerts.length > 0 ? [req.alerts.pop()] : [];
+        delete req.session.alerts;
+        req.session.save(null);
+    }
 
     next();
 });
 
-/**
- * Set up local head and global for all templates
- */
-app.locals.head = head;
-app.locals.global = global;
-app.locals.alerts = [];
 
 /**
  * Route session check
  */
 app.use((req, res, next) => {
-    var path = req.path.slice(1).split('/')[0],
-        now = Date.now();
+    const route = req.path.slice(1).split('/')[0];
+    const now = Date.now();
 
-    //Check if not a platform route, then send onwwards
-    if(routes.platform.indexOf(path) == -1) {
+    // Check if not a platform route, then send onwwards
+    if (routes.platform.indexOf(route) === -1) {
         return next();
     }
 
-    //Check if there is no sessioned user
+    // Check if there is no sessioned user
     if (!req.session.user) {
-        return res.redirect('/account?next=' + req.url);
+        req.session.redirect = req.url;
+        return req.session.save((error) => {
+            res.redirect('/account');
+        });
     }
 
-    //Check if the session hasn't expired
-    if (!req.session.user.TTL || req.session.user.TTL - now > 0){
+    // Check if the session hasn't expired
+    if (req.session.user.TTL && req.session.user.TTL - now > 0) {
         return next();
     }
 
+    //Session has expired, so refresh the user
     User.refresh(req, res, next);
 });
 
-/**
- * Route config for public facing pages
- */
+
+//Route config for public facing pag
 app.use((req, res, next) => {
-    if(!req.fresco)
-        req.fresco = {};
-
     res.locals.section = 'public';
-
     next();
 });
 
-/**
- * Loop through all public routes
- */
-for (var i = 0; i < routes.public.length; i++) {
-    var routePrefix = routes.public[i] == 'index' ? '' : routes.public[i],
-        route = require('./routes/' + routes.public[i]);
-
+//Loop through all public routes
+for(routePrefix of routes.public) {
+    routePrefix = routePrefix == 'index' ? '' : routePrefix;
+    const route = require(`./routes/${routePrefix}`);
     app.use('/' + routePrefix , route);
 }
 
-/**
- * Loop through all script routes
- */
-for (var i = 0; i < routes.scripts.length; i++) {
-    var routePrefix = routes.scripts[i],
-        route = require('./routes/scripts/' + routePrefix);
-
-    app.use('/scripts' , route);
+//Loop through all script routes
+for(routePrefix of routes.scripts) {
+    const route = require(`./routes/scripts/${routePrefix}`);
+    app.use(`/scripts/${routePrefix}` , route);
 }
 
-
-/**
- * Route config for private (platform) facing pages
- */
+//Route config for private (platform) facing pages
 app.use((req, res, next) => {
-    if(!req.fresco)
-        req.fresco = {};
-
     res.locals.section = 'platform';
     next();
 });
 
-
-/**
- * Loop through all platform routes
- */
-for (var i = 0; i < routes.platform.length; i++) {
-    var routePrefix = routes.platform[i] ,
-        route = require('./routes/' + routePrefix);
-
+//Loop through all platform routes
+for(routePrefix of routes.platform) {
+    const route = require(`./routes/${routePrefix}`);
     app.use('/' + routePrefix , route);
 }
 
 /**
  * Webservery proxy for forwarding to the api
  */
-// Special case for assignment create
-// TODO: Remove this
-app.post('/api/assignment/create', (req, res, next) => {
-  req.body.outlet = req.session.user && req.session.user.outlet ? req.session.user.outlet.id : undefined;
-  next();
-});
-
 app.use('/api', API.proxy);
 
 /**
  * Error Midleware
  */
-
 app.use((error, req, res, next) => {
-    var err = {};
-    err.status = typeof(error.status) == 'undefined' ? 500 : error.status;
-
-    console.log(err);
-
     // Development error handle will print stacktrace
-    console.log('Method:', req.method,
-                '\nPath:', req.path,
-                '\nBody', req.body,
-                '\nError: ', error.message + '\n');
+    if(config.DEV) {
+        console.log('Method:', req.method,
+                    '\nPath:', req.path,
+                    '\nBody', req.body,
+                    '\nError: ', error.message + '\n');
+    }
 
-    err.message = error.message || config.ERR_PAGE_MESSAGES[err.status || 500];
+    //Define new error to send to `res`
+    const err = {
+        message: error.message || config.ERR_PAGE_MESSAGES[error.status || 500],
+        status: typeof(error.status) == 'undefined' ? 500 : error.status,
+        stack: config.DEV ? error.stack : null
+    }
 
     //Respond with code
     res.status(err.status);
 
-    if(req.accepts('html')) {
-      return res.render('error', {
-          err: err,
-          section: 'public',
-          page: 'error'
-      });
+    if (req.accepts('html')) {
+        return res.render('error', {
+            err,
+            section: 'public',
+            page: 'error'
+        });
     }
 
     if(req.accepts('json')) {
-      return res.send({ error: 'Server Error' });
+        return res.send(err);
     }
 
-    res.type('txt').send('Server Error');
+    res.type('txt').send(err);
 });
 
 /**
  * 404 Handler Catch
  */
-
 app.use((req, res, next) => {
     //Respond with code
     res.status(404);
@@ -250,13 +214,13 @@ app.use((req, res, next) => {
     // respond with html page
     if (req.accepts('html')) {
         return res.render('error', {
-                 err: {
-                     message: 'Page not found!',
-                     status: 404
-                 },
-                 section: 'public',
-                 page: 'error'
-              });
+           err: {
+               message: 'Page not found!',
+               status: 404
+           },
+           section: 'public',
+           page: 'error'
+        });
     }
 
     // respond with json
@@ -266,8 +230,11 @@ app.use((req, res, next) => {
 
     // default to plain-text. send()
     res.type('txt').send('Page not found!');
+});
 
- });
+app.on('unhandledRejection', (err) => {
+    console.log('unhandledRejection', err);
+});
 
 
 module.exports = app;

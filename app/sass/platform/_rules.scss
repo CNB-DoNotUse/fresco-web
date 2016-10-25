@@ -5,15 +5,20 @@ body {
 	color: $color-black-1;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 400;
-	overflow-y: hidden;
 }
 a {
 	font-weight: 500;
 	color: #000;
 }
-a:hover {
+a:hover, a:focus {
 	color: #000;
 	text-decoration: none;
+}
+
+button:focus {outline:none;}
+
+.toggler{
+    cursor: pointer;
 }
 .toggler:hover {
 	cursor: hand;
@@ -60,6 +65,14 @@ a:hover {
 	padding:0 !important;
 }
 
+.img-cover-bg {
+	height: 500px;
+    display: block;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .img-avatar {
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
@@ -103,26 +116,13 @@ body > div.wrapper > div > .container-fluid {
 	opacity:1;
 }
 
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 .page {
-
 	opacity:0;
-
-	-webkit-animation:fadeIn linear 1;  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
-	   -moz-animation:fadeIn linear 1;
-		    animation:fadeIn linear 1;
-
-	-webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
-	   -moz-animation-fill-mode:forwards;
-			animation-fill-mode:forwards;
-
-	-webkit-animation-duration:.1s;
-	   -moz-animation-duration:.1s;
-		    animation-duration:.1s;
-
-	-webkit-animation-delay: 0.1s;
-	   -moz-animation-delay: 0.1s;
-		    animation-delay: 0.1s;
-
+    animation:fadeIn linear 1;
+    animation-fill-mode:forwards;
+    animation-duration:.1s;
+    animation-delay: 0.1s;
 }
 
 
@@ -158,15 +158,27 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 }
 
 .checkbox input[type=checkbox]:checked~.check:before, .checkbox input[type=checkbox]:checked~.check{
-  color: #0047bb;
+	color: $fresco-blue;
+
+	.explicit & {
+		color:$color-error;
+	}
 }
 
 .checkbox input[type=checkbox]:checked + .checkbox-material .check, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check {
-	color:#0047bb;
+	color: $fresco-blue;
+
+	.explicit & {
+		color:$color-error;
+	}
 }
 
 .checkbox input[type=checkbox]:checked + .checkbox-material .check:before, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check:before{
-	color:#0047bb;
+	color: $fresco-blue;
+
+	.explicit & {
+		color:$color-error;
+	}
 }
 
 
@@ -200,55 +212,14 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	padding: 8px;
 	font-weight: 500;
 }
-.form-group-default {
 
-	display: inline-block;
-	font-weight: 400;
-	input.form-control,
-	textarea.form-control {
-		background-color: transparent;
-		color:#000;
-		color:rgba(0, 0, 0, 0.87);
-	}
-	.form-control:disabled {
-		border-bottom: none;
-	}
-	.form-control:focus {
-		@include background-image(linear-gradient($color-accent-primary, $color-accent-primary), linear-gradient($color-black-4, $color-black-4));
-	}
-	.hint {
-		color: $color-black-3;
-	}
-	input.form-control:not(.empty) ~ .floating-label,
-	textarea.form-control:not(.empty) ~ .floating-label {
-		color: $color-black-3;
-		white-space: nowrap;
-	}
-	input.form-control:not(.empty):focus ~ .floating-label,
-	textarea.form-control:not(.empty):focus ~ .floating-label {
-		color: $color-accent-primary;
-	}
-	textarea {
-		resize: vertical;
-	}
-	textarea.empty ~ .floating-label {
-		margin-top: -5px;
-	}
-	.form-control:disabled{
-	  border-bottom: none;
-	}
-	.form-control.error {
-		@include background-image(linear-gradient($color-error, $color-error), linear-gradient($color-error, $color-error));
-	}
-	.form-control.success {
-		@include background-image(linear-gradient($color-success, $color-success), linear-gradient($color-success, $color-success));
-	}
-	.form-control.error:not(.empty):focus ~ .floating-label {
-		color: $color-error;
-	}
-	.form-control.success:not(.empty):focus ~ .floating-label {
-		color: $color-success;
-	}
+/**
+ * Boostrap Material UI Override
+ */
+.form-group-default {
+	display:inline-block;
+	font-weight:400;
+
 	.checkbox input[type=checkbox]:checked~.check, .checkbox input[type=checkbox]:checked~.check:before {
 		color: $color-accent-primary;
 	}
@@ -285,18 +256,68 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	}
 }
 
+.form-group {
+	margin:18px 0 0;
+	padding:0;
+
+	.form-control {
+		margin:0;
+		color:#000;
+		font-size:14px;
+		padding:6px 0 0;
+		height:28px;
+	}
+
+	textarea{
+		// height:40px !important;
+		resize:vertical;
+	}
+
+	.help-block {
+		color: rgba(0, 0, 0, 0.26);
+	}
+
+	//Default style
+	.control-label{
+		color: rgba(0,0,0,.26);
+	}
+
+	//Just empty
+	&.is-empty {
+		.control-label{
+			font-size:14px !important;
+			top:-10px !important;
+		}
+	}
+
+	//Empty and not focused
+	&.is-empty, &:not(.is-focused) {
+		.control-label {
+			color: #7e7e7e;
+		}
+	}
+
+	//Empty and focused, just focused, not empty .-.
+	&.is-empty.is-focused, &.is-focused, &:not(.is-empty) {
+		.control-label{
+			font-size: 9px !important;
+			top:-22px !important;
+		}
+	}
+}
+
 // map
 .map-group {
 	height: 100%;
+	width: 100%;
+
 	.form-group-default {
-		@include display(flex);
-		@include flex-direction(row);
-		margin-bottom: 8px;
+		margin-bottom: 22px;
+		width:100%;
+
 		.form-control-wrapper {
 			width: 100%;
-			@include flex(3);
 			+ .form-control-wrapper {
-				@include flex(1);
 				margin-left: 16px;
 				margin-bottom: 8px;
 			}
@@ -305,8 +326,6 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	.map-container {
 		width: 100%;
 		height:250px;
-		margin-bottom: 8px;
-		background-color: $color-shade-2;
 	}
 	.map-container.dispatch{
 		height:100%;
@@ -356,6 +375,8 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	.assignment-callout-image-counter {
 		padding-right: 16px;
 		line-height: 36px;
+		position: relative;
+	    top: -3px;
 	}
 	.assignment-callout-video-counter {
 		line-height: 36px;
@@ -391,7 +412,6 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 			> div {
 				padding: 0 24px;
 				> div.card {
-					max-width: 100%;
 					width: auto;
 					margin-bottom: 24px;
 					> div.card-body {
@@ -419,32 +439,6 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 
 .card-foot-btn {
 	border-radius: 0px 0px 2px 2px;
-}
-
-// related
-.related > div.tabs > div.tab {
-	height: auto;
-	width: 100%;
-	background-color: $color-shade-2;
-	white-space: nowrap;
-	overflow-x: auto;
-	> div.tab-inner {
-		display: table;
-		> a.btn {
-			margin: 0;
-			padding: 0;
-			width: 192px;
-			min-width: 192px;
-			height: 100%;
-			background-color: $color-shade-4;
-			display: table-cell;
-		}
-		> img {
-			display: inline-block;
-			margin-left: -3px;
-			height: 144px;
-		}
-	}
 }
 
 .toggle-edit {
@@ -503,6 +497,7 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 			margin-bottom: 4px;
 			> span {
 				margin-right: 16px;
+				vertical-align: middle;
 			}
 		}
 		> li:last-child {
@@ -618,6 +613,15 @@ div.chips {
 	}
 }
 
+.chip__primary-text {
+    font-weight: 500;
+    opacity: 0.87;
+}
+
+.chip__alt-text {
+    font-weight: 300;
+    opacity: 0.54;
+}
 
 // tabs
 .tab-control {
@@ -631,6 +635,7 @@ div.chips {
 		border-bottom: 1px solid $color-black-4;
 		line-height: 25px;
 		color: $color-black-2 !important;
+        outline: 0;
 	}
 	> button:last-child {
 	}
@@ -639,6 +644,11 @@ div.chips {
 		line-height: 25px;
 		color: $color-black-1 !important;
 	}
+    > .btn {
+        &:active, &:hover, &:focus, &:visited {
+            outline: 0;
+        }
+    }
 }
 .tab-control.full {
 	@include display(flex);
@@ -667,17 +677,44 @@ div.chips {
 div.list {
 	height: 100%;
 	overflow-y: auto;
-	> div.list-item {
+
+	a {
+		text-decoration:none;
+
+		&:focus {
+			color:black;
+		}
+	}
+
+	div.list-item {
 		padding: 16px;
+		position:relative;
+		cursor: 'pointer';
+
 		@include display(flex);
+
 
 		&.assignment-list-item {
 			max-width: 368px;
 			overflow: hidden;
 		}
 
+		&.global {
+			text-decoration:none;
 
-		> div {
+			.flexy {
+				max-width:71%;
+			}
+
+			.mdi-logout-variant {
+				position:absolute;
+				top: 25px;
+			    right: 20px;
+			    opacity: .26;
+			}
+		}
+
+		div {
 			cursor:pointer;
 			margin-right: 16px;
 			padding: 2px 0;
@@ -691,10 +728,11 @@ div.list {
 			> span.icon {
 				line-height: 40px;
 			}
-			> p.md-type-body1,
-			> p.md-type-body2,
-			> p.md-type-caption {
+			p.md-type-body1,
+			p.md-type-body2,
+			p.md-type-caption {
 				line-height: 36px;
+				display:inline-block;
 				margin: 0;
 			}
 			> span,
@@ -704,24 +742,24 @@ div.list {
 				text-overflow: ellipsis;
 			}
 		}
-		> div:last-child {
+		div:last-child {
 			margin-right: 0;
 		}
-		> div.flexy {
+		div.flexy {
 			@include flex(1);
 			max-width: 85%;
 		}
-		> div.peek {
+		div.peek {
 			display: none;
 		}
 	}
-	> div.list-item:hover {
+	div.list-item:hover {
 		background-color: $color-shade-2;
 		> div.peek {
 			display: initial;
 		}
 	}
-	> div.list-item.active {
+	div.list-item.active {
 		background-color: $color-white-2;
 	}
 }
@@ -746,7 +784,7 @@ div.list {
 	opacity: 1;
 }
 .dim.transparent.toggled {
-	opacity: 0.12;
+	opacity: .9;
 }
 
 
@@ -764,7 +802,7 @@ div.list {
 	}
 	> .dialog-head {
 		position: absolute;
-		z-index: 1;
+		z-index: 10;
 		height: 64px;
 		padding: 20px 24px 20px 32px;
 	    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
@@ -773,16 +811,23 @@ div.list {
 			line-height: 24px;
 		}
 		~ .dialog-body {
-			padding-top: 92px;
+			padding-top: 71px;
 		}
 	}
 	> .dialog-body {
 		border-radius: 2px;
-		padding: 24px 32px 88px;
+		padding:24px 32px 88px;
 		max-height: 100%;
 		overflow-y: auto;
+
+		.slick-slider{
+			margin-bottom:20px;
+		}
+
 		> .dialog-col {
 			padding: 0;
+
+
 			+ .dialog-col {
 				padding-left: 32px;
 			}
@@ -799,13 +844,13 @@ div.list {
 	}
 	> .dialog-foot {
 		position: absolute;
-		z-index: 1;
+		z-index: 2;
 		bottom: 0px;
 		height: 64px;
 		padding: 14px 16px;
 		border-top: 1px solid $color-black-4;
 		~ .dialog-body {
-			padding-bottom: 76px;
+			padding-bottom:92px;
 		}
 	}
 }
@@ -858,6 +903,8 @@ div.list {
 			}
 			li {
 				margin: 0 -20px;
+				@include transition(background-color 0.3s ease);
+
 				a {
 					display:block;
 					line-height: 22px;
@@ -867,7 +914,13 @@ div.list {
 				    color: rgb(0, 0, 0);
 					color: rgba(0, 0, 0, 0.87);
 					span {
+						vertical-align: middle;
 						margin-right: 24px;
+
+						~ span {
+							position:relative;
+							top:1px;
+						}
 					}
 				}
 			}
@@ -943,23 +996,28 @@ div.list {
 		float:left;
 	}
 	.spacer {
+        float: left;
 		display: inline-block;
 		@media (max-width: 1199px) {
 			display: none;
 		}
 		width: 24px;
+        height: 100%;
 	}
 	> .tab-control {
+        float: left;
 		display: inline-block;
-		position: relative;
-		top: 9px;
-		margin: 0 24px;
+        margin: 24px 24px 0 24px;
 	}
 	> .form-group-default {
-		margin: 18px 0 0 10px;
+		float:left;
+
+		.form-group {
+			margin: 14px 0 0;
+		}
 	}
 	> h1 {
-		display: inline-block;
+        float: left;
 		display: inline-block;
 		max-width: 50%;
 		white-space: nowrap;
@@ -990,6 +1048,10 @@ div.list {
 
 .panel{
 	@include box-shadow(0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12));
+}
+
+.edit.panel {
+	overflow: hidden;
 }
 
 //drop
@@ -1091,7 +1153,7 @@ div.list {
 	.tiles {
 		margin: 0;
 		padding:0;
-		
+
 		// .story{
 		// 	.flex-row, .flex-col{
 		// 		height:150px
@@ -1393,21 +1455,10 @@ div.admin {
 	}
 }
 
-.admin-edit-pane {
-	.dialog {
-		height: 100%;
-
-		.dialog-row {
-			margin-top: 24px;
-			margin-bottom: 24px;
-		}
-	}
-}
-
 
 // cards
 .cards {
-	position: absolute;
+	position: fixed;
 	top: 64px;
 	right: 0px;
 	width: 384px;
@@ -1425,6 +1476,10 @@ div.admin {
 	> .card-body,
 	> .card-foot {
 		width: 100%;
+
+		img {
+		    width: 100%;
+		}
 	}
 	> .card-head {
 		position: absolute;
@@ -1439,7 +1494,7 @@ div.admin {
 			line-height: 24px;
 		}
 		~ .card-body {
-			padding-top: 56px;
+			padding-top: 45px;
 		}
 		> .tab-control {
 			margin: -16px -20px 0;
@@ -1480,9 +1535,6 @@ div.admin {
 			> .form-control-wrapper {
 				margin-bottom: 24px;
 			}
-		}
-		> .map-group {
-			margin-bottom: 24px;
 		}
 	}
 	> .card-foot {
@@ -1610,7 +1662,7 @@ div.admin {
 // payment
 a.payment {
 	display: block;
-	margin-bottom: 24px;
+	margin:26px 0 14px;
 	font-size: 12px;
 	line-height: 12px;
 	font-weight: normal;
@@ -1700,6 +1752,10 @@ div.time {}
   cursor: pointer;
 }
 
+.mdi.icon.toggler {
+	position: relative;
+}
+
 /** Move to Frick */
 .mdi-close-circle {
   transition: transform 300ms;
@@ -1730,7 +1786,7 @@ div.time {}
 	background-image: linear-gradient(#0047bb, #0047bb), linear-gradient(#d2d2d2, #d2d2d2) !important;
 }
 
-.form-control:focus ~ .floating-label, .form-control.focus ~.floating-label {
+.form-control:focus ~ .control-label, .form-control.focus ~.control-label {
 	color: #0047bb !important;
 }
 
@@ -1739,3 +1795,28 @@ div.time {}
 	bottom: 0;
 	width: 100%;
 }
+
+.form-group.is-focused label{
+    color: $fresco-blue;
+
+    .explicit & {
+    	color:$color-error !important;
+    }
+}
+
+.checkbox input[type=checkbox]:checked + .checkbox-material .check, label.checkbox-inline input[type=checkbox]:checked + .checkbox-material .check {
+    border-color: $fresco-blue;
+
+    .explicit &  {
+    	border-color:$color-error !important;
+    }
+}
+
+.alertify {
+    .dialog {
+        .msg {
+            overflow-wrap: break-word;
+        }
+    }
+}
+

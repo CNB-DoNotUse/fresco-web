@@ -1,23 +1,22 @@
-var express         = require('express'),
-    requestJson     = require('request-json'),
-    superagent      = require('superagent'),
-    config          = require('../../lib/config'),
-    validator       = require('validator'),
-    router          = express.Router(),
-    xml2js          = require("xml2js").parseString,
-    mandrill        = require('mandrill-api/mandrill'),
-    mandrill_client = new mandrill.Mandrill(config.MANDRILL);
+const express         = require('express');
+const requestJson     = require('request-json');
+const superagent      = require('superagent');
+const config          = require('../../lib/config');
+const validator       = require('validator');
+const router          = express.Router();
+const xml2js          = require("xml2js").parseString;
+const mandrill        = require('mandrill-api/mandrill');
+const mandrill_client = new mandrill.Mandrill(config.MANDRILL);
 
 /**
  * Adds a pro user as a lead into zoho
  */
-
 router.post('/pro/signup', (req, res, next) => {
-    var params = {
+    let params = {
         firstname : req.body.firstname,
         lastname  : req.body.lastname,
         zip       : req.body.zip,
-        phone     : req.body.phone,
+        phone     : req.body.phone.replace(/\D/g,''),
         email     : req.body.email,
         time      : req.body.time,
         adid      : typeof(req.body.adid) === 'undefined' ? '' : req.body.adid,
@@ -51,7 +50,7 @@ router.post('/pro/signup', (req, res, next) => {
     }
 
     //Make the XML Data
-    var proUser = 
+    let proUser = 
         '<CustomModule1>' +
             '<row no="1">' +
                 '<FL val="CustomModule1 Name">'+ params.firstname + ' ' + params.lastname + '</FL>' +
@@ -108,7 +107,6 @@ router.post('/pro/signup', (req, res, next) => {
 /**
  * Sends response email to the pro user
  */
-
 function sendEmail(params, callback) {
     mandrill_client.messages.sendTemplate({
         template_name: 'notification-prouser-signup',
@@ -159,7 +157,6 @@ function sendEmail(params, callback) {
 /**
  * Updates a pro user on zoho
  */
-
 router.post('/pro/update', (req, res, next) => { 
     var params = {
             day     : req.body.day,

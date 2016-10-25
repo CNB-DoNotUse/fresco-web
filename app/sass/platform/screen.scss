@@ -1,5 +1,14 @@
-@import "./public/fonts/roboto/roboto";
-@import "./public/vendor/mdi/scss/materialdesignicons.scss";
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~bootstrap-material-design/dist/css/bootstrap-material-design.css";
+@import "~bootstrap-material-design/dist/css/ripples.css";
+@import "~slick-carousel/slick/slick.scss";
+@import "~slick-carousel/slick/slick-theme.scss";
+@import "~alertify.js/dist/css/alertify.css";
+@import "~mdi/scss/materialdesignicons";
+@import "frick.scss";
+@import "../../fonts/roboto.css";
+@import "../../fonts/nota/nota.css";
+@import "../global/snackbar";
 @import "../global/mixins";
 @import "../global/colors";
 @import "./bourbon/_bourbon";
@@ -8,6 +17,8 @@
 @import "_functions";
 @import "_rules";
 @import "_dropdowns";
+@import "user-meta";
+@import "dialogs";
 @import "_inputs";
 @import "_material-typography";
 @import "_global";

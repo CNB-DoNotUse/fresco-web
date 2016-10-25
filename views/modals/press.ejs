@@ -98,7 +98,7 @@
 	"quote"		:"If Fresco had enough users out in the world, news outlets would never be lacking for photos of an incident or an event."
 }]; %>
 
-<div class="modal press xs <%- active %>" id="_press">
+<div class="modal modal_window press xs <%- active %>" id="_press">
 	<div class="header">
 		<h2>Fresco in the News</h2>
 		
@@ -114,7 +114,7 @@
 
 				<li>
 					<div class="preview">
-						<img src="<%= global.CDN %>/index/<%- article.image %>.png" />
+						<img src="<%= utils.CDN %>/index/<%- article.image %>.png" />
 					</div>
 					<div class="meta">
 						<a target="_blank" href="<%- article.url %>">
@@ -137,7 +137,7 @@
 	<div class="modal-footer">
 		<ul>
 			<li class="pdf-kit">
-				<a href="<%= global.CDN %>/pdf/press.pdf" target="_blank">
+				<a href="<%= utils.CDN %>/pdf/press.pdf" target="_blank">
 					<span class="mdi mdi-download"></span>
 					<p></p>
 				</a>
