@@ -21,8 +21,7 @@ export const FETCH_SUSPENDED_USERS_REQUEST = 'moderation/FETCH_SUSPENDED_USERS_R
 export const FETCH_SUSPENDED_USERS_SUCCESS = 'moderation/FETCH_SUSPENDED_USERS_SUCCESS';
 export const FETCH_REPORTS_SUCCESS = 'moderation/FETCH_REPORTS_SUCCESS';
 export const SET_REPORTS_INDEX = 'moderation/SET_REPORTS_INDEX';
-export const ENABLE_FILTER = 'moderation/ENABLE_FILTER';
-export const DISABLE_FILTER = 'moderation/DISABLE_FILTER';
+export const TOGGLE_FILTER = 'moderation/TOGGLE_FILTER';
 export const TOGGLE_SUSPEND_USER = 'moderation/TOGGLE_SUSPEND_USER';
 export const TOGGLE_GALLERY_GRAPHIC = 'moderation/TOGGLE_GALLERY_GRAPHIC';
 export const RESTORE_SUSPENDED_USER = 'moderation/RESTORE_SUSPENDED_USER';
@@ -147,22 +146,11 @@ export const fetchUsers = () => (dispatch, getState) => {
     });
 };
 
-export const toggleFilter = (tab, filter) => (dispatch, getState) => {
-    const activeFilters = getState().getIn(['moderation', 'ui', 'filters', tab]);
-
-    if (activeFilters.includes(filter)) {
-        return ({
-            type: DISABLE_FILTER,
-            tab,
-            filter,
-        });
-    }
-    return ({
-        type: ENABLE_FILTER,
-        tab,
-        filter,
-    });
-};
+export const toggleFilter = (tab, filter) => ({
+    type: TOGGLE_FILTER,
+    tab,
+    filter,
+});
 
 export const updateReportsIndex = (entityType, id, change) => (dispatch, getState) => {
     const reportData = getState().getIn(['moderation', 'reports', entityType, id], Map());
@@ -494,10 +482,11 @@ const ui = (state = fromJS({
             header: action.header,
             body: action.body,
         }));
-    case ENABLE_FILTER:
-        return state.updateIn(['filters', action.tab], f => f.add(action.filter));
-    case DISABLE_FILTER:
-        return state.updateIn(['filters', action.tab], f => f.delete(action.filter));
+    case TOGGLE_FILTER:
+        return state.updateIn(['filters', action.tab], f => {
+            if (f.has(action.filter)) return f.delete(action.filter);
+            return f.add(action.filter);
+        });
     case SET_ACTIVE_TAB:
         return state
             .set('activeTab', action.activeTab.toLowerCase())

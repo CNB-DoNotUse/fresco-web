@@ -9,54 +9,76 @@ import 'isomorphic-fetch';
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
 
-const initialState = fromJS({
-    galleries: fromJS({ entities: OrderedSet(), loading: false, requestDeleted: {} }),
-    users: fromJS({ entities: OrderedSet(), loading: false, requestDeleted: {} }),
-    suspendedUsers: fromJS({ entities: OrderedSet(), loading: false }),
-    reports: fromJS({ galleries: {}, users: {}, loading: false }),
-    ui: fromJS({
+describe('moderation ui reducer', () => {
+    const initialState = fromJS({
         activeTab: 'galleries',
         filters: fromJS({ galleries: Set(), users: Set() }),
         suspendedDialog: false,
         infoDialog: fromJS({ open: false, header: '', body: '' }),
         error: null,
         alert: null,
-    }),
-});
+    });
 
-describe('moderation reducer', () => {
     it('returns the initial state', () => {
-        expect(reducer(undefined, {})).to.equal(initialState);
+        expect(reducer(undefined, {}).get('ui')).to.equal(initialState);
     });
 
     it('should handle TOGGLE_SUSPENDED_DIALOG', () => {
-        expect(reducer(undefined, actions.toggleSuspendedDialog()).toJS())
+        expect(reducer(undefined, actions.toggleSuspendedDialog()))
         .to.have.deep.property('ui.suspendedDialog', true);
     });
 
     it('should handle TOGGLE_INFO_DIALOG', () => {
         const state = reducer(undefined, actions.toggleInfoDialog({
             open: true, header: 'Fresco header', body: 'Fresco body',
-        })).toJS();
+        }));
 
         expect(state).to.have.deep.property('ui.infoDialog.open', true);
         expect(state).to.have.deep.property('ui.infoDialog.header', 'Fresco header');
         expect(state).to.have.deep.property('ui.infoDialog.body', 'Fresco body');
     });
 
-    // it('should handle ENABLE_FILTER and DISABLE_FILTER', () => {
-    //     const action = {
-    //         type: actions.ENABLE_FILTER,
-    //         tab: 'galleries',
-    //         filter: 'abuse',
-    //     };
-    //     const state = reducer(undefined, action).toJS();
-    //     console.log('state', state);
-    //     expect(state).to.have.deep.property('ui.filters.galleries', ['abuse']);
-    // });
+    it('should handle TOGGLE_FILTER', () => {
+        const state = reducer(undefined, actions.toggleFilter('galleries', 'abuse'));
+
+        expect(state).to.have.deep.property('ui.filters.galleries', Set.of('abuse'));
+    });
+
+    it('should handle SET_ACTIVE_TAB', () => {
+        const state = reducer(undefined, actions.setActiveTab('users'));
+        expect(state).to.have.deep.property('ui.activeTab', 'users');
+    });
+
+    it('should handle SET_ALERT', () => {
+        const state = reducer(undefined, { type: actions.SET_ALERT, data: 'Alert!' });
+        expect(state).to.have.deep.property('ui.alert', 'Alert!');
+    });
+
+    it('should handle DISMISS_ALERT', () => {
+        let state = reducer(undefined, { type: actions.SET_ALERT, data: 'Alert!' });
+        expect(state).to.have.deep.property('ui.alert', 'Alert!');
+
+        state = reducer(undefined, { type: actions.DISMISS_ALERT });
+        expect(state).to.have.deep.property('ui.alert', null);
+    });
 });
 
 describe('moderation async action creators', () => {
+    const initialState = fromJS({
+        galleries: fromJS({ entities: OrderedSet(), loading: false, requestDeleted: {} }),
+        users: fromJS({ entities: OrderedSet(), loading: false, requestDeleted: {} }),
+        suspendedUsers: fromJS({ entities: OrderedSet(), loading: false }),
+        reports: fromJS({ galleries: {}, users: {}, loading: false }),
+        ui: fromJS({
+            activeTab: 'galleries',
+            filters: fromJS({ galleries: Set(), users: Set() }),
+            suspendedDialog: false,
+            infoDialog: fromJS({ open: false, header: '', body: '' }),
+            error: null,
+            alert: null,
+        }),
+    });
+
     afterEach(fetchMock.restore);
 
     it('creates FETCH_GALLERIES_SUCCESS when fetching galleries has been done', () => {
