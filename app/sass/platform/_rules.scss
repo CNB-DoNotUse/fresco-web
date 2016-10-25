@@ -65,6 +65,14 @@ button:focus {outline:none;}
 	padding:0 !important;
 }
 
+.img-cover-bg {
+	height: 500px;
+    display: block;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .img-avatar {
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
