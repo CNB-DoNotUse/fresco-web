@@ -25,8 +25,7 @@ export default class GalleryEdit extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.gallery.id !== prevProps.gallery.id) {
             this.setState(this.getStateFromProps(this.props));
-            this.refs['gallery-caption'].className =
-                this.refs['gallery-caption'].className.replace(/\bempty\b/, '');
+            this.galleryCaption.className = this.galleryCaption.className.replace(/\bempty\b/, '');
         }
     }
 
@@ -50,7 +49,6 @@ export default class GalleryEdit extends React.Component {
             });
         }
     }
-
 
 	/**
 	 * Gets all form data and verifies gallery.
@@ -139,10 +137,10 @@ export default class GalleryEdit extends React.Component {
         const { gallery } = props;
 
         return {
+            assignment: get(gallery, 'assignments[0]'),
             editButtonsEnabled: false,
             tags: gallery.tags || [],
             stories: gallery.stories || [],
-            assignment: get(gallery, 'assignments[0]'),
             caption: gallery.caption || 'No Caption',
             loading: false,
             external_account_name: gallery.external_account_name,
@@ -267,7 +265,7 @@ export default class GalleryEdit extends React.Component {
             loading,
             external_account_name,
             external_source,
-            is_nsfw
+            is_nsfw,
         } = this.state;
 
         if (!gallery) {
@@ -297,7 +295,7 @@ export default class GalleryEdit extends React.Component {
                         placeholder="Caption"
                         onChange={(e) => this.handleChangeCaption(e)}
                         value={caption}
-                        ref="gallery-caption"
+                        ref={r => { this.galleryCaption = r; }}
                     />
 
                     <ChipInput
@@ -305,7 +303,7 @@ export default class GalleryEdit extends React.Component {
                         placeholder="Assignment"
                         queryAttr="title"
                         items={assignment ? [assignment] : []}
-                        updateItems={(a) => this.setState({ assignment: a[0] })}
+                        updateItems={a => this.setState({ assignment: a[0] })}
                         multiple={false}
                         className="dialog-row"
                         autocomplete
