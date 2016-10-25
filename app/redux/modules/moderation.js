@@ -172,7 +172,7 @@ export const updateReportsIndex = (entityType, id, change) => (dispatch, getStat
 
     dispatch({
         type: SET_REPORTS_INDEX,
-        reportsType: entityType,
+        entityType,
         ownerId: id,
         index: newIndex,
     });
@@ -456,11 +456,11 @@ const reports = (state = fromJS({
     switch (action.type) {
     case FETCH_REPORTS_SUCCESS:
         return state.updateIn([action.entityType, action.id], Map(), r => fromJS({
-            reports: r.get('reports', List()).concat(action.reports),
+            reports: r.get('reports', List()).concat(fromJS(action.reports)),
             index: r.get('index', 0),
         }));
     case SET_REPORTS_INDEX:
-        return state.setIn([action.reportsType, action.ownerId, 'index'], action.index);
+        return state.setIn([action.entityType, action.ownerId, 'index'], action.index);
     default:
         return state;
     }

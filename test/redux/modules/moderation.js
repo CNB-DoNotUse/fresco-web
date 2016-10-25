@@ -23,12 +23,12 @@ describe('moderation ui reducer', () => {
         expect(reducer(undefined, {}).get('ui')).to.equal(initialState);
     });
 
-    it('should handle TOGGLE_SUSPENDED_DIALOG', () => {
+    it('handles TOGGLE_SUSPENDED_DIALOG', () => {
         expect(reducer(undefined, actions.toggleSuspendedDialog()))
         .to.have.deep.property('ui.suspendedDialog', true);
     });
 
-    it('should handle TOGGLE_INFO_DIALOG', () => {
+    it('handles TOGGLE_INFO_DIALOG', () => {
         const state = reducer(undefined, actions.toggleInfoDialog({
             open: true, header: 'Fresco header', body: 'Fresco body',
         }));
@@ -38,29 +38,63 @@ describe('moderation ui reducer', () => {
         expect(state).to.have.deep.property('ui.infoDialog.body', 'Fresco body');
     });
 
-    it('should handle TOGGLE_FILTER', () => {
+    it('handles TOGGLE_FILTER', () => {
         const state = reducer(undefined, actions.toggleFilter('galleries', 'abuse'));
 
         expect(state).to.have.deep.property('ui.filters.galleries', Set.of('abuse'));
     });
 
-    it('should handle SET_ACTIVE_TAB', () => {
+    it('handles SET_ACTIVE_TAB', () => {
         const state = reducer(undefined, actions.setActiveTab('users'));
         expect(state).to.have.deep.property('ui.activeTab', 'users');
     });
 
-    it('should handle SET_ALERT', () => {
+    it('handles SET_ALERT', () => {
         const state = reducer(undefined, { type: actions.SET_ALERT, data: 'Alert!' });
         expect(state).to.have.deep.property('ui.alert', 'Alert!');
     });
 
-    it('should handle DISMISS_ALERT', () => {
+    it('handles DISMISS_ALERT', () => {
         let state = reducer(undefined, { type: actions.SET_ALERT, data: 'Alert!' });
         expect(state).to.have.deep.property('ui.alert', 'Alert!');
 
         state = reducer(undefined, { type: actions.DISMISS_ALERT });
         expect(state).to.have.deep.property('ui.alert', null);
     });
+});
+
+describe('moderation reports reducer', () => {
+    it('handles FETCH_REPORTS_SUCCESS', () => {
+        const state = reducer(undefined, {
+            type: actions.FETCH_REPORTS_SUCCESS,
+            reports: [{ id: '1' }, { id: '2' }],
+            entityType: 'users',
+            id: '1',
+        });
+
+        expect(state).to.have.deep.property('reports.users.1').that.equals(
+            fromJS({ reports: [{ id: '1' }, { id: '2' }], index: 0 })
+        );
+    });
+
+    it('handles SET_REPORTS_INDEX', () => {
+        const state = reducer(undefined, {
+            type: actions.SET_REPORTS_INDEX,
+            entityType: 'users',
+            ownerId: '1',
+            index: 3,
+        });
+
+        expect(state).to.have.deep.property('reports.users.1.index').that.equals(3);
+    });
+});
+
+describe('moderation suspendedUsers reducer', () => {
+    const initialState = fromJS({
+        suspendedUsers: { entities: OrderedSet(), loading: false },
+    });
+
+    // it('handles ')
 });
 
 describe('moderation async action creators', () => {
