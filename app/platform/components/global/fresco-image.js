@@ -2,96 +2,139 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 
 /**
- * Stateless image that manages an image error handler
+ * Fresco mage that manages an image error handler
  * @description Will set a timeout to keep loading the image if it 404s
+ * @param {Prop} loadWithPlaceholder If you'd like the image to load with a placeholder first then pass this. Applicable in cases where you need
+ * a set height and you don't want your image objecto collapse if the 404s
  */
 class FrescoImage extends React.Component {
-    missingImageUrl = `${utils.CDN}/images/missing.png`;
-
-    state = {
-        image: utils.formatImg(this.props.src, this.props.size),
-        timeout: 0
-    }
-
     static propTypes = {
         size: PropTypes.string,
         src: PropTypes.string,
         updateImage: PropTypes.func,
         className: PropTypes.string,
         style: PropTypes.object,
+        placeholderStyle: PropTypes.object,
         refreshInterval: PropTypes.bool,
+        loadWithPlaceholder: PropTypes.bool,
     };
 
     static defaultProps = {
         size: 'small',
         refreshInterval: false,
         style: {},
-        updateImage: () => {}
+        loadWithPlaceholder: false,
+        placeholderStyle: {},
+        updateImage: () => {},
     };
 
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.src !== this.props.src) {
-            this.setState({
-                image: utils.formatImg(nextProps.src, nextProps.size),
-                timeout: 0
-            });
-        }
+    placeholderUrl = `${utils.CDN}/images/missing.png`;
+
+    missingUrl = `${utils.CDN}/images/missing.png`;
+
+    state = {
+        placeholderStyle: this.props.placeholderStyle,
+        hidePlaceholder: false,
+        timeout: 1000
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        // Timeout has changed, attempt setting image back
-        if (this.state.timeout > prevState.timeout
-            || prevState.image !== this.state.image) {
-            this.updateImage(this.state.image);
+    componentWillMount() {
+        this.setInitialSource();
+    }
+
+    componentDidUpdate(prevProps) {
+        const { src, size } = this.props;
+
+        if ((src !== prevProps.src) || (size !== prevProps.size)) {
+            this.setInitialSource(src);
         }
     }
 
     componentWillUnmount() {
-        clearTimeout(this.timeoutId);
+        clearTimeout(this.loadTimeout);
     }
 
-    /**
-     * On the timeout event, update the state timeout in a fibonacci sequence
-     * On the `componentDidUpdate` call, the regular image will be set back
-     */
-    onTimeout = (timeout) => {
+    setInitialSource = () => {
+        const formattedSrc = utils.formatImg(this.props.src, this.props.size);
         this.setState({
-            timeout: (timeout || 1) + this.state.timeout,
+            src: this.props.loadWithPlaceholder ? this.placeholderUrl : formattedSrc,
+            formattedSrc,
+            hidePlaceholder: false
         });
     }
 
-    // Updates image and sends image up to prop
-    updateImage = (src) => {
-        this.image.src = src;
-        this.props.updateImage(src);
+    /**
+     * When our hidden image loads successfully, hide the `missing` placeholder one
+     */
+    onLoad = () => {
+        if (this.props.loadWithPlaceholder) {
+            this.setState({
+                hidePlaceholder: true
+            });
+        }
     }
 
     /**
-     * If the image fails to load, set a missing image and re-attempt to load the image
-     * after the timeout
+     * On the timeout interval, either clear it, or try updating the image again to see if it'll be able to resolve
+     */
+    onTimeout = () => {
+        if (!this.img || this.state.src === this.state.formattedSrc) {
+            clearTimeout(this.loadTimeout);
+        } else {
+            this.setState({
+                src: this.state.formattedSrc,
+                timeout: this.state.timeout + this.state.timeout
+            });
+        }
+    }
+
+    /**
+     * On image error, set the image as the placeholder and a set a timeout to try again later
      */
     onError = () => {
-        this.updateImage(this.missingImageUrl);
+        if (this.img) {
+            this.setState({ src: this.placeholderUrl })
+        }
+
+        this.props.updateImage(this.placeholderUrl);
 
         if (this.props.refreshInterval) {
-            this.timeoutId = setTimeout(() => {
-                this.onTimeout(this.state.timeout);
-            }, this.state.timeout * 1000);
+            this.loadTimeout = setTimeout(this.onTimeout, this.state.timeout);
         }
     }
 
     render() {
-        return (
-            <img
-                className={this.props.className || 'img-cover'}
-                style={this.props.style}
-                role="presentation"
-                ref={r => { this.image = r; }}
-                onError={this.onError}
-                src={this.state.image}
-            />
-        );
+        const style = Object.assign({}, this.props.style, this.state.placeholderStyle);
+
+        const backgroundStyle = {
+            'backgroundImage': this.state.hidePlaceholder ? '' : `url(${this.placeholderUrl})`,
+        }
+
+        if(this.props.loadWithPlaceholder) {
+            return <div className="img-cover-bg" style={backgroundStyle}>
+                <img
+                    className={this.props.className || 'img-cover'}
+                    style={{ display: this.state.hidePlaceholder ? 'block' : 'none' }}
+                    role="presentation"
+                    onLoad={this.onLoad}
+                    onError={this.onError}
+                    src={this.state.formattedSrc}
+                />
+            </div>
+        } else {
+            return (
+                <img
+                    className={this.props.className || 'img-cover'}
+                    style={style}
+                    role="presentation"
+                    ref={r => { this.img = r; }}
+                    onError={this.onError}
+                    src={this.state.src}
+                />
+            );
+        }
     }
 }
 
 export default FrescoImage;
+

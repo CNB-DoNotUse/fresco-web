@@ -37,7 +37,8 @@ class Stories extends React.Component {
 	loadStories (last, callback) {
 		const params = {
             last,
-			limit: 10
+			limit: 20,
+			sortBy: 'updated_at'
 		};
 
 		$.ajax({

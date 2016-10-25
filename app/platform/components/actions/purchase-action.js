@@ -3,9 +3,8 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 
 /**
- * Global purchase actions
+ * Global purchase action
  */
-
 class PurchaseAction extends React.Component {
     requestPurchase(post, assignment) {
         const data = { post_ids: [post.id] };
@@ -29,8 +28,7 @@ class PurchaseAction extends React.Component {
         })
         .fail((xhr, status, error) => {
             $.snackbar({
-                content: xhr.responseJSON.msg ||
-                    utils.resolveError(error, 'There was an error while completing your purchase!'),
+                content: xhr.responseJSON.msg || 'There was an error while completing your purchase!'
             });
         });
     }

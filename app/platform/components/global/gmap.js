@@ -10,11 +10,39 @@ import utils from 'utils';
  * @description Map element that is found in Gallery Edit, Admin Panel, etc.
  */
 class GMap extends React.Component {
+    static propTypes = {
+        onDataChange: PropTypes.func,
+        updateCurrentBounds: PropTypes.func,
+        radius: PropTypes.number,
+        location: PropTypes.object,
+        address: PropTypes.string,
+        draggable: PropTypes.bool,
+        type: PropTypes.string,
+        zoom: PropTypes.number,
+        rerender: PropTypes.bool,
+    };
+
+    static defaultProps = {
+        onDataChange() {},
+        updateCurrentBounds() {},
+        radius: null,
+        location: { lng: -74, lat: 40.7 },
+        draggable: false,
+        type: 'active',
+        zoom: 12,
+        rerender: false,
+    };
+
+    defaultCenter = { lng: -74, lat: 40.7 };
+
     constructor(props) {
         super(props);
 
-        this.state = { center: this.getCenter(props.location) };
+        this.geocoder = new google.maps.Geocoder();
+        this.getCenter(this.props.location, this.props.address);
     }
+
+    state = { center: this.defaultCenter }
 
     componentDidMount() {
         const { updateCurrentBounds } = this.props;
@@ -24,7 +52,7 @@ class GMap extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.location && (nextProps.location !== this.props.location)) {
-            this.setState({ center: this.getCenter(nextProps.location) });
+            this.getCenter(nextProps.location, nextProps.address);
         }
     }
 
@@ -41,33 +69,44 @@ class GMap extends React.Component {
     onDragend(e) {
         const { onDataChange, updateCurrentBounds } = this.props;
         const location = { lng: e.latLng.lng(), lat: e.latLng.lat() };
-
-        this.setState({ center: this.getCenter(location) });
+        this.getCenter(location);
 
         onDataChange({ location, source: 'markerDrag' });
 
         updateCurrentBounds(this.map ? this.map.getBounds() : {});
     }
 
-    getCenter(location) {
+    getCenter(location, address) {
         // If location, get centroid of polygon, or use the point passed.
         // Otherwise use NYC for center.
-        if (location && location.type && location.coordinates.length) {
-            switch (location.type.toLowerCase()) {
-            case 'polygon':
-                return utils.getCentroid(location.coordinates);
-            case 'multipoint':
-                return utils.getAvgFromMultipoint(location);
-            case 'point':
-                return { lng: location.coordinates[0], lat: location.coordinates[1] };
-            default:
-                return { lng: -74, lat: 40.7 };
+        new Promise((resolve) => {
+            if (location && location.type && location.coordinates.length) {
+                switch (location.type.toLowerCase()) {
+                    case 'polygon':
+                        resolve(utils.getCentroid(location.coordinates));
+                    case 'multipoint':
+                        resolve(utils.getAvgFromMultipoint(location));
+                    case 'point':
+                        resolve({ lng: location.coordinates[0], lat: location.coordinates[1] });
+                    default:
+                        resolve({ lng: -74, lat: 40.7 });
+                }
+            } else if (location && location.lat && location.lng) {
+                resolve({ lng: location.lng, lat: location.lat });
+            } else if (address) {
+                this.geocoder.geocode({ address }, (results, status) => {
+                    if (status === 'OK') {
+                        const loc = results[0].geometry.location;
+                        resolve({ lng: loc.lng(), lat: loc.lat() });
+                    } else {
+                        resolve(this.defaultCenter);
+                    }
+                });
+            } else {
+                resolve(this.defaultCenter);
             }
-        } else if (location && location.lat && location.lng) {
-            return { lng: location.lng, lat: location.lat };
-        }
-
-        return { lng: -74, lat: 40.7 };
+        })
+        .then(center => this.setState({ center }));
     }
 
     renderMarker() {
@@ -84,7 +123,7 @@ class GMap extends React.Component {
 
         return (
             <Marker
-                ref={(m) => this.marker = m}
+                ref={(m) => { this.marker = m; }}
                 position={center}
                 draggable={draggable}
                 icon={markerImage}
@@ -106,7 +145,7 @@ class GMap extends React.Component {
 
         return (
             <Circle
-                ref={(c) => this.circle = c}
+                ref={(c) => { this.circle = c; }}
                 center={center}
                 options={circleOptions}
             />
@@ -143,28 +182,6 @@ class GMap extends React.Component {
         );
     }
 }
-
-GMap.propTypes = {
-    onDataChange: PropTypes.func,
-    updateCurrentBounds: PropTypes.func,
-    radius: PropTypes.number,
-    location: PropTypes.object,
-    draggable: PropTypes.bool,
-    type: PropTypes.string,
-    zoom: PropTypes.number,
-    rerender: PropTypes.bool,
-};
-
-GMap.defaultProps = {
-    onDataChange() {},
-    updateCurrentBounds() {},
-    radius: null,
-    location: { lng: -74, lat: 40.7 },
-    draggable: false,
-    type: 'active',
-    zoom: 12,
-    rerender: false,
-};
 
 export default GMap;
 

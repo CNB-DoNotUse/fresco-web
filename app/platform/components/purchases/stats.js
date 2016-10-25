@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import api from 'app/lib/api';
 
 export default class PurchasesStats extends React.Component {
     static propTypes = {
@@ -6,7 +7,6 @@ export default class PurchasesStats extends React.Component {
         updatePurchases: PropTypes.bool,
         loadStats: PropTypes.func,
         downloadExports: PropTypes.func,
-        emailStatement: PropTypes.func,
     }
 
     static defaultProps = {
@@ -48,8 +48,21 @@ export default class PurchasesStats extends React.Component {
         });
     }
 
+    emailStatement = () => {
+        api
+        .post('outlet/export/email')
+        .then(() => {
+            $.snackbar({
+                content: 'Account statement successfully sent! Please check your email.',
+            });
+        })
+        .catch(() => {
+            $.snackbar({ content: 'Could not email statement' });
+        });
+    }
+
     render() {
-        const { downloadExports, emailStatement } = this.props;
+        const { downloadExports } = this.props;
         const { last_day, last_7days, last_30days, total_revenue } = this.state.stats;
 
         return (
@@ -89,7 +102,7 @@ export default class PurchasesStats extends React.Component {
                     id="email-statement-button"
                     type="button"
                     className="btn"
-                    onClick={emailStatement}
+                    onClick={this.emailStatement}
                 >
                     Email my statement
                 </button>

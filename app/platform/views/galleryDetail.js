@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import utils from 'utils';
+import get from 'lodash/get';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/gallery/sidebar';
 import Edit from './../components/gallery/edit';
 import App from './app';
-import utils from 'utils';
-import get from 'lodash/get';
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
@@ -45,6 +45,7 @@ class GalleryDetail extends React.Component {
         if (!get(gallery, 'posts.length')) return [];
 
         if (verifiedToggled) return gallery.posts.filter(p => p.rating >= 2);
+
         return gallery.posts;
     }
 

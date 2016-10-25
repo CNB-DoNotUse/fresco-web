@@ -5,7 +5,7 @@ import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
 const onChangeAssignments = (onChange) => (assignments) => {
     onChange({ assignment: assignments[0]
-        ? { id: assignments[0].id, title: assignments[0].title }
+        ? { id: assignments[0].id, title: assignments[0].title, body: assignments[0].caption }
         : null,
     });
 };
@@ -19,13 +19,15 @@ const Template = ({
 
         <ChipInput
             model="assignments"
-            attr="title"
+            queryAttr="title"
             placeholder="Assignment"
             items={(assignment && [assignment]) || []}
             updateItems={onChangeAssignments(onChange)}
             multiple={false}
             className="push-notifs__chip-input"
+            params={{ rating: '1' }}
             autocomplete
+            idLookup
             initMaterial
         />
 

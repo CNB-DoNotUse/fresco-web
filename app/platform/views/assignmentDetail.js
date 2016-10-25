@@ -1,29 +1,25 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import utils from 'utils';
+import 'app/sass/platform/_assignment';
+import 'app/sass/platform/_posts';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/assignment/sidebar';
 import Edit from './../components/assignment/edit.js';
 import App from './app';
-import utils from 'utils';
-import 'app/sass/platform/_assignment';
-import 'app/sass/platform/_posts';
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
  */
 class AssignmentDetail extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            assignment: this.props.assignment,
-            editToggled: false,
-            verifiedToggle: true,
-            sortBy: 'created_at',
-            loading: false,
-        };
-    }
+    state = {
+        assignment: this.props.assignment,
+        editToggled: false,
+        verifiedToggle: true,
+        sortBy: 'created_at',
+        loading: false,
+    };
 
     componentDidMount() {
         setInterval(() => {
@@ -64,11 +60,8 @@ class AssignmentDetail extends React.Component {
             limit: 10,
             sortBy,
             last,
+            rating: verifiedToggle ? 2 : [1, 2],
         };
-
-        if (verifiedToggle) {
-            params.rating = [1];
-        }
 
         $.ajax({
             url: `/api/assignment/${assignment.id}/posts`,
@@ -165,11 +158,11 @@ class AssignmentDetail extends React.Component {
                     permissions={user.permissions}
                     onVerifiedToggled={(t) => this.onVerifiedToggled(t)}
                     updateSort={(s) => this.updateSort(s)}
-                    verifiedToggle={true}
                     edit={() => this.toggleEdit()}
                     editable
                     timeToggle
                     chronToggle
+                    verifiedToggle
                 />
 
                 <Sidebar

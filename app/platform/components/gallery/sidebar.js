@@ -1,78 +1,45 @@
 import React from 'react';
-
-/** //
-
-Description : Column on the left of the posts grid on the gallery detail page
-
-// **/
+import utils from 'utils';
 
 /**
  * Gallery sidebar parent object
+ * @description Column on the left of the posts grid on the gallery detail page
  */
+const GallerySidebar = ({ gallery }) => {
+	return (
+		<div className="col-sm-4 profile hidden-xs">
+			<div className="container-fluid fat">
+				<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+					<div className="meta">
+						<div className="meta-description" id="gallery-description">{gallery.caption}</div>
 
-export default class Sidebar extends React.Component {
-
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-
-		return (
-			<div className="col-sm-4 profile hidden-xs">
-				<div className="container-fluid fat">
-					<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-						<div className="meta">
-							<div className="meta-description" id="gallery-description">{this.props.gallery.caption}</div>
-
-							<GalleryStats gallery={this.props.gallery} />
-						</div>
+						<GalleryStats photo_count={gallery.photo_count} video_count={gallery.video_count} />
 					</div>
 				</div>
 			</div>
-
-		);
-	}
-
+		</div>
+	);
 }
 
 /**
  * Gallery stats inside the sidebar
  */
-
-class GalleryStats extends React.Component {
-
-	render() {
-
-		if(!this.props.gallery.stats) return(
-			<div className="meta-list"></div>
-		);
-
-		var photos = '',
-			videos = '';
-
-		if(this.props.gallery.stats.photos){
-			photos = <li>
-						<span className="mdi mdi-image icon"></span>
-						<span>{this.props.gallery.stats.photos} {this.props.gallery.stats.photos > 1 ? 'photos' : 'photo'}</span>
-					</li>
-		}
-		if(this.props.gallery.stats.videos){
-			videos = <li>
-						<span className="mdi mdi-movie icon"></span>
-						{this.props.gallery.stats.videos + ' video'}
-					</li>
-		}
-
-		return (
-
-			<div className="meta-list">
-				<ul className="md-type-subhead">
-					{photos}
-					{videos}
-				</ul>
-			</div>
-
-		)
-	}
+const GalleryStats = ({ photo_count, video_count }) => {
+	return (
+		<div className="meta-list">
+			<ul className="md-type-subhead">
+				<li>
+					<span className="mdi mdi-image icon"></span>
+					<span>{photo_count || 0} {utils.isPlural(photo_count) ? 'photos' : 'photo'}</span>
+				</li>
+				<li>
+					<span className="mdi mdi-movie icon"></span>
+					<span>{video_count || 0} {utils.isPlural(photo_count) ? 'videos' : 'video'}</span>
+				</li>
+			</ul>
+		</div>
+	);
 }
+
+
+export default GallerySidebar;

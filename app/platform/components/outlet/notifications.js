@@ -1,6 +1,7 @@
 import React from 'react';
 import utils from 'utils';
 import every from 'lodash/every';
+import cloneDeep from 'lodash/cloneDeep';
 
 /**
  * Outlet notifications component for managing notification settings
@@ -29,8 +30,8 @@ class Notifications extends React.Component {
 	updateNotification = (option, index = null) => (e) => {
 		const singleNotification = index !== null;
 		let params = {};
-		let notifications = _.cloneDeep(this.state.notifications);
-		let oldNotifications = _.cloneDeep(this.state.notifications);
+		let notifications = cloneDeep(this.state.notifications);
+		let oldNotifications = cloneDeep(this.state.notifications);
 
 		if(singleNotification) {
 		    notifications[index].options[option] = e.target.checked;

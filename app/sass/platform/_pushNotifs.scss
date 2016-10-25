@@ -5,6 +5,7 @@
     top: 64px;
     overflow-y: scroll;
     padding-bottom: 100px !important;
+    height: calc(100% - 64px) !important;
 }
 
 .push-notifs__checkbox {

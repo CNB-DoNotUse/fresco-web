@@ -19,7 +19,7 @@ class PurchasesListItem extends React.Component {
 	
 	render() {
 		const { purchase, showTitle } = this.props;
-		const {assignment, post, outlet, amount} = purchase;
+		const { assignment, post, outlet, amount } = purchase;
 		const video = post.stream != null;
 		const timeString = moment(purchase.created_at).format('MMM Do, h:mma');
 		const title = outlet.title;
@@ -60,10 +60,6 @@ class PurchasesListItem extends React.Component {
 						<div onClick={this.openLink.bind(this, '/assignment/' + assignment.id)}>
 							<p className="md-type-body2" style={{lineHeight: '16px'}}>
 								{assignment.title}
-							</p>
-							
-							<p className="md-type-body1" style={{lineHeight: '24px'}}>
-								{purchase.assignment.location.address || purchase.assignment.location.googlemaps}
 							</p>
 						</div>
 					) : ''}

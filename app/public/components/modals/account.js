@@ -28,7 +28,7 @@ let Account = function(screen){
 
 Account.prototype.init = function() {
 	//Run on load
-	this.updatePosition(window.innerWidth);
+	// this.updatePosition(window.innerWidth);
 
 	window.addEventListener('resize', () => {
 		this.updatePosition(window.innerWidth);
@@ -121,7 +121,7 @@ Account.prototype.processSignup = function() {
 			value: document.getElementById('outlet-url').value,
 			name: 'URL'
 		},
-		'medium' : {
+		'type' : {
 			value: document.getElementById('outlet-medium').dataset.option,
 			name: 'medium of communcation'
 		},
@@ -172,7 +172,9 @@ Account.prototype.processSignup = function() {
 	    phone: params.phone.value,
 	    outlet: {
 	    	title: params.title.value,
-	    	link: params.link.value
+	    	link: params.link.value,
+		    state: params.state.value,
+		    type: params.type.value
 	    }
 	};
 

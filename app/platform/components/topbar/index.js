@@ -11,7 +11,7 @@ import utils from 'utils';
  * If the prop exists, then the repsective toggle/dropdown/edit/whatever
  * is added to the navigation bar
  */
-class Index extends React.Component {
+class TopBar extends React.Component {
 
 	/**
 	 * Prop function called from `LocationAutocomplete` for getting autocomplete date
@@ -195,10 +195,10 @@ class Index extends React.Component {
 
                 <div className="spacer" />
 
-                {title
-                    ? <h1 className="md-type-title">{title}</h1>
-                    : ''
-                }
+                {title ?
+                    <h1 className="md-type-title">{title}</h1>
+                : ''}
+
                 {locationInput ?
                     <LocationAutocomplete
                         class="nav"
@@ -227,7 +227,7 @@ class Index extends React.Component {
 
 }
 
-Index.propTypes = {
+TopBar.propTypes = {
     title: PropTypes.string,
     saveButton: PropTypes.bool,
     locationInput: PropTypes.bool,
@@ -250,14 +250,14 @@ Index.propTypes = {
     onVerifiedToggled: PropTypes.func,
 };
 
-Index.defaultProps = {
+TopBar.defaultProps = {
     title: '',
     edit() {},
     hide() { console.log('Hide function not implemented in TopBar'); },
     onVerifiedToggled() {},
     onOutletFilterAdd() {},
     onOutletFilterRemove() {},
+    permissions: [],
 };
 
-export default Index;
-
+export default TopBar;

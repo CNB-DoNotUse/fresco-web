@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+import get from 'lodash/get';
 
 /**
  * Assignment List Item used in assignment administration page
@@ -8,6 +9,7 @@ class AdminAssignmentListItem extends React.Component {
     render() {
         const { assignment, active, setActiveAssignment } = this.props;
         let location = 'No Location';
+        const outletId = get(assignment, 'outlets[0].id');
 
         if (assignment.address) {
             location = assignment.address;
@@ -21,7 +23,10 @@ class AdminAssignmentListItem extends React.Component {
                 onClick={setActiveAssignment}
             >
                 <div>
-                    <a href={`/outlet/${assignment.outlets[0].id}`} target="_blank">
+                    <a
+                        href={outletId ? `/outlet/${outletId}` : '#'}
+                        target={outletId ? '_blank' : ''}
+                    >
                         <img
                             className="img-circle"
                             style={{ width: '40px', height: '40px' }}

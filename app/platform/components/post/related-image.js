@@ -1,10 +1,5 @@
 import React from 'react';
-import utils from 'utils';
 import FrescoImage from '../global/fresco-image';
-
-/** //
-Description : Related posts at the bottom of the PostDetail view
-// **/
 
 /**
  * PostRelated parent object
@@ -17,7 +12,8 @@ export default class PostRelatedImage extends React.Component {
                 <FrescoImage
                     className="img-link"
                     src={this.props.post.image}
-                    size="small"
+                    size="medium"
+                    placeholderStyle={{ height: "300px" }}
                 />
             </a>
         );

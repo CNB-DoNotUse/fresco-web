@@ -233,7 +233,7 @@ class DownloadSubmissions extends React.Component {
     //Download submission stats through CSV middleware
     download() {
         $.snackbar({content: 'Downloading...'});
-        window.location.replace("/scripts/report?u=/post/submissions/report");
+        window.location.replace("/scripts/report?u=/post/submissions/report?since=0");
     }
 
     render() {

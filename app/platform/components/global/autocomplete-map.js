@@ -83,6 +83,7 @@ class AutocompleteMap extends React.Component {
                 {radiusInput}
 
                 <GMap
+                    address={address}
                     location={location}
                     radius={radius}
                     rerender={rerender}

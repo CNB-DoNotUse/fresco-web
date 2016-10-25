@@ -1,34 +1,43 @@
-import React from 'react'
+import React, { PropTypes } from 'react';
 
 /**
  * Single Tag element
  */
-export default class Tag extends React.Component {
+const Tag = ({ plus, onClick, text, altText, hasAlt }) => (
+    <li className="chip" onClick={onClick}>
+        <div className="chip">
+            <div className="icon">
+                <span className={`mdi ${plus ? 'mdi-plus' : 'mdi-minus'} icon md-type-subhead`} />
+            </div>
 
-	constructor(props) {
-		super(props);
-	}
+            {hasAlt ? (
+                <span className="chip md-type-body1 tag">
+                    <span className="chip__primary-text">
+                        {`${text} `}
+                        <span className="chip__alt-text">
+                            {altText}
+                        </span>
+                    </span>
+                </span>
+            ) : (
+                <span className="chip md-type-body1 tag">{text}</span>
+            )}
+        </div>
+    </li>
+);
 
-	render() {
-		const { plus } = this.props;
-		
-		return(
-			<li className="chip" onClick={this.props.onClick}>
-				<div className="chip">
-					<div className="icon">
-						<span 
-							className={`mdi ${plus ? 'mdi-plus' : 'mdi-minus'} icon md-type-subhead`}>
-						</span>
-					</div>
-
-					<span className="chip md-type-body1 tag">{this.props.text}</span>
-				</div>
-			</li>
-		);
-	}
-}
+Tag.propTypes = {
+    text: PropTypes.string,
+    altText: PropTypes.string,
+    plus: PropTypes.bool,
+    hasAlt: PropTypes.bool,
+    onClick: PropTypes.func,
+};
 
 Tag.defaultProps = {
-	text: '',
-	plus: false
-}
+    text: '',
+    plus: false,
+    hasAlt: false
+};
+
+export default Tag;

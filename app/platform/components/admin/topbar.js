@@ -17,6 +17,8 @@ class TopBar extends React.Component {
 
     state = { loading: false };
 
+    displayName = 'TopBar'
+
     componentDidMount() {
         $('[data-tab="' + this.props.activeTab + '"]').addClass('toggled');
     }

@@ -1,53 +1,47 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import utils from 'utils';
 
 /**
  * Global download action
  */
 class DownloadAction extends React.Component {
+    static propTypes = {
+        post: PropTypes.object.isRequired,
+    };
 
-	constructor(props) {
-		super(props);
+    // Called whenever the purhcase icon is selected
+    download = () => {
+        const { post } = this.props;
+        // Override click event for browsers that do not support it
+        HTMLElement.prototype.click = function() {
+            const evt = this.ownerDocument.createEvent('MouseEvents');
+            evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+            this.dispatchEvent(evt);
+        };
 
-		this.download = this.download.bind(this);
-	}
+        if (!post) {
+            return $.snackbar({
+                content: 'We couldn\'t find this post!',
+                timeout: 0,
+            });
+        }
 
-	render() {
-		return (
-			<span className="mdi mdi-download icon pull-right" onClick={this.download}></span>
-		)
-	} 
+        const href = post.stream
+            ? utils.streamToMp4(post.stream)
+            : post.image;
 
-	//Called whenever the purhcase icon is selected
-	download(event) {
+        const link = document.createElement('a');
 
-		//Override click event for browsers that do not support it
-		HTMLElement.prototype.click = function() {
-			var evt = this.ownerDocument.createEvent('MouseEvents');
-			evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-			this.dispatchEvent(evt);
-		}
+        link.download = Date.now() + '.' + href.split('.').pop();
+        link.href = href;
+        link.click();
+    }
 
-		if (!this.props.post) {
-
-			$.snackbar({
-				content: 'We couldn\'t find this post!',
-				timeout: 0
-			});
-
-			return;
-		}
-
-		var href = this.props.post.video ?
-			this.props.post.video.replace('videos/', 'videos/mp4/').replace('.m3u8', '.mp4') :
-			this.props.post.image;
-
-		var link = document.createElement("a");
-
-		link.download = Date.now() + '.' + href.split('.').pop();
-		link.href = href;
-		link.click();
-	}
-
+    render() {
+        return (
+            <span className="mdi mdi-download icon pull-right" onClick={this.download} />
+        );
+    }
 }
 
 

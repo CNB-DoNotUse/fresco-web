@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import api from 'app/lib/api';
 import App from './app'
 import DispatchMap from '../components/dispatch/dispatch-map'
 import DispatchAssignments from '../components/dispatch/dispatch-assignments'
@@ -136,17 +137,9 @@ class Dispatch extends React.Component {
             params.limit = 10;
         }
 
-        $.ajax({
-            url: '/api/assignment/list',
-            type: 'GET',
-            data: $.param(params),
-            success: (response, status, xhr) => {
-                callback(response && !response.err ? response : []);
-            },
-            error: (xhr, status, error) => {
-                $.snackbar({content: utils.resolveError(error)});
-            }
-        });
+        api.get('assignment/list', params)
+        .then(res => callback(res))
+        .catch(() => $.snackbar({ content: 'Couldn\'t fetch assignments!' }));
     }
 
     /**
@@ -154,27 +147,18 @@ class Dispatch extends React.Component {
      * @param  {Google Maps object}   map
      * @param  {Function} callback callback with data, error
      */
-    findUsers(map, callback) {
+    findUsers(map, cb) {
         const params = {
             geo: {
-                type: "Polygon",
-                coordinates:  utils.generatePolygonFromBounds(map.getBounds())
-            }
+                type: 'Polygon',
+                coordinates: utils.generatePolygonFromBounds(map.getBounds()),
+            },
         };
 
-        $.ajax({
-            url: '/api/user/locations/find',
-            type: 'GET',
-            data: $.param(params),
-            success: (response, status, xhr) => {
-                callback(
-                    !response.err && response.length > 0 ? response : []
-                );
-            },
-            error: (xhr, status, error) => {
-                console.log("Can't fetch users!");
-            }
-        });
+        api
+        .get('user/locations/find', params)
+        .then(res => cb(res))
+        .catch(res => cb([]));
     }
 
     /**

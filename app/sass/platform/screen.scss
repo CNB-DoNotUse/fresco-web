@@ -7,6 +7,7 @@
 @import "~mdi/scss/materialdesignicons";
 @import "frick.scss";
 @import "../../fonts/roboto.css";
+@import "../../fonts/nota/nota.css";
 @import "../global/snackbar";
 @import "../global/mixins";
 @import "../global/colors";
@@ -16,6 +17,8 @@
 @import "_functions";
 @import "_rules";
 @import "_dropdowns";
+@import "user-meta";
+@import "dialogs";
 @import "_inputs";
 @import "_material-typography";
 @import "_global";

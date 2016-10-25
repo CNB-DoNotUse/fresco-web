@@ -1,6 +1,5 @@
 import React from 'react';
 import utils from 'utils';
-import _ from 'lodash';
 
 export default class Info extends React.Component {
     constructor(props) {
@@ -45,15 +44,15 @@ export default class Info extends React.Component {
             });
         } else if(!changed) {
             if(changes.length <= 1 && changes.includes(source)) {
-                this.setState({ 
-                    disabled: true, 
+                this.setState({
+                    disabled: true,
                     changes: []
                 });
-            } else {            
-                this.setState({ 
+            } else {
+                this.setState({
                     changes: changes.filter(change => change !== source)
                 });
-            }        
+            }
         }
     }
 
@@ -102,8 +101,8 @@ export default class Info extends React.Component {
     /**
      * Updates the outlet with the params passed
      */
-    updateInfo(avatarFiles, params) {   
-        this.loading = true;     
+    updateInfo(avatarFiles, params) {
+        this.loading = true;
         $.ajax({
             url: "/api/outlet/update",
             method: 'POST',
@@ -149,7 +148,7 @@ export default class Info extends React.Component {
             }
         })
         .done((response) => {
-            return $.snackbar({ 
+            return $.snackbar({
                 content: `Your ${calledWithInfo ? 'info' : 'avatar'} has been successfully updated!`
             });
         })
@@ -167,10 +166,10 @@ export default class Info extends React.Component {
 
         return (
             <div className="card settings-info">
-                <div 
-                    className="avatar" 
-                    ref="outlet-avatar-image" 
-                    style={{backgroundImage: 'url(' + this.state.outletAvatar + ')'}} 
+                <div
+                    className="avatar"
+                    ref="outlet-avatar-image"
+                    style={{backgroundImage: 'url(' + this.state.outletAvatar + ')'}}
                 >
                     <div className="overlay" onClick={() => this.refs.avatarFileInput.click()}>
                         <span className="mdi mdi-upload"></span>
@@ -211,8 +210,8 @@ export default class Info extends React.Component {
                         defaultValue={outlet.bio}
                     />
 
-                    <button 
-                        className={`btn btn-flat card-foot-btn ${disabled ? 'disabled' : 'changed'}`} 
+                    <button
+                        className={`btn btn-flat card-foot-btn ${disabled ? 'disabled' : 'changed'}`}
                         onClick={this.updateSettings}>SAVE CHANGES</button>
                 </div>
             </div>

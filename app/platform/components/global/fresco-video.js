@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import uniqueId from 'lodash/uniqueId';
 import '../../../sass/platform/video.scss';
-
-require('script!video.js/dist/video');
-require('script!videojs-contrib-hls/dist/videojs-contrib-hls');
+require('script!video.js/dist/video.min.js');
+require('script!videojs-contrib-hls/dist/videojs-contrib-hls.min.js');
 
 /**
  * Stateless video that sets up an HTML video or Video.JS videoJSPlayer for m3u8
@@ -18,12 +17,14 @@ class FrescoVideo extends React.Component {
         style: PropTypes.object,
         autoplay: PropTypes.bool,
         muted: PropTypes.bool,
+        hideControls: PropTypes.bool,
     };
 
     static defaultProps = {
         autoplay: false,
         muted: false,
         video: '',
+        clickToPause: true
     }
 
     state = {
@@ -56,6 +57,22 @@ class FrescoVideo extends React.Component {
         }
     }
 
+    toggleVideo = () => {
+        const { videoJSPlayer } = this.state;
+        if (videoJSPlayer.paused()) 
+            videoJSPlayer.play();
+        else 
+            videoJSPlayer.pause();
+    }
+
+    pause = () => {
+        this.state.videoJSPlayer.pause();
+    }
+
+    play = () => {
+        this.state.videoJSPlayer.play();   
+    }
+
     setUpPlayer = () => {
         const options = {
             muted: this.props.muted,
@@ -85,25 +102,25 @@ class FrescoVideo extends React.Component {
     }
 
     render() {
-        const { video } = this.props;
-        const { type } = this.props;
+        const { video, type, width, thumbnail, autoplay, hideControls, clickToPause } = this.props;
+        const { id, isStream } = this.state;
 
         // Video.JS if an m3u8 file
-        let className = `${this.state.isStream ? 'video-js vjs-default-skin' : ''}`;
-
-        className += !this.props.width ? ' full-width' : '';
+        let className = `${isStream ? 'video-js' : ''} ${!hideControls ? 'vjs-default-skin' : ''}`;
+        className += !width ? ' full-width' : '';
 
         return (
             <div className="fresco-video-wrap">
                 <video
-                    id={this.state.id}
+                    id={id}
                     className={className}
-                    autoPlay={this.props.autoplay}
-                    controls
+                    autoPlay={autoplay}
+                    controls={!hideControls}
+                    onClick={clickToPause ? this.toggleVideo : null}
                 >
                     <source
-                        src={this.props.video}
-                        poster={this.props.thumbnail}
+                        src={video}
+                        poster={thumbnail}
                         type={type || this.getType(video)}
                     />
                 </video>

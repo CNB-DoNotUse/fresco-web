@@ -1,0 +1,91 @@
+/* Sass Document */
+
+/**
+ * User Meta Component
+ */
+.meta-user {
+    white-space: nowrap;
+    width: 100%;
+    margin:16px 0;
+    height: 45px;
+
+    .meta-user-icon {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(0, 0, 0, 0.26);
+        border-radius: 20px;
+        display: inline-block;
+
+        img {
+            border-radius: 20px;
+            margin:0;
+            width:40px !important;
+            height:100% !important;
+        }
+
+        i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 26px;
+        }
+    }
+
+    .meta-user-text {
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 16px;
+        width: 100%;
+
+        span {
+            vertical-align: middle;
+        }
+
+        .meta-user-name__primary,
+        .meta-user-name__secondary {
+            overflow:hidden;
+            text-overflow: ellipsis;
+            white-space:nowrap;
+        }
+
+        .meta-user-name__primary {
+            color: rgba(0, 0, 0, 0.87);
+            font-weight: 500;
+            font-size:16px;
+            max-width: 60%;
+            display:inline-block;
+        }
+
+        .meta-user-name__secondary {
+            margin-left: 8px;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.54);
+        }
+
+        .meta-user-stats {
+            vertical-align: bottom;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.54);
+            overflow: hidden;
+            width: 100%;
+
+            .meta-user-location {
+
+                span:first-child {
+                    max-width:27%;
+                    overflow:hidden;
+                    text-overflow: ellipsis;
+                    white-space:nowrap;
+                    display:inline-block;
+                }
+
+                span:last-child {
+                    margin:0 5px;
+                }
+            }
+        }
+    }
+}

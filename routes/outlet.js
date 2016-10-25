@@ -50,7 +50,7 @@ router.get('/settings', (req, res, next) => {
             props: JSON.stringify(props),
         });
     })
-    .catch((error) => {
+    .catch(error => {
         next({
             message: 'Outlet not found!',
             status: error.status || 500,
@@ -64,15 +64,14 @@ router.get('/settings', (req, res, next) => {
  */
 router.get('/:id?', (req, res, next) => {
     const { user } = req.session;
-    const id = req.params.id || (user.outlet ? user.outlet.id : '');
 
     // Make request for full outlet object
     API.request({
         method: 'GET',
-        url: `/outlet/${id || 'me'}`,
+        url: `/outlet/${req.params.id || 'me'}`,
         token: req.session.token
     })
-    .then((response) => {
+    .then(response => {
         const outlet = response.body;
         const title = outlet.title;
         const props = JSON.stringify({ user, title, outlet });
@@ -88,6 +87,7 @@ router.get('/:id?', (req, res, next) => {
         next({
             message: 'It seems like we couldn\'t locate your outlet!',
             status: error.status || 500,
+            stack: error.stack
         })
     });
 });

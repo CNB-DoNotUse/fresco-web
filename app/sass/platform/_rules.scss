@@ -5,7 +5,6 @@ body {
 	color: $color-black-1;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 400;
-	overflow-y: hidden;
 }
 a {
 	font-weight: 500;
@@ -66,6 +65,14 @@ button:focus {outline:none;}
 	padding:0 !important;
 }
 
+.img-cover-bg {
+	height: 500px;
+    display: block;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .img-avatar {
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
@@ -109,26 +116,13 @@ body > div.wrapper > div > .container-fluid {
 	opacity:1;
 }
 
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 .page {
-
 	opacity:0;
-
-	-webkit-animation:fadeIn linear 1;  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
-	   -moz-animation:fadeIn linear 1;
-		    animation:fadeIn linear 1;
-
-	-webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
-	   -moz-animation-fill-mode:forwards;
-			animation-fill-mode:forwards;
-
-	-webkit-animation-duration:.1s;
-	   -moz-animation-duration:.1s;
-		    animation-duration:.1s;
-
-	-webkit-animation-delay: 0.1s;
-	   -moz-animation-delay: 0.1s;
-		    animation-delay: 0.1s;
-
+    animation:fadeIn linear 1;
+    animation-fill-mode:forwards;
+    animation-duration:.1s;
+    animation-delay: 0.1s;
 }
 
 
@@ -164,15 +158,27 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 }
 
 .checkbox input[type=checkbox]:checked~.check:before, .checkbox input[type=checkbox]:checked~.check{
-  color: #0047bb;
+	color: $fresco-blue;
+
+	.explicit & {
+		color:$color-error;
+	}
 }
 
 .checkbox input[type=checkbox]:checked + .checkbox-material .check, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check {
-	color:#0047bb;
+	color: $fresco-blue;
+
+	.explicit & {
+		color:$color-error;
+	}
 }
 
 .checkbox input[type=checkbox]:checked + .checkbox-material .check:before, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check:before{
-	color:#0047bb;
+	color: $fresco-blue;
+
+	.explicit & {
+		color:$color-error;
+	}
 }
 
 
@@ -297,12 +303,6 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 			font-size: 9px !important;
 			top:-22px !important;
 		}
-	}
-}
-
-.autocomplete-map {
-	> div {
-		float:left;
 	}
 }
 
@@ -613,6 +613,15 @@ div.chips {
 	}
 }
 
+.chip__primary-text {
+    font-weight: 500;
+    opacity: 0.87;
+}
+
+.chip__alt-text {
+    font-weight: 300;
+    opacity: 0.54;
+}
 
 // tabs
 .tab-control {
@@ -1449,7 +1458,7 @@ div.admin {
 
 // cards
 .cards {
-	position: absolute;
+	position: fixed;
 	top: 64px;
 	right: 0px;
 	width: 384px;
@@ -1789,10 +1798,18 @@ div.time {}
 
 .form-group.is-focused label{
     color: $fresco-blue;
+
+    .explicit & {
+    	color:$color-error !important;
+    }
 }
 
 .checkbox input[type=checkbox]:checked + .checkbox-material .check, label.checkbox-inline input[type=checkbox]:checked + .checkbox-material .check {
     border-color: $fresco-blue;
+
+    .explicit &  {
+    	border-color:$color-error !important;
+    }
 }
 
 .alertify {

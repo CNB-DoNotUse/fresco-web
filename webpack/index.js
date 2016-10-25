@@ -6,105 +6,111 @@ const autoprefixer = require('autoprefixer');
 
 const fileLoaderName = 'fonts/[name].[ext]';
 const hashDate = Date.now();
+const appDirectory = './app';
+const platformDirectory = `${appDirectory}/platform/views/`
+const publicDirectory = `${appDirectory}/public/views/`
 
 // Generates view object for us
 const views = () => {
     const viewsToReturn = {};
 
-    // Generates object mapping { dir: directory, file: file (from 'fs') }
-    function genViewsFromDir(dir) {
-        return fs.readdirSync(dir).map((file) => (
-            { dir, file }
-        ));
-    }
-
     const viewFiles = [].concat(
-        genViewsFromDir('./app/platform/views/'),
-        genViewsFromDir('./app/public/views/')
+        genViewsFromDir(platformDirectory),
+        genViewsFromDir(publicDirectory)
     );
 
     viewFiles.forEach((view) => {
         if (['app.js', '.DS_Store'].indexOf(view.file) !== -1) return;
 
-        viewsToReturn[view.file.replace('.js', '')] = [view.dir + view.file, 'babel-polyfill'];
+        viewsToReturn[view.file.replace('.js', '')] = ['babel-polyfill', view.dir + view.file];
     });
 
     return viewsToReturn;
 };
 
+// Generates object mapping { dir: directory, file: file (from 'fs') }
+const genViewsFromDir = (dir) => {
+    return fs.readdirSync(dir).map((file) => (
+        { dir, file }
+    ));
+}
+
 // Generates plugins for webpack
 const plugins = (env) => {
     // Base plugins
-    let plugins = [
+    let arr = [
         new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery"
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery',
         }),
         new ExtractTextPlugin('css/[name].css'),
         new AssetsPlugin({
             path: './public/build',
             filename: 'assets.json',
-            prettyPrint: true
+            prettyPrint: true,
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'commons',
+            filename: 'js/commons.js',
+            // (Only use these entries)
+            chunks: genViewsFromDir(platformDirectory).map(obj => obj.file.replace('.js', '')),
         }),
     ];
 
     if (env === 'dev') {
-        plugins.push(
-            new webpack.DefinePlugin({ __DEV__: true })
+        arr.push(
+            new webpack.DefinePlugin({
+                'process.env': { __DEV__: true },
+            })
         );
     }
 
     if (env === 'production') {
-        plugins.push(
+        arr.push(
             new webpack.optimize.UglifyJsPlugin({
-                compress: {
-                    warnings: false
-                }
+                compress: { warnings: false },
             })
         );
-        plugins.push(
+        arr.push(new webpack.optimize.DedupePlugin());
+        arr.push(
             new webpack.DefinePlugin({
-                'process.env': { NODE_ENV: JSON.stringify('production') }
+                'process.env': { NODE_ENV: JSON.stringify('production') },
             })
         );
     }
 
-    return plugins;
+    return arr;
 };
 
 // Define output obj. for webpack
 const output = (env) => {
+    const jsPath = `js/[name].js`;
+
     if(env === 'production') {
         return {
             path: `./public/build/${hashDate}/`,
-            filename: 'js/[name].js',
+            filename: jsPath,
+            chunkFilename: jsPath,
             publicPath: `/build/${hashDate}/`
         }
     } else {
         return {
             path: './public/build/',
-            filename: 'js/[name].js',
+            filename: jsPath,
+            chunkFilename: jsPath,
             publicPath: '/build/'
         }
     }
 };
 
 const loaders = (env) => {
-    let arr = [
+    const arr = [
         // Babel
         {
             test: /.jsx?$/,
             loader: 'babel',
             exclude: /(node_modules|bower_components)/,
-            query: {
-                presets: ['es2015', 'react'],
-                plugins: [
-                    'transform-object-rest-spread',
-                    'transform-es2015-destructuring',
-                    'transform-class-properties',
-                ],
-            },
         },
         {
             test: /\.scss$/,
@@ -152,6 +158,19 @@ const loaders = (env) => {
     return arr;
 };
 
+const externals = (env) => {
+    if(env === 'dev') {
+        return {
+            // http://airbnb.io/enzyme/docs/guides/webpack.html
+            'react/addons': true,
+            'react/lib/ExecutionEnvironment': true,
+            'react/lib/ReactContext': true
+        }
+    } else {
+        return {};
+    }
+}
+
 /**
  * Exports webpack JSON config
  * @param  {String} env The environment we're in
@@ -163,10 +182,8 @@ module.exports = (env = 'dev') => ({
     plugins: plugins(env),
     watch: env === 'dev',
     devtool: env === 'dev' ? 'eval-source-map' : null,
-    module: {
-        loaders: loaders(env),
-        postcss: () => [autoprefixer],
-    },
+    module: { loaders: loaders(env) },
+    postcss: () => [autoprefixer],
     resolve: {
         // All these extensions will be resolved without specifying extension in the `require` function
         extensions: ['', '.js', '.scss'],
@@ -178,10 +195,5 @@ module.exports = (env = 'dev') => ({
             './',
         ],
     },
-    externals: {
-        // http://airbnb.io/enzyme/docs/guides/webpack.html
-        'react/addons': true,
-        'react/lib/ExecutionEnvironment': true,
-        'react/lib/ReactContext': true
-    },
+    externals: externals(env),
 });

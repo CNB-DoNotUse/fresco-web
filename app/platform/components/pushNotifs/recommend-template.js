@@ -4,7 +4,7 @@ import TitleBody from './title-body';
 import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
 const onChangeGalleries = (onChange) => (gallery) => {
-    onChange({ gallery: gallery[0] });
+    onChange({ gallery: gallery[0] || null });
 };
 
 const onChangeStories = (onChange) => (story) => {
@@ -21,7 +21,7 @@ const Template = ({
 
         <ChipInput
             model="galleries"
-            attr="id"
+            queryAttr="id"
             placeholder="Gallery"
             items={(gallery && [gallery]) || []}
             updateItems={onChangeGalleries(onChange)}
@@ -33,12 +33,13 @@ const Template = ({
 
         <ChipInput
             model="stories"
-            attr="title"
+            queryAttr="title"
             placeholder="Story"
             items={(story && [story]) || []}
             updateItems={onChangeStories(onChange)}
             multiple={false}
             className="push-notifs__chip-input"
+            createNew={false}
             autocomplete
             initMaterial
         />

@@ -73,22 +73,6 @@ export default class Body extends React.Component {
         window.open(url, '_blank');
     }
 
-    emailStatement = () => {
-        $.ajax({
-            url: '/api/outlet/emailStatement',
-            type: 'GET',
-            dataType: 'json',
-            success: () => {
-                $.snackbar({
-                    content: 'Account statement successfully sent! Please check your email.',
-                });
-            },
-            error: () => {
-                $.snackbar({ content: 'Could not email statement' });
-            },
-        });
-    }
-
     render() {
         const { outlet, user, activeTab } = this.props;
 
@@ -113,8 +97,7 @@ export default class Body extends React.Component {
                     </div>
                 </div>
                 <div className={`tab ${activeTab === 'Purchases' ? 'toggled' : ''}`}>
-                    <Purchases
-                        emailStatement={this.emailStatement}
+                    <PurchasesBody
                         downloadExports={this.downloadExports}
                         loadPurchases={this.loadPurchases}
                         loadStats={this.loadStats}

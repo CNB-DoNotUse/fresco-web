@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import differenceBy from 'lodash/differenceBy';
+import get from 'lodash/get';
+import 'app/sass/platform/_admin';
 import App from './app';
 import TopBar from './../components/admin/topbar';
 import Assignments from './../components/admin/assignments';
 import Galleries from './../components/admin/galleries';
-import differenceBy from 'lodash/differenceBy';
-import get from 'lodash/get';
-import 'app/sass/platform/_admin';
 
 /**
  * Admin Page Component (composed of Admin Component and Navbar)
@@ -58,7 +58,7 @@ class Admin extends React.Component {
         this.setState({ activeTab: tab });
     }
 
-    getData(last, options, callback) {
+    getData = (options, callback, last = null) => {
         const tab = options.tab || this.state.activeTab;
         let params = {};
         let endpoint = '';
@@ -136,7 +136,7 @@ class Admin extends React.Component {
     }
 
     refresh = () => {
-        this.getData(undefined, { tab: this.state.activeTab }, (data) => {
+        this.getData({ tab: this.state.activeTab }, (data) => {
             const oldData = this.state[this.state.activeTab];
             const newData = differenceBy(data, oldData, 'id');
 
@@ -155,7 +155,7 @@ class Admin extends React.Component {
     }
 
     resetAssignments() {
-        this.getData(undefined, { tab: 'assignments' }, (assignments) => {
+        this.getData({ tab: 'assignments' }, (assignments) => {
             this.setState({
                 activeTab: 'assignments',
                 assignments: assignments.length ? assignments : this.state.assignments,
@@ -164,7 +164,7 @@ class Admin extends React.Component {
     }
 
     resetSubmissions() {
-        this.getData(undefined, { tab: 'submissions' }, (submissions) => {
+        this.getData({ tab: 'submissions' }, (submissions) => {
             this.setState({
                 activeTab: 'submissions',
                 submissions: submissions.length ? submissions : this.state.submissions,
@@ -173,7 +173,7 @@ class Admin extends React.Component {
     }
 
     resetImports() {
-        this.getData(undefined, { tab: 'imports' }, (imports) => {
+        this.getData({ tab: 'imports' }, (imports) => {
             this.setState({
                 activeTab: 'imports',
                 imports: imports.length ? imports : this.state.imports,
@@ -185,23 +185,22 @@ class Admin extends React.Component {
      * Query for initial data. Set the active tab to a tab with data.
      */
     loadInitial() {
-        this.getData(undefined, { tab: 'submissions' }, (submissions) => {
-            this.setState({
-                submissions: this.state.submissions.concat(submissions),
-            });
-        });
-
-        this.getData(undefined, { tab: 'assignments' }, (assignments) => {
-            this.setState({ assignments });
-        });
-
-        this.getData(undefined, { tab: 'imports' }, (imports) => {
-            this.setState({
-                activeTab: (imports.length && !this.state.submissions.length)
-                    ? 'imports'
-                    : 'submissions',
-                imports: this.state.imports.concat(imports),
-            });
+        this.getData({ tab: 'submissions' }, (submissions) => {
+            if(submissions.length) {
+                this.setState({
+                    activeTab: 'submissions',
+                    submissions: this.state.submissions.concat(submissions)
+                });
+            } else {
+                this.getData({ tab: 'imports' }, (imports) => {
+                    this.setState({
+                        activeTab: (imports.length && !this.state.submissions.length)
+                            ? 'imports'
+                            : 'submissions',
+                        imports: this.state.imports.concat(imports),
+                    });
+                });
+            }
         });
     }
 
@@ -223,7 +222,7 @@ class Admin extends React.Component {
             tab = (
                 <Assignments
                     assignments={this.getAssignments()}
-                    getData={(l, o, cb) => this.getData(l, o, cb)}
+                    getData={this.getData}
                     removeAssignment={(id, cb) => this.removeAssignment(id, cb)}
                 />
             );
@@ -232,7 +231,7 @@ class Admin extends React.Component {
             tab = (
                 <Galleries
                     galleries={this.state.submissions}
-                    getData={(l, o, cb) => this.getData(l, o, cb)}
+                    getData={this.getData}
                     removeGallery={(id, cb) => this.removeSubmission(id, cb)}
                     galleryType="submissions"
                 />
@@ -242,7 +241,7 @@ class Admin extends React.Component {
             tab = (
                 <Galleries
                     galleries={this.state.imports}
-                    getData={(l, o, cb) => this.getData(l, o, cb)}
+                    getData={this.getData}
                     removeGallery={(id, cb) => this.removeImport(id, cb)}
                     galleryType="imports"
                 />

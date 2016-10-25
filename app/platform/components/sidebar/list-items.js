@@ -4,12 +4,13 @@ import Item from './item';
 const ListItems = ({ user }) => {
     if (!user) return null;
 
-    let admin = null;
-    let dispatch = null;
-    let outlet = null;
-    let purchases = null;
-    let push = null;
-    let stats = null;
+    let admin;
+    let dispatch;
+    let outlet;
+    let purchases;
+    let push;
+    let stats;
+    let moderation;
 
     if (user.outlet) {
         dispatch = <Item link="/dispatch" icon="mdi-map" text="Dispatch" />;
@@ -18,6 +19,7 @@ const ListItems = ({ user }) => {
     if (user.permissions.includes('update-other-content')) {
         admin = <Item link="/admin" icon="mdi-dots-horizontal" text="Admin" />;
         push = <Item link="/push" icon="mdi-message-plus" text="Push" />;
+        moderation = <Item link="/moderation" icon="mdi-flag-variant" text="Moderation" />;
     }
     if (user.permissions.includes('get-all-purchases')) {
         purchases = <Item link="/purchases" icon="mdi-currency-usd" text="Purchases" />;
@@ -67,6 +69,7 @@ const ListItems = ({ user }) => {
             {dispatch}
             {push}
             {admin}
+            {moderation}
             {purchases}
             {stats}
             {outlet}

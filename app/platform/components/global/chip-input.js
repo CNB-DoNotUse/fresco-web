@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
 import reject from 'lodash/reject';
 import capitalize from 'lodash/capitalize';
+import utils from 'utils';
+import get from 'lodash/get';
+import api from 'app/lib/api';
 import Tag from '../global/tag';
 
 /**
@@ -13,21 +16,33 @@ class ChipInput extends React.Component {
     static propTypes = {
         items: PropTypes.array.isRequired,
         updateItems: PropTypes.func.isRequired,
+        modifyText: PropTypes.func,
         model: PropTypes.string.isRequired,
-        attr: PropTypes.string,
+        queryAttr: PropTypes.string,
+        altAttr: PropTypes.string,
         initMaterial: PropTypes.bool,
         className: PropTypes.string,
         autocomplete: PropTypes.bool,
+        createNew: PropTypes.bool,
         multiple: PropTypes.bool,
+        idLookup: PropTypes.bool,
+        search: PropTypes.bool,
+        disabled: PropTypes.bool,
         placeholder: PropTypes.string,
+        params: PropTypes.object,
     };
 
     static defaultProps = {
         items: [],
+        params: {},
         initMaterial: false,
         className: '',
         autocomplete: false,
+        search: false,
+        createNew: true,
         multiple: true,
+        disabled: false,
+        modifyText(t) { return t; },
     };
 
     state = {
@@ -59,24 +74,12 @@ class ChipInput extends React.Component {
 
     onChangeQuery = (e) => {
         const query = e.target.value;
-        const { model, attr, autocomplete } = this.props;
-        this.setState({ query });
-        if (!autocomplete || !attr) return;
-
-        // Enter is pressed, and query is present
         if (!query.length === 0) {
             this.setState({ suggestions: [] });
-        } else {
-            $.ajax({
-                url: '/api/search',
-                data: { [`${model}[a][${attr}]`]: query },
-                success: (res) => {
-                    if (res[model] && res[model].results) {
-                        this.setState({ suggestions: res[model].results });
-                    }
-                },
-            });
+            return;
         }
+
+        this.setState({ query }, this.getSuggestions);
     }
 
     /**
@@ -86,31 +89,84 @@ class ChipInput extends React.Component {
      * @param {object} e key up event
      */
     onKeyUpQuery = (e) => {
-        const { attr, autocomplete } = this.props;
+        const { queryAttr, altAttr, createNew } = this.props;
         const { suggestions, query } = this.state;
 
+        // Enter is pressed, and query is present
         if (e.keyCode === 13 && query.length > 0) {
-            const matched = autocomplete && suggestions.find((s) => (
-                s.title.toLowerCase() === query.toLowerCase()
-            ));
-
-            if (!attr) {
+            if (!queryAttr) {
                 this.addItem(query);
                 return;
             }
 
-            this.addItem(matched || { [attr]: query });
+            const matched = suggestions.find((s) => (
+                s[queryAttr] && (s[queryAttr].toLowerCase() === query.toLowerCase())
+            )) || suggestions[0];
+
+            if (createNew && altAttr) {
+                this.addItem({ [queryAttr]: query, [altAttr]: query, new: true });
+            } else if (createNew) {
+                this.addItem({ [queryAttr]: query, new: true });
+            } else if (matched) this.addItem(matched);
         }
+    }
+
+    getSuggestions = () => {
+        const {
+            model,
+            queryAttr,
+            autocomplete,
+            idLookup,
+            search,
+            params,
+        } = this.props;
+        const { query } = this.state;
+        if (!autocomplete && !search) return;
+
+        if (search) {
+            api
+            .get('search', { [`${model}[q]`]: query, ...params })
+            .then(res => {
+                if (get(res, `${model}.results.length`)) {
+                    this.setState({ suggestions: res[model].results });
+                } else if (idLookup) {
+                    this.getModelById(query);
+                }
+            });
+            return;
+        }
+
+        api
+        .get('search', { [`${model}[a][${queryAttr}]`]: query, ...params })
+        .then(res => {
+            if (get(res, `${model}.results.length`)) {
+                this.setState({ suggestions: res[model].results });
+            } else if (idLookup) {
+                this.getModelById(query);
+            }
+        });
+    }
+
+    getModelById(id) {
+        const { model } = this.props;
+        api
+        .get(`${utils.pluralToSingularModel(model)}/${id}`)
+        .then(res => {
+            if (res) {
+                this.setState({ suggestions: [res] });
+            }
+        })
+        .catch(err => err);
     }
 
     /**
      * Adds story element, return if story exists in prop stories.
      */
     addItem(newItem) {
-        let { items, attr, multiple } = this.props;
+        let { items, queryAttr, multiple, altAttr } = this.props;
 
-        if (attr) {
-            if (!newItem[attr] || !newItem[attr].length) return;
+        if (queryAttr) {
+            if (!newItem[queryAttr] && !newItem[altAttr]) return;
             if (newItem.id && items.some((i) => (i.id === newItem.id))) return;
         } else if (items.some(i => i === newItem)) return;
 
@@ -123,37 +179,74 @@ class ChipInput extends React.Component {
     /**
      * Removes story and updates to parent
      */
-    removeItem(item) {
-        let { items, attr } = this.props;
+    onClickTag = (item) => {
+        if (this.props.disabled) return;
+        let { items, queryAttr } = this.props;
 
-        if (!attr) items = items.filter(i => i !== item);
+        if (!queryAttr) items = items.filter(i => i !== item);
         else if (item.id) items = reject(items, { id: item.id });
-        else items = reject(items, { [attr]: item[attr] });
+        else items = reject(items, { [queryAttr]: item[queryAttr] });
 
         this.props.updateItems(items);
     }
 
+    modifyText(text) {
+        return this.props.modifyText(text);
+    }
+
+    renderSuggestion(suggestion, key) {
+        const { queryAttr, altAttr } = this.props;
+        let text;
+        if (!altAttr) text = suggestion[queryAttr];
+        else if (suggestion[queryAttr]) {
+            text = (
+                <span className="chip__primary-text">
+                    {`${suggestion[queryAttr]} `}
+                    <span className="chip__alt-text">
+                        {suggestion[altAttr] || ''}
+                    </span>
+                </span>
+            );
+        } else if (suggestion[altAttr]) {
+            text = (
+                <span className="chips__primary-text" >
+                    suggestion[altAttr]
+                </span>
+            );
+        }
+
+        return (
+            <li onClick={() => this.addItem(suggestion)} key={key}>
+                {text}
+            </li>
+        );
+    }
+
     render() {
         const { query, suggestions } = this.state;
-        const { items, attr, model, placeholder } = this.props;
-        const itemsJSX = items.map((item, i) => (
-            <Tag
-                text={attr ? item[attr] : item}
-                plus={false}
-                onClick={() => this.removeItem(item)}
-                key={i}
-            />
-        ));
+        const { items, queryAttr, altAttr, model, placeholder, disabled } = this.props;
+        const itemsJSX = items.map((item, i) => {
+            const text = queryAttr ? item[queryAttr] : item;
+
+            return (
+                <Tag
+                    text={this.modifyText(text)}
+                    altText={altAttr ? item[altAttr] : ''}
+                    plus={false}
+                    onClick={this.onClickTag(item)}
+                    key={i}
+                    hasAlt={!!altAttr}
+                />
+            );
+        });
 
         const suggestionsJSX = suggestions.map((suggestion, i) => (
-            <li onClick={() => this.addItem(suggestion)} key={i}>
-                {suggestion[attr]}
-            </li>
+            this.renderSuggestion(suggestion, i)
         ));
 
         return (
             <div
-                ref={r => this.area = r}
+                ref={r => { this.area = r; }}
                 className={`split chips form-group-default ${this.props.className}`}
             >
                 <div className="split-cell">
@@ -164,6 +257,7 @@ class ChipInput extends React.Component {
                         onChange={this.onChangeQuery}
                         onKeyUp={this.onKeyUpQuery}
                         value={query}
+                        disabled={disabled}
                     />
 
                     <ul
@@ -183,4 +277,3 @@ class ChipInput extends React.Component {
 }
 
 export default ChipInput;
-

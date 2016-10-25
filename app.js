@@ -37,6 +37,12 @@ app.set('view engine', 'ejs');
 app.use(compression())
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
+//Set up public directory
+app.use(
+    express.static(path.join(__dirname, 'public'), {
+        maxAge: 1000 * 60 * 60 * 24  // 1 day cache
+    })
+);
 
 //Multer
 const storage = multer.diskStorage({
@@ -48,11 +54,9 @@ const storage = multer.diskStorage({
     }
 });
 
-app.use(
-    multer({
-        storage: storage
-    }).any()
-);
+app.use(multer({
+    storage: storage
+}).any());
 
 //Cookie parser
 app.use(cookieParser());
@@ -71,28 +75,20 @@ app.use(
     })
 );
 
-//Set up public directory
-app.use(
-    express.static(path.join(__dirname, 'public'), {
-        maxAge: 1000 * 60 * 60 * 2 // 2 hour cache
-    })
-);
-
-
 /**
  * Alert & Verifications check
  */
 app.use((req, res, next) => {
     res.locals.alerts = [];
 
-    if (req.session && req.session.user && !req.session.user.verified){
-        res.locals.alerts.push('\
-            <p>Your email hasn\'t been verified.\
-                <br>Please click on the link sent to your inbox to verify your email!\
-            </p>\
-            <a href="/scripts/user/verify/resend">RESEND EMAIL</a>'
-        );
-    }
+    // if (req.session && req.session.user && !req.session.user.verified){
+    //     res.locals.alerts.push('\
+    //         <p>Your email hasn\'t been verified.\
+    //             <br>Please click on the link sent to your inbox to verify your email!\
+    //         </p>\
+    //         <a href="/scripts/user/verify/resend">RESEND EMAIL</a>'
+    //     );
+    // }
 
     if (req.session && req.session.alerts){
         res.locals.alerts = res.locals.alerts.concat(req.session.alerts);

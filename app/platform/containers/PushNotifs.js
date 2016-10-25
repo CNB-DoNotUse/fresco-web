@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
+import Confirm from '../components/dialogs/confirm';
+import Info from '../components/dialogs/info';
 import TopBar from '../components/topbar';
 import Default from '../components/pushNotifs/default-template';
 import GalleryList from '../components/pushNotifs/gallery-list-template';
@@ -15,12 +17,15 @@ class PushNotifs extends React.Component {
     static propTypes = {
         onSetActiveTab: PropTypes.func.isRequired,
         onChangeTemplate: PropTypes.func.isRequired,
-        onConfirmDialog: PropTypes.func.isRequired,
+        onDismissAlert: PropTypes.func.isRequired,
         onSend: PropTypes.func.isRequired,
         activeTab: PropTypes.string.isRequired,
         loading: PropTypes.bool.isRequired,
         templates: PropTypes.object.isRequired,
-        dialog: PropTypes.string,
+        requestConfirmSend: PropTypes.bool.isRequired,
+        cancelSend: PropTypes.func.isRequired,
+        confirmSend: PropTypes.func.isRequired,
+        alert: PropTypes.string,
     };
 
     componentDidMount() {
@@ -37,38 +42,51 @@ class PushNotifs extends React.Component {
         const { activeTab, onChangeTemplate, templates } = this.props;
 
         switch (activeTab.toLowerCase()) {
-            case 'gallery list':
-                return <GalleryList
+        case 'gallery list':
+            return (
+                <GalleryList
                     {...templates.get('gallery list', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'gallery list')}
-                />;
-            case 'assignment':
-                return <Assignment
+                />
+            );
+        case 'assignment':
+            return (
+                <Assignment
                     {...templates.get('assignment', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'assignment')}
-                />;
-            case 'recommend':
-                return <Recommend
+                />
+            );
+        case 'recommend':
+            return (
+                <Recommend
                     {...templates.get('recommend', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'recommend')}
-                />;
-            case 'default':
-            default:
-                return <Default
+                />
+            );
+        case 'default':
+        default:
+            return (
+                <Default
                     {...templates.get('default', Map()).toJS()}
                     onChange={partial(onChangeTemplate, 'default')}
-                />;
+                />
+            );
         }
     }
 
     render() {
         const {
             onSetActiveTab,
-            onConfirmDialog,
-            activeTab,
+            onDismissAlert,
             onSend,
+            onCloseInfoDialog,
+            activeTab,
             loading,
-            dialog,
+            alert,
+            requestConfirmSend,
+            cancelSend,
+            confirmSend,
+            infoDialog,
         } = this.props;
 
         return (
@@ -79,15 +97,16 @@ class PushNotifs extends React.Component {
                     setActiveTab={onSetActiveTab}
                     activeTab={activeTab}
                 />
-                <div className="push-notifs__tab row">
+                <div className="push-notifs__tab">
                     <div className="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
                         <Snackbar
-                            message={dialog || ''}
-                            open={!!dialog}
+                            message={alert || ''}
+                            open={!!alert}
                             autoHideDuration={5000}
-                            onRequestClose={onConfirmDialog}
-                            onActionTouchTap={onConfirmDialog}
-                            onClick={onConfirmDialog}
+                            onRequestClose={onDismissAlert}
+                            onActionTouchTap={onDismissAlert}
+                            onClick={onDismissAlert}
+                            bodyStyle={{ height: 'auto', whiteSpace: 'pre-line' }}
                         />
                         {this.renderTemplate()}
                         <button
@@ -99,6 +118,22 @@ class PushNotifs extends React.Component {
                             Send
                         </button>
                     </div>
+
+                    <Confirm
+                        text={"Send notification?"}
+                        onConfirm={partial(confirmSend, activeTab)}
+                        onCancel={cancelSend}
+                        toggled={requestConfirmSend}
+                        disabled={loading}
+                        hasInput={false}
+                    />
+
+                    <Info
+                        onClose={onCloseInfoDialog}
+                        header={infoDialog.get('header')}
+                        body={infoDialog.get('body')}
+                        toggled={infoDialog.get('visible')}
+                    />
                 </div>
             </div>
         );
@@ -110,14 +145,19 @@ function mapStateToProps(state) {
         activeTab: state.getIn(['pushNotifs', 'activeTab']),
         templates: state.getIn(['pushNotifs', 'templates']),
         loading: state.getIn(['pushNotifs', 'loading']),
-        dialog: state.getIn(['pushNotifs', 'dialog']),
+        alert: state.getIn(['pushNotifs', 'alert']),
+        requestConfirmSend: state.getIn(['pushNotifs', 'requestConfirmSend']),
+        infoDialog: state.getIn(['pushNotifs', 'infoDialog']),
     };
 }
 
 export default connect(mapStateToProps, {
     onSetActiveTab: pushActions.setActiveTab,
     onChangeTemplate: pushActions.updateTemplate,
-    onConfirmDialog: pushActions.confirmDialog,
+    onDismissAlert: pushActions.dismissAlert,
     onSend: pushActions.send,
+    confirmSend: pushActions.confirmSend,
+    cancelSend: pushActions.cancelSend,
+    onCloseInfoDialog: pushActions.closeInfoDialog,
 })(PushNotifs);
 

@@ -4,6 +4,7 @@ import utils from 'utils';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
 import AutocompleteMap from '../global/autocomplete-map';
+import ExplicitCheckbox from '../global/explicit-checkbox';
 import ChipInput from '../global/chip-input';
 import EditPosts from './../gallery/edit-posts';
 import EditByline from './../gallery/edit-byline';
@@ -12,16 +13,18 @@ import EditByline from './../gallery/edit-byline';
  *	Admin Gallery Edit component.
  *	Delete, Skip, Verify galleries
  */
-class GalleryEdit extends React.Component {
-    constructor(props) {
-        super(props);
+export default class GalleryEdit extends React.Component {
+    static propTypes = {
+        gallery: PropTypes.object.isRequired,
+        galleryType: PropTypes.string.isRequired,
+        onUpdateGallery: PropTypes.func.isRequired,
+    };
 
-        this.state = this.getStateFromProps(props);
-    }
+    state = this.getStateFromProps(this.props);
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.gallery.id !== nextProps.gallery.id) {
-            this.setState(this.getStateFromProps(nextProps));
+    componentDidUpdate(prevProps) {
+        if (this.props.gallery.id !== prevProps.gallery.id) {
+            this.setState(this.getStateFromProps(this.props));
             this.refs['gallery-caption'].className =
                 this.refs['gallery-caption'].className.replace(/\bempty\b/, '');
         }
@@ -139,7 +142,7 @@ class GalleryEdit extends React.Component {
             editButtonsEnabled: false,
             tags: gallery.tags || [],
             stories: gallery.stories || [],
-            assignment: null,
+            assignment: get(gallery, 'assignments[0]'),
             caption: gallery.caption || 'No Caption',
             loading: false,
             external_account_name: gallery.external_account_name,
@@ -163,6 +166,7 @@ class GalleryEdit extends React.Component {
             external_account_name,
             external_source,
             rating,
+            is_nsfw
         } = this.state;
         const { gallery } = this.props;
 
@@ -175,6 +179,7 @@ class GalleryEdit extends React.Component {
             tags,
             caption,
             address,
+            is_nsfw,
             ...this.getPostsUpdateParams(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             external_account_name,
@@ -239,6 +244,10 @@ class GalleryEdit extends React.Component {
         this.setState({ stories });
     }
 
+    toggle_is_nsfw = () => {
+        this.setState({ is_nsfw: !this.state.is_nsfw });
+    }
+
 	/**
 	 * Called when caption input fires keyUp event
 	 */
@@ -258,6 +267,7 @@ class GalleryEdit extends React.Component {
             loading,
             external_account_name,
             external_source,
+            is_nsfw
         } = this.state;
 
         if (!gallery) {
@@ -293,7 +303,7 @@ class GalleryEdit extends React.Component {
                     <ChipInput
                         model="assignments"
                         placeholder="Assignment"
-                        attr="title"
+                        queryAttr="title"
                         items={assignment ? [assignment] : []}
                         updateItems={(a) => this.setState({ assignment: a[0] })}
                         multiple={false}
@@ -311,11 +321,16 @@ class GalleryEdit extends React.Component {
 
                     <ChipInput
                         model="stories"
-                        attr="title"
+                        queryAttr="title"
                         items={stories}
                         updateItems={this.updateStories}
                         className="dialog-row"
                         autocomplete
+                    />
+
+                    <ExplicitCheckbox
+                        is_nsfw={is_nsfw}
+                        onChange={this.toggle_is_nsfw}
                     />
 
                     <AutocompleteMap
@@ -332,7 +347,7 @@ class GalleryEdit extends React.Component {
                 <div className="dialog-foot">
                     <button
                         type="button"
-                        className="btn btn-flat gallery-revert"
+                        className="btn btn-flat"
                         onClick={() => this.revert()}
                         disabled={loading}
                     >
@@ -340,25 +355,25 @@ class GalleryEdit extends React.Component {
                     </button>
                     <button
                         type="button"
-                        className="btn btn-flat pull-right gallery-verify"
-                        onClick={() => this.setState({ rating: 2 },
-                            () => this.onVerify())}
+                        className="btn btn-flat pull-right"
+                        onClick={() => this.setState({ rating: 2 }, () => this.onVerify())}
                         disabled={loading}
                     >
                         Verify
                     </button>
+                    {galleryType === 'submissions' && (
+                        <button
+                            type="button"
+                            className="btn btn-flat pull-right"
+                            onClick={() => this.setState({ rating: 1 }, () => this.onSkip())}
+                            disabled={loading}
+                        >
+                            Skip
+                        </button>
+                    )}
                     <button
                         type="button"
-                        className="btn btn-flat pull-right gallery-skip"
-                        onClick={() => this.setState({ rating: 1 },
-                            () => this.onSkip())}
-                        disabled={loading}
-                    >
-                        Skip
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-flat pull-right gallery-delete"
+                        className="btn btn-flat pull-right"
                         onClick={() => this.onRemove()}
                         disabled={loading}
                     >
@@ -369,12 +384,4 @@ class GalleryEdit extends React.Component {
 		);
     }
 }
-
-GalleryEdit.propTypes = {
-    gallery: PropTypes.object.isRequired,
-    galleryType: PropTypes.string.isRequired,
-    onUpdateGallery: PropTypes.func.isRequired,
-};
-
-export default GalleryEdit;
 
