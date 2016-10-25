@@ -360,6 +360,7 @@ const gallery = (state, action) => {
 const galleries = (state = fromJS({
     entities: OrderedSet(),
     loading: false,
+    requestDeleted: Map(),
 }), action = {}) => {
     if (action.entityType && action.entityType !== 'gallery') return state;
 
@@ -377,7 +378,16 @@ const galleries = (state = fromJS({
     case TOGGLE_SUSPEND_USER:
         return state.update('entities', es => es.map(e => gallery(e, action)));
     case CONFIRM_DELETE_CARD:
-        return state.update('entities', es => es.filterNot(e => e.get('id') === action.id));
+        return state
+            .update('entities', es => es.filterNot(e => e.get('id') === action.id))
+            .set('requestDeleted', Map());
+    case REQUEST_DELETE_CARD:
+        return state.set('requestDeleted', fromJS({
+            id: action.id,
+            entityType: action.entityType,
+        }));
+    case CANCEL_DELETE_CARD:
+        return state.set('requestDeleted', Map());
     default:
         return state;
     }
@@ -400,6 +410,7 @@ const user = (state, action) => {
 const users = (state = fromJS({
     entities: OrderedSet(),
     loading: false,
+    requestDeleted: Map(),
 }), action = {}) => {
     if (action.entityType && action.entityType !== 'user') return state;
 
@@ -416,7 +427,16 @@ const users = (state = fromJS({
     case TOGGLE_SUSPEND_USER:
         return state.update('entities', es => es.map(e => user(e, action)));
     case CONFIRM_DELETE_CARD:
-        return state.update('entities', es => es.filterNot(e => e.get('id') === action.id));
+        return state
+            .update('entities', es => es.filterNot(e => e.get('id') === action.id))
+            .set('requestDeleted', Map());
+    case REQUEST_DELETE_CARD:
+        return state.set('requestDeleted', fromJS({
+            id: action.id,
+            entityType: action.entityType,
+        }));
+    case CANCEL_DELETE_CARD:
+        return state.set('requestDeleted', Map());
     default:
         return state;
     }
@@ -462,7 +482,6 @@ const ui = (state = fromJS({
     activeTab: 'galleries',
     filters: fromJS({ galleries: Set(), users: Set() }),
     suspendedDialog: false,
-    requestDeleted: Map(),
     infoDialog: fromJS({ open: false, header: '', body: '' }),
     error: null,
     alert: null }), action = {}) => {
@@ -487,13 +506,6 @@ const ui = (state = fromJS({
         return state.set('alert', action.data);
     case DISMISS_ALERT:
         return state.set('alert', null);
-    case REQUEST_DELETE_CARD:
-        return state.set('requestDeleted', fromJS(
-            { entityType: action.entityType, id: action.id }
-        ));
-    case CANCEL_DELETE_CARD:
-    case CONFIRM_DELETE_CARD:
-        return state.set('requestDeleted', Map());
     default:
         return state;
     }
