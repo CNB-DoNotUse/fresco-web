@@ -10,8 +10,8 @@ const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
 
 const initialState = fromJS({
-    galleries: fromJS({ entities: OrderedSet(), loading: false }),
-    users: fromJS({ entities: OrderedSet(), loading: false }),
+    galleries: fromJS({ entities: OrderedSet(), loading: false, requestDeleted: {} }),
+    users: fromJS({ entities: OrderedSet(), loading: false, requestDeleted: {} }),
     suspendedUsers: fromJS({ entities: OrderedSet(), loading: false }),
     reports: fromJS({ galleries: {}, users: {}, loading: false }),
     ui: fromJS({
