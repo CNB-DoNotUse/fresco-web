@@ -30,6 +30,8 @@ class FrescoImage extends React.Component {
 
     placeholderUrl = `${utils.CDN}/images/missing.png`;
 
+    missingUrl = `${utils.CDN}/images/missing.png`;
+
     state = {
         placeholderStyle: this.props.placeholderStyle,
         hidePlaceholder: false,
@@ -104,8 +106,12 @@ class FrescoImage extends React.Component {
     render() {
         const style = Object.assign({}, this.props.style, this.state.placeholderStyle);
 
+        const backgroundStyle = {
+            'backgroundImage': this.state.hidePlaceholder ? '' : `url(${this.placeholderUrl})`,
+        }
+
         if(this.props.loadWithPlaceholder) {
-            return <div>
+            return <div className="img-cover-bg" style={backgroundStyle}>
                 <img
                     className={this.props.className || 'img-cover'}
                     style={{ display: this.state.hidePlaceholder ? 'block' : 'none' }}
@@ -113,11 +119,6 @@ class FrescoImage extends React.Component {
                     onLoad={this.onLoad}
                     onError={this.onError}
                     src={this.state.formattedSrc}
-                />
-                <img
-                    className={this.props.className || 'img-cover'}
-                    style={{ display: this.state.hidePlaceholder ? 'none' : 'block' }}
-                    src={this.placeholderUrl}
                 />
             </div>
         } else {

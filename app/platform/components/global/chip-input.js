@@ -179,7 +179,7 @@ class ChipInput extends React.Component {
     /**
      * Removes story and updates to parent
      */
-    onClickTag(item) {
+    onClickTag = (item) => {
         if (this.props.disabled) return;
         let { items, queryAttr } = this.props;
 
@@ -233,7 +233,7 @@ class ChipInput extends React.Component {
                     text={this.modifyText(text)}
                     altText={altAttr ? item[altAttr] : ''}
                     plus={false}
-                    onClick={() => this.onClickTag(item)}
+                    onClick={this.onClickTag(item)}
                     key={i}
                     hasAlt={!!altAttr}
                 />
