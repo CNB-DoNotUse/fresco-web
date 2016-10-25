@@ -1,7 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
-import { fromJS, Set, OrderedSet } from 'immutable';
+import { fromJS, Set, OrderedSet, Map } from 'immutable';
 import { expect } from 'chai';
 import reducer, * as actions from 'app/redux/modules/moderation';
 import 'isomorphic-fetch';
@@ -23,12 +23,12 @@ describe('moderation ui reducer', () => {
         expect(reducer(undefined, {}).get('ui')).to.equal(initialState);
     });
 
-    it('should handle TOGGLE_SUSPENDED_DIALOG', () => {
+    it('handles TOGGLE_SUSPENDED_DIALOG', () => {
         expect(reducer(undefined, actions.toggleSuspendedDialog()))
         .to.have.deep.property('ui.suspendedDialog', true);
     });
 
-    it('should handle TOGGLE_INFO_DIALOG', () => {
+    it('handles TOGGLE_INFO_DIALOG', () => {
         const state = reducer(undefined, actions.toggleInfoDialog({
             open: true, header: 'Fresco header', body: 'Fresco body',
         }));
@@ -38,28 +38,188 @@ describe('moderation ui reducer', () => {
         expect(state).to.have.deep.property('ui.infoDialog.body', 'Fresco body');
     });
 
-    it('should handle TOGGLE_FILTER', () => {
+    it('handles TOGGLE_FILTER', () => {
         const state = reducer(undefined, actions.toggleFilter('galleries', 'abuse'));
 
         expect(state).to.have.deep.property('ui.filters.galleries', Set.of('abuse'));
     });
 
-    it('should handle SET_ACTIVE_TAB', () => {
+    it('handles SET_ACTIVE_TAB', () => {
         const state = reducer(undefined, actions.setActiveTab('users'));
         expect(state).to.have.deep.property('ui.activeTab', 'users');
     });
 
-    it('should handle SET_ALERT', () => {
+    it('handles SET_ALERT', () => {
         const state = reducer(undefined, { type: actions.SET_ALERT, data: 'Alert!' });
         expect(state).to.have.deep.property('ui.alert', 'Alert!');
     });
 
-    it('should handle DISMISS_ALERT', () => {
+    it('handles DISMISS_ALERT', () => {
         let state = reducer(undefined, { type: actions.SET_ALERT, data: 'Alert!' });
         expect(state).to.have.deep.property('ui.alert', 'Alert!');
 
-        state = reducer(undefined, { type: actions.DISMISS_ALERT });
+        state = reducer(state, { type: actions.DISMISS_ALERT });
         expect(state).to.have.deep.property('ui.alert', null);
+    });
+});
+
+describe('moderation reports reducer', () => {
+    it('handles FETCH_REPORTS_SUCCESS', () => {
+        const state = reducer(undefined, {
+            type: actions.FETCH_REPORTS_SUCCESS,
+            reports: [{ id: '1' }, { id: '2' }],
+            entityType: 'users',
+            id: '1',
+        });
+
+        expect(state).to.have.deep.property('reports.users.1').that.equals(
+            fromJS({ reports: [{ id: '1' }, { id: '2' }], index: 0 })
+        );
+    });
+
+    it('handles SET_REPORTS_INDEX', () => {
+        const state = reducer(undefined, {
+            type: actions.SET_REPORTS_INDEX,
+            entityType: 'users',
+            ownerId: '1',
+            index: 3,
+        });
+
+        expect(state).to.have.deep.property('reports.users.1.index').that.equals(3);
+    });
+});
+
+describe('moderation suspendedUsers reducer', () => {
+    it('handles FETCH_SUSPENDED_USERS_SUCCESS', () => {
+        const state = reducer(undefined, {
+            type: actions.FETCH_SUSPENDED_USERS_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }],
+        });
+
+        expect(state).to.have.deep.property(
+            'suspendedUsers.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
+    });
+
+    it('handles RESTORE_SUSPENDED_USER', () => {
+        const state = reducer(undefined, {
+            type: actions.FETCH_SUSPENDED_USERS_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }],
+        });
+
+        expect(state).to.have.deep.property(
+            'suspendedUsers.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
+    });
+});
+
+describe('moderation users reducer', () => {
+    it('handles FETCH_USERS_SUCCESS', () => {
+        const state = reducer(undefined, {
+            type: actions.FETCH_USERS_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }],
+        });
+
+        expect(state).to.have.deep.property(
+            'users.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
+    });
+
+    it('handles REQUEST_DELETE_CARD', () => {
+        const state = reducer(undefined, {
+            type: actions.REQUEST_DELETE_CARD,
+            id: '3',
+            entityType: 'user',
+        });
+
+        expect(state).to.have.deep.property(
+            'users.requestDeleted',
+            fromJS({ id: '3', entityType: 'user' })
+        );
+    });
+
+    it('handles CONFIRM_DELETE_CARD', () => {
+        let state = reducer(undefined, {
+            type: actions.FETCH_USERS_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }, { id: '3' }],
+        });
+
+        expect(state).to.have.deep.property('users.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }, { id: '3' }]))
+        );
+
+        state = reducer(state, {
+            type: actions.REQUEST_DELETE_CARD,
+            id: '3',
+            entityType: 'user',
+        });
+
+        state = reducer(state, {
+            type: actions.CONFIRM_DELETE_CARD,
+            id: '3',
+        });
+
+        expect(state).to.have.deep.property('users.requestDeleted', Map());
+        expect(state).to.have.deep.property('users.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
+    });
+});
+
+describe('moderation galleries reducer', () => {
+    it('handles FETCH_GALLERIES_SUCCESS', () => {
+        const state = reducer(undefined, {
+            type: actions.FETCH_GALLERIES_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }],
+        });
+
+        expect(state).to.have.deep.property(
+            'galleries.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
+    });
+
+    it('handles REQUEST_DELETE_CARD', () => {
+        const state = reducer(undefined, {
+            type: actions.REQUEST_DELETE_CARD,
+            id: '3',
+            entityType: 'gallery',
+        });
+
+        expect(state).to.have.deep.property(
+            'galleries.requestDeleted',
+            fromJS({ id: '3', entityType: 'gallery' })
+        );
+    });
+
+    it('handles CONFIRM_DELETE_CARD', () => {
+        let state = reducer(undefined, {
+            type: actions.FETCH_GALLERIES_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }, { id: '3' }],
+        });
+
+        expect(state).to.have.deep.property('galleries.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }, { id: '3' }]))
+        );
+
+        state = reducer(state, {
+            type: actions.REQUEST_DELETE_CARD,
+            id: '3',
+            entityType: 'gallery',
+        });
+
+        state = reducer(state, {
+            type: actions.CONFIRM_DELETE_CARD,
+            id: '3',
+        });
+
+        expect(state).to.have.deep.property('galleries.requestDeleted', Map());
+        expect(state).to.have.deep.property('galleries.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
     });
 });
 
@@ -87,20 +247,6 @@ describe('moderation async action creators', () => {
         fetchMock
         .mock(/\/api\/gallery\/\d+\/reports+/, { body: [{ id: '1' }, { id: '2' }] });
 
-        // const expectedActions = [
-        //     {
-        //         entityType: 'galleries',
-        //         id: '1',
-        //         reports: [{ id: '1' }, { id: '2' }],
-        //         type: actions.FETCH_REPORTS_SUCCESS,
-        //     },
-        //     {
-        //         entityType: 'galleries',
-        //         id: '2',
-        //         reports: [{ id: '1' }, { id: '2' }],
-        //         type: actions.FETCH_REPORTS_SUCCESS,
-        //     },
-        // ];
         const store = mockStore(fromJS({ moderation: initialState }));
 
         return store.dispatch(actions.fetchGalleries())

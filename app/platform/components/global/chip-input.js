@@ -173,7 +173,7 @@ class ChipInput extends React.Component {
         if (multiple) items = items.concat(newItem);
         else items = [newItem];
 
-        this.setState({ query: '' }, this.props.updateItems(items));
+        this.setState({ query: '' }, () => this.props.updateItems(items));
     }
 
     /**
@@ -233,7 +233,7 @@ class ChipInput extends React.Component {
                     text={this.modifyText(text)}
                     altText={altAttr ? item[altAttr] : ''}
                     plus={false}
-                    onClick={this.onClickTag(item)}
+                    onClick={() => this.onClickTag(item)}
                     key={i}
                     hasAlt={!!altAttr}
                 />
