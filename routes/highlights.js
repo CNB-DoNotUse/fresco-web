@@ -16,8 +16,6 @@ router.get('/', (req, res, next) => {
         title: title
     };
 
-    console.log('Highlights');
-
     res.render('app', {
         alerts: req.alerts,
         page : 'highlights',
