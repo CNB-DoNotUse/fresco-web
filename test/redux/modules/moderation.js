@@ -1,7 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
-import { fromJS, Set, OrderedSet } from 'immutable';
+import { fromJS, Set, OrderedSet, Map } from 'immutable';
 import { expect } from 'chai';
 import reducer, * as actions from 'app/redux/modules/moderation';
 import 'isomorphic-fetch';
@@ -58,7 +58,7 @@ describe('moderation ui reducer', () => {
         let state = reducer(undefined, { type: actions.SET_ALERT, data: 'Alert!' });
         expect(state).to.have.deep.property('ui.alert', 'Alert!');
 
-        state = reducer(undefined, { type: actions.DISMISS_ALERT });
+        state = reducer(state, { type: actions.DISMISS_ALERT });
         expect(state).to.have.deep.property('ui.alert', null);
     });
 });
@@ -90,11 +90,137 @@ describe('moderation reports reducer', () => {
 });
 
 describe('moderation suspendedUsers reducer', () => {
-    const initialState = fromJS({
-        suspendedUsers: { entities: OrderedSet(), loading: false },
+    it('handles FETCH_SUSPENDED_USERS_SUCCESS', () => {
+        const state = reducer(undefined, {
+            type: actions.FETCH_SUSPENDED_USERS_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }],
+        });
+
+        expect(state).to.have.deep.property(
+            'suspendedUsers.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
     });
 
-    // it('handles ')
+    it('handles RESTORE_SUSPENDED_USER', () => {
+        const state = reducer(undefined, {
+            type: actions.FETCH_SUSPENDED_USERS_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }],
+        });
+
+        expect(state).to.have.deep.property(
+            'suspendedUsers.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
+    });
+});
+
+describe('moderation users reducer', () => {
+    it('handles FETCH_USERS_SUCCESS', () => {
+        const state = reducer(undefined, {
+            type: actions.FETCH_USERS_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }],
+        });
+
+        expect(state).to.have.deep.property(
+            'users.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
+    });
+
+    it('handles REQUEST_DELETE_CARD', () => {
+        const state = reducer(undefined, {
+            type: actions.REQUEST_DELETE_CARD,
+            id: '3',
+            entityType: 'user',
+        });
+
+        expect(state).to.have.deep.property(
+            'users.requestDeleted',
+            fromJS({ id: '3', entityType: 'user' })
+        );
+    });
+
+    it('handles CONFIRM_DELETE_CARD', () => {
+        let state = reducer(undefined, {
+            type: actions.FETCH_USERS_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }, { id: '3' }],
+        });
+
+        expect(state).to.have.deep.property('users.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }, { id: '3' }]))
+        );
+
+        state = reducer(state, {
+            type: actions.REQUEST_DELETE_CARD,
+            id: '3',
+            entityType: 'user',
+        });
+
+        state = reducer(state, {
+            type: actions.CONFIRM_DELETE_CARD,
+            id: '3',
+        });
+
+        expect(state).to.have.deep.property('users.requestDeleted', Map());
+        expect(state).to.have.deep.property('users.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
+    });
+});
+
+describe('moderation galleries reducer', () => {
+    it('handles FETCH_GALLERIES_SUCCESS', () => {
+        const state = reducer(undefined, {
+            type: actions.FETCH_GALLERIES_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }],
+        });
+
+        expect(state).to.have.deep.property(
+            'galleries.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
+    });
+
+    it('handles REQUEST_DELETE_CARD', () => {
+        const state = reducer(undefined, {
+            type: actions.REQUEST_DELETE_CARD,
+            id: '3',
+            entityType: 'gallery',
+        });
+
+        expect(state).to.have.deep.property(
+            'galleries.requestDeleted',
+            fromJS({ id: '3', entityType: 'gallery' })
+        );
+    });
+
+    it('handles CONFIRM_DELETE_CARD', () => {
+        let state = reducer(undefined, {
+            type: actions.FETCH_GALLERIES_SUCCESS,
+            data: [{ id: '1' }, { id: '2' }, { id: '3' }],
+        });
+
+        expect(state).to.have.deep.property('galleries.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }, { id: '3' }]))
+        );
+
+        state = reducer(state, {
+            type: actions.REQUEST_DELETE_CARD,
+            id: '3',
+            entityType: 'gallery',
+        });
+
+        state = reducer(state, {
+            type: actions.CONFIRM_DELETE_CARD,
+            id: '3',
+        });
+
+        expect(state).to.have.deep.property('galleries.requestDeleted', Map());
+        expect(state).to.have.deep.property('galleries.entities',
+            OrderedSet(fromJS([{ id: '1' }, { id: '2' }]))
+        );
+    });
 });
 
 describe('moderation async action creators', () => {
@@ -121,20 +247,6 @@ describe('moderation async action creators', () => {
         fetchMock
         .mock(/\/api\/gallery\/\d+\/reports+/, { body: [{ id: '1' }, { id: '2' }] });
 
-        // const expectedActions = [
-        //     {
-        //         entityType: 'galleries',
-        //         id: '1',
-        //         reports: [{ id: '1' }, { id: '2' }],
-        //         type: actions.FETCH_REPORTS_SUCCESS,
-        //     },
-        //     {
-        //         entityType: 'galleries',
-        //         id: '2',
-        //         reports: [{ id: '1' }, { id: '2' }],
-        //         type: actions.FETCH_REPORTS_SUCCESS,
-        //     },
-        // ];
         const store = mockStore(fromJS({ moderation: initialState }));
 
         return store.dispatch(actions.fetchGalleries())
