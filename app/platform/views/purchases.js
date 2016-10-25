@@ -22,6 +22,8 @@ class Purchases extends React.Component {
         availableOutlets: [],
         availableUsers: [],
         updatePurchases: false,
+        activeTab: 'Summary',
+        outletStatsTime: 'today so far',
     };
 
     findOutlets = (q) => {
@@ -292,13 +294,6 @@ class Purchases extends React.Component {
                 </TopBar>
 
                 {this.renderTab()}
-
-                <PurchasesBody
-                    updatePurchases={this.state.updatePurchases}
-                    downloadExports={this.downloadExports}
-                    loadPurchases={this.loadPurchases}
-                    loadStats={this.loadStats}
-                />
             </App>
         );
     }
