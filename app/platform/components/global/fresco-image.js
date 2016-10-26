@@ -17,7 +17,7 @@ class FrescoImage extends React.Component {
         placeholderStyle: PropTypes.object,
         refreshInterval: PropTypes.bool,
         loadWithPlaceholder: PropTypes.bool,
-        height: PropTypes.string
+        height: PropTypes.string,
     };
 
     static defaultProps = {
@@ -36,14 +36,14 @@ class FrescoImage extends React.Component {
     state = {
         placeholderStyle: this.props.placeholderStyle,
         hidePlaceholder: false,
-        timeout: 1000
+        timeout: 1000,
     }
 
     componentWillMount() {
         this.setInitialSource();
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    componentWillUpdate(nextProps) {
         const { src, size } = nextProps;
 
         if ((src !== this.props.src) || (size !== this.props.size)) {
@@ -56,11 +56,13 @@ class FrescoImage extends React.Component {
     }
 
     setInitialSource = (src = '', size = '') => {
-        const formattedSrc = src === '' ? utils.formatImg(this.props.src, this.props.size) : utils.formatImg(src, size);
+        const formattedSrc = (src === '')
+            ? utils.formatImg(this.props.src, this.props.size)
+            : utils.formatImg(src, size);
         this.setState({
             src: this.props.loadWithPlaceholder ? this.placeholderUrl : formattedSrc,
             formattedSrc,
-            hidePlaceholder: false
+            hidePlaceholder: false,
         });
     }
 
@@ -69,9 +71,7 @@ class FrescoImage extends React.Component {
      */
     onLoad = () => {
         if (this.props.loadWithPlaceholder) {
-            this.setState({
-                hidePlaceholder: true
-            });
+            this.setState({ hidePlaceholder: true });
         }
     }
 
@@ -85,7 +85,7 @@ class FrescoImage extends React.Component {
         } else {
             this.setState({
                 src: this.state.formattedSrc,
-                timeout: this.state.timeout + this.state.timeout
+                timeout: this.state.timeout + this.state.timeout,
             });
         }
     }
@@ -94,7 +94,7 @@ class FrescoImage extends React.Component {
      * On image error, set the image as the placeholder and set a timeout to try again later
      */
     onError = () => {
-        this.setState({ src: this.placeholderUrl })
+        this.setState({ src: this.placeholderUrl });
 
         this.props.updateImage(this.placeholderUrl);
 
@@ -106,34 +106,39 @@ class FrescoImage extends React.Component {
     render() {
         let placeholderStyle = {};
 
-        if(!this.state.hidePlaceholder) {
+        if (!this.state.hidePlaceholder) {
             placeholderStyle = Object.assign({
-                'backgroundImage': this.state.hidePlaceholder ? '' : `url(${this.placeholderUrl})`,
+                backgroundImage: this.state.hidePlaceholder ? '' : `url(${this.placeholderUrl})`,
             }, this.props.placeholderStyle);
         }
 
-        if(this.props.loadWithPlaceholder) {
-            return <div className="img-cover-bg" style={placeholderStyle}>
-                <img
-                    className={this.props.className || 'img-cover'}
-                    style={{ display: this.state.hidePlaceholder ? 'block' : 'none' }}
-                    role="presentation"
-                    onLoad={this.onLoad}
-                    onError={this.onError}
-                    src={this.state.formattedSrc}
-                />
-            </div>
-        } else {
+        if (this.props.loadWithPlaceholder) {
             return (
-                <img
-                    className={this.props.className || 'img-cover'}
-                    style={this.props.style}
-                    role="presentation"
-                    onError={this.onError}
-                    src={this.state.src}
-                />
+                <div className="img-cover-bg" style={placeholderStyle}>
+                    <img
+                        className={this.props.className || 'img-cover'}
+                        style={{
+                            display: this.state.hidePlaceholder ? 'block' : 'none',
+                            ...this.props.style,
+                        }}
+                        role="presentation"
+                        onLoad={this.onLoad}
+                        onError={this.onError}
+                        src={this.state.formattedSrc}
+                    />
+                </div>
             );
         }
+
+        return (
+            <img
+                className={this.props.className || 'img-cover'}
+                style={this.props.style}
+                role="presentation"
+                onError={this.onError}
+                src={this.state.src}
+            />
+        );
     }
 }
 
