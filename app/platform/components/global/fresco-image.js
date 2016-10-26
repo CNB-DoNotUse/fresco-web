@@ -43,22 +43,22 @@ class FrescoImage extends React.Component {
         this.setInitialSource();
     }
 
-    componentWillUpdate(nextProps) {
-        const { src, size } = nextProps;
+    componentDidUpdate(prevProps, prevState) {
+        const { src, size } = prevProps;
 
         if ((src !== this.props.src) || (size !== this.props.size)) {
-            this.setInitialSource(src);
+            this.setInitialSource();
         }
     }
+
 
     componentWillUnmount() {
         clearTimeout(this.loadTimeout);
     }
 
-    setInitialSource = (src = '', size = '') => {
-        const formattedSrc = (src === '')
-            ? utils.formatImg(this.props.src, this.props.size)
-            : utils.formatImg(src, size);
+    setInitialSource = () => {
+        const formattedSrc = utils.formatImg(this.props.src, this.props.size);
+
         this.setState({
             src: this.props.loadWithPlaceholder ? this.placeholderUrl : formattedSrc,
             formattedSrc,
