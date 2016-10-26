@@ -10,7 +10,7 @@ const PostRelatedImage = ({ post }) => (
         <FrescoImage
             className="img-link"
             src={post.image}
-            size="small"
+            size="medium"
             placeholderStyle={{ height: '300px' }}
         />
     </a>
