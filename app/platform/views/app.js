@@ -31,17 +31,17 @@ class App extends React.Component {
     }
 
     render() {
-        const { query, user, contentClassName, children } = this.props;
+        const { query, user, children } = this.props;
         return (
             <div>
                 <div className="container-fluid">
                     <Sidebar
-                        query={this.props.query}
-                        user={this.props.user}
+                        query={query}
+                        user={user}
                     />
 
-                    <div className={`col-md-12 col-lg-10 ${contentClassName}`}>
-                        {this.props.children}
+                    <div className="col-md-12 col-lg-10">
+                        {children}
                     </div>
                 </div>
             </div>

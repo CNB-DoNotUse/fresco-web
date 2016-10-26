@@ -1463,7 +1463,7 @@ div.admin {
 	right: 0px;
 	width: 384px;
 	max-width: 100%;
-	height: 100%;
+	height: calc(100% - 64px);
 	padding: 8px 8px 72px;
 	overflow-y: auto;
 }

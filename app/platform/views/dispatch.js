@@ -226,7 +226,7 @@ class Dispatch extends React.Component {
         }
 
         return (
-            <App contentClassName="dispatch__ctr" user={this.props.user}>
+            <App user={this.props.user}>
                 <TopBar
                     locationInput={true}
                     mapPlace={this.state.mapPlace}
