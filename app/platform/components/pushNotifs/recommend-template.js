@@ -15,6 +15,7 @@ const Template = ({
     gallery,
     story,
     onChange,
+    onChangeAsync,
     ...props }) => (
     <div>
         <TitleBody onChange={onChange} {...props} />
@@ -24,7 +25,7 @@ const Template = ({
             queryAttr="id"
             placeholder="Gallery"
             items={(gallery && [gallery]) || []}
-            updateItems={onChangeGalleries(onChange)}
+            updateItems={onChangeGalleries(onChangeAsync)}
             autocomplete={false}
             multiple={false}
             className="push-notifs__chip-input"
@@ -36,7 +37,7 @@ const Template = ({
             queryAttr="title"
             placeholder="Story"
             items={(story && [story]) || []}
-            updateItems={onChangeStories(onChange)}
+            updateItems={onChangeStories(onChangeAsync)}
             multiple={false}
             className="push-notifs__chip-input"
             createNew={false}
@@ -44,8 +45,8 @@ const Template = ({
             initMaterial
         />
 
-        <RestrictByLocation onChange={onChange} {...props} />
-        <RestrictByUser onChange={onChange} {...props} />
+        <RestrictByLocation onChange={onChangeAsync} {...props} />
+        <RestrictByUser onChange={onChangeAsync} {...props} />
     </div>
 );
 
@@ -53,6 +54,7 @@ Template.propTypes = {
     gallery: PropTypes.object,
     story: PropTypes.object,
     onChange: PropTypes.func,
+    onChangeAsync: PropTypes.func,
 };
 
 export default Template;

@@ -17,6 +17,7 @@ class PushNotifs extends React.Component {
     static propTypes = {
         onSetActiveTab: PropTypes.func.isRequired,
         onChangeTemplate: PropTypes.func.isRequired,
+        onChangeTemplateAsync: PropTypes.func.isRequired,
         onDismissAlert: PropTypes.func.isRequired,
         onSend: PropTypes.func.isRequired,
         activeTab: PropTypes.string.isRequired,
@@ -39,38 +40,25 @@ class PushNotifs extends React.Component {
     }
 
     renderTemplate() {
-        const { activeTab, onChangeTemplate, templates } = this.props;
+        const { activeTab, onChangeTemplate, onChangeTemplateAsync, templates } = this.props;
+        const activeTabKey = activeTab.toLowerCase();
 
-        switch (activeTab.toLowerCase()) {
+        const props = {
+            ...templates.get(activeTabKey, Map()).toJS(),
+            onChange: partial(onChangeTemplate, activeTabKey),
+            onChangeAsync: partial(onChangeTemplateAsync, activeTabKey),
+        };
+
+        switch (activeTabKey) {
         case 'gallery list':
-            return (
-                <GalleryList
-                    {...templates.get('gallery list', Map()).toJS()}
-                    onChange={partial(onChangeTemplate, 'gallery list')}
-                />
-            );
+            return <GalleryList {...props} />;
         case 'assignment':
-            return (
-                <Assignment
-                    {...templates.get('assignment', Map()).toJS()}
-                    onChange={partial(onChangeTemplate, 'assignment')}
-                />
-            );
+            return <Assignment {...props} />;
         case 'recommend':
-            return (
-                <Recommend
-                    {...templates.get('recommend', Map()).toJS()}
-                    onChange={partial(onChangeTemplate, 'recommend')}
-                />
-            );
+            return <Recommend {...props} />;
         case 'default':
         default:
-            return (
-                <Default
-                    {...templates.get('default', Map()).toJS()}
-                    onChange={partial(onChangeTemplate, 'default')}
-                />
-            );
+            return <Default {...props} />;
         }
     }
 
@@ -154,6 +142,7 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
     onSetActiveTab: pushActions.setActiveTab,
     onChangeTemplate: pushActions.updateTemplate,
+    onChangeTemplateAsync: pushActions.updateTemplateAsync,
     onDismissAlert: pushActions.dismissAlert,
     onSend: pushActions.send,
     confirmSend: pushActions.confirmSend,
