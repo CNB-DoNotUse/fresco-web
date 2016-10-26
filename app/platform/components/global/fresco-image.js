@@ -107,14 +107,18 @@ class FrescoImage extends React.Component {
         let placeholderStyle = {};
 
         if (!this.state.hidePlaceholder) {
-            placeholderStyle = Object.assign({
-                backgroundImage: this.state.hidePlaceholder ? '' : `url(${this.placeholderUrl})`,
-            }, this.props.placeholderStyle);
+            placeholderStyle = Object.assign(
+                {
+                    backgroundImage: this.state.hidePlaceholder ? '' : `url(${this.placeholderUrl})`,
+                },
+                this.props.placeholderStyle,
+                this.props.style
+            );
         }
 
         if (this.props.loadWithPlaceholder) {
             return (
-                <div className="img-cover-bg" style={placeholderStyle}>
+                <div className={`img-cover-bg ${this.props.className}`} style={placeholderStyle}>
                     <img
                         className={this.props.className || 'img-cover'}
                         style={{
