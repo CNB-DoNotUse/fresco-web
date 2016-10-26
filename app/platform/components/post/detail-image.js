@@ -57,8 +57,7 @@ class PostDetailImage extends React.Component {
             }
         } else {
             actions.push(downloadAction);
-            if (!purchased) 
-                actions.push(purchaseAction);
+            if (!purchased) actions.push(purchaseAction);
         }
 
         if (post.stream) {
@@ -66,7 +65,7 @@ class PostDetailImage extends React.Component {
                 <FrescoVideo
                     video={post.stream}
                     thumbnail={post.image}
-                    width='640'
+                    width="640"
                     autoplay
                     muted
                 />
