@@ -12,7 +12,7 @@ export default class PostRelatedImage extends React.Component {
                 <FrescoImage
                     className="img-link"
                     src={this.props.post.image}
-                    size="medium"
+                    size="small"
                     placeholderStyle={{ height: "300px" }}
                 />
             </a>
