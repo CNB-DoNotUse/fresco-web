@@ -109,7 +109,7 @@ class UserSettings extends React.Component {
             full_name: name.value,
             bio: bio.value,
             email: email.value,
-            username: username.value
+            username: username.value !== '' ? username.value : null
         }
 
         if(!utils.isEmptyString(phone.value)) {
