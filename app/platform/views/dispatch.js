@@ -226,7 +226,7 @@ class Dispatch extends React.Component {
         }
 
         return (
-            <App user={this.props.user}>
+            <App contentClassName="dispatch__ctr" user={this.props.user}>
                 <TopBar
                     locationInput={true}
                     mapPlace={this.state.mapPlace}
@@ -263,7 +263,8 @@ class Dispatch extends React.Component {
                     findAssignments={this.findAssignments}
                     updateCurrentBounds={this.updateCurrentBounds}
                     findUsers={this.findUsers}
-                    updateNewAssignment={this.updateNewAssignment} />
+                    updateNewAssignment={this.updateNewAssignment}
+                />
 
                 <div className="cards">
                     {cards}

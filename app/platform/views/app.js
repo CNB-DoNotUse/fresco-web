@@ -15,11 +15,23 @@ require('script!alertify.js/dist/js/alertify');
  */
 class App extends React.Component {
 
+    static propTypes = {
+        query: PropTypes.string,
+        user: PropTypes.object,
+        children: PropTypes.node,
+        contentClassName: PropTypes.string,
+    };
+
+    static defaultProps = {
+        contentClassName: '',
+    };
+
     componentDidMount() {
         $.material.init();
     }
 
     render() {
+        const { query, user, contentClassName, children } = this.props;
         return (
             <div>
                 <div className="container-fluid">
@@ -28,7 +40,7 @@ class App extends React.Component {
                         user={this.props.user}
                     />
 
-                    <div className="col-md-12 col-lg-10">
+                    <div className={`col-md-12 col-lg-10 ${contentClassName}`}>
                         {this.props.children}
                     </div>
                 </div>
@@ -37,10 +49,5 @@ class App extends React.Component {
     }
 }
 
-App.propTypes = {
-    query: PropTypes.string,
-    user: PropTypes.object,
-    children: PropTypes.node,
-};
-
 export default App;
+
