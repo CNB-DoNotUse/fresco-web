@@ -5,11 +5,7 @@ import utils from 'utils';
  * Story Edit Component
  */
 class Edit extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = this.getStateFromProps(props);
-    }
+    state = this.getStateFromProps(this.props);
 
     componentDidMount() {
         $.material.init();
@@ -20,7 +16,7 @@ class Edit extends React.Component {
         const { story, save } = this.props;
         if (!story || !story.id) return;
 
-        save(story.id, {title, caption});
+        save(story.id, { title, caption });
     }
 
     onRemove() {
@@ -160,11 +156,12 @@ class Edit extends React.Component {
 
     renderStats() {
         const { story } = this.props;
+        const { caption } = this.state;
 
         return (
             <div className="meta">
                 <div id="story-edit-caption" className="meta-description">
-                    {story.caption}
+                    {caption}
                 </div>
 
                 <div className="meta-list">

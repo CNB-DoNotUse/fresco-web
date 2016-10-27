@@ -198,7 +198,13 @@ const verifyRecommendUpdate = ({ data, state }) => {
     });
 };
 
-export const updateTemplate = (template, data) => (dispatch, getState) => {
+export const updateTemplate = (template, data) => ({
+    type: UPDATE_TEMPLATE_SUCCESS,
+    template,
+    data,
+});
+
+export const updateTemplateAsync = (template, data) => (dispatch, getState) => {
     const successAction = {
         type: UPDATE_TEMPLATE_SUCCESS,
         template,

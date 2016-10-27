@@ -13,15 +13,11 @@ import GalleryEdit from './../components/gallery/edit';
  * Post Detail Parent Object, made of a side column and PostList
  */
 class PostDetail extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            galleryEditToggled: false,
-            gallery: props.gallery,
-            post: props.post,
-        };
-    }
+    state = {
+        galleryEditToggled: false,
+        gallery: this.props.gallery,
+        post: this.props.post,
+    };
 
     onUpdateGallery(gallery) {
         if (!gallery || !gallery.posts) return;
@@ -59,9 +55,9 @@ class PostDetail extends React.Component {
                             />
                         </div>
                     </div>
-                    
+
                     <PostRelated gallery={gallery} />
-                    
+
                     <PostRelatedTags tags={gallery.tags} />
                 </div>
 

@@ -36,6 +36,7 @@ const AdminGalleryListItem = ({ gallery, active, onClick }) => {
                         style={{ width: '40px', height: '40px' }}
                         src={get(gallery, 'posts[0].image', '')}
                         size="thumb"
+                        loadWithPlaceholder
                         refreshInterval
                     />
                 </a>
