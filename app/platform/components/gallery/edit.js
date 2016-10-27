@@ -540,7 +540,7 @@ class Edit extends React.Component {
                         items={stories}
                         updateItems={(s) => this.setState({ stories: s })}
                         className="dialog-row"
-                        createNew={false}
+                        createNew
                         autocomplete
                     />
 
