@@ -3,6 +3,7 @@ import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
+import api from 'app/lib/api';
 import AutocompleteMap from '../global/autocomplete-map';
 import ExplicitCheckbox from '../global/explicit-checkbox';
 import ChipInput from '../global/chip-input';
@@ -114,23 +115,30 @@ export default class GalleryEdit extends React.Component {
         this.setState({ loading: true });
         const { onUpdateGallery, gallery } = this.props;
         const { rating } = this.state;
+        const params = { ...this.getPostsParams(), rating };
 
-        $.ajax({
-            url: `/api/gallery/${gallery.id}/update`,
-            method: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify({ rating }),
-        })
-        .done(() => {
+        api
+        .post(`gallery/${gallery.id}/update`, params)
+        .then(() => {
             onUpdateGallery(gallery.id);
             $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
                 .click(() => { window.open(`/gallery/${gallery.id}`); });
         })
-        .fail(() => {
+        .catch(() => {
             this.setState({ loading: false });
             $.snackbar({ content: 'Unable to skip gallery' });
         });
+    }
+
+    onToggleDeletePost(post) {
+        let { posts } = this.state;
+        if (posts.some(p => p.id === post.id)) {
+            posts = posts.filter(p => p.id !== post.id);
+        } else {
+            posts = posts.concat(post);
+        }
+
+        this.setState({ posts });
     }
 
     getStateFromProps(props) {
@@ -146,6 +154,7 @@ export default class GalleryEdit extends React.Component {
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
             rating: gallery.rating,
+            posts: gallery.posts,
             ...this.getInitialLocationData(),
         };
     }
@@ -164,7 +173,8 @@ export default class GalleryEdit extends React.Component {
             external_account_name,
             external_source,
             rating,
-            is_nsfw
+            is_nsfw,
+            posts,
         } = this.state;
         const { gallery } = this.props;
 
@@ -178,7 +188,7 @@ export default class GalleryEdit extends React.Component {
             caption,
             address,
             is_nsfw,
-            ...this.getPostsUpdateParams(),
+            ...this.getPostsParams(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             external_account_name,
             external_source,
@@ -188,32 +198,34 @@ export default class GalleryEdit extends React.Component {
         return params;
     }
 
-    getPostsUpdateParams() {
+    getPostsParams() {
         const { gallery } = this.props;
         const { address, location, rating, assignment } = this.state;
+        const { posts_remove } = utils.getRemoveAddParams('posts', gallery.posts, this.state.posts);
+
         // check to see if should save locations on all gallery's posts
+        const posts = this.state.posts.filter(p => !posts_remove.includes(p.id));
         const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
+        let posts_update;
 
-        if (sameLocation || (!gallery.posts || !gallery.posts.length)) {
-            return {
-                posts_update: gallery.posts.map(p => ({
-                    id: p.id,
-                    rating,
-                    assignment_id: assignment ? assignment.id : null,
-                })),
-            };
-        }
-
-        return {
-            posts_update: gallery.posts.map(p => ({
+        if (sameLocation || !posts) {
+            posts_update = posts.map(p => ({
                 id: p.id,
-                address,
-                lat: location.lat,
-                lng: location.lng,
                 rating,
                 assignment_id: assignment ? assignment.id : null,
-            })),
-        };
+            }));
+        }
+
+        posts_update = posts.map(p => ({
+            id: p.id,
+            address,
+            lat: location.lat,
+            lng: location.lng,
+            rating,
+            assignment_id: assignment ? assignment.id : null,
+        }));
+
+        return { posts_update, posts_remove };
     }
 
     getInitialLocationData() {
@@ -266,6 +278,7 @@ export default class GalleryEdit extends React.Component {
             external_account_name,
             external_source,
             is_nsfw,
+            posts,
         } = this.state;
 
         if (!gallery) {
@@ -276,7 +289,13 @@ export default class GalleryEdit extends React.Component {
             <div className="dialog admin-edit-pane">
                 <div className="dialog-body" style={{ visibility: 'visible' }} >
                     <div className="gallery-images">
-                        <EditPosts originalPosts={gallery.posts} refreshInterval />
+                        <EditPosts
+                            originalPosts={gallery.posts}
+                            editingPosts={posts}
+                            onToggleDeletePost={p => this.onToggleDeletePost(p)}
+                            canDelete
+                            refreshInterval
+                        />
                     </div>
 
                     <EditByline
