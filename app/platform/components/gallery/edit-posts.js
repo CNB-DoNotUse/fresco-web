@@ -38,14 +38,14 @@ const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
                         <div className="md-type-caption">This post will be deleted</div>
                     </span>
                 </div>
-                {editingPosts.length > 1 ? (
+                {(editingPosts.length > 1 || deleteToggled) && (
                     <a className="frick-frame__delete-btn">
                         <span
                             className={`mdi mdi-close-circle icon ${deleteToggled ? 'addback' : ''}`}
                             onClick={() => onToggleDelete(p)}
                         />
                     </a>
-                ) : null}
+                )}
             </div>
         );
     })
