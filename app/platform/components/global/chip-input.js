@@ -3,6 +3,7 @@ import reject from 'lodash/reject';
 import capitalize from 'lodash/capitalize';
 import utils from 'utils';
 import get from 'lodash/get';
+import TextField from 'material-ui/TextField';
 import api from 'app/lib/api';
 import Tag from '../global/tag';
 
@@ -54,11 +55,11 @@ class ChipInput extends React.Component {
         document.addEventListener('click', this.onClick);
     }
 
-    componentDidMount() {
-        if (this.props.initMaterial) {
-            $.material.init();
-        }
-    }
+    // componentDidMount() {
+    //     if (this.props.initMaterial) {
+    //         $.material.init();
+    //     }
+    // }
 
     componentWillUnmount() {
         document.removeEventListener('click', this.onClick);
@@ -244,20 +245,30 @@ class ChipInput extends React.Component {
             this.renderSuggestion(suggestion, i)
         ));
 
+        // <input
+        //     type="text"
+        //     className="form-control floating-label"
+        //     placeholder={placeholder || capitalize(model)}
+        //     onChange={this.onChangeQuery}
+        //     onKeyUp={this.onKeyUpQuery}
+        //     value={query}
+        //     disabled={disabled}
+        // />
+
         return (
             <div
                 ref={r => { this.area = r; }}
                 className={`split chips form-group-default ${this.props.className}`}
             >
                 <div className="split-cell">
-                    <input
-                        type="text"
-                        className="form-control floating-label"
-                        placeholder={placeholder || capitalize(model)}
+                    <TextField
+                        hintText={placeholder || capitalize(model)}
+                        floatingLabelText={placeholder || capitalize(model)}
                         onChange={this.onChangeQuery}
                         onKeyUp={this.onKeyUpQuery}
                         value={query}
                         disabled={disabled}
+                        fullWidth
                     />
 
                     <ul

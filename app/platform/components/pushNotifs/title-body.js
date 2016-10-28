@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import TextField from 'material-ui/TextField';
 
 const onChangeTitle = (onChange) => (e) => {
     onChange({ title: e.target.value });
@@ -14,20 +15,21 @@ const TitleBody = ({
     onChange,
     }) => (
     <span>
-        <input
-            type="text"
-            className="form-control floating-label"
-            placeholder="Title"
+        <TextField
+            hintText="Title"
+            floatingLabelText="Title"
             value={title || ''}
             onChange={onChangeTitle(onChange)}
+            fullWidth
         />
 
-        <textarea
+        <TextField
             type="text"
-            className="form-control floating-label"
-            placeholder="Body"
+            hintText="Body"
+            floatingLabelText="Body"
             value={body || ''}
             onChange={onChangeBody(onChange)}
+            fullWidth
         />
     </span>
 );
