@@ -1,8 +1,18 @@
+global.jQuery = require('jquery');
+require('../../../app/sass/public/pro/pro.scss');
+require('snackbarjs');
+require('velocity-animate');
+import Waves from 'node-waves';
+import Nav from '../components/nav';
+import Animation from '../components/animation';
+
 var schedule = document.getElementById('schedule'),
 	nav = new Nav({
 	    tablet: 1024, 
 	    mobile: 720
 	});
+
+let animation = new Animation();
 
 nav.resize();
 
@@ -52,9 +62,9 @@ function animateBlock(block, fill, e, callback) {
 		circle.style.background = '#FFFFFF';
 	}
 
-	width = $(block).width();
-	height = $(block).height();
-	r = Math.sqrt(width * width + height * height);
+	let width = $(block).width();
+	let height = $(block).height();
+	let r = Math.sqrt(width * width + height * height);
 
 	circle.style.width = r*2 + 'px';
 	circle.style.height = r*2 + 'px';
