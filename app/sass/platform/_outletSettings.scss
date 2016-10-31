@@ -21,16 +21,16 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
  */
 .outlet-settings{
 	padding: 64px 0 24px;
-	overflow: hidden;
-}
+    overflow: hidden;
 
-/**
- * Card Overrides
- */
-.card {
-	.header {
-		padding: 14px 16px;
-	}
+    /**
+     * Card Overrides
+     */
+    .card {
+        .header {
+            padding: 14px 16px;
+        }
+    }
 }
 
 /**
@@ -300,8 +300,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 
 	.footer{
-		padding:0 16px;
-
 		.sub-title{
 			@include rgba(color, 0, 0, 0, 0.54);
 			font-weight:500;
@@ -325,10 +323,24 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 }
 
-/**
- * User (Outlet) Notification Settings
- */
-.settings-outlet-notifications {
-
-
+.api-tokens__input {
+    width: 70% !important;
+    height: 48px;
+    float: left;
+    padding-right: 10px;
 }
+
+.api-tokens__options {
+    top: -10px;
+    float: right;
+}
+
+.api-tokens__select-all {
+    color: rgba(0, 0, 0, 0.54);
+    font-weight: 500;
+    margin-right: 20px;
+    float: right;
+    position: relative;
+    line-height: 48px;
+}
+
