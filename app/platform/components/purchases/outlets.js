@@ -9,8 +9,6 @@ import api from 'app/lib/api';
 import OutletColumn from './outlet-column.js';
 
 // TODO: fix draggable style (not showing dragged column with purchases)
-// TODO: fix bad loading state in loadOutlets
-// TODO: add horizontal scroll
 class PurchasesOutlets extends React.Component {
     static propTypes = {
         statsTime: PropTypes.string.isRequired,

@@ -100,7 +100,7 @@ export default class Body extends React.Component {
                     </div>
                 </div>
                 <div className={`tab ${activeTab === 'Purchases' ? 'toggled' : ''}`}>
-                    <PurchasesBody
+                    <Purchases
                         downloadExports={this.downloadExports}
                         loadPurchases={this.loadPurchases}
                         loadStats={this.loadStats}

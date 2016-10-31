@@ -29,8 +29,8 @@ export default class PurchasesListItem extends React.Component {
                             src={post ? utils.formatImg(post.image, 'small') : ''}
                             style={{
                                 margin: '-2px 0',
-                                    width: '40px',
-                                    height: '40px'
+                                width: '40px',
+                                height: '40px'
                             }}
                         />
                     </div>
@@ -43,40 +43,37 @@ export default class PurchasesListItem extends React.Component {
                     <div className={post.owner ? '' : 'flexy'}>
                         <p className="md-type-body1">{price}</p>
                     </div>
-                    {post.owner
-                        ? <div className="flexy" >
+                    {post.owner && (
+                        <div className="flexy" >
                             <a href={`/user/${post.owner.id}`}>
                                 <p className="md-type-body2">
                                     {post.owner.full_name || post.owner.username}
                                 </p>
                             </a>
                         </div>
-                        : ''
-                    }
+                    )}
 
-                    {purchase.assignment
-                        ? <div onClick={() => this.openLink('/assignment/' + assignment.id)}>
+                    {assignment && (
+                        <div onClick={() => this.openLink('/assignment/' + assignment.id)}>
                             <p className="md-type-body2" style={{ lineHeight: '16px' }}>
                                 {assignment.title}
                             </p>
 
                             <p className="md-type-body1" style={{ lineHeight: '24px' }}>
-                                {purchase.assignment.location.address || purchase.assignment.location.googlemaps}
+                                {assignment.location.address || assignment.location.googlemaps}
                             </p>
                         </div>
-                        : ''
-                    }
+                    )}
 
-                    {showTitle
-                        ? <div>
+                    {showTitle && (
+                        <div>
                             <a href={`/outlet/${outlet.id}`}>
                                 <p className="md-type-body2 toggle-aradd  toggler">
                                     {showTitle ? outlet.title : ''}
                                 </p>
                             </a>
                         </div>
-                        : ''
-                    }
+                    )}
                 </div>
             </span>
 		);
