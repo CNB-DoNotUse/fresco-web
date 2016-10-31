@@ -143,9 +143,9 @@ function animateCompletion(e) {
 	circle.style.top = yPosition + "px";
 	circle.style.display = 'block';
 
-	width = $(form).width();
-	height = $(form).height();
-	r = Math.sqrt(width * width + height * height);
+	var width = $(form).width();
+	var height = $(form).height();
+	var r = Math.sqrt(width * width + height * height);
 
 	circle.style.width = r*2 + 'px';
 	circle.style.height = r*2 + 'px';

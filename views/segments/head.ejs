@@ -68,7 +68,7 @@
     <% } %>
 
     <% // Load asset based on page, check if in dev mode or not %>
-    <% if(typeof(page) !== 'undefined' && typeof(assets) !== 'undefined'){ %>
+    <% if(typeof(page) !== 'undefined' && typeof(assets) !== 'undefined' && typeof(assets[page]['css']) !== 'undefined'){ %>
         <link rel="stylesheet" type="text/css" href="<%= assets[page]['css'] %>">
     <% } %>
 </head>
