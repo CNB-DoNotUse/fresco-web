@@ -211,15 +211,12 @@ class TopBar extends React.Component {
                 {this.renderTabs()}
                 {this.renderTopBarItems()}
                 {children}
-                {saveButton
-                    ? <a
+                {saveButton && (
+                    <a
                         onClick={updateSettings}
-                        className="mdi mdi-content-save icon pull-right hidden-xs"
-                    >
-                        <div className="ripple-wrapper"></div>
-                    </a>
-                    : ''
-                }
+                        className="mdi mdi-content-save icon pull-right hidden-xs toggler"
+                    />
+                )}
 
             </nav>
         );

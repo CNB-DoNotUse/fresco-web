@@ -108,12 +108,16 @@ class UserSettings extends React.Component {
         const params = {
             full_name: name.value,
             bio: bio.value,
-            email: email.value,
-            username: username.value
+            email: email.value
         }
 
+
         if(!utils.isEmptyString(phone.value)) {
-            params.phone = this.refs.phone.value;
+            params.phone = phone.value;
+        }
+
+        if(!utils.isEmptyString(username.value)) {
+            params.username = username.value;
         }
 
         //Check if objects are the same to prevent hitting user/update, and just avatar update instead

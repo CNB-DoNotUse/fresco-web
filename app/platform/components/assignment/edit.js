@@ -243,8 +243,8 @@ export default class AssignmentEdit extends React.Component {
                         />
                     </div>
 
-                    {user.permissions.includes('update-other-content')
-                        ? <ChipInput
+                    {user.permissions.includes('update-other-content') && (
+                        <ChipInput
                             model="outlets"
                             queryAttr="title"
                             className="dialog-row"
@@ -252,8 +252,7 @@ export default class AssignmentEdit extends React.Component {
                             updateItems={(o) => this.setState({ outlets: o })}
                             autocomplete
                         />
-                        : ''
-                    }
+                    )}
 
                 </div>
                 <div className="dialog-col col-xs-12 col-md-5 form-group-default">
@@ -270,9 +269,8 @@ export default class AssignmentEdit extends React.Component {
                             </label>
                         </div>
 
-                        {globalLocation
-                            ? ''
-                            : <AutocompleteMap
+                        {!globalLocation && (
+                            <AutocompleteMap
                                 address={address}
                                 location={location}
                                 radius={Math.round(utils.milesToFeet(radius))}
@@ -283,7 +281,7 @@ export default class AssignmentEdit extends React.Component {
                                 rerender
                                 hasRadius
                             />
-                        }
+                        )}
                     </div>
 
                     <div className="dialog-row">
@@ -345,14 +343,13 @@ export default class AssignmentEdit extends React.Component {
                 >
                     Discard
                 </button>
-                {!this.isGlobalLocation()
-                    ? <MergeDropup
+                {!this.isGlobalLocation() && (
+                    <MergeDropup
                         assignmentId={assignment.id}
                         location={location}
                         onSelectMerge={(a) => this.onSelectMerge(a)}
                     />
-                    : ''
-                }
+                )}
             </div>
         );
     }
@@ -418,18 +415,16 @@ export default class AssignmentEdit extends React.Component {
                     </div>
                 </div>
 
-                {showMergeDialog && assignmentToMergeInto
-                    ? <Merge
+                {(showMergeDialog && assignmentToMergeInto) && (
+                    <Merge
                         assignment={assignment}
                         assignmentToMergeInto={assignmentToMergeInto}
                         onClose={() => this.onCloseMerge()}
                         onMergeAssignment={(id, mId) => this.onMergeAssignment(id, mId)}
                     />
-                    : ''
-                }
+                )}
             </div>
 		);
     }
 }
-
 

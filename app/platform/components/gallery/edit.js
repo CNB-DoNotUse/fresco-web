@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import request from 'superagent';
+import api from 'app/lib/api';
 import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
@@ -70,14 +71,15 @@ class Edit extends React.Component {
     onSave = () => {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
-        let { loading, uploads, assignments } = this.state;
+        let { loading, uploads, assignments, isOriginalGallery } = this.state;
 
         if (!get(gallery, 'id') || !params || loading) return;
         this.setState({ loading: true });
+        const postsToDelete = isOriginalGallery ? get(params, 'posts_remove') : [];
 
         Promise.all([
             this.saveGallery(gallery.id, params),
-            this.deletePosts(get(params, 'posts_remove')),
+            this.deletePosts(postsToDelete),
         ])
         .then(res => {
             if (get(res[0], 'posts_new.length')) {
@@ -291,7 +293,7 @@ class Edit extends React.Component {
 
     getPostsUpdateParams(removed = []) {
         const { gallery } = this.props;
-        const posts = gallery.posts.filter(p => !removed.includes(p));
+        const posts = gallery.posts.filter(p => !removed.includes(p.id));
         const { address, location, rating } = this.state;
         // check to see if should save locations on all gallery's posts
         const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
@@ -346,16 +348,7 @@ class Edit extends React.Component {
 
     deletePosts(postIds) {
         if (!postIds || !postIds.length) return Promise.resolve();
-        return new Promise((resolve, reject) => (
-            $.ajax({
-                url: '/api/post/delete',
-                method: 'post',
-                contentType: 'application/json',
-                data: JSON.stringify({ post_ids: postIds }),
-            })
-            .done((res) => resolve(res))
-            .fail((err) => reject(err))
-        ));
+        return api.post('post/delete', { post_ids: postIds });
     }
 
     saveGallery(id, params) {
@@ -547,14 +540,13 @@ class Edit extends React.Component {
                         items={stories}
                         updateItems={(s) => this.setState({ stories: s })}
                         className="dialog-row"
-                        createNew={false}
+                        createNew
                         autocomplete
                     />
 
                     <ChipInput
                         model="articles"
                         queryAttr="link"
-                        altAttr="title"
                         items={articles}
                         updateItems={(a) => this.setState({ articles: a })}
                         className="dialog-row"
@@ -586,10 +578,10 @@ class Edit extends React.Component {
                         originalPosts={gallery.posts}
                         editingPosts={posts}
                         uploads={uploads}
-                        canDelete={isOriginalGallery}
                         onToggleDeletePost={p => this.onToggleDeletePost(p)}
                         onToggleDeleteUpload={(u, i) => this.onToggleDeleteUpload(u, i)}
                         className="dialog-col col-xs-12 col-md-5"
+                        canDelete
                     />
                 ) : null}
 

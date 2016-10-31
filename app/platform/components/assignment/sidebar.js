@@ -54,7 +54,7 @@ class Sidebar extends React.Component {
                     <li>
                         <span className="mdi mdi-movie icon"></span>
                         <span>
-                            {video_count + ' photo' + (utils.isPlural(video_count) ? 's' : '')}
+                            {video_count + ' video' + (utils.isPlural(video_count) ? 's' : '')}
                         </span>
                     </li>
                 </ul>

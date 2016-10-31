@@ -57,8 +57,7 @@ class PostDetailImage extends React.Component {
             }
         } else {
             actions.push(downloadAction);
-            if (!purchased) 
-                actions.push(purchaseAction);
+            if (!purchased) actions.push(purchaseAction);
         }
 
         if (post.stream) {

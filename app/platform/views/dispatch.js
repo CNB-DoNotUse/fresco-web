@@ -263,7 +263,8 @@ class Dispatch extends React.Component {
                     findAssignments={this.findAssignments}
                     updateCurrentBounds={this.updateCurrentBounds}
                     findUsers={this.findUsers}
-                    updateNewAssignment={this.updateNewAssignment} />
+                    updateNewAssignment={this.updateNewAssignment}
+                />
 
                 <div className="cards">
                     {cards}

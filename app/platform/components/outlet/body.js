@@ -51,6 +51,7 @@ export default class Body extends React.Component {
         const params = {
             outlet_ids: [this.props.outlet.id],
             limit: 20,
+            sortBy: 'created_at',
             last,
         };
 

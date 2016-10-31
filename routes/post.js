@@ -1,4 +1,5 @@
 const express = require('express');
+const utils = require('../lib/utils');
 const config = require('../lib/config');
 const api = require('../lib/api');
 const router = express.Router();
@@ -28,11 +29,7 @@ router.get('/:id', (req, res, next) => {
         });
     }).then(response => {
         gallery = response.body || {};
-        if (post.owner) {
-            title += 'Post by ' + (post.owner.full_name || post.owner.username);
-        } else if (post.curator) {
-            title += 'Imported by ' + post.curator.full_name;
-        }
+        title = utils.getBylineFromPost(post, true);
 
         verifier = post.curator ? post.curator.full_name : '';
 
@@ -47,7 +44,6 @@ router.get('/:id', (req, res, next) => {
             alerts: req.alerts,
             page: 'postDetail',
         });
-
     }).catch(error => {
         next({
             message: error.status === 404 ? 'Post not found!' : 'Unable to load post!',

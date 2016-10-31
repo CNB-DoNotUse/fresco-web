@@ -13,6 +13,7 @@ const onChangeAssignments = (onChange) => (assignments) => {
 const Template = ({
     assignment,
     onChange,
+    onChangeAsync,
     ...props }) => (
     <div>
         <TitleBody onChange={onChange} {...props} />
@@ -22,7 +23,7 @@ const Template = ({
             queryAttr="title"
             placeholder="Assignment"
             items={(assignment && [assignment]) || []}
-            updateItems={onChangeAssignments(onChange)}
+            updateItems={onChangeAssignments(onChangeAsync)}
             multiple={false}
             className="push-notifs__chip-input"
             params={{ rating: '1' }}
@@ -31,8 +32,8 @@ const Template = ({
             initMaterial
         />
 
-        <RestrictByLocation onChange={onChange} {...props} />
-        <RestrictByUser onChange={onChange} {...props} />
+        <RestrictByLocation onChange={onChangeAsync} {...props} />
+        <RestrictByUser onChange={onChangeAsync} {...props} />
     </div>
 );
 
@@ -40,6 +41,7 @@ const Template = ({
 Template.propTypes = {
     assignment: PropTypes.object,
     onChange: PropTypes.func,
+    onChangeAsync: PropTypes.func,
 };
 
 export default Template;

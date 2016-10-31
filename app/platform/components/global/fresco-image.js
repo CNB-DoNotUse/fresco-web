@@ -17,6 +17,7 @@ class FrescoImage extends React.Component {
         placeholderStyle: PropTypes.object,
         refreshInterval: PropTypes.bool,
         loadWithPlaceholder: PropTypes.bool,
+        height: PropTypes.string,
     };
 
     static defaultProps = {
@@ -35,20 +36,21 @@ class FrescoImage extends React.Component {
     state = {
         placeholderStyle: this.props.placeholderStyle,
         hidePlaceholder: false,
-        timeout: 1000
+        timeout: 1000,
     }
 
     componentWillMount() {
         this.setInitialSource();
     }
 
-    componentDidUpdate(prevProps) {
-        const { src, size } = this.props;
+    componentDidUpdate(prevProps, prevState) {
+        const { src, size } = prevProps;
 
-        if ((src !== prevProps.src) || (size !== prevProps.size)) {
-            this.setInitialSource(src);
+        if ((src !== this.props.src) || (size !== this.props.size)) {
+            this.setInitialSource();
         }
     }
+
 
     componentWillUnmount() {
         clearTimeout(this.loadTimeout);
@@ -56,10 +58,11 @@ class FrescoImage extends React.Component {
 
     setInitialSource = () => {
         const formattedSrc = utils.formatImg(this.props.src, this.props.size);
+
         this.setState({
             src: this.props.loadWithPlaceholder ? this.placeholderUrl : formattedSrc,
             formattedSrc,
-            hidePlaceholder: false
+            hidePlaceholder: false,
         });
     }
 
@@ -68,9 +71,7 @@ class FrescoImage extends React.Component {
      */
     onLoad = () => {
         if (this.props.loadWithPlaceholder) {
-            this.setState({
-                hidePlaceholder: true
-            });
+            this.setState({ hidePlaceholder: true });
         }
     }
 
@@ -78,23 +79,22 @@ class FrescoImage extends React.Component {
      * On the timeout interval, either clear it, or try updating the image again to see if it'll be able to resolve
      */
     onTimeout = () => {
-        if (!this.img || this.state.src === this.state.formattedSrc) {
+        //If the state is using the correct image
+        if (this.state.src === this.state.formattedSrc) {
             clearTimeout(this.loadTimeout);
         } else {
             this.setState({
                 src: this.state.formattedSrc,
-                timeout: this.state.timeout + this.state.timeout
+                timeout: this.state.timeout + this.state.timeout,
             });
         }
     }
 
     /**
-     * On image error, set the image as the placeholder and a set a timeout to try again later
+     * On image error, set the image as the placeholder and set a timeout to try again later
      */
     onError = () => {
-        if (this.img) {
-            this.setState({ src: this.placeholderUrl })
-        }
+        this.setState({ src: this.placeholderUrl });
 
         this.props.updateImage(this.placeholderUrl);
 
@@ -104,35 +104,45 @@ class FrescoImage extends React.Component {
     }
 
     render() {
-        const style = Object.assign({}, this.props.style, this.state.placeholderStyle);
+        let placeholderStyle = {};
 
-        const backgroundStyle = {
-            'backgroundImage': this.state.hidePlaceholder ? '' : `url(${this.placeholderUrl})`,
-        }
-
-        if(this.props.loadWithPlaceholder) {
-            return <div className="img-cover-bg" style={backgroundStyle}>
-                <img
-                    className={this.props.className || 'img-cover'}
-                    style={{ display: this.state.hidePlaceholder ? 'block' : 'none' }}
-                    role="presentation"
-                    onLoad={this.onLoad}
-                    onError={this.onError}
-                    src={this.state.formattedSrc}
-                />
-            </div>
-        } else {
-            return (
-                <img
-                    className={this.props.className || 'img-cover'}
-                    style={style}
-                    role="presentation"
-                    ref={r => { this.img = r; }}
-                    onError={this.onError}
-                    src={this.state.src}
-                />
+        if (!this.state.hidePlaceholder) {
+            placeholderStyle = Object.assign(
+                {
+                    backgroundImage: this.state.hidePlaceholder ? '' : `url(${this.placeholderUrl})`,
+                },
+                this.props.placeholderStyle,
+                this.props.style
             );
         }
+
+        if (this.props.loadWithPlaceholder) {
+            return (
+                <div className={`img-cover-bg ${this.props.className}`} style={placeholderStyle}>
+                    <img
+                        className={this.props.className || 'img-cover'}
+                        style={{
+                            display: this.state.hidePlaceholder ? 'block' : 'none',
+                            ...this.props.style,
+                        }}
+                        role="presentation"
+                        onLoad={this.onLoad}
+                        onError={this.onError}
+                        src={this.state.formattedSrc}
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <img
+                className={this.props.className || 'img-cover'}
+                style={this.props.style}
+                role="presentation"
+                onError={this.onError}
+                src={this.state.src}
+            />
+        );
     }
 }
 
