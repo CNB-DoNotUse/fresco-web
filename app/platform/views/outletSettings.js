@@ -7,6 +7,7 @@ import PaymentInfo from '../components/outlet/payment-info';
 import Members from '../components/outlet/members';
 import Locations from '../components/outlet/locations';
 import Notifications from '../components/outlet/notifications';
+import APITokens from '../components/outlet/api-tokens';
 import QuickSupport from '../components/global/quick-support';
 import 'app/sass/platform/_outletSettings';
 
@@ -14,6 +15,12 @@ import 'app/sass/platform/_outletSettings';
  * Outlet Settings page
  */
 class OutletSettings extends React.Component {
+    static propTypes = {
+        user: PropTypes.object,
+        outlet: PropTypes.object,
+        payment: PropTypes.array,
+    };
+
     constructor(props) {
         super(props);
 
@@ -27,10 +34,7 @@ class OutletSettings extends React.Component {
 
     updateOutlet(outlet) {
         this.state.user.outlet = outlet;
-        this.setState({
-            outlet,
-            user: this.state.user
-        });
+        this.setState({ outlet, user: this.state.user });
     }
 
     updateMembers(members) {
@@ -39,7 +43,7 @@ class OutletSettings extends React.Component {
 
     render() {
         const { payment } = this.props;
-        const { outlet, user } = this.state;
+        const { outlet, user, members } = this.state;
         const isOwner = outlet.owner.id === user.id;
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
 
@@ -49,52 +53,47 @@ class OutletSettings extends React.Component {
 
                 <div className={className}>
                     <div className="left">
-                        {isOwner ?
+                        {isOwner && (
                             <Info
                                 updateOutlet={(o) => this.updateOutlet(o)}
                                 outlet={outlet}
                             />
-                        : '' }
+                        )}
 
-                        {isOwner ?
+                        {isOwner && (
                             <PaymentInfo
                                 payment={payment}
-                                outlet={this.state.outlet}
+                                outlet={outlet}
                             />
-                        : ''}
+                        )}
 
-                        {isOwner ?
-                            <QuickSupport />
-                        : ''}
+                        {isOwner && (
+                            <APITokens
+                                outlet={outlet}
+                            />
+                        )}
+
+                        {isOwner && <QuickSupport />}
                     </div>
                     <div className="right">
-                        <Notifications outlet={this.state.outlet} />
+                        <Notifications outlet={outlet} />
+                        <Locations outlet={outlet} />
 
-                        <Locations outlet={this.state.outlet} />
-
-                        {isOwner ?
+                        {isOwner && (
                             <Members
-                                outlet={this.state.outlet}
+                                outlet={outlet}
                                 updateMembers={(o) => this.updateMembers(o)}
-                                members={this.state.members}
+                                members={members}
                             />
-                        : ''}
+                        )}
 
-                        {!isOwner ?
-                            <QuickSupport />
-                        : ''}
+                        {!isOwner && <QuickSupport />}
                     </div>
                 </div>
             </App>
         );
     }
 }
-
-OutletSettings.propTypes = {
-    user: PropTypes.object,
-    outlet: PropTypes.object,
-    payment: PropTypes.array,
-};
 
 ReactDOM.render(
     <OutletSettings
