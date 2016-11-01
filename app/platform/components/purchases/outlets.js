@@ -23,49 +23,49 @@ class PurchasesOutlets extends React.Component {
 
     state = {
         outletsById: {},
-        outletsOrdering: getFromPurchasesStorage('outletsOrdering') || this.props.outletIds,
+        sortedIds: getFromPurchasesStorage('sortedIds') || this.props.outletIds,
         loading: false,
     }
 
     componentDidMount() {
         const { outletIds } = this.props;
-        let { outletsOrdering } = this.state;
-        outletsOrdering = filter(outletsOrdering, o => outletIds.includes(o));
-        this.setState({ outletsOrdering }, () => this.loadOutlets(outletIds));
+        let { sortedIds } = this.state;
+        sortedIds = filter(sortedIds, o => outletIds.includes(o));
+        this.setState({ sortedIds }, () => this.loadOutlets(outletIds));
     }
 
     componentWillReceiveProps(nextProps) {
         const { outletIds } = nextProps;
-        let { outletsById, outletsOrdering } = this.state;
+        let { outletsById, sortedIds } = this.state;
 
         if (JSON.stringify(outletIds) !== JSON.stringify(this.props.outletIds)) {
             // get newly added outlet ids to then load them
             outletsById = pickBy(outletsById, o => {
                 return outletIds.includes(o.id);
             });
-            outletsOrdering = filter(outletsOrdering, o => outletIds.includes(o));
+            sortedIds = filter(sortedIds, o => outletIds.includes(o));
             let newOutletIds = outletIds;
             if (Object.keys(outletsById).length) {
-                newOutletIds = difference(outletIds, outletsOrdering);
+                newOutletIds = difference(outletIds, sortedIds);
             }
 
-            this.setState({ outletsById, outletsOrdering }, () => this.loadOutlets(newOutletIds));
+            this.setState({ outletsById, sortedIds }, () => this.loadOutlets(newOutletIds));
         }
     }
 
     onMove = (dragIndex, hoverIndex) => {
-        const { outletsOrdering } = this.state;
-        const dragOutlet = outletsOrdering[dragIndex];
+        const { sortedIds } = this.state;
+        const dragOutlet = sortedIds[dragIndex];
 
         this.setState(update(this.state, {
-            outletsOrdering: {
+            sortedIds: {
                 $splice: [
                     [dragIndex, 1],
                     [hoverIndex, 0, dragOutlet],
                 ],
             },
         }), () => {
-            setInPurchasesStorage({ outletsOrdering: this.state.outletsOrdering })
+            setInPurchasesStorage({ sortedIds: this.state.sortedIds })
         });
     }
 
@@ -76,7 +76,7 @@ class PurchasesOutlets extends React.Component {
      * @param {array} outletIds array of outlet ids
      */
     loadOutlets = (outletIds) => {
-        let { outletsById, outletsOrdering, loading } = this.state;
+        let { outletsById, sortedIds, loading } = this.state;
         if (loading || !outletIds || !outletIds.length) return;
 
         this.setState({ loading: true });
@@ -84,32 +84,31 @@ class PurchasesOutlets extends React.Component {
         .then(res => {
             res.forEach(o => {
                 outletsById = Object.assign(outletsById, { [o.id]: o });
-                if (!outletsOrdering.includes(o.id)) {
-                    outletsOrdering = update(outletsOrdering, { $push: [o.id] });
+                if (!sortedIds.includes(o.id)) {
+                    sortedIds = update(sortedIds, { $push: [o.id] });
                 }
             });
         })
         .catch(() => $.snackbar({ content: 'There was an error loading outlets' }))
         .then(() => {
-            this.setState({ outletsById, outletsOrdering, loading: false },
+            this.setState({ outletsById, sortedIds, loading: false },
                 () => this.loadInitialPurchases(outletIds))
         });
     }
 
     loadInitialPurchases = (outletIds) => {
-        let { outletsById, loading } = this.state;
-        if (loading || !outletIds || !outletIds.length) return;
+        let { sortedIds, outletsById, loading } = this.state;
+        if (loading || !sortedIds.length) return;
         this.setState({ loading: true });
 
-        Promise.all(outletIds.map((id) => api.get('purchase/list', {
+        Promise.all(sortedIds.map(id => api.get('purchase/list', {
             outlet_ids: [id],
             limit: 5,
         })))
         .then(res => {
             res.forEach((purchases) => {
                 if (purchases && purchases.length) {
-                    const outletIdx = outletsById.findIndex(o => o.id === purchases[0].outlet_id);
-                    outletsById = update(outletsById, { [outletIdx]: { $merge: { purchases } } });
+                    outletsById = update(outletsById, { [purchases[0].outlet_id]: { $merge: { purchases } } });
                 }
             });
         })
@@ -122,11 +121,10 @@ class PurchasesOutlets extends React.Component {
     }
 
     loadMorePurchases = (outletId) => {
-        let { outletsById = [], loading } = this.state;
+        let { loading, outletsById } = this.state;
         if (loading || !outletId) return;
         this.setState({ loading: true });
-        const outletIdx = outletsById.findIndex(o => o.id === outletId);
-        const outlet = outletsById[outletIdx];
+        const outlet = outletsById[outletId];
 
         api.get('purchase/list', {
             outlet_ids: [outletId],
@@ -135,7 +133,7 @@ class PurchasesOutlets extends React.Component {
         })
         .then(res => {
             if (res && res.length) {
-                outletsById = update(outletsById, { [outletIdx]: { purchases: { $push: res } } });
+                outletsById = update(outletsById, { [outletId]: { purchases: { $push: res } } });
             }
         })
         .catch(() => {
@@ -147,12 +145,12 @@ class PurchasesOutlets extends React.Component {
     }
 
     render() {
-        const { outletsById, outletsOrdering } = this.state;
+        const { outletsById, sortedIds } = this.state;
         if (!Object.keys(outletsById).length) return null;
 
         return (
             <div className="purchases__outlets">
-                {outletsOrdering.map((id, i) => {
+                {sortedIds.map((id, i) => {
                     const outlet = outletsById[id];
                     if (!outlet) return null;
                     return (
