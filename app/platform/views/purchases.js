@@ -5,6 +5,7 @@ import find from 'lodash/find';
 import map from 'lodash/map';
 import differenceBy from 'lodash/differenceBy';
 import api from 'app/lib/api';
+import { getFromStorage, setInStorage } from 'app/lib/storage';
 import 'app/sass/platform/_purchases.scss';
 import App from './app';
 import TopBar from '../components/topbar';
@@ -13,12 +14,15 @@ import Outlets from '../components/purchases/outlets';
 import TagFilter from '../components/topbar/tag-filter';
 import Dropdown from '../components/global/dropdown';
 
+const getFromPurchasesStorage = getFromStorage('purchases');
+const setInPurchasesStorage = setInStorage('purchases');
+
 /**
  * Admin Purchases page
  */
 class Purchases extends React.Component {
     state = {
-        outlets: this.getSessionStorage('outlets') || [],
+        outlets: getFromPurchasesStorage('outlets') || [],
         users: [],
         availableOutlets: [],
         availableUsers: [],
@@ -26,25 +30,6 @@ class Purchases extends React.Component {
         activeTab: 'Summary',
         outletStatsTime: 'today so far',
     };
-
-    getSessionStorage(key) {
-        if (sessionStorage.getItem('purchases')) {
-            const data = JSON.parse(sessionStorage.getItem('purchases'));
-            return data[key];
-        }
-
-        return null;
-    }
-
-    updateSessionStorage(data) {
-        let curData = {};
-        if (sessionStorage.getItem('purchases')) {
-            curData = JSON.parse(sessionStorage.getItem('purchases'));
-        }
-
-        const newData = JSON.stringify(Object.assign(curData, data));
-        sessionStorage.setItem('purchases', newData);
-    }
 
     findOutlets = (q) => {
         if (q.length === 0) {
@@ -114,7 +99,7 @@ class Purchases extends React.Component {
                 availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
                 updatePurchases: true
             }, () => {
-                this.updateSessionStorage({ outlets: this.state.outlets });
+                setInPurchasesStorage({ outlets: this.state.outlets });
             });
         }
     }
@@ -149,7 +134,7 @@ class Purchases extends React.Component {
             availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}),
             updatePurchases: true,
         }, () => {
-            this.updateSessionStorage({ outlets: this.state.outlets });
+            setInPurchasesStorage({ outlets: this.state.outlets });
         });
     }
 
