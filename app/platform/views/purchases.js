@@ -3,6 +3,7 @@ import update from 'react-addons-update';
 import ReactDOM from 'react-dom';
 import find from 'lodash/find';
 import map from 'lodash/map';
+import differenceBy from 'lodash/differenceBy';
 import api from 'app/lib/api';
 import 'app/sass/platform/_purchases.scss';
 import App from './app';
@@ -17,7 +18,7 @@ import Dropdown from '../components/global/dropdown';
  */
 class Purchases extends React.Component {
     state = {
-        outlets: [],
+        outlets: this.getSessionStorage('outlets') || [],
         users: [],
         availableOutlets: [],
         availableUsers: [],
@@ -25,6 +26,25 @@ class Purchases extends React.Component {
         activeTab: 'Summary',
         outletStatsTime: 'today so far',
     };
+
+    getSessionStorage(key) {
+        if (sessionStorage.getItem('purchases')) {
+            const data = JSON.parse(sessionStorage.getItem('purchases'));
+            return data[key];
+        }
+
+        return null;
+    }
+
+    updateSessionStorage(data) {
+        let curData = {};
+        if (sessionStorage.getItem('purchases')) {
+            curData = JSON.parse(sessionStorage.getItem('purchases'));
+        }
+
+        const newData = JSON.stringify(Object.assign(curData, data));
+        sessionStorage.setItem('purchases', newData);
+    }
 
     findOutlets = (q) => {
         if (q.length === 0) {
@@ -35,9 +55,8 @@ class Purchases extends React.Component {
             api
             .get('search', params)
             .then(res => {
-                this.setState({
-                    availableOutlets: res.outlets.results,
-                });
+                this.setState({ availableOutlets:
+                    differenceBy(res.outlets.results, this.state.outlets, 'title') });
             })
             .catch(err => err);
         }
@@ -87,15 +106,16 @@ class Purchases extends React.Component {
     addOutlet = (outletToAdd, index) => {
         const { availableOutlets, outlets } = this.state;
         const outlet = availableOutlets[index];
+        if (!outlet) return;
 
-        if(outlet !== null) {
-            if(find(outlets, ['id', outlet.id]) === undefined){
-                this.setState({
-                    outlets: update(outlets, {$push: [outlet]}),
-                    availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
-                    updatePurchases: true
-                });
-            }
+        if(find(outlets, ['id', outlet.id]) === undefined){
+            this.setState({
+                outlets: update(outlets, {$push: [outlet]}),
+                availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
+                updatePurchases: true
+            }, () => {
+                this.updateSessionStorage({ outlets: this.state.outlets });
+            });
         }
     }
 
@@ -128,6 +148,8 @@ class Purchases extends React.Component {
             // Add the user back to the autocomplete list
             availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}),
             updatePurchases: true,
+        }, () => {
+            this.updateSessionStorage({ outlets: this.state.outlets });
         });
     }
 
