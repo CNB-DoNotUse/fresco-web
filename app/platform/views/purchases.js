@@ -41,7 +41,7 @@ class Purchases extends React.Component {
             .get('search', params)
             .then(res => {
                 this.setState({ availableOutlets:
-                    differenceBy(res.outlets.results, this.state.outlets, 'title') });
+                    differenceBy(res.outlets.results, this.state.outlets, 'id') });
             })
             .catch(err => err);
         }
