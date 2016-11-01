@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import flow from 'lodash/flow';
+import api from 'app/lib/api';
 import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
 import { UserStats, PurchaseStats, OutletGoal } from './outlet-column-parts';
@@ -64,10 +65,24 @@ const initialState = {
         dau: 0,
         galleryCount: 0,
     },
-    purchaseStats: {},
+    purchaseStats: {
+        photos: 0,
+        videos: 0,
+        margin: 0,
+        revenue: 0,
+    },
+    revenueData: {},
     dailyVideoCount: 0,
     purchases: [],
     loading: false,
+};
+
+const statsTimeMap = {
+    'this year': 'this_year',
+    'last 30 days': 'last_30days',
+    'last 7 days': 'last_7days',
+    'last 24 hours': 'last_day',
+    'today so far': 'total_revenue',
 };
 
 /**
@@ -82,7 +97,7 @@ class OutletColumn extends React.Component {
         connectDropTarget: PropTypes.func.isRequired,
         loadMorePurchases: PropTypes.func.isRequired,
         outlet: PropTypes.object.isRequired,
-        since: PropTypes.object,
+        statsTime: PropTypes.string,
     };
 
     static defaultProps = {
@@ -91,23 +106,16 @@ class OutletColumn extends React.Component {
 
     state = initialState;
 
-    // componentDidMount() {
-        // this.loadPurchaseStats();
+    componentDidMount() {
+        this.loadPurchaseStats();
         // this.loadGoal();
-    // }
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.outlet.id !== this.props.outlet.id) {
             this.setState(initialState);
         }
     }
-
-    // componentDidUpdate(prevProps) {
-    //     // console.log('SINCE', prevProps.since !== this.props.since)
-    //     // if (prevProps.since !== this.props.since) {
-    //     //     this.loadPurchaseStats();
-    //     // }
-    // }
 
     /**
      * Scroll listener for main window
@@ -135,43 +143,34 @@ class OutletColumn extends React.Component {
     }
 
     /**
-     * Loads user stats for outlet and sets state
-     */
-    // loadUserStats = () => {
-
-    // }
-
-    /**
      * Loads stats for purchases
      */
-    // loadPurchaseStats = (lastPurchase = null) => {
-    //     const calculateStats = ({ total_revenue = 0 }) => {
-    //         if (!total_revenue) return;
+    loadPurchaseStats = (lastPurchase = null) => {
+        const { outlet: { id } } = this.props;
 
-    //         const stripeFee = (0.029 * total_revenue) + 0.30;
-    //         const userFee = 0.67 * total_revenue;
-    //         const margin = total_revenue - stripeFee - userFee;
+        api.get('purchase/stats', { outlet_ids: [id] })
+        .then(res => this.setState({ revenueData: res }))
+        .catch(() => {
+            $.snackbar({
+                content: `There was an error getting outlet(${id}) purchase stats`,
+            });
+        });
+    }
 
-    //         this.setState({ purchaseStats: {
-    //             margin: `$${Math.round(margin * 100) / 100}`,
-    //             revenue: `$${total_revenue}`,
-    //         } });
-    //     };
+    calcPurchaseStats() {
+        const { revenueData } = this.state;
+        const { statsTime } = this.props;
 
-    //     const { outlet: { id } } = this.props;
+        const revenue = revenueData[(statsTimeMap[statsTime])];
+        if (!revenue) return;
 
-    //     api.get('purchase/stats', {
-    //         outlet_ids: [id],
-    //         limit: 5,
-    //         last: lastPurchase,
-    //     })
-    //     .then(calculateStats)
-    //     .catch(() => {
-    //         $.snackbar({
-    //             content: `There was an error getting outlet(${id}) purchase stats`,
-    //         });
-    //     });
-    // }
+        const stripeFee = (0.029 * revenue) + 0.30;
+        const userFee = 0.67 * revenue;
+        let margin = revenue - stripeFee - userFee;
+        margin = (Math.round(margin * 100) / 100);
+
+        return { margin, revenue: parseInt(revenue) };
+    }
 
     // loadGoal = () => {
     //     $.ajax({
@@ -260,9 +259,7 @@ class OutletColumn extends React.Component {
             <div
                 draggable
                 className="outlet-column"
-                style={{
-                    opacity: isDragging ? 0 : 1,
-                }}
+                style={{ opacity: isDragging ? 0 : 1 }}
             >
                 {connectDragPreview(
                     <div
@@ -280,8 +277,7 @@ class OutletColumn extends React.Component {
                             {connectDragSource(<span className="mdi mdi-drag-vertical drag" />)}
                         </div>
 
-                        <UserStats {...userStats} />
-                        <PurchaseStats {...purchaseStats} />
+                        <PurchaseStats {...this.calcPurchaseStats()} />
                         <OutletGoal
                             dailyVideoCount={dailyVideoCount}
                             adjustGoal={this.adjustGoal}

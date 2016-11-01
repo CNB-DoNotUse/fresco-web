@@ -21,8 +21,8 @@ export const UserStats = ({ mau, dau, galleryCount }) => (
 );
 
 UserStats.propTypes = {
-    mau: PropTypes.string,
-    dau: PropTypes.string,
+    mau: PropTypes.number,
+    dau: PropTypes.number,
     galleryCount: PropTypes.number,
 };
 
@@ -38,11 +38,11 @@ export const PurchaseStats = ({ photos = 0, videos = 0, margin = 0, revenue = 0 
                 <span>{utils.isPlural(photos) ? 'videos' : 'video'}</span>
             </li>
             <li>
-                <span className="count">{revenue}</span>
+                <span className="count">{`$${revenue}`}</span>
                 <span>revenue</span>
             </li>
             <li>
-                <span className="count">{margin}</span>
+                <span className="count">{`$${margin}`}</span>
                 <span>margin</span>
             </li>
             <li>

@@ -52,29 +52,6 @@ class PurchasesOutlets extends React.Component {
     }
 
     /**
-     * Updates the time interval the outelt data is loaded in
-     * @return {moment} Moment.JS Object for the selected time
-     */
-    getTimeInterval = (selected) => {
-        switch (selected) {
-            case 'today so far':
-                return moment().utc().startOf('day');
-            case 'last 24 hours':
-                return moment().utc().subtract(1, 'day');
-            case 'last 7 days':
-                return moment().utc().subtract(7, 'days');
-            case 'last 30 days':
-                return moment().utc().subtract(30, 'days');
-            case 'this year':
-                return moment().utc().subtract(1, 'year');
-            case 'all time':
-                return null;
-            default:
-                return moment().utc().startOf('day')
-        }
-    }
-
-    /**
      * loadOutlets
      * loads outlet info and purchases for new outlet ids props
      *
@@ -156,7 +133,7 @@ class PurchasesOutlets extends React.Component {
                         id={outlet.id}
                         index={i}
                         outlet={outlet}
-                        since={this.getTimeInterval(this.props.statsTime)}
+                        statsTime={this.props.statsTime}
                         loadMorePurchases={this.loadMorePurchases}
                         onMove={this.onMove}
                         draggable
