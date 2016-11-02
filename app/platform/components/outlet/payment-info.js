@@ -16,7 +16,7 @@ class PaymentInfo extends React.Component {
             disabled: true
         }
     }
-    
+
     componentDidMount() {
         Stripe.setPublishableKey(window.__initialProps__.stripePublishableKey);
     }
@@ -37,15 +37,15 @@ class PaymentInfo extends React.Component {
             });
         } else if(!changed) {
             if(changes.length <= 1 && changes.includes(source)) {
-                this.setState({ 
-                    disabled: true, 
+                this.setState({
+                    disabled: true,
                     changes: []
                 });
-            } else {            
-                this.setState({ 
+            } else {
+                this.setState({
                     changes: changes.filter(change => change !== source)
                 });
-            }        
+            }
         }
     }
 
@@ -99,7 +99,7 @@ class PaymentInfo extends React.Component {
                 contentType: 'application/json',
                 dataType: 'json'
             })
-            .done((response) => {
+            .done(response => {
                 //Clear input fields
                 for (let ref in this.refs) {
                     if(this.refs[ref].value)
@@ -114,9 +114,9 @@ class PaymentInfo extends React.Component {
 
                 return $.snackbar({ content: 'Payment information updated!' });
             })
-            .fail((error) => {
+            .fail(error => {
                 return $.snackbar({ content: 'There was an issue saving your payment info!' });
-                
+
                 this.setState({ disabled: false });
             });
         });
@@ -165,7 +165,7 @@ class PaymentInfo extends React.Component {
                             tabIndex="2"
                             ref="expiration"
                         />
-                        
+
                         <input
                             type="text"
                             className="form-control ccv"

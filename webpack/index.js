@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const AssetsPlugin = require('assets-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+
 const fileLoaderName = 'fonts/[name].[ext]';
 const hashDate = Date.now();
 const appDirectory = './app';

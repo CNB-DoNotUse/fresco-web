@@ -3,22 +3,32 @@ import update from 'react-addons-update';
 import ReactDOM from 'react-dom';
 import find from 'lodash/find';
 import map from 'lodash/map';
+import differenceBy from 'lodash/differenceBy';
 import api from 'app/lib/api';
+import { getFromStorage, setInStorage } from 'app/lib/storage';
+import 'app/sass/platform/_purchases.scss';
 import App from './app';
 import TopBar from '../components/topbar';
-import PurchasesBody from '../components/purchases/purchases-body';
+import ListWithStats from '../components/purchases/list-with-stats';
+import Outlets from '../components/purchases/outlets';
 import TagFilter from '../components/topbar/tag-filter';
+import Dropdown from '../components/global/dropdown';
+
+const getFromPurchasesStorage = getFromStorage('purchases');
+const setInPurchasesStorage = setInStorage('purchases');
 
 /**
  * Admin Purchases page
  */
 class Purchases extends React.Component {
     state = {
-        outlets: [],
+        outlets: getFromPurchasesStorage('outlets') || [],
         users: [],
         availableOutlets: [],
         availableUsers: [],
         updatePurchases: false,
+        activeTab: 'Summary',
+        outletStatsTime: 'today so far',
     };
 
     findOutlets = (q) => {
@@ -30,9 +40,8 @@ class Purchases extends React.Component {
             api
             .get('search', params)
             .then(res => {
-                this.setState({
-                    availableOutlets: res.outlets.results,
-                });
+                this.setState({ availableOutlets:
+                    differenceBy(res.outlets.results, this.state.outlets, 'id') });
             })
             .catch(err => err);
         }
@@ -82,15 +91,16 @@ class Purchases extends React.Component {
     addOutlet = (outletToAdd, index) => {
         const { availableOutlets, outlets } = this.state;
         const outlet = availableOutlets[index];
+        if (!outlet) return;
 
-        if(outlet !== null) {
-            if(find(outlets, ['id', outlet.id]) === undefined){
-                this.setState({
-                    outlets: update(outlets, {$push: [outlet]}),
-                    availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
-                    updatePurchases: true
-                });
-            }
+        if(find(outlets, ['id', outlet.id]) === undefined){
+            this.setState({
+                outlets: update(outlets, {$push: [outlet]}),
+                availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
+                updatePurchases: true
+            }, () => {
+                setInPurchasesStorage({ outlets: this.state.outlets });
+            });
         }
     }
 
@@ -123,6 +133,8 @@ class Purchases extends React.Component {
             // Add the user back to the autocomplete list
             availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}),
             updatePurchases: true,
+        }, () => {
+            setInPurchasesStorage({ outlets: this.state.outlets });
         });
     }
 
@@ -203,10 +215,47 @@ class Purchases extends React.Component {
         window.open(url, '_blank');
     }
 
+    renderTab() {
+        const { activeTab, updatePurchases } = this.state;
+        switch (activeTab.toLowerCase()) {
+            case 'outlets':
+                return (
+                    <Outlets
+                        outletIds={this.state.outlets.map(o => o.id)}
+                        statsTime={this.state.outletStatsTime}
+                    />
+                );
+            case 'summary':
+            default:
+                return (
+                    <ListWithStats
+                        updatePurchases={updatePurchases}
+                        downloadExports={this.downloadExports}
+                        loadPurchases={this.loadPurchases}
+                        loadStats={this.loadStats}
+                    />
+                );
+        }
+    }
+
     render() {
+        const {
+            outlets,
+            users,
+            searchOutlets,
+            searchUsers,
+            activeTab,
+            outletStatsTime,
+        } = this.state;
+
         return (
             <App user={this.props.user}>
-                <TopBar title="Purchases">
+                <TopBar
+                    title="Purchases"
+                    tabs={['Summary', 'Outlets']}
+                    setActiveTab={(t) => this.setState({ activeTab: t })}
+                    activeTab={activeTab}
+                >
                     <TagFilter
                         text="Outlets"
                         tagList={this.state.availableOutlets}
@@ -218,34 +267,47 @@ class Purchases extends React.Component {
                         attr={'title'}
                     />
 
-                    <TagFilter
-                        text="Users"
-                        tagList={this.state.availableUsers}
-                        filterList={this.state.users}
-                        onTagInput={this.findUsers}
-                        onTagAdd={this.addUser}
-                        onTagRemove={this.removeUser}
-                        key="usersFilter"
-                        attr={'full_name'}
-                        altAttr={'username'}
-                        hasAlt
-                    />
+                    {(activeTab === 'Summary') &&
+                        <TagFilter
+                            text="Users"
+                            tagList={this.state.availableUsers}
+                            filterList={this.state.users}
+                            onTagInput={this.findUsers}
+                            onTagAdd={this.addUser}
+                            onTagRemove={this.removeUser}
+                            key="usersFilter"
+                            attr={'full_name'}
+                            altAttr={'username'}
+                            hasAlt
+                        />
+                    }
+
+                    {(activeTab === 'Outlets') &&
+                        <Dropdown
+                            options={[
+                                'today so far',
+                                'last 24 hours',
+                                'last 7 days',
+                                'last 30 days',
+                                'this year',
+                                'all time',
+                            ]}
+                            selected={outletStatsTime}
+                            onSelected={(b) => this.setState({ outletStatsTime: b })}
+                            key="timeToggle"
+                            inList
+                        />
+                    }
                 </TopBar>
 
-                <PurchasesBody
-                    updatePurchases={this.state.updatePurchases}
-                    downloadExports={this.downloadExports}
-                    loadPurchases={this.loadPurchases}
-                    loadStats={this.loadStats}
-                />
+                {this.renderTab()}
             </App>
         );
     }
 }
 
 ReactDOM.render(
-    <Purchases
-        user={window.__initialProps__.user} />,
+    <Purchases user={window.__initialProps__.user} />,
     document.getElementById('app')
 );
 
