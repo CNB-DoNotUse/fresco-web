@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import moment from 'moment';
 import update from 'react-addons-update';
 import { DragDropContext } from 'react-dnd';
 import difference from 'lodash/difference';
@@ -9,7 +8,7 @@ import pickBy from 'lodash/pickBy';
 import HTML5Backend from 'react-dnd-html5-backend';
 import api from 'app/lib/api';
 import { getFromStorage, setInStorage } from 'app/lib/storage';
-import OutletColumn from './outlet-column.js';
+import OutletColumn from './outlet-column';
 
 const getFromPurchasesStorage = getFromStorage('purchases');
 const setInPurchasesStorage = setInStorage('purchases');
@@ -40,9 +39,7 @@ class PurchasesOutlets extends React.Component {
 
         if (JSON.stringify(outletIds) !== JSON.stringify(this.props.outletIds)) {
             // get newly added outlet ids to then load them
-            outletsById = pickBy(outletsById, o => {
-                return outletIds.includes(o.id);
-            });
+            outletsById = pickBy(outletsById, o => outletIds.includes(o.id));
             sortedIds = filter(sortedIds, o => outletIds.includes(o));
             let newOutletIds = outletIds;
             if (Object.keys(outletsById).length) {
@@ -131,7 +128,7 @@ class PurchasesOutlets extends React.Component {
             last: last(outlet.purchases).id,
             limit: 5,
         })
-        .then(res => {
+        .then((res) => {
             if (res && res.length) {
                 outletsById = update(outletsById, { [outletId]: { purchases: { $push: res } } });
             }

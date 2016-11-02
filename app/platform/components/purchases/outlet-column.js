@@ -162,14 +162,14 @@ class OutletColumn extends React.Component {
         const { statsTime } = this.props;
 
         const revenue = revenueData[(statsTimeMap[statsTime])];
-        if (!revenue) return;
+        if (!revenue) return null;
 
         const stripeFee = (0.029 * revenue) + 0.30;
         const userFee = 0.67 * revenue;
         let margin = revenue - stripeFee - userFee;
         margin = (Math.round(margin * 100) / 100);
 
-        return { margin, revenue: parseInt(revenue) };
+        return { margin, revenue: parseFloat(revenue) };
     }
 
     // loadGoal = () => {

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import FitText from 'app/platform/components/global/fit-text';
 import utils from 'utils';
 
 export const UserStats = ({ mau, dau, galleryCount }) => (
@@ -38,11 +39,21 @@ export const PurchaseStats = ({ photos = 0, videos = 0, margin = 0, revenue = 0 
                 <span>{utils.isPlural(photos) ? 'videos' : 'video'}</span>
             </li>
             <li>
-                <span className="count">{`$${revenue}`}</span>
+                <FitText
+                    text={`$${revenue.toFixed(2)}`}
+                    defaultFontSize={16}
+                    fitCharCount={8}
+                    className="count"
+                />
                 <span>revenue</span>
             </li>
             <li>
-                <span className="count">{`$${margin}`}</span>
+                <FitText
+                    text={`$${margin.toFixed(2)}`}
+                    defaultFontSize={16}
+                    fitCharCount={8}
+                    className="count"
+                />
                 <span>margin</span>
             </li>
             <li>
@@ -60,7 +71,7 @@ PurchaseStats.propTypes = {
     revenue: PropTypes.number,
 };
 
-export const OutletGoal = ({ dailyVideoCount, adjustGoal, goal }) =>  {
+export const OutletGoal = ({ dailyVideoCount, adjustGoal, goal }) => {
     const percentage = 50;
 
     let circleColor = 'red';
