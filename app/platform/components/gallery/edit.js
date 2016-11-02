@@ -408,7 +408,7 @@ class Edit extends React.Component {
         this.setState({ rating: e.target.checked ? 3 : 2 });
     }
 
-    toggleIsNSFW = () => {
+    onChangeIsNSFW = () => {
         this.setState({ is_nsfw: !this.state.is_nsfw });
     }
 
@@ -586,7 +586,7 @@ class Edit extends React.Component {
 
                     <ExplicitCheckbox
                         is_nsfw={is_nsfw}
-                        onChange={this.toggleIsNSFW}
+                        onChange={this.onChangeIsNSFW}
                     />
                 </div>
 
