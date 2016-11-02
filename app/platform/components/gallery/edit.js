@@ -3,6 +3,7 @@ import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import request from 'superagent';
 import api from 'app/lib/api';
+import { isOriginalGallery, isImportedGallery, isSubmittedGallery } from 'app/lib/models';
 import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
@@ -52,7 +53,7 @@ class Edit extends React.Component {
             articles: gallery.articles,
             rating: gallery.rating,
             is_nsfw: gallery.is_nsfw,
-            isOriginalGallery: utils.isOriginalGallery(this.props.gallery),
+            isOriginalGallery: isOriginalGallery(this.props.gallery),
             uploads: [],
             loading: false,
             ...this.getInitialLocationData(),
@@ -439,7 +440,7 @@ class Edit extends React.Component {
         const { gallery } = this.props;
         if (!gallery || !gallery.posts) return null;
 
-        if (utils.isImportedGallery(gallery)) {
+        if (isImportedGallery(gallery)) {
             return (
                 <button
                     type="button"
@@ -458,7 +459,7 @@ class Edit extends React.Component {
     renderMap() {
         const { address, location, isOriginalGallery } = this.state;
         const { gallery } = this.props;
-        const mapDisabled = !isOriginalGallery || utils.isSubmittedGallery(gallery);
+        const mapDisabled = !isOriginalGallery || isSubmittedGallery(gallery);
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">

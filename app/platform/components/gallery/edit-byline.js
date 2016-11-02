@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { isImportedGallery } from 'app/lib/models';
 import utils from 'utils';
 
 /**
@@ -21,7 +22,7 @@ class BylineEdit extends React.Component {
             external_source,
         } = this.props;
 
-        if (!utils.isImportedGallery(gallery)) {
+        if (!isImportedGallery(gallery)) {
             return (
                 <div className="dialog-row">
                     <div>
