@@ -49,15 +49,17 @@ class PostDetailImage extends React.Component {
             />
         );
 
-        if (user.permissions.includes('get-all-purchases')) {
+        //If an admin
+        if (user.permissions.includes('update-other-content')) {
             actions.push(downloadAction);
+            if (!purchased) actions.push(purchaseAction);
+        } else {
             // Check if the post is purchased
             if (user.outlet && !purchased) {
                 actions.push(purchaseAction);
+            } else {
+                actions.push(downloadAction);
             }
-        } else {
-            actions.push(downloadAction);
-            if (!purchased) actions.push(purchaseAction);
         }
 
         if (post.stream) {
