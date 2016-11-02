@@ -129,6 +129,7 @@ class FrescoImage extends React.Component {
                         onLoad={this.onLoad}
                         onError={this.onError}
                         src={this.state.formattedSrc}
+                        draggable={false}
                     />
                 </div>
             );
@@ -141,6 +142,7 @@ class FrescoImage extends React.Component {
                 role="presentation"
                 onError={this.onError}
                 src={this.state.src}
+                draggable={false}
             />
         );
     }
