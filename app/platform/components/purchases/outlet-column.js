@@ -3,7 +3,7 @@ import flow from 'lodash/flow';
 import api from 'app/lib/api';
 import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
-import { UserStats, PurchaseStats, OutletGoal } from './outlet-column-parts';
+import { PurchaseStats, OutletGoal } from './outlet-column-parts';
 import OutletColumnPurchase from './outlet-column-purchase';
 
 // based on following example
@@ -59,23 +59,18 @@ const columnTarget = {
 };
 
 
-const initialState = {
+const initialState = outlet => ({
     userStats: {
         mau: 0,
         dau: 0,
         galleryCount: 0,
     },
-    purchaseStats: {
-        photos: 0,
-        videos: 0,
-        margin: 0,
-        revenue: 0,
-    },
     revenueData: {},
     dailyVideoCount: 0,
     purchases: [],
     loading: false,
-};
+    goal: outlet ? outlet.goal : 0,
+});
 
 const statsTimeMap = {
     'this year': 'this_year',
@@ -104,7 +99,7 @@ class OutletColumn extends React.Component {
         isDragging: false,
     };
 
-    state = initialState;
+    state = initialState(this.props.outlet);
 
     componentDidMount() {
         this.loadPurchaseStats();
@@ -113,7 +108,7 @@ class OutletColumn extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.outlet.id !== this.props.outlet.id) {
-            this.setState(initialState);
+            this.setState(initialState());
         }
     }
 
@@ -190,49 +185,42 @@ class OutletColumn extends React.Component {
      * Manages goal adjustment
      * @param  {integer} increment Value to add to current goal
      */
-    // adjustGoal = (increment) => {
-    //     const outlet = this.state.outlet;
-    //     const params = { id: this.state.outlet.id };
-    //     const updateGoal = (data) => {
-    //         // Check if event set goal is still consistent with state goal
-    //         // before sending out request
-    //         if (data.goal !== this.state.outlet.goal) {
-    //             return;
-    //         }
+    adjustGoal = (increment) => {
+        const { outlet } = this.props;
+        const params = { id: outlet.id };
+        // const updateGoal = (data) => {
+        //     // Check if event set goal is still consistent with state goal
+        //     // before sending out request
+        //     if (data.goal !== this.state.outlet.goal) {
+        //         return;
+        //     }
 
-    //         $.ajax({
-    //             url: '/api/outlet/goal',
-    //             type: 'POST',
-    //             data,
-    //             dataType: 'json',
-    //             success: (response, status, xhr) => {
-    //                 // Set again based on response data for consistency
-    //                 // this.setState({
-    //                 //     outlet: response
-    //                 // });
-    //             },
-    //             error: (xhr, status, error) => {
-    //                 $.snackbar({
-    //                     content: utils.resolveError(error, 'There was an error updating this outlet\'s goal.'),
-    //                 });
-    //             },
-    //         });
-    //     };
+        //     api
+        //     .post('outlet/goal')
+        //     .then((res) => {
 
-    //     if (typeof (outlet.goal) === 'undefined' || !outlet.goal) {
-    //         params.goal = 1;
-    //     } else {
-    //         params.goal = outlet.goal + increment;
-    //     }
+        //     })
+        //     .catch(() => {
+        //         $.snackbar({
+        //             content: 'There was an error updating this outlet\'s goal.',
+        //         });
+        //     });
+        // };
 
-    //     // Set goal on outlet for state
-    //     outlet.goal = params.goal;
-    //     // Set for immediate feedback
-    //     this.setState({ outlet });
+        if (typeof (outlet.goal) === 'undefined' || !outlet.goal) {
+            params.goal = 1;
+        } else {
+            params.goal = outlet.goal + increment;
+        }
 
-    //     // Timeout in case of rapid clicks
-    //     setTimeout(() => updateGoal(params), 1000);
-    // }
+        // Set goal on outlet for state
+        outlet.goal = params.goal;
+        // Set for immediate feedback
+        this.setState({ outlet });
+
+        // Timeout in case of rapid clicks
+        // setTimeout(() => updateGoal(params), 1000);
+    }
 
     renderPurchasesList = ({ onScroll, purchases = [] }) => (
         <ul className="outlet-column__list" onScroll={onScroll}>
@@ -253,7 +241,7 @@ class OutletColumn extends React.Component {
             connectDragPreview,
             outlet,
         } = this.props;
-        const { userStats, purchaseStats, dailyVideoCount } = this.state;
+        const { dailyVideoCount } = this.state;
 
         return connectDropTarget(
             <div
@@ -264,7 +252,7 @@ class OutletColumn extends React.Component {
                 {connectDragPreview(
                     <div
                         className="outlet-column__head"
-                        ref={r => { this.head = r; }}
+                        ref={(r) => { this.head = r; }}
                     >
                         <div className="title">
                             <div>
