@@ -58,6 +58,7 @@ class Edit extends React.Component {
             ...this.getInitialLocationData(),
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
+            owner: gallery.owner,
         };
     }
 
@@ -208,6 +209,7 @@ class Edit extends React.Component {
             external_source,
             rating,
             is_nsfw,
+            owner,
         } = this.state;
         const { gallery } = this.props;
         const postsFormData = this.getPostsFormData();
@@ -232,12 +234,13 @@ class Edit extends React.Component {
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             rating,
             is_nsfw,
+            owner_id: owner ? owner.id : null,
         };
 
         // Make sure our params are valid types and don't have any empty arrays
         // Special exception if the param is a `bool`
-        return pickBy(params, v => {
-            return (typeof(v) === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
+        return pickBy(params, (v) => {
+            return (typeof v === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
         });
     }
 
@@ -489,6 +492,7 @@ class Edit extends React.Component {
             isOriginalGallery,
             external_account_name,
             external_source,
+            owner,
         } = this.state;
         if (!gallery) return '';
 
@@ -528,8 +532,8 @@ class Edit extends React.Component {
                     <ChipInput
                         model="tags"
                         items={tags}
-                        modifyText={(t) => `#${t}`}
-                        updateItems={(t) => this.setState({ tags: t })}
+                        modifyText={t => `#${t}`}
+                        updateItems={t => this.setState({ tags: t })}
                         autocomplete={false}
                         className="dialog-row"
                     />
@@ -538,7 +542,7 @@ class Edit extends React.Component {
                         model="stories"
                         queryAttr="title"
                         items={stories}
-                        updateItems={(s) => this.setState({ stories: s })}
+                        updateItems={s => this.setState({ stories: s })}
                         className="dialog-row"
                         createNew
                         autocomplete
@@ -548,9 +552,22 @@ class Edit extends React.Component {
                         model="articles"
                         queryAttr="link"
                         items={articles}
-                        updateItems={(a) => this.setState({ articles: a })}
+                        updateItems={a => this.setState({ articles: a })}
                         className="dialog-row"
                         createNew
+                        search
+                    />
+
+                    <ChipInput
+                        model="users"
+                        placeholder="Owner"
+                        queryAttr="full_name"
+                        altAttr="username"
+                        items={owner ? [owner] : []}
+                        updateItems={u => this.setState({ owner: u[0] })}
+                        className="dialog-row"
+                        createNew={false}
+                        multiple={false}
                         search
                     />
 
