@@ -268,6 +268,7 @@ class ChipInput extends React.Component {
                         onKeyUp={this.onKeyUpQuery}
                         value={query}
                         disabled={disabled}
+                        className="mui-text-field"
                         fullWidth
                     />
 

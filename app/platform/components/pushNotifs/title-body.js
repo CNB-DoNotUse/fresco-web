@@ -20,6 +20,7 @@ const TitleBody = ({
             floatingLabelText="Title"
             value={title || ''}
             onChange={onChangeTitle(onChange)}
+            className="mui-text-field"
             fullWidth
         />
 
@@ -29,6 +30,7 @@ const TitleBody = ({
             floatingLabelText="Body"
             value={body || ''}
             onChange={onChangeBody(onChange)}
+            className="mui-text-field"
             fullWidth
         />
     </span>

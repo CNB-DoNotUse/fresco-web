@@ -256,6 +256,21 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	}
 }
 
+.mui-text-field {
+    margin-top: -20px;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    label, input, div {
+        font-size: 14px !important;
+    }
+    input {
+        color: #000;
+    }
+}
+
 .form-group {
 	margin:18px 0 0;
 	padding:0;
