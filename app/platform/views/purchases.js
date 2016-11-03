@@ -215,29 +215,6 @@ class Purchases extends React.Component {
         window.open(url, '_blank');
     }
 
-    renderTab() {
-        const { activeTab, updatePurchases } = this.state;
-        switch (activeTab.toLowerCase()) {
-            case 'outlets':
-                return (
-                    <Outlets
-                        outletIds={this.state.outlets.map(o => o.id)}
-                        statsTime={this.state.outletStatsTime}
-                    />
-                );
-            case 'summary':
-            default:
-                return (
-                    <ListWithStats
-                        updatePurchases={updatePurchases}
-                        downloadExports={this.downloadExports}
-                        loadPurchases={this.loadPurchases}
-                        loadStats={this.loadStats}
-                    />
-                );
-        }
-    }
-
     render() {
         const {
             outlets,
@@ -246,6 +223,7 @@ class Purchases extends React.Component {
             searchUsers,
             activeTab,
             outletStatsTime,
+            updatePurchases,
         } = this.state;
 
         return (
@@ -295,12 +273,25 @@ class Purchases extends React.Component {
                             selected={outletStatsTime}
                             onSelected={(b) => this.setState({ outletStatsTime: b })}
                             key="timeToggle"
+                            dropdownClass="purchases__time-dropdown"
                             inList
                         />
                     }
                 </TopBar>
 
-                {this.renderTab()}
+                <Outlets
+                    style={{ display: `${activeTab === 'Outlets' ? 'block' : 'none'}` }}
+                    outletIds={this.state.outlets.map(o => o.id)}
+                    statsTime={this.state.outletStatsTime}
+                />
+
+                <ListWithStats
+                    style={{ display: `${activeTab === 'Summary' ? 'block' : 'none'}` }}
+                    updatePurchases={updatePurchases}
+                    downloadExports={this.downloadExports}
+                    loadPurchases={this.loadPurchases}
+                    loadStats={this.loadStats}
+                />
             </App>
         );
     }
