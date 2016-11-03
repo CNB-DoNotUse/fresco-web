@@ -27,16 +27,22 @@ UserStats.propTypes = {
     galleryCount: PropTypes.number,
 };
 
-export const PurchaseStats = ({ photos = 0, videos = 0, margin = 0, revenue = 0 }) => (
+export const PurchaseStats = ({
+    photo_count = 0,
+    video_count = 0,
+    assignment_count = 0,
+    margin = 0,
+    revenue = 0,
+}) => (
     <div className="revenue">
         <ul>
             <li>
-                <span className="count">{photos}</span>
-                <span>{utils.isPlural(photos) ? 'photos' : 'photo'}</span>
+                <span className="count">{photo_count}</span>
+                <span>{utils.isPlural(photo_count) ? 'photos' : 'photo'}</span>
             </li>
             <li>
-                <span className="count">{videos}</span>
-                <span>{utils.isPlural(photos) ? 'videos' : 'video'}</span>
+                <span className="count">{video_count}</span>
+                <span>{utils.isPlural(video_count) ? 'videos' : 'video'}</span>
             </li>
             <li>
                 <FitText
@@ -57,16 +63,17 @@ export const PurchaseStats = ({ photos = 0, videos = 0, margin = 0, revenue = 0 
                 <span>margin</span>
             </li>
             <li>
-                <span className="count">0</span>
-                <span>assignments</span>
+                <span className="count">{assignment_count}</span>
+                <span>{utils.isPlural(assignment_count) ? 'assignments' : 'assignment'}</span>
             </li>
         </ul>
     </div>
 );
 
 PurchaseStats.propTypes = {
-    photos: PropTypes.number,
-    videos: PropTypes.number,
+    photo_count: PropTypes.number,
+    video_count: PropTypes.number,
+    assignment_count: PropTypes.number,
     margin: PropTypes.number,
     revenue: PropTypes.number,
 };
