@@ -20,6 +20,11 @@ export const isImportedGallery = ({ owner_id = null, posts = [] }) => (
     !owner_id && (posts && posts.every(p => !p.owner_id))
 );
 
+// TODO: should turn into new isImportedGallery?
+// export const galleryOwnerChangeable = ({ owner_id = null, uploader_id = null }) => (
+//     owner_id !== uploader_id
+// );
+
 export const isSubmittedGallery = ({ owner_id = null, posts = [] }) => (
     owner_id && (posts && posts.every(p => p.owner_id === owner_id))
 );

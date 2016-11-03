@@ -83,7 +83,7 @@ class Edit extends React.Component {
             this.saveGallery(gallery.id, params),
             this.deletePosts(postsToDelete),
         ])
-        .then(res => {
+        .then((res) => {
             if (get(res[0], 'posts_new.length')) {
                 return Promise.all([
                     res[0],
@@ -93,14 +93,14 @@ class Edit extends React.Component {
 
             return res;
         })
-        .then(res => {
+        .then((res) => {
             this.hide();
             this.setState({ uploads: [], loading: false }, () => {
                 $.snackbar({ content: 'Gallery saved!' });
                 onUpdateGallery(Object.assign(res[0], { assignments }));
             });
         })
-        .catch(err => {
+        .catch(() => {
             $.snackbar({ content: 'There was an error saving the gallery!' });
             this.setState({ loading: false });
         });
