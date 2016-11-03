@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
 import utils from 'utils';
+import get from 'lodash/get';
 
 export default class PurchasesListItem extends React.Component {
 	/**
@@ -60,7 +61,7 @@ export default class PurchasesListItem extends React.Component {
                             </p>
 
                             <p className="md-type-body1" style={{ lineHeight: '24px' }}>
-                                {assignment.location.address || assignment.location.googlemaps}
+                                {get(assignment, 'location.address') || get(assignment, 'location.googlemaps')}
                             </p>
                         </div>
                     )}
