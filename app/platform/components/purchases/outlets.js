@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import update from 'react-addons-update';
+import moment from 'moment';
 import { DragDropContext } from 'react-dnd';
 import difference from 'lodash/difference';
 import last from 'lodash/last';
@@ -13,7 +14,6 @@ import OutletColumn from './outlet-column';
 const getFromPurchasesStorage = getFromStorage('purchases');
 const setInPurchasesStorage = setInStorage('purchases');
 
-// TODO: fix draggable style (not showing dragged column with purchases)
 class PurchasesOutlets extends React.Component {
     static propTypes = {
         statsTime: PropTypes.string.isRequired,
@@ -102,7 +102,7 @@ class PurchasesOutlets extends React.Component {
             outlet_ids: [id],
             limit: 5,
         })))
-        .then(res => {
+        .then((res) => {
             res.forEach((purchases) => {
                 if (purchases && purchases.length) {
                     outletsById = update(outletsById, { [purchases[0].outlet_id]: { $merge: { purchases } } });
@@ -118,7 +118,8 @@ class PurchasesOutlets extends React.Component {
     }
 
     loadMorePurchases = (outletId) => {
-        let { loading, outletsById } = this.state;
+        const { loading } = this.state;
+        let { outletsById } = this.state;
         if (loading || !outletId) return;
         this.setState({ loading: true });
         const outlet = outletsById[outletId];
@@ -141,8 +142,38 @@ class PurchasesOutlets extends React.Component {
         .then(() => this.setState({ outletsById, loading: false }));
     }
 
+     /**
+     * Updates the time interval the outelt data is loaded in
+     * @return {moment} Moment.JS Object for the selected time
+     */
+    getStatsISO = (selected) => {
+        let dt = moment().utc();
+        switch (selected) {
+        case 'last 24 hours':
+            dt = dt.subtract(1, 'day');
+            break;
+        case 'last 7 days':
+            dt = dt.subtract(7, 'days');
+            break;
+        case 'last 30 days':
+            dt = dt.subtract(30, 'days');
+            break;
+        case 'this year':
+            dt = dt.subtract(1, 'year');
+            break;
+        case 'all time':
+            return null;
+        case 'today so far':
+        default:
+            dt = dt.startOf('day');
+        }
+
+        return dt.toISOString();
+    }
+
     render() {
         const { outletsById, sortedIds } = this.state;
+        const { statsTime } = this.props;
         if (!Object.keys(outletsById).length) return null;
 
         return (
@@ -156,7 +187,8 @@ class PurchasesOutlets extends React.Component {
                             id={outlet.id}
                             index={i}
                             outlet={outlet}
-                            statsTime={this.props.statsTime}
+                            statsTime={statsTime}
+                            statsAfterISO={this.getStatsISO(statsTime)}
                             loadMorePurchases={this.loadMorePurchases}
                             onMove={this.onMove}
                             draggable

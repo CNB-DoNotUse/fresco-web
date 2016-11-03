@@ -66,6 +66,7 @@ const initialState = outlet => ({
         galleryCount: 0,
     },
     revenueData: {},
+    statsData: {},
     dailyVideoCount: 0,
     purchases: [],
     loading: false,
@@ -77,7 +78,8 @@ const statsTimeMap = {
     'last 30 days': 'last_30days',
     'last 7 days': 'last_7days',
     'last 24 hours': 'last_day',
-    'today so far': 'total_revenue',
+    'today so far': 'today',
+    'all time': 'total_revenue',
 };
 
 /**
@@ -93,6 +95,7 @@ class OutletColumn extends React.Component {
         loadMorePurchases: PropTypes.func.isRequired,
         outlet: PropTypes.object.isRequired,
         statsTime: PropTypes.string,
+        statsAfterISO: PropTypes.string,
     };
 
     static defaultProps = {
@@ -103,12 +106,16 @@ class OutletColumn extends React.Component {
 
     componentDidMount() {
         this.loadPurchaseStats();
+        this.loadOutletStats(this.props.outlet.id, this.props.statsAfterISO);
         // this.loadGoal();
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.outlet.id !== this.props.outlet.id) {
             this.setState(initialState());
+        }
+        if (nextProps.statsAfterISO !== this.props.statsAfterISO) {
+            this.loadOutletStats(nextProps.outlet.id, nextProps.statsAfterISO);
         }
     }
 
@@ -140,7 +147,7 @@ class OutletColumn extends React.Component {
     /**
      * Loads stats for purchases
      */
-    loadPurchaseStats = (lastPurchase = null) => {
+    loadPurchaseStats() {
         const { outlet: { id } } = this.props;
 
         api.get('purchase/stats', { outlet_ids: [id] })
@@ -152,19 +159,36 @@ class OutletColumn extends React.Component {
         });
     }
 
+    loadOutletStats(id, statsAfterISO) {
+        if (!id) return;
+        let params = { outlet_ids: [id] };
+        if (statsAfterISO) params = Object.assign(params, { after: statsAfterISO });
+
+        api.get('outlet/stats', params)
+        .then((res) => {
+            this.setState({ statsData: res[0] });
+        })
+        .catch(() => {
+            $.snackbar({
+                content: `There was an error getting outlet(${id}) purchase stats`,
+            });
+        });
+    }
+
     calcPurchaseStats() {
-        const { revenueData } = this.state;
+        const { revenueData, statsData } = this.state;
         const { statsTime } = this.props;
+        const revenue = revenueData[(statsTimeMap[statsTime])] || 0;
+        let margin = 0;
 
-        const revenue = revenueData[(statsTimeMap[statsTime])];
-        if (!revenue) return null;
+        if (revenue && revenue > 0) {
+            const stripeFee = (0.029 * revenue) + 0.30;
+            const userFee = 0.67 * revenue;
+            margin = revenue - stripeFee - userFee;
+            margin = (Math.round(margin * 100) / 100);
+        }
 
-        const stripeFee = (0.029 * revenue) + 0.30;
-        const userFee = 0.67 * revenue;
-        let margin = revenue - stripeFee - userFee;
-        margin = (Math.round(margin * 100) / 100);
-
-        return { margin, revenue: parseFloat(revenue) };
+        return { margin, revenue: parseFloat(revenue), ...statsData };
     }
 
     // loadGoal = () => {
