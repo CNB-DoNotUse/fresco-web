@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import LocationAutocomplete from '../global/location-autocomplete.js';
+import TextField from 'material-ui/TextField';
 import GMap from './gmap';
 
 class AutocompleteMap extends React.Component {
@@ -22,8 +23,8 @@ class AutocompleteMap extends React.Component {
     /**
      * Updates prop radius function
      */
-    onChangeRadius() {
-        const radius = parseFloat(this.refs.radius.value.replace(/^0-9/g, ''));
+    onChangeRadius(e) {
+        const radius = parseFloat(e.value.replace(/^0-9/g, ''));
         // Check if a number
         if (!isNaN(radius)) {
             this.props.onRadiusUpdate(radius);
@@ -54,15 +55,14 @@ class AutocompleteMap extends React.Component {
 
         if (hasRadius) {
             radiusInput = (
-                <input
-                    type="text"
-                    className="form-control floating-label numbers"
-                    style={{ marginBottom: '10px' }}
-                    data-hint={unit}
-                    placeholder="Radius"
+                <TextField
+                    hintText="Radius"
+                    floatingLabelText="Radius"
                     defaultValue={Math.round(radius)}
-                    onChange={() => this.onChangeRadius()}
-                    ref="radius"
+                    onChange={(e) => this.onChangeRadius(e)}
+                    className="mui-text-field mui-text-field--first"
+                    style={{ marginBottom: '10px' }}
+                    fullWidth
                 />
             );
         }
