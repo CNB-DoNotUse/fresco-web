@@ -18,6 +18,7 @@ class PurchasesOutlets extends React.Component {
     static propTypes = {
         statsTime: PropTypes.string.isRequired,
         outletIds: PropTypes.array.isRequired,
+        style: PropTypes.object,
     };
 
     state = {
@@ -173,11 +174,11 @@ class PurchasesOutlets extends React.Component {
 
     render() {
         const { outletsById, sortedIds } = this.state;
-        const { statsTime } = this.props;
+        const { statsTime, style } = this.props;
         if (!Object.keys(outletsById).length) return null;
 
         return (
-            <div className="purchases__outlets">
+            <div style={style} className="purchases__outlets">
                 {sortedIds.map((id, i) => {
                     const outlet = outletsById[id];
                     if (!outlet) return null;
