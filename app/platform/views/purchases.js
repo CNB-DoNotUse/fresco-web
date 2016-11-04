@@ -144,23 +144,12 @@ class Purchases extends React.Component {
     loadStats = (callback) => {
         const params = {
             outlet_ids: map(this.state.outlets, 'id'),
-            user_ids: map(this.state.users, 'id')
-        }
+            user_ids: map(this.state.users, 'id'),
+        };
 
-        $.ajax({
-            url: '/api/purchase/stats',
-            type: 'GET',
-            data: $.param(params),
-            success: (response, status, xhr) => {
-                if(response.err || !response) {
-                    return $.snackbar({
-                        content: 'There was an error receiving purchases!'
-                    });
-                } else {
-                    callback(response);
-                }
-            }
-        });
+        api.get('purchase/stats', params)
+        .then(res => callback(res))
+        .catch(() => $.snackbar({ content: 'There was an error receiving purchases!' }));
     }
 
     /**
