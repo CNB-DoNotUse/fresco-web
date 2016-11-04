@@ -54,7 +54,7 @@ export default class OutletColumnPurchase extends React.Component {
         return (
             <li className="outlet-column__purchase">
                 <div className="meta-top">
-                    <a href={post.owner ? '/user/' + post.owner._id : '#'}>
+                    <a href={post.owner ? `/user/${post.owner.id}` : '#'}>
                         <h3>{name}</h3>
                     </a>
 
