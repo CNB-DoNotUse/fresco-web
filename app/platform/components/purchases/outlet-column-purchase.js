@@ -34,7 +34,7 @@ export default class OutletColumnPurchase extends React.Component {
         const userTimezone = moment.tz.guess();
         const purchasedDate = new Date(purchase.created_at);
         if (purchasedDate.valueOf() < lastDay) {
-            timestampText = moment.tz(purchase.created_at, userTimezone).format('MMMM Do, YYYY');
+            timestampText = moment.tz(purchase.created_at, userTimezone).format('MMMM Do, YYYY, h:mm A');
         } else {
             timestampText = moment.tz(purchase.created_at, userTimezone).format('h:mm A z');
         }

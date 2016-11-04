@@ -74,11 +74,11 @@ const initialState = outlet => ({
 });
 
 const statsTimeMap = {
-    'this year': 'this_year',
-    'last 30 days': 'last_30days',
-    'last 7 days': 'last_7days',
-    'last 24 hours': 'last_day',
-    'today so far': 'today',
+    'this year': 'revenue_this_year',
+    'last 30 days': 'revenue_last_30days',
+    'last 7 days': 'revenue_last_7days',
+    'last 24 hours': 'revenue_last_day',
+    'today so far': 'revenue_today',
     'all time': 'total_revenue',
 };
 
