@@ -19,6 +19,8 @@ export default class OutletColumnPurchase extends React.Component {
         let media = '';
         let timestampText = '';
 
+        if (!post) return null;
+
         const name = post.owner
             ? post.owner.full_name
             : '';

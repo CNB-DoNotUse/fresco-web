@@ -14,6 +14,7 @@ export default class PurchasesListItem extends React.Component {
     render() {
         const { purchase, showTitle } = this.props;
         const { assignment, post, outlet, amount } = purchase;
+        if (!post) return null;
         const video = post.stream != null;
         const timeString = moment(purchase.created_at).format('MMM Do, h:mma');
         const price = `$${(amount / 100).toFixed(2)}`; // amount to 2 decimal points
