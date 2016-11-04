@@ -153,6 +153,11 @@ const loaders = (env) => {
             loader: 'file-loader',
             query: { name: fileLoaderName },
         },
+        {
+            test: /\.json$/,
+            loader: 'json',
+            query: { name: fileLoaderName },
+        },
     ];
 
     return arr;

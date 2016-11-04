@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import FrescoImage from '../global/fresco-image';
 import FrescoVideo from '../global/fresco-video';
 
@@ -29,10 +29,11 @@ export default class OutletColumnPurchase extends React.Component {
             media = <FrescoImage src={post.image} size="small" />;
         }
 
+        const userTimezone = moment.tz.guess();
         if (purchase.timestamp < lastDay) {
-            timestampText = moment(purchase.timestamp).format('MMMM Do, YYYY');
+            timestampText = moment(purchase.timestamp, userTimezone).format('MMMM Do, YYYY');
         } else {
-            timestampText = moment(purchase.timestamp).format('h:mm A') + ' UTC';
+            timestampText = moment.tz(purchase.timestamp, userTimezone).format('h:mm A z');
         }
 
         if (purchase.assignment) {

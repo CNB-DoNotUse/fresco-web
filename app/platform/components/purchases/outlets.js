@@ -24,7 +24,6 @@ class PurchasesOutlets extends React.Component {
     state = {
         outletsById: {},
         sortedIds: getFromPurchasesStorage('sortedIds') || this.props.outletIds,
-        loading: false,
     }
 
     componentDidMount() {
@@ -63,7 +62,7 @@ class PurchasesOutlets extends React.Component {
                 ],
             },
         }), () => {
-            setInPurchasesStorage({ sortedIds: this.state.sortedIds })
+            setInPurchasesStorage({ sortedIds: this.state.sortedIds });
         });
     }
 
@@ -74,10 +73,9 @@ class PurchasesOutlets extends React.Component {
      * @param {array} outletIds array of outlet ids
      */
     loadOutlets = (outletIds) => {
-        let { outletsById, sortedIds, loading } = this.state;
-        if (loading || !outletIds || !outletIds.length) return;
+        let { outletsById, sortedIds } = this.state;
+        if (!outletIds || !outletIds.length) return;
 
-        this.setState({ loading: true });
         Promise.all(outletIds.map((id) => api.get(`outlet/${id}`)))
         .then(res => {
             res.forEach(o => {
@@ -89,15 +87,15 @@ class PurchasesOutlets extends React.Component {
         })
         .catch(() => $.snackbar({ content: 'There was an error loading outlets' }))
         .then(() => {
-            this.setState({ outletsById, sortedIds, loading: false },
-                () => this.loadInitialPurchases(outletIds))
+            this.setState({ outletsById, sortedIds }, () => {
+                this.loadInitialPurchases(outletIds);
+            });
         });
     }
 
     loadInitialPurchases = (outletIds) => {
-        let { sortedIds, outletsById, loading } = this.state;
-        if (loading || !sortedIds.length) return;
-        this.setState({ loading: true });
+        let { sortedIds, outletsById } = this.state;
+        if (!sortedIds.length) return;
 
         Promise.all(sortedIds.map(id => api.get('purchase/list', {
             outlet_ids: [id],
@@ -115,14 +113,12 @@ class PurchasesOutlets extends React.Component {
                 content: `There was an error getting outlets(${outletIds.join(', ')}) purchases!`,
             });
         })
-        .then(() => this.setState({ outletsById, loading: false }));
+        .then(() => this.setState({ outletsById }));
     }
 
     loadMorePurchases = (outletId) => {
-        const { loading } = this.state;
         let { outletsById } = this.state;
-        if (loading || !outletId) return;
-        this.setState({ loading: true });
+        if (!outletId) return;
         const outlet = outletsById[outletId];
 
         api.get('purchase/list', {
@@ -140,7 +136,7 @@ class PurchasesOutlets extends React.Component {
                 content: `There was an error getting outlet(${outletId}) purchases!`,
             });
         })
-        .then(() => this.setState({ outletsById, loading: false }));
+        .then(() => this.setState({ outletsById }));
     }
 
      /**
