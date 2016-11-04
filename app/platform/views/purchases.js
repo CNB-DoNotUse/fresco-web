@@ -215,6 +215,13 @@ class Purchases extends React.Component {
         window.open(url, '_blank');
     }
 
+    getTabStyle(tab) {
+        if (this.state.activeTab === tab) {
+            return { display: 'block' };
+        }
+        return { display: 'none' };
+    }
+
     render() {
         const {
             outlets,
@@ -279,18 +286,19 @@ class Purchases extends React.Component {
                     }
                 </TopBar>
 
+                <div style={this.getTabStyle('Summary')}>
+                    <ListWithStats
+                        updatePurchases={updatePurchases}
+                        downloadExports={this.downloadExports}
+                        loadPurchases={this.loadPurchases}
+                        loadStats={this.loadStats}
+                    />
+                </div>
+
                 <Outlets
-                    style={{ display: `${activeTab === 'Outlets' ? 'block' : 'none'}` }}
+                    style={this.getTabStyle('Outlets')}
                     outletIds={this.state.outlets.map(o => o.id)}
                     statsTime={this.state.outletStatsTime}
-                />
-
-                <ListWithStats
-                    style={{ display: `${activeTab === 'Summary' ? 'block' : 'none'}` }}
-                    updatePurchases={updatePurchases}
-                    downloadExports={this.downloadExports}
-                    loadPurchases={this.loadPurchases}
-                    loadStats={this.loadStats}
                 />
             </App>
         );

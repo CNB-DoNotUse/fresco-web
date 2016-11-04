@@ -182,9 +182,8 @@ class OutletColumn extends React.Component {
         let margin = 0;
 
         if (revenue && revenue > 0) {
-            const stripeFee = (0.029 * revenue) + 0.30;
             const userFee = 0.67 * revenue;
-            margin = revenue - stripeFee - userFee;
+            margin = revenue - userFee;
             margin = (Math.round(margin * 100) / 100);
         }
 
