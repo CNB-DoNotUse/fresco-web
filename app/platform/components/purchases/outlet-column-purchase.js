@@ -28,13 +28,13 @@ export default class OutletColumnPurchase extends React.Component {
         if (post.stream) {
             media = <FrescoVideo video={post.stream} thumbnail={post.image} />;
         } else {
-            media = <FrescoImage src={post.image} size="small" />;
+            media = <div className="img"><FrescoImage src={post.image} size="small" /></div>;
         }
 
         const userTimezone = moment.tz.guess();
         const purchasedDate = new Date(purchase.created_at);
         if (purchasedDate.valueOf() < lastDay) {
-            timestampText = moment.tz(purchase.created_at, userTimezone).format('MMMM Do, YYYY');
+            timestampText = moment.tz(purchase.created_at, userTimezone).format('MMMM Do, YYYY, h:mm A');
         } else {
             timestampText = moment.tz(purchase.created_at, userTimezone).format('h:mm A z');
         }
@@ -54,7 +54,7 @@ export default class OutletColumnPurchase extends React.Component {
         return (
             <li className="outlet-column__purchase">
                 <div className="meta-top">
-                    <a href={post.owner ? '/user/' + post.owner._id : '#'}>
+                    <a href={post.owner ? `/user/${post.owner.id}` : '#'}>
                         <h3>{name}</h3>
                     </a>
 

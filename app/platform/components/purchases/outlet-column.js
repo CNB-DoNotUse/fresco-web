@@ -66,7 +66,7 @@ const initialState = outlet => ({
         galleryCount: 0,
     },
     revenueData: {},
-    statsData: {},
+    outletStats: {},
     dailyVideoCount: 0,
     purchases: [],
     loading: false,
@@ -74,11 +74,11 @@ const initialState = outlet => ({
 });
 
 const statsTimeMap = {
-    'this year': 'this_year',
-    'last 30 days': 'last_30days',
-    'last 7 days': 'last_7days',
-    'last 24 hours': 'last_day',
-    'today so far': 'today',
+    'this year': 'revenue_this_year',
+    'last 30 days': 'revenue_last_30days',
+    'last 7 days': 'revenue_last_7days',
+    'last 24 hours': 'revenue_last_day',
+    'today so far': 'revenue_today',
     'all time': 'total_revenue',
 };
 
@@ -139,9 +139,7 @@ class OutletColumn extends React.Component {
 
         // Check that nothing is loading and that we're at the end of the scroll,
         // and that we have a parent bind to load  more posts
-        if (endOfScroll) {
-            loadMorePurchases(outlet.id);
-        }
+        if (endOfScroll) loadMorePurchases(outlet.id);
     }
 
     /**
@@ -152,11 +150,7 @@ class OutletColumn extends React.Component {
 
         api.get('purchase/stats', { outlet_ids: [id] })
         .then(res => this.setState({ revenueData: res }))
-        .catch(() => {
-            $.snackbar({
-                content: `There was an error getting outlet(${id}) purchase stats`,
-            });
-        });
+        .catch(() => this.setState({ revenueData: null }));
     }
 
     loadOutletStats(id, statsAfterISO) {
@@ -166,20 +160,16 @@ class OutletColumn extends React.Component {
 
         api.get('outlet/stats', params)
         .then((res) => {
-            this.setState({ statsData: res[0] });
+            this.setState({ outletStats: res[0] });
         })
-        .catch(() => {
-            $.snackbar({
-                content: `There was an error getting outlet(${id}) purchase stats`,
-            });
-        });
+        .catch(() => this.setState({ outletStats: null }));
     }
 
     calcPurchaseStats() {
-        const { revenueData, statsData } = this.state;
+        const { revenueData } = this.state;
         const { statsTime } = this.props;
-        const revenue = revenueData[(statsTimeMap[statsTime])] || 0;
-        let margin = 0;
+        const revenue = revenueData[(statsTimeMap[statsTime])];
+        let margin = parseFloat(revenue);
 
         if (revenue && revenue > 0) {
             const userFee = 0.67 * revenue;
@@ -187,62 +177,7 @@ class OutletColumn extends React.Component {
             margin = (Math.round(margin * 100) / 100);
         }
 
-        return { margin, revenue: parseFloat(revenue), ...statsData };
-    }
-
-    // loadGoal = () => {
-    //     $.ajax({
-    //         url: '/api/outlet/purchases/stats',
-    //         type: 'GET',
-    //         data: {
-    //             outlets: [this.state.outlet.id],
-    //             since: moment().utc().startOf('day').unix() * 1000,
-    //             now: Date.now(),
-    //         },
-    //         dataType: 'json',
-    //         success: response => this.setState({ dailyVideoCount: response.data.videos }),
-    //     });
-    // }
-
-    /**
-     * Manages goal adjustment
-     * @param  {integer} increment Value to add to current goal
-     */
-    adjustGoal = (increment) => {
-        const { outlet } = this.props;
-        const params = { id: outlet.id };
-        // const updateGoal = (data) => {
-        //     // Check if event set goal is still consistent with state goal
-        //     // before sending out request
-        //     if (data.goal !== this.state.outlet.goal) {
-        //         return;
-        //     }
-
-        //     api
-        //     .post('outlet/goal')
-        //     .then((res) => {
-
-        //     })
-        //     .catch(() => {
-        //         $.snackbar({
-        //             content: 'There was an error updating this outlet\'s goal.',
-        //         });
-        //     });
-        // };
-
-        if (typeof (outlet.goal) === 'undefined' || !outlet.goal) {
-            params.goal = 1;
-        } else {
-            params.goal = outlet.goal + increment;
-        }
-
-        // Set goal on outlet for state
-        outlet.goal = params.goal;
-        // Set for immediate feedback
-        this.setState({ outlet });
-
-        // Timeout in case of rapid clicks
-        // setTimeout(() => updateGoal(params), 1000);
+        return { margin, revenue: parseFloat(revenue) };
     }
 
     renderPurchasesList = ({ onScroll, purchases = [] }) => (
@@ -264,7 +199,7 @@ class OutletColumn extends React.Component {
             connectDragPreview,
             outlet,
         } = this.props;
-        const { dailyVideoCount } = this.state;
+        const { dailyVideoCount, outletStats } = this.state;
 
         return connectDropTarget(
             <div
@@ -288,12 +223,7 @@ class OutletColumn extends React.Component {
                             {connectDragSource(<span className="mdi mdi-drag-vertical drag" />)}
                         </div>
 
-                        <PurchaseStats {...this.calcPurchaseStats()} />
-                        <OutletGoal
-                            dailyVideoCount={dailyVideoCount}
-                            adjustGoal={this.adjustGoal}
-                            goal={outlet.goal || 0}
-                        />
+                        <PurchaseStats {...this.calcPurchaseStats()} {...outletStats} />
                     </div>
                 )}
 

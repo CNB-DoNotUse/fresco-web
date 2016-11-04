@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import FitText from 'app/platform/components/global/fit-text';
 import utils from 'utils';
+import isNumber from 'lodash/isNumber';
 
 export const UserStats = ({ mau, dau, galleryCount }) => (
     <div className="users">
@@ -28,25 +29,25 @@ UserStats.propTypes = {
 };
 
 export const PurchaseStats = ({
-    photo_count = 0,
-    video_count = 0,
-    assignment_count = 0,
-    margin = 0,
-    revenue = 0,
+    photo_count,
+    video_count,
+    assignment_count,
+    margin,
+    revenue,
 }) => (
     <div className="revenue">
         <ul>
             <li>
-                <span className="count">{photo_count}</span>
+                <span className="count">{isNumber(photo_count) ? photo_count : 'N/A'}</span>
                 <span>{utils.isPlural(photo_count) ? 'photos' : 'photo'}</span>
             </li>
             <li>
-                <span className="count">{video_count}</span>
+                <span className="count">{isNumber(video_count) ? video_count : 'N/A'}</span>
                 <span>{utils.isPlural(video_count) ? 'videos' : 'video'}</span>
             </li>
             <li>
                 <FitText
-                    text={`$${revenue.toFixed(2)}`}
+                    text={isNumber(revenue) ? `$${revenue.toFixed(2)}` : 'N/A'}
                     defaultFontSize={16}
                     fitCharCount={8}
                     className="count"
@@ -55,7 +56,7 @@ export const PurchaseStats = ({
             </li>
             <li>
                 <FitText
-                    text={`$${margin.toFixed(2)}`}
+                    text={isNumber(margin) ? `$${margin.toFixed(2)}` : 'N/A'}
                     defaultFontSize={16}
                     fitCharCount={8}
                     className="count"
@@ -63,7 +64,7 @@ export const PurchaseStats = ({
                 <span>margin</span>
             </li>
             <li>
-                <span className="count">{assignment_count}</span>
+                <span className="count">{isNumber(assignment_count) ? assignment_count : 'N/A'}</span>
                 <span>{utils.isPlural(assignment_count) ? 'assignments' : 'assignment'}</span>
             </li>
         </ul>
