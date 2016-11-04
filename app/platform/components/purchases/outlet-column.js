@@ -289,11 +289,6 @@ class OutletColumn extends React.Component {
                         </div>
 
                         <PurchaseStats {...this.calcPurchaseStats()} />
-                        <OutletGoal
-                            dailyVideoCount={dailyVideoCount}
-                            adjustGoal={this.adjustGoal}
-                            goal={outlet.goal || 0}
-                        />
                     </div>
                 )}
 
