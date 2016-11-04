@@ -19,6 +19,8 @@ export default class OutletColumnPurchase extends React.Component {
         let media = '';
         let timestampText = '';
 
+        if (!post) return null;
+
         const name = post.owner
             ? post.owner.full_name
             : '';
@@ -30,10 +32,11 @@ export default class OutletColumnPurchase extends React.Component {
         }
 
         const userTimezone = moment.tz.guess();
-        if (purchase.timestamp < lastDay) {
-            timestampText = moment(purchase.timestamp, userTimezone).format('MMMM Do, YYYY');
+        const purchasedDate = new Date(purchase.created_at);
+        if (purchasedDate.valueOf() < lastDay) {
+            timestampText = moment.tz(purchase.created_at, userTimezone).format('MMMM Do, YYYY');
         } else {
-            timestampText = moment.tz(purchase.timestamp, userTimezone).format('h:mm A z');
+            timestampText = moment.tz(purchase.created_at, userTimezone).format('h:mm A z');
         }
 
         if (purchase.assignment) {
