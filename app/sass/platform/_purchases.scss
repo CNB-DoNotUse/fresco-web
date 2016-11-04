@@ -240,9 +240,18 @@
         overflow:hidden;
 
         img, video  {
-            @include border-radius(2px);
             display:block;
             width: 100%;
+        }
+
+        .img, .fresco-video-wrap {
+            @include border-radius(2px);
+            height: 100%;
+            overflow: hidden;
+        }
+
+        img {
+            object-fit: cover;
             height: auto;
         }
 

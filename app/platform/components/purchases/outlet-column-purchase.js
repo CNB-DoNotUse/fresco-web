@@ -28,7 +28,7 @@ export default class OutletColumnPurchase extends React.Component {
         if (post.stream) {
             media = <FrescoVideo video={post.stream} thumbnail={post.image} />;
         } else {
-            media = <FrescoImage src={post.image} size="small" />;
+            media = <div className="img"><FrescoImage src={post.image} size="small" /></div>;
         }
 
         const userTimezone = moment.tz.guess();
