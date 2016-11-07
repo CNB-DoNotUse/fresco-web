@@ -267,7 +267,7 @@ class Purchases extends React.Component {
                                 'all time',
                             ]}
                             selected={outletStatsTime}
-                            onSelected={(b) => this.setState({ outletStatsTime: b })}
+                            onSelected={b => this.setState({ outletStatsTime: b })}
                             key="timeToggle"
                             dropdownClass="purchases__time-dropdown"
                             inList
@@ -286,6 +286,7 @@ class Purchases extends React.Component {
 
                 <Outlets
                     style={this.getTabStyle('Outlets')}
+                    loadData={activeTab === 'Outlets'}
                     outletIds={this.state.outlets.map(o => o.id)}
                     statsTime={this.state.outletStatsTime}
                 />

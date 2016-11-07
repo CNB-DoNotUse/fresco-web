@@ -169,7 +169,7 @@ class OutletColumn extends React.Component {
         const { revenueData } = this.state;
         const { statsTime } = this.props;
         const revenue = revenueData[(statsTimeMap[statsTime])];
-        let margin = parseFloat(revenue);
+        let margin = revenue ? parseFloat(revenue) : null;
 
         if (revenue && revenue > 0) {
             const userFee = 0.67 * revenue;
@@ -177,7 +177,10 @@ class OutletColumn extends React.Component {
             margin = (Math.round(margin * 100) / 100);
         }
 
-        return { margin, revenue: parseFloat(revenue) };
+        return {
+            margin,
+            revenue: revenue ? parseFloat(revenue) : null
+        };
     }
 
     renderPurchasesList = ({ onScroll, purchases = [] }) => (

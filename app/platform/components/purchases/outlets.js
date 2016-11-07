@@ -19,6 +19,7 @@ class PurchasesOutlets extends React.Component {
         statsTime: PropTypes.string.isRequired,
         outletIds: PropTypes.array.isRequired,
         style: PropTypes.object,
+        loadData: PropTypes.bool,
     };
 
     state = {
@@ -27,10 +28,12 @@ class PurchasesOutlets extends React.Component {
     }
 
     componentDidMount() {
-        const { outletIds } = this.props;
+        const { outletIds, loadData } = this.props;
         let { sortedIds } = this.state;
         sortedIds = filter(sortedIds, o => outletIds.includes(o));
-        this.setState({ sortedIds }, () => this.loadOutlets(outletIds));
+        this.setState({ sortedIds }, () => {
+            if (loadData) this.loadOutlets(outletIds);
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -47,6 +50,12 @@ class PurchasesOutlets extends React.Component {
             }
 
             this.setState({ outletsById, sortedIds }, () => this.loadOutlets(newOutletIds));
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if ((prevProps.loadData !== this.props.loadData) && this.props.loadData) {
+            this.loadOutlets(this.props.outletIds);
         }
     }
 
