@@ -73,7 +73,7 @@ export default class PurchasesStats extends React.Component {
 
         const statFromData = (data) => {
             const d = parseFloat(data);
-            if (isNumber(d)) return d / 100;
+            if (isNumber(d)) return `$${d / 100}`;
 
             return 'N/A';
         };
