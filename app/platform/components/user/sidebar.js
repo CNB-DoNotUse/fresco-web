@@ -7,7 +7,6 @@ import UserItem from 'platform/components/global/user-item';
  * @description Column on the left of the user page
  */
 class Sidebar extends React.Component {
-
     render() {
         const { detailUser } = this.props;
         const avatar = detailUser.avatar || utils.defaultAvatar;
@@ -28,26 +27,26 @@ class Sidebar extends React.Component {
                             <div className="meta">
                                 <div className="meta-list">
                                     <ul className="md-type-subhead">
-                                        {detailUser.email ? 
+                                        {detailUser.email && (
                                             <li className="ellipses">
-                                                <span className="mdi mdi-email icon"></span>
+                                                <span className="mdi mdi-email icon" />
                                                 <a target="_top" href={`mailto:${detailUser.email}`}>
                                                     {detailUser.email}
                                                 </a>
                                             </li>
-                                        : ''}
+                                        )}
 
-                                        {detailUser.stripe_account_id ? 
+                                        {detailUser.stripe_account_id && (
                                             <li className="ellipses">
-                                                <span className="mdi mdi-bank icon"></span>
+                                                <span className="mdi mdi-bank icon" />
                                                 <a
                                                     target="_top"
-                                                    href={`https://dashboard.stripe.com/${detailUser.stripe}`}
+                                                    href={`https://dashboard.stripe.com/${detailUser.stripe_account_id}`}
                                                 >
                                                     Stripe
                                                 </a>
                                             </li>
-                                        : ''}
+                                        )}
                                     </ul>
                                 </div>
                             </div>
