@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment-timezone';
+import utils from 'utils';
 import FrescoImage from '../global/fresco-image';
 import FrescoVideo from '../global/fresco-video';
 
@@ -14,7 +15,6 @@ export default class OutletColumnPurchase extends React.Component {
     render() {
         const purchase = this.props.purchase;
         const post = purchase.post;
-        const lastDay = Date.now() - 86400000;
         let assignmentMeta = '';
         let media = '';
         let timestampText = '';
@@ -31,13 +31,7 @@ export default class OutletColumnPurchase extends React.Component {
             media = <div className="img"><FrescoImage src={post.image} size="small" /></div>;
         }
 
-        const userTimezone = moment.tz.guess();
-        const purchasedDate = new Date(purchase.created_at);
-        if (purchasedDate.valueOf() < lastDay) {
-            timestampText = moment.tz(purchase.created_at, userTimezone).format('MMMM Do, YYYY, h:mm A');
-        } else {
-            timestampText = moment.tz(purchase.created_at, userTimezone).format('h:mm A z');
-        }
+        timestampText = utils.formatTime(purchase.created_at, true);
 
         if (purchase.assignment) {
             assignmentMeta = (

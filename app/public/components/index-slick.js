@@ -81,7 +81,7 @@ Slick.prototype.init = function() {
 
 	arrowLeft.addEventListener('click', function(){
 		$('#slick-highlights').slick('slickPrev');
-	});	
+	});
 }
 
 /**
@@ -107,12 +107,12 @@ Slick.prototype.createGalleryView = function(gallery) {
 		                        </td>
 		                        <td class="byline">${utils.getBylineFromPost(post)}</td>
 		                    </tr>
-		                    
+
 		                    <tr>
 		                        <td><span class="mdi mdi-map-marker"></span></td>
 		                        <td class="meta-text">${address}</td>
 		                    </tr>
-		                    
+
 		                    <tr>
 		                        <td><span class="mdi mdi-clock"></span></td>
 		                        <td class="meta-text">${timestampText}</td>
