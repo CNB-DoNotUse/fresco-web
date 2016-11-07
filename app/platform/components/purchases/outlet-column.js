@@ -73,14 +73,17 @@ const initialState = outlet => ({
     goal: outlet ? outlet.goal : 0,
 });
 
-const statsTimeMap = {
-    'this year': 'revenue_this_year',
-    'last 30 days': 'revenue_last_30days',
-    'last 7 days': 'revenue_last_7days',
-    'last 24 hours': 'revenue_last_day',
-    'today so far': 'revenue_today',
-    'all time': 'total_revenue',
-};
+const statsTimeMap = type => ({
+    'this year': `${type}_this_year`,
+    'last 30 days': `${type}_last_30days`,
+    'last 7 days': `${type}_last_7days`,
+    'last 24 hours': `${type}_last_day`,
+    'today so far': `${type}_today`,
+    'all time': `total_${type}`,
+});
+
+const revenueTimeMap = statsTimeMap('revenue');
+const feesTimeMap = statsTimeMap('fees');
 
 /**
  * Outlet Column Component
@@ -168,19 +171,16 @@ class OutletColumn extends React.Component {
     calcPurchaseStats() {
         const { revenueData } = this.state;
         const { statsTime } = this.props;
-        const revenue = revenueData[(statsTimeMap[statsTime])];
-        let margin = revenue ? parseFloat(revenue) : null;
-
-        if (revenue && revenue > 0) {
-            const userFee = 0.67 * revenue;
-            margin = revenue - userFee;
-            margin = (Math.round(margin * 100) / 100);
+        if (revenueData[(revenueTimeMap[statsTime])] === null) {
+            return { margin: null, revenue: null };
         }
+        const revenue = parseFloat(revenueData[(revenueTimeMap[statsTime])]) / 100;
+        const fees = parseFloat(revenueData[(feesTimeMap[statsTime])]) / 100;
+        let margin = revenue;
 
-        return {
-            margin,
-            revenue: revenue ? parseFloat(revenue) : null
-        };
+        if (revenue && revenue > 0) margin -= fees;
+
+        return { margin, revenue };
     }
 
     renderPurchasesList = ({ onScroll, purchases = [] }) => (
