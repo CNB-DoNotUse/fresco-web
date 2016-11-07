@@ -51,7 +51,7 @@ export default class OutletColumnPurchase extends React.Component {
                         <h3>{name}</h3>
                     </a>
 
-                    <span>{timestampText}</span>
+                    <a href={`/post/${post.id}`}>{timestampText}</a>
                 </div>
 
                 <div className="media-cell">
