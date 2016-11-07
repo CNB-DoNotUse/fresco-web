@@ -60,9 +60,19 @@ class FrescoVideo extends React.Component {
             muted: this.props.muted,
         };
 
-        if (this.props.width) options.width = this.props.width;
-
         const videoJSPlayer = videojs(this.state.id, options);
+
+        videoJSPlayer.on('loadedmetadata', () => {
+            videoJSPlayer.tech_.hls.representations().forEach((rep, i) => {
+                if (i === 0) rep.enabled(true);
+                else rep.enabled(false);
+                // if (rep.width >= 960) {
+                //     rep.enabled(true);
+                // } else {
+                //     rep.enabled(false);
+                // }
+            });
+        });
 
         this.setState({ videoJSPlayer });
 
@@ -84,7 +94,15 @@ class FrescoVideo extends React.Component {
     }
 
     render() {
-        const { video, type, width, thumbnail, autoplay, hideControls } = this.props;
+        const {
+            video,
+            type,
+            width,
+            height,
+            thumbnail,
+            autoplay,
+            hideControls,
+        } = this.props;
         const { id, isStream } = this.state;
 
         // Video.JS if an m3u8 file
@@ -95,6 +113,8 @@ class FrescoVideo extends React.Component {
             <div className="fresco-video-wrap">
                 <video
                     id={id}
+                    width={width}
+                    height={height}
                     className={className}
                     autoPlay={autoplay}
                     controls={!hideControls}
