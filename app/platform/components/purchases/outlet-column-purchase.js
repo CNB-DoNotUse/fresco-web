@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import moment from 'moment-timezone';
 import utils from 'utils';
 import FrescoImage from '../global/fresco-image';
 import FrescoVideo from '../global/fresco-video';
@@ -47,7 +46,7 @@ export default class OutletColumnPurchase extends React.Component {
 
         return (
             <li className="outlet-column__purchase">
-                <div className="meta-top">
+                <div className="outlet-column__purchase-meta">
                     <a href={post.owner ? `/user/${post.owner.id}` : '#'}>
                         <h3>{name}</h3>
                     </a>
