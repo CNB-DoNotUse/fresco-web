@@ -13,7 +13,6 @@ class FrescoVideo extends React.Component {
         thumbnail: PropTypes.string,
         width: PropTypes.string,
         type: PropTypes.string,
-        style: PropTypes.object,
         autoplay: PropTypes.bool,
         muted: PropTypes.bool,
         hideControls: PropTypes.bool,
@@ -98,6 +97,7 @@ class FrescoVideo extends React.Component {
                     className={className}
                     autoPlay={autoplay}
                     controls={!hideControls}
+                    ref={r => { this.video = r; }}
                 >
                     <source
                         src={video}
