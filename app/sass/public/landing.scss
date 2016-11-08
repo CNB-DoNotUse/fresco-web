@@ -20,7 +20,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	div{
 		position:absolute;
 		left:0; right:0; top:0; bottom:0;
-		background: #ffc600 url("https://d1dw1p6sgigznj.cloudfront.net/index/map.png");
+		background: #ffc600 url("https://cdn.fresconews.com/static/index/map.png");
 		background-repeat: no-repeat;
 		background-position:50%;
 	    background-size:cover;
@@ -113,7 +113,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		a{
 			color:#FFF !important;
 			text-shadow:0 2px 2px #000;
-			text-shadow:0 2px 2px rgba(0, 0, 0, .15); 
+			text-shadow:0 2px 2px rgba(0, 0, 0, .15);
 		}
 	}
 }
@@ -143,7 +143,7 @@ $heroHeight: 180px;
 			text-shadow:0 2px 2px #F5F5F5;
 			text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
 		}
-		
+
 		h3{
 			margin:4px 0 0 ;
 			font-weight:400;
@@ -162,7 +162,7 @@ $heroHeight: 180px;
 			margin:0 5px;
 			img{
 				width:145px;
-			}	
+			}
 		}
 	}
 }
@@ -180,7 +180,7 @@ $heroHeight: 180px;
     }
 
 	@include mobile{
-   		margin-bottom:12px;		
+   		margin-bottom:12px;
 	}
 
 	@media screen and (max-width: 1280px) {
@@ -252,7 +252,7 @@ $heroHeight: 180px;
 					max-width:100%;
 				}
 			}
-			
+
 			li.third{
 				.callout{
 					z-index:50;
@@ -270,7 +270,7 @@ $heroHeight: 180px;
 					}
 				}
 			}
-			
+
 			li.second{
 				width:42%;
 				margin:0 4%;
@@ -279,12 +279,12 @@ $heroHeight: 180px;
 					margin:0 auto;
 				}
 			}
-			
+
 
 			li.first, li.third{
 				width:24%;
 			}
-			
+
 		}
 
 		.line{
@@ -295,7 +295,7 @@ $heroHeight: 180px;
 			@include mobile{
 				width:$mobileLineWidth;
 			}
-		
+
 		}
 
 		.progress{
@@ -345,12 +345,12 @@ $heroHeight: 180px;
 			li.first{
 				left:9%;
 			}
-			
+
 			li.second{
 				left: 0;
 				right: 0;
 			}
-			
+
 			li.third{
 				right:9%;
 			}

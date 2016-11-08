@@ -1,8 +1,8 @@
 // Session storage helper fns
 
 export const getFromStorage = (storageKey) => (key) => {
-    if (sessionStorage.getItem(storageKey)) {
-        const data = JSON.parse(sessionStorage.getItem(storageKey));
+    if (localStorage.getItem(storageKey)) {
+        const data = JSON.parse(localStorage.getItem(storageKey));
         return data[key];
     }
 
@@ -11,10 +11,10 @@ export const getFromStorage = (storageKey) => (key) => {
 
 export const setInStorage = (storageKey) => (data) => {
     let curData = {};
-    if (sessionStorage.getItem(storageKey)) {
-        curData = JSON.parse(sessionStorage.getItem(storageKey));
+    if (localStorage.getItem(storageKey)) {
+        curData = JSON.parse(localStorage.getItem(storageKey));
     }
 
     const newData = JSON.stringify(Object.assign(curData, data));
-    sessionStorage.setItem(storageKey, newData);
+    localStorage.setItem(storageKey, newData);
 }

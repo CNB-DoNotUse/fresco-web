@@ -202,33 +202,6 @@
     flex-wrap:wrap;
     flex-direction:row;
 
-    &:hover {
-
-    }
-
-    .meta-top {
-        padding:0 24px;
-        width:100%;
-        height:48px;
-        display:flex;
-        flex-basis:100%;
-        align-items:center;
-        justify-content:space-between;
-
-        h3 {
-            display:inline-block;
-            margin:0;
-            font-size:16px;
-            font-weight:500;
-            @include rgba(color, 0, 0, 0, 0.87);
-        }
-
-        span {
-            font-size:12px;
-            line-height:16px;
-            @include rgba(color, 0, 0, 0, 0.54);
-        }
-    }
 
     .media-cell {
         z-index: 2;
@@ -296,6 +269,35 @@
                 font-weight:500;
             }
         }
+    }
+}
+
+.outlet-column__purchase-meta {
+    padding:0 24px;
+    width:100%;
+    height:48px;
+    display:flex;
+    flex-basis:100%;
+    flex-wrap: wrap;
+    align-items:center;
+    justify-content:space-between;
+
+    a:first-child {
+        margin-right: 4px;
+    }
+
+    a:last-child {
+        font-size:12px;
+        line-height:16px;
+        @include rgba(color, 0, 0, 0, 0.54);
+    }
+
+    h3 {
+        display:inline-block;
+        margin:0;
+        font-size:16px;
+        font-weight:500;
+        @include rgba(color, 0, 0, 0, 0.87);
     }
 }
 

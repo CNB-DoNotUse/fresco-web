@@ -38,7 +38,7 @@ class CellTime extends Component {
         const time = sortBy === 'captured_at'
             ? (post.captured_at || post.created_at)
             : post.created_at;
-        const timeString = typeof(time) === 'undefined' ? 'No timestamp' : utils.formatTime(time);
+        const timeString = typeof time === 'undefined' ? 'No timestamp' : utils.formatTime(time);
         const pad = (num, size) => (`000000000${num}`).substr(-size);
 
         if (firstLook) {
@@ -69,3 +69,4 @@ CellTime.defaultProps = {
 };
 
 export default CellTime;
+
