@@ -64,9 +64,9 @@ class FrescoVideo extends React.Component {
 
         videoJSPlayer.on('loadedmetadata', () => {
             videoJSPlayer.tech_.hls.representations().forEach((rep, i) => {
-                if (i === 0) rep.enabled(true);
+                if (i <= 1) rep.enabled(true);
                 else rep.enabled(false);
-                // if (rep.width >= 960) {
+                // if (rep.width >= 900) {
                 //     rep.enabled(true);
                 // } else {
                 //     rep.enabled(false);
@@ -79,6 +79,12 @@ class FrescoVideo extends React.Component {
         if (this.props.autoplay) {
             videoJSPlayer.play();
         }
+    }
+
+    logReps = () => {
+        this.state.videoJSPlayer.tech_.hls.representations().forEach(rep => {
+            if (rep.enabled()) console.log(rep);
+        });
     }
 
     getType(video) {
@@ -113,11 +119,11 @@ class FrescoVideo extends React.Component {
             <div className="fresco-video-wrap">
                 <video
                     id={id}
-                    width={width}
-                    height={height}
                     className={className}
                     autoPlay={autoplay}
                     controls={!hideControls}
+                    onClick={this.logReps}
+                    width={width}
                 >
                     <source
                         src={video}
