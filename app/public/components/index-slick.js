@@ -93,7 +93,7 @@ Slick.prototype.createGalleryView = function(gallery) {
 	const link = 'https://fresconews.com/gallery/' + gallery.id;
 
 	let posts = gallery.posts.map((post) => {
-		const defaultAvatar = 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png';
+		const defaultAvatar = `${utils.CDN}/images/user-1.png`;
 		const avatar = post.owner && post.owner.avatar ? post.owner.avatar : defaultAvatar;
 		const address = post.address != null ? post.address : 'No location';
 		const timestampText = utils.formatTime(post.created_at, true);
