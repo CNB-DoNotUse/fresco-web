@@ -4,6 +4,7 @@ import utils from 'utils';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
 import api from 'app/lib/api';
+import { isUploadedGallery } from 'app/lib/models';
 import AutocompleteMap from '../global/autocomplete-map';
 import ExplicitCheckbox from '../global/explicit-checkbox';
 import ChipInput from '../global/chip-input';
@@ -348,18 +349,20 @@ export default class GalleryEdit extends React.Component {
                         autocomplete
                     />
 
-                    <ChipInput
-                        model="users"
-                        placeholder="Owner"
-                        queryAttr="full_name"
-                        altAttr="username"
-                        items={owner ? [owner] : []}
-                        updateItems={u => this.setState({ owner: u[0] })}
-                        className="dialog-row"
-                        createNew={false}
-                        multiple={false}
-                        search
-                    />
+                    {isUploadedGallery(gallery) && (
+                        <ChipInput
+                            model="users"
+                            placeholder="Owner"
+                            queryAttr="full_name"
+                            altAttr="username"
+                            items={owner ? [owner] : []}
+                            updateItems={u => this.setState({ owner: u[0] })}
+                            className="dialog-row"
+                            createNew={false}
+                            multiple={false}
+                            search
+                        />
+                    )}
 
                     <ExplicitCheckbox
                         is_nsfw={is_nsfw}

@@ -3,7 +3,12 @@ import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import request from 'superagent';
 import api from 'app/lib/api';
-import { isOriginalGallery, isImportedGallery, isSubmittedGallery } from 'app/lib/models';
+import {
+    isOriginalGallery,
+    isImportedGallery,
+    isSubmittedGallery,
+    isUploadedGallery,
+} from 'app/lib/models';
 import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
@@ -559,18 +564,20 @@ class Edit extends React.Component {
                         search
                     />
 
-                    <ChipInput
-                        model="users"
-                        placeholder="Owner"
-                        queryAttr="full_name"
-                        altAttr="username"
-                        items={owner ? [owner] : []}
-                        updateItems={u => this.setState({ owner: u[0] })}
-                        className="dialog-row"
-                        createNew={false}
-                        multiple={false}
-                        search
-                    />
+                    {isUploadedGallery(gallery) && (
+                        <ChipInput
+                            model="users"
+                            placeholder="Owner"
+                            queryAttr="full_name"
+                            altAttr="username"
+                            items={owner ? [owner] : []}
+                            updateItems={u => this.setState({ owner: u[0] })}
+                            className="dialog-row"
+                            createNew={false}
+                            multiple={false}
+                            search
+                        />
+                    )}
 
                     <div className="dialog-row">
                         <div className="checkbox">
