@@ -1,4 +1,4 @@
-<% 
+<%
 	var team = [
 		{
 			'members' :[
@@ -59,7 +59,8 @@
 				{
 					'name'   : 'Philip Bernstein',
 					'title'  : 'Sr. iOS Engineer',
-					'avatar' : 'phil.jpg'
+					'avatar' : 'phil.jpg',
+					'handle' : 'philip'
 				},
 				{
 					'name'   : 'Blaze Gawlik',
@@ -179,10 +180,10 @@
 <div class="modal modal_window team xs <%- active %>" id="_team">
 	<div class="header">
 		<h2>Team</h2>
-		
+
 		<span data-event="landing" class="mdi mdi-close modal-action"></span>
 	</div>
-	
+
 	<div class="body">
 		<div class="banner">
 			<img src="<%= utils.CDN %>/index/team.jpg">
@@ -191,10 +192,10 @@
 		<div class="team-rows">
 			<% for(var i=0; i <team.length; i++) { %>
 				<div class="row">
-					
+
 					<% if(typeof(team[i]['title']) != 'undefined'){ %>
 						<h3><%= team[i]['title'] %></h3>
-					<% } %>	
+					<% } %>
 
 					<ul id="team-list-<%-i%>">
 						<% for(var k=0; k < team[i]['members'].length; k++) { %>
@@ -203,15 +204,15 @@
 
 							<li class="team-member">
 								<% if(typeof(member['avatar']) != 'undefined'){ %>
-								
+
 									<div class="avatar">
 										<img src="" />
 									</div>
-								
+
 								<% } else { %>
 									<div class="avatar border"></div>
 								<% } %>
-								
+
 								<div class="meta">
 									<p class="name"><%- member['name'] %></p>
 									<p class="title"><%- member['title'] %></p>
@@ -240,7 +241,7 @@
 		 	members = team[i]['members'],
 			listItems = list.getElementsByTagName('li');
 
-		for(var k=0; k < members.length; k++) { 
+		for(var k=0; k < members.length; k++) {
 
 			var member = members[k];
 

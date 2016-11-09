@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const AssetsPlugin = require('assets-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+
 const fileLoaderName = 'fonts/[name].[ext]';
 const hashDate = Date.now();
 const appDirectory = './app';
@@ -150,6 +151,11 @@ const loaders = (env) => {
         {
             test: /\.(eot|ttf|svg|gif|png)$/,
             loader: 'file-loader',
+            query: { name: fileLoaderName },
+        },
+        {
+            test: /\.json$/,
+            loader: 'json',
             query: { name: fileLoaderName },
         },
     ];

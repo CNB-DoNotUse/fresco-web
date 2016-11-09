@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import PurchasesBody from '../purchases/purchases-body';
+import Purchases from '../purchases/list-with-stats';
 import PostList from '../post/list';
 import Sidebar from './sidebar';
 
@@ -20,7 +20,8 @@ export default class Body extends React.Component {
 	 */
     loadPosts = (last, cb) => {
         this.loadPurchases(last, (purchases) => {
-            const posts = purchases.map((purchase) => purchase.post);
+            const posts = purchases.map(purchase =>
+                Object.assign(purchase.post, { purchase_id: purchase.id }));
             cb(posts);
         });
     }
@@ -91,6 +92,7 @@ export default class Body extends React.Component {
                                 size="large"
                                 editable={false}
                                 permissions={user.permissions}
+                                paginateBy={"purchase_id"}
                                 allPurchased
                                 scrollable
                             />
@@ -98,7 +100,7 @@ export default class Body extends React.Component {
                     </div>
                 </div>
                 <div className={`tab ${activeTab === 'Purchases' ? 'toggled' : ''}`}>
-                    <PurchasesBody
+                    <Purchases
                         downloadExports={this.downloadExports}
                         loadPurchases={this.loadPurchases}
                         loadStats={this.loadStats}
@@ -108,3 +110,4 @@ export default class Body extends React.Component {
         );
     }
 }
+

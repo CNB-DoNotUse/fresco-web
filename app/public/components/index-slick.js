@@ -81,7 +81,7 @@ Slick.prototype.init = function() {
 
 	arrowLeft.addEventListener('click', function(){
 		$('#slick-highlights').slick('slickPrev');
-	});	
+	});
 }
 
 /**
@@ -93,12 +93,12 @@ Slick.prototype.createGalleryView = function(gallery) {
 	const link = 'https://fresconews.com/gallery/' + gallery.id;
 
 	let posts = gallery.posts.map((post) => {
-		const defaultAvatar = 'https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png';
+		const defaultAvatar = `${utils.CDN}/images/user-1.png`;
 		const avatar = post.owner && post.owner.avatar ? post.owner.avatar : defaultAvatar;
 		const address = post.address != null ? post.address : 'No location';
-		const timestampText = moment(post.time_created).format('h:mm A');
+		const timestampText = utils.formatTime(post.created_at, true);
 
-		return `<div class="post-slide" style="background-image:url('${post.image}')">
+		return `<div class="post-slide" style="background-image:url('${utils.formatImg(post.image, 'medium')}')">
 		            <table class="slick-meta">
 		                <tbody>
 		                    <tr class="user">
@@ -107,12 +107,12 @@ Slick.prototype.createGalleryView = function(gallery) {
 		                        </td>
 		                        <td class="byline">${utils.getBylineFromPost(post)}</td>
 		                    </tr>
-		                    
+
 		                    <tr>
 		                        <td><span class="mdi mdi-map-marker"></span></td>
 		                        <td class="meta-text">${address}</td>
 		                    </tr>
-		                    
+
 		                    <tr>
 		                        <td><span class="mdi mdi-clock"></span></td>
 		                        <td class="meta-text">${timestampText}</td>

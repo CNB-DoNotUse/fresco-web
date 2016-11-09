@@ -8,10 +8,11 @@ const xml2js          = require("xml2js").parseString;
 const mandrill        = require('mandrill-api/mandrill');
 const mandrill_client = new mandrill.Mandrill(config.MANDRILL);
 
+
 /**
  * Adds a pro user as a lead into zoho
  */
-router.post('/pro/signup', (req, res, next) => {
+router.post('/signup', (req, res, next) => {
     let params = {
         firstname : req.body.firstname,
         lastname  : req.body.lastname,
@@ -157,7 +158,7 @@ function sendEmail(params, callback) {
 /**
  * Updates a pro user on zoho
  */
-router.post('/pro/update', (req, res, next) => { 
+router.post('/update', (req, res, next) => { 
     var params = {
             day     : req.body.day,
             morning : req.body.morning == 'true', //BOOL gets converted to a string afterwards :(

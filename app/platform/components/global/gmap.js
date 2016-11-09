@@ -83,27 +83,27 @@ class GMap extends React.Component {
             if (location && location.type && location.coordinates.length) {
                 switch (location.type.toLowerCase()) {
                     case 'polygon':
-                        resolve(utils.getCentroid(location.coordinates));
+                        return resolve(utils.getCentroid(location.coordinates));
                     case 'multipoint':
-                        resolve(utils.getAvgFromMultipoint(location));
+                        return resolve(utils.getAvgFromMultipoint(location));
                     case 'point':
-                        resolve({ lng: location.coordinates[0], lat: location.coordinates[1] });
+                        return resolve({ lng: location.coordinates[0], lat: location.coordinates[1] });
                     default:
-                        resolve({ lng: -74, lat: 40.7 });
+                        return resolve({ lng: -74, lat: 40.7 });
                 }
             } else if (location && location.lat && location.lng) {
-                resolve({ lng: location.lng, lat: location.lat });
-            } else if (address) {
+                return resolve({ lng: location.lng, lat: location.lat });
+            } else if (address && address !== "No Address") {
                 this.geocoder.geocode({ address }, (results, status) => {
                     if (status === 'OK') {
                         const loc = results[0].geometry.location;
-                        resolve({ lng: loc.lng(), lat: loc.lat() });
+                        return resolve({ lng: loc.lng(), lat: loc.lat() });
                     } else {
-                        resolve(this.defaultCenter);
+                        return resolve(this.defaultCenter);
                     }
                 });
             } else {
-                resolve(this.defaultCenter);
+                return resolve(this.defaultCenter);
             }
         })
         .then(center => this.setState({ center }));

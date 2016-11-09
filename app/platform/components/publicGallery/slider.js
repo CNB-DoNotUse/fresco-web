@@ -19,7 +19,7 @@ class PublicGallerySlider extends React.Component {
         setTimeout(() => {
             if(this.refs[`video${index}`]) {
                 this.refs[`video${index}`].play();
-            }   
+            }
         }, 1);
     }
 
@@ -42,16 +42,15 @@ class PublicGallerySlider extends React.Component {
 
             return (
                 <div className="slick-slide" key={i} style={style}>
-                    {p.stream ? 
+                    {p.stream && (
                         <FrescoVideo
                             autoplay={i === 0}
                             video={p.stream}
                             ref={`video${i}`}
-                            clickToPause={true}
                             userAgent={userAgent}
                             hideControls
                         />
-                    : null}
+                    )}
                     <table className="slick-meta">
                         <tbody>
                             <tr className="user">

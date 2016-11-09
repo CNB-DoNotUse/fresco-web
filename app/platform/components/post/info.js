@@ -65,7 +65,7 @@ export default class PostInfo extends React.Component {
 				<div className="row">
 					<div className="col-xs-12 col-sm-7 col-md-12">
                         {userIcon}
-                        
+
 						<div className="meta-description">{this.props.gallery.caption}</div>
 					</div>
 					<div className="col-xs-12 col-sm-5 col-md-12 meta-list">

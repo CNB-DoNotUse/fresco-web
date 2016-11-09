@@ -74,7 +74,7 @@ router.get('/:id', (req, res, next) => {
                 
                 res.render('pro/pro', {
                     head: head,
-                    page: 'pro',
+                    page: 'pro-schedule',
                     dayValues: dayValues,
                     proId: proId,
                     name : firstname + ' ' + lastname,

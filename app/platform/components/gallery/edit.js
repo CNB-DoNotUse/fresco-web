@@ -547,7 +547,6 @@ class Edit extends React.Component {
                     <ChipInput
                         model="articles"
                         queryAttr="link"
-                        altAttr="title"
                         items={articles}
                         updateItems={(a) => this.setState({ articles: a })}
                         className="dialog-row"

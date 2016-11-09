@@ -23,13 +23,13 @@
     <title><%= typeof(title) !== 'undefined' ? `${title} | ${head.title}` : head.title %></title>
 
     <!--Icons-->
-    <link rel="shortcut icon" type="image/png" content="https://d1dw1p6sgigznj.cloudfront.net/images/icon-favicon.png">
-    <link rel="image_src" type="image/png" content="https://d1dw1p6sgigznj.cloudfront.net/images/icon-generic.png">
+    <link rel="shortcut icon" type="image/png" content="https://cdn.fresconews.com/static/images/icon-favicon.png">
+    <link rel="image_src" type="image/png" content="https://cdn.fresconews.com/static/images/icon-generic.png">
 
     <!--Apple-->
     <meta name="apple-mobile-web-app-title" content="Fresco">
     <meta name="apple-itunes-app" content="app-id=872040692, affiliate-data=myAffiliateData, app-argument=myURL">
-    <link rel="apple-touch-icon" type="image/png" href="https://d1dw1p6sgigznj.cloudfront.net/images/icon-apple.png">
+    <link rel="apple-touch-icon" type="image/png" href="https://cdn.fresconews.com/static/images/icon-apple.png">
 
     <!--Meta-->
     <meta name="description" content="<%= meta.description || head.meta.description %>">
@@ -68,7 +68,7 @@
     <% } %>
 
     <% // Load asset based on page, check if in dev mode or not %>
-    <% if(typeof(page) !== 'undefined' && typeof(assets) !== 'undefined'){ %>
+    <% if(typeof(page) !== 'undefined' && typeof(assets) !== 'undefined' && typeof(assets[page]['css']) !== 'undefined'){ %>
         <link rel="stylesheet" type="text/css" href="<%= assets[page]['css'] %>">
     <% } %>
 </head>

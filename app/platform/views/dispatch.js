@@ -176,7 +176,7 @@ class Dispatch extends React.Component {
      * Downloads stats when button is clicked
      */
     downloadStats() {
-        window.open('/scripts/report?u=/assignment/report', '_blank');
+        window.open('/scripts/report?u=/assignment/report?since=721153588321', '_blank');
     }
 
     render() {

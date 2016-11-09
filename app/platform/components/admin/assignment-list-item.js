@@ -30,7 +30,7 @@ class AdminAssignmentListItem extends React.Component {
                         <img
                             className="img-circle"
                             style={{ width: '40px', height: '40px' }}
-                            src="https://d1dw1p6sgigznj.cloudfront.net/images/user-1.png"
+                            src={`${utils.CDN}/images/user-1.png`}
                             role="presentation"
                         />
                         {/* screen.css got rid of the image style */}

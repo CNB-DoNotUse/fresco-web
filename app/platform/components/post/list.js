@@ -99,7 +99,7 @@ class PostList extends React.Component {
             this.setState({ loading: true });
 
             // Run load on parent call
-            this.props.loadPosts(last(this.state.posts).id, (posts) => {
+            this.props.loadPosts(last(this.state.posts)[this.props.paginateBy], (posts) => {
                 // Disables scroll, and returns if posts are empty
                 if (!posts || posts.length === 0) {
                     this.setState({ scrollable: false });
@@ -115,11 +115,31 @@ class PostList extends React.Component {
         }
     }
 
+    onToggleGalleryBulkEdit = () => {
+        if (this.state.selectedPosts.length > 1) {
+            this.setState({ galleryBulkEditToggled: !this.state.galleryBulkEditToggled });
+        } else {
+            this.setState({ galleryBulkEditToggled: false });
+            $.snackbar({ content: 'Select more than one gallery to edit' });
+        }
+    }
+
+    onToggleGalleryCreate = () => {
+        this.setState({ galleryCreateToggled: !this.state.galleryCreateToggled });
+    }
+
     /**
      * Initial call to populate posts
      */
     loadInitialPosts() {
         this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
+    }
+
+    /**
+     * Initial call to populate posts
+     */
+    loadInitialPosts() {
+        this.props.loadPosts(null, posts => { this.setState({ posts }); });
     }
 
     /**
@@ -256,6 +276,7 @@ PostList.propTypes = {
     parentCaption: PropTypes.string,
     sortBy: PropTypes.string,
     className: PropTypes.string,
+    paginateBy: PropTypes.string,
     onScroll: PropTypes.func,
     loadPosts: PropTypes.func,
 };
@@ -268,6 +289,7 @@ PostList.defaultProps = {
     onlyVerified: false,
     loadPosts() {},
     permissions: [],
+    paginateBy: "id",
 };
 
 export default PostList;
