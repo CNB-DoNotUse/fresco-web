@@ -7,6 +7,8 @@
     "API_VERSION": "v2",
     "WEB_ROOT": "http://dev.fresconews.com",
 
+    "STRIPE_PUBLISHABLE": "pk_test_o4pMXyj95Vqe5NgV3hb7qmdo",
+
     "REDIS": {
       "SESSIONS": "localhost"
     }

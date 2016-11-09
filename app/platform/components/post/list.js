@@ -115,6 +115,26 @@ class PostList extends React.Component {
         }
     }
 
+    onToggleGalleryBulkEdit = () => {
+        if (this.state.selectedPosts.length > 1) {
+            this.setState({ galleryBulkEditToggled: !this.state.galleryBulkEditToggled });
+        } else {
+            this.setState({ galleryBulkEditToggled: false });
+            $.snackbar({ content: 'Select more than one gallery to edit' });
+        }
+    }
+
+    onToggleGalleryCreate = () => {
+        this.setState({ galleryCreateToggled: !this.state.galleryCreateToggled });
+    }
+
+    /**
+     * Initial call to populate posts
+     */
+    loadInitialPosts() {
+        this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
+    }
+
     /**
      * Initial call to populate posts
      */

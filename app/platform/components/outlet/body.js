@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import PurchasesBody from '../purchases/purchases-body';
+import Purchases from '../purchases/list-with-stats';
 import PostList from '../post/list';
 import Sidebar from './sidebar';
 
@@ -100,7 +100,7 @@ export default class Body extends React.Component {
                     </div>
                 </div>
                 <div className={`tab ${activeTab === 'Purchases' ? 'toggled' : ''}`}>
-                    <PurchasesBody
+                    <Purchases
                         downloadExports={this.downloadExports}
                         loadPurchases={this.loadPurchases}
                         loadStats={this.loadStats}

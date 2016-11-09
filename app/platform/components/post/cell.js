@@ -131,17 +131,17 @@ class PostCell extends React.Component {
                     </div>
 
                     <div className="img">
-                        <FrescoImage 
+                        <FrescoImage
                             src={post.image}
                             refreshInterval={true}
-                            size={size} 
+                            size={size}
                         />
                     </div>
                 </div>
 
                 {this.renderFooter()}
 
-                {gallery && galleryEditVisible ? 
+                {gallery && galleryEditVisible ?
                     <GalleryEdit
                         gallery={gallery}
                         visible={galleryEditVisible}

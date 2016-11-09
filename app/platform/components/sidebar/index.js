@@ -26,7 +26,7 @@ class Sidebar extends Component {
                     <a href="/highlights">
                         <img
                             role="presentation"
-                            src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-news.png"
+                            src={`${utils.CDN}/images/wordmark-news.png`}
                         />
                     </a>
 
