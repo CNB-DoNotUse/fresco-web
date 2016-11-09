@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 /**
  * KML Input File selector
@@ -60,7 +59,7 @@ class KMLInput extends React.Component {
             const latLngArray = coordinates.map((latLng) => {
                 latLng = new google.maps.LatLng(latLng[1], latLng[0]);
                 //Extend bounds each time
-                bounds.extend(latLng);  
+                bounds.extend(latLng);
                 return latLng;
             });
 
@@ -73,18 +72,18 @@ class KMLInput extends React.Component {
     render() {
         return (
             <div>
-                <button 
-                    className="btn btn-flat pull-right mt12 mr16 kml" 
+                <button
+                    className="btn btn-flat pull-right mt12 mr16 kml"
                     onClick={() => this.kmlClicked()}>Upload a KML file
                 </button>
 
-                <input 
-                    onChange={() => this.kmlFileInputChange()} 
+                <input
+                    onChange={() => this.kmlFileInputChange()}
                     type="file"
-                    accept="text/kml" 
+                    accept="text/kml"
                     ref="kmlFileInput" />
             </div>
-        )
+        );
     }
 }
 

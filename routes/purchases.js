@@ -1,26 +1,25 @@
-const express     = require('express');
-const config      = require('../lib/config');
-const utils       = require('../lib/utils');
-const request     = require('request-json');
-const router      = express.Router();
-const api         = request.createClient(config.API_URL);
+const express = require('express');
+const config = require('../lib/config');
+
+const router = express.Router();
 
 /**
  * Root purchases page
  */
 router.get('/', (req, res, next) => {
-    //Check if an Admin
     if (!req.session.user.permissions.includes('get-all-purchases')) {
-        return next({
+        next({
             message: config.ERR_PAGE_MESSAGES[403],
-            status: 403
+            status: 403,
         });
+
+        return;
     }
 
     const title = 'Purchases';
     const props = {
-        user : req.session.user,
-        title
+        user: req.session.user,
+        title,
     };
 
     res.render('app', {
@@ -28,7 +27,7 @@ router.get('/', (req, res, next) => {
         title,
         alerts: req.alerts,
         page: 'purchases',
-        props: JSON.stringify(props)
+        props: JSON.stringify(props),
     });
 });
 

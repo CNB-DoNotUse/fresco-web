@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import isNumber from 'lodash/isNumber';
 import api from 'app/lib/api';
 
 export default class PurchasesStats extends React.Component {
@@ -63,7 +64,19 @@ export default class PurchasesStats extends React.Component {
 
     render() {
         const { downloadExports } = this.props;
-        const { last_day, last_7days, last_30days, total_revenue } = this.state.stats;
+        const {
+            revenue_last_day,
+            revenue_last_7days,
+            revenue_last_30days,
+            total_revenue,
+        } = this.state.stats;
+
+        const statFromData = (data) => {
+            const d = (data !== null) ? parseFloat(data) : null;
+            if (isNumber(d)) return `$${d / 100}`;
+
+            return 'N/A';
+        };
 
         return (
             <div className="col-md-4">
@@ -71,20 +84,19 @@ export default class PurchasesStats extends React.Component {
 
                 <ul className="md-type-subhead">
                     <li>
-                        <span>${last_day / 100}</span>
+                        <span>{statFromData(revenue_last_day)}</span>
                         <span className="md-type-caption"> last 24 hours</span>
                     </li>
                     <li>
-                        <span>${last_7days / 100}</span>
+                        <span>{statFromData(revenue_last_7days)}</span>
                         <span className="md-type-caption"> last 7 days</span>
                     </li>
                     <li>
-                        <span>${last_30days / 100}</span>
+                        <span>{statFromData(revenue_last_30days)}</span>
                         <span className="md-type-caption"> last 30 days</span>
                     </li>
-
                     <li>
-                        <span>${total_revenue / 100}</span>
+                        <span>{statFromData(total_revenue)}</span>
                         <span className="md-type-caption"> total</span>
                     </li>
                 </ul>
