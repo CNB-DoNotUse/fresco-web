@@ -16,12 +16,14 @@ class FrescoVideo extends React.Component {
         autoplay: PropTypes.bool,
         muted: PropTypes.bool,
         hideControls: PropTypes.bool,
+        highRes: PropTypes.bool,
     };
 
     static defaultProps = {
         autoplay: false,
         muted: false,
         video: '',
+        highRes: false,
     }
 
     state = {
@@ -55,35 +57,25 @@ class FrescoVideo extends React.Component {
     }
 
     setUpPlayer = () => {
+        const { autoplay, highRes } = this.props;
         const options = {
             muted: this.props.muted,
         };
 
         const videoJSPlayer = videojs(this.state.id, options);
 
-        videoJSPlayer.on('loadedmetadata', () => {
-            videoJSPlayer.tech_.hls.representations().forEach((rep, i) => {
-                if (i <= 1) rep.enabled(true);
-                else rep.enabled(false);
-                // if (rep.width >= 900) {
-                //     rep.enabled(true);
-                // } else {
-                //     rep.enabled(false);
-                // }
+        if (highRes) {
+            videoJSPlayer.on('loadedmetadata', () => {
+                videoJSPlayer.tech_.hls.representations().forEach((rep, i) => {
+                    if (i <= 1) rep.enabled(true);
+                    else rep.enabled(false);
+                });
             });
-        });
+        }
 
         this.setState({ videoJSPlayer });
 
-        if (this.props.autoplay) {
-            videoJSPlayer.play();
-        }
-    }
-
-    logReps = () => {
-        this.state.videoJSPlayer.tech_.hls.representations().forEach(rep => {
-            if (rep.enabled()) console.log(rep);
-        });
+        if (autoplay) videoJSPlayer.play();
     }
 
     getType(video) {
@@ -120,7 +112,6 @@ class FrescoVideo extends React.Component {
                     className={className}
                     autoPlay={autoplay}
                     controls={!hideControls}
-                    ref={(r) => { this.video = r; }}
                     width={width}
                 >
                     <source
