@@ -54,8 +54,11 @@ class PurchasesOutlets extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if ((prevProps.loadData !== this.props.loadData) && this.props.loadData) {
-            this.loadOutlets(this.props.outletIds);
+        // load initial data when cmp is rendered if no initial data exists
+        if (!Object.keys(this.state.outletsById).length) {
+            if ((prevProps.loadData !== this.props.loadData) && this.props.loadData) {
+                this.loadOutlets(this.props.outletIds);
+            }
         }
     }
 
