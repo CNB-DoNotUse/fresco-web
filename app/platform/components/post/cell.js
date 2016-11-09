@@ -53,13 +53,11 @@ class PostCell extends React.Component {
     }
 
     onMouseEnter = () => {
-        const video = this.frescoVideo.video;
-        video.play();
+        this.setState({ mouseEntered: true });
     }
 
     onMouseLeave = () => {
-        const video = this.frescoVideo.video;
-        video.pause();
+        this.setState({ mouseEntered: false });
     }
 
     onToggleGalleryEdit = (gallery = {}) => {
@@ -118,7 +116,7 @@ class PostCell extends React.Component {
             size,
             sizes,
         } = this.props;
-        const { galleryEditVisible, gallery } = this.state;
+        const { galleryEditVisible, gallery, mouseEntered } = this.state;
         const divSize = size === 'large' ? sizes.large : sizes.small;
 
         return (
@@ -146,18 +144,19 @@ class PostCell extends React.Component {
                         <Stories stories={post.stories} />
                     </div>
 
-                    {post.stream ? (
+                    {(mouseEntered && post.stream) ? (
                         <FrescoVideo
                             video={post.stream}
                             ref={r => { this.frescoVideo = r; }}
                             hideControls
+                            autoplay
                         />
                     ) : (
                         <div className="img">
                             <FrescoImage
                                 src={post.image}
-                                refreshInterval={true}
                                 size={size}
+                                refreshInterval
                             />
                         </div>
                     )}
@@ -165,13 +164,13 @@ class PostCell extends React.Component {
 
                 {this.renderFooter()}
 
-                {gallery && galleryEditVisible ?
+                {(gallery && galleryEditVisible) && (
                     <GalleryEdit
                         gallery={gallery}
                         visible={galleryEditVisible}
                         toggle={this.onToggleGalleryEdit}
                     />
-                : null }
+                )}
             </div>
         );
     }
