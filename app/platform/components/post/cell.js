@@ -147,7 +147,6 @@ class PostCell extends React.Component {
                     {(mouseEntered && post.stream) ? (
                         <FrescoVideo
                             video={post.stream}
-                            ref={r => { this.frescoVideo = r; }}
                             hideControls
                             autoplay
                         />
