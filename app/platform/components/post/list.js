@@ -135,12 +135,6 @@ class PostList extends React.Component {
         this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
     }
 
-    /**
-     * Initial call to populate posts
-     */
-    loadInitialPosts() {
-        this.props.loadPosts(null, posts => { this.setState({ posts }); });
-    }
 
     /**
      * Sorts posts based on the current field in props
