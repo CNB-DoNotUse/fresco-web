@@ -17,9 +17,10 @@
 			]
 		},
 		{
-			'title' : 'Design',
+			'title' : 'Creative',
 			'members' :[
 				{
+					'avatar' : 'imogen.jpg',
 					'name'   : 'Imogen Olsen',
 					'title'  : 'Chief Design Officer',
 					'handle' : 'imogenic'
@@ -327,7 +328,7 @@
 			var image = listItems[k].getElementsByTagName('img')[0];
 
 			if(typeof(image) !== 'undefined')
-				image.src = '<%= utils.CDN %>/index/team2/' + member.avatar;
+				image.src = '<%= utils.CDN %>/index/team/' + member.avatar;
 		}
 	}
 </script>
