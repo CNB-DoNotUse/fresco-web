@@ -56,6 +56,12 @@ class FrescoVideo extends React.Component {
         }
     }
 
+    onClickVideo = () => {
+        if (this.props.hideControls) {
+            this.togglePlayer();
+        }
+    }
+
     setUpPlayer = () => {
         const { autoplay, highRes } = this.props;
         const options = {
@@ -76,6 +82,12 @@ class FrescoVideo extends React.Component {
         this.setState({ videoJSPlayer });
 
         if (autoplay) videoJSPlayer.play();
+    }
+
+    togglePlayer = () => {
+        const { videoJSPlayer } = this.state;
+        if (videoJSPlayer.paused()) videoJSPlayer.play();
+        else videoJSPlayer.pause();
     }
 
     getType(video) {
@@ -112,6 +124,7 @@ class FrescoVideo extends React.Component {
                     className={className}
                     autoPlay={autoplay}
                     controls={!hideControls}
+                    onClick={this.onClickVideo}
                     width={width}
                 >
                     <source
