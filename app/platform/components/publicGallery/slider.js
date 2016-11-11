@@ -23,12 +23,11 @@ class PublicGallerySlider extends React.Component {
         }, 1);
     }
 
-    render() {
+    renderSlickContent() {
         const { posts = [], userAgent } = this.props;
-
         if (!posts.length) return <div />;
 
-        const slickContent = posts.map((p, i) => {
+        return posts.map((p, i) => {
             const avatar = get(p, 'owner.avatar', null) !== null ? p.owner.avatar : utils.defaultSmallAvatar;
             const address = get(p, 'address', 'No location');
             const timestampText = moment(p.created_at).format('MMM Do YYYY, h:mm:ss a');
@@ -37,7 +36,7 @@ class PublicGallerySlider extends React.Component {
                 backgroundImage: `url(${image})`,
             };
             if (p.stream) {
-                style = '';
+                style = {};
             }
 
             return (
@@ -72,20 +71,24 @@ class PublicGallerySlider extends React.Component {
                 </div>
             );
         });
+    }
 
+    render() {
+        const { posts } = this.props;
         const settings = {
             dots: posts.length > 1,
             arrows: true,
             draggable: true,
+            infinite: false,
             beforeChange: this.beforeChange,
             afterChange: this.afterChange,
             nextArrow: <NextArrow />,
-            prevArrow: <PrevArrow />
+            prevArrow: <PrevArrow />,
         };
 
         return (
             <Slick {...settings} className="slick">
-                {slickContent}
+                {this.renderSlickContent()}
             </Slick>
         );
     }

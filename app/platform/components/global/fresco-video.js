@@ -84,6 +84,14 @@ class FrescoVideo extends React.Component {
         if (autoplay) videoJSPlayer.play();
     }
 
+    play = () => {
+        this.state.videoJSPlayer.play();
+    }
+
+    pause = () => {
+        this.state.videoJSPlayer.pause();
+    }
+
     togglePlayer = () => {
         const { videoJSPlayer } = this.state;
         if (videoJSPlayer.paused()) videoJSPlayer.play();
