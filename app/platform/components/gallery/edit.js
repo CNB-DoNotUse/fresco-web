@@ -257,7 +257,7 @@ class Edit extends React.Component {
     getAssignmentParam() {
         const { gallery } = this.props;
         const { assignments } = this.state;
-        if (!gallery.assignments.length && !assignments.length) return null;
+        if (gallery.assignments === assignments) return null;
         if (!assignments.length) return { assignment_id: null };
         if (assignments.length === 1) return { assignment_id: assignments[0].id };
 
@@ -318,7 +318,7 @@ class Edit extends React.Component {
             });
         });
 
-        params = params.filter(p => Object.keys(p) > 1);
+        params = params.filter(p => Object.keys(p).length > 1);
 
         return { posts_update: params };
     }
