@@ -34,7 +34,11 @@ class StoryDetail extends React.Component {
     }
 
     save(id, params) {
-        if (!id || !params || this.state.loading) return;
+        if (!id || this.state.loading) return;
+        if (Object.keys(params).length < 1) {
+            $.snackbar({ content: 'No changes made!' });
+            return;
+        }
         this.setState({ loading: true });
 
         $.ajax({
