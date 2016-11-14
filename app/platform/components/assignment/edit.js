@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { getAddressFromLatLng } from 'app/lib/location';
 import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
+import pickBy from 'lodash/pickBy';
 import utils from 'utils';
 import ChipInput from '../global/chip-input';
 import AutocompleteMap from '../global/autocomplete-map';
@@ -13,13 +14,30 @@ export default class AssignmentEdit extends React.Component {
         user: PropTypes.object,
         assignment: PropTypes.object,
         onToggle: PropTypes.func,
-        updateOutlet: PropTypes.func,
         save: PropTypes.func,
         loading: PropTypes.bool,
         visible: PropTypes.bool.isRequired,
     };
 
     state = this.getStateFromProps(this.props)
+
+    getStateFromProps(props) {
+        const { assignment } = props;
+        const radius = assignment.radius || 0;
+
+        if (!assignment) return {};
+
+        return {
+            address: assignment.address,
+            caption: assignment.caption,
+            endsAt: moment(assignment.ends_at).valueOf(),
+            location: assignment.location,
+            radius,
+            title: assignment.title,
+            outlets: assignment.outlets,
+            showMergeDialog: false,
+        };
+    }
 
     componentDidMount() {
         $.material.init();
@@ -72,9 +90,9 @@ export default class AssignmentEdit extends React.Component {
         }
     }
 
-	/**
-	 * Saves the assignment from the current values in the form
-	 */
+    /**
+     * Saves the assignment from the current values in the form
+     */
     onSave() {
         const { assignment, save, loading } = this.props;
         const { title, caption, radius, location, address, endsAt, outlets } = this.state;
@@ -85,7 +103,8 @@ export default class AssignmentEdit extends React.Component {
         if (!assignment || !assignment.id || loading) return;
         if (this.hasFormErrors()) return;
 
-        const params = {
+        // filter params for changed values only
+        const params = pickBy({
             address,
             caption,
             radius: this.isGlobalLocation() ? undefined : radius,
@@ -93,7 +112,13 @@ export default class AssignmentEdit extends React.Component {
             ...utils.getRemoveAddParams('outlets', assignment.outlets, outlets),
             title,
             ends_at: endsAt,
-        };
+        }, (v, k) => {
+            if (assignment[k] === v) return false;
+            if (k === 'ends_at' && (moment(assignment.ends_at).valueOf() === v)) return false;
+            if (Array.isArray(v)) return !!v.length;
+            if (typeof v === 'undefined') return false;
+            return true;
+        });
 
         save(assignment.id, params);
     }
@@ -121,24 +146,6 @@ export default class AssignmentEdit extends React.Component {
         window.location.href = mergeIntoId
             ? `/assignment/${mergeIntoId}`
             : document.referrer || '/highlights';
-    }
-
-    getStateFromProps(props) {
-        const { assignment } = props;
-        const radius = assignment.radius || 0;
-
-        if (!assignment) return {};
-
-        return {
-            address: assignment.address,
-            caption: assignment.caption,
-            endsAt: moment(assignment.ends_at).valueOf(),
-            location: assignment.location,
-            radius,
-            title: assignment.title,
-            outlets: assignment.outlets,
-            showMergeDialog: false,
-        };
     }
 
     hasFormErrors() {
