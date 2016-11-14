@@ -301,7 +301,6 @@ class Edit extends React.Component {
         const posts = gallery.posts.filter(p => !removed.includes(p.id));
         const { address, location, rating } = this.state;
         // check to see if should save locations on all gallery's posts
-        const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
         let params = posts.map(p => {
             const postParam = Object.assign({
                 id: p.id,
@@ -312,8 +311,7 @@ class Edit extends React.Component {
             }, this.getAssignmentParam());
 
             return pickBy(postParam, (v, k) => {
-                if (sameLocation && ['address', 'lat', 'lng'].includes(k)) return false;
-                if (gallery[k] === v) return false;
+                if (k !== 'id' && p[k] === v) return false;
                 return true;
             });
         });
