@@ -310,6 +310,7 @@ class Edit extends React.Component {
                 rating: rating === 3 ? 2 : rating
             }, this.getAssignmentParam());
 
+            // filter out unchanged params
             return pickBy(postParam, (v, k) => {
                 if (k !== 'id' && p[k] === v) return false;
                 return true;
