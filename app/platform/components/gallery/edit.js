@@ -73,7 +73,11 @@ class Edit extends React.Component {
         const { gallery, onUpdateGallery } = this.props;
         let { loading, uploads, assignments, isOriginalGallery } = this.state;
 
-        if (!get(gallery, 'id') || !params || loading) return;
+        if (!Object.keys(params).length) {
+            $.snackbar({ content: 'No changes made!' });
+            return;
+        }
+        if (!get(gallery, 'id') || loading) return;
         this.setState({ loading: true });
         const postsToDelete = isOriginalGallery ? get(params, 'posts_remove') : [];
 
@@ -222,7 +226,7 @@ class Edit extends React.Component {
             return null;
         }
 
-        const params = {
+        let params = {
             tags,
             caption,
             external_account_name,
@@ -236,9 +240,12 @@ class Edit extends React.Component {
 
         // Make sure our params are valid types and don't have any empty arrays
         // Special exception if the param is a `bool`
-        return pickBy(params, v => {
+        params = pickBy(params, (v, k) => {
+            if (gallery[k] === v) return false;
             return (typeof(v) === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
         });
+
+        return params;
     }
 
     getFilesFromUploads() {
@@ -248,13 +255,11 @@ class Edit extends React.Component {
     // only set assignment on new posts if gallery isn't
     // curated and all posts belong to same assignment
     getAssignmentParam() {
+        const { gallery } = this.props;
         const { assignments } = this.state;
-        if (!assignments.length) {
-            return { assignment_id: null };
-        }
-        if (assignments.length === 1) {
-            return { assignment_id: assignments[0].id };
-        }
+        if (!gallery.assignments.length && !assignments.length) return null;
+        if (!assignments.length) return { assignment_id: null };
+        if (assignments.length === 1) return { assignment_id: assignments[0].id };
 
         return null;
     }
@@ -297,29 +302,23 @@ class Edit extends React.Component {
         const { address, location, rating } = this.state;
         // check to see if should save locations on all gallery's posts
         const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
-        let params;
-        if (sameLocation) {
-            params = posts.map(p => {
-                return Object.assign(
-                    pickBy({
-                        id: p.id,
-                        rating: rating === 3 ? 2 : rating }, v => !!v),
-                    this.getAssignmentParam()
-                );
+        let params = posts.map(p => {
+            const postParam = Object.assign({
+                id: p.id,
+                address,
+                lat: location.lat,
+                lng: location.lng,
+                rating: rating === 3 ? 2 : rating
+            }, this.getAssignmentParam());
+
+            return pickBy(postParam, (v, k) => {
+                if (sameLocation && ['address', 'lat', 'lng'].includes(k)) return false;
+                if (gallery[k] === v) return false;
+                return true;
             });
-        } else {
-            params = posts.map(p => {
-                return Object.assign(
-                    pickBy({
-                        id: p.id,
-                        address,
-                        lat: location.lat,
-                        lng: location.lng,
-                        rating: rating === 3 ? 2 : rating }, v => !!v),
-                    this.getAssignmentParam()
-                );
-            });
-        }
+        });
+
+        params = params.filter(p => Object.keys(p) > 1);
 
         return { posts_update: params };
     }
