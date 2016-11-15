@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { getAddressFromLatLng } from 'app/lib/location';
 import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import utils from 'utils';
 import ChipInput from '../global/chip-input';
@@ -113,7 +114,7 @@ export default class AssignmentEdit extends React.Component {
             title,
             ends_at: endsAt,
         }, (v, k) => {
-            if (assignment[k] === v) return false;
+            if (isEqual(assignment[k], v)) return false;
             if (k === 'ends_at' && (moment(assignment.ends_at).valueOf() === v)) return false;
             if (Array.isArray(v)) return !!v.length;
             if (typeof v === 'undefined') return false;
