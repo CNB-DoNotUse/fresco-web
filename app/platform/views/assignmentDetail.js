@@ -103,11 +103,15 @@ class AssignmentDetail extends React.Component {
         });
     }
 
-	/**
-	 * Saves the assignment from the current values in the form
-	 */
-    save(id, params) {
-        if (!id || !params || this.state.loading) return;
+    /**
+     * Saves the assignment from the current values in the form
+     */
+    save(id, params = {}) {
+        if (!id || this.state.loading) return;
+        if (Object.keys(params).length === 0) {
+            $.snackbar({ content: 'No changes made!' });
+            return;
+        }
         this.setState({ loading: true });
 
         $.ajax({

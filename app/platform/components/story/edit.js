@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import pickBy from 'lodash/pickBy';
 import utils from 'utils';
 
 /**
@@ -15,8 +16,9 @@ class Edit extends React.Component {
         const { title, caption } = this.state;
         const { story, save } = this.props;
         if (!story || !story.id) return;
+        let params = pickBy({ title, caption }, (v, k) => story[k] !== v);
 
-        save(story.id, { title, caption });
+        save(story.id, params);
     }
 
     onRemove() {
