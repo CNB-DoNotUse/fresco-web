@@ -250,7 +250,7 @@ class Edit extends React.Component {
         // Special exception if the param is a `bool`
         params = pickBy(params, (v, k) => {
             if (gallery[k] === v) return false;
-            return (typeof(v) === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
+            return (typeof v === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
         });
 
         return params;
@@ -309,18 +309,24 @@ class Edit extends React.Component {
         const posts = gallery.posts.filter(p => !removed.includes(p.id));
         const { address, location, rating } = this.state;
         // check to see if should save locations on all gallery's posts
-        let params = posts.map(p => {
-            const postParam = Object.assign({
+        const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
+        let params = posts.map((p) => {
+            let postParam = Object.assign({
                 id: p.id,
-                address,
-                lat: location.lat,
-                lng: location.lng,
-                rating: rating === 3 ? 2 : rating
+                rating: rating === 3 ? 2 : rating,
             }, this.getAssignmentParam());
+
+            if (!sameLocation) {
+                postParam = Object.assign(postParam, {
+                    address,
+                    lat: location.lat,
+                    lng: location.lng,
+                });
+            }
 
             // filter out unchanged params
             return pickBy(postParam, (v, k) => {
-                if (k !== 'id' && p[k] === v) return false;
+                if (k !== 'id' && (p[k] === v)) return false;
                 return true;
             });
         });
