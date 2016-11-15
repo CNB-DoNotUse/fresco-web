@@ -85,7 +85,7 @@ class PostList extends React.Component {
     /**
      * Scroll listener for main window
      */
-    onScroll(e) {
+    onScroll = (e) => {
         const grid = e.target;
         if (!this.area || !this.area.contains(e.target)) {
             return;
@@ -102,9 +102,8 @@ class PostList extends React.Component {
 
             // Run load on parent call
             this.props.loadPosts(lastPost[this.props.paginateBy], (posts) => {
-                // Disables scroll, and returns if posts are empty
                 if (!posts || posts.length === 0) {
-                    this.setState({ scrollable: false });
+                    this.setState({ loading: false });
                     return;
                 }
 
@@ -113,7 +112,7 @@ class PostList extends React.Component {
                     posts: this.state.posts.concat(posts),
                     loading: false,
                 });
-            }, this);
+            });
         }
     }
 
@@ -227,8 +226,8 @@ class PostList extends React.Component {
             <div ref={r => { this.area = r; }}>
                 <div
                     className={`container-fluid fat grid ${className}`}
-                    ref={r => { this.grid = r; }}
-                    onScroll={scrollable ? onScroll || ((e) => this.onScroll(e)) : null}
+                    ref={(r) => { this.grid = r; }}
+                    onScroll={scrollable ? onScroll || this.onScroll : null}
                 >
                     {this.renderPosts()}
 
@@ -285,7 +284,7 @@ PostList.defaultProps = {
     onlyVerified: false,
     loadPosts() {},
     permissions: [],
-    paginateBy: "id",
+    paginateBy: 'id',
 };
 
 export default PostList;
