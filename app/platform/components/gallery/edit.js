@@ -142,8 +142,8 @@ class Edit extends React.Component {
         this.fileInput.value = '';
     }
 
-    onChangePostsChips = (posts) => {
-        if (posts.length <= 1) {
+    onChangePostsChips = (posts = []) => {
+        if (!posts.length) {
             $.snackbar({ content: 'Galleries must have at least 1 post' });
             return;
         }
