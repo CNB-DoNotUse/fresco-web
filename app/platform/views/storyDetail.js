@@ -21,8 +21,6 @@ class StoryDetail extends React.Component {
             story: props.story,
             sortBy: props.sortBy,
         };
-
-        this.loadPosts = this.loadPosts.bind(this);
     }
 
     toggleStoryEdit() {
@@ -87,7 +85,7 @@ class StoryDetail extends React.Component {
      * @param {string} lastId Last post in the list
      * @param {function} callback callback delivering posts
      */
-    loadPosts(last, callback) {
+    loadPosts = (last, callback) => {
         const { story, sortBy } = this.state;
         const params = {
             last,
@@ -104,8 +102,9 @@ class StoryDetail extends React.Component {
         .done((res) => {
             callback(res);
         })
-        .fail((xhr, status, error) => {
-            $.snackbar({ content: utils.resolveError(error) });
+        .fail(() => {
+            $.snackbar({ content: 'Couldn\'t load posts!' });
+            callback([]);
         });
     }
 
@@ -117,7 +116,7 @@ class StoryDetail extends React.Component {
             <App user={user}>
                 <TopBar
                     title={story.title}
-                    updateSort={(s) => this.updateSort(s)}
+                    updateSort={s => this.updateSort(s)}
                     edit={() => this.toggleStoryEdit()}
                     editable
                     timeToggle
