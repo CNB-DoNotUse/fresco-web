@@ -96,10 +96,12 @@ class PostList extends React.Component {
         // Check that nothing is loading and that we're at the end of the scroll
         if (!this.state.loading && endOfScroll) {
             // Set that we're loading
+            const lastPost = last(this.state.posts);
+            if (!lastPost) return;
             this.setState({ loading: true });
 
             // Run load on parent call
-            this.props.loadPosts(last(this.state.posts)[this.props.paginateBy], (posts) => {
+            this.props.loadPosts(lastPost[this.props.paginateBy], (posts) => {
                 // Disables scroll, and returns if posts are empty
                 if (!posts || posts.length === 0) {
                     this.setState({ scrollable: false });

@@ -5,15 +5,12 @@ import SuggestionList from '../highlights/suggestion-list';
 import GalleryCell from './gallery-cell';
 
 /** //
-
 Description : List for a gallery used across the site (/highlights, /content/galleries, etc.)
-
 // **/
 
 /**
  * Gallery List Parent Object
  */
-
 class GalleryList extends React.Component {
     static propTypes = {
         onlyVerified: PropTypes.bool,
@@ -68,19 +65,20 @@ class GalleryList extends React.Component {
 
         api
         .get(endpoint, params)
-        .then(res => { callback(res); })
+        .then(callback)
         .catch(() => {
             $.snackbar({ content: 'Failed to load galleries' });
         });
     }
 
-	//Scroll listener for main window
-    scroll = (e) => {
+	// Scroll listener for main window
+    onScroll = (e) => {
         const grid = e.target;
 
         if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
-            this.setState({ loading : true });
             const lastGallery = this.state.galleries[this.state.galleries.length - 1];
+            if (!lastGallery) return;
+            this.setState({ loading : true });
 
             this.loadGalleries(lastGallery.id, (galleries) => {
                 if (!galleries) return;
@@ -110,7 +108,7 @@ class GalleryList extends React.Component {
             return (
                 <div
                     className="container-fluid grid"
-                    onScroll={this.scroll}
+                    onScroll={this.onScroll}
                     ref="grid"
                 >
                     <div className="col-md-8">{galleries}</div>
@@ -123,7 +121,7 @@ class GalleryList extends React.Component {
         return (
             <div
                 className="container-fluid grid"
-                onScroll={this.scroll}
+                onScroll={this.onScroll}
                 ref="grid"
             >
                 {galleries}
