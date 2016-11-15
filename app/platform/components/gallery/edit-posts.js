@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import Slider from 'react-slick';
 import find from 'lodash/find';
 import get from 'lodash/get';
+import unionBy from 'lodash/unionBy';
 import FrescoImage from '../global/fresco-image';
 import FrescoVideo from '../global/fresco-video';
 
@@ -18,15 +19,15 @@ const renderPost = (post) => {
     return (
         <FrescoImage
             src={post.image}
-            loadWithPlaceholder={true}
             placeholderStyle={{ height: '500px' }}
             size="medium"
+            loadWithPlaceholder
         />
     );
 };
 
 const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
-    originalPosts.map((p, i) => {
+    unionBy(originalPosts, editingPosts, 'id').map((p, i) => {
         const deleteToggled = !find(editingPosts, { id: p.id });
 
         return (
@@ -154,8 +155,9 @@ class EditPosts extends React.Component {
         return (
             <Slider
                 className={className}
-                ref={r => { this.slider = r; }}
+                ref={(r) => { this.slider = r; }}
                 infinite={originalPosts.length > 1}
+                adaptiveHeight
                 swipeToSlide
                 draggable
                 dots

@@ -143,7 +143,7 @@ class Edit extends React.Component {
     }
 
     onChangePostsChips = (posts) => {
-        if (this.state.posts.length <= 1) {
+        if (posts.length <= 1) {
             $.snackbar({ content: 'Galleries must have at least 1 post' });
             return;
         }
@@ -554,20 +554,23 @@ class Edit extends React.Component {
                         model="articles"
                         queryAttr="link"
                         items={articles}
-                        updateItems={(a) => this.setState({ articles: a })}
+                        updateItems={a => this.setState({ articles: a })}
                         className="dialog-row"
                         createNew
                         search
                     />
 
-                    <ChipInput
-                        model="posts"
-                        items={posts}
-                        queryAttr="id"
-                        updateItems={this.onChangePostsChips}
-                        className="dialog-row"
-                        idLookup
-                    />
+                    {!isOriginalGallery && (
+                        <ChipInput
+                            model="posts"
+                            items={posts}
+                            queryAttr="id"
+                            updateItems={this.onChangePostsChips}
+                            className="dialog-row"
+                            createNew={false}
+                            idLookup
+                        />
+                    )}
 
                     <div className="dialog-row">
                         <div className="checkbox">

@@ -121,12 +121,12 @@ class ChipInput extends React.Component {
             params,
         } = this.props;
         const { query } = this.state;
-        if (!autocomplete && !search) return;
+        if (!autocomplete && !search && !idLookup) return;
 
         if (search) {
             api
             .get('search', { [`${model}[q]`]: query, ...params })
-            .then(res => {
+            .then((res) => {
                 if (get(res, `${model}.results.length`)) {
                     this.setState({ suggestions: res[model].results });
                 } else if (idLookup) {
@@ -136,25 +136,28 @@ class ChipInput extends React.Component {
             return;
         }
 
-        api
-        .get('search', { [`${model}[a][${queryAttr}]`]: query, ...params })
-        .then(res => {
-            if (get(res, `${model}.results.length`)) {
-                this.setState({ suggestions: res[model].results });
-            } else if (idLookup) {
-                this.getModelById(query);
-            }
-        });
+        if (autocomplete) {
+            api
+            .get('search', { [`${model}[a][${queryAttr}]`]: query, ...params })
+            .then((res) => {
+                if (get(res, `${model}.results.length`)) {
+                    this.setState({ suggestions: res[model].results });
+                } else if (idLookup) {
+                    this.getModelById(query);
+                }
+            });
+            return;
+        }
+
+        if (idLookup) this.getModelById(query);
     }
 
     getModelById(id) {
         const { model } = this.props;
         api
         .get(`${utils.pluralToSingularModel(model)}/${id}`)
-        .then(res => {
-            if (res) {
-                this.setState({ suggestions: [res] });
-            }
+        .then((res) => {
+            if (res) this.setState({ suggestions: [res] });
         })
         .catch(err => err);
     }
