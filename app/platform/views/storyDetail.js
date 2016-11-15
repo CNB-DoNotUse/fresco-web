@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import utils from 'utils';
 import App from './app';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/story/sidebar';
 import Edit from './../components/story/edit';
-import utils from 'utils';
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
