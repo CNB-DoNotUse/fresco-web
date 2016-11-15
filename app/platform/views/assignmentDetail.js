@@ -156,8 +156,8 @@ class AssignmentDetail extends React.Component {
                 <TopBar
                     title={assignment.title}
                     permissions={user.permissions}
-                    onVerifiedToggled={(t) => this.onVerifiedToggled(t)}
-                    updateSort={(s) => this.updateSort(s)}
+                    onVerifiedToggled={t => this.onVerifiedToggled(t)}
+                    updateSort={s => this.updateSort(s)}
                     edit={() => this.toggleEdit()}
                     editable
                     timeToggle
@@ -188,7 +188,7 @@ class AssignmentDetail extends React.Component {
                     assignment={assignment}
                     save={(id, p) => this.save(id, p)}
                     onToggle={() => this.toggleEdit()}
-                    updateOutlet={(o) => this.updateOutlet(o)}
+                    updateOutlet={o => this.updateOutlet(o)}
                     user={user}
                     loading={loading}
                     visible={editToggled}

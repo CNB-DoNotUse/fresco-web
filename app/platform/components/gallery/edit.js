@@ -142,6 +142,14 @@ class Edit extends React.Component {
         this.fileInput.value = '';
     }
 
+    onChangePostsChips = (posts) => {
+        if (posts.length <= 1) {
+            $.snackbar({ content: 'Galleries must have at least 1 post' });
+            return;
+        }
+        this.setState({ posts });
+    }
+
     /**
      * Updates state map location when AutocompleteMap gives new location
      */
@@ -514,7 +522,7 @@ class Edit extends React.Component {
                             className="form-control floating-label"
                             value={caption}
                             placeholder="Caption"
-                            onChange={(e) => this.setState({ caption: e.target.value })}
+                            onChange={e => this.setState({ caption: e.target.value })}
                         />
                     </div>
 
@@ -526,8 +534,8 @@ class Edit extends React.Component {
                     <ChipInput
                         model="tags"
                         items={tags}
-                        modifyText={(t) => `#${t}`}
-                        updateItems={(t) => this.setState({ tags: t })}
+                        modifyText={t => `#${t}`}
+                        updateItems={t => this.setState({ tags: t })}
                         autocomplete={false}
                         className="dialog-row"
                     />
@@ -536,7 +544,7 @@ class Edit extends React.Component {
                         model="stories"
                         queryAttr="title"
                         items={stories}
-                        updateItems={(s) => this.setState({ stories: s })}
+                        updateItems={s => this.setState({ stories: s })}
                         className="dialog-row"
                         createNew
                         autocomplete
@@ -546,11 +554,23 @@ class Edit extends React.Component {
                         model="articles"
                         queryAttr="link"
                         items={articles}
-                        updateItems={(a) => this.setState({ articles: a })}
+                        updateItems={a => this.setState({ articles: a })}
                         className="dialog-row"
                         createNew
                         search
                     />
+
+                    {!isOriginalGallery && (
+                        <ChipInput
+                            model="posts"
+                            items={posts}
+                            queryAttr="id"
+                            updateItems={this.onChangePostsChips}
+                            className="dialog-row"
+                            createNew={false}
+                            idLookup
+                        />
+                    )}
 
                     <div className="dialog-row">
                         <div className="checkbox">
@@ -558,7 +578,7 @@ class Edit extends React.Component {
                                 <input
                                     type="checkbox"
                                     checked={rating === 3}
-                                    onChange={(e) => this.toggleHighlight(e)}
+                                    onChange={e => this.toggleHighlight(e)}
                                 />
                                 Highlighted
                             </label>
