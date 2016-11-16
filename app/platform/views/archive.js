@@ -26,9 +26,9 @@ class Archive extends React.Component {
         sortBy: this.props.sortBy || 'created_at',
     };
 
-    onVerifiedToggled = (toggled) => {
-        this.setState({ verifiedToggle: toggled });
-        setInStorage({ verifiedToggle: toggled });
+    onVerifiedToggled = (verifiedToggle) => {
+        this.setState({ verifiedToggle });
+        setInStorage({ verifiedToggle });
     }
 
     // Returns array of posts with last and callback, used in child PostList

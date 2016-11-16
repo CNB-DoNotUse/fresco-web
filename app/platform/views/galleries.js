@@ -1,35 +1,39 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import App from './app.js';
-import GalleryList from './../components/global/gallery-list.js';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import App from './app';
+import GalleryList from './../components/global/gallery-list';
 import TopBar from './../components/topbar';
 
+const getFromStorage = createGetFromStorage({ key: 'galleries' });
+const setInStorage = createSetInStorage({ key: 'galleries' });
+
 /**
- * Galleries Parent Object (composed of GalleryList and Navbar)
- * Half = False, to render at large size instead of half size
+ * Galleries Parent Cmp (composed of GalleryList and Navbar)
  */
-
 class Galleries extends React.Component {
+    static propTypes = {
+        user: PropTypes.object,
+    };
 
-    constructor(props) {
-        super(props);
+    state = { verifiedToggle: getFromStorage('verifiedToggle', true) };
 
-        this.state = { showVerified: true };
-        this.onVerifiedToggled = this.onVerifiedToggled.bind(this);
-    }
-
-    onVerifiedToggled(showVerified) {
-        this.setState({ showVerified });
+    onVerifiedToggled = (verifiedToggle) => {
+        this.setState({ verifiedToggle });
+        setInStorage({ verifiedToggle });
     }
 
     render() {
+        const { verifiedToggle } = this.state;
+        const { user } = this.props;
+
         return (
-            <App user={this.props.user}>
+            <App user={user}>
                 <TopBar
                     title="Galleries"
-                    permissions={this.props.user.permissions}
-                    updateSort={this.updateSort}
+                    permissions={user.permissions}
                     onVerifiedToggled={this.onVerifiedToggled}
+                    defaultVerified={verifiedToggle}
                     timeToggle
                     verifiedToggle
                 />
@@ -37,7 +41,7 @@ class Galleries extends React.Component {
                 <GalleryList
                     withList={false}
                     highlighted={false}
-                    onlyVerified={this.state.showVerified}
+                    onlyVerified={verifiedToggle}
                 />
             </App>
         );
