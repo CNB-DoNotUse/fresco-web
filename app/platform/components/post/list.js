@@ -1,10 +1,14 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 import last from 'lodash/last';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import PostCell from './cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
 import GalleryCreate from '../gallery/create';
+
+const getFromStorage = createGetFromStorage({ key: 'PostList' });
+const setInStorage = createSetInStorage({ key: 'PostList' });
 
 /**
  * Post List Parent Object
@@ -19,7 +23,7 @@ class PostList extends React.Component {
             posts: props.posts || [],
             loading: false,
             scrollable: props.scrollable,
-            selectedPosts: [],
+            selectedPosts: getFromStorage('selectedPosts', []),
             galleryCreateToggled: false,
             galleryBulkEditToggled: false,
         };
@@ -136,7 +140,6 @@ class PostList extends React.Component {
         this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
     }
 
-
     /**
      * Sorts posts based on the current field in props
      * @return {array} An array of posts now sorted
@@ -167,14 +170,16 @@ class PostList extends React.Component {
 
         // Filter out anything, but ones that equal the passed post
         // Post not found, so add
+        let newSelected = [];
         if (!selectedPosts.some((s) => s.id === passedPost.id)) {
-            this.setState({ selectedPosts: selectedPosts.concat(passedPost) });
+            newSelected = selectedPosts.concat(passedPost);
         } else {
             // No post found
-            this.setState({
-                selectedPosts: selectedPosts.filter((post) => post.id !== passedPost.id),
-            });
+            newSelected = selectedPosts.filter((post) => post.id !== passedPost.id);
         }
+
+        this.setState({ selectedPosts: newSelected });
+        setInStorage({ selectedPosts: newSelected });
     }
 
     renderPosts() {
@@ -231,29 +236,29 @@ class PostList extends React.Component {
                 >
                     {this.renderPosts()}
 
-                    {selectedPosts && selectedPosts.length > 1 ?
+                    {(selectedPosts && selectedPosts.length > 1) && (
                         <GalleryBulkSelect
                             posts={selectedPosts}
-                            setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
+                            setSelectedPosts={p => this.setState({ selectedPosts: p })}
                             onToggleEdit={this.onToggleGalleryBulkEdit}
                             onToggleCreate={this.onToggleGalleryCreate}
                         />
-                    : ''}
+                    )}
 
-                    {galleryBulkEditToggled ?
+                    {galleryBulkEditToggled && (
                         <GalleryBulkEdit
                             posts={selectedPosts}
                             onHide={this.onToggleGalleryBulkEdit}
                         />
-                    : ''}
+                    )}
 
-                    {galleryCreateToggled ?
+                    {galleryCreateToggled && (
                         <GalleryCreate
                             posts={selectedPosts}
-                            setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
+                            setSelectedPosts={p => this.setState({ selectedPosts: p })}
                             onHide={this.onToggleGalleryCreate}
                         />
-                    : ''}
+                    )}
                 </div>
             </div>
         );

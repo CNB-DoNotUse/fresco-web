@@ -91,3 +91,4 @@ ReactDOM.render(
     <Videos user={window.__initialProps__.user} />,
     document.getElementById('app')
 );
+
