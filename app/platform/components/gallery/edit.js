@@ -7,7 +7,6 @@ import {
     isOriginalGallery,
     isImportedGallery,
     isSubmittedGallery,
-    isUploadedGallery,
 } from 'app/lib/models';
 import times from 'lodash/times';
 import get from 'lodash/get';
@@ -576,7 +575,7 @@ class Edit extends React.Component {
                         search
                     />
 
-                    {isUploadedGallery(gallery) && (
+                    {isImportedGallery(gallery) && (
                         <ChipInput
                             model="users"
                             placeholder="Owner"

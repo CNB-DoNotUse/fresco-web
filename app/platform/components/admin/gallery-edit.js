@@ -5,7 +5,7 @@ import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import get from 'lodash/get';
 import api from 'app/lib/api';
-import { isUploadedGallery } from 'app/lib/models';
+import { isImportedGallery } from 'app/lib/models';
 import AutocompleteMap from '../global/autocomplete-map';
 import ExplicitCheckbox from '../global/explicit-checkbox';
 import ChipInput from '../global/chip-input';
@@ -358,7 +358,7 @@ export default class GalleryEdit extends React.Component {
                         autocomplete
                     />
 
-                    {isUploadedGallery(gallery) && (
+                    {isImportedGallery(gallery) && (
                         <ChipInput
                             model="users"
                             placeholder="Owner"
