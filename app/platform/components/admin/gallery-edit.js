@@ -49,6 +49,7 @@ export default class GalleryEdit extends React.Component {
             is_nsfw: gallery.is_nsfw,
             owner: gallery.owner,
             ...this.getInitialLocationData(),
+            bylineDisabled: false,
         };
     }
 
@@ -80,6 +81,16 @@ export default class GalleryEdit extends React.Component {
                 });
             });
         }
+    }
+
+    onChangeOwner = (res) => {
+        const { gallery } = this.props;
+        this.setState({
+            owner: res[0],
+            bylineDisabled: true,
+            external_account_name: gallery.external_account_name,
+            external_source: gallery.external_source,
+        });
     }
 
 	/**
@@ -292,6 +303,7 @@ export default class GalleryEdit extends React.Component {
             is_nsfw,
             posts,
             owner,
+            bylineDisabled,
         } = this.state;
 
         if (!gallery) {
@@ -313,13 +325,29 @@ export default class GalleryEdit extends React.Component {
 
                     <EditByline
                         gallery={gallery}
+                        disabled={bylineDisabled}
                         external_account_name={external_account_name}
                         external_source={external_source}
-                        onChangeExtAccountName={(a) =>
+                        onChangeExtAccountName={a =>
                                 this.setState({ external_account_name: a })}
-                        onChangeExtSource={(s) =>
+                        onChangeExtSource={s =>
                                 this.setState({ external_source: s })}
                     />
+
+                    {isImportedGallery(gallery) && (
+                        <ChipInput
+                            model="users"
+                            placeholder="Owner"
+                            queryAttr="full_name"
+                            altAttr="username"
+                            items={owner ? [owner] : []}
+                            updateItems={this.onChangeOwner}
+                            className="dialog-row"
+                            createNew={false}
+                            multiple={false}
+                            search
+                        />
+                    )}
 
                     <textarea
                         type="text"
@@ -357,21 +385,6 @@ export default class GalleryEdit extends React.Component {
                         className="dialog-row"
                         autocomplete
                     />
-
-                    {isImportedGallery(gallery) && (
-                        <ChipInput
-                            model="users"
-                            placeholder="Owner"
-                            queryAttr="full_name"
-                            altAttr="username"
-                            items={owner ? [owner] : []}
-                            updateItems={u => this.setState({ owner: u[0] })}
-                            className="dialog-row"
-                            createNew={false}
-                            multiple={false}
-                            search
-                        />
-                    )}
 
                     <ExplicitCheckbox
                         is_nsfw={is_nsfw}

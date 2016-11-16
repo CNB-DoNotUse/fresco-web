@@ -64,7 +64,18 @@ class Edit extends React.Component {
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
             owner: gallery.owner,
+            bylineDisabled: false,
         };
+    }
+
+    onChangeOwner = (res) => {
+        const { gallery } = this.props;
+        this.setState({
+            owner: res[0],
+            bylineDisabled: true,
+            external_account_name: gallery.external_account_name,
+            external_source: gallery.external_source,
+        });
     }
 
     onRemove = () => {
@@ -510,15 +521,17 @@ class Edit extends React.Component {
             external_account_name,
             external_source,
             owner,
+            bylineDisabled,
         } = this.state;
         if (!gallery) return '';
 
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    {isOriginalGallery ? (
+                    {isOriginalGallery && (
                         <EditByline
                             gallery={gallery}
+                            disabled={bylineDisabled}
                             external_source={external_source}
                             external_account_name={external_account_name}
                             onChangeExtAccountName={(a) =>
@@ -528,7 +541,22 @@ class Edit extends React.Component {
                                 this.setState({ external_source: s })
                             }
                         />
-                    ) : ''}
+                    )}
+
+                    {isImportedGallery(gallery) && (
+                        <ChipInput
+                            model="users"
+                            placeholder="Owner"
+                            queryAttr="full_name"
+                            altAttr="username"
+                            items={owner ? [owner] : []}
+                            updateItems={this.onChangeOwner}
+                            className="dialog-row"
+                            createNew={false}
+                            multiple={false}
+                            search
+                        />
+                    )}
 
                     <div className="dialog-row">
                         <textarea
@@ -574,21 +602,6 @@ class Edit extends React.Component {
                         createNew
                         search
                     />
-
-                    {isImportedGallery(gallery) && (
-                        <ChipInput
-                            model="users"
-                            placeholder="Owner"
-                            queryAttr="full_name"
-                            altAttr="username"
-                            items={owner ? [owner] : []}
-                            updateItems={u => this.setState({ owner: u[0] })}
-                            className="dialog-row"
-                            createNew={false}
-                            multiple={false}
-                            search
-                        />
-                    )}
 
                     {!isOriginalGallery && (
                         <ChipInput
@@ -685,7 +698,7 @@ class Edit extends React.Component {
                     Save
                 </button>
 
-                {isOriginalGallery ? (
+                {isOriginalGallery && (
                     <button
                         type="button"
                         onClick={() =>
@@ -695,7 +708,7 @@ class Edit extends React.Component {
                     >
                         {(gallery.rating < 2) ? 'Verify' : 'Unverify'}
                     </button>
-                ) : null}
+                )}
 
                 <button
                     type="button"
