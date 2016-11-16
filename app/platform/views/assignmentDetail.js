@@ -8,7 +8,7 @@ import 'app/sass/platform/_posts';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/assignment/sidebar';
-import Edit from './../components/assignment/edit.js';
+import Edit from './../components/assignment/edit';
 import App from './app';
 
 const getFromStorage = createGetFromStorage({ key: 'assignmentDetail' });
@@ -18,6 +18,11 @@ const setInStorage = createSetInStorage({ key: 'assignmentDetail' });
  * Story Detail Parent Object, made of a side column and PostList
  */
 class AssignmentDetail extends React.Component {
+    static propTypes = {
+        user: PropTypes.object,
+        assignment: PropTypes.object,
+    };
+
     state = {
         assignment: this.props.assignment,
         editToggled: false,
@@ -203,11 +208,6 @@ class AssignmentDetail extends React.Component {
         );
     }
 }
-
-AssignmentDetail.propTypes = {
-    user: PropTypes.object,
-    assignment: PropTypes.object,
-};
 
 ReactDOM.render(
     <AssignmentDetail

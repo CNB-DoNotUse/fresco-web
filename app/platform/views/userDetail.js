@@ -1,19 +1,28 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import api from 'app/lib/api';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import App from './app';
 import Sidebar from './../components/user/sidebar';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import '../../sass/platform/user.scss';
 
+const getFromStorage = createGetFromStorage({ key: 'userDetail' });
+const setInStorage = createSetInStorage({ key: 'userDetail' });
+
 /**
  * User Detail Parent Object, made of a user side column and PostList
  */
 class UserDetail extends React.Component {
     state = {
-        verifiedToggled: true,
+        verifiedToggle: getFromStorage('verifiedToggle', true),
     };
+
+    onVerifiedToggled = (verifiedToggle) => {
+        this.setState({ verifiedToggle });
+        setInStorage({ verifiedToggle });
+    }
 
     edit() {
         window.location.href = '/user/settings';
@@ -22,11 +31,11 @@ class UserDetail extends React.Component {
     // Returns array of posts for the user
     // with offset and callback, used in child PostList
     loadPosts = (last, callback) => {
-        const { verifiedToggled } = this.state;
+        const { verifiedToggle } = this.state;
         const { detailUser } = this.props;
         const params = {
             limit: 15,
-            rating: verifiedToggled ? 2 : [0, 1, 2],
+            rating: verifiedToggle ? 2 : [0, 1, 2],
             last,
         };
 
@@ -43,15 +52,17 @@ class UserDetail extends React.Component {
 
     render() {
         const { user, editable, detailUser } = this.props;
+        const { verifiedToggle } = this.state;
         return (
             <App user={user}>
                 <TopBar
                     title={detailUser.full_name}
-                    editIcon={"mdi-settings"}
+                    editIcon="mdi-settings"
                     editable={editable}
                     edit={() => this.edit()}
-                    onVerifiedToggled={(b) => this.setState({ verifiedToggled: b })}
+                    onVerifiedToggled={this.onVerifiedToggled}
                     permissions={user.permissions}
+                    defaultVerified={verifiedToggle}
                     verifiedToggle
                     timeToggle
                 />
@@ -67,7 +78,7 @@ class UserDetail extends React.Component {
                         size="large"
                         permissions={user.permissions}
                         scrollable
-                        onlyVerified={this.state.verifiedToggled}
+                        onlyVerified={this.state.verifiedToggle}
                     />
                 </div>
             </App>
