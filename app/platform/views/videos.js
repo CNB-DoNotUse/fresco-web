@@ -15,13 +15,12 @@ const setInStorage = createSetInStorage({ key: 'videos' });
  */
 class Videos extends React.Component {
     static propTypes = {
-        sortBy: PropTypes.string,
         user: PropTypes.object,
     };
 
     state = {
         verifiedToggle: getFromStorage('verifiedToggle', true),
-        sortBy: this.props.sortBy || 'created_at',
+        sortBy: getFromStorage('sortBy', 'created_at'),
     };
 
     onVerifiedToggled = (toggled) => {
@@ -29,11 +28,12 @@ class Videos extends React.Component {
         setInStorage({ verifiedToggle: toggled });
     }
 
-    updateSort = (sortBy) => {
+    onChronToggled = (sortBy) => {
         this.setState({ sortBy });
+        setInStorage({ sortBy });
     }
 
-	// Returns array of posts with last and callback, used in child PostList
+    // Returns array of posts with last and callback, used in child PostList
     loadPosts = (last, callback) => {
         const params = {
             last,
@@ -65,9 +65,10 @@ class Videos extends React.Component {
                 <TopBar
                     title="Videos"
                     permissions={user.permissions}
-                    updateSort={this.updateSort}
+                    onChronToggled={this.onChronToggled}
                     onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={verifiedToggle}
+                    defaultChron={sortBy}
                     chronToggle
                     timeToggle
                     verifiedToggle
