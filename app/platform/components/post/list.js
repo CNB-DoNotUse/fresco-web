@@ -162,16 +162,15 @@ class PostList extends React.Component {
         // Check if `not` CM
         if (!permissions.includes('update-other-content')) return;
 
-        // Make sure we haven't reached the limit
-        if (selectedPosts.length >= utils.limits.galleryItems) {
-            $.snackbar({ content: `Galleries can only contain up to ${utils.limits.galleryItems} items!` });
-            return;
-        }
-
         // Filter out anything, but ones that equal the passed post
         // Post not found, so add
         let newSelected = [];
         if (!selectedPosts.some(s => s.id === passedPost.id)) {
+            // Make sure we haven't reached the limit
+            if (selectedPosts.length >= utils.limits.galleryItems) {
+                $.snackbar({ content: `Galleries can only contain up to ${utils.limits.galleryItems} items!` });
+                return;
+            }
             newSelected = selectedPosts.concat(passedPost);
         } else {
             // No post found
