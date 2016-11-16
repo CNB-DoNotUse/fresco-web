@@ -2,9 +2,13 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import App from './app';
 import PostList from './../components/post/list';
 import TopBar from './../components/topbar';
+
+const getFromStorage = createGetFromStorage({ key: 'archive' });
+const setInStorage = createSetInStorage({ key: 'archive' });
 
 /**
  * Archive Parent Object (composed of PostList and Navbar)
@@ -18,15 +22,16 @@ class Archive extends React.Component {
     };
 
     state = {
-        verifiedToggle: true,
+        verifiedToggle: getFromStorage('verifiedToggle', true),
         sortBy: this.props.sortBy || 'created_at',
     };
 
     onVerifiedToggled = (toggled) => {
         this.setState({ verifiedToggle: toggled });
+        setInStorage({ verifiedToggle: toggled });
     }
 
-	// Returns array of posts with last and callback, used in child PostList
+    // Returns array of posts with last and callback, used in child PostList
     loadPosts = (last, callback) => {
         const params = {
             last,
@@ -53,13 +58,16 @@ class Archive extends React.Component {
     }
 
     render() {
+        const { verifiedToggle, sortBy } = this.state;
+        const { user, title } = this.props;
         return (
-            <App user={this.props.user}>
+            <App user={user}>
                 <TopBar
-                    title={this.props.title}
+                    title={title}
                     updateSort={this.updateSort}
-                    permissions={this.props.user.permissions}
+                    permissions={user.permissions}
                     onVerifiedToggled={this.onVerifiedToggled}
+                    defaultVerified={verifiedToggle ? '' : 'all'}
                     chronToggle
                     timeToggle
                     verifiedToggle
@@ -67,10 +75,10 @@ class Archive extends React.Component {
 
                 <PostList
                     loadPosts={this.loadPosts}
-                    permissions={this.props.user.permissions}
-                    sortBy={this.state.sortBy}
+                    permissions={user.permissions}
+                    sortBy={sortBy}
                     size="small"
-                    onlyVerified={this.state.verifiedToggle}
+                    onlyVerified={verifiedToggle}
                     scrollable
                 />
             </App>
