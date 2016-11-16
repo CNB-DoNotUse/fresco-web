@@ -20,7 +20,7 @@ class Photos extends React.Component {
 
     state = {
         verifiedToggle: getFromStorage('verifiedToggle', true),
-        sortBy: this.props.sortBy || 'created_at',
+        sortBy: getFromStorage('sortBy', 'created_at'),
     };
 
     onVerifiedToggled = (toggled) => {
@@ -28,8 +28,9 @@ class Photos extends React.Component {
         setInStorage({ verifiedToggle: toggled });
     }
 
-    updateSort = (sortBy) => {
+    onChronToggled = (sortBy) => {
         this.setState({ sortBy });
+        setInStorage({ sortBy });
     }
 
 	// Returns array of posts with last and callback, used in child PostList
@@ -64,9 +65,10 @@ class Photos extends React.Component {
                 <TopBar
                     title="Photos"
                     permissions={user.permissions}
-                    updateSort={this.updateSort}
+                    onChronToggled={this.onChronToggled}
                     onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={verifiedToggle}
+                    defaultChron={sortBy}
                     chronToggle
                     timeToggle
                     verifiedToggle
