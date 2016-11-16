@@ -7,8 +7,8 @@ import App from './app';
 import PostList from './../components/post/list';
 import TopBar from './../components/topbar';
 
-const getFromStorage = createGetFromStorage({ key: 'photos' });
-const setInStorage = createSetInStorage({ key: 'photos' });
+const getFromStorage = createGetFromStorage({ key: 'views/photos' });
+const setInStorage = createSetInStorage({ key: 'views/photos' });
 
 /**
  * Photos Parent Object (composed of PhotoList and Navbar)

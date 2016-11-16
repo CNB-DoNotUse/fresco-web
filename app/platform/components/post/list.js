@@ -7,8 +7,8 @@ import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
 import GalleryCreate from '../gallery/create';
 
-const getFromStorage = createGetFromStorage({ key: 'PostList' });
-const setInStorage = createSetInStorage({ key: 'PostList' });
+const getFromStorage = createGetFromStorage({ key: 'components/post/list' });
+const setInStorage = createSetInStorage({ key: 'components/post/list' });
 
 /**
  * Post List Parent Object
@@ -164,20 +164,24 @@ class PostList extends React.Component {
 
         // Make sure we haven't reached the limit
         if (selectedPosts.length >= utils.limits.galleryItems) {
-            $.snackbar({ content: 'Galleries can only contain up to 10 items!' });
+            $.snackbar({ content: `Galleries can only contain up to ${utils.limits.galleryItems} items!` });
             return;
         }
 
         // Filter out anything, but ones that equal the passed post
         // Post not found, so add
         let newSelected = [];
-        if (!selectedPosts.some((s) => s.id === passedPost.id)) {
+        if (!selectedPosts.some(s => s.id === passedPost.id)) {
             newSelected = selectedPosts.concat(passedPost);
         } else {
             // No post found
-            newSelected = selectedPosts.filter((post) => post.id !== passedPost.id);
+            newSelected = selectedPosts.filter(post => post.id !== passedPost.id);
         }
 
+        this.setSelectedPosts(newSelected);
+    }
+
+    setSelectedPosts = (newSelected) => {
         this.setState({ selectedPosts: newSelected });
         setInStorage({ selectedPosts: newSelected });
     }
@@ -239,7 +243,7 @@ class PostList extends React.Component {
                     {(selectedPosts && selectedPosts.length > 1) && (
                         <GalleryBulkSelect
                             posts={selectedPosts}
-                            setSelectedPosts={p => this.setState({ selectedPosts: p })}
+                            setSelectedPosts={this.setSelectedPosts}
                             onToggleEdit={this.onToggleGalleryBulkEdit}
                             onToggleCreate={this.onToggleGalleryCreate}
                         />
@@ -255,7 +259,7 @@ class PostList extends React.Component {
                     {galleryCreateToggled && (
                         <GalleryCreate
                             posts={selectedPosts}
-                            setSelectedPosts={p => this.setState({ selectedPosts: p })}
+                            setSelectedPosts={this.setSelectedPosts}
                             onHide={this.onToggleGalleryCreate}
                         />
                     )}

@@ -7,8 +7,8 @@ import App from './app';
 import PostList from './../components/post/list';
 import TopBar from './../components/topbar';
 
-const getFromStorage = createGetFromStorage({ key: 'archive' });
-const setInStorage = createSetInStorage({ key: 'archive' });
+const getFromStorage = createGetFromStorage({ key: 'views/archive' });
+const setInStorage = createSetInStorage({ key: 'views/archive' });
 
 /**
  * Archive Parent Object (composed of PostList and Navbar)
