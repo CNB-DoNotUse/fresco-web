@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import 'app/sass/platform/_assignment';
 import 'app/sass/platform/_posts';
 import TopBar from './../components/topbar';
@@ -10,6 +11,9 @@ import Sidebar from './../components/assignment/sidebar';
 import Edit from './../components/assignment/edit.js';
 import App from './app';
 
+const getFromStorage = createGetFromStorage({ key: 'assignmentDetail' });
+const setInStorage = createSetInStorage({ key: 'assignmentDetail' });
+
 /**
  * Story Detail Parent Object, made of a side column and PostList
  */
@@ -17,7 +21,7 @@ class AssignmentDetail extends React.Component {
     state = {
         assignment: this.props.assignment,
         editToggled: false,
-        verifiedToggle: true,
+        verifiedToggle: getFromStorage('verifiedToggle', true),
         sortBy: 'created_at',
         loading: false,
     };
@@ -30,8 +34,9 @@ class AssignmentDetail extends React.Component {
         }, 5000);
     }
 
-    onVerifiedToggled(verifiedToggle) {
+    onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
+        setInStorage({ verifiedToggle });
     }
 
     updateSort(sortBy) {
@@ -156,9 +161,10 @@ class AssignmentDetail extends React.Component {
                 <TopBar
                     title={assignment.title}
                     permissions={user.permissions}
-                    onVerifiedToggled={t => this.onVerifiedToggled(t)}
+                    onVerifiedToggled={this.onVerifiedToggled}
                     updateSort={s => this.updateSort(s)}
                     edit={() => this.toggleEdit()}
+                    defaultVerified={verifiedToggle}
                     editable
                     timeToggle
                     chronToggle
