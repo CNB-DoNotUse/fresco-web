@@ -1,34 +1,34 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import App from './app';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/story/sidebar';
 import Edit from './../components/story/edit';
 
+const getFromStorage = createGetFromStorage({ key: 'storyDetail' });
+const setInStorage = createSetInStorage({ key: 'storyDetail' });
+
 /**
  * Story Detail Parent Object, made of a side column and PostList
  */
 class StoryDetail extends React.Component {
+    state = {
+        loading: false,
+        editToggled: false,
+        story: this.props.story,
+        sortBy: getFromStorage('sortBy', 'created_at'),
+    };
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            loading: false,
-            editToggled: false,
-            story: props.story,
-            sortBy: props.sortBy,
-        };
+    onChronToggled = (sortBy) => {
+        this.setState({ sortBy });
+        setInStorage({ sortBy });
     }
 
     toggleStoryEdit() {
         this.setState({ editToggled: !this.state.editToggled });
-    }
-
-    updateSort(sortBy) {
-        this.setState({ sortBy });
     }
 
     save(id, params) {
@@ -120,8 +120,9 @@ class StoryDetail extends React.Component {
             <App user={user}>
                 <TopBar
                     title={story.title}
-                    updateSort={s => this.updateSort(s)}
+                    onChronToggled={this.onChronToggled}
                     edit={() => this.toggleStoryEdit()}
+                    defaultChron={sortBy}
                     editable
                     timeToggle
                     chronToggle
@@ -157,11 +158,6 @@ class StoryDetail extends React.Component {
 StoryDetail.propTypes = {
     story: PropTypes.object,
     user: PropTypes.object,
-    sortBy: PropTypes.string,
-};
-
-StoryDetail.defaultProps = {
-    sortBy: 'created_at',
 };
 
 ReactDOM.render(
