@@ -27,7 +27,7 @@ class AssignmentDetail extends React.Component {
         assignment: this.props.assignment,
         editToggled: false,
         verifiedToggle: getFromStorage('verifiedToggle', true),
-        sortBy: 'created_at',
+        sortBy: getFromStorage('sortBy', 'created_at'),
         loading: false,
     };
 
@@ -44,8 +44,9 @@ class AssignmentDetail extends React.Component {
         setInStorage({ verifiedToggle });
     }
 
-    updateSort(sortBy) {
+    onChronToggled = (sortBy) => {
         this.setState({ sortBy });
+        setInStorage({ sortBy });
     }
 
     fetchAssignment() {
@@ -166,10 +167,11 @@ class AssignmentDetail extends React.Component {
                 <TopBar
                     title={assignment.title}
                     permissions={user.permissions}
-                    onVerifiedToggled={this.onVerifiedToggled}
-                    updateSort={s => this.updateSort(s)}
                     edit={() => this.toggleEdit()}
+                    onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={verifiedToggle}
+                    onChronToggled={this.onChronToggled}
+                    defaultChron={sortBy}
                     editable
                     timeToggle
                     chronToggle
