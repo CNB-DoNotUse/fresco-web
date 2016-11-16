@@ -85,7 +85,7 @@ class PostList extends React.Component {
     /**
      * Scroll listener for main window
      */
-    onScroll(e) {
+    onScroll = (e) => {
         const grid = e.target;
         if (!this.area || !this.area.contains(e.target)) {
             return;
@@ -96,13 +96,14 @@ class PostList extends React.Component {
         // Check that nothing is loading and that we're at the end of the scroll
         if (!this.state.loading && endOfScroll) {
             // Set that we're loading
+            const lastPost = last(this.state.posts);
+            if (!lastPost) return;
             this.setState({ loading: true });
 
             // Run load on parent call
-            this.props.loadPosts(last(this.state.posts)[this.props.paginateBy], (posts) => {
-                // Disables scroll, and returns if posts are empty
+            this.props.loadPosts(lastPost[this.props.paginateBy], (posts) => {
                 if (!posts || posts.length === 0) {
-                    this.setState({ scrollable: false });
+                    this.setState({ loading: false });
                     return;
                 }
 
@@ -111,7 +112,7 @@ class PostList extends React.Component {
                     posts: this.state.posts.concat(posts),
                     loading: false,
                 });
-            }, this);
+            });
         }
     }
 
@@ -135,12 +136,6 @@ class PostList extends React.Component {
         this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
     }
 
-    /**
-     * Initial call to populate posts
-     */
-    loadInitialPosts() {
-        this.props.loadPosts(null, posts => { this.setState({ posts }); });
-    }
 
     /**
      * Sorts posts based on the current field in props
@@ -231,8 +226,8 @@ class PostList extends React.Component {
             <div ref={r => { this.area = r; }}>
                 <div
                     className={`container-fluid fat grid ${className}`}
-                    ref={r => { this.grid = r; }}
-                    onScroll={scrollable ? onScroll || ((e) => this.onScroll(e)) : null}
+                    ref={(r) => { this.grid = r; }}
+                    onScroll={scrollable ? onScroll || this.onScroll : null}
                 >
                     {this.renderPosts()}
 
@@ -289,7 +284,7 @@ PostList.defaultProps = {
     onlyVerified: false,
     loadPosts() {},
     permissions: [],
-    paginateBy: "id",
+    paginateBy: 'id',
 };
 
 export default PostList;

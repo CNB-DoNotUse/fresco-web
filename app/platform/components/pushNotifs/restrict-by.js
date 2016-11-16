@@ -7,6 +7,7 @@ const onChangeRestrictByLocation = (onChange) => (e) => {
     onChange({
         restrictByLocation: e.target.checked,
         restrictByUser: false,
+        radius: 250,
     });
 };
 

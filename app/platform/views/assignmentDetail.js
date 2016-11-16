@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
+import api from 'app/lib/api';
 import 'app/sass/platform/_assignment';
 import 'app/sass/platform/_posts';
 import TopBar from './../components/topbar';
@@ -54,7 +55,7 @@ class AssignmentDetail extends React.Component {
      * @param {string} lastId Last post in the list
      * @param {function} callback callback delivering posts
      */
-    loadPosts(last, callback) {
+    loadPosts = (last, callback) => {
         const { assignment, sortBy, verifiedToggle } = this.state;
         const params = {
             limit: 10,
@@ -63,17 +64,12 @@ class AssignmentDetail extends React.Component {
             rating: verifiedToggle ? 2 : [1, 2],
         };
 
-        $.ajax({
-            url: `/api/assignment/${assignment.id}/posts`,
-            type: 'GET',
-            data: params,
-            dataType: 'json',
-        })
-        .done((res) => {
-            callback(res);
-        })
-        .fail((xhr, status, error) => {
-            $.snackbar({ content: utils.resolveError(error) });
+        api
+        .get(`assignment/${assignment.id}/posts`, params)
+        .then(callback)
+        .catch(() => {
+            $.snackbar({ content: 'Couldn\'t load posts!' });
+            callback(null);
         });
     }
 
@@ -107,11 +103,15 @@ class AssignmentDetail extends React.Component {
         });
     }
 
-	/**
-	 * Saves the assignment from the current values in the form
-	 */
-    save(id, params) {
-        if (!id || !params || this.state.loading) return;
+    /**
+     * Saves the assignment from the current values in the form
+     */
+    save(id, params = {}) {
+        if (!id || this.state.loading) return;
+        if (Object.keys(params).length === 0) {
+            $.snackbar({ content: 'No changes made!' });
+            return;
+        }
         this.setState({ loading: true });
 
         $.ajax({
@@ -156,8 +156,8 @@ class AssignmentDetail extends React.Component {
                 <TopBar
                     title={assignment.title}
                     permissions={user.permissions}
-                    onVerifiedToggled={(t) => this.onVerifiedToggled(t)}
-                    updateSort={(s) => this.updateSort(s)}
+                    onVerifiedToggled={t => this.onVerifiedToggled(t)}
+                    updateSort={s => this.updateSort(s)}
                     edit={() => this.toggleEdit()}
                     editable
                     timeToggle
@@ -174,7 +174,7 @@ class AssignmentDetail extends React.Component {
                 <div className="col-sm-8 tall">
                     <PostList
                         permissions={user.permissions}
-                        loadPosts={(l, cb) => this.loadPosts(l, cb)}
+                        loadPosts={this.loadPosts}
                         sortBy={sortBy}
                         onlyVerified={verifiedToggle}
                         assignment={assignment}
@@ -188,7 +188,7 @@ class AssignmentDetail extends React.Component {
                     assignment={assignment}
                     save={(id, p) => this.save(id, p)}
                     onToggle={() => this.toggleEdit()}
-                    updateOutlet={(o) => this.updateOutlet(o)}
+                    updateOutlet={o => this.updateOutlet(o)}
                     user={user}
                     loading={loading}
                     visible={editToggled}

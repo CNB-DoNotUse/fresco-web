@@ -46,6 +46,7 @@ class Videos extends React.Component {
         .then(res => { callback(res); })
         .catch(() => {
             $.snackbar({ content: 'Failed to load videos' });
+            callback([]);
         });
     }
 

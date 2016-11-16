@@ -1202,7 +1202,7 @@ div.list {
 				> .hover {
 					@include display(flex);
 					@include flex-direction(column);
-					background-color: $color-black-2;
+					background-color:rgba(0,0,0, 0.24);
 					color: $color-white-1;
 					> a {
 						color:#FFF;
@@ -1215,6 +1215,7 @@ div.list {
 						padding: 7px 12px 0;
 						overflow: hidden;
 						text-overflow: ellipsis;
+						text-shadow: 0 2px 2px rgba(0, 0, 0, 0.05), 0 3px 3px rgba(0, 0, 0, 0.1);
 					}
 					> span {
 						display: block;

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
 import App from './app';
-import PostList from './../components/post/list.js';
+import PostList from './../components/post/list';
 import TopBar from './../components/topbar';
 
 /**
@@ -13,6 +13,8 @@ import TopBar from './../components/topbar';
 class Archive extends React.Component {
     static propTypes = {
         sortBy: PropTypes.string,
+        title: PropTypes.string,
+        user: PropTypes.object,
     };
 
     state = {
@@ -39,9 +41,10 @@ class Archive extends React.Component {
 
         api
         .get('post/list', params)
-        .then(res => { callback(res); })
+        .then(callback)
         .catch(() => {
             $.snackbar({ content: 'We\'re unable to load the archive right now!' });
+            callback([]);
         });
     }
 

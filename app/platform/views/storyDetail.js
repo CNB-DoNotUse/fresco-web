@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import utils from 'utils';
 import App from './app';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/story/sidebar';
 import Edit from './../components/story/edit';
-import utils from 'utils';
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
@@ -21,8 +21,6 @@ class StoryDetail extends React.Component {
             story: props.story,
             sortBy: props.sortBy,
         };
-
-        this.loadPosts = this.loadPosts.bind(this);
     }
 
     toggleStoryEdit() {
@@ -34,7 +32,11 @@ class StoryDetail extends React.Component {
     }
 
     save(id, params) {
-        if (!id || !params || this.state.loading) return;
+        if (!id || this.state.loading) return;
+        if (Object.keys(params).length < 1) {
+            $.snackbar({ content: 'No changes made!' });
+            return;
+        }
         this.setState({ loading: true });
 
         $.ajax({
@@ -87,7 +89,7 @@ class StoryDetail extends React.Component {
      * @param {string} lastId Last post in the list
      * @param {function} callback callback delivering posts
      */
-    loadPosts(last, callback) {
+    loadPosts = (last, callback) => {
         const { story, sortBy } = this.state;
         const params = {
             last,
@@ -104,8 +106,9 @@ class StoryDetail extends React.Component {
         .done((res) => {
             callback(res);
         })
-        .fail((xhr, status, error) => {
-            $.snackbar({ content: utils.resolveError(error) });
+        .fail(() => {
+            $.snackbar({ content: 'Couldn\'t load posts!' });
+            callback([]);
         });
     }
 
@@ -117,7 +120,7 @@ class StoryDetail extends React.Component {
             <App user={user}>
                 <TopBar
                     title={story.title}
-                    updateSort={(s) => this.updateSort(s)}
+                    updateSort={s => this.updateSort(s)}
                     edit={() => this.toggleStoryEdit()}
                     editable
                     timeToggle

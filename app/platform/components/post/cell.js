@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 import GalleryEdit from '../gallery/edit';
 import FrescoImage from '../global/fresco-image';
+import FrescoVideo from '../global/fresco-video';
 import Actions from './cell-actions';
 import Stories from './cell-stories';
 import Time from './cell-time';
@@ -49,6 +50,14 @@ class PostCell extends React.Component {
         } else {
             window.open(`/post/${post.id}`, '_self');
         }
+    }
+
+    onMouseEnter = () => {
+        this.setState({ mouseEntered: true });
+    }
+
+    onMouseLeave = () => {
+        this.setState({ mouseEntered: false });
     }
 
     onToggleGalleryEdit = (gallery = {}) => {
@@ -107,7 +116,7 @@ class PostCell extends React.Component {
             size,
             sizes,
         } = this.props;
-        const { galleryEditVisible, gallery } = this.state;
+        const { galleryEditVisible, gallery, mouseEntered } = this.state;
         const divSize = size === 'large' ? sizes.large : sizes.small;
 
         return (
@@ -115,7 +124,12 @@ class PostCell extends React.Component {
                 <div className="tile-body noselect">
                     <div className="frame" />
 
-                    <div className="hover" onClick={this.onClickPost}>
+                    <div
+                        className="hover"
+                        onClick={this.onClickPost}
+                        onMouseEnter={this.onMouseEnter}
+                        onMouseLeave={this.onMouseLeave}
+                    >
                         <p className="md-type-body1">
                             {post.parent && post.parent.caption
                                 ? post.parent.caption
@@ -130,24 +144,32 @@ class PostCell extends React.Component {
                         <Stories stories={post.stories} />
                     </div>
 
-                    <div className="img">
-                        <FrescoImage
-                            src={post.image}
-                            refreshInterval={true}
-                            size={size}
+                    {(mouseEntered && post.stream) ? (
+                        <FrescoVideo
+                            video={post.stream}
+                            hideControls
+                            autoplay
                         />
-                    </div>
+                    ) : (
+                        <div className="img">
+                            <FrescoImage
+                                src={post.image}
+                                size={size}
+                                refreshInterval
+                            />
+                        </div>
+                    )}
                 </div>
 
                 {this.renderFooter()}
 
-                {gallery && galleryEditVisible ?
+                {(gallery && galleryEditVisible) && (
                     <GalleryEdit
                         gallery={gallery}
                         visible={galleryEditVisible}
                         toggle={this.onToggleGalleryEdit}
                     />
-                : null }
+                )}
             </div>
         );
     }

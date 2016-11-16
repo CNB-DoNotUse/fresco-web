@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import isEqual from 'lodash/isEqual';
+import pickBy from 'lodash/pickBy';
 import get from 'lodash/get';
 import api from 'app/lib/api';
 import { isUploadedGallery } from 'app/lib/models';
@@ -196,7 +197,7 @@ export default class GalleryEdit extends React.Component {
             return null;
         }
 
-        const params = {
+        let params = {
             tags,
             caption,
             address,
@@ -208,6 +209,13 @@ export default class GalleryEdit extends React.Component {
             rating,
             owner_id: owner ? owner.id : null,
         };
+
+        // Make sure our params are valid types and don't have any empty arrays
+        // Special exception if the param is a `bool`
+        params = pickBy(params, (v, k) => {
+            if (gallery[k] === v) return false;
+            return (typeof(v) === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
+        });
 
         return params;
     }
@@ -230,14 +238,15 @@ export default class GalleryEdit extends React.Component {
             }));
         }
 
-        posts_update = posts.map(p => ({
+        // filter out unchanged params
+        posts_update = posts.map(p => pickBy({
             id: p.id,
             address,
             lat: location.lat,
             lng: location.lng,
             rating,
             assignment_id: assignment ? assignment.id : null,
-        }));
+        }, (v, k) => k === 'id' || p[k] !== v));
 
         return { posts_update, posts_remove };
     }

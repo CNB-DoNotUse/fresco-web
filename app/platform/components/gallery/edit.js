@@ -80,7 +80,11 @@ class Edit extends React.Component {
         const { gallery, onUpdateGallery } = this.props;
         let { loading, uploads, assignments, isOriginalGallery } = this.state;
 
-        if (!get(gallery, 'id') || !params || loading) return;
+        if (!Object.keys(params).length) {
+            $.snackbar({ content: 'No changes made!' });
+            return;
+        }
+        if (!get(gallery, 'id') || loading) return;
         this.setState({ loading: true });
         const postsToDelete = isOriginalGallery ? get(params, 'posts_remove') : [];
 
@@ -143,6 +147,14 @@ class Edit extends React.Component {
         });
 
         this.fileInput.value = '';
+    }
+
+    onChangePostsChips = (posts = []) => {
+        if (!posts.length) {
+            $.snackbar({ content: 'Galleries must have at least 1 post' });
+            return;
+        }
+        this.setState({ posts });
     }
 
     /**
@@ -230,7 +242,7 @@ class Edit extends React.Component {
             return null;
         }
 
-        const params = {
+        let params = {
             tags,
             caption,
             external_account_name,
@@ -245,9 +257,12 @@ class Edit extends React.Component {
 
         // Make sure our params are valid types and don't have any empty arrays
         // Special exception if the param is a `bool`
-        return pickBy(params, (v) => {
+        params = pickBy(params, (v, k) => {
+            if (gallery[k] === v) return false;
             return (typeof v === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
         });
+
+        return params;
     }
 
     getFilesFromUploads() {
@@ -257,13 +272,11 @@ class Edit extends React.Component {
     // only set assignment on new posts if gallery isn't
     // curated and all posts belong to same assignment
     getAssignmentParam() {
+        const { gallery } = this.props;
         const { assignments } = this.state;
-        if (!assignments.length) {
-            return { assignment_id: null };
-        }
-        if (assignments.length === 1) {
-            return { assignment_id: assignments[0].id };
-        }
+        if (gallery.assignments === assignments) return null;
+        if (!assignments.length) return { assignment_id: null };
+        if (assignments.length === 1) return { assignment_id: assignments[0].id };
 
         return null;
     }
@@ -306,29 +319,28 @@ class Edit extends React.Component {
         const { address, location, rating } = this.state;
         // check to see if should save locations on all gallery's posts
         const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
-        let params;
-        if (sameLocation) {
-            params = posts.map(p => {
-                return Object.assign(
-                    pickBy({
-                        id: p.id,
-                        rating: rating === 3 ? 2 : rating }, v => !!v),
-                    this.getAssignmentParam()
-                );
+        let params = posts.map((p) => {
+            let postParam = Object.assign({
+                id: p.id,
+                rating: rating === 3 ? 2 : rating,
+            }, this.getAssignmentParam());
+
+            if (!sameLocation) {
+                postParam = Object.assign(postParam, {
+                    address,
+                    lat: location.lat,
+                    lng: location.lng,
+                });
+            }
+
+            // filter out unchanged params
+            return pickBy(postParam, (v, k) => {
+                if (k !== 'id' && (p[k] === v)) return false;
+                return true;
             });
-        } else {
-            params = posts.map(p => {
-                return Object.assign(
-                    pickBy({
-                        id: p.id,
-                        address,
-                        lat: location.lat,
-                        lng: location.lng,
-                        rating: rating === 3 ? 2 : rating }, v => !!v),
-                    this.getAssignmentParam()
-                );
-            });
-        }
+        });
+
+        params = params.filter(p => Object.keys(p).length > 1);
 
         return { posts_update: params };
     }
@@ -526,7 +538,7 @@ class Edit extends React.Component {
                             className="form-control floating-label"
                             value={caption}
                             placeholder="Caption"
-                            onChange={(e) => this.setState({ caption: e.target.value })}
+                            onChange={e => this.setState({ caption: e.target.value })}
                         />
                     </div>
 
@@ -579,13 +591,25 @@ class Edit extends React.Component {
                         />
                     )}
 
+                    {!isOriginalGallery && (
+                        <ChipInput
+                            model="posts"
+                            items={posts}
+                            queryAttr="id"
+                            updateItems={this.onChangePostsChips}
+                            className="dialog-row"
+                            createNew={false}
+                            idLookup
+                        />
+                    )}
+
                     <div className="dialog-row">
                         <div className="checkbox">
                             <label>
                                 <input
                                     type="checkbox"
                                     checked={rating === 3}
-                                    onChange={(e) => this.toggleHighlight(e)}
+                                    onChange={e => this.toggleHighlight(e)}
                                 />
                                 Highlighted
                             </label>

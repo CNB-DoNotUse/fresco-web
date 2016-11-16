@@ -8,6 +8,7 @@ import omit from 'lodash/omit';
 import pick from 'lodash/pick';
 import mapKeys from 'lodash/mapKeys';
 import mapValues from 'lodash/mapValues';
+import utils from 'utils';
 
 // constants
 // action types
@@ -50,7 +51,6 @@ const getTemplateErrors = (template, getState) => {
     if (templateData.get('restrictByLocation') && templateData.get('radius') < 250) {
         errors.push('Radius must be at least 250ft');
     }
-
     if (missing.length) msg = `Missing required fields: ${missing.join(', ')}`;
     errors.forEach(e => { msg = msg.concat(`\n${e}`); });
 
@@ -92,6 +92,7 @@ const getFormDataFromTemplate = (template, state) => (
             case ('gallery_id'): return v.id;
             case ('story_id'): return v.id;
             case ('assignment_id'): return v.id;
+            case ('radius'): return utils.feetToMiles(v);
             default:
                 return v;
             }
