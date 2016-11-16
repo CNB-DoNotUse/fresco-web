@@ -67,7 +67,7 @@ class Archive extends React.Component {
                     updateSort={this.updateSort}
                     permissions={user.permissions}
                     onVerifiedToggled={this.onVerifiedToggled}
-                    defaultVerified={verifiedToggle ? '' : 'all'}
+                    defaultVerified={verifiedToggle}
                     chronToggle
                     timeToggle
                     verifiedToggle

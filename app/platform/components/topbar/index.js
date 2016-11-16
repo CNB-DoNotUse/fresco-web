@@ -129,7 +129,7 @@ class TopBar extends React.Component {
             topbarItems.push(
                 <Dropdown
                     options={['All content', 'Verified']}
-                    selected={defaultVerified === 'all' ? 'All content' : 'Verified'}
+                    selected={defaultVerified ? 'Verified' : 'All content'}
                     onSelected={(s) => this.verifiedToggleSelected(s)}
                     key="verifiedToggle"
                     inList
@@ -237,7 +237,7 @@ TopBar.propTypes = {
     chronToggle: PropTypes.bool,
     timeToggle: PropTypes.bool,
     verifiedToggle: PropTypes.bool,
-    defaultVerified: PropTypes.string,
+    defaultVerified: PropTypes.bool,
     permissions: PropTypes.array,
     tabs: PropTypes.array,
     setActiveTab: PropTypes.func,
