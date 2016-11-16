@@ -16,19 +16,23 @@ const setInStorage = createSetInStorage({ key: 'archive' });
  */
 class Archive extends React.Component {
     static propTypes = {
-        sortBy: PropTypes.string,
         title: PropTypes.string,
         user: PropTypes.object,
     };
 
     state = {
         verifiedToggle: getFromStorage('verifiedToggle', true),
-        sortBy: this.props.sortBy || 'created_at',
+        sortBy: getFromStorage('sortBy', 'created_at'),
     };
 
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
         setInStorage({ verifiedToggle });
+    }
+
+    onChronToggled = (sortBy) => {
+        this.setState({ sortBy });
+        setInStorage({ sortBy });
     }
 
     // Returns array of posts with last and callback, used in child PostList
@@ -53,10 +57,6 @@ class Archive extends React.Component {
         });
     }
 
-    updateSort = (sortBy) => {
-        this.setState({ sortBy });
-    }
-
     render() {
         const { verifiedToggle, sortBy } = this.state;
         const { user, title } = this.props;
@@ -64,10 +64,11 @@ class Archive extends React.Component {
             <App user={user}>
                 <TopBar
                     title={title}
-                    updateSort={this.updateSort}
                     permissions={user.permissions}
                     onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={verifiedToggle}
+                    onChronToggled={this.onChronToggled}
+                    defaultChron={sortBy}
                     chronToggle
                     timeToggle
                     verifiedToggle

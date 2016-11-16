@@ -50,17 +50,17 @@ class TopBar extends React.Component {
 
     // Called when the user selects all content or verified
     verifiedToggleSelected(selected) {
-        this.props.onVerifiedToggled(selected == 'Verified');
+        this.props.onVerifiedToggled(selected === 'Verified');
     }
 
 	// Called when the user selects a time format
     chronToggleSelected(selected) {
-        selected = selected.toLowerCase();
+        const str = selected.toLowerCase();
 
-        if (selected === 'by capture time') {
-            this.props.updateSort('captured_at');
-        } else if (selected === 'by upload time') {
-            this.props.updateSort('created_at');
+        if (str === 'by capture time') {
+            this.props.onChronToggled('captured_at');
+        } else if (str === 'by upload time') {
+            this.props.onChronToggled('created_at');
         }
     }
 
@@ -73,6 +73,7 @@ class TopBar extends React.Component {
             timeToggle,
             verifiedToggle,
             defaultVerified,
+            defaultChron,
             permissions,
         } = this.props;
         const topbarItems = [];
@@ -97,7 +98,7 @@ class TopBar extends React.Component {
                     <RadioGroup
                         options={['Relative time', 'Absolute time']}
                         selected="Relative time"
-                        onSelected={(s) => this.timeToggleSelected(s)}
+                        onSelected={this.timeToggleSelected}
                         key="timeToggle"
                     />
                 );
@@ -105,7 +106,7 @@ class TopBar extends React.Component {
             topbarItems.push(
                 <Dropdown
                     options={['By capture time', 'By upload time']}
-                    selected="By upload time"
+                    selected={(defaultChron === 'captured_at') ? 'By capture time' : 'By upload time'}
                     onSelected={(s) => this.chronToggleSelected(s)}
                     key="chronToggle"
                     inList
@@ -118,7 +119,7 @@ class TopBar extends React.Component {
                 <Dropdown
                     options={['Relative time', 'Absolute time']}
                     selected="Relative time"
-                    onSelected={s => this.timeToggleSelected(s)}
+                    onSelected={this.timeToggleSelected}
                     key="timeToggle"
                     inList
                 />
@@ -238,6 +239,7 @@ TopBar.propTypes = {
     timeToggle: PropTypes.bool,
     verifiedToggle: PropTypes.bool,
     defaultVerified: PropTypes.bool,
+    defaultChron: PropTypes.string,
     permissions: PropTypes.array,
     tabs: PropTypes.array,
     setActiveTab: PropTypes.func,
@@ -245,6 +247,7 @@ TopBar.propTypes = {
     children: PropTypes.node,
     updateMapPlace: PropTypes.func,
     onVerifiedToggled: PropTypes.func,
+    onChronToggled: PropTypes.func,
 };
 
 TopBar.defaultProps = {
