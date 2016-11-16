@@ -2,9 +2,13 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import App from './app';
-import PostList from './../components/post/list.js';
+import PostList from './../components/post/list';
 import TopBar from './../components/topbar';
+
+const getFromStorage = createGetFromStorage({ key: 'photos' });
+const setInStorage = createSetInStorage({ key: 'photos' });
 
 /**
  * Photos Parent Object (composed of PhotoList and Navbar)
@@ -15,12 +19,13 @@ class Photos extends React.Component {
     };
 
     state = {
-        showVerified: true,
+        verifiedToggle: getFromStorage('verifiedToggle', true),
         sortBy: this.props.sortBy || 'created_at',
     };
 
     onVerifiedToggled = (toggled) => {
-        this.setState({ showVerified: toggled });
+        this.setState({ verifiedToggle: toggled });
+        setInStorage({ verifiedToggle: toggled });
     }
 
     updateSort = (sortBy) => {
@@ -37,7 +42,7 @@ class Photos extends React.Component {
             rating: [0, 1, 2],
         };
 
-        if (this.state.showVerified) {
+        if (this.state.verifiedToggle) {
             params.rating = 2;
         }
 
@@ -52,7 +57,7 @@ class Photos extends React.Component {
 
     render() {
         const { user } = this.props;
-        const { sortBy, showVerified } = this.state;
+        const { sortBy, verifiedToggle } = this.state;
 
         return (
             <App user={user}>
@@ -61,6 +66,7 @@ class Photos extends React.Component {
                     permissions={user.permissions}
                     updateSort={this.updateSort}
                     onVerifiedToggled={this.onVerifiedToggled}
+                    defaultVerified={verifiedToggle}
                     chronToggle
                     timeToggle
                     verifiedToggle
@@ -69,7 +75,7 @@ class Photos extends React.Component {
                     permissions={user.permissions}
                     size="small"
                     sortBy={sortBy}
-                    onlyVerified={showVerified}
+                    onlyVerified={verifiedToggle}
                     loadPosts={this.loadPosts}
                     scrollable
                 />

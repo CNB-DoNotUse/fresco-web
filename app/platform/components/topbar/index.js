@@ -118,7 +118,7 @@ class TopBar extends React.Component {
                 <Dropdown
                     options={['Relative time', 'Absolute time']}
                     selected="Relative time"
-                    onSelected={(s) => this.timeToggleSelected(s)}
+                    onSelected={s => this.timeToggleSelected(s)}
                     key="timeToggle"
                     inList
                 />
@@ -130,7 +130,7 @@ class TopBar extends React.Component {
                 <Dropdown
                     options={['All content', 'Verified']}
                     selected={defaultVerified ? 'Verified' : 'All content'}
-                    onSelected={(s) => this.verifiedToggleSelected(s)}
+                    onSelected={s => this.verifiedToggleSelected(s)}
                     key="verifiedToggle"
                     inList
                 />
