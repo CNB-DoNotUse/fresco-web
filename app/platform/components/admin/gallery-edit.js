@@ -49,7 +49,7 @@ export default class GalleryEdit extends React.Component {
             is_nsfw: gallery.is_nsfw,
             owner: gallery.owner,
             ...this.getInitialLocationData(),
-            bylineDisabled: false,
+            bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
         };
     }
 
@@ -83,11 +83,11 @@ export default class GalleryEdit extends React.Component {
         }
     }
 
-    onChangeOwner = (res) => {
+    onChangeOwner = (owner) => {
         const { gallery } = this.props;
         this.setState({
-            owner: res[0],
-            bylineDisabled: true,
+            owner,
+            bylineDisabled: !!owner,
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
         });
@@ -225,7 +225,7 @@ export default class GalleryEdit extends React.Component {
         // Special exception if the param is a `bool`
         params = pickBy(params, (v, k) => {
             if (gallery[k] === v) return false;
-            return (typeof(v) === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
+            return Array.isArray(v) ? v.length : true;
         });
 
         return params;
@@ -341,7 +341,7 @@ export default class GalleryEdit extends React.Component {
                             queryAttr="full_name"
                             altAttr="username"
                             items={owner ? [owner] : []}
-                            updateItems={this.onChangeOwner}
+                            updateItems={res => this.onChangeOwner(res[0])}
                             className="dialog-row"
                             createNew={false}
                             multiple={false}
