@@ -26,6 +26,7 @@ class PostList extends React.Component {
             selectedPosts: getFromStorage('selectedPosts', []),
             galleryCreateToggled: false,
             galleryBulkEditToggled: false,
+            prevScrollTop: 0,
         };
 
         // If we aren't dynamically loading posts, then sort them locally
@@ -91,33 +92,56 @@ class PostList extends React.Component {
      */
     onScroll = (e) => {
         const grid = e.target;
-        if (!this.area || !this.area.contains(e.target)) {
+        if (!this.area || !this.area.contains(e.target) || this.state.loading) {
             return;
         }
-
         const endOfScroll = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
-
-        // Check that nothing is loading and that we're at the end of the scroll
-        if (!this.state.loading && endOfScroll) {
-            // Set that we're loading
-            const lastPost = last(this.state.posts);
-            if (!lastPost) return;
-            this.setState({ loading: true });
-
-            // Run load on parent call
-            this.props.loadPosts(lastPost[this.props.paginateBy], (posts) => {
-                if (!posts || posts.length === 0) {
-                    this.setState({ loading: false });
-                    return;
-                }
-
-                // Set galleries from successful response, and unset loading
-                this.setState({
-                    posts: this.state.posts.concat(posts),
-                    loading: false,
-                });
-            });
+        const topOfScroll = grid.scrollTop < 400 && (grid.scrollTop < this.state.prevScrollTop);
+        this.setState({ prevScrollTop: grid.scrollTop });
+        if (endOfScroll) this.onScrollDown();
+        else if (topOfScroll) {
+            this.onScrollUp();
         }
+    }
+
+    onScrollUp() {
+        const firstPost = this.state.posts[0];
+        if (!firstPost) return;
+        this.setState({ loading: true });
+
+        const cb = (posts) => {
+            if (!posts || posts.length === 0) {
+                this.setState({ loading: false });
+                return;
+            }
+
+            // Set galleries from successful response, and unset loading
+            this.setState({
+                posts: posts.concat(this.state.posts),
+                loading: false,
+            });
+        };
+        this.props.loadPosts({ last: firstPost[this.props.paginateBy], direction: 'asc', cb });
+    }
+
+    onScrollDown() {
+        const lastPost = last(this.state.posts);
+        if (!lastPost) return;
+        this.setState({ loading: true });
+
+        const cb = (posts) => {
+            if (!posts || posts.length === 0) {
+                this.setState({ loading: false });
+                return;
+            }
+
+            // Set galleries from successful response, and unset loading
+            this.setState({
+                posts: this.state.posts.concat(posts),
+                loading: false,
+            });
+        };
+        this.props.loadPosts({ last: lastPost[this.props.paginateBy], cb });
     }
 
     onToggleGalleryBulkEdit = () => {
@@ -137,7 +161,7 @@ class PostList extends React.Component {
      * Initial call to populate posts
      */
     loadInitialPosts() {
-        this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
+        this.props.loadPosts({ cb: (posts) => { this.setState({ posts }); } });
     }
 
     /**

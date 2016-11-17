@@ -22,17 +22,14 @@ class PurchasesList extends Component {
         if (this.props.updatePurchases) this.loadPurchases();
     }
 
-	/**
-	 * Loads initial set of purchases
-	 */
+    /**
+     * Loads initial set of purchases
+     */
     loadPurchases = () => {
-        this.props.loadPurchases(null, (purchases) => {
-            // Set posts & callback from successful response
-            this.setState({ purchases });
-        });
+        this.props.loadPurchases({ cb: (purchases) => { this.setState({ purchases }); } });
     }
 
-	// Handle purchases div scroll
+    // Handle purchases div scroll
     scroll(e) {
         if (this.state.loading) return;
 
@@ -42,11 +39,9 @@ class PurchasesList extends Component {
         // Check if already getting purchases because async
         if (bottomReached) {
             this.setState({ loading: true });
-
-            // Pass current offset to getMorePurchases
-            this.props.loadPurchases(last(this.state.purchases).id, (purchases) => {
+            const cb = (purchases) => {
                 // Disables scroll, and returns if purchases are empty
-                if (!purchases || purchases.length == 0) {
+                if (!purchases || purchases.length === 0) {
                     this.setState({ scrollable: false });
                     return;
                 }
@@ -57,7 +52,10 @@ class PurchasesList extends Component {
                     loading: false,
                     purchases: this.state.purchases.concat(purchases),
                 });
-            });
+            };
+
+            // Pass current offset to getMorePurchases
+            this.props.loadPurchases({ last: last(this.state.purchases).id, cb });
         }
     }
 

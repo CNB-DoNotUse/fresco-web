@@ -156,7 +156,7 @@ class Purchases extends React.Component {
      * Requests purchases from server
      * @return {[type]} [description]
      */
-    loadPurchases = (last = null, cb) => {
+    loadPurchases = ({ last = null, cb }) => {
         //Update state for purchase list if needed so it doesn't loop
         if(this.state.updatePurchases){
             this.setState({

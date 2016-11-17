@@ -1,7 +1,11 @@
 import React, { PropTypes } from 'react';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import Purchases from '../purchases/list-with-stats';
 import PostList from '../post/list';
 import Sidebar from './sidebar';
+
+const getFromStorage = createGetFromStorage({ key: 'components/outlet/body' });
+const setInStorage = createSetInStorage({ key: 'components/outlet/body' });
 
 export default class Body extends React.Component {
     static propTypes = {
@@ -18,17 +22,26 @@ export default class Body extends React.Component {
     /**
      * Loads posts using purchases data enpoint
      */
-    loadPosts = (last, cb) => {
-        this.loadPurchases(last, (purchases) => {
-            if (!purchases) {
+    loadPosts = ({ last, direction = 'desc', cb }) => {
+        let firstPurchaseOfPage;
+        if (!last) firstPurchaseOfPage = getFromStorage('firstPurchaseOfPage');
+        const callback = (purchases) => {
+            if (!purchases || !purchases.length) {
                 cb([]);
                 return;
             }
 
+            setInStorage({ firstPurchaseOfPage: purchases[0].id });
+
             const posts = purchases.map(purchase =>
-                Object.assign(purchase.post, { purchase_id: purchase.id }));
+                Object.assign({}, purchase.post, { purchase_id: purchase.id }));
             cb(posts);
-        });
+        };
+        if (!last && firstPurchaseOfPage) {
+            this.loadPurchases({ last: firstPurchaseOfPage, direction, cb: callback });
+        } else {
+            this.loadPurchases({ last, direction, cb: callback });
+        }
     }
 
     /**
@@ -50,15 +63,16 @@ export default class Body extends React.Component {
         });
     }
 
-	/**
-	 * Requests purchases from server
-	 */
-    loadPurchases = (last = null, cb) => {
+    /**
+     * Requests purchases from server
+     */
+    loadPurchases = ({ last = null, direction = 'desc', cb }) => {
         const params = {
             outlet_ids: [this.props.outlet.id],
             limit: 20,
             sortBy: 'created_at',
             last,
+            direction,
         };
 
         $.ajax({
