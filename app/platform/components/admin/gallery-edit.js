@@ -5,6 +5,7 @@ import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import get from 'lodash/get';
 import api from 'app/lib/api';
+import { isImportedGallery } from 'app/lib/models';
 import AutocompleteMap from '../global/autocomplete-map';
 import ExplicitCheckbox from '../global/explicit-checkbox';
 import ChipInput from '../global/chip-input';
@@ -31,9 +32,39 @@ export default class GalleryEdit extends React.Component {
         }
     }
 
-	/**
-	 * Updates state map location when AutocompleteMap gives new location
-	 */
+    getStateFromProps(props) {
+        const { gallery } = props;
+
+        return {
+            assignment: get(gallery, 'assignments[0]'),
+            editButtonsEnabled: false,
+            tags: gallery.tags || [],
+            stories: gallery.stories || [],
+            caption: gallery.caption || 'No Caption',
+            loading: false,
+            external_account_name: gallery.external_account_name,
+            external_source: gallery.external_source,
+            rating: gallery.rating,
+            posts: gallery.posts,
+            is_nsfw: gallery.is_nsfw,
+            owner: gallery.owner,
+            ...this.getInitialLocationData(),
+            bylineDisabled: false,
+        };
+    }
+
+    /**
+     * Reverts all changes
+     */
+    onRevert = () => {
+        if (this.state.loading) return;
+
+        this.setState(this.getStateFromProps(this.props));
+    }
+
+    /**
+     * Updates state map location when AutocompleteMap gives new location
+     */
     onPlaceChange(place) {
         this.setState({ address: place.address, location: place.location });
     }
@@ -50,6 +81,16 @@ export default class GalleryEdit extends React.Component {
                 });
             });
         }
+    }
+
+    onChangeOwner = (res) => {
+        const { gallery } = this.props;
+        this.setState({
+            owner: res[0],
+            bylineDisabled: true,
+            external_account_name: gallery.external_account_name,
+            external_source: gallery.external_source,
+        });
     }
 
 	/**
@@ -142,24 +183,6 @@ export default class GalleryEdit extends React.Component {
         this.setState({ posts });
     }
 
-    getStateFromProps(props) {
-        const { gallery } = props;
-
-        return {
-            assignment: get(gallery, 'assignments[0]'),
-            editButtonsEnabled: false,
-            tags: gallery.tags || [],
-            stories: gallery.stories || [],
-            caption: gallery.caption || 'No Caption',
-            loading: false,
-            external_account_name: gallery.external_account_name,
-            external_source: gallery.external_source,
-            rating: gallery.rating,
-            posts: gallery.posts,
-            ...this.getInitialLocationData(),
-        };
-    }
-
     /**
      * getFormData
      *
@@ -176,6 +199,7 @@ export default class GalleryEdit extends React.Component {
             rating,
             is_nsfw,
             posts,
+            owner,
         } = this.state;
         const { gallery } = this.props;
 
@@ -194,6 +218,7 @@ export default class GalleryEdit extends React.Component {
             external_account_name,
             external_source,
             rating,
+            owner_id: owner ? owner.id : null,
         };
 
         // Make sure our params are valid types and don't have any empty arrays
@@ -245,17 +270,6 @@ export default class GalleryEdit extends React.Component {
         return { location, address };
     }
 
-	/**
-	 * Reverts all changes
-	 */
-    revert() {
-        if (this.state.loading) return;
-
-        this.setState(this.getStateFromProps(this.props));
-        this.refs['gallery-caption'].className =
-            this.refs['gallery-caption'].className.replace(/\bempty\b/, '');
-    }
-
     /**
      * Updates state with new stories
      */
@@ -263,7 +277,7 @@ export default class GalleryEdit extends React.Component {
         this.setState({ stories });
     }
 
-    toggleIsNSFW = () => {
+    onChangeIsNSFW = () => {
         this.setState({ is_nsfw: !this.state.is_nsfw });
     }
 
@@ -288,6 +302,8 @@ export default class GalleryEdit extends React.Component {
             external_source,
             is_nsfw,
             posts,
+            owner,
+            bylineDisabled,
         } = this.state;
 
         if (!gallery) {
@@ -309,17 +325,33 @@ export default class GalleryEdit extends React.Component {
 
                     <EditByline
                         gallery={gallery}
+                        disabled={bylineDisabled}
                         external_account_name={external_account_name}
                         external_source={external_source}
-                        onChangeExtAccountName={(a) =>
+                        onChangeExtAccountName={a =>
                                 this.setState({ external_account_name: a })}
-                        onChangeExtSource={(s) =>
+                        onChangeExtSource={s =>
                                 this.setState({ external_source: s })}
                     />
 
+                    {isImportedGallery(gallery) && (
+                        <ChipInput
+                            model="users"
+                            placeholder="Owner"
+                            queryAttr="full_name"
+                            altAttr="username"
+                            items={owner ? [owner] : []}
+                            updateItems={this.onChangeOwner}
+                            className="dialog-row"
+                            createNew={false}
+                            multiple={false}
+                            search
+                        />
+                    )}
+
                     <textarea
                         type="text"
-                        className="form-control floating-label gallery-caption"
+                        className="form-control floating-label"
                         placeholder="Caption"
                         onChange={(e) => this.handleChangeCaption(e)}
                         value={caption}
@@ -356,7 +388,7 @@ export default class GalleryEdit extends React.Component {
 
                     <ExplicitCheckbox
                         is_nsfw={is_nsfw}
-                        onChange={this.toggleIsNSFW}
+                        onChange={this.onChangeIsNSFW}
                     />
 
                     <AutocompleteMap
@@ -374,7 +406,7 @@ export default class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat"
-                        onClick={() => this.revert()}
+                        onClick={this.onRevert}
                         disabled={loading}
                     >
                         Revert changes

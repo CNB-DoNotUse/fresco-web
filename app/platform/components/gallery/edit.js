@@ -3,6 +3,11 @@ import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import request from 'superagent';
 import api from 'app/lib/api';
+import {
+    isOriginalGallery,
+    isImportedGallery,
+    isSubmittedGallery,
+} from 'app/lib/models';
 import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
@@ -52,13 +57,25 @@ class Edit extends React.Component {
             articles: gallery.articles,
             rating: gallery.rating,
             is_nsfw: gallery.is_nsfw,
-            isOriginalGallery: utils.isOriginalGallery(this.props.gallery),
+            isOriginalGallery: isOriginalGallery(this.props.gallery),
             uploads: [],
             loading: false,
             ...this.getInitialLocationData(),
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
+            owner: gallery.owner,
+            bylineDisabled: false,
         };
+    }
+
+    onChangeOwner = (res) => {
+        const { gallery } = this.props;
+        this.setState({
+            owner: res[0],
+            bylineDisabled: true,
+            external_account_name: gallery.external_account_name,
+            external_source: gallery.external_source,
+        });
     }
 
     onRemove = () => {
@@ -85,7 +102,7 @@ class Edit extends React.Component {
             this.saveGallery(gallery.id, params),
             this.deletePosts(postsToDelete),
         ])
-        .then(res => {
+        .then((res) => {
             if (get(res[0], 'posts_new.length')) {
                 return Promise.all([
                     res[0],
@@ -95,14 +112,14 @@ class Edit extends React.Component {
 
             return res;
         })
-        .then(res => {
+        .then((res) => {
             this.hide();
             this.setState({ uploads: [], loading: false }, () => {
                 $.snackbar({ content: 'Gallery saved!' });
                 onUpdateGallery(Object.assign(res[0], { assignments }));
             });
         })
-        .catch(err => {
+        .catch(() => {
             $.snackbar({ content: 'There was an error saving the gallery!' });
             this.setState({ loading: false });
         });
@@ -220,6 +237,7 @@ class Edit extends React.Component {
             external_source,
             rating,
             is_nsfw,
+            owner,
         } = this.state;
         const { gallery } = this.props;
         const postsFormData = this.getPostsFormData();
@@ -244,6 +262,7 @@ class Edit extends React.Component {
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             rating,
             is_nsfw,
+            owner_id: owner ? owner.id : null,
         };
 
         // Make sure our params are valid types and don't have any empty arrays
@@ -417,7 +436,7 @@ class Edit extends React.Component {
         this.setState({ rating: e.target.checked ? 3 : 2 });
     }
 
-    toggleIsNSFW = () => {
+    onChangeIsNSFW = () => {
         this.setState({ is_nsfw: !this.state.is_nsfw });
     }
 
@@ -448,7 +467,7 @@ class Edit extends React.Component {
         const { gallery } = this.props;
         if (!gallery || !gallery.posts) return null;
 
-        if (utils.isImportedGallery(gallery)) {
+        if (isImportedGallery(gallery)) {
             return (
                 <button
                     type="button"
@@ -467,7 +486,7 @@ class Edit extends React.Component {
     renderMap() {
         const { address, location, isOriginalGallery } = this.state;
         const { gallery } = this.props;
-        const mapDisabled = !isOriginalGallery || utils.isSubmittedGallery(gallery);
+        const mapDisabled = !isOriginalGallery || isSubmittedGallery(gallery);
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
@@ -501,15 +520,18 @@ class Edit extends React.Component {
             isOriginalGallery,
             external_account_name,
             external_source,
+            owner,
+            bylineDisabled,
         } = this.state;
         if (!gallery) return '';
 
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    {isOriginalGallery ? (
+                    {isOriginalGallery && (
                         <EditByline
                             gallery={gallery}
+                            disabled={bylineDisabled}
                             external_source={external_source}
                             external_account_name={external_account_name}
                             onChangeExtAccountName={(a) =>
@@ -519,7 +541,22 @@ class Edit extends React.Component {
                                 this.setState({ external_source: s })
                             }
                         />
-                    ) : ''}
+                    )}
+
+                    {isImportedGallery(gallery) && (
+                        <ChipInput
+                            model="users"
+                            placeholder="Owner"
+                            queryAttr="full_name"
+                            altAttr="username"
+                            items={owner ? [owner] : []}
+                            updateItems={this.onChangeOwner}
+                            className="dialog-row"
+                            createNew={false}
+                            multiple={false}
+                            search
+                        />
+                    )}
 
                     <div className="dialog-row">
                         <textarea
@@ -593,7 +630,7 @@ class Edit extends React.Component {
 
                     <ExplicitCheckbox
                         is_nsfw={is_nsfw}
-                        onChange={this.toggleIsNSFW}
+                        onChange={this.onChangeIsNSFW}
                     />
                 </div>
 
@@ -661,7 +698,7 @@ class Edit extends React.Component {
                     Save
                 </button>
 
-                {isOriginalGallery ? (
+                {isOriginalGallery && (
                     <button
                         type="button"
                         onClick={() =>
@@ -671,7 +708,7 @@ class Edit extends React.Component {
                     >
                         {(gallery.rating < 2) ? 'Verify' : 'Unverify'}
                     </button>
-                ) : null}
+                )}
 
                 <button
                     type="button"

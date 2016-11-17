@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { isImportedGallery } from 'app/lib/models';
 import utils from 'utils';
 
 /**
@@ -19,9 +20,10 @@ class BylineEdit extends React.Component {
             gallery,
             external_account_name,
             external_source,
+            disabled,
         } = this.props;
 
-        if (!utils.isImportedGallery(gallery)) {
+        if (!isImportedGallery(gallery)) {
             return (
                 <div className="dialog-row">
                     <div>
@@ -30,7 +32,7 @@ class BylineEdit extends React.Component {
                             className="form-control floating-label"
                             value={utils.getBylineFromGallery(gallery) || ''}
                             placeholder="Byline"
-                            disabled={true}
+                            disabled
                         />
                     </div>
                 </div>
@@ -46,6 +48,7 @@ class BylineEdit extends React.Component {
                         value={external_account_name || ''}
                         onChange={(e) => onChangeExtAccountName(e.target.value)}
                         placeholder="Name"
+                        disabled={disabled}
                     />
                 </div>
 
@@ -56,6 +59,7 @@ class BylineEdit extends React.Component {
                         value={external_source || ''}
                         onChange={(e) => onChangeExtSource(e.target.value)}
                         placeholder="Affiliation"
+                        disabled={disabled}
                     />
                 </div>
             </div>
@@ -69,11 +73,13 @@ BylineEdit.propTypes = {
     onChangeExtSource: PropTypes.func.isRequired,
     external_account_name: PropTypes.string,
     external_source: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
 BylineEdit.defaultProps = {
     external_source: '',
     external_account_name: '',
+    disabled: false,
 };
 
 export default BylineEdit;

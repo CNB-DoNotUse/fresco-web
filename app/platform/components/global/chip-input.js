@@ -213,7 +213,7 @@ class ChipInput extends React.Component {
         } else if (suggestion[altAttr]) {
             text = (
                 <span className="chips__primary-text" >
-                    suggestion[altAttr]
+                    {suggestion[altAttr]}
                 </span>
             );
         }
