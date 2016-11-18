@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import reverse from 'lodash/reverse';
 import Purchases from '../purchases/list-with-stats';
 import PostList from '../post/list';
 import Sidebar from './sidebar';
@@ -23,22 +24,22 @@ export default class Body extends React.Component {
      * Loads posts using purchases data enpoint
      */
     loadPosts = ({ last, direction = 'desc', cb }) => {
-        let firstPurchaseOfPage;
-        if (!last) firstPurchaseOfPage = getFromStorage('firstPurchaseOfPage');
+        let lastPurchaseOfPage;
+        if (!last) lastPurchaseOfPage = getFromStorage('lastPurchaseOfPage');
         const callback = (purchases) => {
             if (!purchases || !purchases.length) {
                 cb([]);
                 return;
             }
 
-            setInStorage({ firstPurchaseOfPage: purchases[0].id });
+            setInStorage({ lastPurchaseOfPage: purchases[purchases.length - 1].id });
 
             const posts = purchases.map(purchase =>
                 Object.assign({}, purchase.post, { purchase_id: purchase.id }));
             cb(posts);
         };
-        if (!last && firstPurchaseOfPage) {
-            this.loadPurchases({ last: firstPurchaseOfPage, direction, cb: callback });
+        if (!last && lastPurchaseOfPage) {
+            this.loadPurchases({ last: lastPurchaseOfPage, direction: 'asc', cb: callback });
         } else {
             this.loadPurchases({ last, direction, cb: callback });
         }
@@ -80,7 +81,10 @@ export default class Body extends React.Component {
             type: 'GET',
             data: $.param(params),
         })
-        .done(cb)
+        .done((res) => {
+            if (direction === 'asc') cb(reverse(res));
+            else cb(res);
+        })
         .fail(() => {
             $.snackbar({ content: 'There was an error receiving purchases!' });
             cb([]);

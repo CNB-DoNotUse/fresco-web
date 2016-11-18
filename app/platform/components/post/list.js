@@ -115,12 +115,18 @@ class PostList extends React.Component {
                 return;
             }
 
+
+            this.previousScrollHeightMinusTop = this.grid.scrollHeight - this.grid.scrollTop;
+
             // Set galleries from successful response, and unset loading
             this.setState({
                 posts: posts.concat(this.state.posts),
                 loading: false,
+            }, () => {
+                this.grid.scrollTop = this.grid.scrollHeight - this.previousScrollHeightMinusTop;
             });
         };
+
         this.props.loadPosts({ last: firstPost[this.props.paginateBy], direction: 'asc', cb });
     }
 
@@ -141,6 +147,7 @@ class PostList extends React.Component {
                 loading: false,
             });
         };
+
         this.props.loadPosts({ last: lastPost[this.props.paginateBy], cb });
     }
 
