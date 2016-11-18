@@ -2,11 +2,15 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import get from 'lodash/get';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/gallery/sidebar';
 import Edit from './../components/gallery/edit';
 import App from './app';
+
+const getFromStorage = createGetFromStorage({ key: 'galleryDetail' });
+const setInStorage = createSetInStorage({ key: 'galleryDetail' });
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
@@ -26,10 +30,15 @@ class GalleryDetail extends React.Component {
         editToggled: false,
         gallery: this.props.gallery,
         title: this.props.title,
-        verifiedToggled: true,
+        verifiedToggle: getFromStorage('verifiedToggle', true),
     };
 
-	/**
+    onVerifiedToggled = (verifiedToggle) => {
+        this.setState({ verifiedToggle });
+        setInStorage({ verifiedToggle });
+    }
+
+    /**
      * Updates gallery in state
      */
     onUpdateGallery(gallery) {
@@ -41,10 +50,10 @@ class GalleryDetail extends React.Component {
     }
 
     getPostsFromGallery() {
-        const { gallery, verifiedToggled } = this.state;
+        const { gallery, verifiedToggle } = this.state;
         if (!get(gallery, 'posts.length')) return [];
 
-        if (verifiedToggled) return gallery.posts.filter(p => p.rating >= 2);
+        if (verifiedToggle) return gallery.posts.filter(p => p.rating >= 2);
 
         return gallery.posts;
     }
@@ -72,6 +81,7 @@ class GalleryDetail extends React.Component {
             title,
             updatePosts,
             editToggled,
+            verifiedToggle,
         } = this.state;
 
         return (
@@ -81,7 +91,8 @@ class GalleryDetail extends React.Component {
                     editable={user.permissions.includes('update-other-content')}
                     permissions={user.permissions}
                     edit={() => this.toggleEdit()}
-                    onVerifiedToggled={(b) => this.setState({ verifiedToggled: b })}
+                    onVerifiedToggled={this.onVerifiedToggled}
+                    defaultVerified={verifiedToggle}
                     verifiedToggle
                     timeToggle
                 />

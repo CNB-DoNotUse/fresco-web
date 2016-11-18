@@ -1,10 +1,14 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 import last from 'lodash/last';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import PostCell from './cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
 import GalleryCreate from '../gallery/create';
+
+const getFromStorage = createGetFromStorage({ key: 'components/post/list' });
+const setInStorage = createSetInStorage({ key: 'components/post/list' });
 
 /**
  * Post List Parent Object
@@ -19,7 +23,7 @@ class PostList extends React.Component {
             posts: props.posts || [],
             loading: false,
             scrollable: props.scrollable,
-            selectedPosts: [],
+            selectedPosts: getFromStorage('selectedPosts', []),
             galleryCreateToggled: false,
             galleryBulkEditToggled: false,
         };
@@ -136,7 +140,6 @@ class PostList extends React.Component {
         this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
     }
 
-
     /**
      * Sorts posts based on the current field in props
      * @return {array} An array of posts now sorted
@@ -159,22 +162,27 @@ class PostList extends React.Component {
         // Check if `not` CM
         if (!permissions.includes('update-other-content')) return;
 
-        // Make sure we haven't reached the limit
-        if (selectedPosts.length >= utils.limits.galleryItems) {
-            $.snackbar({ content: 'Galleries can only contain up to 10 items!' });
-            return;
-        }
-
         // Filter out anything, but ones that equal the passed post
         // Post not found, so add
-        if (!selectedPosts.some((s) => s.id === passedPost.id)) {
-            this.setState({ selectedPosts: selectedPosts.concat(passedPost) });
+        let newSelected = [];
+        if (!selectedPosts.some(s => s.id === passedPost.id)) {
+            // Make sure we haven't reached the limit
+            if (selectedPosts.length >= utils.limits.galleryItems) {
+                $.snackbar({ content: `Galleries can only contain up to ${utils.limits.galleryItems} items!` });
+                return;
+            }
+            newSelected = selectedPosts.concat(passedPost);
         } else {
             // No post found
-            this.setState({
-                selectedPosts: selectedPosts.filter((post) => post.id !== passedPost.id),
-            });
+            newSelected = selectedPosts.filter(post => post.id !== passedPost.id);
         }
+
+        this.setSelectedPosts(newSelected);
+    }
+
+    setSelectedPosts = (newSelected) => {
+        this.setState({ selectedPosts: newSelected });
+        setInStorage({ selectedPosts: newSelected });
     }
 
     renderPosts() {
@@ -231,29 +239,29 @@ class PostList extends React.Component {
                 >
                     {this.renderPosts()}
 
-                    {selectedPosts && selectedPosts.length > 1 ?
+                    {(selectedPosts && selectedPosts.length > 1) && (
                         <GalleryBulkSelect
                             posts={selectedPosts}
-                            setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
+                            setSelectedPosts={this.setSelectedPosts}
                             onToggleEdit={this.onToggleGalleryBulkEdit}
                             onToggleCreate={this.onToggleGalleryCreate}
                         />
-                    : ''}
+                    )}
 
-                    {galleryBulkEditToggled ?
+                    {galleryBulkEditToggled && (
                         <GalleryBulkEdit
                             posts={selectedPosts}
                             onHide={this.onToggleGalleryBulkEdit}
                         />
-                    : ''}
+                    )}
 
-                    {galleryCreateToggled ?
+                    {galleryCreateToggled && (
                         <GalleryCreate
                             posts={selectedPosts}
-                            setSelectedPosts={(p) => this.setState({ selectedPosts: p })}
+                            setSelectedPosts={this.setSelectedPosts}
                             onHide={this.onToggleGalleryCreate}
                         />
-                    : ''}
+                    )}
                 </div>
             </div>
         );

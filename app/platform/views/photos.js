@@ -2,9 +2,13 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import App from './app';
-import PostList from './../components/post/list.js';
+import PostList from './../components/post/list';
 import TopBar from './../components/topbar';
+
+const getFromStorage = createGetFromStorage({ key: 'views/photos' });
+const setInStorage = createSetInStorage({ key: 'views/photos' });
 
 /**
  * Photos Parent Object (composed of PhotoList and Navbar)
@@ -15,16 +19,18 @@ class Photos extends React.Component {
     };
 
     state = {
-        showVerified: true,
-        sortBy: this.props.sortBy || 'created_at',
+        verifiedToggle: getFromStorage('verifiedToggle', true),
+        sortBy: getFromStorage('sortBy', 'created_at'),
     };
 
     onVerifiedToggled = (toggled) => {
-        this.setState({ showVerified: toggled });
+        this.setState({ verifiedToggle: toggled });
+        setInStorage({ verifiedToggle: toggled });
     }
 
-    updateSort = (sortBy) => {
+    onChronToggled = (sortBy) => {
         this.setState({ sortBy });
+        setInStorage({ sortBy });
     }
 
 	// Returns array of posts with last and callback, used in child PostList
@@ -37,7 +43,7 @@ class Photos extends React.Component {
             rating: [0, 1, 2],
         };
 
-        if (this.state.showVerified) {
+        if (this.state.verifiedToggle) {
             params.rating = 2;
         }
 
@@ -52,15 +58,17 @@ class Photos extends React.Component {
 
     render() {
         const { user } = this.props;
-        const { sortBy, showVerified } = this.state;
+        const { sortBy, verifiedToggle } = this.state;
 
         return (
             <App user={user}>
                 <TopBar
                     title="Photos"
                     permissions={user.permissions}
-                    updateSort={this.updateSort}
+                    onChronToggled={this.onChronToggled}
                     onVerifiedToggled={this.onVerifiedToggled}
+                    defaultVerified={verifiedToggle}
+                    defaultChron={sortBy}
                     chronToggle
                     timeToggle
                     verifiedToggle
@@ -69,7 +77,7 @@ class Photos extends React.Component {
                     permissions={user.permissions}
                     size="small"
                     sortBy={sortBy}
-                    onlyVerified={showVerified}
+                    onlyVerified={verifiedToggle}
                     loadPosts={this.loadPosts}
                     scrollable
                 />

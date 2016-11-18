@@ -1,20 +1,42 @@
 // Session storage helper fns
 
-export const getFromStorage = (storageKey) => (key) => {
-    if (localStorage.getItem(storageKey)) {
-        const data = JSON.parse(localStorage.getItem(storageKey));
-        return data[key];
+export const createGetFromStorage = ({ type = 'session', key }) => (dataKey, unfound = null) => {
+    if (type === 'session') {
+        if (sessionStorage.getItem(key)) {
+            const data = JSON.parse(sessionStorage.getItem(key));
+            return data[dataKey];
+        }
     }
 
-    return null;
+    if (type === 'local') {
+        if (localStorage.getItem(key)) {
+            const data = JSON.parse(localStorage.getItem(key));
+            return data[dataKey];
+        }
+    }
+
+    return unfound;
 };
 
-export const setInStorage = (storageKey) => (data) => {
+export const createSetInStorage = ({ type = 'session', key }) => (data) => {
     let curData = {};
-    if (localStorage.getItem(storageKey)) {
-        curData = JSON.parse(localStorage.getItem(storageKey));
+
+    if (type === 'session') {
+        if (sessionStorage.getItem(key)) {
+            curData = JSON.parse(sessionStorage.getItem(key));
+        }
+
+        const newData = JSON.stringify(Object.assign(curData, data));
+        sessionStorage.setItem(key, newData);
     }
 
-    const newData = JSON.stringify(Object.assign(curData, data));
-    localStorage.setItem(storageKey, newData);
-}
+    if (type === 'local') {
+        if (localStorage.getItem(key)) {
+            curData = JSON.parse(localStorage.getItem(key));
+        }
+
+        const newData = JSON.stringify(Object.assign(curData, data));
+        localStorage.setItem(key, newData);
+    }
+};
+

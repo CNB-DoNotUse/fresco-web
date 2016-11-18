@@ -2,23 +2,32 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import 'app/sass/platform/_assignment';
 import 'app/sass/platform/_posts';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/assignment/sidebar';
-import Edit from './../components/assignment/edit.js';
+import Edit from './../components/assignment/edit';
 import App from './app';
+
+const getFromStorage = createGetFromStorage({ key: 'assignmentDetail' });
+const setInStorage = createSetInStorage({ key: 'assignmentDetail' });
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
  */
 class AssignmentDetail extends React.Component {
+    static propTypes = {
+        user: PropTypes.object,
+        assignment: PropTypes.object,
+    };
+
     state = {
         assignment: this.props.assignment,
         editToggled: false,
-        verifiedToggle: true,
-        sortBy: 'created_at',
+        verifiedToggle: getFromStorage('verifiedToggle', true),
+        sortBy: getFromStorage('sortBy', 'created_at'),
         loading: false,
     };
 
@@ -30,12 +39,14 @@ class AssignmentDetail extends React.Component {
         }, 5000);
     }
 
-    onVerifiedToggled(verifiedToggle) {
+    onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
+        setInStorage({ verifiedToggle });
     }
 
-    updateSort(sortBy) {
+    onChronToggled = (sortBy) => {
         this.setState({ sortBy });
+        setInStorage({ sortBy });
     }
 
     fetchAssignment() {
@@ -156,9 +167,11 @@ class AssignmentDetail extends React.Component {
                 <TopBar
                     title={assignment.title}
                     permissions={user.permissions}
-                    onVerifiedToggled={t => this.onVerifiedToggled(t)}
-                    updateSort={s => this.updateSort(s)}
                     edit={() => this.toggleEdit()}
+                    onVerifiedToggled={this.onVerifiedToggled}
+                    defaultVerified={verifiedToggle}
+                    onChronToggled={this.onChronToggled}
+                    defaultChron={sortBy}
                     editable
                     timeToggle
                     chronToggle
@@ -197,11 +210,6 @@ class AssignmentDetail extends React.Component {
         );
     }
 }
-
-AssignmentDetail.propTypes = {
-    user: PropTypes.object,
-    assignment: PropTypes.object,
-};
 
 ReactDOM.render(
     <AssignmentDetail

@@ -10,15 +10,37 @@ import ChipInput from '../global/chip-input';
  * Bulk Edit Parent Object
  */
 class BulkEdit extends React.Component {
-    constructor(props) {
-        super(props);
+    state = { loading: false };
 
-        this.state = { loading: false };
+    static propTypes = {
+        posts: PropTypes.array.isRequired,
+        onHide: PropTypes.func.isRequired,
+    };
+
+    static defaultProps = {
+        posts: [],
+    };
+
+    componentWillMount() {
+        this.getStateFromProps(this.props);
     }
 
     componentDidMount() {
         $.material.init();
-        this.getStateFromProps(this.props);
+    }
+
+    getStateFromProps(props) {
+        const galleryIds = uniq(props.posts.map(p => p.parent_id)).filter(id => !!id);
+        let galleries;
+
+        $.ajax({
+            url: `/api/gallery/${galleryIds.join(',')}`,
+        })
+        .then((res) => {
+            if (Array.isArray(res)) galleries = res;
+            else galleries = [res];
+        })
+        .then(() => this.setState(this.getStateFromGalleries(galleries)));
     }
 
     /**
@@ -36,20 +58,6 @@ class BulkEdit extends React.Component {
      */
     onScroll = (e) => {
         e.stopPropagation();
-    }
-
-    getStateFromProps(props) {
-        const galleryIds = uniq(props.posts.map(p => p.parent_id)).filter(id => !!id);
-        let galleries;
-
-        $.ajax({
-            url: `/api/gallery/${galleryIds.join(',')}`,
-        })
-        .then((res) => {
-            if (Array.isArray(res)) galleries = res;
-            else galleries = [res];
-        })
-        .then(() => this.setState(this.getStateFromGalleries(galleries)));
     }
 
     getStateFromGalleries(galleries) {
@@ -118,14 +126,14 @@ class BulkEdit extends React.Component {
                             className="form-control floating-label"
                             placeholder="Caption"
                             value={caption}
-                            onChange={(e) => this.setState({ caption: e.target.value })}
+                            onChange={e => this.setState({ caption: e.target.value })}
                         />
                     </div>
 
                     <ChipInput
                         model="tags"
                         items={tags}
-                        updateItems={(t) => this.setState({ tags: t })}
+                        updateItems={t => this.setState({ tags: t })}
                         autocomplete={false}
                     />
 
@@ -139,11 +147,13 @@ class BulkEdit extends React.Component {
                     />
                 </div>
 
-                <EditPosts
-                    className="dialog-col col-xs-12 col-md-5"
-                    canDelete={false}
-                    originalPosts={posts}
-                />
+                {posts && (
+                    <EditPosts
+                        className="dialog-col col-xs-12 col-md-5"
+                        canDelete={false}
+                        originalPosts={posts}
+                    />
+                )}
             </div>
         );
     }
@@ -212,15 +222,6 @@ class BulkEdit extends React.Component {
         );
     }
 }
-
-BulkEdit.propTypes = {
-    posts: PropTypes.array.isRequired,
-    onHide: PropTypes.func.isRequired,
-};
-
-BulkEdit.defaultProps = {
-    posts: [],
-};
 
 export default BulkEdit;
 

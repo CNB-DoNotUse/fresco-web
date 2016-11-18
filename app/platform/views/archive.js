@@ -2,9 +2,13 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import App from './app';
 import PostList from './../components/post/list';
 import TopBar from './../components/topbar';
+
+const getFromStorage = createGetFromStorage({ key: 'views/archive' });
+const setInStorage = createSetInStorage({ key: 'views/archive' });
 
 /**
  * Archive Parent Object (composed of PostList and Navbar)
@@ -12,21 +16,26 @@ import TopBar from './../components/topbar';
  */
 class Archive extends React.Component {
     static propTypes = {
-        sortBy: PropTypes.string,
         title: PropTypes.string,
         user: PropTypes.object,
     };
 
     state = {
-        verifiedToggle: true,
-        sortBy: this.props.sortBy || 'created_at',
+        verifiedToggle: getFromStorage('verifiedToggle', true),
+        sortBy: getFromStorage('sortBy', 'created_at'),
     };
 
-    onVerifiedToggled = (toggled) => {
-        this.setState({ verifiedToggle: toggled });
+    onVerifiedToggled = (verifiedToggle) => {
+        this.setState({ verifiedToggle });
+        setInStorage({ verifiedToggle });
     }
 
-	// Returns array of posts with last and callback, used in child PostList
+    onChronToggled = (sortBy) => {
+        this.setState({ sortBy });
+        setInStorage({ sortBy });
+    }
+
+    // Returns array of posts with last and callback, used in child PostList
     loadPosts = (last, callback) => {
         const params = {
             last,
@@ -48,18 +57,18 @@ class Archive extends React.Component {
         });
     }
 
-    updateSort = (sortBy) => {
-        this.setState({ sortBy });
-    }
-
     render() {
+        const { verifiedToggle, sortBy } = this.state;
+        const { user, title } = this.props;
         return (
-            <App user={this.props.user}>
+            <App user={user}>
                 <TopBar
-                    title={this.props.title}
-                    updateSort={this.updateSort}
-                    permissions={this.props.user.permissions}
+                    title={title}
+                    permissions={user.permissions}
                     onVerifiedToggled={this.onVerifiedToggled}
+                    defaultVerified={verifiedToggle}
+                    onChronToggled={this.onChronToggled}
+                    defaultChron={sortBy}
                     chronToggle
                     timeToggle
                     verifiedToggle
@@ -67,10 +76,10 @@ class Archive extends React.Component {
 
                 <PostList
                     loadPosts={this.loadPosts}
-                    permissions={this.props.user.permissions}
-                    sortBy={this.state.sortBy}
+                    permissions={user.permissions}
+                    sortBy={sortBy}
                     size="small"
-                    onlyVerified={this.state.verifiedToggle}
+                    onlyVerified={verifiedToggle}
                     scrollable
                 />
             </App>
