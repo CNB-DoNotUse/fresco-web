@@ -31,6 +31,12 @@ class Purchases extends React.Component {
         outletStatsTime: 'today so far',
     };
 
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.activeTab === 'Summary' && prevState.activeTab !== 'Summary') {
+            $.material.init();
+        }
+    }
+
     findOutlets = (q) => {
         if (q.length === 0) {
             this.setState({ availableOutlets: [] });
@@ -204,13 +210,6 @@ class Purchases extends React.Component {
         window.open(url, '_blank');
     }
 
-    getTabStyle(tab) {
-        if (this.state.activeTab === tab) {
-            return { display: 'block' };
-        }
-        return { display: 'none' };
-    }
-
     render() {
         const {
             outlets,
@@ -221,6 +220,12 @@ class Purchases extends React.Component {
             outletStatsTime,
             updatePurchases,
         } = this.state;
+
+
+        const getTabStyle = (tab) => {
+            if (activeTab === tab) return { display: 'block' };
+            return { display: 'none' };
+        };
 
         return (
             <App user={this.props.user}>
@@ -275,7 +280,7 @@ class Purchases extends React.Component {
                     }
                 </TopBar>
 
-                <div style={this.getTabStyle('Summary')}>
+                <div style={getTabStyle('Summary')}>
                     <ListWithStats
                         updatePurchases={updatePurchases}
                         downloadExports={this.downloadExports}
@@ -285,7 +290,7 @@ class Purchases extends React.Component {
                 </div>
 
                 <Outlets
-                    style={this.getTabStyle('Outlets')}
+                    style={getTabStyle('Outlets')}
                     loadData={activeTab === 'Outlets'}
                     outletIds={this.state.outlets.map(o => o.id)}
                     statsTime={this.state.outletStatsTime}
