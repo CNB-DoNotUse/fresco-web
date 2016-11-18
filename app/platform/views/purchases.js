@@ -214,11 +214,11 @@ class Purchases extends React.Component {
         const {
             outlets,
             users,
-            searchOutlets,
-            searchUsers,
             activeTab,
             outletStatsTime,
             updatePurchases,
+            availableOutlets,
+            availableUsers,
         } = this.state;
 
 
@@ -232,13 +232,13 @@ class Purchases extends React.Component {
                 <TopBar
                     title="Purchases"
                     tabs={['Summary', 'Outlets']}
-                    setActiveTab={(t) => this.setState({ activeTab: t })}
+                    setActiveTab={t => this.setState({ activeTab: t })}
                     activeTab={activeTab}
                 >
                     <TagFilter
                         text="Outlets"
-                        tagList={this.state.availableOutlets}
-                        filterList={this.state.outlets}
+                        tagList={availableOutlets}
+                        filterList={outlets}
                         onTagInput={this.findOutlets}
                         onTagAdd={this.addOutlet}
                         onTagRemove={this.removeOutlet}
@@ -249,8 +249,8 @@ class Purchases extends React.Component {
                     {(activeTab === 'Summary') &&
                         <TagFilter
                             text="Users"
-                            tagList={this.state.availableUsers}
-                            filterList={this.state.users}
+                            tagList={availableUsers}
+                            filterList={users}
                             onTagInput={this.findUsers}
                             onTagAdd={this.addUser}
                             onTagRemove={this.removeUser}
@@ -292,7 +292,7 @@ class Purchases extends React.Component {
                 <Outlets
                     style={getTabStyle('Outlets')}
                     loadData={activeTab === 'Outlets'}
-                    outletIds={this.state.outlets.map(o => o.id)}
+                    outletIds={outlets.map(o => o.id)}
                     statsTime={this.state.outletStatsTime}
                 />
             </App>
