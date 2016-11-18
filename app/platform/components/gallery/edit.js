@@ -64,15 +64,15 @@ class Edit extends React.Component {
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
             owner: gallery.owner,
-            bylineDisabled: false,
+            bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
         };
     }
 
-    onChangeOwner = (res) => {
+    onChangeOwner = (owner) => {
         const { gallery } = this.props;
         this.setState({
-            owner: res[0],
-            bylineDisabled: true,
+            owner,
+            bylineDisabled: !!owner,
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
         });
@@ -269,7 +269,8 @@ class Edit extends React.Component {
         // Special exception if the param is a `bool`
         params = pickBy(params, (v, k) => {
             if (gallery[k] === v) return false;
-            return (typeof v === 'boolean' || !!v) && (Array.isArray(v) ? v.length : true);
+            if (['posts_new'].includes(k) && !v) return false;
+            return Array.isArray(v) ? v.length : true;
         });
 
         return params;
@@ -486,16 +487,16 @@ class Edit extends React.Component {
     renderMap() {
         const { address, location, isOriginalGallery } = this.state;
         const { gallery } = this.props;
-        const mapDisabled = !isOriginalGallery || isSubmittedGallery(gallery);
+        const mapDisabled = !isImportedGallery(gallery) && (!isOriginalGallery || isSubmittedGallery(gallery));
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
                 <AutocompleteMap
                     address={address}
                     location={location}
-                    onPlaceChange={(place) => this.onPlaceChange(place)}
-                    onMapDataChange={(data) => this.onMapDataChange(data)}
-                    onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
+                    onPlaceChange={place => this.onPlaceChange(place)}
+                    onMapDataChange={data => this.onMapDataChange(data)}
+                    onRadiusUpdate={r => this.onRadiusUpdate(r)}
                     hasRadius={false}
                     disabled={mapDisabled}
                     draggable={!mapDisabled}
@@ -550,7 +551,7 @@ class Edit extends React.Component {
                             queryAttr="full_name"
                             altAttr="username"
                             items={owner ? [owner] : []}
-                            updateItems={this.onChangeOwner}
+                            updateItems={res => this.onChangeOwner(res[0])}
                             className="dialog-row"
                             createNew={false}
                             multiple={false}
