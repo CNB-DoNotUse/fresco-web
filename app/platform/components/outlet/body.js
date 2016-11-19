@@ -25,8 +25,14 @@ export default class Body extends React.Component {
                 return;
             }
 
-            const posts = purchases.map(purchase =>
-                Object.assign(purchase.post, { purchase_id: purchase.id }));
+            const posts = [];
+
+            for (let i = 0; i < purchases.length; i++) {
+                if(purchases[i].post) {
+                    posts.push(Object.assign(purchases[i].post, { purchase_id: purchases[i].id }));
+                }
+            }
+
             cb(posts);
         });
     }
