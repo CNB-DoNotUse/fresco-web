@@ -95,7 +95,7 @@ class Sidebar extends React.Component {
                     <div className="map-group">
                         <GMap
                             location={assignment.location}
-                            radius={assignment.radius}
+                            radius={Math.round(utils.milesToFeet(assignment.radius))}
                         />
                     </div>
                 </div>
