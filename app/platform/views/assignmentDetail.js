@@ -72,13 +72,13 @@ class AssignmentDetail extends React.Component {
             last,
             rating: verifiedToggle ? 2 : [1, 2],
         };
-        const markerImageUrl = (isVideo, active) => {
+        const markerImageUrl = (isVideo, purchased) => {
             if (isVideo) {
-                if (active) return '/images/video-marker-active.png';
+                if (purchased) return '/images/video-marker-active.png';
                 return '/images/video-marker.png';
             }
 
-            if (active) return '/images/photo-marker-active.png';
+            if (purchased) return '/images/photo-marker-active.png';
             return '/images/photo-marker.png';
         };
 
@@ -89,7 +89,7 @@ class AssignmentDetail extends React.Component {
             const mapPostsMarkers = res.map(p => ({
                 id: p.id,
                 location: p.location,
-                iconUrl: markerImageUrl(!!p.stream, false),
+                iconUrl: markerImageUrl(!!p.stream, p.purchased),
             }));
 
             this.setState({ mapPostsMarkers });
