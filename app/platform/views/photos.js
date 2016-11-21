@@ -42,7 +42,7 @@ class Photos extends React.Component {
 
         api
         .get('post/list', params)
-        .then(res => { callback(res); })
+        .then(callback)
         .catch(() => {
             $.snackbar({ content: 'Failed to load posts' });
             callback([]);
