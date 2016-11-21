@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 import moment from 'moment';
+import GMap from 'app/platform/components/global/gmap';
 
 /**
  * Sidebar Component
@@ -82,11 +83,20 @@ class Sidebar extends React.Component {
                             {assignment.caption || 'No Description'}
                         </div>
 
-                        {moment().diff(assignment.ends_at) < 1 ?
+                        {moment().diff(assignment.ends_at) < 1 && (
                             <div className="meta-user">{expireButton}</div>
-                        : ''}
+                        )}
 
                         {this.renderStats()}
+                    </div>
+                </div>
+
+                <div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+                    <div className="map-group">
+                        <GMap
+                            location={assignment.location}
+                            radius={assignment.radius}
+                        />
                     </div>
                 </div>
             </div>

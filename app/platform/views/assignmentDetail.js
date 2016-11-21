@@ -5,10 +5,10 @@ import api from 'app/lib/api';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import 'app/sass/platform/_assignment';
 import 'app/sass/platform/_posts';
-import TopBar from './../components/topbar';
-import PostList from './../components/post/list';
-import Sidebar from './../components/assignment/sidebar';
-import Edit from './../components/assignment/edit';
+import TopBar from '../components/topbar';
+import PostList from '../components/post/list';
+import Sidebar from '../components/assignment/sidebar';
+import Edit from '../components/assignment/edit';
 import App from './app';
 
 /**
