@@ -5,7 +5,7 @@ import find from 'lodash/find';
 import map from 'lodash/map';
 import differenceBy from 'lodash/differenceBy';
 import api from 'app/lib/api';
-import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import { getFromLocalStorage, setInLocalStorage } from 'app/lib/storage';
 import 'app/sass/platform/_purchases.scss';
 import App from './app';
 import TopBar from '../components/topbar';
@@ -14,15 +14,12 @@ import Outlets from '../components/purchases/outlets';
 import TagFilter from '../components/topbar/tag-filter';
 import Dropdown from '../components/global/dropdown';
 
-const getFromStorage = createGetFromStorage({ type: 'local', key: 'purchases' });
-const setInStorage = createSetInStorage({ type: 'local', key: 'purchases' });
-
 /**
  * Admin Purchases page
  */
 class Purchases extends React.Component {
     state = {
-        outlets: getFromStorage('outlets') || [],
+        outlets: getFromLocalStorage('views/purchases', 'outlets', []),
         users: [],
         availableOutlets: [],
         availableUsers: [],
@@ -45,7 +42,7 @@ class Purchases extends React.Component {
 
             api
             .get('search', params)
-            .then(res => {
+            .then((res) => {
                 this.setState({ availableOutlets:
                     differenceBy(res.outlets.results, this.state.outlets, 'id') });
             })
@@ -105,7 +102,7 @@ class Purchases extends React.Component {
                 availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
                 updatePurchases: true
             }, () => {
-                setInStorage({ outlets: this.state.outlets });
+                setInLocalStorage('views/purchases', { outlets: this.state.outlets });
             });
         }
     }
@@ -140,7 +137,7 @@ class Purchases extends React.Component {
             availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}),
             updatePurchases: true,
         }, () => {
-            setInStorage({ outlets: this.state.outlets });
+            setInLocalStorage('views/purchases', { outlets: this.state.outlets });
         });
     }
 

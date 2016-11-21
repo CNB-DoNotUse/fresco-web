@@ -2,15 +2,12 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import get from 'lodash/get';
-import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/gallery/sidebar';
 import Edit from './../components/gallery/edit';
 import App from './app';
-
-const getFromStorage = createGetFromStorage({ key: 'galleryDetail' });
-const setInStorage = createSetInStorage({ key: 'galleryDetail' });
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
@@ -30,12 +27,12 @@ class GalleryDetail extends React.Component {
         editToggled: false,
         gallery: this.props.gallery,
         title: this.props.title,
-        verifiedToggle: getFromStorage('verifiedToggle', true),
+        verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
     };
 
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
-        setInStorage({ verifiedToggle });
+        setInSessionStorage('topbar', { verifiedToggle });
     }
 
     /**

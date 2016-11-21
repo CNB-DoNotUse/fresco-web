@@ -1,15 +1,12 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
-import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import App from './app';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/story/sidebar';
 import Edit from './../components/story/edit';
-
-const getFromStorage = createGetFromStorage({ key: 'storyDetail' });
-const setInStorage = createSetInStorage({ key: 'storyDetail' });
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
@@ -19,12 +16,12 @@ class StoryDetail extends React.Component {
         loading: false,
         editToggled: false,
         story: this.props.story,
-        sortBy: getFromStorage('sortBy', 'created_at'),
+        sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
     };
 
     onChronToggled = (sortBy) => {
         this.setState({ sortBy });
-        setInStorage({ sortBy });
+        setInSessionStorage('topbar', { sortBy });
     }
 
     toggleStoryEdit() {

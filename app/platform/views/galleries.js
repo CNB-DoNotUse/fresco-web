@@ -1,12 +1,10 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import App from './app';
 import GalleryList from './../components/global/gallery-list';
 import TopBar from './../components/topbar';
 
-const getFromStorage = createGetFromStorage({ key: 'galleries' });
-const setInStorage = createSetInStorage({ key: 'galleries' });
 
 /**
  * Galleries Parent Cmp (composed of GalleryList and Navbar)
@@ -16,11 +14,13 @@ class Galleries extends React.Component {
         user: PropTypes.object,
     };
 
-    state = { verifiedToggle: getFromStorage('verifiedToggle', true) };
+    state = {
+        verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
+    };
 
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
-        setInStorage({ verifiedToggle });
+        setInSessionStorage('topbar', { verifiedToggle });
     }
 
     render() {

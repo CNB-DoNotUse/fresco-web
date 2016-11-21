@@ -1,27 +1,24 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import api from 'app/lib/api';
-import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import App from './app';
 import Sidebar from './../components/user/sidebar';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import '../../sass/platform/user.scss';
 
-const getFromStorage = createGetFromStorage({ key: 'userDetail' });
-const setInStorage = createSetInStorage({ key: 'userDetail' });
-
 /**
  * User Detail Parent Object, made of a user side column and PostList
  */
 class UserDetail extends React.Component {
     state = {
-        verifiedToggle: getFromStorage('verifiedToggle', true),
+        verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
     };
 
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
-        setInStorage({ verifiedToggle });
+        setInSessionStorage('topbar', { verifiedToggle });
     }
 
     edit() {
