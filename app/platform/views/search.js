@@ -6,12 +6,16 @@ import clone from 'lodash/clone';
 import last from 'lodash/last';
 import pick from 'lodash/pick';
 import pull from 'lodash/pull';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import App from './app';
 import TopBar from './../components/topbar';
 import LocationDropdown from '../components/topbar/location-dropdown';
 import TagFilter from '../components/topbar/tag-filter';
 import SearchSidebar from './../components/search/sidebar';
-import PostList from './../components/post/list.js';
+import PostList from './../components/post/list';
+
+const getFromStorage = createGetFromStorage({ key: 'search' });
+const setInStorage = createSetInStorage({ key: 'search' });
 
 class Search extends Component {
 
@@ -25,7 +29,7 @@ class Search extends Component {
             location: this.props.location,
             stories: [],
             title: this.getTitle(true),
-            verifiedToggle: true,
+            verifiedToggle: getFromStorage('verifiedToggle', true),
             currentPostParams: {},
             tags: this.props.tags,
             purchases: this.props.purchases,
@@ -188,10 +192,9 @@ class Search extends Component {
     /**
      * Verified toggle state bind
      */
-    onVerifiedToggled(toggled) {
-        this.setState({
-            verifiedToggle: toggled
-        });
+    onVerifiedToggled(verifiedToggle) {
+        this.setState({ verifiedToggle });
+        setInStorage({ verifiedToggle });
     }
 
     /**
@@ -438,10 +441,13 @@ class Search extends Component {
             >
                 <TopBar
                     title={this.state.title}
-                    timeToggle={true}
-                    verifiedToggle={true}
                     permissions={this.props.user.permissions}
-                    onVerifiedToggled={this.onVerifiedToggled}>
+                    onVerifiedToggled={this.onVerifiedToggled}
+                    defaultVerified={this.state.verifiedToggle}
+                    verifiedToggle
+                    timeToggle
+                >
+
 
                     <TagFilter
                         onTagAdd={this.addTag}

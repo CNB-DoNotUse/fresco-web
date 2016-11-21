@@ -2,32 +2,38 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import App from './app';
-import PostList from './../components/post/list.js';
+import PostList from './../components/post/list';
 import TopBar from './../components/topbar';
+
+const getFromStorage = createGetFromStorage({ key: 'videos' });
+const setInStorage = createSetInStorage({ key: 'videos' });
 
 /**
  * Videos Parent Object (composed of Post and Navbar)
  */
 class Videos extends React.Component {
     static propTypes = {
-        sortBy: PropTypes.string,
+        user: PropTypes.object,
     };
 
     state = {
-        showVerified: true,
-        sortBy: this.props.sortBy || 'created_at',
+        verifiedToggle: getFromStorage('verifiedToggle', true),
+        sortBy: getFromStorage('sortBy', 'created_at'),
     };
 
     onVerifiedToggled = (toggled) => {
-        this.setState({ showVerified: toggled });
+        this.setState({ verifiedToggle: toggled });
+        setInStorage({ verifiedToggle: toggled });
     }
 
-    updateSort = (sortBy) => {
+    onChronToggled = (sortBy) => {
         this.setState({ sortBy });
+        setInStorage({ sortBy });
     }
 
-	// Returns array of posts with last and callback, used in child PostList
+    // Returns array of posts with last and callback, used in child PostList
     loadPosts = (last, callback) => {
         const params = {
             last,
@@ -37,26 +43,32 @@ class Videos extends React.Component {
             rating: [0, 1, 2],
         };
 
-        if (this.state.showVerified) {
+        if (this.state.verifiedToggle) {
             params.rating = 2;
         }
 
         api
         .get('post/list', params)
-        .then(res => { callback(res); })
+        .then(callback)
         .catch(() => {
             $.snackbar({ content: 'Failed to load videos' });
+            callback([]);
         });
     }
 
     render() {
+        const { verifiedToggle, sortBy } = this.state;
+        const { user } = this.props;
+
         return (
-            <App user={this.props.user}>
+            <App user={user}>
                 <TopBar
                     title="Videos"
-                    permissions={this.props.user.permissions}
-                    updateSort={this.updateSort}
+                    permissions={user.permissions}
+                    onChronToggled={this.onChronToggled}
                     onVerifiedToggled={this.onVerifiedToggled}
+                    defaultVerified={verifiedToggle}
+                    defaultChron={sortBy}
                     chronToggle
                     timeToggle
                     verifiedToggle
@@ -64,10 +76,10 @@ class Videos extends React.Component {
 
                 <PostList
                     loadPosts={this.loadPosts}
-                    permissions={this.props.user.permissions}
+                    permissions={user.permissions}
                     size="small"
-                    sortBy={this.state.sortBy}
-                    onlyVerified={this.state.showVerified}
+                    sortBy={sortBy}
+                    onlyVerified={verifiedToggle}
                     scrollable
                 />
             </App>
@@ -79,3 +91,4 @@ ReactDOM.render(
     <Videos user={window.__initialProps__.user} />,
     document.getElementById('app')
 );
+

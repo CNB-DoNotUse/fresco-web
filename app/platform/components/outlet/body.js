@@ -15,20 +15,31 @@ export default class Body extends React.Component {
         purchases: [],
     }
 
-	/**
-	 * Loads posts using purchases data enpoint
-	 */
+    /**
+     * Loads posts using purchases data enpoint
+     */
     loadPosts = (last, cb) => {
         this.loadPurchases(last, (purchases) => {
-            const posts = purchases.map(purchase =>
-                Object.assign(purchase.post, { purchase_id: purchase.id }));
+            if (!purchases) {
+                cb([]);
+                return;
+            }
+
+            const posts = [];
+
+            for (let i = 0; i < purchases.length; i++) {
+                if(purchases[i].post) {
+                    posts.push(Object.assign(purchases[i].post, { purchase_id: purchases[i].id }));
+                }
+            }
+
             cb(posts);
         });
     }
 
-	/**
-	 * Loads stats for purchases
-	 */
+    /**
+     * Loads stats for purchases
+     */
     loadStats = (callback) => {
         const params = {
             outlet_ids: [this.props.outlet.id],
@@ -64,6 +75,7 @@ export default class Body extends React.Component {
         .done(cb)
         .fail(() => {
             $.snackbar({ content: 'There was an error receiving purchases!' });
+            cb([]);
         });
     }
 
@@ -92,7 +104,7 @@ export default class Body extends React.Component {
                                 size="large"
                                 editable={false}
                                 permissions={user.permissions}
-                                paginateBy={"purchase_id"}
+                                paginateBy="purchase_id"
                                 allPurchased
                                 scrollable
                             />

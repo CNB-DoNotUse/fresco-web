@@ -5,7 +5,7 @@ import find from 'lodash/find';
 import map from 'lodash/map';
 import differenceBy from 'lodash/differenceBy';
 import api from 'app/lib/api';
-import { getFromStorage, setInStorage } from 'app/lib/storage';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import 'app/sass/platform/_purchases.scss';
 import App from './app';
 import TopBar from '../components/topbar';
@@ -14,15 +14,15 @@ import Outlets from '../components/purchases/outlets';
 import TagFilter from '../components/topbar/tag-filter';
 import Dropdown from '../components/global/dropdown';
 
-const getFromPurchasesStorage = getFromStorage('purchases');
-const setInPurchasesStorage = setInStorage('purchases');
+const getFromStorage = createGetFromStorage({ type: 'local', key: 'purchases' });
+const setInStorage = createSetInStorage({ type: 'local', key: 'purchases' });
 
 /**
  * Admin Purchases page
  */
 class Purchases extends React.Component {
     state = {
-        outlets: getFromPurchasesStorage('outlets') || [],
+        outlets: getFromStorage('outlets') || [],
         users: [],
         availableOutlets: [],
         availableUsers: [],
@@ -30,6 +30,12 @@ class Purchases extends React.Component {
         activeTab: 'Summary',
         outletStatsTime: 'today so far',
     };
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.activeTab === 'Summary' && prevState.activeTab !== 'Summary') {
+            $.material.init();
+        }
+    }
 
     findOutlets = (q) => {
         if (q.length === 0) {
@@ -99,7 +105,7 @@ class Purchases extends React.Component {
                 availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
                 updatePurchases: true
             }, () => {
-                setInPurchasesStorage({ outlets: this.state.outlets });
+                setInStorage({ outlets: this.state.outlets });
             });
         }
     }
@@ -134,7 +140,7 @@ class Purchases extends React.Component {
             availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}),
             updatePurchases: true,
         }, () => {
-            setInPurchasesStorage({ outlets: this.state.outlets });
+            setInStorage({ outlets: this.state.outlets });
         });
     }
 
@@ -204,13 +210,6 @@ class Purchases extends React.Component {
         window.open(url, '_blank');
     }
 
-    getTabStyle(tab) {
-        if (this.state.activeTab === tab) {
-            return { display: 'block' };
-        }
-        return { display: 'none' };
-    }
-
     render() {
         const {
             outlets,
@@ -221,6 +220,12 @@ class Purchases extends React.Component {
             outletStatsTime,
             updatePurchases,
         } = this.state;
+
+
+        const getTabStyle = (tab) => {
+            if (activeTab === tab) return { display: 'block' };
+            return { display: 'none' };
+        };
 
         return (
             <App user={this.props.user}>
@@ -275,7 +280,7 @@ class Purchases extends React.Component {
                     }
                 </TopBar>
 
-                <div style={this.getTabStyle('Summary')}>
+                <div style={getTabStyle('Summary')}>
                     <ListWithStats
                         updatePurchases={updatePurchases}
                         downloadExports={this.downloadExports}
@@ -285,7 +290,7 @@ class Purchases extends React.Component {
                 </div>
 
                 <Outlets
-                    style={this.getTabStyle('Outlets')}
+                    style={getTabStyle('Outlets')}
                     loadData={activeTab === 'Outlets'}
                     outletIds={this.state.outlets.map(o => o.id)}
                     statsTime={this.state.outletStatsTime}

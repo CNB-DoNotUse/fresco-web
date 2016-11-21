@@ -1,40 +1,42 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import utils from 'utils';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import App from './app';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/story/sidebar';
 import Edit from './../components/story/edit';
-import utils from 'utils';
+
+const getFromStorage = createGetFromStorage({ key: 'storyDetail' });
+const setInStorage = createSetInStorage({ key: 'storyDetail' });
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
  */
 class StoryDetail extends React.Component {
+    state = {
+        loading: false,
+        editToggled: false,
+        story: this.props.story,
+        sortBy: getFromStorage('sortBy', 'created_at'),
+    };
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            loading: false,
-            editToggled: false,
-            story: props.story,
-            sortBy: props.sortBy,
-        };
-
-        this.loadPosts = this.loadPosts.bind(this);
+    onChronToggled = (sortBy) => {
+        this.setState({ sortBy });
+        setInStorage({ sortBy });
     }
 
     toggleStoryEdit() {
         this.setState({ editToggled: !this.state.editToggled });
     }
 
-    updateSort(sortBy) {
-        this.setState({ sortBy });
-    }
-
     save(id, params) {
-        if (!id || !params || this.state.loading) return;
+        if (!id || this.state.loading) return;
+        if (Object.keys(params).length < 1) {
+            $.snackbar({ content: 'No changes made!' });
+            return;
+        }
         this.setState({ loading: true });
 
         $.ajax({
@@ -87,7 +89,7 @@ class StoryDetail extends React.Component {
      * @param {string} lastId Last post in the list
      * @param {function} callback callback delivering posts
      */
-    loadPosts(last, callback) {
+    loadPosts = (last, callback) => {
         const { story, sortBy } = this.state;
         const params = {
             last,
@@ -104,8 +106,9 @@ class StoryDetail extends React.Component {
         .done((res) => {
             callback(res);
         })
-        .fail((xhr, status, error) => {
-            $.snackbar({ content: utils.resolveError(error) });
+        .fail(() => {
+            $.snackbar({ content: 'Couldn\'t load posts!' });
+            callback([]);
         });
     }
 
@@ -117,8 +120,9 @@ class StoryDetail extends React.Component {
             <App user={user}>
                 <TopBar
                     title={story.title}
-                    updateSort={(s) => this.updateSort(s)}
+                    onChronToggled={this.onChronToggled}
                     edit={() => this.toggleStoryEdit()}
+                    defaultChron={sortBy}
                     editable
                     timeToggle
                     chronToggle
@@ -154,11 +158,6 @@ class StoryDetail extends React.Component {
 StoryDetail.propTypes = {
     story: PropTypes.object,
     user: PropTypes.object,
-    sortBy: PropTypes.string,
-};
-
-StoryDetail.defaultProps = {
-    sortBy: 'created_at',
 };
 
 ReactDOM.render(

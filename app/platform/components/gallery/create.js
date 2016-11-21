@@ -9,18 +9,14 @@ import ChipInput from '../global/chip-input';
  */
 
 class Create extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            tags: [],
-            stories: [],
-            articles: [],
-            rating: 2,
-            caption: '',
-            loading: false,
-        };
-    }
+    state = {
+        tags: [],
+        stories: [],
+        articles: [],
+        rating: 2,
+        caption: '',
+        loading: false,
+    };
 
     componentDidMount() {
         $.material.init();

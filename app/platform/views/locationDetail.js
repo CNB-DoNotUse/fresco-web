@@ -42,7 +42,7 @@ class LocationDetail extends React.Component {
 	/**
 	 * Returns array of posts with offset and callback, used in child PostList
 	 */
-    loadPosts(last, cb) {
+    loadPosts = (last, cb) => {
         const { location } = this.props;
         const params = {
             limit: utils.postCount,
@@ -61,8 +61,9 @@ class LocationDetail extends React.Component {
         .done((res) => {
             cb(res);
         })
-        .fail((xhr, status, error) => {
-            $.snackbar({ content: utils.resolveError(error) });
+        .fail(() => {
+            $.snackbar({ content: 'Coudn\'t load posts!' });
+            cb([]);
         });
     }
 
@@ -83,7 +84,7 @@ class LocationDetail extends React.Component {
                 </TopBar>
 
                 <PostList
-                    loadPosts={(last, cb) => this.loadPosts(last, cb)}
+                    loadPosts={this.loadPosts}
                     permissions={user.permissions}
                     sortBy={this.state.sort}
                     size="small"

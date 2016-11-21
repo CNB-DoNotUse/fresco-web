@@ -1,23 +1,33 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
+import api from 'app/lib/api';
+import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
 import 'app/sass/platform/_assignment';
 import 'app/sass/platform/_posts';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/assignment/sidebar';
-import Edit from './../components/assignment/edit.js';
+import Edit from './../components/assignment/edit';
 import App from './app';
+
+const getFromStorage = createGetFromStorage({ key: 'assignmentDetail' });
+const setInStorage = createSetInStorage({ key: 'assignmentDetail' });
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
  */
 class AssignmentDetail extends React.Component {
+    static propTypes = {
+        user: PropTypes.object,
+        assignment: PropTypes.object,
+    };
+
     state = {
         assignment: this.props.assignment,
         editToggled: false,
-        verifiedToggle: true,
-        sortBy: 'created_at',
+        verifiedToggle: getFromStorage('verifiedToggle', true),
+        sortBy: getFromStorage('sortBy', 'created_at'),
         loading: false,
     };
 
@@ -29,12 +39,14 @@ class AssignmentDetail extends React.Component {
         }, 5000);
     }
 
-    onVerifiedToggled(verifiedToggle) {
+    onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
+        setInStorage({ verifiedToggle });
     }
 
-    updateSort(sortBy) {
+    onChronToggled = (sortBy) => {
         this.setState({ sortBy });
+        setInStorage({ sortBy });
     }
 
     fetchAssignment() {
@@ -54,7 +66,7 @@ class AssignmentDetail extends React.Component {
      * @param {string} lastId Last post in the list
      * @param {function} callback callback delivering posts
      */
-    loadPosts(last, callback) {
+    loadPosts = (last, callback) => {
         const { assignment, sortBy, verifiedToggle } = this.state;
         const params = {
             limit: 10,
@@ -63,17 +75,12 @@ class AssignmentDetail extends React.Component {
             rating: verifiedToggle ? 2 : [1, 2],
         };
 
-        $.ajax({
-            url: `/api/assignment/${assignment.id}/posts`,
-            type: 'GET',
-            data: params,
-            dataType: 'json',
-        })
-        .done((res) => {
-            callback(res);
-        })
-        .fail((xhr, status, error) => {
-            $.snackbar({ content: utils.resolveError(error) });
+        api
+        .get(`assignment/${assignment.id}/posts`, params)
+        .then(callback)
+        .catch(() => {
+            $.snackbar({ content: 'Couldn\'t load posts!' });
+            callback(null);
         });
     }
 
@@ -107,11 +114,15 @@ class AssignmentDetail extends React.Component {
         });
     }
 
-	/**
-	 * Saves the assignment from the current values in the form
-	 */
-    save(id, params) {
-        if (!id || !params || this.state.loading) return;
+    /**
+     * Saves the assignment from the current values in the form
+     */
+    save(id, params = {}) {
+        if (!id || this.state.loading) return;
+        if (Object.keys(params).length === 0) {
+            $.snackbar({ content: 'No changes made!' });
+            return;
+        }
         this.setState({ loading: true });
 
         $.ajax({
@@ -156,9 +167,11 @@ class AssignmentDetail extends React.Component {
                 <TopBar
                     title={assignment.title}
                     permissions={user.permissions}
-                    onVerifiedToggled={(t) => this.onVerifiedToggled(t)}
-                    updateSort={(s) => this.updateSort(s)}
                     edit={() => this.toggleEdit()}
+                    onVerifiedToggled={this.onVerifiedToggled}
+                    defaultVerified={verifiedToggle}
+                    onChronToggled={this.onChronToggled}
+                    defaultChron={sortBy}
                     editable
                     timeToggle
                     chronToggle
@@ -174,7 +187,7 @@ class AssignmentDetail extends React.Component {
                 <div className="col-sm-8 tall">
                     <PostList
                         permissions={user.permissions}
-                        loadPosts={(l, cb) => this.loadPosts(l, cb)}
+                        loadPosts={this.loadPosts}
                         sortBy={sortBy}
                         onlyVerified={verifiedToggle}
                         assignment={assignment}
@@ -188,7 +201,7 @@ class AssignmentDetail extends React.Component {
                     assignment={assignment}
                     save={(id, p) => this.save(id, p)}
                     onToggle={() => this.toggleEdit()}
-                    updateOutlet={(o) => this.updateOutlet(o)}
+                    updateOutlet={o => this.updateOutlet(o)}
                     user={user}
                     loading={loading}
                     visible={editToggled}
@@ -197,11 +210,6 @@ class AssignmentDetail extends React.Component {
         );
     }
 }
-
-AssignmentDetail.propTypes = {
-    user: PropTypes.object,
-    assignment: PropTypes.object,
-};
 
 ReactDOM.render(
     <AssignmentDetail

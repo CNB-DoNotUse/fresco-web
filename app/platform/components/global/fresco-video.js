@@ -13,16 +13,17 @@ class FrescoVideo extends React.Component {
         thumbnail: PropTypes.string,
         width: PropTypes.string,
         type: PropTypes.string,
-        style: PropTypes.object,
         autoplay: PropTypes.bool,
         muted: PropTypes.bool,
         hideControls: PropTypes.bool,
+        highRes: PropTypes.bool,
     };
 
     static defaultProps = {
         autoplay: false,
         muted: false,
         video: '',
+        highRes: false,
     }
 
     state = {
@@ -55,20 +56,46 @@ class FrescoVideo extends React.Component {
         }
     }
 
+    onClickVideo = () => {
+        if (this.props.hideControls) {
+            this.togglePlayer();
+        }
+    }
+
     setUpPlayer = () => {
+        const { autoplay, highRes } = this.props;
         const options = {
             muted: this.props.muted,
         };
 
-        if (this.props.width) options.width = this.props.width;
-
         const videoJSPlayer = videojs(this.state.id, options);
+
+        if (highRes) {
+            videoJSPlayer.on('loadedmetadata', () => {
+                videoJSPlayer.tech_.hls.representations().forEach((rep, i) => {
+                    if (i <= 1) rep.enabled(true);
+                    else rep.enabled(false);
+                });
+            });
+        }
 
         this.setState({ videoJSPlayer });
 
-        if (this.props.autoplay) {
-            videoJSPlayer.play();
-        }
+        if (autoplay) videoJSPlayer.play();
+    }
+
+    play = () => {
+        this.state.videoJSPlayer.play();
+    }
+
+    pause = () => {
+        this.state.videoJSPlayer.pause();
+    }
+
+    togglePlayer = () => {
+        const { videoJSPlayer } = this.state;
+        if (videoJSPlayer.paused()) videoJSPlayer.play();
+        else videoJSPlayer.pause();
     }
 
     getType(video) {
@@ -84,7 +111,14 @@ class FrescoVideo extends React.Component {
     }
 
     render() {
-        const { video, type, width, thumbnail, autoplay, hideControls } = this.props;
+        const {
+            video,
+            type,
+            width,
+            thumbnail,
+            autoplay,
+            hideControls,
+        } = this.props;
         const { id, isStream } = this.state;
 
         // Video.JS if an m3u8 file
@@ -98,6 +132,8 @@ class FrescoVideo extends React.Component {
                     className={className}
                     autoPlay={autoplay}
                     controls={!hideControls}
+                    onClick={this.onClickVideo}
+                    width={width}
                 >
                     <source
                         src={video}
