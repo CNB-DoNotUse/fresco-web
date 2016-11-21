@@ -20,6 +20,7 @@ class GMap extends React.Component {
         type: PropTypes.string,
         zoom: PropTypes.number,
         rerender: PropTypes.bool,
+        containerElement: PropTypes.node,
     };
 
     static defaultProps = {
@@ -31,6 +32,7 @@ class GMap extends React.Component {
         type: 'active',
         zoom: 12,
         rerender: false,
+        containerElement: <div className="map-container" />,
     };
 
     defaultCenter = { lng: -74, lat: 40.7 };
@@ -109,7 +111,7 @@ class GMap extends React.Component {
         .then(center => this.setState({ center }));
     }
 
-    renderMarker() {
+    renderCenterMarker() {
         const { draggable } = this.props;
         const { center } = this.state;
         const markerImage = {
@@ -128,11 +130,12 @@ class GMap extends React.Component {
                 draggable={draggable}
                 icon={markerImage}
                 onDragend={(e) => this.onDragend(e)}
+                zIndex={2}
             />
         );
     }
 
-    renderCircle() {
+    renderRadiusCircle() {
         const { radius, type } = this.props;
         const { center } = this.state;
         const circleOptions = {
@@ -152,11 +155,51 @@ class GMap extends React.Component {
         );
     }
 
+    renderMarkers() {
+        const { markersData } = this.props;
+        if (!markersData || !markersData.length) return;
+
+        const markerImage = m => ({
+            url: m.iconUrl || '/images/assignment-drafted.png',
+            size: new google.maps.Size(108, 114),
+            scaledSize: new google.maps.Size(36, 38),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(18, 19),
+        });
+
+        const getPosition = (m) => {
+            if (m.location && m.location.coordinates) {
+                return {
+                    lng: m.location.coordinates[0],
+                    lat: m.location.coordinates[1],
+                };
+            }
+
+            return null;
+        };
+
+        return markersData
+        .map((m, i) => {
+            const pos = getPosition(m);
+            return pos && (
+                <Marker
+                    key={i}
+                    position={pos}
+                    icon={markerImage(m)}
+                    zIndex={1}
+                    draggable={false}
+                />
+            );
+        })
+        .filter(m => !!m);
+    }
+
     render() {
-        const { zoom, draggable } = this.props;
+        const { zoom, draggable, containerElement } = this.props;
         const { center } = this.state;
         const mapOptions = {
             mapTypeControl: false,
+            streetViewControl: false,
             disableDoubleClickZoom: true,
             scrollwheel: draggable,
             draggable,
@@ -165,16 +208,17 @@ class GMap extends React.Component {
         return (
             <section style={{ height: '100%' }}>
                 <GoogleMapLoader
-                    containerElement={<div className="map-container" />}
+                    containerElement={containerElement}
                     googleMapElement={
                         <GoogleMap
-                            ref={(map) => this.map = map}
+                            ref={(map) => { this.map = map; }}
                             defaultZoom={zoom}
                             center={center}
                             options={mapOptions}
                         >
-                            {this.renderMarker()}
-                            {this.renderCircle()}
+                            {this.renderCenterMarker()}
+                            {this.renderRadiusCircle()}
+                            {this.renderMarkers()}
                         </GoogleMap>
                     }
                 />

@@ -26,6 +26,7 @@ class AssignmentDetail extends React.Component {
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
         loading: false,
+        mapPostsMarkers: [],
     };
 
     componentDidMount() {
@@ -71,10 +72,28 @@ class AssignmentDetail extends React.Component {
             last,
             rating: verifiedToggle ? 2 : [1, 2],
         };
+        const markerImageUrl = (isVideo, active) => {
+            if (isVideo) {
+                if (active) return '/images/video-marker-active.png';
+                return '/images/video-marker.png';
+            }
+
+            if (active) return '/images/photo-marker-active.png';
+            return '/images/photo-marker.png';
+        };
 
         api
         .get(`assignment/${assignment.id}/posts`, params)
-        .then(callback)
+        .then((res) => {
+            callback(res);
+            const mapPostsMarkers = res.map(p => ({
+                id: p.id,
+                location: p.location,
+                iconUrl: markerImageUrl(!!p.stream, false),
+            }));
+
+            this.setState({ mapPostsMarkers });
+        })
         .catch(() => {
             $.snackbar({ content: 'Couldn\'t load posts!' });
             callback(null);
@@ -85,7 +104,7 @@ class AssignmentDetail extends React.Component {
      * Sets the assignment to expire
      * Invoked from the on-page button `Expire`
      */
-    expireAssignment() {
+    expireAssignment = () => {
         this.setState({ loading: true });
 
         $.ajax({
@@ -102,9 +121,7 @@ class AssignmentDetail extends React.Component {
             this.setState({ assignment: response });
         })
         .fail(() => {
-            $.snackbar({
-                content: utils.resolveError(response.err, 'There was an error expiring this assignment!')
-            });
+            $.snackbar({ content: 'There was an error expiring this assignment!' });
         })
         .always(() => {
             this.setState({ loading: false });
@@ -157,6 +174,7 @@ class AssignmentDetail extends React.Component {
             verifiedToggle,
             loading,
             sortBy,
+            mapPostsMarkers,
         } = this.state;
 
         return (
@@ -177,8 +195,9 @@ class AssignmentDetail extends React.Component {
 
                 <Sidebar
                     assignment={assignment}
-                    expireAssignment={() => this.expireAssignment()}
+                    expireAssignment={this.expireAssignment}
                     loading={loading}
+                    mapPostsMarkers={mapPostsMarkers}
                 />
 
                 <div className="col-sm-8 tall">

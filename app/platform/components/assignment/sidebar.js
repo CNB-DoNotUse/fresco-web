@@ -64,7 +64,7 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        const { assignment, expireAssignment, loading } = this.props;
+        const { assignment, expireAssignment, loading, mapPostsMarkers } = this.props;
         const expireButton = (
             <button
                 className="btn fat tall btn-error assignment-expire"
@@ -91,13 +91,13 @@ class Sidebar extends React.Component {
                     </div>
                 </div>
 
-                <div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-                    <div className="map-group">
-                        <GMap
-                            location={assignment.location}
-                            radius={Math.round(utils.milesToFeet(assignment.radius))}
-                        />
-                    </div>
+                <div className="col-sm-11 col-md-10 col-sm-offset-1 col-md-offset-2">
+                    <GMap
+                        location={assignment.location}
+                        radius={Math.round(utils.milesToFeet(assignment.radius))}
+                        containerElement={<div className="assignment__map-ctr" />}
+                        markersData={mapPostsMarkers}
+                    />
                 </div>
             </div>
 
