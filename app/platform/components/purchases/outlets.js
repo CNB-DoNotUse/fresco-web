@@ -8,11 +8,8 @@ import filter from 'lodash/filter';
 import pickBy from 'lodash/pickBy';
 import HTML5Backend from 'react-dnd-html5-backend';
 import api from 'app/lib/api';
-import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import { getFromLocalStorage, setInLocalStorage } from 'app/lib/storage';
 import OutletColumn from './outlet-column';
-
-const getFromStorage = createGetFromStorage({ type: 'local', key: 'purchases' });
-const setInStorage = createSetInStorage({ type: 'local', key: 'purchases' });
 
 class PurchasesOutlets extends React.Component {
     static propTypes = {
@@ -24,7 +21,7 @@ class PurchasesOutlets extends React.Component {
 
     state = {
         outletsById: {},
-        sortedIds: getFromStorage('sortedIds') || this.props.outletIds,
+        sortedIds: getFromLocalStorage('views/purchases', 'sortedIds', this.props.outletIds),
     }
 
     componentDidMount() {
@@ -74,7 +71,7 @@ class PurchasesOutlets extends React.Component {
                 ],
             },
         }), () => {
-            setInStorage({ sortedIds: this.state.sortedIds });
+            setInLocalStorage('views/purchases', { sortedIds: this.state.sortedIds });
         });
     }
 

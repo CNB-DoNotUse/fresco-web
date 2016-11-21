@@ -2,13 +2,10 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
-import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import App from './app';
 import PostList from './../components/post/list';
 import TopBar from './../components/topbar';
-
-const getFromStorage = createGetFromStorage({ key: 'views/archive' });
-const setInStorage = createSetInStorage({ key: 'views/archive' });
 
 /**
  * Archive Parent Object (composed of PostList and Navbar)
@@ -21,18 +18,18 @@ class Archive extends React.Component {
     };
 
     state = {
-        verifiedToggle: getFromStorage('verifiedToggle', true),
-        sortBy: getFromStorage('sortBy', 'created_at'),
+        verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
+        sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
     };
 
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
-        setInStorage({ verifiedToggle });
+        setInSessionStorage('topbar', { verifiedToggle });
     }
 
     onChronToggled = (sortBy) => {
         this.setState({ sortBy });
-        setInStorage({ sortBy });
+        setInSessionStorage('topbar', { sortBy });
     }
 
     // Returns array of posts with last and callback, used in child PostList

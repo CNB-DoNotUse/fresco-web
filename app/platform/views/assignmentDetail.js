@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
-import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import 'app/sass/platform/_assignment';
 import 'app/sass/platform/_posts';
 import TopBar from './../components/topbar';
@@ -10,9 +10,6 @@ import PostList from './../components/post/list';
 import Sidebar from './../components/assignment/sidebar';
 import Edit from './../components/assignment/edit';
 import App from './app';
-
-const getFromStorage = createGetFromStorage({ key: 'assignmentDetail' });
-const setInStorage = createSetInStorage({ key: 'assignmentDetail' });
 
 /**
  * Story Detail Parent Object, made of a side column and PostList
@@ -26,8 +23,8 @@ class AssignmentDetail extends React.Component {
     state = {
         assignment: this.props.assignment,
         editToggled: false,
-        verifiedToggle: getFromStorage('verifiedToggle', true),
-        sortBy: getFromStorage('sortBy', 'created_at'),
+        verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
+        sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
         loading: false,
     };
 
@@ -41,12 +38,12 @@ class AssignmentDetail extends React.Component {
 
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
-        setInStorage({ verifiedToggle });
+        setInSessionStorage('topbar', { verifiedToggle });
     }
 
     onChronToggled = (sortBy) => {
         this.setState({ sortBy });
-        setInStorage({ sortBy });
+        setInSessionStorage('topbar', { sortBy });
     }
 
     fetchAssignment() {

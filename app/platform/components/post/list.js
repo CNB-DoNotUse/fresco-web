@@ -1,14 +1,11 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 import last from 'lodash/last';
-import { createGetFromStorage, createSetInStorage } from 'app/lib/storage';
+import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import PostCell from './cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
 import GalleryCreate from '../gallery/create';
-
-const getFromStorage = createGetFromStorage({ key: 'components/post/list' });
-const setInStorage = createSetInStorage({ key: 'components/post/list' });
 
 /**
  * Post List Parent Object
@@ -23,7 +20,7 @@ class PostList extends React.Component {
             posts: props.posts || [],
             loading: false,
             scrollable: props.scrollable,
-            selectedPosts: getFromStorage('selectedPosts', []),
+            selectedPosts: getFromSessionStorage('post/list', 'selectedPosts', []),
             galleryCreateToggled: false,
             galleryBulkEditToggled: false,
         };
@@ -182,7 +179,7 @@ class PostList extends React.Component {
 
     setSelectedPosts = (newSelected) => {
         this.setState({ selectedPosts: newSelected });
-        setInStorage({ selectedPosts: newSelected });
+        setInSessionStorage('post/list', { selectedPosts: newSelected });
     }
 
     renderPosts() {

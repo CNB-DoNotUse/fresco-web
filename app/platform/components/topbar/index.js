@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
+import utils from 'utils';
 import Dropdown from './../global/dropdown';
 import RadioGroup from './../global/radio-group';
 import LocationAutocomplete from './../global/location-autocomplete.js';
-import utils from 'utils';
 
 /**
  * Top Bar for pages of the site
@@ -12,6 +12,42 @@ import utils from 'utils';
  * is added to the navigation bar
  */
 class TopBar extends React.Component {
+
+    static propTypes = {
+        title: PropTypes.string,
+        saveButton: PropTypes.bool,
+        locationInput: PropTypes.bool,
+        mapPlace: PropTypes.object,
+        editable: PropTypes.bool,
+        updateSettings: PropTypes.func,
+        bounds: PropTypes.object,
+        editIcon: PropTypes.string,
+        edit: PropTypes.func,
+        chronToggle: PropTypes.bool,
+        timeToggle: PropTypes.bool,
+        verifiedToggle: PropTypes.bool,
+        defaultVerified: PropTypes.bool,
+        defaultChron: PropTypes.string,
+        permissions: PropTypes.array,
+        tabs: PropTypes.array,
+        setActiveTab: PropTypes.func,
+        activeTab: PropTypes.string,
+        children: PropTypes.node,
+        updateMapPlace: PropTypes.func,
+        onVerifiedToggled: PropTypes.func,
+        onChronToggled: PropTypes.func,
+    };
+
+    static defaultProps = {
+        title: '',
+        edit() {},
+        onVerifiedToggled() {},
+        onOutletFilterAdd() {},
+        onOutletFilterRemove() {},
+        permissions: [],
+        defaultVerified: true,
+        defaultChron: 'captured_at',
+    };
 
 	/**
 	 * Prop function called from `LocationAutocomplete` for getting autocomplete date
@@ -49,12 +85,12 @@ class TopBar extends React.Component {
     }
 
     // Called when the user selects all content or verified
-    verifiedToggleSelected(selected) {
+    onSelectVerified = (selected) => {
         this.props.onVerifiedToggled(selected === 'Verified');
     }
 
-	// Called when the user selects a time format
-    chronToggleSelected(selected) {
+    // Called when the user selects a time format
+    onSelectChronToggle = (selected) => {
         const str = selected.toLowerCase();
 
         if (str === 'by capture time') {
@@ -107,7 +143,7 @@ class TopBar extends React.Component {
                 <Dropdown
                     options={['By capture time', 'By upload time']}
                     selected={(defaultChron === 'captured_at') ? 'By capture time' : 'By upload time'}
-                    onSelected={(s) => this.chronToggleSelected(s)}
+                    onSelected={this.onSelectChronToggle}
                     key="chronToggle"
                     inList
                 >
@@ -131,7 +167,7 @@ class TopBar extends React.Component {
                 <Dropdown
                     options={['All content', 'Verified']}
                     selected={defaultVerified ? 'Verified' : 'All content'}
-                    onSelected={s => this.verifiedToggleSelected(s)}
+                    onSelected={this.onSelectVerified}
                     key="verifiedToggle"
                     inList
                 />
@@ -224,40 +260,5 @@ class TopBar extends React.Component {
     }
 
 }
-
-TopBar.propTypes = {
-    title: PropTypes.string,
-    saveButton: PropTypes.bool,
-    locationInput: PropTypes.bool,
-    mapPlace: PropTypes.object,
-    editable: PropTypes.bool,
-    updateSettings: PropTypes.func,
-    bounds: PropTypes.object,
-    editIcon: PropTypes.string,
-    edit: PropTypes.func,
-    chronToggle: PropTypes.bool,
-    timeToggle: PropTypes.bool,
-    verifiedToggle: PropTypes.bool,
-    defaultVerified: PropTypes.bool,
-    defaultChron: PropTypes.string,
-    permissions: PropTypes.array,
-    tabs: PropTypes.array,
-    setActiveTab: PropTypes.func,
-    activeTab: PropTypes.string,
-    children: PropTypes.node,
-    updateMapPlace: PropTypes.func,
-    onVerifiedToggled: PropTypes.func,
-    onChronToggled: PropTypes.func,
-};
-
-TopBar.defaultProps = {
-    title: '',
-    edit() {},
-    hide() { console.log('Hide function not implemented in TopBar'); },
-    onVerifiedToggled() {},
-    onOutletFilterAdd() {},
-    onOutletFilterRemove() {},
-    permissions: [],
-};
 
 export default TopBar;
