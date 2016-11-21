@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 import moment from 'moment';
+import isEmpty from 'lodash/isEmpty';
 import GMap from 'app/platform/components/global/gmap';
 
 /**
@@ -8,6 +9,13 @@ import GMap from 'app/platform/components/global/gmap';
  * Description : Column on the left of the posts grid on the assignment detail page
  */
 class Sidebar extends React.Component {
+
+    static propTypes = {
+        assignment: PropTypes.object.isRequired,
+        expireAssignment: PropTypes.func.isRequired,
+        loading: PropTypes.bool.isRequired,
+        postsMapMarkers: PropTypes.array,
+    };
 
     /**
      * AssignmentStats stats inside the sidebar
@@ -63,8 +71,25 @@ class Sidebar extends React.Component {
         );
     }
 
+    renderMap() {
+        const { assignment, postsMapMarkers } = this.props;
+
+        return !isEmpty(assignment.location) && (
+            <div className="col-sm-11 col-md-10 col-sm-offset-1 col-md-offset-2">
+                <GMap
+                    location={assignment.location}
+                    radius={Math.round(utils.milesToFeet(assignment.radius))}
+                    containerElement={<div className="assignment__map-ctr" />}
+                    markersData={postsMapMarkers}
+                    zoomControl={false}
+                    fitBounds
+                />
+            </div>
+        );
+    }
+
     render() {
-        const { assignment, expireAssignment, loading, mapPostsMarkers } = this.props;
+        const { assignment, expireAssignment, loading } = this.props;
         const expireButton = (
             <button
                 className="btn fat tall btn-error assignment-expire"
@@ -91,26 +116,12 @@ class Sidebar extends React.Component {
                     </div>
                 </div>
 
-                <div className="col-sm-11 col-md-10 col-sm-offset-1 col-md-offset-2">
-                    <GMap
-                        location={assignment.location}
-                        radius={Math.round(utils.milesToFeet(assignment.radius))}
-                        containerElement={<div className="assignment__map-ctr" />}
-                        markersData={mapPostsMarkers}
-                        zoomControl={false}
-                    />
-                </div>
+                {this.renderMap()}
             </div>
 
         );
     }
 }
-
-Sidebar.propTypes = {
-    assignment: PropTypes.object.isRequired,
-    expireAssignment: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
-};
 
 export default Sidebar;
 

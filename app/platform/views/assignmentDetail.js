@@ -26,7 +26,7 @@ class AssignmentDetail extends React.Component {
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
         loading: false,
-        mapPostsMarkers: [],
+        postsMapMarkers: [],
     };
 
     componentDidMount() {
@@ -86,13 +86,13 @@ class AssignmentDetail extends React.Component {
         .get(`assignment/${assignment.id}/posts`, params)
         .then((res) => {
             callback(res);
-            const mapPostsMarkers = res.map(p => ({
+            const postsMapMarkers = res.map(p => ({
                 id: p.id,
                 location: p.location,
                 iconUrl: markerImageUrl(!!p.stream, p.purchased),
             }));
 
-            this.setState({ mapPostsMarkers });
+            this.setState({ postsMapMarkers });
         })
         .catch(() => {
             $.snackbar({ content: 'Couldn\'t load posts!' });
@@ -174,7 +174,7 @@ class AssignmentDetail extends React.Component {
             verifiedToggle,
             loading,
             sortBy,
-            mapPostsMarkers,
+            postsMapMarkers,
         } = this.state;
 
         return (
@@ -197,7 +197,7 @@ class AssignmentDetail extends React.Component {
                     assignment={assignment}
                     expireAssignment={this.expireAssignment}
                     loading={loading}
-                    mapPostsMarkers={mapPostsMarkers}
+                    postsMapMarkers={postsMapMarkers}
                 />
 
                 <div className="col-sm-8 tall">

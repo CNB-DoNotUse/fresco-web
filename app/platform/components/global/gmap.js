@@ -22,6 +22,7 @@ class GMap extends React.Component {
         zoomControl: PropTypes.bool,
         rerender: PropTypes.bool,
         containerElement: PropTypes.node,
+        fitBounds: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -35,6 +36,7 @@ class GMap extends React.Component {
         zoomControl: true,
         rerender: false,
         containerElement: <div className="map-container" />,
+        fitBounds: false,
     };
 
     defaultCenter = { lng: -74, lat: 40.7 };
@@ -61,7 +63,7 @@ class GMap extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.radius !== this.props.radius) {
+        if (this.props.fitBounds || prevProps.radius !== this.props.radius) {
             if (this.map && this.circle) this.map.fitBounds(this.circle.getBounds());
         }
 
