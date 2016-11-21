@@ -86,13 +86,13 @@ class AssignmentDetail extends React.Component {
         .get(`assignment/${assignment.id}/posts`, params)
         .then((res) => {
             callback(res);
-            const postsMapMarkers = res.map(p => ({
+            const markers = res.map(p => ({
                 id: p.id,
                 location: p.location,
                 iconUrl: markerImageUrl(!!p.stream, p.purchased),
             }));
 
-            this.setState({ postsMapMarkers });
+            this.setState({ postsMapMarkers: this.state.postsMapMarkers.concat(markers) });
         })
         .catch(() => {
             $.snackbar({ content: 'Couldn\'t load posts!' });
