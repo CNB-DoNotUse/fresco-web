@@ -19,6 +19,7 @@ class GMap extends React.Component {
         draggable: PropTypes.bool,
         type: PropTypes.string,
         zoom: PropTypes.number,
+        zoomControl: PropTypes.bool,
         rerender: PropTypes.bool,
         containerElement: PropTypes.node,
     };
@@ -31,6 +32,7 @@ class GMap extends React.Component {
         draggable: false,
         type: 'active',
         zoom: 12,
+        zoomControl: true,
         rerender: false,
         containerElement: <div className="map-container" />,
     };
@@ -195,7 +197,7 @@ class GMap extends React.Component {
     }
 
     render() {
-        const { zoom, draggable, containerElement } = this.props;
+        const { zoom, zoomControl, draggable, containerElement } = this.props;
         const { center } = this.state;
         const mapOptions = {
             mapTypeControl: false,
@@ -203,6 +205,7 @@ class GMap extends React.Component {
             disableDoubleClickZoom: true,
             scrollwheel: draggable,
             draggable,
+            zoomControl,
         };
 
         return (

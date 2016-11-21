@@ -97,6 +97,7 @@ class Sidebar extends React.Component {
                         radius={Math.round(utils.milesToFeet(assignment.radius))}
                         containerElement={<div className="assignment__map-ctr" />}
                         markersData={mapPostsMarkers}
+                        zoomControl={false}
                     />
                 </div>
             </div>
