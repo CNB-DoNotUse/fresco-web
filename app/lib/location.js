@@ -13,3 +13,9 @@ export const getAddressFromLatLng = ({ lat, lng }, cb) => {
 
     return cb('');
 };
+
+export const getLatLngFromGeo = ({ coordinates, type }) => {
+    if (!coordinates || !type || type.toLowerCase() !== 'point') return null;
+
+    return { lng: coordinates[0], lat: coordinates[1] };
+};

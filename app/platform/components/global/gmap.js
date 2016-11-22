@@ -23,6 +23,8 @@ class GMap extends React.Component {
         rerender: PropTypes.bool,
         containerElement: PropTypes.node,
         fitBounds: PropTypes.bool,
+        markersData: PropTypes.array,
+        panTo: PropTypes.object,
     };
 
     static defaultProps = {
@@ -48,23 +50,33 @@ class GMap extends React.Component {
         this.getCenter(this.props.location, this.props.address);
     }
 
-    state = { center: this.defaultCenter }
+    state = {
+        center: this.defaultCenter,
+        hasFitBounds: false,
+    }
 
     componentDidMount() {
-        const { updateCurrentBounds } = this.props;
-
-        updateCurrentBounds(this.map ? this.map.getBounds() : {});
+        this.props.updateCurrentBounds(this.map ? this.map.getBounds() : {});
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.location && (nextProps.location !== this.props.location)) {
             this.getCenter(nextProps.location, nextProps.address);
         }
+
+        if (nextProps.panTo && (nextProps.panTo !== this.props.panTo)) {
+            this.map.panTo(nextProps.panTo);
+        }
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.fitBounds || prevProps.radius !== this.props.radius) {
-            if (this.map && this.circle) this.map.fitBounds(this.circle.getBounds());
+        const fitBoundsProp = this.props.fitBounds && !this.state.hasFitBounds;
+        const radiusChanged = prevProps.radius !== this.props.radius;
+        if (fitBoundsProp || radiusChanged) {
+            if (this.map && this.circle) {
+                this.setState({ hasFitBounds: true });
+                this.map.fitBounds(this.circle.getBounds());
+            }
         }
 
         if (this.map && this.props.rerender) {
@@ -161,7 +173,7 @@ class GMap extends React.Component {
 
     renderMarkers() {
         const { markersData } = this.props;
-        if (!markersData || !markersData.length) return;
+        if (!markersData || !markersData.length) return null;
 
         const markerImage = m => ({
             url: m.iconUrl || '/images/assignment-drafted.png',
@@ -171,30 +183,16 @@ class GMap extends React.Component {
             anchor: new google.maps.Point(18, 19),
         });
 
-        const getPosition = (m) => {
-            if (m.location && m.location.coordinates) {
-                return {
-                    lng: m.location.coordinates[0],
-                    lat: m.location.coordinates[1],
-                };
-            }
-
-            return null;
-        };
-
         return markersData
-        .map((m, i) => {
-            const pos = getPosition(m);
-            return pos && (
-                <Marker
-                    key={i}
-                    position={pos}
-                    icon={markerImage(m)}
-                    zIndex={1}
-                    draggable={false}
-                />
-            );
-        })
+        .map((m, i) => (
+            <Marker
+                key={i}
+                position={m.position}
+                icon={markerImage(m)}
+                zIndex={1}
+                draggable={false}
+            />
+        ))
         .filter(m => !!m);
     }
 
@@ -218,8 +216,8 @@ class GMap extends React.Component {
                         <GoogleMap
                             ref={(map) => { this.map = map; }}
                             defaultZoom={zoom}
-                            center={center}
                             options={mapOptions}
+                            defaultCenter={center}
                         >
                             {this.renderCenterMarker()}
                             {this.renderRadiusCircle()}

@@ -14,7 +14,8 @@ class Sidebar extends React.Component {
         assignment: PropTypes.object.isRequired,
         expireAssignment: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
-        postsMapMarkers: PropTypes.array,
+        mapMarkers: PropTypes.array,
+        mapPanTo: PropTypes.object,
     };
 
     /**
@@ -72,7 +73,7 @@ class Sidebar extends React.Component {
     }
 
     renderMap() {
-        const { assignment, postsMapMarkers } = this.props;
+        const { assignment, mapMarkers, mapPanTo } = this.props;
 
         return !isEmpty(assignment.location) && (
             <div className="col-sm-11 col-md-10 col-sm-offset-1 col-md-offset-2">
@@ -80,8 +81,10 @@ class Sidebar extends React.Component {
                     location={assignment.location}
                     radius={Math.round(utils.milesToFeet(assignment.radius))}
                     containerElement={<div className="assignment__map-ctr" />}
-                    markersData={postsMapMarkers}
+                    markersData={mapMarkers}
                     zoomControl={false}
+                    panTo={mapPanTo}
+                    rerender
                     fitBounds
                 />
             </div>

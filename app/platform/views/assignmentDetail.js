@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
+import { getLatLngFromGeo } from 'app/lib/location';
 import 'app/sass/platform/_assignment';
 import 'app/sass/platform/_posts';
 import TopBar from '../components/topbar';
@@ -26,7 +27,7 @@ class AssignmentDetail extends React.Component {
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
         loading: false,
-        postsMapMarkers: [],
+        mapMarkers: [],
     };
 
     componentDidMount() {
@@ -48,13 +49,14 @@ class AssignmentDetail extends React.Component {
     }
 
     onMouseEnterPost = (id) => {
-        const { postsMapMarkers } = this.state;
-        const idx = postsMapMarkers.findIndex(p => p.id === id);
-        const marker = postsMapMarkers[idx];
-        marker.active = true;
-        postsMapMarkers[idx] = marker;
+        const { mapMarkers } = this.state;
+        const marker = mapMarkers.find(p => p.id === id);
+        // const idx = mapMarkers.findIndex(p => p.id === id);
+        // const marker = mapMarkers[idx];
+        // marker.active = true;
+        // mapMarkers[idx] = marker;
 
-        this.setState({ postsMapMarkers });
+        this.setState({ mapPanTo: marker.position });
     }
 
     fetchAssignment() {
@@ -67,6 +69,27 @@ class AssignmentDetail extends React.Component {
         .then((res) => {
             this.setState({ assignment: res });
         });
+    }
+
+    setMarkersFromPosts(posts) {
+        if (!posts) return;
+        const markerImageUrl = (isVideo, purchased) => {
+            if (isVideo) {
+                if (purchased) return '/images/video-marker-active.png';
+                return '/images/video-marker.png';
+            }
+
+            if (purchased) return '/images/photo-marker-active.png';
+            return '/images/photo-marker.png';
+        };
+
+        const markers = posts.map(p => ({
+            id: p.id,
+            position: getLatLngFromGeo(p.location),
+            iconUrl: markerImageUrl(!!p.stream, p.purchased),
+        }));
+
+        this.setState({ mapMarkers: this.state.mapMarkers.concat(markers) });
     }
 
     /**
@@ -82,27 +105,11 @@ class AssignmentDetail extends React.Component {
             last,
             rating: verifiedToggle ? 2 : [1, 2],
         };
-        const markerImageUrl = (isVideo, purchased) => {
-            if (isVideo) {
-                if (purchased) return '/images/video-marker-active.png';
-                return '/images/video-marker.png';
-            }
-
-            if (purchased) return '/images/photo-marker-active.png';
-            return '/images/photo-marker.png';
-        };
-
         api
         .get(`assignment/${assignment.id}/posts`, params)
         .then((res) => {
             callback(res);
-            const markers = res.map(p => ({
-                id: p.id,
-                location: p.location,
-                iconUrl: markerImageUrl(!!p.stream, p.purchased),
-            }));
-
-            this.setState({ postsMapMarkers: this.state.postsMapMarkers.concat(markers) });
+            this.setMarkersFromPosts(res);
         })
         .catch(() => {
             $.snackbar({ content: 'Couldn\'t load posts!' });
@@ -184,7 +191,8 @@ class AssignmentDetail extends React.Component {
             verifiedToggle,
             loading,
             sortBy,
-            postsMapMarkers,
+            mapMarkers,
+            mapPanTo,
         } = this.state;
 
         return (
@@ -207,7 +215,8 @@ class AssignmentDetail extends React.Component {
                     assignment={assignment}
                     expireAssignment={this.expireAssignment}
                     loading={loading}
-                    postsMapMarkers={postsMapMarkers}
+                    mapMarkers={mapMarkers}
+                    mapPanTo={mapPanTo}
                 />
 
                 <div className="col-sm-8 tall">
