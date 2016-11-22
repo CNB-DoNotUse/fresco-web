@@ -47,6 +47,16 @@ class AssignmentDetail extends React.Component {
         setInSessionStorage('topbar', { sortBy });
     }
 
+    onMouseEnterPost = (id) => {
+        const { postsMapMarkers } = this.state;
+        const idx = postsMapMarkers.findIndex(p => p.id === id);
+        const marker = postsMapMarkers[idx];
+        marker.active = true;
+        postsMapMarkers[idx] = marker;
+
+        this.setState({ postsMapMarkers });
+    }
+
     fetchAssignment() {
         const { assignment } = this.state;
         if (!assignment || !assignment.id) return;
@@ -207,6 +217,7 @@ class AssignmentDetail extends React.Component {
                         sortBy={sortBy}
                         onlyVerified={verifiedToggle}
                         assignment={assignment}
+                        onMouseEnterPost={this.onMouseEnterPost}
                         editable={false}
                         size="large"
                         scrollable

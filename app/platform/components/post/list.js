@@ -190,6 +190,7 @@ class PostList extends React.Component {
             editable,
             sortBy,
             parentCaption,
+            onMouseEnterPost,
         } = this.props;
         const {
             posts,
@@ -211,6 +212,7 @@ class PostList extends React.Component {
                         key={i}
                         editable={editable}
                         sortBy={sortBy}
+                        onMouseEnter={onMouseEnterPost}
                         togglePost={this.togglePost}
                     />
                 ))}
@@ -228,7 +230,7 @@ class PostList extends React.Component {
         } = this.state;
 
         return (
-            <div ref={r => { this.area = r; }}>
+            <div ref={(r) => { this.area = r; }}>
                 <div
                     className={`container-fluid fat grid ${className}`}
                     ref={(r) => { this.grid = r; }}
@@ -278,6 +280,7 @@ PostList.propTypes = {
     className: PropTypes.string,
     paginateBy: PropTypes.string,
     onScroll: PropTypes.func,
+    onMouseEnterPost: PropTypes.func,
     loadPosts: PropTypes.func,
 };
 
