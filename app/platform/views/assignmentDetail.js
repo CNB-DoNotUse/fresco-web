@@ -49,18 +49,20 @@ class AssignmentDetail extends React.Component {
     }
 
     onMouseEnterPost = (id) => {
-        const { mapMarkers } = this.state;
-        const marker = mapMarkers.find(p => p.id === id);
-        // const idx = mapMarkers.findIndex(p => p.id === id);
-        // const marker = mapMarkers[idx];
-        // marker.active = true;
-        // mapMarkers[idx] = marker;
+        let { mapMarkers } = this.state;
+        mapMarkers = mapMarkers.map(m => Object.assign(m, { active: false }));
+        const idx = mapMarkers.findIndex(p => p.id === id);
+        const marker = mapMarkers[idx];
+        marker.active = true;
+        mapMarkers[idx] = marker;
 
-        this.setState({ mapPanTo: marker.position });
+        this.setState({ mapPanTo: marker.position, mapMarkers });
     }
 
     onMouseLeavePostList = () => {
-        this.setState({ mapPanTo: null });
+        let { mapMarkers } = this.state;
+        mapMarkers = mapMarkers.map(m => Object.assign(m, { active: false }));
+        this.setState({ mapPanTo: null, mapMarkers });
     }
 
     fetchAssignment() {
@@ -79,12 +81,16 @@ class AssignmentDetail extends React.Component {
         if (!posts) return;
         const markerImageUrl = (isVideo, purchased) => {
             if (isVideo) {
-                if (purchased) return '/images/video-marker-active.png';
-                return '/images/video-marker.png';
+                return {
+                    normal: '/images/video-marker.png',
+                    active: '/images/video-marker-active.png',
+                };
             }
 
-            if (purchased) return '/images/photo-marker-active.png';
-            return '/images/photo-marker.png';
+            return {
+                normal: '/images/photo-marker.png',
+                active: '/images/photo-marker-active.png',
+            };
         };
 
         const markers = posts.map(p => ({

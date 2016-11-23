@@ -180,7 +180,7 @@ class GMap extends React.Component {
         if (!markersData || !markersData.length) return null;
 
         const markerImage = m => ({
-            url: m.iconUrl || '/images/assignment-drafted.png',
+            url: m.active ? m.iconUrl.active : m.iconUrl.normal,
             size: new google.maps.Size(108, 114),
             scaledSize: new google.maps.Size(36, 38),
             origin: new google.maps.Point(0, 0),
@@ -193,7 +193,7 @@ class GMap extends React.Component {
                 key={i}
                 position={m.position}
                 icon={markerImage(m)}
-                zIndex={1}
+                zIndex={m.active ? 3 : 1}
                 draggable={false}
             />
         ))
