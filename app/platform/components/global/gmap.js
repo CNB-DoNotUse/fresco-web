@@ -50,6 +50,8 @@ class GMap extends React.Component {
         this.getCenter(this.props.location, this.props.address);
     }
 
+    hasFitBounds = false;
+
     state = {
         center: this.defaultCenter,
         hasFitBounds: false,
@@ -64,20 +66,22 @@ class GMap extends React.Component {
             this.getCenter(nextProps.location, nextProps.address);
         }
 
-        if (nextProps.panTo && (nextProps.panTo !== this.props.panTo)) {
-            this.map.panTo(nextProps.panTo);
+        if (nextProps.panTo !== this.props.panTo) {
+            if (nextProps.panTo) this.map.panTo(nextProps.panTo);
+            else this.map.panTo(this.state.center);
         }
     }
 
     componentDidUpdate(prevProps) {
-        const fitBoundsProp = this.props.fitBounds && !this.state.hasFitBounds;
+        const fitBoundsProp = this.props.fitBounds && !this.hasFitBounds;
         const radiusChanged = prevProps.radius !== this.props.radius;
         if (fitBoundsProp || radiusChanged) {
             if (this.map && this.circle) {
-                this.setState({ hasFitBounds: true });
+                this.hasFitBounds = true;
                 this.map.fitBounds(this.circle.getBounds());
             }
         }
+
 
         if (this.map && this.props.rerender) {
             google.maps.event.trigger(this.map.props.map, 'resize');

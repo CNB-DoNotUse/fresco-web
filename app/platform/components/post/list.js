@@ -191,6 +191,7 @@ class PostList extends React.Component {
             sortBy,
             parentCaption,
             onMouseEnterPost,
+            onMouseLeaveList,
         } = this.props;
         const {
             posts,
@@ -200,22 +201,28 @@ class PostList extends React.Component {
         if (!posts.length) return '';
 
         return (
-            <div className="row tiles" id="posts">
-                {posts.map((p, i) => (
-                    <PostCell
-                        size={size}
-                        parentCaption={parentCaption}
-                        post={p}
-                        permissions={permissions}
-                        toggled={selectedPosts.some((s) => s.id === p.id)}
-                        assignment={assignment}
-                        key={i}
-                        editable={editable}
-                        sortBy={sortBy}
-                        onMouseEnter={onMouseEnterPost}
-                        togglePost={this.togglePost}
-                    />
-                ))}
+            <div>
+                <div
+                    onMouseLeave={onMouseLeaveList}
+                    className="row tiles"
+                    id="posts"
+                >
+                    {posts.map((p, i) => (
+                        <PostCell
+                            size={size}
+                            parentCaption={parentCaption}
+                            post={p}
+                            permissions={permissions}
+                            toggled={selectedPosts.some(s => s.id === p.id)}
+                            assignment={assignment}
+                            key={i}
+                            editable={editable}
+                            sortBy={sortBy}
+                            onMouseEnter={onMouseEnterPost}
+                            togglePost={this.togglePost}
+                        />
+                    ))}
+                </div>
             </div>
         );
     }
@@ -232,7 +239,7 @@ class PostList extends React.Component {
         return (
             <div ref={(r) => { this.area = r; }}>
                 <div
-                    className={`container-fluid fat grid ${className}`}
+                    className={`container-fluid grid ${className}`}
                     ref={(r) => { this.grid = r; }}
                     onScroll={scrollable ? onScroll || this.onScroll : null}
                 >
@@ -281,6 +288,7 @@ PostList.propTypes = {
     paginateBy: PropTypes.string,
     onScroll: PropTypes.func,
     onMouseEnterPost: PropTypes.func,
+    onMouseLeaveList: PropTypes.func,
     loadPosts: PropTypes.func,
 };
 

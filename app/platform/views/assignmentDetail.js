@@ -59,6 +59,10 @@ class AssignmentDetail extends React.Component {
         this.setState({ mapPanTo: marker.position });
     }
 
+    onMouseLeavePostList = () => {
+        this.setState({ mapPanTo: null });
+    }
+
     fetchAssignment() {
         const { assignment } = this.state;
         if (!assignment || !assignment.id) return;
@@ -227,6 +231,7 @@ class AssignmentDetail extends React.Component {
                         onlyVerified={verifiedToggle}
                         assignment={assignment}
                         onMouseEnterPost={this.onMouseEnterPost}
+                        onMouseLeaveList={this.onMouseLeavePostList}
                         editable={false}
                         size="large"
                         scrollable
