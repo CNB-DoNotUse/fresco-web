@@ -49,14 +49,7 @@ class AssignmentDetail extends React.Component {
     }
 
     onMouseEnterPost = (id) => {
-        let { mapMarkers } = this.state;
-        mapMarkers = mapMarkers.map(m => Object.assign(m, { active: false }));
-        const idx = mapMarkers.findIndex(p => p.id === id);
-        const marker = mapMarkers[idx];
-        marker.active = true;
-        mapMarkers[idx] = marker;
-
-        this.setState({ mapPanTo: marker.position, mapMarkers });
+        this.setMarkerActive(id, true);
     }
 
     onMouseLeavePostList = () => {
@@ -67,6 +60,21 @@ class AssignmentDetail extends React.Component {
 
     onMouseOverMarker = (scrollToPostId) => {
         this.setState({ scrollToPostId });
+        this.setMarkerActive(scrollToPostId);
+    }
+
+    setMarkerActive(id, panTo = false) {
+        let { mapMarkers } = this.state;
+        mapMarkers = mapMarkers.map(m => Object.assign(m, { active: false }));
+        const idx = mapMarkers.findIndex(p => p.id === id);
+        const marker = mapMarkers[idx];
+        marker.active = true;
+        mapMarkers[idx] = marker;
+
+        this.setState({
+            mapPanTo: panTo ? marker.position : null,
+            mapMarkers,
+        });
     }
 
     setMarkersFromPosts(posts) {

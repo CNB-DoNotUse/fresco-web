@@ -299,6 +299,7 @@ PostList.propTypes = {
     onMouseEnterPost: PropTypes.func,
     onMouseLeaveList: PropTypes.func,
     loadPosts: PropTypes.func,
+    scrollTo: PropTypes.string,
 };
 
 PostList.defaultProps = {
