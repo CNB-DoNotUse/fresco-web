@@ -68,6 +68,11 @@ class PostList extends React.Component {
                 this.setState({ posts: this.sortPosts() });
             }
         }
+
+        if (nextProps.scrollTo !== this.props.scrollTo) {
+            const paddingTop = parseInt(window.getComputedStyle(this.grid, null).getPropertyValue('padding-top'), 10);
+            this.grid.scrollTop = this[`cell${nextProps.scrollTo}`].area.offsetTop - paddingTop;
+        }
     }
 
     onToggleGalleryBulkEdit = () => {
@@ -130,21 +135,9 @@ class PostList extends React.Component {
         this.setState({ galleryCreateToggled: !this.state.galleryCreateToggled });
     }
 
-    /**
-     * Initial call to populate posts
-     */
-    loadInitialPosts() {
-        this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
-    }
-
-    /**
-     * Sorts posts based on the current field in props
-     * @return {array} An array of posts now sorted
-     */
-    sortPosts() {
-        const field = this.props.sortBy === 'captured_at' ? 'captured_at' : 'created_at';
-
-        return this.state.posts.sort((post1, post2) => post2[field] - post1[field]);
+    setSelectedPosts = (newSelected) => {
+        this.setState({ selectedPosts: newSelected });
+        setInSessionStorage('post/list', { selectedPosts: newSelected });
     }
 
     /**
@@ -177,9 +170,21 @@ class PostList extends React.Component {
         this.setSelectedPosts(newSelected);
     }
 
-    setSelectedPosts = (newSelected) => {
-        this.setState({ selectedPosts: newSelected });
-        setInSessionStorage('post/list', { selectedPosts: newSelected });
+    /**
+     * Sorts posts based on the current field in props
+     * @return {array} An array of posts now sorted
+     */
+    sortPosts() {
+        const field = this.props.sortBy === 'captured_at' ? 'captured_at' : 'created_at';
+
+        return this.state.posts.sort((post1, post2) => post2[field] - post1[field]);
+    }
+
+    /**
+     * Initial call to populate posts
+     */
+    loadInitialPosts() {
+        this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
     }
 
     renderPosts() {
@@ -209,6 +214,7 @@ class PostList extends React.Component {
                 >
                     {posts.map((p, i) => (
                         <PostCell
+                            ref={(r) => { this[`cell${p.id}`] = r; }}
                             size={size}
                             parentCaption={parentCaption}
                             post={p}

@@ -65,24 +65,13 @@ class AssignmentDetail extends React.Component {
         this.setState({ mapPanTo: null, mapMarkers });
     }
 
-    onMouseOverMarker = (id) => {
-    }
-
-    fetchAssignment() {
-        const { assignment } = this.state;
-        if (!assignment || !assignment.id) return;
-
-        $.ajax({
-            url: `/api/assignment/${assignment.id}`,
-        })
-        .then((res) => {
-            this.setState({ assignment: res });
-        });
+    onMouseOverMarker = (scrollToPostId) => {
+        this.setState({ scrollToPostId });
     }
 
     setMarkersFromPosts(posts) {
         if (!posts) return;
-        const markerImageUrl = (isVideo, purchased) => {
+        const markerImageUrl = (isVideo) => {
             if (isVideo) {
                 return {
                     normal: '/images/video-marker.png',
@@ -99,10 +88,22 @@ class AssignmentDetail extends React.Component {
         const markers = posts.map(p => ({
             id: p.id,
             position: getLatLngFromGeo(p.location),
-            iconUrl: markerImageUrl(!!p.stream, p.purchased),
+            iconUrl: markerImageUrl(!!p.stream),
         }));
 
         this.setState({ mapMarkers: this.state.mapMarkers.concat(markers) });
+    }
+
+    fetchAssignment() {
+        const { assignment } = this.state;
+        if (!assignment || !assignment.id) return;
+
+        $.ajax({
+            url: `/api/assignment/${assignment.id}`,
+        })
+        .then((res) => {
+            this.setState({ assignment: res });
+        });
     }
 
     /**
@@ -206,6 +207,7 @@ class AssignmentDetail extends React.Component {
             sortBy,
             mapMarkers,
             mapPanTo,
+            scrollToPostId,
         } = this.state;
 
         return (
@@ -244,6 +246,7 @@ class AssignmentDetail extends React.Component {
                         onMouseLeaveList={this.onMouseLeavePostList}
                         editable={false}
                         size="large"
+                        scrollTo={scrollToPostId}
                         scrollable
                     />
                 </div>

@@ -122,7 +122,10 @@ class PostCell extends React.Component {
         const divSize = size === 'large' ? sizes.large : sizes.small;
 
         return (
-            <div className={`${divSize} tile ${toggled ? 'toggled' : ''}`}>
+            <div
+                ref={(r) => { this.area = r; }}
+                className={`${divSize} tile ${toggled ? 'toggled' : ''}`}
+            >
                 <div className="tile-body noselect">
                     <div className="frame" />
 
