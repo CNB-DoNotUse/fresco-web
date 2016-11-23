@@ -24,6 +24,7 @@ class GMap extends React.Component {
         containerElement: PropTypes.node,
         fitBoundsOnMount: PropTypes.bool,
         markersData: PropTypes.array,
+        onMouseOverMarker: PropTypes.func,
         panTo: PropTypes.object,
     };
 
@@ -177,7 +178,7 @@ class GMap extends React.Component {
     }
 
     renderMarkers() {
-        const { markersData } = this.props;
+        const { markersData, onMouseOverMarker } = this.props;
         if (!markersData || !markersData.length) return null;
 
         const markerImage = m => ({
@@ -196,6 +197,7 @@ class GMap extends React.Component {
                 icon={markerImage(m)}
                 zIndex={m.active ? 3 : 1}
                 draggable={false}
+                onMouseover={() => onMouseOverMarker(m.id)}
             />
         ))
         .filter(m => !!m);

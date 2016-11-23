@@ -65,6 +65,9 @@ class AssignmentDetail extends React.Component {
         this.setState({ mapPanTo: null, mapMarkers });
     }
 
+    onMouseOverMarker = (id) => {
+    }
+
     fetchAssignment() {
         const { assignment } = this.state;
         if (!assignment || !assignment.id) return;
@@ -227,6 +230,7 @@ class AssignmentDetail extends React.Component {
                     loading={loading}
                     mapMarkers={mapMarkers}
                     mapPanTo={mapPanTo}
+                    onMouseOverMarker={this.onMouseOverMarker}
                 />
 
                 <div className="col-sm-8 tall">

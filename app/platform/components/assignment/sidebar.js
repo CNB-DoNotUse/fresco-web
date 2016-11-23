@@ -16,6 +16,7 @@ class Sidebar extends React.Component {
         loading: PropTypes.bool.isRequired,
         mapMarkers: PropTypes.array,
         mapPanTo: PropTypes.object,
+        onHoverMarker: PropTypes.func,
     };
 
     /**
@@ -73,7 +74,7 @@ class Sidebar extends React.Component {
     }
 
     renderMap() {
-        const { assignment, mapMarkers, mapPanTo } = this.props;
+        const { assignment, mapMarkers, mapPanTo, onMouseOverMarker } = this.props;
 
         return !isEmpty(assignment.location) && (
             <div className="col-sm-11 col-md-10 col-sm-offset-1 col-md-offset-2">
@@ -85,6 +86,7 @@ class Sidebar extends React.Component {
                     zoomControl={false}
                     panTo={mapPanTo}
                     zoom={13}
+                    onMouseOverMarker={onMouseOverMarker}
                     rerender
                     fitBoundsOnMount
                 />
