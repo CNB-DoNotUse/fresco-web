@@ -84,8 +84,9 @@ class Sidebar extends React.Component {
                     markersData={mapMarkers}
                     zoomControl={false}
                     panTo={mapPanTo}
+                    zoom={13}
                     rerender
-                    fitBounds
+                    fitBoundsOnMount
                 />
             </div>
         );

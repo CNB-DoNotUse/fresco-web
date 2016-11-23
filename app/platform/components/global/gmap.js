@@ -22,7 +22,7 @@ class GMap extends React.Component {
         zoomControl: PropTypes.bool,
         rerender: PropTypes.bool,
         containerElement: PropTypes.node,
-        fitBounds: PropTypes.bool,
+        fitBoundsOnMount: PropTypes.bool,
         markersData: PropTypes.array,
         panTo: PropTypes.object,
     };
@@ -38,7 +38,8 @@ class GMap extends React.Component {
         zoomControl: true,
         rerender: false,
         containerElement: <div className="map-container" />,
-        fitBounds: false,
+        fitBoundsOnMount: false,
+        panTo: null,
     };
 
     defaultCenter = { lng: -74, lat: 40.7 };
@@ -73,9 +74,9 @@ class GMap extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const fitBoundsProp = this.props.fitBounds && !this.hasFitBounds;
+        const fitBoundsOnMount= this.props.fitBoundsOnMount && !this.hasFitBounds;
         const radiusChanged = prevProps.radius !== this.props.radius;
-        if (fitBoundsProp || radiusChanged) {
+        if (fitBoundsOnMount || radiusChanged) {
             if (this.map && this.circle) {
                 this.hasFitBounds = true;
                 this.map.fitBounds(this.circle.getBounds());
@@ -201,7 +202,7 @@ class GMap extends React.Component {
     }
 
     render() {
-        const { zoom, zoomControl, draggable, containerElement } = this.props;
+        const { zoom, zoomControl, draggable, containerElement, fitBoundsOnMount } = this.props;
         const { center } = this.state;
         const mapOptions = {
             mapTypeControl: false,
@@ -212,6 +213,14 @@ class GMap extends React.Component {
             zoomControl,
         };
 
+        const mapProps = {
+            defaultZoom: zoom,
+            options: mapOptions,
+        };
+
+        if (fitBoundsOnMount) mapProps.defaultCenter = center;
+        else mapProps.center = center;
+
         return (
             <section style={{ height: '100%' }}>
                 <GoogleMapLoader
@@ -219,9 +228,7 @@ class GMap extends React.Component {
                     googleMapElement={
                         <GoogleMap
                             ref={(map) => { this.map = map; }}
-                            defaultZoom={zoom}
-                            options={mapOptions}
-                            defaultCenter={center}
+                            {...mapProps}
                         >
                             {this.renderCenterMarker()}
                             {this.renderRadiusCircle()}
