@@ -70,8 +70,11 @@ class PostList extends React.Component {
         }
 
         if (nextProps.scrollTo !== this.props.scrollTo) {
-            const paddingTop = parseInt(window.getComputedStyle(this.grid, null).getPropertyValue('padding-top'), 10);
-            this.grid.scrollTop = this[`cell${nextProps.scrollTo}`].area.offsetTop - paddingTop;
+            const $grid = $(this.grid);
+            const paddingTop = parseInt($grid.css('padding-top'), 10);
+            $grid.animate({
+                scrollTop: this[`cell${nextProps.scrollTo}`].area.offsetTop - paddingTop,
+            });
         }
     }
 
