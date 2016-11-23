@@ -75,9 +75,11 @@ class GMap extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const fitBoundsOnMount= this.props.fitBoundsOnMount && !this.hasFitBounds;
-        const radiusChanged = prevProps.radius !== this.props.radius;
-        if (fitBoundsOnMount || radiusChanged) {
+        const { radius, fitBoundsOnMount, rerender } = this.props;
+
+        const fitBounds = fitBoundsOnMount && !this.hasFitBounds && radius;
+        const radiusChanged = prevProps.radius !== radius;
+        if (fitBounds || radiusChanged) {
             if (this.map && this.circle) {
                 this.hasFitBounds = true;
                 this.map.fitBounds(this.circle.getBounds());
@@ -85,7 +87,7 @@ class GMap extends React.Component {
         }
 
 
-        if (this.map && this.props.rerender) {
+        if (this.map && rerender) {
             google.maps.event.trigger(this.map.props.map, 'resize');
         }
     }

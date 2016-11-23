@@ -65,9 +65,11 @@ class AssignmentDetail extends React.Component {
 
     setMarkerActive(id, panTo = false) {
         let { mapMarkers } = this.state;
-        mapMarkers = mapMarkers.map(m => Object.assign(m, { active: false }));
         const idx = mapMarkers.findIndex(p => p.id === id);
+        if (idx === -1) return;
+
         const marker = mapMarkers[idx];
+        mapMarkers = mapMarkers.map(m => Object.assign(m, { active: false }));
         marker.active = true;
         mapMarkers[idx] = marker;
 
@@ -93,11 +95,14 @@ class AssignmentDetail extends React.Component {
             };
         };
 
-        const markers = posts.map(p => ({
-            id: p.id,
-            position: getLatLngFromGeo(p.location),
-            iconUrl: markerImageUrl(!!p.stream),
-        }));
+        const markers = posts.map(p => {
+            if (!p.location) return null;
+            return {
+                id: p.id,
+                position: getLatLngFromGeo(p.location),
+                iconUrl: markerImageUrl(!!p.stream),
+            };
+        }).filter(m => !!m);
 
         this.setState({ mapMarkers: this.state.mapMarkers.concat(markers) });
     }
