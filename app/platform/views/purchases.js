@@ -32,7 +32,13 @@ class Purchases extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.state.activeTab === 'Summary' && prevState.activeTab !== 'Summary') {
             $.material.init();
+            this.setState({ availableOutlets: [] });
         }
+    }
+
+    getTabOutlets() {
+        const outletsKey = `${this.state.activeTab.toLowerCase()}/outlets`;
+        return this.state[outletsKey];
     }
 
     findOutlets = (q) => {
@@ -45,7 +51,7 @@ class Purchases extends React.Component {
             .get('search', params)
             .then((res) => {
                 this.setState({ availableOutlets:
-                    differenceBy(res.outlets.results, this.state.outlets, 'id') });
+                    differenceBy(res.outlets.results, this.getTabOutlets(), 'id') });
             })
             .catch(err => err);
         }
@@ -59,11 +65,7 @@ class Purchases extends React.Component {
 
             api
             .get('search', params)
-            .then(res => {
-                this.setState({
-                    availableUsers: res.users.results,
-                });
-            })
+            .then(res => this.setState({ availableUsers: res.users.results }))
             .catch(err => err);
         }
     }
@@ -150,7 +152,7 @@ class Purchases extends React.Component {
      */
     loadStats = (callback) => {
         const params = {
-            outlet_ids: map(this.state.outlets, 'id'),
+            outlet_ids: map(this.getTabOutlets(), 'id'),
             user_ids: map(this.state.users, 'id'),
         };
 
@@ -172,7 +174,7 @@ class Purchases extends React.Component {
         }
 
         const params = {
-            outlet_ids: map(this.state.outlets, 'id'),
+            outlet_ids: map(this.getTabOutlets(), 'id'),
             user_ids: map(this.state.users, 'id'),
             limit: 20,
             sortBy: 'created_at',
@@ -196,7 +198,7 @@ class Purchases extends React.Component {
 	 * Sends browser to script to generate CSV
      */
     downloadExports = () => {
-        const oultets = this.state.outlets.map((outlet) => {
+        const outlets = this.getTabOutlets().map((outlet) => {
             return 'outlet_ids[]='+ outlet.id
         }).join('&');
 
@@ -204,7 +206,7 @@ class Purchases extends React.Component {
             return 'user_ids[]='+ user.id
         }).join('&');
 
-        const u = encodeURIComponent(`/purchase/report?${oultets}${users}`);
+        const u = encodeURIComponent(`/purchase/report?${outlets}${users}`);
 
         const url = `/scripts/report?u=${u}&e=Failed`;
 
@@ -212,16 +214,7 @@ class Purchases extends React.Component {
     }
 
     render() {
-        const {
-            outlets,
-            users,
-            searchOutlets,
-            searchUsers,
-            activeTab,
-            outletStatsTime,
-            updatePurchases,
-        } = this.state;
-
+        const { activeTab, outletStatsTime, updatePurchases } = this.state;
 
         const getTabStyle = (tab) => {
             if (activeTab === tab) return { display: 'block' };
@@ -241,7 +234,7 @@ class Purchases extends React.Component {
                     <TagFilter
                         text="Outlets"
                         tagList={this.state.availableOutlets}
-                        filterList={this.state[outletsKey]}
+                        filterList={this.getTabOutlets()}
                         onTagInput={this.findOutlets}
                         onTagAdd={this.addOutlet}
                         onTagRemove={this.removeOutlet}
