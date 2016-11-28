@@ -444,7 +444,10 @@ class Edit extends React.Component {
     }
 
     onChangeHighlightedAt = (e) => {
-        this.setState({ updateHighlightedAt: e.target.checked });
+        this.setState({
+            rating: e.target.checked ? 3 : this.state.rating,
+            updateHighlightedAt: e.target.checked,
+        });
     }
 
     onChangeIsNSFW = () => {
