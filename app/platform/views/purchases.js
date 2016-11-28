@@ -221,8 +221,6 @@ class Purchases extends React.Component {
             return { display: 'none' };
         };
 
-        const outletsKey = `${this.state.activeTab.toLowerCase()}/outlets`;
-
         return (
             <App user={this.props.user}>
                 <TopBar
