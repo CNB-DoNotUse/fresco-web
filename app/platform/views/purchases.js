@@ -152,7 +152,7 @@ class Purchases extends React.Component {
      */
     loadStats = (callback) => {
         const params = {
-            outlet_ids: map(this.getTabOutlets(), 'id'),
+            outlet_ids: map(this.state['summary/outlets'], 'id'),
             user_ids: map(this.state.users, 'id'),
         };
 
@@ -174,7 +174,7 @@ class Purchases extends React.Component {
         }
 
         const params = {
-            outlet_ids: map(this.getTabOutlets(), 'id'),
+            outlet_ids: map(this.state['summary/outlets'], 'id'),
             user_ids: map(this.state.users, 'id'),
             limit: 20,
             sortBy: 'created_at',
@@ -198,7 +198,7 @@ class Purchases extends React.Component {
 	 * Sends browser to script to generate CSV
      */
     downloadExports = () => {
-        const outlets = this.getTabOutlets().map((outlet) => {
+        const outlets = this.state['summary/outlets'].map((outlet) => {
             return 'outlet_ids[]='+ outlet.id
         }).join('&');
 
