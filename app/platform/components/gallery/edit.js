@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
+import moment from 'moment';
 import request from 'superagent';
 import api from 'app/lib/api';
 import {
@@ -65,6 +66,7 @@ class Edit extends React.Component {
             external_source: gallery.external_source,
             owner: gallery.owner,
             bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
+            updateHighlightedAt: false,
         };
     }
 
@@ -238,6 +240,7 @@ class Edit extends React.Component {
             rating,
             is_nsfw,
             owner,
+            updateHighlightedAt
         } = this.state;
         const { gallery } = this.props;
         const postsFormData = this.getPostsFormData();
@@ -263,13 +266,14 @@ class Edit extends React.Component {
             rating,
             is_nsfw,
             owner_id: owner ? owner.id : null,
+            highlighted_at: updateHighlightedAt ? moment().toISOString() : null,
         };
 
         // Make sure our params are valid types and don't have any empty arrays
         // Special exception if the param is a `bool`
         params = pickBy(params, (v, k) => {
             if (gallery[k] === v) return false;
-            if (['posts_new'].includes(k) && !v) return false;
+            if (['posts_new', 'highlighted_at'].includes(k) && !v) return false;
             return Array.isArray(v) ? v.length : true;
         });
 
@@ -424,17 +428,23 @@ class Edit extends React.Component {
         });
     }
 
-    /**
-	 * Reverts all changes
-	 */
+
+    // Reverts all changes
     revert() {
         if (this.state.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
     }
 
-    toggleHighlight(e) {
-        this.setState({ rating: e.target.checked ? 3 : 2 });
+    onChangeHighlighted = (e) => {
+        this.setState({
+            rating: e.target.checked ? 3 : 2,
+            updateHighlightedAt: e.target.checked,
+        });
+    }
+
+    onChangeHighlightedAt = (e) => {
+        this.setState({ updateHighlightedAt: e.target.checked });
     }
 
     onChangeIsNSFW = () => {
@@ -523,6 +533,7 @@ class Edit extends React.Component {
             external_source,
             owner,
             bylineDisabled,
+            updateHighlightedAt,
         } = this.state;
         if (!gallery) return '';
 
@@ -622,9 +633,22 @@ class Edit extends React.Component {
                                 <input
                                     type="checkbox"
                                     checked={rating === 3}
-                                    onChange={e => this.toggleHighlight(e)}
+                                    onChange={this.onChangeHighlighted}
                                 />
                                 Highlighted
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="dialog-row">
+                        <div className="checkbox">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={updateHighlightedAt}
+                                    onChange={this.onChangeHighlightedAt}
+                                />
+                                Bring To Top
                             </label>
                         </div>
                     </div>
