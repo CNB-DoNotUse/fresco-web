@@ -19,7 +19,8 @@ import Dropdown from '../components/global/dropdown';
  */
 class Purchases extends React.Component {
     state = {
-        outlets: getFromLocalStorage('views/purchases', 'outlets', []),
+        'summary/outlets': getFromLocalStorage('views/purchases', 'summary/outlets', []),
+        'outlets/outlets': getFromLocalStorage('views/purchases', 'outlets/outlets', []),
         users: [],
         availableOutlets: [],
         availableUsers: [],
@@ -86,27 +87,6 @@ class Purchases extends React.Component {
         }
     }
 
-
-    /**
-     * Adds outlet to filter
-     * @param {string} outletToAdd String title of the outlet
-     */
-    addOutlet = (outletToAdd, index) => {
-        const { availableOutlets, outlets } = this.state;
-        const outlet = availableOutlets[index];
-        if (!outlet) return;
-
-        if(find(outlets, ['id', outlet.id]) === undefined){
-            this.setState({
-                outlets: update(outlets, {$push: [outlet]}),
-                availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
-                updatePurchases: true
-            }, () => {
-                setInLocalStorage('views/purchases', { outlets: this.state.outlets });
-            });
-        }
-    }
-
     /**
      * Remove user from filter
      * @param {string} userToRemove An email string of the user
@@ -123,21 +103,45 @@ class Purchases extends React.Component {
     }
 
     /**
+     * Adds outlet to filter
+     * @param {string} outletToAdd String title of the outlet
+     */
+    addOutlet = (outletToAdd, index) => {
+        const { availableOutlets } = this.state;
+        const outletsKey = `${this.state.activeTab.toLowerCase()}/outlets`;
+        const state = this.state;
+        const outlets = this.state[outletsKey];
+        const outlet = availableOutlets[index];
+        if (!outlet) return;
+
+        if(find(outlets, ['id', outlet.id]) === undefined){
+            this.setState({
+                [outletsKey]: update(outlets, { $push: [outlet] }),
+                availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
+                updatePurchases: true
+            }, () => {
+                setInLocalStorage('views/purchases', { [outletsKey]: this.state[outletsKey] });
+            });
+        }
+    }
+
+    /**
      * Remove outlet from filter
      * @param {string} outletToRemove A title string of the outlet
      * @param {int} index index in the array
      */
     removeOutlet = (outletToRemove, index) => {
-        const outlet = this.state.outlets[index];
+        const outletsKey = `${this.state.activeTab.toLowerCase()}/outlets`;
+        const outlet = this.state[outletsKey][index];
 
         this.setState({
             // Keep the filtered list updated
-            outlets: update(this.state.outlets, {$splice: [[index, 1]]}),
+            [outletsKey]: update(this.state[outletsKey], { $splice: [[index, 1]] }),
             // Add the user back to the autocomplete list
-            availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}),
+            availableOutlets: update(this.state.availableOutlets, { $push: [outlet] }),
             updatePurchases: true,
         }, () => {
-            setInLocalStorage('views/purchases', { outlets: this.state.outlets });
+            setInLocalStorage('views/purchases', { [outletsKey]: this.state[outletsKey] });
         });
     }
 
@@ -224,18 +228,20 @@ class Purchases extends React.Component {
             return { display: 'none' };
         };
 
+        const outletsKey = `${this.state.activeTab.toLowerCase()}/outlets`;
+
         return (
             <App user={this.props.user}>
                 <TopBar
                     title="Purchases"
                     tabs={['Summary', 'Outlets']}
-                    setActiveTab={(t) => this.setState({ activeTab: t })}
+                    setActiveTab={t => this.setState({ activeTab: t })}
                     activeTab={activeTab}
                 >
                     <TagFilter
                         text="Outlets"
                         tagList={this.state.availableOutlets}
-                        filterList={this.state.outlets}
+                        filterList={this.state[outletsKey]}
                         onTagInput={this.findOutlets}
                         onTagAdd={this.addOutlet}
                         onTagRemove={this.removeOutlet}
@@ -289,7 +295,7 @@ class Purchases extends React.Component {
                 <Outlets
                     style={getTabStyle('Outlets')}
                     loadData={activeTab === 'Outlets'}
-                    outletIds={this.state.outlets.map(o => o.id)}
+                    outletIds={this.state['outlets/outlets'].map(o => o.id)}
                     statsTime={this.state.outletStatsTime}
                 />
             </App>
