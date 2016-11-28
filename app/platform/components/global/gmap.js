@@ -3,6 +3,7 @@ import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
 import Marker from 'react-google-maps/lib/Marker';
 import Circle from 'react-google-maps/lib/Circle';
+import api from 'app/lib/api';
 import utils from 'utils';
 
 /**
@@ -25,6 +26,7 @@ class GMap extends React.Component {
         fitBoundsOnMount: PropTypes.bool,
         markersData: PropTypes.array,
         onMouseOverMarker: PropTypes.func,
+        renderUsers: PropTypes.bool,
         panTo: PropTypes.object,
     };
 
@@ -72,11 +74,12 @@ class GMap extends React.Component {
             if (nextProps.panTo) this.map.panTo(nextProps.panTo);
             else this.map.panTo(this.state.center);
         }
+
+        if (this.props.renderUsers) this.getUsers();
     }
 
     componentDidUpdate(prevProps) {
         const { radius, fitBoundsOnMount, rerender } = this.props;
-
         const fitBounds = fitBoundsOnMount && !this.hasFitBounds && radius;
         const radiusChanged = prevProps.radius !== radius;
         if (fitBounds || radiusChanged) {
@@ -133,6 +136,21 @@ class GMap extends React.Component {
             }
         })
         .then(center => this.setState({ center }));
+    }
+
+    getUsers() {
+        if (!this.map || !this.map.getBounds()) return;
+        const params = {
+            geo: {
+                type: 'Polygon',
+                coordinates: utils.generatePolygonFromBounds(this.map.getBounds()),
+            },
+        };
+
+        api
+        .get('user/locations/find', params)
+        .then(users => this.setState({ users }))
+        .catch(res => res);
     }
 
     renderCenterMarker() {
@@ -194,7 +212,7 @@ class GMap extends React.Component {
         return markersData
         .map((m, i) => (
             <Marker
-                key={i}
+                key={`marker-${i}`}
                 position={m.position}
                 icon={markerImage(m)}
                 zIndex={m.active ? 3 : 1}
@@ -203,6 +221,28 @@ class GMap extends React.Component {
             />
         ))
         .filter(m => !!m);
+    }
+
+    renderUsers() {
+        const { users } = this.state;
+        if (!users || !users.length) return null;
+        const image = {
+            url: '/images/assignment-user@3x.png',
+            size: new google.maps.Size(30, 33),
+            scaledSize: new google.maps.Size(10, 11),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(5, 5.5),
+        };
+
+        return users
+        .map((u, i) => (
+            <Marker
+                key={`users-${i}`}
+                position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
+                icon={image}
+                draggable={false}
+            />
+        ));
     }
 
     render() {
@@ -237,6 +277,7 @@ class GMap extends React.Component {
                             {this.renderCenterMarker()}
                             {this.renderRadiusCircle()}
                             {this.renderMarkers()}
+                            {this.renderUsers()}
                         </GoogleMap>
                     }
                 />

@@ -87,6 +87,7 @@ class Sidebar extends React.Component {
                     panTo={mapPanTo}
                     zoom={13}
                     onMouseOverMarker={onMouseOverMarker}
+                    renderUsers
                     rerender
                     fitBoundsOnMount
                 />
