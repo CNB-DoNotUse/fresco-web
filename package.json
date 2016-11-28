@@ -8,7 +8,7 @@
     "test": "NODE_PATH='./:./lib' mocha --compilers js:babel-core/register --require ./test/setup.js --require ignore-styles \"test/**/*@(.js)\"",
     "test:watch": "npm run test -- --reporter min --watch",
     "build": "webpack --progress --colors --display-error-details --config webpack/webpack.config.js",
-    "buildProd": "NODE_ENV=production webpack --progress --colors --display-error-details -p --config webpack/webpack.production.config.js"
+    "buildProd": "NODE_ENV=production webpack --progress --colors --display-error-details --config webpack/webpack.production.config.js"
   },
   "dependencies": {
     "async": "~2.0.0-rc.3",
