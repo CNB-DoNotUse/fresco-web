@@ -57,7 +57,7 @@ class PostDetailImage extends React.Component {
             // Check if the post is purchased
             if (user.outlet && !purchased) {
                 actions.push(purchaseAction);
-            } else {
+            } else if(purchased) {
                 actions.push(downloadAction);
             }
         }
