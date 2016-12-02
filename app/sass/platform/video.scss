@@ -1,11 +1,33 @@
 @import '~video.js/dist/video-js.css';
+@import '~customDependencies/valiant/valiant360.css';
 
+/**
+ * Generic video wrapper found fresco-video
+ */
 .fresco-video-wrap {
     .full-width {
         width:100% !important;
     }
+
 }
 
+/**
+ * VR Wrapper Styles
+ */
+.fresco-vr-wrap {
+    width:inherit;
+    
+    .fresco-vr {
+        height:337px;
+        // width:100%;
+        // min-width:600px;
+    }
+}
+
+
+/**
+ * Video styles inside the post cell
+ */
 .tile-body {
     .fresco-video-wrap {
         position: relative;

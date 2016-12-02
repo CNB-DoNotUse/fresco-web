@@ -148,6 +148,10 @@ Nav.prototype.loadModal = function(m) {
     }
 }
 
+/**
+ * Handles loading the modal with a passed prototype
+ * @param  {Object} passedPrototype Passed prototype that comes from webpack's require.ensure
+ */
 Nav.prototype.handleModal = function(passedPrototype) {
     //Require and init modal through prototype
     const modal = new passedPrototype(this.screen);
@@ -216,7 +220,7 @@ Nav.prototype.presentModal = function(modalId, pushState, callback = ()=>{}) {
                 );
 			}
 		}); 
-	} else{
+	} else {
 		$('.modal').velocity('fadeOut', {
 			duration: this.modalTransitionLength,
 			complete: () => {

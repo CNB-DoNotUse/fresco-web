@@ -520,7 +520,7 @@ class Edit extends React.Component {
     }
 
     renderBody() {
-        const { gallery } = this.props;
+        const { gallery, visible } = this.props;
         const {
             stories,
             caption,
@@ -538,6 +538,7 @@ class Edit extends React.Component {
             bylineDisabled,
             updateHighlightedAt,
         } = this.state;
+        
         if (!gallery) return '';
 
         return (
@@ -662,7 +663,7 @@ class Edit extends React.Component {
                     />
                 </div>
 
-                {get(posts, 'length') || get(uploads, 'length') ? (
+                {visible && get(posts, 'length') || get(uploads, 'length') ? (
                     <EditPosts
                         originalPosts={gallery.posts}
                         editingPosts={posts}

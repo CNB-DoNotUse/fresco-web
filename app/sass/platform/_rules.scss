@@ -412,9 +412,10 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 			> div {
 				padding: 0 24px;
 				> div.card {
-					width: auto;
+					width:auto;
 					margin-bottom: 24px;
 					> div.card-body {
+						width:100%;
 						padding: 0 0 48px;
 					}
 					> div.card-foot {

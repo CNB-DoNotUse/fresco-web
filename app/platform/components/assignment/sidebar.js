@@ -16,7 +16,7 @@ class Sidebar extends React.Component {
         const expirationTime = new Date(assignment.ends_at);
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ')
             + moment(expirationTime).fromNow();
-        const createdText = 'Created at ' + moment(assignment.created_at).format('LT');
+        const createdText = 'Created at ' + utils.formatTime(assignment.created_at, true);
         const { photo_count, video_count } = assignment;
 
         return (

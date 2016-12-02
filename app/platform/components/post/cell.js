@@ -148,6 +148,7 @@ class PostCell extends React.Component {
                         <FrescoVideo
                             video={post.stream}
                             hideControls
+                            muted={true}
                             autoplay
                         />
                     ) : (
