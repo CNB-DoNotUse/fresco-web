@@ -67,6 +67,8 @@ class FrescoVideo extends React.Component {
     }
 
     setUpVRPlayer = () => {
+        const { autoplay, muted } = this.props;
+
         //Isolate Valiant dependencies to its own file to not have to load it on non-VR pages
         require.ensure(['three', 'script!customDependencies/valiant/jquery.valiant360.min.js'], (require) => {
             global.THREE = require('three');
@@ -75,7 +77,9 @@ class FrescoVideo extends React.Component {
             $('#fresco-video-element').Valiant360({
                 hideControls: false,    // hide player controls
                 keyboardControls: true, // use keyboard controls (move by arrows),
-                autoplay: this.props.autoplay
+                clickAndDrag: true,
+                autoplay,
+                muted
             });
         }, 'valiant');
     }
