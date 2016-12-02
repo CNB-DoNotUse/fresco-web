@@ -24,8 +24,6 @@ class FrescoVideo extends React.Component {
         autoplay: false,
         muted: false,
         video: '',
-        width: 'auto',
-        height: 'auto',
         vr: false,
         highRes: false,
     }
@@ -83,9 +81,9 @@ class FrescoVideo extends React.Component {
     }
 
     setUpPlayer = () => {
-        const options = {
-            muted: this.props.muted
-        };
+        const { highRes, muted } = this.props;
+
+        const options = { muted };
       
         const videoJSPlayer = videojs(this.state.id, options);
 
