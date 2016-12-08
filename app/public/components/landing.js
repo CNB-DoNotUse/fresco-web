@@ -31,30 +31,30 @@ Landing.prototype = new Animation();
  * Full landing init function for page
  */
 Landing.prototype.init = function() {
+    if(window.location.pathname === '/') { 
+        this.indexInit(); 
+    }    
+
     this.nav.init();
     Waves.attach('.button', [ 'waves-block', 'waves-classic']);
     Waves.init();
     this.resize();
     this.enableDropdown();
 
-    if(window.location.pathname === '/') { 
-        this.indexInit(); 
-    }    
 }
 
 /**
  * Specific inilizaiton for landing page elements
  */
 Landing.prototype.indexInit = function() {
+    //Set the bottom to visible after initializing
+    this.bottom.style.opacity = 1;
     this.slick.loadHighlights();
 
     this.bottomOffsetTop = $(this.bottom).offset().top - 100; //100 for the absolute green money
     this.bottomOffset = $(window).height() - this.bottomOffsetTop;
 
     this.updateElements(window.pageYOffset);
-
-    //Set the bottom to visible after initializing
-    this.bottom.style.opacity = 1;
 }
 
 /**
