@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
-import GMap from 'app/platform/components/global/gmap';
+import AssignmentMap from './map';
 
 /**
  * Sidebar Component
@@ -16,7 +16,7 @@ class Sidebar extends React.Component {
         loading: PropTypes.bool.isRequired,
         mapMarkers: PropTypes.array,
         mapPanTo: PropTypes.object,
-        onHoverMarker: PropTypes.func,
+        onMouseOverMarker: PropTypes.func,
     };
 
     /**
@@ -34,7 +34,7 @@ class Sidebar extends React.Component {
             <div className="meta-list">
                 <ul className="md-type-subhead">
                     <li>
-                        <span className="mdi mdi-map-marker icon"></span>
+                        <span className="mdi mdi-map-marker icon" />
                         <span>
                             {assignment.location
                                 ? assignment.address || 'No Address'
@@ -43,11 +43,11 @@ class Sidebar extends React.Component {
                         </span>
                     </li>
                     <li>
-                        <span className="mdi mdi-clock icon"></span>
+                        <span className="mdi mdi-clock icon" />
                         <span>{createdText}</span>
                     </li>
                     <li className="expired">
-                        <span className="mdi mdi-clock icon"></span>
+                        <span className="mdi mdi-clock icon" />
                         <span>{expiredText}</span>
                     </li>
                     {assignment.outlets.map((o, i) => (
@@ -57,13 +57,13 @@ class Sidebar extends React.Component {
                         </li>
                     ))}
                     <li>
-                        <span className="mdi mdi-image icon"></span>
+                        <span className="mdi mdi-image icon" />
                         <span>
                             {photo_count + ' photo' + (utils.isPlural(photo_count) ? 's' : '')}
                         </span>
                     </li>
                     <li>
-                        <span className="mdi mdi-movie icon"></span>
+                        <span className="mdi mdi-movie icon" />
                         <span>
                             {video_count + ' video' + (utils.isPlural(video_count) ? 's' : '')}
                         </span>
@@ -77,21 +77,12 @@ class Sidebar extends React.Component {
         const { assignment, mapMarkers, mapPanTo, onMouseOverMarker } = this.props;
 
         return !isEmpty(assignment.location) && (
-            <div className="col-sm-11 col-md-10 col-sm-offset-1 col-md-offset-2">
-                <GMap
-                    location={assignment.location}
-                    radius={Math.round(utils.milesToFeet(assignment.radius))}
-                    containerElement={<div className="assignment__map-ctr" />}
-                    markersData={mapMarkers}
-                    zoomControl={false}
-                    panTo={mapPanTo}
-                    zoom={13}
-                    onMouseOverMarker={onMouseOverMarker}
-                    renderUsers
-                    rerender
-                    fitBoundsOnMount
-                />
-            </div>
+            <AssignmentMap
+                mapMarkers={mapMarkers}
+                mapPanTo={mapPanTo}
+                onMouseOverMarker={onMouseOverMarker}
+                assignment={assignment}
+            />
         );
     }
 
