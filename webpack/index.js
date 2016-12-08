@@ -70,6 +70,7 @@ const plugins = (env) => {
         arr.push(
             new webpack.optimize.UglifyJsPlugin({
                 compress: { warnings: false },
+                sourceMap: false,
             })
         );
         arr.push(new webpack.optimize.DedupePlugin());

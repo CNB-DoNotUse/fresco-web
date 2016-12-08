@@ -13,6 +13,7 @@ const session       = require('express-session');
 const RedisStore    = require('connect-redis')(session);
 const cookieParser  = require('cookie-parser');
 const bodyParser    = require('body-parser');
+const helmet        = require('helmet');
 const multer        = require('multer');
 const fs            = require('fs');
 const app           = express();
@@ -43,6 +44,9 @@ app.use(
         maxAge: 1000 * 60 * 60 * 24  // 1 day cache
     })
 );
+
+//Secure headers
+app.use(helmet())
 
 //Multer
 const storage = multer.diskStorage({

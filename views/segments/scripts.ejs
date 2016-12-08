@@ -25,6 +25,17 @@
     <script type="text/javascript" src="<%= assets[page]['js'] %>"></script>
 <% } %>
 
+<script type="text/javascript">
+    var _mfq = _mfq || [];
+    (function() {
+        var mf = document.createElement("script");
+        mf.type = "text/javascript"; mf.async = true;
+        mf.src = "//cdn.mouseflow.com/projects/97c80247-abbc-46a3-9669-0dd89eb5396c.js";
+        document.getElementsByTagName("head")[0].appendChild(mf);
+    })();
+    window._mfq.push(["setVariable", "user_id", window.__initialProps__ ? window.__initialProps__.user.id : null]);
+</script>
+
 
 <!--Google Analytics-->
 <% include ga %>

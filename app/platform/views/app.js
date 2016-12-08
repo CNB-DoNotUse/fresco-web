@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import Sidebar from '../components/sidebar';
 import '../../sass/platform/screen.scss';
-
 global.jQuery = require('jquery');
 require('snackbarjs');
 require('alerts');

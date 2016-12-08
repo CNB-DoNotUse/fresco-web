@@ -3,7 +3,7 @@
 export const getFromSessionStorage = (key, dataKey, unfound = null) => {
     if (sessionStorage.getItem(key)) {
         const data = JSON.parse(sessionStorage.getItem(key));
-        return data[dataKey];
+        if (data && data[dataKey]) return data[dataKey];
     }
 
     return unfound;
@@ -12,7 +12,7 @@ export const getFromSessionStorage = (key, dataKey, unfound = null) => {
 export const getFromLocalStorage = (key, dataKey, unfound = null) => {
     if (localStorage.getItem(key)) {
         const data = JSON.parse(localStorage.getItem(key));
-        return data[dataKey];
+        if (data && data[dataKey]) return data[dataKey];
     }
 
     return unfound;

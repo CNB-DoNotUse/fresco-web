@@ -57,17 +57,24 @@ class PostDetailImage extends React.Component {
             // Check if the post is purchased
             if (user.outlet && !purchased) {
                 actions.push(purchaseAction);
-            } else {
+            } else if(purchased) {
                 actions.push(downloadAction);
             }
         }
 
         if (post.stream) {
+            let vr = false;
+
+            if(post.width / post.height === 2) {
+                vr = true;
+            }
+
             postMedia = (
                 <FrescoVideo
-                    video={post.stream}
+                    video={vr ? utils.streamToMp4(post.stream) : post.stream}
                     thumbnail={post.image}
                     width="640"
+                    vr={vr}
                     highRes
                     autoplay
                     muted
@@ -85,7 +92,7 @@ class PostDetailImage extends React.Component {
         }
 
         return (
-            <div className="col-xs-12 col-md-8">
+            <div className="col-xs-12 col-md-8 post-media-wrap">
                 <div className="card panel">
                     <div className="card-foot small">
                         {actions}

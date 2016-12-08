@@ -13,7 +13,7 @@ import ConfirmDialog from '../components/dialogs/confirm';
 class UserSettings extends React.Component {
 
     state = {
-        avatar: this.props.user.avatar || utils.defaultAvatar,
+        avatar: utils.formatImg(this.props.user.avatar, 'small') || utils.defaultSmallAvatar,
         user: this.props.user,
         passwordToggled: false,
         verify_password: null,
