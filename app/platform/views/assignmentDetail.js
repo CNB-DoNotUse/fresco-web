@@ -6,10 +6,12 @@ import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import { getLatLngFromGeo } from 'app/lib/location';
 import 'app/sass/platform/_assignment';
 import 'app/sass/platform/_posts';
+import isEmpty from 'lodash/isEmpty';
 import TopBar from '../components/topbar';
 import PostList from '../components/post/list';
 import Sidebar from '../components/assignment/sidebar';
 import Edit from '../components/assignment/edit';
+import AssignmentMap from '../components/assignment/map';
 import App from './app';
 
 /**
@@ -243,9 +245,14 @@ class AssignmentDetail extends React.Component {
                     assignment={assignment}
                     expireAssignment={this.expireAssignment}
                     loading={loading}
-                    markerData={markerData}
-                    mapPanTo={mapPanTo}
-                    onMouseOverMarker={this.onMouseOverMarker}
+                    map={!isEmpty(assignment.location) && (
+                        <AssignmentMap
+                            markerData={markerData}
+                            mapPanTo={mapPanTo}
+                            onMouseOverMarker={this.onMouseOverMarker}
+                            assignment={assignment}
+                        />
+                    )}
                 />
 
                 <div className="col-sm-8 tall">

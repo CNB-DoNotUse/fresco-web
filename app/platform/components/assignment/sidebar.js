@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 import moment from 'moment';
-import isEmpty from 'lodash/isEmpty';
-import AssignmentMap from './map';
 
 /**
  * Sidebar Component
@@ -14,9 +12,7 @@ class Sidebar extends React.Component {
         assignment: PropTypes.object.isRequired,
         expireAssignment: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
-        markerData: PropTypes.array,
-        mapPanTo: PropTypes.object,
-        onMouseOverMarker: PropTypes.func,
+        map: PropTypes.node.isRequired,
     };
 
     /**
@@ -73,21 +69,8 @@ class Sidebar extends React.Component {
         );
     }
 
-    renderMap() {
-        const { assignment, markerData, mapPanTo, onMouseOverMarker } = this.props;
-
-        return !isEmpty(assignment.location) && (
-            <AssignmentMap
-                markerData={markerData}
-                mapPanTo={mapPanTo}
-                onMouseOverMarker={onMouseOverMarker}
-                assignment={assignment}
-            />
-        );
-    }
-
     render() {
-        const { assignment, expireAssignment, loading } = this.props;
+        const { assignment, expireAssignment, loading, map } = this.props;
         const expireButton = (
             <button
                 className="btn fat tall btn-error assignment-expire"
@@ -114,7 +97,7 @@ class Sidebar extends React.Component {
                     </div>
                 </div>
 
-                {this.renderMap()}
+                {map}
             </div>
 
         );
