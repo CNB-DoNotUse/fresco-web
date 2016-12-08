@@ -1,5 +1,14 @@
 @import './_variables';
 
+@keyframes blueBackground {
+    from {background-color:rgba(92, 133, 245, 0.54);}
+    to {background-color: transparent;}
+}
+
+.tile__frame--highlighted {
+    animation: blueBackground 3s ease-in-out;
+}
+
 .tile__first-look {
     display: inline-block;
     color: #0047bb;
@@ -17,7 +26,6 @@
     span {
         margin-left: 4.7px;
     }
-
 }
 
 // related

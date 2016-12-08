@@ -21,6 +21,7 @@ class PostCell extends React.Component {
         sizes: PropTypes.object,
         editable: PropTypes.bool,
         toggled: PropTypes.bool,
+        highlighted: PropTypes.bool,
         togglePost: PropTypes.func,
         onMouseEnter: PropTypes.func,
     };
@@ -117,6 +118,7 @@ class PostCell extends React.Component {
             parentCaption,
             size,
             sizes,
+            highlighted,
         } = this.props;
         const { galleryEditVisible, gallery, mouseEntered } = this.state;
         const divSize = size === 'large' ? sizes.large : sizes.small;
@@ -127,7 +129,7 @@ class PostCell extends React.Component {
                 className={`${divSize} tile ${toggled ? 'toggled' : ''}`}
             >
                 <div className="tile-body noselect">
-                    <div className="frame" />
+                    <div className={`tile__frame ${highlighted ? 'tile__frame--highlighted' : ''}`} />
 
                     <div
                         className="hover"
@@ -153,7 +155,7 @@ class PostCell extends React.Component {
                         <FrescoVideo
                             video={post.stream}
                             hideControls
-                            muted={true}
+                            muted
                             autoplay
                         />
                     ) : (

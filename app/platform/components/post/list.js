@@ -6,6 +6,7 @@ import PostCell from './cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
 import GalleryCreate from '../gallery/create';
+import 'app/sass/platform/_posts.scss';
 
 /**
  * Post List Parent Object
@@ -200,6 +201,7 @@ class PostList extends React.Component {
             parentCaption,
             onMouseEnterPost,
             onMouseLeaveList,
+            scrollTo,
         } = this.props;
         const {
             posts,
@@ -218,6 +220,7 @@ class PostList extends React.Component {
                     {posts.map((p, i) => (
                         <PostCell
                             ref={(r) => { this[`cell${p.id}`] = r; }}
+                            highlighted={scrollTo === p.id}
                             size={size}
                             parentCaption={parentCaption}
                             post={p}

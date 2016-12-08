@@ -25,7 +25,7 @@ export default class StoryCell extends React.Component {
 		return(
 			<div className='col-xs-6 col-md-3 tile story' onClick={this.onClick}>
 				<div className="tile-body">
-					<div className="frame"></div>
+					<div className="tile__frame"></div>
 
 					<div className="hover">
 						<p className="md-type-body1">{story.caption}</p>
