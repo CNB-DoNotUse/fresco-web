@@ -27,7 +27,7 @@ class AssignmentDetail extends React.Component {
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
         loading: false,
-        mapMarkers: [],
+        markerData: [],
     };
 
     componentDidMount() {
@@ -53,9 +53,9 @@ class AssignmentDetail extends React.Component {
     }
 
     onMouseLeavePostList = () => {
-        let { mapMarkers } = this.state;
-        mapMarkers = mapMarkers.map(m => Object.assign(m, { active: false }));
-        this.setState({ mapPanTo: null, mapMarkers });
+        let { markerData } = this.state;
+        markerData = markerData.map(m => Object.assign(m, { active: false }));
+        this.setState({ mapPanTo: null, markerData });
     }
 
     onMouseOverMarker = (scrollToPostId) => {
@@ -64,18 +64,18 @@ class AssignmentDetail extends React.Component {
     }
 
     setMarkerActive(id, panTo = false) {
-        let { mapMarkers } = this.state;
-        const idx = mapMarkers.findIndex(p => p.id === id);
+        let { markerData } = this.state;
+        const idx = markerData.findIndex(p => p.id === id);
         if (idx === -1) return;
 
-        const marker = mapMarkers[idx];
-        mapMarkers = mapMarkers.map(m => Object.assign(m, { active: false }));
+        const marker = markerData[idx];
+        markerData = markerData.map(m => Object.assign(m, { active: false }));
         marker.active = true;
-        mapMarkers[idx] = marker;
+        markerData[idx] = marker;
 
         this.setState({
             mapPanTo: panTo ? marker.position : null,
-            mapMarkers,
+            markerData,
         });
     }
 
@@ -104,7 +104,7 @@ class AssignmentDetail extends React.Component {
             };
         }).filter(m => !!m);
 
-        this.setState({ mapMarkers: this.state.mapMarkers.concat(markers) });
+        this.setState({ markerData: this.state.markerData.concat(markers) });
     }
 
     fetchAssignment() {
@@ -218,7 +218,7 @@ class AssignmentDetail extends React.Component {
             verifiedToggle,
             loading,
             sortBy,
-            mapMarkers,
+            markerData,
             mapPanTo,
             scrollToPostId,
         } = this.state;
@@ -243,7 +243,7 @@ class AssignmentDetail extends React.Component {
                     assignment={assignment}
                     expireAssignment={this.expireAssignment}
                     loading={loading}
-                    mapMarkers={mapMarkers}
+                    markerData={markerData}
                     mapPanTo={mapPanTo}
                     onMouseOverMarker={this.onMouseOverMarker}
                 />

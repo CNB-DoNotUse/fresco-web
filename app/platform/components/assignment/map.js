@@ -6,7 +6,7 @@ import GMap from '../global/gmap';
 
 class AssignmentMap extends React.Component {
     static propTypes = {
-        mapMarkers: PropTypes.array,
+        markerData: PropTypes.array,
         mapPanTo: PropTypes.object,
         onMouseOverMarker: PropTypes.func,
         assignment: PropTypes.object,
@@ -35,7 +35,7 @@ class AssignmentMap extends React.Component {
         .catch(res => res);
     }
 
-    renderMarkers() {
+    renderUserMarkers() {
         const { users } = this.state;
         if (!users || !users.length) return null;
         const image = {
@@ -57,8 +57,36 @@ class AssignmentMap extends React.Component {
         ));
     }
 
+    renderDataMarkers() {
+        const { markerData, onMouseOverMarker } = this.props;
+        if (!markerData || !markerData.length) return null;
+
+        const markerImage = m => ({
+            url: m.active ? m.iconUrl.active : m.iconUrl.normal,
+            size: new google.maps.Size(108, 114),
+            scaledSize: new google.maps.Size(36, 38),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(18, 19),
+        });
+
+        return markerData
+        .map((m, i) => (
+            <Marker
+                key={`marker-${i}`}
+                position={m.position}
+                icon={markerImage(m)}
+                zIndex={m.active ? 3 : 1}
+                draggable={false}
+                onMouseover={() => onMouseOverMarker(m.id)}
+            />
+        ))
+        .filter(m => !!m);
+    }
+
     render() {
-        const { assignment, mapMarkers, mapPanTo, onMouseOverMarker } = this.props;
+        const { assignment, mapPanTo, onMouseOverMarker } = this.props;
+        const userMarkers = this.renderUserMarkers();
+        const dataMarkers = this.renderDataMarkers();
 
         return (
             <div className="col-sm-11 col-md-10 col-sm-offset-1 col-md-offset-2">
@@ -67,12 +95,11 @@ class AssignmentMap extends React.Component {
                     location={assignment.location}
                     radius={Math.round(utils.milesToFeet(assignment.radius))}
                     containerElement={<div className="assignment__map-ctr" />}
-                    markersData={mapMarkers}
                     zoomControl={false}
                     panTo={mapPanTo}
                     zoom={13}
                     onMouseOverMarker={onMouseOverMarker}
-                    markers={this.renderMarkers()}
+                    markers={[].concat(userMarkers).concat(dataMarkers)}
                     rerender
                     fitBoundsOnMount
                 />

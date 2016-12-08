@@ -14,7 +14,7 @@ class Sidebar extends React.Component {
         assignment: PropTypes.object.isRequired,
         expireAssignment: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
-        mapMarkers: PropTypes.array,
+        markerData: PropTypes.array,
         mapPanTo: PropTypes.object,
         onMouseOverMarker: PropTypes.func,
     };
@@ -74,11 +74,11 @@ class Sidebar extends React.Component {
     }
 
     renderMap() {
-        const { assignment, mapMarkers, mapPanTo, onMouseOverMarker } = this.props;
+        const { assignment, markerData, mapPanTo, onMouseOverMarker } = this.props;
 
         return !isEmpty(assignment.location) && (
             <AssignmentMap
-                mapMarkers={mapMarkers}
+                markerData={markerData}
                 mapPanTo={mapPanTo}
                 onMouseOverMarker={onMouseOverMarker}
                 assignment={assignment}

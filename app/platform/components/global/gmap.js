@@ -25,8 +25,6 @@ class GMap extends React.Component {
         containerElement: PropTypes.node,
         markers: PropTypes.array,
         fitBoundsOnMount: PropTypes.bool,
-        markersData: PropTypes.array,
-        onMouseOverMarker: PropTypes.func,
         panTo: PropTypes.object,
     };
 
@@ -179,32 +177,6 @@ class GMap extends React.Component {
         );
     }
 
-    renderMarkers() {
-        const { markersData, onMouseOverMarker } = this.props;
-        if (!markersData || !markersData.length) return null;
-
-        const markerImage = m => ({
-            url: m.active ? m.iconUrl.active : m.iconUrl.normal,
-            size: new google.maps.Size(108, 114),
-            scaledSize: new google.maps.Size(36, 38),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(18, 19),
-        });
-
-        return markersData
-        .map((m, i) => (
-            <Marker
-                key={`marker-${i}`}
-                position={m.position}
-                icon={markerImage(m)}
-                zIndex={m.active ? 3 : 1}
-                draggable={false}
-                onMouseover={() => onMouseOverMarker(m.id)}
-            />
-        ))
-        .filter(m => !!m);
-    }
-
     render() {
         const {
             zoom,
@@ -243,7 +215,6 @@ class GMap extends React.Component {
                         >
                             {this.renderCenterMarker()}
                             {this.renderRadiusCircle()}
-                            {this.renderMarkers()}
                             {markers}
                         </GoogleMap>
                     }
