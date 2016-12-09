@@ -11,6 +11,7 @@ import TopBar from '../components/topbar';
 import PostList from '../components/post/list';
 import Sidebar from '../components/assignment/sidebar';
 import Edit from '../components/assignment/edit';
+import ItemsDialog from '../components/dialogs/items';
 import AssignmentMap from '../components/assignment/map';
 import App from './app';
 
@@ -25,17 +26,22 @@ class AssignmentDetail extends React.Component {
 
     state = {
         assignment: this.props.assignment,
+        acceptedDialog: false,
         editToggled: false,
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
         loading: false,
         markerData: [],
+        acceptedUsers: [],
     };
 
     componentDidMount() {
         setInterval(() => {
             if (!this.state.editToggled) {
                 this.fetchAssignment();
+            }
+            if (this.props.user.permissions.includes('update-other-content')) {
+                this.fetchAcceptedUsers();
             }
         }, 5000);
     }
@@ -118,6 +124,16 @@ class AssignmentDetail extends React.Component {
         })
         .then((res) => {
             this.setState({ assignment: res });
+        });
+    }
+
+    fetchAcceptedUsers() {
+        const { assignment, acceptedUsers } = this.state;
+        if (!assignment || !assignment.id) return;
+
+        api.get(`/api/assignment/${assignment.id}/accepted`)
+        .then((res) => {
+            this.setState({ acceptedUsers: res });
         });
     }
 
@@ -223,6 +239,8 @@ class AssignmentDetail extends React.Component {
             markerData,
             mapPanTo,
             scrollToPostId,
+            acceptedUsers,
+            acceptedDialog,
         } = this.state;
 
         return (
@@ -245,6 +263,7 @@ class AssignmentDetail extends React.Component {
                     assignment={assignment}
                     expireAssignment={this.expireAssignment}
                     loading={loading}
+                    user={user}
                     map={!isEmpty(assignment.location) && (
                         <AssignmentMap
                             markerData={markerData}
@@ -253,6 +272,9 @@ class AssignmentDetail extends React.Component {
                             assignment={assignment}
                         />
                     )}
+                    acceptedCount={acceptedUsers ? acceptedUsers.length : 0}
+                    onClickAccepted={() =>
+                        this.setState({ acceptedDialog: !this.state.acceptedDialog })}
                 />
 
                 <div className="col-sm-8 tall">
@@ -279,6 +301,13 @@ class AssignmentDetail extends React.Component {
                     user={user}
                     loading={loading}
                     visible={editToggled}
+                />
+
+                <ItemsDialog
+                    toggled={acceptedDialog}
+                    onClose={() => this.setState({ acceptedDialog: false })}
+                    emptyMessage="No accepted users"
+                    header="Accepted users"
                 />
             </App>
         );

@@ -19,7 +19,7 @@ class Sidebar extends React.Component {
      * AssignmentStats stats inside the sidebar
      */
     renderStats() {
-        const { assignment } = this.props;
+        const { assignment, user, acceptedCount, onClickAccepted } = this.props;
         const expirationTime = new Date(assignment.ends_at);
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ')
             + moment(expirationTime).fromNow();
@@ -64,6 +64,12 @@ class Sidebar extends React.Component {
                             {video_count + ' video' + (utils.isPlural(video_count) ? 's' : '')}
                         </span>
                     </li>
+                    {user.permissions.includes('update-other-content') && (
+                        <li style={{ cursor: 'pointer' }} onClick={onClickAccepted}>
+                            <span className="mdi mdi-account-multiple icon" />
+                            <span>{acceptedCount}</span>
+                        </li>
+                    )}
                 </ul>
             </div>
         );
