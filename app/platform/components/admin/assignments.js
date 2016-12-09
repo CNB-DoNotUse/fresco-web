@@ -73,7 +73,8 @@ class Assignments extends React.Component {
             editPane = (
                 <AssignmentEdit
                     assignment={activeAssignment}
-                    onUpdateAssignment={(id) => this.onUpdateAssignment(id)}
+                    onUpdateAssignment={id => this.onUpdateAssignment(id)}
+                    user={this.props.user}
                 />
             );
         }
@@ -95,6 +96,7 @@ Assignments.propTypes = {
     assignments: PropTypes.array.isRequired,
     getData: PropTypes.func.isRequired,
     removeAssignment: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired,
 };
 
 export default Assignments;
