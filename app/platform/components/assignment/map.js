@@ -39,30 +39,48 @@ class AssignmentMap extends React.Component {
     getActiveUsers() {
         api
         .get(`assignment/${this.props.assignment.id}/accepted`)
-        .then(activeUsers => this.setState({ activeUsers }))
+        .then(acceptedUsers => this.setState({ acceptedUsers }))
         .catch(res => res);
     }
 
     renderUserMarkers() {
-        const { users } = this.state;
+        const { users, acceptedUsers } = this.state;
         if (!users || !users.length) return null;
-        const image = {
+        const userIcon = {
             url: '/images/assignment-user@3x.png',
             size: new google.maps.Size(30, 33),
             scaledSize: new google.maps.Size(10, 11),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(5, 5.5),
         };
+        const acceptedIcon = {
+            url: '/images/assignment-user-accepted@3x.png',
+            size: new google.maps.Size(30, 33),
+            scaledSize: new google.maps.Size(10, 11),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(5, 5.5),
+        };
 
-        return users
-        .map((u, i) => (
-            <Marker
-                key={`users-${i}`}
-                position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
-                icon={image}
-                draggable={false}
-            />
-        ));
+        const userMarkers = users
+            .map((u, i) => (
+                <Marker
+                    key={`users-${i}`}
+                    position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
+                    icon={userIcon}
+                    draggable={false}
+                />
+            ));
+        const acceptedMarkers = acceptedUsers
+            .map((u, i) => (
+                <Marker
+                    key={`users-${i}`}
+                    position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
+                    icon={acceptedIcon}
+                    draggable={false}
+                />
+            ));
+
+        return [].concat(userMarkers).concat(acceptedMarkers);
     }
 
     renderDataMarkers() {
