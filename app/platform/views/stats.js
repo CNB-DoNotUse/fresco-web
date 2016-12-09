@@ -172,7 +172,10 @@ class Stats extends React.Component {
         const { count } = this.state;
 
         return (
-            <App user={this.props.user}>
+            <App 
+                user={this.props.user}
+                page="stats"
+            >
                 <TopBar
                     title={this.props.title} />
 

@@ -54,7 +54,10 @@ class Photos extends React.Component {
         const { sortBy, verifiedToggle } = this.state;
 
         return (
-            <App user={user}>
+            <App 
+                 user={this.props.user}
+                 page="photos"
+             >
                 <TopBar
                     title="Photos"
                     permissions={user.permissions}

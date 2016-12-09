@@ -36,7 +36,9 @@ class Outlet extends React.Component {
         }
 
         return (
-            <App user={user}>
+            <App 
+                user={user}
+                page="outlet">
                 <TopBar
                     title={outlet.title}
                     permissions={user.permissions}

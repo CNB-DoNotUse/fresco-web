@@ -23,10 +23,29 @@ class App extends React.Component {
 
     static defaultProps = {
         contentClassName: '',
+        page: 'Unknown'
     };
 
     componentDidMount() {
         $.material.init();
+
+        this.trackPage();
+    }
+
+    /**
+     * Tracks page being viewed through analytics provided
+     */
+    trackPage() {
+        const { user, page } = this.props;
+
+        if(analytics && typeof(analytics) !== 'undefined') {
+            analytics.identify(this.props.user.id, {
+                name: this.props.user.full_name,
+                email: this.props.user.email
+            });
+
+            analytics.page(page);
+        }
     }
 
     render() {
