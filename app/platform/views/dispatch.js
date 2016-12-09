@@ -132,8 +132,8 @@ class Dispatch extends React.Component {
                 coordinates :  utils.generatePolygonFromBounds(map.getBounds())
             };
         } else {
-            params.sortBy = params.rating == 0 ? 'created_at' : 'ends_at';
-            params.direction = viewMode === 'active' ? 'asc' : 'desc'; //Switch sort when viewing non-active `history`
+            params.sortBy ='created_at';
+            params.direction = 'desc';
             params.limit = 10;
         }
 
