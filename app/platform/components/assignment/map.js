@@ -17,10 +17,11 @@ class AssignmentMap extends React.Component {
     }
 
     componentWillReceiveProps() {
-        this.getUsers();
+        this.getAllUsers();
+        this.getActiveUsers();
     }
 
-    getUsers() {
+    getAllUsers() {
         if (!this.gmap.map || !this.gmap.map.getBounds()) return;
         const params = {
             geo: {
@@ -32,6 +33,13 @@ class AssignmentMap extends React.Component {
         api
         .get('user/locations/find', params)
         .then(users => this.setState({ users }))
+        .catch(res => res);
+    }
+
+    getActiveUsers() {
+        api
+        .get(`assignment/${this.props.assignment.id}/accepted`)
+        .then(activeUsers => this.setState({ activeUsers }))
         .catch(res => res);
     }
 
@@ -109,3 +117,4 @@ class AssignmentMap extends React.Component {
 }
 
 export default AssignmentMap;
+
