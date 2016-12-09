@@ -21,6 +21,16 @@ import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
 import { LoaderOpacity } from '../global/loader';
 
+const deletePosts = (postIds) => {
+    if (!postIds || !postIds.length) return Promise.resolve();
+    return api.post('post/delete', { post_ids: postIds });
+};
+
+const saveGallery = (id, params) => {
+    if (!id || !params) return Promise.resolve();
+    return api.post(`gallery/${id}/update`, params);
+};
+
 /**
  * Gallery Edit Parent Object
  * Component for adding gallery editing to the current view
@@ -90,7 +100,7 @@ class Edit extends React.Component {
     onSave = () => {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
-        let { loading, uploads, assignments, isOriginalGallery } = this.state;
+        const { loading, assignments, isOriginalGallery } = this.state;
 
         if (!Object.keys(params).length) {
             $.snackbar({ content: 'No changes made!' });
@@ -100,15 +110,16 @@ class Edit extends React.Component {
         this.setState({ loading: true });
         const postsToDelete = isOriginalGallery ? get(params, 'posts_remove') : [];
 
-        Promise.all([
-            this.saveGallery(gallery.id, params),
-            this.deletePosts(postsToDelete),
-        ])
+        saveGallery(gallery.id, params)
         .then((res) => {
-            if (get(res[0], 'posts_new.length')) {
+            deletePosts(postsToDelete);
+            return res;
+        })
+        .then((res) => {
+            if (get(res, 'posts_new.length')) {
                 return Promise.all([
-                    res[0],
-                    this.uploadFiles(res[0].posts_new, this.getFilesFromUploads()),
+                    res,
+                    this.uploadFiles(res.posts_new, this.getFilesFromUploads()),
                 ]);
             }
 
@@ -118,7 +129,7 @@ class Edit extends React.Component {
             this.hide();
             this.setState({ uploads: [], loading: false }, () => {
                 $.snackbar({ content: 'Gallery saved!' });
-                onUpdateGallery(Object.assign(res[0], { assignments }));
+                onUpdateGallery(Object.assign(res, { assignments }));
             });
         })
         .catch(() => {
@@ -382,26 +393,6 @@ class Edit extends React.Component {
         return Promise.all(requests);
     }
 
-    deletePosts(postIds) {
-        if (!postIds || !postIds.length) return Promise.resolve();
-        return api.post('post/delete', { post_ids: postIds });
-    }
-
-    saveGallery(id, params) {
-        if (!id || !params) return Promise.resolve();
-
-        return new Promise((resolve, reject) => (
-            $.ajax({
-                url: `/api/gallery/${id}/update`,
-                method: 'post',
-                contentType: 'application/json',
-                data: JSON.stringify(params),
-            })
-            .done(resolve)
-            .fail(reject)
-        ));
-    }
-
     removeGallery(id) {
         if (!id || this.state.loading) return;
 
@@ -538,7 +529,7 @@ class Edit extends React.Component {
             bylineDisabled,
             updateHighlightedAt,
         } = this.state;
-        
+
         if (!gallery) return '';
 
         return (
