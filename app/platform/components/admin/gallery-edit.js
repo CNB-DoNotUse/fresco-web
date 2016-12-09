@@ -113,10 +113,10 @@ export default class GalleryEdit extends React.Component {
         const params = this.getFormData();
         const postsToDelete = get(params, 'posts_remove', []);
 
-        Promise.all([
-            saveGallery(gallery.id, params),
-            deletePosts(postsToDelete),
-        ])
+        saveGallery(gallery.id, params)
+        .then(() => {
+            deletePosts(postsToDelete);
+        })
         .then(() => {
             onUpdateGallery(gallery.id);
             $.snackbar({
@@ -157,7 +157,7 @@ export default class GalleryEdit extends React.Component {
         });
     }
 
-	/**
+    /**
      * Skips gallery
      */
     onSkip() {
@@ -168,10 +168,10 @@ export default class GalleryEdit extends React.Component {
         const params = { ...this.getPostsParams(), rating };
         const postsToDelete = get(params, 'posts_remove', []);
 
-        Promise.all([
-            saveGallery(gallery.id, params),
-            deletePosts(postsToDelete),
-        ])
+        saveGallery(gallery.id, params)
+        .then(() => {
+            deletePosts(postsToDelete);
+        })
         .then(() => {
             onUpdateGallery(gallery.id);
             $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
