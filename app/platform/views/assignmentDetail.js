@@ -23,6 +23,7 @@ class AssignmentDetail extends React.Component {
     static propTypes = {
         user: PropTypes.object,
         assignment: PropTypes.object,
+        acceptedUsers: PropTypes.array,
     };
 
     state = {
@@ -33,16 +34,12 @@ class AssignmentDetail extends React.Component {
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
         loading: false,
         markerData: [],
-        acceptedUsers: [],
     };
 
     componentDidMount() {
         setInterval(() => {
             if (!this.state.editToggled) {
                 this.fetchAssignment();
-            }
-            if (this.props.user.permissions.includes('update-other-content')) {
-                this.fetchAcceptedUsers();
             }
         }, 5000);
     }
@@ -129,16 +126,6 @@ class AssignmentDetail extends React.Component {
         })
         .then((res) => {
             this.setState({ assignment: res });
-        });
-    }
-
-    fetchAcceptedUsers() {
-        const { assignment } = this.state;
-        if (!assignment || !assignment.id) return;
-
-        api.get(`assignment/${assignment.id}/accepted`)
-        .then((res) => {
-            this.setState({ acceptedUsers: res });
         });
     }
 
@@ -234,7 +221,7 @@ class AssignmentDetail extends React.Component {
     }
 
     render() {
-        const { user } = this.props;
+        const { user, acceptedUsers } = this.props;
         const {
             assignment,
             editToggled,
@@ -244,7 +231,6 @@ class AssignmentDetail extends React.Component {
             markerData,
             mapPanTo,
             scrollToPostId,
-            acceptedUsers,
             acceptedDialog,
         } = this.state;
 
@@ -314,8 +300,8 @@ class AssignmentDetail extends React.Component {
                         emptyMessage="No accepted users"
                         header="Accepted users"
                     >
-                        {acceptedUsers.map(u => (
-                            <AcceptedUser user={u} />
+                        {acceptedUsers.map((u, i) => (
+                            <AcceptedUser key={`accepted-user-${i}`} user={u} />
                         ))}
                     </ItemsDialog>
                 )}
@@ -328,6 +314,7 @@ ReactDOM.render(
     <AssignmentDetail
         user={window.__initialProps__.user}
         assignment={window.__initialProps__.assignment}
+        acceptedUsers={window.__initialProps__.acceptedUsers}
     />,
     document.getElementById('app')
 );

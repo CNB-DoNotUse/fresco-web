@@ -11,7 +11,7 @@ class Sidebar extends React.Component {
     static propTypes = {
         assignment: PropTypes.object.isRequired,
         user: PropTypes.object.isRequired,
-        accepetedCount: PropTypes.number.isRequired,
+        acceptedCount: PropTypes.number.isRequired,
         onClickAccepted: PropTypes.func.isRequired,
         expireAssignment: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
