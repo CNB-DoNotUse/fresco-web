@@ -19,7 +19,7 @@ class AssignmentMap extends React.Component {
         fetchedAcceptedUsers: false,
     }
 
-    componentWillReceiveProps() {
+    componentWillUpdate() {
         if (!this.state.fetchedUsers) this.getAllUsers();
         if (!this.state.fetchedAcceptedUsers) this.getAcceptedUsers();
     }
@@ -64,26 +64,20 @@ class AssignmentMap extends React.Component {
             anchor: new google.maps.Point(5, 5.5),
         };
 
-        const userMarkers = users
-            .map((u, i) => (
-                <Marker
-                    key={`users-${i}`}
-                    position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
-                    icon={userIcon}
-                    draggable={false}
-                />
-            ));
-        const acceptedMarkers = acceptedUsers
-            .map((u, i) => (
-                <Marker
-                    key={`users-${i}`}
-                    position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
-                    icon={acceptedIcon}
-                    draggable={false}
-                />
-            ));
+        const getMarkerIcon = (user) => {
+            if (acceptedUsers.some(a => a.id === user.id)) return acceptedIcon;
+            return userIcon;
+        };
 
-        return [].concat(userMarkers).concat(acceptedMarkers);
+        return users
+            .map((u, i) => (
+                <Marker
+                    key={`users-${i}`}
+                    position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
+                    icon={getMarkerIcon(u)}
+                    draggable={false}
+                />
+            ));
     }
 
     renderDataMarkers() {
