@@ -42,7 +42,7 @@ export default class Items extends React.Component {
                     <div
                         className="items"
                     >
-                        {children.length ? children : this.renderEmptyMessage()}
+                        {(children && children.length) ? children : this.renderEmptyMessage()}
                     </div>
 
                     <div className="footer">

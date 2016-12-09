@@ -31,6 +31,7 @@ export default class AssignmentEdit extends React.Component {
         return {
             address: assignment.address,
             caption: assignment.caption,
+            isAcceptable: assignment.is_acceptable,
             endsAt: moment(assignment.ends_at).valueOf(),
             location: assignment.location,
             radius,
@@ -96,7 +97,16 @@ export default class AssignmentEdit extends React.Component {
      */
     onSave() {
         const { assignment, save, loading } = this.props;
-        const { title, caption, radius, location, address, endsAt, outlets } = this.state;
+        const {
+            title,
+            caption,
+            radius,
+            location,
+            address,
+            endsAt,
+            outlets,
+            isAcceptable,
+        } = this.state;
         const geo = location && Object.prototype.hasOwnProperty.call(location, 'type')
             ? location
             : utils.getGeoFromCoord(location);
@@ -113,6 +123,7 @@ export default class AssignmentEdit extends React.Component {
             ...utils.getRemoveAddParams('outlets', assignment.outlets, outlets),
             title,
             ends_at: endsAt,
+            is_acceptable: isAcceptable,
         }, (v, k) => {
             if (isEqual(assignment[k], v)) return false;
             if (k === 'ends_at' && (moment(assignment.ends_at).valueOf() === v)) return false;
@@ -222,7 +233,16 @@ export default class AssignmentEdit extends React.Component {
     }
 
     renderBody() {
-        const { title, caption, outlets, address, location, radius, endsAt } = this.state;
+        const {
+            title,
+            caption,
+            outlets,
+            address,
+            location,
+            radius,
+            endsAt,
+            isAcceptable,
+        } = this.state;
         const { user } = this.props;
         const globalLocation = this.isGlobalLocation();
 
@@ -247,7 +267,7 @@ export default class AssignmentEdit extends React.Component {
                             placeholder="Caption"
                             title="Caption"
                             value={caption}
-                            onChange={(e) => this.setState({ caption: e.target.value })}
+                            onChange={e => this.setState({ caption: e.target.value })}
                         />
                     </div>
 
@@ -257,12 +277,25 @@ export default class AssignmentEdit extends React.Component {
                             queryAttr="title"
                             className="dialog-row"
                             items={outlets}
-                            updateItems={(o) => this.setState({ outlets: o })}
+                            updateItems={o => this.setState({ outlets: o })}
                             autocomplete
                         />
                     )}
 
+                    {user.permissions.includes('update-other-content') && (
+                        <div className="checkbox form-group">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    onChange={e => this.setState({ isAcceptable: e.target.checked })}
+                                    checked={isAcceptable}
+                                />
+                                Acceptable
+                            </label>
+                        </div>
+                    )}
                 </div>
+
                 <div className="dialog-col col-xs-12 col-md-5 form-group-default">
 
                     <div className="dialog-row map-group">

@@ -11,15 +11,16 @@ router.get('/:id', (req, res, next) => {
         user = req.session.user;
     }
 
-    api.request({
-        token,
-        url: `/assignment/${req.params.id}`,
-    }).then(response => {
-        const assignment = response.body;
-        const props = { user, assignment };
+    Promise.all([
+        api.request({ token, url: `/assignment/${req.params.id}` }),
+        api.request({ token, url: `/assignment/${req.params.id}/accepted` }),
+    ]).then((apiRes) => {
+        const assignment = apiRes[0].body;
+        const acceptedUsers = apiRes[1].body;
+        const props = { user, assignment, acceptedUsers };
 
         if (user.permissions.includes('view-all-assignments')
-            || assignment.outlets.some((o) => (o.id === user.outlet.id))) {
+            || assignment.outlets.some(o => o.id === user.outlet.id)) {
             res.render('app', {
                 props: JSON.stringify(props),
                 config,

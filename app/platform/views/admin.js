@@ -221,6 +221,7 @@ class Admin extends React.Component {
         case 'assignments':
             tab = (
                 <Assignments
+                    user={this.props.user}
                     assignments={this.getAssignments()}
                     getData={this.getData}
                     removeAssignment={(id, cb) => this.removeAssignment(id, cb)}

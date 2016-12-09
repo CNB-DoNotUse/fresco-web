@@ -129,17 +129,18 @@ export default class DispatchSubmit extends React.Component {
             title,
             caption,
             radius,
-            inputField,
             autocomplete,
-            expiration
+            expiration,
+            isAcceptable,
         } = this.refs;
 
-        let assignment = {
+        const assignment = {
             title: title.value,
             caption: caption.value,
             starts_at: Date.now(),
-            //Convert to milliseconds (from hours) and add current time
-            ends_at: expiration.value  * 60 * 60 * 1000 + Date.now()
+            // Convert to milliseconds (from hours) and add current time
+            ends_at: expiration.value * 60 * 60 * 1000 + Date.now(),
+            is_acceptable: isAcceptable.checked,
         };
 
         if(!global) {
@@ -321,6 +322,14 @@ export default class DispatchSubmit extends React.Component {
                                 checked={this.state.global}
                                 onChange={this.onGlobalChange.bind(this)} />
                             Global
+                        </label>
+                    </div>
+                    <div />
+
+                    <div className="checkbox form-group">
+                        <label>
+                            <input type="checkbox" ref="isAcceptable" />
+                            Acceptable
                         </label>
                     </div>
                 </div>

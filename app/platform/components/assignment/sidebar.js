@@ -8,11 +8,21 @@ import moment from 'moment';
  */
 class Sidebar extends React.Component {
 
+    static propTypes = {
+        assignment: PropTypes.object.isRequired,
+        user: PropTypes.object.isRequired,
+        acceptedCount: PropTypes.number.isRequired,
+        onClickAccepted: PropTypes.func.isRequired,
+        expireAssignment: PropTypes.func.isRequired,
+        loading: PropTypes.bool.isRequired,
+        map: PropTypes.node.isRequired,
+    };
+
     /**
      * AssignmentStats stats inside the sidebar
      */
     renderStats() {
-        const { assignment } = this.props;
+        const { assignment, user, acceptedCount, onClickAccepted } = this.props;
         const expirationTime = new Date(assignment.ends_at);
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ')
             + moment(expirationTime).fromNow();
@@ -23,7 +33,7 @@ class Sidebar extends React.Component {
             <div className="meta-list">
                 <ul className="md-type-subhead">
                     <li>
-                        <span className="mdi mdi-map-marker icon"></span>
+                        <span className="mdi mdi-map-marker icon" />
                         <span>
                             {assignment.location
                                 ? assignment.address || 'No Address'
@@ -32,11 +42,11 @@ class Sidebar extends React.Component {
                         </span>
                     </li>
                     <li>
-                        <span className="mdi mdi-clock icon"></span>
+                        <span className="mdi mdi-clock icon" />
                         <span>{createdText}</span>
                     </li>
                     <li className="expired">
-                        <span className="mdi mdi-clock icon"></span>
+                        <span className="mdi mdi-clock icon" />
                         <span>{expiredText}</span>
                     </li>
                     {assignment.outlets.map((o, i) => (
@@ -46,24 +56,35 @@ class Sidebar extends React.Component {
                         </li>
                     ))}
                     <li>
-                        <span className="mdi mdi-image icon"></span>
+                        <span className="mdi mdi-image icon" />
                         <span>
                             {photo_count + ' photo' + (utils.isPlural(photo_count) ? 's' : '')}
                         </span>
                     </li>
                     <li>
-                        <span className="mdi mdi-movie icon"></span>
+                        <span className="mdi mdi-movie icon" />
                         <span>
                             {video_count + ' video' + (utils.isPlural(video_count) ? 's' : '')}
                         </span>
                     </li>
+                    {user.permissions.includes('update-other-content') ? (
+                        <li style={{ cursor: 'pointer' }} onClick={onClickAccepted}>
+                            <span className="mdi mdi-account-multiple icon" />
+                            <span>{acceptedCount}</span>
+                        </li>
+                    ) : (
+                        <li>
+                            <span className="mdi mdi-account-multiple icon" />
+                            <span>{acceptedCount}</span>
+                        </li>
+                    )}
                 </ul>
             </div>
         );
     }
 
     render() {
-        const { assignment, expireAssignment, loading } = this.props;
+        const { assignment, expireAssignment, loading, map } = this.props;
         const expireButton = (
             <button
                 className="btn fat tall btn-error assignment-expire"
@@ -82,24 +103,20 @@ class Sidebar extends React.Component {
                             {assignment.caption || 'No Description'}
                         </div>
 
-                        {moment().diff(assignment.ends_at) < 1 ?
+                        {moment().diff(assignment.ends_at) < 1 && (
                             <div className="meta-user">{expireButton}</div>
-                        : ''}
+                        )}
 
                         {this.renderStats()}
                     </div>
                 </div>
+
+                {map}
             </div>
 
         );
     }
 }
-
-Sidebar.propTypes = {
-    assignment: PropTypes.object.isRequired,
-    expireAssignment: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
-};
 
 export default Sidebar;
 

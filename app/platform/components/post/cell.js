@@ -21,7 +21,9 @@ class PostCell extends React.Component {
         sizes: PropTypes.object,
         editable: PropTypes.bool,
         toggled: PropTypes.bool,
+        highlighted: PropTypes.bool,
         togglePost: PropTypes.func,
+        onMouseEnter: PropTypes.func,
     };
 
     static defaultProps = {
@@ -54,6 +56,7 @@ class PostCell extends React.Component {
 
     onMouseEnter = () => {
         this.setState({ mouseEntered: true });
+        this.props.onMouseEnter && this.props.onMouseEnter(this.props.post.id);
     }
 
     onMouseLeave = () => {
@@ -115,14 +118,18 @@ class PostCell extends React.Component {
             parentCaption,
             size,
             sizes,
+            highlighted,
         } = this.props;
         const { galleryEditVisible, gallery, mouseEntered } = this.state;
         const divSize = size === 'large' ? sizes.large : sizes.small;
 
         return (
-            <div className={`${divSize} tile ${toggled ? 'toggled' : ''}`}>
+            <div
+                ref={(r) => { this.area = r; }}
+                className={`${divSize} tile ${toggled ? 'toggled' : ''}`}
+            >
                 <div className="tile-body noselect">
-                    <div className="frame" />
+                    <div className={`tile__frame ${highlighted ? 'tile__frame--highlighted' : ''}`} />
 
                     <div
                         className="hover"
@@ -148,7 +155,7 @@ class PostCell extends React.Component {
                         <FrescoVideo
                             video={post.stream}
                             hideControls
-                            muted={true}
+                            muted
                             autoplay
                         />
                     ) : (
