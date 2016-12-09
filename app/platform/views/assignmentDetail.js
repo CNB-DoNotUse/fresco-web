@@ -13,6 +13,7 @@ import Sidebar from '../components/assignment/sidebar';
 import Edit from '../components/assignment/edit';
 import ItemsDialog from '../components/dialogs/items';
 import AssignmentMap from '../components/assignment/map';
+import AcceptedUser from '../components/assignment/accepted-user';
 import App from './app';
 
 /**
@@ -69,6 +70,10 @@ class AssignmentDetail extends React.Component {
     onMouseOverMarker = (scrollToPostId) => {
         this.setState({ scrollToPostId });
         this.setMarkerActive(scrollToPostId);
+    }
+
+    onClickAccepted = () => {
+        this.setState({ acceptedDialog: !this.state.acceptedDialog });
     }
 
     setMarkerActive(id, panTo = false) {
@@ -128,10 +133,10 @@ class AssignmentDetail extends React.Component {
     }
 
     fetchAcceptedUsers() {
-        const { assignment, acceptedUsers } = this.state;
+        const { assignment } = this.state;
         if (!assignment || !assignment.id) return;
 
-        api.get(`/api/assignment/${assignment.id}/accepted`)
+        api.get(`assignment/${assignment.id}/accepted`)
         .then((res) => {
             this.setState({ acceptedUsers: res });
         });
@@ -273,8 +278,7 @@ class AssignmentDetail extends React.Component {
                         />
                     )}
                     acceptedCount={acceptedUsers ? acceptedUsers.length : 0}
-                    onClickAccepted={() =>
-                        this.setState({ acceptedDialog: !this.state.acceptedDialog })}
+                    onClickAccepted={this.onClickAccepted}
                 />
 
                 <div className="col-sm-8 tall">
@@ -303,12 +307,18 @@ class AssignmentDetail extends React.Component {
                     visible={editToggled}
                 />
 
-                <ItemsDialog
-                    toggled={acceptedDialog}
-                    onClose={() => this.setState({ acceptedDialog: false })}
-                    emptyMessage="No accepted users"
-                    header="Accepted users"
-                />
+                {user.permissions.includes('update-other-content') && (
+                    <ItemsDialog
+                        toggled={acceptedDialog}
+                        onClose={() => this.setState({ acceptedDialog: false })}
+                        emptyMessage="No accepted users"
+                        header="Accepted users"
+                    >
+                        {acceptedUsers.map(u => (
+                            <AcceptedUser user={u} />
+                        ))}
+                    </ItemsDialog>
+                )}
             </App>
         );
     }
