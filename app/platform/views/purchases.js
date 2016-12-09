@@ -223,7 +223,7 @@ class Purchases extends React.Component {
 
         return (
             <App 
-                user={user}
+                user={this.props.user}
                 page="purchases">
                 <TopBar
                     title="Purchases"
