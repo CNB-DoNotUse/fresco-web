@@ -38,13 +38,15 @@ class OutletSettings extends React.Component {
     }
 
     render() {
-        const { payment } = this.props;
+        const { payment, stripePublishableKey } = this.props;
         const { outlet, user } = this.state;
         const isOwner = outlet.owner.id === user.id;
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
 
         return (
-            <App user={user}>
+            <App 
+                user={user}
+                page="outletSettings">
                 <TopBar title={outlet.title} />
 
                 <div className={className}>
@@ -59,6 +61,7 @@ class OutletSettings extends React.Component {
                         {isOwner ?
                             <PaymentInfo
                                 payment={payment}
+                                stripePublishableKey={stripePublishableKey}
                                 outlet={this.state.outlet}
                             />
                         : ''}
@@ -80,9 +83,7 @@ class OutletSettings extends React.Component {
                             />
                         : ''}
 
-                        {!isOwner ?
-                            <QuickSupport />
-                        : ''}
+                        <QuickSupport />
                     </div>
                 </div>
             </App>
@@ -101,6 +102,7 @@ ReactDOM.render(
         user={window.__initialProps__.user}
         outlet={window.__initialProps__.outlet}
         payment={window.__initialProps__.payment}
+        stripePublishableKey={window.__initialProps__.stripePublishableKey}
     />,
 	document.getElementById('app')
 );

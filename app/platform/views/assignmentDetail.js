@@ -235,7 +235,9 @@ class AssignmentDetail extends React.Component {
         } = this.state;
 
         return (
-            <App user={user}>
+            <App 
+                user={this.props.user}
+                page='assignmentDetail'>
                 <TopBar
                     title={assignment.title}
                     permissions={user.permissions}

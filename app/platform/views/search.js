@@ -436,6 +436,7 @@ class Search extends Component {
             <App
                 query={this.props.query}
                 user={this.props.user}
+                page="search">
             >
                 <TopBar
                     title={this.state.title}

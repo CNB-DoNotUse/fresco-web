@@ -58,7 +58,10 @@ class Archive extends React.Component {
         const { verifiedToggle, sortBy } = this.state;
         const { user, title } = this.props;
         return (
-            <App user={user}>
+           <App 
+                user={this.props.user}
+                page="archive"
+            >
                 <TopBar
                     title={title}
                     permissions={user.permissions}

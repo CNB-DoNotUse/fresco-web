@@ -70,7 +70,9 @@ class LocationDetail extends React.Component {
     render() {
         const { user, location, outlet } = this.props;
         return (
-            <App user={user}>
+            <App 
+                user={this.props.user}
+                page='locationDetail'>
                 <TopBar
                     title={location.title}
                     timeToggle

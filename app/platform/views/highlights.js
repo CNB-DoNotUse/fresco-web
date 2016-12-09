@@ -12,7 +12,9 @@ import TopBar from './../components/topbar'
 class Highlights extends React.Component {
 	render() {
 		return (
-			<App user={this.props.user}>
+			<App 
+				user={this.props.user}
+				page="highlights">
 				<TopBar title="Highlights"
 					timeToggle={true} />
 
