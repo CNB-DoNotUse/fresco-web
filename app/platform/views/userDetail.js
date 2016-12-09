@@ -51,7 +51,7 @@ class UserDetail extends React.Component {
         const { user, editable, detailUser } = this.props;
         const { verifiedToggle } = this.state;
         return (
-            <App 
+            <App
                 user={user}
                 page="userDetail"
             >
@@ -78,7 +78,7 @@ class UserDetail extends React.Component {
                         size="large"
                         permissions={user.permissions}
                         scrollable
-                        onlyVerified={this.state.verifiedToggle}
+                        onlyVerified={verifiedToggle}
                     />
                 </div>
             </App>
