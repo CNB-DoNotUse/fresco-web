@@ -222,7 +222,9 @@ class Purchases extends React.Component {
         };
 
         return (
-            <App user={this.props.user}>
+            <App 
+                user={this.props.user}
+                page="purchases">
                 <TopBar
                     title="Purchases"
                     tabs={['Summary', 'Outlets']}

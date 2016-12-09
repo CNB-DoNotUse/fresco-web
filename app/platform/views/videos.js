@@ -58,7 +58,10 @@ class Videos extends React.Component {
         const { user } = this.props;
 
         return (
-            <App user={user}>
+            <App 
+                 user={this.props.user}
+                 page="videos"
+             >
                 <TopBar
                     title="Videos"
                     permissions={user.permissions}

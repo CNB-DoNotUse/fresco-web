@@ -228,7 +228,10 @@ class UserSettings extends React.Component {
         const { user, disabled } = this.state;
 
         return (
-            <App user={this.state.user}>
+            <App 
+                user={this.state.user}
+                page="userSettings"
+            >
                 <TopBar
                     title={this.state.user.full_name}
                     saveButton={true}

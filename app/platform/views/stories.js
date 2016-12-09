@@ -18,7 +18,10 @@ class Stories extends React.Component {
 
 	render() {
 		return (
-			<App user={this.props.user}>
+			<App 
+				user={this.props.user}
+				page="stories"
+			>
 				<TopBar
 					title="Stories"
 					timeToggle={true}

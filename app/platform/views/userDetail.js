@@ -51,7 +51,10 @@ class UserDetail extends React.Component {
         const { user, editable, detailUser } = this.props;
         const { verifiedToggle } = this.state;
         return (
-            <App user={user}>
+            <App 
+                user={user}
+                page="userDetail"
+            >
                 <TopBar
                     title={detailUser.full_name}
                     editIcon="mdi-settings"

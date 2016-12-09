@@ -114,7 +114,10 @@ class StoryDetail extends React.Component {
         const { story, sortBy, editToggled, loading } = this.state;
 
         return (
-            <App user={user}>
+            <App 
+                user={user}
+                page="storyDetail"
+            >
                 <TopBar
                     title={story.title}
                     onChronToggled={this.onChronToggled}

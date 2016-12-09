@@ -256,7 +256,9 @@ class Admin extends React.Component {
 
     render() {
         return (
-            <App user={this.props.user}>
+            <App 
+                user={this.props.user}
+                page='admin'>
                 <TopBar
                     activeTab={this.state.activeTab}
                     resetImports={() => this.resetImports()}

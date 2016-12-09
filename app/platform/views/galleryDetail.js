@@ -82,7 +82,9 @@ class GalleryDetail extends React.Component {
         } = this.state;
 
         return (
-            <App user={user}>
+            <App 
+                user={this.props.user}
+                page='galleryDetail'>
                 <TopBar
                     title={title}
                     editable={user.permissions.includes('update-other-content')}

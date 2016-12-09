@@ -35,7 +35,9 @@ class PostDetail extends React.Component {
         const editable = (user.permissions.includes('update-other-content')) && !!gallery.id;
 
         return (
-            <App user={user}>
+            <App 
+                user={user}
+                page="postDetail">
                 <TopBar
                     title={title}
                     editable={editable}
