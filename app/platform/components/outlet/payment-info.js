@@ -18,7 +18,7 @@ class PaymentInfo extends React.Component {
     }
 
     componentDidMount() {
-        Stripe.setPublishableKey(window.__initialProps__.stripePublishableKey);
+        Stripe.setPublishableKey(this.props.stripePublishableKey);
     }
 
     /**
@@ -210,11 +210,13 @@ class PaymentInfo extends React.Component {
 }
 
 PaymentInfo.defaultProps = {
-    payment: []
+    payment: [],
+    stripePublishableKey: ''
 }
 
 PaymentInfo.propTypes = {
     payment: PropTypes.array,
+    stripePublishableKey: PropTypes.string
 };
 
 export default PaymentInfo;
