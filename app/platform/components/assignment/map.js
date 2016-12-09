@@ -14,11 +14,14 @@ class AssignmentMap extends React.Component {
 
     state = {
         users: [],
+        acceptedUsers: [],
+        fetchedUsers: false,
+        fetchedAcceptedUsers: false,
     }
 
     componentWillReceiveProps() {
-        this.getAllUsers();
-        this.getActiveUsers();
+        if (!this.state.fetchedUsers) this.getAllUsers();
+        if (!this.state.fetchedAcceptedUsers) this.getAcceptedUsers();
     }
 
     getAllUsers() {
@@ -32,14 +35,14 @@ class AssignmentMap extends React.Component {
 
         api
         .get('user/locations/find', params)
-        .then(users => this.setState({ users }))
+        .then(users => this.setState({ users, fetchedUsers: true }))
         .catch(res => res);
     }
 
-    getActiveUsers() {
+    getAcceptedUsers() {
         api
         .get(`assignment/${this.props.assignment.id}/accepted`)
-        .then(acceptedUsers => this.setState({ acceptedUsers }))
+        .then(acceptedUsers => this.setState({ acceptedUsers, fetchedAcceptedUsers: true }))
         .catch(res => res);
     }
 
