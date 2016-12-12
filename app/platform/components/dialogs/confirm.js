@@ -6,16 +6,17 @@ export default class Confirm extends React.Component {
         onCancel: PropTypes.func,
         toggled: PropTypes.bool,
         hasInput: PropTypes.bool,
-        text: PropTypes.string,
+        header: PropTypes.string,
         disabled: PropTypes.bool,
         confirmText: PropTypes.string,
+        body: PropTypes.string,
     }
 
     static defaultProps = {
         onConfirm: () => {},
         onCancel: () => {},
         toggled: false,
-        text: '',
+        header: '',
         confirmText: 'Confirm',
         hasInput: false,
         disabled: false,
@@ -28,35 +29,38 @@ export default class Confirm extends React.Component {
         else onConfirm();
     }
 
-    renderInput = () => (
+    renderBody = () => (
         <div className="body">
-            <form
-                className="form-group-default"
-                onSubmit={this.onConfirm}
-            >
-                <input
-                    ref={r => { this.input = r; }}
-                    type="password"
-                    className="form-control floating-label"
-                    placeholder="Password"
-                />
-            </form>
+            {this.props.body && this.props.body}
+            {this.props.hasInput && (
+                <form
+                    className="form-group-default"
+                    onSubmit={this.onConfirm}
+                >
+                    <input
+                        ref={(r) => { this.input = r; }}
+                        type="password"
+                        className="form-control floating-label"
+                        placeholder="Password"
+                    />
+                </form>
+            )}
         </div>
     )
 
     render() {
-        const { toggled, text, confirmText, hasInput, onCancel, disabled } = this.props;
+        const { toggled, header, confirmText, hasInput, onCancel, disabled, body } = this.props;
 
         return (
             <div className={`dialog-wrap ${toggled ? 'toggled' : ''}`}>
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
 
-                <div className={`confirm-dialog ${toggled ? 'toggled' : ''} ${hasInput ? '' : 'no-input'}`}>
+                <div className={`confirm-dialog ${toggled ? 'toggled' : ''}`}>
                     <div className="header">
-                        <h3>{text}</h3>
+                        <h3>{header}</h3>
                     </div>
 
-                    {hasInput && this.renderInput()}
+                    {(hasInput || body) && this.renderBody()}
 
                     <div className="footer">
                         <button

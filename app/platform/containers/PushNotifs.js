@@ -3,6 +3,7 @@ import * as pushActions from 'app/redux/modules/pushNotifs';
 import 'app/sass/platform/_pushNotifs.scss';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
+import get from 'lodash/get';
 import { Map } from 'immutable';
 import Snackbar from 'material-ui/Snackbar';
 import Confirm from '../components/dialogs/confirm';
@@ -13,6 +14,22 @@ import GalleryList from '../components/pushNotifs/gallery-list-template';
 import Recommend from '../components/pushNotifs/recommend-template';
 import Assignment from '../components/pushNotifs/assignment-template';
 
+const getConfirmText = (template) => {
+    if (get(template, 'assignment', false)) {
+        return 'Notification will be sent to every user near assignment';
+    }
+
+    if (get(template, 'restrictByLocation', false)) {
+        return 'Notification will be sent to every user in selected location';
+    }
+
+    if (!get(template, 'restrictByUser', false) && !get(template, 'restrictByLocation', false)) {
+        return 'Notification will be sent to every user';
+    }
+
+    return null;
+};
+
 class PushNotifs extends React.Component {
     static propTypes = {
         onSetActiveTab: PropTypes.func.isRequired,
@@ -21,11 +38,13 @@ class PushNotifs extends React.Component {
         onDismissAlert: PropTypes.func.isRequired,
         onSend: PropTypes.func.isRequired,
         activeTab: PropTypes.string.isRequired,
+        activeTemplate: PropTypes.object.isRequired,
         loading: PropTypes.bool.isRequired,
-        templates: PropTypes.object.isRequired,
+        infoDialog: PropTypes.instanceOf(Map),
         requestConfirmSend: PropTypes.bool.isRequired,
         cancelSend: PropTypes.func.isRequired,
         confirmSend: PropTypes.func.isRequired,
+        onCloseInfoDialog: PropTypes.func.isRequired,
         alert: PropTypes.string,
     };
 
@@ -40,11 +59,16 @@ class PushNotifs extends React.Component {
     }
 
     renderTemplate() {
-        const { activeTab, onChangeTemplate, onChangeTemplateAsync, templates } = this.props;
+        const {
+            activeTab,
+            activeTemplate,
+            onChangeTemplate,
+            onChangeTemplateAsync,
+        } = this.props;
         const activeTabKey = activeTab.toLowerCase();
 
         const props = {
-            ...templates.get(activeTabKey, Map()).toJS(),
+            ...activeTemplate,
             onChange: partial(onChangeTemplate, activeTabKey),
             onChangeAsync: partial(onChangeTemplateAsync, activeTabKey),
         };
@@ -75,6 +99,7 @@ class PushNotifs extends React.Component {
             cancelSend,
             confirmSend,
             infoDialog,
+            activeTemplate,
         } = this.props;
 
         return (
@@ -108,7 +133,8 @@ class PushNotifs extends React.Component {
                     </div>
 
                     <Confirm
-                        text={"Send notification?"}
+                        header="Send notification?"
+                        body={getConfirmText(activeTemplate)}
                         onConfirm={partial(confirmSend, activeTab)}
                         onCancel={cancelSend}
                         toggled={requestConfirmSend}
@@ -129,9 +155,13 @@ class PushNotifs extends React.Component {
 }
 
 function mapStateToProps(state) {
+    const activeTab = state.getIn(['pushNotifs', 'activeTab']);
+    const templates = state.getIn(['pushNotifs', 'templates']);
+    const activeTemplate = templates.get(activeTab.toLowerCase(), Map()).toJS();
+
     return {
-        activeTab: state.getIn(['pushNotifs', 'activeTab']),
-        templates: state.getIn(['pushNotifs', 'templates']),
+        activeTab,
+        activeTemplate,
         loading: state.getIn(['pushNotifs', 'loading']),
         alert: state.getIn(['pushNotifs', 'alert']),
         requestConfirmSend: state.getIn(['pushNotifs', 'requestConfirmSend']),

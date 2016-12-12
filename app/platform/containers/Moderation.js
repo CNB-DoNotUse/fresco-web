@@ -200,11 +200,11 @@ class Moderation extends React.Component {
                             fadeOutCard,
                             requestDeleted.get('entityType'),
                             requestDeleted.get('id'),
-                            onConfirmDelete
+                            onConfirmDelete,
                         )}
                         onCancel={onCancelDelete}
                         toggled={!!requestDeleted.get('id')}
-                        text={'Confirm delete?'}
+                        header="Confirm delete?"
                     />
 
                     {this.renderContent()}
