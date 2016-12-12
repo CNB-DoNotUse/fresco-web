@@ -119,7 +119,6 @@ class AssignmentMap extends React.Component {
                         location={assignment.location}
                         radius={Math.round(utils.milesToFeet(assignment.radius))}
                         containerElement={<div className="assignment__map-ctr" />}
-                        zoomControl={false}
                         panTo={mapPanTo}
                         zoom={13}
                         onMouseOverMarker={onMouseOverMarker}
