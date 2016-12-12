@@ -28,7 +28,9 @@ class Galleries extends React.Component {
         const { user } = this.props;
 
         return (
-            <App user={user}>
+            <App 
+                user={this.props.user}
+                page='galleries'>
                 <TopBar
                     title="Galleries"
                     permissions={user.permissions}
