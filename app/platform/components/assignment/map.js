@@ -112,20 +112,21 @@ class AssignmentMap extends React.Component {
         const dataMarkers = this.renderDataMarkers();
 
         return (
-            <div className="col-sm-11 col-md-10 col-sm-offset-1 col-md-offset-2">
-                <GMap
-                    ref={(r) => { this.gmap = r; }}
-                    location={assignment.location}
-                    radius={Math.round(utils.milesToFeet(assignment.radius))}
-                    containerElement={<div className="assignment__map-ctr" />}
-                    zoomControl={false}
-                    panTo={mapPanTo}
-                    zoom={13}
-                    onMouseOverMarker={onMouseOverMarker}
-                    markers={[].concat(userMarkers).concat(dataMarkers)}
-                    rerender
-                    fitBoundsOnMount
-                />
+            <div className="row">
+                <div className="col-sm-11 col-md-10 col-sm-offset-1">
+                    <GMap
+                        ref={(r) => { this.gmap = r; }}
+                        location={assignment.location}
+                        radius={Math.round(utils.milesToFeet(assignment.radius))}
+                        containerElement={<div className="assignment__map-ctr" />}
+                        panTo={mapPanTo}
+                        zoom={13}
+                        onMouseOverMarker={onMouseOverMarker}
+                        markers={[].concat(userMarkers).concat(dataMarkers)}
+                        rerender
+                        fitBoundsOnMount
+                    />
+                </div>
             </div>
         );
     }

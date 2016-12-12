@@ -83,7 +83,7 @@ export default class AssignmentEdit extends React.Component {
      * When global is checked, location and address set to null
      * When not checked, location and adress are set to original/default vals
      */
-    onChangeGlobal() {
+    onChangeGlobal = () => {
         if (this.isGlobalLocation()) {
             const { assignment: { location, address } } = this.props;
             this.setState({ location: location || { lat: 40.7, lng: -74 }, address });
@@ -160,6 +160,14 @@ export default class AssignmentEdit extends React.Component {
             : document.referrer || '/highlights';
     }
 
+    onChangeInput = (e) => {
+        if (e.target.type === 'checkbox') {
+            this.setState({ [e.target.name]: e.target.checked });
+        } else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
+    }
+
     hasFormErrors() {
         const { title, caption, radius, address, endsAt, outlets } = this.state;
 
@@ -211,7 +219,7 @@ export default class AssignmentEdit extends React.Component {
     /**
      * Reverts fields to original state
      */
-    cancel() {
+    onCancel = () => {
         this.revert();
         this.props.onToggle();
     }
@@ -226,7 +234,7 @@ export default class AssignmentEdit extends React.Component {
                 <span className="md-type-title">Edit assignment</span>
                 <span
                     className="mdi mdi-close pull-right icon toggle-edit toggler"
-                    onClick={() => this.cancel()}
+                    onClick={this.onCancel}
                 />
             </div>
         );
@@ -255,8 +263,9 @@ export default class AssignmentEdit extends React.Component {
                             className="form-control floating-label"
                             placeholder="Title"
                             title="Title"
+                            name="title"
                             value={title}
-                            onChange={(e) => this.setState({ title: e.target.value })}
+                            onChange={this.onChangeInput}
                         />
                     </div>
 
@@ -265,9 +274,10 @@ export default class AssignmentEdit extends React.Component {
                             type="text"
                             className="form-control floating-label"
                             placeholder="Caption"
+                            name="caption"
                             title="Caption"
                             value={caption}
-                            onChange={e => this.setState({ caption: e.target.value })}
+                            onChange={this.onChangeInput}
                         />
                     </div>
 
@@ -287,7 +297,9 @@ export default class AssignmentEdit extends React.Component {
                             <label>
                                 <input
                                     type="checkbox"
-                                    onChange={e => this.setState({ isAcceptable: e.target.checked })}
+                                    name="isAcceptable"
+                                    disabled={globalLocation}
+                                    onChange={this.onChangeInput}
                                     checked={isAcceptable}
                                 />
                                 Acceptable
@@ -303,7 +315,8 @@ export default class AssignmentEdit extends React.Component {
                             <label>
                                 <input
                                     type="checkbox"
-                                    onChange={() => this.onChangeGlobal()}
+                                    disabled={isAcceptable}
+                                    onChange={this.onChangeGlobal}
                                     checked={globalLocation}
                                 />
                                 Global
@@ -380,7 +393,7 @@ export default class AssignmentEdit extends React.Component {
                     type="button"
                     className="btn btn-flat pull-right toggle-edit toggler"
                     disabled={loading}
-                    onClick={() => this.cancel()}
+                    onClick={this.onCancel}
                 >
                     Discard
                 </button>

@@ -107,12 +107,20 @@ export default class AssignmentEdit extends React.Component {
      * When global is checked, location and address set to null
      * When not checked, location and adress are set to original/default vals
      */
-    onChangeGlobal() {
+    onChangeGlobal = () => {
         if (this.isGlobalLocation()) {
             const { assignment: { location, address } } = this.props;
             this.setState({ location: location || { lat: 40.7, lng: -74 }, address });
         } else {
             this.setState({ location: null, address: null });
+        }
+    }
+
+    onChangeInput = (e) => {
+        if (e.target.type === 'checkbox') {
+            this.setState({ [e.target.name]: e.target.checked });
+        } else {
+            this.setState({ [e.target.name]: e.target.value });
         }
     }
 
@@ -236,7 +244,8 @@ export default class AssignmentEdit extends React.Component {
                         <label>
                             <input
                                 type="checkbox"
-                                onChange={() => this.onChangeGlobal()}
+                                disabled={isAcceptable}
+                                onChange={this.onChangeGlobal}
                                 checked={globalLocation}
                             />
                             Global
@@ -271,8 +280,10 @@ export default class AssignmentEdit extends React.Component {
                             <label>
                                 <input
                                     type="checkbox"
-                                    onChange={e => this.setState({ isAcceptable: e.target.checked })}
+                                    name="isAcceptable"
+                                    disabled={globalLocation}
                                     checked={isAcceptable}
+                                    onChange={this.onChangeInput}
                                 />
                                 Acceptable
                             </label>

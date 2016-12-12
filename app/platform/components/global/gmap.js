@@ -151,7 +151,7 @@ class GMap extends React.Component {
                 position={center}
                 draggable={draggable}
                 icon={markerImage}
-                onDragend={(e) => this.onDragend(e)}
+                onDragend={e => this.onDragend(e)}
                 zIndex={2}
             />
         );
