@@ -97,17 +97,19 @@ class Sidebar extends React.Component {
 
         return (
             <div className="col-sm-4 profile hidden-xs">
-                <div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-                    <div className="meta">
-                        <div className="meta-description" id="story-description">
-                            {assignment.caption || 'No Description'}
+                <div className="row">
+                    <div className="col-sm-10 col-md-8 col-sm-offset-1">
+                        <div className="meta">
+                            <div className="meta-description" id="story-description">
+                                {assignment.caption || 'No Description'}
+                            </div>
+
+                            {moment().diff(assignment.ends_at) < 1 && (
+                                <div className="meta-user">{expireButton}</div>
+                            )}
+
+                            {this.renderStats()}
                         </div>
-
-                        {moment().diff(assignment.ends_at) < 1 && (
-                            <div className="meta-user">{expireButton}</div>
-                        )}
-
-                        {this.renderStats()}
                     </div>
                 </div>
 
