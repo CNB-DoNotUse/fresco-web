@@ -40,7 +40,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 /**
  * Dialog Element
  */
-.items-dialog {
+.dialog-modal--items {
     width: 640px;
     @extend .dialog-modal;
 
@@ -91,7 +91,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     }
 }
 
-.info-dialog {
+.dialog-modal--info {
     @extend .dialog-modal;
 
     .header {
@@ -136,7 +136,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     }
 }
 
-.confirm-dialog {
+.dialog-modal--confirm {
     @extend .dialog-modal;
 
     &.no-input {
