@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import isEqual from 'lodash/isEqual';
 import utils from 'utils';
 import api from 'app/lib/api';
 import Marker from 'react-google-maps/lib/Marker';
@@ -41,7 +42,7 @@ class AssignmentMap extends React.Component {
 
     getAcceptedUsers() {
         api
-        .get(`assignment/${this.props.assignment.id}/accepted`)
+        .get('user/locations/find', { assignment_id: this.props.assignment.id })
         .then(acceptedUsers => this.setState({ acceptedUsers, fetchedAcceptedUsers: true }))
         .catch(res => res);
     }
@@ -65,7 +66,7 @@ class AssignmentMap extends React.Component {
         };
 
         const getMarkerIcon = (user) => {
-            if (acceptedUsers.some(a => a.id === user.id)) return acceptedIcon;
+            if (acceptedUsers.some(a => isEqual(a.geo, user.geo))) return acceptedIcon;
             return userIcon;
         };
 

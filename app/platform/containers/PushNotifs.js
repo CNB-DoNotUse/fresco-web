@@ -15,16 +15,19 @@ import Recommend from '../components/pushNotifs/recommend-template';
 import Assignment from '../components/pushNotifs/assignment-template';
 
 const getConfirmText = (template) => {
-    if (get(template, 'assignment', false)) {
-        return 'Notification will be sent to every user near assignment';
+    const restrictedByUser = get(template, 'restrictByUser', false);
+    const restrictedByLocation = get(template, 'restrictByLocation', false);
+
+    if (get(template, 'assignment', false) && (!restrictedByUser && !restrictedByLocation)) {
+        return 'This notification will be sent to every user near the selected assignment!';
     }
 
-    if (get(template, 'restrictByLocation', false)) {
-        return 'Notification will be sent to every user in selected location';
+    if (restrictedByLocation) {
+        return 'This notification will be sent to every user in the selected location!';
     }
 
-    if (!get(template, 'restrictByUser', false) && !get(template, 'restrictByLocation', false)) {
-        return 'Notification will be sent to every user';
+    if (!restrictedByUser && !restrictedByLocation) {
+        return 'This notification will be sent to every user!';
     }
 
     return null;
