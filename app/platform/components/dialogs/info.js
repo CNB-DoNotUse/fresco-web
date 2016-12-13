@@ -26,7 +26,7 @@ export default class Info extends React.Component {
             <div className={`dialog-wrap ${toggled ? 'toggled' : ''}`}>
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
 
-                <div className={`info-dialog ${toggled ? 'toggled' : ''}`}>
+                <div className={`dialog-modal--info ${toggled ? 'toggled' : ''}`}>
                     <div className="header">
                         <span>{header}</span>
                     </div>
