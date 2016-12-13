@@ -2,7 +2,6 @@ import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import update from 'react-addons-update';
-import clone from 'lodash/clone';
 import last from 'lodash/last';
 import pick from 'lodash/pick';
 import pull from 'lodash/pull';
@@ -30,7 +29,6 @@ class Search extends Component {
             verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
             currentPostParams: {},
             tags: this.props.tags,
-            purchases: this.props.purchases,
         };
 
         this.loadingPosts = false;
@@ -46,37 +44,15 @@ class Search extends Component {
         this.addTag				= this.addTag.bind(this);
         this.removeTag			= this.removeTag.bind(this);
         this.scroll  			= this.scroll.bind(this);
-        this.onMapDataChange	= this.onMapDataChange.bind(this);
-        this.onRadiusUpdate		= this.onRadiusUpdate.bind(this);
         this.refreshData		= this.refreshData.bind(this);
         this.pushState			= this.pushState.bind(this);
     }
 
     componentDidMount() {
-        //Load intial set of data
+        // Load intial set of data
         this.refreshData(true);
 
-        window.onpopstate = (event) => {
-            //Reload page
-            document.location.reload();
-        };
-
-        // If has location in state, get address from LatLng.
-        // Location dropdown will use this as it's defaultLocation
-        if(this.state.location.coordinates) {
-            const geocoder = new google.maps.Geocoder();
-            const { location } = this.state;
-
-            geocoder.geocode({'location': this.state.location.coordinates}, (results, status) => {
-                if(status === google.maps.GeocoderStatus.OK && results[0]){
-                    location.address = results[0].formatted_address;
-
-                    this.setState({
-                        title : this.getTitle()
-                    });
-                }
-            });
-        }
+        window.onpopstate = () => document.location.reload();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -90,64 +66,62 @@ class Search extends Component {
             numberOfPostResults
         } = this.state;
 
-        if(JSON.stringify(prevState.location.coordinates) !== JSON.stringify(location.coordinates)) {
+        if (JSON.stringify(prevState.location.coordinates) !== JSON.stringify(location.coordinates)) {
             shouldUpdate = true;
-        } else if(prevState.location.radius !== location.radius) {
+        } else if (prevState.location.radius !== location.radius) {
             shouldUpdate = true;
-        } else if(JSON.stringify(prevState.tags) !== JSON.stringify(tags)){
+        } else if (JSON.stringify(prevState.tags) !== JSON.stringify(tags)){
             shouldUpdate = true;
-        } else if(prevState.verifiedToggle !== verifiedToggle) {
+        } else if (prevState.verifiedToggle !== verifiedToggle) {
             shouldUpdate = true;
-        } else if(prevState.numberOfPostResults !== this.state.numberOfPostResults) {
+        } else if (prevState.numberOfPostResults !== this.state.numberOfPostResults) {
             onlyTitle = true;
         }
 
-        if(prevState.numberOfPostResults !== numberOfPostResults) {
+        if (prevState.numberOfPostResults !== numberOfPostResults) {
             onlyTitle = true;
         }
 
-        //Update if any of the conditions are true
-        if(shouldUpdate) {
+        // Update if any of the conditions are true
+        if (shouldUpdate) {
             this.refreshData(false);
         }
 
-        if(shouldUpdate || onlyTitle) {
-            this.setState({
-                title : this.getTitle(false)
-            });
+        if (shouldUpdate || onlyTitle) {
+            this.setState({ title: this.getTitle(false) });
         }
 
-        if(shouldUpdate || onlyTitle) {
-            this.setState({
-                title : this.getTitle(false)
-            });
+        if (shouldUpdate || onlyTitle) {
+            this.setState({ title: this.getTitle(false) });
         }
     }
 
-	/**
-	 * Determins title for page
-	 * @param  {BOOL} withProps If title should be determined from props or state
-	 * @return {string} Returns a title
-	 */
+    /**
+     * Determins title for page
+     * @param  {BOOL} withProps If title should be determined from props or state
+     * @return {string} Returns a title
+     */
     getTitle(withProps) {
         const {
             tags,
             location,
-            numberOfPostResults
+            numberOfPostResults,
         } = withProps ? this.props : this.state;
 
         let title = '';
 
-        const count = typeof(numberOfPostResults) !== 'undefined' ? `${numberOfPostResults.toLocaleString()} results` : 'Results';
+        const count = typeof numberOfPostResults !== 'undefined'
+            ? `${numberOfPostResults.toLocaleString()} results`
+            : 'Results';
 
-        if(this.props.query !== '') {
+        if (this.props.query !== '') {
             title = `${count} for ${this.props.query}`;
-        } else if(tags.length) {
+        } else if (tags.length) {
             title = `${count} for ${utils.isPlural(tags.length) ? 'tags' : 'tag'} ${tags.join(', ')}`;
-        } else if(location && location.address) {
+        } else if (location && location.address) {
             title = `${count} from ${location.address}`;
         } else {
-            title = "No search query!"
+            title = 'No search query!';
         }
 
         return title;
@@ -160,10 +134,7 @@ class Search extends Component {
             return {
                 geo: {
                     type: 'Point',
-                    coordinates: [
-                        location.coordinates.lng,
-                        location.coordinates.lat
-                    ]
+                    coordinates: [location.coordinates.lng, location.coordinates.lat]
                 },
                 radius: utils.feetToMiles(location.radius),
             };
@@ -182,9 +153,7 @@ class Search extends Component {
         this.getUsers();
         this.getStories();
 
-        if(!initial){
-            this.pushState();
-        }
+        if (!initial) this.pushState();
     }
 
     /**
@@ -224,9 +193,9 @@ class Search extends Component {
         });
     }
 
-	/**
-	 * Retrieves posts from API based on state
-	 */
+    /**
+     * Retrieves posts from API based on state
+     */
     getPosts(force = true, lastId) {
         const { currentPostParams, tags, verifiedToggle } = this.state;
 
@@ -358,31 +327,23 @@ class Search extends Component {
     }
 
     /**
-     * When radius changes
+     * Called when Map location, address, or radius changes
      */
-    onRadiusUpdate(radius) {
-        let location = clone(this.state.location);
-        location.radius = radius;
+    onLocationChange = ({ location }) => {
         this.setState({ location });
-    }
+        // let location = clone(this.state.location);
 
-    /**
-     * Called when AutocompleteMap data changes
-     */
-    onMapDataChange(data) {
-        let location = clone(this.state.location);
+        // location.coordinates = data.location;
+        // location.address = data.address;
 
-        location.coordinates = data.location;
-        location.address = data.address;
+        // if(!location.radius) location.radius = 250;
 
-        if(!location.radius) location.radius = 250;
-
-        this.setState({
-            location,
-            map: {
-                circle: data.circle
-            }
-        });
+        // this.setState({
+        //     location,
+        //     map: {
+        //         circle: data.circle
+        //     }
+        // });
     }
 
     /**
@@ -398,7 +359,7 @@ class Search extends Component {
             query += '&tags[]=' + encodeURIComponent(tag);
         });
 
-        if(location.coordinates && location.radius){
+        if (location.coordinates && location.radius){
             query += '&lat=' + location.coordinates.lat + '&lon=' + location.coordinates.lng;
             query += '&radius=' + location.radius;
         }
@@ -456,14 +417,12 @@ class Search extends Component {
                     />
 
                     <LocationDropdown
-                        location={this.state.location.coordinates}
-                        radius={this.state.location.radius}
-                        address={this.state.location.address}
+                        location={this.state.location}
+                        radius={this.state.radius}
+                        address={this.state.address}
                         units="Miles"
                         key="locationDropdown"
-                        onRadiusUpdate={this.onRadiusUpdate}
-                        onPlaceChange={this.onMapDataChange}
-                        onMapDataChange={this.onMapDataChange}
+                        onLocationChange={this.onLocationChange}
                     />
                 </TopBar>
 
@@ -471,7 +430,6 @@ class Search extends Component {
                     <PostList
                         posts={this.state.posts}
                         permissions={this.props.user.permissions}
-                        purchases={this.props.purchases}
                         ref="postList"
                         size="large"
                         onScroll={this.scroll}
@@ -492,23 +450,19 @@ class Search extends Component {
 
 Search.defaultProps = {
     location: {},
+    radius: 0,
     tags: [],
-    q: ''
-}
+};
 
 Search.propTypes = {
-    q: PropTypes.string,
     query: PropTypes.string,
     tags: PropTypes.array,
     location: PropTypes.object,
+    radius: PropTypes.number,
     user: PropTypes.object,
 };
 
 ReactDOM.render(
-    <Search
-        user={window.__initialProps__.user}
-        location={window.__initialProps__.location}
-        tags={window.__initialProps__.tags}
-        query={window.__initialProps__.query} />,
-    document.getElementById('app')
+    <Search {...window.__initialProps__} />,
+    document.getElementById('app'),
 );
