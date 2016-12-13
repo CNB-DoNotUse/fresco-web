@@ -375,8 +375,7 @@ class Search extends Component {
         location.coordinates = data.location;
         location.address = data.address;
 
-        if(!location.radius)
-            location.radius = 250;
+        if(!location.radius) location.radius = 250;
 
         this.setState({
             location,
@@ -436,7 +435,7 @@ class Search extends Component {
             <App
                 query={this.props.query}
                 user={this.props.user}
-                page="search">
+                page="search"
             >
                 <TopBar
                     title={this.state.title}
@@ -459,7 +458,7 @@ class Search extends Component {
                     <LocationDropdown
                         location={this.state.location.coordinates}
                         radius={this.state.location.radius}
-                        defaultLocation={this.state.location.address}
+                        address={this.state.location.address}
                         units="Miles"
                         key="locationDropdown"
                         onRadiusUpdate={this.onRadiusUpdate}

@@ -1,19 +1,24 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import AutocompleteMap from '../global/autocomplete-map';
 import Dropdown from '../global/dropdown';
 
 class LocationDropdown extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            toggled: false
-        };
-
-        this.onToggled = this.onToggled.bind(this);
+    static propTypes = {
+        onPlaceChange: PropTypes.func,
+        onMapDataChange: PropTypes.func,
+        onRadiusUpdate: PropTypes.func,
+        address: PropTypes.string,
+        location: PropTypes.object,
+        radius: PropTypes.number,
     }
 
-    onToggled() {
+    static defaultProps = {
+        onMapDataChange() {},
+    }
+
+    state = { toggled: false }
+
+    onToggled = () => {
         this.setState({ toggled: !this.state.toggled });
     }
 
@@ -26,14 +31,15 @@ class LocationDropdown extends React.Component {
                 dropdownClass="location-search-dropdown"
             >
                 <AutocompleteMap
-                    rerender={this.state.toggled}
                     onPlaceChange={this.props.onPlaceChange}
                     onMapDataChange={this.props.onMapDataChange}
                     onRadiusUpdate={this.props.onRadiusUpdate}
-                    address={this.props.defaultLocation}
+                    address={this.props.address}
                     location={this.props.location}
                     radius={this.props.radius}
                     units="feet"
+                    rerender
+                    draggable
                     hasRadius
                 />
             </Dropdown>
@@ -41,8 +47,5 @@ class LocationDropdown extends React.Component {
     }
 }
 
-LocationDropdown.defaultProps = {
-    onMapDataChange() {},
-};
-
 export default LocationDropdown;
+

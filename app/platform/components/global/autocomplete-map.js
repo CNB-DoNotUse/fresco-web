@@ -30,10 +30,10 @@ class AutocompleteMap extends React.Component {
         }
     }
 
-	/**
-	 * Updates states bounds for other components
-	 */
-    updateCurrentBounds(bounds) {
+    /**
+     * Updates states bounds for other components
+     */
+    updateCurrentBounds = (bounds) => {
         this.setState({ bounds });
     }
 
@@ -88,7 +88,7 @@ class AutocompleteMap extends React.Component {
                     radius={radius}
                     rerender={rerender}
                     draggable={draggable}
-                    updateCurrentBounds={(b) => this.updateCurrentBounds(b)}
+                    updateCurrentBounds={this.updateCurrentBounds}
                     onDataChange={onMapDataChange}
                 />
             </div>
@@ -104,7 +104,7 @@ AutocompleteMap.propTypes = {
     onRadiusUpdate: PropTypes.func,
     address: PropTypes.string,
     onPlaceChange: PropTypes.func,
-    location: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.array]),
+    location: PropTypes.object,
     rerender: PropTypes.bool,
     draggable: PropTypes.bool,
     onMapDataChange: PropTypes.func,

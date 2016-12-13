@@ -72,6 +72,10 @@ class GMap extends React.Component {
             if (nextProps.panTo) this.map.panTo(nextProps.panTo);
             else this.map.panTo(this.state.center);
         }
+
+        if (this.map && this.props.rerender) {
+            google.maps.event.trigger(this.map.props.map, 'resize');
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -83,10 +87,6 @@ class GMap extends React.Component {
                 this.hasFitBounds = true;
                 this.map.fitBounds(this.circle.getBounds());
             }
-        }
-
-        if (this.map && rerender) {
-            google.maps.event.trigger(this.map.props.map, 'resize');
         }
     }
 
