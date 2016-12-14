@@ -70,12 +70,12 @@ class Sidebar extends React.Component {
                     {user.permissions.includes('update-other-content') ? (
                         <li style={{ cursor: 'pointer' }} onClick={onClickAccepted}>
                             <span className="mdi mdi-account-multiple icon" />
-                            <span>{acceptedCount}</span>
+                            <span>{`${acceptedCount} accepted ${acceptedCount === 1 ? 'user' : 'users'}`}</span>
                         </li>
                     ) : (
                         <li>
                             <span className="mdi mdi-account-multiple icon" />
-                            <span>{acceptedCount}</span>
+                            <span>{`${acceptedCount} accepted ${acceptedCount === 1 ? 'user' : 'users'}`}</span>
                         </li>
                     )}
                 </ul>
