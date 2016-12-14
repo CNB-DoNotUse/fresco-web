@@ -55,7 +55,8 @@ class AssignmentDetail extends React.Component {
     }
 
     onMouseEnterPost = (id) => {
-        this.setMarkerActive(id, true);
+        if (this.markerTimeout) clearTimeout(this.markerTimeout);
+        this.markerTimeout = setTimeout(() => this.setMarkerActive(id, true), 1500);
     }
 
     onMouseLeavePostList = () => {
