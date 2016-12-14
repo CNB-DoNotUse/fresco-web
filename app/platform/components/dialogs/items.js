@@ -33,7 +33,7 @@ export default class Items extends React.Component {
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
 
                 <div
-                    className={`items-dialog ${toggled ? 'toggled' : ''}`}
+                    className={`dialog-modal--items ${toggled ? 'toggled' : ''}`}
                 >
                     <div className="header">
                         <span>{header}</span>
