@@ -140,7 +140,7 @@ class AssignmentDetail extends React.Component {
             limit: 10,
             sortBy,
             last,
-            rating: verifiedToggle ? 2 : [1, 2],
+            rating: verifiedToggle ? 2 : [0, 1, 2],
         };
         api
         .get(`assignment/${assignment.id}/posts`, params)
@@ -235,7 +235,7 @@ class AssignmentDetail extends React.Component {
         } = this.state;
 
         return (
-            <App 
+            <App
                 user={this.props.user}
                 page='assignmentDetail'>
                 <TopBar
