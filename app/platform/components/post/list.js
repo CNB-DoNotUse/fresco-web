@@ -200,6 +200,7 @@ class PostList extends React.Component {
             sortBy,
             parentCaption,
             onMouseEnterPost,
+            onMouseLeavePost,
             onMouseLeaveList,
             scrollTo,
         } = this.props;
@@ -231,6 +232,7 @@ class PostList extends React.Component {
                             editable={editable}
                             sortBy={sortBy}
                             onMouseEnter={onMouseEnterPost}
+                            onMouseLeave={onMouseLeavePost}
                             togglePost={this.togglePost}
                         />
                     ))}
@@ -300,6 +302,7 @@ PostList.propTypes = {
     paginateBy: PropTypes.string,
     onScroll: PropTypes.func,
     onMouseEnterPost: PropTypes.func,
+    onMouseLeavePost: PropTypes.func,
     onMouseLeaveList: PropTypes.func,
     loadPosts: PropTypes.func,
     scrollTo: PropTypes.string,

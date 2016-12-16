@@ -24,6 +24,7 @@ class PostCell extends React.Component {
         highlighted: PropTypes.bool,
         togglePost: PropTypes.func,
         onMouseEnter: PropTypes.func,
+        onMouseLeave: PropTypes.func,
     };
 
     static defaultProps = {
@@ -61,6 +62,7 @@ class PostCell extends React.Component {
 
     onMouseLeave = () => {
         this.setState({ mouseEntered: false });
+        this.props.onMouseLeave && this.props.onMouseLeave(this.props.post.id);
     }
 
     onToggleGalleryEdit = (gallery = {}) => {

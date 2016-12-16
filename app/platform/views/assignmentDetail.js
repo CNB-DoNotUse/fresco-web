@@ -59,6 +59,10 @@ class AssignmentDetail extends React.Component {
         this.markerTimeout = setTimeout(() => this.setMarkerActive(id, true), 1500);
     }
 
+    onMouseLeavePost = () => {
+        if (this.markerTimeout) clearTimeout(this.markerTimeout);
+    }
+
     onMouseLeavePostList = () => {
         let { markerData } = this.state;
         markerData = markerData.map(m => Object.assign(m, { active: false }));
@@ -68,6 +72,10 @@ class AssignmentDetail extends React.Component {
     onMouseOverMarker = (scrollToPostId) => {
         this.setState({ scrollToPostId });
         this.setMarkerActive(scrollToPostId);
+    }
+
+    onMouseOutMarker = () => {
+        this.resetMarkerActive();
     }
 
     onClickAccepted = () => {
@@ -106,7 +114,7 @@ class AssignmentDetail extends React.Component {
             };
         };
 
-        const markers = posts.map(p => {
+        const markers = posts.map((p) => {
             if (!p.location) return null;
             return {
                 id: p.id,
@@ -116,6 +124,13 @@ class AssignmentDetail extends React.Component {
         }).filter(m => !!m);
 
         this.setState({ markerData: this.state.markerData.concat(markers) });
+    }
+
+    resetMarkerActive() {
+        let { markerData } = this.state;
+        markerData = markerData.map(m => Object.assign(m, { active: false }));
+
+        this.setState({ mapPanTo: null, markerData });
     }
 
     fetchAssignment() {
@@ -263,6 +278,7 @@ class AssignmentDetail extends React.Component {
                             markerData={markerData}
                             mapPanTo={mapPanTo}
                             onMouseOverMarker={this.onMouseOverMarker}
+                            onMouseOutMarker={this.onMouseOutMarker}
                             assignment={assignment}
                         />
                     )}
@@ -278,6 +294,7 @@ class AssignmentDetail extends React.Component {
                         onlyVerified={verifiedToggle}
                         assignment={assignment}
                         onMouseEnterPost={this.onMouseEnterPost}
+                        onMouseLeavePost={this.onMouseLeavePost}
                         onMouseLeaveList={this.onMouseLeavePostList}
                         editable={false}
                         size="large"

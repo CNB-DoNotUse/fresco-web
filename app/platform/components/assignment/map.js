@@ -10,6 +10,7 @@ class AssignmentMap extends React.Component {
         markerData: PropTypes.array,
         mapPanTo: PropTypes.object,
         onMouseOverMarker: PropTypes.func,
+        onMouseOutMarker: PropTypes.func,
         assignment: PropTypes.object,
     }
 
@@ -18,22 +19,7 @@ class AssignmentMap extends React.Component {
             return true;
         }
 
-        const changedMarkerData = () => {
-            if (this.props.markerData.length !== nextProps.markerData.length) return true;
-
-            this.props.markerData.some((m, i) => {
-                if (!isEqual(m, nextProps.markerData[i])) {
-                    return true;
-                }
-                return false;
-            })
-
-            return false;
-        };
-
-        if (changedMarkerData) {
-            return true;
-        }
+        if (this.props.markerData !== nextProps.markerData) return true;
 
         if (!isEqual(this.props.mapPanTo, nextProps.mapPanTo)) {
             return true;
@@ -43,7 +29,7 @@ class AssignmentMap extends React.Component {
     }
 
     renderDataMarkers() {
-        const { markerData, onMouseOverMarker } = this.props;
+        const { markerData, onMouseOverMarker, onMouseOutMarker } = this.props;
         if (!markerData || !markerData.length) return null;
 
         const markerImage = m => ({
@@ -63,13 +49,14 @@ class AssignmentMap extends React.Component {
                 zIndex={m.active ? 3 : 1}
                 draggable={false}
                 onMouseover={() => onMouseOverMarker(m.id)}
+                onMouseout={() => onMouseOutMarker(m.id)}
             />
         ))
         .filter(m => !!m);
     }
 
     render() {
-        const { assignment, mapPanTo, onMouseOverMarker } = this.props;
+        const { assignment, mapPanTo } = this.props;
         const dataMarkers = this.renderDataMarkers();
 
         return (
@@ -82,7 +69,6 @@ class AssignmentMap extends React.Component {
                         containerElement={<div className="assignment__map-ctr" />}
                         panTo={mapPanTo}
                         zoom={13}
-                        onMouseOverMarker={onMouseOverMarker}
                         markers={dataMarkers}
                         rerender
                         fitBoundsOnMount
