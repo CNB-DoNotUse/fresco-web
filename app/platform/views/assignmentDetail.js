@@ -56,7 +56,7 @@ class AssignmentDetail extends React.Component {
 
     onMouseEnterPost = (id) => {
         if (this.markerTimeout) clearTimeout(this.markerTimeout);
-        this.markerTimeout = setTimeout(() => this.setMarkerActive(id, true), 1500);
+        this.markerTimeout = setTimeout(() => this.setMarkerActive(id, true), 500);
     }
 
     onMouseLeavePost = () => {
@@ -99,7 +99,7 @@ class AssignmentDetail extends React.Component {
     }
 
     setMarkersFromPosts(posts) {
-        if (!posts) return;
+        if (!posts || !posts.length) return;
         const markerImageUrl = (isVideo) => {
             if (isVideo) {
                 return {
