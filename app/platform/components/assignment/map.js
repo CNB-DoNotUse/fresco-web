@@ -13,72 +13,33 @@ class AssignmentMap extends React.Component {
         assignment: PropTypes.object,
     }
 
-    state = {
-        users: [],
-        acceptedUsers: [],
-        fetchedUsers: false,
-        fetchedAcceptedUsers: false,
-    }
+    shouldComponentUpdate(nextProps) {
+        if (!isEqual(this.props.assignment.location, nextProps.assignment.location)) {
+            return true;
+        }
 
-    componentWillUpdate() {
-        if (!this.state.fetchedUsers) this.getAllUsers();
-        if (!this.state.fetchedAcceptedUsers) this.getAcceptedUsers();
-    }
+        const changedMarkerData = () => {
+            if (this.props.markerData.length !== nextProps.markerData.length) return true;
 
-    getAllUsers() {
-        if (!this.gmap.map || !this.gmap.map.getBounds()) return;
-        const params = {
-            geo: {
-                type: 'Polygon',
-                coordinates: utils.generatePolygonFromBounds(this.gmap.map.getBounds()),
-            },
+            this.props.markerData.some((m, i) => {
+                if (!isEqual(m, nextProps.markerData[i])) {
+                    return true;
+                }
+                return false;
+            })
+
+            return false;
         };
 
-        api
-        .get('user/locations/find', params)
-        .then(users => this.setState({ users, fetchedUsers: true }))
-        .catch(res => res);
-    }
+        if (changedMarkerData) {
+            return true;
+        }
 
-    getAcceptedUsers() {
-        api
-        .get('user/locations/find', { assignment_id: this.props.assignment.id })
-        .then(acceptedUsers => this.setState({ acceptedUsers, fetchedAcceptedUsers: true }))
-        .catch(res => res);
-    }
+        if (!isEqual(this.props.mapPanTo, nextProps.mapPanTo)) {
+            return true;
+        }
 
-    renderUserMarkers() {
-        const { users, acceptedUsers } = this.state;
-        if (!users || !users.length) return null;
-        const userIcon = {
-            url: '/images/assignment-user@3x.png',
-            size: new google.maps.Size(30, 33),
-            scaledSize: new google.maps.Size(10, 11),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(5, 5.5),
-        };
-        const acceptedIcon = {
-            url: '/images/assignment-user-accepted@3x.png',
-            size: new google.maps.Size(30, 33),
-            scaledSize: new google.maps.Size(10, 11),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(5, 5.5),
-        };
-
-        const getMarkerIcon = (user) => {
-            if (acceptedUsers.some(a => isEqual(a.geo, user.geo))) return acceptedIcon;
-            return userIcon;
-        };
-
-        return users
-            .map((u, i) => (
-                <Marker
-                    key={`users-${i}`}
-                    position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
-                    icon={getMarkerIcon(u)}
-                    draggable={false}
-                />
-            ));
+        return false;
     }
 
     renderDataMarkers() {
@@ -109,7 +70,6 @@ class AssignmentMap extends React.Component {
 
     render() {
         const { assignment, mapPanTo, onMouseOverMarker } = this.props;
-        const userMarkers = this.renderUserMarkers();
         const dataMarkers = this.renderDataMarkers();
 
         return (
@@ -123,7 +83,7 @@ class AssignmentMap extends React.Component {
                         panTo={mapPanTo}
                         zoom={13}
                         onMouseOverMarker={onMouseOverMarker}
-                        markers={[].concat(userMarkers).concat(dataMarkers)}
+                        markers={dataMarkers}
                         rerender
                         fitBoundsOnMount
                     />
