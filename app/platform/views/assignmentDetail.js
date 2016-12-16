@@ -61,6 +61,9 @@ class AssignmentDetail extends React.Component {
 
     onMouseLeavePost = () => {
         if (this.markerTimeout) clearTimeout(this.markerTimeout);
+        let { markerData } = this.state;
+        markerData = markerData.map(m => Object.assign(m, { active: false }));
+        this.setState({ mapPanTo: null, markerData });
     }
 
     onMouseLeavePostList = () => {
