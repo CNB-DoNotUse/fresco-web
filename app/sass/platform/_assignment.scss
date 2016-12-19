@@ -1,3 +1,6 @@
+@import './variables';
+@import '../global/mixins';
+
 .merge-dropup {
     position: relative;
 }
@@ -143,3 +146,25 @@
 	.dialog-row { margin: 0 !important; }
 }
 
+.assignment__map-ctr {
+    height: 344px;
+    width: 344px;
+    max-width: 100%;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+}
+
+.assignment__accepted-user{
+    @include vertical-align-flex;
+
+    .meta-user {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .btn {
+        margin-left: 24px;
+        text-transform: uppercase;
+        color: $color-accent-primary;
+    }
+}

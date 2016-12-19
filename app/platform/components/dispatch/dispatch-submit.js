@@ -1,8 +1,8 @@
 import React from 'react';
-import GMap from '../global/gmap';
-import LocationAutocomplete from '../global/location-autocomplete.js';
 import utils from 'utils';
 import assign from 'lodash/assign';
+import GMap from '../global/gmap';
+import LocationAutocomplete from '../global/location-autocomplete';
 
 /**
  * Assignment Form parent component
@@ -14,8 +14,9 @@ export default class DispatchSubmit extends React.Component {
 
         this.state = {
             place: null,
-            global: false
-        }
+            global: false,
+            isAcceptable: false,
+        };
 
         this.geocoder = new google.maps.Geocoder();
         this.submitForm = this.submitForm.bind(this);
@@ -76,13 +77,19 @@ export default class DispatchSubmit extends React.Component {
     /**
      * Checkbox listener for global options
      */
-    onGlobalChange() {
-        if(!this.state.global)
-            this.props.updateNewAssignment();
-        else
-            this.props.updateNewAssignment('new');
+    onChangeGlobal = (e) => {
+        if (!this.state.global) this.props.updateNewAssignment();
+        else this.props.updateNewAssignment('new');
 
-        this.setState({ global : !this.state.global });
+        this.setState({ global: e.target.checked });
+    }
+
+    onChangeInput = (e) => {
+        if (e.target.type === 'checkbox') {
+            this.setState({ [e.target.name]: e.target.checked });
+        } else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
     }
 
     /**
@@ -109,8 +116,7 @@ export default class DispatchSubmit extends React.Component {
     updateRadius(e) {
         const radiusInMiles = utils.feetToMiles(parseFloat(this.refs['radius'].value));
 
-        if(radiusInMiles == 'NaN')
-            return;
+        if (radiusInMiles == 'NaN') return;
 
         this.props.updateNewAssignment(
             this.props.newAssignment.location,
@@ -119,30 +125,29 @@ export default class DispatchSubmit extends React.Component {
         );
     }
 
-	/**
-	 * Form submissions
-	 */
+    /**
+     * Form submissions
+     */
     submitForm() {
-        const { newAssignment } = this.props;
-        const { global } = this.state;
+        const { global, isAcceptable } = this.state;
         const {
             title,
             caption,
             radius,
-            inputField,
             autocomplete,
-            expiration
+            expiration,
         } = this.refs;
 
-        let assignment = {
+        const assignment = {
             title: title.value,
             caption: caption.value,
             starts_at: Date.now(),
-            //Convert to milliseconds (from hours) and add current time
-            ends_at: expiration.value  * 60 * 60 * 1000 + Date.now()
+            // Convert to milliseconds (from hours) and add current time
+            ends_at: expiration.value * 60 * 60 * 1000 + Date.now(),
+            is_acceptable: isAcceptable,
         };
 
-        if(!global) {
+        if (!global) {
             assign(assignment, {
                 radius: utils.feetToMiles(parseInt(radius.value)),
                 address: autocomplete.refs.inputField.value,
@@ -157,19 +162,24 @@ export default class DispatchSubmit extends React.Component {
 
             /* Run check only if it's not global */
             if (utils.isEmptyString(assignment.address)){
-                return $.snackbar({content: 'Your assignment must have a location!'});
+                $.snackbar({content: 'Your assignment must have a location!'});
+                return;
             } else if (!utils.isValidRadius(assignment.radius)){
-                return $.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
+                $.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
+                return;
             }
         }
 
         /* Run regular checks */
         if (utils.isEmptyString(assignment.title)){
-            return $.snackbar({content: 'Your assignment must have a title!'});
+            $.snackbar({content: 'Your assignment must have a title!'});
+            return;
         } else if (utils.isEmptyString(assignment.caption)){
-            return $.snackbar({content: 'Your assignment must have a caption!'});
+            $.snackbar({content: 'Your assignment must have a caption!'});
+            return;
         } else if (isNaN(expiration.value) || expiration.value < 1){
-            return $.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
+            $.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
+            return;
         }
 
         $.ajax({
@@ -200,7 +210,7 @@ export default class DispatchSubmit extends React.Component {
             autocomplete.value = '';
         })
         .fail((error) => {
-            return $.snackbar({content: 'There was an error submitting your assignment!'});
+            $.snackbar({content: 'There was an error submitting your assignment!'});
         });
     }
 
@@ -216,10 +226,7 @@ export default class DispatchSubmit extends React.Component {
             rerender
         } = this.props;
 
-        const {
-            global,
-            autocompleteText,
-        } = this.state;
+        const { global, isAcceptable } = this.state;
 
         const paymentAvailable = this.props.user.outlet && this.props.user.outlet.card;
 
@@ -318,16 +325,30 @@ export default class DispatchSubmit extends React.Component {
                         <label>
                             <input
                                 type="checkbox"
-                                checked={this.state.global}
-                                onChange={this.onGlobalChange.bind(this)} />
+                                onChange={this.onChangeGlobal}
+                                disabled={isAcceptable}
+                            />
                             Global
+                        </label>
+                    </div>
+                    <div />
+
+                    <div className="checkbox form-group">
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="isAcceptable"
+                                disabled={global}
+                                onChange={this.onChangeInput}
+                            />
+                            Acceptable
                         </label>
                     </div>
                 </div>
 
                 <a className="payment" href="/outlet/settings">
                     <span
-                        className={'mdi mdi-check ' + ( paymentAvailable ? 'available' : 'un-available')}>
+                        className={'mdi mdi-check ' + (paymentAvailable ? 'available' : 'un-available')}>
                     </span>
 
                     {paymentAvailable ? 'Payment information available' : 'Payment information unavailable'}

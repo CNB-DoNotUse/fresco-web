@@ -228,7 +228,7 @@ class UserSettings extends React.Component {
         const { user, disabled } = this.state;
 
         return (
-            <App 
+            <App
                 user={this.state.user}
                 page="userSettings"
             >
@@ -328,7 +328,7 @@ class UserSettings extends React.Component {
                     onConfirm={(password) => this.onPasswordSubmit(password)}
                     onCancel={() => this.onPasswordToggle()}
                     toggled={this.state.passwordToggled}
-                    text="Enter your password"
+                    header="Enter your password"
                     confirmText="Save changes"
                     hasInput
                 />

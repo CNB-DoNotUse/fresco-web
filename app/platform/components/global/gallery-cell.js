@@ -20,7 +20,7 @@ export default class GalleryCell extends React.Component {
 
 		return (
 			<div className={size + " tile story gallery"}>
-				<div className="frame"></div>
+				<div className="tile__frame"></div>
 
 				<div className="tile-body">
 					<div className="hover">

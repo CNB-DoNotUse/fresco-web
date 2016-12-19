@@ -31,6 +31,7 @@ export default class AssignmentEdit extends React.Component {
         return {
             address: assignment.address,
             caption: assignment.caption,
+            isAcceptable: assignment.is_acceptable,
             endsAt: moment(assignment.ends_at).valueOf(),
             location: assignment.location,
             radius,
@@ -82,7 +83,7 @@ export default class AssignmentEdit extends React.Component {
      * When global is checked, location and address set to null
      * When not checked, location and adress are set to original/default vals
      */
-    onChangeGlobal() {
+    onChangeGlobal = () => {
         if (this.isGlobalLocation()) {
             const { assignment: { location, address } } = this.props;
             this.setState({ location: location || { lat: 40.7, lng: -74 }, address });
@@ -96,7 +97,16 @@ export default class AssignmentEdit extends React.Component {
      */
     onSave() {
         const { assignment, save, loading } = this.props;
-        const { title, caption, radius, location, address, endsAt, outlets } = this.state;
+        const {
+            title,
+            caption,
+            radius,
+            location,
+            address,
+            endsAt,
+            outlets,
+            isAcceptable,
+        } = this.state;
         const geo = location && Object.prototype.hasOwnProperty.call(location, 'type')
             ? location
             : utils.getGeoFromCoord(location);
@@ -113,6 +123,7 @@ export default class AssignmentEdit extends React.Component {
             ...utils.getRemoveAddParams('outlets', assignment.outlets, outlets),
             title,
             ends_at: endsAt,
+            is_acceptable: isAcceptable,
         }, (v, k) => {
             if (isEqual(assignment[k], v)) return false;
             if (k === 'ends_at' && (moment(assignment.ends_at).valueOf() === v)) return false;
@@ -147,6 +158,14 @@ export default class AssignmentEdit extends React.Component {
         window.location.href = mergeIntoId
             ? `/assignment/${mergeIntoId}`
             : document.referrer || '/highlights';
+    }
+
+    onChangeInput = (e) => {
+        if (e.target.type === 'checkbox') {
+            this.setState({ [e.target.name]: e.target.checked });
+        } else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
     }
 
     hasFormErrors() {
@@ -200,7 +219,7 @@ export default class AssignmentEdit extends React.Component {
     /**
      * Reverts fields to original state
      */
-    cancel() {
+    onCancel = () => {
         this.revert();
         this.props.onToggle();
     }
@@ -215,14 +234,23 @@ export default class AssignmentEdit extends React.Component {
                 <span className="md-type-title">Edit assignment</span>
                 <span
                     className="mdi mdi-close pull-right icon toggle-edit toggler"
-                    onClick={() => this.cancel()}
+                    onClick={this.onCancel}
                 />
             </div>
         );
     }
 
     renderBody() {
-        const { title, caption, outlets, address, location, radius, endsAt } = this.state;
+        const {
+            title,
+            caption,
+            outlets,
+            address,
+            location,
+            radius,
+            endsAt,
+            isAcceptable,
+        } = this.state;
         const { user } = this.props;
         const globalLocation = this.isGlobalLocation();
 
@@ -235,8 +263,9 @@ export default class AssignmentEdit extends React.Component {
                             className="form-control floating-label"
                             placeholder="Title"
                             title="Title"
+                            name="title"
                             value={title}
-                            onChange={(e) => this.setState({ title: e.target.value })}
+                            onChange={this.onChangeInput}
                         />
                     </div>
 
@@ -245,9 +274,10 @@ export default class AssignmentEdit extends React.Component {
                             type="text"
                             className="form-control floating-label"
                             placeholder="Caption"
+                            name="caption"
                             title="Caption"
                             value={caption}
-                            onChange={(e) => this.setState({ caption: e.target.value })}
+                            onChange={this.onChangeInput}
                         />
                     </div>
 
@@ -257,12 +287,27 @@ export default class AssignmentEdit extends React.Component {
                             queryAttr="title"
                             className="dialog-row"
                             items={outlets}
-                            updateItems={(o) => this.setState({ outlets: o })}
+                            updateItems={o => this.setState({ outlets: o })}
                             autocomplete
                         />
                     )}
 
+                    {user.permissions.includes('update-other-content') && (
+                        <div className="checkbox form-group">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="isAcceptable"
+                                    disabled={globalLocation}
+                                    onChange={this.onChangeInput}
+                                    checked={isAcceptable}
+                                />
+                                Acceptable
+                            </label>
+                        </div>
+                    )}
                 </div>
+
                 <div className="dialog-col col-xs-12 col-md-5 form-group-default">
 
                     <div className="dialog-row map-group">
@@ -270,7 +315,8 @@ export default class AssignmentEdit extends React.Component {
                             <label>
                                 <input
                                     type="checkbox"
-                                    onChange={() => this.onChangeGlobal()}
+                                    disabled={isAcceptable}
+                                    onChange={this.onChangeGlobal}
                                     checked={globalLocation}
                                 />
                                 Global
@@ -347,7 +393,7 @@ export default class AssignmentEdit extends React.Component {
                     type="button"
                     className="btn btn-flat pull-right toggle-edit toggler"
                     disabled={loading}
-                    onClick={() => this.cancel()}
+                    onClick={this.onCancel}
                 >
                     Discard
                 </button>

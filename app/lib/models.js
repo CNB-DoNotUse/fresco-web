@@ -25,3 +25,12 @@ export const isSubmittedGallery = ({ owner_id = null, posts = [] }) => (
     owner_id && (posts && posts.every(p => p.owner_id === owner_id))
 );
 
+export const deletePosts = (postIds) => {
+    if (!postIds || !postIds.length) return Promise.resolve();
+    return api.post('post/delete', { post_ids: postIds });
+};
+
+export const saveGallery = (id, params) => {
+    if (!id || !params) return Promise.resolve();
+    return api.post(`gallery/${id}/update`, params);
+};
