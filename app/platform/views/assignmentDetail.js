@@ -54,6 +54,12 @@ class AssignmentDetail extends React.Component {
         setInSessionStorage('topbar', { sortBy });
     }
 
+    /**
+     * On mouse enter post callback
+     * set's the corresponding map marker active
+     *
+     * @param {string} id the id of post
+     */
     onMouseEnterPost = (id) => {
         if (this.markerTimeout) clearTimeout(this.markerTimeout);
         this.markerTimeout = setTimeout(() => this.setMarkerActive(id, true), 750);

@@ -5,6 +5,12 @@ import api from 'app/lib/api';
 import Marker from 'react-google-maps/lib/Marker';
 import GMap from '../global/gmap';
 
+/**
+ * AssignmentMap
+ * Map component for assignment detail page
+ *
+ * @extends {React}
+ */
 class AssignmentMap extends React.Component {
     static propTypes = {
         markerData: PropTypes.array,

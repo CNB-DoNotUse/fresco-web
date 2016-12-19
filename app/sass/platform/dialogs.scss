@@ -20,6 +20,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
    }
 }
 
+// the base class for all modal dialog components
+// centers component, gives base width, and animation
 .dialog-modal {
     background-color: #fafafa;
     width:384px;

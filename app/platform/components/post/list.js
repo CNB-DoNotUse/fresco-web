@@ -139,6 +139,11 @@ class PostList extends React.Component {
         this.setState({ galleryCreateToggled: !this.state.galleryCreateToggled });
     }
 
+    /**
+     * setSelectedPosts
+     *
+     * @param {Array} newSelected Array of posts that are will now be selected
+     */
     setSelectedPosts = (newSelected) => {
         this.setState({ selectedPosts: newSelected });
         setInSessionStorage('post/list', { selectedPosts: newSelected });
