@@ -4,6 +4,7 @@ import utils from 'utils';
 import api from 'app/lib/api';
 import Marker from 'react-google-maps/lib/Marker';
 import GMap from '../global/gmap';
+import GoogleMap from '../googleMap';
 
 /**
  * AssignmentMap
@@ -79,6 +80,9 @@ class AssignmentMap extends React.Component {
                         rerender
                         fitBoundsOnMount
                     />
+                </div>
+                <div className="col-sm-11 col-md-10 col-sm-offset-1">
+                    <GoogleMap />
                 </div>
             </div>
         );

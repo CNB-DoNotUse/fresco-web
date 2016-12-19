@@ -4,6 +4,14 @@ const config        = require('../lib/config');
 const routes        = require('../lib/routes');
 const API  = require('../lib/api');
 
+router.get('/map-test', (req, res) => {
+    res.locals.section = 'platform';
+    return res.render('app', {
+        props: JSON.stringify({}),
+        page: 'mapTest',
+    });
+});
+
 /**
  * Root index for the landing page
  */
