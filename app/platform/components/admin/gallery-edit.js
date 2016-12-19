@@ -5,22 +5,12 @@ import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import get from 'lodash/get';
 import api from 'app/lib/api';
-import { isImportedGallery } from 'app/lib/models';
+import { isImportedGallery, deletePosts, saveGallery } from 'app/lib/models';
 import AutocompleteMap from '../global/autocomplete-map';
 import ExplicitCheckbox from '../global/explicit-checkbox';
 import ChipInput from '../global/chip-input';
 import EditPosts from './../gallery/edit-posts';
 import EditByline from './../gallery/edit-byline';
-
-const deletePosts = (postIds) => {
-    if (!postIds || !postIds.length) return Promise.resolve();
-    return api.post('post/delete', { post_ids: postIds });
-};
-
-const saveGallery = (id, params) => {
-    if (!id || !params) return Promise.resolve();
-    return api.post(`gallery/${id}/update`, params);
-};
 
 /**
  *	Admin Gallery Edit component.
