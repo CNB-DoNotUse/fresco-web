@@ -291,7 +291,6 @@ class AssignmentDetail extends React.Component {
                             assignment={assignment}
                         />
                     )}
-                    acceptedCount={acceptedUsers ? acceptedUsers.length : 0}
                     onClickAccepted={this.onClickAccepted}
                 />
 
