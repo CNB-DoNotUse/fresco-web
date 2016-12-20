@@ -11,7 +11,6 @@ class Sidebar extends React.Component {
     static propTypes = {
         assignment: PropTypes.object.isRequired,
         user: PropTypes.object.isRequired,
-        acceptedCount: PropTypes.number.isRequired,
         onClickAccepted: PropTypes.func.isRequired,
         expireAssignment: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
@@ -22,7 +21,8 @@ class Sidebar extends React.Component {
      * AssignmentStats stats inside the sidebar
      */
     renderStats() {
-        const { assignment, user, acceptedCount, onClickAccepted } = this.props;
+        const { assignment, user, onClickAccepted } = this.props;
+        const acceptedCount = assignment.accepted_count;
         const expirationTime = new Date(assignment.ends_at);
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ')
             + moment(expirationTime).fromNow();
