@@ -1,6 +1,7 @@
 import React from 'react';
 import utils from 'utils';
 import assign from 'lodash/assign';
+import pickBy from 'lodash/pickBy';
 import GMap from '../global/gmap';
 import LocationAutocomplete from '../global/location-autocomplete';
 
@@ -138,14 +139,14 @@ export default class DispatchSubmit extends React.Component {
             expiration,
         } = this.refs;
 
-        const assignment = {
+        const assignment = pickBy({
             title: title.value,
             caption: caption.value,
             starts_at: Date.now(),
             // Convert to milliseconds (from hours) and add current time
             ends_at: expiration.value * 60 * 60 * 1000 + Date.now(),
             is_acceptable: isAcceptable,
-        };
+        }, v => !!v);
 
         if (!global) {
             assign(assignment, {
@@ -161,24 +162,24 @@ export default class DispatchSubmit extends React.Component {
             });
 
             /* Run check only if it's not global */
-            if (utils.isEmptyString(assignment.address)){
-                $.snackbar({content: 'Your assignment must have a location!'});
+            if (!assignment.address){
+                $.snackbar({ content: 'Your assignment must have a location!' });
                 return;
-            } else if (!utils.isValidRadius(assignment.radius)){
-                $.snackbar({content: 'Please enter a radius greater than or equal to 250 feet'});
+            } else if (!assignment.radius || !utils.isValidRadius(assignment.radius)){
+                $.snackbar({ content: 'Please enter a radius greater than or equal to 250 feet' });
                 return;
             }
         }
 
         /* Run regular checks */
-        if (utils.isEmptyString(assignment.title)){
-            $.snackbar({content: 'Your assignment must have a title!'});
+        if (!assignment.title){
+            $.snackbar({ content: 'Your assignment must have a title!' });
             return;
-        } else if (utils.isEmptyString(assignment.caption)){
-            $.snackbar({content: 'Your assignment must have a caption!'});
+        } else if (!assignment.caption){
+            $.snackbar({ content: 'Your assignment must have a caption!' });
             return;
-        } else if (isNaN(expiration.value) || expiration.value < 1){
-            $.snackbar({content: 'Your assignment\'s expiration time must be at least 1 hour!'});
+        } else if (!expiration.value || isNaN(expiration.value) || expiration.value < 1){
+            $.snackbar({ content: 'Your assignment\'s expiration time must be at least 1 hour!' });
             return;
         }
 
@@ -333,17 +334,19 @@ export default class DispatchSubmit extends React.Component {
                     </div>
                     <div />
 
-                    <div className="checkbox form-group">
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="isAcceptable"
-                                disabled={global}
-                                onChange={this.onChangeInput}
-                            />
-                            Acceptable
-                        </label>
-                    </div>
+                    {user.permissions.includes('update-other-content') && (
+                        <div className="checkbox form-group">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="isAcceptable"
+                                    disabled={global}
+                                    onChange={this.onChangeInput}
+                                />
+                                Acceptable
+                            </label>
+                        </div>
+                    )}
                 </div>
 
                 <a className="payment" href="/outlet/settings">
