@@ -116,6 +116,7 @@ class AssignmentMap extends React.Component {
                             zoom={13}
                             draggable={false}
                         >
+                            <CenterMarker />
                             {dataMarkersNew}
                         </GoogleMap>
                     </div>

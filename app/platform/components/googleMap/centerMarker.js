@@ -31,13 +31,13 @@ const CenterMarker = ({
 
 CenterMarker.propTypes = {
     onDragend: PropTypes.func,
-    type: PropTypes.string.isRequired,
-    map: PropTypes.object.isRequired,
+    type: PropTypes.string,
+    map: PropTypes.object,
     mapCenter: PropTypes.shape({
         lat: PropTypes.number,
         lng: PropTypes.number,
-    }).isRequired,
-    draggable: PropTypes.bool.isRequired,
+    }),
+    draggable: PropTypes.bool,
 };
 
 export default CenterMarker;

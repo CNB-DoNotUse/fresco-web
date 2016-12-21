@@ -125,7 +125,8 @@ class Map extends React.Component {
     }
 
     renderChildren() {
-        const { children } = this.props;
+        let { children } = this.props;
+        children = children.filter(c => !!c);
 
         if (!this.map || !children) return null;
 

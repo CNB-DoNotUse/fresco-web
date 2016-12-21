@@ -6,6 +6,8 @@ import CenterMarker from 'app/platform/components/googleMap/centerMarker';
 
 ReactDOM.render(
     <GoogleMap>
+        <Marker position={{ lng: -74.1, lat: 40.8 }} />
+        <Marker />
         <CenterMarker />
     </GoogleMap>,
     document.getElementById('app')
