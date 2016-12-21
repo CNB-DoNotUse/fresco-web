@@ -19,6 +19,7 @@ class Map extends React.Component {
         mapTypeControl: PropTypes.bool.isRequired,
         streetViewControl: PropTypes.bool.isRequired,
         draggable: PropTypes.bool.isRequired,
+        zoomControl: PropTypes.bool.isRequired,
     }
 
     static defaultProps = {
@@ -28,6 +29,7 @@ class Map extends React.Component {
         mapTypeControl: false,
         streetViewControl: false,
         draggable: true,
+        zoomControl: true,
     }
 
     constructor(props) {
@@ -71,6 +73,7 @@ class Map extends React.Component {
                 scrollwheel,
                 mapTypeControl,
                 streetViewControl,
+                zoomControl,
                 draggable,
             });
 
