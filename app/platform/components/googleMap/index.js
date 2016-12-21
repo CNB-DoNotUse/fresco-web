@@ -18,6 +18,7 @@ class Map extends React.Component {
         scrollwheel: PropTypes.bool.isRequired,
         mapTypeControl: PropTypes.bool.isRequired,
         streetViewControl: PropTypes.bool.isRequired,
+        draggable: PropTypes.bool.isRequired,
     }
 
     static defaultProps = {
@@ -26,6 +27,7 @@ class Map extends React.Component {
         scrollwheel: false,
         mapTypeControl: false,
         streetViewControl: false,
+        draggable: true,
     }
 
     constructor(props) {
@@ -51,7 +53,13 @@ class Map extends React.Component {
 
     loadMap() {
         if (google) {
-            const { zoom, scrollwheel, mapTypeControl, streetViewControl } = this.props;
+            const {
+                zoom,
+                scrollwheel,
+                mapTypeControl,
+                streetViewControl,
+                draggable,
+            } = this.props;
             const { currentLocation: { lat, lng } } = this.state;
 
             const maps = google.maps;
@@ -63,6 +71,7 @@ class Map extends React.Component {
                 scrollwheel,
                 mapTypeControl,
                 streetViewControl,
+                draggable,
             });
 
             this.map = new maps.Map(node, mapConfig);

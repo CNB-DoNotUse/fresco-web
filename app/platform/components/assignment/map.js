@@ -113,6 +113,7 @@ class AssignmentMap extends React.Component {
                         <GoogleMap
                             initialLocation={initialLocation}
                             zoom={13}
+                            draggable={false}
                         >
                             {dataMarkersNew}
                         </GoogleMap>
