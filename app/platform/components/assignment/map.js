@@ -88,6 +88,7 @@ class AssignmentMap extends React.Component {
                             initialLocation={initialLocation}
                             zoom={13}
                             draggable={false}
+                            panTo={panTo}
                         >
                             <CenterMarker />
                             <Circle

@@ -55,6 +55,52 @@ class Map extends React.Component {
         if (prevState.currentLocation !== this.state.currentLocation) {
             this.recenterMap();
         }
+
+        if (prevProps.panTo !== this.props.panTo) {
+            this.panTo();
+        }
+    }
+
+    panTo() {
+        if (!this.map) return;
+        const { lat, lng } = this.props.panTo;
+        const location = new google.maps.LatLng({ lat, lng });
+        this.map.panTo(location);
+    }
+
+    /**
+     * returns event handler that calls prop callback
+     * uses timeout to limit event cbs being executed to one at a time
+     *
+     * @param {String} evtName
+     */
+    handleEvent(evtName) {
+        let timeout;
+
+        return (e) => {
+            const handlerName = createHandlerName(evtName);
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+            timeout = setTimeout(() => {
+                if (this.props[handlerName]) {
+                    this.props[handlerName](this.props, this.map, e);
+                }
+            }, 0);
+        };
+    }
+
+    recenterMap() {
+        const map = this.map;
+        const { lat, lng } = this.state.currentLocation;
+
+        const maps = google.maps;
+
+        if (map) {
+            const center = new maps.LatLng(lat, lng);
+            map.panTo(center);
+        }
     }
 
     loadMap() {
@@ -90,41 +136,6 @@ class Map extends React.Component {
 
             maps.event.trigger(this.map, 'ready');
             this.setState({ loaded: true });
-        }
-    }
-
-    /**
-     * returns event handler that calls prop callback
-     * uses timeout to limit event cbs being executed to one at a time
-     *
-     * @param {String} evtName
-     */
-    handleEvent(evtName) {
-        let timeout;
-
-        return (e) => {
-            const handlerName = createHandlerName(evtName);
-            if (timeout) {
-                clearTimeout(timeout);
-                timeout = null;
-            }
-            timeout = setTimeout(() => {
-                if (this.props[handlerName]) {
-                    this.props[handlerName](this.props, this.map, e);
-                }
-            }, 0);
-        };
-    }
-
-    recenterMap() {
-        const map = this.map;
-        const { lat, lng } = this.state.currentLocation;
-
-        const maps = google.maps;
-
-        if (map) {
-            const center = new maps.LatLng(lat, lng);
-            map.panTo(center);
         }
     }
 
