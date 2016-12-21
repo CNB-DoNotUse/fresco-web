@@ -18,6 +18,7 @@ class Marker extends React.Component {
             lng: PropTypes.number,
         }),
         map: React.PropTypes.object,
+        icon: React.PropTypes.object,
     }
 
     componentDidMount() {
@@ -57,6 +58,7 @@ class Marker extends React.Component {
             map,
             position,
             mapCenter,
+            icon,
         } = this.props;
 
         const pos = position || mapCenter;
@@ -66,6 +68,8 @@ class Marker extends React.Component {
             map,
             position: latLng,
         };
+
+        if (icon) config.icon = icon;
 
         this.marker = new google.maps.Marker(config);
 

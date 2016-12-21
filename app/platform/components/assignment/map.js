@@ -5,6 +5,7 @@ import api from 'app/lib/api';
 import Marker from 'react-google-maps/lib/Marker';
 import GMap from '../global/gmap';
 import GoogleMap from '../googleMap';
+import VanillaMarker from '../googleMap/marker';
 
 /**
  * AssignmentMap
@@ -62,10 +63,34 @@ class AssignmentMap extends React.Component {
         .filter(m => !!m);
     }
 
+    renderDataMarkersNew() {
+        const { markerData, onMouseOverMarker, onMouseOutMarker } = this.props;
+        if (!markerData || !markerData.length) return null;
+
+        const markerImage = m => ({
+            url: m.active ? m.iconUrl.active : m.iconUrl.normal,
+            size: new google.maps.Size(108, 114),
+            scaledSize: new google.maps.Size(36, 38),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(18, 19),
+        });
+
+        return markerData
+        .map((m, i) => (
+            <VanillaMarker
+                key={`marker-${i}`}
+                position={m.position}
+                icon={markerImage(m)}
+            />
+        ))
+        .filter(m => !!m);
+    }
+
     render() {
         const { assignment, mapPanTo } = this.props;
         const { location: { coordinates } } = assignment;
         const dataMarkers = this.renderDataMarkers();
+        const dataMarkersNew = this.renderDataMarkersNew();
         const initialLocation = { lng: coordinates[0], lat: coordinates[1] };
 
         return (
@@ -88,7 +113,9 @@ class AssignmentMap extends React.Component {
                         <GoogleMap
                             initialLocation={initialLocation}
                             zoom={13}
-                        />
+                        >
+                            {dataMarkersNew}
+                        </GoogleMap>
                     </div>
                 </div>
             </div>
