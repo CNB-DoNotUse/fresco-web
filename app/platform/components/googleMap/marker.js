@@ -19,7 +19,12 @@ class Marker extends React.Component {
         }),
         map: React.PropTypes.object,
         icon: React.PropTypes.object,
+        zIndex: React.PropTypes.number.isRequired,
     }
+
+    static defaultProps = {
+        zIndex: 1,
+    };
 
     componentDidMount() {
         this.renderMarker();
@@ -59,14 +64,16 @@ class Marker extends React.Component {
             position,
             mapCenter,
             icon,
+            zIndex,
         } = this.props;
 
         const pos = position || mapCenter;
         const latLng = new google.maps.LatLng(pos.lat, pos.lng);
 
         const config = {
-            map,
             position: latLng,
+            map,
+            zIndex,
         };
 
         if (icon) config.icon = icon;

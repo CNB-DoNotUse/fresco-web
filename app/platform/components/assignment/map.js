@@ -5,6 +5,7 @@ import api from 'app/lib/api';
 import Marker from 'react-google-maps/lib/Marker';
 import GMap from '../global/gmap';
 import GoogleMap from '../googleMap';
+import CenterMarker from '../googleMap/centerMarker';
 import VanillaMarker from '../googleMap/marker';
 
 /**

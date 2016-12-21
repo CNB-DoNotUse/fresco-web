@@ -28,7 +28,7 @@ class Map extends React.Component {
         scrollwheel: false,
         mapTypeControl: false,
         streetViewControl: false,
-        draggable: true,
+        draggable: false,
         zoomControl: true,
     }
 
@@ -61,6 +61,7 @@ class Map extends React.Component {
                 mapTypeControl,
                 streetViewControl,
                 draggable,
+                zoomControl,
             } = this.props;
             const { currentLocation: { lat, lng } } = this.state;
 
