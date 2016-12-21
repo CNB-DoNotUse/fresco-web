@@ -2,10 +2,9 @@
 /* global google */
 
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { createHandlerName } from 'app/lib/helpers';
 
-const evtNames = ['click', 'dragend'];
+const evtNames = ['click', 'dragend', 'mouseover', 'mouseout'];
 
 class Marker extends React.Component {
     static propTypes = {

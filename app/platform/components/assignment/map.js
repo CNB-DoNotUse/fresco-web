@@ -69,6 +69,8 @@ class AssignmentMap extends React.Component {
                 icon={markerImage(m, false)}
                 pannedIcon={markerImage(m, true)}
                 panned={m.active}
+                onMouseover={() => onMouseOverMarker(m.id)}
+                onMouseout={() => onMouseOutMarker(m.id)}
             />
         ))
         .filter(m => !!m);
