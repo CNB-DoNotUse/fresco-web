@@ -19,6 +19,8 @@ class Marker extends React.Component {
         }),
         map: React.PropTypes.object,
         icon: React.PropTypes.object,
+        pannedIcon: React.PropTypes.object,
+        panned: React.PropTypes.bool,
         zIndex: React.PropTypes.number.isRequired,
     }
 
@@ -31,9 +33,21 @@ class Marker extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if ((this.props.map !== prevProps.map) ||
-            (this.props.position !== prevProps.position)) {
+        const { map, position, panned, pannedIcon, icon, zIndex } = this.props;
+        if ((map !== prevProps.map) ||
+            (position !== prevProps.position)) {
             this.renderMarker();
+        }
+
+        if (panned !== prevProps.panned) {
+            if (!panned) {
+                this.marker.setIcon(icon);
+                this.marker.setZIndex(zIndex);
+            }
+            if (panned && pannedIcon) {
+                this.marker.setIcon(pannedIcon);
+                this.marker.setZIndex(zIndex + 1);
+            }
         }
     }
 
