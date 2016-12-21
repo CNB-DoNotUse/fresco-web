@@ -141,10 +141,7 @@ class Map extends React.Component {
     render() {
         return (
             <div
-                style={{
-                    height: '100%',
-                    width: '100%',
-                }}
+                style={{ height: '100%', width: '100%' }}
                 ref={(r) => { this.mapCtr = r; }}
             >
                 {this.state.loaded && this.renderChildren()}

@@ -24,6 +24,8 @@ class AssignmentMap extends React.Component {
         assignment: PropTypes.object,
     }
 
+    hasFitBounds = false;
+
     shouldComponentUpdate(nextProps) {
         if (!isEqual(this.props.assignment.location, nextProps.assignment.location)) {
             return true;
@@ -36,6 +38,17 @@ class AssignmentMap extends React.Component {
         }
 
         return false;
+    }
+
+    componentDidUpdate() {
+        if (!this.hasFitBounds) this.fitCircleBounds();
+    }
+
+    fitCircleBounds() {
+        if (this.googleMap.map && this.mapCircle.circle) {
+            this.hasFitBounds = true;
+            this.googleMap.map.fitBounds(this.mapCircle.circle.getBounds());
+        }
     }
 
     renderDataMarkers() {
@@ -94,6 +107,7 @@ class AssignmentMap extends React.Component {
         const dataMarkers = this.renderDataMarkers();
         const dataMarkersNew = this.renderDataMarkersNew();
         const initialLocation = { lng: coordinates[0], lat: coordinates[1] };
+        const circleRadius = Math.round(utils.milesToFeet(assignment.radius));
 
         return (
             <div className="row">
@@ -113,13 +127,15 @@ class AssignmentMap extends React.Component {
                 <div className="col-sm-11 col-md-10 col-sm-offset-1">
                     <div className="assignment__map-ctr">
                         <GoogleMap
+                            ref={(r) => {this.googleMap = r; }}
                             initialLocation={initialLocation}
                             zoom={13}
                             draggable={false}
                         >
                             <CenterMarker />
                             <Circle
-                                radius={Math.round(utils.milesToFeet(assignment.radius))}
+                                ref={(r) => { this.mapCircle = r; }}
+                                radius={circleRadius}
                             />
                             {dataMarkersNew}
                         </GoogleMap>
