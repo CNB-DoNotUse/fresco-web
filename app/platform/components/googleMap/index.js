@@ -20,6 +20,10 @@ class Map extends React.Component {
         streetViewControl: PropTypes.bool.isRequired,
         draggable: PropTypes.bool.isRequired,
         zoomControl: PropTypes.bool.isRequired,
+        panTo: PropTypes.shape({
+            lat: PropTypes.number,
+            lng: PropTypes.number,
+        }),
     }
 
     static defaultProps = {
