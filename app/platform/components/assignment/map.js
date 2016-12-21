@@ -64,7 +64,9 @@ class AssignmentMap extends React.Component {
 
     render() {
         const { assignment, mapPanTo } = this.props;
+        const { location: { coordinates } } = assignment;
         const dataMarkers = this.renderDataMarkers();
+        const initialLocation = { lng: coordinates[0], lat: coordinates[1] };
 
         return (
             <div className="row">
@@ -82,7 +84,12 @@ class AssignmentMap extends React.Component {
                     />
                 </div>
                 <div className="col-sm-11 col-md-10 col-sm-offset-1">
-                    <GoogleMap />
+                    <div className="assignment__map-ctr">
+                        <GoogleMap
+                            initialLocation={initialLocation}
+                            zoom={13}
+                        />
+                    </div>
                 </div>
             </div>
         );

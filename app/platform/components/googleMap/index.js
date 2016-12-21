@@ -12,14 +12,16 @@ class Map extends React.Component {
         initialLocation: PropTypes.shape({
             lat: PropTypes.number,
             lng: PropTypes.number,
-        }),
-        zoom: PropTypes.number,
+        }).isRequired,
+        zoom: PropTypes.number.isRequired,
         children: PropTypes.node,
+        scrollwheel: PropTypes.bool.isRequired,
     }
 
     static defaultProps = {
         initialLocation: { lng: -74, lat: 40.7 },
         zoom: 14,
+        scrollwheel: false,
     }
 
     constructor(props) {
@@ -45,13 +47,17 @@ class Map extends React.Component {
 
     loadMap() {
         if (google) {
-            const { zoom } = this.props;
+            const { zoom, scrollwheel } = this.props;
             const { currentLocation: { lat, lng } } = this.state;
 
             const maps = google.maps;
             const node = ReactDOM.findDOMNode(this.mapCtr);
             const center = new maps.LatLng({ lat, lng });
-            const mapConfig = Object.assign({}, { center, zoom });
+            const mapConfig = Object.assign({}, {
+                center,
+                zoom,
+                scrollwheel,
+            });
 
             this.map = new maps.Map(node, mapConfig);
 
