@@ -1,4 +1,4 @@
-// inspired by https://github.com/fullstackreact/google-maps-react
+// based on https://github.com/fullstackreact/google-maps-react
 /* global google */
 
 import React, { PropTypes } from 'react';
@@ -14,6 +14,7 @@ class Map extends React.Component {
             lng: PropTypes.number,
         }),
         zoom: PropTypes.number,
+        children: PropTypes.node,
     }
 
     static defaultProps = {
@@ -21,7 +22,7 @@ class Map extends React.Component {
         zoom: 14,
     }
 
-    static evtNames = ['click', 'dragend']
+    static evtNames = ['ready', 'click', 'dragend']
 
     constructor(props) {
         super(props);
@@ -31,6 +32,7 @@ class Map extends React.Component {
 
     state = {
         currentLocation: this.props.initialLocation,
+        loaded: false,
     }
 
     componentDidMount() {
@@ -44,7 +46,7 @@ class Map extends React.Component {
     }
 
     loadMap() {
-        if (google && google.maps) {
+        if (google) {
             const { zoom } = this.props;
             const { currentLocation: { lat, lng } } = this.state;
 
@@ -55,9 +57,12 @@ class Map extends React.Component {
 
             this.map = new maps.Map(node, mapConfig);
 
-            Map.evtNames.forEach(e => {
+            Map.evtNames.forEach((e) => {
                 this.map.addListener(e, this.handleEvent(e));
             });
+
+            maps.event.trigger(this.map, 'ready');
+            this.setState({ loaded: true });
         }
     }
 
@@ -90,16 +95,30 @@ class Map extends React.Component {
         }
     }
 
+    renderChildren() {
+        const { children } = this.props;
+
+        if (!this.map || !children) return null;
+
+        return React.Children.map(children, c => (
+            React.cloneElement(c, {
+                map: this.map,
+                mapCenter: this.state.currentLocation,
+            })
+        ));
+    }
+
     render() {
         return (
             <div
-                className="test"
                 style={{
                     height: '100%',
                     width: '100%',
                 }}
                 ref={(r) => { this.mapCtr = r; }}
-            />
+            >
+                {this.state.loaded && this.renderChildren()}
+            </div>
         );
     }
 }
