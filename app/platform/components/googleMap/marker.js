@@ -3,9 +3,9 @@
 
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import { createHandlerName } from 'app/lib/helpers';
 
 const evtNames = ['click', 'dragend'];
-const createHandlerName = evtName => camelCase(`on${evtName.toUpperCase()}`);
 
 class Marker extends React.Component {
     static propTypes = {

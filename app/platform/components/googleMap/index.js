@@ -3,10 +3,9 @@
 
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import camelCase from 'lodash/camelCase';
+import { createHandlerName } from 'app/lib/helpers';
 
 const evtNames = ['ready', 'click', 'dragend'];
-const createHandlerName = evtName => camelCase(`on${evtName.toUpperCase()}`);
 
 class Map extends React.Component {
     static propTypes = {
