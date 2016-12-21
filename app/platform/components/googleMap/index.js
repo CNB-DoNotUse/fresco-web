@@ -5,6 +5,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import camelCase from 'lodash/camelCase';
 
+const evtNames = ['ready', 'click', 'dragend'];
 const createHandlerName = evtName => camelCase(`on${evtName.toUpperCase()}`);
 
 class Map extends React.Component {
@@ -22,12 +23,10 @@ class Map extends React.Component {
         zoom: 14,
     }
 
-    static evtNames = ['ready', 'click', 'dragend']
-
     constructor(props) {
         super(props);
 
-        Map.evtNames.forEach((e) => { Map.propTypes[createHandlerName(e)] = PropTypes.func; });
+        evtNames.forEach((e) => { Map.propTypes[createHandlerName(e)] = PropTypes.func; });
     }
 
     state = {
@@ -57,7 +56,7 @@ class Map extends React.Component {
 
             this.map = new maps.Map(node, mapConfig);
 
-            Map.evtNames.forEach((e) => {
+            evtNames.forEach((e) => {
                 this.map.addListener(e, this.handleEvent(e));
             });
 
@@ -66,11 +65,17 @@ class Map extends React.Component {
         }
     }
 
+    /**
+     * returns event handler that calls prop callback
+     * uses timeout to limit event cbs being executed to one at a time
+     *
+     * @param {String} evtName
+     */
     handleEvent(evtName) {
         let timeout;
-        const handlerName = createHandlerName(evtName);
 
         return (e) => {
+            const handlerName = createHandlerName(evtName);
             if (timeout) {
                 clearTimeout(timeout);
                 timeout = null;

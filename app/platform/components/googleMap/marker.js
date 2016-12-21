@@ -4,6 +4,9 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 
+const evtNames = ['click', 'dragend'];
+const createHandlerName = evtName => camelCase(`on${evtName.toUpperCase()}`);
+
 class Marker extends React.Component {
     static propTypes = {
         position: PropTypes.shape({
@@ -28,6 +31,27 @@ class Marker extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        if (this.marker) {
+            this.marker.setMap(null);
+        }
+    }
+
+    /**
+     * returns event handler that calls prop callback
+     *
+     * @param {String} evtName
+     */
+    handleEvent(evtName) {
+        return (e) => {
+            const handlerName = createHandlerName(evtName);
+
+            if (this.props[handlerName]) {
+                this.props[handlerName](this.props, this.map, e);
+            }
+        };
+    }
+
     renderMarker() {
         const {
             map,
@@ -44,6 +68,10 @@ class Marker extends React.Component {
         };
 
         this.marker = new google.maps.Marker(config);
+
+        evtNames.forEach((e) => {
+            this.marker.addListener(e, this.handleEvent(e));
+        });
     }
 
     render() {
