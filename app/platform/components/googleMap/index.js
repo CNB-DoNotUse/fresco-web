@@ -63,9 +63,17 @@ class Map extends React.Component {
 
     panTo() {
         if (!this.map) return;
-        const { lat, lng } = this.props.panTo;
-        const location = new google.maps.LatLng({ lat, lng });
-        this.map.panTo(location);
+        const { panTo, initialLocation } = this.props;
+
+        if (panTo) {
+            const { lat, lng } = panTo;
+            const location = new google.maps.LatLng({ lat, lng });
+            this.map.panTo(location);
+        } else {
+            const { lat, lng } = initialLocation;
+            const location = new google.maps.LatLng({ lat, lng });
+            this.map.panTo(location);
+        }
     }
 
     /**
