@@ -6,6 +6,7 @@ import Marker from 'react-google-maps/lib/Marker';
 import GMap from '../global/gmap';
 import GoogleMap from '../googleMap';
 import CenterMarker from '../googleMap/centerMarker';
+import Circle from '../googleMap/Circle';
 import VanillaMarker from '../googleMap/marker';
 
 /**
@@ -117,6 +118,9 @@ class AssignmentMap extends React.Component {
                             draggable={false}
                         >
                             <CenterMarker />
+                            <Circle
+                                radius={Math.round(utils.milesToFeet(assignment.radius))}
+                            />
                             {dataMarkersNew}
                         </GoogleMap>
                     </div>
