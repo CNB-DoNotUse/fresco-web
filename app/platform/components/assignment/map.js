@@ -22,9 +22,16 @@ class AssignmentMap extends React.Component {
         assignment: PropTypes.object,
     }
 
+    fetchedAcceptedUsers = false;
+    fetchedAllUser = false;
     hasFitBounds = false;
 
-    shouldComponentUpdate(nextProps) {
+    state = {
+        users: [],
+        acceptedUsers: [],
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
         if (!isEqual(this.props.assignment.location, nextProps.assignment.location)) {
             return true;
         }
@@ -35,6 +42,14 @@ class AssignmentMap extends React.Component {
             return true;
         }
 
+        if (!isEqual(this.state.users, nextState.users)) {
+            return true;
+        }
+
+        if (!isEqual(this.state.acceptedUsers, nextState.acceptedUsers)) {
+            return true;
+        }
+
         return false;
     }
 
@@ -42,11 +57,74 @@ class AssignmentMap extends React.Component {
         if (!this.hasFitBounds) this.fitCircleBounds();
     }
 
+    onTilesLoaded = () => {
+        if (!this.fetchedAllUsers) this.fetchAllUsers();
+        if (!this.fetchedAcceptedUsers) this.fetchAcceptedUsers();
+    }
+
     fitCircleBounds() {
         if (this.googleMap.map && this.mapCircle.circle) {
             this.hasFitBounds = true;
             this.googleMap.map.fitBounds(this.mapCircle.circle.getBounds());
         }
+    }
+
+    fetchAllUsers() {
+        if (!this.googleMap.map) return;
+        const params = {
+            geo: {
+                type: 'Polygon',
+                coordinates: utils.generatePolygonFromBounds(this.googleMap.map.getBounds()),
+            },
+        };
+
+        api
+        .get('user/locations/find', params)
+        .then(users => this.setState({ users }))
+        .catch(res => res);
+    }
+
+    fetchAcceptedUsers() {
+        api
+        .get('user/locations/find', { assignment_id: this.props.assignment.id })
+        .then(acceptedUsers => this.setState({ acceptedUsers }))
+        .catch(res => res);
+    }
+
+    renderUserLocMarkers() {
+        const { users, acceptedUsers } = this.state;
+        if (!users || !users.length) return null;
+        const userIcon = {
+            url: '/images/assignment-user@3x.png',
+            size: new google.maps.Size(30, 33),
+            scaledSize: new google.maps.Size(10, 11),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(5, 5.5),
+        };
+        const acceptedIcon = {
+            url: '/images/assignment-user-accepted@3x.png',
+            size: new google.maps.Size(30, 33),
+            scaledSize: new google.maps.Size(10, 11),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(5, 5.5),
+        };
+
+        const getMarkerIcon = (user) => {
+            if (acceptedUsers.some(a => isEqual(a.geo, user.geo))) return acceptedIcon;
+            return userIcon;
+        };
+
+        const markers = users
+            .map((u, i) => (
+                <Marker
+                    key={`users-${i}`}
+                    position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
+                    icon={getMarkerIcon(u)}
+                    draggable={false}
+                />
+            ));
+
+        return markers;
     }
 
     renderDataMarkers() {
@@ -79,7 +157,6 @@ class AssignmentMap extends React.Component {
     render() {
         const { assignment, panTo } = this.props;
         const { location: { coordinates } } = assignment;
-        const dataMarkersNew = this.renderDataMarkers();
         const initialLocation = { lng: coordinates[0], lat: coordinates[1] };
         const circleRadius = Math.round(utils.milesToFeet(assignment.radius));
 
@@ -93,13 +170,15 @@ class AssignmentMap extends React.Component {
                             zoom={13}
                             draggable={false}
                             panTo={panTo}
+                            onTilesloaded={this.onTilesLoaded}
                         >
                             <CenterMarker />
                             <Circle
                                 ref={(r) => { this.mapCircle = r; }}
                                 radius={circleRadius}
                             />
-                            {dataMarkersNew}
+                            {this.renderDataMarkers()}
+                            {this.renderUserLocMarkers()}
                         </GoogleMap>
                     </div>
                 </div>
