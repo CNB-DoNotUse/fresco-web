@@ -69,10 +69,6 @@ class AssignmentMap extends React.Component {
         }
     }
 
-    onBoundsChanged = () => {
-        this.fetchAllUsers();
-    }
-
     fitCircleBounds() {
         if (this.googleMap.map && this.mapCircle.circle) {
             this.hasFitBounds = true;
@@ -183,7 +179,6 @@ class AssignmentMap extends React.Component {
                             draggable={false}
                             panTo={panTo}
                             onTilesloaded={this.onTilesLoaded}
-                            onBoundsChanged={this.onBoundsChanged}
                         >
                             <CenterMarker />
                             <Circle
