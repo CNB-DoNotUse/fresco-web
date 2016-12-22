@@ -19,7 +19,7 @@ const CenterMarker = ({
     };
     return (
         <Marker
-            zIndex={2}
+            zIndex={3}
             position={mapCenter}
             map={map}
             mapCenter={mapCenter}

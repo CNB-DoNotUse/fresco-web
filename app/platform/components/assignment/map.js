@@ -6,6 +6,7 @@ import GoogleMap from '../googleMap';
 import CenterMarker from '../googleMap/centerMarker';
 import Circle from '../googleMap/circle';
 import Marker from '../googleMap/marker';
+import MarkerGroup from '../googleMap/markerGroup';
 
 /**
  * AssignmentMap
@@ -124,17 +125,17 @@ class AssignmentMap extends React.Component {
             return userIcon;
         };
 
-        const markers = users
-            .map((u, i) => (
-                <Marker
-                    key={`users-${i}`}
-                    position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
-                    icon={getMarkerIcon(u)}
-                    draggable={false}
-                />
-            ));
+        const markerData = users.map(u => ({
+            position: { lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] },
+            icon: getMarkerIcon(u),
+        }));
 
-        return markers;
+        return (
+            <MarkerGroup
+                markerData={markerData}
+                draggable={false}
+            />
+        );
     }
 
     renderDataMarkers() {
@@ -159,6 +160,7 @@ class AssignmentMap extends React.Component {
                 panned={m.active}
                 onMouseover={() => onMouseOverMarker(m.id)}
                 onMouseout={() => onMouseOutMarker(m.id)}
+                zIndex={2}
             />
         ))
         .filter(m => !!m);
