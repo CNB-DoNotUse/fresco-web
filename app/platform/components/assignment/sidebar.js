@@ -49,12 +49,14 @@ class Sidebar extends React.Component {
                         <span className="mdi mdi-clock icon" />
                         <span>{expiredText}</span>
                     </li>
-                    {assignment.outlets.map((o, i) => (
-                        <li key={i}>
-                            <span className="mdi mdi-account-multiple icon" />
-                            <a href={`/outlet/${o.id}`}>{o.title}</a>
-                        </li>
-                    ))}
+                    {user.permissions.includes('update-other-content') && (
+                        assignment.outlets.map((o, i) => (
+                            <li key={i}>
+                                <span className="mdi mdi-account-multiple icon" />
+                                <a href={`/outlet/${o.id}`}>{o.title}</a>
+                            </li>
+                        ))
+                    )}
                     <li>
                         <span className="mdi mdi-image icon" />
                         <span>
