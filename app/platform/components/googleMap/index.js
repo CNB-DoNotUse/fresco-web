@@ -5,7 +5,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createHandlerName } from 'app/lib/helpers';
 
-const evtNames = ['ready', 'click', 'dragend', 'tilesloaded'];
+const evtNames = ['ready', 'click', 'dragend', 'tilesloaded', 'bounds_changed'];
 
 class Map extends React.Component {
     static propTypes = {

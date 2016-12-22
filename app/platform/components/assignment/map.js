@@ -58,8 +58,18 @@ class AssignmentMap extends React.Component {
     }
 
     onTilesLoaded = () => {
-        if (!this.fetchedAllUsers) this.fetchAllUsers();
-        if (!this.fetchedAcceptedUsers) this.fetchAcceptedUsers();
+        if (!this.fetchedAllUsers) {
+            this.fetchedAllUsers = true;
+            this.fetchAllUsers();
+        }
+        if (!this.fetchedAcceptedUsers) {
+            this.fetchedAcceptedUsers = true;
+            this.fetchAcceptedUsers();
+        }
+    }
+
+    onBoundsChanged = () => {
+        this.fetchAllUsers();
     }
 
     fitCircleBounds() {
@@ -171,6 +181,7 @@ class AssignmentMap extends React.Component {
                             draggable={false}
                             panTo={panTo}
                             onTilesloaded={this.onTilesLoaded}
+                            onBoundsChanged={this.onBoundsChanged}
                         >
                             <CenterMarker />
                             <Circle
