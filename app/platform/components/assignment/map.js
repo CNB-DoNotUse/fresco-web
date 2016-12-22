@@ -156,7 +156,7 @@ class AssignmentMap extends React.Component {
                 panned={m.active}
                 onMouseover={() => onMouseOverMarker(m.id)}
                 onMouseout={() => onMouseOutMarker(m.id)}
-                zIndex={2}
+                zIndex={m.active ? 4 : 2}
             />
         ))
         .filter(m => !!m);
