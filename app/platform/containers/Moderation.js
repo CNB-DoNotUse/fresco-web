@@ -204,7 +204,7 @@ class Moderation extends React.Component {
                         )}
                         onCancel={onCancelDelete}
                         toggled={!!requestDeleted.get('id')}
-                        text={'Confirm delete?'}
+                        header="Confirm delete?"
                     />
 
                     {this.renderContent()}

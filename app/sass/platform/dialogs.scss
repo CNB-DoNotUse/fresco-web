@@ -20,12 +20,11 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
    }
 }
 
-/**
- * Dialog Element
- */
-.items-dialog {
-    width: 640px;
+// the base class for all modal dialog components
+// centers component, gives base width, and animation
+.dialog-modal {
     background-color: #fafafa;
+    width:384px;
     display:none;
     opacity:0;
     z-index: $z-dim + 1;
@@ -38,6 +37,14 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
         display:block;
         opacity:1;
     }
+}
+
+/**
+ * Dialog Element
+ */
+.dialog-modal--items {
+    width: 640px;
+    @extend .dialog-modal;
 
     .header {
         font-family: $nota;
@@ -86,21 +93,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     }
 }
 
-.info-dialog {
-    background-color: #fafafa;
-    display:none;
-    opacity:0;
-    z-index: $z-dim + 1;
-    width: 384px;
-    @include vertical-horizontal-align;
-    @include box-shadow(0 16px 16px 0 rgba(0, 0, 0, 0.24), 0 0 16px 0 rgba(0, 0, 0, 0.12));
-    @include border-radius(2px);
-    @include transition(opacity 0.15s ease-in-out);
-
-    &.toggled {
-        display:block;
-        opacity:1;
-    }
+.dialog-modal--info {
+    @extend .dialog-modal;
 
     .header {
         font-family: $nota;
@@ -144,23 +138,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     }
 }
 
-.confirm-dialog {
-    background-color: #fafafa;
-    width:384px;
-    height:224px;
-    margin:auto;
-    display:none;
-    opacity:0;
-    z-index: $z-dim + 1;
-    @include vertical-horizontal-align;
-    @include box-shadow(0 16px 16px 0 rgba(0, 0, 0, 0.24), 0 0 16px 0 rgba(0, 0, 0, 0.12));
-    @include border-radius(2px);
-    @include transition(opacity 0.15s ease-in-out);
-
-    &.toggled {
-        display:block;
-        opacity:1;
-    }
+.dialog-modal--confirm {
+    @extend .dialog-modal;
 
     &.no-input {
         height: 128px;
@@ -182,16 +161,13 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     }
 
     .body {
-        height:96px;
-        padding:0 24px;
+        font-size: 16px;
+        color: rgba(0, 0, 0, 0.54);
+        padding: 16px 24px;
 
         div, form {
             width:100%;
             margin:0;
-        }
-
-        .form-group-default {
-            padding:32px 0 16px;
         }
 
         input {

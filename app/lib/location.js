@@ -13,3 +13,16 @@ export const getAddressFromLatLng = ({ lat, lng }, cb) => {
 
     return cb('');
 };
+
+/**
+ * Returns lat lng map from GeoJSON object
+ *
+ * @param {Array} coordinates Array with lat and lng
+ * @param {String} type GeoJSON GeoJSON type
+ * @returns {Object} Object with lat lng keys
+ */
+export const getLatLngFromGeo = ({ coordinates, type }) => {
+    if (!coordinates || !type || type.toLowerCase() !== 'point') return null;
+
+    return { lng: coordinates[0], lat: coordinates[1] };
+};

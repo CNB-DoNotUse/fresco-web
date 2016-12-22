@@ -16,9 +16,9 @@ class Photos extends React.Component {
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
     };
 
-    onVerifiedToggled = (toggled) => {
-        this.setState({ verifiedToggle: toggled });
-        setInSessionStorage('topbar', { verifiedToggle: toggled });
+    onVerifiedToggled = (verifiedToggle) => {
+        this.setState({ verifiedToggle });
+        setInSessionStorage('topbar', { verifiedToggle });
     }
 
     onChronToggled = (sortBy) => {
@@ -54,7 +54,7 @@ class Photos extends React.Component {
         const { sortBy, verifiedToggle } = this.state;
 
         return (
-            <App 
+            <App
                  user={this.props.user}
                  page="photos"
              >

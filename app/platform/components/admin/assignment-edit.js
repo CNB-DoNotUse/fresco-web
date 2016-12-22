@@ -15,6 +15,7 @@ import isEmpty from 'lodash/isEmpty';
 export default class AssignmentEdit extends React.Component {
     static propTypes = {
         assignment: PropTypes.object.isRequired,
+        user: PropTypes.object.isRequired,
         onUpdateAssignment: PropTypes.func.isRequired,
     };
 
@@ -41,6 +42,7 @@ export default class AssignmentEdit extends React.Component {
 
         return {
             address: assignment.address,
+            isAcceptable: assignment.is_acceptable,
             radius,
             location: assignment.location,
             showMergeDialog: false,
@@ -105,7 +107,7 @@ export default class AssignmentEdit extends React.Component {
      * When global is checked, location and address set to null
      * When not checked, location and adress are set to original/default vals
      */
-    onChangeGlobal() {
+    onChangeGlobal = () => {
         if (this.isGlobalLocation()) {
             const { assignment: { location, address } } = this.props;
             this.setState({ location: location || { lat: 40.7, lng: -74 }, address });
@@ -114,9 +116,17 @@ export default class AssignmentEdit extends React.Component {
         }
     }
 
+    onChangeInput = (e) => {
+        if (e.target.type === 'checkbox') {
+            this.setState({ [e.target.name]: e.target.checked });
+        } else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
+    }
+
     onApproveAssignment() {
         const { assignment } = this.props;
-        const { location, address, radius } = this.state;
+        const { location, address, radius, isAcceptable } = this.state;
         const geo = location && location.hasOwnProperty('type')
             ? location
             : utils.getGeoFromCoord(location);
@@ -129,6 +139,7 @@ export default class AssignmentEdit extends React.Component {
             location: this.isGlobalLocation() ? null : geo,
             // Convert to ms and current timestamp
             ends_at: this.refs['assignment-expiration'].value * 1000 * 60 * 60 + Date.now(),
+            is_acceptable: isAcceptable,
         };
 
         this.approveAssignment(assignment.id, params);
@@ -198,13 +209,14 @@ export default class AssignmentEdit extends React.Component {
     }
 
     render() {
-        const { assignment } = this.props;
+        const { assignment, user } = this.props;
         const {
             radius,
             address,
             location,
             showMergeDialog,
             loading,
+            isAcceptable,
         } = this.state;
         const expirationTime = assignment ? utils.hoursToExpiration(assignment.ends_at) : null;
         const globalLocation = this.isGlobalLocation();
@@ -228,32 +240,31 @@ export default class AssignmentEdit extends React.Component {
                         defaultValue={assignment.caption}
                     />
 
-
                     <div className="checkbox form-group">
                         <label>
                             <input
                                 type="checkbox"
-                                onChange={() => this.onChangeGlobal()}
+                                disabled={isAcceptable}
+                                onChange={this.onChangeGlobal}
                                 checked={globalLocation}
                             />
                             Global
                         </label>
                     </div>
 
-                    {globalLocation
-                        ? ''
-                        : <AutocompleteMap
+                    {!globalLocation && (
+                        <AutocompleteMap
                             address={address || ''}
                             location={location}
                             radius={Math.round(utils.milesToFeet(radius))}
-                            onPlaceChange={(place) => this.onPlaceChange(place)}
-                            onMapDataChange={(data) => this.onMapDataChange(data)}
-                            onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
+                            onPlaceChange={place => this.onPlaceChange(place)}
+                            onMapDataChange={data => this.onMapDataChange(data)}
+                            onRadiusUpdate={r => this.onRadiusUpdate(r)}
                             draggable
                             rerender
                             hasRadius
                         />
-                    }
+                    )}
 
                     <input
                         type="text"
@@ -263,6 +274,21 @@ export default class AssignmentEdit extends React.Component {
                         ref="assignment-expiration"
                         defaultValue={expirationTime}
                     />
+
+                    {user.permissions.includes('update-other-content') && (
+                        <div className="checkbox form-group">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="isAcceptable"
+                                    disabled={globalLocation}
+                                    checked={isAcceptable}
+                                    onChange={this.onChangeInput}
+                                />
+                                Acceptable
+                            </label>
+                        </div>
+                    )}
                 </div>
 
                 <div className="dialog-foot">
@@ -283,25 +309,23 @@ export default class AssignmentEdit extends React.Component {
                         Reject
                     </button>
 
-                    {!globalLocation
-                        ? <MergeDropup
+                    {!globalLocation && (
+                        <MergeDropup
                             assignmentId={assignment.id}
                             location={location}
-                            onSelectMerge={(a) => this.onSelectMerge(a)}
+                            onSelectMerge={a => this.onSelectMerge(a)}
                         />
-                        : ''
-                    }
+                    )}
                 </div>
 
-                {showMergeDialog
-                    ? <Merge
+                {showMergeDialog && (
+                    <Merge
                         assignment={assignment}
                         assignmentToMergeInto={this.state.assignmentToMergeInto}
                         onClose={() => this.onCloseMerge()}
-                        onMergeAssignment={(id) => this.onMergeAssignment(id)}
+                        onMergeAssignment={id => this.onMergeAssignment(id)}
                     />
-                    : ''
-                }
+                )}
             </div>
         );
     }

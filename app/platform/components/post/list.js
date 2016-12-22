@@ -6,6 +6,7 @@ import PostCell from './cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
 import GalleryCreate from '../gallery/create';
+import 'app/sass/platform/_posts.scss';
 
 /**
  * Post List Parent Object
@@ -40,34 +41,63 @@ class PostList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         // If we receive new posts in props
-        if (nextProps.posts) {
-            const currentPostIds = this.state.posts.length ? this.state.posts.map(p => p.id) : [];
-            const newPostIds = nextProps.posts.map(p => p.id);
-            const differentPosts = (JSON.stringify(currentPostIds) !== JSON.stringify(newPostIds));
-
-            // Check if the parent tells the component to update
-            if (differentPosts || nextProps.updatePosts) {
-                this.setState({ posts: nextProps.posts });
-                return;
-            }
-        }
+        if (nextProps.posts) this.onChangePostsProp(nextProps.posts, nextProps.updatePosts);
 
         // Checks if the verified prop is changed `or` Checks if the sortBy prop is changed
         const verifiedChanged = nextProps.onlyVerified !== this.props.onlyVerified;
         const sortByChanged = nextProps.sortBy !== this.props.sortBy;
-        if (verifiedChanged || sortByChanged) {
-            this.grid.scrollTop = 0;
+        if (verifiedChanged || sortByChanged) this.onChangeVerifiedSortProps(nextProps.scrollable);
 
-            if (nextProps.scrollable) {
-                // Clear state for immediate feedback
-                this.setState({ posts: [] });
+        if (nextProps.scrollTo !== this.props.scrollTo) this.onChangeScrollTo(nextProps.scrollTo);
+    }
 
-                // Load posts from API
-                this.loadInitialPosts();
-            } else {
-                this.setState({ posts: this.sortPosts() });
-            }
+    /**
+     * Handles change of verified or sortBy props
+     *
+     * @param {Boolean} scrollable Prop which determines whether component is scrollable
+     */
+    onChangeVerifiedSortProps = (scrollable) => {
+        this.grid.scrollTop = 0;
+
+        if (scrollable) {
+            // Clear state for immediate feedback
+            this.setState({ posts: [] });
+
+            // Load posts from API
+            this.loadInitialPosts();
+        } else {
+            this.setState({ posts: this.sortPosts() });
         }
+    }
+
+    /**
+     * Handler for new posts prop
+     *
+     * @param {Array} posts Array of posts objects
+     * @param {Boolean} updatePosts Boolean prop to determine if posts should be updated
+     */
+    onChangePostsProp = (posts, updatePosts) => {
+        const currentPostIds = this.state.posts.length ? this.state.posts.map(p => p.id) : [];
+        const newPostIds = posts.map(p => p.id);
+        const differentPosts = (JSON.stringify(currentPostIds) !== JSON.stringify(newPostIds));
+
+        // Check if the parent tells the component to update
+        if (differentPosts || updatePosts) {
+            this.setState({ posts });
+        }
+    }
+
+    /**
+     * Handler for new scroll to post id prop
+     *
+     * @param {String} scrollTo Id of post to scroll to
+     */
+    onChangeScrollTo = (scrollTo) => {
+        const $grid = $(this.grid);
+        const paddingTop = parseInt($grid.css('padding-top'), 10);
+        $grid.animate({
+            scrollTop: this[`cell${scrollTo}`].area.offsetTop - paddingTop,
+        });
     }
 
     onToggleGalleryBulkEdit = () => {
@@ -131,20 +161,13 @@ class PostList extends React.Component {
     }
 
     /**
-     * Initial call to populate posts
+     * setSelectedPosts
+     *
+     * @param {Array} newSelected Array of posts that are will now be selected
      */
-    loadInitialPosts() {
-        this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
-    }
-
-    /**
-     * Sorts posts based on the current field in props
-     * @return {array} An array of posts now sorted
-     */
-    sortPosts() {
-        const field = this.props.sortBy === 'captured_at' ? 'captured_at' : 'created_at';
-
-        return this.state.posts.sort((post1, post2) => post2[field] - post1[field]);
+    setSelectedPosts = (newSelected) => {
+        this.setState({ selectedPosts: newSelected });
+        setInSessionStorage('post/list', { selectedPosts: newSelected });
     }
 
     /**
@@ -177,9 +200,21 @@ class PostList extends React.Component {
         this.setSelectedPosts(newSelected);
     }
 
-    setSelectedPosts = (newSelected) => {
-        this.setState({ selectedPosts: newSelected });
-        setInSessionStorage('post/list', { selectedPosts: newSelected });
+    /**
+     * Sorts posts based on the current field in props
+     * @return {array} An array of posts now sorted
+     */
+    sortPosts() {
+        const field = this.props.sortBy === 'captured_at' ? 'captured_at' : 'created_at';
+
+        return this.state.posts.sort((post1, post2) => post2[field] - post1[field]);
+    }
+
+    /**
+     * Initial call to populate posts
+     */
+    loadInitialPosts() {
+        this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
     }
 
     renderPosts() {
@@ -190,6 +225,10 @@ class PostList extends React.Component {
             editable,
             sortBy,
             parentCaption,
+            onMouseEnterPost,
+            onMouseLeavePost,
+            onMouseLeaveList,
+            scrollTo,
         } = this.props;
         const {
             posts,
@@ -199,21 +238,31 @@ class PostList extends React.Component {
         if (!posts.length) return '';
 
         return (
-            <div className="row tiles" id="posts">
-                {posts.map((p, i) => (
-                    <PostCell
-                        size={size}
-                        parentCaption={parentCaption}
-                        post={p}
-                        permissions={permissions}
-                        toggled={selectedPosts.some((s) => s.id === p.id)}
-                        assignment={assignment}
-                        key={i}
-                        editable={editable}
-                        sortBy={sortBy}
-                        togglePost={this.togglePost}
-                    />
-                ))}
+            <div>
+                <div
+                    onMouseLeave={onMouseLeaveList}
+                    className="row tiles"
+                    id="posts"
+                >
+                    {posts.map((p, i) => (
+                        <PostCell
+                            ref={(r) => { this[`cell${p.id}`] = r; }}
+                            highlighted={scrollTo === p.id}
+                            size={size}
+                            parentCaption={parentCaption}
+                            post={p}
+                            permissions={permissions}
+                            toggled={selectedPosts.some(s => s.id === p.id)}
+                            assignment={assignment}
+                            key={i}
+                            editable={editable}
+                            sortBy={sortBy}
+                            onMouseEnter={onMouseEnterPost}
+                            onMouseLeave={onMouseLeavePost}
+                            togglePost={this.togglePost}
+                        />
+                    ))}
+                </div>
             </div>
         );
     }
@@ -228,9 +277,9 @@ class PostList extends React.Component {
         } = this.state;
 
         return (
-            <div ref={r => { this.area = r; }}>
+            <div ref={(r) => { this.area = r; }}>
                 <div
-                    className={`container-fluid fat grid ${className}`}
+                    className={`container-fluid grid ${className}`}
                     ref={(r) => { this.grid = r; }}
                     onScroll={scrollable ? onScroll || this.onScroll : null}
                 >
@@ -278,7 +327,11 @@ PostList.propTypes = {
     className: PropTypes.string,
     paginateBy: PropTypes.string,
     onScroll: PropTypes.func,
+    onMouseEnterPost: PropTypes.func,
+    onMouseLeavePost: PropTypes.func,
+    onMouseLeaveList: PropTypes.func,
     loadPosts: PropTypes.func,
+    scrollTo: PropTypes.string,
 };
 
 PostList.defaultProps = {

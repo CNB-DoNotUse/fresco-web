@@ -1147,10 +1147,9 @@ div.list {
 	height: 100%;
 	overflow-y:auto;
 	padding: 64px 0 0;
-	.frame {
+	.tile__frame {
 		position: absolute;
 		z-index: $z-tile-body-frame;
-		@include frame();
 	}
 	.tiles {
 		margin: 0;
@@ -1189,11 +1188,10 @@ div.list {
 				position: relative;
 				border: 1px solid $color-black-4;
 
-				> .frame {
+				> .tile__frame {
 					position: absolute;
 					width: 100%;
 					height: 100%;
-					@include frame();
 				}
 				> .img {
 					> .img-cover{
@@ -1348,7 +1346,7 @@ div.list {
 			visibility: visible;
 		}
 		> .tile.toggled {
-			> .tile-body > .frame {
+			> .tile-body > .tile__frame {
 				background-color: rgba(92,133,245,.54);
 			}
 			> .tile-foot {
