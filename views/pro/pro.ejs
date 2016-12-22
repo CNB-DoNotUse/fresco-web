@@ -1,4 +1,4 @@
-<% 
+<%
     proIdPage = typeof(proId) !== 'undefined' ? true : false;
     navClass = proIdPage ? 'nav transparent' : 'nav';
     display = typeof(proId) !== 'undefined' ? 'none' : '';
@@ -12,7 +12,7 @@
             <span class="icon-fresco"></span>
         </a>
 
-        <ul> 
+        <ul>
             <% if(!proIdPage){ %>
                 <li class="modal-action" data-event="scroll" data-element="_about">ABOUT</li>
                 <li class="modal-action" data-event="scroll" data-element="_signup">SIGN UP</li>
@@ -52,19 +52,5 @@
 
     <%- include('../segments/footer', {display: display}) %>
 </div>
-
-<!-- Facebook Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '948626691915182');
-fbq('track', "PageView");</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=948626691915182&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Facebook Pixel Code -->
 
 <% include ../segments/scripts %>
