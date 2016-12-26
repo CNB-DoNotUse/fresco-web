@@ -179,7 +179,7 @@ const externals = (env) => {
 
 /**
  * Exports webpack JSON config
- * @param  {String} env The environment we're in
+ * @param  {String} `env` The environment we're in
  * @return {Object} Webpack confing
  */
 module.exports = (env = 'dev') => ({
