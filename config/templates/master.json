@@ -7,6 +7,8 @@
     "WEB_ROOT" : "https://fresconews.com",
     "API_VERSION": "v2",
 
+    "SEGMENT_WRITE_KEY": "VdFQp2i6q6K8nYOB7kAXtyfilKDtUbOw",
+
     "STRIPE_PUBLISHABLE": "pk_live_saSjliYnCbjFwYfriTzhTQiO",
 
     "REDIS": {

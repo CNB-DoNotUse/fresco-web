@@ -25,6 +25,7 @@ process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
  */
 app.locals.head = head;
 app.locals.utils = utils;
+app.locals.segmentKey = config.SEGMENT_WRITE_KEY;
 app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
 app.locals.section = 'public';
 
