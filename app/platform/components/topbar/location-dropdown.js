@@ -10,16 +10,17 @@ class LocationDropdown extends React.Component {
 
     state = {
         toggled: false,
-        coordinates: this.props.location.coordinates || {},
+        lat: this.props.location.lat || 0,
+        lng: this.props.location.lng || 0,
         source: '',
         address: this.props.location.address || '',
-        radius: this.props.location.radius || 0,
+        radius: this.props.location.radius || 250,
     }
 
     componentDidMount() {
         const { location } = this.state;
 
-        if (location.lat && location.lng) {
+        if (location && location.lat && location.lng) {
             const geocoder = new google.maps.Geocoder();
 
             geocoder.geocode({ location: { ...location } }, (results, status) => {
@@ -30,29 +31,29 @@ class LocationDropdown extends React.Component {
         }
     }
 
-    componentDidUpdate() {
-        const { address, radius, coordinates } = this.state;
-        this.props.onLocationChange({ address, radius, coordinates });
+    onChange() {
+        const { address, radius, lat, lng } = this.state;
+        this.props.onLocationChange({ address, radius, lat, lng });
     }
 
     onToggled = () => {
         this.setState({ toggled: !this.state.toggled });
     }
 
-    onMapDataChange = ({ coordinates, source }) => {
-        this.setState({ coordinates, source });
+    onMapDataChange = ({ location: { lat, lng }, source }) => {
+        this.setState({ lat, lng, source }, this.onChange);
     }
 
-    onPlaceChange = ({ address, coordinates }) => {
-        this.setState({ address, coordinates });
+    onPlaceChange = ({ location: { lat, lng }, address }) => {
+        this.setState({ lat, lng, address }, this.onChange);
     }
 
     onRadiusUpdate = (radius) => {
-        this.setState({ radius });
+        this.setState({ radius }, this.onChange);
     }
 
     render() {
-        const { address, coordinates, radius } = this.state;
+        const { address, lat, lng, radius } = this.state;
         return (
             <Dropdown
                 inList
@@ -65,7 +66,7 @@ class LocationDropdown extends React.Component {
                     onMapDataChange={this.onMapDataChange}
                     onRadiusUpdate={this.onRadiusUpdate}
                     address={address}
-                    location={coordinates}
+                    location={{ lat, lng }}
                     radius={radius}
                     units="feet"
                     rerender

@@ -14,10 +14,8 @@ router.get('/', (req, res) => {
     // Check if location is vali
     if (!isNaN(req.query.lat) && !isNaN(req.query.lon) && !isNaN(req.query.radius)) {
         location = {
-            coordinates: {
-                lat: parseFloat(req.query.lat),
-                lng: parseFloat(req.query.lon),
-            },
+            lat: parseFloat(req.query.lat),
+            lng: parseFloat(req.query.lon),
             radius: parseFloat(req.query.radius),
         };
     }

@@ -13,6 +13,15 @@ import TagFilter from '../components/topbar/tag-filter';
 import SearchSidebar from './../components/search/sidebar';
 import PostList from './../components/post/list';
 
+const isNewLocation = (oldLoc, newLoc) => {
+    if (!oldLoc || !newLoc) return false;
+    if (JSON.stringify(oldLoc) !== JSON.stringify(newLoc)) {
+        return true;
+    }
+
+    return false;
+};
+
 
 class Search extends Component {
 
@@ -23,7 +32,7 @@ class Search extends Component {
             assignments: [],
             posts: [],
             users: [],
-            location: this.props.location,
+            location: this.props.location || {},
             stories: [],
             title: this.getTitle(true),
             verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
@@ -63,14 +72,13 @@ class Search extends Component {
             location,
             tags,
             verifiedToggle,
-            numberOfPostResults
+            numberOfPostResults,
         } = this.state;
 
-        if (JSON.stringify(prevState.location.coordinates) !== JSON.stringify(location.coordinates)) {
+
+        if (isNewLocation(prevState.location, location)) {
             shouldUpdate = true;
-        } else if (prevState.location.radius !== location.radius) {
-            shouldUpdate = true;
-        } else if (JSON.stringify(prevState.tags) !== JSON.stringify(tags)){
+        } else if (JSON.stringify(prevState.tags) !== JSON.stringify(tags)) {
             shouldUpdate = true;
         } else if (prevState.verifiedToggle !== verifiedToggle) {
             shouldUpdate = true;
@@ -130,11 +138,11 @@ class Search extends Component {
     geoParams() {
         const { location } = this.state;
 
-        if (location.coordinates && location.radius) {
+        if (location.lat && location.lng && location.radius) {
             return {
                 geo: {
                     type: 'Point',
-                    coordinates: [location.coordinates.lng, location.coordinates.lat]
+                    coordinates: [location.lng, location.lat],
                 },
                 radius: utils.feetToMiles(location.radius),
             };
@@ -143,10 +151,10 @@ class Search extends Component {
         return {};
     }
 
-	/**
-	 * Gets new search data
-	 * @param {bool} initial Indicates if it is the initial data load
-	 */
+    /**
+     * Gets new search data
+     * @param {bool} initial Indicates if it is the initial data load
+     */
     refreshData(initial) {
         this.getAssignments();
         this.getPosts();
@@ -322,28 +330,15 @@ class Search extends Component {
 
     removeTag(tag, index) {
         this.setState({
-            tags: update(this.state.tags, {$splice: [[index, 1]]}), //Keep the filtered list updated
+            tags: update(this.state.tags, { $splice: [[index, 1]] }), //Keep the filtered list updated
         });
     }
 
     /**
-     * Called when Map location, address, or radius changes
+     * Called on Location dropdown state changes
      */
-    onLocationChange = ({ location }) => {
-        this.setState({ location });
-        // let location = clone(this.state.location);
-
-        // location.coordinates = data.location;
-        // location.address = data.address;
-
-        // if(!location.radius) location.radius = 250;
-
-        // this.setState({
-        //     location,
-        //     map: {
-        //         circle: data.circle
-        //     }
-        // });
+    onLocationChange = (data) => {
+        this.setState({ location: { ...data } });
     }
 
     /**
@@ -359,8 +354,8 @@ class Search extends Component {
             query += '&tags[]=' + encodeURIComponent(tag);
         });
 
-        if (location.coordinates && location.radius){
-            query += '&lat=' + location.coordinates.lat + '&lon=' + location.coordinates.lng;
+        if (location.lat && location.lng && location.radius){
+            query += '&lat=' + location.lat + '&lon=' + location.lng;
             query += '&radius=' + location.radius;
         }
 
