@@ -23,7 +23,7 @@ class Circle extends React.Component {
     componentDidUpdate(prevProps) {
         if ((this.props.map !== prevProps.map) ||
             (this.props.mapCenter !== prevProps.mapCenter)) {
-            this.renderMarker();
+            this.renderCircle();
         }
     }
 

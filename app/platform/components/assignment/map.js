@@ -16,8 +16,22 @@ import MarkerGroup from '../googleMap/markerGroup';
  */
 class AssignmentMap extends React.Component {
     static propTypes = {
-        markerData: PropTypes.array,
-        panTo: PropTypes.object,
+        markerData: PropTypes.arrayOf(PropTypes.shape({
+            position: PropTypes.shape({
+                lat: PropTypes.number,
+                lng: PropTypes.number,
+            }),
+            iconUrl: PropTypes.shape({
+                active: PropTypes.string,
+                normal: PropTypes.string,
+            }),
+            id: PropTypes.string,
+            active: PropTypes.bool,
+        })),
+        panTo: PropTypes.shape({
+            lat: PropTypes.number,
+            lng: PropTypes.number,
+        }),
         onMouseOverMarker: PropTypes.func,
         onMouseOutMarker: PropTypes.func,
         assignment: PropTypes.object,
@@ -76,6 +90,10 @@ class AssignmentMap extends React.Component {
         }
     }
 
+    /**
+     * Fetches the locations of all users inside the current bounds of the map
+     *
+     */
     fetchAllUsers() {
         if (!this.googleMap.map) return;
         const params = {
@@ -91,6 +109,10 @@ class AssignmentMap extends React.Component {
         .catch(res => res);
     }
 
+    /**
+     * Fetches locations of the users that have accepted this assignment
+     *
+     */
     fetchAcceptedUsers() {
         api
         .get('user/locations/find', { assignment_id: this.props.assignment.id })
@@ -98,6 +120,13 @@ class AssignmentMap extends React.Component {
         .catch(res => res);
     }
 
+    /**
+     * Renders user location markers
+     * Shows blue markers for regular users
+     * Shows green marker for users that have accepted assignment
+     *
+     * @returns {JSX} MarkerGroup component for user location markers
+     */
     renderUserLocMarkers() {
         const { users, acceptedUsers } = this.state;
         if (!users || !users.length) return null;
@@ -134,6 +163,12 @@ class AssignmentMap extends React.Component {
         );
     }
 
+    /**
+     * Renders markers for each assignment photo or video
+     * Marker shows type of content and location
+     *
+     * @returns {Array} Array of Marker cmps
+     */
     renderDataMarkers() {
         const { markerData, onMouseOverMarker, onMouseOutMarker } = this.props;
         if (!markerData || !markerData.length) return null;

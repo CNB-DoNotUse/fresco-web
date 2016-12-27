@@ -91,6 +91,12 @@ class AssignmentDetail extends React.Component {
         this.setState({ acceptedDialog: !this.state.acceptedDialog });
     }
 
+    /**
+     * Sets the marker with the given post id active on the map
+     *
+     * @param {String} id Id of post the marker is attached to
+     * @param {Boolean} shouldPanTo=false If the marker should be panned to in the map
+     */
     setMarkerActive(id, shouldPanTo = false) {
         let { markerData } = this.state;
         const idx = markerData.findIndex(p => p.id === id);
