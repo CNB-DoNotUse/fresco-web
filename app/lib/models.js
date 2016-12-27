@@ -30,6 +30,12 @@ export const deletePosts = (postIds) => {
     return api.post('post/delete', { post_ids: postIds });
 };
 
+/**
+ * Saves a gallery
+ * @param  {String} id     ID of the galley to save
+ * @param  {Object} params Gallery paramsters to update
+ * @return {Object}        API response from gallery/update, normally an updated gallery object
+ */
 export const saveGallery = (id, params) => {
     if (!id || !params) return Promise.resolve();
     return api.post(`gallery/${id}/update`, params);

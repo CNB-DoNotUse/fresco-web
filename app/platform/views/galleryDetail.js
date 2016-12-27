@@ -2,12 +2,16 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import get from 'lodash/get';
+import last from 'lodash/last';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
+import { getLikes, getReposts } from 'app/lib/gallery';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/gallery/sidebar';
 import Edit from './../components/gallery/edit';
 import App from './app';
+import ItemsDialog from '../components/dialogs/items';
+import UserItem from '../components/global/user-item';
 
 /**
  * Gallery Detail Parent Object, made of a side column and PostList
@@ -27,12 +31,77 @@ class GalleryDetail extends React.Component {
         editToggled: false,
         gallery: this.props.gallery,
         title: this.props.title,
+        likes: null,
+        reposts: null,
+        loading: false,
+        likesDialog: false,
+        repostsDialog: false,
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
     };
 
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
         setInSessionStorage('topbar', { verifiedToggle });
+    }
+
+    /**
+     * OnScroll event passed up from the dialogs
+     * @param  {Object} e       Target
+     * @param  {String} context context passed down to items-dialog
+     */
+    onScroll = (e, context) => {
+        const grid = e.target;
+        const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 50);
+
+        if(!bottomReached || this.state.loading) 
+            return;
+
+        this.setState({ loading: true });
+
+        switch(context) {
+            case 'likes':
+                getLikes(this.state.gallery.id, { 
+                        last: last(this.state.likes).id 
+                    })
+                    .then(likes => {
+                        this.setState({ 
+                            likes: this.state.likes.concat(likes),
+                            loading: likes.length > 0
+                        })   
+                    })
+                break;
+            case 'reposts':
+                    getReposts(this.state.gallery.id, { 
+                            last: last(this.state.reposts).id 
+                        })
+                        .then(reposts => {
+                            this.setState({ 
+                                reposts: this.state.reposts.concat(reposts),
+                                loading: reposts.length > 0
+                            })   
+                        })
+                break;
+        }
+    }
+
+    onClickLikes = () => {
+        const { likes, gallery } = this.state;
+        getLikes(gallery.id)
+            .then(likes => {
+                this.setState({ likes, loading: false })           
+            })
+
+        this.setState({ likesDialog: !this.state.likesDialog });
+    }
+
+    onClickReposts = () => {
+        const { reposts, gallery } = this.state;
+        getReposts(gallery.id)
+            .then(reposts => {
+                this.setState({ reposts, loading: false })           
+            })
+
+        this.setState({ repostsDialog: !this.state.repostsDialog });
     }
 
     /**
@@ -46,6 +115,9 @@ class GalleryDetail extends React.Component {
         });
     }
 
+    /**
+     * Returns an array of posts based on current verified toggle state
+     */
     getPostsFromGallery() {
         const { gallery, verifiedToggle } = this.state;
         if (!get(gallery, 'posts.length')) return [];
@@ -53,18 +125,6 @@ class GalleryDetail extends React.Component {
         if (verifiedToggle) return gallery.posts.filter(p => p.rating >= 2);
 
         return gallery.posts;
-    }
-
-    fetchGallery() {
-        const { gallery } = this.state;
-        if (!gallery || !gallery.id) return;
-
-        $.ajax({
-            url: `/api/gallery/${gallery.id}`,
-        })
-        .then((res) => {
-            this.setState({ gallery: res });
-        });
     }
 
     toggleEdit() {
@@ -79,7 +139,13 @@ class GalleryDetail extends React.Component {
             updatePosts,
             editToggled,
             verifiedToggle,
+            likes,
+            reposts,
+            likesDialog,
+            repostsDialog
         } = this.state;
+
+        const showDialog = user.permissions.includes('update-other-content');
 
         return (
             <App 
@@ -96,7 +162,10 @@ class GalleryDetail extends React.Component {
                     timeToggle
                 />
 
-                <Sidebar gallery={gallery} />
+                <Sidebar 
+                    onClickLikes={this.onClickLikes}
+                    onClickReposts={this.onClickReposts}
+                    gallery={gallery} />
 
                 <div className="col-sm-8 tall">
                     <PostList
@@ -109,6 +178,46 @@ class GalleryDetail extends React.Component {
                         size="large"
                     />
                 </div>
+
+                {showDialog && (
+                    <ItemsDialog
+                        toggled={likesDialog}
+                        onClose={() => this.setState({ likesDialog: false })}
+                        scrollable={true}
+                        context='likes'
+                        onScroll={this.onScroll}
+                        emptyMessage={!likes ? 'Loading likes...' : likes.length === 0 ? "No likes :(" : ''}
+                        header={`Likes (${gallery.likes})`}
+                    >
+                        {likes ?
+                            likes.map((u, i) => (
+                                <UserItem key={`likes-user-${i}`} user={u} />
+                            ))
+                            :
+                            null
+                        }
+                    </ItemsDialog>
+                )}
+
+                {showDialog && (
+                    <ItemsDialog
+                        toggled={repostsDialog}
+                        onClose={() => this.setState({ repostsDialog: false })}
+                        scrollable={true}
+                        context='reposts'
+                        onScroll={this.onScroll}
+                        emptyMessage={!reposts ? 'Loading reposts...' : reposts.length === 0 ? "No reposts :(" : ''}
+                        header={`Reposts (${gallery.reposts})`}
+                    >
+                        {reposts ? 
+                            reposts.map((u, i) => (
+                                <UserItem key={`reposts-user-${i}`} user={u} />
+                            ))
+                            :
+                            null
+                        }
+                    </ItemsDialog>
+                )}
 
                 <Edit
                     toggle={() => this.toggleEdit()}

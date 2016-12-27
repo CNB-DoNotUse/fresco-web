@@ -24,6 +24,8 @@ const UserName = ({ id, username, full_name }) => (
 
 const UserMediaMeta = ({ photo_count, video_count, location }) => {
     if (!photo_count && !video_count) {
+        return null;
+    } else if (photo_count === 0 && video_count === 0){
         return <div className="meta-user-stats">New user!</div>;
     }
 
