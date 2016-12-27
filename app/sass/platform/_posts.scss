@@ -1,5 +1,6 @@
 @import './_variables';
 
+// css animation for blue background fade out
 @keyframes blueBackground {
     from {background-color:rgba(92, 133, 245, 0.54);}
     to {background-color: transparent;}

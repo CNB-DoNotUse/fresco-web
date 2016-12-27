@@ -25,6 +25,7 @@ process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
  */
 app.locals.head = head;
 app.locals.utils = utils;
+app.locals.segmentKey = config.SEGMENT_WRITE_KEY;
 app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
 app.locals.section = 'public';
 
@@ -49,6 +50,7 @@ app.use(
 app.use(helmet())
 
 //Multer
+//Define Storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/')
@@ -57,7 +59,7 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + '.' + file.originalname.split('.').pop())
     }
 });
-
+//Use storage
 app.use(multer({
     storage: storage
 }).any());
@@ -78,6 +80,7 @@ app.use(
         unset: 'destroy'
     })
 );
+
 
 /**
  * Alert & Verifications check
@@ -109,6 +112,10 @@ app.use((req, res, next) => {
  * Route session check
  */
 app.use((req, res, next) => {
+    if (!req.session) {
+        return next({ message: 'Unable to establish a session. Please contact support@fresconews.com.' }) // handle error
+    }
+
     const route = req.path.slice(1).split('/')[0];
     const now = Date.now();
 

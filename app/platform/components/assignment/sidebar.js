@@ -11,7 +11,6 @@ class Sidebar extends React.Component {
     static propTypes = {
         assignment: PropTypes.object.isRequired,
         user: PropTypes.object.isRequired,
-        acceptedCount: PropTypes.number.isRequired,
         onClickAccepted: PropTypes.func.isRequired,
         expireAssignment: PropTypes.func.isRequired,
         loading: PropTypes.bool.isRequired,
@@ -22,7 +21,8 @@ class Sidebar extends React.Component {
      * AssignmentStats stats inside the sidebar
      */
     renderStats() {
-        const { assignment, user, acceptedCount, onClickAccepted } = this.props;
+        const { assignment, user, onClickAccepted } = this.props;
+        const acceptedCount = assignment.accepted_count;
         const expirationTime = new Date(assignment.ends_at);
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ')
             + moment(expirationTime).fromNow();
@@ -70,12 +70,12 @@ class Sidebar extends React.Component {
                     {user.permissions.includes('update-other-content') ? (
                         <li style={{ cursor: 'pointer' }} onClick={onClickAccepted}>
                             <span className="mdi mdi-account-multiple icon" />
-                            <span>{acceptedCount}</span>
+                            <span>{`${acceptedCount} accepted ${acceptedCount === 1 ? 'user' : 'users'}`}</span>
                         </li>
                     ) : (
                         <li>
                             <span className="mdi mdi-account-multiple icon" />
-                            <span>{acceptedCount}</span>
+                            <span>{`${acceptedCount} accepted ${acceptedCount === 1 ? 'user' : 'users'}`}</span>
                         </li>
                     )}
                 </ul>

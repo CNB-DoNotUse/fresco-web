@@ -5,84 +5,37 @@ import api from 'app/lib/api';
 import Marker from 'react-google-maps/lib/Marker';
 import GMap from '../global/gmap';
 
+/**
+ * AssignmentMap
+ * Map component for assignment detail page
+ *
+ * @extends {React}
+ */
 class AssignmentMap extends React.Component {
     static propTypes = {
         markerData: PropTypes.array,
         mapPanTo: PropTypes.object,
         onMouseOverMarker: PropTypes.func,
+        onMouseOutMarker: PropTypes.func,
         assignment: PropTypes.object,
     }
 
-    state = {
-        users: [],
-        acceptedUsers: [],
-        fetchedUsers: false,
-        fetchedAcceptedUsers: false,
-    }
+    shouldComponentUpdate(nextProps) {
+        if (!isEqual(this.props.assignment.location, nextProps.assignment.location)) {
+            return true;
+        }
 
-    componentWillUpdate() {
-        if (!this.state.fetchedUsers) this.getAllUsers();
-        if (!this.state.fetchedAcceptedUsers) this.getAcceptedUsers();
-    }
+        if (this.props.markerData !== nextProps.markerData) return true;
 
-    getAllUsers() {
-        if (!this.gmap.map || !this.gmap.map.getBounds()) return;
-        const params = {
-            geo: {
-                type: 'Polygon',
-                coordinates: utils.generatePolygonFromBounds(this.gmap.map.getBounds()),
-            },
-        };
+        if (!isEqual(this.props.mapPanTo, nextProps.mapPanTo)) {
+            return true;
+        }
 
-        api
-        .get('user/locations/find', params)
-        .then(users => this.setState({ users, fetchedUsers: true }))
-        .catch(res => res);
-    }
-
-    getAcceptedUsers() {
-        api
-        .get('user/locations/find', { assignment_id: this.props.assignment.id })
-        .then(acceptedUsers => this.setState({ acceptedUsers, fetchedAcceptedUsers: true }))
-        .catch(res => res);
-    }
-
-    renderUserMarkers() {
-        const { users, acceptedUsers } = this.state;
-        if (!users || !users.length) return null;
-        const userIcon = {
-            url: '/images/assignment-user@3x.png',
-            size: new google.maps.Size(30, 33),
-            scaledSize: new google.maps.Size(10, 11),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(5, 5.5),
-        };
-        const acceptedIcon = {
-            url: '/images/assignment-user-accepted@3x.png',
-            size: new google.maps.Size(30, 33),
-            scaledSize: new google.maps.Size(10, 11),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(5, 5.5),
-        };
-
-        const getMarkerIcon = (user) => {
-            if (acceptedUsers.some(a => isEqual(a.geo, user.geo))) return acceptedIcon;
-            return userIcon;
-        };
-
-        return users
-            .map((u, i) => (
-                <Marker
-                    key={`users-${i}`}
-                    position={{ lng: u.geo.coordinates[0], lat: u.geo.coordinates[1] }}
-                    icon={getMarkerIcon(u)}
-                    draggable={false}
-                />
-            ));
+        return false;
     }
 
     renderDataMarkers() {
-        const { markerData, onMouseOverMarker } = this.props;
+        const { markerData, onMouseOverMarker, onMouseOutMarker } = this.props;
         if (!markerData || !markerData.length) return null;
 
         const markerImage = m => ({
@@ -102,14 +55,14 @@ class AssignmentMap extends React.Component {
                 zIndex={m.active ? 3 : 1}
                 draggable={false}
                 onMouseover={() => onMouseOverMarker(m.id)}
+                onMouseout={() => onMouseOutMarker(m.id)}
             />
         ))
         .filter(m => !!m);
     }
 
     render() {
-        const { assignment, mapPanTo, onMouseOverMarker } = this.props;
-        const userMarkers = this.renderUserMarkers();
+        const { assignment, mapPanTo } = this.props;
         const dataMarkers = this.renderDataMarkers();
 
         return (
@@ -122,8 +75,7 @@ class AssignmentMap extends React.Component {
                         containerElement={<div className="assignment__map-ctr" />}
                         panTo={mapPanTo}
                         zoom={13}
-                        onMouseOverMarker={onMouseOverMarker}
-                        markers={[].concat(userMarkers).concat(dataMarkers)}
+                        markers={dataMarkers}
                         rerender
                         fitBoundsOnMount
                     />

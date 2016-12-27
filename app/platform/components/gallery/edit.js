@@ -8,6 +8,8 @@ import {
     isOriginalGallery,
     isImportedGallery,
     isSubmittedGallery,
+    deletePosts,
+    saveGallery,
 } from 'app/lib/models';
 import times from 'lodash/times';
 import get from 'lodash/get';
@@ -20,16 +22,6 @@ import ExplicitCheckbox from '../global/explicit-checkbox';
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
 import { LoaderOpacity } from '../global/loader';
-
-const deletePosts = (postIds) => {
-    if (!postIds || !postIds.length) return Promise.resolve();
-    return api.post('post/delete', { post_ids: postIds });
-};
-
-const saveGallery = (id, params) => {
-    if (!id || !params) return Promise.resolve();
-    return api.post(`gallery/${id}/update`, params);
-};
 
 /**
  * Gallery Edit Parent Object

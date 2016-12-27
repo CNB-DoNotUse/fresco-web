@@ -54,8 +54,22 @@ class AssignmentDetail extends React.Component {
         setInSessionStorage('topbar', { sortBy });
     }
 
+    /**
+     * On mouse enter post callback
+     * set's the corresponding map marker active
+     *
+     * @param {string} id the id of post
+     */
     onMouseEnterPost = (id) => {
-        this.setMarkerActive(id, true);
+        if (this.markerTimeout) clearTimeout(this.markerTimeout);
+        this.markerTimeout = setTimeout(() => this.setMarkerActive(id, true), 750);
+    }
+
+    onMouseLeavePost = () => {
+        if (this.markerTimeout) clearTimeout(this.markerTimeout);
+        let { markerData } = this.state;
+        markerData = markerData.map(m => Object.assign(m, { active: false }));
+        this.setState({ mapPanTo: null, markerData });
     }
 
     onMouseLeavePostList = () => {
@@ -67,6 +81,10 @@ class AssignmentDetail extends React.Component {
     onMouseOverMarker = (scrollToPostId) => {
         this.setState({ scrollToPostId });
         this.setMarkerActive(scrollToPostId);
+    }
+
+    onMouseOutMarker = () => {
+        this.resetMarkerActive();
     }
 
     onClickAccepted = () => {
@@ -90,7 +108,7 @@ class AssignmentDetail extends React.Component {
     }
 
     setMarkersFromPosts(posts) {
-        if (!posts) return;
+        if (!posts || !posts.length) return;
         const markerImageUrl = (isVideo) => {
             if (isVideo) {
                 return {
@@ -105,7 +123,7 @@ class AssignmentDetail extends React.Component {
             };
         };
 
-        const markers = posts.map(p => {
+        const markers = posts.map((p) => {
             if (!p.location) return null;
             return {
                 id: p.id,
@@ -115,6 +133,13 @@ class AssignmentDetail extends React.Component {
         }).filter(m => !!m);
 
         this.setState({ markerData: this.state.markerData.concat(markers) });
+    }
+
+    resetMarkerActive() {
+        let { markerData } = this.state;
+        markerData = markerData.map(m => Object.assign(m, { active: false }));
+
+        this.setState({ mapPanTo: null, markerData });
     }
 
     fetchAssignment() {
@@ -140,7 +165,7 @@ class AssignmentDetail extends React.Component {
             limit: 10,
             sortBy,
             last,
-            rating: verifiedToggle ? 2 : [1, 2],
+            rating: verifiedToggle ? 2 : [0, 1, 2],
         };
         api
         .get(`assignment/${assignment.id}/posts`, params)
@@ -235,7 +260,7 @@ class AssignmentDetail extends React.Component {
         } = this.state;
 
         return (
-            <App 
+            <App
                 user={this.props.user}
                 page='assignmentDetail'>
                 <TopBar
@@ -262,10 +287,10 @@ class AssignmentDetail extends React.Component {
                             markerData={markerData}
                             mapPanTo={mapPanTo}
                             onMouseOverMarker={this.onMouseOverMarker}
+                            onMouseOutMarker={this.onMouseOutMarker}
                             assignment={assignment}
                         />
                     )}
-                    acceptedCount={acceptedUsers ? acceptedUsers.length : 0}
                     onClickAccepted={this.onClickAccepted}
                 />
 
@@ -277,6 +302,7 @@ class AssignmentDetail extends React.Component {
                         onlyVerified={verifiedToggle}
                         assignment={assignment}
                         onMouseEnterPost={this.onMouseEnterPost}
+                        onMouseLeavePost={this.onMouseLeavePost}
                         onMouseLeaveList={this.onMouseLeavePostList}
                         editable={false}
                         size="large"
