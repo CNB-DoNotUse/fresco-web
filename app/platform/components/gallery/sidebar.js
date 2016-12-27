@@ -5,15 +5,15 @@ import utils from 'utils';
  * Gallery sidebar parent object
  * @description Column on the left of the posts grid on the gallery detail page
  */
-const GallerySidebar = ({ gallery }) => {
+const GallerySidebar = (props) => {
 	return (
 		<div className="col-sm-4 profile hidden-xs">
 			<div className="container-fluid fat">
 				<div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
 					<div className="meta">
-						<div className="meta-description" id="gallery-description">{gallery.caption}</div>
+						<div className="meta-description" id="gallery-description">{props.gallery.caption}</div>
 
-						<GalleryStats photo_count={gallery.photo_count} video_count={gallery.video_count} />
+						<GalleryStats {...props} />
 					</div>
 				</div>
 			</div>
@@ -24,21 +24,51 @@ const GallerySidebar = ({ gallery }) => {
 /**
  * Gallery stats inside the sidebar
  */
-const GalleryStats = ({ photo_count, video_count }) => {
+const GalleryStats = ({ 
+	gallery, 
+	onClickReposts,
+	onClickLikes 
+}) => {
 	return (
 		<div className="meta-list">
 			<ul className="md-type-subhead">
-				<li>
-					<span className="mdi mdi-image icon"></span>
-					<span>{photo_count || 0} {utils.isPlural(photo_count) ? 'photos' : 'photo'}</span>
-				</li>
-				<li>
-					<span className="mdi mdi-movie icon"></span>
-					<span>{video_count || 0} {utils.isPlural(photo_count) ? 'videos' : 'video'}</span>
-				</li>
+				<Stat
+					icon='mdi mdi-image icon'
+					value={gallery.photo_count}
+					name={'photo'} 
+				/> 
+				<Stat
+					icon='mdi mdi-movie icon'
+					value={gallery.video_count}
+					name={'video'} 
+				/>
+				<Stat
+					icon='mdi mdi-heart icon'
+					value={gallery.likes}
+					name={'like'}
+					onClick={onClickLikes} 
+				/>
+				<Stat
+					icon='mdi mdi-twitter-retweet icon'
+					value={gallery.reposts}
+					name={'repost'}
+					onClick={onClickReposts}
+				/> 
 			</ul>
 		</div>
 	);
+}
+
+/**
+ * Individual statistic component
+ */
+const Stat = ({ value, name, icon, onClick = null }) => {
+	return (
+		<li onClick={onClick} style={{ cursor: onClick ? 'pointer' : null }}>
+			<span className={icon}></span>
+			<span>{value || 0} {utils.isPlural(value) ? `${name}s` : name}</span>
+		</li>
+	)
 }
 
 

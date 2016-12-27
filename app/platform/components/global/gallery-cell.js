@@ -14,7 +14,6 @@ export default class GalleryCell extends React.Component {
         const size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
         const stories = (gallery.stories || []).slice(0, 2);
         const galleryCellStories = stories.length > 0 ? <GalleryCellStories stories={stories} /> : '';
-
         const postWithAddress = gallery.posts.find(p => p.address);
         const location = postWithAddress ? postWithAddress.address : 'No Location';
 
@@ -158,20 +157,21 @@ class GalleryCellImages extends React.Component {
 
 class GalleryCellStats extends React.Component {
 	render() {
-		const { photo_count, video_count } = this.props.gallery;
+		const { photo_count, video_count, reposts, likes } = this.props.gallery;
+		const delimiter = ' • ';
         let statString = '';
 
 		if (photo_count > 0) {
-			statString = photo_count + ' Photo' + (photo_count == 1 ? '' : 's');
+			statString = `${photo_count} Photo${utils.isPlural(photo_count) ? 's' : ''} ${delimiter}`;
         }
 
 		if (video_count > 0) {
-			if (statString.length > 0) {
-				statString += ' • ';
-            }
-
-			statString +=  video_count+ ' Video' + (video_count == 1 ? '' : 's');
+			statString += `${video_count} Video${utils.isPlural(video_count) ? 's' : ''} ${delimiter}`
 		}
+
+		statString += `${reposts} Repost${utils.isPlural(reposts) ? 's' : ''} • `;
+		statString += `${likes} Like${utils.isPlural(likes) ? 's' : ''}`;
+
 
 		return <span className="right-info">{statString}</span>;
 	}
