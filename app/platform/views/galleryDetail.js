@@ -145,8 +145,6 @@ class GalleryDetail extends React.Component {
             repostsDialog
         } = this.state;
 
-        const showDialog = user.permissions.includes('update-other-content');
-
         return (
             <App 
                 user={this.props.user}
@@ -179,45 +177,43 @@ class GalleryDetail extends React.Component {
                     />
                 </div>
 
-                {showDialog && (
-                    <ItemsDialog
-                        toggled={likesDialog}
-                        onClose={() => this.setState({ likesDialog: false })}
-                        scrollable={true}
-                        context='likes'
-                        onScroll={this.onScroll}
-                        emptyMessage={!likes ? 'Loading likes...' : likes.length === 0 ? "No likes :(" : ''}
-                        header={`Likes (${gallery.likes})`}
-                    >
-                        {likes ?
-                            likes.map((u, i) => (
-                                <UserItem key={`likes-user-${i}`} user={u} />
-                            ))
-                            :
-                            null
-                        }
-                    </ItemsDialog>
-                )}
 
-                {showDialog && (
-                    <ItemsDialog
-                        toggled={repostsDialog}
-                        onClose={() => this.setState({ repostsDialog: false })}
-                        scrollable={true}
-                        context='reposts'
-                        onScroll={this.onScroll}
-                        emptyMessage={!reposts ? 'Loading reposts...' : reposts.length === 0 ? "No reposts :(" : ''}
-                        header={`Reposts (${gallery.reposts})`}
-                    >
-                        {reposts ? 
-                            reposts.map((u, i) => (
-                                <UserItem key={`reposts-user-${i}`} user={u} />
-                            ))
-                            :
-                            null
-                        }
-                    </ItemsDialog>
-                )}
+                <ItemsDialog
+                    toggled={likesDialog}
+                    onClose={() => this.setState({ likesDialog: false })}
+                    scrollable={true}
+                    context='likes'
+                    onScroll={this.onScroll}
+                    emptyMessage={!likes ? 'Loading likes...' : likes.length === 0 ? "No likes :(" : ''}
+                    header={`Likes (${gallery.likes})`}
+                >
+                    {likes ?
+                        likes.map((u, i) => (
+                            <UserItem key={`likes-user-${i}`} user={u} />
+                        ))
+                        :
+                        null
+                    }
+                </ItemsDialog>
+
+
+                <ItemsDialog
+                    toggled={repostsDialog}
+                    onClose={() => this.setState({ repostsDialog: false })}
+                    scrollable={true}
+                    context='reposts'
+                    onScroll={this.onScroll}
+                    emptyMessage={!reposts ? 'Loading reposts...' : reposts.length === 0 ? "No reposts :(" : ''}
+                    header={`Reposts (${gallery.reposts})`}
+                >
+                    {reposts ? 
+                        reposts.map((u, i) => (
+                            <UserItem key={`reposts-user-${i}`} user={u} />
+                        ))
+                        :
+                        null
+                    }
+                </ItemsDialog>
 
                 <Edit
                     toggle={() => this.toggleEdit()}
