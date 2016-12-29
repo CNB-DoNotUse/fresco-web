@@ -3,17 +3,25 @@ import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
+import { geoParams } from 'app/lib/location';
 import App from './app';
 import PostList from './../components/post/list';
 import TopBar from './../components/topbar';
+import LocationDropdown from '../components/topbar/location-dropdown';
 
 /**
  * Photos Parent Object (composed of PhotoList and Navbar)
  */
 class Photos extends React.Component {
+    static propTypes = {
+        user: PropTypes.object,
+    }
+
     state = {
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
+        location: getFromSessionStorage('archive', 'location', {}),
+        reloadPosts: false,
     };
 
     onVerifiedToggled = (verifiedToggle) => {
@@ -26,7 +34,15 @@ class Photos extends React.Component {
         setInSessionStorage('topbar', { sortBy });
     }
 
-	// Returns array of posts with last and callback, used in child PostList
+    /**
+     * Called on Location dropdown state changes
+     */
+    onLocationChange = (location) => {
+        this.setState({ location, reloadPosts: true });
+        setInSessionStorage('archive', { location });
+    }
+
+    // Returns array of posts with last and callback, used in child PostList
     loadPosts = (last, callback) => {
         const params = {
             last,
@@ -34,6 +50,7 @@ class Photos extends React.Component {
             type: 'photo',
             sortBy: this.state.sortBy,
             rating: [0, 1, 2],
+            ...geoParams(this.state.location),
         };
 
         if (this.state.verifiedToggle) {
@@ -51,13 +68,13 @@ class Photos extends React.Component {
 
     render() {
         const { user } = this.props;
-        const { sortBy, verifiedToggle } = this.state;
+        const { sortBy, verifiedToggle, location, reloadPosts } = this.state;
 
         return (
             <App
-                 user={this.props.user}
-                 page="photos"
-             >
+                user={user}
+                page="photos"
+            >
                 <TopBar
                     title="Photos"
                     permissions={user.permissions}
@@ -68,13 +85,21 @@ class Photos extends React.Component {
                     chronToggle
                     timeToggle
                     verifiedToggle
-                />
+                >
+                    <LocationDropdown
+                        location={location}
+                        units="Miles"
+                        key="locationDropdown"
+                        onLocationChange={this.onLocationChange}
+                    />
+                </TopBar>
                 <PostList
                     permissions={user.permissions}
                     size="small"
                     sortBy={sortBy}
                     onlyVerified={verifiedToggle}
                     loadPosts={this.loadPosts}
+                    reloadPosts={reloadPosts}
                     scrollable
                 />
             </App>

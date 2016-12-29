@@ -22,7 +22,7 @@ class Archive extends React.Component {
     state = {
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
-        location: {},
+        location: getFromSessionStorage('archive', 'location', {}),
         reloadPosts: false,
     };
 
@@ -39,8 +39,9 @@ class Archive extends React.Component {
     /**
      * Called on Location dropdown state changes
      */
-    onLocationChange = (data) => {
-        this.setState({ location: { ...data }, reloadPosts: true });
+    onLocationChange = (location) => {
+        this.setState({ location, reloadPosts: true });
+        setInSessionStorage('archive', { location });
     }
 
     // Returns array of posts with last and callback, used in child PostList
@@ -69,11 +70,11 @@ class Archive extends React.Component {
     }
 
     render() {
-        const { verifiedToggle, sortBy, reloadPosts } = this.state;
+        const { verifiedToggle, sortBy, reloadPosts, location } = this.state;
         const { user, title } = this.props;
         return (
-           <App
-                user={this.props.user}
+            <App
+                user={user}
                 page="archive"
             >
                 <TopBar
@@ -88,7 +89,7 @@ class Archive extends React.Component {
                     verifiedToggle
                 >
                     <LocationDropdown
-                        location={this.state.location}
+                        location={location}
                         units="Miles"
                         key="locationDropdown"
                         onLocationChange={this.onLocationChange}
