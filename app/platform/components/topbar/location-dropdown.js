@@ -5,16 +5,16 @@ import Dropdown from '../global/dropdown';
 class LocationDropdown extends React.Component {
     static propTypes = {
         onLocationChange: PropTypes.func.isRequired,
-        location: PropTypes.object,
+        location: PropTypes.shape({
+            lat: PropTypes.number,
+            lng: PropTypes.number,
+            radius: PropTypes.number,
+            address: PropTypes.string,
+        }).isRequired,
     }
 
     state = {
         toggled: false,
-        lat: this.props.location.lat || 0,
-        lng: this.props.location.lng || 0,
-        source: '',
-        address: this.props.location.address || '',
-        radius: this.props.location.radius || 250,
     }
 
     componentDidMount() {
@@ -31,29 +31,29 @@ class LocationDropdown extends React.Component {
         }
     }
 
-    onChange() {
-        const { address, radius, lat, lng } = this.state;
-        this.props.onLocationChange({ address, radius, lat, lng });
+    onChange(data) {
+        const { onLocationChange, location } = this.props;
+        onLocationChange(Object.assign({}, location, data));
     }
 
     onToggled = () => {
         this.setState({ toggled: !this.state.toggled });
     }
 
-    onMapDataChange = ({ location: { lat, lng }, source }) => {
-        this.setState({ lat, lng, source }, this.onChange);
+    onMapDataChange = ({ location: { lat, lng } }) => {
+        this.onChange({ lat, lng });
     }
 
     onPlaceChange = ({ location: { lat, lng }, address }) => {
-        this.setState({ lat, lng, address }, this.onChange);
+        this.onChange({ lat, lng, address });
     }
 
     onRadiusUpdate = (radius) => {
-        this.setState({ radius }, this.onChange);
+        this.onChange({ radius });
     }
 
     render() {
-        const { address, lat, lng, radius } = this.state;
+        const { location: { address, lat, lng, radius } } = this.props;
         return (
             <Dropdown
                 inList

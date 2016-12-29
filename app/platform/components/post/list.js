@@ -60,10 +60,6 @@ class PostList extends React.Component {
      */
     onChangeVerifiedSortProps = (scrollable) => {
         if (scrollable) {
-            // Clear state for immediate feedback
-            this.setState({ posts: [] });
-
-            // Load posts from API
             this.loadInitialPosts();
         } else {
             this.setState({ posts: this.sortPosts() }, () => {
@@ -216,9 +212,9 @@ class PostList extends React.Component {
      * Initial call to populate posts
      */
     loadInitialPosts() {
-        this.props.loadPosts(null, (posts) => {
-            this.setState({ posts }, () => {
-                this.grid.scrollTop = 0;
+        this.setState({ posts: [] }, () => {
+            this.props.loadPosts(null, (posts) => {
+                this.setState({ posts }, () => { this.grid.scrollTop = 0; });
             });
         });
     }
