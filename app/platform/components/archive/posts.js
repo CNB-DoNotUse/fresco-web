@@ -40,7 +40,7 @@ class Posts extends React.Component {
     /**
      * Called on Location dropdown state changes
      */
-    onLocationChange = (location) => {
+    onChangeLocation = (location) => {
         this.setState({ location, reloadPosts: true });
         setInSessionStorage('archive', { location });
     }
@@ -93,7 +93,7 @@ class Posts extends React.Component {
                         location={location}
                         units="Miles"
                         key="locationDropdown"
-                        onLocationChange={this.onLocationChange}
+                        onChangeLocation={this.onChangeLocation}
                     />
                 </TopBar>
                 <PostList

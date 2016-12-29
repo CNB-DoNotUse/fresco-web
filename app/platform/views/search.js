@@ -321,7 +321,7 @@ class Search extends Component {
     /**
      * Called on Location dropdown state changes
      */
-    onLocationChange = (data) => {
+    onChangeLocation = (data) => {
         this.setState({ location: { ...data } });
     }
 
@@ -397,7 +397,7 @@ class Search extends Component {
                         location={this.state.location}
                         units="Miles"
                         key="locationDropdown"
-                        onLocationChange={this.onLocationChange}
+                        onChangeLocation={this.onChangeLocation}
                     />
                 </TopBar>
 

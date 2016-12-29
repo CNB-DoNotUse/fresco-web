@@ -1,20 +1,26 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 import api from 'app/lib/api';
-import SuggestionList from '../highlights/suggestion-list';
+import { geoParams } from 'app/lib/location';
 import GalleryCell from './gallery-cell';
-
-/** //
-Description : List for a gallery used across the site (/highlights, /content/galleries, etc.)
-// **/
+import SuggestionList from '../highlights/suggestion-list';
 
 /**
  * Gallery List Parent Object
+ * @description : List for a gallery used across the site (/highlights, /content/galleries, etc.)
  */
 class GalleryList extends React.Component {
     static propTypes = {
         onlyVerified: PropTypes.bool,
+        withList: PropTypes.bool,
         highlighted: PropTypes.bool,
+        location: PropTypes.shape({
+            lat: PropTypes.number,
+            lng: PropTypes.number,
+            radius: PropTypes.number,
+            address: PropTypes.string,
+            source: PropTypes.string,
+        }),
     };
 
     state = {
@@ -24,20 +30,22 @@ class GalleryList extends React.Component {
     };
 
     componentDidMount() {
-        this.loadInitalGalleries();
+        this.loadInitialGalleries();
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.onlyVerified !== this.props.onlyVerified) {
-            this.setState({ galleries: [] });
-
-            this.loadInitalGalleries();
-
-            this.refs.grid.scrollTop = 0;
-        }
+    componentDidUpdate(prevProps) {
+        const { onlyVerified, location } = this.props;
+        if (prevProps.onlyVerified !== onlyVerified) this.onChangeOnlyVerified();
+        if (prevProps.location !== location) this.loadInitialGalleries();
     }
 
-    loadInitalGalleries = () => {
+    onChangeOnlyVerified() {
+        this.setState({ galleries: [] });
+        this.loadInitialGalleries();
+        this.grid.scrollTop = 0;
+    }
+
+    loadInitialGalleries = () => {
         this.loadGalleries(null, (galleries) => {
             // Set galleries from successful response
             this.setState({ galleries });
@@ -46,11 +54,12 @@ class GalleryList extends React.Component {
 
     // Returns array of galleries with offset and callback
     loadGalleries = (last, callback) => {
-        const { highlighted, onlyVerified, sort } = this.props;
+        const { highlighted, onlyVerified, sort, location } = this.props;
         const params = {
             limit: 20,
             last,
             sort,
+            ...geoParams(location),
         };
 
         let endpoint = 'gallery/list';
@@ -109,7 +118,7 @@ class GalleryList extends React.Component {
                 <div
                     className="container-fluid grid"
                     onScroll={this.onScroll}
-                    ref="grid"
+                    ref={(r) => { this.grid = r; }}
                 >
                     <div className="col-md-8">{galleries}</div>
 
@@ -122,7 +131,7 @@ class GalleryList extends React.Component {
             <div
                 className="container-fluid grid"
                 onScroll={this.onScroll}
-                ref="grid"
+                ref={(r) => { this.grid = r; }}
             >
                 {galleries}
             </div>
@@ -135,3 +144,4 @@ GalleryList.defaultProps = {
 };
 
 export default GalleryList;
+

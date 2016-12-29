@@ -4,7 +4,7 @@ import Dropdown from '../global/dropdown';
 
 class LocationDropdown extends React.Component {
     static propTypes = {
-        onLocationChange: PropTypes.func.isRequired,
+        onChangeLocation: PropTypes.func.isRequired,
         location: PropTypes.shape({
             lat: PropTypes.number,
             lng: PropTypes.number,
@@ -18,8 +18,8 @@ class LocationDropdown extends React.Component {
     }
 
     onChange(data) {
-        const { onLocationChange, location } = this.props;
-        onLocationChange(Object.assign({}, { radius: 250}, location, data));
+        const { onChangeLocation, location } = this.props;
+        onChangeLocation(Object.assign({}, { radius: 250 }, location, data));
     }
 
     onToggled = () => {
