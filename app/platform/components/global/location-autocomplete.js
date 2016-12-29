@@ -56,6 +56,7 @@ class LocationAutocomplete extends React.Component {
 
         if (query === '' || query == null) {
             this.setState({ predictions: [], active: false });
+            this.props.onClearInput && this.props.onClearInput();
             return;
         }
 
@@ -146,11 +147,11 @@ class LocationAutocomplete extends React.Component {
 
     render() {
         const active = this.state.active && this.props.transition;
-        const autocompleteClass = `autocomplete ${this.props.class} ${active ? 'active' :''}`;
+        const autocompleteClass = `autocomplete ${this.props.class} ${active ? 'active' : ''}`;
 
         return (
-            <div 
-                className={autocompleteClass} 
+            <div
+                className={autocompleteClass}
                 ref="autocompleteWrap"
             >
                 <div>
@@ -187,6 +188,7 @@ LocationAutocomplete.propTypes = {
     transition: PropTypes.bool,
     updateAutocompleteData: PropTypes.func,
     bounds: PropTypes.object,
+    onClearInput: PropTypes.func,
 };
 
 export default LocationAutocomplete;

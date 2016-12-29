@@ -38,6 +38,10 @@ class LocationDropdown extends React.Component {
         this.onChange({ radius });
     }
 
+    onClearLocation = () => {
+        this.onChange({ address: null, lat: null, lng: null })
+    }
+
     render() {
         const { location: { address, lat, lng, radius } } = this.props;
         return (
@@ -51,6 +55,7 @@ class LocationDropdown extends React.Component {
                     onPlaceChange={this.onPlaceChange}
                     onMapDataChange={this.onMapDataChange}
                     onRadiusUpdate={this.onRadiusUpdate}
+                    onClearLocation={this.onClearLocation}
                     address={address}
                     location={{ lat, lng }}
                     radius={radius}

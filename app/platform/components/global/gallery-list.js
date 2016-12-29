@@ -21,6 +21,7 @@ class GalleryList extends React.Component {
             address: PropTypes.string,
             source: PropTypes.string,
         }),
+        sort: PropTypes.string,
     };
 
     state = {
