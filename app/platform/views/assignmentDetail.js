@@ -91,7 +91,13 @@ class AssignmentDetail extends React.Component {
         this.setState({ acceptedDialog: !this.state.acceptedDialog });
     }
 
-    setMarkerActive(id, panTo = false) {
+    /**
+     * Sets the marker with the given post id active on the map
+     *
+     * @param {String} id Id of post the marker is attached to
+     * @param {Boolean} shouldPanTo=false If the marker should be panned to in the map
+     */
+    setMarkerActive(id, shouldPanTo = false) {
         let { markerData } = this.state;
         const idx = markerData.findIndex(p => p.id === id);
         if (idx === -1) return;
@@ -102,7 +108,7 @@ class AssignmentDetail extends React.Component {
         markerData[idx] = marker;
 
         this.setState({
-            mapPanTo: panTo ? marker.position : null,
+            mapPanTo: shouldPanTo ? marker.position : null,
             markerData,
         });
     }
@@ -285,7 +291,7 @@ class AssignmentDetail extends React.Component {
                     map={!isEmpty(assignment.location) && (
                         <AssignmentMap
                             markerData={markerData}
-                            mapPanTo={mapPanTo}
+                            panTo={mapPanTo}
                             onMouseOverMarker={this.onMouseOverMarker}
                             onMouseOutMarker={this.onMouseOutMarker}
                             assignment={assignment}

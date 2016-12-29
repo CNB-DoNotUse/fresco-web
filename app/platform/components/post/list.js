@@ -237,7 +237,7 @@ class PostList extends React.Component {
             selectedPosts,
         } = this.state;
 
-        if (!posts.length) return '';
+        if (!posts || !posts.length) return '';
 
         return (
             <div>
