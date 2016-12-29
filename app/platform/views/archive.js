@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
-import { geoParams } from 'app/lib/helpers';
+import { geoParams } from 'app/lib/location';
 import App from './app';
 import PostList from '../components/post/list';
 import TopBar from '../components/topbar';

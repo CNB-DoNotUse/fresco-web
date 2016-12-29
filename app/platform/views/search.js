@@ -6,7 +6,7 @@ import last from 'lodash/last';
 import pick from 'lodash/pick';
 import pull from 'lodash/pull';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
-import { geoParams } from 'app/lib/helpers';
+import { geoParams } from 'app/lib/location';
 import App from './app';
 import TopBar from './../components/topbar';
 import LocationDropdown from '../components/topbar/location-dropdown';

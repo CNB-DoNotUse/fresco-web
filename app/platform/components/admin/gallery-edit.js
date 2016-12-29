@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
@@ -73,14 +72,7 @@ export default class GalleryEdit extends React.Component {
      * Updates state map location when AutocompleteMap gives new location from drag
      */
     onMapDataChange(data) {
-        if (data.source === 'markerDrag') {
-            getAddressFromLatLng(data.location, (address) => {
-                this.setState({
-                    address,
-                    location: data.location,
-                });
-            });
-        }
+        if (data.source === 'markerDrag') this.setState(data);
     }
 
     onChangeOwner = (owner) => {

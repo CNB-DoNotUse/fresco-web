@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { getAddressFromLatLng } from 'app/lib/location';
 import LocationAutocomplete from '../global/location-autocomplete.js';
 import GMap from './gmap';
 
@@ -28,6 +29,13 @@ class AutocompleteMap extends React.Component {
         if (!isNaN(radius)) {
             this.props.onRadiusUpdate(radius);
         }
+    }
+
+    onMapDataChange = ({ location, source }) => {
+        getAddressFromLatLng(location)
+        .then((address) => {
+            this.props.onMapDataChange({ location, source, address });
+        });
     }
 
     /**
@@ -89,7 +97,7 @@ class AutocompleteMap extends React.Component {
                     rerender={rerender}
                     draggable={draggable}
                     updateCurrentBounds={this.updateCurrentBounds}
-                    onDataChange={onMapDataChange}
+                    onDataChange={this.onMapDataChange}
                 />
             </div>
         );

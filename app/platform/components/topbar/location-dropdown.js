@@ -17,31 +17,17 @@ class LocationDropdown extends React.Component {
         toggled: false,
     }
 
-    componentDidMount() {
-        const { location } = this.state;
-
-        if (location && location.lat && location.lng) {
-            const geocoder = new google.maps.Geocoder();
-
-            geocoder.geocode({ location: { ...location } }, (results, status) => {
-                if (status === google.maps.GeocoderStatus.OK && results[0]) {
-                    this.setState({ address: results[0].formatted_address });
-                }
-            });
-        }
-    }
-
     onChange(data) {
         const { onLocationChange, location } = this.props;
-        onLocationChange(Object.assign({}, location, data));
+        onLocationChange(Object.assign({}, { radius: 250}, location, data));
     }
 
     onToggled = () => {
         this.setState({ toggled: !this.state.toggled });
     }
 
-    onMapDataChange = ({ location: { lat, lng } }) => {
-        this.onChange({ lat, lng });
+    onMapDataChange = ({ location: { lat, lng }, address }) => {
+        this.onChange({ lat, lng, address });
     }
 
     onPlaceChange = ({ location: { lat, lng }, address }) => {
