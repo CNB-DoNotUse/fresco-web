@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 import utils from 'utils';
 import api from 'app/lib/api';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
+import { geoParams } from 'app/lib/helpers';
 import App from './app';
-import PostList from './../components/post/list';
-import TopBar from './../components/topbar';
+import PostList from '../components/post/list';
+import TopBar from '../components/topbar';
+import LocationDropdown from '../components/topbar/location-dropdown';
 
 /**
  * Archive Parent Object (composed of PostList and Navbar)
@@ -20,6 +22,8 @@ class Archive extends React.Component {
     state = {
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
+        location: {},
+        reloadPosts: false,
     };
 
     onVerifiedToggled = (verifiedToggle) => {
@@ -32,6 +36,13 @@ class Archive extends React.Component {
         setInSessionStorage('topbar', { sortBy });
     }
 
+    /**
+     * Called on Location dropdown state changes
+     */
+    onLocationChange = (data) => {
+        this.setState({ location: { ...data }, reloadPosts: true });
+    }
+
     // Returns array of posts with last and callback, used in child PostList
     loadPosts = (last, callback) => {
         const params = {
@@ -39,6 +50,7 @@ class Archive extends React.Component {
             limit: utils.postCount,
             sortBy: this.state.sortBy,
             rating: [0, 1, 2],
+            ...geoParams(this.state.location),
         };
 
         if (this.state.verifiedToggle) {
@@ -47,7 +59,9 @@ class Archive extends React.Component {
 
         api
         .get('post/list', params)
-        .then(callback)
+        .then((res) => {
+            this.setState({ reloadPosts: false }, () => callback(res));
+        })
         .catch(() => {
             $.snackbar({ content: 'We\'re unable to load the archive right now!' });
             callback([]);
@@ -55,10 +69,10 @@ class Archive extends React.Component {
     }
 
     render() {
-        const { verifiedToggle, sortBy } = this.state;
+        const { verifiedToggle, sortBy, reloadPosts } = this.state;
         const { user, title } = this.props;
         return (
-           <App 
+           <App
                 user={this.props.user}
                 page="archive"
             >
@@ -72,7 +86,14 @@ class Archive extends React.Component {
                     chronToggle
                     timeToggle
                     verifiedToggle
-                />
+                >
+                    <LocationDropdown
+                        location={this.state.location}
+                        units="Miles"
+                        key="locationDropdown"
+                        onLocationChange={this.onLocationChange}
+                    />
+                </TopBar>
 
                 <PostList
                     loadPosts={this.loadPosts}
@@ -80,6 +101,7 @@ class Archive extends React.Component {
                     sortBy={sortBy}
                     size="small"
                     onlyVerified={verifiedToggle}
+                    reloadPosts={reloadPosts}
                     scrollable
                 />
             </App>

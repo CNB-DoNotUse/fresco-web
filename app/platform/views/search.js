@@ -6,6 +6,7 @@ import last from 'lodash/last';
 import pick from 'lodash/pick';
 import pull from 'lodash/pull';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
+import { geoParams } from 'app/lib/helpers';
 import App from './app';
 import TopBar from './../components/topbar';
 import LocationDropdown from '../components/topbar/location-dropdown';
@@ -44,7 +45,6 @@ class Search extends Component {
         this.loadingUsers = false;
 
         this.getTitle 			= this.getTitle.bind(this);
-        this.geoParams			= this.geoParams.bind(this);
         this.getAssignments		= this.getAssignments.bind(this);
         this.getPosts			= this.getPosts.bind(this);
         this.getUsers			= this.getUsers.bind(this);
@@ -135,22 +135,6 @@ class Search extends Component {
         return title;
     }
 
-    geoParams() {
-        const { location } = this.state;
-
-        if (location.lat && location.lng && location.radius) {
-            return {
-                geo: {
-                    type: 'Point',
-                    coordinates: [location.lng, location.lat],
-                },
-                radius: utils.feetToMiles(location.radius),
-            };
-        }
-
-        return {};
-    }
-
     /**
      * Gets new search data
      * @param {bool} initial Indicates if it is the initial data load
@@ -182,7 +166,7 @@ class Search extends Component {
             q: this.props.query,
             limit: 10,
             rating: this.state.verifiedToggle ? 1 : null,
-            ...this.geoParams()
+            ...geoParams(this.state.location)
         };
 
         $.ajax({
@@ -205,7 +189,7 @@ class Search extends Component {
      * Retrieves posts from API based on state
      */
     getPosts(force = true, lastId) {
-        const { currentPostParams, tags, verifiedToggle } = this.state;
+        const { currentPostParams, tags, verifiedToggle, location } = this.state;
 
         const params = {
             q: this.props.query,
@@ -214,7 +198,7 @@ class Search extends Component {
             sortBy: 'created_at',
             last: lastId,
             rating: verifiedToggle ? utils.RATINGS.VERIFIED : null,
-            ...this.geoParams()
+            ...geoParams(location)
         };
 
         $.ajax({
@@ -401,8 +385,6 @@ class Search extends Component {
                     verifiedToggle
                     timeToggle
                 >
-
-
                     <TagFilter
                         onTagAdd={this.addTag}
                         onTagRemove={this.removeTag}
@@ -413,8 +395,6 @@ class Search extends Component {
 
                     <LocationDropdown
                         location={this.state.location}
-                        radius={this.state.radius}
-                        address={this.state.address}
                         units="Miles"
                         key="locationDropdown"
                         onLocationChange={this.onLocationChange}
@@ -445,7 +425,6 @@ class Search extends Component {
 
 Search.defaultProps = {
     location: {},
-    radius: 0,
     tags: [],
 };
 
@@ -453,7 +432,6 @@ Search.propTypes = {
     query: PropTypes.string,
     tags: PropTypes.array,
     location: PropTypes.object,
-    radius: PropTypes.number,
     user: PropTypes.object,
 };
 
