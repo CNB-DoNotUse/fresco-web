@@ -147,7 +147,7 @@ class LocationAutocomplete extends React.Component {
 
     render() {
         const active = this.state.active && this.props.transition;
-        const autocompleteClass = `autocomplete ${this.props.class} ${active ? 'active' : ''}`;
+        const autocompleteClass = `autocomplete ${this.props.className} ${active ? 'active' : ''}`;
 
         return (
             <div
@@ -175,13 +175,13 @@ class LocationAutocomplete extends React.Component {
 LocationAutocomplete.defaultProps = {
     updateAutocompleteData() {},
     transition: true,
-    class: '',
+    className: '',
     inputClass: '',
     inputText: ''
 };
 
 LocationAutocomplete.propTypes = {
-    class: PropTypes.string,
+    className: PropTypes.string,
     inputText: PropTypes.string,
     inputClass: PropTypes.string,
     disabled: PropTypes.bool,

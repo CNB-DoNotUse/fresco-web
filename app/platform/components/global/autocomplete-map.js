@@ -77,7 +77,7 @@ class AutocompleteMap extends React.Component {
                     inputText={address}
                     disabled={disabled}
                     bounds={this.state.bounds}
-                    class="form"
+                    className="form"
                     inputClass="form-control floating-label"
                     ref="autocomplete"
                     transition={false}

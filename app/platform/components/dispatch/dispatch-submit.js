@@ -282,7 +282,7 @@ export default class DispatchSubmit extends React.Component {
                     <div className="form-group-default">
                         <LocationAutocomplete
                             inputText={this.state.autocompleteText || ''}
-                            class="form"
+                            className="form"
                             inputClass="form-control floating-label"
                             ref="autocomplete"
                             transition={false}
