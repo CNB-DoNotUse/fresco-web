@@ -6,6 +6,7 @@ import { geoParams } from 'app/lib/location';
 import App from 'app/platform/views/app';
 import PostList from '../post/list';
 import TopBar from '../topbar';
+import TagFilter from '../topbar/tag-filter';
 import LocationDropdown from '../topbar/location-dropdown';
 
 /**
@@ -24,6 +25,7 @@ class Posts extends React.Component {
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
         location: getFromSessionStorage('archive', 'location', {}),
+        tags: getFromSessionStorage('archive', 'tags', []),
         reloadPosts: false,
     };
 
@@ -45,21 +47,35 @@ class Posts extends React.Component {
         setInSessionStorage('archive', { location });
     }
 
+    onAddTag = (tag) => {
+        this.setState({
+            tags: this.state.tags.concat(tag),
+            reloadPosts: true,
+        });
+    }
+
+    onRemoveTag = (tag) => {
+        this.setState({
+            tags: this.state.tags.filter(t => t !== tag),
+            reloadPosts: true,
+        });
+    }
+
     // Returns array of posts with last and callback, used in child PostList
     loadPosts = (last, callback) => {
         const { type } = this.props;
+        const { sortBy, location, tags, verifiedToggle } = this.state;
         const params = {
             last,
             limit: utils.postCount,
-            sortBy: this.state.sortBy,
             rating: [0, 1, 2],
-            ...geoParams(this.state.location),
+            ...geoParams(location),
             type,
+            tags,
+            sortBy,
         };
 
-        if (this.state.verifiedToggle) {
-            params.rating = 2;
-        }
+        if (verifiedToggle) params.rating = 2;
 
         api
         .get('post/list', params)
@@ -74,7 +90,7 @@ class Posts extends React.Component {
 
     render() {
         const { user, title, page } = this.props;
-        const { sortBy, verifiedToggle, location, reloadPosts } = this.state;
+        const { sortBy, verifiedToggle, location, reloadPosts, tags } = this.state;
 
         return (
             <App user={user} page={page}>
@@ -89,6 +105,13 @@ class Posts extends React.Component {
                     timeToggle
                     verifiedToggle
                 >
+                    <TagFilter
+                        onTagAdd={this.onAddTag}
+                        onTagRemove={this.onRemoveTag}
+                        filterList={tags}
+                        attr=""
+                        key="tagFilter"
+                    />
                     <LocationDropdown
                         location={location}
                         units="Miles"
