@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import App from './app';
-import GalleryList from './../components/global/gallery-list';
-import TopBar from './../components/topbar';
+import GalleryList from '../components/global/gallery-list';
+import TopBar from '../components/topbar';
+import TagFilter from '../components/topbar/tag-filter';
 import LocationDropdown from '../components/topbar/location-dropdown';
 
 /**
@@ -17,6 +18,7 @@ class Galleries extends React.Component {
     state = {
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
         location: getFromSessionStorage('archive', 'location', {}),
+        tags: getFromSessionStorage('archive', 'tags', []),
     };
 
     onVerifiedToggled = (verifiedToggle) => {
@@ -28,12 +30,20 @@ class Galleries extends React.Component {
      * Called on Location dropdown state changes
      */
     onChangeLocation = (location) => {
-        this.setState({ location, reloadPosts: true });
+        this.setState({ location});
         setInSessionStorage('archive', { location });
     }
 
+    onAddTag = (tag) => {
+        this.setState({ tags: this.state.tags.concat(tag) });
+    }
+
+    onRemoveTag = (tag) => {
+        this.setState({ tags: this.state.tags.filter(t => t !== tag) });
+    }
+
     render() {
-        const { verifiedToggle, location } = this.state;
+        const { verifiedToggle, location, tags } = this.state;
         const { user } = this.props;
 
         return (
@@ -46,6 +56,13 @@ class Galleries extends React.Component {
                     timeToggle
                     verifiedToggle
                 >
+                    <TagFilter
+                        onTagAdd={this.onAddTag}
+                        onTagRemove={this.onRemoveTag}
+                        filterList={tags}
+                        attr=""
+                        key="tagFilter"
+                    />
                     <LocationDropdown
                         location={location}
                         units="Miles"
@@ -59,6 +76,7 @@ class Galleries extends React.Component {
                     highlighted={false}
                     onlyVerified={verifiedToggle}
                     location={location}
+                    tags={tags}
                 />
             </App>
         );

@@ -4,6 +4,7 @@ import api from 'app/lib/api';
 import { geoParams } from 'app/lib/location';
 import GalleryCell from './gallery-cell';
 import SuggestionList from '../highlights/suggestion-list';
+import isEqual from 'lodash/isEqual';
 
 /**
  * Gallery List Parent Object
@@ -22,12 +23,12 @@ class GalleryList extends React.Component {
             source: PropTypes.string,
         }),
         sort: PropTypes.string,
+        tags: PropTypes.arrayOf(PropTypes.string),
     };
 
     state = {
         galleries: [],
         loading: false,
-        tags: [],
     };
 
     componentDidMount() {
@@ -35,31 +36,51 @@ class GalleryList extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { onlyVerified, location } = this.props;
-        if (prevProps.onlyVerified !== onlyVerified) this.onChangeOnlyVerified();
-        if (prevProps.location !== location) this.loadInitialGalleries();
+        const { tags, location, onlyVerified } = this.props;
+        const newLocation = !isEqual(prevProps.location, location);
+        const newTags = !isEqual(prevProps.tags, tags);
+        const verifiedChanged = prevProps.onlyVerified !== onlyVerified;
+        if (newLocation || newTags || verifiedChanged) this.loadInitialGalleries();
     }
 
-    onChangeOnlyVerified() {
-        this.setState({ galleries: [] });
-        this.loadInitialGalleries();
-        this.grid.scrollTop = 0;
+    // Scroll listener for main window
+    onScroll = (e) => {
+        const grid = e.target;
+
+        if (!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
+            const lastGallery = this.state.galleries[this.state.galleries.length - 1];
+            if (!lastGallery) return;
+            this.setState({ loading : true });
+
+            this.loadGalleries(lastGallery.id, (galleries) => {
+                if (!galleries) return;
+
+                // Set galleries from successful response
+                this.setState({
+                    galleries: this.state.galleries.concat(galleries),
+                    loading: false,
+                });
+            });
+        }
     }
 
     loadInitialGalleries = () => {
-        this.loadGalleries(null, (galleries) => {
-            // Set galleries from successful response
-            this.setState({ galleries });
+        this.setState({ galleries: [] }, () => {
+            this.loadGalleries(null, (galleries) => {
+                this.grid.scrollTop = 0;
+                this.setState({ galleries });
+            });
         });
     }
 
     // Returns array of galleries with offset and callback
     loadGalleries = (last, callback) => {
-        const { highlighted, onlyVerified, sort, location } = this.props;
+        const { tags, highlighted, onlyVerified, sort, location } = this.props;
         const params = {
             limit: 20,
             last,
             sort,
+            tags,
             ...geoParams(location),
         };
 
@@ -79,27 +100,6 @@ class GalleryList extends React.Component {
         .catch(() => {
             $.snackbar({ content: 'Failed to load galleries' });
         });
-    }
-
-	// Scroll listener for main window
-    onScroll = (e) => {
-        const grid = e.target;
-
-        if(!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
-            const lastGallery = this.state.galleries[this.state.galleries.length - 1];
-            if (!lastGallery) return;
-            this.setState({ loading : true });
-
-            this.loadGalleries(lastGallery.id, (galleries) => {
-                if (!galleries) return;
-
-                // Set galleries from successful response
-                this.setState({
-                    galleries: this.state.galleries.concat(galleries),
-                    loading: false,
-                });
-            });
-        }
     }
 
     render() {
