@@ -4,6 +4,7 @@ import App from './app';
 import TopBar from '../components/topbar';
 import StoryList from '../components/global/story-list';
 import LocationDropdown from '../components/topbar/location-dropdown';
+import TagFilter from '../components/topbar/tag-filter';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import { geoParams } from 'app/lib/location';
 import utils from 'utils';
@@ -18,6 +19,7 @@ class Stories extends React.Component {
 
     state = {
         location: getFromSessionStorage('archive', 'location', {}),
+        tags: getFromSessionStorage('archive', 'tags', []),
         reloadStories: false,
     }
 
@@ -29,15 +31,29 @@ class Stories extends React.Component {
         setInSessionStorage('archive', { location });
     }
 
+    onAddTag = (tag) => {
+        const tags = this.state.tags.concat(tag);
+        this.setState({ tags, reloadStories: true });
+        setInSessionStorage('archive', { tags });
+    }
+
+    onRemoveTag = (tag) => {
+        const tags = this.state.tags.filter(t => t !== tag);
+        this.setState({ tags, reloadStories: true });
+        setInSessionStorage('archive', { tags });
+    }
+
     /**
      * Returns array of posts with offset and callback, used in child PostList
      */
     loadStories = (last, callback) => {
+        const { location, tags } = this.state;
         const params = {
             last,
             limit: 20,
             sortBy: 'updated_at',
-            ...geoParams(this.state.location),
+            tags,
+            ...geoParams(location),
         };
 
         $.ajax({
@@ -55,6 +71,7 @@ class Stories extends React.Component {
     }
 
     render() {
+        const { location, reloadStories, tags } = this.state;
         return (
             <App user={this.props.user} page="stories">
                 <TopBar
@@ -62,8 +79,15 @@ class Stories extends React.Component {
                     timeToggle
                     tagToggle
                 >
+                    <TagFilter
+                        onTagAdd={this.onAddTag}
+                        onTagRemove={this.onRemoveTag}
+                        filterList={tags}
+                        attr=""
+                        key="tagFilter"
+                    />
                     <LocationDropdown
-                        location={this.state.location}
+                        location={location}
                         units="Miles"
                         key="locationDropdown"
                         onChangeLocation={this.onChangeLocation}
@@ -72,7 +96,7 @@ class Stories extends React.Component {
 
                 <StoryList
                     loadStories={this.loadStories}
-                    reloadStories={this.state.reloadStories}
+                    reloadStories={reloadStories}
                     scrollable
                 />
             </App>

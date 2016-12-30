@@ -48,17 +48,15 @@ class Posts extends React.Component {
     }
 
     onAddTag = (tag) => {
-        this.setState({
-            tags: this.state.tags.concat(tag),
-            reloadPosts: true,
-        });
+        const tags = this.state.tags.concat(tag);
+        this.setState({ tags, reloadStories: true });
+        setInSessionStorage('archive', { tags });
     }
 
     onRemoveTag = (tag) => {
-        this.setState({
-            tags: this.state.tags.filter(t => t !== tag),
-            reloadPosts: true,
-        });
+        const tags = this.state.tags.filter(t => t !== tag);
+        this.setState({ tags, reloadStories: true });
+        setInSessionStorage('archive', { tags });
     }
 
     // Returns array of posts with last and callback, used in child PostList

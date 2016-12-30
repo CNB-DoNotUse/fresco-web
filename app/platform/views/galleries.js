@@ -35,11 +35,15 @@ class Galleries extends React.Component {
     }
 
     onAddTag = (tag) => {
-        this.setState({ tags: this.state.tags.concat(tag) });
+        const tags = this.state.tags.concat(tag);
+        this.setState({ tags, reloadStories: true });
+        setInSessionStorage('archive', { tags });
     }
 
     onRemoveTag = (tag) => {
-        this.setState({ tags: this.state.tags.filter(t => t !== tag) });
+        const tags = this.state.tags.filter(t => t !== tag);
+        this.setState({ tags, reloadStories: true });
+        setInSessionStorage('archive', { tags });
     }
 
     render() {

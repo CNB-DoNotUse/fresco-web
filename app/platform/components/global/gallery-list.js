@@ -50,7 +50,7 @@ class GalleryList extends React.Component {
         if (!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400)){
             const lastGallery = this.state.galleries[this.state.galleries.length - 1];
             if (!lastGallery) return;
-            this.setState({ loading : true });
+            this.setState({ loading: true });
 
             this.loadGalleries(lastGallery.id, (galleries) => {
                 if (!galleries) return;
