@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import ReactDom from 'react-dom';
 import App from './app';
-import GalleryList from './../components/global/gallery-list';
-import TopBar from './../components/topbar';
+import GalleryList from '../components/gallery/list';
+import TopBar from '../components/topbar';
 import api from 'app/lib/api';
 import isEqual from 'lodash/isEqual';
 
