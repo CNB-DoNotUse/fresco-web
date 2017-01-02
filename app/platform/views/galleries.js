@@ -8,6 +8,7 @@ import TagFilter from '../components/topbar/tag-filter';
 import LocationDropdown from '../components/topbar/location-dropdown';
 import { geoParams } from 'app/lib/location';
 import isEqual from 'lodash/isEqual';
+import get from 'lodash/get';
 import api from 'app/lib/api';
 
 /**
@@ -43,7 +44,7 @@ class Galleries extends React.Component {
         const grid = e.target;
         const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
 
-        if (!this.state.loading && bottomReached){
+        if (!this.state.loading && bottomReached) {
             const lastGallery = this.state.galleries[this.state.galleries.length - 1];
             if (!lastGallery) return;
             this.setState({ loading: true });
@@ -77,14 +78,17 @@ class Galleries extends React.Component {
             last,
             tags,
             ...geoParams(location),
+            galleries: true,
         };
 
         if (verifiedToggle) params.rating = 2;
         else params.rating = [0, 1, 2];
 
         api
-        .get('gallery/list', params)
-        .then(callback)
+        .get('search', params)
+        .then((res) => {
+            callback(get(res, 'galleries.results', []));
+        })
         .catch(() => {
             $.snackbar({ content: 'Failed to load galleries' });
         });

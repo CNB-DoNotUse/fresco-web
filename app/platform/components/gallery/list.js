@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import utils from 'utils';
 import GalleryCell from './cell';
 import SuggestionList from '../highlights/suggestion-list';
 
@@ -18,7 +17,7 @@ class List extends React.Component {
         const { galleries, withList, onScroll } = this.props;
         const half = !withList;
         // Save all the galleries
-        const galleriesJSX = (
+        const galleriesJSX = galleries && (
             <div className="row tiles">
                 {galleries.map((gallery, i) => (
                     <GalleryCell gallery={gallery} half={half} key={i} />

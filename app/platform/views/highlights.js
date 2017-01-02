@@ -78,6 +78,7 @@ class Highlights extends React.Component {
                 <GalleryList
                     ref={(r) => { this.list = r; }}
                     onScroll={this.onScroll}
+                    galleries={this.state.galleries}
                     withList
                     highlighted
                 />
