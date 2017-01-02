@@ -25,6 +25,13 @@ export default class GalleryEdit extends React.Component {
 
     state = this.getStateFromProps(this.props);
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (JSON.stringify(nextState) !== JSON.stringify(this.state)) return true;
+        if (this.props.gallery.id !== nextProps.gallery.id) return true;
+
+        return false;
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.gallery.id !== prevProps.gallery.id) {
             this.setState(this.getStateFromProps(this.props));

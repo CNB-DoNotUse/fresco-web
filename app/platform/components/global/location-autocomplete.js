@@ -34,12 +34,10 @@ class LocationAutocomplete extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         // Check if the passed input text has changed
-        if (nextProps.inputText !== null) {
-            this.refs.inputField.value = nextProps.inputText;
+        this.refs.inputField.value = nextProps.inputText;
 
-            // Reset predictions for cleanup
-            this.setState({ predictions: [], active: false });
-        }
+        // Reset predictions for cleanup
+        this.setState({ predictions: [], active: false });
     }
 
     componentWillUnmount() {
@@ -149,8 +147,8 @@ class LocationAutocomplete extends React.Component {
         const autocompleteClass = `autocomplete ${this.props.class} ${active ? 'active' :''}`;
 
         return (
-            <div 
-                className={autocompleteClass} 
+            <div
+                className={autocompleteClass}
                 ref="autocompleteWrap"
             >
                 <div>
