@@ -49,13 +49,13 @@ class Posts extends React.Component {
 
     onAddTag = (tag) => {
         const tags = this.state.tags.concat(tag);
-        this.setState({ tags, reloadStories: true });
+        this.setState({ tags, reloadPosts: true });
         setInSessionStorage('archive', { tags });
     }
 
     onRemoveTag = (tag) => {
         const tags = this.state.tags.filter(t => t !== tag);
-        this.setState({ tags, reloadStories: true });
+        this.setState({ tags, reloadPosts: true });
         setInSessionStorage('archive', { tags });
     }
 
