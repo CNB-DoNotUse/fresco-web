@@ -85,7 +85,6 @@ class Galleries extends React.Component {
             </App>
         );
     }
-
 }
 
 ReactDOM.render(
