@@ -3,6 +3,21 @@ import moment from 'moment';
 import utils from 'utils';
 import get from 'lodash/get';
 
+
+const renderUserName = (user) => {
+    if (!user) return null;
+
+    return (
+        <div className="flexy" >
+            <a href={`/user/${user.id}`}>
+                <p className="md-type-body2">
+                    {get(user, 'full_name.length') ? user.full_name : user.username }
+                </p>
+            </a>
+        </div>
+    );
+};
+
 export default class PurchasesListItem extends React.Component {
 	/**
 	 * Opens passed link
@@ -45,15 +60,8 @@ export default class PurchasesListItem extends React.Component {
                     <div className={post.owner ? '' : 'flexy'}>
                         <p className="md-type-body1">{price}</p>
                     </div>
-                    {post.owner && (
-                        <div className="flexy" >
-                            <a href={`/user/${post.owner.id}`}>
-                                <p className="md-type-body2">
-                                    {post.owner.full_name || post.owner.username}
-                                </p>
-                            </a>
-                        </div>
-                    )}
+
+                    {renderUserName(post.owner)}
 
                     {assignment && (
                         <div onClick={() => this.openLink('/assignment/' + assignment.id)}>
