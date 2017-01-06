@@ -4,6 +4,7 @@ import api from 'app/lib/api';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import { geoParams } from 'app/lib/location';
 import App from 'app/platform/views/app';
+import get from 'lodash/get';
 import PostList from '../post/list';
 import TopBar from '../topbar';
 import TagFilter from '../topbar/tag-filter';
@@ -79,7 +80,9 @@ class Posts extends React.Component {
         api
         .get('search', params)
         .then((res) => {
-            this.setState({ reloadPosts: false }, () => callback(res));
+            this.setState({ reloadPosts: false }, () => {
+                callback(get(res, 'posts.results', []));
+            });
         })
         .catch(() => {
             $.snackbar({ content: `Failed to load ${type}s` });
