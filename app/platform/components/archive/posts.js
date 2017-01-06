@@ -68,7 +68,8 @@ class Posts extends React.Component {
             limit: utils.postCount,
             rating: [0, 1, 2],
             ...geoParams(location),
-            type,
+            posts: true,
+            post_type: type,
             tags,
             sortBy,
         };
@@ -76,7 +77,7 @@ class Posts extends React.Component {
         if (verifiedToggle) params.rating = 2;
 
         api
-        .get('post/list', params)
+        .get('search', params)
         .then((res) => {
             this.setState({ reloadPosts: false }, () => callback(res));
         })
