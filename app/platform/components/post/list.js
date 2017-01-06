@@ -43,6 +43,8 @@ class PostList extends React.Component {
         // If we receive new posts in props
         if (nextProps.posts) this.onChangePostsProp(nextProps.posts, nextProps.updatePosts);
 
+        if (nextProps.reloadPosts) this.loadInitialPosts();
+
         // Checks if the verified prop is changed `or` Checks if the sortBy prop is changed
         const verifiedChanged = nextProps.onlyVerified !== this.props.onlyVerified;
         const sortByChanged = nextProps.sortBy !== this.props.sortBy;
@@ -57,16 +59,12 @@ class PostList extends React.Component {
      * @param {Boolean} scrollable Prop which determines whether component is scrollable
      */
     onChangeVerifiedSortProps = (scrollable) => {
-        this.grid.scrollTop = 0;
-
         if (scrollable) {
-            // Clear state for immediate feedback
-            this.setState({ posts: [] });
-
-            // Load posts from API
             this.loadInitialPosts();
         } else {
-            this.setState({ posts: this.sortPosts() });
+            this.setState({ posts: this.sortPosts() }, () => {
+                this.grid.scrollTop = 0;
+            });
         }
     }
 
@@ -214,7 +212,11 @@ class PostList extends React.Component {
      * Initial call to populate posts
      */
     loadInitialPosts() {
-        this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
+        this.setState({ posts: [] }, () => {
+            this.props.loadPosts(null, (posts) => {
+                this.setState({ posts }, () => { this.grid.scrollTop = 0; });
+            });
+        });
     }
 
     renderPosts() {
@@ -332,6 +334,7 @@ PostList.propTypes = {
     onMouseLeaveList: PropTypes.func,
     loadPosts: PropTypes.func,
     scrollTo: PropTypes.string,
+    reloadPosts: PropTypes.bool,
 };
 
 PostList.defaultProps = {
@@ -343,6 +346,7 @@ PostList.defaultProps = {
     loadPosts() {},
     permissions: [],
     paginateBy: 'id',
+    reloadPosts: false,
 };
 
 export default PostList;

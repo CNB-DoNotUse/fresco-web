@@ -232,19 +232,16 @@ class TopBar extends React.Component {
 
                 <div className="spacer" />
 
-                {title ?
-                    <h1 className="md-type-title">{title}</h1>
-                : ''}
+                {title && <h1 className="md-type-title">{title}</h1>}
 
-                {locationInput ?
+                {locationInput && (
                     <LocationAutocomplete
-                        class="nav"
+                        className="nav"
                         inputText={mapPlace ? mapPlace.description || mapPlace.formatted_address : ''}
                         bounds={bounds}
                         updateAutocompleteData={(a) => this.onUpdateAutocomplete(a)}
                     />
-                    : ''
-                }
+                )}
                 {this.renderTabs()}
                 {this.renderTopBarItems()}
                 {children}
