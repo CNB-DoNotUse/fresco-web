@@ -6,17 +6,17 @@ import utils from 'utils';
  */
 const UserName = ({ id, username = "", full_name ="" }) => (
     <div className="meta-user-name">
-        {!!full_name.length &&
+        {!!full_name &&
             <a href={`/user/${id}`}>
                 <span className="meta-user-name__primary">{`${full_name}`}</span>
             </a>
         }
 
-        {!!(username.length && full_name.length) &&
+        {!!(username && full_name) &&
             <a href={`/user/${id}`} className="meta-user-name__secondary">{`@${username}`}</a>
         }
 
-        {!!(!full_name.length && username.length) &&
+        {!!(!full_name && username) &&
             <a href={`/user/${id}`} className="meta-user-name__primary">{`@${username}`}</a>
         }
     </div>
