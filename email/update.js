@@ -13,7 +13,7 @@ const updateTemplate = (name, data) => {
         name,
         subject: data.subject,
         code: data.html,
-        labels: dev ? ['dev'] : [],
+        labels: dev ? ['dev'] : ['prod'],
     });
 };
 
@@ -21,6 +21,7 @@ const createTemplate = (name, data) => {
     mandrillClient.templates.add({
         name,
         subject: data.subject,
+        publish: false,
         code: data.html,
         from_name: 'Fresco News',
         from_email: 'donotreply@fresconews.com',
@@ -32,15 +33,16 @@ fs.readdir(templatesDir, (_, dirs) => {
     dirs.filter(d => !d.includes('.')).forEach((dir) => {
         const templateDir = path.join(__dirname, 'templates', dir);
         new EmailTemplate(templateDir).render({}, (err, result) => {
-            const name = startCase(templateDir);
-            if (err) console.error(err);
-            if (result) console.log(result.html);
+            let name = templateDir.split('/').pop();
+            name = dev ? `Dev ${startCase(name)}` : startCase(name);
 
-            // mandrillClient.info({ name }, () => {
-            //     updateTemplate(result);
-            // }, (e) => {
-            //     if (e.name === 'Unknown_Template') createTemplate(result);
-            // });
+            if (err) console.error('err: ', err);
+
+            mandrillClient.templates.info({ name }, () => {
+                updateTemplate(name, result);
+            }, (e) => {
+                if (e.name === 'Unknown_Template') createTemplate(name, result);
+            });
         });
     });
 });
