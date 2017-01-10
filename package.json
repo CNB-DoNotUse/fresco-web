@@ -9,7 +9,8 @@
     "test:watch": "npm run test -- --reporter min --watch",
     "build": "webpack --progress --colors --display-error-details --config webpack/webpack.config.js",
     "buildProd": "NODE_ENV=production webpack --progress --colors --display-error-details --config webpack/webpack.production.config.js",
-    "updateEmailTemplates": "node ./email/update.js"
+    "updateEmailTemplates": "node ./email/update.js",
+    "updateEmailTemplatesDev": "NODE_ENV=development node ./email/update.js"
   },
   "dependencies": {
     "async": "~2.0.0-rc.3",
