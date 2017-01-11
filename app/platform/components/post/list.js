@@ -17,9 +17,10 @@ class PostList extends React.Component {
     constructor(props) {
         super(props);
 
+        this.loading = false;
+
         this.state = {
             posts: props.posts || [],
-            loading: false,
             scrollable: props.scrollable,
             selectedPosts: getFromSessionStorage('post/list', 'selectedPosts', []),
             galleryCreateToggled: false,
@@ -123,24 +124,22 @@ class PostList extends React.Component {
         const endOfScroll = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
 
         // Check that nothing is loading and that we're at the end of the scroll
-        if (!this.state.loading && endOfScroll) {
+        if (!this.loading && endOfScroll) {
             // Set that we're loading
             const lastPost = last(this.state.posts);
             if (!lastPost) return;
-            this.setState({ loading: true });
+            this.loading = true;
 
             // Run load on parent call
             this.props.loadPosts(lastPost[this.props.paginateBy], (posts) => {
                 if (!posts || posts.length === 0) {
-                    this.setState({ loading: false });
+                    this.loading = false;
                     return;
                 }
 
                 // Set galleries from successful response, and unset loading
-                this.setState({
-                    posts: this.state.posts.concat(posts),
-                    loading: false,
-                });
+                this.setState({ posts: this.state.posts.concat(posts) });
+                this.loading = false;
             });
         }
     }

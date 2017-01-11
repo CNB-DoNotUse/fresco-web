@@ -27,8 +27,9 @@ class Posts extends React.Component {
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
         location: getFromSessionStorage('archive', 'location', {}),
         tags: getFromSessionStorage('archive', 'tags', []),
-        reloadPosts: false,
     };
+
+    reloadPosts = false;
 
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
@@ -44,19 +45,22 @@ class Posts extends React.Component {
      * Called on Location dropdown state changes
      */
     onChangeLocation = (location) => {
-        this.setState({ location, reloadPosts: true });
+        this.reloadPosts = true;
+        this.setState({ location });
         setInSessionStorage('archive', { location });
     }
 
     onAddTag = (tag) => {
         const tags = this.state.tags.concat(tag);
-        this.setState({ tags, reloadPosts: true });
+        this.reloadPosts = true;
+        this.setState({ tags });
         setInSessionStorage('archive', { tags });
     }
 
     onRemoveTag = (tag) => {
         const tags = this.state.tags.filter(t => t !== tag);
-        this.setState({ tags, reloadPosts: true });
+        this.reloadPosts = true;
+        this.setState({ tags });
         setInSessionStorage('archive', { tags });
     }
 
@@ -80,9 +84,8 @@ class Posts extends React.Component {
         api
         .get('search', params)
         .then((res) => {
-            this.setState({ reloadPosts: false }, () => {
-                callback(get(res, 'posts.results', []));
-            });
+            this.reloadPosts = true;
+            callback(get(res, 'posts.results', []));
         })
         .catch(() => {
             $.snackbar({ content: `Failed to load ${type}s` });
@@ -92,7 +95,7 @@ class Posts extends React.Component {
 
     render() {
         const { user, title, page } = this.props;
-        const { sortBy, verifiedToggle, location, reloadPosts, tags } = this.state;
+        const { sortBy, verifiedToggle, location, tags } = this.state;
 
         return (
             <App user={user} page={page}>
@@ -127,7 +130,7 @@ class Posts extends React.Component {
                     sortBy={sortBy}
                     onlyVerified={verifiedToggle}
                     loadPosts={this.loadPosts}
-                    reloadPosts={reloadPosts}
+                    reloadPosts={this.reloadPosts}
                     scrollable
                 />
             </App>
