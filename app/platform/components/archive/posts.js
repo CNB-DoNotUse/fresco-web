@@ -84,7 +84,7 @@ class Posts extends React.Component {
         api
         .get('search', params)
         .then((res) => {
-            this.reloadPosts = true;
+            this.reloadPosts = false;
             callback(get(res, 'posts.results', []));
         })
         .catch(() => {

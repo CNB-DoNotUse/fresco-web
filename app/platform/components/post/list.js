@@ -117,7 +117,7 @@ class PostList extends React.Component {
      */
     onScroll = (e) => {
         const grid = e.target;
-        if (!this.area || !this.area.contains(e.target)) {
+        if (this.loading || !this.area || !this.area.contains(e.target)) {
             return;
         }
 
