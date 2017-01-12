@@ -54,6 +54,8 @@ class Map extends React.Component {
         loaded: false,
     }
 
+    hasRerendered = false;
+
     componentDidMount() {
         this.loadMap();
     }
@@ -63,7 +65,8 @@ class Map extends React.Component {
             this.setState({ currentLocation: nextProps.location });
         }
 
-        if (this.map && this.props.rerender) {
+        if (!this.hasRerendered && this.map && this.props.rerender) {
+            this.hasRerendered = true;
             google.maps.event.trigger(this.map, 'resize');
             this.recenterMap();
         }
