@@ -7,6 +7,7 @@ import { createHandlerName } from 'app/lib/helpers';
 import isEqual from 'lodash/isEqual';
 
 const evtNames = ['ready', 'click', 'dragend', 'tilesloaded', 'bounds_changed'];
+const defaultLocation = { lng: -74, lat: 40.7 };
 
 class Map extends React.Component {
     static propTypes = {
@@ -17,7 +18,7 @@ class Map extends React.Component {
         location: PropTypes.shape({
             lat: PropTypes.number,
             lng: PropTypes.number,
-        }).isRequired,
+        }),
         zoom: PropTypes.number.isRequired,
         children: PropTypes.node,
         scrollwheel: PropTypes.bool.isRequired,
@@ -33,7 +34,7 @@ class Map extends React.Component {
     }
 
     static defaultProps = {
-        initialLocation: { lng: -74, lat: 40.7 },
+        initialLocation: defaultLocation,
         zoom: 14,
         scrollwheel: false,
         mapTypeControl: false,
@@ -45,12 +46,11 @@ class Map extends React.Component {
 
     constructor(props) {
         super(props);
-
         evtNames.forEach((e) => { Map.propTypes[createHandlerName(e)] = PropTypes.func; });
     }
 
     state = {
-        currentLocation: this.props.location || this.props.initialLocation,
+        currentLocation: [defaultLocation, this.props.location, this.props.initialLocation].find(loc => loc.lat && loc.lng),
         loaded: false,
     }
 
@@ -61,7 +61,7 @@ class Map extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!isEqual(this.props.location, nextProps.location)) {
+        if (!isEqual(this.props.location, nextProps.location) && nextProps.location.lng && nextProps.location.lat) {
             this.setState({ currentLocation: nextProps.location });
         }
 
