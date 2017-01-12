@@ -4,12 +4,18 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createHandlerName } from 'app/lib/helpers';
+import isEqual from 'lodash/isEqual';
 
 const evtNames = ['ready', 'click', 'dragend', 'tilesloaded', 'bounds_changed'];
+const defaultLocation = { lng: -74, lat: 40.7 };
 
 class Map extends React.Component {
     static propTypes = {
         initialLocation: PropTypes.shape({
+            lat: PropTypes.number,
+            lng: PropTypes.number,
+        }).isRequired,
+        location: PropTypes.shape({
             lat: PropTypes.number,
             lng: PropTypes.number,
         }).isRequired,
@@ -28,7 +34,7 @@ class Map extends React.Component {
     }
 
     static defaultProps = {
-        initialLocation: { lng: -74, lat: 40.7 },
+        initialLocation: defaultLocation,
         zoom: 14,
         scrollwheel: false,
         mapTypeControl: false,
@@ -63,7 +69,11 @@ class Map extends React.Component {
         }
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps) {
+        if (!isEqual(this.props.location, nextProps.location)) {
+            this.setState({ currentLocation: nextProps.location });
+        }
+
         if (this.map && this.props.rerender) {
             google.maps.event.trigger(this.map, 'resize');
         }

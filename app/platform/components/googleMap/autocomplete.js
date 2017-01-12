@@ -6,6 +6,34 @@ import GoogleMap from '../googleMap';
 class AutocompleteMap extends React.Component {
     state = { bounds: null };
 
+    static propTypes = {
+        radius: PropTypes.number,
+        unit: PropTypes.string,
+        hasRadius: PropTypes.bool,
+        disabled: PropTypes.bool,
+        onRadiusUpdate: PropTypes.func,
+        address: PropTypes.string,
+        onPlaceChange: PropTypes.func,
+        location: PropTypes.object,
+        rerender: PropTypes.bool,
+        draggable: PropTypes.bool,
+        onMapDataChange: PropTypes.func,
+        onClearLocation: PropTypes.func,
+    };
+
+    static defaultProps = {
+        address: '',
+        unit: 'Feet',
+        location: null,
+        radius: 250,
+        hasRadius: false,
+        rerender: false,
+        draggable: false,
+        onPlaceChange() {},
+        onRadiusUpdate() {},
+        onClearLocation() {},
+    };
+
     componentDidUpdate() {
         if (this.props.radius && this.props.hasRadius) {
             this.refs.radius.value = Math.round(this.props.radius);
@@ -53,6 +81,31 @@ class AutocompleteMap extends React.Component {
 
         return (
             <div className="map-group autocomplete-map form-group-default">
+                <LocationAutocomplete
+                    inputText={address}
+                    disabled={disabled}
+                    bounds={this.state.bounds}
+                    className="form"
+                    inputClass="form-control floating-label"
+                    ref="autocomplete"
+                    transition={false}
+                    updateAutocompleteData={onPlaceChange}
+                    onClearInput={onClearLocation}
+                />
+
+                {hasRadius && (
+                    <input
+                        type="text"
+                        className="form-control floating-label numbers"
+                        style={{ marginBottom: '10px' }}
+                        data-hint={unit}
+                        placeholder="Radius"
+                        defaultValue={Math.round(radius)}
+                        onChange={() => this.onChangeRadius()}
+                        ref="radius"
+                    />
+                )}
+
                 <div className="map-container">
                     <GoogleMap
                         address={address}
