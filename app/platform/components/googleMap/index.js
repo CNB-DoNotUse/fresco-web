@@ -65,6 +65,7 @@ class Map extends React.Component {
 
         if (this.map && this.props.rerender) {
             google.maps.event.trigger(this.map, 'resize');
+            this.recenterMap();
         }
     }
 

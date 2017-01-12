@@ -11,16 +11,23 @@ class RadiusMap extends React.Component {
             lat: PropTypes.number,
             lng: PropTypes.number,
         }).isRequired,
+        fitBoundsOnMount: PropTypes.bool,
     }
 
     static defaultProps = {
         radius: null,
+        fitBoundsOnMount: false,
     }
 
-    componentDidUpdate(prevProps) {
-        const { radius } = this.props;
+    hasFitBounds = false;
 
-        if (prevProps.radius !== radius && radius) {
+    componentDidUpdate(prevProps) {
+        const { radius, fitBoundsOnMount } = this.props;
+
+        const fitBounds = fitBoundsOnMount && !this.hasFitBounds && radius;
+        const radiusChanged = prevProps.radius !== radius;
+        if (fitBounds || radiusChanged) {
+            this.hasFitBounds = true;
             this.googleMap.map.fitBounds(this.googleCircle.circle.getBounds());
         }
     }
