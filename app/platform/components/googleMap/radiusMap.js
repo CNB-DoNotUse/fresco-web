@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 import GoogleMap from './index';
 import Circle from './circle';
+import CenterMarker from './centerMarker';
 
 class RadiusMap extends React.Component {
     static propTypes = {
@@ -12,6 +13,7 @@ class RadiusMap extends React.Component {
             lng: PropTypes.number,
         }).isRequired,
         fitBoundsOnMount: PropTypes.bool,
+        onDataChange: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -58,6 +60,11 @@ class RadiusMap extends React.Component {
                 {...this.props}
             >
                 {this.renderRadiusCircle()}
+                <CenterMarker
+                    mapCenter={this.props.location}
+                    onDragend={this.props.onDataChange}
+                    draggable
+                />
             </GoogleMap>
         );
     }

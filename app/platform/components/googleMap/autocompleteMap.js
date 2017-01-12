@@ -51,10 +51,10 @@ class AutocompleteMap extends React.Component {
         }
     }
 
-    onMapDataChange = ({ location, source }) => {
+    onMapDataChange = (location) => {
         getAddressFromLatLng(location)
         .then((address) => {
-            this.props.onMapDataChange({ location, source, address });
+            this.props.onMapDataChange({ location, address });
         });
     }
 
