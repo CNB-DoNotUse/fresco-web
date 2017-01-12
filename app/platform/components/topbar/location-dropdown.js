@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import AutocompleteMap from '../global/autocomplete-map';
+import AutocompleteMap from '../googleMap/autocomplete';
 import Dropdown from '../global/dropdown';
 
 class LocationDropdown extends React.Component {

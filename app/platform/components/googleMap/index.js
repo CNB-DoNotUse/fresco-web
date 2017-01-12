@@ -24,6 +24,7 @@ class Map extends React.Component {
             lat: PropTypes.number,
             lng: PropTypes.number,
         }),
+        rerender: PropTypes.bool.isRequired,
     }
 
     static defaultProps = {
@@ -34,6 +35,7 @@ class Map extends React.Component {
         streetViewControl: false,
         draggable: false,
         zoomControl: true,
+        rerender: false,
     }
 
     constructor(props) {
@@ -58,6 +60,12 @@ class Map extends React.Component {
 
         if (prevProps.panTo !== this.props.panTo) {
             this.panTo();
+        }
+    }
+
+    componentWillReceiveProps() {
+        if (this.map && this.props.rerender) {
+            google.maps.event.trigger(this.map, 'resize');
         }
     }
 
@@ -149,6 +157,7 @@ class Map extends React.Component {
 
     renderChildren() {
         let { children } = this.props;
+        if (!children) return null;
         children = children.filter(c => !!c);
 
         if (!this.map || !children) return null;
