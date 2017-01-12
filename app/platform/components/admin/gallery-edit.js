@@ -418,16 +418,14 @@ export default class GalleryEdit extends React.Component {
                     >
                         Verify
                     </button>
-                    {galleryType === 'submissions' && (
-                        <button
-                            type="button"
-                            className="btn btn-flat pull-right"
-                            onClick={() => this.setState({ rating: 1 }, () => this.onSkip())}
-                            disabled={loading}
-                        >
-                            Skip
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        className="btn btn-flat pull-right"
+                        onClick={() => this.setState({ rating: 1 }, () => this.onSkip())}
+                        disabled={loading}
+                    >
+                        Skip
+                    </button>
                     <button
                         type="button"
                         className="btn btn-flat pull-right"
