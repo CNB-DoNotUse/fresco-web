@@ -27,6 +27,12 @@ class Circle extends React.Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.radius !== nextProps.radius) {
+            this.circle.setRadius(nextProps.radius || 0);
+        }
+    }
+
     renderCircle() {
         const {
             map,

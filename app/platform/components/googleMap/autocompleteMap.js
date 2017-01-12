@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { getAddressFromLatLng } from 'app/lib/location';
 import LocationAutocomplete from '../global/location-autocomplete.js';
-import GoogleMap from '../googleMap';
+import RadiusMap from '../googleMap/radiusMap';
 
 class AutocompleteMap extends React.Component {
     state = { bounds: null };
@@ -107,7 +107,7 @@ class AutocompleteMap extends React.Component {
                 )}
 
                 <div className="map-container">
-                    <GoogleMap
+                    <RadiusMap
                         address={address}
                         location={location}
                         radius={radius}

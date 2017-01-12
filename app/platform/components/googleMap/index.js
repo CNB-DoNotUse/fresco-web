@@ -7,7 +7,6 @@ import { createHandlerName } from 'app/lib/helpers';
 import isEqual from 'lodash/isEqual';
 
 const evtNames = ['ready', 'click', 'dragend', 'tilesloaded', 'bounds_changed'];
-const defaultLocation = { lng: -74, lat: 40.7 };
 
 class Map extends React.Component {
     static propTypes = {
@@ -34,7 +33,7 @@ class Map extends React.Component {
     }
 
     static defaultProps = {
-        initialLocation: defaultLocation,
+        initialLocation: { lng: -74, lat: 40.7 },
         zoom: 14,
         scrollwheel: false,
         mapTypeControl: false,
@@ -51,22 +50,12 @@ class Map extends React.Component {
     }
 
     state = {
-        currentLocation: this.props.initialLocation,
+        currentLocation: this.props.location || this.props.initialLocation,
         loaded: false,
     }
 
     componentDidMount() {
         this.loadMap();
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.currentLocation !== this.state.currentLocation) {
-            this.recenterMap();
-        }
-
-        if (prevProps.panTo !== this.props.panTo) {
-            this.panTo();
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -76,6 +65,19 @@ class Map extends React.Component {
 
         if (this.map && this.props.rerender) {
             google.maps.event.trigger(this.map, 'resize');
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const { panTo } = this.props;
+        const { currentLocation } = this.state;
+
+        if (prevState.currentLocation !== currentLocation) {
+            this.recenterMap();
+        }
+
+        if (prevProps.panTo !== panTo) {
+            this.panTo();
         }
     }
 
@@ -168,7 +170,7 @@ class Map extends React.Component {
     renderChildren() {
         let { children } = this.props;
         if (!children) return null;
-        children = children.filter(c => !!c);
+        children = Array.isArray(children) ? children.filter(c => !!c) : children;
 
         if (!this.map || !children) return null;
 

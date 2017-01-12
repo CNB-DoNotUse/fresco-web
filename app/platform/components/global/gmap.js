@@ -79,7 +79,7 @@ class GMap extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { radius, fitBoundsOnMount, rerender } = this.props;
+        const { radius, fitBoundsOnMount } = this.props;
         const fitBounds = fitBoundsOnMount && !this.hasFitBounds && radius;
         const radiusChanged = prevProps.radius !== radius;
         if (fitBounds || radiusChanged) {
