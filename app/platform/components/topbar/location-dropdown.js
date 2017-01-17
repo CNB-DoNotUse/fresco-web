@@ -2,6 +2,11 @@ import React, { PropTypes } from 'react';
 import AutocompleteMap from '../googleMap/autocompleteMap';
 import Dropdown from '../global/dropdown';
 
+/**
+ * LocationDropdown - Class for selecting location in topbar with autocompleteMap cmp
+ *
+ * @extends {React}
+ */
 class LocationDropdown extends React.Component {
     static propTypes = {
         onChangeLocation: PropTypes.func.isRequired,
@@ -17,6 +22,13 @@ class LocationDropdown extends React.Component {
         toggled: false,
     }
 
+    /**
+     * onChange
+     * Called whenever the cmp receives new location data via its autocompleteMap callbacks
+     * Location data is then propagated to parent cmp via onChangeLocation cb
+     *
+     * @param {Object} data new location data
+     */
     onChange(data) {
         const { onChangeLocation, location } = this.props;
         onChangeLocation(Object.assign({}, { radius: 250 }, location, data));
