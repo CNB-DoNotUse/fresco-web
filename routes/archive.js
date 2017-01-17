@@ -62,8 +62,8 @@ router.get('/:filter', (req, res) => {
         return res.redirect('/');
     }
 
-    const props = { user: req.session.user };
     const title = req.params.filter[0].toUpperCase() + req.params.filter.slice(1);
+    const props = { user: req.session.user, title };
 
     return res.render('app', {
         title,
