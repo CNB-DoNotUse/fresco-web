@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 import last from 'lodash/last';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
+import { scrolledToBottom } from 'app/lib/helpers';
 import PostCell from './cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
@@ -121,10 +122,8 @@ class PostList extends React.Component {
             return;
         }
 
-        const endOfScroll = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
-
         // Check that nothing is loading and that we're at the end of the scroll
-        if (!this.loading && endOfScroll) {
+        if (!this.loading && scrolledToBottom(grid)) {
             // Set that we're loading
             const lastPost = last(this.state.posts);
             if (!lastPost) return;

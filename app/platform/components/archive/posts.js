@@ -18,7 +18,7 @@ class Posts extends React.Component {
     static propTypes = {
         user: PropTypes.object,
         type: PropTypes.oneOf(['photo', 'video', null]),
-        page: PropTypes.oneOf(['photos', 'video', 'archive']),
+        page: PropTypes.oneOf(['photos', 'videos', 'archive']),
         title: PropTypes.oneOf(['Archive', 'Photos', 'Videos']),
     }
 

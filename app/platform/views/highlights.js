@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDom from 'react-dom';
+import { scrolledToBottom } from 'app/lib/helpers';
 import App from './app';
 import GalleryList from '../components/gallery/list';
 import TopBar from '../components/topbar';
@@ -28,7 +29,7 @@ class Highlights extends React.Component {
     // Scroll listener for main window
     onScroll = (e) => {
         const grid = e.target;
-        const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
+        const bottomReached = scrolledToBottom(grid);
 
         if (!this.state.loading && bottomReached) {
             const lastGallery = this.state.galleries[this.state.galleries.length - 1];

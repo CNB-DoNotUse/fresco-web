@@ -7,3 +7,15 @@ import camelCase from 'lodash/camelCase';
  * @returns {String} The name of the handler for the given event
  */
 export const createHandlerName = evtName => camelCase(`on${evtName.toUpperCase()}`);
+
+/**
+ * scrolledToBottom
+ *
+ * @param {DOM element} el
+ * @param {Number} Offset - the pixel offset to calculate bottom scrolled
+ * @returns {Boolean} Whether or not the scroll has reached the bottom of the passed DOM element
+ */
+export const scrolledToBottom = (el, offset = 400) => (
+    el && (el.scrollTop > ((el.scrollHeight - el.offsetHeight) - offset))
+);
+

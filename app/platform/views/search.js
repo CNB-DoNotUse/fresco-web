@@ -7,6 +7,7 @@ import pick from 'lodash/pick';
 import pull from 'lodash/pull';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import { geoParams } from 'app/lib/location';
+import { scrolledToBottom } from 'app/lib/helpers';
 import App from './app';
 import TopBar from './../components/topbar';
 import LocationDropdown from '../components/topbar/location-dropdown';
@@ -352,7 +353,7 @@ class Search extends Component {
      */
     scroll(e) {
         const grid = e.target;
-        const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
+        const bottomReached = scrolledToBottom(grid);
         const sidebarScrolled = grid.className.indexOf('search-sidebar') > -1;
 
         //Check that nothing is loading and that we're at the end of the scroll,

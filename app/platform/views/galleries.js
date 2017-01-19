@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
+import { scrolledToBottom } from 'app/lib/helpers';
 import App from './app';
 import List from '../components/gallery/list';
 import TopBar from '../components/topbar';
@@ -42,9 +43,8 @@ class Galleries extends React.Component {
     // Scroll listener for main window
     onScroll = (e) => {
         const grid = e.target;
-        const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
 
-        if (!this.state.loading && bottomReached) {
+        if (!this.state.loading && scrolledToBottom(grid)) {
             const lastGallery = this.state.galleries[this.state.galleries.length - 1];
             if (!lastGallery) return;
             this.setState({ loading: true });
