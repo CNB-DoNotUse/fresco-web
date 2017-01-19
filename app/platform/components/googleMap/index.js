@@ -50,7 +50,7 @@ class Map extends React.Component {
     }
 
     state = {
-        currentLocation: [defaultLocation, this.props.location, this.props.initialLocation].find(loc => loc.lat && loc.lng),
+        currentLocation: [this.props.location, this.props.initialLocation, defaultLocation].find(loc => loc.lat && loc.lng),
         loaded: false,
     }
 
