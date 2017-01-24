@@ -3,6 +3,10 @@
     "COOKIE_SUFFIX": "Dev",
 
     "API_URL": "https://api.dev.fresconews.com",
+
+    "API_CLIENT_ID" : "G2Kcv7lZmGT1h2GpiUuaxmm2Ie4Z0ljLux8cu9aMjf0u8tx2OsA7jHBgE7cE",
+    "API_CLIENT_SECRET" : "w3LcO0UV8kjzXV3FiBIeuAPaihMZFMaPOXXB4IZZVtXMrQSYZ6zqjZRHgtQ23X4zIn14yyCXGrnK7kZs4qPhYpkqSgBlTYq4ZEyn9vXDVPjh5RNHeickuPKtocryo28rOoaZa6mQHo3nR5kanS96XEO6GRUZDmAzlKw5rTY39tgtM3DxQ3y1t4WzSKJkN3",
+
     "API_TOKEN" : "MTMzNzp0aGlzaXNhc2VjcmV0",
     "WEB_ROOT": "http://dev.fresconews.com",
     "API_VERSION": "v2",

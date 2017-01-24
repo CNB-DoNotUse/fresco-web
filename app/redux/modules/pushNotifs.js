@@ -323,42 +323,42 @@ const pushNotifs = (state = fromJS({
     error: null,
     alert: null }), action = {}) => {
     switch (action.type) {
-    case SEND:
-        return state.set('requestConfirmSend', true);
-    case CONFIRM_SEND:
-        return state.set('loading', true);
-    case SEND_SUCCESS:
-        return state
-            .set('loading', false)
-            .set('requestConfirmSend', false)
-            .set('alert', 'Notification sent!')
-            .setIn(['templates', action.template], Map())
-            .set('infoDialog', fromJS({
-                visible: true,
-                header: action.header,
-                body: action.body,
-            }));
-    case CLOSE_INFO_DIALOG:
-        return state.set('infoDialog', fromJS({ visible: false }));
-    case SEND_FAIL:
-        return state
-            .set('loading', false)
-            .set('requestConfirmSend', false)
-            .set('alert', action.data);
-    case SET_ACTIVE_TAB:
-        return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
-    case DISMISS_ALERT:
-        return state.set('alert', null);
-    case CANCEL_SEND:
-        return state
-            .set('requestConfirmSend', false)
-            .set('loading', false);
-    case UPDATE_TEMPLATE_SUCCESS:
-        return state.mergeIn(['templates', action.template], action.data);
-    case UPDATE_TEMPLATE_ERROR:
-        return state.set('alert', action.msg);
-    default:
-        return state;
+        case SEND:
+            return state.set('requestConfirmSend', true);
+        case CONFIRM_SEND:
+            return state.set('loading', true);
+        case SEND_SUCCESS:
+            return state
+                .set('loading', false)
+                .set('requestConfirmSend', false)
+                .set('alert', 'Notification sent!')
+                .setIn(['templates', action.template], Map())
+                .set('infoDialog', fromJS({
+                    visible: true,
+                    header: action.header,
+                    body: action.body,
+                }));
+        case CLOSE_INFO_DIALOG:
+            return state.set('infoDialog', fromJS({ visible: false }));
+        case SEND_FAIL:
+            return state
+                .set('loading', false)
+                .set('requestConfirmSend', false)
+                .set('alert', action.data);
+        case SET_ACTIVE_TAB:
+            return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
+        case DISMISS_ALERT:
+            return state.set('alert', null);
+        case CANCEL_SEND:
+            return state
+                .set('requestConfirmSend', false)
+                .set('loading', false);
+        case UPDATE_TEMPLATE_SUCCESS:
+            return state.mergeIn(['templates', action.template], action.data);
+        case UPDATE_TEMPLATE_ERROR:
+            return state.set('alert', action.msg);
+        default:
+            return state;
     }
 };
 
