@@ -438,5 +438,5 @@ Search.propTypes = {
 
 ReactDOM.render(
     <Search {...window.__initialProps__} />,
-    document.getElementById('app'),
+    document.getElementById('app')
 );
