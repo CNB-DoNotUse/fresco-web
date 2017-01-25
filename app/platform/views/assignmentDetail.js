@@ -17,9 +17,10 @@ import AcceptedUser from '../components/assignment/accepted-user';
 import App from './app';
 
 /**
- * Story Detail Parent Object, made of a side column and PostList
+ * Assignment Detail Parent Object, made of a side column and PostList
  */
 class AssignmentDetail extends React.Component {
+
     static propTypes = {
         user: PropTypes.object,
         assignment: PropTypes.object,

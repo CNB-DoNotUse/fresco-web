@@ -4,7 +4,7 @@ import Dropdown from './dropdown';
 import get from 'lodash/get';
 
 /**
- * Location Dropdown for saved locations
+ * Location Dropdown for `saved locations`
  */
 class LocationDropdown extends React.Component {
     constructor(props) {

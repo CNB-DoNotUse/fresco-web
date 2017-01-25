@@ -9,6 +9,9 @@ const fetchStatusHandler = (response) => {
     throw new Error(response.statusText);
 };
 
+/**
+ * Front-end API proxy to be used around the codebase instead of direct network requests
+ */
 export default {
     post(url, body) {
         const headers = new Headers();

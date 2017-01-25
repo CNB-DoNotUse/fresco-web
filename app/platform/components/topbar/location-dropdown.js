@@ -3,11 +3,12 @@ import AutocompleteMap from '../googleMap/autocompleteMap';
 import Dropdown from '../global/dropdown';
 
 /**
- * LocationDropdown - Class for selecting location in topbar with autocompleteMap cmp
+ * LocationDropdown - Class for selecting location in topbar with autocompleteMap cmp.
  *
  * @extends {React}
  */
 class LocationDropdown extends React.Component {
+
     static propTypes = {
         onChangeLocation: PropTypes.func.isRequired,
         location: PropTypes.shape({
@@ -56,10 +57,11 @@ class LocationDropdown extends React.Component {
 
     render() {
         const { location: { address, lat, lng, radius } } = this.props;
+
         return (
             <Dropdown
                 inList
-                title="Location"
+                title={lat && lng && address ? `Filtering ${address}` : "Location"}
                 onToggled={this.onToggled}
                 dropdownClass="location-search-dropdown"
             >
