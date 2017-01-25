@@ -53,7 +53,6 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 	.toggle{
 		padding:13px 16px 0;
 		height:48px;
-		width:20px;
 		@include rgba(0, 0, 0, 0.87);
 
 		span{
@@ -63,7 +62,7 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			max-width: 80%;
+		    max-width: 260px;
 		    float: left;
 		    position: relative;
 		    top: 2px;
