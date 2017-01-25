@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 /**
  * Generic Dropdown Element
- * @param  {function} onSelected A function called wtih the user's selection
+ * @param {function} onSelected A function called wtih the user's selection
  */
 class Dropdown extends React.Component {
     constructor(props) {
@@ -90,25 +90,22 @@ class Dropdown extends React.Component {
             // If options are passed, use those
             list = (
                 <ul className="list">
-                    {
-                        options.map((option, i) => (
-                            <li
-                                className={option === this.state.selected ? 'active' : ''}
-                                key={i}
-                                onClick={(e) => this.optionClicked(e)}
-                            >
-                                <span>{option}</span>
-                            </li>
-                            ))
-                    }
+                    {options.map((option, i) => (
+                        <li
+                            className={option === this.state.selected ? 'active' : ''}
+                            key={i}
+                            onClick={(e) => this.optionClicked(e)}
+                        >
+                            <span>{option}</span>
+                        </li>
+                    ))}
                 </ul>
             );
         }
 
         return (
             <div
-                className={`nav-dropdown ${inList ? 'pull-right' : ''}
-                ${dropdownClass} ${active ? 'active' : ''}`}
+                className={`nav-dropdown ${inList ? 'pull-right' : ''} ${dropdownClass} ${active ? 'active' : ''}`}
             >
                 <div className="toggle" onClick={() => this.toggle()} >
                     <span>{title || this.state.selected}</span>
