@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import flow from 'lodash/flow';
+import { scrolledToBottom } from 'app/lib/helpers';
 import api from 'app/lib/api';
 import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
@@ -138,11 +139,9 @@ class OutletColumn extends React.Component {
             head.className += ' shadow';
         }
 
-        const endOfScroll = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 200);
-
         // Check that nothing is loading and that we're at the end of the scroll,
         // and that we have a parent bind to load  more posts
-        if (endOfScroll) loadMorePurchases(outlet.id);
+        if (scrolledToBottom(grid)) loadMorePurchases(outlet.id);
     }
 
     /**

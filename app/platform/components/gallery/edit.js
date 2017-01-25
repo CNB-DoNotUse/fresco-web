@@ -184,7 +184,8 @@ class Edit extends React.Component {
      */
     onMapDataChange(data) {
         if (data.source === 'markerDrag') {
-            getAddressFromLatLng(data.location, (address) => {
+            getAddressFromLatLng(data.location)
+            .then((address) => {
                 this.setState({ address, location: data.location });
             });
         }

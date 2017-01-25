@@ -4,8 +4,10 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createHandlerName } from 'app/lib/helpers';
+import isEqual from 'lodash/isEqual';
 
 const evtNames = ['ready', 'click', 'dragend', 'tilesloaded', 'bounds_changed'];
+const defaultLocation = { lng: -74, lat: 40.7 };
 
 class Map extends React.Component {
     static propTypes = {
@@ -13,6 +15,10 @@ class Map extends React.Component {
             lat: PropTypes.number,
             lng: PropTypes.number,
         }).isRequired,
+        location: PropTypes.shape({
+            lat: PropTypes.number,
+            lng: PropTypes.number,
+        }),
         zoom: PropTypes.number.isRequired,
         children: PropTypes.node,
         scrollwheel: PropTypes.bool.isRequired,
@@ -24,39 +30,57 @@ class Map extends React.Component {
             lat: PropTypes.number,
             lng: PropTypes.number,
         }),
+        rerender: PropTypes.bool.isRequired,
     }
 
     static defaultProps = {
-        initialLocation: { lng: -74, lat: 40.7 },
+        initialLocation: defaultLocation,
         zoom: 14,
         scrollwheel: false,
         mapTypeControl: false,
         streetViewControl: false,
         draggable: false,
         zoomControl: true,
+        rerender: false,
     }
 
     constructor(props) {
         super(props);
-
         evtNames.forEach((e) => { Map.propTypes[createHandlerName(e)] = PropTypes.func; });
     }
 
     state = {
-        currentLocation: this.props.initialLocation,
+        currentLocation: [this.props.location, this.props.initialLocation, defaultLocation].find(loc => loc && loc.lat && loc.lng),
         loaded: false,
     }
+
+    hasRerendered = false;
 
     componentDidMount() {
         this.loadMap();
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (!isEqual(this.props.location, nextProps.location) && nextProps.location.lng && nextProps.location.lat) {
+            this.setState({ currentLocation: nextProps.location });
+        }
+
+        if (!this.hasRerendered && this.map && this.props.rerender) {
+            this.hasRerendered = true;
+            google.maps.event.trigger(this.map, 'resize');
+            this.recenterMap();
+        }
+    }
+
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.currentLocation !== this.state.currentLocation) {
+        const { panTo } = this.props;
+        const { currentLocation } = this.state;
+
+        if (prevState.currentLocation !== currentLocation) {
             this.recenterMap();
         }
 
-        if (prevProps.panTo !== this.props.panTo) {
+        if (prevProps.panTo !== panTo) {
             this.panTo();
         }
     }
@@ -149,7 +173,8 @@ class Map extends React.Component {
 
     renderChildren() {
         let { children } = this.props;
-        children = children.filter(c => !!c);
+        if (!children) return null;
+        children = Array.isArray(children) ? children.filter(c => !!c) : children;
 
         if (!this.map || !children) return null;
 

@@ -16,15 +16,17 @@ class Marker extends React.Component {
             lat: PropTypes.number,
             lng: PropTypes.number,
         }),
-        map: React.PropTypes.object,
-        icon: React.PropTypes.object,
-        pannedIcon: React.PropTypes.object,
-        panned: React.PropTypes.bool,
-        zIndex: React.PropTypes.number.isRequired,
+        map: PropTypes.object,
+        icon: PropTypes.object,
+        pannedIcon: PropTypes.object,
+        panned: PropTypes.bool,
+        zIndex: PropTypes.number.isRequired,
+        draggable: PropTypes.bool,
     }
 
     static defaultProps = {
         zIndex: 1,
+        draggable: false,
     };
 
     componentDidMount() {
@@ -33,9 +35,12 @@ class Marker extends React.Component {
 
     componentDidUpdate(prevProps) {
         const { map, position, panned, pannedIcon, icon, zIndex } = this.props;
-        if ((map !== prevProps.map) ||
-            (position !== prevProps.position)) {
+        if ((map !== prevProps.map)) {
             this.renderMarker();
+        }
+
+        if (position !== prevProps.position) {
+            this.marker.setPosition(position);
         }
 
         if (panned !== prevProps.panned) {
@@ -78,6 +83,7 @@ class Marker extends React.Component {
             mapCenter,
             icon,
             zIndex,
+            draggable,
         } = this.props;
 
         const pos = position || mapCenter;
@@ -87,6 +93,7 @@ class Marker extends React.Component {
             position: latLng,
             map,
             zIndex,
+            draggable,
         };
 
         if (icon) config.icon = icon;

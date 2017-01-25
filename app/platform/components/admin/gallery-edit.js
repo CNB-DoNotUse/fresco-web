@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
@@ -24,6 +23,13 @@ export default class GalleryEdit extends React.Component {
     };
 
     state = this.getStateFromProps(this.props);
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (JSON.stringify(nextState) !== JSON.stringify(this.state)) return true;
+        if (this.props.gallery.id !== nextProps.gallery.id) return true;
+
+        return false;
+    }
 
     componentDidUpdate(prevProps) {
         if (this.props.gallery.id !== prevProps.gallery.id) {
@@ -73,14 +79,7 @@ export default class GalleryEdit extends React.Component {
      * Updates state map location when AutocompleteMap gives new location from drag
      */
     onMapDataChange(data) {
-        if (data.source === 'markerDrag') {
-            getAddressFromLatLng(data.location, (address) => {
-                this.setState({
-                    address,
-                    location: data.location,
-                });
-            });
-        }
+        if (data.source === 'markerDrag') this.setState(data);
     }
 
     onChangeOwner = (owner) => {
@@ -419,16 +418,14 @@ export default class GalleryEdit extends React.Component {
                     >
                         Verify
                     </button>
-                    {galleryType === 'submissions' && (
-                        <button
-                            type="button"
-                            className="btn btn-flat pull-right"
-                            onClick={() => this.setState({ rating: 1 }, () => this.onSkip())}
-                            disabled={loading}
-                        >
-                            Skip
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        className="btn btn-flat pull-right"
+                        onClick={() => this.setState({ rating: 1 }, () => this.onSkip())}
+                        disabled={loading}
+                    >
+                        Skip
+                    </button>
                     <button
                         type="button"
                         className="btn btn-flat pull-right"

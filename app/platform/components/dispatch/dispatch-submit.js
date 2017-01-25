@@ -34,6 +34,10 @@ export default class DispatchSubmit extends React.Component {
         let successfulGeo = false;
         const self = this;
 
+        if (!this.props.displaySubmissionCard) {
+            this.clearInputFields();
+        }
+
         // Dispatch map has an eventlistener to set `lastChangeSource`
         // This occurs when the pending assignment marker is moved.
         if(nextProps.lastChangeSource == 'markerDrag' && nextProps.newAssignment) {
@@ -68,6 +72,21 @@ export default class DispatchSubmit extends React.Component {
                 }
             });
         }
+    }
+
+    clearInputFields() {
+        const {
+            title,
+            caption,
+            radius,
+            expiration,
+        } = this.refs;
+
+        title.value = '';
+        caption.value = '';
+        radius.value = '';
+        expiration.value = '';
+        this.setState({ autocompleteText: '' });
     }
 
     editMapChanged(data) {
@@ -204,11 +223,7 @@ export default class DispatchSubmit extends React.Component {
                 timeout: 5000
             });
 
-            //Clear all the fields
-            title.value = '';
-            caption.value = '';
-            expiration.value = '';
-            autocomplete.value = '';
+            this.clearInputFields();
         })
         .fail((error) => {
             $.snackbar({content: 'There was an error submitting your assignment!'});
@@ -282,7 +297,7 @@ export default class DispatchSubmit extends React.Component {
                     <div className="form-group-default">
                         <LocationAutocomplete
                             inputText={this.state.autocompleteText || ''}
-                            class="form"
+                            className="form"
                             inputClass="form-control floating-label"
                             ref="autocomplete"
                             transition={false}
