@@ -11,6 +11,7 @@ import Time from './cell-time';
  * Single Post Cell, child of PostList
  */
 class PostCell extends React.Component {
+
     static propTypes = {
         permissions: PropTypes.array,
         parentCaption: PropTypes.string,
@@ -123,6 +124,7 @@ class PostCell extends React.Component {
             highlighted,
         } = this.props;
         const { galleryEditVisible, gallery, mouseEntered } = this.state;
+        
         const divSize = size === 'large' ? sizes.large : sizes.small;
 
         return (
