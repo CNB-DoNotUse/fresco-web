@@ -105,6 +105,7 @@ const output = (env) => {
     }
 };
 
+//Pretty self explanatory
 const loaders = (env) => {
     const arr = [
         // Babel
