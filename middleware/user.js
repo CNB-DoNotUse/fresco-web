@@ -27,8 +27,6 @@ module.exports = {
         user
             .login(req.body.email || req.body.username, req.body.password, req)
             .then(response => {
-                console.log(response);
-
                 res.status(200).json({
                     success: true,
                     redirect: req.session.redirect || null
