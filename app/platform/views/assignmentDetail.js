@@ -272,7 +272,7 @@ class AssignmentDetail extends React.Component {
                 page='assignmentDetail'>
                 <TopBar
                     title={assignment.title}
-                    permissions={user.permissions}
+                    roles={user.roles}
                     edit={() => this.toggleEdit()}
                     onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={verifiedToggle}
@@ -303,7 +303,7 @@ class AssignmentDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        permissions={user.permissions}
+                        roles={user.roles}
                         loadPosts={this.loadPosts}
                         sortBy={sortBy}
                         onlyVerified={verifiedToggle}
@@ -328,7 +328,7 @@ class AssignmentDetail extends React.Component {
                     visible={editToggled}
                 />
 
-                {user.permissions.includes('update-other-content') && (
+                {user.roles.includes('admin') && (
                     <ItemsDialog
                         toggled={acceptedDialog}
                         onClose={() => this.setState({ acceptedDialog: false })}

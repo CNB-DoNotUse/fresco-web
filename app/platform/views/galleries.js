@@ -127,7 +127,7 @@ class Galleries extends React.Component {
             <App user={this.props.user} page="galleries">
                 <TopBar
                     title="Galleries"
-                    permissions={user.permissions}
+                    roles={user.roles}
                     onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={verifiedToggle}
                     timeToggle

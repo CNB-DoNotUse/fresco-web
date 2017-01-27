@@ -173,10 +173,10 @@ class PostList extends React.Component {
      */
     togglePost = (passedPost) => {
         const { selectedPosts } = this.state;
-        const { permissions } = this.props;
+        const { roles } = this.props;
 
         // Check if `not` CM
-        if (!permissions.includes('update-other-content')) return;
+        if (!roles.includes('admin')) return;
 
         // Filter out anything, but ones that equal the passed post
         // Post not found, so add
@@ -219,7 +219,7 @@ class PostList extends React.Component {
 
     renderPosts() {
         const {
-            permissions,
+            roles,
             size,
             assignment,
             editable,
@@ -251,7 +251,7 @@ class PostList extends React.Component {
                             size={size}
                             parentCaption={parentCaption}
                             post={p}
-                            permissions={permissions}
+                            roles={roles}
                             toggled={selectedPosts.some(s => s.id === p.id)}
                             assignment={assignment}
                             key={i}
@@ -317,7 +317,7 @@ class PostList extends React.Component {
 PostList.propTypes = {
     posts: PropTypes.array,
     scrollable: PropTypes.bool,
-    permissions: PropTypes.array,
+    roles: PropTypes.array,
     size: PropTypes.string,
     assignment: PropTypes.object,
     editable: PropTypes.bool,
@@ -342,7 +342,7 @@ PostList.defaultProps = {
     scrollable: false,
     onlyVerified: false,
     loadPosts() {},
-    permissions: [],
+    roles: [],
     paginateBy: 'id',
     reloadPosts: false,
 };

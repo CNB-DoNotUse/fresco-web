@@ -273,7 +273,7 @@ export default class AssignmentEdit extends React.Component {
                         />
                     </div>
 
-                    {user.permissions.includes('update-other-content') && (
+                    {user.roles.includes('admin') && (
                         <ChipInput
                             model="outlets"
                             queryAttr="title"
@@ -284,7 +284,7 @@ export default class AssignmentEdit extends React.Component {
                         />
                     )}
 
-                    {user.permissions.includes('update-other-content') && (
+                    {user.roles.includes('admin') && (
                         <div className="checkbox form-group">
                             <label>
                                 <input

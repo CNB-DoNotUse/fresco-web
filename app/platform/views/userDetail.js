@@ -61,7 +61,7 @@ class UserDetail extends React.Component {
                     editable={editable}
                     edit={() => this.edit()}
                     onVerifiedToggled={this.onVerifiedToggled}
-                    permissions={user.permissions}
+                    roles={user.roles}
                     defaultVerified={verifiedToggle}
                     verifiedToggle
                     timeToggle
@@ -76,7 +76,7 @@ class UserDetail extends React.Component {
                     <PostList
                         loadPosts={this.loadPosts}
                         size="large"
-                        permissions={user.permissions}
+                        roles={user.roles}
                         scrollable
                         onlyVerified={verifiedToggle}
                     />

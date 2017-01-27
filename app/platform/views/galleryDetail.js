@@ -151,8 +151,8 @@ class GalleryDetail extends React.Component {
                 page='galleryDetail'>
                 <TopBar
                     title={title}
-                    editable={user.permissions.includes('update-other-content')}
-                    permissions={user.permissions}
+                    editable={user.roles.includes('admin')}
+                    roles={user.roles}
                     edit={() => this.toggleEdit()}
                     onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={verifiedToggle}
@@ -167,7 +167,7 @@ class GalleryDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        permissions={user.permissions}
+                        roles={user.roles}
                         parentCaption={gallery.caption}
                         posts={this.getPostsFromGallery()}
                         updatePosts={updatePosts}

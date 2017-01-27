@@ -9,7 +9,7 @@ const router = express.Router();
  */
 router.get('/:id', (req, res, next) => {
     api.request({
-        token: req.session.token,
+        token: req.session.token.token,
         url: '/story/' + req.params.id,
     }).then(response => {
         const props = {

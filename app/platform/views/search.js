@@ -380,7 +380,7 @@ class Search extends Component {
             >
                 <TopBar
                     title={this.state.title}
-                    permissions={this.props.user.permissions}
+                    roles={this.props.user.roles}
                     onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={this.state.verifiedToggle}
                     verifiedToggle
@@ -405,7 +405,7 @@ class Search extends Component {
                 <div className="col-sm-8 tall p0">
                     <PostList
                         posts={this.state.posts}
-                        permissions={this.props.user.permissions}
+                        roles={this.props.user.roles}
                         ref="postList"
                         size="large"
                         onScroll={this.scroll}

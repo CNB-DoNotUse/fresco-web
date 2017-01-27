@@ -7,13 +7,11 @@ const router = express.Router();
  * Root purchases page
  */
 router.get('/', (req, res, next) => {
-    if (!req.session.user.permissions.includes('get-all-purchases')) {
-        next({
+    if (!req.session.user.roles.includes('admin')) {
+        return next({
             message: config.ERR_PAGE_MESSAGES[403],
             status: 403,
         });
-
-        return;
     }
 
     const title = 'Purchases';

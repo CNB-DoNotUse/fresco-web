@@ -41,7 +41,7 @@ class Outlet extends React.Component {
                 page="outlet">
                 <TopBar
                     title={outlet.title}
-                    permissions={user.permissions}
+                    roles={user.roles}
                     edit={this.edit}
                     editIcon={"mdi-settings"}
                     activeTab={this.state.activeTab}

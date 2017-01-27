@@ -52,11 +52,13 @@ function render(gallery, user, req, res) {
  */
 router.get('/:id', (req, res, next) => {
     API.request({
-        token: req.session.token,
+        token: req.session.token.token,
         url: `/gallery/${req.params.id}`,
-    }).then(response => {
+    })
+    .then(response => {
         render(response.body, req.session.user, req, res);
-    }).catch(error => {
+    })
+    .catch(error => {
         next({
             message: error.status === 404 ? 'Gallery not found!' : 'Unable to load gallery!',
             status: error.status,

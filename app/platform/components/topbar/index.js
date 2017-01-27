@@ -28,7 +28,7 @@ class TopBar extends React.Component {
         verifiedToggle: PropTypes.bool,
         defaultVerified: PropTypes.bool,
         defaultChron: PropTypes.string,
-        permissions: PropTypes.array,
+        roles: PropTypes.array,
         tabs: PropTypes.array,
         setActiveTab: PropTypes.func,
         activeTab: PropTypes.string,
@@ -44,7 +44,7 @@ class TopBar extends React.Component {
         onVerifiedToggled() {},
         onOutletFilterAdd() {},
         onOutletFilterRemove() {},
-        permissions: [],
+        roles: [],
         defaultVerified: true,
         defaultChron: 'captured_at',
     };
@@ -110,7 +110,7 @@ class TopBar extends React.Component {
             verifiedToggle,
             defaultVerified,
             defaultChron,
-            permissions,
+            roles,
         } = this.props;
         const topbarItems = [];
 
@@ -162,7 +162,7 @@ class TopBar extends React.Component {
             );
         }
 
-        if (verifiedToggle && permissions.includes('update-other-content')) {
+        if (verifiedToggle && roles.includes('admin')) {
             topbarItems.push(
                 <Dropdown
                     options={['All content', 'Verified']}

@@ -349,7 +349,7 @@ export default class DispatchSubmit extends React.Component {
                     </div>
                     <div />
 
-                    {user.permissions.includes('update-other-content') && (
+                    {user.roles.includes('admin') && (
                         <div className="checkbox form-group">
                             <label>
                                 <input

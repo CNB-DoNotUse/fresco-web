@@ -101,7 +101,7 @@ class Posts extends React.Component {
             <App user={user} page={page}>
                 <TopBar
                     title={title}
-                    permissions={user.permissions}
+                    roles={user.roles}
                     onChronToggled={this.onChronToggled}
                     onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={verifiedToggle}
@@ -125,7 +125,7 @@ class Posts extends React.Component {
                     />
                 </TopBar>
                 <PostList
-                    permissions={user.permissions}
+                    roles={user.roles}
                     size="small"
                     sortBy={sortBy}
                     onlyVerified={verifiedToggle}
