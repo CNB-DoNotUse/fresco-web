@@ -6,7 +6,7 @@ export default class Info extends React.Component {
         super(props);
 
         this.state = {
-            outletAvatar: this.props.outlet.avatar,
+            outletAvatar: utils.formatImg(this.props.outlet.avatar, 'small'),
             changes: [],
             disabled: true
         }
@@ -18,11 +18,9 @@ export default class Info extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        //Change avatar if it changes from the outlet prop
-        if(nextProps.outlet.avatar !== this.state.outletAvatar) {
-            this.setState({
-                outletAvatar: nextProps.outlet.avatar
-            });
+        // Change avatar if it changes from the outlet prop
+        if (nextProps.outlet.avatar !== this.state.outletAvatar) {
+            this.setState({ outletAvatar: utils.formatImg(nextProps.outlet.avatar, 'small') });
         }
     }
 

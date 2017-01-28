@@ -2,17 +2,27 @@ import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
 import update from 'react-addons-update';
-import clone from 'lodash/clone';
 import last from 'lodash/last';
 import pick from 'lodash/pick';
 import pull from 'lodash/pull';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
+import { geoParams } from 'app/lib/location';
+import { scrolledToBottom } from 'app/lib/helpers';
 import App from './app';
 import TopBar from './../components/topbar';
 import LocationDropdown from '../components/topbar/location-dropdown';
 import TagFilter from '../components/topbar/tag-filter';
 import SearchSidebar from './../components/search/sidebar';
 import PostList from './../components/post/list';
+
+const isNewLocation = (oldLoc, newLoc) => {
+    if (!oldLoc || !newLoc) return false;
+    if (JSON.stringify(oldLoc) !== JSON.stringify(newLoc)) {
+        return true;
+    }
+
+    return false;
+};
 
 
 class Search extends Component {
@@ -24,20 +34,18 @@ class Search extends Component {
             assignments: [],
             posts: [],
             users: [],
-            location: this.props.location,
+            location: this.props.location || {},
             stories: [],
             title: this.getTitle(true),
             verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
             currentPostParams: {},
             tags: this.props.tags,
-            purchases: this.props.purchases,
         };
 
         this.loadingPosts = false;
         this.loadingUsers = false;
 
         this.getTitle 			= this.getTitle.bind(this);
-        this.geoParams			= this.geoParams.bind(this);
         this.getAssignments		= this.getAssignments.bind(this);
         this.getPosts			= this.getPosts.bind(this);
         this.getUsers			= this.getUsers.bind(this);
@@ -46,37 +54,15 @@ class Search extends Component {
         this.addTag				= this.addTag.bind(this);
         this.removeTag			= this.removeTag.bind(this);
         this.scroll  			= this.scroll.bind(this);
-        this.onMapDataChange	= this.onMapDataChange.bind(this);
-        this.onRadiusUpdate		= this.onRadiusUpdate.bind(this);
         this.refreshData		= this.refreshData.bind(this);
         this.pushState			= this.pushState.bind(this);
     }
 
     componentDidMount() {
-        //Load intial set of data
+        // Load intial set of data
         this.refreshData(true);
 
-        window.onpopstate = (event) => {
-            //Reload page
-            document.location.reload();
-        };
-
-        // If has location in state, get address from LatLng.
-        // Location dropdown will use this as it's defaultLocation
-        if(this.state.location.coordinates) {
-            const geocoder = new google.maps.Geocoder();
-            const { location } = this.state;
-
-            geocoder.geocode({'location': this.state.location.coordinates}, (results, status) => {
-                if(status === google.maps.GeocoderStatus.OK && results[0]){
-                    location.address = results[0].formatted_address;
-
-                    this.setState({
-                        title : this.getTitle()
-                    });
-                }
-            });
-        }
+        window.onpopstate = () => document.location.reload();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -87,104 +73,80 @@ class Search extends Component {
             location,
             tags,
             verifiedToggle,
-            numberOfPostResults
+            numberOfPostResults,
         } = this.state;
 
-        if(JSON.stringify(prevState.location.coordinates) !== JSON.stringify(location.coordinates)) {
+
+        if (isNewLocation(prevState.location, location)) {
             shouldUpdate = true;
-        } else if(prevState.location.radius !== location.radius) {
+        } else if (JSON.stringify(prevState.tags) !== JSON.stringify(tags)) {
             shouldUpdate = true;
-        } else if(JSON.stringify(prevState.tags) !== JSON.stringify(tags)){
+        } else if (prevState.verifiedToggle !== verifiedToggle) {
             shouldUpdate = true;
-        } else if(prevState.verifiedToggle !== verifiedToggle) {
-            shouldUpdate = true;
-        } else if(prevState.numberOfPostResults !== this.state.numberOfPostResults) {
+        } else if (prevState.numberOfPostResults !== this.state.numberOfPostResults) {
             onlyTitle = true;
         }
 
-        if(prevState.numberOfPostResults !== numberOfPostResults) {
+        if (prevState.numberOfPostResults !== numberOfPostResults) {
             onlyTitle = true;
         }
 
-        //Update if any of the conditions are true
-        if(shouldUpdate) {
+        // Update if any of the conditions are true
+        if (shouldUpdate) {
             this.refreshData(false);
         }
 
-        if(shouldUpdate || onlyTitle) {
-            this.setState({
-                title : this.getTitle(false)
-            });
+        if (shouldUpdate || onlyTitle) {
+            this.setState({ title: this.getTitle(false) });
         }
 
-        if(shouldUpdate || onlyTitle) {
-            this.setState({
-                title : this.getTitle(false)
-            });
+        if (shouldUpdate || onlyTitle) {
+            this.setState({ title: this.getTitle(false) });
         }
     }
 
-	/**
-	 * Determins title for page
-	 * @param  {BOOL} withProps If title should be determined from props or state
-	 * @return {string} Returns a title
-	 */
+    /**
+     * Determins title for page
+     * @param  {BOOL} withProps If title should be determined from props or state
+     * @return {string} Returns a title
+     */
     getTitle(withProps) {
         const {
             tags,
             location,
-            numberOfPostResults
+            numberOfPostResults,
         } = withProps ? this.props : this.state;
 
         let title = '';
 
-        const count = typeof(numberOfPostResults) !== 'undefined' ? `${numberOfPostResults.toLocaleString()} results` : 'Results';
+        const count = typeof numberOfPostResults !== 'undefined'
+            ? `${numberOfPostResults.toLocaleString()} results`
+            : 'Results';
 
-        if(this.props.query !== '') {
+        if (this.props.query !== '') {
             title = `${count} for ${this.props.query}`;
-        } else if(tags.length) {
+        } else if (tags.length) {
             title = `${count} for ${utils.isPlural(tags.length) ? 'tags' : 'tag'} ${tags.join(', ')}`;
-        } else if(location && location.address) {
+        } else if (location && location.address) {
             title = `${count} from ${location.address}`;
         } else {
-            title = "No search query!"
+            title = 'No search query!';
         }
 
         return title;
     }
 
-    geoParams() {
-        const { location } = this.state;
-
-        if (location.coordinates && location.radius) {
-            return {
-                geo: {
-                    type: 'Point',
-                    coordinates: [
-                        location.coordinates.lng,
-                        location.coordinates.lat
-                    ]
-                },
-                radius: utils.feetToMiles(location.radius),
-            };
-        }
-
-        return {};
-    }
-
-	/**
-	 * Gets new search data
-	 * @param {bool} initial Indicates if it is the initial data load
-	 */
+    /**
+     * Gets new search data
+     * @param {bool} initial Indicates if it is the initial data load
+     */
     refreshData(initial) {
         this.getAssignments();
         this.getPosts();
         this.getUsers();
         this.getStories();
 
-        if(!initial){
-            this.pushState();
-        }
+        if (!initial) this.pushState();
     }
 
     /**
@@ -205,7 +167,7 @@ class Search extends Component {
             q: this.props.query,
             limit: 10,
             rating: this.state.verifiedToggle ? 1 : null,
-            ...this.geoParams()
+            ...geoParams(this.state.location)
         };
 
         $.ajax({
@@ -224,11 +186,11 @@ class Search extends Component {
         });
     }
 
-	/**
-	 * Retrieves posts from API based on state
-	 */
+    /**
+     * Retrieves posts from API based on state
+     */
     getPosts(force = true, lastId) {
-        const { currentPostParams, tags, verifiedToggle } = this.state;
+        const { currentPostParams, tags, verifiedToggle, location } = this.state;
 
         const params = {
             q: this.props.query,
@@ -237,7 +199,7 @@ class Search extends Component {
             sortBy: 'created_at',
             last: lastId,
             rating: verifiedToggle ? utils.RATINGS.VERIFIED : null,
-            ...this.geoParams()
+            ...geoParams(location)
         };
 
         $.ajax({
@@ -353,37 +315,15 @@ class Search extends Component {
 
     removeTag(tag, index) {
         this.setState({
-            tags: update(this.state.tags, {$splice: [[index, 1]]}), //Keep the filtered list updated
+            tags: update(this.state.tags, { $splice: [[index, 1]] }), //Keep the filtered list updated
         });
     }
 
     /**
-     * When radius changes
+     * Called on Location dropdown state changes
      */
-    onRadiusUpdate(radius) {
-        let location = clone(this.state.location);
-        location.radius = radius;
-        this.setState({ location });
-    }
-
-    /**
-     * Called when AutocompleteMap data changes
-     */
-    onMapDataChange(data) {
-        let location = clone(this.state.location);
-
-        location.coordinates = data.location;
-        location.address = data.address;
-
-        if(!location.radius)
-            location.radius = 250;
-
-        this.setState({
-            location,
-            map: {
-                circle: data.circle
-            }
-        });
+    onChangeLocation = (data) => {
+        this.setState({ location: { ...data } });
     }
 
     /**
@@ -399,8 +339,8 @@ class Search extends Component {
             query += '&tags[]=' + encodeURIComponent(tag);
         });
 
-        if(location.coordinates && location.radius){
-            query += '&lat=' + location.coordinates.lat + '&lon=' + location.coordinates.lng;
+        if (location.lat && location.lng && location.radius){
+            query += '&lat=' + location.lat + '&lon=' + location.lng;
             query += '&radius=' + location.radius;
         }
 
@@ -413,7 +353,7 @@ class Search extends Component {
      */
     scroll(e) {
         const grid = e.target;
-        const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
+        const bottomReached = scrolledToBottom(grid);
         const sidebarScrolled = grid.className.indexOf('search-sidebar') > -1;
 
         //Check that nothing is loading and that we're at the end of the scroll,
@@ -436,17 +376,16 @@ class Search extends Component {
             <App
                 query={this.props.query}
                 user={this.props.user}
+                page="search"
             >
                 <TopBar
                     title={this.state.title}
-                    permissions={this.props.user.permissions}
+                    roles={this.props.user.roles}
                     onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={this.state.verifiedToggle}
                     verifiedToggle
                     timeToggle
                 >
-
-
                     <TagFilter
                         onTagAdd={this.addTag}
                         onTagRemove={this.removeTag}
@@ -456,22 +395,17 @@ class Search extends Component {
                     />
 
                     <LocationDropdown
-                        location={this.state.location.coordinates}
-                        radius={this.state.location.radius}
-                        defaultLocation={this.state.location.address}
+                        location={this.state.location}
                         units="Miles"
                         key="locationDropdown"
-                        onRadiusUpdate={this.onRadiusUpdate}
-                        onPlaceChange={this.onMapDataChange}
-                        onMapDataChange={this.onMapDataChange}
+                        onChangeLocation={this.onChangeLocation}
                     />
                 </TopBar>
 
                 <div className="col-sm-8 tall p0">
                     <PostList
                         posts={this.state.posts}
-                        permissions={this.props.user.permissions}
-                        purchases={this.props.purchases}
+                        roles={this.props.user.roles}
                         ref="postList"
                         size="large"
                         onScroll={this.scroll}
@@ -493,11 +427,9 @@ class Search extends Component {
 Search.defaultProps = {
     location: {},
     tags: [],
-    q: ''
-}
+};
 
 Search.propTypes = {
-    q: PropTypes.string,
     query: PropTypes.string,
     tags: PropTypes.array,
     location: PropTypes.object,
@@ -505,10 +437,6 @@ Search.propTypes = {
 };
 
 ReactDOM.render(
-    <Search
-        user={window.__initialProps__.user}
-        location={window.__initialProps__.location}
-        tags={window.__initialProps__.tags}
-        query={window.__initialProps__.query} />,
+    <Search {...window.__initialProps__} />,
     document.getElementById('app')
 );

@@ -4,7 +4,9 @@ export default class Items extends React.Component {
     static propTypes = {
         onClose: PropTypes.func,
         toggled: PropTypes.bool,
+        scrollable: PropTypes.bool,
         header: PropTypes.string,
+        context: PropTypes.string,
         emptyMessage: PropTypes.string,
         children: PropTypes.node,
     }
@@ -13,11 +15,13 @@ export default class Items extends React.Component {
         onClose: () => {},
         toggled: false,
         header: '',
+        scrollable: false,
+        context: null,
         emptyMessage: 'No items',
     }
 
     renderEmptyMessage() {
-        return <div style={{ textAlign: 'center' }}>{this.props.emptyMessage}</div>;
+        return <p className="empty">{this.props.emptyMessage}</p>;
     }
 
     render() {
@@ -26,6 +30,8 @@ export default class Items extends React.Component {
             header,
             onClose,
             children,
+            scrollable,
+            context
         } = this.props;
 
         return (
@@ -33,7 +39,8 @@ export default class Items extends React.Component {
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
 
                 <div
-                    className={`items-dialog ${toggled ? 'toggled' : ''}`}
+                    className={`dialog-modal--items ${toggled ? 'toggled' : ''}`}
+                    onScroll={scrollable ? (e) => { this.props.onScroll(e, context) } : null}
                 >
                     <div className="header">
                         <span>{header}</span>
@@ -42,7 +49,7 @@ export default class Items extends React.Component {
                     <div
                         className="items"
                     >
-                        {children.length ? children : this.renderEmptyMessage()}
+                        {(children && children.length) ? children : this.renderEmptyMessage()}
                     </div>
 
                     <div className="footer">

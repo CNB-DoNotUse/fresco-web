@@ -13,9 +13,9 @@ const screen = {
 let landing = new Landing(screen);
 window.landing = landing;
 
-window.onload = () => {
-	landing.init();
-};
+$(document).ready(() => {
+	landing.init(); 
+});
 
 window.addEventListener('resize', () => {
 	landing.resize();

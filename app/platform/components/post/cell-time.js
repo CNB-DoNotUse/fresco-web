@@ -4,6 +4,7 @@ import utils from 'utils';
 
 /**
  * Post Cell Time/First Look
+ * @description  First look is a time that is derived from the `first_look_until` timestamp on a post
  */
 class CellTime extends Component {
 
@@ -38,6 +39,8 @@ class CellTime extends Component {
         const time = sortBy === 'captured_at'
             ? (post.captured_at || post.created_at)
             : post.created_at;
+
+
         const timeString = typeof time === 'undefined' ? 'No timestamp' : utils.formatTime(time);
         const pad = (num, size) => (`000000000${num}`).substr(-size);
 
@@ -65,7 +68,7 @@ CellTime.propTypes = {
 
 CellTime.defaultProps = {
     post: {},
-    sortBy: 'captured_at',
+    sortBy: 'created_at',
 };
 
 export default CellTime;

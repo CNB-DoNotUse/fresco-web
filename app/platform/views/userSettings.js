@@ -13,7 +13,7 @@ import ConfirmDialog from '../components/dialogs/confirm';
 class UserSettings extends React.Component {
 
     state = {
-        avatar: this.props.user.avatar || utils.defaultAvatar,
+        avatar: utils.formatImg(this.props.user.avatar, 'small') || utils.defaultSmallAvatar,
         user: this.props.user,
         passwordToggled: false,
         verify_password: null,
@@ -163,8 +163,8 @@ class UserSettings extends React.Component {
                 if(avatarFiles.length) {
                     this.updateAvatar(avatarFiles, true);
                 } else {
-                    const permissions = this.state.user.permissions;
-                    response.permissions = permissions;
+                    const roles = this.state.user.roles;
+                    response.roles = roles;
 
                     this.setState({ user: response });
 
@@ -203,8 +203,8 @@ class UserSettings extends React.Component {
             }
         })
             .done(response => {
-                const permissions = this.state.user.permissions;
-                response.permissions = permissions;
+                const roles = this.state.user.roles;
+                response.roles = roles;
 
                 this.setState({ user: response });
 
@@ -228,7 +228,10 @@ class UserSettings extends React.Component {
         const { user, disabled } = this.state;
 
         return (
-            <App user={this.state.user}>
+            <App
+                user={this.state.user}
+                page="userSettings"
+            >
                 <TopBar
                     title={this.state.user.full_name}
                     saveButton={true}
@@ -325,7 +328,7 @@ class UserSettings extends React.Component {
                     onConfirm={(password) => this.onPasswordSubmit(password)}
                     onCancel={() => this.onPasswordToggle()}
                     toggled={this.state.passwordToggled}
-                    text="Enter your password"
+                    header="Enter your password"
                     confirmText="Save changes"
                     hasInput
                 />

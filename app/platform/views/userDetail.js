@@ -51,14 +51,17 @@ class UserDetail extends React.Component {
         const { user, editable, detailUser } = this.props;
         const { verifiedToggle } = this.state;
         return (
-            <App user={user}>
+            <App
+                user={user}
+                page="userDetail"
+            >
                 <TopBar
                     title={detailUser.full_name}
                     editIcon="mdi-settings"
                     editable={editable}
                     edit={() => this.edit()}
                     onVerifiedToggled={this.onVerifiedToggled}
-                    permissions={user.permissions}
+                    roles={user.roles}
                     defaultVerified={verifiedToggle}
                     verifiedToggle
                     timeToggle
@@ -73,9 +76,9 @@ class UserDetail extends React.Component {
                     <PostList
                         loadPosts={this.loadPosts}
                         size="large"
-                        permissions={user.permissions}
+                        roles={user.roles}
                         scrollable
-                        onlyVerified={this.state.verifiedToggle}
+                        onlyVerified={verifiedToggle}
                     />
                 </div>
             </App>

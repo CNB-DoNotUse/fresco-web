@@ -1,12 +1,15 @@
 import React, { PropTypes } from 'react';
 import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
+import moment from 'moment';
 import request from 'superagent';
 import api from 'app/lib/api';
 import {
     isOriginalGallery,
     isImportedGallery,
     isSubmittedGallery,
+    deletePosts,
+    saveGallery,
 } from 'app/lib/models';
 import times from 'lodash/times';
 import get from 'lodash/get';
@@ -65,6 +68,7 @@ class Edit extends React.Component {
             external_source: gallery.external_source,
             owner: gallery.owner,
             bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
+            updateHighlightedAt: false,
         };
     }
 
@@ -88,7 +92,7 @@ class Edit extends React.Component {
     onSave = () => {
         const params = this.getFormData();
         const { gallery, onUpdateGallery } = this.props;
-        let { loading, uploads, assignments, isOriginalGallery } = this.state;
+        const { loading, assignments, isOriginalGallery } = this.state;
 
         if (!Object.keys(params).length) {
             $.snackbar({ content: 'No changes made!' });
@@ -98,15 +102,16 @@ class Edit extends React.Component {
         this.setState({ loading: true });
         const postsToDelete = isOriginalGallery ? get(params, 'posts_remove') : [];
 
-        Promise.all([
-            this.saveGallery(gallery.id, params),
-            this.deletePosts(postsToDelete),
-        ])
+        saveGallery(gallery.id, params)
         .then((res) => {
-            if (get(res[0], 'posts_new.length')) {
+            deletePosts(postsToDelete);
+            return res;
+        })
+        .then((res) => {
+            if (get(res, 'posts_new.length')) {
                 return Promise.all([
-                    res[0],
-                    this.uploadFiles(res[0].posts_new, this.getFilesFromUploads()),
+                    res,
+                    this.uploadFiles(res.posts_new, this.getFilesFromUploads()),
                 ]);
             }
 
@@ -116,7 +121,7 @@ class Edit extends React.Component {
             this.hide();
             this.setState({ uploads: [], loading: false }, () => {
                 $.snackbar({ content: 'Gallery saved!' });
-                onUpdateGallery(Object.assign(res[0], { assignments }));
+                onUpdateGallery(Object.assign(res, { assignments }));
             });
         })
         .catch(() => {
@@ -179,7 +184,8 @@ class Edit extends React.Component {
      */
     onMapDataChange(data) {
         if (data.source === 'markerDrag') {
-            getAddressFromLatLng(data.location, (address) => {
+            getAddressFromLatLng(data.location)
+            .then((address) => {
                 this.setState({ address, location: data.location });
             });
         }
@@ -238,6 +244,7 @@ class Edit extends React.Component {
             rating,
             is_nsfw,
             owner,
+            updateHighlightedAt
         } = this.state;
         const { gallery } = this.props;
         const postsFormData = this.getPostsFormData();
@@ -263,13 +270,14 @@ class Edit extends React.Component {
             rating,
             is_nsfw,
             owner_id: owner ? owner.id : null,
+            highlighted_at: updateHighlightedAt ? moment().toISOString() : null,
         };
 
         // Make sure our params are valid types and don't have any empty arrays
         // Special exception if the param is a `bool`
         params = pickBy(params, (v, k) => {
             if (gallery[k] === v) return false;
-            if (['posts_new'].includes(k) && !v) return false;
+            if (['posts_new', 'highlighted_at'].includes(k) && !v) return false;
             return Array.isArray(v) ? v.length : true;
         });
 
@@ -378,26 +386,6 @@ class Edit extends React.Component {
         return Promise.all(requests);
     }
 
-    deletePosts(postIds) {
-        if (!postIds || !postIds.length) return Promise.resolve();
-        return api.post('post/delete', { post_ids: postIds });
-    }
-
-    saveGallery(id, params) {
-        if (!id || !params) return Promise.resolve();
-
-        return new Promise((resolve, reject) => (
-            $.ajax({
-                url: `/api/gallery/${id}/update`,
-                method: 'post',
-                contentType: 'application/json',
-                data: JSON.stringify(params),
-            })
-            .done(resolve)
-            .fail(reject)
-        ));
-    }
-
     removeGallery(id) {
         if (!id || this.state.loading) return;
 
@@ -424,17 +412,26 @@ class Edit extends React.Component {
         });
     }
 
-    /**
-	 * Reverts all changes
-	 */
+
+    // Reverts all changes
     revert() {
         if (this.state.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
     }
 
-    toggleHighlight(e) {
-        this.setState({ rating: e.target.checked ? 3 : 2 });
+    onChangeHighlighted = (e) => {
+        this.setState({
+            rating: e.target.checked ? 3 : 2,
+            updateHighlightedAt: e.target.checked,
+        });
+    }
+
+    onChangeHighlightedAt = (e) => {
+        this.setState({
+            rating: e.target.checked ? 3 : this.state.rating,
+            updateHighlightedAt: e.target.checked,
+        });
     }
 
     onChangeIsNSFW = () => {
@@ -507,7 +504,7 @@ class Edit extends React.Component {
     }
 
     renderBody() {
-        const { gallery } = this.props;
+        const { gallery, visible } = this.props;
         const {
             stories,
             caption,
@@ -523,7 +520,9 @@ class Edit extends React.Component {
             external_source,
             owner,
             bylineDisabled,
+            updateHighlightedAt,
         } = this.state;
+
         if (!gallery) return '';
 
         return (
@@ -622,9 +621,22 @@ class Edit extends React.Component {
                                 <input
                                     type="checkbox"
                                     checked={rating === 3}
-                                    onChange={e => this.toggleHighlight(e)}
+                                    onChange={this.onChangeHighlighted}
                                 />
                                 Highlighted
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="dialog-row">
+                        <div className="checkbox">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={updateHighlightedAt}
+                                    onChange={this.onChangeHighlightedAt}
+                                />
+                                Bring To Top
                             </label>
                         </div>
                     </div>
@@ -635,7 +647,7 @@ class Edit extends React.Component {
                     />
                 </div>
 
-                {get(posts, 'length') || get(uploads, 'length') ? (
+                {visible && get(posts, 'length') || get(uploads, 'length') ? (
                     <EditPosts
                         originalPosts={gallery.posts}
                         editingPosts={posts}

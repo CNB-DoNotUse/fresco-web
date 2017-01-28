@@ -1,11 +1,10 @@
 import React, { PropTypes } from 'react';
-import { getAddressFromLatLng } from 'app/lib/location';
 import utils from 'utils';
 import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import get from 'lodash/get';
 import api from 'app/lib/api';
-import { isImportedGallery } from 'app/lib/models';
+import { isImportedGallery, deletePosts, saveGallery } from 'app/lib/models';
 import AutocompleteMap from '../global/autocomplete-map';
 import ExplicitCheckbox from '../global/explicit-checkbox';
 import ChipInput from '../global/chip-input';
@@ -24,6 +23,13 @@ export default class GalleryEdit extends React.Component {
     };
 
     state = this.getStateFromProps(this.props);
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (JSON.stringify(nextState) !== JSON.stringify(this.state)) return true;
+        if (this.props.gallery.id !== nextProps.gallery.id) return true;
+
+        return false;
+    }
 
     componentDidUpdate(prevProps) {
         if (this.props.gallery.id !== prevProps.gallery.id) {
@@ -73,14 +79,7 @@ export default class GalleryEdit extends React.Component {
      * Updates state map location when AutocompleteMap gives new location from drag
      */
     onMapDataChange(data) {
-        if (data.source === 'markerDrag') {
-            getAddressFromLatLng(data.location, (address) => {
-                this.setState({
-                    address,
-                    location: data.location,
-                });
-            });
-        }
+        if (data.source === 'markerDrag') this.setState(data);
     }
 
     onChangeOwner = (owner) => {
@@ -93,23 +92,21 @@ export default class GalleryEdit extends React.Component {
         });
     }
 
-	/**
-	 * Gets all form data and verifies gallery.
-	 */
+    /**
+     * Gets all form data and verifies gallery.
+     */
     onVerify() {
         if (this.state.loading) return;
         this.setState({ loading: true });
         const { onUpdateGallery, gallery } = this.props;
         const params = this.getFormData();
+        const postsToDelete = get(params, 'posts_remove', []);
 
-        $.ajax({
-            url: `/api/gallery/${gallery.id}/update`,
-            method: 'POST',
-            data: JSON.stringify(params),
-            dataType: 'json',
-            contentType: 'application/json',
+        saveGallery(gallery.id, params)
+        .then(() => {
+            deletePosts(postsToDelete);
         })
-        .done(() => {
+        .then(() => {
             onUpdateGallery(gallery.id);
             $.snackbar({
                 content: 'Gallery verified! Click to open',
@@ -119,14 +116,14 @@ export default class GalleryEdit extends React.Component {
                 win.focus();
             });
         })
-        .fail(() => {
+        .catch(() => {
             this.setState({ loading: false });
             $.snackbar({ content: 'Unable to verify gallery' });
         });
     }
 
-	/**
-	 * Removes gallery
+    /**
+     * Removes gallery
      */
     onRemove() {
         if (this.state.loading) return;
@@ -149,7 +146,7 @@ export default class GalleryEdit extends React.Component {
         });
     }
 
-	/**
+    /**
      * Skips gallery
      */
     onSkip() {
@@ -158,9 +155,12 @@ export default class GalleryEdit extends React.Component {
         const { onUpdateGallery, gallery } = this.props;
         const { rating } = this.state;
         const params = { ...this.getPostsParams(), rating };
+        const postsToDelete = get(params, 'posts_remove', []);
 
-        api
-        .post(`gallery/${gallery.id}/update`, params)
+        saveGallery(gallery.id, params)
+        .then(() => {
+            deletePosts(postsToDelete);
+        })
         .then(() => {
             onUpdateGallery(gallery.id);
             $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
@@ -198,7 +198,6 @@ export default class GalleryEdit extends React.Component {
             external_source,
             rating,
             is_nsfw,
-            posts,
             owner,
         } = this.state;
         const { gallery } = this.props;
@@ -419,16 +418,14 @@ export default class GalleryEdit extends React.Component {
                     >
                         Verify
                     </button>
-                    {galleryType === 'submissions' && (
-                        <button
-                            type="button"
-                            className="btn btn-flat pull-right"
-                            onClick={() => this.setState({ rating: 1 }, () => this.onSkip())}
-                            disabled={loading}
-                        >
-                            Skip
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        className="btn btn-flat pull-right"
+                        onClick={() => this.setState({ rating: 1 }, () => this.onSkip())}
+                        disabled={loading}
+                    >
+                        Skip
+                    </button>
                     <button
                         type="button"
                         className="btn btn-flat pull-right"

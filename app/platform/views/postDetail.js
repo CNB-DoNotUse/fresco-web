@@ -32,10 +32,12 @@ class PostDetail extends React.Component {
     render() {
         const { user, title, verifier } = this.props;
         const { gallery, galleryEditToggled, post } = this.state;
-        const editable = (user.permissions.includes('update-other-content')) && !!gallery.id;
+        const editable = (user.roles.includes('admin')) && !!gallery.id;
 
         return (
-            <App user={user}>
+            <App 
+                user={user}
+                page="postDetail">
                 <TopBar
                     title={title}
                     editable={editable}

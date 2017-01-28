@@ -19,7 +19,8 @@ import Dropdown from '../components/global/dropdown';
  */
 class Purchases extends React.Component {
     state = {
-        outlets: getFromLocalStorage('views/purchases', 'outlets', []),
+        'summary/outlets': getFromLocalStorage('views/purchases', 'summary/outlets', []),
+        'outlets/outlets': getFromLocalStorage('views/purchases', 'outlets/outlets', []),
         users: [],
         availableOutlets: [],
         availableUsers: [],
@@ -31,7 +32,13 @@ class Purchases extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.state.activeTab === 'Summary' && prevState.activeTab !== 'Summary') {
             $.material.init();
+            this.setState({ availableOutlets: [] });
         }
+    }
+
+    getTabOutlets() {
+        const outletsKey = `${this.state.activeTab.toLowerCase()}/outlets`;
+        return this.state[outletsKey];
     }
 
     findOutlets = (q) => {
@@ -44,7 +51,7 @@ class Purchases extends React.Component {
             .get('search', params)
             .then((res) => {
                 this.setState({ availableOutlets:
-                    differenceBy(res.outlets.results, this.state.outlets, 'id') });
+                    differenceBy(res.outlets.results, this.getTabOutlets(), 'id') });
             })
             .catch(err => err);
         }
@@ -58,11 +65,7 @@ class Purchases extends React.Component {
 
             api
             .get('search', params)
-            .then(res => {
-                this.setState({
-                    availableUsers: res.users.results,
-                });
-            })
+            .then(res => this.setState({ availableUsers: res.users.results }))
             .catch(err => err);
         }
     }
@@ -86,27 +89,6 @@ class Purchases extends React.Component {
         }
     }
 
-
-    /**
-     * Adds outlet to filter
-     * @param {string} outletToAdd String title of the outlet
-     */
-    addOutlet = (outletToAdd, index) => {
-        const { availableOutlets, outlets } = this.state;
-        const outlet = availableOutlets[index];
-        if (!outlet) return;
-
-        if(find(outlets, ['id', outlet.id]) === undefined){
-            this.setState({
-                outlets: update(outlets, {$push: [outlet]}),
-                availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
-                updatePurchases: true
-            }, () => {
-                setInLocalStorage('views/purchases', { outlets: this.state.outlets });
-            });
-        }
-    }
-
     /**
      * Remove user from filter
      * @param {string} userToRemove An email string of the user
@@ -123,21 +105,45 @@ class Purchases extends React.Component {
     }
 
     /**
+     * Adds outlet to filter
+     * @param {string} outletToAdd String title of the outlet
+     */
+    addOutlet = (outletToAdd, index) => {
+        const { availableOutlets } = this.state;
+        const outletsKey = `${this.state.activeTab.toLowerCase()}/outlets`;
+        const state = this.state;
+        const outlets = this.state[outletsKey];
+        const outlet = availableOutlets[index];
+        if (!outlet) return;
+
+        if(find(outlets, ['id', outlet.id]) === undefined){
+            this.setState({
+                [outletsKey]: update(outlets, { $push: [outlet] }),
+                availableOutlets: update(availableOutlets, {$splice: [[index, 1]]}),
+                updatePurchases: true
+            }, () => {
+                setInLocalStorage('views/purchases', { [outletsKey]: this.state[outletsKey] });
+            });
+        }
+    }
+
+    /**
      * Remove outlet from filter
      * @param {string} outletToRemove A title string of the outlet
      * @param {int} index index in the array
      */
     removeOutlet = (outletToRemove, index) => {
-        const outlet = this.state.outlets[index];
+        const outletsKey = `${this.state.activeTab.toLowerCase()}/outlets`;
+        const outlet = this.state[outletsKey][index];
 
         this.setState({
             // Keep the filtered list updated
-            outlets: update(this.state.outlets, {$splice: [[index, 1]]}),
+            [outletsKey]: update(this.state[outletsKey], { $splice: [[index, 1]] }),
             // Add the user back to the autocomplete list
-            availableOutlets: update(this.state.availableOutlets, {$push: [outlet]}),
+            availableOutlets: update(this.state.availableOutlets, { $push: [outlet] }),
             updatePurchases: true,
         }, () => {
-            setInLocalStorage('views/purchases', { outlets: this.state.outlets });
+            setInLocalStorage('views/purchases', { [outletsKey]: this.state[outletsKey] });
         });
     }
 
@@ -146,7 +152,7 @@ class Purchases extends React.Component {
      */
     loadStats = (callback) => {
         const params = {
-            outlet_ids: map(this.state.outlets, 'id'),
+            outlet_ids: map(this.state['summary/outlets'], 'id'),
             user_ids: map(this.state.users, 'id'),
         };
 
@@ -168,7 +174,7 @@ class Purchases extends React.Component {
         }
 
         const params = {
-            outlet_ids: map(this.state.outlets, 'id'),
+            outlet_ids: map(this.state['summary/outlets'], 'id'),
             user_ids: map(this.state.users, 'id'),
             limit: 20,
             sortBy: 'created_at',
@@ -192,7 +198,7 @@ class Purchases extends React.Component {
 	 * Sends browser to script to generate CSV
      */
     downloadExports = () => {
-        const oultets = this.state.outlets.map((outlet) => {
+        const outlets = this.state['summary/outlets'].map((outlet) => {
             return 'outlet_ids[]='+ outlet.id
         }).join('&');
 
@@ -200,7 +206,7 @@ class Purchases extends React.Component {
             return 'user_ids[]='+ user.id
         }).join('&');
 
-        const u = encodeURIComponent(`/purchase/report?${oultets}${users}`);
+        const u = encodeURIComponent(`/purchase/report?${outlets}${users}`);
 
         const url = `/scripts/report?u=${u}&e=Failed`;
 
@@ -208,16 +214,7 @@ class Purchases extends React.Component {
     }
 
     render() {
-        const {
-            outlets,
-            users,
-            searchOutlets,
-            searchUsers,
-            activeTab,
-            outletStatsTime,
-            updatePurchases,
-        } = this.state;
-
+        const { activeTab, outletStatsTime, updatePurchases } = this.state;
 
         const getTabStyle = (tab) => {
             if (activeTab === tab) return { display: 'block' };
@@ -225,17 +222,19 @@ class Purchases extends React.Component {
         };
 
         return (
-            <App user={this.props.user}>
+            <App 
+                user={this.props.user}
+                page="purchases">
                 <TopBar
                     title="Purchases"
                     tabs={['Summary', 'Outlets']}
-                    setActiveTab={(t) => this.setState({ activeTab: t })}
+                    setActiveTab={t => this.setState({ activeTab: t })}
                     activeTab={activeTab}
                 >
                     <TagFilter
                         text="Outlets"
                         tagList={this.state.availableOutlets}
-                        filterList={this.state.outlets}
+                        filterList={this.getTabOutlets()}
                         onTagInput={this.findOutlets}
                         onTagAdd={this.addOutlet}
                         onTagRemove={this.removeOutlet}
@@ -289,7 +288,7 @@ class Purchases extends React.Component {
                 <Outlets
                     style={getTabStyle('Outlets')}
                     loadData={activeTab === 'Outlets'}
-                    outletIds={this.state.outlets.map(o => o.id)}
+                    outletIds={this.state['outlets/outlets'].map(o => o.id)}
                     statsTime={this.state.outletStatsTime}
                 />
             </App>

@@ -114,7 +114,10 @@ class StoryDetail extends React.Component {
         const { story, sortBy, editToggled, loading } = this.state;
 
         return (
-            <App user={user}>
+            <App 
+                user={user}
+                page="storyDetail"
+            >
                 <TopBar
                     title={story.title}
                     onChronToggled={this.onChronToggled}
@@ -129,7 +132,7 @@ class StoryDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        permissions={user.permissions}
+                        roles={user.roles}
                         loadPosts={this.loadPosts}
                         editable={false}
                         sortBy={sortBy}

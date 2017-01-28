@@ -13,7 +13,7 @@ const CONTACT_PREFIX = 'CONTACT_FORM_IP_';
  * Reset password endpoint
  * Takes an email in the body
  */
-router.post('/contact', (req, res, next) => {
+router.post('/', (req, res, next) => {
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     redis.get(CONTACT_PREFIX + ip, (err, reply) => {

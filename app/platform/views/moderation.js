@@ -8,7 +8,7 @@ const { user } = window.__initialProps__;
 const store = configureStore({ user });
 
 ReactDOM.render(
-    <Root store={store}>
+    <Root store={store} page='moderation'>
         <Moderation />
     </Root>,
     document.getElementById('app')

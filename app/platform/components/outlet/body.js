@@ -103,7 +103,7 @@ export default class Body extends React.Component {
                                 loadPosts={this.loadPosts}
                                 size="large"
                                 editable={false}
-                                permissions={user.permissions}
+                                roles={user.roles}
                                 paginateBy="purchase_id"
                                 allPurchased
                                 scrollable

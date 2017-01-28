@@ -6,6 +6,9 @@
 <!-- Alerts -->
 <script type="text/javascript">window.alerts = <%- JSON.stringify(alerts) %></script>
 
+<!--Analytics-->
+<% include analytics %>
+
 <!--Remote Scripts-->
 <% if(typeof remoteScripts !== 'undefined') { %>
     <% for(let script of remoteScripts) { %>
@@ -24,10 +27,6 @@
 <% if(typeof(page) !== 'undefined' && typeof(assets) !== 'undefined'){ %>
     <script type="text/javascript" src="<%= assets[page]['js'] %>"></script>
 <% } %>
-
-
-<!--Google Analytics-->
-<% include ga %>
 
 </body>
 

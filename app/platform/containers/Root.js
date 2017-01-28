@@ -8,10 +8,10 @@ import App from './App';
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
-const Root = ({ store, children }) => (
+const Root = ({ store, children, page }) => (
     <Provider store={store}>
         <MuiThemeProvider>
-            <App>
+            <App page={page}>
                 {children}
             </App>
         </MuiThemeProvider>

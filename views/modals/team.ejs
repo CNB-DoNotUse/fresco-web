@@ -130,8 +130,9 @@
 				},
 				{
 					'avatar' : 'alberto.jpg',
-					'name'   : 'Alberto',
-					'title'  : 'Executive Producer'
+					'name'   : 'Alberto Zamora',
+					'title'  : 'Executive Producer',
+                    'handle' : 'albertojourno'
 				},
 				{
 					'name'   : 'Lizzy Francis',
@@ -292,10 +293,10 @@
 							<% member = team[i]['members'][k] %>
 
 							<li class="team-member">
-								<% if(typeof(member['avatar']) != 'undefined'){ %>
+								<% if(typeof(member['avatar']) != 'undefined' && active){ %>
 
 									<div class="avatar">
-										<img src="" />
+										<img src="<%= utils.CDN %>/index/team/<%= member.avatar%>" />
 									</div>
 
 								<% } else { %>
@@ -320,24 +321,3 @@
 	</div>
 </div>
 
-<script type="text/javascript">
-	var team = <%- JSON.stringify(team) %>
-
-	//Sets all the team member image sources
-	for(var i=0; i <team.length; i++) {
-
-		var list = document.getElementById('team-list-' + i),
-		 	members = team[i]['members'],
-			listItems = list.getElementsByTagName('li');
-
-		for(var k=0; k < members.length; k++) {
-
-			var member = members[k];
-
-			var image = listItems[k].getElementsByTagName('img')[0];
-
-			if(typeof(image) !== 'undefined')
-				image.src = '<%= utils.CDN %>/index/team/' + member.avatar;
-		}
-	}
-</script>

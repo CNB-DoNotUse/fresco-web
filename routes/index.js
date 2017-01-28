@@ -42,8 +42,7 @@ router.get('/join/:token', (req, res, next) => {
     // Make request for invite
     API.request({
         method: 'GET',
-        url: `/outlet/invite/${req.params.token}`,
-        token: req.session.token
+        url: `/outlet/invite/${req.params.token}`
     })
     .then((response) => {
         const { body } = response;

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import last from 'lodash/last';
-import StoryCell from './story-cell.js';
+import StoryCell from './story-cell';
 
 /**
  * List for a set of stories used across the site
@@ -8,13 +8,29 @@ import StoryCell from './story-cell.js';
  * Story List Parent Object
  */
 export default class StoryList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { stories: [] };
-        this.scroll = this.scroll.bind(this);
+    static propTypes = {
+        loadStories: PropTypes.func,
+        scrollable: PropTypes.bool,
+        reloadStories: PropTypes.bool,
     }
 
+    static defaultProps = {
+        reloadStories: false,
+    }
+
+    state = {
+        stories: [],
+    };
+
     componentDidMount() {
+        this.loadInitialStories();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.reloadStories) this.loadInitialStories();
+    }
+
+    loadInitialStories() {
         // Access parent var load method
         this.props.loadStories(null, (stories) => {
             // Set stories from successful response
@@ -23,10 +39,10 @@ export default class StoryList extends React.Component {
     }
 
     // Scroll listener for main window
-    scroll(e) {
+    scroll = (e) => {
         const grid = e.target;
 
-		// Check that nothing is loading and that we're at the end of the scroll,
+        // Check that nothing is loading and that we're at the end of the scroll,
         // and that we have a parent bind to load more stories
         if (!this.state.loading && grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400) && this.props.loadStories) {
             // Set that we're loading

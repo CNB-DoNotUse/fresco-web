@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+import api from 'app/lib/api';
 
 /**
  * Global download action
@@ -9,15 +10,9 @@ class DownloadAction extends React.Component {
         post: PropTypes.object.isRequired,
     };
 
-    // Called whenever the purhcase icon is selected
+    // Called whenever the download icon is selected
     download = () => {
         const { post } = this.props;
-        // Override click event for browsers that do not support it
-        HTMLElement.prototype.click = function() {
-            const evt = this.ownerDocument.createEvent('MouseEvents');
-            evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-            this.dispatchEvent(evt);
-        };
 
         if (!post) {
             return $.snackbar({
@@ -26,15 +21,26 @@ class DownloadAction extends React.Component {
             });
         }
 
-        const href = post.stream
-            ? utils.streamToMp4(post.stream)
-            : post.image;
+        // Override click event for browsers that do not support it
+        HTMLElement.prototype.click = function(){
+            const evt = this.ownerDocument.createEvent('MouseEvents');
+            evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+            this.dispatchEvent(evt);
+        };
 
-        const link = document.createElement('a');
+        api
+        .get(`post/${post.id}/download`)
+        .then(res => {
+            const downloadLink = res.result;
+           
 
-        link.download = Date.now() + '.' + href.split('.').pop();
-        link.href = href;
-        link.click();
+            const link = document.createElement('a');
+
+            link.download = Date.now() + '.' + downloadLink.split('.').pop();
+            link.href = downloadLink;
+            link.click();
+        })
+        .catch(() => $.snackbar({ content: 'We can\'t download this post right now!' }));
     }
 
     render() {

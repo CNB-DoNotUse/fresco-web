@@ -11,8 +11,9 @@ import Time from './cell-time';
  * Single Post Cell, child of PostList
  */
 class PostCell extends React.Component {
+
     static propTypes = {
-        permissions: PropTypes.array,
+        roles: PropTypes.array,
         parentCaption: PropTypes.string,
         size: PropTypes.string,
         sortBy: PropTypes.string,
@@ -21,7 +22,10 @@ class PostCell extends React.Component {
         sizes: PropTypes.object,
         editable: PropTypes.bool,
         toggled: PropTypes.bool,
+        highlighted: PropTypes.bool,
         togglePost: PropTypes.func,
+        onMouseEnter: PropTypes.func,
+        onMouseLeave: PropTypes.func,
     };
 
     static defaultProps = {
@@ -54,10 +58,12 @@ class PostCell extends React.Component {
 
     onMouseEnter = () => {
         this.setState({ mouseEntered: true });
+        this.props.onMouseEnter && this.props.onMouseEnter(this.props.post.id);
     }
 
     onMouseLeave = () => {
         this.setState({ mouseEntered: false });
+        this.props.onMouseLeave && this.props.onMouseLeave(this.props.post.id);
     }
 
     onToggleGalleryEdit = (gallery = {}) => {
@@ -72,7 +78,7 @@ class PostCell extends React.Component {
         const {
             post,
             assignment,
-            permissions,
+            roles,
             sortBy,
             editable,
         } = this.props;
@@ -91,7 +97,7 @@ class PostCell extends React.Component {
                     purchased={purchased}
                     onPurchase={() => this.setState({ purchased: true })}
                     onEdit={this.onToggleGalleryEdit}
-                    permissions={permissions}
+                    roles={roles}
                     editable={editable}
                 />
 
@@ -115,14 +121,19 @@ class PostCell extends React.Component {
             parentCaption,
             size,
             sizes,
+            highlighted,
         } = this.props;
         const { galleryEditVisible, gallery, mouseEntered } = this.state;
+        
         const divSize = size === 'large' ? sizes.large : sizes.small;
 
         return (
-            <div className={`${divSize} tile ${toggled ? 'toggled' : ''}`}>
+            <div
+                ref={(r) => { this.area = r; }}
+                className={`${divSize} tile ${toggled ? 'toggled' : ''}`}
+            >
                 <div className="tile-body noselect">
-                    <div className="frame" />
+                    <div className={`tile__frame ${highlighted ? 'tile__frame--highlighted' : ''}`} />
 
                     <div
                         className="hover"
@@ -148,6 +159,7 @@ class PostCell extends React.Component {
                         <FrescoVideo
                             video={post.stream}
                             hideControls
+                            muted
                             autoplay
                         />
                     ) : (

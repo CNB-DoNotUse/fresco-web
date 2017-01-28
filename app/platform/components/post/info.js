@@ -25,7 +25,7 @@ export default class PostInfo extends React.Component {
             verifiedBy = 'Verified';
             verifyClass = "mdi icon verified mdi-checkbox-marked-circle";
 
-            if (user.permissions.includes('update-other-content') && post.curator) {
+            if (user.roles.includes('admin') && post.curator) {
                  verifiedBy += ` by ${post.curator.full_name}`;
             }
         } else {
@@ -51,7 +51,7 @@ export default class PostInfo extends React.Component {
 		}
 
 		// Check to show curator item
-		if (gallery.curator && this.props.user.permissions.includes('update-other-content')) {
+		if (gallery.curator && user.roles.includes('admin')) {
             curator = (
                 <li>
                     <span className="mdi mdi-account icon"></span>

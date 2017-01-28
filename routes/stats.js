@@ -8,7 +8,7 @@ const router    = express.Router();
  */
 router.get('/', (req, res, next) => {
     //Check if Admin
-    if (!req.session.user.permissions.includes('get-all-purchases')) {
+    if (!req.session.user.roles.includes('admin')) {
         return next({
             status: 401,
             message: config.ERR_PAGE_MESSAGES[401]

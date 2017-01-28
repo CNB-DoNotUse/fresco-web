@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../../lib/user');
+const User = require('../../middleware/user');
 const API = require('../../lib/api');
 
 /**
@@ -16,34 +16,26 @@ router.get('/logout', User.logout);
 /**
  * Registers a new user account, optionally with an outlet
  */
-router.post('/register', (req, res) => {
+router.post('/register', (req, res, next) => {
     API.request({
         method: 'POST',
-        url: '/auth/register',
+        url: '/user/create',
         body: req.body,
     })
     .then(response => {
-        const { token } = response.body;
+        const { user } = response.body;
 
-        // Make request for full user object for session
-        API.request({
-            method: 'GET',
-            url: '/user/me',
-            token,
-        })
-        .then(response => {
-            const user = response.body;
-
-            User
-                .saveSession(req, user, token)
-                .then(() => {
-                    res.status(response.status).json({ success: true })
-                })
-                .catch(error => {
-                    res.status(response.status).json({ success: false, error })
+        //Log in newly registered user
+        user
+            .login(user.username, req.body.password, req)
+            .then(response => {
+                res.status(200).json({
+                    success: true                
                 });
-        })
-        .catch(error => API.handleError(error, res));
+            })
+            .catch(error => {
+                res.status(error.status).json({ success: false, error });
+            });
     })
     .catch(error => API.handleError(error, res));
 });

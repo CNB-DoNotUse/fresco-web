@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { scrolledToBottom } from 'app/lib/helpers';
 import last from 'lodash/last';
 import AssignmentListItem from './assignment-list-item';
 
@@ -46,9 +47,7 @@ export default class DispatchAssignments extends React.Component {
 
         // Check that nothing is loading and that we're at the end of the scroll,
         // and that we have a parent bind to load  more posts
-        const endOfScroll = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 200);
-
-        if (endOfScroll && assignments.length > 0) {
+        if (scrolledToBottom(grid) && assignments.length > 0) {
             // Set that we're loading
             this.setState({ loading: true });
 

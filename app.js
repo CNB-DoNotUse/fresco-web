@@ -3,7 +3,7 @@ const head          = require('./lib/head');
 const utils         = require('./lib/utils');
 const routes        = require('./lib/routes');
 const API           = require('./lib/api');
-const User          = require('./lib/user');
+const User          = require('./middleware/user');
 const redis         = require('./lib/redis');
 const express       = require('express');
 const compression   = require('compression');
@@ -13,6 +13,7 @@ const session       = require('express-session');
 const RedisStore    = require('connect-redis')(session);
 const cookieParser  = require('cookie-parser');
 const bodyParser    = require('body-parser');
+const helmet        = require('helmet');
 const multer        = require('multer');
 const fs            = require('fs');
 const app           = express();
@@ -24,6 +25,7 @@ process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
  */
 app.locals.head = head;
 app.locals.utils = utils;
+app.locals.segmentKey = config.SEGMENT_WRITE_KEY;
 app.locals.assets = JSON.parse(fs.readFileSync('public/build/assets.json'));
 app.locals.section = 'public';
 
@@ -44,7 +46,11 @@ app.use(
     })
 );
 
+//Secure headers
+app.use(helmet())
+
 //Multer
+//Define Storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/')
@@ -53,7 +59,7 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + '.' + file.originalname.split('.').pop())
     }
 });
-
+//Use storage
 app.use(multer({
     storage: storage
 }).any());
@@ -75,20 +81,12 @@ app.use(
     })
 );
 
+
 /**
  * Alert & Verifications check
  */
 app.use((req, res, next) => {
     res.locals.alerts = [];
-
-    // if (req.session && req.session.user && !req.session.user.verified){
-    //     res.locals.alerts.push('\
-    //         <p>Your email hasn\'t been verified.\
-    //             <br>Please click on the link sent to your inbox to verify your email!\
-    //         </p>\
-    //         <a href="/scripts/user/verify/resend">RESEND EMAIL</a>'
-    //     );
-    // }
 
     if (req.session && req.session.alerts){
         res.locals.alerts = res.locals.alerts.concat(req.session.alerts);
@@ -105,6 +103,10 @@ app.use((req, res, next) => {
  * Route session check
  */
 app.use((req, res, next) => {
+    if (!req.session) {
+        return next({ message: 'Unable to establish a session. Please contact support@fresconews.com.' }) // handle error
+    }
+
     const route = req.path.slice(1).split('/')[0];
     const now = Date.now();
 
@@ -121,13 +123,15 @@ app.use((req, res, next) => {
         });
     }
 
+    const tokenExpired = new Date(req.session.token.expires_at) < Date.now(); //Bearer token has expired
+
     // Check if the session hasn't expired
-    if (req.session.user.TTL && req.session.user.TTL - now > 0) {
+    if (!tokenExpired) {
         return next();
     }
 
-    //Session has expired, so refresh the user
-    User.refresh(req, res, next);
+    //Bearer token has expired, so refresh the token
+    User.refreshBearer(req, res, next);
 });
 
 

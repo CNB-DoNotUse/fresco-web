@@ -2,13 +2,6 @@
     "STATIC_CDN": "https://cdn.fresconews.com/static",
     "SESSION_SECRET": "Flerbelerbler heller falala laller",
 
-    "TWITTER": {
-        "CONSUMER_KEY": "94rpzX0nPHcRVncdP5tBRHUIp",
-        "CONSUMER_SECRET": "ke11m42OxmHI1YGu9it9nKPuGNtDMsVUizCd1ZQtTi5g7IOeF6",
-        "ACCESS_TOKEN_KEY": "2871169317-Mbv4U5wtRnWt9iCxkhehEEaRNaKqHGowyGBXeMx",
-        "ACCESS_TOKEN_SECRET": "DB0OMAsgIeb4PdDafzk5ALedC3MsRPngU9v1FfjkXXLd0"
-    },
-
     "VISIBILITY": {
         "PENDING": 0,
         "VERIFIED": 1,
@@ -35,8 +28,6 @@
         "404": "Page not found!",
         "500": "Internal server error"
     },
-
-    "PARSE_API": "https://api.parse.com/",
 
     "DASH_HOME": "/highlights",
 

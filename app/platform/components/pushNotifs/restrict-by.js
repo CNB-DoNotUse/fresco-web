@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { getAddressFromLatLng } from 'app/lib/location';
 import ChipInput from '../global/chip-input';
 import AutocompleteMap from '../global/autocomplete-map';
 
@@ -23,11 +22,7 @@ const onPlaceChange = (onChange) => (place) => {
 };
 
 const onMapDataChange = (onChange) => (data) => {
-    if (data.source === 'markerDrag') {
-        getAddressFromLatLng(data.location, (address) => {
-            onChange({ address, location: data.location });
-        });
-    }
+    if (data.source === 'markerDrag') onChange(data);
 };
 
 const onChangeUsers = (onChange) => (users) => {

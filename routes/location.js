@@ -1,17 +1,13 @@
 const express = require('express');
 const config = require('../lib/config');
-const api = require('../lib/api');
+const API = require('../lib/api');
 const router = express.Router();
 
 router.get('/:id', (req, res, next) => {
-    let user;
-    let token;
-    if (req.session) {
-        token = req.session.token;
-        user = req.session.user;
-    }
+    let user = req.session.user;
+    let token = req.session.token.token;
 
-    api.request({
+    API.request({
         token,
         url: `/outlet/locations/${req.params.id}`,
     }).then(response => {

@@ -1,14 +1,15 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
 import api from 'app/lib/api';
-import App from './app'
-import DispatchMap from '../components/dispatch/dispatch-map'
-import DispatchAssignments from '../components/dispatch/dispatch-assignments'
-import DispatchSubmit from '../components/dispatch/dispatch-submit'
-import DispatchRequest from '../components/dispatch/dispatch-request'
-import TopBar from '../components/topbar'
+import App from './app';
+import DispatchMap from '../components/dispatch/dispatch-map';
+import DispatchAssignments from '../components/dispatch/dispatch-assignments';
+import DispatchSubmit from '../components/dispatch/dispatch-submit';
+import DispatchRequest from '../components/dispatch/dispatch-request';
+import TopBar from '../components/topbar';
 import LocationDropdown from '../components/global/location-dropdown';
-import utils from 'utils'
+import utils from 'utils';
+import get from 'lodash/get';
 import 'sass/platform/_dispatch'
 
 /**
@@ -70,13 +71,17 @@ class Dispatch extends React.Component {
     updateNewAssignment(location = null, radius = 0, zoom = 0, lastChangeSource = null) {
         let newAssignment = null;
 
-        //Clear the new assignment if there's no location
-        if(location == null) {
-            newAssignment = null
-        } else if (location == 'new') {
+        // Clear the new assignment if there's no location
+        if (location == null) {
+            newAssignment = null;
+        } else if (location === 'new') {
             newAssignment = 'unset';
         } else {
-            newAssignment = { location, radius, zoom };
+            newAssignment = {
+                location,
+                radius: radius || get(this.state.newAssignment, 'radius', 0),
+                zoom,
+            };
         }
 
         this.setState({ newAssignment, lastChangeSource });
@@ -132,8 +137,8 @@ class Dispatch extends React.Component {
                 coordinates :  utils.generatePolygonFromBounds(map.getBounds())
             };
         } else {
-            params.sortBy = params.rating == 0 ? 'created_at' : 'ends_at';
-            params.direction = viewMode === 'active' ? 'asc' : 'desc'; //Switch sort when viewing non-active `history`
+            params.sortBy ='created_at';
+            params.direction = 'desc';
             params.limit = 10;
         }
 
@@ -226,7 +231,9 @@ class Dispatch extends React.Component {
         }
 
         return (
-            <App user={this.props.user}>
+            <App
+                user={this.props.user}
+                page='dispatch'>
                 <TopBar
                     locationInput={true}
                     mapPlace={this.state.mapPlace}
@@ -241,7 +248,7 @@ class Dispatch extends React.Component {
                         addLocationButton
                     />
 
-                    {this.props.user.permissions.includes('get-all-purchases') ?
+                    {this.props.user.roles.includes('admin') ?
                         <button
                             className="btn btn-flat pull-right mt12 mr16"
                             onClick={this.downloadStats} >Download Stats (.xlsx)</button>
