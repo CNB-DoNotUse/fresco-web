@@ -1,0 +1,44 @@
+@import '../_variables.scss';
+@import '../../global/mixins.scss';
+
+/**
+ * Container for the dialog
+ */
+.dialog-wrap {
+   position: fixed;
+   display: none;
+   top: 0;
+   left: 0;
+   height: 100%;
+   width: 100%;
+   z-index: 5;
+
+   &.toggled {
+       display: block;
+   }
+}
+
+/**
+ * The base class for all modal dialog components
+ * @description  centers component, gives base width, and animation
+ */
+.dialog-modal {
+    background-color: #fafafa;
+    width:384px;
+    display:none;
+    opacity:0;
+    z-index: $z-dim + 1;
+    overflow: auto;
+    margin: auto;
+    max-height: 80%;
+
+    @include vertical-align;
+    @include box-shadow(0 16px 16px 0 rgba(0, 0, 0, 0.24), 0 0 16px 0 rgba(0, 0, 0, 0.12));
+    @include border-radius(2px);
+    @include transition(opacity 0.15s ease-in-out);
+
+    &.toggled {
+        display:block;
+        opacity:1;
+    }
+}

@@ -322,6 +322,7 @@ const pushNotifs = (state = fromJS({
     requestConfirmSend: false,
     error: null,
     alert: null }), action = {}) => {
+
     switch (action.type) {
         case SEND:
             return state.set('requestConfirmSend', true);

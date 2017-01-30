@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import Base from './base';
-import 'app/sass/platform/dialogs/confirm.scss';
 
-export default class Confirm extends React.Component {
+export default class NewToken extends React.Component {
     static propTypes = {
         onConfirm: PropTypes.func,
         onCancel: PropTypes.func,
@@ -31,22 +30,9 @@ export default class Confirm extends React.Component {
         else onConfirm();
     }
 
-    renderBody = () => (
+    renderForm = () => (
         <div className="body">
-            {this.props.body && this.props.body}
-            {this.props.hasInput && (
-                <form
-                    className="form-group-default"
-                    onSubmit={this.onConfirm}
-                >
-                    <input
-                        ref={(r) => { this.input = r; }}
-                        type="password"
-                        className="form-control floating-label"
-                        placeholder="Password"
-                    />
-                </form>
-            )}
+            
         </div>
     )
 
@@ -56,11 +42,24 @@ export default class Confirm extends React.Component {
         return (
             <Base toggled={toggled}>
                 <div className={`dialog-modal--confirm ${toggled ? 'toggled' : ''}`}>
-                    <div className="header">
-                        <h3>{header}</h3>
-                    </div>
+                    <div className="version-dropdown"></div>
+                    
+                    <div className="form">
 
-                    {(hasInput || body) && this.renderBody()}
+                        <input
+                            ref="tokenName"
+                            type="text"
+                            className="token-name"
+                            placeholder="Token name"
+                        />
+
+                        <input
+                            ref="redirect"
+                            type="text"
+                            className="form-control floating-label"
+                            placeholder="Redirect URI"
+                        />
+                    </div>
 
                     <div className="footer">
                         <button
@@ -76,7 +75,7 @@ export default class Confirm extends React.Component {
                             onClick={this.onConfirm}
                             disabled={disabled}
                         >
-                            {confirmText}
+                            Save
                         </button>
                     </div>
                 </div>

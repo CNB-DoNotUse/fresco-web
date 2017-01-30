@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import 'app/sass/platform/dialogs/info.scss';
 
 export default class Info extends React.Component {
     static propTypes = {

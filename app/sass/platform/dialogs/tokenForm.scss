@@ -1,0 +1,13 @@
+@import '../_variables.scss';
+@import '../../global/mixins.scss';
+@import './dialogs';
+
+/**
+ * Dialog Element with just info
+ */
+.dialog-modal--form {
+    @extend .dialog-modal;
+
+    
+    
+}

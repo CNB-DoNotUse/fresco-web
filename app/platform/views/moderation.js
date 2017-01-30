@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import configureStore from 'app/redux/store/configureStore';
+import configureStore from 'app/redux/store';
 import Root from '../containers/Root';
 import Moderation from '../containers/Moderation';
 

@@ -13,8 +13,6 @@ export default class Info extends React.Component {
 
         this.avatarInputChange = this.avatarInputChange.bind(this);
         this.updateSettings = this.updateSettings.bind(this);
-        this.updateInfo = this.updateInfo.bind(this);
-        this.updateAvatar = this.updateAvatar.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -77,7 +75,7 @@ export default class Info extends React.Component {
 	 * Saves outlet's info
 	 */
     updateSettings() {
-        if(this.loading) return;
+        if(this.props.isLoading) return;
 
         const avatarFiles = this.refs['avatarFileInput'].files;
         const params = {
@@ -88,74 +86,12 @@ export default class Info extends React.Component {
 
         //Check so we don't call outlet/update without needing to, and just go straight to updating the avatar
         if(!utils.compareObjects(params, this.props.outlet)) {
-            this.updateInfo(avatarFiles, params);
+            this.props.updateOutlet(params, avatarFiles);
         } else {
             if(avatarFiles.length) {
-                this.updateAvatar(avatarFiles);
+                this.props.updateAvatar(avatarFiles);
             }
         }
-    }
-
-    /**
-     * Updates the outlet with the params passed
-     */
-    updateInfo(avatarFiles, params) {
-        this.loading = true;
-        $.ajax({
-            url: "/api/outlet/update",
-            method: 'POST',
-            beforeSend: (xhr) => {
-                xhr.setRequestHeader('TTL', '0');
-            },
-            data: JSON.stringify(params),
-            contentType: 'application/json'
-        })
-        .done((response) => {
-            if(avatarFiles.length) {
-                this.updateAvatar(avatarFiles, true);
-            } else {
-                this.props.updateOutlet(response);
-                return $.snackbar({ content: 'Your info has been successfully saved!' });
-            }
-        })
-        .fail((error) => {
-            return $.snackbar({ content: utils.resolveError(error, 'There was an error updating your settings!') });
-        })
-        .always(() => {
-            this.loading = false;
-        });
-    }
-
-    /**
-     * Updates the outlet's avatar
-     * @param  {BOOL} calledWithInfo Context for the error message
-     */
-    updateAvatar(avatarFiles, calledWithInfo) {
-        let files = new FormData();
-        files.append('avatar', avatarFiles[0]);
-        this.loading = true;
-
-        $.ajax({
-            url: "/api/outlet/avatar",
-            method: 'POST',
-            data: files,
-            contentType: false,
-            processData: false,
-            beforeSend: (xhr) => {
-                xhr.setRequestHeader('TTL', '0');
-            }
-        })
-        .done((response) => {
-            return $.snackbar({
-                content: `Your ${calledWithInfo ? 'info' : 'avatar'} has been successfully updated!`
-            });
-        })
-        .fail((error) => {
-            return $.snackbar({ content: utils.resolveError(error, 'There was an error updating your avatar!') });
-        })
-        .always(() => {
-            this.loading = false;
-        });
     }
 
     render() {

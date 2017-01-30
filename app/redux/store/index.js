@@ -4,25 +4,32 @@ import { fromJS, Iterable } from 'immutable';
 import createLogger from 'redux-logger';
 import rootReducer from '../modules/reducer';
 
+/**
+ * Configures our redux store
+ * @param  {Object} initialState Initial starting state
+ * @return {Redux Store} redux Store object
+ */
 export default function configureStore(initialState) {
+
+    //Use thunk middleware for our async reducers
     const middleware = [thunk];
 
     let enhancer;
 
     if (process.env.__DEV__) {
         const logger = createLogger({
-            stateTransformer: (state) => {
-                const newState = {};
+            // stateTransformer: (state) => {
+            //     const newState = {};
 
-                for (const i of Object.keys(state.toJS())) {
-                    if (Iterable.isIterable(state.get(i))) {
-                        newState[i] = state.get(i).toJS();
-                    } else {
-                        newState[i] = state.get(i);
-                    }
-                }
-                return newState;
-            },
+            //     for (const i of Object.keys(state.toJS())) {
+            //         if (Iterable.isIterable(state.get(i))) {
+            //             newState[i] = state.get(i).toJS();
+            //         } else {
+            //             newState[i] = state.get(i);
+            //         }
+            //     }
+            //     return newState;
+            // },
         });
 
         middleware.push(logger);
@@ -36,8 +43,8 @@ export default function configureStore(initialState) {
         enhancer = applyMiddleware(...middleware);
     }
 
-    // See https://github.com/rackt/redux/releases/tag/v3.1.0
-    const store = createStore(rootReducer, fromJS(initialState), enhancer);
+
+    const store = createStore(rootReducer, initialState, enhancer);
 
     return store;
 }

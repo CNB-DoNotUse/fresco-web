@@ -1,16 +1,15 @@
-import React from 'react';
-import utils from 'utils';
+import React, { PropTypes } from 'react';
 import every from 'lodash/every';
-import cloneDeep from 'lodash/cloneDeep';
 
 /**
  * Outlet notifications component for managing notification settings
  */
 class Notifications extends React.Component {
 
-	state = {
-		notifications: []
-	}
+	static propTypes = {
+	    notificationSettings: PropTypes.array,
+	    loadNotifications: PropTypes.func
+	};
 
 	componentDidUpdate(prevProps, prevState) {
 		//Need to init everytime because of the checkboxes
@@ -19,7 +18,7 @@ class Notifications extends React.Component {
 
 	componentDidMount() {
 		//Retrieve notifications
-		this.loadNotifications();
+		this.props.loadNotifications();
 	}
 
 	/**
@@ -28,61 +27,7 @@ class Notifications extends React.Component {
 	 * @param {Integer} index The index of the notificaton object to find in the array of notifs
 	 */
 	updateNotification = (option, index = null) => (e) => {
-		const singleNotification = index !== null;
-		let params = {};
-		let notifications = cloneDeep(this.state.notifications);
-		let oldNotifications = cloneDeep(this.state.notifications);
-
-		if(singleNotification) {
-		    notifications[index].options[option] = e.target.checked;
-
-		    params = { 
-		    	[notifications[index].type] : {
-		    		[option]: e.target.checked
-		    	} 
-		    }
-		} else {
-			for (let notif of notifications) {
-		        notif['options'][option] = e.target.checked;
-		        params[notif.type] = {
-		        	[option]: e.target.checked
-		        }
-			}
-		}
-
-		//Set new notifications, failure will set back to original state
-		this.setState({ notifications });
-
-		$.ajax({
-		    url: '/api/user/settings/update',
-		    method: 'post',
-		    contentType: 'application/json',
-		    dataType: 'json',
-		    data: JSON.stringify(params),
-		})
-		.fail((xhr, status, error) => {
-		    //Set back due to failure
-		    this.setState({
-		        notifications: oldNotifications
-		    });
-
-		    $.snackbar({ content: 'We\'re unable to update your notifications at the moment! Please try again in a bit.' });
-		});
-	}
-
-	/**
-	 * Loads notifications for the outlet
-	 */
-	loadNotifications = () => {
-		$.ajax({ 
-		    url: '/api/user/settings',
-		    data: {
-		    	types_like: 'notify-outlet%'
-		    }
-		})
-		.done((res) => {
-		    this.setState({ notifications: res });
-		});
+		this.props.updateNotification(option, index, e);
 	}
 
 	renderNotificationList (notifications) {
@@ -108,7 +53,7 @@ class Notifications extends React.Component {
 	}
 
 	render () {
-		const { notifications } = this.state;
+		const { notificationSettings } = this.props;
 
 		return (
 			<div className="card settings-outlet-notifications">
@@ -123,7 +68,7 @@ class Notifications extends React.Component {
 					</div>
 				</div>
 
-				{this.renderNotificationList(notifications)}
+				{this.renderNotificationList(notificationSettings)}
 
 				<div className="footer">
 					<div className="notification-options">
@@ -131,7 +76,7 @@ class Notifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
-									checked={every(notifications, 'options.send_sms')}
+									checked={every(notificationSettings, 'options.send_sms')}
 									onChange={this.updateNotification('send_sms')} />
 							</label>
 						</div>
@@ -140,7 +85,7 @@ class Notifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
-									checked={every(notifications, 'options.send_email')}
+									checked={every(notificationSettings, 'options.send_email')}
 									onChange={this.updateNotification('send_email')} />
 							</label>
 						</div>
@@ -149,7 +94,7 @@ class Notifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
-									checked={every(notifications, 'options.send_fresco')}
+									checked={every(notificationSettings, 'options.send_fresco')}
 									onChange={this.updateNotification('send_fresco')} />
 							</label>
 						</div>
@@ -208,5 +153,8 @@ const NotificaitonItem = ({ notification, updateNotification, index }) => {
 	);
 }
 
+Notifications.defaultProps = {
+	notificationSettings: []
+}
 
 export default Notifications;
