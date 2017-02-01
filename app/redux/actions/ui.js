@@ -5,6 +5,7 @@ import api from 'app/lib/api';
  */
 export const TOGGLE_SNACKBAR = 'TOGGLE_SNACKBAR';
 export const UPDATE_LOADING = 'UPDATE_LOADING';
+export const TOGGLE_MODAL = 'UPDATE_MODAL';
 
 /**
  * Action creators
@@ -22,4 +23,9 @@ export const toggleSnackbar = (snackbarText, show = true) => ({
 export const isLoading = (loading) => ({
     type: UPDATE_LOADING,
     loading
+});
+
+export const toggleModal = (showModal) => ({
+    type: TOGGLE_MODAL,
+    showModal
 });

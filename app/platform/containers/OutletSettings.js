@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import * as outlet from 'app/redux/actions/outlet';
 import * as ui from 'app/redux/actions/ui';
-import * as notificationSettings from 'app/redux/actions/notificationSettings';
-import * as clients from 'app/redux/actions/clients';
 
 import App from '../views/app';
 import TopBar from '../components/topbar';
@@ -99,11 +99,7 @@ class OutletSettings extends React.Component {
                         )}
                     </div>
                     <div className="right">
-                        <Notifications 
-                            loadNotifications={this.props.loadNotifications}
-                            notificationSettings={notificationSettings}
-                            updateNotification={this.props.updateNotification}
-                            outlet={outlet} />
+                        <Notifications />
                         
                         <Locations outlet={outlet} />
 
@@ -129,41 +125,16 @@ const mapStateToProps = (state) => {
         user: state.user,
         members: state.members,
         ui: state.ui,
-        notificationSettings: state.notificationSettings,
         clients: state.clients
     }
 }
 
+
 const mapDispatchToProps = (dispatch) => {
-    return {
-        updateOutlet: (params, avatarFiles) => {
-            dispatch(outlet.updateOutlet(params, avatarFiles))
-        },
-        updateAvatar: (avatarFiles, calledWithInfo) => {
-            dispatch(outlet.updateAvatar(avatarFiles, calledWithInfo))
-        },
-        updateMembers: (members) => {
-            dispatch(outlet.updateOutlet(members))
-        },
-        toggleSnackbar: (snackBarText, shown) => {
-            dispatch(ui.toggleSnackbar(snackBarText, shown))
-        },
-        receiveNotifications: (notifications) => {
-            dispatch(notifications)
-        },
-        loadNotifications: () => {
-            dispatch(notificationSettings.loadNotifications());
-        },
-        updateNotification: (option, index, e) => {
-            dispatch(notificationSettings.updateNotification(option,index,e))
-        },
-        getClients: () => {
-            dispatch(clients.getClients());
-        },
-        updateClient: (...args) => {
-            dispatch(clients.updateClient(...args));
-        }
-    }
+    return bindActionCreators(
+        { ...outlet, ...ui }, 
+        dispatch
+    )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OutletSettings);

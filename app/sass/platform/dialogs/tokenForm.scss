@@ -1,13 +1,71 @@
 @import '../_variables.scss';
 @import '../../global/mixins.scss';
+@import '../../global/colors.scss';
 @import './dialogs';
 
 /**
  * Dialog Element with just info
  */
-.dialog-modal--form {
+.dialog-modal--tokenForm {
     @extend .dialog-modal;
 
+    width:500px;
+
+    .dialog-modal__headerActions {
+        float:right;
+    }
+
+    .dialog-modal__form {
+        padding:17px 24px;
+    }
+
+    .dialog-modal__token-dropdown {
+        background:transparent;
+        margin:0;
+    }
+
+    .dialog-modal__delete {
+        cursor:pointer;
+        @include rgba(color, 0, 0, 0, 0.54);
+    }
+
+    .dialog-modal__footer {
+        height:52px;
+        font-size: 15px;
+        font-weight: 500;
+        padding:8px;
+        border-top: solid 1px rgba(0, 0, 0, 0.12);
+
+        button {
+            float:right;
+            color:$fresco-blue;
+        }
+
+        .dialog-modal__rekey {
+            float:left;
+        }
+    }
+
     
-    
+    .dialog-modal__headerInput {
+        font-size:21px;
+        background:none;
+        border:none;
+        font-weight:500;
+        @include rgba(color, 0, 0, 0, 0.87);
+    }
+
+    .dialog-modal__redirectInput {
+        max-width:328px;
+        font-size:16px;
+        line-height:24px;
+        background:none;
+        margin:38px auto 0;
+        border:none;
+        border-bottom:solid 1px rgba(0, 0, 0, 0.12);
+        @include placeholderColor{
+            @include rgba(color, 0, 0, 0, 0.26)
+        }
+    }
+
 }

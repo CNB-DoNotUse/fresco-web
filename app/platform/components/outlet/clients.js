@@ -1,33 +1,51 @@
 import React, { PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import utils from 'utils';
+import * as clients from 'app/redux/actions/clients';
+import * as ui from 'app/redux/actions/ui';
+import * as versions from 'app/redux/actions/versions';
+
+import ClientForm from  '../dialogs/client-form.js';
+import ClientItem from './client-item';
+
 
 /**
  * OAauth client manager for 3rd parties
  */
 export default class Clients extends React.Component {
     static propTypes = {
-        outlet: PropTypes.object,
         clients: PropTypes.array,
         getClients: PropTypes.function,
-        updateClient: PropTypes.function,
+        updateClient: PropTypes.func,
         isLoading: PropTypes.bool
     };
+
+    state = {
+        activeClient: null
+    }
 
     componentDidMount() {
         this.props.getClients();   
     }
 
-    updateClient = (id, params, index) => {
+    updateClient = (id, params) => {
         if(this.props.isLoading) return;
-        this.props.updateClient(id , params, index);   
+        this.props.updateClient(id, params);   
     }
 
-    toggleModal = () => {
-
+    /**
+     * Toggles editing by setting client to be editing in state and later passing it to the token form
+     * @param  {Object} activeClient Client to be edited
+     */
+    toggleEdit = (activeClient = null) => {
+        this.setState({ activeClient })
+        this.props.toggleModal();
     }
 
     render() {
-        const { clients } = this.props;
+        const { clients, generateClient, showModal, toggleModal, getVersions, versions } = this.props;
+        const { activeClient, tokenForm, clientIndex } = this.state;
 
         return (
             <div className="card client-tokens__card">
@@ -35,11 +53,22 @@ export default class Clients extends React.Component {
                     <span className="title">API Tokens</span>
 
                     <div className="client-tokens__sub-header">
-                        <span className="new-token" onClick={this.toggleModal}>NEW TOKEN</span>
+                        <span className="new-token" onClick={() => this.toggleEdit(null)}>NEW TOKEN</span>
 
                         <a href="https://api.fresconews.com" className="api-docs">API DOCS</a>
                     </div>
                 </div>
+
+                <ClientForm 
+                    newToken={activeClient ? false : true}
+                    client={activeClient}
+                    clientIndex={clientIndex}
+                    toggled={showModal}
+                    versions={this.props.versions}
+                    toggle={toggleModal}
+                    getVersions={getVersions}
+                    updateClient={this.updateClient}
+                    generateClient={generateClient} />
 
                 <div className="client-tokens__body">
                     {clients.map((client, index) => {
@@ -47,6 +76,8 @@ export default class Clients extends React.Component {
                             <ClientItem 
                                 updateClient={this.updateClient}
                                 client={client} 
+                                toggle={toggleModal}
+                                toggleEdit={this.toggleEdit}
                                 key={index} />
                         )
                     })}
@@ -60,79 +91,19 @@ Clients.defaultProps = {
     clients: []
 }
 
-
-/**
- * Individual client item in the client list
- */
-class ClientItem extends React.Component {
-
-    state = {
-        editable: false,
-        enabled: this.props.client.enabled
+const mapStateToProps = (state) => {
+    return {
+        clients: state.clients,
+        versions: state.versions,
+        showModal: state.ui.showModal
     }
-
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.client.enabled !== this.state.enabled) {
-            this.setState({ enabled: nextProps.client.enabled })
-        }
-    }
-
-    isEditable = (editable) => {
-        this.setState({ editable: true });
-    }
-
-    /**
-     * Toggles enabled state of the component, subsequently updates client
-     * @param  {String} id ID of the client
-     * @param {Integer} index Index within the list of clients
-     */
-    toggleEnabled = (id, index) => {
-        const enabled = !this.state.enabled;
-        this.setState({ enabled })
-        this.props.updateClient(id, { enabled }, index)
-    }
-
-
-    render() {
-        const { client, index } = this.props;
-        const { tag, api_version, last_used_at, id } = client;
-        const versionNumber = `${api_version.version_major}.${api_version.version_minor}`;
-
-        return (
-            <div 
-                className="client-item" 
-                onMouseEnter={() => this.isEditable(true)} 
-                onMouseLeave={() => this.isEditable(false)}
-            >
-                <div className="client-item__toggle togglebutton">
-                  <label>
-                    <input 
-                        onChange={(e) => this.toggleEnabled(id, index)}
-                        type="checkbox" 
-                        checked={this.state.enabled ? 'true' : ''} 
-                    />
-                  </label>
-                </div>
-
-                <div className="client-item__info">
-                    <h3 className="client-item__tag">{tag || 'No tag'}</h3>
-
-                    {this.state.editable && 
-                        <i className="mdi mdi-pencil client-item__edit"></i>
-                    }
-                    
-                    <p className="client-item__meta">
-                        <span>Version {versionNumber} • </span>
-                        <span>Last active {utils.formatTime(last_used_at, true)}</span>
-                    </p>
-
-                    <span className="client-item__copy-action">Copy Client ID</span>
-
-                    <span className="client-item__copy-action">Copy Client Secret</span>
-                </div>
-            </div>
-        )        
-    }
-
 }
 
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators(
+        { ...clients, ...ui, ...versions }, 
+        dispatch
+    );
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Clients);

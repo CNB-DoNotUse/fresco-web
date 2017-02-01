@@ -55,7 +55,7 @@ class Dropdown extends React.Component {
     /**
      * Called whenever an option is selected from the dropdown
      */
-    optionClicked(e) {
+    optionClicked(e, i) {
         // Get the span tag from the list item
         const selected = e.currentTarget.getElementsByTagName('span')[0].innerHTML;
 
@@ -70,7 +70,7 @@ class Dropdown extends React.Component {
         this.toggle();
 
         if (this.props.onSelected) {
-            this.props.onSelected(selected);
+            this.props.onSelected(selected, i);
         }
     }
 
@@ -94,7 +94,7 @@ class Dropdown extends React.Component {
                         <li
                             className={option === this.state.selected ? 'active' : ''}
                             key={i}
-                            onClick={(e) => this.optionClicked(e)}
+                            onClick={(e) => this.optionClicked(e, i)}
                         >
                             <span>{option}</span>
                         </li>

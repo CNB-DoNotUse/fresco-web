@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import every from 'lodash/every';
+
+import * as notificationSettings from 'app/redux/actions/notificationSettings';
 
 /**
  * Outlet notifications component for managing notification settings
@@ -17,6 +20,8 @@ class Notifications extends React.Component {
 	}
 
 	componentDidMount() {
+		console.log(this.props);
+
 		//Retrieve notifications
 		this.props.loadNotifications();
 	}
@@ -157,4 +162,25 @@ Notifications.defaultProps = {
 	notificationSettings: []
 }
 
-export default Notifications;
+const mapStateToProps = (state) => {
+    return {
+        ui: state.ui,
+        notificationSettings: state.notificationSettings
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        receiveNotifications: (notifications) => {
+            dispatch(notifications)
+        },
+        loadNotifications: () => {
+            dispatch(notificationSettings.loadNotifications());
+        },
+        updateNotification: (option, index, e) => {
+            dispatch(notificationSettings.updateNotification(option,index,e))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);

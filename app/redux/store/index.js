@@ -2,14 +2,13 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { fromJS, Iterable } from 'immutable';
 import createLogger from 'redux-logger';
-import rootReducer from '../modules/reducer';
 
 /**
  * Configures our redux store
  * @param  {Object} initialState Initial starting state
  * @return {Redux Store} redux Store object
  */
-export default function configureStore(initialState) {
+export default function configureStore(initialState, reducer) {
 
     //Use thunk middleware for our async reducers
     const middleware = [thunk];
@@ -44,7 +43,7 @@ export default function configureStore(initialState) {
     }
 
 
-    const store = createStore(rootReducer, initialState, enhancer);
+    const store = createStore(reducer, initialState, enhancer);
 
     return store;
 }
