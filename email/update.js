@@ -33,7 +33,7 @@ fs.readdir(templatesDir, (_, dirs) => {
     dirs.filter(d => !d.includes('.')).forEach((dir) => {
         const templateDir = path.join(__dirname, 'templates', dir);
         new EmailTemplate(templateDir).render({}, (err, result) => {
-            let name = templateDir.split('/').pop();
+            let name = templateDir.split(path.sep).pop();
             name = dev ? `Dev ${startCase(name)}` : startCase(name);
 
             if (err) console.error('err: ', err);
@@ -46,4 +46,3 @@ fs.readdir(templatesDir, (_, dirs) => {
         });
     });
 });
-
