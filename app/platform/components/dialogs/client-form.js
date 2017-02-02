@@ -58,7 +58,7 @@ export default class ClientForm extends React.Component {
      * @return {[type]} [description]
      */
     onConfirm = () => {
-        const { client, clientIndex } = this.props;
+        const { client } = this.props;
 
         const params = {
             tag: this.state.tag,
@@ -70,7 +70,7 @@ export default class ClientForm extends React.Component {
         //Client is passed
         if(this.props.client) {
             params.rekey = this.state.shouldRekey
-            this.props.updateClient(client.id, params, clientIndex);
+            this.props.updateClient(client.id, params);
         } else if (this.props.newToken) {
             params.scope = 'public';
             this.props.generateClient(params);

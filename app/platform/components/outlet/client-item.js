@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+require('script!clipboard/dist/clipboard.js');
 
 /**
  * Individual client item in the client list
@@ -9,17 +10,77 @@ export default class ClientItem extends React.Component {
         enabled: PropTypes.bool,
         updateClient: PropTypes.func,
         toggleEdit: PropTypes.func,
-        client: PropTypes.object.isRequired
+        client: PropTypes.object.isRequired,
+        updateClientWithSecret: PropTypes.object.isRequired
     }
 
     state = {
         editable: false,
-        enabled: this.props.client.enabled
+        enabled: this.props.client.enabled,
+        client_id_clipboard: null,
+        client_secret_clipboard: null
+    }
+
+    componentDidMount() {
+        this.configureClipboard();
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.client.enabled !== this.state.enabled) {
-            this.setState({ enabled: nextProps.client.enabled })
+        const { client } = nextProps;
+        if(client.enabled !== this.state.enabled) {
+            this.setState({ enabled: client.enabled })
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const { client } = this.props;
+
+        if((client.client_secret && !prevProps.client.client_secret) || client.id !== prevProps.client.id) {
+            this.configureClipboard();
+        }
+    }
+
+    /**
+     * Configures clipboard actions
+     */
+    configureClipboard = () => {
+        const { client } = this.props;
+        const client_id_clipboard = new Clipboard(this.refs.client_id, {
+            text: (trigger) => {
+                return client.client_id;
+            }
+        }); 
+
+        client_id_clipboard.on('success', (e) => {
+            this.props.toggleSnackbar('Client ID successfully copied!')
+        });
+        
+        if(this.state.client_id_clipboard)
+            this.state.client_id_clipboard.destroy();
+        
+        this.setState({ client_id_clipboard })
+
+        if(client.client_secret) {
+            const client_secret_clipboard = new Clipboard(this.refs.client_secret, {
+                text: (trigger) => {
+                    return client.client_secret;
+                }
+            });  
+         
+            client_secret_clipboard.on('success', (e) => {
+                this.props.toggleSnackbar('Client Secret successfully copied!')
+            })
+
+            if(this.state.client_secret_clipboard)
+                this.state.client_secret_clipboard.destroy();
+
+            this.setState({ client_secret_clipboard })
+        }
+    }
+
+    clientSecretClicked = () => {
+        if(!this.props.client.client_secret) {
+            this.props.updateClientWithSecret(this.props.client.id, this.props.client.client_id);
         }
     }
 
@@ -40,7 +101,7 @@ export default class ClientItem extends React.Component {
 
     render() {
         const { client, toggleEdit } = this.props;
-        const { tag, api_version, last_used_at, id } = client;
+        const { tag, api_version, last_used_at, id, client_id } = client;
         const versionNumber = `${api_version.version_major}.${api_version.version_minor}`;
 
         return (
@@ -68,12 +129,17 @@ export default class ClientItem extends React.Component {
                     
                     <p className="client-item__meta">
                         <span>Version {versionNumber} • </span>
-                        <span>Last active {utils.formatTime(last_used_at, true)}</span>
+                        <span>{last_used_at ? 'Last active ' + utils.formatTime(last_used_at, true) : 'No record of activity'}</span>
                     </p>
 
-                    <span className="client-item__copy-action">Copy Client ID</span>
+                    <span 
+                        className="client-item__copy-action" 
+                        ref="client_id">Copy Client ID</span>
 
-                    <span className="client-item__copy-action">Copy Client Secret</span>
+                    <span 
+                        className="client-item__copy-action"
+                        onClick={this.clientSecretClicked}
+                        ref="client_secret">{!client.client_secret ? 'Request secret' : 'Copy Client Secret'}</span>
                 </div>
             </div>
         )        

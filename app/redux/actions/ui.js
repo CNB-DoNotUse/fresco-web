@@ -20,12 +20,12 @@ export const toggleSnackbar = (snackbarText, show = true) => ({
  * Set's loading state
  * @param  {boolean} loading Is loading or not
  */
-export const isLoading = (loading) => ({
+export const enableLoading = (loading) => ({
     type: UPDATE_LOADING,
     loading
 });
 
-export const toggleModal = (showModal) => ({
+export const toggleModal = (showModal = false) => ({
     type: TOGGLE_MODAL,
     showModal
 });

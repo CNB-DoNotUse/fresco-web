@@ -44,7 +44,16 @@ export default class Clients extends React.Component {
     }
 
     render() {
-        const { clients, generateClient, showModal, toggleModal, getVersions, versions } = this.props;
+        const { 
+            clients,
+            generateClient, 
+            showModal, 
+            toggleModal, 
+            getVersions, 
+            versions, 
+            toggleSnackbar,
+            updateClientWithSecret
+        } = this.props;
         const { activeClient, tokenForm, clientIndex } = this.state;
 
         return (
@@ -78,6 +87,8 @@ export default class Clients extends React.Component {
                                 client={client} 
                                 toggle={toggleModal}
                                 toggleEdit={this.toggleEdit}
+                                toggleSnackbar={toggleSnackbar}
+                                updateClientWithSecret={updateClientWithSecret}
                                 key={index} />
                         )
                     })}

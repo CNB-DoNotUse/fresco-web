@@ -1,5 +1,6 @@
 import api from 'app/lib/api';
-import { isLoading, toggleSnackbar, toggleModal } from './ui';
+import { enableLoading, toggleSnackbar, toggleModal } from './ui';
+import { findById } from 'app/lib/helpers';
 
 /**
  * Action types as consant
@@ -17,10 +18,9 @@ export const receiveClients = (clients) => ({
     clients
 });
 
-export const receiveClient = (client, id, index) => ({
+export const receiveClient = (client, index) => ({
     type: RECEIVE_CLIENT,
     client,
-    id,
     index
 });
 
@@ -41,38 +41,25 @@ export const addClient = (client) => ({
 export const getClients = () => (dispatch) => {
     api
         .get('client/list')
-        .then(response => dispatch(receiveClients(response)))
+        .then(response => dispatch(receiveClients([ response[0] ])))
 }
-
-// /**
-//  * Gets API version
-//  * @param  {[type]} ) [description]
-//  * @return {[type]}   [description]
-//  */
-// export const getVersions = () => (dispatch) => {
-//     api
-//         .get('versions/list')
-//         .then(response => dispatch(receiveVersions(response)))
-// }
-
-
 
 /**
  * Action creator for generating a client
  */
 export const generateClient = (params) => (dispatch) => {
-    dispatch(isLoading(true));
+    dispatch(enableLoading(true));
 
     api
         .post(`client/generate`, params)
         .then(response => {
             dispatch(addClient(response));
             dispatch(toggleModal(false));
-            dispatch(isLoading(false));
+            dispatch(enableLoading(false));
         })
         .catch(error => {
             dispatch(toggleSnackbar('There was an error creating this client!'))
-            dispatch(isLoading(false));
+            dispatch(enableLoading(false));
         });
 }
 
@@ -81,29 +68,44 @@ export const generateClient = (params) => (dispatch) => {
  * @param  {Object} params Params to update the client with
  */
 export const updateClient = (id, params = {}) => (dispatch, getState) => {
-    const clients = getState().clients;
-    let index = null;
-    const clientToUpdate = clients.find((c, i) => {
-        index = i;
-        return c['id'] === id;
-    })
+    const { clients, ui } = getState();
+    const { index, object } = findById(id, clients, 'id');
 
-    dispatch(isLoading(true));
+    dispatch(enableLoading(true));
 
     api
         .post(`client/${id}/update`, params)
         .then(response => {
-            dispatch(receiveClient(response, id, index));
-            dispatch(toggleModal(false));
-            dispatch(isLoading(false));
+            dispatch(receiveClient(response, index));
+            dispatch(enableLoading(false));
+            if(ui.showModal) dispatch(toggleModal(false));
         })
         .catch(error => {
-            dispatch(isLoading(false));
-            //Send back clients again to update state
-            dispatch(receiveClients(clients))
+            dispatch(enableLoading(false));
+            //Send back client again to update state to previous
+            dispatch(receiveClient(object, index))
             dispatch(toggleSnackbar('There was an error updating this client!'))
         });
 }
+
+/**
+ * Adds secret to client object
+ * @param  {String} client_id client's id
+ */
+export const updateClientWithSecret = (id, client_id) => (dispatch, getState) => {
+    const { index, object } = findById(id, getState().clients, 'id');
+
+    const mock = { ...object, 'client_secret': 'fasdasd'};
+
+    api
+        .get(`client/${client_id}/secret`)
+        .then(response => dispatch(receiveClient(response, index)))
+        .catch(error => {
+            dispatch(receiveClient(mock, index));
+            dispatch(toggleSnackbar('There was an error fetching this client\'s secret. Please contact api@fresconews.com.'))
+        });
+}
+
 
 /**
  * Deletes a client
@@ -118,16 +120,16 @@ export const deleteClient = (id) => (dispatch, getState) => {
         return c['id'] === id;
     })
 
-    dispatch(isLoading(true));
+    dispatch(enableLoading(true));
 
     api
         .post(`client/${id}/delete`)
         .then(response => {
             dispatch(removeClient(id, index));
-            dispatch(isLoading(false));
+            dispatch(enableLoading(false));
         })
         .catch(error => {
-            dispatch(isLoading(false));
+            dispatch(enableLoading(false));
             dispatch(toggleSnackbar('There was an error deleting this client!'))
         });
 
