@@ -11,7 +11,7 @@
     "buildProd": "NODE_ENV=production webpack --progress --colors --display-error-details --config webpack/webpack.production.config.js",
     "updateEmailTemplates": "node ./email/update.js",
     "updateEmailTemplatesDev": "NODE_ENV=development node ./email/update.js",
-    "watchEmailTemplates": "nodemon --watch ./email/templates --ext hbs,scss ./email/render.js"
+    "watchEmailTemplates": "nodemon --watch ./app/email/templates --watch ./app/sass --ext hbs,scss ./app/email/render.js"
   },
   "dependencies": {
     "async": "~2.0.0-rc.3",
@@ -27,7 +27,7 @@
     "debug": "~2.2.0",
     "detect-node": "^2.0.3",
     "ejs": "~2.5.1",
-    "email-templates": "^2.5.4",
+    "email-templates": "https://github.com/rpm0618/node-email-templates.git#temp-compiled",
     "express": "~4.14.0",
     "express-session": "~1.14.0",
     "handlebars": "^4.0.6",

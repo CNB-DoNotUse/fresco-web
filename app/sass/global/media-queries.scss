@@ -36,3 +36,9 @@ $desktop-width-large: 1440px;
     @content;
   }
 }
+
+@mixin desktop-all {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+}

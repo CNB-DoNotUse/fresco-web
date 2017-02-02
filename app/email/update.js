@@ -32,7 +32,9 @@ const createTemplate = (name, data) => {
 fs.readdir(templatesDir, (_, dirs) => {
     dirs.filter(d => !d.includes('.')).forEach((dir) => {
         const templateDir = path.join(__dirname, 'templates', dir);
-        new EmailTemplate(templateDir).render({}, (err, result) => {
+        new EmailTemplate(templateDir, {juiceOptions: {
+            preserveMediaQueries: true
+        }}).render({}, (err, result) => {
             let name = templateDir.split(path.sep).pop();
             name = dev ? `Dev ${startCase(name)}` : startCase(name);
 

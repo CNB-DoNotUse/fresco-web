@@ -1,0 +1,70 @@
+@import "../global/colors";
+@import "../global/media-queries";
+
+$email-bg: #fafafa;
+$email-title: rgba(0, 0, 0, 0.54);
+$email-body: rgba(0, 0, 0, 0.87);
+
+html, body{
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: $fresco-bg;
+}
+
+.email-content {
+    background-color: $email-bg;
+    width: 100%;
+
+    @include desktop-all {
+        width: 800px !important;
+        margin: 24px auto 24px auto;
+        border-radius: 2px;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 0 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+}
+
+.email-content__title {
+    font-size: 14px;
+    line-height: 48px;
+    color: $email-title;
+    padding: 8px 16px 0 16px;
+
+    @include desktop-all {
+        padding-left: 22px !important;
+        padding-right: 22px !important;
+    }
+}
+
+.email-content__body {
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 500;
+    padding: 0px 16px 16px 16px;
+
+    @include desktop-all {
+        padding-left: 22px !important;
+        padding-right: 22px !important;
+        padding-bottom: 24px !important;
+    }
+}
+
+.email-content__divider {
+    height: 2px;
+    width: 92%;
+    margin: auto;
+    border-top: solid 1px rgba(0, 0, 0, 0.12);
+
+    @include desktop-all {
+        width: 100% !important;
+    }
+}
+
+.email-content__footer {
+    display: block;
+    width: 120px;
+    margin: auto;
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
