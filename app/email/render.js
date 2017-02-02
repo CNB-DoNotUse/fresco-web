@@ -1,8 +1,13 @@
 const EmailTemplate = require('email-templates').EmailTemplate;
 const fs = require('fs');
 const path = require('path');
+const Handlebars = require('handlebars');
 
 const templatesDir = path.join(__dirname, 'templates');
+
+// Register the footer as a handlebars partial to be re-used
+const footerTemplate = fs.readFileSync(path.join(__dirname, 'footer.hbs')).toString();
+Handlebars.registerPartial('footer', footerTemplate);
 
 fs.readdir(templatesDir, (_, dirs) => {
     dirs.filter(d => !d.includes('.')).forEach(dir => {

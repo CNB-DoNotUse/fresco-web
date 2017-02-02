@@ -2,14 +2,19 @@
 @import "../global/media-queries";
 
 $email-bg: #fafafa;
-$email-title: rgba(0, 0, 0, 0.54);
-$email-body: rgba(0, 0, 0, 0.87);
+$email-title: #737373;
+$email-body: #212121;
+$email-divider: #dcdcdc;
 
-html, body{
+html, body, .container {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     background-color: $fresco-bg;
+
+    @include desktop-all {
+        padding-top: 24px !important;
+    }
 }
 
 .email-content {
@@ -18,8 +23,11 @@ html, body{
 
     @include desktop-all {
         width: 800px !important;
-        margin: 24px auto 24px auto;
+        margin: auto;
         border-radius: 2px;
+
+        // If the email client supports box-shadow, then they support rgba, so
+        // there is no need to convert these colors
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 0 2px 0 rgba(0, 0, 0, 0.05);
     }
 
@@ -43,6 +51,8 @@ html, body{
     font-weight: 500;
     padding: 0px 16px 16px 16px;
 
+    color: $email-body;
+
     @include desktop-all {
         padding-left: 22px !important;
         padding-right: 22px !important;
@@ -50,14 +60,20 @@ html, body{
     }
 }
 
+a, a:active, a:link, a:visited {
+    text-decoration: none;
+    color: inherit;
+    font-weight: 700;
+}
+
 .email-content__divider {
     height: 2px;
-    width: 92%;
-    margin: auto;
-    border-top: solid 1px rgba(0, 0, 0, 0.12);
+    margin-left: 16px;
+    margin-right: 16px;
+    border-top: solid 1px $email-divider;
 
     @include desktop-all {
-        width: 100% !important;
+        margin: 0 !important;
     }
 }
 

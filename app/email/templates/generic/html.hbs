@@ -1,14 +1,16 @@
 <html>
+	<head></head>
 	<body>
-		<div class="email-content">
-			<div class="email-content__title">
-				\{{ title }}
+		<div class="container">
+			<div class="email-content">
+				<div class="email-content__title">
+					\{{ title }}
+				</div>
+				<div class="email-content__body">
+					\{{ body }}
+				</div>
+				{{> footer }}
 			</div>
-			<div class="email-content__body">
-				\{{ body }}
-			</div>
-			<div class="email-content__divider"></div>
-			<img class="email-content__footer" src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-nav.png" alt="Fresco Logo">
 		</div>
 	</body>
 </html>
