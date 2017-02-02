@@ -51,10 +51,6 @@ export const getClients = () => (dispatch) => {
 export const generateClient = (params) => (dispatch) => {
     dispatch(enableLoading(true));
 
-    if(utils.isEmptyString(params.tag) || !utils.isValidUrl(params.redirect)) {
-       return dispatch(toggleSnackbar('Please enter in all fields!'));
-    }
-
     api
         .post(`client/generate`, params)
         .then(response => {

@@ -28,7 +28,6 @@ export default class ClientForm extends React.Component {
 
     state = {
         api_versions: [],
-        disabled: false,
         shouldRekey: false,
         redirect_uri: '',
         tag: ''
@@ -40,12 +39,13 @@ export default class ClientForm extends React.Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
+        //Incoming new client, or client state change
         if((nextProps.client && !this.props.client) || (nextProps.client && (nextProps.client.id !== this.props.client.id))) {
             this.setState({ 
                 tag: nextProps.client.tag || '', 
                 redirect_uri: nextProps.client.redirect_uri || ''
             });
-        } else if(nextProps.newToken && this.props.client !== null) {
+        } else if(nextProps.newToken && this.props.client !== null) { //New token, and no client currently
             this.setState({
                 tag: '',
                 redirect_uri: ''
@@ -94,9 +94,20 @@ export default class ClientForm extends React.Component {
         });
     }
 
+    /**
+     * Returns true if inputs are valid
+     */
+    validInputs = () => {
+        if(utils.isEmptyString(this.state.tag) || !utils.isValidUrl(this.state.redirect_uri)) {
+           return true
+        }
+
+        return false;
+    }
+
     render() {
         const { toggled, onCancel, body, toggle, newToken, client } = this.props;
-        const { disabled, rekeyDialogToggled } = this.state;
+        const { rekeyDialogToggled } = this.state;
 
         return (
             <Base toggled={toggled}>
@@ -145,7 +156,7 @@ export default class ClientForm extends React.Component {
                         <button
                             className="primary btn"
                             onClick={this.onConfirm}
-                            disabled={disabled}
+                            disabled={this.validInputs()}
                         >
                             {newToken ? 'Create' : 'Save'}
                         </button>
