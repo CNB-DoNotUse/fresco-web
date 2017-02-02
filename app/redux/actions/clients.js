@@ -1,4 +1,5 @@
 import api from 'app/lib/api';
+import utils from 'utils';
 import { enableLoading, toggleSnackbar, toggleModal } from './ui';
 import { findById } from 'app/lib/helpers';
 
@@ -49,6 +50,10 @@ export const getClients = () => (dispatch) => {
  */
 export const generateClient = (params) => (dispatch) => {
     dispatch(enableLoading(true));
+
+    if(utils.isEmptyString(params.tag) || !utils.isValidUrl(params.redirect)) {
+       return dispatch(toggleSnackbar('Please enter in all fields!'));
+    }
 
     api
         .post(`client/generate`, params)
@@ -101,7 +106,6 @@ export const updateClientWithSecret = (id, client_id) => (dispatch, getState) =>
         .get(`client/${client_id}/secret`)
         .then(response => dispatch(receiveClient(response, index)))
         .catch(error => {
-            dispatch(receiveClient(mock, index));
             dispatch(toggleSnackbar('There was an error fetching this client\'s secret. Please contact api@fresconews.com.'))
         });
 }

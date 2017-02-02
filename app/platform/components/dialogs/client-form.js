@@ -94,17 +94,6 @@ export default class ClientForm extends React.Component {
         });
     }
 
-    /**
-     * Returns if inputs should be disabled or note
-     */
-    disabled = () => {
-        if(utils.isEmptyString(this.state.tag) || !utils.isValidUrl(this.state.redirect)) {
-           return true;
-        } else {
-            return false;
-        }
-    }
-
     render() {
         const { toggled, onCancel, body, toggle, newToken, client } = this.props;
         const { disabled, rekeyDialogToggled } = this.state;

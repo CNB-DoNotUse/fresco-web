@@ -6,18 +6,22 @@ import 'app/sass/platform/dialogs/dialogs.scss';
  */
 export default class Base extends React.Component {
     static propTypes = {
-        toggled: PropTypes.bool
+        toggled: PropTypes.bool,
+        zIndex: PropTypes.number
     };
 
     static defaultProps = {
-        toggled: false
+        toggled: false,
+        zIndex: 5
     }
 
     render() {
-        const { children, toggled } = this.props;
+        const { children, toggled, zIndex } = this.props;
+
 
         return (
-            <div className={`dialog-wrap ${toggled ? 'toggled' : ''}`}>
+            <div style={{ zIndex }} 
+                className={`dialog-wrap ${toggled ? 'toggled' : ''}`}>
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
                 {children}
             </div>
