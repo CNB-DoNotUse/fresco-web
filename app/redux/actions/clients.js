@@ -41,7 +41,7 @@ export const addClient = (client) => ({
 export const getClients = () => (dispatch) => {
     api
         .get('client/list')
-        .then(response => dispatch(receiveClients([ response[0] ])))
+        .then(response => dispatch(receiveClients(response)))
 }
 
 /**
