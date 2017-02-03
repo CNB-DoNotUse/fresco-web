@@ -3,7 +3,7 @@ const head          = require('./lib/head');
 const utils         = require('./lib/utils');
 const routes        = require('./lib/routes');
 const API           = require('./lib/api');
-const User          = require('./middleware/user');
+const userMiddleware = require('./middleware/user');
 const redis         = require('./lib/redis');
 const express       = require('express');
 const compression   = require('compression');
@@ -131,7 +131,7 @@ app.use((req, res, next) => {
     }
 
     //Bearer token has expired, so refresh the token
-    User.refreshBearer(req, res, next);
+    userMiddleware.refreshBearer(req, res, next);
 });
 
 

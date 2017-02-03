@@ -2,7 +2,7 @@ const Promise = require('bluebird');
 
 const config = require('../lib/config');
 const API = require('../lib/api');
-const user = require('../lib/user');
+const userLib = require('../lib/user');
 
 
 /**
@@ -14,7 +14,7 @@ module.exports = {
      * Middleware for refreshing token
      */
     refreshBearer: (req, res, next)  => {
-        user
+        userLib
             .refreshBearer(req)
             .then(() => next())
             .catch(() => User.logout(req, res))
@@ -24,7 +24,7 @@ module.exports = {
      * User log in middleware
      */
     login(req, res) {
-        user
+        userLib
             .login(req.body.email || req.body.username, req.body.password, req)
             .then(response => {
                 res.status(200).json({

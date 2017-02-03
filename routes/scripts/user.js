@@ -1,17 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../../middleware/user');
+const userMiddleware = require('../../middleware/user');
 const API = require('../../lib/api');
 
 /**
  * Processes login in for web platform users
  */
-router.post('/login', User.login);
+router.post('/login', userMiddleware.login);
 
 /**
  * Logs the user out and redirects
  */
-router.get('/logout', User.logout);
+router.get('/logout', userMiddleware.logout);
 
 /**
  * Registers a new user account, optionally with an outlet
@@ -64,7 +64,7 @@ router.post('/reset', (req, res, next) => {
         //Set req.body for middleware
         req.body.username = body.username || body.email
 
-        User.login(req, res, next);
+        userMiddleware.login(req, res, next);
     })
     .catch(error => API.handleError(error, res));
 });
