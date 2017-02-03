@@ -1,7 +1,7 @@
 const express = require('express');
 const config = require('../../lib/config');
 const API = require('../../lib/api');
-const User = require('../../lib/user');
+const userLib = require('../../lib/user');
 const router = express.Router();
 
 /**
@@ -21,7 +21,7 @@ function checkOutlet(req, res) {
 router.post('/invite/accept', (req, res, next) => {
     const { accept, updates } = req.body;
 
-    User
+    userLib
         .login(accept.username, accept.password, req)
         .then(response => {
             let { user, token } = response.body;
@@ -72,7 +72,7 @@ router.post('/invite/accept', (req, res, next) => {
 
     //Ending function
     const end = (req, user, token) => {
-        User
+        userLib
         .saveSession(req, user, token)
         .then(() => {
             return res.status(200).send({success: true});
