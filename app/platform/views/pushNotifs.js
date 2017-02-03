@@ -8,7 +8,9 @@ const { user } = window.__initialProps__;
 const store = configureStore({ user });
 
 ReactDOM.render(
-    <Root store={store}>
+    <Root 
+        store={store}
+        page='moderation'>
         <PushNotifs />
     </Root>,
     document.getElementById('app')
