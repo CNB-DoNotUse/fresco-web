@@ -1,15 +1,18 @@
 <html>
+	<head></head>
 	<body>
-		<div class="nav">
-            <img src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-foot.png" height="50px">
-			<div>
-				<h1>ASSIGNMENT APPROVED</h1>
+		<div class="container">
+			<div class="email-content">
+				<div class="email-content__title">
+					Assignment Approved
+				</div>
+				<div class="email-content__body">
+					Your assignment <b>\{{ assignment }}</b> has been approved and is now visible to all nearby Fresco users!  Content will now appear as users submit to your assignment.
+		            <br><br>
+		            Please feel free to contact <a href="mailto:support@fresconews.com">support@fresconews.com</a> with any questions or concerns.
+				</div>
+				{{> footer }}
 			</div>
-		</div>
-    	<div class="content">
-            Your assignment <b>\{{ assignment }}</b> has been approved and is now visible to all nearby Fresco users!  Content will now appear as users submit to your assignment.
-            <br><br>
-            Please feel free to contact support@fresconews.com with any questions or concerns.
 		</div>
 	</body>
 </html>

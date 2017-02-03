@@ -4,10 +4,12 @@
 		<div class="container">
 			<div class="email-content">
 				<div class="email-content__title">
-					\{{ title }}
+					<!-- title has to be capitalized, or it won't get filled in
+					by the template. I'm not sure why -->
+					\{{{ TITLE }}}
 				</div>
 				<div class="email-content__body">
-					\{{ body }}
+					\{{{ body }}}
 				</div>
 				{{> footer }}
 			</div>

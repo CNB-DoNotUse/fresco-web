@@ -51,7 +51,7 @@ const testMessage = {
         content: '10023',
     }, {
         name: 'time',
-        content: '9: 30 am',
+        content: '9:30 am',
     }, {
         name: 'amount',
         content: '20',
@@ -70,6 +70,9 @@ const testMessage = {
     }, {
         name: 'contact_phone',
         content: 'test contact phone',
+    }, {
+        name: 'body',
+        content: 'THIS IS A BODY!!!!!!'
     }],
 };
 
@@ -84,7 +87,7 @@ const sendTemplate = (name) => {
 fs.readdir(templatesDir, (_, dirs) => {
     dirs.filter(d => !d.includes('.')).forEach((dir) => {
         const templateDir = path.join(__dirname, 'templates', dir);
-        let name = templateDir.split('/').pop();
+        let name = templateDir.split(path.sep).pop();
         name = `Dev ${startCase(name)}`;
 
         mandrillClient.templates.info({ name }, () => {

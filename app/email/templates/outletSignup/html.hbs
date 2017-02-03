@@ -1,26 +1,23 @@
-<html style="font-family: 'Roboto', sans-serif">
-    <head>
-        <style>
-            div {
-                width: auto;
-                max-width: 400px;
-                margin: 0 auto;
-                text-align: left;
-            }
-        </style>
-    </head>
-    <body style="margin:10px auto;text-align:center;">
-        <img style="display: block;margin:40px auto 0;max-width:350px;" src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-news.png"/>
-        <h2>The outlet <b>\{{ outlet }}</b> has joined Fresco News!</h2>
-        <div>
-            <p>Outlet type: \{{ outlet_type }}</p>
-            <p>Outlet location: \{{ outlet_location }}</p>
-            <p>The outlet's contact information is as follows:</p>
-            <ul>
-                <li>Name: \{{ contact_name }}</li>
-                <li>Email: \{{ contact_email }}</li>
-                <li>Phone: \{{ contact_phone }}</li>
-            </ul>
-        </div>
-    </body>
+<html>
+	<head></head>
+	<body>
+		<div class="container">
+			<div class="email-content">
+				<div class="email-content__title">
+					The outlet <b>\{{ outlet }}</b> has joined Fresco News!
+				</div>
+				<div class="email-content__body">
+                    <p>Outlet type: \{{ outlet_type }}</p>
+                    <p>Outlet location: \{{ outlet_location }}</p>
+                    <p>The outlet's contact information is as follows:</p>
+                    <ul>
+                        <li>Name: \{{ contact_name }}</li>
+                        <li>Email: \{{ contact_email }}</li>
+                        <li>Phone: \{{ contact_phone }}</li>
+                    </ul>
+				</div>
+				{{> footer }}
+			</div>
+		</div>
+	</body>
 </html>

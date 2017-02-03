@@ -1,9 +1,17 @@
-<html style="font-family: 'Roboto', sans-serif">
-    <body style="margin:10px auto;text-align:center;max-width:70vw;">
-        <img src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-news.png" style="display:block;margin:40px auto 0;max-width:500px;width: 100%;"/>
-        <br/>
-        <h2>You've been invited!</h2>
-        <p style="max-width:90%;width:70%;margin:0 auto;">You've been invited by \{{ outlet }} to be a member of their outlet on Fresco News.  To register, click the link below and fill out the registration form.</p>
-        <p>Register at: \{{ link }}</p>
-    </body>
+<html>
+	<head></head>
+	<body>
+		<div class="container">
+			<div class="email-content">
+				<div class="email-content__title">
+					You've been invited!
+				</div>
+				<div class="email-content__body">
+                    <p>You've been invited by \{{ outlet }} to be a member of their outlet on Fresco News.  To register, click the link below and fill out the registration form.</p>
+                    <p>Register at: <a href="\{{ link }}">\{{ link }}</a></p>
+				</div>
+				{{> footer }}
+			</div>
+		</div>
+	</body>
 </html>

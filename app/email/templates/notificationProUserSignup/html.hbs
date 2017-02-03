@@ -1,32 +1,32 @@
 <html>
+	<head></head>
 	<body>
-        <div class="nav">
-            <img src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-foot.png">
-            <div>
-				<h1>Pro User</h1>
+		<div class="container">
+			<div class="email-content">
+				<div class="email-content__title">
+					Pro User
+				</div>
+				<div class="email-content__body">
+					<p>Thank you for signing up!</p>
+		            <p>We will call you in the next 24 hours to discuss next steps.</p>
+
+		            <p>Your info -</p>
+		            <ul>
+		                <li>\{{ name }}</li>
+		                <li>\{{ email }}</li>
+		                <li>\{{ phone }}</li>
+		                <li>\{{ zip }}</li>
+		                <li>\{{ time }}</li>
+		            </ul>
+
+		            <p>Go <a target="_blank" href="\{{ link }}">here</a> to update your schedule</p>
+
+		            <p>If you have any questions or concerns before we contact you, email us anytime at <a href="mailto:info@fresconews.com">info@fresconews.com</a></p>
+
+		            <p>In the meantime, get a head start on becoming a citizen journalist by downloading our mobile app <a target="_blank" href="http://app.fresco.news">here</a>!</p>
+				</div>
+				{{> footer }}
 			</div>
-		</div>
-        <div class="content">
-            <h2 style="
-				font-size:1.2em;">Thank you for signing up!</h2>
-            <h2 style="
-				font-size:1.2em;">We will call you in the next 24 hours to discuss next steps.</h2>
-
-            <h3 style="
-				font-size:1.1em;">Your info -</h3>
-            <ul>
-                <li>\{{ name }}</li>
-                <li>\{{ email }}</li>
-                <li>\{{ phone }}</li>
-                <li>\{{ zip }}</li>
-                <li>\{{ time }}</li>
-            </ul>
-
-            <p>\{{ url link }} to update your schedule</p>
-
-            <p>If you have any questions or concerns before we contact you, email us anytime at info@fresconews.com</p>
-
-            <p>In the meantime, get a head start on becoming a citizen journalist by downloading our mobile app <a href="http://app.fresco.news">here</a>!</p>
 		</div>
 	</body>
 </html>

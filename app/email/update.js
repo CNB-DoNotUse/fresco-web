@@ -3,6 +3,7 @@ const EmailTemplate = require('email-templates').EmailTemplate;
 const fs = require('fs');
 const path = require('path');
 const startCase = require('lodash/startCase');
+const Handlebars = require('handlebars');
 
 const dev = process.env.NODE_ENV === 'development';
 const mandrillClient = new mandrill.Mandrill('Wm-tSNLBNAMbt4xT_ouWKg');

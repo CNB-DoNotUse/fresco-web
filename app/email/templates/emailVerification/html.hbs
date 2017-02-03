@@ -1,9 +1,18 @@
-<html style="font-family: 'Roboto', sans-serif">
-    <body style="margin:10px auto;text-align:center;">
-        <img style="width: 70vw;max-width:2000px;" src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-news.png"/>
-        <h2>You email needs to be verified!</h2>
-        <p>Before using Fresco News to its full potential, please click \{{ url link }} or paste the URL below in your address bar to confirm that this is your email account.</p>
+<html>
+	<head></head>
+	<body>
+		<div class="container">
+			<div class="email-content">
+				<div class="email-content__title">
+					You email needs to be verified!
+				</div>
+				<div class="email-content__body">
+					Before using Fresco News to its full potential, please click <a target="_blank" href="\{{ link }}">here</a> or paste the URL below in your address bar to confirm that this is your email account.
 
-        <span>\{{ url URL }}</span>
-    </body>
+                    <br>\{{ link }}
+				</div>
+				{{> footer }}
+			</div>
+		</div>
+	</body>
 </html>

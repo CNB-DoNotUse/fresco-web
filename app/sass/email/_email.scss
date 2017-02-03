@@ -26,9 +26,7 @@ html, body, .container {
         margin: auto;
         border-radius: 2px;
 
-        // If the email client supports box-shadow, then they support rgba, so
-        // there is no need to convert these colors
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 0 2px 0 rgba(0, 0, 0, 0.05);
+        border: solid 1px $email-divider;
     }
 
 }
@@ -52,6 +50,10 @@ html, body, .container {
     padding: 0px 16px 16px 16px;
 
     color: $email-body;
+
+    p {
+        margin: 0px 0px 8px 0px;
+    }
 
     @include desktop-all {
         padding-left: 22px !important;

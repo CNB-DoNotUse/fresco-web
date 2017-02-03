@@ -1,15 +1,18 @@
-<html style="font-family: 'Roboto', sans-serif">
+<html>
+	<head></head>
 	<body>
-		<div class="nav" bgcolor="#ffc600">
-			<img src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-foot.png" height="50px">
-			<div>
-				<h1>OUTLET VERIFIED</h1>
+		<div class="container">
+			<div class="email-content">
+				<div class="email-content__title">
+					Outlet Verified
+				</div>
+				<div class="email-content__body">
+					<p>Congratulations! <b>\{{ outlet }}</b> is now verified on Fresco!</p>
+		            <p>Members of your outlet can now access all Fresco News features, including purchasing Archive content and posting assignments on Dispatch.</p>
+		            <p><a target="_blank" href="https://fresconews.com/">Log in to get started.</a></p>
+				</div>
+				{{> footer }}
 			</div>
-		</div>
-    	<div class="content">
-            <p>Congratulations! <b>\{{ outlet }}</b> is now verified on Fresco!</p>
-            <p>Members of your outlet can now access all Fresco News features, including purchasing Archive content and posting assignments on Dispatch.</p>
-            <p><a href="https://fresconews.com/">Log in to get started.</a></p>
 		</div>
 	</body>
 </html>
