@@ -20,8 +20,6 @@ class Notifications extends React.Component {
 	}
 
 	componentDidMount() {
-		console.log(this.props);
-
 		//Retrieve notifications
 		this.props.loadNotifications();
 	}
