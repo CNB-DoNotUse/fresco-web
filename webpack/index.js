@@ -167,8 +167,8 @@ const loaders = (env) => {
 
 const externals = (env) => {
     if(env === 'dev') {
+        //Used for enzyme — http://airbnb.io/enzyme/docs/guides/webpack.html
         return {
-            // http://airbnb.io/enzyme/docs/guides/webpack.html
             'react/addons': true,
             'react/lib/ExecutionEnvironment': true,
             'react/lib/ReactContext': true

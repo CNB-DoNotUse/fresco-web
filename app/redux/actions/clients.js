@@ -48,8 +48,13 @@ export const getClients = () => (dispatch) => {
 /**
  * Action creator for generating a client
  */
-export const generateClient = (params) => (dispatch) => {
+export const generateClient = (params = {}) => (dispatch) => {
     dispatch(enableLoading(true));
+
+    //Validate
+    if(!params.api_version_id) {
+        return dispatch(toggleSnackbar('Please select a version for your client!'))
+    }
 
     api
         .post(`client/generate`, params)
@@ -96,8 +101,6 @@ export const updateClient = (id, params = {}) => (dispatch, getState) => {
 export const updateClientWithSecret = (id, client_id) => (dispatch, getState) => {
     const { index, object } = findById(id, getState().clients, 'id');
 
-    const mock = { ...object, 'client_secret': 'fasdasd'};
-
     api
         .get(`client/${client_id}/secret`)
         .then(response => dispatch(receiveClient(response, index)))
@@ -113,28 +116,19 @@ export const updateClientWithSecret = (id, client_id) => (dispatch, getState) =>
  * @param {Integer} index Index of the client within data source
  */
 export const deleteClient = (id) => (dispatch, getState) => {
-    const clients = getState().clients;
-    let index = null;
-    const clientToRemove = clients.find((c, i) => {
-        index = i;
-        return c['id'] === id;
-    })
-
+    const { index, object } = findById(id, getState().clients, 'id');
     dispatch(enableLoading(true));
 
     api
         .post(`client/${id}/delete`)
         .then(response => {
-            dispatch(removeClient(id, index));
             dispatch(enableLoading(false));
+            dispatch(toggleModal(false));
+            dispatch(removeClient(index));
         })
         .catch(error => {
             dispatch(enableLoading(false));
             dispatch(toggleSnackbar('There was an error deleting this client!'))
         });
-
-}
-
-export const rekeyClient = (clientID) => (dispatch) => {
 
 }

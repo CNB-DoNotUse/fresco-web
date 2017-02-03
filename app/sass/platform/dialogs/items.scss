@@ -9,7 +9,7 @@
     @extend .dialog-modal;
     width: 640px;
 
-    .header {
+    .dialog-modal__header {
         font-family: $nota;
         padding:0 24px;
         height: 52px;
@@ -25,7 +25,7 @@
         }
     }
 
-    .items {
+    .dialog-modal__body {
         overflow-y: scroll;
         overflow-x: hidden;
         margin: 0 auto;
@@ -33,7 +33,7 @@
         height: auto;
     }
 
-    .footer {
+    .dialog-modal__footer {
         font-family: $nota;
         height: 52px;
         font-size: 14px;

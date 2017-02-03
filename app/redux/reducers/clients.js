@@ -15,7 +15,10 @@ import * as actions from '../actions/clients';
         case actions.ADD_CLIENT:
             return [action.client, ...state] 
         case actions.REMOVE_CLIENT:
-            return state.filter((elm, index) => index !== action.index)   
+            return [
+                ...state.slice(0, action.index),
+                ...state.slice(action.index + 1)
+              ];
         default:
             return state
     }

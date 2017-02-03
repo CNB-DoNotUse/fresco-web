@@ -10,8 +10,8 @@ export default class ClientItem extends React.Component {
         enabled: PropTypes.bool,
         updateClient: PropTypes.func,
         toggleEdit: PropTypes.func,
-        client: PropTypes.object.isRequired,
-        updateClientWithSecret: PropTypes.object.isRequired
+        updateClientWithSecret: PropTypes.func.isRequired,
+        client: PropTypes.object.isRequired
     }
 
     state = {

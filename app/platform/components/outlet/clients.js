@@ -9,14 +9,13 @@ import * as versions from 'app/redux/actions/versions';
 import ClientForm from  '../dialogs/client-form.js';
 import ClientItem from './client-item';
 
-
 /**
  * OAauth client manager for 3rd parties
  */
-export default class Clients extends React.Component {
+class Clients extends React.Component {
     static propTypes = {
         clients: PropTypes.array,
-        getClients: PropTypes.function,
+        getClients: PropTypes.func,
         updateClient: PropTypes.func,
         isLoading: PropTypes.bool
     };
@@ -47,7 +46,8 @@ export default class Clients extends React.Component {
         const { 
             clients,
             generateClient, 
-            showModal, 
+            showModal,
+            deleteClient, 
             toggleModal, 
             getVersions, 
             versions, 
@@ -68,17 +68,6 @@ export default class Clients extends React.Component {
                     </div>
                 </div>
 
-                <ClientForm 
-                    newToken={activeClient ? false : true}
-                    client={activeClient}
-                    clientIndex={clientIndex}
-                    toggled={showModal}
-                    versions={this.props.versions}
-                    toggle={toggleModal}
-                    getVersions={getVersions}
-                    updateClient={this.updateClient}
-                    generateClient={generateClient} />
-
                 <div className="client-tokens__body">
                     {clients.map((client, index) => {
                         return (
@@ -93,6 +82,18 @@ export default class Clients extends React.Component {
                         )
                     })}
                 </div>
+
+                <ClientForm 
+                    newClient={activeClient ? false : true}
+                    client={activeClient}
+                    clientIndex={clientIndex}
+                    toggled={showModal}
+                    versions={this.props.versions}
+                    toggle={toggleModal}
+                    getVersions={getVersions}
+                    deleteClient={deleteClient}
+                    updateClient={this.updateClient}
+                    generateClient={generateClient} />
             </div>
         );
     };

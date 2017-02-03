@@ -8,7 +8,7 @@ import createLogger from 'redux-logger';
  * @param  {Object} initialState Initial starting state
  * @return {Redux Store} redux Store object
  */
-export default function configureStore(initialState, reducer) {
+export default function configureStore(initialState, reducer, env = 'dev') {
 
     //Use thunk middleware for our async reducers
     const middleware = [thunk];
@@ -16,20 +16,7 @@ export default function configureStore(initialState, reducer) {
     let enhancer;
 
     if (process.env.__DEV__) {
-        const logger = createLogger({
-            // stateTransformer: (state) => {
-            //     const newState = {};
-
-            //     for (const i of Object.keys(state.toJS())) {
-            //         if (Iterable.isIterable(state.get(i))) {
-            //             newState[i] = state.get(i).toJS();
-            //         } else {
-            //             newState[i] = state.get(i);
-            //         }
-            //     }
-            //     return newState;
-            // },
-        });
+        const logger = createLogger();
 
         middleware.push(logger);
 

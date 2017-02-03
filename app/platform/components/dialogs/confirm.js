@@ -2,6 +2,11 @@ import React, { PropTypes } from 'react';
 import Base from './base';
 import 'app/sass/platform/dialogs/confirm.scss';
 
+/**
+ * Basic confirm dialog
+ * Pass onConfirm and onCancel props to get signals of user input
+ * Can optionally pass back up an input, see props for more
+ */
 export default class Confirm extends React.Component {
     static propTypes = {
         onConfirm: PropTypes.func,
@@ -32,7 +37,7 @@ export default class Confirm extends React.Component {
     }
 
     renderBody = () => (
-        <div className="body">
+        <div className="dialog-modal__body">
             {this.props.body && this.props.body}
             {this.props.hasInput && (
                 <form
@@ -56,13 +61,13 @@ export default class Confirm extends React.Component {
         return (
             <Base toggled={toggled}>
                 <div className={`dialog-modal--confirm ${toggled ? 'toggled' : ''}`}>
-                    <div className="header">
+                    <div className="dialog-modal__header">
                         <h3>{header}</h3>
                     </div>
 
                     {(hasInput || body) && this.renderBody()}
 
-                    <div className="footer">
+                    <div className="dialog-modal__footer">
                         <button
                             className="cancel btn"
                             onClick={onCancel}

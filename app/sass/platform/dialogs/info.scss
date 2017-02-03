@@ -8,7 +8,7 @@
 .dialog-modal--info {
     @extend .dialog-modal;
 
-    .header {
+    .dialog-modal__header {
         font-family: $nota;
         height: 64px;
         padding:0 24px;
@@ -22,13 +22,13 @@
         }
     }
 
-    .body {
+    .dialog-modal__body {
         font-size: 16px;
         color: rgba(0, 0, 0, 0.54);
         padding: 0 24px 16px 24px;
     }
 
-    .footer {
+    .dialog-modal__footer {
         font-family: $nota;
         height: 52px;
         font-size: 14px;

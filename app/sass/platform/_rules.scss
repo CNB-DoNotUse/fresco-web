@@ -181,6 +181,14 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	}
 }
 
+.togglebutton label input[type=checkbox]:checked + .toggle {
+	background-color: rgba(0, 71, 187, 0.3);
+}
+
+.togglebutton label input[type=checkbox]:checked + .toggle:after {
+	background-color:$fresco-blue;
+}
+
 
 // icons
 .icon {

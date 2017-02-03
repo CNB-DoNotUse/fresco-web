@@ -2,8 +2,11 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 import Base from './base';
 import Confirm from './confirm';
-import Dropdown from '../global/dropdown';
+import VersionDropdown from '../outlet/version-dropdown';
 import 'app/sass/platform/dialogs/tokenForm.scss';
+
+const deleteMessage = 'Are you sure you want to delete this client?';
+const rekeyMessage = 'Are you sure you want to create new client credentials? This will invalidate all of your current integrations.';
 
 /**
  * Form for creating/updating a client. 
@@ -14,23 +17,26 @@ export default class ClientForm extends React.Component {
         toggle: PropTypes.func,
         toggled: PropTypes.bool,
         body: PropTypes.string,
-        newToken: PropTypes.bool,
-        updateToken: PropTypes.func,
-        createToken: PropTypes.func,
+        newClient: PropTypes.bool,
+        updateClient: PropTypes.func,
+        generateClient: PropTypes.func,
         client: PropTypes.object
     }
 
     static defaultProps = {
         toggle: () => {},
         toggled: false,
-        newToken: true
+        newClient: true,
+        selectedVersion: null
     }
 
     state = {
-        api_versions: [],
         shouldRekey: false,
         redirect_uri: '',
-        tag: ''
+        tag: '',
+        confirmMessage: deleteMessage,
+        confirmButton: 'Delete',
+        confirmFormToggled: false
     }
 
     componentDidMount() {
@@ -43,45 +49,50 @@ export default class ClientForm extends React.Component {
         if((nextProps.client && !this.props.client) || (nextProps.client && (nextProps.client.id !== this.props.client.id))) {
             this.setState({ 
                 tag: nextProps.client.tag || '', 
-                redirect_uri: nextProps.client.redirect_uri || ''
+                redirect_uri: nextProps.client.redirect_uri || '',
+                selectedVersion: nextProps.client.api_version
             });
-        } else if(nextProps.newToken && this.props.client !== null) { //New token, and no client currently
+        } else if(nextProps.newClient && this.props.client !== null) { //New token, and no client currently
             this.setState({
                 tag: '',
-                redirect_uri: ''
+                redirect_uri: '',
+                shouldRekey: false,
+                selectedVersion: null
             })
         }
     }
 
     /**
      * Form confirmation
-     * @return {[type]} [description]
      */
-    onConfirm = () => {
+    onSave = () => {
         const { client } = this.props;
 
         const params = {
             tag: this.state.tag,
             redirect_uri: this.state.redirect_uri,
             enabled: true,
-            api_version_id: '7ewm8YP3GL5x'
+            api_version_id: this.state.selectedVersion ? this.state.selectedVersion.id : null
         }
 
         //Client is passed
         if(this.props.client) {
             params.rekey = this.state.shouldRekey
+
+            if(params.rekey) {
+                return this.setState({
+                    confirmFormToggled: true,
+                    confirmMessage: rekeyMessage,
+                    confirmButton: 'Save',
+                    onConfirm: () => { this.props.updateClient(client.id, params) }
+                })
+            }
+
             this.props.updateClient(client.id, params);
-        } else if (this.props.newToken) {
+        } else if (this.props.newClient) {
             params.scope = 'public';
             this.props.generateClient(params);
         }
-    }
-
-    /**
-     * Toggles the `shouldRekey` state
-     */
-    toggleRekey = () => {
-        this.setState({ shouldRekey: !this.state.shouldRekey })
     }
 
     handleInputChange = (e) => {
@@ -95,33 +106,64 @@ export default class ClientForm extends React.Component {
     }
 
     /**
+     * When a version is selected
+     */
+    versionSelected = (selectedVersion) => {
+        this.setState({ selectedVersion })
+    }
+
+    /**
      * Returns true if inputs are valid
      */
     validInputs = () => {
-        if(utils.isEmptyString(this.state.tag) || !utils.isValidUrl(this.state.redirect_uri)) {
-           return true
+        if(!utils.isEmptyString(this.state.tag) && !utils.isEmptyString(this.state.redirect_uri)) {
+           return true;
         }
 
         return false;
     }
 
+    /**
+     * Calls delete function
+     */
+    delete = () => {
+        this.setState({
+            confirmFormToggled: true,
+            confirmMessage: deleteMessage,
+            confirmButton: 'Delete',
+            onConfirm: () => { this.props.deleteClient(this.props.client.id) }
+        })
+    }
+
+    /**
+     * Delete action called
+     */
+    onConfirm = () => {
+        this.setState({ confirmFormToggled: false });
+        this.state.onConfirm();
+    }
+
+
     render() {
-        const { toggled, onCancel, body, toggle, newToken, client } = this.props;
-        const { rekeyDialogToggled } = this.state;
+        const { toggled, onCancel, body, toggle, newClient, client, versions } = this.props;
+        const { rekeyDialogToggled, selectedVersion } = this.state;
 
         return (
             <Base toggled={toggled}>
                 <div className={`dialog-modal--tokenForm ${toggled ? 'toggled' : ''}`}>
                     <form className="dialog-modal__form" onSubmit={this.onConfirm}>
                         <div className="dialog-modal__headerActions">
-                            <Dropdown
-                                title="API Version"
-                                dropdownClass="dialog-modal__token-dropdown"
-                                options={this.props.api_versions} />
+                            <VersionDropdown
+                                selectedVersion={selectedVersion}
+                                versionSelected={this.versionSelected}
+                                versions={versions}
+                             />
 
-                            <i 
+                            {!newClient && 
+                                <i 
                                 className="mdi mdi-delete dialog-modal__delete"
-                                onClick={() => toggle()} />
+                                onClick={this.delete} />
+                            }
                         </div>
                         
                         <input
@@ -144,21 +186,21 @@ export default class ClientForm extends React.Component {
                     </form>
 
                     <div className="dialog-modal__footer">
-                        {!newToken &&
+                        {!newClient &&
                             <button
                                 className={`primary btn  dialog-modal__rekey ${this.state.shouldRekey ? '' : 'disabled'}`}
-                                onClick={this.toggleRekey}
+                                onClick={() => this.setState({ shouldRekey: !this.state.shouldRekey })}
                             >
-                                Regenerate Token
+                                Regenerate Credentials
                             </button>
                         }
 
                         <button
                             className="primary btn"
-                            onClick={this.onConfirm}
-                            disabled={this.validInputs()}
+                            onClick={this.onSave}
+                            disabled={!this.validInputs()}
                         >
-                            {newToken ? 'Create' : 'Save'}
+                            {newClient ? 'Create' : 'Save'}
                         </button>
 
 
@@ -169,6 +211,17 @@ export default class ClientForm extends React.Component {
                             Cancel
                         </button>
                     </div>
+
+                    {!newClient && 
+                        <Confirm
+                            onConfirm={this.onConfirm}
+                            onCancel={() => { this.setState({ confirmFormToggled: false }) }}
+                            toggled={this.state.confirmFormToggled}
+                            header={this.state.confirmMessage}
+                            zIndex={6}
+                            confirmButton={this.state.confirmButton}
+                        />
+                    }
                 </div>
             </Base>
         );

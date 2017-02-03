@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 /**
  * Generic Dropdown Element
- * @param {function} onSelected A function called wtih the user's selection
+ * @param {function} onSelected A function called with the user's selection
  */
 class Dropdown extends React.Component {
     constructor(props) {
@@ -25,6 +25,10 @@ class Dropdown extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.selected !== this.props.selected) {
             this.setState({ selected: nextProps.selected });
+        }
+
+        if(nextProps.active !== this.props.active) {
+            this.setState({ active: nextProps.active });
         }
     }
 
@@ -107,16 +111,17 @@ class Dropdown extends React.Component {
             <div
                 className={`nav-dropdown ${inList ? 'pull-right' : ''} ${dropdownClass} ${active ? 'active' : ''}`}
             >
-                <div className="toggle" onClick={() => this.toggle()} >
+                <div 
+                    className="toggle" 
+                    onClick={() => this.toggle()} >
                     <span>{title || this.state.selected}</span>
+                    
                     <i className={this.getCaretIconClassName()} />
+                    
                     {dropdownActions}
                 </div>
 
-                <div className="dropdown-body">
-					{list}
-					{children}
-                </div>
+                <div className="dropdown-body">{list}{children}</div>
             </div>
 		);
     }
@@ -136,10 +141,10 @@ Dropdown.propTypes = {
     inList: PropTypes.bool,
     dropdownClass: PropTypes.string,
     title: PropTypes.string,
+    active: PropTypes.bool,
     reverseCaretDirection: PropTypes.bool,
     dropdownActions: PropTypes.node,
     children: PropTypes.node,
 };
 
-export default Dropdown;
-
+export default Dropdown

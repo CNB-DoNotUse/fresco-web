@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import configureStore from 'app/redux/store';
+import configureStore from 'app/redux/store/immutableStore';
 import Root from '../containers/Root';
 import PushNotifs from '../containers/PushNotifs';
 

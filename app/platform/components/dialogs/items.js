@@ -43,17 +43,17 @@ export default class Items extends React.Component {
                     className={`dialog-modal--items ${toggled ? 'toggled' : ''}`}
                     onScroll={scrollable ? (e) => { this.props.onScroll(e, context) } : null}
                 >
-                    <div className="header">
+                    <div className="dialog-modal__header">
                         <span>{header}</span>
                     </div>
 
                     <div
-                        className="items"
+                        className="dialog-modal__items"
                     >
                         {(children && children.length) ? children : this.renderEmptyMessage()}
                     </div>
 
-                    <div className="footer">
+                    <div className="dialog-modal__footer">
                         <button
                             className="cancel"
                             onClick={onClose}
