@@ -16,5 +16,7 @@
 
     "REDIS": {
       "SESSIONS": "localhost"
-    }
+    },
+
+    "DOCS": "fresconews"
 }

@@ -17,5 +17,7 @@
 
     "REDIS": {
       "SESSIONS": "localhost"
-    }
+    },
+
+    "DOCS": "frescodevelopment"
 }
