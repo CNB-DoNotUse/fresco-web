@@ -84,7 +84,7 @@ export default class ClientForm extends React.Component {
      * Form confirmation
      */
     onSave = () => {
-        const { client } = this.props;
+        const { client, outlet } = this.props;
 
         const params = {
             tag: this.state.tag,
@@ -109,6 +109,7 @@ export default class ClientForm extends React.Component {
             this.props.updateClient(client.id, params);
         } else if (this.props.newClient) {
             params.scope = 'public';
+            params.outlet_id = outlet.id;
             this.props.generateClient(params);
         }
     }

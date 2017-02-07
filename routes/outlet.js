@@ -30,7 +30,7 @@ router.get('/settings', (req, res, next) => {
             token: token.token,
         }, req)
     ])
-    .then(responses => { 
+    .then(responses => {
         const outlet = responses[0].body;
         const payment = responses[1].body;
         const title = 'Outlet Settings';

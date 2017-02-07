@@ -39,9 +39,11 @@ export const addClient = (client) => ({
 /**
  * Action creator for getting clients
  */
-export const getClients = () => (dispatch) => {
+export const getClients = () => (dispatch, getState) => {
+    const outlet_id = getState().user.outlet.id;
+
     api
-        .get('client/list')
+        .get('client/list', { outlet_id })
         .then(response => dispatch(receiveClients(response)))
 }
 

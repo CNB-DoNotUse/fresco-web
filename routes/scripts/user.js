@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userMiddleware = require('../../middleware/user');
+const userLib = require('../../lib/user');
 const API = require('../../lib/api');
 
 /**
@@ -17,20 +18,23 @@ router.get('/logout', userMiddleware.logout);
  * Registers a new user account, optionally with an outlet
  */
 router.post('/register', (req, res, next) => {
+    console.log(req.body);;
+
+
     API.request({
         method: 'POST',
         url: '/user/create',
         body: req.body,
     })
     .then(response => {
-        const { user } = response.body;
-
+        const user = response.body;
+        
         //Log in newly registered user
-        user
+        userLib
             .login(user.username, req.body.password, req)
             .then(response => {
                 res.status(200).json({
-                    success: true                
+                    success: true
                 });
             })
             .catch(error => {

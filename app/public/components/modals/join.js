@@ -14,7 +14,7 @@ let Join = function(){
 	this.disabled = false;
 	this.submit = document.getElementById('join_submit');
 	this.loader = document.getElementById('join-loader');
-	
+
 	this.processing = false;
 
 	return this;
@@ -111,17 +111,17 @@ Join.prototype.registerUser = function() {
 
 	$.ajax({
  	    url: "/scripts/user/register",
-		data: JSON.stringify(params),
-		method: "POST",
-		contentType: 'application/json'
+			data: JSON.stringify(params),
+			method: "POST",
+			contentType: 'application/json'
  	})
  	.done((response) => {
 		window.location.replace('/archive');
  	})
  	.fail((error) => {
- 	    this.reEnable();
+ 	  this.reEnable();
 
- 	    $.snackbar({content: error.responseJSON.msg});
+ 		$.snackbar({content: error.responseJSON.msg});
  	});
 }
 
@@ -189,7 +189,7 @@ function resolveError(err) {
 		case 'Unauthorized':
 			return 'Invalid email or password!'
 	    default:
-	        return 'An error occured! Please try again in a bit.'   
+	        return 'An error occured! Please try again in a bit.'
 	}
 }
 

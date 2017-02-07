@@ -78,14 +78,10 @@ router.post('/invite/accept', (req, res, next) => {
             return res.status(200).send({success: true});
         })
         .catch(() => {
-            return res.status(500).send({success: false});  
+            return res.status(500).send({success: false});
         })
     }
 });
 
-
-router.post('/payment/create', (req, res) => {
-
-});
 
 module.exports = router;

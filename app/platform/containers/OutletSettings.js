@@ -29,14 +29,7 @@ class OutletSettings extends React.Component {
     };
 
     constructor(props) {
-        super(props);
-
-        // //User & outlet is in state so we can change the parent cmps. on update
-        // this.state = {
-        //     outlet: props.outlet,
-        //     user: props.user,
-        //     members: props.outlet.members ? props.outlet.members.filter(m => m.id !== props.outlet.owner.id) : [] //Hide outlet member
-        // }
+      super(props);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -50,23 +43,22 @@ class OutletSettings extends React.Component {
         this.setState({ members });
     }
 
-
     render() {
-        const { 
-            outlet, 
-            user, 
-            members, 
-            ui, 
-            notificationSettings, 
+        const {
+            outlet,
+            user,
+            members,
+            ui,
+            notificationSettings,
             clients,
-            payment, 
-            stripePublishableKey 
+            payment,
+            stripePublishableKey
         } = this.props;
         const isOwner = outlet.owner.id === user.id;
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
 
         return (
-            <App 
+            <App
                 user={user}
                 page="outletSettings">
                 <TopBar title={outlet.title} />
@@ -102,7 +94,7 @@ class OutletSettings extends React.Component {
                     </div>
                     <div className="right">
                         <Notifications />
-                        
+
                         <Locations outlet={outlet} />
 
                         {isOwner && (
@@ -133,7 +125,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators(
-        { ...outlet, ...ui }, 
+        { ...outlet, ...ui },
         dispatch
     )
 }

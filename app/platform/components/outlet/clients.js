@@ -15,6 +15,7 @@ import ClientItem from './client-item';
 class Clients extends React.Component {
     static propTypes = {
         clients: PropTypes.array,
+        outlet: PropTypes.object,
         getClients: PropTypes.func,
         updateClient: PropTypes.func,
         isLoading: PropTypes.bool
@@ -25,12 +26,12 @@ class Clients extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getClients();   
+        this.props.getClients();
     }
 
     updateClient = (id, params) => {
         if(this.props.isLoading) return;
-        this.props.updateClient(id, params);   
+        this.props.updateClient(id, params);
     }
 
     /**
@@ -43,14 +44,15 @@ class Clients extends React.Component {
     }
 
     render() {
-        const { 
+        const {
             clients,
-            generateClient, 
+            outlet,
+            generateClient,
             showModal,
-            deleteClient, 
-            toggleModal, 
-            getVersions, 
-            versions, 
+            deleteClient,
+            toggleModal,
+            getVersions,
+            versions,
             toggleSnackbar,
             getClient
         } = this.props;
@@ -71,9 +73,9 @@ class Clients extends React.Component {
                 <div className="client-tokens__body">
                     {clients.map((client, index) => {
                         return (
-                            <ClientItem 
+                            <ClientItem
                                 updateClient={this.updateClient}
-                                client={client} 
+                                client={client}
                                 toggle={toggleModal}
                                 toggleEdit={this.toggleEdit}
                                 toggleSnackbar={toggleSnackbar}
@@ -83,11 +85,12 @@ class Clients extends React.Component {
                     })}
                 </div>
 
-                <ClientForm 
+                <ClientForm
                     newClient={activeClient ? false : true}
                     client={activeClient}
                     clientIndex={clientIndex}
                     toggled={showModal}
+                    outlet={outlet}
                     versions={this.props.versions}
                     toggle={toggleModal}
                     getVersions={getVersions}
@@ -113,7 +116,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators(
-        { ...clients, ...ui, ...versions }, 
+        { ...clients, ...ui, ...versions },
         dispatch
     );
 }
