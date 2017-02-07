@@ -95,17 +95,21 @@ export const updateClient = (id, params = {}) => (dispatch, getState) => {
 }
 
 /**
- * Adds secret to client object
- * @param  {String} client_id client's id
+ * Gets a client by it's ID.
+ * @param  {String} id client's id, not the client's client_id
  */
-export const updateClientWithSecret = (id, client_id) => (dispatch, getState) => {
+export const getClient = (id, show_secret) => (dispatch, getState) => {
     const { index, object } = findById(id, getState().clients, 'id');
 
     api
-        .get(`client/${client_id}/secret`)
+        .get(`client/${id}`, { show_secret })
         .then(response => dispatch(receiveClient(response, index)))
         .catch(error => {
-            dispatch(toggleSnackbar('There was an error fetching this client\'s secret. Please contact api@fresconews.com.'))
+            if(show_secret) {
+                dispatch(toggleSnackbar('There was an error fetching this client\'s secret. Please contact api@fresconews.com.'))
+            } else {
+                dispatch(toggleSnackbar('There was an error fetching this client!. Please contact api@fresconews.com.'))
+            }
         });
 }
 

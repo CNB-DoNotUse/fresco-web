@@ -52,7 +52,7 @@ class Clients extends React.Component {
             getVersions, 
             versions, 
             toggleSnackbar,
-            updateClientWithSecret
+            getClient
         } = this.props;
         const { activeClient, tokenForm, clientIndex } = this.state;
 
@@ -77,7 +77,7 @@ class Clients extends React.Component {
                                 toggle={toggleModal}
                                 toggleEdit={this.toggleEdit}
                                 toggleSnackbar={toggleSnackbar}
-                                updateClientWithSecret={updateClientWithSecret}
+                                getClient={getClient}
                                 key={index} />
                         )
                     })}

@@ -25,6 +25,7 @@ class OutletSettings extends React.Component {
         user: PropTypes.object,
         outlet: PropTypes.object,
         payment: PropTypes.array,
+        stripePublishableKey: PropTypes.string
     };
 
     constructor(props) {
@@ -85,6 +86,7 @@ class OutletSettings extends React.Component {
                             <PaymentInfo
                                 payment={payment}
                                 outlet={outlet}
+                                stripePublishableKey={stripePublishableKey}
                             />
                         )}
 

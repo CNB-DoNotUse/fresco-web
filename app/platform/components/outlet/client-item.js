@@ -10,7 +10,7 @@ export default class ClientItem extends React.Component {
         enabled: PropTypes.bool,
         updateClient: PropTypes.func,
         toggleEdit: PropTypes.func,
-        updateClientWithSecret: PropTypes.func.isRequired,
+        getClient: PropTypes.func.isRequired,
         client: PropTypes.object.isRequired
     }
 
@@ -49,15 +49,15 @@ export default class ClientItem extends React.Component {
             text: (trigger) => {
                 return client.client_id;
             }
-        }); 
+        });
 
         client_id_clipboard.on('success', (e) => {
             this.props.toggleSnackbar('Client ID successfully copied!')
         });
-        
+
         if(this.state.client_id_clipboard)
             this.state.client_id_clipboard.destroy();
-        
+
         this.setState({ client_id_clipboard })
 
         if(client.client_secret) {
@@ -65,8 +65,8 @@ export default class ClientItem extends React.Component {
                 text: (trigger) => {
                     return client.client_secret;
                 }
-            });  
-         
+            });
+
             client_secret_clipboard.on('success', (e) => {
                 this.props.toggleSnackbar('Client Secret successfully copied!')
             })
@@ -80,7 +80,7 @@ export default class ClientItem extends React.Component {
 
     clientSecretClicked = () => {
         if(!this.props.client.client_secret) {
-            this.props.updateClientWithSecret(this.props.client.id, this.props.client.client_id);
+            this.props.getClient(this.props.client.id, true);
         }
     }
 
@@ -101,21 +101,25 @@ export default class ClientItem extends React.Component {
 
     render() {
         const { client, toggleEdit } = this.props;
-        const { tag, api_version, last_used_at, id, client_id } = client;
-        const versionNumber = `${api_version.version_major}.${api_version.version_minor}`;
+        const { tag, api_version, last_used_at, id, client_id} = client;
+        const { version_major, version_minor, deprecated_at } = api_version;
+        const versionNumber = `${version_major}.${version_minor}`;
+        const deprecationDifference = deprecated_at ? new Date(deprecated_at) - Date.now() : undefined;
+        const underExpirationWindow = deprecationDifference < 7889238000; //3 months in milliseconds
+        const expirationText = underExpirationWindow ? (deprecationDifference < 0 ? '(Expired)' : '(Expiring soon)') : '';
 
         return (
-            <div 
-                className="client-item" 
-                onMouseEnter={() => this.isEditable(true)} 
+            <div
+                className="client-item"
+                onMouseEnter={() => this.isEditable(true)}
                 onMouseLeave={() => this.isEditable(false)}
             >
                 <div className="client-item__toggle togglebutton">
                   <label>
-                    <input 
+                    <input
                         onChange={(e) => this.toggleEnabled(id)}
-                        type="checkbox" 
-                        checked={this.state.enabled ? 'true' : ''} 
+                        type="checkbox"
+                        checked={this.state.enabled ? 'true' : ''}
                     />
                   </label>
                 </div>
@@ -123,25 +127,26 @@ export default class ClientItem extends React.Component {
                 <div className="client-item__info">
                     <h3 className="client-item__tag">{tag || 'No tag'}</h3>
 
-                    <i 
+                    <i
                         className={`mdi mdi-pencil mdi-18px client-item__edit ${this.state.editable ? 'toggled' : ''}`}
                         onClick={() => toggleEdit(client)} />
-                    
+
                     <p className="client-item__meta">
-                        <span>Version {versionNumber} • </span>
-                        <span>{last_used_at ? 'Last active ' + utils.formatTime(last_used_at, true) : 'No record of activity'}</span>
+                        <span className={underExpirationWindow ? "expiring" : ""}>
+                          Version {versionNumber} {expirationText}</span>
+                        <span> • {last_used_at ? 'Last active ' + utils.formatTime(last_used_at, true) : 'No record of activity'}</span>
                     </p>
 
-                    <span 
-                        className="client-item__copy-action" 
+                    <span
+                        className="client-item__copy-action"
                         ref="client_id">Copy Client ID</span>
 
-                    <span 
+                    <span
                         className="client-item__copy-action"
                         onClick={this.clientSecretClicked}
                         ref="client_secret">{!client.client_secret ? 'Request secret' : 'Copy Client Secret'}</span>
                 </div>
             </div>
-        )        
+        )
     }
 }

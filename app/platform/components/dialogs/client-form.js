@@ -1,15 +1,16 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import utils from 'utils';
 import Base from './base';
 import Confirm from './confirm';
 import VersionDropdown from '../outlet/version-dropdown';
-import 'app/sass/platform/dialogs/tokenForm.scss';
+import 'app/sass/platform/dialogs/clientForm.scss';
 
 const deleteMessage = 'Are you sure you want to delete this client?';
 const rekeyMessage = 'Are you sure you want to create new client credentials? This will invalidate all of your current integrations.';
 
 /**
- * Form for creating/updating a client. 
+ * Form for creating/updating a client.
  * Found in outlet settings in the clients component
  */
 export default class ClientForm extends React.Component {
@@ -42,13 +43,30 @@ export default class ClientForm extends React.Component {
     componentDidMount() {
         //Do API version loading
         this.props.getVersions();
+
+        document.addEventListener('click', this.handleClickOutside, true);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', this.handleClickOutside, true);
+    }
+
+    /**
+     * Handles click event from dom listener. Determines if click is outside of the modal
+     */
+    handleClickOutside = () => {
+        const domNode = ReactDOM.findDOMNode(this.refs.modal);
+
+        if ((!domNode || !domNode.contains(event.target)) && this.props.toggled) {
+            this.props.toggle(false);
+        }
     }
 
     componentWillUpdate(nextProps, nextState) {
         //Incoming new client, or client state change
         if((nextProps.client && !this.props.client) || (nextProps.client && (nextProps.client.id !== this.props.client.id))) {
-            this.setState({ 
-                tag: nextProps.client.tag || '', 
+            this.setState({
+                tag: nextProps.client.tag || '',
                 redirect_uri: nextProps.client.redirect_uri || '',
                 selectedVersion: nextProps.client.api_version
             });
@@ -147,10 +165,11 @@ export default class ClientForm extends React.Component {
     render() {
         const { toggled, onCancel, body, toggle, newClient, client, versions } = this.props;
         const { rekeyDialogToggled, selectedVersion } = this.state;
+        const disabled = !this.validInputs();
 
         return (
-            <Base toggled={toggled}>
-                <div className={`dialog-modal--tokenForm ${toggled ? 'toggled' : ''}`}>
+            <Base toggled={toggled} toggle={toggle}>
+                <div ref="modal" className={`dialog-modal--tokenForm ${toggled ? 'toggled' : ''}`}>
                     <form className="dialog-modal__form" onSubmit={this.onConfirm}>
                         <div className="dialog-modal__headerActions">
                             <VersionDropdown
@@ -159,13 +178,13 @@ export default class ClientForm extends React.Component {
                                 versions={versions}
                              />
 
-                            {!newClient && 
-                                <i 
+                            {!newClient &&
+                                <i
                                 className="mdi mdi-delete dialog-modal__delete"
                                 onClick={this.delete} />
                             }
                         </div>
-                        
+
                         <input
                             name="tag"
                             type="text"
@@ -196,9 +215,9 @@ export default class ClientForm extends React.Component {
                         }
 
                         <button
-                            className="primary btn"
+                            className={`primary btn ${disabled ? 'disabled' : ''}`}
                             onClick={this.onSave}
-                            disabled={!this.validInputs()}
+                            disabled={disabled}
                         >
                             {newClient ? 'Create' : 'Save'}
                         </button>
@@ -212,7 +231,7 @@ export default class ClientForm extends React.Component {
                         </button>
                     </div>
 
-                    {!newClient && 
+                    {!newClient &&
                         <Confirm
                             onConfirm={this.onConfirm}
                             onCancel={() => { this.setState({ confirmFormToggled: false }) }}

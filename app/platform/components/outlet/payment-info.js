@@ -129,7 +129,7 @@ class PaymentInfo extends React.Component {
         if (activePayment && activePayment.brand && activePayment.last4 != null) {
             cardText = `USING ${activePayment.brand}-${activePayment.last4}`;
         } else {
-            cardText = 'No active payment method!'
+            cardText = 'Add payment method'
         }
 
         return (
@@ -138,7 +138,7 @@ class PaymentInfo extends React.Component {
                     <span className="title">PAYMENT INFORMATION</span>
 
                     <div>
-                        <span className="last4">{cardText}</span>
+                        <span className={`last4 ${!activePayment ? 'missing' : ''}`}>{cardText}</span>
 
                         <a href="/outlet">PURCHASE HISTORY</a>
                     </div>

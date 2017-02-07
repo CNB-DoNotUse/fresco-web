@@ -14,6 +14,22 @@ class Dropdown extends React.Component {
     }
 
     componentDidMount() {
+        document.addEventListener('click', this.handleClickOutside, true);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', this.handleClickOutside, true);
+    }
+
+    handleClickOutside = () => {
+        const domNode = ReactDOM.findDOMNode(this.refs.toggle);
+
+        if ((!domNode || !domNode.contains(event.target)) && this.props.toggled) {
+            this.props.toggle(false);
+        }
+    }
+
+    componentDidMount() {
         // Click event for outside clicking
         $(document).click((e) => {
             if ($(e.target).parents('.nav-dropdown').size() === 0 && e.target !== this.refs.drop) {
@@ -113,7 +129,9 @@ class Dropdown extends React.Component {
             >
                 <div 
                     className="toggle" 
-                    onClick={() => this.toggle()} >
+                    ref='toggle'
+                    onClick={() => this.toggle()}
+                >
                     <span>{title || this.state.selected}</span>
                     
                     <i className={this.getCaretIconClassName()} />
