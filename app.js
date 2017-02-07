@@ -116,7 +116,7 @@ app.use((req, res, next) => {
     }
 
     // Check if there is no sessioned user
-    if (!req.session.user) {
+    if (!req.session.user || !req.session.token || !req.session.token.token) {
         req.session.redirect = req.url;
         return req.session.save((error) => {
             res.redirect('/account');

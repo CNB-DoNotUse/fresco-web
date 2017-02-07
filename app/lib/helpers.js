@@ -19,3 +19,19 @@ export const scrolledToBottom = (el, offset = 400) => (
     el && (el.scrollTop > ((el.scrollHeight - el.offsetHeight) - offset))
 );
 
+/**
+ * Finds element by it's identifying field
+ * @param  {String} id         ID to look for
+ * @param  {Array} array      data source to search
+ * @param  {String} identifier identifiying field on the object look for
+ * @return {Object} Contains index found at, and the object itself
+ */
+export const findById = (id, array, identifier) => {
+    let index = null;
+    const object = array.find((o, i) => {
+        index = i;
+        return o[identifier] === id;
+    })
+
+    return {index, object};
+}

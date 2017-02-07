@@ -8,6 +8,9 @@ import App from './App';
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
+/**
+ * Wrapper for Material UI pages using redux
+ */
 const Root = ({ store, children, page }) => (
     <Provider store={store}>
         <MuiThemeProvider>

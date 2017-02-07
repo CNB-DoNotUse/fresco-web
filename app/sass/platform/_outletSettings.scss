@@ -7,7 +7,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------*/
 
 @import 'settings';
-@import "./bourbon/_bourbon";
+@import '../global/colors';
+@import '../global/drop-shadows.scss';
 
 /**
  * Ugly fix for bootstrap for this specfic page
@@ -21,16 +22,20 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
  */
 .outlet-settings{
 	padding: 64px 0 24px;
-	overflow: hidden;
-}
+    overflow: hidden;
 
-/**
- * Card Overrides
- */
-.card {
-	.header {
-		padding: 14px 16px;
-	}
+    /**
+     * Card Overrides
+     */
+    .card {
+        .header {
+            padding: 14px 16px;
+
+            div {
+            	float:right;
+            }
+        }
+    }
 }
 
 /**
@@ -42,7 +47,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	.header {
 		text-transform: uppercase;
 		div {
-			float:right;
             a {
                 @include rgba(color, 0, 0, 0, .87);
             }
@@ -52,6 +56,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				color:#4cd764;
 				margin-right:14px;
 				text-align:right;
+
+				&.missing {
+					color:$fresco-error;
+				}
 			}
 		}
 	}
@@ -300,8 +308,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 
 	.footer{
-		padding:0 16px;
-
 		.sub-title{
 			@include rgba(color, 0, 0, 0, 0.54);
 			font-weight:500;
@@ -326,9 +332,105 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 }
 
 /**
- * User (Outlet) Notification Settings
+ * Card for managing OAuth clients
  */
-.settings-outlet-notifications {
+.client-tokens__card {
+	.header {
+	}
+
+	.client-tokens__sub-header {
+		//Move closer to edge
+	    margin: -8px -8px 0 0;
+	}
+
+	.client-tokens__body {
+		max-height: 260px;
+		margin: 8px 0;
+		overflow: auto;
+		@include transition(height 0.3s ease);
+	}
+
+	.new-token {
+		color:$fresco-blue;
+		cursor:pointer;
+		font-weight: 500;
+	}
+
+	.api-docs {
+		background-color:$fresco-blue;
+		color:#FFF;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-weight:500;
+		padding:8px;
+		margin-left:12px;
+
+		@include border-radius(2px);
+		@include lightShadow();
+	}
+
+}
+
+/**
+ * Individaul client item appearing in the client items card
+ */
+.client-item{
+	padding:16px 14px;
 
 
+	&:hover {
+		@include rgba(background, 0, 0 ,0, 0.04);
+		@include transition(background-color 0.3s ease);
+	}
+
+}
+
+.client-item__toggle {
+	float:right;
+    margin-top: 14px;
+}
+
+.client-item__info {
+	.client-item__tag {
+		font-size: 16px;
+		margin:0;
+		padding:0;
+		font-weight:500;
+		display:inline-block;
+		font-size: 18px;
+		@include rgba(color, 0, 0 ,0, 0.87);
+	}
+
+	.client-item__edit {
+		margin: 0 0 0 4px;
+		cursor:pointer;
+		display:none;
+		@include rgba(color, 0, 0, 0, 0.54);
+
+		&.toggled {
+			display:inline-block;
+		}
+	}
+
+	.client-item__meta {
+		font-size: 12px;
+		letter-spacing: normal;
+		line-height:16px;
+		margin:0 0 18px;
+		@include rgba(color, 0, 0, 0, 0.54);
+	}
+
+	.expiring {
+		color:$fresco-error;
+	}
+
+	.client-item__copy-action {
+		font-weight:500;
+		text-transform:uppercase;
+		color:$fresco-blue;
+		margin-right:16px;
+		font-size:15px;
+		cursor:pointer;
+	}
 }

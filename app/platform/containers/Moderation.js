@@ -5,6 +5,8 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map, OrderedSet } from 'immutable';
+
+import App from '../views/app';
 import Snackbar from 'material-ui/Snackbar';
 import FrescoMasonry from '../components/global/fresco-masonry';
 import TopBar from '../components/moderation/topbar';
@@ -148,6 +150,7 @@ class Moderation extends React.Component {
             requestDeleted,
             fadeOutCard,
             infoDialog,
+            user
         } = this.props;
 
         return (
@@ -215,6 +218,7 @@ class Moderation extends React.Component {
 }
 
 function mapStateToProps(state) {
+    const user = state.get('user');
     const moderation = state.get('moderation');
     const filters = moderation.getIn(['ui', 'filters']);
     const galleryFilters = filters.get('galleries');
@@ -240,6 +244,7 @@ function mapStateToProps(state) {
         galleries,
         users,
         filters,
+        user
     };
 }
 

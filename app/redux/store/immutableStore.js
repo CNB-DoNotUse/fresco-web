@@ -4,6 +4,9 @@ import { fromJS, Iterable } from 'immutable';
 import createLogger from 'redux-logger';
 import rootReducer from '../modules/reducer';
 
+/**
+ * Immutable js store. 
+ */
 export default function configureStore(initialState) {
     const middleware = [thunk];
 
@@ -41,4 +44,3 @@ export default function configureStore(initialState) {
 
     return store;
 }
-

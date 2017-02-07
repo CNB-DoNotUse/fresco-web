@@ -1,0 +1,51 @@
+@import '../_variables.scss';
+@import '../../global/mixins.scss';
+@import './dialogs';
+
+/**
+ * Dialog Element with just info
+ */
+.dialog-modal--info {
+    @extend .dialog-modal;
+
+    .dialog-modal__header {
+        font-family: $nota;
+        height: 64px;
+        padding:0 24px;
+        @include vertical-align-flex;
+
+        span {
+            font-size: 20px;
+            font-weight: 500;
+            margin-right: auto;
+            @include rgba(0, 0, 0, 0.87);
+        }
+    }
+
+    .dialog-modal__body {
+        font-size: 16px;
+        color: rgba(0, 0, 0, 0.54);
+        padding: 0 24px 16px 24px;
+    }
+
+    .dialog-modal__footer {
+        font-family: $nota;
+        height: 52px;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 12px;
+        @include vertical-align-flex;
+
+        button {
+            border:none;
+            background:none;
+            text-transform:uppercase;
+            color:#0047bb;
+            margin-left: auto;
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+}

@@ -8,9 +8,7 @@ import cloneDeep from 'lodash/cloneDeep';
  */
 class Locations extends React.Component {
 
-    state = {
-        locations: []
-    }
+    state = { locations: [] }
 
     componentDidMount() {
         // Retreive locations
@@ -42,7 +40,7 @@ class Locations extends React.Component {
 
         const locations = JSON.parse(window.sessionStorage.locations);
 
-        $.ajax({ 
+        $.ajax({
             url: '/api/outlet/locations',
             data: {
                 limit: 400
@@ -92,15 +90,15 @@ class Locations extends React.Component {
         .done(() => {
             // Update locations
             this.loadLocations();
-            
+
             $.snackbar({ content: `Your outlet is now tracking ${autocomplete.value}!` });
-            
+
             // Clear field
             autocomplete.value = '';
         })
         .fail((xhr = {}, status, err) => {
             const { responseJSON: { msg = utils.resolveError(err) } } = xhr;
-            
+
             $.snackbar({ content: msg });
         });
     }
@@ -115,7 +113,7 @@ class Locations extends React.Component {
             url: `/api/outlet/locations/${id}/delete`,
         })
         .done(() => {
-            this.setState({ 
+            this.setState({
                 locations : this.state.locations.filter((l) => (l.id !== id))
             });
 
@@ -129,12 +127,12 @@ class Locations extends React.Component {
 	/**
 	 * Updates the notification type for the passed location id
      * @param {Object} location The location object being updated
-     * @param {String} notifType [description] 
+     * @param {String} notifType [description]
 	 */
     updateLocation = (notif, location = null, index = null) => (e) => {
         const singleLocation = (location !== null && index !== null);
         const url = `/api/outlet/locations/${singleLocation ? location.id : this.state.locations.map(l => l.id).join(',')}/settings/update`;
-        
+
         let oldLocations = cloneDeep(this.state.locations);
         let locations = cloneDeep(this.state.locations);
 
@@ -174,7 +172,7 @@ class Locations extends React.Component {
                 <ul className="outlet-locations">
                     {locations.map((location, i) => {
                         return (
-                            <LocationItem 
+                            <LocationItem
                                 key={i}
                                 index={i}
                                 updateLocation={this.updateLocation}
@@ -206,16 +204,16 @@ class Locations extends React.Component {
                 {this.renderLocationList(locations)}
 
                 <div className="footer">
-                    <input 
-                        type="text" 
-                        ref="outlet-location-input" 
-                        placeholder="New location" 
+                    <input
+                        type="text"
+                        ref="outlet-location-input"
+                        placeholder="New location"
                     />
-                    
+
                     <div className="location-options">
                         <div className="checkbox check-sms">
                             <label>
-                                <input 
+                                <input
                                     type="checkbox"
                                     checked={every(locations, 'settings.send_sms')}
                                     onChange={this.updateLocation('send_sms')} />
@@ -224,7 +222,7 @@ class Locations extends React.Component {
 
                         <div className="checkbox check-email">
                             <label>
-                                <input 
+                                <input
                                     type="checkbox"
                                     checked={every(locations, 'settings.send_email')}
                                     onChange={this.updateLocation('send_email')} />
@@ -233,7 +231,7 @@ class Locations extends React.Component {
 
                         <div className="checkbox check-fresco">
                             <label>
-                                <input 
+                                <input
                                     type="checkbox"
                                     checked={every(locations, 'settings.send_fresco')}
                                     onChange={this.updateLocation('send_fresco')} />
@@ -267,9 +265,9 @@ const LocationItem = ({ location, updateLocation, removeLocation, index }) => {
             </div>
 
             <div className="location-options form-group-default">
-                <span 
-                    onClick={removeLocation(location.id)} 
-                    className="remove-location mdi mdi-delete" 
+                <span
+                    onClick={removeLocation(location.id)}
+                    className="remove-location mdi mdi-delete"
                 />
 
                 <div className="checkbox check-sms">

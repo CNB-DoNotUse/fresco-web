@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import * as pushActions from 'app/redux/modules/pushNotifs';
-import 'app/sass/platform/_pushNotifs.scss';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import get from 'lodash/get';
 import { Map } from 'immutable';
+
+import App from '../views/app';
 import Snackbar from 'material-ui/Snackbar';
 import Confirm from '../components/dialogs/confirm';
 import Info from '../components/dialogs/info';
@@ -13,6 +14,8 @@ import Default from '../components/pushNotifs/default-template';
 import GalleryList from '../components/pushNotifs/gallery-list-template';
 import Recommend from '../components/pushNotifs/recommend-template';
 import Assignment from '../components/pushNotifs/assignment-template';
+
+import 'app/sass/platform/_pushNotifs.scss';
 
 const getConfirmText = (template) => {
     const restrictedByUser = get(template, 'restrictByUser', false);
@@ -77,15 +80,15 @@ class PushNotifs extends React.Component {
         };
 
         switch (activeTabKey) {
-        case 'gallery list':
-            return <GalleryList {...props} />;
-        case 'assignment':
-            return <Assignment {...props} />;
-        case 'recommend':
-            return <Recommend {...props} />;
-        case 'default':
-        default:
-            return <Default {...props} />;
+            case 'gallery list':
+                return <GalleryList {...props} />;
+            case 'assignment':
+                return <Assignment {...props} />;
+            case 'recommend':
+                return <Recommend {...props} />;
+            case 'default':
+            default:
+                return <Default {...props} />;
         }
     }
 
@@ -158,9 +161,12 @@ class PushNotifs extends React.Component {
 }
 
 function mapStateToProps(state) {
+    const user = state.getIn(['user']);
     const activeTab = state.getIn(['pushNotifs', 'activeTab']);
     const templates = state.getIn(['pushNotifs', 'templates']);
     const activeTemplate = templates.get(activeTab.toLowerCase(), Map()).toJS();
+
+    console.log(state.getIn(['user']));
 
     return {
         activeTab,
@@ -169,6 +175,7 @@ function mapStateToProps(state) {
         alert: state.getIn(['pushNotifs', 'alert']),
         requestConfirmSend: state.getIn(['pushNotifs', 'requestConfirmSend']),
         infoDialog: state.getIn(['pushNotifs', 'infoDialog']),
+        user
     };
 }
 
