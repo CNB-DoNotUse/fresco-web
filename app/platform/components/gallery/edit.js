@@ -438,7 +438,6 @@ class Edit extends React.Component {
 
     onChangeHighlightedAt = (e) => {
         this.setState({
-            shouldHighlight: e.target.checked,
             updateHighlightedAt: e.target.checked,
         });
     }
