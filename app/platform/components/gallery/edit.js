@@ -69,6 +69,7 @@ class Edit extends React.Component {
             owner: gallery.owner,
             bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
             updateHighlightedAt: false,
+            shouldHighlight: gallery.highlighted_at !== null
         };
     }
 
@@ -244,6 +245,7 @@ class Edit extends React.Component {
             rating,
             is_nsfw,
             owner,
+            shouldHighlight,
             updateHighlightedAt
         } = this.state;
         const { gallery } = this.props;
@@ -269,15 +271,22 @@ class Edit extends React.Component {
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             rating,
             is_nsfw,
-            owner_id: owner ? owner.id : null,
-            highlighted_at: updateHighlightedAt ? moment().toISOString() : null,
+            owner_id: owner ? owner.id : null
         };
+
+        if(!shouldHighlight) {
+            //We should un-highlight it
+            params.highlighted_at = null;
+        } else if(updateHighlightedAt || (shouldHighlight && !gallery.highlighted_at)) {
+            params.highlighted_at = moment().toISOString();
+            //If we are told to bring to the top, or it's never been highlighted and it should be
+        }
 
         // Make sure our params are valid types and don't have any empty arrays
         // Special exception if the param is a `bool`
         params = pickBy(params, (v, k) => {
             if (gallery[k] === v) return false;
-            if (['posts_new', 'highlighted_at'].includes(k) && !v) return false;
+            if (['posts_new'].includes(k) && !v) return false;
             return Array.isArray(v) ? v.length : true;
         });
 
@@ -422,14 +431,14 @@ class Edit extends React.Component {
 
     onChangeHighlighted = (e) => {
         this.setState({
-            rating: e.target.checked ? 3 : 2,
+            shouldHighlight: e.target.checked,
             updateHighlightedAt: e.target.checked,
         });
     }
 
     onChangeHighlightedAt = (e) => {
         this.setState({
-            rating: e.target.checked ? 3 : this.state.rating,
+            shouldHighlight: e.target.checked,
             updateHighlightedAt: e.target.checked,
         });
     }
@@ -510,17 +519,18 @@ class Edit extends React.Component {
             caption,
             assignments,
             tags,
-            rating,
             is_nsfw,
             articles,
             posts,
             uploads,
             isOriginalGallery,
             external_account_name,
+            highlighted_at,
             external_source,
             owner,
             bylineDisabled,
             updateHighlightedAt,
+            shouldHighlight
         } = this.state;
 
         if (!gallery) return '';
@@ -620,7 +630,7 @@ class Edit extends React.Component {
                             <label>
                                 <input
                                     type="checkbox"
-                                    checked={rating === 3}
+                                    checked={shouldHighlight}
                                     onChange={this.onChangeHighlighted}
                                 />
                                 Highlighted
