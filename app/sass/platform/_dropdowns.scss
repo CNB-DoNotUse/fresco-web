@@ -48,6 +48,11 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 		.dropdown-body{
 			display:block;
 		}
+
+
+		.mdi {
+			display:inline-block;
+		}
 	}
 
 	.toggle{
@@ -62,10 +67,10 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-		  max-width: 260px;
-		  float: left;
-		  position: relative;
-		  top: 2px;
+			max-width: 260px;
+			float: left;
+			position: relative;
+			top: 2px;
 			@include vertical-align();
 		}
 
@@ -74,7 +79,6 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 			font-size:22px;
 			line-height: 22px;
 			color:#757575;
-			display:inline-block;
 			@include vertical-align();
 		}
 
