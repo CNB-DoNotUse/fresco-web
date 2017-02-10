@@ -28,8 +28,12 @@ class OutletSettings extends React.Component {
         stripePublishableKey: PropTypes.string
     };
 
+    state = {
+        members: this.props.outlet.members ? this.props.outlet.members.filter(m => m.id !== this.props.outlet.owner.id) : [] //Hide outlet member
+    }
+
     constructor(props) {
-      super(props);
+        super(props);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -47,13 +51,13 @@ class OutletSettings extends React.Component {
         const {
             outlet,
             user,
-            members,
             ui,
             notificationSettings,
             clients,
             payment,
             stripePublishableKey
         } = this.props;
+        const { members } = this.state;
         const isOwner = outlet.owner.id === user.id;
         const className = `outlet-settings ${!isOwner ? 'centered' : ''}`;
 

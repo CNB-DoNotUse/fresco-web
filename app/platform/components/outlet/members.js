@@ -219,7 +219,7 @@ export default class OutletMembers extends React.Component {
 					<input type="text"
 						className="outlet-invite"
 						ref="outletInviteField"
-						placeholder="Invite users by email — luke@death-star.net, hansolo64@death-star.net"
+						placeholder="Invite users by email"
                         onKeyDown={this.inviteKeyDown}
                     />
 				</div>
