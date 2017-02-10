@@ -66,7 +66,7 @@ class Clients extends React.Component {
                     <div className="client-tokens__sub-header">
                         <span className="new-token" onClick={() => this.toggleEdit(null)}>NEW TOKEN</span>
 
-                        <a href="https://api.fresconews.com" className="api-docs">API DOCS</a>
+                        <a href="https://fresconews.com/docs/api" className="api-docs">API DOCS</a>
                     </div>
                 </div>
 
