@@ -64,7 +64,9 @@ class Posts extends React.Component {
         setInSessionStorage('archive', { tags });
     }
 
-    // Returns array of posts with last and callback, used in child PostList
+    /**
+     * Returns array of posts with last and callback, used in child PostList
+     */
     loadPosts = (last, callback) => {
         const { type } = this.props;
         const { sortBy, location, tags, verifiedToggle } = this.state;
@@ -77,6 +79,7 @@ class Posts extends React.Component {
             post_type: type,
             tags,
             sortBy,
+            count:false //Don't return a count
         };
 
         if (verifiedToggle) params.rating = 2;

@@ -16,11 +16,8 @@ router.get('/logout', userMiddleware.logout);
 
 /**
  * Registers a new user account, optionally with an outlet
- */
+ */ 
 router.post('/register', (req, res, next) => {
-    console.log(req.body);;
-
-
     API.request({
         method: 'POST',
         url: '/user/create',
