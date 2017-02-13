@@ -31,20 +31,30 @@ router.get('/:id', (req, res, next) => {
         gallery = response.body || {};
         title = utils.getBylineFromPost(post, true);
 
-        verifier = post.curator ? post.curator.full_name : '';
-
         res.render('app', {
             props: JSON.stringify({
                 gallery,
                 post,
                 title,
-                verifier,
                 user: req.session.user,
             }),
+            title,
+            og: {
+                title,
+                image: utils.formatImg(post.image, 'large'),
+                url: req.originalUrl,
+                description: gallery.caption,
+            },
+            twitter: {
+                title,
+                description: gallery.caption,
+                image: utils.formatImg(post.image, 'large'),
+            },
             alerts: req.alerts,
-            page: 'postDetail',
+            page: 'postDetail'
         });
-    }).catch(error => {
+    })
+    .catch(error => {
         next({
             message: error.status === 404 ? 'Post not found!' : 'Unable to load post!',
             status: error.status,

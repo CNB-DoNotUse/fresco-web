@@ -53,7 +53,6 @@ class PostDetail extends React.Component {
                                 user={user}
                                 post={post}
                                 gallery={gallery}
-                                verifier={verifier}
                             />
                         </div>
                     </div>
@@ -90,7 +89,6 @@ ReactDOM.render(
     <PostDetail
         user={window.__initialProps__.user}
         gallery={window.__initialProps__.gallery}
-        verifier={window.__initialProps__.verifier || ''}
         post={window.__initialProps__.post}
         title={window.__initialProps__.title}
     />,

@@ -18,7 +18,6 @@ export default class PostInfo extends React.Component {
 		let timeString = utils.formatTime(post.created_at, true);
 		let verifiedBy = '';
 		let verifyClass = '';
-		let userName = '';
 
         //Define verifier text based on approvals
         if (post.rating >= 2) {
@@ -35,8 +34,6 @@ export default class PostInfo extends React.Component {
 
         //Check to show user icon
         if(post.owner){
-            userName = post.owner.full_name || post.owner.username;
-
             userIcon = <UserItem user={post.owner} />
         }
 
@@ -95,8 +92,4 @@ export default class PostInfo extends React.Component {
 		);
 	}
 
-}
-
-PostInfo.defaultProps = {
-	verifier: ''
 }
