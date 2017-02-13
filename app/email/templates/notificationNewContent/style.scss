@@ -1,41 +1,98 @@
-html, body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-}
-a {
-    color: black;
-}
-.nav {
-    background-color: #ffc600;
-    color: white;
-    margin: 0;
-    height: 100px;
-    width: 100%;
-}
-.nav img {
-    width: auto;
-    padding-left: 34px;
-    padding-top: 25px;
-    float: left;
-    height: 50px;
-}
-.nav div {
-    float: right;
-    padding-right: 36px;
-    padding-top: 34px;
-}
-.nav div h1 {
-    font-weight: bold;
-    font-size: 30px;
-    margin: 0;
-    padding: 0;
-}
-.nav div p {
-    margin: 0;
-}
-.content {
-    padding: 25px 40px;
+@import "../../../sass/email/_email";
+
+$email-button: #0047bb;
+
+.email-content__body {
+    padding-left: 0px !important;
+
+    @include desktop-all {
+        padding-left: 0px !important;
+    }
+
+    .gallery {
+        display: inline-block;
+        width: 100%;
+
+        padding-bottom: 16px;
+
+        @include desktop-all {
+            padding-bottom: 24px;
+        }
+    }
+
+    .media {
+        width: 100%;
+
+        max-width: 408px;
+        margin: auto;
+
+        float: center;
+        display: block;
+
+        @include desktop-all {
+            width: 408px !important;
+
+            float: left;
+        }
+
+        .post {
+            width: 200px;
+            height: 200px;
+
+            margin-left: 4px;
+            margin-top: 4px;
+
+            float: left;
+            display: inline-block;
+
+            background-color: $email-title;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .post.large {
+            width: 408px;
+            height: 271px;
+        }
+    }
+
+    .caption_container {
+        width: 100%;
+        float: left;
+
+        font-size: 14px;
+
+        @include desktop-all {
+            width: 342px !important;
+        }
+
+        .caption {
+            padding-left: 16px;
+            padding-right: 16px;
+
+            padding-bottom: 14px;
+
+            @include desktop-all {
+                padding-left: 24px !important;
+                padding-right: 24px !important;
+            }
+        }
+
+        a, a:active, a:link, a:visited {
+            text-decoration: none;
+            color: $email-button;
+            font-weight: 600;
+
+            margin-left: 16px;
+            margin-right: 16px;
+
+            @include desktop-all {
+                margin-left: 24px !important;
+                margin-right: 24px !important;
+            }
+        }
+    }
 }

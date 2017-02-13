@@ -64,7 +64,7 @@ html, body, .container {
 
 a, a:active, a:link, a:visited {
     text-decoration: none;
-    color: inherit;
+    color: $email-body;
     font-weight: 700;
 }
 

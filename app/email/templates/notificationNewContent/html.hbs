@@ -1,14 +1,38 @@
 <html>
-    <body>
-        <div class="nav">
-            <img src="https://d1dw1p6sgigznj.cloudfront.net/images/wordmark-foot.png">
-            <div>
-				<h1>NEW GALLERY</h1>
-                <p>A new gallery has been submitted to your assignment!</p>
+	<head></head>
+	<body>
+		<div class="container">
+			<div class="email-content">
+				<div class="email-content__title">
+					Here's the latest from <a target="_blank" href="\{{ model.link }}">\{{ model.name }}</a>
+				</div>
+				<div class="email-content__body">
+                    \{{#each galleries}}
+                        <div class="gallery">
+                            <div class="media">
+                                \{{#if single_post}}
+                                    \{{#each posts}}
+                                        <a target="_blank" href="\{{ link }}" class="post large">
+                                            <img src="\{{ image }}"></img>
+                                        </a>
+                                    \{{/each}}
+                                \{{else}}
+									\{{#each posts}}
+										<a target="_blank" href="\{{ link }}" class="post">
+											<img src="\{{ image }}"></img>
+										</a>
+									\{{/each}}
+                                \{{/if}}
+                            </div>
+                            <div class="caption_container">
+                                <div class="caption">\{{ caption }}</div>
+                                <a target="_blank" href="\{{ gallery_link }}">OPEN GALLERY</a>
+                            </div>
+                        </div>
+                    \{{/each}}
+				</div>
+				{{> footer }}
 			</div>
-		</div>
-    	<div class="content">
-            Someone has submitted a gallery to your assignment <b>\{{ assignment }}</b>!  To view your assignment, go to the \{{ url link }}.
 		</div>
 	</body>
 </html>

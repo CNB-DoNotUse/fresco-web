@@ -73,6 +73,50 @@ const testMessage = {
     }, {
         name: 'body',
         content: 'THIS IS A BODY!!!!!!'
+    }, {
+        name: 'model',
+        content: {
+            name: 'Google',
+            link: 'https://www.google.com'
+        }
+    }, {
+        name: 'galleries',
+        content: [
+            {
+                caption: "Hello World",
+                gallery_link: "https://www.fresconews.com/",
+                posts: [
+                    {
+                        image: "https://d2j1l98c0ybckw.cloudfront.net/images/55f47fed5fdc140b5b338997_1442086894671.jpeg",
+                        link: "https://www.msn.com/"
+                    }
+                ],
+                single_post: true
+            },
+            {
+                caption: "What a wonderful day",
+                gallery_link: "https://www.fresconews.com/",
+                posts: [
+                    {
+                        image: "https://d2j1l98c0ybckw.cloudfront.net/images/55f47fed5fdc140b5b338997_1442086894671.jpeg",
+                        link: "https://www.yahoo.com"
+                    },
+                    {
+                        image: "https://d2j1l98c0ybckw.cloudfront.net/images/55f47fed5fdc140b5b338997_1442086894671.jpeg",
+                        link: "https://www.aol.com/"
+                    },
+                    {
+                        image: "https://d2j1l98c0ybckw.cloudfront.net/images/55f47fed5fdc140b5b338997_1442086894671.jpeg",
+                        link: "https://www.cnn.com/"
+                    },
+                    {
+                        image: "https://d2j1l98c0ybckw.cloudfront.net/images/55f47fed5fdc140b5b338997_1442086894671.jpeg",
+                        link: "https://www.verizon.com/"
+                    }
+                ],
+                single_post: false
+            }
+        ]
     }],
 };
 
