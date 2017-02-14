@@ -15,7 +15,7 @@ export const createHandlerName = evtName => camelCase(`on${evtName.toUpperCase()
  * @param {Number} Offset - the pixel offset to calculate bottom scrolled
  * @returns {Boolean} Whether or not the scroll has reached the bottom of the passed DOM element
  */
-export const scrolledToBottom = (el, offset = 400) => (
+export const scrolledToBottom = (el, offset = 800) => (
     el && (el.scrollTop > ((el.scrollHeight - el.offsetHeight) - offset))
 );
 

@@ -11,6 +11,7 @@ const renderPost = (post) => {
         return (
             <FrescoVideo
                 video={post.stream}
+                clickToPlay={false}
                 thumbnail={post.image}
             />
         );

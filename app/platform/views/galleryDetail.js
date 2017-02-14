@@ -108,6 +108,9 @@ class GalleryDetail extends React.Component {
      * Updates gallery in state
      */
     onUpdateGallery(gallery) {
+        console.log(gallery);
+
+
         this.setState({
             gallery,
             title: utils.getTitleFromGallery(gallery),

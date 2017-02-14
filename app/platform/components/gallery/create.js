@@ -185,7 +185,7 @@ class Create extends React.Component {
 
                                 <ChipInput
                                     model="articles"
-                                    queryAttr="title"
+                                    queryAttr="link"
                                     items={articles}
                                     updateItems={(a) => this.setState({ articles: a })}
                                     className="dialog-row"

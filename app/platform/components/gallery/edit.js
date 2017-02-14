@@ -96,11 +96,13 @@ class Edit extends React.Component {
         const { loading, assignments, isOriginalGallery } = this.state;
 
         if (!Object.keys(params).length) {
-            $.snackbar({ content: 'No changes made!' });
-            return;
+            return $.snackbar({ content: 'No changes made!' });
         }
+
         if (!get(gallery, 'id') || loading) return;
+        
         this.setState({ loading: true });
+        
         const postsToDelete = isOriginalGallery ? get(params, 'posts_remove') : [];
 
         saveGallery(gallery.id, params)
@@ -109,6 +111,7 @@ class Edit extends React.Component {
             return res;
         })
         .then((res) => {
+            //Check if there are posts to upload
             if (get(res, 'posts_new.length')) {
                 return Promise.all([
                     res,
@@ -118,11 +121,14 @@ class Edit extends React.Component {
 
             return res;
         })
-        .then((res) => {
+        //If the promise.all is run, then we get back an array, not a single object
+        .then(res => res.constructor === Array ? res[0] : res)
+        .then(res => {
             this.hide();
+
             this.setState({ uploads: [], loading: false }, () => {
-                $.snackbar({ content: 'Gallery saved!' });
                 onUpdateGallery(Object.assign(res, { assignments }));
+                $.snackbar({ content: 'Gallery saved!' });
             });
         })
         .catch(() => {
@@ -322,10 +328,9 @@ class Edit extends React.Component {
             });
         }
 
-        let { posts_new, posts_add, posts_remove } =
-            utils.getRemoveAddParams('posts', gallery.posts, posts);
+        let { posts_new, posts_add, posts_remove } = utils.getRemoveAddParams('posts', gallery.posts, posts);
 
-        posts_new = posts_new
+        posts_new = posts_new 
             ? posts_new.map(p =>
                 Object.assign({}, p, {
                     rating,
@@ -373,6 +378,12 @@ class Edit extends React.Component {
         return { posts_update: params };
     }
 
+    /**
+     * Uploads passed files
+     * @param  {Array} posts new posts with upload urls
+     * @param  {Array} files actual files from the web browser
+     * @return {Promise(s)}  Promise.All 
+     */
     uploadFiles(posts, files) {
         if (!posts || !files || !files.length) return Promise.resolve;
         const requests = posts.map((p, i) => {
