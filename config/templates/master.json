@@ -4,8 +4,8 @@
 
     "API_URL": "https://api.fresconews.com",
 
-    "API_CLIENT_ID" : "",
-    "API_CLIENT_SECRET" : "",
+    "API_CLIENT_ID" : "4QKIX4DcssrcVOW93BHFD0uTzNA6TOs7oUlxbXGIcwCcw1T6iP1we4N0bVpM",
+    "API_CLIENT_SECRET" : "8U2Iwt33BTgUFGg3fJGzLUv9P7BFgzRtSmvRNsUNq9ZXtOlcpPU9lPijb4gcKnd8CaKjXpRsZDq3IP1N9qeou6rSItMdX5wLByuudTVKOn4mwsaqn3WKduJKBNaF7x7agmJFFfhVqGJw3ynqidvxDYdi4L9mbg4lYNyv0ZbLlFRB2R1CMcsFZfTsmwlgGQ",
 
     "WEB_ROOT" : "https://fresconews.com",
     "API_VERSION": "v2",
