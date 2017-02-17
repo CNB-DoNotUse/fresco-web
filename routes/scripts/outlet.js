@@ -4,27 +4,13 @@ const API = require('../../lib/api');
 const userLib = require('../../lib/user');
 const router = express.Router();
 
-/**
- * Make sure a user is signed in and is part of an outlet
- * @param  {Request}  req Express request object
- * @param  {Response} res Express response object
- * @return {boolean}      True if everything is kosher, false if not
- */
-function checkOutlet(req, res) {
-    if (!req.session.user || !req.session.user.outlet) {
-        res.status(400).json({ err: 'ERR_INVALID_OUTLET' }).end();
-        return false;
-    }
-    return true;
-}
-
 router.post('/invite/accept', (req, res, next) => {
     const { accept, updates } = req.body;
 
     userLib
         .login(accept.username, accept.password, req)
         .then(response => {
-            let { user, token } = response.body;
+            let { user, token } = response;
 
             //Accept the invite
             API.request({
@@ -59,21 +45,22 @@ router.post('/invite/accept', (req, res, next) => {
                         let updatedUser = response.body;
                         updatedUser.roles = user.roles;
 
-                        end(req, updatedUser, token)
+                        end(req, updatedUser)
                     })
                     .catch(error => API.handleError(error, res));
                 } else {
-                    end(req, user, token);
+                    end(req, user);
                 }
             })
+            .catch(error => API.handleError(error, res));
         })
         .catch(error => API.handleError(error, res));
 
 
     //Ending function
-    const end = (req, user, token) => {
+    const end = (req, user) => {
         userLib
-        .saveSession(req, user, token)
+        .saveSession(req, user)
         .then(() => {
             return res.status(200).send({success: true});
         })

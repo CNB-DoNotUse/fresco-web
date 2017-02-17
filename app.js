@@ -92,10 +92,12 @@ app.use((req, res, next) => {
         res.locals.alerts = res.locals.alerts.concat(req.session.alerts);
 
         delete req.session.alerts;
-        req.session.save(null);
+        req.session.save(() => {
+            next();
+        });
+    } else {
+        next();
     }
-
-    next();
 });
 
 
