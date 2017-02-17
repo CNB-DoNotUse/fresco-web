@@ -74,11 +74,8 @@ const testMessage = {
         name: 'body',
         content: 'THIS IS A BODY!!!!!!'
     }, {
-        name: 'model',
-        content: {
-            name: 'Google',
-            link: 'https://www.google.com'
-        }
+        name: 'links',
+        content: '<a style="text-decoration: none; font-weight: 700; color: #212121;" href="https://www.google.com">Google</a>'
     }, {
         name: 'galleries',
         content: [
