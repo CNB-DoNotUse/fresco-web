@@ -91,13 +91,12 @@ app.use((req, res, next) => {
     if (req.session && req.session.alerts){
         res.locals.alerts = res.locals.alerts.concat(req.session.alerts);
 
+        //Delete session alerts after attaching to the locals
         delete req.session.alerts;
-        req.session.save(() => {
-            next();
-        });
-    } else {
-        next();
+        req.session.save();
     }
+    
+    next();
 });
 
 
