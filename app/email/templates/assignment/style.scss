@@ -37,15 +37,17 @@ $email-button: #0047bb;
         }
     }
 
+    .caption_container.local {
+        @include desktop-all {
+            width: 342px !important;
+        }
+    }
+
     .caption_container {
         width: 100%;
         float: left;
 
         font-size: 14px;
-
-        @include desktop-all {
-            width: 342px !important;
-        }
 
         .caption {
             padding-left: 16px;
