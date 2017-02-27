@@ -43,7 +43,7 @@ class Locations extends React.Component {
         $.ajax({
             url: '/api/outlet/locations',
             data: {
-                limit: 400
+                limit: 100
                 // since: locations.since //TODO
             }
         })

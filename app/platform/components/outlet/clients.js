@@ -61,7 +61,7 @@ class Clients extends React.Component {
         return (
             <div className="card client-tokens__card">
                 <div className="header">
-                    <span className="title">API Tokens</span>
+                    <span className="title">API Clients</span>
 
                     <div className="client-tokens__sub-header">
                         <span className="new-token" onClick={() => this.toggleEdit(null)}>NEW TOKEN</span>

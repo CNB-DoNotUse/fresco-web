@@ -52,7 +52,7 @@ function render(gallery, user, req, res) {
  */
 router.get('/:id', (req, res, next) => {
     API.request({
-        token: req.session.token.token,
+        token: req.session.token ? req.session.token.token : '', 
         url: `/gallery/${req.params.id}`,
     })
     .then(response => {
