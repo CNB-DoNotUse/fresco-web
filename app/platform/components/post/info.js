@@ -69,8 +69,13 @@ export default class PostInfo extends React.Component {
 						<ul className="md-type-subhead">
 							<li>
 								<span className="mdi mdi-clock icon"></span>
-								{timeString}
+								{`Uploaded at ${utils.formatTime(post.created_at, true)}`}
 							</li>
+
+                            <li>
+                                <span className="mdi mdi-camera icon"></span>
+                                {`Captured at ${utils.formatTime(post.captured_at, true)}`}
+                            </li>
 
 							<li>
 								<span className="mdi mdi-map-marker icon"></span>
