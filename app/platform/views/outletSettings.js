@@ -6,8 +6,8 @@ import reducer from 'app/redux/modules/outletSettings';
 
 import OutletSettings from '../containers/OutletSettings';
 
-const { user, outlet, stripePublishableKey } = window.__initialProps__;
-const store = configureStore({ user, outlet }, reducer);
+const { user, outlet, stripePublishableKey, payment } = window.__initialProps__;
+const store = configureStore({ user, outlet, payment }, reducer);
 
 const Root = ({ store, page }) => (
     <Provider store={store}>

@@ -15,5 +15,6 @@ export default createReducer({
     ui,
     notificationSettings,
     clients,
+    payment: (state = [], action) => state,
     versions
 });

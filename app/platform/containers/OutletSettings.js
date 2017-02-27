@@ -122,6 +122,7 @@ const mapStateToProps = (state) => {
         outlet: state.outlet,
         user: state.user,
         members: state.members,
+        payment: state.payment,
         ui: state.ui,
         clients: state.clients
     }
