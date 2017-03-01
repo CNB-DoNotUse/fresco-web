@@ -1,16 +1,8 @@
-<html>
-	<head></head>
-	<body>
-		<div class="container">
-			<div class="email-content">
-				<div class="email-content__title">
-					Statement
-				</div>
-				<div class="email-content__body">
-					\{{{ table }}}
-				</div>
-				{{> footer }}
-			</div>
-		</div>
-	</body>
-</html>
+{{#> email_base }}
+	<div class="email-content__title">
+		Statement
+	</div>
+	<div class="email-content__body">
+		\{{{ table }}}
+	</div>
+{{/email_base}}

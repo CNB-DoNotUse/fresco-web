@@ -9,8 +9,9 @@ const dev = process.env.NODE_ENV === 'development';
 const mandrillClient = new mandrill.Mandrill('Wm-tSNLBNAMbt4xT_ouWKg');
 const templatesDir = path.join(__dirname, 'templates');
 
-const footerTemplate = fs.readFileSync(path.join(__dirname, 'footer.hbs')).toString();
-Handlebars.registerPartial('footer', footerTemplate);
+// Register the common elements for the emails
+const email_base = fs.readFileSync(path.join(__dirname, 'email_base.hbs')).toString();
+Handlebars.registerPartial('email_base', email_base);
 
 const updateTemplate = (name, data) => {
     mandrillClient.templates.update({

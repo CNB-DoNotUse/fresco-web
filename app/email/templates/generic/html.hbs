@@ -1,17 +1,9 @@
-<html>
-	<head></head>
-	<body>
-		<div class="container">
-			<div class="email-content">
-				<div class="email-content__title">
-					<!-- 'title' is a built in helper in mailchimp -->
-					\{{{ TITLE }}}
-				</div>
-				<div class="email-content__body">
-					\{{{ body }}}
-				</div>
-				{{> footer }}
-			</div>
-		</div>
-	</body>
-</html>
+{{#> email_base }}
+	<div class="email-content__title">
+		<!-- 'title' is a built in helper in mailchimp -->
+		\{{{ TITLE }}}
+	</div>
+	<div class="email-content__body">
+		\{{{ body }}}
+	</div>
+{{/email_base}}

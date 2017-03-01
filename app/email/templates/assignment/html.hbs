@@ -1,33 +1,25 @@
-<html>
-	<head></head>
-	<body>
-		<div class="container">
-			<div class="email-content">
-				<div class="email-content__title">
-					Assignment \{{operation}}: <a target="_blank" href="\{{ link }}">\{{ assignment_title }}</a>
+{{#> email_base }}
+	<div class="email-content__title">
+		Assignment \{{operation}}: <a target="_blank" href="\{{ link }}">\{{ assignment_title }}</a>
+	</div>
+	<div class="email-content__body">
+        <div class="assignment">
+			\{{#if local}}
+				<div class="map">
+					<a target="_blank" href="\{{ link }}">
+						<img src="\{{ static_map }}" alt="Assignment Map">
+					</a>
 				</div>
-				<div class="email-content__body">
-                    <div class="assignment">
-						\{{#if local}}
-							<div class="map">
-								<a target="_blank" href="\{{ link }}">
-									<img src="\{{ static_map }}" alt="Assignment Map">
-								</a>
-							</div>
-							<div class="caption_container local">
-						\{{else}}
-							<div class="caption_container">
-						\{{/if}}
-                            <div class="caption">\{{ caption }}</div>
-                            <a target="_blank" href="\{{ link }}">OPEN ASSIGNMENT</a>
-                        </div>
-                    </div>
-					<div class="map-info">
-						\{{{ info }}}
-					</div>
-				</div>
-				{{> footer }}
-			</div>
+				<div class="caption_container local">
+			\{{else}}
+				<div class="caption_container">
+			\{{/if}}
+                <div class="caption">\{{ caption }}</div>
+                <a target="_blank" href="\{{ link }}">OPEN ASSIGNMENT</a>
+            </div>
+        </div>
+		<div class="map-info">
+			\{{{ info }}}
 		</div>
-	</body>
-</html>
+	</div>
+{{/email_base}}
