@@ -24,7 +24,7 @@ router.post('/signup', (req, res, next) => {
         market    : typeof(req.body.market) === 'undefined' ? '' : req.body.market,
         referral  : typeof(req.body.ref) === 'undefined' ?  '' : req.body.ref
     };
-    
+
     /*
     Check fields
      */
@@ -51,7 +51,7 @@ router.post('/signup', (req, res, next) => {
     }
 
     //Make the XML Data
-    let proUser = 
+    let proUser =
         '<CustomModule1>' +
             '<row no="1">' +
                 '<FL val="CustomModule1 Name">'+ params.firstname + ' ' + params.lastname + '</FL>' +
@@ -84,14 +84,14 @@ router.post('/signup', (req, res, next) => {
 
             xml2js(response.text, function (err, result) {
                 var field = result.response.result[0].recorddetail[0]['FL'][0];
-                
+
                 //Check if field key is correct
                 if(field['$']['val'] == 'Id'){
                     rowId = field['_'];
                 }
 
                 params.proId = rowId;
-               
+
                 sendEmail(params, null);
 
                 //Respond with row id after parsing
@@ -111,38 +111,40 @@ router.post('/signup', (req, res, next) => {
 function sendEmail(params, callback) {
     mandrill_client.messages.sendTemplate({
         template_name: 'notification-prouser-signup',
-        template_content: [
-            {
-                name: 'name',
-                content: 'Name - ' + params.firstname + ' ' + params.lastname
-            },
-            {
-                name: 'zip',
-                content: 'Zip Code - ' + params.zip
-            },
-            {
-                name: 'email',
-                content: 'Email - ' + params.email
-            },
-            {
-                name: 'phone',
-                content: 'Phone Number - ' + params.phone
-            },
-            {
-                name: 'time',
-                content: 'Best Time to Call - ' + params.time
-            },
-            {
-                name: 'link',
-                content: '<a href="'+ config.WEB_ROOT +'/pro/' + params.proId + '">Click here</a>'
-            }
-        ],
+        template_content: [],
         message: {
             from_email: "donotreply@fresconews.com",
             from_name: 'Fresco News',
             to: [{
                 email: params.email
-            }]
+            }],
+            merge_language: 'handlebars',
+            global_merge_vars: [
+                {
+                    name: 'name',
+                    content: 'Name - ' + params.firstname + ' ' + params.lastname
+                },
+                {
+                    name: 'zip',
+                    content: 'Zip Code - ' + params.zip
+                },
+                {
+                    name: 'email',
+                    content: 'Email - ' + params.email
+                },
+                {
+                    name: 'phone',
+                    content: 'Phone Number - ' + params.phone
+                },
+                {
+                    name: 'time',
+                    content: 'Best Time to Call - ' + params.time
+                },
+                {
+                    name: 'link',
+                    content: '<a href="'+ config.WEB_ROOT +'/pro/' + params.proId + '">Click here</a>'
+                }
+            ]
         }
     }, (response) => {
         var response = response[0];
@@ -158,7 +160,7 @@ function sendEmail(params, callback) {
 /**
  * Updates a pro user on zoho
  */
-router.post('/update', (req, res, next) => { 
+router.post('/update', (req, res, next) => {
     var params = {
             day     : req.body.day,
             morning : req.body.morning == 'true', //BOOL gets converted to a string afterwards :(
@@ -173,7 +175,7 @@ router.post('/update', (req, res, next) => {
         params.time = config.PRO.MORNING
     else if(params.evening)
         params.time = config.PRO.EVENING
-    else 
+    else
         params.time = 'None';
 
     if(!params.day || !params.time || !params.id){
@@ -184,7 +186,7 @@ router.post('/update', (req, res, next) => {
     }
 
     //Make the XML Data
-    var proUser = 
+    var proUser =
         '<CustomModule1>' +
             '<row no="1">' +
                 '<FL val="'+ params.day +'">' + params.time + '</FL>' +
@@ -196,7 +198,7 @@ router.post('/update', (req, res, next) => {
     .post(config.ZOHO.UPDATE_LEAD + '&id=' + params.id + '&xmlData=' + proUser)
     .end((err, response) => {
         console.log(response.text);
-        
+
         //Response comes back as XML, we `indexOf` for the success message inside
         if(err || response.text.indexOf('Record(s) updated successfully') == -1) {
              return res.json({
