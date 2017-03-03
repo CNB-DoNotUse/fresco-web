@@ -3,7 +3,7 @@ const head          = require('./lib/head');
 const utils         = require('./lib/utils');
 const routes        = require('./lib/routes');
 const API           = require('./lib/api');
-const User          = require('./lib/user');
+const userMiddleware = require('./middleware/user');
 const redis         = require('./lib/redis');
 const express       = require('express');
 const compression   = require('compression');
@@ -88,22 +88,14 @@ app.use(
 app.use((req, res, next) => {
     res.locals.alerts = [];
 
-    // if (req.session && req.session.user && !req.session.user.verified){
-    //     res.locals.alerts.push('\
-    //         <p>Your email hasn\'t been verified.\
-    //             <br>Please click on the link sent to your inbox to verify your email!\
-    //         </p>\
-    //         <a href="/scripts/user/verify/resend">RESEND EMAIL</a>'
-    //     );
-    // }
-
     if (req.session && req.session.alerts){
         res.locals.alerts = res.locals.alerts.concat(req.session.alerts);
 
+        //Delete session alerts after attaching to the locals
         delete req.session.alerts;
-        req.session.save(null);
+        req.session.save();
     }
-
+    
     next();
 });
 
@@ -125,20 +117,22 @@ app.use((req, res, next) => {
     }
 
     // Check if there is no sessioned user
-    if (!req.session.user) {
+    if (!req.session.user || !req.session.token || !req.session.token.token) {
         req.session.redirect = req.url;
         return req.session.save((error) => {
             res.redirect('/account');
         });
     }
 
+    const tokenExpired = new Date(req.session.token.expires_at) < Date.now(); //Bearer token has expired
+
     // Check if the session hasn't expired
-    if (req.session.user.TTL && req.session.user.TTL - now > 0) {
+    if (!tokenExpired) {
         return next();
     }
 
-    //Session has expired, so refresh the user
-    User.refresh(req, res, next);
+    //Bearer token has expired, so refresh the token
+    userMiddleware.refreshBearer(req, res, next);
 });
 
 

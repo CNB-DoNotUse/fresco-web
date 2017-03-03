@@ -49,7 +49,7 @@ class Sidebar extends React.Component {
                         <span className="mdi mdi-clock icon" />
                         <span>{expiredText}</span>
                     </li>
-                    {user.permissions.includes('update-other-content') && (
+                    {user.roles.includes('admin') && (
                         assignment.outlets.map((o, i) => (
                             <li key={i}>
                                 <span className="mdi mdi-account-multiple icon" />
@@ -69,7 +69,7 @@ class Sidebar extends React.Component {
                             {video_count + ' video' + (utils.isPlural(video_count) ? 's' : '')}
                         </span>
                     </li>
-                    {user.permissions.includes('update-other-content') ? (
+                    {user.roles.includes('admin') ? (
                         <li style={{ cursor: 'pointer' }} onClick={onClickAccepted}>
                             <span className="mdi mdi-account-multiple icon" />
                             <span>{`${acceptedCount} accepted ${acceptedCount === 1 ? 'user' : 'users'}`}</span>

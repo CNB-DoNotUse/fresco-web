@@ -5,6 +5,7 @@ import get from 'lodash/get';
 import last from 'lodash/last';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import { getLikes, getReposts } from 'app/lib/gallery';
+import { scrolledToBottom } from 'app/lib/helpers';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/gallery/sidebar';
@@ -51,34 +52,33 @@ class GalleryDetail extends React.Component {
      */
     onScroll = (e, context) => {
         const grid = e.target;
-        const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 50);
+        const bottomReached = scrolledToBottom(grid, 50);
 
-        if(!bottomReached || this.state.loading) 
-            return;
+        if(!bottomReached || this.state.loading) return;
 
         this.setState({ loading: true });
 
         switch(context) {
             case 'likes':
-                getLikes(this.state.gallery.id, { 
-                        last: last(this.state.likes).id 
+                getLikes(this.state.gallery.id, {
+                        last: last(this.state.likes).id
                     })
                     .then(likes => {
-                        this.setState({ 
+                        this.setState({
                             likes: this.state.likes.concat(likes),
                             loading: likes.length > 0
-                        })   
+                        })
                     })
                 break;
             case 'reposts':
-                    getReposts(this.state.gallery.id, { 
-                            last: last(this.state.reposts).id 
+                    getReposts(this.state.gallery.id, {
+                            last: last(this.state.reposts).id
                         })
                         .then(reposts => {
-                            this.setState({ 
+                            this.setState({
                                 reposts: this.state.reposts.concat(reposts),
                                 loading: reposts.length > 0
-                            })   
+                            })
                         })
                 break;
         }
@@ -88,7 +88,7 @@ class GalleryDetail extends React.Component {
         const { likes, gallery } = this.state;
         getLikes(gallery.id)
             .then(likes => {
-                this.setState({ likes, loading: false })           
+                this.setState({ likes, loading: false })
             })
 
         this.setState({ likesDialog: !this.state.likesDialog });
@@ -98,7 +98,7 @@ class GalleryDetail extends React.Component {
         const { reposts, gallery } = this.state;
         getReposts(gallery.id)
             .then(reposts => {
-                this.setState({ reposts, loading: false })           
+                this.setState({ reposts, loading: false })
             })
 
         this.setState({ repostsDialog: !this.state.repostsDialog });
@@ -108,6 +108,9 @@ class GalleryDetail extends React.Component {
      * Updates gallery in state
      */
     onUpdateGallery(gallery) {
+        console.log(gallery);
+
+
         this.setState({
             gallery,
             title: utils.getTitleFromGallery(gallery),
@@ -146,13 +149,13 @@ class GalleryDetail extends React.Component {
         } = this.state;
 
         return (
-            <App 
+            <App
                 user={this.props.user}
                 page='galleryDetail'>
                 <TopBar
                     title={title}
-                    editable={user.permissions.includes('update-other-content')}
-                    permissions={user.permissions}
+                    editable={user.roles.includes('admin')}
+                    roles={user.roles}
                     edit={() => this.toggleEdit()}
                     onVerifiedToggled={this.onVerifiedToggled}
                     defaultVerified={verifiedToggle}
@@ -160,14 +163,14 @@ class GalleryDetail extends React.Component {
                     timeToggle
                 />
 
-                <Sidebar 
+                <Sidebar
                     onClickLikes={this.onClickLikes}
                     onClickReposts={this.onClickReposts}
                     gallery={gallery} />
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        permissions={user.permissions}
+                        roles={user.roles}
                         parentCaption={gallery.caption}
                         posts={this.getPostsFromGallery()}
                         updatePosts={updatePosts}
@@ -206,7 +209,7 @@ class GalleryDetail extends React.Component {
                     emptyMessage={!reposts ? 'Loading reposts...' : reposts.length === 0 ? "No reposts :(" : ''}
                     header={`Reposts (${gallery.reposts})`}
                 >
-                    {reposts ? 
+                    {reposts ?
                         reposts.map((u, i) => (
                             <UserItem key={`reposts-user-${i}`} user={u} />
                         ))

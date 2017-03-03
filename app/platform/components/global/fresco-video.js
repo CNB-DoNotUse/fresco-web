@@ -14,6 +14,7 @@ class FrescoVideo extends React.Component {
         width: PropTypes.string,
         type: PropTypes.string,
         autoplay: PropTypes.bool,
+        clickToPlay: PropTypes.bool,
         vr: PropTypes.bool,
         muted: PropTypes.bool,
         hideControls: PropTypes.bool,
@@ -23,6 +24,7 @@ class FrescoVideo extends React.Component {
     static defaultProps = {
         autoplay: false,
         muted: false,
+        clickToPlay: true,
         video: '',
         vr: false,
         highRes: false,
@@ -141,12 +143,17 @@ class FrescoVideo extends React.Component {
             autoplay,
             vr,
             hideControls,
+            clickToPlay
         } = this.props;
         const { id, isStream } = this.state;
 
         // Video.JS if an m3u8 file
         let className = `${isStream ? 'video-js' : ''} ${!hideControls ? 'vjs-default-skin' : ''}`;
         className += !width ? ' full-width' : '';
+
+        if(!clickToPlay) {
+            className += ' preventClick';
+        }
 
         return (
             (vr ? (
@@ -164,7 +171,7 @@ class FrescoVideo extends React.Component {
                         className={className}
                         autoPlay={autoplay}
                         controls={!hideControls}
-                        onClick={this.onClickVideo}
+                        onClick={clickToPlay ? this.onClickVideo : null}
                         width={width}
                         height={height}
                     >

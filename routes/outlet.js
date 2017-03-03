@@ -22,15 +22,15 @@ router.get('/settings', (req, res, next) => {
         API.request({
             url: '/outlet/me',
             method: 'GET',
-            token,
-        }),
+            token: token.token,
+        }, req),
         API.request({
             url: '/outlet/payment',
             method: 'GET',
-            token
-        })
+            token: token.token,
+        }, req)
     ])
-    .then(responses => { 
+    .then(responses => {
         const outlet = responses[0].body;
         const payment = responses[1].body;
         const title = 'Outlet Settings';
@@ -69,8 +69,8 @@ router.get('/:id?', (req, res, next) => {
     API.request({
         method: 'GET',
         url: `/outlet/${req.params.id || 'me'}`,
-        token: req.session.token
-    })
+        token: req.session.token.token
+    }, req)
     .then(response => {
         const outlet = response.body;
         const title = outlet.title;

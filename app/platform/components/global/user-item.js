@@ -4,19 +4,19 @@ import utils from 'utils';
 /**
  * Stateless user item component used in meta lists and user profiles
  */
-const UserName = ({ id, username, full_name }) => (
+const UserName = ({ id, username = "", full_name ="" }) => (
     <div className="meta-user-name">
-        {full_name &&
+        {!!full_name &&
             <a href={`/user/${id}`}>
                 <span className="meta-user-name__primary">{`${full_name}`}</span>
             </a>
         }
 
-        {(username && full_name) &&
+        {!!(username && full_name) &&
             <a href={`/user/${id}`} className="meta-user-name__secondary">{`@${username}`}</a>
         }
 
-        {(!full_name && username) &&
+        {!!(!full_name && username) &&
             <a href={`/user/${id}`} className="meta-user-name__primary">{`@${username}`}</a>
         }
     </div>

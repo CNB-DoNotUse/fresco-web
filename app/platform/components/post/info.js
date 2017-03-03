@@ -18,14 +18,13 @@ export default class PostInfo extends React.Component {
 		let timeString = utils.formatTime(post.created_at, true);
 		let verifiedBy = '';
 		let verifyClass = '';
-		let userName = '';
 
         //Define verifier text based on approvals
         if (post.rating >= 2) {
             verifiedBy = 'Verified';
             verifyClass = "mdi icon verified mdi-checkbox-marked-circle";
 
-            if (user.permissions.includes('update-other-content') && post.curator) {
+            if (user.roles.includes('admin') && post.curator) {
                  verifiedBy += ` by ${post.curator.full_name}`;
             }
         } else {
@@ -35,8 +34,6 @@ export default class PostInfo extends React.Component {
 
         //Check to show user icon
         if(post.owner){
-            userName = post.owner.full_name || post.owner.username;
-
             userIcon = <UserItem user={post.owner} />
         }
 
@@ -51,7 +48,7 @@ export default class PostInfo extends React.Component {
 		}
 
 		// Check to show curator item
-		if (gallery.curator && this.props.user.permissions.includes('update-other-content')) {
+		if (gallery.curator && user.roles.includes('admin')) {
             curator = (
                 <li>
                     <span className="mdi mdi-account icon"></span>
@@ -72,8 +69,13 @@ export default class PostInfo extends React.Component {
 						<ul className="md-type-subhead">
 							<li>
 								<span className="mdi mdi-clock icon"></span>
-								{timeString}
+								{`Uploaded at ${utils.formatTime(post.created_at, true)}`}
 							</li>
+
+                            <li>
+                                <span className="mdi mdi-camera icon"></span>
+                                {`Captured at ${utils.formatTime(post.captured_at, true)}`}
+                            </li>
 
 							<li>
 								<span className="mdi mdi-map-marker icon"></span>
@@ -95,8 +97,4 @@ export default class PostInfo extends React.Component {
 		);
 	}
 
-}
-
-PostInfo.defaultProps = {
-	verifier: ''
 }

@@ -1,13 +1,10 @@
 import React, { PropTypes } from 'react';
+import { getAddressFromLatLng } from 'app/lib/location';
 import LocationAutocomplete from '../global/location-autocomplete.js';
 import GMap from './gmap';
 
 class AutocompleteMap extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = { bounds: null };
-    }
+    state = { bounds: null };
 
     componentDidMount() {
         $.material.init();
@@ -30,10 +27,17 @@ class AutocompleteMap extends React.Component {
         }
     }
 
-	/**
-	 * Updates states bounds for other components
-	 */
-    updateCurrentBounds(bounds) {
+    onMapDataChange = ({ location, source }) => {
+        getAddressFromLatLng(location)
+        .then((address) => {
+            this.props.onMapDataChange({ location, source, address });
+        });
+    }
+
+    /**
+     * Updates states bounds for other components
+     */
+    updateCurrentBounds = (bounds) => {
         this.setState({ bounds });
     }
 
@@ -48,7 +52,7 @@ class AutocompleteMap extends React.Component {
             location,
             rerender,
             draggable,
-            onMapDataChange,
+            onClearLocation,
         } = this.props;
         let radiusInput = '';
 
@@ -73,11 +77,12 @@ class AutocompleteMap extends React.Component {
                     inputText={address}
                     disabled={disabled}
                     bounds={this.state.bounds}
-                    class="form"
+                    className="form"
                     inputClass="form-control floating-label"
                     ref="autocomplete"
                     transition={false}
                     updateAutocompleteData={onPlaceChange}
+                    onClearInput={onClearLocation}
                 />
 
                 {radiusInput}
@@ -88,8 +93,8 @@ class AutocompleteMap extends React.Component {
                     radius={radius}
                     rerender={rerender}
                     draggable={draggable}
-                    updateCurrentBounds={(b) => this.updateCurrentBounds(b)}
-                    onDataChange={onMapDataChange}
+                    updateCurrentBounds={this.updateCurrentBounds}
+                    onDataChange={this.onMapDataChange}
                 />
             </div>
         );
@@ -104,10 +109,11 @@ AutocompleteMap.propTypes = {
     onRadiusUpdate: PropTypes.func,
     address: PropTypes.string,
     onPlaceChange: PropTypes.func,
-    location: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.array]),
+    location: PropTypes.object,
     rerender: PropTypes.bool,
     draggable: PropTypes.bool,
     onMapDataChange: PropTypes.func,
+    onClearLocation: PropTypes.func,
 };
 
 AutocompleteMap.defaultProps = {
@@ -120,6 +126,7 @@ AutocompleteMap.defaultProps = {
     draggable: false,
     onPlaceChange() {},
     onRadiusUpdate() {},
+    onClearLocation() {},
 };
 
 export default AutocompleteMap;

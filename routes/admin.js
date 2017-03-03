@@ -7,7 +7,7 @@ const router = express.Router();
  * Admin page
  */
 router.get('/', (req, res, next) => {
-    if (!req.session.user || req.session.user.rank < 1){
+    if (!req.session.user || !req.session.user.roles.includes('admin')) {
         return next({
             message: config.ERR_PAGE_MESSAGES[403],
             status: 403

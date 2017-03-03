@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import 'app/sass/platform/dialogs/info.scss';
 
 export default class Info extends React.Component {
     static propTypes = {
@@ -27,15 +28,15 @@ export default class Info extends React.Component {
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
 
                 <div className={`dialog-modal--info ${toggled ? 'toggled' : ''}`}>
-                    <div className="header">
+                    <div className="dialog-modal__header">
                         <span>{header}</span>
                     </div>
 
-                    <div className="body">
+                    <div className="dialog-modal__body">
                         {body}
                     </div>
 
-                    <div className="footer">
+                    <div className="dialog-body__footer">
                         <button
                             className="btn"
                             onClick={onClose}

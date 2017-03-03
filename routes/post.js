@@ -1,7 +1,7 @@
 const express = require('express');
 const utils = require('../lib/utils');
 const config = require('../lib/config');
-const api = require('../lib/api');
+const API = require('../lib/api');
 const router = express.Router();
 
 /**
@@ -15,36 +15,46 @@ router.get('/:id', (req, res, next) => {
     let title = '';
     let verifier;
 
-    const token = req.session.token;
-
     // Make request for post
-    api.request({
-        token,
+    API.request({
         url: `/post/${req.params.id}`,
-    }).then(response => {
+        token: req.session.token.token
+    })
+    .then(response => {
         post = response.body || {};
-        return api.request({
-            token,
+        return API.request({
             url: `/gallery/${response.body.parent_id}`,
+            token: req.session.token.token
         });
-    }).then(response => {
+    })
+    .then(response => {
         gallery = response.body || {};
         title = utils.getBylineFromPost(post, true);
-
-        verifier = post.curator ? post.curator.full_name : '';
 
         res.render('app', {
             props: JSON.stringify({
                 gallery,
                 post,
                 title,
-                verifier,
                 user: req.session.user,
             }),
+            title,
+            og: {
+                title,
+                image: utils.formatImg(post.image, 'large'),
+                url: req.originalUrl,
+                description: gallery.caption,
+            },
+            twitter: {
+                title,
+                description: gallery.caption,
+                image: utils.formatImg(post.image, 'large'),
+            },
             alerts: req.alerts,
-            page: 'postDetail',
+            page: 'postDetail'
         });
-    }).catch(error => {
+    })
+    .catch(error => {
         next({
             message: error.status === 404 ? 'Post not found!' : 'Unable to load post!',
             status: error.status,

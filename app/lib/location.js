@@ -1,17 +1,20 @@
-export const getAddressFromLatLng = ({ lat, lng }, cb) => {
-    if (lat && lng) {
-        const geocoder = new google.maps.Geocoder();
+import utils from 'utils';
 
-        geocoder.geocode({ location: { lat, lng } },
-            (results, status) => {
+export const getAddressFromLatLng = ({ lat, lng }) => {
+    return new Promise((resolve) => {
+        if (lat && lng) {
+            const geocoder = new google.maps.Geocoder();
+
+            geocoder.geocode({ location: { lat, lng } }, (results, status) => {
                 if (status === google.maps.GeocoderStatus.OK && results[0]) {
-                    return cb(results[0].formatted_address);
+                    return resolve(results[0].formatted_address);
                 }
-                return cb('');
+                return resolve('');
             });
-    }
-
-    return cb('');
+        } else {
+            return resolve('');
+        }
+    });
 };
 
 /**
@@ -26,3 +29,24 @@ export const getLatLngFromGeo = ({ coordinates, type }) => {
 
     return { lng: coordinates[0], lat: coordinates[1] };
 };
+
+/**
+ * geoParams
+ *
+ * @param {Object} {Location object containing lat, lng, and radius keys
+ * @returns {Object} Param for geo data
+ */
+export const geoParams = ({ lat, lng, radius } = {}) => {
+    if (lat && lng && radius) {
+        return {
+            geo: {
+                type: 'Point',
+                coordinates: [lng, lat],
+            },
+            radius: utils.feetToMiles(radius),
+        };
+    }
+
+    return {};
+}
+

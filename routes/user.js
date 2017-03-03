@@ -45,7 +45,7 @@ router.get('/:id?', (req, res, next) => {
     // If the user id is passed, render user with id
     if (req.params.id) {
         API.request({
-            token: req.session.token,
+            token: req.session.token.token,
             url: `/user/${req.params.id}`,
         }).then(response => {
             renderUserDetail(response.body, req.session.user, res);

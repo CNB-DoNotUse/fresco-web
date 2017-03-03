@@ -3,7 +3,6 @@ import AutocompleteMap from '../global/autocomplete-map';
 import Merge from '../assignment/merge';
 import MergeDropup from '../assignment/merge-dropup';
 import utils from 'utils';
-import { getAddressFromLatLng } from 'app/lib/location';
 import isEmpty from 'lodash/isEmpty';
 
 /**
@@ -62,14 +61,7 @@ export default class AssignmentEdit extends React.Component {
      * Updates state map location when AutocompleteMap gives new location from drag
      */
     onMapDataChange(data) {
-        if (data.source === 'markerDrag') {
-            getAddressFromLatLng(data.location, (address) => {
-                this.setState({
-                    address,
-                    location: data.location,
-                });
-            });
-        }
+        if (data.source === 'markerDrag') this.setState(data);
     }
 
     /**
@@ -275,7 +267,7 @@ export default class AssignmentEdit extends React.Component {
                         defaultValue={expirationTime}
                     />
 
-                    {user.permissions.includes('update-other-content') && (
+                    {user.roles.includes('admin') && (
                         <div className="checkbox form-group">
                             <label>
                                 <input

@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 import last from 'lodash/last';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
+import { scrolledToBottom } from 'app/lib/helpers';
 import PostCell from './cell';
 import GalleryBulkSelect from '../gallery/bulk-select';
 import GalleryBulkEdit from '../gallery/bulk-edit';
@@ -17,9 +18,10 @@ class PostList extends React.Component {
     constructor(props) {
         super(props);
 
+        this.loading = false;
+
         this.state = {
             posts: props.posts || [],
-            loading: false,
             scrollable: props.scrollable,
             selectedPosts: getFromSessionStorage('post/list', 'selectedPosts', []),
             galleryCreateToggled: false,
@@ -43,6 +45,8 @@ class PostList extends React.Component {
         // If we receive new posts in props
         if (nextProps.posts) this.onChangePostsProp(nextProps.posts, nextProps.updatePosts);
 
+        if (nextProps.reloadPosts) this.loadInitialPosts();
+
         // Checks if the verified prop is changed `or` Checks if the sortBy prop is changed
         const verifiedChanged = nextProps.onlyVerified !== this.props.onlyVerified;
         const sortByChanged = nextProps.sortBy !== this.props.sortBy;
@@ -57,16 +61,12 @@ class PostList extends React.Component {
      * @param {Boolean} scrollable Prop which determines whether component is scrollable
      */
     onChangeVerifiedSortProps = (scrollable) => {
-        this.grid.scrollTop = 0;
-
         if (scrollable) {
-            // Clear state for immediate feedback
-            this.setState({ posts: [] });
-
-            // Load posts from API
             this.loadInitialPosts();
         } else {
-            this.setState({ posts: this.sortPosts() });
+            this.setState({ posts: this.sortPosts() }, () => {
+                this.grid.scrollTop = 0;
+            });
         }
     }
 
@@ -118,31 +118,27 @@ class PostList extends React.Component {
      */
     onScroll = (e) => {
         const grid = e.target;
-        if (!this.area || !this.area.contains(e.target)) {
+        if (this.loading || !this.area || !this.area.contains(e.target)) {
             return;
         }
 
-        const endOfScroll = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 400);
-
         // Check that nothing is loading and that we're at the end of the scroll
-        if (!this.state.loading && endOfScroll) {
+        if (!this.loading && scrolledToBottom(grid)) {
             // Set that we're loading
             const lastPost = last(this.state.posts);
             if (!lastPost) return;
-            this.setState({ loading: true });
+            this.loading = true;
 
             // Run load on parent call
             this.props.loadPosts(lastPost[this.props.paginateBy], (posts) => {
                 if (!posts || posts.length === 0) {
-                    this.setState({ loading: false });
+                    this.loading = false;
                     return;
                 }
 
                 // Set galleries from successful response, and unset loading
-                this.setState({
-                    posts: this.state.posts.concat(posts),
-                    loading: false,
-                });
+                this.setState({ posts: this.state.posts.concat(posts) });
+                this.loading = false;
             });
         }
     }
@@ -177,10 +173,10 @@ class PostList extends React.Component {
      */
     togglePost = (passedPost) => {
         const { selectedPosts } = this.state;
-        const { permissions } = this.props;
+        const { roles } = this.props;
 
         // Check if `not` CM
-        if (!permissions.includes('update-other-content')) return;
+        if (!roles.includes('admin')) return;
 
         // Filter out anything, but ones that equal the passed post
         // Post not found, so add
@@ -214,12 +210,16 @@ class PostList extends React.Component {
      * Initial call to populate posts
      */
     loadInitialPosts() {
-        this.props.loadPosts(null, (posts) => { this.setState({ posts }); });
+        this.setState({ posts: [] }, () => {
+            this.props.loadPosts(null, (posts) => {
+                this.setState({ posts }, () => { this.grid.scrollTop = 0; });
+            });
+        });
     }
 
     renderPosts() {
         const {
-            permissions,
+            roles,
             size,
             assignment,
             editable,
@@ -251,7 +251,7 @@ class PostList extends React.Component {
                             size={size}
                             parentCaption={parentCaption}
                             post={p}
-                            permissions={permissions}
+                            roles={roles}
                             toggled={selectedPosts.some(s => s.id === p.id)}
                             assignment={assignment}
                             key={i}
@@ -317,7 +317,7 @@ class PostList extends React.Component {
 PostList.propTypes = {
     posts: PropTypes.array,
     scrollable: PropTypes.bool,
-    permissions: PropTypes.array,
+    roles: PropTypes.array,
     size: PropTypes.string,
     assignment: PropTypes.object,
     editable: PropTypes.bool,
@@ -332,6 +332,7 @@ PostList.propTypes = {
     onMouseLeaveList: PropTypes.func,
     loadPosts: PropTypes.func,
     scrollTo: PropTypes.string,
+    reloadPosts: PropTypes.bool,
 };
 
 PostList.defaultProps = {
@@ -341,8 +342,9 @@ PostList.defaultProps = {
     scrollable: false,
     onlyVerified: false,
     loadPosts() {},
-    permissions: [],
+    roles: [],
     paginateBy: 'id',
+    reloadPosts: false,
 };
 
 export default PostList;

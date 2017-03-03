@@ -175,8 +175,9 @@ Nav.prototype.presentModal = function(modalId, pushState, callback = ()=>{}) {
     //Load modal JS file
     this.loadModal(window.modal.id.slice(1));
     //Update window history state
-    if(pushState)
+    if(pushState) {
         window.history.pushState({modal : modalId}, null, modalId);
+    }
 
     //Add class for proper height on wrapper
     $('.wrapper').addClass('full');
@@ -205,11 +206,12 @@ Nav.prototype.presentModal = function(modalId, pushState, callback = ()=>{}) {
     						//Make the modal visible so that we can bring it up
     						modalElm.style.display = 'block';
     						modalElm.style.opacity = 1;
-    						
-    						//Fade in Nav element
-    						$(this.navElement).velocity({ opacity: 1 }, { display: "block" });
-    						//Bring in modal
-    						$(modalElm).velocity({ translateY : '0'}, { duration: this.modalTransitionLength, easing: 'ease-out' });
+
+                            
+                            //Fade in Nav element
+                            $(this.navElement).velocity({ opacity: 1 }, { display: "block" });
+                            //Bring in modal
+                            $(modalElm).velocity({ translateY : '0%'}, { duration: this.modalTransitionLength, easing: 'ease-out' });
 
     						//Call resize to configure elements properly
     						window.landing.resize();
@@ -233,7 +235,7 @@ Nav.prototype.presentModal = function(modalId, pushState, callback = ()=>{}) {
 						modal.style.opacity = 1;
 
 						$(modalElm).velocity(
-							{ translateY : '0'}, 
+							{ translateY : '0%'}, 
 							{ 
 								duration: this.modalTransitionLength, 
 								easing: 'ease-out', 

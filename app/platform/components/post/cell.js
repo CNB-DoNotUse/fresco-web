@@ -11,8 +11,9 @@ import Time from './cell-time';
  * Single Post Cell, child of PostList
  */
 class PostCell extends React.Component {
+
     static propTypes = {
-        permissions: PropTypes.array,
+        roles: PropTypes.array,
         parentCaption: PropTypes.string,
         size: PropTypes.string,
         sortBy: PropTypes.string,
@@ -77,7 +78,7 @@ class PostCell extends React.Component {
         const {
             post,
             assignment,
-            permissions,
+            roles,
             sortBy,
             editable,
         } = this.props;
@@ -96,7 +97,7 @@ class PostCell extends React.Component {
                     purchased={purchased}
                     onPurchase={() => this.setState({ purchased: true })}
                     onEdit={this.onToggleGalleryEdit}
-                    permissions={permissions}
+                    roles={roles}
                     editable={editable}
                 />
 
@@ -123,6 +124,7 @@ class PostCell extends React.Component {
             highlighted,
         } = this.props;
         const { galleryEditVisible, gallery, mouseEntered } = this.state;
+        
         const divSize = size === 'large' ? sizes.large : sizes.small;
 
         return (

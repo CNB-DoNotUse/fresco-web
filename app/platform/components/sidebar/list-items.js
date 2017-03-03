@@ -16,12 +16,12 @@ const ListItems = ({ user }) => {
         dispatch = <Item link="/dispatch" icon="mdi-map" text="Dispatch" />;
         outlet = <Item link="/outlet" icon="mdi-account-multiple" text={user.outlet.title} />;
     }
-    if (user.permissions.includes('update-other-content')) {
+    if (user.roles.includes('admin')) {
         admin = <Item link="/admin" icon="mdi-dots-horizontal" text="Admin" />;
         push = <Item link="/push" icon="mdi-message-plus" text="Push" />;
         moderation = <Item link="/moderation" icon="mdi-flag-variant" text="Moderation" />;
     }
-    if (user.permissions.includes('get-all-purchases')) {
+    if (user.roles.includes('admin')) {
         purchases = <Item link="/purchases" icon="mdi-currency-usd" text="Purchases" />;
         stats = <Item link="/stats" icon="mdi-chart-line" text="Stats" />;
     }

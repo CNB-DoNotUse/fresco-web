@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import { scrolledToBottom } from 'app/lib/helpers';
 import last from 'lodash/last';
 import ListItem from './list-item';
 
@@ -37,7 +38,7 @@ class PurchasesList extends Component {
         if (this.state.loading) return;
 
         const grid = e.target;
-        const bottomReached = grid.scrollTop > ((grid.scrollHeight - grid.offsetHeight) - 96);
+        const bottomReached = scrolledToBottom(grid, 96);
 
         // Check if already getting purchases because async
         if (bottomReached) {

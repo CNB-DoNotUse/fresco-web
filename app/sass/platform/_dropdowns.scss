@@ -16,6 +16,7 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 	background:#FFF;
 	height:48px;
 	margin:8px 8px 0 0;
+	max-width:380px;
 	cursor:pointer;
 	vertical-align:middle;
 	position:relative;
@@ -47,26 +48,42 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 		.dropdown-body{
 			display:block;
 		}
+
+
+		.mdi {
+			display:inline-block;
+		}
 	}
 
 	.toggle{
-		padding:13px 16px 0;
+		padding:0 16px;
 		height:48px;
+		@include rgba(0, 0, 0, 0.87);
 
 		span{
 			font-size:14px;
 			font-weight:500;
 			text-transform: uppercase;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			max-width: 260px;
+			float: left;
+			position: relative;
+			top: 2px;
+			@include vertical-align();
 		}
 
-		@include rgba(0, 0, 0, 0.87);
-
 		.mdi{
-			vertical-align:middle;
 			margin:0 0 2px 4px;
 			font-size:22px;
 			line-height: 22px;
 			color:#757575;
+			@include vertical-align();
+		}
+
+		.mdi-menu-down {
+			float:left;
 		}
 
 		.mdi-settings, .mdi-playlist-plus{
@@ -143,7 +160,7 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 			font-weight:400;
 			float:right;
 			margin: 10px 0;
-			
+
 			.mdi-launch{
 				font-size:20px;
 				position:relative;
@@ -160,6 +177,7 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
+
 		.count{
 			font-size:13px;
 			font-weight:400;

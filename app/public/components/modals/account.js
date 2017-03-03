@@ -242,7 +242,7 @@ Account.prototype.processLogin = function() {
  	    this.reEnableLogin();
 
  	    return $.snackbar({ 
- 	    	content: error.responseJSON.msg || 'There was an error logging you in. Please try again in a bit.'
+ 	    	content: resolveError(error.responseJSON.error.msg, 'There was an error logging you in. Please try again in a bit.')
  	    });
  	});
 }
@@ -282,8 +282,8 @@ function getParameterByName(name) {
 
 function resolveError(err, _default){
 	switch(err){
-	    case 'title':
-	        return 'This outlet title is taken!';
+	    case 'Invalid credentials':
+	        return 'Your username or password is incorrect!';
 	    case 'email':
 	    	return 'It seems like there\'s an account with this email already, please try a different one.'
 	    case 'Unauthorized':

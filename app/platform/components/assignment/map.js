@@ -15,6 +15,7 @@ import MarkerGroup from '../googleMap/markerGroup';
  * @extends {React}
  */
 class AssignmentMap extends React.Component {
+
     static propTypes = {
         markerData: PropTypes.arrayOf(PropTypes.shape({
             position: PropTypes.shape({

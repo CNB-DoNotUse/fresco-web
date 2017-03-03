@@ -1,0 +1,76 @@
+@import '../_variables.scss';
+@import '../../global/mixins.scss';
+@import './dialogs';
+
+/**
+ * Dialog Element with a confirmation
+ */
+.dialog-modal--confirm {
+    @extend .dialog-modal;
+
+    &.no-input {
+        height: 128px;
+    }
+
+    .dialog-modal__header{
+        padding:18px 24px;
+        min-height:64px;
+
+        h3 {
+            margin:0;
+            padding:0;
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 1.4;
+            @include rgba(0, 0, 0, 0.87);
+        }
+    }
+
+    .dialog-modal__body {
+        font-size: 16px;
+        color: rgba(0, 0, 0, 0.54);
+        padding: 16px 24px;
+        border-top: solid 1px rgba(0, 0, 0, 0.12);
+
+        div, form {
+            width:100%;
+            margin:0;
+        }
+
+        input {
+            width:100%;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+    }
+
+    .dialog-modal__footer {
+        height:64px;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 12px;
+        border-top:solid 1px rgba(0, 0, 0, 0.12);
+
+        button {
+            border:none;
+            display: inline-block;
+            text-align: justify;
+            background:none;
+            float:right;
+            text-transform:uppercase;
+
+            &:first-child {
+                float:left;
+            }
+
+            &:focus {
+                outline: none;
+            }
+
+
+            &.primary {
+                color:#0047bb;
+            }
+        }
+    }
+}

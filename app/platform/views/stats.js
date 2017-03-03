@@ -172,7 +172,7 @@ class Stats extends React.Component {
         const { count } = this.state;
 
         return (
-            <App 
+            <App
                 user={this.props.user}
                 page="stats"
             >
@@ -186,7 +186,7 @@ class Stats extends React.Component {
 
                         <LocationAutocomplete
                             inputText={this.state.autocompleteText}
-                            class="form"
+                            className="form"
                             inputClass="form-control floating-label"
                             ref="autocomplete"
                             transition={false}

@@ -5,7 +5,7 @@ router.get('/', (req, res, next) => {
     const { user } = req.session;
 
     // TODO is this the correct permission
-    if (user.permissions.includes('update-other-content')) {
+    if (user.roles.includes('admin')) {
         res.render('app', {
             title: 'Moderation',
             alerts: req.alerts,

@@ -163,8 +163,8 @@ class UserSettings extends React.Component {
                 if(avatarFiles.length) {
                     this.updateAvatar(avatarFiles, true);
                 } else {
-                    const permissions = this.state.user.permissions;
-                    response.permissions = permissions;
+                    const roles = this.state.user.roles;
+                    response.roles = roles;
 
                     this.setState({ user: response });
 
@@ -203,8 +203,8 @@ class UserSettings extends React.Component {
             }
         })
             .done(response => {
-                const permissions = this.state.user.permissions;
-                response.permissions = permissions;
+                const roles = this.state.user.roles;
+                response.roles = roles;
 
                 this.setState({ user: response });
 

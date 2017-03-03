@@ -2,6 +2,10 @@ import React, { PropTypes } from 'react';
 import Marker from './marker';
 import utils from 'utils';
 
+const onMarkerDragend = cb => (markerProps, markerMap, e) => {
+    cb(e.latLng.toJSON());
+};
+
 const CenterMarker = ({
     onDragend,
     type = 'active',
@@ -24,6 +28,7 @@ const CenterMarker = ({
             map={map}
             mapCenter={mapCenter}
             icon={markerImage}
+            onDragend={onMarkerDragend(onDragend)}
             draggable={draggable}
         />
     );

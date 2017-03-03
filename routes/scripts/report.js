@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => {
     API.request({
         method: 'GET',
         url: req.query.u,
-        token: req.session.token
+        token: req.session.token.token
     })
     .then(response => csv.middleware(response, res, next))
     .catch((error) => {

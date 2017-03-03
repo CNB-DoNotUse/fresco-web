@@ -50,7 +50,7 @@ class PostDetailImage extends React.Component {
         );
 
         //If an admin
-        if (user.permissions.includes('update-other-content')) {
+        if (user.roles.includes('admin')) {
             actions.push(downloadAction);
             if (!purchased) actions.push(purchaseAction);
         } else {

@@ -69,6 +69,7 @@ class Edit extends React.Component {
             owner: gallery.owner,
             bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
             updateHighlightedAt: false,
+            shouldHighlight: gallery.highlighted_at !== null
         };
     }
 
@@ -95,11 +96,13 @@ class Edit extends React.Component {
         const { loading, assignments, isOriginalGallery } = this.state;
 
         if (!Object.keys(params).length) {
-            $.snackbar({ content: 'No changes made!' });
-            return;
+            return $.snackbar({ content: 'No changes made!' });
         }
+
         if (!get(gallery, 'id') || loading) return;
+        
         this.setState({ loading: true });
+        
         const postsToDelete = isOriginalGallery ? get(params, 'posts_remove') : [];
 
         saveGallery(gallery.id, params)
@@ -108,6 +111,7 @@ class Edit extends React.Component {
             return res;
         })
         .then((res) => {
+            //Check if there are posts to upload
             if (get(res, 'posts_new.length')) {
                 return Promise.all([
                     res,
@@ -117,11 +121,14 @@ class Edit extends React.Component {
 
             return res;
         })
-        .then((res) => {
+        //If the promise.all is run, then we get back an array, not a single object
+        .then(res => res.constructor === Array ? res[0] : res)
+        .then(res => {
             this.hide();
+
             this.setState({ uploads: [], loading: false }, () => {
-                $.snackbar({ content: 'Gallery saved!' });
                 onUpdateGallery(Object.assign(res, { assignments }));
+                $.snackbar({ content: 'Gallery saved!' });
             });
         })
         .catch(() => {
@@ -184,7 +191,8 @@ class Edit extends React.Component {
      */
     onMapDataChange(data) {
         if (data.source === 'markerDrag') {
-            getAddressFromLatLng(data.location, (address) => {
+            getAddressFromLatLng(data.location)
+            .then((address) => {
                 this.setState({ address, location: data.location });
             });
         }
@@ -243,6 +251,7 @@ class Edit extends React.Component {
             rating,
             is_nsfw,
             owner,
+            shouldHighlight,
             updateHighlightedAt
         } = this.state;
         const { gallery } = this.props;
@@ -268,15 +277,22 @@ class Edit extends React.Component {
             ...utils.getRemoveAddParams('articles', gallery.articles, articles),
             rating,
             is_nsfw,
-            owner_id: owner ? owner.id : null,
-            highlighted_at: updateHighlightedAt ? moment().toISOString() : null,
+            owner_id: owner ? owner.id : null
         };
+
+        if(!shouldHighlight) {
+            //We should un-highlight it
+            params.highlighted_at = null;
+        } else if(updateHighlightedAt || (shouldHighlight && !gallery.highlighted_at)) {
+            params.highlighted_at = moment().toISOString();
+            //If we are told to bring to the top, or it's never been highlighted and it should be
+        }
 
         // Make sure our params are valid types and don't have any empty arrays
         // Special exception if the param is a `bool`
         params = pickBy(params, (v, k) => {
             if (gallery[k] === v) return false;
-            if (['posts_new', 'highlighted_at'].includes(k) && !v) return false;
+            if (['posts_new'].includes(k) && !v) return false;
             return Array.isArray(v) ? v.length : true;
         });
 
@@ -312,10 +328,9 @@ class Edit extends React.Component {
             });
         }
 
-        let { posts_new, posts_add, posts_remove } =
-            utils.getRemoveAddParams('posts', gallery.posts, posts);
+        let { posts_new, posts_add, posts_remove } = utils.getRemoveAddParams('posts', gallery.posts, posts);
 
-        posts_new = posts_new
+        posts_new = posts_new 
             ? posts_new.map(p =>
                 Object.assign({}, p, {
                     rating,
@@ -363,6 +378,12 @@ class Edit extends React.Component {
         return { posts_update: params };
     }
 
+    /**
+     * Uploads passed files
+     * @param  {Array} posts new posts with upload urls
+     * @param  {Array} files actual files from the web browser
+     * @return {Promise(s)}  Promise.All 
+     */
     uploadFiles(posts, files) {
         if (!posts || !files || !files.length) return Promise.resolve;
         const requests = posts.map((p, i) => {
@@ -421,14 +442,13 @@ class Edit extends React.Component {
 
     onChangeHighlighted = (e) => {
         this.setState({
-            rating: e.target.checked ? 3 : 2,
+            shouldHighlight: e.target.checked,
             updateHighlightedAt: e.target.checked,
         });
     }
 
     onChangeHighlightedAt = (e) => {
         this.setState({
-            rating: e.target.checked ? 3 : this.state.rating,
             updateHighlightedAt: e.target.checked,
         });
     }
@@ -509,17 +529,18 @@ class Edit extends React.Component {
             caption,
             assignments,
             tags,
-            rating,
             is_nsfw,
             articles,
             posts,
             uploads,
             isOriginalGallery,
             external_account_name,
+            highlighted_at,
             external_source,
             owner,
             bylineDisabled,
             updateHighlightedAt,
+            shouldHighlight
         } = this.state;
 
         if (!gallery) return '';
@@ -619,7 +640,7 @@ class Edit extends React.Component {
                             <label>
                                 <input
                                     type="checkbox"
-                                    checked={rating === 3}
+                                    checked={shouldHighlight}
                                     onChange={this.onChangeHighlighted}
                                 />
                                 Highlighted

@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { getAddressFromLatLng } from 'app/lib/location';
 import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
@@ -56,14 +55,7 @@ export default class AssignmentEdit extends React.Component {
      * Updates state map location when AutocompleteMap gives new location from drag
      */
     onMapDataChange(data) {
-        if (data.source === 'markerDrag') {
-            getAddressFromLatLng(data.location, (address) => {
-                this.setState({
-                    address,
-                    location: data.location,
-                });
-            });
-        }
+        if (data.source === 'markerDrag') this.setState(data);
     }
 
     onChangeEndsAt(e) {
@@ -281,7 +273,7 @@ export default class AssignmentEdit extends React.Component {
                         />
                     </div>
 
-                    {user.permissions.includes('update-other-content') && (
+                    {user.roles.includes('admin') && (
                         <ChipInput
                             model="outlets"
                             queryAttr="title"
@@ -292,7 +284,7 @@ export default class AssignmentEdit extends React.Component {
                         />
                     )}
 
-                    {user.permissions.includes('update-other-content') && (
+                    {user.roles.includes('admin') && (
                         <div className="checkbox form-group">
                             <label>
                                 <input
