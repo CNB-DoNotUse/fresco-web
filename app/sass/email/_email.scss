@@ -10,10 +10,13 @@ html, body, .container {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: $fresco-bg;
+    background-color: $email-bg;
 
     @include desktop-all {
+        background-color: $fresco-bg !important;
+
         padding-top: 24px !important;
+        padding-bottom: 24px !important;
     }
 }
 

@@ -16,7 +16,7 @@ $email-button: #0047bb;
         padding-bottom: 16px;
 
         @include desktop-all {
-            padding-bottom: 24px;
+            padding-bottom: 24px !important;
         }
     }
 
@@ -45,11 +45,13 @@ $email-button: #0047bb;
             float: left;
             display: inline-block;
 
-            background-color: $email-title;
+            position: relative;
+            overflow: hidden;
 
             img {
-                width: 100%;
                 height: 100%;
+                margin: auto;
+                display: block;
             }
         }
 
@@ -72,10 +74,11 @@ $email-button: #0047bb;
         .caption {
             padding-left: 16px;
             padding-right: 16px;
-
+            padding-top: 16px;
             padding-bottom: 14px;
 
             @include desktop-all {
+                padding-top: 0 !important;
                 padding-left: 24px !important;
                 padding-right: 24px !important;
             }
