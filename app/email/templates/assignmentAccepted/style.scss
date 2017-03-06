@@ -1,0 +1,12 @@
+@import "../../../sass/email/_email";
+
+$email-button: #0047bb;
+
+a.button {
+    display: table-cell;
+    padding-top: 14px;
+
+    text-decoration: none;
+    color: $email-button;
+    font-weight: 600;
+}
