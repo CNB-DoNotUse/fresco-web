@@ -64,7 +64,8 @@ class OutletSettings extends React.Component {
         return (
             <App
                 user={user}
-                page="outletSettings">
+                page="Outlet Settings"
+            >
                 <TopBar title={outlet.title} />
 
                 <div className={className}>
