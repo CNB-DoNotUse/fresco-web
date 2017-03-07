@@ -23,7 +23,6 @@ $email-button: #0047bb;
     .media {
         width: 100%;
 
-        max-width: 408px;
         margin: auto;
 
         float: center;
@@ -36,8 +35,10 @@ $email-button: #0047bb;
         }
 
         .post {
-            max-width: 200px;
-            height: 200px;
+            @include desktop-all {
+                max-width: 200px !important;
+                height: 200px !important;
+            }
 
             width: 48%;
 
@@ -58,10 +59,14 @@ $email-button: #0047bb;
         }
 
         .post.large {
-            max-width: 408px;
-            height: 271px;
+            @include desktop-all {
+                max-width: 408px !important;
+                height: 271px !important;
+            }
 
-            width: 100%
+            max-width: none;
+            width: 100%;
+            height: auto;
         }
     }
 
