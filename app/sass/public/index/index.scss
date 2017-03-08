@@ -12,19 +12,23 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 @import "~slick-carousel/slick/slick.scss";
 @import "~slick-carousel/slick/slick-theme.scss";
 @import "~node-waves/dist/waves.css";
-@import "../global/_global";
-@import "../global/fresco-slick";
-@import "landing";
-@import "modals/modal";
-@import "modals/team";
-@import "modals/account";
-@import "modals/press";
-@import "modals/contact";
-@import "modals/faq";
-@import "modals/legal";
-@import "modals/forgot";
-@import "modals/join";
-@import "modals/reset";
+@import "../../global/_global";
+@import "../../global/fresco-slick";
+@import "../footer";
+@import "../nav";
+@import "../dropdown";
+@import "../showbox";
+@import "./landing";
+@import "../modals/modal";
+@import "../modals/team";
+@import "../modals/account";
+@import "../modals/press";
+@import "../modals/contact";
+@import "../modals/faq";
+@import "../modals/legal";
+@import "../modals/forgot";
+@import "../modals/join";
+@import "../modals/reset";
 
 .wrapper{
 	height:auto;

@@ -1,0 +1,36 @@
+/**
+ * Navigation element
+ */
+$navHeight:128px;
+
+.nav{
+    width:100%;
+    height:$navHeight;
+    background:white;
+    position:fixed;
+    text-align:center;
+    z-index:100;
+
+    @include mobile{
+        opacity:1;
+        height:56px;
+        text-align:center;
+    }
+
+    .logo{
+        font-size: 65px;
+        color: #ffc600;
+        height: 65px;
+        position: relative;
+        top: 33px;
+
+        @include mobile{
+            top:14px;
+            display: inline-block;
+            height:auto;
+            font-size:33px;
+            float:none !important;
+            position:relative !important;
+        }
+    }
+}

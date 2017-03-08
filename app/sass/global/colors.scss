@@ -1,10 +1,4 @@
-/* Sass Document */
-
-/*-----------------------------------------------------------------------------------
-
-Copyright 2016 Fresco News, Inc. All Rights Reserved.
-
--------------------------------------------------------------------------------------*/
+@import "media-queries";
 
 /**
  * Color Definitons
@@ -17,6 +11,12 @@ $fresco-blue: #0047BB;
 $fresco-bg: #f2f2ed;
 
 $fresco-error:#d0021b;
+
+$fresco-black:rgba(0, 0, 0, 0.87);
+
+$fresco-grey:rgba(0, 0, 0, 0.54);
+
+
 
 .twitter{
   color:#55acee !important;

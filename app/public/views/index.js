@@ -1,5 +1,5 @@
 global.jQuery = require('jquery');
-require('../../sass/public/index.scss');
+require('../../sass/public/index/index.scss');
 require('snackbarjs');
 require('velocity-animate');
 require('alerts');
