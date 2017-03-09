@@ -11,3 +11,4 @@ public/css/
 public/js/
 config/*.json
 npm-debug.log.*
+app/email/templates/*/*.html

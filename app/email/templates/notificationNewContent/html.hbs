@@ -1,0 +1,36 @@
+{{#> email_base }}
+	<div class="email-content__title">
+		Here's the latest from \{{{links}}}
+	</div>
+	<div class="email-content__body">
+        \{{#each galleries}}
+            <div class="gallery">
+                <div class="media">
+                    \{{#if single_post}}
+                        \{{#each posts}}
+                            <a target="_blank" href="\{{ link }}" class="post large">
+								<div class="img_wrap">
+									<img src="\{{ image }}"></img>
+								</div>
+								<div class="img_after"></div>
+                            </a>
+                        \{{/each}}
+                    \{{else}}
+						\{{#each posts}}
+							<a target="_blank" href="\{{ link }}" class="post">
+								<div class="img_wrap">
+									<img src="\{{ image }}"></img>
+								</div>
+								<div class="img_after"></div>
+							</a>
+						\{{/each}}
+                    \{{/if}}
+                </div>
+                <div class="caption_container">
+                    <div class="caption">\{{ caption }}</div>
+                    <a target="_blank" href="\{{ gallery_link }}">OPEN GALLERY</a>
+                </div>
+            </div>
+        \{{/each}}
+	</div>
+{{/email_base}}

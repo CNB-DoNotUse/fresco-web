@@ -1,0 +1,95 @@
+@import "../global/colors";
+@import "../global/media-queries";
+
+$email-bg: #fafafa;
+$email-title: #737373;
+$email-body: #212121;
+$email-divider: #dcdcdc;
+
+.container {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: $email-bg;
+
+    @include desktop-all {
+        background-color: $fresco-bg !important;
+
+        padding-top: 24px !important;
+        padding-bottom: 24px !important;
+    }
+}
+
+.email-content {
+    background-color: $email-bg;
+    width: 100%;
+
+    border: solid 1px $email-divider;
+
+    @include desktop-all {
+        max-width: 800px !important;
+        width: 80%;
+        margin: auto;
+        border-radius: 2px;
+    }
+
+}
+
+.email-content__title {
+    font-size: 14px;
+    color: $email-title;
+    padding: 22px 16px 22px 16px;
+
+    @include desktop-all {
+        padding-left: 22px !important;
+        padding-right: 22px !important;
+    }
+}
+
+.email-content__body {
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 500;
+    padding: 0px 16px 16px 16px;
+
+    color: $email-body;
+
+    p {
+        margin: 0px 0px 8px 0px;
+    }
+
+    @include desktop-all {
+        padding-left: 22px !important;
+        padding-right: 22px !important;
+        padding-bottom: 24px !important;
+    }
+}
+
+a, a:active, a:link, a:visited {
+    text-decoration: none;
+    color: $email-body;
+    font-weight: 700;
+}
+
+.email-content__divider {
+    height: 2px;
+    margin-left: 16px;
+    margin-right: 16px;
+    border-top: solid 1px $email-divider;
+
+    @include desktop-all {
+        margin: 0 !important;
+    }
+}
+
+.email-content__footer {
+    display: block;
+    width: 120px;
+    margin: auto;
+    padding-top: 24px;
+    padding-bottom: 24px;
+
+    img {
+        width: 100%;
+    }
+}

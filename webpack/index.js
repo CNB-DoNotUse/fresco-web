@@ -61,7 +61,7 @@ const plugins = (env) => {
     if (env === 'dev') {
         arr.push(
             new webpack.DefinePlugin({
-                'process.env': { __DEV__: true },
+                'process.env': { NODE_ENV: JSON.stringify('development') },
             })
         );
     }

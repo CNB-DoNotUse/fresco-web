@@ -12,7 +12,7 @@ export default function configureStore(initialState) {
 
     let enhancer;
 
-    if (process.env.__DEV__) {
+    if (process.env.NODE_ENV === 'development') {
         const logger = createLogger({
             stateTransformer: (state) => {
                 const newState = {};

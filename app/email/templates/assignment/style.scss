@@ -1,0 +1,89 @@
+@import "../../../sass/email/_email";
+
+$email-button: #0047bb;
+
+.email-content__body {
+    padding-left: 0px !important;
+
+    @include desktop-all {
+        padding-left: 0px !important;
+    }
+
+    .assignment {
+        display: inline-block;
+        width: 100%;
+
+        padding-bottom: 16px;
+
+        @include desktop-all {
+            padding-bottom: 24px;
+        }
+    }
+
+    .map {
+        width: 100%;
+
+        max-width: 408px;
+        margin: auto;
+
+        float: center;
+        display: block;
+
+        @include desktop-all {
+            width: 408px !important;
+            float: left;
+
+            padding-left: 4px;
+        }
+    }
+
+    .caption_container.local {
+        @include desktop-all {
+            width: 342px !important;
+        }
+    }
+
+    .caption_container {
+        width: 100%;
+        float: left;
+
+        font-size: 14px;
+
+        .caption {
+            padding-left: 16px;
+            padding-right: 16px;
+            padding-top: 16px;
+            padding-bottom: 14px;
+
+            @include desktop-all {
+                padding-top: 0 !important;
+                padding-left: 24px !important;
+                padding-right: 24px !important;
+            }
+        }
+
+        a, a:active, a:link, a:visited {
+            text-decoration: none;
+            color: $email-button;
+            font-weight: 600;
+
+            margin-left: 16px;
+            margin-right: 16px;
+
+            @include desktop-all {
+                margin-left: 24px !important;
+                margin-right: 24px !important;
+            }
+        }
+    }
+
+    .map-info {
+        padding-left: 16px;
+        padding-right: 16px;
+
+        @include desktop-all {
+            padding-left: 22px !important;
+            padding-right: 22px !important;
+        }
+    }
+}
