@@ -142,7 +142,7 @@ function sendEmail(params, callback) {
                 },
                 {
                     name: 'link',
-                    content: '<a href="'+ config.WEB_ROOT +'/pro/' + params.proId + '">Click here</a>'
+                    content: config.WEB_ROOT +'/pro/' + params.proId
                 }
             ]
         }
