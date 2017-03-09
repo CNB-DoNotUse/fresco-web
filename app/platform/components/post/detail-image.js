@@ -73,6 +73,7 @@ class PostDetailImage extends React.Component {
                 <FrescoVideo
                     video={vr ? utils.streamToMp4(post.stream) : post.stream}
                     thumbnail={post.image}
+                    status={post.status}
                     width="640"
                     vr={vr}
                     highRes

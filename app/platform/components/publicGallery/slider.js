@@ -47,6 +47,7 @@ class PublicGallerySlider extends React.Component {
                             video={p.stream}
                             ref={`video${i}`}
                             userAgent={userAgent}
+                            status={post.status}
                             hideControls
                         />
                     )}

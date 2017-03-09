@@ -34,7 +34,7 @@ class PostCell extends React.Component {
             small: 'col-xs-6 col-sm-4 col-md-3 col-lg-2',
         },
         togglePost: () => {},
-        toggled: false,
+        toggled: false
     };
 
     state = {
@@ -158,6 +158,7 @@ class PostCell extends React.Component {
                     {(mouseEntered && post.stream) ? (
                         <FrescoVideo
                             video={post.stream}
+                            status={post.status}
                             hideControls
                             muted
                             autoplay
@@ -166,6 +167,7 @@ class PostCell extends React.Component {
                         <div className="img">
                             <FrescoImage
                                 src={post.image}
+                                status={post.status}
                                 size={size}
                                 refreshInterval
                             />

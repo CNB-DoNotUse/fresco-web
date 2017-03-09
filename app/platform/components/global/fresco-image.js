@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 
 /**
- * Fresco mage that manages an image error handler
+ * Fresco image that manages an image error handler
  * @description Will set a timeout to keep loading the image if it 404s
  * @param {Prop} loadWithPlaceholder If you'd like the image to load with a placeholder first then pass this. Applicable in cases where you need
  * a set height and you don't want your image objecto collapse if the 404s
@@ -18,10 +18,12 @@ class FrescoImage extends React.Component {
         refreshInterval: PropTypes.bool,
         loadWithPlaceholder: PropTypes.bool,
         height: PropTypes.string,
+        status: PropTypes.number
     };
 
     static defaultProps = {
         size: 'small',
+        status: 0,
         refreshInterval: false,
         style: {},
         loadWithPlaceholder: false,
@@ -29,25 +31,26 @@ class FrescoImage extends React.Component {
         updateImage: () => {},
     };
 
-    placeholderUrl = `${utils.CDN}/images/missing.png`;
-
     missingUrl = `${utils.CDN}/images/missing.png`;
+
+    processingUrl = `${utils.CDN}/images/processing.png`;
 
     state = {
         placeholderStyle: this.props.placeholderStyle,
         hidePlaceholder: false,
         timeout: 1000,
+        placeholderUrl: this.props.status == 1 ? this.processingUrl : this.missingUrl
     }
 
     componentWillMount() {
-        this.setInitialSource();
+        this.setInitialSource(this.props.src, this.props.size);
     }
 
     componentDidUpdate(prevProps, prevState) {
         const { src, size } = prevProps;
 
         if ((src !== this.props.src) || (size !== this.props.size)) {
-            this.setInitialSource();
+            this.setInitialSource(src, size);
         }
     }
 
@@ -56,11 +59,11 @@ class FrescoImage extends React.Component {
         clearTimeout(this.loadTimeout);
     }
 
-    setInitialSource = () => {
-        const formattedSrc = utils.formatImg(this.props.src, this.props.size);
+    setInitialSource = (src, size) => {
+        const formattedSrc = size ? utils.formatImg(src, size) : src;
 
         this.setState({
-            src: this.props.loadWithPlaceholder ? this.placeholderUrl : formattedSrc,
+            src: this.props.loadWithPlaceholder ? this.state.placeholderUrl : formattedSrc,
             formattedSrc,
             hidePlaceholder: false,
         });
@@ -94,9 +97,9 @@ class FrescoImage extends React.Component {
      * On image error, set the image as the placeholder and set a timeout to try again later
      */
     onError = () => {
-        this.setState({ src: this.placeholderUrl });
+        this.setState({ src: this.state.placeholderUrl });
 
-        this.props.updateImage(this.placeholderUrl);
+        this.props.updateImage(this.state.placeholderUrl);
 
         if (this.props.refreshInterval) {
             this.loadTimeout = setTimeout(this.onTimeout, this.state.timeout);
@@ -109,7 +112,7 @@ class FrescoImage extends React.Component {
         if (!this.state.hidePlaceholder) {
             placeholderStyle = Object.assign(
                 {
-                    backgroundImage: this.state.hidePlaceholder ? '' : `url(${this.placeholderUrl})`,
+                    backgroundImage: this.state.hidePlaceholder ? '' : `url(${this.state.placeholderUrl})`,
                 },
                 this.props.placeholderStyle,
                 this.props.style
@@ -149,4 +152,3 @@ class FrescoImage extends React.Component {
 }
 
 export default FrescoImage;
-

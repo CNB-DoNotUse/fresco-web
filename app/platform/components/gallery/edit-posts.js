@@ -11,6 +11,7 @@ const renderPost = (post) => {
         return (
             <FrescoVideo
                 video={post.stream}
+                status={post.status}
                 clickToPlay={false}
                 thumbnail={post.image}
             />
@@ -20,6 +21,7 @@ const renderPost = (post) => {
     return (
         <FrescoImage
             src={post.image}
+            status={post.status}
             placeholderStyle={{ height: '500px' }}
             size="medium"
             loadWithPlaceholder

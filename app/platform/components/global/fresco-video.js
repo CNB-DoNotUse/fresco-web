@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
+import FrescoImage from './fresco-image';
 import uniqueId from 'lodash/uniqueId';
+import utils from 'utils';
 import '../../../sass/platform/video.scss';
 require('script!video.js/dist/video.min.js');
 require('script!videojs-contrib-hls/dist/videojs-contrib-hls.min.js');
@@ -19,6 +21,7 @@ class FrescoVideo extends React.Component {
         muted: PropTypes.bool,
         hideControls: PropTypes.bool,
         highRes: PropTypes.bool,
+        status: PropTypes.number
     };
 
     static defaultProps = {
@@ -28,6 +31,7 @@ class FrescoVideo extends React.Component {
         video: '',
         vr: false,
         highRes: false,
+        status: 2
     }
 
     state = {
@@ -143,6 +147,7 @@ class FrescoVideo extends React.Component {
             autoplay,
             vr,
             hideControls,
+            status,
             clickToPlay
         } = this.props;
         const { id, isStream } = this.state;
@@ -150,42 +155,68 @@ class FrescoVideo extends React.Component {
         // Video.JS if an m3u8 file
         let className = `${isStream ? 'video-js' : ''} ${!hideControls ? 'vjs-default-skin' : ''}`;
         className += !width ? ' full-width' : '';
+        let body = null;
+        let style = {};
+        let parentClass = 'fresco-video-wrap';
 
         if(!clickToPlay) {
             className += ' preventClick';
         }
 
+        if(status == 0) {
+            parentClass += ' img';
+            body = (
+                <FrescoImage 
+                    src={`${utils.CDN}/images/missing.png`}
+                    loadWithPlaceholder={false}
+                    size='medium'
+                    refreshInterval={null}
+                />
+            );
+        } else if(status == 1) {
+            parentClass += ' img';
+            body = (
+                <FrescoImage 
+                    src={`${utils.CDN}/images/processing.png`}
+                    size={null}
+                    loadWithPlaceholder={false}
+                    refreshInterval={null}
+                />
+            );
+        } else if(vr) {
+            style = {width, height};
+            parentClass = 'fresco-vr-wrap';
+            body = (
+                <div
+                    className="fresco-vr"
+                    data-video-src={this.props.video} 
+                    id="fresco-video-element">
+                </div>
+            );
+        } else {
+            body = (
+                <video
+                    id={id}
+                    className={className}
+                    autoPlay={autoplay}
+                    controls={!hideControls}
+                    onClick={clickToPlay ? this.onClickVideo : null}
+                    width={width}
+                    height={height}
+                >
+                    <source
+                        src={video}
+                        poster={thumbnail}
+                        type={type || this.getType(video)}
+                    />
+                </video>
+            );
+        }
+
         return (
-            (vr ? (
-                <div className="fresco-vr-wrap" style={{width, height}}>
-                    <div
-                        className="fresco-vr"
-                        data-video-src={this.props.video} 
-                        id="fresco-video-element">
-                    </div>
-                </div>
-            ) : ( 
-                <div className="fresco-video-wrap">
-                    <video
-                        id={id}
-                        className={className}
-                        autoPlay={autoplay}
-                        controls={!hideControls}
-                        onClick={clickToPlay ? this.onClickVideo : null}
-                        width={width}
-                        height={height}
-                    >
-                        <source
-                            src={video}
-                            poster={thumbnail}
-                            type={type || this.getType(video)}
-                        />
-                    </video>
-                </div>
-            ))
+            <div className={parentClass} style={style}>{body}</div>
         );
     }
 }
 
 export default FrescoVideo;
-
