@@ -1,6 +1,7 @@
 import React from 'react';
 import FrescoBackgroundImage from '../global/fresco-background-image';
 import utils from 'utils';
+import time from 'app/lib/time';
 
 /**
  * Single Gallery Cell, child of GalleryList
@@ -10,7 +11,7 @@ export default class GalleryCell extends React.Component {
         const { half, gallery } = this.props;
 
         const timestamp = gallery.created_at;
-        const timeString = utils.formatTime(gallery.created_at);
+        const timeString = time.formatTime(gallery.created_at);
         const size = half ? 'col-xs-6 col-md-3' : 'col-xs-12 col-md-6';
         const stories = (gallery.stories || []).slice(0, 2);
         const galleryCellStories = stories.length > 0 ? <GalleryCellStories stories={stories} /> : '';

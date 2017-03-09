@@ -1,6 +1,6 @@
-import React from 'react'
-import FrescoImage from './fresco-image'
-import utils from 'utils'
+import React from 'react';
+import FrescoImage from './fresco-image';
+import time from 'app/lib/time';
 
 /**
  * Single Story Cell, child of StoryList
@@ -20,7 +20,7 @@ export default class StoryCell extends React.Component {
 	render() {
 		const {story} = this.props;
 		const timestamp = story.updated_at || story.created_at;
-		const timeString = utils.formatTime(timestamp);
+		const timeString = time.formatTime(timestamp);
 
 		return(
 			<div className='col-xs-6 col-md-3 tile story' onClick={this.onClick}>

@@ -5,8 +5,17 @@
 @import "../../global/media-queries";
 @import "../../global/drop-shadows";
 
+$headerWidth:288px;
+
 body {
     background: #f2f2ed;
+}
+
+.bold {
+    font-size: 16px;
+    line-height: 28px;
+    font-weight: 500;
+    color:$fresco-black;
 }
 
 .oauth {
@@ -34,13 +43,13 @@ body {
 
     @include mobile {
         position:relative;
-        margin:24px 16px 6px;
+        margin:55px 16px 0px;
         top:0;
     }
 }
 
 .oauth__header {
-    max-width:288px;
+    max-width:$headerWidth;
     margin: 0 auto;
 
     .oauth__form__header {
@@ -48,9 +57,14 @@ body {
         font-family:$roboto;
         font-size: 14px;
         margin:0 auto 20px;
+        line-height: 1.5em;
     }
 
     .oauth__application {
+        overflow: auto;
+        padding: 4px 2px;
+        margin: 0 -2px;
+
         img {
             @include border-radius(50px);
             @include lightShadow();
@@ -58,13 +72,7 @@ body {
             height:40px;
             margin-right:16px;
             float:left;
-        }
-
-        .oauth__application__title {
-            font-size: 16px;
-            line-height: 28px;
-            font-weight: 500;
-            color:$fresco-black;
+            border: 3px solid white;
         }
 
         .oauth__application__site {
@@ -93,7 +101,12 @@ body {
     margin: 0 auto;
     position:relative;
 
-    .oauth__form__body {
+    .oauth__form__disclaimer {
+        max-width:$headerWidth;
+        margin: 0 auto;
+    }
+
+    form.oauth__form__body {
         margin:14px 0 auto;
         background-color: #fafafa;
         @include border-radius(2px);
@@ -116,7 +129,7 @@ body {
 
     .oauth__form__actions {
         float:right;
-        margin:14px auto 0;
+        margin:14px auto 12px;
 
         .oauth__form__action {
             text-transform:uppercase;

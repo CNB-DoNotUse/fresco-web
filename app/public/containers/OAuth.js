@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as ui from 'app/redux/actions/ui';
+import * as oauth from 'app/redux/actions/oauth'
 
 import 'app/sass/public/oauth/oauth';
 
@@ -12,21 +13,37 @@ import 'app/sass/public/oauth/oauth';
  * Public OAuth Page
  */
 class OAuth extends React.Component {
+
+    propTypes = {
+        outlet: PropTypes.object.isRequired,
+        loggedIn: PropTypes.bool.isRequired,
+        hasGranted: PropTypes.bool.isRequired
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.ui.showSnackbar) {
+            $.snackbar({ content: nextProps.ui.snackbarText });
+            this.props.toggleSnackbar('', false);
+        }
+    }
+
     render() {
         const { outlet } = this.props;
 
         return(
             <div className="oauth">
-                <span className="icon-fresco oauth__form-logo"></span>
+                <a href="/">
+                    <span className="icon-fresco oauth__form-logo"></span>
+                </a>
 
                 <div className="oauth__inner">
                     <div className="oauth__header">
                         <h3 className="oauth__form__header">An application would like to connect to  your account:</h3>
 
-                        <div className="oauth__application">
-                            <img src="https://cdn.fresconews.com/images/350/5de2af34cb8cfaeb3a5c4ebe7695176c_1480905454108_avatar.jpg" />
+                        <div className="oauth__application bold">
+                            <img src={outlet.avatar} />
                             <p className="oauth__application__title">{outlet.title}</p>
-                            <a href={outlet.link} className="oauth__application__site" >http://fresconews.com</a>
+                            <a href={outlet.link} className="oauth__application__site" >{outlet.link}</a>
                         </div>
 
                         <div className="oauth__disclaimer">
@@ -46,15 +63,9 @@ class OAuth extends React.Component {
 
 OAuth.defaultProps = {
     loggedIn: false,
-    hasGranted: false,
-    outlet: {title: 'Fresco News', link: 'http://fresconews.com'}
+    hasGranted: false
 }
 
-OAuth.propTypes = {
-    application: PropTypes.object.isRequired,
-    loggedIn: PropTypes.bool.isRequired,
-    hasGranted: PropTypes.bool.isRequired
-};
 
 class OAuthForm extends React.Component {
 
@@ -82,8 +93,14 @@ class OAuthForm extends React.Component {
         return false;
     }
 
-    login() {
-        this.props.authorize();
+    /**
+     * Calls authorize method with login parameters
+     */
+    login = () =>  {
+        this.props.authorize({
+            username: this.state.username,
+            password: this.state.password,
+        });
     }
 
     /**
@@ -103,8 +120,8 @@ class OAuthForm extends React.Component {
 
         if(hasGranted && loggedIn) {
             body = (
-                <div className="oauth__form__body">
-                    <p className="">{outlet.title} is already connected to your account.</p>
+                <div className="oauth__form__disclaimer">
+                    <p className="bold">{outlet.title} is already connected to your account.</p>
                 </div>
             );
 
@@ -115,7 +132,7 @@ class OAuthForm extends React.Component {
                         onClick={this.props.revoke}>Revoke</span>
                     <span 
                         className="oauth__form__action oauth__form__action--grant" 
-                        onClick={this.props.allow}>Allow</span>
+                        onClick={() => this.props.authorize()}>Allow</span>
                 </div>
             );
         } else if(!hasGranted && loggedIn) {
@@ -126,7 +143,7 @@ class OAuthForm extends React.Component {
                         onClick={this.props.cancel}>Cancel</span>
                     <span 
                         className="oauth__form__action oauth__form__action--grant" 
-                        onClick={this.props.allow}>Allow</span>
+                        onClick={() => this.props.authorize()}>Allow</span>
                 </div>
             );
         } else if(!loggedIn) {
@@ -134,7 +151,7 @@ class OAuthForm extends React.Component {
             const buttonClass = disabled ? 'oauth__form__action--disabled' : 'oauth__form__action--grant';
 
             body = (
-                <div className="oauth__form__body">
+                <form className="oauth__form__body">
                     <input 
                         type="text" 
                         placeholder="Email or @username"
@@ -145,7 +162,7 @@ class OAuthForm extends React.Component {
                         placeholder="Password"
                         name="password"
                         onChange={(e) => this.handleInputChange(e)} />
-                </div>
+                </form>
             );
 
             actions = (
@@ -175,9 +192,8 @@ class OAuthForm extends React.Component {
             outlet
         } = this.props;
 
-
         return (
-            <div className="oauth__form_-wrap">
+            <div className="oauth__form__wrap">
                 {this.renderForm()}
             </div>
         )
@@ -187,13 +203,16 @@ class OAuthForm extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        ui: state.ui
+        ui: state.ui,
+        outlet: state.outlet,
+        loggedIn: state.loggedIn,
+        hasGranted: state.hasGranted
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators(
-        { ...ui },
+        { ...ui, ...oauth },
         dispatch
     )
 }

@@ -7,8 +7,7 @@ import reducer from 'app/redux/modules/oauth';
 
 import OAuth from '../containers/Oauth';
 
-// const { user, outlet, stripePublishableKey, payment } = window.__initialProps__;
-const store = configureStore({}, reducer);
+const store = configureStore(window.__initialProps__, reducer);
 
 ReactDOM.render(
     <Root store={store}>

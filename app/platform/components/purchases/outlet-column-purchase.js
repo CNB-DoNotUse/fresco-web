@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import utils from 'utils';
+import time from 'app/lib/time';
 import FrescoImage from '../global/fresco-image';
 import FrescoVideo from '../global/fresco-video';
 
@@ -30,7 +30,7 @@ export default class OutletColumnPurchase extends React.Component {
             media = <div className="img"><FrescoImage src={post.image} size="small" /></div>;
         }
 
-        timestampText = utils.formatTime(purchase.created_at, true);
+        timestampText = time.formatTime(purchase.created_at, true);
 
         if (purchase.assignment) {
             assignmentMeta = (

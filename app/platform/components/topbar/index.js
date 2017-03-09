@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+import time from 'app/lib/time';
 import Dropdown from './../global/dropdown';
 import RadioGroup from './../global/radio-group';
 import LocationAutocomplete from './../global/location-autocomplete.js';
@@ -78,9 +79,9 @@ class TopBar extends React.Component {
     // Called when the user selects a time format
     timeToggleSelected(selected) {
         if (selected === 'Absolute time') {
-            utils.setTimeDisplayType('absolute');
+            time.setTimeDisplayType('absolute');
         } else if (selected === 'Relative time') {
-            utils.setTimeDisplayType('relative');
+            time.setTimeDisplayType('relative');
         }
     }
 

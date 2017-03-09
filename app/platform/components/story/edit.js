@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import pickBy from 'lodash/pickBy';
 import utils from 'utils';
+import time from 'app/lib/time';
 
 /**
  * Story Edit Component
@@ -170,11 +171,11 @@ class Edit extends React.Component {
                     <ul className="md-type-subhead">
                         <li>
                             <span className="mdi mdi-clock icon" />
-                            <span id="story-edit-date">Created {utils.formatTime(story.created_at)}</span>
+                            <span id="story-edit-date">Created {time.formatTime(story.created_at)}</span>
                         </li>
                         <li>
                             <span className="mdi mdi-clock icon" />
-                            <span id="story-edit-date">Updated {utils.formatTime(story.updated_at)}</span>
+                            <span id="story-edit-date">Updated {time.formatTime(story.updated_at)}</span>
                         </li>
                         <li>
                             <span className="mdi mdi-image icon" />

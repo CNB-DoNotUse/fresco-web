@@ -22,7 +22,9 @@ const PublicGallery = ({ gallery, userAgent }) => {
 
             <div className="gallery-detail-wrap page">
                 <div className="gallery-slick-wrap">
-                    <PublicGallerySlider posts={gallery.posts} userAgent={userAgent} />
+                    <PublicGallerySlider 
+                        posts={gallery.posts} 
+                        userAgent={userAgent} />
                 </div>
 
                 <div className="gallery-info-wrap">

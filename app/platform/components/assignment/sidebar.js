@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+import time from 'app/lib/time';
 import moment from 'moment';
 
 /**
@@ -26,7 +27,7 @@ class Sidebar extends React.Component {
         const expirationTime = new Date(assignment.ends_at);
         const expiredText = (moment().diff(expirationTime) > 1 ? 'Expired ' : 'Expires ')
             + moment(expirationTime).fromNow();
-        const createdText = 'Created at ' + utils.formatTime(assignment.created_at, true);
+        const createdText = 'Created at ' + time.formatTime(assignment.created_at, true);
         const { photo_count, video_count } = assignment;
 
         return (
