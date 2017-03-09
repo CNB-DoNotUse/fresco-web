@@ -9,13 +9,19 @@
                     \{{#if single_post}}
                         \{{#each posts}}
                             <a target="_blank" href="\{{ link }}" class="post large">
-                                <img src="\{{ image }}"></img>
+								<div class="img_wrap">
+									<img src="\{{ image }}"></img>
+								</div>
+								<div class="img_after"></div>
                             </a>
                         \{{/each}}
                     \{{else}}
 						\{{#each posts}}
 							<a target="_blank" href="\{{ link }}" class="post">
-								<img src="\{{ image }}"></img>
+								<div class="img_wrap">
+									<img src="\{{ image }}"></img>
+								</div>
+								<div class="img_after"></div>
 							</a>
 						\{{/each}}
                     \{{/if}}

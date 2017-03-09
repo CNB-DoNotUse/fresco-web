@@ -24,37 +24,44 @@ $email-button: #0047bb;
         width: 100%;
 
         margin: auto;
-
-        float: center;
         display: block;
 
         @include desktop-all {
             width: 408px !important;
-
             float: left;
         }
 
         .post {
             @include desktop-all {
                 max-width: 200px !important;
-                height: 200px !important;
+                max-height: 200px !important;
             }
 
             width: 48%;
 
-            margin-left: 4px;
+            margin-left: 2%;
             margin-top: 4px;
 
             float: left;
             display: inline-block;
 
-            position: relative;
             overflow: hidden;
 
-            img {
-                height: 100%;
-                margin: auto;
+            background-color: #b9b9b9;
+
+            .img_after {
                 display: block;
+                padding-bottom: 100%;
+            }
+
+            .img_wrap {
+                height: 0;
+                overflow: visible;
+
+                img {
+                    width: 100%;
+                    display: block;
+                }
             }
         }
 
@@ -62,11 +69,21 @@ $email-button: #0047bb;
             @include desktop-all {
                 max-width: 408px !important;
                 height: 271px !important;
+                max-height: none !important;
             }
 
-            max-width: none;
+            .img_after {
+                padding-bottom: 50%
+            }
+
+            .img_wrap {
+                margin: 2%;
+            }
+
+            background: none;
+
             width: 100%;
-            height: auto;
+            margin: auto;
         }
     }
 
@@ -77,7 +94,7 @@ $email-button: #0047bb;
         font-size: 14px;
 
         @include desktop-all {
-            width: 342px !important;
+            width: 40% !important;
         }
 
         .caption {

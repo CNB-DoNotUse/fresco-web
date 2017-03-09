@@ -6,7 +6,7 @@ $email-title: #737373;
 $email-body: #212121;
 $email-divider: #dcdcdc;
 
-html, body, .container {
+.container {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
@@ -24,21 +24,21 @@ html, body, .container {
     background-color: $email-bg;
     width: 100%;
 
+    border: solid 1px $email-divider;
+
     @include desktop-all {
-        width: 800px !important;
+        max-width: 800px !important;
+        width: 80%;
         margin: auto;
         border-radius: 2px;
-
-        border: solid 1px $email-divider;
     }
 
 }
 
 .email-content__title {
     font-size: 14px;
-    line-height: 48px;
     color: $email-title;
-    padding: 8px 16px 0 16px;
+    padding: 22px 16px 22px 16px;
 
     @include desktop-all {
         padding-left: 22px !important;
