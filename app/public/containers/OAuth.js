@@ -1,12 +1,17 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import utils from 'utils';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import * as ui from 'app/redux/actions/ui';
+
 import 'app/sass/public/oauth/oauth';
 
 /**
  * Public OAuth Page
  */
 class OAuth extends React.Component {
-
     render() {
         const { outlet } = this.props;
 
@@ -53,8 +58,32 @@ OAuth.propTypes = {
 
 class OAuthForm extends React.Component {
 
-    login() {
+    state = {
+        username: '',
+        password: '',
+    }
 
+    handleInputChange = (e) => {
+        const target = e.target;
+        const value = target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+    }
+
+    //Returns true if inputs are valid
+    validInputs = () => {
+        if(!utils.isEmptyString(this.state.username) && !utils.isEmptyString(this.state.password)) {
+           return true;
+        }
+
+        return false;
+    }
+
+    login() {
+        this.props.authorize();
     }
 
     /**
@@ -81,29 +110,52 @@ class OAuthForm extends React.Component {
 
             actions = (
                 <div className="oauth__form__actions">
-                    <span className="oauth__form__action--revoke" onClick={this.props.revoke}>Revoke</span>
-                    <span className="oauth__form__action--grant" onClick={this.props.allow}>Allow</span>
+                    <span 
+                        className="oauth__form__action oauth__form__action--revoke" 
+                        onClick={this.props.revoke}>Revoke</span>
+                    <span 
+                        className="oauth__form__action oauth__form__action--grant" 
+                        onClick={this.props.allow}>Allow</span>
                 </div>
             );
         } else if(!hasGranted && loggedIn) {
             body = (
                 <div className="oauth__form__actions">
-                    <span className="oauth__form__action--cancel" onClick={this.props.cancel}>Cancel</span>
-                    <span className="oauth__form__action--grant" onClick={this.props.allow}>Allow</span>
+                    <span 
+                        className="oauth__form__action oauth__form__action--cancel" 
+                        onClick={this.props.cancel}>Cancel</span>
+                    <span 
+                        className="oauth__form__action oauth__form__action--grant" 
+                        onClick={this.props.allow}>Allow</span>
                 </div>
             );
         } else if(!loggedIn) {
+            const disabled = !this.validInputs();
+            const buttonClass = disabled ? 'oauth__form__action--disabled' : 'oauth__form__action--grant';
+
             body = (
                 <div className="oauth__form__body">
-                    <input type="text" placeholder="Email or @username" />
-                    <input type="text" placeholder="Password" />
+                    <input 
+                        type="text" 
+                        placeholder="Email or @username"
+                        name="username"
+                        onChange={(e) => this.handleInputChange(e)} />
+                    <input 
+                        type="password" 
+                        placeholder="Password"
+                        name="password"
+                        onChange={(e) => this.handleInputChange(e)} />
                 </div>
             );
 
             actions = (
                 <div className="oauth__form__actions">
-                    <span className="oauth__form__action--cancel" onClick={this.props.cancel}>Cancel</span>
-                    <span className="oauth__form__action--grant" onClick={this.props.login}>Log In & Allow</span>
+                    <span 
+                        className="oauth__form__action oauth__form__action--cancel" 
+                        onClick={this.props.cancel}>Cancel</span>
+                    <span 
+                        className={`oauth__form__action ${buttonClass}`} 
+                        onClick={this.props.login}>Log In & Allow</span>
                 </div>
             );
         }
@@ -133,4 +185,17 @@ class OAuthForm extends React.Component {
 
 }
 
-export default OAuth;
+const mapStateToProps = (state) => {
+    return {
+        ui: state.ui
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators(
+        { ...ui },
+        dispatch
+    )
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OAuth);

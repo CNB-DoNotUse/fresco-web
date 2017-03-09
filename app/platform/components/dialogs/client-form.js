@@ -240,8 +240,7 @@ export default class ClientForm extends React.Component {
                             header={this.state.confirmMessage}
                             zIndex={6}
                             confirmButton={this.state.confirmButton}
-                        />
-                    }
+                        />}
                 </div>
             </Base>
         );
