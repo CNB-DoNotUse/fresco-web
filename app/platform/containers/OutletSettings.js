@@ -30,7 +30,7 @@ class OutletSettings extends React.Component {
 
     state = {
         members: this.props.outlet.members ? this.props.outlet.members.filter(m => m.id !== this.props.outlet.owner.id) : [] //Hide outlet member
-    }
+    };
 
     constructor(props) {
         super(props);

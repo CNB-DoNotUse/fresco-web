@@ -10,7 +10,7 @@ import RelatedPostImage from './related-image';
 export default class PostRelated extends React.Component {
     static propTypes = {
         gallery: PropTypes.object,
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -67,7 +67,7 @@ export default class PostRelated extends React.Component {
                 stories: stories
             });
         }
-    }
+    };
 
     setDisplayedTab = (event) => {
         if (this.state.selectedTab === event.currentTarget.dataset.tab) {
@@ -76,7 +76,7 @@ export default class PostRelated extends React.Component {
         this.setState({
             selectedTab: event.currentTarget.dataset.tab
         });
-    }
+    };
 
     render() {
         let tabs = [];

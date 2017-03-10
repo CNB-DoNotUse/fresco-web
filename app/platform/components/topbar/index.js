@@ -87,7 +87,7 @@ class TopBar extends React.Component {
     // Called when the user selects all content or verified
     onSelectVerified = (selected) => {
         this.props.onVerifiedToggled(selected === 'Verified');
-    }
+    };
 
     // Called when the user selects a time format
     onSelectChronToggle = (selected) => {
@@ -98,7 +98,7 @@ class TopBar extends React.Component {
         } else if (str === 'by upload time') {
             this.props.onChronToggled('created_at');
         }
-    }
+    };
 
     renderTopBarItems() {
         const {

@@ -7,7 +7,7 @@ export default class FitText extends React.Component {
         compressor: PropTypes.number,
         text: PropTypes.string,
         className: PropTypes.string,
-    }
+    };
 
     static defaultProps = {
         compressor: 1,
@@ -39,4 +39,3 @@ export default class FitText extends React.Component {
         );
     }
 }
-

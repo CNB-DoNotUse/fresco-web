@@ -31,7 +31,7 @@ class Map extends React.Component {
             lng: PropTypes.number,
         }),
         rerender: PropTypes.bool.isRequired,
-    }
+    };
 
     static defaultProps = {
         initialLocation: defaultLocation,
@@ -42,7 +42,7 @@ class Map extends React.Component {
         draggable: false,
         zoomControl: true,
         rerender: false,
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -52,7 +52,7 @@ class Map extends React.Component {
     state = {
         currentLocation: [this.props.location, this.props.initialLocation, defaultLocation].find(loc => loc && loc.lat && loc.lng),
         loaded: false,
-    }
+    };
 
     hasRerendered = false;
 
@@ -199,4 +199,3 @@ class Map extends React.Component {
 }
 
 export default Map;
-

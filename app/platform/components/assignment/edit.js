@@ -19,7 +19,7 @@ export default class AssignmentEdit extends React.Component {
         visible: PropTypes.bool.isRequired,
     };
 
-    state = this.getStateFromProps(this.props)
+    state = this.getStateFromProps(this.props);
 
     getStateFromProps(props) {
         const { assignment } = props;
@@ -82,7 +82,7 @@ export default class AssignmentEdit extends React.Component {
         } else {
             this.setState({ location: null, address: null });
         }
-    }
+    };
 
     /**
      * Saves the assignment from the current values in the form
@@ -158,7 +158,7 @@ export default class AssignmentEdit extends React.Component {
         } else {
             this.setState({ [e.target.name]: e.target.value });
         }
-    }
+    };
 
     hasFormErrors() {
         const { title, caption, radius, address, endsAt, outlets } = this.state;
@@ -206,7 +206,7 @@ export default class AssignmentEdit extends React.Component {
             radius: null,
             outlet: null,
         });
-    }
+    };
 
     /**
      * Reverts fields to original state
@@ -214,7 +214,7 @@ export default class AssignmentEdit extends React.Component {
     onCancel = () => {
         this.revert();
         this.props.onToggle();
-    }
+    };
 
     isGlobalLocation() {
         return !this.state.location || isEmpty(this.state.location);
@@ -473,4 +473,3 @@ export default class AssignmentEdit extends React.Component {
 		);
     }
 }
-

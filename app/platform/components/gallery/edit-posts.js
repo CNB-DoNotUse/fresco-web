@@ -119,7 +119,7 @@ class EditPosts extends React.Component {
         onToggleDeletePost: PropTypes.func,
         onToggleDeleteUpload: PropTypes.func,
         canDelete: PropTypes.bool,
-    }
+    };
 
     static defaultProps = {
         canDelete: false,
@@ -127,7 +127,7 @@ class EditPosts extends React.Component {
         editingPosts: [],
         originalPosts: [],
         className: '',
-    }
+    };
 
     componentDidUpdate(prevProps) {
         // Reset slick to first index of we have different posts
@@ -175,4 +175,3 @@ class EditPosts extends React.Component {
 }
 
 export default EditPosts;
-

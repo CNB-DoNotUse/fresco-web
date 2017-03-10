@@ -16,7 +16,7 @@ export default class DispatchRequest extends React.Component {
 	state = {
 		toggled: false,
 		requesting: false
-	}
+	};
 
 	submitRequest() {
 		if(this.state.requesting) return;
@@ -33,25 +33,25 @@ export default class DispatchRequest extends React.Component {
 
     		this.hide();
         })
-        .catch(() => 
+        .catch(() =>
         	$.snackbar({ content: 'We were unable to process your request!' })
         )
-        .then(() => 
+        .then(() =>
         	this.setState({ requesting: false })
         );
 	}
 
 	hide = () => {
 		this.setState({ toggled: true })
-	}
+	};
 
 	render() {
 		return (
 			<div className={`card panel toggle-card ${this.state.toggled ? 'toggled' : ''}`}>
 				<div className="card-head">
 					<span className="md-type-title">Request access to Dispatch</span>
-					<span 
-						id="close-request-access-window" 
+					<span
+						id="close-request-access-window"
 						className="mdi mdi-close pull-right icon toggle-card toggler"
 						onClick={this.hide}
 					>

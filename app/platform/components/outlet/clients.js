@@ -23,7 +23,7 @@ class Clients extends React.Component {
 
     state = {
         activeClient: null
-    }
+    };
 
     componentDidMount() {
         this.props.getClients();
@@ -32,7 +32,7 @@ class Clients extends React.Component {
     updateClient = (id, params) => {
         if(this.props.isLoading) return;
         this.props.updateClient(id, params);
-    }
+    };
 
     /**
      * Toggles editing by setting client to be editing in state and later passing it to the token form
@@ -41,7 +41,7 @@ class Clients extends React.Component {
     toggleEdit = (activeClient = null) => {
         this.setState({ activeClient })
         this.props.toggleModal();
-    }
+    };
 
     render() {
         const {

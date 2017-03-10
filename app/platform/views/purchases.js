@@ -55,7 +55,7 @@ class Purchases extends React.Component {
             })
             .catch(err => err);
         }
-    }
+    };
 
     findUsers = (q) => {
         if (q.length === 0) {
@@ -68,7 +68,7 @@ class Purchases extends React.Component {
             .then(res => this.setState({ availableUsers: res.users.results }))
             .catch(err => err);
         }
-    }
+    };
 
     /**
      * Adds user to filter
@@ -87,7 +87,7 @@ class Purchases extends React.Component {
                 });
             }
         }
-    }
+    };
 
     /**
      * Remove user from filter
@@ -102,7 +102,7 @@ class Purchases extends React.Component {
             availableUsers: update(this.state.availableUsers, {$push: [user]}), //Add the user back to the autocomplete list
             updatePurchases: true
         });
-    }
+    };
 
     /**
      * Adds outlet to filter
@@ -125,7 +125,7 @@ class Purchases extends React.Component {
                 setInLocalStorage('views/purchases', { [outletsKey]: this.state[outletsKey] });
             });
         }
-    }
+    };
 
     /**
      * Remove outlet from filter
@@ -145,7 +145,7 @@ class Purchases extends React.Component {
         }, () => {
             setInLocalStorage('views/purchases', { [outletsKey]: this.state[outletsKey] });
         });
-    }
+    };
 
     /**
      * Loads stats for purchases
@@ -159,7 +159,7 @@ class Purchases extends React.Component {
         api.get('purchase/stats', params)
         .then(res => callback(res))
         .catch(() => $.snackbar({ content: 'There was an error receiving purchases!' }));
-    }
+    };
 
     /**
      * Requests purchases from server
@@ -192,7 +192,7 @@ class Purchases extends React.Component {
                 content: 'There was an error receiving purchases!'
             });
         });
-    }
+    };
 
 	/**
 	 * Sends browser to script to generate CSV
@@ -211,7 +211,7 @@ class Purchases extends React.Component {
         const url = `/scripts/report?u=${u}&e=Failed`;
 
         window.open(url, '_blank');
-    }
+    };
 
     render() {
         const { activeTab, outletStatsTime, updatePurchases } = this.state;
@@ -222,7 +222,7 @@ class Purchases extends React.Component {
         };
 
         return (
-            <App 
+            <App
                 user={this.props.user}
                 page="purchases">
                 <TopBar
@@ -300,4 +300,3 @@ ReactDOM.render(
     <Purchases user={window.__initialProps__.user} />,
     document.getElementById('app')
 );
-

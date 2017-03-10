@@ -29,7 +29,7 @@ class Stories extends React.Component {
                 $.snackbar({ content:  'Couldn\'t fetch any stories!' });
             }
         });
-    }
+    };
 
     render() {
         return (
@@ -53,4 +53,3 @@ ReactDOM.render(
     <Stories user={window.__initialProps__.user} />,
     document.getElementById('app')
 );
-

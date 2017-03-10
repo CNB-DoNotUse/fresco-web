@@ -12,11 +12,11 @@ export default class StoryList extends React.Component {
         loadStories: PropTypes.func,
         scrollable: PropTypes.bool,
         reloadStories: PropTypes.bool,
-    }
+    };
 
     static defaultProps = {
         reloadStories: false,
-    }
+    };
 
     state = {
         stories: [],
@@ -59,7 +59,7 @@ export default class StoryList extends React.Component {
                 });
             });
         }
-    }
+    };
 
     render() {
         return (
@@ -77,4 +77,3 @@ export default class StoryList extends React.Component {
         );
     }
 }
-

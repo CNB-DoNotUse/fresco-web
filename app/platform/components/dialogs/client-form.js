@@ -22,14 +22,14 @@ export default class ClientForm extends React.Component {
         updateClient: PropTypes.func,
         generateClient: PropTypes.func,
         client: PropTypes.object
-    }
+    };
 
     static defaultProps = {
         toggle: () => {},
         toggled: false,
         newClient: true,
         selectedVersion: null
-    }
+    };
 
     state = {
         shouldRekey: false,
@@ -38,7 +38,7 @@ export default class ClientForm extends React.Component {
         confirmMessage: deleteMessage,
         confirmButton: 'Delete',
         confirmFormToggled: false
-    }
+    };
 
     componentDidMount() {
         //Do API version loading
@@ -60,7 +60,7 @@ export default class ClientForm extends React.Component {
         if ((!domNode || !domNode.contains(event.target)) && this.props.toggled) {
             this.props.toggle(false);
         }
-    }
+    };
 
     componentWillUpdate(nextProps, nextState) {
         //Incoming new client, or client state change
@@ -112,7 +112,7 @@ export default class ClientForm extends React.Component {
             params.outlet_id = outlet.id;
             this.props.generateClient(params);
         }
-    }
+    };
 
     handleInputChange = (e) => {
         const target = e.target;
@@ -122,14 +122,14 @@ export default class ClientForm extends React.Component {
         this.setState({
             [name]: value
         });
-    }
+    };
 
     /**
      * When a version is selected
      */
     versionSelected = (selectedVersion) => {
         this.setState({ selectedVersion })
-    }
+    };
 
     /**
      * Returns true if inputs are valid
@@ -140,7 +140,7 @@ export default class ClientForm extends React.Component {
         }
 
         return false;
-    }
+    };
 
     /**
      * Calls delete function
@@ -152,7 +152,7 @@ export default class ClientForm extends React.Component {
             confirmButton: 'Delete',
             onConfirm: () => { this.props.deleteClient(this.props.client.id) }
         })
-    }
+    };
 
     /**
      * Delete action called
@@ -160,7 +160,7 @@ export default class ClientForm extends React.Component {
     onConfirm = () => {
         this.setState({ confirmFormToggled: false });
         this.state.onConfirm();
-    }
+    };
 
 
     render() {

@@ -19,7 +19,7 @@ class UserDetail extends React.Component {
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
         setInSessionStorage('topbar', { verifiedToggle });
-    }
+    };
 
     edit() {
         window.location.href = '/user/settings';
@@ -45,7 +45,7 @@ class UserDetail extends React.Component {
             $.snackbar({ content: 'We couldn\'t load this user\'s posts!' });
             callback([]);
         });
-    }
+    };
 
     render() {
         const { user, editable, detailUser } = this.props;
@@ -102,4 +102,3 @@ ReactDOM.render(
     />,
     document.getElementById('app')
 );
-

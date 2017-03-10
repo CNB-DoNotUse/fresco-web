@@ -9,13 +9,13 @@ export default class VersionDropdown extends React.Component {
     static propTypes = {
         versions: PropTypes.array,
         selectedVersion: PropTypes.object
-    }
+    };
 
-    state = {}
+    state = {};
 
     componentWillReceiveProps(nextProps) {
         //Incoming new client, or client state change
-        if((nextProps.selectedVersion && !this.props.selectedVersion) 
+        if((nextProps.selectedVersion && !this.props.selectedVersion)
             || (nextProps.selectedVersion && (nextProps.selectedVersion.id !== this.props.selectedVersion.id))) {
             this.setState({ active: false })
         }
@@ -45,6 +45,6 @@ export default class VersionDropdown extends React.Component {
                     })}
                 </ul>
             </Dropdown>
-        )        
+        )
     }
 }

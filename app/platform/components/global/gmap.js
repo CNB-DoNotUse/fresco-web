@@ -57,7 +57,7 @@ class GMap extends React.Component {
     state = {
         center: this.defaultCenter,
         hasFitBounds: false,
-    }
+    };
 
     componentDidMount() {
         this.props.updateCurrentBounds(this.map ? this.map.getBounds() : {});
@@ -225,4 +225,3 @@ class GMap extends React.Component {
 }
 
 export default GMap;
-

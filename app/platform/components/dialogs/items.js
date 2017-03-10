@@ -10,7 +10,7 @@ export default class Items extends React.Component {
         context: PropTypes.string,
         emptyMessage: PropTypes.string,
         children: PropTypes.node,
-    }
+    };
 
     static defaultProps = {
         onClose: () => {},
@@ -19,7 +19,7 @@ export default class Items extends React.Component {
         scrollable: false,
         context: null,
         emptyMessage: 'No items',
-    }
+    };
 
     renderEmptyMessage() {
         return <p className="empty">{this.props.emptyMessage}</p>;

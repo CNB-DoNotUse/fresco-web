@@ -8,12 +8,12 @@ export default class Body extends React.Component {
         outlet: PropTypes.object,
         user: PropTypes.object,
         activeTab: PropTypes.string,
-    }
+    };
 
     state = {
         posts: [],
         purchases: [],
-    }
+    };
 
     /**
      * Loads posts using purchases data enpoint
@@ -35,7 +35,7 @@ export default class Body extends React.Component {
 
             cb(posts);
         });
-    }
+    };
 
     /**
      * Loads stats for purchases
@@ -54,7 +54,7 @@ export default class Body extends React.Component {
         .fail(() => {
             $.snackbar({ content: 'There was an error receiving purchases!' });
         });
-    }
+    };
 
 	/**
 	 * Requests purchases from server
@@ -77,7 +77,7 @@ export default class Body extends React.Component {
             $.snackbar({ content: 'There was an error receiving purchases!' });
             cb([]);
         });
-    }
+    };
 
     downloadExports = () => {
         const oultet = `outlet_ids[]=${this.props.outlet.id}`;
@@ -85,7 +85,7 @@ export default class Body extends React.Component {
         const url = `/scripts/report?u=${u}&e=Failed`;
 
         window.open(url, '_blank');
-    }
+    };
 
     render() {
         const { outlet, user, activeTab } = this.props;
@@ -122,4 +122,3 @@ export default class Body extends React.Component {
         );
     }
 }
-

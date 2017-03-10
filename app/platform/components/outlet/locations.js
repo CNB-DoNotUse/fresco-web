@@ -8,7 +8,7 @@ import cloneDeep from 'lodash/cloneDeep';
  */
 class Locations extends React.Component {
 
-    state = { locations: [] }
+    state = { locations: [] };
 
     componentDidMount() {
         // Retreive locations
@@ -122,7 +122,7 @@ class Locations extends React.Component {
         .fail((xhr, status, error) => {
             $.snackbar({ content: 'We were unable to delete this locaiton. Please try again in a bit!' });
         });
-    }
+    };
 
 	/**
 	 * Updates the notification type for the passed location id
@@ -160,7 +160,7 @@ class Locations extends React.Component {
 
             $.snackbar({ content: 'We\'re unable to update your locations at the moment! Please try again in a bit.' });
         });
-    }
+    };
 
     renderLocationList(locations) {
         if (!locations.length) {

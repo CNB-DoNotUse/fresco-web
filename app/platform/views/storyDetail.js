@@ -22,7 +22,7 @@ class StoryDetail extends React.Component {
     onChronToggled = (sortBy) => {
         this.setState({ sortBy });
         setInSessionStorage('topbar', { sortBy });
-    }
+    };
 
     toggleStoryEdit() {
         this.setState({ editToggled: !this.state.editToggled });
@@ -107,14 +107,14 @@ class StoryDetail extends React.Component {
             $.snackbar({ content: 'Couldn\'t load posts!' });
             callback([]);
         });
-    }
+    };
 
     render() {
         const { user } = this.props;
         const { story, sortBy, editToggled, loading } = this.state;
 
         return (
-            <App 
+            <App
                 user={user}
                 page="storyDetail"
             >
@@ -168,4 +168,3 @@ ReactDOM.render(
   		title={window.__initialProps__.title} />,
   	document.getElementById('app')
 );
-

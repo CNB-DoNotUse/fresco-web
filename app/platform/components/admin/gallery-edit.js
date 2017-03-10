@@ -66,7 +66,7 @@ export default class GalleryEdit extends React.Component {
         if (this.state.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
-    }
+    };
 
     /**
      * Updates state map location when AutocompleteMap gives new location
@@ -90,7 +90,7 @@ export default class GalleryEdit extends React.Component {
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
         });
-    }
+    };
 
     /**
      * Gets all form data and verifies gallery.
@@ -274,11 +274,11 @@ export default class GalleryEdit extends React.Component {
      */
     updateStories = (stories) => {
         this.setState({ stories });
-    }
+    };
 
     onChangeIsNSFW = () => {
         this.setState({ is_nsfw: !this.state.is_nsfw });
-    }
+    };
 
 	/**
 	 * Called when caption input fires keyUp event
@@ -439,4 +439,3 @@ export default class GalleryEdit extends React.Component {
 		);
     }
 }
-

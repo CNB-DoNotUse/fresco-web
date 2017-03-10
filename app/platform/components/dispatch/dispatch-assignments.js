@@ -15,7 +15,7 @@ export default class DispatchAssignments extends React.Component {
     state = {
         assignments: [],
         loading: false,
-    }
+    };
 
     componentDidMount() {
         //Access parent find method
@@ -62,7 +62,7 @@ export default class DispatchAssignments extends React.Component {
                 });
             });
         }
-    }
+    };
 
 	/**
 	 * Toggle Assignment List
@@ -87,7 +87,7 @@ export default class DispatchAssignments extends React.Component {
         });
 
         this.props.updateViewMode(toggle);
-    }
+    };
 
     render() {
         const buttonClass = "btn btn-flat";
@@ -168,4 +168,3 @@ export default class DispatchAssignments extends React.Component {
         );
     }
 }
-
