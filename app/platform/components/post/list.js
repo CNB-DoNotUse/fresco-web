@@ -68,7 +68,7 @@ class PostList extends React.Component {
                 this.grid.scrollTop = 0;
             });
         }
-    }
+    };
 
     /**
      * Handler for new posts prop
@@ -85,7 +85,7 @@ class PostList extends React.Component {
         if (differentPosts || updatePosts) {
             this.setState({ posts });
         }
-    }
+    };
 
     /**
      * Handler for new scroll to post id prop
@@ -98,7 +98,7 @@ class PostList extends React.Component {
         $grid.animate({
             scrollTop: this[`cell${scrollTo}`].area.offsetTop - paddingTop,
         });
-    }
+    };
 
     onToggleGalleryBulkEdit = () => {
         if (this.state.selectedPosts.length > 1) {
@@ -107,11 +107,11 @@ class PostList extends React.Component {
             this.setState({ galleryBulkEditToggled: false });
             $.snackbar({ content: 'Select more than one gallery to edit' });
         }
-    }
+    };
 
     onToggleGalleryCreate = () => {
         this.setState({ galleryCreateToggled: !this.state.galleryCreateToggled });
-    }
+    };
 
     /**
      * Scroll listener for main window
@@ -141,7 +141,7 @@ class PostList extends React.Component {
                 this.loading = false;
             });
         }
-    }
+    };
 
     onToggleGalleryBulkEdit = () => {
         if (this.state.selectedPosts.length > 1) {
@@ -150,11 +150,11 @@ class PostList extends React.Component {
             this.setState({ galleryBulkEditToggled: false });
             $.snackbar({ content: 'Select more than one gallery to edit' });
         }
-    }
+    };
 
     onToggleGalleryCreate = () => {
         this.setState({ galleryCreateToggled: !this.state.galleryCreateToggled });
-    }
+    };
 
     /**
      * setSelectedPosts
@@ -164,7 +164,7 @@ class PostList extends React.Component {
     setSelectedPosts = (newSelected) => {
         this.setState({ selectedPosts: newSelected });
         setInSessionStorage('post/list', { selectedPosts: newSelected });
-    }
+    };
 
     /**
      * Toggles posts in stateful selected posts
@@ -194,7 +194,7 @@ class PostList extends React.Component {
         }
 
         this.setSelectedPosts(newSelected);
-    }
+    };
 
     /**
      * Sorts posts based on the current field in props

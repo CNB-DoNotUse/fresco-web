@@ -13,7 +13,7 @@ class PublicGallerySlider extends React.Component {
                 this.refs[`video${index}`].pause();
             }
         }, 1)
-    }
+    };
 
     afterChange = (index) => {
         setTimeout(() => {
@@ -21,7 +21,7 @@ class PublicGallerySlider extends React.Component {
                 this.refs[`video${index}`].play();
             }
         }, 1);
-    }
+    };
 
     renderSlickContent() {
         const { posts = [], userAgent } = this.props;

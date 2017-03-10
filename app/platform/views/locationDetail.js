@@ -65,12 +65,12 @@ class LocationDetail extends React.Component {
             $.snackbar({ content: 'Coudn\'t load posts!' });
             cb([]);
         });
-    }
+    };
 
     render() {
         const { user, location, outlet } = this.props;
         return (
-            <App 
+            <App
                 user={this.props.user}
                 page='locationDetail'>
                 <TopBar
@@ -112,4 +112,3 @@ ReactDOM.render(
     />,
     document.getElementById('app')
 );
-

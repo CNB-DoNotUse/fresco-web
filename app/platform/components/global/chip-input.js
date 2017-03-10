@@ -70,7 +70,7 @@ class ChipInput extends React.Component {
         }
 
         this.setState({ query: '' });
-    }
+    };
 
     onChangeQuery = (e) => {
         const query = e.target.value;
@@ -80,7 +80,7 @@ class ChipInput extends React.Component {
         }
 
         this.setState({ query }, this.getSuggestions);
-    }
+    };
 
     /**
      * onKeyUpQuery
@@ -109,7 +109,7 @@ class ChipInput extends React.Component {
                 this.addItem({ [queryAttr]: query, new: true });
             } else if (matched) this.addItem(matched);
         }
-    }
+    };
 
     getSuggestions = () => {
         const {
@@ -150,7 +150,7 @@ class ChipInput extends React.Component {
         }
 
         if (idLookup) this.getModelById(query);
-    }
+    };
 
     getModelById(id) {
         const { model } = this.props;
@@ -191,7 +191,7 @@ class ChipInput extends React.Component {
         else items = reject(items, { [queryAttr]: item[queryAttr] });
 
         this.props.updateItems(items);
-    }
+    };
 
     modifyText(text) {
         return this.props.modifyText(text);

@@ -22,7 +22,7 @@ class Marker extends React.Component {
         panned: PropTypes.bool,
         zIndex: PropTypes.number.isRequired,
         draggable: PropTypes.bool,
-    }
+    };
 
     static defaultProps = {
         zIndex: 1,
@@ -111,4 +111,3 @@ class Marker extends React.Component {
 }
 
 export default Marker;
-

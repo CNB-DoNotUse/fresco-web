@@ -14,7 +14,7 @@ export default class Base extends React.Component {
         toggled: false,
         zIndex: 5,
         toggle: () => {}
-    }
+    };
 
     render() {
         const { children, toggled, zIndex } = this.props;
@@ -22,7 +22,7 @@ export default class Base extends React.Component {
 
         return (
             <div style={{ zIndex }}
-                ref='base' 
+                ref='base'
                 className={`dialog-wrap ${toggled ? 'toggled' : ''}`}>
                 <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
                 {children}

@@ -17,7 +17,7 @@ export default class Confirm extends React.Component {
         disabled: PropTypes.bool,
         confirmText: PropTypes.string,
         body: PropTypes.string,
-    }
+    };
 
     static defaultProps = {
         onConfirm: () => {},
@@ -27,14 +27,14 @@ export default class Confirm extends React.Component {
         confirmText: 'Confirm',
         hasInput: false,
         disabled: false,
-    }
+    };
 
     onConfirm = (e) => {
         e.preventDefault();
         const { hasInput, onConfirm } = this.props;
         if (hasInput) onConfirm(this.input.value);
         else onConfirm();
-    }
+    };
 
     renderBody = () => (
         <div className="dialog-modal__body">
@@ -53,7 +53,7 @@ export default class Confirm extends React.Component {
                 </form>
             )}
         </div>
-    )
+    );
 
     render() {
         const { toggled, header, confirmText, hasInput, onCancel, disabled, body } = this.props;
@@ -89,4 +89,3 @@ export default class Confirm extends React.Component {
         );
     }
 }
-

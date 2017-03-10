@@ -81,14 +81,14 @@ class Edit extends React.Component {
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
         });
-    }
+    };
 
     onRemove = () => {
         const { gallery } = this.props;
         if (!gallery || !gallery.id || this.state.loading) return;
 
         this.removeGallery(gallery.id);
-    }
+    };
 
     onSave = () => {
         const params = this.getFormData();
@@ -100,9 +100,9 @@ class Edit extends React.Component {
         }
 
         if (!get(gallery, 'id') || loading) return;
-        
+
         this.setState({ loading: true });
-        
+
         const postsToDelete = isOriginalGallery ? get(params, 'posts_remove') : [];
 
         saveGallery(gallery.id, params)
@@ -135,7 +135,7 @@ class Edit extends React.Component {
             $.snackbar({ content: 'There was an error saving the gallery!' });
             this.setState({ loading: false });
         });
-    }
+    };
 
     onChangeFileInput(e) {
         const files = e.target.files;
@@ -177,7 +177,7 @@ class Edit extends React.Component {
             return;
         }
         this.setState({ posts });
-    }
+    };
 
     /**
      * Updates state map location when AutocompleteMap gives new location
@@ -225,7 +225,7 @@ class Edit extends React.Component {
      */
     onScroll = (e) => {
         e.stopPropagation();
-    }
+    };
 
     getInitialLocationData() {
         const { gallery } = this.props;
@@ -330,7 +330,7 @@ class Edit extends React.Component {
 
         let { posts_new, posts_add, posts_remove } = utils.getRemoveAddParams('posts', gallery.posts, posts);
 
-        posts_new = posts_new 
+        posts_new = posts_new
             ? posts_new.map(p =>
                 Object.assign({}, p, {
                     rating,
@@ -382,7 +382,7 @@ class Edit extends React.Component {
      * Uploads passed files
      * @param  {Array} posts new posts with upload urls
      * @param  {Array} files actual files from the web browser
-     * @return {Promise(s)}  Promise.All 
+     * @return {Promise(s)}  Promise.All
      */
     uploadFiles(posts, files) {
         if (!posts || !files || !files.length) return Promise.resolve;
@@ -445,17 +445,17 @@ class Edit extends React.Component {
             shouldHighlight: e.target.checked,
             updateHighlightedAt: e.target.checked,
         });
-    }
+    };
 
     onChangeHighlightedAt = (e) => {
         this.setState({
             updateHighlightedAt: e.target.checked,
         });
-    }
+    };
 
     onChangeIsNSFW = () => {
         this.setState({ is_nsfw: !this.state.is_nsfw });
-    }
+    };
 
     onToggleDeletePost(post) {
         let { posts } = this.state;
@@ -808,4 +808,3 @@ Edit.defaultProps = {
 };
 
 export default Edit;
-

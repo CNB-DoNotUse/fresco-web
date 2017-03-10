@@ -56,7 +56,7 @@ class Admin extends React.Component {
         if (tab === this.state.activeTab) return;
 
         this.setState({ activeTab: tab });
-    }
+    };
 
     getData = (options, callback, last = null) => {
         const tab = options.tab || this.state.activeTab;
@@ -97,7 +97,7 @@ class Admin extends React.Component {
 
             return cb(data);
         });
-    }
+    };
 
     getAssignments() {
         const { assignments } = this.state;
@@ -152,7 +152,7 @@ class Admin extends React.Component {
 
             this.setState({ [this.state.activeTab]: updatedData });
         });
-    }
+    };
 
     resetAssignments() {
         this.getData({ tab: 'assignments' }, (assignments) => {
@@ -257,7 +257,7 @@ class Admin extends React.Component {
 
     render() {
         return (
-            <App 
+            <App
                 user={this.props.user}
                 page='admin'>
                 <TopBar
@@ -282,4 +282,3 @@ ReactDOM.render(
     <Admin user={window.__initialProps__.user} />,
     document.getElementById('app')
 );
-

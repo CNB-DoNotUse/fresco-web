@@ -58,7 +58,7 @@ class BulkEdit extends React.Component {
      */
     onScroll = (e) => {
         e.stopPropagation();
-    }
+    };
 
     getStateFromGalleries(galleries) {
         if (!galleries) return { galleries: [], tags: [], stories: [], caption: '' };
@@ -224,4 +224,3 @@ class BulkEdit extends React.Component {
 }
 
 export default BulkEdit;
-

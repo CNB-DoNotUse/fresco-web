@@ -17,11 +17,11 @@ class LocationDropdown extends React.Component {
             radius: PropTypes.number,
             address: PropTypes.string,
         }).isRequired,
-    }
+    };
 
     state = {
         toggled: false,
-    }
+    };
 
     /**
      * onChange
@@ -37,23 +37,23 @@ class LocationDropdown extends React.Component {
 
     onToggled = () => {
         this.setState({ toggled: !this.state.toggled });
-    }
+    };
 
     onMapDataChange = ({ location: { lat, lng }, address }) => {
         this.onChange({ lat, lng, address });
-    }
+    };
 
     onPlaceChange = ({ location: { lat, lng }, address }) => {
         this.onChange({ lat, lng, address });
-    }
+    };
 
     onRadiusUpdate = (radius) => {
         this.onChange({ radius });
-    }
+    };
 
     onClearLocation = () => {
         this.onChange({ address: null, lat: null, lng: null })
-    }
+    };
 
     render() {
         const { location: { address, lat, lng, radius } } = this.props;
@@ -84,4 +84,3 @@ class LocationDropdown extends React.Component {
 }
 
 export default LocationDropdown;
-

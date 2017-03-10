@@ -13,7 +13,7 @@ class MarkerGroup extends React.Component {
         icon: React.PropTypes.object,
         zIndex: React.PropTypes.number.isRequired,
         markerData: PropTypes.array.isRequired,
-    }
+    };
 
     static defaultProps = {
         zIndex: 1,
@@ -50,4 +50,3 @@ class MarkerGroup extends React.Component {
 }
 
 export default MarkerGroup;
-

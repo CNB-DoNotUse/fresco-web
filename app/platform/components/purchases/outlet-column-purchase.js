@@ -9,7 +9,7 @@ import FrescoVideo from '../global/fresco-video';
 export default class OutletColumnPurchase extends React.Component {
     static propTypes = {
         purchase: PropTypes.object,
-    }
+    };
 
     render() {
         const purchase = this.props.purchase;
@@ -63,4 +63,3 @@ export default class OutletColumnPurchase extends React.Component {
         );
     }
 }
-

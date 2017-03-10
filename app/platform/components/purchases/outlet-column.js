@@ -142,7 +142,7 @@ class OutletColumn extends React.Component {
         // Check that nothing is loading and that we're at the end of the scroll,
         // and that we have a parent bind to load  more posts
         if (scrolledToBottom(grid)) loadMorePurchases(outlet.id);
-    }
+    };
 
     /**
      * Loads stats for purchases
@@ -188,7 +188,7 @@ class OutletColumn extends React.Component {
                 : null
             }
         </ul>
-    )
+    );
 
     render() {
         const {
@@ -245,4 +245,3 @@ export default flow(
         connectDropTarget: connect.dropTarget(),
     }))
 )(OutletColumn);
-

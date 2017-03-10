@@ -43,7 +43,7 @@ class GalleryDetail extends React.Component {
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
         setInSessionStorage('topbar', { verifiedToggle });
-    }
+    };
 
     /**
      * OnScroll event passed up from the dialogs
@@ -82,7 +82,7 @@ class GalleryDetail extends React.Component {
                         })
                 break;
         }
-    }
+    };
 
     onClickLikes = () => {
         const { likes, gallery } = this.state;
@@ -92,7 +92,7 @@ class GalleryDetail extends React.Component {
             })
 
         this.setState({ likesDialog: !this.state.likesDialog });
-    }
+    };
 
     onClickReposts = () => {
         const { reposts, gallery } = this.state;
@@ -102,7 +102,7 @@ class GalleryDetail extends React.Component {
             })
 
         this.setState({ repostsDialog: !this.state.repostsDialog });
-    }
+    };
 
     /**
      * Updates gallery in state
@@ -238,4 +238,3 @@ ReactDOM.render(
     />,
     document.getElementById('app')
 );
-

@@ -12,14 +12,14 @@ export default class ClientItem extends React.Component {
         toggleEdit: PropTypes.func,
         getClient: PropTypes.func.isRequired,
         client: PropTypes.object.isRequired
-    }
+    };
 
     state = {
         editable: false,
         enabled: this.props.client.enabled,
         client_id_clipboard: null,
         client_secret_clipboard: null
-    }
+    };
 
     componentDidMount() {
         this.configureClipboard();
@@ -76,17 +76,17 @@ export default class ClientItem extends React.Component {
 
             this.setState({ client_secret_clipboard })
         }
-    }
+    };
 
     clientSecretClicked = () => {
         if(!this.props.client.client_secret) {
             this.props.getClient(this.props.client.id, true);
         }
-    }
+    };
 
     isEditable = (editable) => {
         this.setState({ editable });
-    }
+    };
 
     /**
      * Toggles enabled state of the component, subsequently updates client
@@ -96,7 +96,7 @@ export default class ClientItem extends React.Component {
         const enabled = !this.state.enabled;
         this.setState({ enabled })
         this.props.updateClient(id, { enabled })
-    }
+    };
 
 
     render() {

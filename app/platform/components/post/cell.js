@@ -41,7 +41,7 @@ class PostCell extends React.Component {
         purchased: !!this.props.post.purchased || false,
         galleryEditVisible: false,
         gallery: {},
-    }
+    };
 
     onClickPost = (e) => {
         const { post, togglePost } = this.props;
@@ -54,17 +54,17 @@ class PostCell extends React.Component {
         } else {
             window.open(`/post/${post.id}`, '_self');
         }
-    }
+    };
 
     onMouseEnter = () => {
         this.setState({ mouseEntered: true });
         this.props.onMouseEnter && this.props.onMouseEnter(this.props.post.id);
-    }
+    };
 
     onMouseLeave = () => {
         this.setState({ mouseEntered: false });
         this.props.onMouseLeave && this.props.onMouseLeave(this.props.post.id);
-    }
+    };
 
     onToggleGalleryEdit = (gallery = {}) => {
         if (gallery) {
@@ -72,7 +72,7 @@ class PostCell extends React.Component {
         } else {
             this.setState({ galleryEditVisible: !this.state.galleryEditVisible });
         }
-    }
+    };
 
     renderFooter() {
         const {
@@ -124,7 +124,7 @@ class PostCell extends React.Component {
             highlighted,
         } = this.props;
         const { galleryEditVisible, gallery, mouseEntered } = this.state;
-        
+
         const divSize = size === 'large' ? sizes.large : sizes.small;
 
         return (
@@ -190,4 +190,3 @@ class PostCell extends React.Component {
 }
 
 export default PostCell;
-

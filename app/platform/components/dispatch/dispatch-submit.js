@@ -102,7 +102,7 @@ export default class DispatchSubmit extends React.Component {
         else this.props.updateNewAssignment('new');
 
         this.setState({ global: e.target.checked });
-    }
+    };
 
     onChangeInput = (e) => {
         if (e.target.type === 'checkbox') {
@@ -110,7 +110,7 @@ export default class DispatchSubmit extends React.Component {
         } else {
             this.setState({ [e.target.name]: e.target.value });
         }
-    }
+    };
 
     /**
      * Prop function called from `LocationAutocomplete` for getting autocomplete date
@@ -376,4 +376,3 @@ export default class DispatchSubmit extends React.Component {
         );
     }
 }
-
