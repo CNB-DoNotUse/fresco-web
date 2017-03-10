@@ -18,7 +18,6 @@ router.get('/', (req, res, next) => {
         url: `/auth/authorize?client_id=${req.query.client_id}`
     })
     .then(response => {
-        console.log(req.session.user);
         const props = {
             client_id,
             redirect_uri,
