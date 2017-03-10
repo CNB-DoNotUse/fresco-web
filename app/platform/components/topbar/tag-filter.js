@@ -24,7 +24,7 @@ export default class TagFilter extends React.Component {
         hasAlt: false,
     };
 
-    state = { toggled: false }
+    state = { toggled: false };
 
     handleTagInput = (e) => {
         const { onTagInput, onTagAdd, filterList } = this.props;
@@ -42,7 +42,7 @@ export default class TagFilter extends React.Component {
             onTagAdd(tagText);
             this.tagFilterInput.value = '';
         }
-    }
+    };
 
     render() {
         const {
@@ -116,4 +116,3 @@ export default class TagFilter extends React.Component {
         );
     }
 }
-

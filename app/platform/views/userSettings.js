@@ -19,7 +19,7 @@ class UserSettings extends React.Component {
         verify_password: null,
         changes: [],
         disabled: true,
-    }
+    };
 
     componentDidUpdate(prevProps, prevState) {
         // If the verified password was added, then update the settings
@@ -83,11 +83,11 @@ class UserSettings extends React.Component {
         }
 
         reader.readAsDataURL(file);
-    }
+    };
 
     clickProfileImgInput = () => {
         this.refs.avatarFileInput.click();
-    }
+    };
 
     /**
      * Sends update to API
@@ -139,7 +139,7 @@ class UserSettings extends React.Component {
 
             this.updateInfo(avatarFiles, params);
         }
-    }
+    };
 
     updateInfo = (avatarFiles, params) => {
         if(utils.isEmptyString(params.full_name)){
@@ -181,7 +181,7 @@ class UserSettings extends React.Component {
             .always(() => {
                 this.setState({ disabled: false });
             })
-    }
+    };
 
     /**
      * Updates the outlet's avatar
@@ -222,7 +222,7 @@ class UserSettings extends React.Component {
             .always(() => {
                 this.setState({ disabled: false });
             })
-    }
+    };
 
     render() {
         const { user, disabled } = this.state;

@@ -36,7 +36,7 @@ class AssignmentMap extends React.Component {
         onMouseOverMarker: PropTypes.func,
         onMouseOutMarker: PropTypes.func,
         assignment: PropTypes.object,
-    }
+    };
 
     fetchedAcceptedUsers = false;
     fetchedAllUser = false;
@@ -45,7 +45,7 @@ class AssignmentMap extends React.Component {
     state = {
         users: [],
         acceptedUsers: [],
-    }
+    };
 
     shouldComponentUpdate(nextProps, nextState) {
         if (!isEqual(this.props.assignment.location, nextProps.assignment.location)) {
@@ -82,7 +82,7 @@ class AssignmentMap extends React.Component {
             this.fetchedAcceptedUsers = true;
             this.fetchAcceptedUsers();
         }
-    }
+    };
 
     fitCircleBounds() {
         if (this.googleMap.map && this.mapCircle.circle) {
@@ -232,4 +232,3 @@ class AssignmentMap extends React.Component {
 }
 
 export default AssignmentMap;
-

@@ -14,12 +14,12 @@ class RadiusMap extends React.Component {
         }).isRequired,
         fitBoundsOnMount: PropTypes.bool,
         onDataChange: PropTypes.func.isRequired,
-    }
+    };
 
     static defaultProps = {
         radius: null,
         fitBoundsOnMount: false,
-    }
+    };
 
     hasFitBounds = false;
 
@@ -71,4 +71,3 @@ class RadiusMap extends React.Component {
 }
 
 export default RadiusMap;
-

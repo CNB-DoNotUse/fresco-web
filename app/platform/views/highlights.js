@@ -15,7 +15,7 @@ import isEqual from 'lodash/isEqual';
 class Highlights extends React.Component {
     static propTypes = {
         user: PropTypes.object,
-    }
+    };
 
     state = {
         galleries: [],
@@ -46,7 +46,7 @@ class Highlights extends React.Component {
                 });
             });
         }
-    }
+    };
 
     loadInitialGalleries = () => {
         this.setState({ galleries: [] }, () => {
@@ -55,7 +55,7 @@ class Highlights extends React.Component {
                 this.setState({ galleries });
             });
         });
-    }
+    };
 
     // Returns array of galleries with offset and callback
     loadGalleries = (last, callback) => {
@@ -70,7 +70,8 @@ class Highlights extends React.Component {
         .catch(() => {
             $.snackbar({ content: 'Failed to load galleries' });
         });
-    }
+    };
+    
     render() {
         return (
             <App user={this.props.user} page="highlights">
@@ -85,11 +86,10 @@ class Highlights extends React.Component {
                 />
             </App>
         );
-    }
+    };
 }
 
 ReactDom.render(
     <Highlights user={window.__initialProps__.user} />,
     document.getElementById('app')
 );
-

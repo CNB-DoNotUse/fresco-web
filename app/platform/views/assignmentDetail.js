@@ -48,12 +48,12 @@ class AssignmentDetail extends React.Component {
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
         setInSessionStorage('topbar', { verifiedToggle });
-    }
+    };
 
     onChronToggled = (sortBy) => {
         this.setState({ sortBy });
         setInSessionStorage('topbar', { sortBy });
-    }
+    };
 
     /**
      * On mouse enter post callback
@@ -64,33 +64,33 @@ class AssignmentDetail extends React.Component {
     onMouseEnterPost = (id) => {
         if (this.markerTimeout) clearTimeout(this.markerTimeout);
         this.markerTimeout = setTimeout(() => this.setMarkerActive(id, true), 750);
-    }
+    };
 
     onMouseLeavePost = () => {
         if (this.markerTimeout) clearTimeout(this.markerTimeout);
         let { markerData } = this.state;
         markerData = markerData.map(m => Object.assign(m, { active: false }));
         this.setState({ mapPanTo: null, markerData });
-    }
+    };
 
     onMouseLeavePostList = () => {
         let { markerData } = this.state;
         markerData = markerData.map(m => Object.assign(m, { active: false }));
         this.setState({ mapPanTo: null, markerData });
-    }
+    };
 
     onMouseOverMarker = (scrollToPostId) => {
         this.setState({ scrollToPostId });
         this.setMarkerActive(scrollToPostId);
-    }
+    };
 
     onMouseOutMarker = () => {
         this.resetMarkerActive();
-    }
+    };
 
     onClickAccepted = () => {
         this.setState({ acceptedDialog: !this.state.acceptedDialog });
-    }
+    };
 
     /**
      * Sets the marker with the given post id active on the map
@@ -184,7 +184,7 @@ class AssignmentDetail extends React.Component {
             $.snackbar({ content: 'Couldn\'t load posts!' });
             callback(null);
         });
-    }
+    };
 
     /**
      * Sets the assignment to expire
@@ -212,7 +212,7 @@ class AssignmentDetail extends React.Component {
         .always(() => {
             this.setState({ loading: false });
         });
-    }
+    };
 
     /**
      * Saves the assignment from the current values in the form
@@ -353,4 +353,3 @@ ReactDOM.render(
     />,
     document.getElementById('app')
 );
-

@@ -31,7 +31,7 @@ class Notifications extends React.Component {
 	 */
 	updateNotification = (option, index = null) => (e) => {
 		this.props.updateNotification(option, index, e);
-	}
+	};
 
 	renderNotificationList (notifications) {
 	    if (!notifications.length) {
@@ -116,7 +116,7 @@ class Notifications extends React.Component {
 const NotificaitonItem = ({ notification, updateNotification, index }) => {
 	const { title, description, options} = notification;
 
-	return ( 
+	return (
 		<li className="notification">
 			<div className="info">
 				<p className="title">{title}</p>
@@ -152,7 +152,7 @@ const NotificaitonItem = ({ notification, updateNotification, index }) => {
 					</label>
 				</div>
 			</div>
-		</li> 
+		</li>
 	);
 }
 

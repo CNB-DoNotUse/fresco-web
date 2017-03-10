@@ -25,7 +25,7 @@ export default class DispatchMap extends React.Component {
         newAssignmentMarker: null,
         newAssignmentCircle: null,
         isOpeningCallout: false,
-    }
+    };
 
     componentDidMount() {
         // Set up session storage for location
@@ -193,7 +193,7 @@ export default class DispatchMap extends React.Component {
             mapCenter: this.state.map.getCenter(),
             mapZoom: this.state.map.getZoom()
         });
-    }
+    };
 
     /**
      * Clears all relevant assignment data from the map and runs an update at the end
@@ -213,7 +213,7 @@ export default class DispatchMap extends React.Component {
         });
 
         this.updateMap();
-    }
+    };
 
     /**
      * Clears callout if exists
@@ -225,7 +225,7 @@ export default class DispatchMap extends React.Component {
                 activeCallout: null
             });
         }
-    }
+    };
 
     /**
      * Updates the map with new users/assignments
@@ -268,7 +268,7 @@ export default class DispatchMap extends React.Component {
                 });
             });
         }
-    }
+    };
 
     /**
      * Updates all assignment markers on the map, using the previously set ones to remove any repeats
@@ -296,7 +296,7 @@ export default class DispatchMap extends React.Component {
 
         //Add cleaned assignments to the map
         this.addAssignmentsToMap(newAssignments);
-    }
+    };
 
     /**
      * Adds passed array of assignments to the map,
@@ -320,7 +320,7 @@ export default class DispatchMap extends React.Component {
             markers: this.state.markers.concat(markers),
             circles: this.state.circles.concat(circles)
         });
-    }
+    };
 
     /**
      * Makes a marker with the passed assignment and adds it to the map
@@ -379,7 +379,7 @@ export default class DispatchMap extends React.Component {
         );
 
         return { circle, marker }
-    }
+    };
 
     /**
      * Creates a marker from passed params
@@ -474,7 +474,7 @@ export default class DispatchMap extends React.Component {
         }
 
         callback(markers);
-    }
+    };
 
     /**
      * Makes a marker for a user
@@ -541,7 +541,7 @@ export default class DispatchMap extends React.Component {
             activeCallout: callout,
             isOpeningCallout: false,
         });
-    }
+    };
 
     render() {
         return (

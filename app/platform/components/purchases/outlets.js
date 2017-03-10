@@ -22,7 +22,7 @@ class PurchasesOutlets extends React.Component {
     state = {
         outletsById: {},
         sortedIds: getFromLocalStorage('views/purchases', 'sortedIds', this.props.outletIds),
-    }
+    };
 
     componentDidMount() {
         const { outletIds, loadData } = this.props;
@@ -73,7 +73,7 @@ class PurchasesOutlets extends React.Component {
         }), () => {
             setInLocalStorage('views/purchases', { sortedIds: this.state.sortedIds });
         });
-    }
+    };
 
     /**
      * loadOutlets
@@ -100,7 +100,7 @@ class PurchasesOutlets extends React.Component {
                 this.loadInitialPurchases(outletIds);
             });
         });
-    }
+    };
 
     loadInitialPurchases = (outletIds) => {
         let { sortedIds, outletsById } = this.state;
@@ -123,7 +123,7 @@ class PurchasesOutlets extends React.Component {
             });
         })
         .then(() => this.setState({ outletsById }));
-    }
+    };
 
     loadMorePurchases = (outletId) => {
         let { outletsById } = this.state;
@@ -146,7 +146,7 @@ class PurchasesOutlets extends React.Component {
             });
         })
         .then(() => this.setState({ outletsById }));
-    }
+    };
 
      /**
      * Updates the time interval the outelt data is loaded in
@@ -175,7 +175,7 @@ class PurchasesOutlets extends React.Component {
         }
 
         return dt.toISOString();
-    }
+    };
 
     render() {
         const { outletsById, sortedIds } = this.state;
@@ -207,4 +207,3 @@ class PurchasesOutlets extends React.Component {
 }
 
 export default DragDropContext(HTML5Backend)(PurchasesOutlets);
-

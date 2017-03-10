@@ -324,7 +324,7 @@ class Search extends Component {
      */
     onChangeLocation = (data) => {
         this.setState({ location: { ...data } });
-    }
+    };
 
     /**
      * Updates URL push state for latest query based on state

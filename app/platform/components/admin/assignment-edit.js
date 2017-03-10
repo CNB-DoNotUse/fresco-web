@@ -106,7 +106,7 @@ export default class AssignmentEdit extends React.Component {
         } else {
             this.setState({ location: null, address: null });
         }
-    }
+    };
 
     onChangeInput = (e) => {
         if (e.target.type === 'checkbox') {
@@ -114,7 +114,7 @@ export default class AssignmentEdit extends React.Component {
         } else {
             this.setState({ [e.target.name]: e.target.value });
         }
-    }
+    };
 
     onApproveAssignment() {
         const { assignment } = this.props;
@@ -322,4 +322,3 @@ export default class AssignmentEdit extends React.Component {
         );
     }
 }
-

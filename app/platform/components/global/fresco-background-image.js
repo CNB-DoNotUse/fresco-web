@@ -22,7 +22,7 @@ class FrescoBackgroundImage extends React.Component {
 
     updateImage = (image) => {
         this.setState({ image });
-    }
+    };
 
     render() {
         return (
@@ -43,4 +43,3 @@ class FrescoBackgroundImage extends React.Component {
 }
 
 export default FrescoBackgroundImage;
-

@@ -32,7 +32,7 @@ class DownloadAction extends React.Component {
         .get(`post/${post.id}/download`)
         .then(res => {
             const downloadLink = res.result;
-           
+
 
             const link = document.createElement('a');
 
@@ -41,7 +41,7 @@ class DownloadAction extends React.Component {
             link.click();
         })
         .catch(() => $.snackbar({ content: 'We can\'t download this post right now!' }));
-    }
+    };
 
     render() {
         return (

@@ -59,7 +59,7 @@ class Galleries extends React.Component {
                 });
             });
         }
-    }
+    };
 
     loadInitialGalleries = () => {
         this.setState({ galleries: [] }, () => {
@@ -68,7 +68,7 @@ class Galleries extends React.Component {
                 this.setState({ galleries });
             });
         });
-    }
+    };
 
     // Returns array of galleries with offset and callback
     loadGalleries = (last, callback) => {
@@ -92,12 +92,12 @@ class Galleries extends React.Component {
         .catch(() => {
             $.snackbar({ content: 'Failed to load galleries' });
         });
-    }
+    };
 
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
         setInSessionStorage('topbar', { verifiedToggle });
-    }
+    };
 
     /**
      * Called on Location dropdown state changes
@@ -105,19 +105,19 @@ class Galleries extends React.Component {
     onChangeLocation = (location) => {
         this.setState({ location });
         setInSessionStorage('archive', { location });
-    }
+    };
 
     onAddTag = (tag) => {
         const tags = this.state.tags.concat(tag);
         this.setState({ tags, reloadStories: true });
         setInSessionStorage('archive', { tags });
-    }
+    };
 
     onRemoveTag = (tag) => {
         const tags = this.state.tags.filter(t => t !== tag);
         this.setState({ tags, reloadStories: true });
         setInSessionStorage('archive', { tags });
-    }
+    };
 
     render() {
         const { verifiedToggle, location, tags, galleries } = this.state;
@@ -163,4 +163,3 @@ ReactDOM.render(
     <Galleries user={window.__initialProps__.user} />,
     document.getElementById('app')
 );
-

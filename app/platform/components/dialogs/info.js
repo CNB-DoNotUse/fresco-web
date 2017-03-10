@@ -7,13 +7,13 @@ export default class Info extends React.Component {
         toggled: PropTypes.bool,
         header: PropTypes.string,
         body: PropTypes.string,
-    }
+    };
 
     static defaultProps = {
         onClose: () => {},
         toggled: false,
         header: '',
-    }
+    };
 
     render() {
         const {

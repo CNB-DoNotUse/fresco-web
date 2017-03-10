@@ -56,14 +56,14 @@ class AutocompleteMap extends React.Component {
         .then((address) => {
             this.props.onMapDataChange({ location, address });
         });
-    }
+    };
 
     /**
      * Updates states bounds for other components
      */
     updateCurrentBounds = (bounds) => {
         this.setState({ bounds });
-    }
+    };
 
     render() {
         const {

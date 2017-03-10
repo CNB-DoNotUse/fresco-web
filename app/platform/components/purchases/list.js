@@ -13,7 +13,7 @@ class PurchasesList extends Component {
         offset: 0,
         scrollable: true,
         purchases: [],
-    }
+    };
 
     componentDidMount() {
         this.loadPurchases();
@@ -31,7 +31,7 @@ class PurchasesList extends Component {
             // Set posts & callback from successful response
             this.setState({ purchases });
         });
-    }
+    };
 
 	// Handle purchases div scroll
     scroll(e) {
@@ -60,7 +60,7 @@ class PurchasesList extends Component {
                 });
             });
         }
-    }
+    };
 
     render() {
         return (
@@ -87,4 +87,3 @@ PurchasesList.propTypes = {
 };
 
 export default PurchasesList;
-

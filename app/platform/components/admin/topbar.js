@@ -17,7 +17,7 @@ class TopBar extends React.Component {
 
     state = { loading: false };
 
-    displayName = 'TopBar'
+    displayName = 'TopBar';
 
     componentDidMount() {
         $('[data-tab="' + this.props.activeTab + '"]').addClass('toggled');
@@ -72,7 +72,7 @@ class TopBar extends React.Component {
             this.setState({ loading: false });
             this.props.refresh();
         });
-    }
+    };
 
     onKeyDownTwitter = (e) => {
         const tweet = this.twitterImport.value;
@@ -97,19 +97,19 @@ class TopBar extends React.Component {
             this.props.resetImports();
         })
         .fail((error) => {
-            $.snackbar({ 
-                content: error.responseJSON.msg || 'Failed to import media' 
+            $.snackbar({
+                content: error.responseJSON.msg || 'Failed to import media'
             });
         })
         .always(() => {
             this.setState({ loading: false });
         });
-    }
+    };
 
     onClickImport = () => {
         if (this.state.loading) return;
         this.importFileInput.click();
-    }
+    };
 
     uploadFiles(posts, files) {
         const requests = posts.map((p, i) => {
@@ -199,4 +199,3 @@ class TopBar extends React.Component {
 }
 
 export default TopBar;
-

@@ -32,12 +32,12 @@ class FrescoVideo extends React.Component {
         vr: false,
         highRes: false,
         status: 2
-    }
+    };
 
     state = {
         id: uniqueId(), //Need a unique ID because of video.js
         isStream: this.props.video.indexOf('m3u8') > -1,
-    }
+    };
 
     componentDidMount() {
         if (this.state.isStream) {
@@ -70,7 +70,7 @@ class FrescoVideo extends React.Component {
         if (this.props.hideControls) {
             this.togglePlayer();
         }
-    }
+    };
 
     setUpVRPlayer = () => {
         const { autoplay, muted } = this.props;
@@ -88,13 +88,13 @@ class FrescoVideo extends React.Component {
                 muted
             });
         }, 'valiant');
-    }
+    };
 
     setUpPlayer = () => {
         const { highRes, muted } = this.props;
 
         const options = { muted };
-      
+
         const videoJSPlayer = videojs(this.state.id, options);
 
         this.setState({ videoJSPlayer });
@@ -109,21 +109,21 @@ class FrescoVideo extends React.Component {
         }
 
         if (this.props.autoplay) videoJSPlayer.play();
-    }
+    };
 
     play = () => {
         this.state.videoJSPlayer.play();
-    }
+    };
 
     pause = () => {
         this.state.videoJSPlayer.pause();
-    }
+    };
 
     togglePlayer = () => {
         const { videoJSPlayer } = this.state;
         if (videoJSPlayer.paused()) videoJSPlayer.play();
         else videoJSPlayer.pause();
-    }
+    };
 
     getType(video) {
         const parts = video.split('.');
@@ -135,7 +135,7 @@ class FrescoVideo extends React.Component {
         mp4: 'video/mp4',
         webm: 'video/webm',
         ogg: 'video/ogg',
-    }
+    };
 
     render() {
         const {
@@ -166,7 +166,7 @@ class FrescoVideo extends React.Component {
         if(status == 0) {
             parentClass += ' img';
             body = (
-                <FrescoImage 
+                <FrescoImage
                     src={`${utils.CDN}/images/missing.png`}
                     loadWithPlaceholder={false}
                     size='medium'
@@ -176,7 +176,7 @@ class FrescoVideo extends React.Component {
         } else if(status == 1) {
             parentClass += ' img';
             body = (
-                <FrescoImage 
+                <FrescoImage
                     src={`${utils.CDN}/images/processing.png`}
                     size={null}
                     loadWithPlaceholder={false}
@@ -189,7 +189,7 @@ class FrescoVideo extends React.Component {
             body = (
                 <div
                     className="fresco-vr"
-                    data-video-src={this.props.video} 
+                    data-video-src={this.props.video}
                     id="fresco-video-element">
                 </div>
             );

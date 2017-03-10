@@ -11,7 +11,7 @@ export default class PostRelatedTags extends React.Component {
 	state = {
 		tags: {},
 		selectedTag : this.props.tags ? this.props.tags[0] : null
-	}
+	};
 
 	componentDidMount() {
 		this.getTags();
@@ -26,22 +26,22 @@ export default class PostRelatedTags extends React.Component {
 				limit: 5,
 				posts: {
 					tags: [tag]
-				}				
+				}
 			})
-			.then(res => {	
+			.then(res => {
 				this.setState({
 					tags: Object.assign({ [tag]: res.posts.results}, this.state.tags)
 				});
 			})
 			.catch(() => {})
 		}
-	}
+	};
 
 	setDisplayedTag = (selectedTag) => {
 		if (this.state.selectedTag !== selectedTag) {
 			this.setState({ selectedTag });
 		}
-	}
+	};
 
 	render() {
 		let tagTabs = [];
@@ -54,13 +54,13 @@ export default class PostRelatedTags extends React.Component {
 			const toggled = tag === this.state.selectedTag ? 'toggled' : '';
 
 			tagTabs.push(
-				<div 
-					className={`tab ${toggled}`} 
+				<div
+					className={`tab ${toggled}`}
 					key={tag}
 				>
 					<div className="tab-inner">
 						<a className="btn btn-flat" href={`/search?q=&tags[]=${tag}`}>See all</a>
-							
+
 						{this.state.tags[tag].map((post, i) => {
 							return <RelatedPostImage post={post} key={i}/>
 						})}

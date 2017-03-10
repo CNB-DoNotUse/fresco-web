@@ -20,7 +20,7 @@ class Posts extends React.Component {
         type: PropTypes.oneOf(['photo', 'video', null]),
         page: PropTypes.oneOf(['photos', 'videos', 'archive']),
         title: PropTypes.oneOf(['Archive', 'Photos', 'Videos']),
-    }
+    };
 
     state = {
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
@@ -34,12 +34,12 @@ class Posts extends React.Component {
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
         setInSessionStorage('topbar', { verifiedToggle });
-    }
+    };
 
     onChronToggled = (sortBy) => {
         this.setState({ sortBy });
         setInSessionStorage('topbar', { sortBy });
-    }
+    };
 
     /**
      * Called on Location dropdown state changes
@@ -48,21 +48,21 @@ class Posts extends React.Component {
         this.reloadPosts = true;
         this.setState({ location });
         setInSessionStorage('archive', { location });
-    }
+    };
 
     onAddTag = (tag) => {
         const tags = this.state.tags.concat(tag);
         this.reloadPosts = true;
         this.setState({ tags });
         setInSessionStorage('archive', { tags });
-    }
+    };
 
     onRemoveTag = (tag) => {
         const tags = this.state.tags.filter(t => t !== tag);
         this.reloadPosts = true;
         this.setState({ tags });
         setInSessionStorage('archive', { tags });
-    }
+    };
 
     /**
      * Returns array of posts with last and callback, used in child PostList
@@ -94,7 +94,7 @@ class Posts extends React.Component {
             $.snackbar({ content: `Failed to load ${type}s` });
             callback([]);
         });
-    }
+    };
 
     render() {
         const { user, title, page } = this.props;

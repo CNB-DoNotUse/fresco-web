@@ -15,7 +15,7 @@ export default class FrescoMasonry extends Component {
         threshold: PropTypes.number,
         useWindow: PropTypes.bool,
         initialLoad: PropTypes.bool,
-    }
+    };
 
     static defaultProps = {
         className: '',
@@ -23,7 +23,7 @@ export default class FrescoMasonry extends Component {
         useWindow: false,
         initialLoad: false,
         hasMore: true,
-    }
+    };
 
     render() {
         const {
@@ -66,4 +66,3 @@ export default class FrescoMasonry extends Component {
         );
     }
 }
-

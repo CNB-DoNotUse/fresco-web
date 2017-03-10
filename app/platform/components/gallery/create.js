@@ -38,7 +38,7 @@ class Create extends React.Component {
      */
     onScroll = (e) => {
         e.stopPropagation();
-    }
+    };
 
     /**
      * Clears the form of inputed data
@@ -225,4 +225,3 @@ Create.propTypes = {
 };
 
 export default Create;
-

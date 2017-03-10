@@ -27,7 +27,7 @@ class Dropdown extends React.Component {
         if ((!domNode || !domNode.contains(event.target)) && this.props.toggled) {
             this.props.toggle(false);
         }
-    }
+    };
 
     componentDidMount() {
         // Click event for outside clicking
@@ -127,15 +127,15 @@ class Dropdown extends React.Component {
             <div
                 className={`nav-dropdown ${inList ? 'pull-right' : ''} ${dropdownClass} ${active ? 'active' : ''}`}
             >
-                <div 
-                    className="toggle" 
+                <div
+                    className="toggle"
                     ref='toggle'
                     onClick={() => this.toggle()}
                 >
                     <span>{title || this.state.selected}</span>
-                    
+
                     <i className={this.getCaretIconClassName()} />
-                    
+
                     {dropdownActions}
                 </div>
 

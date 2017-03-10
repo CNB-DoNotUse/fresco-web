@@ -40,7 +40,7 @@ class FrescoImage extends React.Component {
         hidePlaceholder: false,
         timeout: 1000,
         placeholderUrl: this.props.status == 1 ? this.processingUrl : this.missingUrl
-    }
+    };
 
     componentWillMount() {
         this.setInitialSource(this.props.src, this.props.size);
@@ -67,7 +67,7 @@ class FrescoImage extends React.Component {
             formattedSrc,
             hidePlaceholder: false,
         });
-    }
+    };
 
     /**
      * When our hidden image loads successfully, hide the `missing` placeholder one
@@ -76,7 +76,7 @@ class FrescoImage extends React.Component {
         if (this.props.loadWithPlaceholder) {
             this.setState({ hidePlaceholder: true });
         }
-    }
+    };
 
     /**
      * On the timeout interval, either clear it, or try updating the image again to see if it'll be able to resolve
@@ -91,7 +91,7 @@ class FrescoImage extends React.Component {
                 timeout: this.state.timeout + this.state.timeout,
             });
         }
-    }
+    };
 
     /**
      * On image error, set the image as the placeholder and set a timeout to try again later
@@ -104,7 +104,7 @@ class FrescoImage extends React.Component {
         if (this.props.refreshInterval) {
             this.loadTimeout = setTimeout(this.onTimeout, this.state.timeout);
         }
-    }
+    };
 
     render() {
         let placeholderStyle = {};

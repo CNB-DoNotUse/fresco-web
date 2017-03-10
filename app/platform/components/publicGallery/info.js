@@ -8,7 +8,7 @@ import utils from 'utils';
 class Info extends React.Component {
     static propTypes = {
         gallery: PropTypes.object,
-    }
+    };
 
     state = {
         relatedGalleries: [],
@@ -16,7 +16,7 @@ class Info extends React.Component {
             galleries: [],
             title: '',
         },
-    }
+    };
 
     componentDidMount() {
         this.loadRelatedGalleries();
@@ -38,7 +38,7 @@ class Info extends React.Component {
         .then((res) => {
             this.setState({ relatedGalleries: res.galleries.results });
         });
-    }
+    };
 
 	/**
 	 * Loads the first related story in the gallery
@@ -58,7 +58,7 @@ class Info extends React.Component {
                 },
             });
         });
-    }
+    };
 
     render() {
         const { gallery } = this.props;

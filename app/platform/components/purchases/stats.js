@@ -8,7 +8,7 @@ export default class PurchasesStats extends React.Component {
         updatePurchases: PropTypes.bool,
         loadStats: PropTypes.func,
         downloadExports: PropTypes.func,
-    }
+    };
 
     static defaultProps = {
         stats: {
@@ -17,11 +17,11 @@ export default class PurchasesStats extends React.Component {
             last_30days: 0,
             total_revenue: 0,
         },
-    }
+    };
 
     state = {
         stats: this.props.stats,
-    }
+    };
 
     componentDidMount() {
         // Load stats when component first mounts
@@ -47,7 +47,7 @@ export default class PurchasesStats extends React.Component {
                 this.setState({ stats });
             }
         });
-    }
+    };
 
     emailStatement = () => {
         api
@@ -60,7 +60,7 @@ export default class PurchasesStats extends React.Component {
         .catch(() => {
             $.snackbar({ content: 'Could not email statement' });
         });
-    }
+    };
 
     render() {
         const { downloadExports } = this.props;
@@ -122,4 +122,3 @@ export default class PurchasesStats extends React.Component {
         );
     }
 }
-
