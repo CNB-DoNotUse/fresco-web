@@ -18,12 +18,13 @@ router.get('/', (req, res, next) => {
         url: `/auth/authorize?client_id=${req.query.client_id}`
     })
     .then(response => {
+        console.log(req.session.user);
         const props = {
             client_id,
             redirect_uri,
             scope,
             outlet: response.body.outlet,
-            loggedIn: req.session.user !== null,
+            loggedIn: req.session.user !== null && typeof(req.session.user) !== 'undefined',
             hasGranted: false
         };
 
