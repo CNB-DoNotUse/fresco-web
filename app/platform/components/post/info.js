@@ -1,5 +1,5 @@
 import React from 'react'
-import utils from 'utils'
+import time from 'app/lib/time';
 import UserItem from 'platform/components/global/user-item';
 
 
@@ -15,7 +15,7 @@ export default class PostInfo extends React.Component {
 		let userIcon = '';
 		let twitter = '';
 	    let	curator = '';
-		let timeString = utils.formatTime(post.created_at, true);
+		let timeString = time.formatTime(post.created_at, true);
 		let verifiedBy = '';
 		let verifyClass = '';
 
@@ -69,12 +69,12 @@ export default class PostInfo extends React.Component {
 						<ul className="md-type-subhead">
 							<li>
 								<span className="mdi mdi-clock icon"></span>
-								{`Uploaded at ${utils.formatTime(post.created_at, true)}`}
+								{`Uploaded at ${time.formatTime(post.created_at, true)}`}
 							</li>
 
                             <li>
                                 <span className="mdi mdi-camera icon"></span>
-                                {`Captured at ${utils.formatTime(post.captured_at, true)}`}
+                                {`Captured at ${time.formatTime(post.captured_at, true)}`}
                             </li>
 
 							<li>

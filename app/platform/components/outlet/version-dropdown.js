@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import utils from 'utils';
+import time from 'app/lib/time';
 import Dropdown from '../global/dropdown';
 
 /**
@@ -39,7 +39,7 @@ export default class VersionDropdown extends React.Component {
                                 onClick={() => versionSelected(version)}
                             >
                                 <span className="version-item__version">Version {`${version.version_major}.${version.version_minor}`}</span>
-                                <span className="version-item__released">Released {utils.formatTime(version.deployed_at, true, 'YYYY/MM/D')}</span>
+                                <span className="version-item__released">Released {time.formatTime(version.deployed_at, true, 'YYYY/MM/D')}</span>
                             </li>
                         );
                     })}

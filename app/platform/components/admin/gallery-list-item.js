@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import FrescoImage from '../global/fresco-image';
-import utils from 'utils';
+import time from 'app/lib/time';
 import 'sass/platform/_galleries';
 import get from 'lodash/get';
 
@@ -67,7 +67,7 @@ const AdminGalleryListItem = ({ gallery, active, onClick }) => {
                 </p>
             </div>
             <div className="list-item-timestamp">
-                <p className="md-type-body1">{utils.formatTime(gallery.created_at)}</p>
+                <p className="md-type-body1">{time.formatTime(gallery.created_at)}</p>
             </div>
         </div>
     );

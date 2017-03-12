@@ -8,7 +8,6 @@ const redis         = require('./lib/redis');
 const express       = require('express');
 const compression   = require('compression');
 const path          = require('path');
-const morgan        = require('morgan');
 const session       = require('express-session');
 const RedisStore    = require('connect-redis')(session);
 const cookieParser  = require('cookie-parser');
@@ -32,8 +31,6 @@ app.locals.section = 'public';
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-// app.use(morgan('dev'));
 
 //GZIP
 app.use(compression())

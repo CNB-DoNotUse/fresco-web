@@ -105,68 +105,72 @@ class PushNotifs extends React.Component {
             cancelSend,
             confirmSend,
             infoDialog,
+            page,
             activeTemplate,
+            user
         } = this.props;
 
         return (
-            <div className="container-fluid">
-                <TopBar
-                    title="Push Notifications"
-                    tabs={['Default', 'Gallery List', 'Recommend', 'Assignment']}
-                    setActiveTab={onSetActiveTab}
-                    activeTab={activeTab}
-                />
-                <div className="push-notifs__tab">
-                    <div className="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-                        <Snackbar
-                            message={alert || ''}
-                            open={!!alert}
-                            autoHideDuration={5000}
-                            onRequestClose={onDismissAlert}
-                            onActionTouchTap={onDismissAlert}
-                            onClick={onDismissAlert}
-                            bodyStyle={{ height: 'auto', whiteSpace: 'pre-line' }}
-                        />
-                        {this.renderTemplate()}
-                        <button
-                            type="button"
-                            onClick={partial(onSend, activeTab)}
-                            className="btn btn-raised btn-primary pull-right push-notifs__send"
+            <App page='Push' user={user}>
+                <div className="container-fluid">
+                    <TopBar
+                        title="Push Notifications"
+                        tabs={['Default', 'Gallery List', 'Recommend', 'Assignment']}
+                        setActiveTab={onSetActiveTab}
+                        activeTab={activeTab}
+                    />
+                    <div className="push-notifs__tab">
+                        <div className="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                            <Snackbar
+                                message={alert || ''}
+                                open={!!alert}
+                                autoHideDuration={5000}
+                                onRequestClose={onDismissAlert}
+                                onActionTouchTap={onDismissAlert}
+                                onClick={onDismissAlert}
+                                bodyStyle={{ height: 'auto', whiteSpace: 'pre-line' }}
+                            />
+                            
+                            {this.renderTemplate()}
+
+                            <button
+                                type="button"
+                                onClick={partial(onSend, activeTab)}
+                                className="btn btn-raised btn-primary pull-right push-notifs__send"
+                                disabled={loading}
+                            >
+                                Send
+                            </button>
+                        </div>
+
+                        <Confirm
+                            header="Send notification?"
+                            body={getConfirmText(activeTemplate)}
+                            onConfirm={partial(confirmSend, activeTab)}
+                            onCancel={cancelSend}
+                            toggled={requestConfirmSend}
                             disabled={loading}
-                        >
-                            Send
-                        </button>
+                            hasInput={false}
+                        />
+
+                        <Info
+                            onClose={onCloseInfoDialog}
+                            header={infoDialog.get('header')}
+                            body={infoDialog.get('body')}
+                            toggled={infoDialog.get('visible')}
+                        />
                     </div>
-
-                    <Confirm
-                        header="Send notification?"
-                        body={getConfirmText(activeTemplate)}
-                        onConfirm={partial(confirmSend, activeTab)}
-                        onCancel={cancelSend}
-                        toggled={requestConfirmSend}
-                        disabled={loading}
-                        hasInput={false}
-                    />
-
-                    <Info
-                        onClose={onCloseInfoDialog}
-                        header={infoDialog.get('header')}
-                        body={infoDialog.get('body')}
-                        toggled={infoDialog.get('visible')}
-                    />
                 </div>
-            </div>
+            </App>
         );
     }
 }
 
 function mapStateToProps(state) {
-    const user = state.getIn(['user']);
+    const user = state.get('user', Map()).toJS();
     const activeTab = state.getIn(['pushNotifs', 'activeTab']);
     const templates = state.getIn(['pushNotifs', 'templates']);
     const activeTemplate = templates.get(activeTab.toLowerCase(), Map()).toJS();
-
-    console.log(state.getIn(['user']));
 
     return {
         activeTab,

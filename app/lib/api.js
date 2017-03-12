@@ -1,47 +1,15 @@
-import 'isomorphic-fetch';
-import qs from 'qs';
-
-const fetchStatusHandler = (response) => {
-    if (response.status === 200) {
-        return response;
-    }
-
-    throw new Error(response.statusText);
-};
+import request from './request';
 
 /**
- * Front-end API proxy to be used around the codebase instead of direct network requests
+ * Front-end API proxy that uses the request lib to prepend requests
  */
 export default {
     post(url, body, headers = {}) {
-        return fetch(`/api/${url}`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            credentials: 'include',
-            headers: Object.assign({
-                'Content-Type': 'application/json',
-                'Data-Type': 'json'
-            }, headers)
-        })
-        .then(fetchStatusHandler)
-        .then(res => res.json())
-        .catch(Promise.reject);
+        return request.post(`/api/${url}`, body, headers);
     },
 
     get(url, body = {}, headers = {}) {
-        const query = qs.stringify(body);
-
-        return fetch(`/api/${url}?${query}`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: Object.assign({
-                'Content-Type': 'application/json',
-                'Data-Type': 'json'
-            }, headers)
-        })
-        .then(fetchStatusHandler)
-        .then(res => res.json())
-        .catch(Promise.reject);
-    },
+        return request.get(`/api/${url}`, body, headers);
+    }
 };
 

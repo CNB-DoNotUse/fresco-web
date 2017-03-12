@@ -153,72 +153,76 @@ class Moderation extends React.Component {
             user
         } = this.props;
 
+        console.log(this.props);
+
         return (
-            <div className="moderation container-fluid">
-                <TopBar
-                    title="Moderation"
-                    tabs={['galleries', 'users']}
-                    setActiveTab={onSetActiveTab}
-                    activeTab={activeTab}
-                    onClickFilter={partial(onClickFilter, activeTab)}
-                    filters={filters.get(activeTab)}
-                    suspendedCount={suspendedUsers.size}
-                    onToggleSuspendedDialog={onToggleSuspendedDialog}
-                />
-
-                <div className="moderation__content row">
-                    <Snackbar
-                        message={alert || ''}
-                        open={!!alert}
-                        autoHideDuration={5000}
-                        onRequestClose={onDismissAlert}
-                        onActionTouchTap={onDismissAlert}
-                        onClick={onDismissAlert}
+            <App page='Moderation' user={user}>
+                <div className="moderation container-fluid">
+                    <TopBar
+                        title="Moderation"
+                        tabs={['galleries', 'users']}
+                        setActiveTab={onSetActiveTab}
+                        activeTab={activeTab}
+                        onClickFilter={partial(onClickFilter, activeTab)}
+                        filters={filters.get(activeTab)}
+                        suspendedCount={suspendedUsers.size}
+                        onToggleSuspendedDialog={onToggleSuspendedDialog}
                     />
 
-                    <ItemsDialog
-                        toggled={suspendedDialog}
-                        onClose={onToggleSuspendedDialog}
-                        emptyMessage="No suspended users"
-                        header="Suspended users"
-                    >
-                        {suspendedUsers.toJS().map(s =>
-                            <SuspendedUser
-                                key={`suspended-user-${s.id}`}
-                                user={s}
-                                onClickRestore={partial(onRestoreUser, s.id)}
-                            />
-                        )}
-                    </ItemsDialog>
+                    <div className="moderation__content row">
+                        <Snackbar
+                            message={alert || ''}
+                            open={!!alert}
+                            autoHideDuration={5000}
+                            onRequestClose={onDismissAlert}
+                            onActionTouchTap={onDismissAlert}
+                            onClick={onDismissAlert}
+                        />
 
-                    <InfoDialog
-                        toggled={infoDialog.get('open')}
-                        onClose={onToggleInfoDialog}
-                        header={infoDialog.get('header')}
-                        body={infoDialog.get('body')}
-                    />
+                        <ItemsDialog
+                            toggled={suspendedDialog}
+                            onClose={onToggleSuspendedDialog}
+                            emptyMessage="No suspended users"
+                            header="Suspended users"
+                        >
+                            {suspendedUsers.toJS().map(s =>
+                                <SuspendedUser
+                                    key={`suspended-user-${s.id}`}
+                                    user={s}
+                                    onClickRestore={partial(onRestoreUser, s.id)}
+                                />
+                            )}
+                        </ItemsDialog>
 
-                    <ConfirmDialog
-                        onConfirm={partial(
-                            fadeOutCard,
-                            requestDeleted.get('entityType'),
-                            requestDeleted.get('id'),
-                            onConfirmDelete
-                        )}
-                        onCancel={onCancelDelete}
-                        toggled={!!requestDeleted.get('id')}
-                        header="Confirm delete?"
-                    />
+                        <InfoDialog
+                            toggled={infoDialog.get('open')}
+                            onClose={onToggleInfoDialog}
+                            header={infoDialog.get('header')}
+                            body={infoDialog.get('body')}
+                        />
 
-                    {this.renderContent()}
+                        <ConfirmDialog
+                            onConfirm={partial(
+                                fadeOutCard,
+                                requestDeleted.get('entityType'),
+                                requestDeleted.get('id'),
+                                onConfirmDelete
+                            )}
+                            onCancel={onCancelDelete}
+                            toggled={!!requestDeleted.get('id')}
+                            header="Confirm delete?"
+                        />
+
+                        {this.renderContent()}
+                    </div>
                 </div>
-            </div>
+            </App>
         );
     }
 }
 
 function mapStateToProps(state) {
-    const user = state.get('user');
+    const user = state.get('user', Map()).toJS();
     const moderation = state.get('moderation');
     const filters = moderation.getIn(['ui', 'filters']);
     const galleryFilters = filters.get('galleries');

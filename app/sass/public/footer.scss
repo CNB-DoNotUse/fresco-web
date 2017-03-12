@@ -1,0 +1,144 @@
+/**
+ * Footer
+ */
+.footer{
+
+    $padding:36px 48px 36px 36px;
+    $mobilePadding:33px 48px 88px 36px;
+
+    background:#FFF;
+    overflow:hidden;
+    color:#000;
+    position:relative;
+
+    .footer-content{
+        &:before,
+        &:after {
+            display: table;
+            content: ' ';
+            zoom: 1
+        }
+
+        &:after {
+            clear: both;
+        }
+        padding:$padding;
+
+        @include mobile{
+            padding:$mobilePadding;
+        }
+    }
+
+    .left{
+        float:left;
+        font-weight:500;
+        line-height:20px;
+        font-family:Roboto;
+
+        @include mobile {
+            float:none;
+        }
+
+        p{
+            font-size:14px;
+        }
+
+        span{
+            color: #ffc600;
+            font-size: 66px;
+            display: block;
+            margin: 0 0 20px -10px;
+        }
+
+    }
+
+    .middle{
+        text-align:center;
+        font-family:Roboto;
+        margin:0 auto;
+        font-size:14px;
+        position:absolute;
+        left: 0;
+        bottom: 19%;
+        right: 0;
+        line-height:20px;
+
+        ul{
+          list-style:disc;
+
+          @include mobile{
+            max-width:240px;
+          }
+
+          li{
+            display:inline-block;
+            // margin-left:5px;
+
+            a{
+              font-weight:700;
+            }
+          }
+        }
+
+        @include tablet{
+            text-align:right;
+            right:44px;
+            bottom:8%;
+        }
+
+        @include mobile {
+            text-align: left;
+            left:36px;
+            bottom:20px;
+        }
+
+        span{
+            text-align:center;
+        }
+
+    }
+
+    .right{
+        float:right;
+        position:relative;
+        top:70px;
+
+        @include tablet{
+            top:50px;
+        }
+
+        @include mobile {
+           float:left;
+           top:25px;
+        }
+
+        ul{
+            text-align:right;
+            margin:0 0 20px 0;
+
+            @include mobile{
+                text-align:left;
+            }
+
+            li, li a{
+                cursor:pointer;
+                font-weight:700;
+                margin:0 0 0 10px;
+                font-size:24px;
+                display:inline-block;
+
+                @include mobile{
+                    margin:0 10px 0 0;
+                }
+            }
+        }
+        .links li{
+
+            @include mobile{
+                display: block;
+                margin:12px 10px 0 0;
+            }
+
+        }
+    }
+}

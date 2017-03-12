@@ -1,14 +1,12 @@
-/* Sass Document */
-
-/*------------------------------------------------------------------------------------
-
-Copyright 2016 Fresco News, Inc. All Rights Reserved.
-
--------------------------------------------------------------------------------------*/
-
+/**
+ * Pro User Page
+ */
 @import "~node-waves/dist/waves.css";
-@import "./../../global/_global";
-@import "../landing";
+@import "../../global/_global";
+@import "../footer";
+@import "../showbox";
+@import "../nav";
+@import "../index/landing";
 @import "../modals/modal";
 @import "pro-schedule";
 
@@ -212,10 +210,9 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	}
 }
 
-/*
-	Filling Circle Class
+/**
+ * Filling Circle Class
  */
-
 .form-circle{
 	background:#4cd764;
 	height:40px;

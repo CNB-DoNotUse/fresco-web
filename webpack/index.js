@@ -49,13 +49,7 @@ const plugins = (env) => {
             path: './public/build',
             filename: 'assets.json',
             prettyPrint: true,
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'commons',
-            filename: 'js/commons.js',
-            // (Only use these entries)
-            chunks: genViewsFromDir(platformDirectory).map(obj => obj.file.replace('.js', '')),
-        }),
+        })
     ];
 
     if (env === 'dev') {
@@ -77,6 +71,14 @@ const plugins = (env) => {
         arr.push(
             new webpack.DefinePlugin({
                 'process.env': { NODE_ENV: JSON.stringify('production') },
+            })
+        );
+        arr.push(
+            new webpack.optimize.CommonsChunkPlugin({
+                name: 'commons',
+                filename: 'js/commons.js',
+                // (Only use these entries)
+                chunks: genViewsFromDir(platformDirectory).map(obj => obj.file.replace('.js', '')),
             })
         );
     }
@@ -111,8 +113,8 @@ const loaders = (env) => {
         // Babel
         {
             test: /.jsx?$/,
-            loader: 'babel',
-            exclude: /(node_modules|bower_components)/,
+            loader: 'babel?cacheDirectory=true',
+            exclude: /(node_modules|bower_components)/
         },
         {
             test: /\.scss$/,
@@ -190,7 +192,7 @@ module.exports = (env = 'dev') => ({
     watch: env === 'dev',
     devtool: env === 'dev' ? 'eval-source-map' : null,
     module: { loaders: loaders(env) },
-    postcss: () => [autoprefixer],
+    postcss: () => env === 'dev' ? [] : [autoprefixer],
     resolve: {
         // All these extensions will be resolved without specifying extension in the `require` function
         extensions: ['', '.js', '.scss'],
@@ -200,7 +202,7 @@ module.exports = (env = 'dev') => ({
             'bower_components',
             'lib',
             './',
-        ],
+        ]
     },
     externals: externals(env),
 });

@@ -1,4 +1,4 @@
-import moment from 'moment';
+import time from '../../lib/time';
 import utils from 'utils';
 require('script!slick-carousel/slick/slick.min.js');
 
@@ -96,7 +96,7 @@ Slick.prototype.createGalleryView = function(gallery) {
 		const defaultAvatar = `${utils.CDN}/images/user-1.png`;
 		const avatar = post.owner && post.owner.avatar ? post.owner.avatar : defaultAvatar;
 		const address = post.address != null ? post.address : 'No location';
-		const timestampText = utils.formatTime(post.created_at, true);
+		const timestampText = time.formatTime(post.created_at, true);
 
 		return `<div class="post-slide" style="background-image:url('${utils.formatImg(post.image, 'medium')}')">
 		            <table class="slick-meta">

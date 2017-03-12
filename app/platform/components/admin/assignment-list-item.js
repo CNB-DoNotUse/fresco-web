@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+import time from 'app/lib/time';
 import get from 'lodash/get';
 
 /**
@@ -52,7 +53,7 @@ class AdminAssignmentListItem extends React.Component {
                     </p>
                 </div>
                 <div>
-                    <p className="md-type-body1">{utils.formatTime(assignment.created_at)}</p>
+                    <p className="md-type-body1">{time.formatTime(assignment.created_at)}</p>
                 </div>
             </div>
         );

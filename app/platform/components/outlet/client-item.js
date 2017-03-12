@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import utils from 'utils';
+import time from 'app/lib/time';
 require('script!clipboard/dist/clipboard.js');
 
 /**
@@ -134,7 +134,7 @@ export default class ClientItem extends React.Component {
                     <p className="client-item__meta">
                         <span className={underExpirationWindow ? "expiring" : ""}>
                           Version {versionNumber} {expirationText}</span>
-                        <span> • {last_used_at ? 'Last active ' + utils.formatTime(last_used_at, true) : 'No record of activity'}</span>
+                        <span> • {last_used_at ? 'Last active ' + time.formatTime(last_used_at, true) : 'No record of activity'}</span>
                     </p>
 
                     <span
