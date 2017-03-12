@@ -147,7 +147,6 @@ class FrescoVideo extends React.Component {
             autoplay,
             vr,
             hideControls,
-            status,
             clickToPlay
         } = this.props;
         const { id, isStream } = this.state;
@@ -162,6 +161,9 @@ class FrescoVideo extends React.Component {
         if(!clickToPlay) {
             className += ' preventClick';
         }
+
+        //Hotfix
+        let status = 2;
 
         if(status == 0) {
             parentClass += ' img';
