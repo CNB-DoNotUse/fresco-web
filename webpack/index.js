@@ -49,6 +49,12 @@ const plugins = (env) => {
             path: './public/build',
             filename: 'assets.json',
             prettyPrint: true,
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'commons',
+            filename: 'js/commons.js',
+            // (Only use these entries)
+            chunks: genViewsFromDir(platformDirectory).map(obj => obj.file.replace('.js', '')),
         })
     ];
 
@@ -71,14 +77,6 @@ const plugins = (env) => {
         arr.push(
             new webpack.DefinePlugin({
                 'process.env': { NODE_ENV: JSON.stringify('production') },
-            })
-        );
-        arr.push(
-            new webpack.optimize.CommonsChunkPlugin({
-                name: 'commons',
-                filename: 'js/commons.js',
-                // (Only use these entries)
-                chunks: genViewsFromDir(platformDirectory).map(obj => obj.file.replace('.js', '')),
             })
         );
     }
