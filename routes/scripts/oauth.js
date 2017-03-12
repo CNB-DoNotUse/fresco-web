@@ -19,9 +19,11 @@ router.post('/authorize',(req, res, next) => {
         oauthLib
         .getAuthorizationCode(token, client_id, redirect_uri, scope)
         .then(response => {
+            const authorization_code = response.body;
+
             res.status(200).json({ 
                 success: true, 
-                redirect_uri: oauthLib.generateReturnURI(redirect_uri, authorization_code) 
+                redirect_uri: oauthLib.generateReturnURI(redirect_uri, authorization_code.token) 
             })
         })
         .catch(error => {
@@ -36,7 +38,8 @@ router.post('/authorize',(req, res, next) => {
         userLib
         .login(username, password, null)
         .then(response => {
-            return console.log(response);
+            let token = response.token.token;
+
             getAuthorizationCode(token, client_id, redirect_uri, scope)
         })
         .catch(error => {

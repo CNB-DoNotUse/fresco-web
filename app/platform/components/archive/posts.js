@@ -91,7 +91,7 @@ class Posts extends React.Component {
             callback(get(res, 'posts.results', []));
         })
         .catch(() => {
-            $.snackbar({ content: `Failed to load ${type}s` });
+            $.snackbar({ content: `Failed to load ${type ? type : 'post'}s` });
             callback([]);
         });
     }
@@ -101,7 +101,10 @@ class Posts extends React.Component {
         const { sortBy, verifiedToggle, location, tags } = this.state;
 
         return (
-            <App user={user} page={page}>
+            <App
+                user={user} 
+                page={page}
+            >
                 <TopBar
                     title={title}
                     roles={user.roles}

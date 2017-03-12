@@ -130,7 +130,9 @@ class PushNotifs extends React.Component {
                                 onClick={onDismissAlert}
                                 bodyStyle={{ height: 'auto', whiteSpace: 'pre-line' }}
                             />
+                            
                             {this.renderTemplate()}
+
                             <button
                                 type="button"
                                 onClick={partial(onSend, activeTab)}

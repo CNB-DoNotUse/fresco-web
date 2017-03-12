@@ -3,7 +3,12 @@ import * as actions from '../actions/ui';
 /**
  * UI reducer
  */
- const ui = (state = {}, action) => {
+ const ui = (state = {
+    snackbarText: '',
+    showSnackbar: false
+ }, action) => {
+    console.log(action);
+
     switch (action.type) {
         case actions.UPDATE_LOADING:
             return {...state, loading: action.loading }

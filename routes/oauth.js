@@ -35,7 +35,7 @@ router.get('/', (req, res, next) => {
     })  
     .catch(error => {
         return next({ message: 'Please check your OAuth parameters!' })
-    })
+    });
 });
 
 module.exports = router;
