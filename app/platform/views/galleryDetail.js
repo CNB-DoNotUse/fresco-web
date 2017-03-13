@@ -170,7 +170,6 @@ class GalleryDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        roles={user.roles}
                         parentCaption={gallery.caption}
                         posts={this.getPostsFromGallery()}
                         updatePosts={updatePosts}

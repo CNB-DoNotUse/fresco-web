@@ -128,7 +128,6 @@ class Posts extends React.Component {
                     />
                 </TopBar>
                 <PostList
-                    roles={user.roles}
                     size="small"
                     sortBy={sortBy}
                     onlyVerified={verifiedToggle}

@@ -77,7 +77,6 @@ class UserDetail extends React.Component {
                     <PostList
                         loadPosts={this.loadPosts}
                         size="large"
-                        roles={user.roles}
                         scrollable
                         onlyVerified={verifiedToggle}
                         page={page}

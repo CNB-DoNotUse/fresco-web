@@ -406,7 +406,6 @@ class Search extends Component {
                 <div className="col-sm-8 tall p0">
                     <PostList
                         posts={this.state.posts}
-                        roles={this.props.user.roles}
                         ref="postList"
                         size="large"
                         onScroll={this.scroll}

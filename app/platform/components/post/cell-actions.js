@@ -26,7 +26,6 @@ class PostCellActions extends React.Component {
 
     render() {
         const {
-            roles,
             purchased,
             editable,
             post,
@@ -40,7 +39,7 @@ class PostCellActions extends React.Component {
         let key = 0;
 
         // Check if we're CM or greater
-        if (roles.includes('admin')) {
+        if (user.roles.includes('admin')) {
             if (editable) {
                 actions.push(
                     <span
@@ -107,7 +106,6 @@ class PostCellActions extends React.Component {
 }
 
 PostCellActions.propTypes = {
-    roles: PropTypes.array,
     editable: PropTypes.bool,
     purchased: PropTypes.bool.isRequired,
     post: PropTypes.object,

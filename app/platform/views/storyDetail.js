@@ -133,7 +133,6 @@ class StoryDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        roles={user.roles}
                         loadPosts={this.loadPosts}
                         editable={false}
                         sortBy={sortBy}

@@ -13,7 +13,6 @@ import Time from './cell-time';
 class PostCell extends React.Component {
 
     static propTypes = {
-        roles: PropTypes.array,
         parentCaption: PropTypes.string,
         size: PropTypes.string,
         sortBy: PropTypes.string,
@@ -80,7 +79,6 @@ class PostCell extends React.Component {
         const {
             post,
             assignment,
-            roles,
             sortBy,
             editable,
             page,
@@ -101,7 +99,6 @@ class PostCell extends React.Component {
                     purchased={purchased}
                     onPurchase={() => this.setState({ purchased: true })}
                     onEdit={this.onToggleGalleryEdit}
-                    roles={roles}
                     editable={editable}
                     page={page}
                     user={user}

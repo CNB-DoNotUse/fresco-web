@@ -304,7 +304,6 @@ class AssignmentDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        roles={user.roles}
                         loadPosts={this.loadPosts}
                         sortBy={sortBy}
                         onlyVerified={verifiedToggle}
