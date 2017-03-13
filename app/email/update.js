@@ -44,6 +44,7 @@ fs.readdir(templatesDir, (_, dirs) => {
             name = dev ? `Dev ${startCase(name)}` : startCase(name);
 
             if (err) console.error('err: ', err);
+            else console.log(`${name} successfully updated`)
 
             mandrillClient.templates.info({ name }, () => {
                 updateTemplate(name, result);
