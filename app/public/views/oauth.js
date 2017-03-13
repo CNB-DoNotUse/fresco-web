@@ -7,7 +7,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import configureStore from 'app/redux/store';
 import Root from '../../platform/containers/Root';
 import reducer from 'app/redux/modules/oauth';
-import OAuth from '../containers/Oauth';
+import OAuth from '../containers/OAuth';
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
