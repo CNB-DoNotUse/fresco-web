@@ -135,6 +135,8 @@ class Posts extends React.Component {
                     loadPosts={this.loadPosts}
                     reloadPosts={this.reloadPosts}
                     scrollable
+                    user={user}
+                    page={page}
                 />
             </App>
         );

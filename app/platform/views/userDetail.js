@@ -50,10 +50,11 @@ class UserDetail extends React.Component {
     render() {
         const { user, editable, detailUser } = this.props;
         const { verifiedToggle } = this.state;
+        const page = 'userDetail';
         return (
             <App
                 user={user}
-                page="userDetail"
+                page={page}
             >
                 <TopBar
                     title={detailUser.full_name}
@@ -79,6 +80,8 @@ class UserDetail extends React.Component {
                         roles={user.roles}
                         scrollable
                         onlyVerified={verifiedToggle}
+                        page={page}
+                        user={user}
                     />
                 </div>
             </App>

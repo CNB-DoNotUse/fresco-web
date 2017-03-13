@@ -26,6 +26,8 @@ class PostCell extends React.Component {
         togglePost: PropTypes.func,
         onMouseEnter: PropTypes.func,
         onMouseLeave: PropTypes.func,
+        page: PropTypes.string,
+        user: PropTypes.object
     };
 
     static defaultProps = {
@@ -81,6 +83,8 @@ class PostCell extends React.Component {
             roles,
             sortBy,
             editable,
+            page,
+            user
         } = this.props;
         const { purchased } = this.state;
 
@@ -99,6 +103,8 @@ class PostCell extends React.Component {
                     onEdit={this.onToggleGalleryEdit}
                     roles={roles}
                     editable={editable}
+                    page={page}
+                    user={user}
                 />
 
                 <div>

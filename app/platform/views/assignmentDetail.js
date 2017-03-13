@@ -266,10 +266,11 @@ class AssignmentDetail extends React.Component {
             acceptedDialog,
         } = this.state;
 
+        const page = 'assignmentDetail';
         return (
             <App
-                user={this.props.user}
-                page='assignmentDetail'>
+                user={user}
+                page={page}>
                 <TopBar
                     title={assignment.title}
                     roles={user.roles}
@@ -315,6 +316,8 @@ class AssignmentDetail extends React.Component {
                         size="large"
                         scrollTo={scrollToPostId}
                         scrollable
+                        page={page}
+                        user={user}
                     />
                 </div>
 

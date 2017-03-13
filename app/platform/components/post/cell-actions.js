@@ -32,6 +32,8 @@ class PostCellActions extends React.Component {
             post,
             assignment,
             onPurchase,
+            page,
+            user
         } = this.props;
 
         const actions = [];
@@ -57,6 +59,8 @@ class PostCellActions extends React.Component {
                         assignment={assignment}
                         onPurchase={onPurchase}
                         key={++key}
+                        page={page}
+                        user={user}
                     />
                 );
             }
@@ -83,6 +87,8 @@ class PostCellActions extends React.Component {
                     assignment={assignment}
                     onPurchase={onPurchase}
                     key={++key}
+                    page={page}
+                    user={user}
                 />
             );
         }
@@ -108,6 +114,8 @@ PostCellActions.propTypes = {
     assignment: PropTypes.object,
     onPurchase: PropTypes.func.isRequired,
     onEdit: PropTypes.func,
+    page: PropTypes.string,
+    user: PropTypes.object
 };
 
 export default PostCellActions;

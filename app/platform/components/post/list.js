@@ -229,6 +229,8 @@ class PostList extends React.Component {
             onMouseLeavePost,
             onMouseLeaveList,
             scrollTo,
+            page,
+            user
         } = this.props;
         const {
             posts,
@@ -260,6 +262,8 @@ class PostList extends React.Component {
                             onMouseEnter={onMouseEnterPost}
                             onMouseLeave={onMouseLeavePost}
                             togglePost={this.togglePost}
+                            page={page}
+                            user={user}
                         />
                     ))}
                 </div>
@@ -333,6 +337,8 @@ PostList.propTypes = {
     loadPosts: PropTypes.func,
     scrollTo: PropTypes.string,
     reloadPosts: PropTypes.bool,
+    page: PropTypes.string,
+    user: PropTypes.object
 };
 
 PostList.defaultProps = {
