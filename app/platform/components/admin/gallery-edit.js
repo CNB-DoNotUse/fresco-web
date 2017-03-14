@@ -8,6 +8,7 @@ import { isImportedGallery, deletePosts, saveGallery } from 'app/lib/models';
 import AutocompleteMap from '../global/autocomplete-map';
 import ExplicitCheckbox from '../global/explicit-checkbox';
 import ChipInput from '../global/chip-input';
+import AssignmentChipInput from '../global/assignment-chip-input';
 import EditPosts from './../gallery/edit-posts';
 import EditByline from './../gallery/edit-byline';
 
@@ -357,11 +358,12 @@ export default class GalleryEdit extends React.Component {
                         ref={r => { this.galleryCaption = r; }}
                     />
 
-                    <ChipInput
+                    <AssignmentChipInput
                         model="assignments"
                         placeholder="Assignment"
                         queryAttr="title"
                         items={assignment ? [assignment] : []}
+                        locationHint={gallery.location}
                         updateItems={a => this.setState({ assignment: a[0] })}
                         multiple={false}
                         className="dialog-row"

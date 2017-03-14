@@ -17,10 +17,10 @@ import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import EditPosts from './edit-posts';
 import EditByline from './edit-byline';
-import EditAssignment from './edit-assignment';
 import ExplicitCheckbox from '../global/explicit-checkbox';
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
+import AssignmentChipInput from '../global/assignment-chip-input';
 import { LoaderOpacity } from '../global/loader';
 
 /**
@@ -589,10 +589,17 @@ class Edit extends React.Component {
                         />
                     </div>
 
-                    <EditAssignment
-                        onChange={a => this.setState({ assignments: a })}
-                        assignments={assignments}
-                    />
+                    <AssignmentChipInput
+                        model="assignments"
+                        placeholder="Assignment"
+                        queryAttr="title"
+                        items={assignments}
+                        locationHint={gallery.location}
+                        updateItems={a => this.setState({ assignments: a })}
+                        multiple={false}
+                        disabled={assignments.length > 1}
+                        className="dialog-row"
+                        autocomplete />
 
                     <ChipInput
                         model="tags"

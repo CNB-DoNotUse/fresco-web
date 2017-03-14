@@ -253,14 +253,27 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		overflow-y:scroll;
 		@include box-shadow(0 3px 10px rgba(0,0,0,.23),0 3px 10px rgba(0,0,0,.16));
 
+		&.show {
+			display:block;
+		}
+
 		li {
 			padding: 5px;
 			cursor:pointer;
 		    font-size: 16px;
 		}
+
 		li:hover{
 			background:#DDD;
 		}
+	}
+
+	.dropdown__suggestion_header {
+	    padding: 12px 6px 10px 5px;
+	    margin:0;
+	    font-size: 16px;
+	    font-weight: 400;
+	    color: rgba(0,0,0,0.54);
 	}
 }
 

@@ -4,6 +4,7 @@ import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import pickBy from 'lodash/pickBy';
 import utils from 'utils';
+import { getGeoFromCoordinates } from 'app/lib/location';
 import ChipInput from '../global/chip-input';
 import AutocompleteMap from '../global/autocomplete-map';
 import Merge from './merge';
@@ -101,7 +102,7 @@ export default class AssignmentEdit extends React.Component {
         } = this.state;
         const geo = location && Object.prototype.hasOwnProperty.call(location, 'type')
             ? location
-            : utils.getGeoFromCoord(location);
+            : getGeoFromCoordinates(location);
 
         if (!assignment || !assignment.id || loading) return;
         if (this.hasFormErrors()) return;

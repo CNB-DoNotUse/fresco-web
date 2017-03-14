@@ -30,10 +30,20 @@ export const getLatLngFromGeo = ({ coordinates, type }) => {
     return { lng: coordinates[0], lat: coordinates[1] };
 };
 
+
+export const geoFromCoordinates = (location) => {
+    if (!coords || !coords.lat || !coords.lng) return null;
+
+    return {
+        type: 'Point',
+        coordinates: [coords.lng, coords.lat],
+    };
+}
+
 /**
  * geoParams
  *
- * @param {Object} {Location object containing lat, lng, and radius keys
+ * @param {Object} {Location object containing lat, lng, and radius keys. Takes radius in feet
  * @returns {Object} Param for geo data
  */
 export const geoParams = ({ lat, lng, radius } = {}) => {
