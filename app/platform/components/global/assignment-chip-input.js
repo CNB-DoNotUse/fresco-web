@@ -55,7 +55,7 @@ class AssignmentChipInput extends React.Component {
             <ChipInput
                 suggestionText="Nearby assignments"
                 initialSuggestions={locationHint !== null ? this.getInitialSuggestions : null}
-                params={{ rating: 1, sortBy: 'created_at', direction: 'asc' }}
+                params={{ rating: 1, sortBy: 'created_at', direction: 'desc' }}
                 {...this.props} />
         );
     }
