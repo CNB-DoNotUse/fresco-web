@@ -15,11 +15,13 @@ class DownloadAction extends React.Component {
         const { post } = this.props;
 
         if (!post) {
-            return $.snackbar({
-                content: 'We couldn\'t find this post!',
-                timeout: 0,
-            });
+            return $.snackbar({ content: 'We couldn\'t find this post!' });
         }
+
+        $.snackbar({
+            content: 'Downloading...',
+            timeout: 0
+        })
 
         // Override click event for browsers that do not support it
         HTMLElement.prototype.click = function(){
@@ -32,8 +34,6 @@ class DownloadAction extends React.Component {
         .get(`post/${post.id}/download`)
         .then(res => {
             const downloadLink = res.result;
-
-
             const link = document.createElement('a');
 
             link.download = Date.now() + '.' + downloadLink.split('.').pop();
