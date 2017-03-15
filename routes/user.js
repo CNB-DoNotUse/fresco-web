@@ -15,6 +15,7 @@ router.get('/settings', (req, res) => {
         props: JSON.stringify(props),
         title: props.title,
         page: 'userSettings',
+        referral: req.session.referral,
     });
 });
 
@@ -35,6 +36,7 @@ function renderUserDetail(detailUser, user, res) {
         title,
         props: JSON.stringify(props),
         page: 'userDetail',
+        referral: req.session.referral,
     });
 }
 
@@ -63,4 +65,3 @@ router.get('/:id?', (req, res, next) => {
 });
 
 module.exports = router;
-

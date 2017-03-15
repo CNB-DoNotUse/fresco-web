@@ -18,6 +18,7 @@ router.get('/', (req, res, next) => {
 
     res.render('app', {
         alerts: req.alerts,
+        referral: req.session.referral,
         page : 'highlights',
         title : title,
         props : JSON.stringify(props)

@@ -23,6 +23,7 @@ router.get('/', (req, res, next) => {
     res.render('app', {
         title,
         alerts: req.alerts,
+        referral: req.session.referral,
         page: 'admin',
         props: JSON.stringify(props)
     });
@@ -31,12 +32,14 @@ router.get('/', (req, res, next) => {
 /**
  * Convienence route to send session token when developing.
  */
-router.get('/token', (req, res, next) => {
-    if(!req.session.user || req.session.user.rank < 1) {
-        return res.send({});
-    }
+if (!config.DEV) {
+    router.get('/token', (req, res, next) => {
+        if(!req.session.user || req.session.user.rank < 1) {
+            return res.send({});
+        }
 
-    return res.send(req.session.token);
-});
+        return res.send(req.session.token);
+    });
+}
 
 module.exports = router;

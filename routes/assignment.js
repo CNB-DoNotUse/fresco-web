@@ -9,7 +9,7 @@ const fetchAcceptedUsers = ({ roles, assignmentId, token }) => {
     if (!roles.includes('admin')) {
         return Promise.resolve([]);
     }
-    
+
     //Fetch accepted users for given assignment id
     return API
             .request({ token, url: `/assignment/${assignmentId}/accepted` })
@@ -40,10 +40,10 @@ router.get('/:id', (req, res, next) => {
         }
 
 
-        fetchAcceptedUsers({ 
-            token, 
-            roles: user.roles, 
-            assignmentId: assignment.id 
+        fetchAcceptedUsers({
+            token,
+            roles: user.roles,
+            assignmentId: assignment.id
         })
         .then((acceptedRes) => {
             acceptedUsers = acceptedRes;
@@ -58,6 +58,7 @@ router.get('/:id', (req, res, next) => {
                 page: 'assignmentDetail',
                 config,
                 alerts,
+                referral: req.session.referral,
             });
         });
     }).catch(() => {

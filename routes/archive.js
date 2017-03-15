@@ -13,6 +13,7 @@ router.get('/', (req, res) => {
         title,
         page: 'archive',
         alerts: req.alerts,
+        referral: req.session.referral,
         props: JSON.stringify(props),
     });
 });
@@ -29,6 +30,7 @@ router.get('/galleries', (req, res) => {
         title,
         config,
         alerts: req.alerts,
+        referral: req.session.referral,
         page: 'galleries',
         props: JSON.stringify(props),
     });
@@ -45,6 +47,7 @@ router.get('/stories', (req, res) => {
         title,
         config,
         alerts: req.alerts,
+        referral: req.session.referral,
         page: 'stories',
         props: JSON.stringify(props),
     });
@@ -69,6 +72,7 @@ router.get('/:filter', (req, res) => {
         title,
         page: req.params.filter,
         alerts: req.alerts,
+        referral: req.session.referral,
         props: JSON.stringify(props),
     });
 });

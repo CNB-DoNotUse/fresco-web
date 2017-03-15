@@ -8,6 +8,7 @@ router.get('/', (req, res, next) => {
         res.render('app', {
             title: 'Push Notifications',
             alerts: req.alerts,
+            referral: req.session.referral,
             page: 'pushNotifs',
             props: JSON.stringify({ user }),
         });
@@ -20,4 +21,3 @@ router.get('/', (req, res, next) => {
 });
 
 module.exports = router;
-

@@ -24,6 +24,7 @@ router.get('/', (req, res, next) => {
         user: req.session.user,
         title,
         alerts: req.alerts,
+        referral: req.session.referral,
         page: 'purchases',
         props: JSON.stringify(props),
     });
