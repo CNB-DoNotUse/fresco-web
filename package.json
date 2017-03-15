@@ -19,6 +19,7 @@
     "babel-loader": "^6.2.10",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
+    "base-64": "^0.1.0",
     "body-parser": "~1.15.0",
     "bootstrap-material-design": "^0.5.10",
     "bricks.js": "^1.7.0",
