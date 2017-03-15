@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
-import utils from 'utils';
-import uniqBy from 'lodash/uniqBy';
-import reject from 'lodash/reject';
+import { geoFromCoordinates } from 'app/lib/location';
+import assignment from 'app/lib/assignment';
 
 /**
  * AssignmentMergeDropup Dropdown(up) menu that displays list of nearby assignments
@@ -57,22 +56,20 @@ class MergeDropup extends React.Component {
         this.setState({ loading: true });
         const data = {
             radius: 100,
-            geo: location.hasOwnProperty('type') ? location : utils.getGeoFromCoord(location),
+            geo: location.hasOwnProperty('type') ? location : geoFromCoordinates(location),
             limit: 5,
+            ends_after: Date.now(),
+            rating: [0, 1] //Active or Pending
         };
 
-        $.ajax({
-            url: '/api/assignment/find',
-            data,
-            dataType: 'json',
-            contentType: 'application/json',
+        assignment
+        .list(data)
+        .then(assignments => {
+            this.setState({ 
+                nearbyAssignments: assignments.filter(a => a.id !== assignmentId)
+            });
         })
-        .done((res) => {
-            const { nearby = [] } = res;
-            const nearbyAssignments = reject(nearby, { id: assignmentId });
-            this.setState({ nearbyAssignments });
-        })
-        .always(() => {
+        .then(() => {
             this.setState({ loading: false });
         });
     }
@@ -114,7 +111,6 @@ class MergeDropup extends React.Component {
                         {this.renderAssignments(nearbyAssignments)}
                     </div>
                 </div>
-
             );
         }
 

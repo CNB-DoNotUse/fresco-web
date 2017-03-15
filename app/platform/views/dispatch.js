@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import api from 'app/lib/api';
 import App from './app';
 import DispatchMap from '../components/dispatch/dispatch-map';
 import DispatchAssignments from '../components/dispatch/dispatch-assignments';
@@ -10,6 +9,8 @@ import TopBar from '../components/topbar';
 import LocationDropdown from '../components/global/location-dropdown';
 import utils from 'utils';
 import get from 'lodash/get';
+import api from 'app/lib/api';
+import assignment from 'app/lib/assignment';
 import 'sass/platform/_dispatch'
 
 /**
@@ -120,16 +121,6 @@ class Dispatch extends React.Component {
         //Update view mode on params
         const { viewMode } = this.state;
 
-        if(viewMode === 'pending') {
-            params.rating = 0;
-        } else if(viewMode === 'active'){
-            params.ends_after = Date.now();
-            params.rating = 1;
-        } else {
-            params.rating = 1;
-            params.ends_before = Date.now();
-        }
-
         //Add map params
         if(map) {
             params.geo = {
@@ -142,7 +133,8 @@ class Dispatch extends React.Component {
             params.limit = 10;
         }
 
-        api.get('assignment/list', params)
+        assignment
+        .list(params, viewMode)
         .then(res => callback(res))
         .catch(() => $.snackbar({ content: 'Couldn\'t fetch assignments!' }));
     }

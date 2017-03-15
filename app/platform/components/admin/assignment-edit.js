@@ -3,6 +3,7 @@ import AutocompleteMap from '../global/autocomplete-map';
 import Merge from '../assignment/merge';
 import MergeDropup from '../assignment/merge-dropup';
 import utils from 'utils';
+import { getGeoFromCoordinates } from 'app/lib/location';
 import isEmpty from 'lodash/isEmpty';
 
 /**
@@ -121,7 +122,7 @@ export default class AssignmentEdit extends React.Component {
         const { location, address, radius, isAcceptable } = this.state;
         const geo = location && location.hasOwnProperty('type')
             ? location
-            : utils.getGeoFromCoord(location);
+            : getGeoFromCoordinates(location);
 
         const params = {
             title: this.refs['assignment-title'].value,
