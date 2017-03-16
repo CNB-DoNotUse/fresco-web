@@ -5,6 +5,7 @@ require('velocity-animate');
 import Waves from 'node-waves';
 import Nav from '../components/nav';
 import Animation from '../components/animation';
+import { mergeReferral } from 'app/lib/referral';
 
 var formWrap = document.getElementById('_form-wrap'),
 	form = document.getElementById('pro-form'),
@@ -112,7 +113,7 @@ function signup(e) {
 
 				link.href = "/pro/" + response.rowId;
 				//Segment - Pixel track
-				if (analytics) analytics.track('CompleteRegistration');
+				if (analytics) analytics.track('CompleteRegistration', mergeReferral());
 				//Complete the signup with the animation
 				animateCompletion(e);
 			}

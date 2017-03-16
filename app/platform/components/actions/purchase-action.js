@@ -1,6 +1,7 @@
 /* global alertify:true */
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+import { mergeReferral } from 'app/lib/referral';
 
 /**
  * Global purchase action
@@ -25,13 +26,13 @@ class PurchaseAction extends React.Component {
             });
 
             if (analytics) {
-                analytics.track('Post purchased', {
+                analytics.track('Post purchased', mergeReferral({
                     post_id: post.id,
                     owner_id: post.owner_id,
                     outlet_id: user ? user.outlet_id : null,
                     gallery_id: post.parent_id,
                     purchased_from: page
-                })
+                }))
             }
 
             this.props.onPurchase();
