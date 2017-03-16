@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import Sidebar from '../components/sidebar';
+import { mergeReferral } from 'app/lib/referral';
 import '../../sass/platform/screen.scss';
 global.jQuery = require('jquery');
 require('snackbarjs');
@@ -39,10 +40,10 @@ class App extends React.Component {
         const { user, page } = this.props;
 
         if(analytics && typeof(analytics) !== 'undefined') {
-            analytics.identify(this.props.user.id, {
+            analytics.identify(this.props.user.id, mergeReferral({
                 name: this.props.user.full_name,
                 email: this.props.user.email
-            });
+            }));
         }
     }
 
@@ -66,4 +67,3 @@ class App extends React.Component {
 }
 
 export default App;
-
