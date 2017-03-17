@@ -40,10 +40,11 @@ class App extends React.Component {
         const { user, page } = this.props;
 
         if(analytics && typeof(analytics) !== 'undefined') {
-            analytics.identify(this.props.user.id, mergeReferral({
+            analytics.identify(this.props.user.id, {
                 name: this.props.user.full_name,
                 email: this.props.user.email
-            }));
+            });
+            console.log('poop');
         }
     }
 

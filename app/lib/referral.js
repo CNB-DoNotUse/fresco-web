@@ -5,7 +5,7 @@
  */
 export const mergeReferral = (params = {}) => {
     for(let referral_param in window.referral) {
-        params['referral_' + referral_param] = window.referral[referral_param]
+        params[referral_param] = window.referral[referral_param]
     }
     return params;
 }

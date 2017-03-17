@@ -112,7 +112,11 @@ app.use((req, res, next) => {
     if (req.query.referral) {
         // Don't fail the request if the there is a problem with the referral token
         try {
-            req.session.referral = JSON.parse(base64.decode(req.query.referral));
+            req.session.referral = {};
+            const referral_params = JSON.parse(base64.decode(req.query.referral));
+            for (let param in referral_params) {
+                req.session.referral['referral_' + param] = referral_params[param];
+            }
         }
         catch (err) {
             console.error(`Error decoding referral token: ${req.query.referral} (${err})`);
