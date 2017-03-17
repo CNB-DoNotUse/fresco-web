@@ -22,7 +22,8 @@ fs.readdir(templatesDir, (_, dirs) => {
                     posts: [
                         {
                             image: "http://cdn.dev.fresconews.com/images/269fa35441ad3df330b92555dc12ea67_1488598405211_submission.jpg",
-                            link: "https://www.msn.com/"
+                            link: "https://www.msn.com/",
+                            video: true
                         }
                     ],
                     single_post: true
@@ -32,11 +33,12 @@ fs.readdir(templatesDir, (_, dirs) => {
                     gallery_link: "https://www.fresconews.com/",
                     posts: [
                         {
-                            image: "http://cdn.dev.fresconews.com/images/c84b1b3e5929a21c8b6aaf6d2baa9abf_1488598405209_submission.jpg",
-                            link: "https://www.yahoo.com"
+                            image: "http://cdn.dev.fresconews.com/images/200x200/c84b1b3e5929a21c8b6aaf6d2baa9abf_1488598405209_submission.jpg",
+                            link: "https://www.yahoo.com",
+                            video: true
                         },
                         {
-                            image: "http://cdn.dev.fresconews.com/images/269fa35441ad3df330b92555dc12ea67_1488598405211_submission.jpg",
+                            image: "http://cdn.dev.fresconews.com/images/200x200/269fa35441ad3df330b92555dc12ea67_1488598405211_submission.jpg",
                             link: "https://www.aol.com/"
                         },
                         {

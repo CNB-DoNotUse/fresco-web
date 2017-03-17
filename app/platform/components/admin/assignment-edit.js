@@ -120,9 +120,7 @@ export default class AssignmentEdit extends React.Component {
     onApproveAssignment() {
         const { assignment } = this.props;
         const { location, address, radius, isAcceptable } = this.state;
-        const geo = location && location.hasOwnProperty('type')
-            ? location
-            : getGeoFromCoordinates(location);
+        const geo = location && location.hasOwnProperty('type') ? location : getGeoFromCoordinates(location);
 
         const params = {
             title: this.refs['assignment-title'].value,

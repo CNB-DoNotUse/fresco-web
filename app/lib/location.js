@@ -31,12 +31,12 @@ export const getLatLngFromGeo = ({ coordinates, type }) => {
 };
 
 
-export const geoFromCoordinates = (location) => {
-    if (!coords || !coords.lat || !coords.lng) return null;
+export const getGeoFromCoordinates = (location) => {
+    if (!location || !location.lat || !location.lng) return null;
 
     return {
         type: 'Point',
-        coordinates: [coords.lng, coords.lat],
+        coordinates: [location.lng, location.lat],
     };
 }
 
