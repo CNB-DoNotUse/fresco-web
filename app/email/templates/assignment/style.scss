@@ -26,14 +26,13 @@ $email-button: #0047bb;
         max-width: 408px;
         margin: auto;
 
-        float: center;
+        padding-left: 4px;
+
         display: block;
 
         @include desktop-all {
             width: 408px !important;
             float: left;
-
-            padding-left: 4px;
         }
     }
 

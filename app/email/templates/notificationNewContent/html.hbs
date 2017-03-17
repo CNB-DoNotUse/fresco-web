@@ -9,6 +9,9 @@
                     \{{#if single_post}}
                         \{{#each posts}}
                             <a target="_blank" href="\{{ link }}" class="post large">
+								\{{#if video}}
+									<img class="video_icon" src="http://cdn.static.fresconews.com/images/email/play-circle-outline.png"></img>
+								\{{/if}}
 								<div class="img_wrap">
 									<img src="\{{ image }}"></img>
 								</div>
@@ -18,6 +21,9 @@
                     \{{else}}
 						\{{#each posts}}
 							<a target="_blank" href="\{{ link }}" class="post">
+								\{{#if video}}
+									<img class="video_icon" src="http://cdn.static.fresconews.com/images/email/play-circle-outline.png"></img>
+								\{{/if}}
 								<div class="img_wrap">
 									<img src="\{{ image }}"></img>
 								</div>
