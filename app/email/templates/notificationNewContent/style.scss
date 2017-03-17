@@ -54,6 +54,10 @@ $email-button: #0047bb;
                 padding-bottom: 100%;
             }
 
+            .video_icon {
+                position: absolute;
+            }
+
             .img_wrap {
                 height: 0;
                 overflow: visible;
@@ -76,14 +80,14 @@ $email-button: #0047bb;
                 padding-bottom: 50%
             }
 
-            .img_wrap {
-                margin: 2%;
+            .video_icon {
+                position: absolute;
             }
 
             background: none;
 
             width: 100%;
-            margin: auto;
+            margin-left: 2%;
         }
     }
 
