@@ -43,7 +43,7 @@ export const getGeoFromCoordinates = (location) => {
 /**
  * geoParams
  *
- * @param {Object} {Location object containing lat, lng, and radius keys. Takes radius in feet
+ * @param {Object} Location object containing lat, lng, and radius keys. Takes radius in `feet`.
  * @returns {Object} Param for geo data
  */
 export const geoParams = ({ lat, lng, radius } = {}) => {
