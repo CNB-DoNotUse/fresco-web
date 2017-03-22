@@ -23,7 +23,7 @@ router.get('/settings', (req, res) => {
  * Renders user page
  * @param  {object} user user to render on page
  */
-function renderUserDetail(detailUser, user, res) {
+function renderUserDetail(detailUser, user, req, res) {
     const title = detailUser.full_name;
     const props = {
         user,
@@ -50,8 +50,9 @@ router.get('/:id?', (req, res, next) => {
             token: req.session.token.token,
             url: `/user/${req.params.id}`,
         }).then(response => {
-            renderUserDetail(response.body, req.session.user, res);
-        }).catch(() => {
+            renderUserDetail(response.body, req.session.user, req, res);
+        }).catch(err => {
+            console.log(err);
             next({
                 message: 'User not found!',
                 status: 404,
@@ -60,7 +61,7 @@ router.get('/:id?', (req, res, next) => {
     } else {
         // Render currently logged in user otherwise
         const user = req.session.user;
-        renderUserDetail(user, user, res);
+        renderUserDetail(user, user, req, res);
     }
 });
 
