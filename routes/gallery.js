@@ -17,6 +17,7 @@ function render(gallery, user, req, res) {
         res.render('app', {
             title,
             alerts: req.alerts,
+            referral: req.session.referral,
             page: 'galleryDetail',
             props: JSON.stringify(props),
         });
@@ -52,7 +53,7 @@ function render(gallery, user, req, res) {
  */
 router.get('/:id', (req, res, next) => {
     API.request({
-        token: req.session.token ? req.session.token.token : '', 
+        token: req.session.token ? req.session.token.token : '',
         url: `/gallery/${req.params.id}`,
     })
     .then(response => {

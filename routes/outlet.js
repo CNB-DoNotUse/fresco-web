@@ -46,6 +46,7 @@ router.get('/settings', (req, res, next) => {
             title,
             page: 'outletSettings',
             alerts: req.alerts,
+            referral: req.session.referral,
             remoteScripts: ['https://js.stripe.com/v2/'],
             props: JSON.stringify(props),
         });
@@ -80,6 +81,7 @@ router.get('/:id?', (req, res, next) => {
             title,
             props,
             alerts: req.alerts,
+            referral: req.session.referral,
             page: 'outlet',
         });
     })

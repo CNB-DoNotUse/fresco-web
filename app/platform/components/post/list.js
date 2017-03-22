@@ -173,7 +173,7 @@ class PostList extends React.Component {
      */
     togglePost = (passedPost) => {
         const { selectedPosts } = this.state;
-        const { roles } = this.props;
+        const roles = this.props.user.roles;
 
         // Check if `not` CM
         if (!roles.includes('admin')) return;
@@ -219,7 +219,6 @@ class PostList extends React.Component {
 
     renderPosts() {
         const {
-            roles,
             size,
             assignment,
             editable,
@@ -229,6 +228,8 @@ class PostList extends React.Component {
             onMouseLeavePost,
             onMouseLeaveList,
             scrollTo,
+            page,
+            user
         } = this.props;
         const {
             posts,
@@ -251,7 +252,6 @@ class PostList extends React.Component {
                             size={size}
                             parentCaption={parentCaption}
                             post={p}
-                            roles={roles}
                             toggled={selectedPosts.some(s => s.id === p.id)}
                             assignment={assignment}
                             key={i}
@@ -260,6 +260,8 @@ class PostList extends React.Component {
                             onMouseEnter={onMouseEnterPost}
                             onMouseLeave={onMouseLeavePost}
                             togglePost={this.togglePost}
+                            page={page}
+                            user={user}
                         />
                     ))}
                 </div>
@@ -317,7 +319,6 @@ class PostList extends React.Component {
 PostList.propTypes = {
     posts: PropTypes.array,
     scrollable: PropTypes.bool,
-    roles: PropTypes.array,
     size: PropTypes.string,
     assignment: PropTypes.object,
     editable: PropTypes.bool,
@@ -333,6 +334,8 @@ PostList.propTypes = {
     loadPosts: PropTypes.func,
     scrollTo: PropTypes.string,
     reloadPosts: PropTypes.bool,
+    page: PropTypes.string,
+    user: PropTypes.object
 };
 
 PostList.defaultProps = {
@@ -342,7 +345,6 @@ PostList.defaultProps = {
     scrollable: false,
     onlyVerified: false,
     loadPosts() {},
-    roles: [],
     paginateBy: 'id',
     reloadPosts: false,
 };

@@ -1,12 +1,13 @@
 /* global alertify:true */
 import React, { PropTypes } from 'react';
 import utils from 'utils';
+import { mergeReferral } from 'app/lib/referral';
 
 /**
  * Global purchase action
  */
 class PurchaseAction extends React.Component {
-    requestPurchase(post, assignment) {
+    requestPurchase(post, assignment, user, page) {
         const data = { post_ids: [post.id] };
         if (assignment && assignment.id) data.assignment_id = assignment.id;
 
@@ -24,6 +25,16 @@ class PurchaseAction extends React.Component {
                 window.location = '/outlet';
             });
 
+            if (analytics) {
+                analytics.track('Post purchased', mergeReferral({
+                    post_id: post.id,
+                    owner_id: post.owner_id,
+                    outlet_id: user ? user.outlet_id : null,
+                    gallery_id: post.parent_id,
+                    purchased_from: page
+                }))
+            }
+
             this.props.onPurchase();
         })
         .fail((xhr, status, error) => {
@@ -36,7 +47,7 @@ class PurchaseAction extends React.Component {
     // Called whenever the purchase icon is selected
     purchase() {
 		// Check if the prop exists first
-        const { post, assignment } = this.props;
+        const { post, assignment, user, page } = this.props;
         if (!post) return;
 
 		// Confirm the purchase
@@ -47,7 +58,7 @@ class PurchaseAction extends React.Component {
             // Clicked 'Yes'
             if (e) {
                 // Send request for purchase
-                this.requestPurchase(post, assignment);
+                this.requestPurchase(post, assignment, user, page);
             }
         });
     }
@@ -66,7 +77,8 @@ PurchaseAction.propTypes = {
     post: PropTypes.object,
     assignment: PropTypes.object,
     onPurchase: PropTypes.func.isRequired,
+    page: PropTypes.string,
+    user: PropTypes.object
 };
 
 export default PurchaseAction;
-

@@ -131,13 +131,14 @@ class Posts extends React.Component {
                     />
                 </TopBar>
                 <PostList
-                    roles={user.roles}
                     size="small"
                     sortBy={sortBy}
                     onlyVerified={verifiedToggle}
                     loadPosts={this.loadPosts}
                     reloadPosts={this.reloadPosts}
                     scrollable
+                    user={user}
+                    page={page}
                 />
             </App>
         );

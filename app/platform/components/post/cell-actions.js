@@ -26,19 +26,20 @@ class PostCellActions extends React.Component {
 
     render() {
         const {
-            roles,
             purchased,
             editable,
             post,
             assignment,
             onPurchase,
+            page,
+            user
         } = this.props;
 
         const actions = [];
         let key = 0;
 
         // Check if we're CM or greater
-        if (roles.includes('admin')) {
+        if (user.roles.includes('admin')) {
             if (editable) {
                 actions.push(
                     <span
@@ -57,6 +58,8 @@ class PostCellActions extends React.Component {
                         assignment={assignment}
                         onPurchase={onPurchase}
                         key={++key}
+                        page={page}
+                        user={user}
                     />
                 );
             }
@@ -83,6 +86,8 @@ class PostCellActions extends React.Component {
                     assignment={assignment}
                     onPurchase={onPurchase}
                     key={++key}
+                    page={page}
+                    user={user}
                 />
             );
         }
@@ -101,13 +106,14 @@ class PostCellActions extends React.Component {
 }
 
 PostCellActions.propTypes = {
-    roles: PropTypes.array,
     editable: PropTypes.bool,
     purchased: PropTypes.bool.isRequired,
     post: PropTypes.object,
     assignment: PropTypes.object,
     onPurchase: PropTypes.func.isRequired,
     onEdit: PropTypes.func,
+    page: PropTypes.string,
+    user: PropTypes.object
 };
 
 export default PostCellActions;

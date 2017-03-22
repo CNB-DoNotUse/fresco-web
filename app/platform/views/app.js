@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import Sidebar from '../components/sidebar';
+import { mergeReferral } from 'app/lib/referral';
 import '../../sass/platform/screen.scss';
 global.jQuery = require('jquery');
 require('snackbarjs');
@@ -66,4 +67,3 @@ class App extends React.Component {
 }
 
 export default App;
-

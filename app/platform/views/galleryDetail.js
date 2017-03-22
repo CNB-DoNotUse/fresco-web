@@ -147,11 +147,11 @@ class GalleryDetail extends React.Component {
             likesDialog,
             repostsDialog
         } = this.state;
-
+        const page = 'galleryDetail';
         return (
             <App
-                user={this.props.user}
-                page='galleryDetail'>
+                user={user}
+                page={page}>
                 <TopBar
                     title={title}
                     editable={user.roles.includes('admin')}
@@ -170,13 +170,14 @@ class GalleryDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        roles={user.roles}
                         parentCaption={gallery.caption}
                         posts={this.getPostsFromGallery()}
                         updatePosts={updatePosts}
                         scrollable={false}
                         editable={false}
                         size="large"
+                        page={page}
+                        user={user}
                     />
                 </div>
 

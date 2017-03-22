@@ -32,7 +32,7 @@ class PostDetailImage extends React.Component {
     }
 
     render() {
-        const { user, post } = this.props;
+        const { user, post, page } = this.props;
         const { purchased } = this.state;
         let actions = [];
         let postMedia = '';
@@ -46,6 +46,8 @@ class PostDetailImage extends React.Component {
                 assignment={{ id: assignmentId }}
                 onPurchase={(bool) => this.onPurchase(bool)}
                 key={i++}
+                user={user}
+                page={page}
             />
         );
 
@@ -110,6 +112,7 @@ class PostDetailImage extends React.Component {
 PostDetailImage.propTypes = {
     post: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
+    page: PropTypes.string.isRequired
 };
 
 export default PostDetailImage;

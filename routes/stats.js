@@ -25,6 +25,7 @@ router.get('/', (req, res, next) => {
         title: props.title,
         props: JSON.stringify(props),
         alerts: req.alerts,
+        referral: req.session.referral,
         page : 'stats'
     });
 });

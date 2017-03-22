@@ -372,11 +372,12 @@ class Search extends Component {
     }
 
     render() {
+        const page = 'search';
         return (
             <App
                 query={this.props.query}
                 user={this.props.user}
-                page="search"
+                page={page}
             >
                 <TopBar
                     title={this.state.title}
@@ -405,11 +406,12 @@ class Search extends Component {
                 <div className="col-sm-8 tall p0">
                     <PostList
                         posts={this.state.posts}
-                        roles={this.props.user.roles}
                         ref="postList"
                         size="large"
                         onScroll={this.scroll}
                         scrollable
+                        page={page}
+                        user={this.props.user}
                     />
                 </div>
 
