@@ -30,13 +30,13 @@ class App extends React.Component {
     componentDidMount() {
         $.material.init();
 
-        this.trackPage();
+        this.trackUser();
     }
 
     /**
      * Tracks page being viewed through analytics provided
      */
-    trackPage() {
+    trackUser() {
         const { user, page } = this.props;
 
         if(analytics && typeof(analytics) !== 'undefined') {
