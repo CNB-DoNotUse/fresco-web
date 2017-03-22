@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import 'app/sass/platform/_moderation.scss';
 import * as moderationActions from 'app/redux/modules/moderation';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { connect } from 'react-redux';
 import partial from 'lodash/partial';
 import { Map, OrderedSet } from 'immutable';
@@ -17,7 +16,8 @@ import InfoDialog from '../components/dialogs/info';
 import ConfirmDialog from '../components/dialogs/confirm';
 import SuspendedUser from '../components/moderation/suspended-user';
 
-class Moderation extends React.Component {
+class Moderation extends React.PureComponent {
+    
     static propTypes = {
         activeTab: PropTypes.string.isRequired,
         onSetActiveTab: PropTypes.func.isRequired,
@@ -53,8 +53,6 @@ class Moderation extends React.Component {
         this.fetchCurrentTab();
         this.props.fetchSuspendedUsers();
     }
-
-    shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
 
     componentDidUpdate(prevProps) {
         if (this.props.activeTab !== prevProps.activeTab) {
