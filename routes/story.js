@@ -21,6 +21,7 @@ router.get('/:id', (req, res, next) => {
             props: JSON.stringify(props),
             config: config,
             alerts: req.alerts,
+            referral: req.session.referral,
             page: 'storyDetail',
             title : 'Story'
         });

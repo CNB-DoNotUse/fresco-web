@@ -9,6 +9,7 @@ router.get('/', (req, res, next) => {
         res.render('app', {
             title: 'Moderation',
             alerts: req.alerts,
+            referral: req.session.referral,
             page: 'moderation',
             props: JSON.stringify({ user }),
         });
@@ -21,4 +22,3 @@ router.get('/', (req, res, next) => {
 });
 
 module.exports = router;
-

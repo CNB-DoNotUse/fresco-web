@@ -30,6 +30,7 @@ router.get('/', (req, res) => {
     res.render('app', {
         title: 'Search',
         alerts: req.alerts,
+        referral: req.session.referral,
         props: JSON.stringify(props),
         page: 'search',
     });

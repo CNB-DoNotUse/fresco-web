@@ -33,11 +33,11 @@ class PostDetail extends React.Component {
         const { user, title, verifier } = this.props;
         const { gallery, galleryEditToggled, post } = this.state;
         const editable = (user.roles.includes('admin')) && !!gallery.id;
-
+        const page = 'postDetail';
         return (
-            <App 
+            <App
                 user={user}
-                page="postDetail">
+                page={page}>
                 <TopBar
                     title={title}
                     editable={editable}
@@ -47,7 +47,7 @@ class PostDetail extends React.Component {
                 <div className="content">
                     <div className="row">
                         <div className="main">
-                            <PostDetailImage post={post} user={user} />
+                            <PostDetailImage post={post} user={user} page={page} />
 
                             <PostInfo
                                 user={user}
@@ -94,4 +94,3 @@ ReactDOM.render(
     />,
     document.getElementById('app')
 );
-

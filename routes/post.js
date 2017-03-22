@@ -51,6 +51,7 @@ router.get('/:id', (req, res, next) => {
                 image: utils.formatImg(post.image, 'large'),
             },
             alerts: req.alerts,
+            referral: req.session.referral,
             page: 'postDetail'
         });
     })

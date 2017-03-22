@@ -41,15 +41,15 @@ router.get('/:id', (req, res, next) => {
         superagent
         .post(config.ZOHO.FETCH_LEAD + '&id=' + proId)
         .end((err, response) => {
-           
+
             xml2js(response.text, function (err, result) {
                 //Redirect because there's an error in the xml
                 if(result.response.error || !result.response.result) {
                     return res.redirect('/');
                 } else {
-                    //Grab fields from the messy zoho xml that is now js 
+                    //Grab fields from the messy zoho xml that is now js
                     var fields = result.response.result[0].CustomModule1[0].row[0]['FL'];
-                   
+
                     for (var i = 0; i < fields.length; i++) {
                         //Assemble key/val vars
                         var key = fields[i]["$"]["val"],
@@ -71,14 +71,15 @@ router.get('/:id', (req, res, next) => {
                         }
                     }
                 }
-                
+
                 res.render('pro/pro', {
                     head: head,
                     page: 'pro-schedule',
                     dayValues: dayValues,
                     proId: proId,
                     name : firstname + ' ' + lastname,
-                    alerts: req.alerts
+                    alerts: req.alerts,
+                    referral: req.session.referral,
                 });
             });
         });

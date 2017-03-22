@@ -112,11 +112,12 @@ class StoryDetail extends React.Component {
     render() {
         const { user } = this.props;
         const { story, sortBy, editToggled, loading } = this.state;
+        const page = 'storyDetail';
 
         return (
             <App
                 user={user}
-                page="storyDetail"
+                page={page}
             >
                 <TopBar
                     title={story.title}
@@ -132,12 +133,13 @@ class StoryDetail extends React.Component {
 
                 <div className="col-sm-8 tall">
                     <PostList
-                        roles={user.roles}
                         loadPosts={this.loadPosts}
                         editable={false}
                         sortBy={sortBy}
                         size="large"
                         scrollable
+                        page={page}
+                        user={user}
                     />
                 </div>
 

@@ -15,6 +15,7 @@ const bodyParser    = require('body-parser');
 const helmet        = require('helmet');
 const multer        = require('multer');
 const fs            = require('fs');
+const base64        = require('base-64');
 const app           = express();
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
@@ -92,7 +93,7 @@ app.use((req, res, next) => {
         delete req.session.alerts;
         req.session.save();
     }
-    
+
     next();
 });
 
@@ -103,6 +104,20 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
     if (!req.session) {
         return next({ message: 'Unable to establish a session. Please contact support@fresconews.com.' }) // handle error
+    }
+
+    if (req.query.referral) {
+        // Don't fail the request if the there is a problem with the referral token
+        try {
+            req.session.referral = {};
+            const referral_params = JSON.parse(base64.decode(req.query.referral));
+            for (let param in referral_params) {
+                req.session.referral['referral_' + param] = referral_params[param];
+            }
+        }
+        catch (err) {
+            console.error(`Error decoding referral token: ${req.query.referral} (${err})`);
+        }
     }
 
     const route = req.path.slice(1).split('/')[0];
@@ -133,7 +148,7 @@ app.use((req, res, next) => {
 });
 
 
-//Route config for public facing pag
+//Route config for public facing page
 app.use((req, res, next) => {
     res.locals.section = 'public';
     next();

@@ -6,6 +6,9 @@
 <!-- Alerts -->
 <script type="text/javascript">window.alerts = <%- JSON.stringify(alerts) %></script>
 
+<!-- Referral -->
+<script type="text/javascript">window.referral = <%- typeof referral !== 'undefined' ? JSON.stringify(referral) : 'undefined' %></script>
+
 <!--Analytics-->
 <% include analytics %>
 

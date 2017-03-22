@@ -69,10 +69,11 @@ class LocationDetail extends React.Component {
 
     render() {
         const { user, location, outlet } = this.props;
+        const page = 'locationDetail';
         return (
             <App
-                user={this.props.user}
-                page='locationDetail'>
+                user={user}
+                page={page}>
                 <TopBar
                     title={location.title}
                     timeToggle
@@ -87,11 +88,12 @@ class LocationDetail extends React.Component {
 
                 <PostList
                     loadPosts={this.loadPosts}
-                    roles={user.roles}
                     sortBy={this.state.sort}
                     size="small"
                     idOffset
                     scrollable
+                    page={page}
+                    user={user}
                 />
             </App>
         );
