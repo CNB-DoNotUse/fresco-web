@@ -77,6 +77,13 @@ export default class PostInfo extends React.Component {
                                 {`Captured at ${time.formatTime(post.captured_at, true)}`}
                             </li>
 
+                            {post.exclusive_until &&
+                                <li>
+                                    <span className="mdi mdi-clock icon"></span>
+                                    {`Exclusive until ${time.formatTime(post.exclusive_until, true)}`}
+                                </li>
+                            }
+
 							<li>
 								<span className="mdi mdi-map-marker icon"></span>
 								{post.address || 'No Location'}

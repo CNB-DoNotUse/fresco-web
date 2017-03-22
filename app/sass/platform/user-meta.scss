@@ -1,5 +1,7 @@
 /* Sass Document */
 
+$imageWidth:40;
+
 /**
  * User Meta Component
  */
@@ -11,7 +13,7 @@
 
     .meta-user-icon {
         position: relative;
-        width: 40px;
+        width:$imageWidth + px;
         height: 40px;
         background-color: rgba(0, 0, 0, 0.26);
         border-radius: 20px;
@@ -37,8 +39,8 @@
     .meta-user-text {
         display: inline-block;
         vertical-align: top;
-        margin-left: 16px;
-        width: 100%;
+        margin-left:16px;
+        width: calc(100% - #{$imageWidth + 16px});
 
         span {
             vertical-align: middle;

@@ -56,8 +56,15 @@ router.get('/:id', (req, res, next) => {
         });
     })
     .catch(error => {
+        let message = 'Unable to load post!';
+
+        if(error.status === 404)
+            message = 'Post not found!';
+        else if(error.msg !== '')
+            message = error.msg;
+
         next({
-            message: error.status === 404 ? 'Post not found!' : 'Unable to load post!',
+            message,
             status: error.status,
             stack: error.stack
         });

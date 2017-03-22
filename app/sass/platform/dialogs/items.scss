@@ -25,6 +25,10 @@
         }
     }
 
+    .dialog-modal__items {
+      padding:0 20px;
+    }
+
     .dialog-modal__body {
         overflow-y: scroll;
         overflow-x: hidden;

@@ -1,12 +1,10 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import utils from 'utils';
-import api from 'app/lib/api';
+import isEmpty from 'lodash/isEmpty';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import { getLatLngFromGeo } from 'app/lib/location';
-import 'app/sass/platform/_assignment';
-import 'app/sass/platform/_posts';
-import isEmpty from 'lodash/isEmpty';
+import api from 'app/lib/api';
 import TopBar from '../components/topbar';
 import PostList from '../components/post/list';
 import Sidebar from '../components/assignment/sidebar';
@@ -15,6 +13,8 @@ import ItemsDialog from '../components/dialogs/items';
 import AssignmentMap from '../components/assignment/map';
 import AcceptedUser from '../components/assignment/accepted-user';
 import App from './app';
+import 'app/sass/platform/_assignment';
+import 'app/sass/platform/_posts';
 
 /**
  * Assignment Detail Parent Object, made of a side column and PostList

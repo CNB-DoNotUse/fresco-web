@@ -37,7 +37,6 @@
     "helmet": "^3.1.0",
     "immutable": "^3.8.1",
     "install": "^0.8.1",
-    "isomorphic-fetch": "^2.2.1",
     "jquery": "^2.1.4",
     "json-loader": "^0.5.4",
     "lodash": "^4.0.1",
@@ -79,6 +78,7 @@
     "video.js": "^5.17.0",
     "videojs-contrib-hls": "^5.3.3",
     "webpack": "^1.14.0",
+    "whatwg-fetch": "^2.0.3",
     "xml2js": "^0.4.16"
   },
   "devDependencies": {

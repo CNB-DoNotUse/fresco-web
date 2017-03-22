@@ -57,7 +57,9 @@ class MergeDropup extends React.Component {
         const data = {
             radius: 100,
             geo: location.hasOwnProperty('type') ? location : getGeoFromCoordinates(location),
-            limit: 5,
+            limit: 8,
+            sortBy: 'created_at',
+            direction: 'desc',
             ends_after: Date.now(),
             rating: [0, 1] //Active or Pending
         };

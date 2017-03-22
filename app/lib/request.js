@@ -1,13 +1,20 @@
-import 'isomorphic-fetch';
+import 'whatwg-fetch';
 import qs from 'qs';
 
-const fetchStatusHandler = (response) => {
-    if (response.status === 200) {
+function checkStatus(response) {
+    if (response.status >= 200 && response.status < 300) {
         return response;
+    } else {
+        let error = new Error(response.statusText);
+        error.response = response
+        throw error;
     }
+}
 
-    throw new Error(response.statusText);
-};
+function parseJSON(response) {
+    return response.json()
+}
+
 
 /**
  * Front-end network proxy to be used around the codebase instead of direct network requests
@@ -23,9 +30,8 @@ export default {
                 'Data-Type': 'json'
             }, headers)
         })
-        .then(fetchStatusHandler)
-        .then(res => res.json())
-        .catch(Promise.reject);
+        .then(checkStatus)
+        .then(parseJSON)
     },
 
     get(url, body = {}, headers = {}) {
@@ -37,9 +43,8 @@ export default {
                 'Data-Type': 'json'
             }, headers)
         })
-        .then(fetchStatusHandler)
-        .then(res => res.json())
-        .catch(Promise.reject);
+        .then(checkStatus)
+        .then(parseJSON)
     },
 };
 
