@@ -44,7 +44,6 @@ class App extends React.Component {
                 name: this.props.user.full_name,
                 email: this.props.user.email
             });
-            console.log('poop');
         }
     }
 
