@@ -64,22 +64,22 @@ class OAuthForm extends React.Component {
 
             actions = (
                 <div className="oauth__form__actions">
-                    <span 
-                        className="oauth__form__action oauth__form__action--revoke" 
+                    <span
+                        className="oauth__form__action oauth__form__action--revoke"
                         onClick={() => this.props.revoke()}>Revoke</span>
-                    <span 
-                        className="oauth__form__action oauth__form__action--grant" 
+                    <span
+                        className="oauth__form__action oauth__form__action--grant"
                         onClick={() => this.props.authorize()}>Allow</span>
                 </div>
             );
         } else if(!hasGranted && loggedIn) {
             body = (
                 <div className="oauth__form__actions">
-                    <span 
-                        className="oauth__form__action oauth__form__action--cancel" 
+                    <span
+                        className="oauth__form__action oauth__form__action--cancel"
                         onClick={this.props.cancel}>Cancel</span>
-                    <span 
-                        className="oauth__form__action oauth__form__action--grant" 
+                    <span
+                        className="oauth__form__action oauth__form__action--grant"
                         onClick={() => this.props.authorize()}>Allow</span>
                 </div>
             );
@@ -88,23 +88,23 @@ class OAuthForm extends React.Component {
 
             body = (
                 <form className="oauth__form__body" onSubmit={this.login}>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         placeholder="Email or @username"
                         name="username"
                         onChange={(e) => this.handleInputChange(e)} />
-                    <input 
-                        type="password" 
+                    <input
+                        type="password"
                         placeholder="Password"
                         name="password"
                         onChange={(e) => this.handleInputChange(e)} />
-                    
+
                     <div className="oauth__form__actions">
-                        <span 
-                            className="oauth__form__action oauth__form__action--cancel" 
+                        <span
+                            className="oauth__form__action oauth__form__action--cancel"
                             onClick={this.props.cancel}>Cancel</span>
-                        <input 
-                            className={`oauth__form__action ${buttonClass}`} 
+                        <input
+                            className={`oauth__form__action ${buttonClass}`}
                             type="submit"
                             value="Log In & Allow" />
                     </div>
@@ -118,7 +118,7 @@ class OAuthForm extends React.Component {
                 {actions}
             </div>
         )
-    }
+    };
 
     render() {
         const {

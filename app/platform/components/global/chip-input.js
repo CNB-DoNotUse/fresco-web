@@ -100,7 +100,7 @@ class ChipInput extends React.Component {
 
     /**
      * On key up event on the input field. The chip input can handle either adding existing items
-     * that are found from the look up, or just simply adding what the user inputs into the text field, think 
+     * that are found from the look up, or just simply adding what the user inputs into the text field, think
      * `tags`. Assignments, galleries, stories however will likely require that a matching item is found.
      * See the logic below
      * @param {object} e Key up event
@@ -117,7 +117,7 @@ class ChipInput extends React.Component {
             //If we're not querying by anything, add the whole object
             if (!queryAttr) {
                 this.addItem(query);
-            } else {            
+            } else {
                 const matched = suggestions.find(s => (
                     s[queryAttr] && (s[queryAttr].toLowerCase() === query.toLowerCase())
                 )) || suggestions[0];
@@ -125,15 +125,15 @@ class ChipInput extends React.Component {
                 //Check if we're creating new items or existing ones
                 if (createNew) {
                     if(altAttr) {
-                        this.addItem({ 
-                            [queryAttr]: query, 
+                        this.addItem({
+                            [queryAttr]: query,
                             [altAttr]: query,
-                             new: true 
+                             new: true
                          });
                     } else {
-                        this.addItem({ 
-                            [queryAttr]: query, 
-                            new: true 
+                        this.addItem({
+                            [queryAttr]: query,
+                            new: true
                         });
                     }
                 } else if (matched) {
@@ -156,7 +156,7 @@ class ChipInput extends React.Component {
 
     /**
      * Gets suggestions to fill the chip input with based on the model passed.
-     * The search for suggestions is based on the type of 
+     * The search for suggestions is based on the type of
      * suggestoon method passed e.g. autocomplete, search, or a lookup my model ID
      */
     getSuggestions = () => {
@@ -173,16 +173,16 @@ class ChipInput extends React.Component {
 
         if (search) {
             api
-            .get('search', { 
-                [`${model}[q]`]: query, 
-                ...params 
+            .get('search', {
+                [`${model}[q]`]: query,
+                ...params
             })
             .then(handleResponse);
         } else if (autocomplete) {
             api
-            .get('search', { 
-                [`${model}[a][${queryAttr}]`]: query, 
-                ...params 
+            .get('search', {
+                [`${model}[a][${queryAttr}]`]: query,
+                ...params
             })
             .then(handleResponse);
         } else if (idLookup) {
@@ -213,7 +213,7 @@ class ChipInput extends React.Component {
         } else {
             this.setState({ suggestions: [], showingInitial: false });
         }
-    }
+    };
 
     /**
      * Does a lookup of a model by its ID, if found, will set in state
@@ -233,18 +233,18 @@ class ChipInput extends React.Component {
      * Adds story element, return if story exists in prop stories.
      */
     addItem(newItem) {
-        let { 
-            items, 
-            queryAttr, 
-            multiple, 
-            altAttr 
+        let {
+            items,
+            queryAttr,
+            multiple,
+            altAttr
         } = this.props;
 
         //Run checks to make sure we don't already have the item
         if (queryAttr) {
-            if (!newItem[queryAttr] && !newItem[altAttr]) 
+            if (!newItem[queryAttr] && !newItem[altAttr])
                 return;
-            if (newItem.id && items.some((i) => (i.id === newItem.id))) 
+            if (newItem.id && items.some((i) => (i.id === newItem.id)))
                 return;
         } else if (items.some(i => i === newItem)) {
             return;
@@ -282,7 +282,7 @@ class ChipInput extends React.Component {
 
     /**
      * Text modifier used by parent cmp. if it wishes to modify
-     * the text string that shows up. Returns text by default via `defaultProps`    
+     * the text string that shows up. Returns text by default via `defaultProps`
      * @param  {String} text The text that is about show up
      * @return {String} Modified version of the text
      */
@@ -319,14 +319,14 @@ class ChipInput extends React.Component {
         }
 
         return (
-            <li 
-                onClick={() => this.addItem(suggestion)} 
+            <li
+                onClick={() => this.addItem(suggestion)}
                 key={key}
             >
                 {text}
             </li>
         );
-    }
+    };
 
     render() {
         const { query, suggestions, showingInitial } = this.state;
@@ -364,9 +364,9 @@ class ChipInput extends React.Component {
                     />
 
                     <ul className={`dropdown ${suggestions.length > 0 ? 'show' : ''}`}>
-                        {showingInitial && 
+                        {showingInitial &&
                             <h4 className="dropdown__suggestion_header">{this.props.suggestionText}</h4>}
-                        
+
                         {suggestions.map(this.renderSuggestion)}
                     </ul>
 
