@@ -89,11 +89,13 @@ class ChipInput extends React.Component {
 
         if (query.length === 0 || utils.isEmptyString(query)) {
             this.getInitialSuggestions();
+            this.setState({ query });
         } else {
-            this.getSuggestions();
+            this.setState({ query }, () => {
+                //On callback so we can make sure we have the new query to get suggestions with
+                this.getSuggestions();
+            });
         }
-
-        this.setState({ query });
     };
 
     /**
@@ -140,7 +142,6 @@ class ChipInput extends React.Component {
             }
         }
     };
-
 
     /**
      * On click handler for the main input field

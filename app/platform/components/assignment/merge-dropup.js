@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { geoFromCoordinates } from 'app/lib/location';
+import { getGeoFromCoordinates } from 'app/lib/location';
 import assignment from 'app/lib/assignment';
 
 /**
@@ -56,7 +56,7 @@ class MergeDropup extends React.Component {
         this.setState({ loading: true });
         const data = {
             radius: 100,
-            geo: location.hasOwnProperty('type') ? location : geoFromCoordinates(location),
+            geo: location.hasOwnProperty('type') ? location : getGeoFromCoordinates(location),
             limit: 5,
             ends_after: Date.now(),
             rating: [0, 1] //Active or Pending
