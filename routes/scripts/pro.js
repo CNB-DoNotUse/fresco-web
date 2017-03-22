@@ -1,5 +1,4 @@
 const express         = require('express');
-const requestJson     = require('request-json');
 const superagent      = require('superagent');
 const config          = require('../../lib/config');
 const validator       = require('validator');

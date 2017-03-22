@@ -1,7 +1,6 @@
 const express       = require('express');
 const superagent    = require('superagent');
 const router        = express.Router();
-const nodemailer    = require('nodemailer');
 const zendesk       = require('node-zendesk');
 const validator     = require('validator');
 

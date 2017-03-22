@@ -21,7 +21,6 @@
   ],
   "dependencies": {
     "alertify.js": "alertifyjs#~1.0.5",
-    "snackbarjs": "~1.1.0",
-    "video.js": "~5.4.5"
+    "snackbarjs": "~1.1.0"
   }
 }

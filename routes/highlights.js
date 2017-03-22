@@ -1,9 +1,7 @@
-var express   = require('express'),
-  router      = express.Router(),
-  requestJson = require('request-json'),
-  config      = require('../lib/config'),
-  head        = require('../lib/head'),
-  api         = requestJson.createClient(config.API_URL)
+const express = require('express');
+const router = express.Router();
+const config = require('../lib/config');
+const head  = require('../lib/head');
 
 /**
  * Main highlights page

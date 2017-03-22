@@ -1,6 +1,5 @@
 const express = require('express');
 const config = require('../lib/config');
-const request = require('request-json');
 const router = express.Router();
 
 /**
