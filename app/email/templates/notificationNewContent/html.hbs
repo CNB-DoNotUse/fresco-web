@@ -9,24 +9,28 @@
                     \{{#if single_post}}
                         \{{#each posts}}
                             <a target="_blank" href="\{{ link }}" class="post large">
-								\{{#if video}}
-									<img class="video_icon" src="http://cdn.static.fresconews.com/images/email/play-circle-outline.png"></img>
-								\{{/if}}
 								<div class="img_wrap">
 									<img src="\{{ image }}"></img>
 								</div>
+								\{{#if video}}
+									<div class="video_container">
+										<img class="video_icon" src="http://cdn.static.fresconews.com/images/email/play-circle-outline.png"></img>
+									</div>
+								\{{/if}}
 								<div class="img_after"></div>
                             </a>
                         \{{/each}}
                     \{{else}}
 						\{{#each posts}}
 							<a target="_blank" href="\{{ link }}" class="post">
-								\{{#if video}}
-									<img class="video_icon" src="http://cdn.static.fresconews.com/images/email/play-circle-outline.png"></img>
-								\{{/if}}
 								<div class="img_wrap">
 									<img src="\{{ image }}"></img>
 								</div>
+								\{{#if video}}
+									<div class="video_container">
+										<img class="video_icon" src="http://cdn.static.fresconews.com/images/email/play-circle-outline.png"></img>
+									</div>
+								\{{/if}}
 								<div class="img_after"></div>
 							</a>
 						\{{/each}}
