@@ -2,13 +2,13 @@
 
 /* Sass Document */
 
-/*------------------------------------------------------------------------------------
+@import "../../global/_global";
+@import "../nav";
+@import "../footer";
 
-Copyright 2016 Fresco News, Inc. All Rights Reserved.
-
--------------------------------------------------------------------------------------*/
-
-@import "./../global/_global";
+.page {
+    padding-top: 128px;
+}
 
 .error{
 	background: url("https://cdn.fresconews.com/static/images/bg-hero.jpg") $fresco-yellow no-repeat center center scroll;

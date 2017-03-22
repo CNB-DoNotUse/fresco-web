@@ -5,7 +5,6 @@
 @import "~mdi/scss/materialdesignicons.scss";
 @import "../../fonts/nota/nota";
 @import "../../fonts/roboto/roboto";
-@import "../../fonts/roboto";
 @import "../../fonts/icomoon/style";
 
 /*
@@ -53,7 +52,6 @@ input[type="submit"]{
 textarea:focus, input:focus{
     outline: 0;
 }
-
 
 .wrapper{
     height:100%;

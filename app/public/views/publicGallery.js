@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import 'app/sass/platform/screen.scss';
-import 'app/sass/platform/_publicGallery.scss';
+import 'app/sass/platform/screen.scss'; //TODO - Remove from here
+import 'app/sass/public/gallery/publicGallery.scss';
 import PublicGallerySlider from 'app/platform/components/publicGallery/slider';
 import PublicGalleryInfo from 'app/platform/components/publicGallery/info';
 import Footer from 'app/platform/components/global/footer';

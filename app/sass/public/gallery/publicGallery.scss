@@ -1,7 +1,9 @@
-@import "../global/_global.scss";
+@import "../../global/_global.scss";
+@import "~slick-carousel/slick/slick.scss";
+@import "~slick-carousel/slick/slick-theme.scss";
+@import "../../global/fresco-slick.scss";
 @import "../nav";
 @import "../footer";
-@import "../global/fresco-slick.scss";
 
 /**
  * Slick Wrapper Parent

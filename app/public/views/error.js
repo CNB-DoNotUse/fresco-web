@@ -1,1 +1,1 @@
-require('../../../app/sass/error/error.scss');
+require('../../../app/sass/public/error/error.scss');

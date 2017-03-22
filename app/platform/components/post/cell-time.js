@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import moment from 'moment';
-import time from 'app/lib/time';
+import timeLib from 'app/lib/time';
 
 /**
  * Post Cell Time/First Look
@@ -41,7 +41,7 @@ class CellTime extends Component {
             : post.created_at;
 
 
-        const timeString = typeof time === 'undefined' ? 'No timestamp' : time.formatTime(time);
+        const timeString = typeof time === 'undefined' ? 'No timestamp' : timeLib.formatTime(time);
         const pad = (num, size) => (`000000000${num}`).substr(-size);
 
         if (firstLook) {
