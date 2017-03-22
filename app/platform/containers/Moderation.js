@@ -153,10 +153,8 @@ class Moderation extends React.Component {
             user
         } = this.props;
 
-        console.log(this.props);
-
         return (
-            <App page='Moderation' user={user}>
+            <App page='moderation' user={user}>
                 <div className="moderation container-fluid">
                     <TopBar
                         title="Moderation"

@@ -111,7 +111,7 @@ class PushNotifs extends React.Component {
         } = this.props;
 
         return (
-            <App page='Push' user={user}>
+            <App page='push' user={user}>
                 <div className="container-fluid">
                     <TopBar
                         title="Push Notifications"
