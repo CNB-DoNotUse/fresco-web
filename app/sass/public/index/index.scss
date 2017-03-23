@@ -1,11 +1,3 @@
-/* Sass Document */
-
-/*------------------------------------------------------------------------------------
-
-Copyright 2016 Fresco News, Inc. All Rights Reserved.
-
--------------------------------------------------------------------------------------*/
-
 /**
  * Root SASS file for public index page and the modals it displays
  */
@@ -14,6 +6,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 @import "~node-waves/dist/waves.css";
 @import "../../global/_global";
 @import "../../global/fresco-slick";
+@import "../../global/chat";
 @import "../footer";
 @import "../nav";
 @import "../dropdown";
