@@ -12,7 +12,7 @@ class PurchaseAction extends React.Component {
         const data = { post_id: post.id  };
 
         api
-            .post('purchase/createasd', data)
+            .post('purchase/create', data)
             .then(() => {
                 $.snackbar({
                     content: 'Purchase successful! Visit your outlet page or click to view your purchased content'
