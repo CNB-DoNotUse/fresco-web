@@ -29,7 +29,7 @@
         "500": "Internal server error"
     },
 
-    "DASH_HOME": "/highlights",
+    "DASH_HOME": "/archive",
 
     "PORT": "3000"
 }

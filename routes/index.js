@@ -9,17 +9,21 @@ const API  = require('../lib/api');
  */
 router.get('/:modal?', (req, res, next) => {
     if(req.params.modal){
-        if(req.params.modal == 'partners') {
+        const modal = req.params.modal;
+
+        if(modal == 'partners') {
             res.redirect('/account');
+        } else if((modal === 'account' || modal === 'login') && req.session.user) {
+            res.redirect(config.DASH_HOME);
         }
         //Not a modal, pass onto route sequence
-        else if(routes.modals.indexOf(req.params.modal) == -1 && routes.aliases[req.params.modal] == null) {
+        else if(routes.modals.indexOf(modal) == -1 && routes.aliases[modal] == null) {
             return next();
         }
     }
     //Redirect to dashboard home if the user is already logged in, instead of the landing page
     else if(req.session.user !== null && typeof(req.session.user) !== 'undefined') {
-        return res.redirect('/highlights');
+        return res.redirect(config.DASH_HOME);
     }
 
     res.render('index', {

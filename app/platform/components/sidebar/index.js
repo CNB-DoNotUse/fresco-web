@@ -23,7 +23,7 @@ class Sidebar extends Component {
         return (
             <div className="col-lg-2 sidebar toggle-drawer" id="_sidebar">
                 <div>
-                    <a href="/highlights">
+                    <a href="/archive">
                         <img
                             role="presentation"
                             src={`${utils.CDN}/images/wordmark-news.png`}

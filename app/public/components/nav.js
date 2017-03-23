@@ -162,7 +162,7 @@ Nav.prototype.handleModal = function(passedPrototype) {
  * Presents a modal
  * @param  {string} modal Modal's unique identifier
  */
-Nav.prototype.presentModal = function(modalId, pushState, callback = ()=>{}) {
+Nav.prototype.presentModal = function(modalId, pushState, callback = () => {}) {
 	let modalElm = document.getElementById('_' + modalId),
 		fromLanding = this.landingWrap.style.display == 'block' || this.landingWrap.style.display == '';
 
