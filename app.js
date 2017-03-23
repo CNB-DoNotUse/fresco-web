@@ -137,15 +137,21 @@ app.use((req, res, next) => {
         });
     }
 
-    const tokenExpired = new Date(req.session.token.expires_at) < Date.now(); //Bearer token has expired
+    const tokenExpired = new Date(req.session.token.expires_at) < now; //Bearer token has expired
 
-    // Check if the session hasn't expired
-    if (!tokenExpired) {
-        return next();
+    // Check if the token hasn't expired
+    if (tokenExpired) {
+        //Bearer token has expired, so refresh the token
+        return userMiddleware.refreshBearer(req, res, next);
     }
 
-    //Bearer token has expired, so refresh the token
-    userMiddleware.refreshBearer(req, res, next);
+    // Check if the session hasn't expired
+    if (!req.session.user.TTL || req.session.user.TTL - now < 0) {
+       //Session has expired, so refresh the user
+       return userMiddleware.refresh(req, res, next);
+   }
+
+    return next();
 });
 
 

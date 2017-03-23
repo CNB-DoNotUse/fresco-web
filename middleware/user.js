@@ -21,6 +21,24 @@ module.exports = {
     },
 
     /**
+     * Refreshes a user's session with new data
+     */
+    refresh(req, res, next) {
+        API.request({
+            url: '/user/me',
+            token: req.session.token.token,
+            method: 'GET',
+        })
+        .then(response => {
+            userLib
+                .saveSession(req, response.body)
+                .then(() => next())
+                .catch(() => User.logout(req, res))
+        })
+        .catch(() => User.logout(req, res))
+    },
+
+    /**
      * User log in middleware
      */
     login(req, res) {
