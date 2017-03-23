@@ -20,7 +20,7 @@ class DownloadAction extends React.Component {
 
         $.snackbar({
             content: 'Downloading...',
-            timeout: 0
+            timeout: 5000
         })
 
         // Override click event for browsers that do not support it
