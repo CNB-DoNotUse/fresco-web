@@ -8,7 +8,7 @@ const userLib = require('../lib/user');
 /**
  * User middleware used around the site
  */
-module.exports = {
+const userMiddleware = {
 
     /**
      * Middleware for refreshing token
@@ -17,25 +17,26 @@ module.exports = {
         userLib
             .refreshBearer(req)
             .then(() => next())
-            .catch(() => User.logout(req, res))
+            .catch(() => userMiddleware.logout(req, res))
     },
 
     /**
      * Refreshes a user's session with new data
      */
     refresh(req, res, next) {
-        API.request({
-            url: '/user/me',
-            token: req.session.token.token,
-            method: 'GET',
-        })
-        .then(response => {
-            userLib
-                .saveSession(req, response.body)
-                .then(() => next())
-                .catch(() => User.logout(req, res))
-        })
-        .catch(() => User.logout(req, res))
+        API
+            .request({
+                url: '/user/me',
+                token: req.session.token.token,
+                method: 'GET',
+            })
+            .then(response => {
+                userLib
+                    .saveSession(req, response.body)
+                    .then(() => next())
+                    .catch(() => userMiddleware.logout(req, res))
+            })
+            .catch(() => userMiddleware.logout(req, res))
     },
 
     /**
@@ -79,3 +80,5 @@ module.exports = {
         .catch(end);
     }
 }
+
+module.exports = userMiddleware;
