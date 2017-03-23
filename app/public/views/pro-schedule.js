@@ -5,16 +5,17 @@ require('velocity-animate');
 import Waves from 'node-waves';
 import Nav from '../components/nav';
 import Animation from '../components/animation';
+import startChat from 'app/chat';
 
-var schedule = document.getElementById('schedule'),
-	nav = new Nav({
-	    tablet: 1024, 
-	    mobile: 720
-	});
+const schedule = document.getElementById('schedule');
+const nav = new Nav({
+	tablet: 1024, 
+	mobile: 720
+});
 
 let animation = new Animation();
-
 nav.resize();
+startChat();
 
 /**
  * Click handler for schedule block element

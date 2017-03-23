@@ -124,9 +124,6 @@ Landing.prototype.updateElements = function(yOffset) {
 
     let navOffset = -offsetDif;
         navOffset = navOffset >= 0 ? 0 : navOffset;
-
-    if(!this.navReached)
-        this.translateY3d(this.nav.navElement, navOffset);
     
     this.translateY3d(this.bottom, bottomOffset);
     this.translateY3d(this.hero, heroOffset);

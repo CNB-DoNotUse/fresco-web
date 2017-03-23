@@ -66,6 +66,7 @@
     "redux-immutable": "^3.0.8",
     "redux-logger": "^2.6.1",
     "superagent": "^3.5.0",
+    "smooch": "^3.13.3",
     "three": "^0.82.1",
     "underscore": "~1.8.3",
     "validator": "^5.2.0",

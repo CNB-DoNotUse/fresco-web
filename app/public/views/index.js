@@ -1,9 +1,10 @@
 global.jQuery = require('jquery');
-require('../../sass/public/index/index.scss');
 require('snackbarjs');
 require('velocity-animate');
 require('alerts');
 const Landing = require('../components/landing.js');
+import startChat from 'app/chat';
+import '../../sass/public/index/index.scss';
 
 const screen = {
     tablet: 1024,
@@ -15,6 +16,7 @@ window.landing = landing;
 
 $(document).ready(() => {
 	landing.init(); 
+    startChat();
 });
 
 window.addEventListener('resize', () => {

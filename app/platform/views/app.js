@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
-import Sidebar from '../components/sidebar';
 import { mergeReferral } from 'app/lib/referral';
-import '../../sass/platform/screen.scss';
 global.jQuery = require('jquery');
+import Sidebar from '../components/sidebar';
+import startChat from 'app/chat';
 require('snackbarjs');
 require('alerts');
 require('script!bootstrap/dist/js/bootstrap');
 require('script!bootstrap-material-design/dist/js/material');
 require('script!bootstrap-material-design/dist/js/ripples');
 require('script!alertify.js/dist/js/alertify');
+import '../../sass/platform/screen.scss';
 
 /**
  * Root App Wrapper
@@ -28,9 +29,11 @@ class App extends React.Component {
     };
 
     componentDidMount() {
+        const { user } = this.props;
         $.material.init();
 
         this.trackUser();
+        startChat();
     }
 
     /**

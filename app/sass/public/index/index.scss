@@ -73,9 +73,6 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
     left:0; right:0;        
 }
 
-.nav{
-    @include transform(translate3d(0, -128px, 0));
-}
 
  @keyframes animateBackground {
  	from { 

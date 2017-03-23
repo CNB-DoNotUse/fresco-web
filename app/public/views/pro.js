@@ -6,6 +6,7 @@ import Waves from 'node-waves';
 import Nav from '../components/nav';
 import Animation from '../components/animation';
 import { mergeReferral } from 'app/lib/referral';
+import startChat from 'app/chat';
 
 var formWrap = document.getElementById('_form-wrap'),
 	form = document.getElementById('pro-form'),
@@ -28,6 +29,7 @@ let animation = new Animation();
 function init() {
 	Waves.attach('.button', [ 'waves-block', 'waves-classic']);
 	Waves.init();
+	startChat();
 
 	if(!submit) return;
 
