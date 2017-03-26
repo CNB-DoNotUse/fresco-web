@@ -26,7 +26,6 @@ const assignment = {
     }
 }
 
-
-export const list = assignment.list
+export const list = assignment.list;
 
 export default assignment;
