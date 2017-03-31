@@ -1,5 +1,6 @@
 @import './variables';
 @import '../global/mixins';
+@import '../global/colors';
 
 .merge-dropup {
     position: relative;
@@ -172,4 +173,30 @@
         text-transform: uppercase;
         color: $color-accent-primary;
     }
+
+    .mdi-map-marker {
+        display: inline-block;
+        float: left;
+        font-size: 22px;
+        color: rgba(0,0,0,0.54);
+        margin-right: 15px;
+    }
+
+    &.changed {
+        animation:animateBackground 1.5s ease-in-out;
+    }
+
+    .assignment__accepted-location {
+        color:$fresco-grey;
+    }
+
+    .assignment__accepted-distance {
+        font-weight:bold;
+        color:$fresco-black;
+    }
+}
+
+@keyframes animateBackground {
+    from {background-color: #4cd764;}
+    to {background-color: clear;}
 }
