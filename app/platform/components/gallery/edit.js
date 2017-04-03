@@ -514,8 +514,8 @@ class Edit extends React.Component {
                     onMapDataChange={data => this.onMapDataChange(data)}
                     onRadiusUpdate={r => this.onRadiusUpdate(r)}
                     hasRadius={false}
-                    disabled={mapDisabled}
-                    draggable={!mapDisabled}
+                    disabled={false}
+                    draggable={true}
                     rerender
                 />
             </div>

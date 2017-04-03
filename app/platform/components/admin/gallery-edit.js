@@ -397,8 +397,8 @@ export default class GalleryEdit extends React.Component {
                         address={address}
                         onPlaceChange={(p) => this.onPlaceChange(p)}
                         onMapDataChange={(data) => this.onMapDataChange(data)}
-                        disabled={galleryType === 'submissions'}
-                        draggable={galleryType !== 'submissions'}
+                        disabled={false}
+                        draggable={true}
                         hasRadius={false}
                         rerender
                     />
