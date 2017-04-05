@@ -19,6 +19,7 @@ import EditByline from './../gallery/edit-byline';
 export default class GalleryEdit extends React.Component {
     static propTypes = {
         gallery: PropTypes.object.isRequired,
+        galleryType: PropTypes.string.isRequired,
         onUpdateGallery: PropTypes.func.isRequired,
     };
 
@@ -288,7 +289,7 @@ export default class GalleryEdit extends React.Component {
     }
 
     render() {
-        const { gallery } = this.props;
+        const { gallery, galleryType } = this.props;
         const {
             location,
             address,
@@ -396,8 +397,8 @@ export default class GalleryEdit extends React.Component {
                         address={address}
                         onPlaceChange={(p) => this.onPlaceChange(p)}
                         onMapDataChange={(data) => this.onMapDataChange(data)}
-                        disabled={false}
-                        draggable={true}
+                        disabled={galleryType === 'submissions'}
+                        draggable={galleryType !== 'submissions'}
                         hasRadius={false}
                         rerender
                     />
