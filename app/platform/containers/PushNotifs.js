@@ -13,13 +13,18 @@ import TopBar from '../components/topbar';
 import Default from '../components/pushNotifs/default-template';
 import GalleryList from '../components/pushNotifs/gallery-list-template';
 import Recommend from '../components/pushNotifs/recommend-template';
+import SupportRequest from '../components/pushNotifs/support-request-template';
 import Assignment from '../components/pushNotifs/assignment-template';
 
 import 'app/sass/platform/_pushNotifs.scss';
 
 const getConfirmText = (template) => {
+    // this is not the way to determine if users/locations have been selected
+    //
     const restrictedByUser = get(template, 'restrictByUser', false);
     const restrictedByLocation = get(template, 'restrictByLocation', false);
+    const usersSelected = get(template, 'users', false);
+    const locationSelected = get(template, 'location', false);
 
     if (get(template, 'assignment', false) && (!restrictedByUser && !restrictedByLocation)) {
         return 'This notification will be sent to every user near the selected assignment!';
@@ -29,8 +34,8 @@ const getConfirmText = (template) => {
         return 'This notification will be sent to every user in the selected location!';
     }
 
-    if (!restrictedByUser && !restrictedByLocation) {
-        return 'This notification will be sent to every user!';
+    if ((!restrictedByUser || !usersSelected) && (!restrictedByLocation || !locationSelected)) {
+        return 'WARNING: This notification will be sent to every user!';
     }
 
     return null;
@@ -86,6 +91,8 @@ class PushNotifs extends React.Component {
                 return <Assignment {...props} />;
             case 'recommend':
                 return <Recommend {...props} />;
+            case 'support request':
+                return <SupportRequest {...props} />;
             case 'default':
             default:
                 return <Default {...props} />;
@@ -115,7 +122,7 @@ class PushNotifs extends React.Component {
                 <div className="container-fluid">
                     <TopBar
                         title="Push Notifications"
-                        tabs={['Default', 'Gallery List', 'Recommend', 'Assignment']}
+                        tabs={['Default', 'Gallery List', 'Recommend', 'Assignment', 'Support Request']}
                         setActiveTab={onSetActiveTab}
                         activeTab={activeTab}
                     />
@@ -130,7 +137,7 @@ class PushNotifs extends React.Component {
                                 onClick={onDismissAlert}
                                 bodyStyle={{ height: 'auto', whiteSpace: 'pre-line' }}
                             />
-                            
+
                             {this.renderTemplate()}
 
                             <button
@@ -193,4 +200,3 @@ export default connect(mapStateToProps, {
     cancelSend: pushActions.cancelSend,
     onCloseInfoDialog: pushActions.closeInfoDialog,
 })(PushNotifs);
-

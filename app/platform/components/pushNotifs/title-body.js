@@ -12,7 +12,25 @@ const TitleBody = ({
     title,
     body,
     onChange,
-    }) => (
+    onlyOneField
+}) => {
+    // I added this portion to be able to have support request have only one field
+
+    if (onlyOneField) {
+        return (
+            <span>
+                <textarea
+                    type="text"
+                    className="form-control floating-label"
+                    placeholder="Body"
+                    value={body || ''}
+                    onChange={onChangeBody(onChange)}
+                />
+            </span>
+        );
+    }
+
+    return(
     <span>
         <input
             type="text"
@@ -30,7 +48,7 @@ const TitleBody = ({
             onChange={onChangeBody(onChange)}
         />
     </span>
-);
+)};
 
 TitleBody.propTypes = {
     title: PropTypes.string,
@@ -39,4 +57,3 @@ TitleBody.propTypes = {
 };
 
 export default TitleBody;
-

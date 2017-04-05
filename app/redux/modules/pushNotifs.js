@@ -26,11 +26,16 @@ export const CLOSE_INFO_DIALOG = 'pushNotifs/CLOSE_INFO_DIALOG';
 // helpers
 const getTemplateErrors = (template, getState) => {
     const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
+    // these lines are redundant and appears in getConfirmText in platform/containers/PushNotifs
+    const usersSelected = templateData.get('users', false);
+    const locationSelected = templateData.get('location', false);
+    const restrictedByUser = templateData.get('restrictByUser', false);
+    const restrictedByLocation = templateData.get('restrictByLocation', false);
     const missing = [];
     const errors = [];
     let msg = '';
 
-    if (!templateData.get('title')) missing.push('Title');
+    if (!templateData.get('title') && template !== "support request") missing.push('Title');
     if (!templateData.get('body')) missing.push('Body');
     switch (template) {
     case 'assignment':
@@ -48,7 +53,12 @@ const getTemplateErrors = (template, getState) => {
         break;
     }
 
-    if (templateData.get('restrictByLocation') && templateData.get('radius') < 250) {
+    if (restrictedByLocation && !locationSelected) missing.push('Specific location');
+    if (restrictedByUser && (!usersSelected || usersSelected.toJS().length === 0)) {
+        missing.push('Specific user');
+    }
+
+    if (restrictedByLocation && templateData.get('radius') < 250) {
         errors.push('Radius must be at least 250ft');
     }
     if (missing.length) msg = `Missing required fields: ${missing.join(', ')}`;
@@ -116,10 +126,16 @@ const getFormDataFromTemplate = (template, state) => (
         }
 
         const templateFormData = { notification:
-            { [templateKey]: omit(formData, ['geo', 'radius', 'user_ids']) },
+            { [templateKey]: omit(formData, ['geo', 'radius', 'source', 'user_ids']) },
         };
         const otherFormData = pick(formData, ['geo', 'radius', 'user_ids']);
 
+        // there may be a better way to package for support request
+        if (template === "support request") {
+            const body = templateFormData.notification["user-news-custom-push"];
+            const user_id = { user_id: otherFormData.user_ids[0]}
+            return resolve(Object.assign({}, body, user_id));
+        }
         return resolve(Object.assign({}, templateFormData, { ...otherFormData }));
     })
 );
@@ -269,8 +285,14 @@ export const send = (template) => (dispatch, getState) => {
 };
 
 const getSuccessMsg = (count) => {
-    if (count === 1) return `${count} push`;
-    return `${count} pushes`;
+    // conditional for smooch notifications
+    if (count) {
+        if (count === 1) return `${count} push`;
+        return `${count} pushes`;
+    } else if (count === 0) {
+        return "However, no users satisfied your filters";
+    }
+    return "1 chat";
 };
 
 export const confirmSend = (template) => (dispatch, getState) => {
@@ -278,10 +300,12 @@ export const confirmSend = (template) => (dispatch, getState) => {
     if (state.get('loading')) return;
     dispatch({ type: CONFIRM_SEND });
 
+    const route = template === "support request" ? 'notifications/smooch' : 'notifications/create';
+
     getFormDataFromTemplate(template, state)
     .then((data) => (
         api
-        .post('notifications/create', data)
+        .post(route, data)
         .then(res => {
             dispatch({
                 type: SEND_SUCCESS,
@@ -316,7 +340,7 @@ export const closeInfoDialog = () => ({
 // reducer
 const pushNotifs = (state = fromJS({
     activeTab: 'default',
-    templates: {},
+    templates: { 'default': {restrictByLocation: false, restrictByUser: true} },
     infoDialog: {},
     loading: false,
     requestConfirmSend: false,
@@ -347,7 +371,15 @@ const pushNotifs = (state = fromJS({
                 .set('requestConfirmSend', false)
                 .set('alert', action.data);
         case SET_ACTIVE_TAB:
-            return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
+            const lowerCaseTemp = action.activeTab.toLowerCase();
+            // changed so it reflects default state of templatesy
+            // do we want to track any changes on the templates,
+            // or should we only allow work on one template at a time?
+            return state
+                .set('activeTab', lowerCaseTemp)
+                .delete('templates')
+                .setIn(['templates', lowerCaseTemp], fromJS({restrictByLocation: false, restrictByUser: true}))
+                .set('alert', null);
         case DISMISS_ALERT:
             return state.set('alert', null);
         case CANCEL_SEND:
@@ -364,4 +396,3 @@ const pushNotifs = (state = fromJS({
 };
 
 export default pushNotifs;
-

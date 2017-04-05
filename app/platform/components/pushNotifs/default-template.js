@@ -21,4 +21,3 @@ DefaultTemplate.propTypes = {
 };
 
 export default DefaultTemplate;
-
