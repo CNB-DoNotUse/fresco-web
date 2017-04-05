@@ -246,6 +246,8 @@ export const updateTemplateAsync = (template, data) => (dispatch, getState) => {
         .then(() => verifyGalleryListUpdate({ data, state }))
         .then(() => dispatch(successAction))
         .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
+
+// TODO: add 'support request' to this reducer
     default:
         return verifyDefaultUpdate({ data, state })
         .then(() => dispatch(successAction))
@@ -316,7 +318,7 @@ export const closeInfoDialog = () => ({
 // reducer
 const pushNotifs = (state = fromJS({
     activeTab: 'default',
-    templates: {},
+    templates: { 'default': {restrictByLocation: false, restrictByUser: true} },
     infoDialog: {},
     loading: false,
     requestConfirmSend: false,
@@ -347,7 +349,12 @@ const pushNotifs = (state = fromJS({
                 .set('requestConfirmSend', false)
                 .set('alert', action.data);
         case SET_ACTIVE_TAB:
-            return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
+            const lowerCaseTemp = action.activeTab.toLowerCase()
+            // changed so it reflects default state of templates
+            return state
+                .set('activeTab', lowerCaseTemp)
+                .setIn(['templates', lowerCaseTemp], {restrictByLocation: false, restrictByUser: true})
+                .set('alert', null);
         case DISMISS_ALERT:
             return state.set('alert', null);
         case CANCEL_SEND:
@@ -364,4 +371,3 @@ const pushNotifs = (state = fromJS({
 };
 
 export default pushNotifs;
-
