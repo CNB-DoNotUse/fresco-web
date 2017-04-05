@@ -6,12 +6,14 @@ const SupportRequest = ({
     onChange,
     onChangeAsync,
     ...props }) => {
-        console.log("here");
     return (
         <div>
             <TitleBody onChange={onChange} {...props} />
 
-            <RestrictByUser onChange={onChangeAsync} {...props} />
+            <RestrictByUser
+                restrictByUser={true}
+                disabled={true}
+                onChange={onChangeAsync} {...props} />
         </div>
 
     );

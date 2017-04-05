@@ -78,14 +78,16 @@ RestrictByLocation.propTypes = {
 };
 
 export const RestrictByUser = ({
-    restrictByUser = false,
+    restrictByUser = true,
     onChange,
+    disabled = false,
     users }) => (
     <span>
         <div className="checkbox form-group push-notifs__checkbox">
             <label>
                 <input
                     type="checkbox"
+                    disabled={disabled}
                     checked={restrictByUser}
                     onChange={onChangeRestrictByUser(onChange)}
                 />
@@ -114,4 +116,3 @@ RestrictByUser.propTypes = {
     restrictByUser: PropTypes.bool,
     users: PropTypes.array,
 };
-
