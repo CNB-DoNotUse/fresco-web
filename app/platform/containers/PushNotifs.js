@@ -33,7 +33,6 @@ const getConfirmText = (template) => {
     if (restrictedByLocation) {
         return 'This notification will be sent to every user in the selected location!';
     }
-
     if ((!restrictedByUser || !usersSelected) && (!restrictedByLocation || !locationSelected)) {
         return 'WARNING: This notification will be sent to every user!';
     }

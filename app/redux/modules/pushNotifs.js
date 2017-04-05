@@ -357,7 +357,7 @@ const pushNotifs = (state = fromJS({
                 .set('loading', false)
                 .set('requestConfirmSend', false)
                 .set('alert', 'Notification sent!')
-                .setIn(['templates', action.template], Map())
+                .setIn(['templates', action.template], fromJS({restrictByLocation: false, restrictByUser: true}))
                 .set('infoDialog', fromJS({
                     visible: true,
                     header: action.header,
