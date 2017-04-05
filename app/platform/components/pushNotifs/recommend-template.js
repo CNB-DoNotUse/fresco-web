@@ -58,4 +58,3 @@ Template.propTypes = {
 };
 
 export default Template;
-

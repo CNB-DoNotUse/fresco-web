@@ -357,7 +357,7 @@ const pushNotifs = (state = fromJS({
             // or should we only allow work on one template at a time?
             return state
                 .set('activeTab', lowerCaseTemp)
-                // .delete('templates')
+                .delete('templates')
                 .setIn(['templates', lowerCaseTemp], fromJS({restrictByLocation: false, restrictByUser: true}))
                 .set('alert', null);
         case DISMISS_ALERT:

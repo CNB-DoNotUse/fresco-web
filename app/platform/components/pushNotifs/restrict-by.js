@@ -81,6 +81,7 @@ export const RestrictByUser = ({
     restrictByUser = true,
     onChange,
     disabled = false,
+    multipleUsers = true,
     users }) => (
     <span>
         <div className="checkbox form-group push-notifs__checkbox">
@@ -104,6 +105,7 @@ export const RestrictByUser = ({
                 updateItems={onChangeUsers(onChange)}
                 className="push-notifs__users"
                 createNew={false}
+                multiple={multipleUsers}
                 search
                 initMaterial
             />

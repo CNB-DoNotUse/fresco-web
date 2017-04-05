@@ -12,6 +12,7 @@ const SupportRequest = ({
 
             <RestrictByUser
                 restrictByUser={true}
+                multipleUsers={false}
                 disabled={true}
                 onChange={onChangeAsync} {...props} />
         </div>
