@@ -126,7 +126,7 @@ const getFormDataFromTemplate = (template, state) => (
         }
 
         const templateFormData = { notification:
-            { [templateKey]: omit(formData, ['geo', 'radius', 'user_ids']) },
+            { [templateKey]: omit(formData, ['geo', 'radius', 'source', 'user_ids']) },
         };
         const otherFormData = pick(formData, ['geo', 'radius', 'user_ids']);
 
@@ -289,6 +289,8 @@ const getSuccessMsg = (count) => {
     if (count) {
         if (count === 1) return `${count} push`;
         return `${count} pushes`;
+    } else if (count === 0) {
+        return "However, no users satisfied your filters";
     }
     return "1 chat";
 };
