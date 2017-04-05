@@ -503,7 +503,6 @@ class Edit extends React.Component {
     renderMap() {
         const { address, location, isOriginalGallery } = this.state;
         const { gallery } = this.props;
-        const mapDisabled = !isImportedGallery(gallery) && (!isOriginalGallery || isSubmittedGallery(gallery));
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
