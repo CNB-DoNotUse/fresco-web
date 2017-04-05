@@ -237,7 +237,7 @@ class ChipInput extends React.Component {
             items,
             queryAttr,
             multiple,
-            altAttr,
+            altAttr
         } = this.props;
 
         //Run checks to make sure we don't already have the item
