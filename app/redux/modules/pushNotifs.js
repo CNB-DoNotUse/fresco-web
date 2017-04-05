@@ -30,7 +30,6 @@ const getTemplateErrors = (template, getState) => {
     const usersSelected = templateData.get('users', false);
     const locationSelected = templateData.get('location', false);
     const restrictedByUser = templateData.get('restrictByUser', false);
-    debugger
     const restrictedByLocation = templateData.get('restrictByLocation', false);
     const missing = [];
     const errors = [];
