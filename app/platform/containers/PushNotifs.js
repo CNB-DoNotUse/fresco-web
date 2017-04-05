@@ -19,8 +19,12 @@ import Assignment from '../components/pushNotifs/assignment-template';
 import 'app/sass/platform/_pushNotifs.scss';
 
 const getConfirmText = (template) => {
+    // this is not the way to determine if users/locations have been selected
+    //
     const restrictedByUser = get(template, 'restrictByUser', false);
     const restrictedByLocation = get(template, 'restrictByLocation', false);
+    const usersSelected = get(template, 'users', false);
+    const locationSelected = get(template, 'location', false);
 
     if (get(template, 'assignment', false) && (!restrictedByUser && !restrictedByLocation)) {
         return 'This notification will be sent to every user near the selected assignment!';
@@ -30,7 +34,7 @@ const getConfirmText = (template) => {
         return 'This notification will be sent to every user in the selected location!';
     }
 
-    if (!restrictedByUser && !restrictedByLocation) {
+    if ((!restrictedByUser || !usersSelected) && (!restrictedByLocation || !locationSelected)) {
         return 'This notification will be sent to every user!';
     }
 

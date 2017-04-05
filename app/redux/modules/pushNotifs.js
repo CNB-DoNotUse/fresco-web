@@ -26,6 +26,12 @@ export const CLOSE_INFO_DIALOG = 'pushNotifs/CLOSE_INFO_DIALOG';
 // helpers
 const getTemplateErrors = (template, getState) => {
     const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
+    // these lines are redundant and appears in getConfirmText in platform/containers/PushNotifs
+    const usersSelected = templateData.get('users', false);
+    const locationSelected = templateData.get('location', false);
+    const restrictedByUser = templateData.get('restrictByUser', false);
+    debugger
+    const restrictedByLocation = templateData.get('restrictByLocation', false);
     const missing = [];
     const errors = [];
     let msg = '';
@@ -48,7 +54,12 @@ const getTemplateErrors = (template, getState) => {
         break;
     }
 
-    if (templateData.get('restrictByLocation') && templateData.get('radius') < 250) {
+    if (restrictedByLocation && !locationSelected) missing.push('Specific location');
+    if (restrictedByUser && (!usersSelected || usersSelected.toJS().length === 0)) {
+        missing.push('Specific user');
+    }
+
+    if (restrictedByLocation && templateData.get('radius') < 250) {
         errors.push('Radius must be at least 250ft');
     }
     if (missing.length) msg = `Missing required fields: ${missing.join(', ')}`;
