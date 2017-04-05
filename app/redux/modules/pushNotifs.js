@@ -205,13 +205,11 @@ const verifyRecommendUpdate = ({ data, state }) => {
     });
 };
 
-export const updateTemplate = (template, data) => {
-    // debugger
-    return({
+export const updateTemplate = (template, data) => ({
     type: UPDATE_TEMPLATE_SUCCESS,
     template,
     data,
-})};
+});
 
 export const updateTemplateAsync = (template, data) => (dispatch, getState) => {
     const successAction = {
@@ -254,8 +252,6 @@ export const updateTemplateAsync = (template, data) => (dispatch, getState) => {
         .then(() => verifyGalleryListUpdate({ data, state }))
         .then(() => dispatch(successAction))
         .catch(msg => dispatch(Object.assign({}, errorAction, { msg })));
-
-// TODO: add 'support request' to this reducer
     default:
         return verifyDefaultUpdate({ data, state })
         .then(() => dispatch(successAction))
@@ -279,8 +275,12 @@ export const send = (template) => (dispatch, getState) => {
 };
 
 const getSuccessMsg = (count) => {
-    if (count === 1) return `${count} push`;
-    return `${count} pushes`;
+    // conditional for smooch notifications
+    if (count) {
+        if (count === 1) return `${count} push`;
+        return `${count} pushes`;
+    }
+    return "1 chat";
 };
 
 export const confirmSend = (template) => (dispatch, getState) => {
