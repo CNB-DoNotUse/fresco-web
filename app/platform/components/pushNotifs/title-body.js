@@ -12,24 +12,23 @@ const TitleBody = ({
     title,
     body,
     onChange,
-    // onlyOneField
+    onlyOneField
 }) => {
     // I added this portion to be able to have support request have only one field
-    // however, this is not sufficient since the title parameter is required 
 
-    // if (onlyOneField) {
-    //     return (
-    //         <span>
-    //             <textarea
-    //                 type="text"
-    //                 className="form-control floating-label"
-    //                 placeholder="Body"
-    //                 value={body || ''}
-    //                 onChange={onChangeBody(onChange)}
-    //             />
-    //         </span>
-    //     );
-    // }
+    if (onlyOneField) {
+        return (
+            <span>
+                <textarea
+                    type="text"
+                    className="form-control floating-label"
+                    placeholder="Body"
+                    value={body || ''}
+                    onChange={onChangeBody(onChange)}
+                />
+            </span>
+        );
+    }
 
     return(
     <span>

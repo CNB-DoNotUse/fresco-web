@@ -8,7 +8,9 @@ const SupportRequest = ({
     ...props }) => {
     return (
         <div>
-            <TitleBody onChange={onChange} {...props} />
+            <TitleBody
+                onlyOneField={true}
+                onChange={onChange} {...props} />
 
             <RestrictByUser
                 restrictByUser={true}
