@@ -13,6 +13,7 @@ import TopBar from '../components/topbar';
 import Default from '../components/pushNotifs/default-template';
 import GalleryList from '../components/pushNotifs/gallery-list-template';
 import Recommend from '../components/pushNotifs/recommend-template';
+import SupportRequest from '../components/pushNotifs/support-request-template';
 import Assignment from '../components/pushNotifs/assignment-template';
 
 import 'app/sass/platform/_pushNotifs.scss';
@@ -86,6 +87,8 @@ class PushNotifs extends React.Component {
                 return <Assignment {...props} />;
             case 'recommend':
                 return <Recommend {...props} />;
+            case 'support request':
+                return <SupportRequest {...props} />;
             case 'default':
             default:
                 return <Default {...props} />;
@@ -115,7 +118,7 @@ class PushNotifs extends React.Component {
                 <div className="container-fluid">
                     <TopBar
                         title="Push Notifications"
-                        tabs={['Default', 'Gallery List', 'Recommend', 'Assignment']}
+                        tabs={['Default', 'Gallery List', 'Recommend', 'Assignment', 'Support Request']}
                         setActiveTab={onSetActiveTab}
                         activeTab={activeTab}
                     />
@@ -130,7 +133,7 @@ class PushNotifs extends React.Component {
                                 onClick={onDismissAlert}
                                 bodyStyle={{ height: 'auto', whiteSpace: 'pre-line' }}
                             />
-                            
+
                             {this.renderTemplate()}
 
                             <button
@@ -193,4 +196,3 @@ export default connect(mapStateToProps, {
     cancelSend: pushActions.cancelSend,
     onCloseInfoDialog: pushActions.closeInfoDialog,
 })(PushNotifs);
-

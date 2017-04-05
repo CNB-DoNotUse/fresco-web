@@ -12,7 +12,8 @@ const TitleBody = ({
     title,
     body,
     onChange,
-    }) => (
+}) => {
+    return(
     <span>
         <input
             type="text"
@@ -30,7 +31,7 @@ const TitleBody = ({
             onChange={onChangeBody(onChange)}
         />
     </span>
-);
+)};
 
 TitleBody.propTypes = {
     title: PropTypes.string,
@@ -39,4 +40,3 @@ TitleBody.propTypes = {
 };
 
 export default TitleBody;
-

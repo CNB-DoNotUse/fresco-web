@@ -199,11 +199,13 @@ const verifyRecommendUpdate = ({ data, state }) => {
     });
 };
 
-export const updateTemplate = (template, data) => ({
+export const updateTemplate = (template, data) => {
+    // debugger
+    return({
     type: UPDATE_TEMPLATE_SUCCESS,
     template,
     data,
-});
+})};
 
 export const updateTemplateAsync = (template, data) => (dispatch, getState) => {
     const successAction = {
@@ -349,11 +351,14 @@ const pushNotifs = (state = fromJS({
                 .set('requestConfirmSend', false)
                 .set('alert', action.data);
         case SET_ACTIVE_TAB:
-            const lowerCaseTemp = action.activeTab.toLowerCase()
-            // changed so it reflects default state of templates
+            const lowerCaseTemp = action.activeTab.toLowerCase();
+            // changed so it reflects default state of templatesy
+            // do we want to track any changes on the templates,
+            // or should we only allow work on one template at a time?
             return state
                 .set('activeTab', lowerCaseTemp)
-                .setIn(['templates', lowerCaseTemp], {restrictByLocation: false, restrictByUser: true})
+                // .delete('templates')
+                .setIn(['templates', lowerCaseTemp], fromJS({restrictByLocation: false, restrictByUser: true}))
                 .set('alert', null);
         case DISMISS_ALERT:
             return state.set('alert', null);
