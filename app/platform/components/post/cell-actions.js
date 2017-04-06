@@ -40,7 +40,7 @@ class PostCellActions extends React.Component {
 
         // Check if we're CM or greater
         if (user.roles.includes('admin') || user.roles.includes('3rd-party-temp')) {
-            if (editable) {
+            if (editable && user.roles.includes('admin')) {
                 actions.push(
                     <span
                         key={++key}
