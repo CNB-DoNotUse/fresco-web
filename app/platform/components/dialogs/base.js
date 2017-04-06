@@ -19,12 +19,13 @@ export default class Base extends React.Component {
     render() {
         const { children, toggled, zIndex } = this.props;
 
-
         return (
             <div style={{ zIndex }}
                 ref='base'
-                className={`dialog-wrap ${toggled ? 'toggled' : ''}`}>
-                <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
+                className={`dialog-wrap ${toggled ? 'toggled' : 'untoggled'}`}
+            >
+                <div className={`dim transparent ${toggled ? 'toggled' : 'untoggled'}`} />
+                
                 {children}
             </div>
         )

@@ -385,28 +385,25 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 		padding-bottom: 8px;
 	}
 	.assignment-callout-caption {
-		padding-bottom: 8px;
 		overflow: hidden;
 		max-height: 120px;
 	}
 	.assignment-callout-icon {
 		padding-right: 6px;
 		line-height: 36px;
+		top:3px;
+		position:relative;
 	}
+
 	.assignment-callout-image-counter {
 		padding-right: 16px;
-		line-height: 36px;
 		position: relative;
-	    top: -3px;
 	}
-	.assignment-callout-video-counter {
-		line-height: 36px;
-	}
+
 	.assignment-callout-buttons {
-		position: absolute;
-		bottom: 0;
 		width: 209px;
 	}
+
 	.assignment-callout-button {
 		/*display: inline-block;*/
 		float: right;

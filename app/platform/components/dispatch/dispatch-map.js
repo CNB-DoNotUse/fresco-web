@@ -16,8 +16,7 @@ export default class DispatchMap extends React.Component {
 
     state = {
         assignments: [],
-        markers: [],
-        circles: [],
+        assignmentMapItems: {},
         users: {},
         userMarkers: {},
         activeCallout: null,
@@ -199,16 +198,13 @@ export default class DispatchMap extends React.Component {
      * Clears all relevant assignment data from the map and runs an update at the end
      */
     clearAssignments = () => {
-        this.state.markers.forEach((marker) => {
-            marker.setMap(null);
-        });
-        this.state.circles.forEach((circle) => {
-            circle.setMap(null);
-        });
+        for(let key in this.state.assignmentMapItems) {
+            this.state.assignmentMapItems[key]['marker'].setMap(null);
+            this.state.assignmentMapItems[key]['circle'].setMap(null);
+        }
 
         this.setState({
-            markers: [],
-            circles: [],
+            assignmentMapItems: {},
             assignments: []
         });
 
@@ -255,17 +251,10 @@ export default class DispatchMap extends React.Component {
 
             this.props.findUsers(this.state.map, (users, error) => {
                 this.loadingUsers = false;
-                if(!users) return;
+                if(!users || error) return;
 
-                const formattedUsers = mapKeys(users, u => u.hash);
-
-                // Update the user markers, then update state on callback
-                this.updateUserMarkers(formattedUsers, (userMarkers) => {
-                    this.setState({
-                        userMarkers,
-                        users: formattedUsers,
-                    });
-                });
+                // Update the user markersk
+                this.updateUserMarkers(mapKeys(users, u => u.hash));
             });
         }
     };
@@ -276,6 +265,7 @@ export default class DispatchMap extends React.Component {
      */
     updateAssignmentMarkers = (newAssignments) => {
         let assignments = clone(this.state.assignments);
+        let markersToUpdate = [];
 
         //Iterate backwards, because we slice as we go
         let i = newAssignments.length;
@@ -303,28 +293,26 @@ export default class DispatchMap extends React.Component {
      * then sets state from concatted response from `addAssignmentToMap` on each assignment
      */
     addAssignmentsToMap = (assignments) => {
-        let markers = [];
+        let assignmentMapItems = {};
         let circles = [];
 
         //Loop and add assignments to map
         assignments.forEach((assignment) => {
-            const assignmentMapData = this.addAssignment(assignment, false);
-
-            //Push into local marker and circles
-            markers.push(assignmentMapData.marker);
-            circles.push(assignmentMapData.circle);
+            //Add to object
+            assignmentMapItems[assignment.id] = this.addAssignment(assignment, false);
         });
 
         //Update state
         this.setState({
-            markers: this.state.markers.concat(markers),
-            circles: this.state.circles.concat(circles)
+            assignmentMapItems: Object.assign(this.state.assignmentMapItems, assignmentMapItems)
         });
     };
 
     /**
      * Makes a marker with the passed assignment and adds it to the map
-     * @return adds a google maps marker, with the passed geo-location
+     * @param  {Object} assignment Assignment to add
+     * @param  {Bool} draggable If it should be draggable or not
+     * @return {Object} Object containing marker and circle
      */
     addAssignment = (assignment, draggable) => {
         //Lat/Lng will default to center if for a created assignment
@@ -357,9 +345,9 @@ export default class DispatchMap extends React.Component {
             map,
             position,
             utils.milesToMeters(radius),
-            status,
-            assignment.id
+            status
         );
+
         //Create the marker
         const marker = this.createAssignmentMarker(
             map,
@@ -367,8 +355,7 @@ export default class DispatchMap extends React.Component {
             title,
             status,
             zIndex,
-            draggable,
-            assignment.id
+            draggable
         );
 
         //Add event handler to display callout when clicekd
@@ -383,8 +370,9 @@ export default class DispatchMap extends React.Component {
 
     /**
      * Creates a marker from passed params
+     * @return {Google.Maps.Marker} A google maps marker representign the passed params
      */
-    createAssignmentMarker(map, position, title, status, zIndex, draggable, assignmentId) {
+    createAssignmentMarker(map, position, title, status, zIndex, draggable) {
         //Create the marker image
         const image = {
             url: status ? utils.assignmentImage[status] : utils.assignmentImage.drafted,
@@ -405,8 +393,7 @@ export default class DispatchMap extends React.Component {
             title: title || 'No title',
             icon: image,
             zIndex: zIndex || 0,
-            draggable: draggable !== undefined ? draggable : true,
-            assignmentId: assignmentId !== undefined ? assignmentId : true
+            draggable: draggable !== undefined ? draggable : true
         });
     }
 
@@ -415,41 +402,44 @@ export default class DispatchMap extends React.Component {
      * @param {dictionary} center Center of the circle
      * @param {integer} radius Circle radius in meters
      * @param {Assignment status} status active/pending/expired
+     * @return {Google.Maps.Circle} A google maps circle representing the passed params
      */
-    createCircle(map, center, radius, status, assignmentId) {
+    createCircle(map, center, radius, status) {
         return new google.maps.Circle({
             map: map,
             center: center || map.getCenter(),
             radius: radius || 0,
             strokeWeight: 0,
             fillColor: utils.assignmentColor[status],
-            fillOpacity: 0.3,
-            assignmentId: assignmentId !== undefined ? assignmentId : true
+            fillOpacity: 0.3
         });
     }
 
     /**
-     * Updates all the user markers on the map
-     * @description Compares the passed in new users, to the current state users
+     * Updates all the user markers on the map. Compares the passed in 
+     * new users, to the current state users, if there are matching users with 
+     * different locations, the markers on the map will be updated. Sets state at 
+     * the end with updated users and markers.
+     * @param {newUsers} Object The new users to update the map with. Organized by the hash id
      */
-    updateUserMarkers = (newUsers, callback) => {
+    updateUserMarkers = (newUsers) => {
         let markers = clone(this.state.userMarkers);
         let currentUsers = clone(this.state.users);
 
-        for(let key of Object.keys(newUsers)) {
+        for(let key in newUsers) {
             const user = newUsers[key];
             const prevUser = currentUsers[key];
 
             //If the user already exists
             if(prevUser) {
                 // If the location has changed, move it, otherwise do nothing
-                if(!isEqual(prevUser.location, user.location)) {
+                if(!isEqual(prevUser.geo, user.geo)) {
                     // Update the marker's position
-                    markers[key]
-                        .setPosition(new google.maps.LatLng(user.curr_geo.coordinates[1], user.curr_geo.coordinates[0]));
+                    const marker = markers[key];
+                    markers[key].setAnimation(google.maps.Animation.DROP);
+                    markers[key].setPosition(new google.maps.LatLng(user.geo.coordinates[1], user.geo.coordinates[0]));
                 }
             } else { //If the user doesn't exist in the new data set
-
 
                 //If the marker exists, but the user doesn't, remove the marker and delete from current set
                 if (markers[key]){
@@ -464,8 +454,9 @@ export default class DispatchMap extends React.Component {
             }
         }
 
-        //Loop through current users and remove them if they're not in the new set
-        for (let key of Object.keys(currentUsers)) {
+        //Loop through current users and remove markers if they're not
+        //in the new data set
+        for (let key in currentUsers) {
             //Check if the user's aren't in the new set by the key
             if (newUsers[key] == null && markers[key]) {
                 markers[key].setMap(null);
@@ -473,7 +464,10 @@ export default class DispatchMap extends React.Component {
             }
         }
 
-        callback(markers);
+        this.setState({
+            userMarkers: markers,
+            users: newUsers,
+        });
     };
 
     /**

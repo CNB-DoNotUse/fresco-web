@@ -33,7 +33,6 @@ class PurchaseAction extends React.Component {
                 this.props.onPurchase();
             })
             .catch(error => {
-                console.log(error);
                 $.snackbar({
                     content: error.msg || 'There was an error while completing your purchase!'
                 });
