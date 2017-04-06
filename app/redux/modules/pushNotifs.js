@@ -35,7 +35,7 @@ const getTemplateErrors = (template, getState) => {
     const errors = [];
     let msg = '';
 
-    if (!templateData.get('title') && template !== "support request") missing.push('Title');
+    if (!templateData.get('title') && template !== "support") missing.push('Title');
     if (!templateData.get('body')) missing.push('Body');
     switch (template) {
     case 'assignment':
@@ -131,7 +131,7 @@ const getFormDataFromTemplate = (template, state) => (
         const otherFormData = pick(formData, ['geo', 'radius', 'user_ids']);
 
         // there may be a better way to package for support request
-        if (template === "support request") {
+        if (template === "support") {
             const body = templateFormData.notification["user-news-custom-push"];
             const user_id = { user_id: otherFormData.user_ids[0]}
             return resolve(Object.assign({}, body, user_id));
@@ -300,7 +300,7 @@ export const confirmSend = (template) => (dispatch, getState) => {
     if (state.get('loading')) return;
     dispatch({ type: CONFIRM_SEND });
 
-    const route = template === "support request" ? 'notifications/smooch' : 'notifications/create';
+    const route = template === "support" ? 'notifications/smooch' : 'notifications/create';
 
     getFormDataFromTemplate(template, state)
     .then((data) => (
