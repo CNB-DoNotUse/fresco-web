@@ -52,7 +52,7 @@ class PostDetailImage extends React.Component {
         );
 
         //If an admin
-        if (user.roles.includes('admin') || user.roles.includes('3rd-party-temp')) {
+        if (user.roles.includes('admin') || user.roles.includes('download-temp')) {
             actions.push(downloadAction);
             if (!purchased) actions.push(purchaseAction);
         } else {
