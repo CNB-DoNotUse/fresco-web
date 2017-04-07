@@ -150,10 +150,9 @@ const getFormDataFromTemplate = (template, state) => (
             templateKey = 'user-news-custom-push';
         }
 
-        const templateFormData = { notification:
-            { [templateKey]: omit(formData, ['geo', 'radius', 'source', 'user_ids']) },
-        };
-        const otherFormData = pick(formData, ['geo', 'radius', 'user_ids']);
+        const templateFormData = { type: templateKey};
+        const otherFormData = {recipients: pick(formData, ['geo', 'radius', 'user_ids']),
+            content: omit(formData, ['geo', 'radius', 'source', 'user_ids'])};
 
         // there may be a better way to package for support request
         if (template === "support") {
@@ -332,7 +331,7 @@ export const confirmSend = (template) => (dispatch, getState) => {
     if (state.get('loading')) return;
     dispatch({ type: CONFIRM_SEND });
 
-    const route = template === "support" ? 'notifications/smooch' : 'notifications/create';
+    const route = template === "support" ? 'notifications/smooch' : 'notifications/user/create';
 
     getFormDataFromTemplate(template, state)
     .then((data) => (
