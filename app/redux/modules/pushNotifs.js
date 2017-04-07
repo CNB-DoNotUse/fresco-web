@@ -89,6 +89,9 @@ const getTemplateErrors = (template, getState) => {
     return msg;
 };
 
+/**
+* Packages template data into a promise
+*/
 const getFormDataFromTemplate = (template, state) => (
     new Promise((resolve) => {
         const templateData = state.getIn(['templates', template], Map());
@@ -306,6 +309,13 @@ export const send = (template) => (dispatch, getState) => {
     dispatch({ type: SEND, template });
 };
 
+/**
+* Determines what messages have been sent
+* @param {number} count is expected from the notifications/create endpoint, which
+*   represents how many individual push notifications were sent, if attribute is
+*   missing, then it is assumed that notifications/smooch (chat) was used
+* @return {string} message confirming type and quantity of notifications
+*/
 const getSuccessMsg = (count) => {
     // conditional for smooch notifications
     if (count) {
