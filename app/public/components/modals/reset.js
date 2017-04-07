@@ -18,6 +18,11 @@ let Reset = function(){
  * Init function
  */
 Reset.prototype.init = function() {
+    const meta = document.createElement('meta');
+    meta.name = "referrer";
+    meta.content = "no-referrer";
+    document.getElementsByTagName('head')[0].appendChild(meta);
+    // will this persist? do i have to remove this when reset is exitted?
     this.form.addEventListener('submit', this.reset.bind(this));
 }
 
@@ -37,12 +42,13 @@ Reset.prototype.reset = function(e) {
         return $.snackbar({ content: 'Please enter a password!'})
     }
 
+
     $.ajax({
         url: "/scripts/user/reset",
-        data: JSON.stringify({ 
-            password, 
-            token, 
-            login: this.hasOutlet === 'true' 
+        data: JSON.stringify({
+            password,
+            token,
+            login: this.hasOutlet === 'true'
         }),
         method: "POST",
         contentType: 'application/json'
