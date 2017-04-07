@@ -95,7 +95,6 @@ const getTemplateErrors = (template, getState) => {
 const getFormDataFromTemplate = (template, state) => (
     new Promise((resolve) => {
         const templateData = state.getIn(['templates', template], Map());
-
         const {restrictByUser, restrictByLocation} = getTemplateState(templateData.toJS());
 
         let formData = templateData
@@ -156,8 +155,8 @@ const getFormDataFromTemplate = (template, state) => (
 
         // there may be a better way to package for support request
         if (template === "support") {
-            const body = templateFormData.notification["user-news-custom-push"];
-            const user_id = { user_id: otherFormData.user_ids[0]}
+            const body = otherFormData.content;
+            const user_id = { user_id: otherFormData.recipients.user_ids[0]}
             return resolve(Object.assign({}, body, user_id));
         }
         return resolve(Object.assign({}, templateFormData, { ...otherFormData }));
