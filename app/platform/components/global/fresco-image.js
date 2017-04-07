@@ -106,6 +106,16 @@ class FrescoImage extends React.Component {
         }
     };
 
+    /**
+    * on right click, prevent menu on images so users cannot save image as
+    */
+
+    disableRightClick = (e) => {
+        e.preventDefault();
+        return false;
+    }
+
+
     render() {
         let placeholderStyle = {};
 
