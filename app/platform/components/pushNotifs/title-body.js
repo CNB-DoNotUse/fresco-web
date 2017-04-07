@@ -1,5 +1,13 @@
 import React, { PropTypes } from 'react';
 
+/**
+* Component that displays title and body input fields that are used for
+* push notification forms
+* @param {string} title the message title
+* @param {string} body the message body
+* @param {bool} onlyOneField whether to display both title and body or just body
+*/
+
 const onChangeTitle = (onChange) => (e) => {
     onChange({ title: e.target.value });
 };
@@ -14,8 +22,6 @@ const TitleBody = ({
     onChange,
     onlyOneField
 }) => {
-    // I added this portion to be able to have support request have only one field
-
     if (onlyOneField) {
         return (
             <span>

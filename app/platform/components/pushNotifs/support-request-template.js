@@ -2,7 +2,13 @@ import React, { PropTypes } from 'react';
 import TitleBody from './title-body';
 import { RestrictByUser } from './restrict-by';
 
-const SupportRequest = ({
+/**
+* Support template
+* This component is a functional component that displays one text body
+* and obligates the user filter
+*/
+
+const Support = ({
     onChange,
     onChangeAsync,
     ...props }) => {
@@ -22,9 +28,9 @@ const SupportRequest = ({
     );
 }
 
-SupportRequest.propTypes = {
+Support.propTypes = {
     onChange: PropTypes.func,
     onChangeAsync: PropTypes.func,
 };
 
-export default SupportRequest;
+export default Support;

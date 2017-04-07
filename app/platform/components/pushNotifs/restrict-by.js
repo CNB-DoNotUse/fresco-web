@@ -35,6 +35,12 @@ const onRadiusChange = (onChange) => (radius) => {
     onChange({ radius });
 };
 
+/**
+* Restrict by location component that first displays a checkbox, and once checked
+* will include a google maps snippet
+*
+*/
+
 export const RestrictByLocation = ({
     restrictByLocation = false,
     onChange,
@@ -76,6 +82,14 @@ RestrictByLocation.propTypes = {
     address: PropTypes.string,
     radius: PropTypes.number,
 };
+
+/**
+* Restrict by user component that first displays a checkbox, and once checked
+* will include text input field that displays users that satisfy the search criteria
+* default state is checked
+* @param {bool} restrictByUser default checked state
+* @param {bool} multipleUsers whether filter accepts multiple users or just one
+*/
 
 export const RestrictByUser = ({
     restrictByUser = true,
