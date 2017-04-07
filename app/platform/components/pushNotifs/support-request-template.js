@@ -2,6 +2,12 @@ import React, { PropTypes } from 'react';
 import TitleBody from './title-body';
 import { RestrictByUser } from './restrict-by';
 
+/**
+* Support template
+* This component is a functional component that displays one text body
+* and obligates the user filter
+*/
+
 const Support = ({
     onChange,
     onChangeAsync,
