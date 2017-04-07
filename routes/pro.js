@@ -10,6 +10,8 @@ var express    = require('express'),
  * Pro User Page
  */
 router.get('/', (req, res, next) => {
+    return res.redirect('https://onboardiq.com/fresconews/apply');
+
     res.render('pro/pro', {
         head: head,
         page: 'pro'

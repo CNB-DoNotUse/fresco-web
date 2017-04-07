@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import Base from './base';
 import 'app/sass/platform/dialogs/items.scss';
 
 export default class Items extends React.Component {
@@ -36,9 +37,7 @@ export default class Items extends React.Component {
         } = this.props;
 
         return (
-            <div className={`dialog-wrap ${toggled ? 'toggled' : ''}`}>
-                <div className={`dim transparent ${toggled ? 'toggled' : ''}`} />
-
+            <Base toggled={toggled}>
                 <div
                     className={`dialog-modal--items ${toggled ? 'toggled' : ''}`}
                     onScroll={scrollable ? (e) => { this.props.onScroll(e, context) } : null}
@@ -62,7 +61,7 @@ export default class Items extends React.Component {
                         </button>
                     </div>
                 </div>
-            </div>
+            </Base>
         );
     }
 }

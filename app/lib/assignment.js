@@ -22,11 +22,20 @@ const assignment = {
             params.ends_before = Date.now();
         }
 
-        return api.get('assignment/list', params)
+        return api.get('assignment/list', params);
+    },
+
+    accepted: (assignmentId) => {
+        return api.get(`assignment/${assignmentId}/accepted`);
+    },
+
+    get: (assignmentId) => {
+        return api.get(`assignment/${assignmentId}`);  
     }
 }
 
-
-export const list = assignment.list
+export const list = assignment.list;
+export const accepted = assignment.accepted;
+export const get = assignment.get;
 
 export default assignment;

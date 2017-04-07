@@ -5,6 +5,8 @@ import isEmpty from 'lodash/isEmpty';
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import { getLatLngFromGeo } from 'app/lib/location';
 import api from 'app/lib/api';
+import assignmentLib from 'app/lib/assignment';
+
 import TopBar from '../components/topbar';
 import PostList from '../components/post/list';
 import Sidebar from '../components/assignment/sidebar';
@@ -29,6 +31,7 @@ class AssignmentDetail extends React.Component {
 
     state = {
         assignment: this.props.assignment,
+        acceptedUsers: this.props.acceptedUsers,
         acceptedDialog: false,
         editToggled: false,
         verifiedToggle: getFromSessionStorage('topbar', 'verifiedToggle', true),
@@ -153,12 +156,17 @@ class AssignmentDetail extends React.Component {
         const { assignment } = this.state;
         if (!assignment || !assignment.id) return;
 
-        $.ajax({
-            url: `/api/assignment/${assignment.id}`,
-        })
-        .then((res) => {
-            this.setState({ assignment: res });
-        });
+        assignmentLib
+            .accepted(assignment.id)
+            .then(response => {
+                 this.setState({ acceptedUsers: response });
+            });
+
+        assignmentLib
+            .get(assignment.id)
+            .then(response => {
+                 this.setState({ assignment: response });
+            });
     }
 
     /**
@@ -253,7 +261,7 @@ class AssignmentDetail extends React.Component {
     }
 
     render() {
-        const { user, acceptedUsers } = this.props;
+        const { user } = this.props;
         const {
             assignment,
             editToggled,
@@ -264,6 +272,7 @@ class AssignmentDetail extends React.Component {
             mapPanTo,
             scrollToPostId,
             acceptedDialog,
+            acceptedUsers
         } = this.state;
 
         const page = 'assignmentDetail';

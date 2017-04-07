@@ -90,6 +90,7 @@ export default class ClientForm extends React.Component {
             tag: this.state.tag,
             redirect_uri: this.state.redirect_uri,
             enabled: true,
+            scope: 'private',
             api_version_id: this.state.selectedVersion ? this.state.selectedVersion.id : null
         }
 
