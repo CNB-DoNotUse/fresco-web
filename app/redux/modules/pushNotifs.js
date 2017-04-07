@@ -24,13 +24,28 @@ export const CANCEL_SEND = 'pushNotifs/CANCEL_SEND';
 export const CLOSE_INFO_DIALOG = 'pushNotifs/CLOSE_INFO_DIALOG';
 
 // helpers
+
+/**
+* Determines the state of location and users filters,
+* whether the filters are checked and if specific locations and users have been
+* selected
+* @param {object} template taken from redux state which is the template info
+* @return {object} that determines which filters have been selected and if specific
+*     details have been chosen
+*/
+export const getTemplateState = (template) => ({
+    restrictByUser: get(template, 'restrictByUser', false),
+    restrictByLocation: get(template, 'restrictByLocation', false),
+    usersSelected: get(template, 'users', false),
+    locationSelected: get(template, 'location', false),
+});
+
 const getTemplateErrors = (template, getState) => {
     const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
-    // these lines are redundant and appears in getConfirmText in platform/containers/PushNotifs
-    const usersSelected = templateData.get('users', false);
-    const locationSelected = templateData.get('location', false);
-    const restrictedByUser = templateData.get('restrictByUser', false);
-    const restrictedByLocation = templateData.get('restrictByLocation', false);
+    const {restrictByUser,
+        restrictByLocation,
+        usersSelected,
+        locationSelected} = getTemplateState(templateData.toJS());
     const missing = [];
     const errors = [];
     let msg = '';
@@ -53,12 +68,12 @@ const getTemplateErrors = (template, getState) => {
         break;
     }
 
-    if (restrictedByLocation && !locationSelected) missing.push('Specific location');
-    if (restrictedByUser && (!usersSelected || usersSelected.toJS().length === 0)) {
+    if (restrictByLocation && !locationSelected) missing.push('Specific location');
+    if (restrictByUser && (!usersSelected || usersSelected.length === 0)) {
         missing.push('Specific user');
     }
 
-    if (restrictedByLocation && templateData.get('radius') < 250) {
+    if (restrictByLocation && templateData.get('radius') < 250) {
         errors.push('Radius must be at least 250ft');
     }
     if (missing.length) msg = `Missing required fields: ${missing.join(', ')}`;
@@ -71,8 +86,8 @@ const getFormDataFromTemplate = (template, state) => (
     new Promise((resolve) => {
         const templateData = state.getIn(['templates', template], Map());
 
-        const restrictByUser = templateData.get('restrictByUser', false);
-        const restrictByLocation = templateData.get('restrictByLocation', false);
+        const {restrictByUser, restrictByLocation} = getTemplateState(templateData.toJS());
+
         let formData = templateData
             .filterNot((v, k) => ['restrictByUser', 'restrictByLocation', 'address'].includes(k))
             .filterNot((v, k) => {
@@ -372,9 +387,6 @@ const pushNotifs = (state = fromJS({
                 .set('alert', action.data);
         case SET_ACTIVE_TAB:
             const lowerCaseTemp = action.activeTab.toLowerCase();
-            // changed so it reflects default state of templatesy
-            // do we want to track any changes on the templates,
-            // or should we only allow work on one template at a time?
             return state
                 .set('activeTab', lowerCaseTemp)
                 .delete('templates')

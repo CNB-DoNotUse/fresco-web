@@ -18,22 +18,23 @@ import Assignment from '../components/pushNotifs/assignment-template';
 
 import 'app/sass/platform/_pushNotifs.scss';
 
+/**
+* Determines the warning messages depending on template state
+*/
 const getConfirmText = (template) => {
-    // this is not the way to determine if users/locations have been selected
-    //
-    const restrictedByUser = get(template, 'restrictByUser', false);
-    const restrictedByLocation = get(template, 'restrictByLocation', false);
-    const usersSelected = get(template, 'users', false);
-    const locationSelected = get(template, 'location', false);
+    const {restrictByUser,
+        restrictByLocation,
+        usersSelected,
+        locationSelected} = pushActions.getTemplateState(template);
 
-    if (get(template, 'assignment', false) && (!restrictedByUser && !restrictedByLocation)) {
+    if (get(template, 'assignment', false) && (!restrictByUser && !restrictByLocation)) {
         return 'This notification will be sent to every user near the selected assignment!';
     }
 
-    if (restrictedByLocation) {
+    if (restrictByLocation) {
         return 'This notification will be sent to every user in the selected location!';
     }
-    if ((!restrictedByUser || !usersSelected) && (!restrictedByLocation || !locationSelected)) {
+    if ((!restrictByUser || !usersSelected) && (!restrictByLocation || !locationSelected)) {
         return 'WARNING: This notification will be sent to every user!';
     }
 
@@ -115,7 +116,6 @@ class PushNotifs extends React.Component {
             activeTemplate,
             user
         } = this.props;
-
         return (
             <App page='push' user={user}>
                 <div className="container-fluid">
