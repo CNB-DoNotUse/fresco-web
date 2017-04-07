@@ -34,10 +34,10 @@ class LocationAutocomplete extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         // Check if the passed input text has changed
+        if (nextProps.inputText === this.props.inputText) {
+            return;
+        }
         this.refs.inputField.value = nextProps.inputText;
-
-        // Reset predictions for cleanup
-        this.setState({ predictions: [], active: false });
     }
 
     componentWillUnmount() {
@@ -190,4 +190,3 @@ LocationAutocomplete.propTypes = {
 };
 
 export default LocationAutocomplete;
-
