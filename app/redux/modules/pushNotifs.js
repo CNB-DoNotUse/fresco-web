@@ -40,7 +40,14 @@ export const getTemplateState = (template) => ({
     locationSelected: get(template, 'location', false),
 });
 
+
+/**
+* Determines the errors on the template and gives an error messages
+* @param {string} template name of the template
+* @return {string} msg error message, empty if there are no errors
+*/
 const getTemplateErrors = (template, getState) => {
+    console.log(typeof template);
     const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
     const {restrictByUser,
         restrictByLocation,
