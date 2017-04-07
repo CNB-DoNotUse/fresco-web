@@ -3,8 +3,9 @@ const head          = require('./lib/head');
 const utils         = require('./lib/utils');
 const routes        = require('./lib/routes');
 const API           = require('./lib/api');
-const userMiddleware = require('./middleware/user');
 const redis         = require('./lib/redis');
+const cron         = require('./lib/cron');
+const userMiddleware = require('./middleware/user');
 const express       = require('express');
 const compression   = require('compression');
 const path          = require('path');
@@ -19,6 +20,8 @@ const base64        = require('base-64');
 const app           = express();
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+
+cron('JYPVFS5E0uJ7ATqs2PCijgJ3MvNp44V2MGh1zSoQCdpy9kLoy2RTqOuaS9EMAUVVXGH5p7P1dNPgpcBj7NHzIvcohdY4eWdu8YMPGi0FwvkF78S1Yv7cT2Mw1FDpJvoP');
 
 /**
  * Set up local head and global for all templates
@@ -150,7 +153,7 @@ app.use((req, res, next) => {
     if (!req.session.user.TTL || req.session.user.TTL - now < 0) {
        //Session has expired, so refresh the user
        return userMiddleware.refresh(req, res, next);
-   }
+    }
 
     return next();
 });
