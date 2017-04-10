@@ -105,6 +105,14 @@ class FrescoImage extends React.Component {
             this.loadTimeout = setTimeout(this.onTimeout, this.state.timeout);
         }
     };
+    /**
+    * on right click, prevent menu on images so users cannot save image as
+    */
+
+    disableRightClick = (e) => {
+        e.preventDefault();
+        return false;
+    }
 
     render() {
         let placeholderStyle = {};
@@ -133,6 +141,7 @@ class FrescoImage extends React.Component {
                         onError={this.onError}
                         src={this.state.formattedSrc}
                         draggable={false}
+                        onContextMenu={this.disableRightClick}
                     />
                 </div>
             );
@@ -146,6 +155,7 @@ class FrescoImage extends React.Component {
                 onError={this.onError}
                 src={this.state.src}
                 draggable={false}
+                onContextMenu={this.disableRightClick}
             />
         );
     }
