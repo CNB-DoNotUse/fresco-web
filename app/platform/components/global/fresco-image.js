@@ -143,6 +143,7 @@ class FrescoImage extends React.Component {
                         onError={this.onError}
                         src={this.state.formattedSrc}
                         draggable={false}
+                        onContextMenu={this.disableRightClick}
                     />
                 </div>
             );
@@ -156,6 +157,7 @@ class FrescoImage extends React.Component {
                 onError={this.onError}
                 src={this.state.src}
                 draggable={false}
+                onContextMenu={this.disableRightClick}
             />
         );
     }
