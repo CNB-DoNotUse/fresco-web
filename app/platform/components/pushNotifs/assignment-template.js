@@ -10,6 +10,13 @@ const onChangeAssignments = (onChange) => (assignments) => {
     });
 };
 
+/**
+* Recomment template
+* This component is a functional component that displays title and body text input
+* fields, chip inputs for assignments, and filter by location or users
+*
+*/
+
 const Template = ({
     assignment,
     onChange,
@@ -45,4 +52,3 @@ Template.propTypes = {
 };
 
 export default Template;
-

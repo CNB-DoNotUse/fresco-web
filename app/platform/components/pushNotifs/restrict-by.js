@@ -35,6 +35,12 @@ const onRadiusChange = (onChange) => (radius) => {
     onChange({ radius });
 };
 
+/**
+* Restrict by location component that first displays a checkbox, and once checked
+* will include a google maps snippet
+*
+*/
+
 export const RestrictByLocation = ({
     restrictByLocation = false,
     onChange,
@@ -77,15 +83,26 @@ RestrictByLocation.propTypes = {
     radius: PropTypes.number,
 };
 
+/**
+* Restrict by user component that first displays a checkbox, and once checked
+* will include text input field that displays users that satisfy the search criteria
+* default state is checked
+* @param {bool} restrictByUser default checked state
+* @param {bool} multipleUsers whether filter accepts multiple users or just one
+*/
+
 export const RestrictByUser = ({
-    restrictByUser = false,
+    restrictByUser = true,
     onChange,
+    disabled = false,
+    multipleUsers = true,
     users }) => (
     <span>
         <div className="checkbox form-group push-notifs__checkbox">
             <label>
                 <input
                     type="checkbox"
+                    disabled={disabled}
                     checked={restrictByUser}
                     onChange={onChangeRestrictByUser(onChange)}
                 />
@@ -102,6 +119,7 @@ export const RestrictByUser = ({
                 updateItems={onChangeUsers(onChange)}
                 className="push-notifs__users"
                 createNew={false}
+                multiple={multipleUsers}
                 search
                 initMaterial
             />
@@ -114,4 +132,3 @@ RestrictByUser.propTypes = {
     restrictByUser: PropTypes.bool,
     users: PropTypes.array,
 };
-

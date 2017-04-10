@@ -2,6 +2,12 @@ import React, { PropTypes } from 'react';
 import TitleBody from './title-body';
 import { RestrictByLocation, RestrictByUser } from './restrict-by';
 
+/**
+* Default template
+* This component is a functional component that displays title and body text input
+* fields and filter by location or users
+*/
+
 const DefaultTemplate = ({
     onChange,
     onChangeAsync,
@@ -21,4 +27,3 @@ DefaultTemplate.propTypes = {
 };
 
 export default DefaultTemplate;
-
