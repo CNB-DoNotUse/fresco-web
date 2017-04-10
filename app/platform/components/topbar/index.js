@@ -112,8 +112,10 @@ class TopBar extends React.Component {
             defaultVerified,
             defaultChron,
             roles,
+            isGalleryDetail = false,
+            galleryRating,
+            modalFunctions
         } = this.props;
-        debugger
         const topbarItems = [];
 
         if (editable) {
@@ -128,6 +130,19 @@ class TopBar extends React.Component {
 		// If showing both the capture type and time type toggles, put the time
 		// type toggle into the dropdown for capture time. Otherwise, display
 		// it separately.
+        if (isGalleryDetail && galleryRating === 2) {
+            topbarItems.push(
+                <Dropdown
+                    options={['recommend']}
+                    selected={'Share'}
+                    onSelected={this.onSelectVerified}
+                    modalList={true}
+                    modalFunctions={modalFunctions}
+                    key="share"
+                    inList
+                    />
+            );
+        }
         if (chronToggle) {
             let timeToggleCmp;
 
@@ -163,7 +178,6 @@ class TopBar extends React.Component {
                 />
             );
         }
-
         if (verifiedToggle && roles.includes('admin')) {
             topbarItems.push(
                 <Dropdown
@@ -185,7 +199,7 @@ class TopBar extends React.Component {
             setActiveTab,
             activeTab,
         } = this.props;
-        debugger
+
         if (tabs) {
             const tabContent = tabs.map((tab) => (
                 <button
