@@ -113,6 +113,7 @@ class TopBar extends React.Component {
             defaultChron,
             roles,
         } = this.props;
+        debugger
         const topbarItems = [];
 
         if (editable) {
@@ -184,7 +185,7 @@ class TopBar extends React.Component {
             setActiveTab,
             activeTab,
         } = this.props;
-
+        debugger
         if (tabs) {
             const tabContent = tabs.map((tab) => (
                 <button
