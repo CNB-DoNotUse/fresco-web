@@ -30,7 +30,7 @@ export const isImportedGallery = ({ owner_id = null, id = null, posts = [], impo
 );
 
 /**
- * Tells us if a gallery is submitted by checking 
+ * Tells us if a gallery is submitted by checking
  * if there is an owner, no importer, and all the posts have the same owner
  */
 export const isSubmittedGallery = ({ owner_id = null, posts = [], importer_id = null } = gallery) => (
@@ -52,3 +52,8 @@ export const saveGallery = (id, params) => {
     if (!id || !params) return Promise.resolve();
     return api.post(`gallery/${id}/update`, params);
 };
+
+export const recommendGallery = (params) => {
+    if (!params) return Promise.resolve();
+    return api.post(`notifications/outlet/create`, params);
+}
