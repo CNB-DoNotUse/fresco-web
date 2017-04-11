@@ -7,6 +7,12 @@ const onChangeGalleries = (onChange) => (galleries) => {
     onChange({ galleries });
 };
 
+/**
+* Gallery List template
+* This component is a functional component that displays title and body text input
+* fields, chip inputs for galleries, and filter by location or users
+*/
+
 const Template = ({
     galleries,
     onChange,
@@ -37,4 +43,3 @@ Template.propTypes = {
 };
 
 export default Template;
-

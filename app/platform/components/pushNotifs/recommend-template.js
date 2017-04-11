@@ -11,6 +11,12 @@ const onChangeStories = (onChange) => (story) => {
     onChange({ story: story[0] ? { id: story[0].id, title: story[0].title } : null });
 };
 
+/**
+* Recommend template
+* This component is a functional component that displays title and body text input
+* fields, chip inputs for galleries and stories, and filter by location or users
+*/
+
 const Template = ({
     gallery,
     story,
@@ -58,4 +64,3 @@ Template.propTypes = {
 };
 
 export default Template;
-

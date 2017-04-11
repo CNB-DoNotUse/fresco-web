@@ -24,13 +24,40 @@ export const CANCEL_SEND = 'pushNotifs/CANCEL_SEND';
 export const CLOSE_INFO_DIALOG = 'pushNotifs/CLOSE_INFO_DIALOG';
 
 // helpers
+
+/**
+* Determines the state of location and users filters,
+* whether the filters are checked and if specific locations and users have been
+* selected
+* @param {object} template taken from redux state which is the template info
+* @return {object} that determines which filters have been selected and if specific
+*     details have been chosen
+*/
+export const getTemplateState = (template) => ({
+    restrictByUser: get(template, 'restrictByUser', false),
+    restrictByLocation: get(template, 'restrictByLocation', false),
+    usersSelected: get(template, 'users', false),
+    locationSelected: get(template, 'location', false),
+});
+
+
+/**
+* Determines the errors on the template and gives an error messages
+* @param {string} template name of the template
+* @return {string} msg error message, empty if there are no errors
+*/
 const getTemplateErrors = (template, getState) => {
+    console.log(typeof template);
     const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
+    const {restrictByUser,
+        restrictByLocation,
+        usersSelected,
+        locationSelected} = getTemplateState(templateData.toJS());
     const missing = [];
     const errors = [];
     let msg = '';
 
-    if (!templateData.get('title')) missing.push('Title');
+    if (!templateData.get('title') && template !== "support") missing.push('Title');
     if (!templateData.get('body')) missing.push('Body');
     switch (template) {
     case 'assignment':
@@ -48,7 +75,12 @@ const getTemplateErrors = (template, getState) => {
         break;
     }
 
-    if (templateData.get('restrictByLocation') && templateData.get('radius') < 250) {
+    if (restrictByLocation && !locationSelected) missing.push('Specific location');
+    if (restrictByUser && (!usersSelected || usersSelected.length === 0)) {
+        missing.push('Specific user');
+    }
+
+    if (restrictByLocation && templateData.get('radius') < 250) {
         errors.push('Radius must be at least 250ft');
     }
     if (missing.length) msg = `Missing required fields: ${missing.join(', ')}`;
@@ -57,12 +89,14 @@ const getTemplateErrors = (template, getState) => {
     return msg;
 };
 
+/**
+* Packages template data into a promise
+*/
 const getFormDataFromTemplate = (template, state) => (
     new Promise((resolve) => {
         const templateData = state.getIn(['templates', template], Map());
+        const {restrictByUser, restrictByLocation} = getTemplateState(templateData.toJS());
 
-        const restrictByUser = templateData.get('restrictByUser', false);
-        const restrictByLocation = templateData.get('restrictByLocation', false);
         let formData = templateData
             .filterNot((v, k) => ['restrictByUser', 'restrictByLocation', 'address'].includes(k))
             .filterNot((v, k) => {
@@ -115,11 +149,16 @@ const getFormDataFromTemplate = (template, state) => (
             templateKey = 'user-news-custom-push';
         }
 
-        const templateFormData = { notification:
-            { [templateKey]: omit(formData, ['geo', 'radius', 'user_ids']) },
-        };
-        const otherFormData = pick(formData, ['geo', 'radius', 'user_ids']);
+        const templateFormData = { type: templateKey};
+        const otherFormData = {recipients: pick(formData, ['geo', 'radius', 'user_ids']),
+            content: omit(formData, ['geo', 'radius', 'source', 'user_ids'])};
 
+        // there may be a better way to package for support request
+        if (template === "support") {
+            const body = otherFormData.content;
+            const user_id = { user_id: otherFormData.recipients.user_ids[0]}
+            return resolve(Object.assign({}, body, user_id));
+        }
         return resolve(Object.assign({}, templateFormData, { ...otherFormData }));
     })
 );
@@ -268,9 +307,22 @@ export const send = (template) => (dispatch, getState) => {
     dispatch({ type: SEND, template });
 };
 
+/**
+* Determines what messages have been sent
+* @param {number} count is expected from the notifications/create endpoint, which
+*   represents how many individual push notifications were sent, if attribute is
+*   missing, then it is assumed that notifications/smooch (chat) was used
+* @return {string} message confirming type and quantity of notifications
+*/
 const getSuccessMsg = (count) => {
-    if (count === 1) return `${count} push`;
-    return `${count} pushes`;
+    // conditional for smooch notifications
+    if (count) {
+        if (count === 1) return `${count} push`;
+        return `${count} pushes`;
+    } else if (count === 0) {
+        return "However, no users satisfied your filters";
+    }
+    return "1 chat";
 };
 
 export const confirmSend = (template) => (dispatch, getState) => {
@@ -278,10 +330,12 @@ export const confirmSend = (template) => (dispatch, getState) => {
     if (state.get('loading')) return;
     dispatch({ type: CONFIRM_SEND });
 
+    const route = template === "support" ? 'notifications/smooch' : 'notifications/user/create';
+
     getFormDataFromTemplate(template, state)
     .then((data) => (
         api
-        .post('notifications/create', data)
+        .post(route, data)
         .then(res => {
             dispatch({
                 type: SEND_SUCCESS,
@@ -316,7 +370,7 @@ export const closeInfoDialog = () => ({
 // reducer
 const pushNotifs = (state = fromJS({
     activeTab: 'default',
-    templates: {},
+    templates: { 'default': {restrictByLocation: false, restrictByUser: true} },
     infoDialog: {},
     loading: false,
     requestConfirmSend: false,
@@ -333,7 +387,7 @@ const pushNotifs = (state = fromJS({
                 .set('loading', false)
                 .set('requestConfirmSend', false)
                 .set('alert', 'Notification sent!')
-                .setIn(['templates', action.template], Map())
+                .setIn(['templates', action.template], fromJS({restrictByLocation: false, restrictByUser: true}))
                 .set('infoDialog', fromJS({
                     visible: true,
                     header: action.header,
@@ -347,7 +401,12 @@ const pushNotifs = (state = fromJS({
                 .set('requestConfirmSend', false)
                 .set('alert', action.data);
         case SET_ACTIVE_TAB:
-            return state.set('activeTab', action.activeTab.toLowerCase()).set('alert', null);
+            const lowerCaseTemp = action.activeTab.toLowerCase();
+            return state
+                .set('activeTab', lowerCaseTemp)
+                .delete('templates')
+                .setIn(['templates', lowerCaseTemp], fromJS({restrictByLocation: false, restrictByUser: true}))
+                .set('alert', null);
         case DISMISS_ALERT:
             return state.set('alert', null);
         case CANCEL_SEND:
@@ -364,4 +423,3 @@ const pushNotifs = (state = fromJS({
 };
 
 export default pushNotifs;
-
