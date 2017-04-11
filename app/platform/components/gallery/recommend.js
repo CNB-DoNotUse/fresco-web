@@ -20,6 +20,7 @@ import EditByline from './edit-byline';
 import ExplicitCheckbox from '../global/explicit-checkbox';
 import AutocompleteMap from '../global/autocomplete-map';
 import ChipInput from '../global/chip-input';
+import Dropdown from 'app/platform/components/global/dropdown.js';
 import AssignmentChipInput from '../global/assignment-chip-input';
 import { LoaderOpacity } from '../global/loader';
 
@@ -69,7 +70,8 @@ class Recommend extends React.Component {
             owner: gallery.owner,
             bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
             updateHighlightedAt: false,
-            shouldHighlight: gallery.highlighted_at !== null
+            shouldHighlight: gallery.highlighted_at !== null,
+            sendToAll: false
         };
     }
 
@@ -522,6 +524,10 @@ class Recommend extends React.Component {
         );
     }
 
+    toggleAllOutlets() {
+        this.setState({sendToAll: !this.state.sendToAll});
+    }
+
     renderBody() {
         const { gallery, visible } = this.props;
         const {
@@ -540,7 +546,9 @@ class Recommend extends React.Component {
             owner,
             bylineDisabled,
             updateHighlightedAt,
-            shouldHighlight
+            shouldHighlight,
+            outlets,
+            sendToAll
         } = this.state;
 
         if (!gallery) return '';
@@ -548,130 +556,25 @@ class Recommend extends React.Component {
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    {isOriginalGallery && (
-                        <EditByline
-                            gallery={gallery}
-                            disabled={bylineDisabled}
-                            external_source={external_source}
-                            external_account_name={external_account_name}
-                            onChangeExtAccountName={(a) =>
-                                this.setState({ external_account_name: a })
-                            }
-                            onChangeExtSource={(s) =>
-                                this.setState({ external_source: s })
-                            }
-                        />
-                    )}
 
-                    {isImportedGallery(gallery) && (
-                        <ChipInput
-                            model="users"
-                            placeholder="Owner"
-                            queryAttr="full_name"
-                            altAttr="username"
-                            items={owner ? [owner] : []}
-                            updateItems={res => this.onChangeOwner(res[0])}
-                            className="dialog-row"
-                            createNew={false}
-                            multiple={false}
-                            search
-                        />
-                    )}
-
-                    <div className="dialog-row">
-                        <textarea
-                            id="gallery-edit-caption"
-                            type="text"
-                            className="form-control floating-label"
-                            value={caption}
-                            placeholder="Caption"
-                            onChange={e => this.setState({ caption: e.target.value })}
-                        />
-                    </div>
-
-                    <AssignmentChipInput
-                        model="assignments"
-                        placeholder="Assignment"
+                    {!sendToAll && <ChipInput
+                        model="outlets"
                         queryAttr="title"
-                        items={assignments}
-                        locationHint={gallery.location}
-                        updateItems={a => this.setState({ assignments: a })}
-                        multiple={false}
-                        disabled={assignments.length > 1}
-                        className="dialog-row"
-                        autocomplete />
-
-                    <ChipInput
-                        model="tags"
-                        items={tags}
-                        modifyText={t => `#${t}`}
-                        updateItems={t => this.setState({ tags: t })}
-                        autocomplete={false}
-                        className="dialog-row"
-                    />
-
-                    <ChipInput
-                        model="stories"
-                        queryAttr="title"
-                        items={stories}
-                        updateItems={s => this.setState({ stories: s })}
+                        items={outlets}
+                        updateItems={s => this.setState({ outlets: s })}
                         className="dialog-row"
                         createNew
                         autocomplete
-                    />
-
-                    <ChipInput
-                        model="articles"
-                        queryAttr="link"
-                        items={articles}
-                        updateItems={a => this.setState({ articles: a })}
-                        className="dialog-row"
-                        createNew
-                        search
-                    />
-
-                    {!isOriginalGallery && (
-                        <ChipInput
-                            model="posts"
-                            items={posts}
-                            queryAttr="id"
-                            updateItems={this.onChangePostsChips}
-                            className="dialog-row"
-                            createNew={false}
-                            idLookup
+                    />}
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={sendToAll}
+                            onChange={() => {this.toggleAllOutlets()}}
                         />
-                    )}
+                    Send to all outlets
+                    </label>
 
-                    <div className="dialog-row">
-                        <div className="checkbox">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={shouldHighlight}
-                                    onChange={this.onChangeHighlighted}
-                                />
-                                Highlighted
-                            </label>
-                        </div>
-                    </div>
-
-                    <div className="dialog-row">
-                        <div className="checkbox">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={updateHighlightedAt}
-                                    onChange={this.onChangeHighlightedAt}
-                                />
-                                Bring To Top
-                            </label>
-                        </div>
-                    </div>
-
-                    <ExplicitCheckbox
-                        is_nsfw={is_nsfw}
-                        onChange={this.onChangeIsNSFW}
-                    />
                 </div>
 
                 {visible && get(posts, 'length') || get(uploads, 'length') ? (
@@ -682,7 +585,7 @@ class Recommend extends React.Component {
                         onToggleDeletePost={p => this.onToggleDeletePost(p)}
                         onToggleDeleteUpload={(u, i) => this.onToggleDeleteUpload(u, i)}
                         className="dialog-col col-xs-12 col-md-5"
-                        canDelete
+                        canDelete={false}
                     />
                 ) : null}
 
@@ -698,36 +601,6 @@ class Recommend extends React.Component {
 
         return (
             <div className="dialog-foot">
-                <input
-                    id="gallery-upload-files"
-                    type="file"
-                    accept="image/*,video/*,video/mp4"
-                    ref={(r) => { this.fileInput = r; }}
-                    style={{ display: 'none' }}
-                    disabled={loading}
-                    onChange={(e) => this.onChangeFileInput(e)}
-                    multiple
-                />
-
-                <button
-                    type="button"
-                    onClick={() => this.revert()}
-                    className="btn btn-flat"
-                    disabled={loading}
-                >
-                    Revert changes
-                </button>
-
-                <button
-                    type="button"
-                    onClick={() => this.onClickClear()}
-                    className="btn btn-flat"
-                    disabled={loading}
-                >
-                    Clear all
-                </button>
-
-                {this.renderAddMore()}
 
                 <button
                     type="button"
@@ -735,28 +608,7 @@ class Recommend extends React.Component {
                     className="btn btn-flat pull-right"
                     disabled={loading}
                 >
-                    Save
-                </button>
-
-                {isOriginalGallery && (
-                    <button
-                        type="button"
-                        onClick={() =>
-                            this.setState({ rating: (gallery.rating < 2 ? 2 : 1) }, this.onSave)}
-                        className="btn btn-flat pull-right"
-                        disabled={loading}
-                    >
-                        {(gallery.rating < 2) ? 'Verify' : 'Unverify'}
-                    </button>
-                )}
-
-                <button
-                    type="button"
-                    onClick={this.onRemove}
-                    className="btn btn-flat pull-right"
-                    disabled={loading}
-                >
-                    Delete
+                    Send Recommendation
                 </button>
 
                 <button
@@ -784,7 +636,7 @@ class Recommend extends React.Component {
                 >
                     <div className="col-xs-12 col-lg-12 edit-new dialog">
                         <div className="dialog-head">
-                            <span className="md-type-title">Edit Gallery</span>
+                            <span className="md-type-title">Recommend Gallery</span>
                             <span
                                 className="mdi mdi-close pull-right icon toggle-edit toggler"
                                 onClick={() => this.hide()}

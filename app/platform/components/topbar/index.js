@@ -133,7 +133,7 @@ class TopBar extends React.Component {
         if (isGalleryDetail && galleryRating === 2) {
             topbarItems.push(
                 <Dropdown
-                    options={['recommend']}
+                    options={['Recommend', 'Send to all']}
                     selected={'Share'}
                     onSelected={this.onSelectVerified}
                     modalList={true}
