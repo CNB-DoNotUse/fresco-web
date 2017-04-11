@@ -4,13 +4,7 @@ import utils from 'utils';
 import moment from 'moment';
 import request from 'superagent';
 import api from 'app/lib/api';
-import {
-    isOriginalGallery,
-    isImportedGallery,
-    isSubmittedGallery,
-    deletePosts,
-    saveGallery,
-} from 'app/lib/models';
+
 import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
@@ -23,6 +17,10 @@ import ChipInput from '../global/chip-input';
 import Dropdown from 'app/platform/components/global/dropdown.js';
 import AssignmentChipInput from '../global/assignment-chip-input';
 import { LoaderOpacity } from '../global/loader';
+import { RestrictByOutlet } from 'app/platform/components/pushNotifs/restrict-by.js';
+import TitleBody from 'app/platform/components/pushNotifs/title-body.js';
+import Confirm from 'app/platform/components/dialogs/confirm.js';
+import { recommendGallery } from 'app/lib/models.js';
 
 /**
  * Gallery Edit Parent Object
@@ -53,6 +51,7 @@ class Recommend extends React.Component {
         if (!gallery) return {};
 
         return {
+            id: gallery.id,
             tags: gallery.tags || [],
             stories: gallery.stories,
             assignments: gallery.assignments,
@@ -61,170 +60,33 @@ class Recommend extends React.Component {
             articles: gallery.articles,
             rating: gallery.rating,
             is_nsfw: gallery.is_nsfw,
-            isOriginalGallery: isOriginalGallery(this.props.gallery),
-            uploads: [],
+            // isOriginalGallery: isOriginalGallery(this.props.gallery),
+            // uploads: [],
             loading: false,
             ...this.getInitialLocationData(),
-            external_account_name: gallery.external_account_name,
-            external_source: gallery.external_source,
-            owner: gallery.owner,
-            bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
-            updateHighlightedAt: false,
-            shouldHighlight: gallery.highlighted_at !== null,
-            sendToAll: false
+            // external_account_name: gallery.external_account_name,
+            // external_source: gallery.external_source,
+            // owner: gallery.owner,
+            // bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
+            // updateHighlightedAt: false,
+            // shouldHighlight: gallery.highlighted_at !== null,
+            sendToAll: false,
+            title: '',
+            body: '',
+            confirm: false
         };
     }
 
-    onChangeOwner = (owner) => {
-        const { gallery } = this.props;
-        this.setState({
-            owner,
-            bylineDisabled: !!owner,
-            external_account_name: gallery.external_account_name,
-            external_source: gallery.external_source,
-        });
-    };
-
-    onRemove = () => {
-        const { gallery } = this.props;
-        if (!gallery || !gallery.id || this.state.loading) return;
-
-        this.removeGallery(gallery.id);
-    };
-
-    onSave = () => {
-        const params = this.getFormData();
-        const { gallery, onUpdateGallery } = this.props;
-        const { loading, assignments, isOriginalGallery } = this.state;
-
-        if (!Object.keys(params).length) {
-            return $.snackbar({ content: 'No changes made!' });
-        }
-
-        if (!get(gallery, 'id') || loading) return;
-
-        this.setState({ loading: true });
-
-        const postsToDelete = isOriginalGallery ? get(params, 'posts_remove') : [];
-
-        saveGallery(gallery.id, params)
-        .then((res) => {
-            deletePosts(postsToDelete);
-            return res;
-        })
-        .then((res) => {
-            //Check if there are posts to upload
-            if (get(res, 'posts_new.length')) {
-                return Promise.all([
-                    res,
-                    this.uploadFiles(res.posts_new, this.getFilesFromUploads()),
-                ]);
-            }
-
-            return res;
-        })
-        //If the promise.all is run, then we get back an array, not a single object
-        .then(res => res.constructor === Array ? res[0] : res)
-        .then(res => {
-            this.hide();
-
-            this.setState({ uploads: [], loading: false }, () => {
-                onUpdateGallery(Object.assign(res, { assignments }));
-                $.snackbar({ content: 'Gallery saved!' });
-            });
-        })
-        .catch(() => {
-            $.snackbar({ content: 'There was an error saving the gallery!' });
-            this.setState({ loading: false });
-        });
-    };
-
-    onChangeFileInput(e) {
-        const files = e.target.files;
-        if (!files || !files.length) return;
-
-        times(files.length, (i) => {
-            const file = files[i];
-            const type = file.type;
-
-            if (type.indexOf('image') > -1) {
-                const reader = new FileReader();
-                reader.onload = (r) => {
-                    const upload = {
-                        type,
-                        url: r.target.result,
-                        file,
-                    };
-
-                    this.setState({ uploads: this.state.uploads.concat(upload) });
-                };
-                reader.readAsDataURL(file);
-            } else if (type.indexOf('video') > -1) {
-                const upload = ({
-                    type,
-                    url: URL.createObjectURL(file),
-                    file,
-                });
-
-                this.setState({ uploads: this.state.uploads.concat(upload) });
-            }
-        });
-
-        this.fileInput.value = '';
-    }
-
-    onChangePostsChips = (posts = []) => {
-        if (!posts.length) {
-            $.snackbar({ content: 'Galleries must have at least 1 post' });
-            return;
-        }
-        this.setState({ posts });
-    };
-
-    /**
-     * Updates state map location when AutocompleteMap gives new location
-     */
-    onPlaceChange(place) {
-        this.setState({ address: place.address, location: place.location });
+    onChange(nextState) {
+        this.setState(nextState);
     }
 
     /**
-     * Updates state map location when AutocompleteMap gives new location from drag
-     */
-    onMapDataChange(data) {
-        if (data.source === 'markerDrag') {
-            getAddressFromLatLng(data.location)
-            .then((address) => {
-                this.setState({ address, location: data.location });
-            });
-        }
-    }
-
-    onClickClear() {
-        if (this.state.loading) return;
-        const { gallery } = this.props;
-
-        this.setState({
-            tags: [],
-            stories: [],
-            assignments: [],
-            uploads: [],
-            address: '',
-            caption: 'No Caption',
-            articles: [],
-            rating: gallery.rating,
-            is_nsfw: false,
-            external_account_name: '',
-            external_source: '',
-        });
-    }
-
-    /**
-     * onScroll - stopPropagation of event
-     * (prevents post/list and other parent cmp scroll listeners from triggering)
-     *
-     * @param {object} e event
-     */
+    * onScroll - stopPropagation of event
+    * (prevents post/list and other parent cmp scroll listeners from triggering)
+    *
+    * @param {object} e event
+    */
     onScroll = (e) => {
         e.stopPropagation();
     };
@@ -237,275 +99,97 @@ class Recommend extends React.Component {
         return { location, address };
     }
 
-    /**
-     * getFormData
-     *
-     * @returns {Object} Form Data Object
-     */
-    getFormData() {
+    // const notificationSlug = 'user-news-gallery';
+    onRecommend = () => {
         const {
-            tags,
-            caption,
-            stories,
-            articles,
-            external_account_name,
-            external_source,
-            rating,
-            is_nsfw,
-            owner,
-            shouldHighlight,
-            updateHighlightedAt
+            title,
+            body,
+            outlets,
+            sendToAll,
         } = this.state;
-        const { gallery } = this.props;
-        const postsFormData = this.getPostsFormData();
+        const missing = [];
+        if (!title) missing.push("a title");
+        if (!body) missing.push("a body");
+        if (!sendToAll && !outlets) missing.push("outlet(s) to send to");
 
-        if (caption.length === 0) {
-            $.snackbar({ content: 'A gallery must have a caption' });
-            return null;
+        if (missing.length > 0) {
+            const msg = `You are missing: ${missing.join(', ')}`
+            return $.snackbar({ content: msg });
         }
-
-        if (!postsFormData) {
-            $.snackbar({ content: 'Galleries must have at least 1 post' });
-            return null;
-        }
-
-        let params = {
-            tags,
-            caption,
-            external_account_name,
-            external_source,
-            ...postsFormData,
-            ...utils.getRemoveAddParams('stories', gallery.stories, stories),
-            ...utils.getRemoveAddParams('articles', gallery.articles, articles),
-            rating,
-            is_nsfw,
-            owner_id: owner ? owner.id : null
-        };
-
-        if(!shouldHighlight) {
-            //We should un-highlight it
-            params.highlighted_at = null;
-        } else if(updateHighlightedAt || (shouldHighlight && !gallery.highlighted_at)) {
-            params.highlighted_at = moment().toISOString();
-            //If we are told to bring to the top, or it's never been highlighted and it should be
-        }
-
-        // Make sure our params are valid types and don't have any empty arrays
-        // Special exception if the param is a `bool`
-        params = pickBy(params, (v, k) => {
-            if (gallery[k] === v) return false;
-            if (['posts_new'].includes(k) && !v) return false;
-            return Array.isArray(v) ? v.length : true;
-        });
-
-        return params;
+        this.setState({confirm: true});
     }
 
-    getFilesFromUploads() {
-        return this.state.uploads.filter(u => !get(u, 'deleteToggled')).map(u => u.file);
-    }
+    getConfirmText = () => {
+        const {
+            outlets,
+            sendToAll
+        } = this.state;
 
-    // only set assignment on new posts if gallery isn't
-    // curated and all posts belong to same assignment
-    getAssignmentParam() {
-        const { gallery } = this.props;
-        const { assignments } = this.state;
-        if (gallery.assignments === assignments) return null;
-        if (!assignments.length) return { assignment_id: null };
-        if (assignments.length === 1) return { assignment_id: assignments[0].id };
-
-        return null;
-    }
-
-    getPostsFormData() {
-        const { gallery } = this.props;
-        const files = this.getFilesFromUploads();
-        let { posts, rating } = this.state;
-
-        if (!files.length && !posts.length) return null;
-
-        if (files.length) {
-            files.forEach((file) => {
-                posts = posts.concat({ contentType: file.type, new: true });
-            });
-        }
-
-        let { posts_new, posts_add, posts_remove } = utils.getRemoveAddParams('posts', gallery.posts, posts);
-
-        posts_new = posts_new
-            ? posts_new.map(p =>
-                Object.assign({}, p, {
-                    rating,
-                    ...this.getAssignmentParam(),
-                }))
-            : null;
-
-        return {
-            posts_new,
-            posts_add,
-            posts_remove,
-            ...this.getPostsUpdateParams(posts_remove),
-        };
-    }
-
-    getPostsUpdateParams(removed = []) {
-        const { gallery } = this.props;
-        const posts = gallery.posts.filter(p => !removed.includes(p.id));
-        const { address, location, rating } = this.state;
-        // check to see if should save locations on all gallery's posts
-        const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
-        let params = posts.map((p) => {
-            let postParam = Object.assign({
-                id: p.id,
-                rating: rating === 3 ? 2 : rating,
-            }, this.getAssignmentParam());
-
-            if (!sameLocation) {
-                postParam = Object.assign(postParam, {
-                    address,
-                    lat: location.lat,
-                    lng: location.lng,
-                });
-            }
-
-            // filter out unchanged params
-            return pickBy(postParam, (v, k) => {
-                if (k !== 'id' && (p[k] === v)) return false;
-                return true;
-            });
-        });
-
-        params = params.filter(p => Object.keys(p).length > 1);
-
-        return { posts_update: params };
-    }
-
-    /**
-     * Uploads passed files
-     * @param  {Array} posts new posts with upload urls
-     * @param  {Array} files actual files from the web browser
-     * @return {Promise(s)}  Promise.All
-     */
-    uploadFiles(posts, files) {
-        if (!posts || !files || !files.length) return Promise.resolve;
-        const requests = posts.map((p, i) => {
-            if (files[i]) {
-                return new Promise((resolve, reject) => {
-                    request
-                    .put(p.upload_url)
-                    .set('Content-Type', files[i].type)
-                    .send(files[i])
-                    .end((err) => {
-                        if (err) reject(err);
-                        else resolve();
-                    });
-                });
-            }
-
-            return Promise.resolve();
-        });
-
-        return Promise.all(requests);
-    }
-
-    removeGallery(id) {
-        if (!id || this.state.loading) return;
-
-        alertify.confirm('Are you sure you want to delete this gallery?', (confirmed) => {
-            if (!confirmed) return;
-            this.setState({ loading: true });
-
-            $.ajax({
-                url: `/api/gallery/${id}/delete`,
-                method: 'POST',
-                dataType: 'json',
-                contentType: 'application/json',
-            })
-            .done(() => {
-                $.snackbar({ content: 'Gallery deleted' });
-                location.href = document.referrer || '/highlights';
-            })
-            .fail(() => {
-                $.snackbar({ content: 'Unable to delete gallery' });
-            })
-            .always(() => {
-                this.setState({ loading: false });
-            });
-        });
-    }
-
-
-    // Reverts all changes
-    revert() {
-        if (this.state.loading) return;
-
-        this.setState(this.getStateFromProps(this.props));
-    }
-
-    onChangeHighlighted = (e) => {
-        this.setState({
-            shouldHighlight: e.target.checked,
-            updateHighlightedAt: e.target.checked,
-        });
-    };
-
-    onChangeHighlightedAt = (e) => {
-        this.setState({
-            updateHighlightedAt: e.target.checked,
-        });
-    };
-
-    onChangeIsNSFW = () => {
-        this.setState({ is_nsfw: !this.state.is_nsfw });
-    };
-
-    onToggleDeletePost(post) {
-        let { posts } = this.state;
-        if (posts.some(p => p.id === post.id)) {
-            posts = posts.filter(p => p.id !== post.id);
+        if (sendToAll) {
+            return "WARNING: You are about to recommend this gallery to every outlet";
         } else {
-            posts = posts.concat(post);
+            return `You will recommend this gallery to the following outlets: ${outlets.map(outlet => outlet.title).join(", ")}`;
         }
-
-        this.setState({ posts });
     }
 
-    onToggleDeleteUpload(upload, i) {
-        const { uploads } = this.state;
-        const deleteToggled = !get(upload, 'deleteToggled', false);
-        uploads[i] = Object.assign({}, upload, { deleteToggled });
+    onConfirmation = () => {
+        const params = this.packageRecommendation();
 
-        this.setState({ uploads });
+        this.setState({ loading: true });
+
+        recommendGallery(params)
+        .then((res) => {
+            if (res.result === "ok") {
+                this.hide();
+                return $.snackbar({content: "Gallery successfully recommended!"})
+            } else {
+                $.snackbar({ content: 'There was an error recommending the gallery!' });
+                this.setState({ loading: false });
+            }
+        })
+        .catch(() => {
+            $.snackbar({ content: 'There was an error recommending the gallery!' });
+            this.setState({ loading: false });
+        });
+    };
+
+
+    packageRecommendation() {
+        const {
+            title,
+            body,
+            id,
+            sendToAll,
+            outlets
+        } = this.state;
+
+        let recipients;
+        if (sendToAll) {
+            recipients = { to_all: true };
+        } else {
+            recipients = { outlet_ids: outlets.map(outlet => outlet.id) };
+        }
+        return {
+            type: ['outlet-recommended-content'],
+            content: {title,
+                body,
+                gallery_ids: [id]},
+            recipients
+        }
     }
 
-    hide() {
+    hide(confirmation = false) {
+        if (confirmation) {
+            this.setState({confirm: false})
+            return;
+        }
         this.props.toggle();
     }
 
-    renderAddMore() {
-        const { gallery } = this.props;
-        if (!gallery || !gallery.posts) return null;
-
-        if (isImportedGallery(gallery)) {
-            return (
-                <button
-                    type="button"
-                    onClick={() => this.fileInput.click()}
-                    className="btn btn-flat"
-                    disabled={this.state.loading}
-                >
-                    Add More
-                </button>
-            );
-        }
-
-        return null;
-    }
 
     renderMap() {
         const { address, location, isOriginalGallery } = this.state;
         const { gallery } = this.props;
-        const mapDisabled = !isImportedGallery(gallery) && (!isOriginalGallery || isSubmittedGallery(gallery));
 
         return (
             <div className="dialog-col col-xs-12 col-md-5 pull-right">
@@ -516,8 +200,8 @@ class Recommend extends React.Component {
                     onMapDataChange={data => this.onMapDataChange(data)}
                     onRadiusUpdate={r => this.onRadiusUpdate(r)}
                     hasRadius={false}
-                    disabled={mapDisabled}
-                    draggable={!mapDisabled}
+                    disabled={true}
+                    draggable={false}
                     rerender
                 />
             </div>
@@ -536,58 +220,35 @@ class Recommend extends React.Component {
             assignments,
             tags,
             is_nsfw,
-            articles,
             posts,
-            uploads,
-            isOriginalGallery,
-            external_account_name,
-            highlighted_at,
-            external_source,
-            owner,
-            bylineDisabled,
-            updateHighlightedAt,
-            shouldHighlight,
             outlets,
-            sendToAll
+            sendToAll,
+            title,
+            body
         } = this.state;
 
         if (!gallery) return '';
 
         return (
             <div className="dialog-body">
-                <div className="dialog-col col-xs-12 col-md-7 form-group-default">
+                    <TitleBody onChange={(nextState) => { this.onChange(nextState)}}
+                        title={title}
+                        body={body}/>
 
-                    {!sendToAll && <ChipInput
-                        model="outlets"
-                        queryAttr="title"
-                        items={outlets}
-                        updateItems={s => this.setState({ outlets: s })}
-                        className="dialog-row"
-                        createNew
-                        autocomplete
-                    />}
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={sendToAll}
-                            onChange={() => {this.toggleAllOutlets()}}
-                        />
-                    Send to all outlets
-                    </label>
+                    <RestrictByOutlet
+                        onChange={() => {this.toggleAllOutlets()}}
+                        sendToAll={sendToAll}
+                        outlets={outlets}
+                        updateItems={s => this.setState({ outlets: s })}/>
 
-                </div>
 
-                {visible && get(posts, 'length') || get(uploads, 'length') ? (
+
                     <EditPosts
                         originalPosts={gallery.posts}
                         editingPosts={posts}
-                        uploads={uploads}
-                        onToggleDeletePost={p => this.onToggleDeletePost(p)}
-                        onToggleDeleteUpload={(u, i) => this.onToggleDeleteUpload(u, i)}
                         className="dialog-col col-xs-12 col-md-5"
                         canDelete={false}
                     />
-                ) : null}
 
                 {this.renderMap()}
             </div>
@@ -604,7 +265,7 @@ class Recommend extends React.Component {
 
                 <button
                     type="button"
-                    onClick={this.onSave}
+                    onClick={this.onRecommend}
                     className="btn btn-flat pull-right"
                     disabled={loading}
                 >
@@ -625,33 +286,46 @@ class Recommend extends React.Component {
 
     render() {
         const { visible } = this.props;
-        const { loading } = this.state;
+        const { loading, confirm } = this.state;
 
-        return (
-            <div onScroll={this.onScroll}>
-                <div className={`dim toggle-edit ${visible ? 'toggled' : ''}`} />
-                <div
-                    className={`edit panel panel-default toggle-edit
-                    gedit ${visible ? 'toggled' : ''}`}
-                >
-                    <div className="col-xs-12 col-lg-12 edit-new dialog">
-                        <div className="dialog-head">
-                            <span className="md-type-title">Recommend Gallery</span>
-                            <span
-                                className="mdi mdi-close pull-right icon toggle-edit toggler"
-                                onClick={() => this.hide()}
-                            />
+        if (confirm) {
+            return (
+                <Confirm
+                    header="Send Recommendation?"
+                    body={this.getConfirmText()}
+                    onConfirm={this.onConfirmation}
+                    onCancel={() => {this.hide(true)}}
+                    toggled={confirm}
+                    disabled={loading}
+                    hasInput={false}/>
+            )
+        } else {
+            return (
+                <div onScroll={this.onScroll}>
+                    <div className={`dim toggle-edit ${visible ? 'toggled' : ''}`} />
+                    <div
+                        className={`edit panel panel-default toggle-edit
+                            gedit ${visible ? 'toggled' : ''}`}
+                            >
+                            <div className="col-xs-12 col-lg-12 edit-new dialog">
+                                <div className="dialog-head">
+                                    <span className="md-type-title">Recommend Gallery</span>
+                                    <span
+                                        className="mdi mdi-close pull-right icon toggle-edit toggler"
+                                        onClick={() => this.hide()}
+                                        />
+                                </div>
+
+                                {this.renderBody()}
+
+                                {this.renderFooter()}
+                            </div>
+
+                            <LoaderOpacity visible={loading} />
                         </div>
-
-                        {this.renderBody()}
-
-                        {this.renderFooter()}
                     </div>
-
-                    <LoaderOpacity visible={loading} />
-                </div>
-            </div>
-        );
+                );
+        }
     }
 }
 
