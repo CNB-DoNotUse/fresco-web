@@ -115,7 +115,7 @@ class Notifications extends React.Component {
  */
 const NotificaitonItem = ({ notification, updateNotification, index }) => {
 	const { title, description, options} = notification;
-
+	
 	return (
 		<li className="notification">
 			<div className="info">
@@ -129,6 +129,7 @@ const NotificaitonItem = ({ notification, updateNotification, index }) => {
 					<label>
 						<input
 							type="checkbox"
+							disabled={!options.hasOwnProperty('send_sms')}
 							checked={options.send_sms || false}
 							onChange={updateNotification('send_sms', index)} />
 					</label>
@@ -138,6 +139,7 @@ const NotificaitonItem = ({ notification, updateNotification, index }) => {
 					<label>
 						<input
 							type="checkbox"
+							disabled={!options.hasOwnProperty('send_email')}
 							checked={options.send_email || false}
 							onChange={updateNotification('send_email', index)} />
 					</label>
@@ -147,6 +149,7 @@ const NotificaitonItem = ({ notification, updateNotification, index }) => {
 					<label>
 						<input
 							type="checkbox"
+							disabled={!options.hasOwnProperty('send_fresco')}
 							checked={options.send_fresco || false}
 							onChange={updateNotification('send_fresco', index)} />
 					</label>
