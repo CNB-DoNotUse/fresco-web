@@ -114,7 +114,7 @@ class TopBar extends React.Component {
             roles,
             isGalleryDetail = false,
             galleryRating,
-            modalFunctions
+            recommendFunction
         } = this.props;
         const topbarItems = [];
 
@@ -132,15 +132,15 @@ class TopBar extends React.Component {
 		// it separately.
         if (isGalleryDetail && galleryRating === 2) {
             topbarItems.push(
-                <Dropdown
-                    options={['Recommend']}
-                    selected={'Share'}
-                    onSelected={this.onSelectVerified}
-                    modalList={true}
-                    modalFunctions={modalFunctions}
-                    key="share"
-                    inList
-                    />
+                <div
+                    className="nav-dropdown pull-right"
+                    onClick={recommendFunction}
+                    key="recommend"
+                    >
+                    <div className="toggle">
+                        <span>Recommend</span>
+                    </div>
+                </div>
             );
         }
         if (chronToggle) {
