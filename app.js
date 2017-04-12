@@ -21,7 +21,7 @@ const app           = express();
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
-cron('JYPVFS5E0uJ7ATqs2PCijgJ3MvNp44V2MGh1zSoQCdpy9kLoy2RTqOuaS9EMAUVVXGH5p7P1dNPgpcBj7NHzIvcohdY4eWdu8YMPGi0FwvkF78S1Yv7cT2Mw1FDpJvoP');
+cron();
 
 /**
  * Set up local head and global for all templates
