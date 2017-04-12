@@ -53,6 +53,10 @@ export const saveGallery = (id, params) => {
     return api.post(`gallery/${id}/update`, params);
 };
 
+/**
+* Recommends a gallery
+* @param {Object} params contains the recommendation's type, content, and recipients
+*/
 export const recommendGallery = (params) => {
     if (!params) return Promise.resolve();
     return api.post(`notifications/outlet/create`, params);

@@ -1,21 +1,9 @@
 import React, { PropTypes } from 'react';
 import { getAddressFromLatLng } from 'app/lib/location';
-import utils from 'utils';
-import moment from 'moment';
-import request from 'superagent';
-import api from 'app/lib/api';
 
-import times from 'lodash/times';
 import get from 'lodash/get';
-import isEqual from 'lodash/isEqual';
-import pickBy from 'lodash/pickBy';
 import EditPosts from './edit-posts';
-import EditByline from './edit-byline';
-import ExplicitCheckbox from '../global/explicit-checkbox';
 import AutocompleteMap from '../global/autocomplete-map';
-import ChipInput from '../global/chip-input';
-import Dropdown from 'app/platform/components/global/dropdown.js';
-import AssignmentChipInput from '../global/assignment-chip-input';
 import { LoaderOpacity } from '../global/loader';
 import { RestrictByOutlet } from 'app/platform/components/pushNotifs/restrict-by.js';
 import TitleBody from 'app/platform/components/pushNotifs/title-body.js';
@@ -23,8 +11,8 @@ import Confirm from 'app/platform/components/dialogs/confirm.js';
 import { recommendGallery } from 'app/lib/models.js';
 
 /**
- * Gallery Edit Parent Object
- * Component for adding gallery editing to the current view
+ * Gallery Recommendation Object
+ * Component for recommending galleries to outlets
  */
 class Recommend extends React.Component {
 
@@ -34,12 +22,6 @@ class Recommend extends React.Component {
         $.material.init();
     }
 
-    // If props has a gallery, and GalleryEdit does not currently have a
-    // gallery or the galleries are not the same
-    componentWillReceiveProps(nextProps) {
-        this.setState(this.getStateFromProps(nextProps));
-    }
-
     /**
      * getStateFromProps
      *
@@ -47,11 +29,11 @@ class Recommend extends React.Component {
      * @returns {object} initial state from passed props
      */
     getStateFromProps(props) {
-        const { gallery } = props;
+        const { gallery, user } = props;
         if (!gallery) return {};
 
         return {
-            id: gallery.id,
+            gallery_id: gallery.id,
             tags: gallery.tags || [],
             stories: gallery.stories,
             assignments: gallery.assignments,
@@ -59,24 +41,19 @@ class Recommend extends React.Component {
             posts: gallery.posts,
             articles: gallery.articles,
             rating: gallery.rating,
-            is_nsfw: gallery.is_nsfw,
-            // isOriginalGallery: isOriginalGallery(this.props.gallery),
-            // uploads: [],
             loading: false,
             ...this.getInitialLocationData(),
-            // external_account_name: gallery.external_account_name,
-            // external_source: gallery.external_source,
-            // owner: gallery.owner,
-            // bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
-            // updateHighlightedAt: false,
-            // shouldHighlight: gallery.highlighted_at !== null,
             sendToAll: false,
             title: '',
             body: '',
-            confirm: false
+            confirm: false,
+            outlets: []
         };
     }
 
+    /**
+    * Method to alter state, used for changes in input fields
+    */
     onChange(nextState) {
         this.setState(nextState);
     }
@@ -99,8 +76,15 @@ class Recommend extends React.Component {
         return { location, address };
     }
 
-    // const notificationSlug = 'user-news-gallery';
-    onRecommend = () => {
+    /**
+    * onRecommend handles both send to outlets and send preview
+    * it first checks if there are any required fields missing and
+    * alerts if there is. If all fields are filled, it sends the preview
+    * right away, or transitions to a confirmation modal for actual send
+    *
+    * @param {Bool} toSelf distinguishes between send preview and send to outlets
+    */
+    onRecommend = (toSelf = false) => {
         const {
             title,
             body,
@@ -110,15 +94,31 @@ class Recommend extends React.Component {
         const missing = [];
         if (!title) missing.push("a title");
         if (!body) missing.push("a body");
+        if (toSelf) {
+            if (missing.length > 0) {
+                const msg = `You are missing: ${missing.join(', ')}`
+                return $.snackbar({ content: msg });
+            } else {
+                this.onConfirmation(true);
+                return
+            }
+        }
         if (!sendToAll && !outlets) missing.push("outlet(s) to send to");
 
         if (missing.length > 0) {
             const msg = `You are missing: ${missing.join(', ')}`
             return $.snackbar({ content: msg });
         }
+
         this.setState({confirm: true});
     }
 
+    /**
+    * getConfirmText checks the state of outlets selected and warns the user
+    * about which stations will receive the recommendations
+    *
+    * @return {String} message to the user
+    */
     getConfirmText = () => {
         const {
             outlets,
@@ -132,60 +132,82 @@ class Recommend extends React.Component {
         }
     }
 
-    onConfirmation = () => {
-        const params = this.packageRecommendation();
-
+    /**
+    * onConfirmation contains the post request to the notification/outlet/create
+    * endpoint and tells the user whether the recommendation was successfully
+    * processed
+    *
+    * @param {Bool} toSelf distinguishes preview from send to outlets
+    */
+    onConfirmation = (toSelf = false) => {
+        const params = toSelf ? this.packageRecommendation(true) : this.packageRecommendation();
+        const successMsg = toSelf ? 'Preview sent, check your email' : "Gallery successfully recommended!"
         this.setState({ loading: true });
 
         recommendGallery(params)
         .then((res) => {
             if (res.result === "ok") {
-                this.hide();
-                return $.snackbar({content: "Gallery successfully recommended!"})
+                if (!toSelf) this.hide();
+                return $.snackbar({content: successMsg})
             } else {
-                $.snackbar({ content: 'There was an error recommending the gallery!' });
+                if (!toSelf) $.snackbar({ content: 'There was an error recommending the gallery' });
                 this.setState({ loading: false });
             }
         })
         .catch(() => {
-            $.snackbar({ content: 'There was an error recommending the gallery!' });
+            if (!toSelf) $.snackbar({ content: 'There was an error recommending the gallery' });
             this.setState({ loading: false });
         });
     };
 
-
-    packageRecommendation() {
+    /**
+    * packageRecommendation creates the payload required to make a recommendation
+    *
+    * @param {Bool} toSelf distinguishes preview from send to outlets
+    * @return {Object} JSON payload that contains notification type, content, and recipients
+    */
+    packageRecommendation(toSelf = false) {
         const {
             title,
             body,
-            id,
+            gallery_id,
             sendToAll,
             outlets
         } = this.state;
 
         let recipients;
-        if (sendToAll) {
-            recipients = { to_all: true };
+        if (toSelf) {
+            recipients = { user_ids: [this.props.user.id] }
         } else {
-            recipients = { outlet_ids: outlets.map(outlet => outlet.id) };
+            if (sendToAll) {
+                recipients = { to_all: true };
+            } else {
+                recipients = { outlet_ids: outlets.map(outlet => outlet.id) };
+            }
         }
         return {
             type: ['outlet-recommended-content'],
             content: {title,
                 body,
-                gallery_ids: [id]},
+                gallery_ids: [gallery_id]},
             recipients
         }
     }
 
+    /**
+    * Closes both the recommendation modal and confirmation modal. If closing recommendation,
+    * it also resets state back so input fields do not persist if modal is reopened
+    *
+    * @param {Bool} confirmation determines which modal is being closed
+    */
     hide(confirmation = false) {
         if (confirmation) {
             this.setState({confirm: false})
             return;
         }
         this.props.toggle();
+        this.setState(this.getStateFromProps(this.props));
     }
-
 
     renderMap() {
         const { address, location, isOriginalGallery } = this.state;
@@ -208,10 +230,16 @@ class Recommend extends React.Component {
         );
     }
 
+    /**
+    * Toggles the state of sendToAll, which tracks if the user wants to send recommendation to all outlets
+    */
     toggleAllOutlets() {
         this.setState({sendToAll: !this.state.sendToAll});
     }
 
+    /**
+    * Renders the body of the modal (all input fields)
+    */
     renderBody() {
         const { gallery, visible } = this.props;
         const {
@@ -255,6 +283,9 @@ class Recommend extends React.Component {
         );
     }
 
+    /**
+    * Renders the footer of the modal (all buttons)
+    */
     renderFooter() {
         const { gallery } = this.props;
         const { loading, isOriginalGallery } = this.state;
@@ -262,6 +293,14 @@ class Recommend extends React.Component {
 
         return (
             <div className="dialog-foot">
+                <button
+                    type="button"
+                    onClick={() => this.onRecommend(true)}
+                    className="btn btn-flat"
+                    disabled={loading}
+                >
+                    Send Preview To Me
+                </button>
 
                 <button
                     type="button"
