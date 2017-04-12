@@ -103,6 +103,7 @@ class Recommend extends React.Component {
                 return
             }
         }
+
         if (!sendToAll && !outlets) missing.push("outlet(s) to send to");
 
         if (missing.length > 0) {
@@ -148,7 +149,8 @@ class Recommend extends React.Component {
         .then((res) => {
             if (res.result === "ok") {
                 if (!toSelf) this.hide();
-                return $.snackbar({content: successMsg})
+                this.setState({ loading: false });
+                return $.snackbar({content: successMsg});
             } else {
                 if (!toSelf) $.snackbar({ content: 'There was an error recommending the gallery' });
                 this.setState({ loading: false });
@@ -259,24 +261,22 @@ class Recommend extends React.Component {
 
         return (
             <div className="dialog-body">
-                    <TitleBody onChange={(nextState) => { this.onChange(nextState)}}
-                        title={title}
-                        body={body}/>
+                <TitleBody onChange={(nextState) => { this.onChange(nextState)}}
+                    title={title}
+                    body={body}/>
 
-                    <RestrictByOutlet
-                        onChange={() => {this.toggleAllOutlets()}}
-                        sendToAll={sendToAll}
-                        outlets={outlets}
-                        updateItems={s => this.setState({ outlets: s })}/>
+                <RestrictByOutlet
+                    onChange={() => {this.toggleAllOutlets()}}
+                    sendToAll={sendToAll}
+                    outlets={outlets}
+                    updateItems={s => this.setState({ outlets: s })}/>
 
-
-
-                    <EditPosts
-                        originalPosts={gallery.posts}
-                        editingPosts={posts}
-                        className="dialog-col col-xs-12 col-md-5"
-                        canDelete={false}
-                    />
+                <EditPosts
+                    originalPosts={gallery.posts}
+                    editingPosts={posts}
+                    className="dialog-col col-xs-12 col-md-5"
+                    canDelete={false}
+                />
 
                 {this.renderMap()}
             </div>
@@ -304,7 +304,7 @@ class Recommend extends React.Component {
 
                 <button
                     type="button"
-                    onClick={this.onRecommend}
+                    onClick={() => this.onRecommend(false)}
                     className="btn btn-flat pull-right"
                     disabled={loading}
                 >
