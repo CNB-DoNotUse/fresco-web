@@ -168,7 +168,7 @@ class GalleryDetail extends React.Component {
                     defaultVerified={verifiedToggle}
                     isGalleryDetail={true}
                     galleryRating={gallery.rating}
-                    modalFunctions={[() => this.toggleRecommend()]}
+                    recommendFunction={() => this.toggleRecommend()}
                     verifiedToggle
                     timeToggle
                 />
