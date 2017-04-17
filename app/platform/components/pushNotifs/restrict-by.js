@@ -138,7 +138,7 @@ export const RestrictByOutlet = ({
     sendToAll,
     outlets,
     updateItems }) => (
-        <div className="dialog-col col-xs-12 col-md-7 form-group-default">
+        <div className="form-group-default">
             {!sendToAll && <ChipInput
                 model="outlets"
                 queryAttr="title"

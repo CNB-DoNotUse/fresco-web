@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { getAddressFromLatLng } from 'app/lib/location';
-
+import Slider from 'react-slick';
+import { renderPost, renderPostsNoDelete } from 'app/platform/components/gallery/edit-posts.js';
 import get from 'lodash/get';
 import EditPosts from './edit-posts';
 import AutocompleteMap from '../global/autocomplete-map';
@@ -103,8 +104,7 @@ class Recommend extends React.Component {
                 return
             }
         }
-
-        if (!sendToAll && !outlets) missing.push("outlet(s) to send to");
+        if (!sendToAll && outlets.length === 0) missing.push("outlet(s) to send to");
 
         if (missing.length > 0) {
             const msg = `You are missing: ${missing.join(', ')}`
@@ -157,7 +157,7 @@ class Recommend extends React.Component {
             }
         })
         .catch(() => {
-            if (!toSelf) $.snackbar({ content: 'There was an error recommending the gallery' });
+            $.snackbar({ content: 'There was an error recommending the gallery' });
             this.setState({ loading: false });
         });
     };
@@ -216,7 +216,7 @@ class Recommend extends React.Component {
         const { gallery } = this.props;
 
         return (
-            <div className="dialog-col col-xs-12 col-md-5 pull-right">
+            <div className="dialog-col col-xs-12 col-md-5">
                 <AutocompleteMap
                     address={address}
                     location={location}
@@ -258,12 +258,26 @@ class Recommend extends React.Component {
         } = this.state;
 
         if (!gallery) return '';
+        const postsJSX = renderPostsNoDelete(posts);
 
         return (
             <div className="dialog-body">
-                <TitleBody onChange={(nextState) => { this.onChange(nextState)}}
-                    title={title}
-                    body={body}/>
+                <Slider
+                    className="dialog-col col-xs-12 col-md-6"
+                    ref={(r) => { this.slider = r; }}
+                    adaptiveHeight={true}
+                    swipeToSlide
+                    draggable
+                    dots
+                    >
+                    {postsJSX}
+                </Slider>
+                {this.renderMap()}
+                <div className="dialog-col col-xs-12 col-md-6 form-group-default">
+                    <TitleBody onChange={(nextState) => { this.onChange(nextState)}}
+                        title={title}
+                        body={body}/>
+                </div>
 
                 <RestrictByOutlet
                     onChange={() => {this.toggleAllOutlets()}}
@@ -271,14 +285,9 @@ class Recommend extends React.Component {
                     outlets={outlets}
                     updateItems={s => this.setState({ outlets: s })}/>
 
-                <EditPosts
-                    originalPosts={gallery.posts}
-                    editingPosts={posts}
-                    className="dialog-col col-xs-12 col-md-5"
-                    canDelete={false}
-                />
 
-                {this.renderMap()}
+
+
             </div>
         );
     }
