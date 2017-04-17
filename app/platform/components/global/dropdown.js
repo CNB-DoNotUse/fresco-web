@@ -55,7 +55,10 @@ class Dropdown extends React.Component {
 
     getCaretIconClassName() {
         const { active } = this.state;
-        const { reverseCaretDirection } = this.props;
+        const { reverseCaretDirection, icon } = this.props;
+        if (icon) {
+            return `mdi mdi-${icon}`;
+        }
 
         if (reverseCaretDirection) {
             return `mdi ${active ? 'mdi-menu-down' : 'mdi-menu-up'}`;
