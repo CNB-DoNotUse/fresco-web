@@ -10,7 +10,7 @@ import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/gallery/sidebar';
 import Edit from './../components/gallery/edit';
-import Recommend from './../components/gallery/recommend';
+import Recommend from 'app/platform/components/dialogs/recommend';
 import App from './app';
 import ItemsDialog from '../components/dialogs/items';
 import UserItem from '../components/global/user-item';
@@ -168,7 +168,7 @@ class GalleryDetail extends React.Component {
                     defaultVerified={verifiedToggle}
                     isGalleryDetail={true}
                     galleryRating={gallery.rating}
-                    recommendFunction={() => this.toggleRecommend()}
+                    modalFunctions={[() => this.toggleRecommend()]}
                     verifiedToggle
                     timeToggle
                 />
