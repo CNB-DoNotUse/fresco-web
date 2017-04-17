@@ -67,7 +67,7 @@ export default class Confirm extends React.Component {
 
                     {(hasInput || body) && this.renderBody()}
 
-                    <div className="dialog-modal__footer">
+                    <div className="dialog-modal__footer clearfix">
                         <button
                             className="cancel btn"
                             onClick={onCancel}
