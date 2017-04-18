@@ -137,7 +137,8 @@ export const RestrictByOutlet = ({
     onChange,
     sendToAll,
     outlets,
-    updateItems }) => (
+    updateItems,
+    disabled }) => (
         <div className="form-group-default">
             {!sendToAll && <ChipInput
                 model="outlets"
@@ -147,6 +148,7 @@ export const RestrictByOutlet = ({
                 className="dialog-row"
                 createNew
                 autocomplete
+                disabled={disabled}
             />}
             <div className="checkbox">
                 <label>
@@ -154,6 +156,7 @@ export const RestrictByOutlet = ({
                         type="checkbox"
                         checked={sendToAll}
                         onChange={onChange}
+                        disabled={disabled}
                     />
                 Send to all outlets
                 </label>

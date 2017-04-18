@@ -1,16 +1,8 @@
 import React, { PropTypes } from 'react';
 import Base from './base';
-// import 'app/sass/platform/dialogs/confirm.scss';
-
-/**
-
- */
 import { getAddressFromLatLng } from 'app/lib/location';
 import Slider from 'react-slick';
-import { renderPost, renderPostsNoDelete } from 'app/platform/components/gallery/edit-posts.js';
 import get from 'lodash/get';
-import EditPosts from '../gallery/edit-posts';
-import AutocompleteMap from '../global/autocomplete-map';
 import { LoaderOpacity } from '../global/loader';
 import { RestrictByOutlet } from 'app/platform/components/pushNotifs/restrict-by.js';
 import TitleBody from 'app/platform/components/pushNotifs/title-body.js';
@@ -29,6 +21,10 @@ class Recommend extends React.Component {
         $.material.init();
     }
 
+    // componentDidUpdate() {
+    //     $.material.init();
+    // }
+
     /**
      * getStateFromProps
      *
@@ -41,20 +37,14 @@ class Recommend extends React.Component {
 
         return {
             gallery_id: gallery.id,
-            tags: gallery.tags || [],
-            stories: gallery.stories,
-            assignments: gallery.assignments,
-            caption: gallery.caption || 'No Caption',
-            posts: gallery.posts,
-            articles: gallery.articles,
             rating: gallery.rating,
             loading: false,
-            ...this.getInitialLocationData(),
             sendToAll: false,
             title: '',
             body: '',
             confirm: false,
-            outlets: []
+            outlets: [],
+            sendPreview: false
         };
     }
 
@@ -75,14 +65,6 @@ class Recommend extends React.Component {
         e.stopPropagation();
     };
 
-    getInitialLocationData() {
-        const { gallery } = this.props;
-        const location = gallery.location || get(gallery, 'posts[0].location');
-        const address = gallery.address || get(gallery, 'posts[0].address');
-
-        return { location, address };
-    }
-
     /**
     * onRecommend handles both send to outlets and send preview
     * it first checks if there are any required fields missing and
@@ -91,17 +73,18 @@ class Recommend extends React.Component {
     *
     * @param {Bool} toSelf distinguishes between send preview and send to outlets
     */
-    onRecommend = (toSelf = false) => {
+    onRecommend = () => {
         const {
             title,
             body,
             outlets,
             sendToAll,
+            sendPreview
         } = this.state;
         const missing = [];
         if (!title) missing.push("a title");
         if (!body) missing.push("a body");
-        if (toSelf) {
+        if (sendPreview) {
             if (missing.length > 0) {
                 const msg = `You are missing: ${missing.join(', ')}`
                 return $.snackbar({ content: msg });
@@ -146,19 +129,20 @@ class Recommend extends React.Component {
     *
     * @param {Bool} toSelf distinguishes preview from send to outlets
     */
-    onConfirmation = (toSelf = false) => {
-        const params = toSelf ? this.packageRecommendation(true) : this.packageRecommendation();
-        const successMsg = toSelf ? 'Preview sent, check your email' : "Gallery successfully recommended!"
+    onConfirmation = () => {
+        const { sendPreview } = this.state;
+        const params = sendPreview ? this.packageRecommendation(true) : this.packageRecommendation();
+        const successMsg = sendPreview ? 'Preview sent, check your email' : "Gallery successfully recommended!"
         this.setState({ loading: true });
 
         recommendGallery(params)
         .then((res) => {
             if (res.result === "ok") {
-                if (!toSelf) this.hide();
+                if (!sendPreview) this.hide();
                 this.setState({ loading: false });
                 return $.snackbar({content: successMsg});
             } else {
-                if (!toSelf) $.snackbar({ content: 'There was an error recommending the gallery' });
+                if (!sendPreview) $.snackbar({ content: 'There was an error recommending the gallery' });
                 this.setState({ loading: false });
             }
         })
@@ -174,17 +158,18 @@ class Recommend extends React.Component {
     * @param {Bool} toSelf distinguishes preview from send to outlets
     * @return {Object} JSON payload that contains notification type, content, and recipients
     */
-    packageRecommendation(toSelf = false) {
+    packageRecommendation() {
         const {
             title,
             body,
             gallery_id,
             sendToAll,
-            outlets
+            outlets,
+            sendPreview
         } = this.state;
 
         let recipients;
-        if (toSelf) {
+        if (sendPreview) {
             recipients = { user_ids: [this.props.user.id] }
         } else {
             if (sendToAll) {
@@ -210,7 +195,7 @@ class Recommend extends React.Component {
     */
     hide(confirmation = false) {
         if (confirmation) {
-            this.setState({confirm: false})
+            this.setState({confirm: false});
             return;
         }
         this.props.toggle();
@@ -230,20 +215,12 @@ class Recommend extends React.Component {
     renderBody() {
         const { gallery, visible } = this.props;
         const {
-            stories,
-            caption,
-            assignments,
-            tags,
-            is_nsfw,
-            posts,
             outlets,
             sendToAll,
             title,
-            body
+            body,
+            sendPreview
         } = this.state;
-
-        if (!gallery) return '';
-        const postsJSX = renderPostsNoDelete(posts);
 
         return (
             <div className="dialog-modal__body">
@@ -254,10 +231,23 @@ class Recommend extends React.Component {
 
                 <RestrictByOutlet
                     onChange={() => {this.toggleAllOutlets()}}
-                    sendToAll={sendToAll}
+                    sendToAll={sendToAll && !sendPreview}
                     outlets={outlets}
+                    disabled={sendPreview}
                     updateItems={s => this.setState({ outlets: s })}/>
-
+                <div className="form-group-default">
+                    <div className="checkbox">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={sendPreview}
+                            onChange={() => this.onChange({sendPreview: !sendPreview,
+                                                            sendToAll: false})}
+                        />
+                    Send preview to me
+                    </label>
+                </div>
+                </div>
             </div>
         );
     }
@@ -280,18 +270,10 @@ class Recommend extends React.Component {
                     >
                     Cancel
                 </button>
-                <button
-                    type="button"
-                    onClick={() => this.onRecommend(true)}
-                    className="btn btn-flat"
-                    disabled={loading}
-                >
-                    Send Preview To Me
-                </button>
 
                 <button
                     type="button"
-                    onClick={() => this.onRecommend(false)}
+                    onClick={() => this.onRecommend()}
                     className="primary btn"
                     disabled={loading}
                 >
@@ -305,35 +287,32 @@ class Recommend extends React.Component {
     render() {
         const { visible } = this.props;
         const { loading, confirm } = this.state;
+        return (
+            <Base toggled={visible}>
+                <div className={`dialog-modal--confirm ${visible ? 'toggled' : ''}`}>
+                    <div className="dialog-modal__header">
+                        <h3>Recommend Gallery</h3>
+                        </div>
 
-        if (confirm) {
-            return (
-                <Confirm
-                    header="Send Recommendation?"
-                    body={this.getConfirmText()}
-                    onConfirm={this.onConfirmation}
-                    onCancel={() => {this.hide(true)}}
-                    toggled={confirm}
-                    disabled={loading}
-                    hasInput={false}/>
-            )
-        } else {
-            return (
-                <Base toggled={visible}>
-                    <div className={`dialog-modal--confirm ${visible ? 'toggled' : ''}`}>
-                        <div className="dialog-modal__header">
-                            <h3>Recommend Gallery</h3>
-                            </div>
+                        {this.renderBody()}
 
-                            {this.renderBody()}
+                        {this.renderFooter()}
 
-                            {this.renderFooter()}
+                    <LoaderOpacity visible={loading} />
+                </div>
 
-                        <LoaderOpacity visible={loading} />
-                    </div>
-                </Base>
-                );
-        }
+                {confirm &&
+                    <Confirm
+                        header="Send Recommendation?"
+                        body={this.getConfirmText()}
+                        onConfirm={this.onConfirmation}
+                        onCancel={() => {this.hide(true)}}
+                        toggled={confirm}
+                        disabled={loading}
+                        zIndex={8}
+                        hasInput={false}/>}
+            </Base>
+        );
     }
 }
 

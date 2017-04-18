@@ -354,48 +354,6 @@ class ChipInput extends React.Component {
                 />
             );
         });
-
-        // low priority: for refactoring topbar and merge chip inout and tag-filter
-        // if (isDropDown) {
-        //     return (
-        //         <Dropdown
-        //             title={filtered.length > 0 ? `Filtering ${filtered.length}` : `Any ${text}`}
-        //             dropdownClass="tags-dropdown"
-        //             inList
-        //         >
-        //             <div className="chips">
-        //                 <div className="split-cell">
-        //                     <div className="form-group-default">
-        //                         <div className="form-control-wrapper">
-        //                             <input
-        //                                 id="tag-filter-input"
-        //                                 type="text"
-        //                                 className="form-control floating-label"
-        //                                 placeholder={text}
-        //                                 ref={r => { this.tagFilterInput = r; }}
-        //                                 onKeyUp={this.handleTagInput}
-        //                             />
-        //                         </div>
-        //                     </div>
-        //
-        //                     <ul id="tag-filter" className="chips">
-        //                         {filtered}
-        //                     </ul>
-        //                 </div>
-        //
-        //                 {available.length > 0 ?
-        //                     <div className="split-cell">
-        //                         <span className="md-type-body2">{`Available ${text}`}</span>
-        //                         <ul id="filter-available" className="chips">{available}</ul>
-        //                     </div>
-        //                     :
-        //                     ''
-        //                 }
-        //             </div>
-        //         </Dropdown>
-        //     );
-        // }
-
         return (
             <div
                 ref='chipInput'
