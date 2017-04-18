@@ -13,11 +13,9 @@ $radius:2px;
 $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 
 .nav-dropdown{
-	text-align: center;
 	background:#FFF;
 	height:48px;
 	margin:8px 8px 0 0;
-	width: 160px;
 	max-width:380px;
 	cursor:pointer;
 	vertical-align:middle;
@@ -107,7 +105,7 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 	.dropdown-body{
 		display:none;
 		position:absolute;
-		width:100%;
+		width:auto;
 		margin:0;
 		padding:0;
 		background:#FFF;
@@ -138,6 +136,7 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 				padding:14px;
 				font-size:16px;
 				font-weight:400;
+				width: auto;
 				@include rgba(color, 0, 0, 0, 0.87);
 
 				&:hover, &.active{
@@ -151,16 +150,21 @@ $dropShadow:0 2px 2px 0 rgba(0, 0, 0 , 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 /**
  * Styles for location dropdown
  */
-.location-dropdown{
+.location-search-dropdown{
 	.mdi-settings, .mdi-playlist-plus{
 		display:none;
 	}
 	&.active{
 		width:320px;
 
+
 		.mdi-settings, .mdi-playlist-plus{
 			display:block;
 		}
+	}
+
+	.dropdown-body {
+		width: 100%;
 	}
 
 	.location-item{
