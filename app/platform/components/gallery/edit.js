@@ -4,13 +4,11 @@ import utils from 'utils';
 import moment from 'moment';
 import request from 'superagent';
 import api from 'app/lib/api';
-import {
-    isOriginalGallery,
+import { deletePosts } from 'app/lib/models';
+import { isOriginalGallery,
     isImportedGallery,
     isSubmittedGallery,
-    deletePosts,
-    saveGallery,
-} from 'app/lib/models';
+    saveGallery } from 'app/lib/galleries';
 import times from 'lodash/times';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';

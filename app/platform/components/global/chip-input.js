@@ -6,6 +6,7 @@ import utils from 'utils';
 import get from 'lodash/get';
 import api from 'app/lib/api';
 import Tag from '../global/tag';
+import Dropdown from 'dropdown';
 
 /**
  * Autocomplet Chip Input
@@ -54,7 +55,7 @@ class ChipInput extends React.Component {
     state = {
         suggestions: [],
         query: '',
-        showingInitial: false
+        showingInitial: false,
     };
 
     componentWillMount() {
@@ -73,6 +74,7 @@ class ChipInput extends React.Component {
 
     /**
      * Handles click event from dom listener. Determines if click is outside of the modal
+     * resets the suggestions ul if a selection has been made
      */
     onClick = () => {
         const domNode = ReactDOM.findDOMNode(this.refs.chipInput);
@@ -167,7 +169,7 @@ class ChipInput extends React.Component {
             autocomplete,
             idLookup,
             search,
-            params
+            params,
         } = this.props;
         const { query } = this.state;
 
@@ -330,7 +332,14 @@ class ChipInput extends React.Component {
 
     render() {
         const { query, suggestions, showingInitial } = this.state;
-        const { items, queryAttr, altAttr, model, placeholder, disabled } = this.props;
+        const { items,
+            queryAttr,
+            altAttr,
+            model,
+            placeholder,
+            disabled,
+            isDropDown = false,
+        } = this.props;
         const itemsJSX = items.map((item, i) => {
             const text = queryAttr ? item[queryAttr] : item;
 
@@ -345,7 +354,6 @@ class ChipInput extends React.Component {
                 />
             );
         });
-
         return (
             <div
                 ref='chipInput'
