@@ -127,9 +127,8 @@ class TopBar extends React.Component {
             );
         }
 
-		// If showing both the capture type and time type toggles, put the time
-		// type toggle into the dropdown for capture time. Otherwise, display
-		// it separately.
+	    // this is the share dropdown that contains the option to recommended
+        // a gallery to outlets 
         if (isGalleryDetail && galleryRating === 2) {
             topbarItems.push(
                 <Dropdown
@@ -157,6 +156,9 @@ class TopBar extends React.Component {
                     />
                 );
             }
+            // If showing both the capture type and time type toggles, put the time
+            // type toggle into the dropdown for capture time. Otherwise, display
+            // it separately.
             topbarItems.push(
                 <Dropdown
                     options={['By capture time', 'By upload time']}

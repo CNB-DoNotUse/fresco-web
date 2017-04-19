@@ -7,7 +7,7 @@ import { LoaderOpacity } from '../global/loader';
 import { RestrictByOutlet } from 'app/platform/components/pushNotifs/restrict-by.js';
 import TitleBody from 'app/platform/components/pushNotifs/title-body.js';
 import Confirm from 'app/platform/components/dialogs/confirm.js';
-import { recommendGallery } from 'app/lib/models.js';
+import { recommendGallery } from 'app/lib/galleries';
 
 /**
  * Gallery Recommendation Object
@@ -20,10 +20,6 @@ class Recommend extends React.Component {
     componentDidMount() {
         $.material.init();
     }
-
-    // componentDidUpdate() {
-    //     $.material.init();
-    // }
 
     /**
      * getStateFromProps
@@ -71,7 +67,8 @@ class Recommend extends React.Component {
     * alerts if there is. If all fields are filled, it sends the preview
     * right away, or transitions to a confirmation modal for actual send
     *
-    * @param {Bool} toSelf distinguishes between send preview and send to outlets
+    * to send a preview, only title and body are required, if actual send,
+    * outlets or all outlets must be selected
     */
     onRecommend = () => {
         const {
@@ -127,7 +124,6 @@ class Recommend extends React.Component {
     * endpoint and tells the user whether the recommendation was successfully
     * processed
     *
-    * @param {Bool} toSelf distinguishes preview from send to outlets
     */
     onConfirmation = () => {
         const { sendPreview } = this.state;
@@ -138,8 +134,8 @@ class Recommend extends React.Component {
         recommendGallery(params)
         .then((res) => {
             if (res.result === "ok") {
+                this.setState({ loading: false, confirm: false });
                 if (!sendPreview) this.hide();
-                this.setState({ loading: false });
                 return $.snackbar({content: successMsg});
             } else {
                 if (!sendPreview) $.snackbar({ content: 'There was an error recommending the gallery' });
@@ -155,7 +151,6 @@ class Recommend extends React.Component {
     /**
     * packageRecommendation creates the payload required to make a recommendation
     *
-    * @param {Bool} toSelf distinguishes preview from send to outlets
     * @return {Object} JSON payload that contains notification type, content, and recipients
     */
     packageRecommendation() {
@@ -191,10 +186,10 @@ class Recommend extends React.Component {
     * Closes both the recommendation modal and confirmation modal. If closing recommendation,
     * it also resets state back so input fields do not persist if modal is reopened
     *
-    * @param {Bool} confirmation determines which modal is being closed
     */
-    hide(confirmation = false) {
-        if (confirmation) {
+    hide() {
+        const { confirm } = this.state;
+        if (confirm) {
             this.setState({confirm: false});
             return;
         }
@@ -306,11 +301,12 @@ class Recommend extends React.Component {
                         header="Send Recommendation?"
                         body={this.getConfirmText()}
                         onConfirm={this.onConfirmation}
-                        onCancel={() => {this.hide(true)}}
+                        onCancel={() => {this.hide()}}
                         toggled={confirm}
                         disabled={loading}
                         zIndex={8}
-                        hasInput={false}/>}
+                        hasInput={false}/>
+                }
             </Base>
         );
     }

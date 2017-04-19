@@ -111,35 +111,19 @@ class Dropdown extends React.Component {
         const { active } = this.state;
         let list = '';
         if (options) {
-            if (modalList) {
-                list = (
-                    <ul className="list">
-                        {options.map((option, i) => (
-                            <li
-                                className={option === this.state.selected ? 'active' : ''}
-                                key={i}
-                                onClick={modalFunctions[i]}
-                                >
-                                <span>{option}</span>
-                            </li>
-                        ))}
-                    </ul>
-                );
-            } else {
-                list = (
-                    <ul className="list">
-                        {options.map((option, i) => (
-                            <li
-                                className={option === this.state.selected ? 'active' : ''}
-                                key={i}
-                                onClick={(e) => this.optionClicked(e, i)}
-                                >
-                                <span>{option}</span>
-                            </li>
-                        ))}
-                    </ul>
-                );
-            }
+            list = (
+                <ul className="list">
+                    {options.map((option, i) => (
+                        <li
+                            className={option === this.state.selected ? 'active' : ''}
+                            key={i}
+                            onClick={ modalList ? modalFunctions[i] : (e) => this.optionClicked(e, i)}
+                            >
+                            <span>{option}</span>
+                        </li>
+                    ))}
+                </ul>
+            );
             // If options are passed, use those
         }
 

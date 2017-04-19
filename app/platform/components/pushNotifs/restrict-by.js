@@ -46,7 +46,8 @@ export const RestrictByLocation = ({
     onChange,
     location,
     address,
-    radius }) => (
+    radius
+}) => (
     <span>
         <div className="checkbox form-group push-notifs__checkbox">
             <label>
@@ -96,7 +97,8 @@ export const RestrictByUser = ({
     onChange,
     disabled = false,
     multipleUsers = true,
-    users }) => (
+    users
+}) => (
     <span>
         <div className="checkbox form-group push-notifs__checkbox">
             <label>
@@ -138,28 +140,29 @@ export const RestrictByOutlet = ({
     sendToAll,
     outlets,
     updateItems,
-    disabled }) => (
-        <div className="form-group-default">
-            {!sendToAll && <ChipInput
-                model="outlets"
-                queryAttr="title"
-                items={outlets}
-                updateItems={updateItems}
-                className="dialog-row"
-                createNew
-                autocomplete
-                disabled={disabled}
-            />}
-            <div className="checkbox">
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={sendToAll}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                Send to all outlets
-                </label>
-            </div>
+    disabled
+}) => (
+    <div className="form-group-default">
+        {!sendToAll && <ChipInput
+            model="outlets"
+            queryAttr="title"
+            items={outlets}
+            updateItems={updateItems}
+            className="dialog-row"
+            createNew
+            autocomplete
+            disabled={disabled}
+        />}
+        <div className="checkbox">
+            <label>
+                <input
+                    type="checkbox"
+                    checked={sendToAll}
+                    onChange={onChange}
+                    disabled={disabled}
+                />
+            Send to all outlets
+            </label>
         </div>
-    );
+    </div>
+);
