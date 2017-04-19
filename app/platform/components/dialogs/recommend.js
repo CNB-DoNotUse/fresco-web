@@ -4,7 +4,7 @@ import { getAddressFromLatLng } from 'app/lib/location';
 import Slider from 'react-slick';
 import get from 'lodash/get';
 import { LoaderOpacity } from '../global/loader';
-import { RestrictByOutlet } from 'app/platform/components/pushNotifs/restrict-by.js';
+import RestrictByOutlet from 'app/platform/components/global/outlet-chip-input.js';
 import TitleBody from 'app/platform/components/pushNotifs/title-body.js';
 import Confirm from 'app/platform/components/dialogs/confirm.js';
 import { recommendGallery } from 'app/lib/galleries';

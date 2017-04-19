@@ -134,35 +134,3 @@ RestrictByUser.propTypes = {
     restrictByUser: PropTypes.bool,
     users: PropTypes.array,
 };
-
-export const RestrictByOutlet = ({
-    onChange,
-    sendToAll,
-    outlets,
-    updateItems,
-    disabled
-}) => (
-    <div className="form-group-default">
-        {!sendToAll && <ChipInput
-            model="outlets"
-            queryAttr="title"
-            items={outlets}
-            updateItems={updateItems}
-            className="dialog-row"
-            createNew
-            autocomplete
-            disabled={disabled}
-        />}
-        <div className="checkbox">
-            <label>
-                <input
-                    type="checkbox"
-                    checked={sendToAll}
-                    onChange={onChange}
-                    disabled={disabled}
-                />
-            Send to all outlets
-            </label>
-        </div>
-    </div>
-);
