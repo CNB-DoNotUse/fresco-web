@@ -51,7 +51,7 @@ class PostCellActions extends React.Component {
             }
 
             // Show the purhcased icon if the post hasn't been purchased
-            if (!purchased) {
+            if (!purchased && !user.roles.includes('download-temp')) {
                 actions.push(
                     <PurchaseAction
                         post={post}
