@@ -49,9 +49,12 @@ export const updateNotification = (option, index = null, e) => (dispatch, getSta
         }
     } else {
         for (let notif of notifications) {
-            notif['options'][option] = e.target.checked;
-            params[notif.type] = {
-                [option]: e.target.checked
+            //Check if option is available
+            if(notif['options'].hasOwnProperty(option)) {
+                notif['options'][option] = e.target.checked;
+                params[notif.type] = {
+                    [option]: e.target.checked
+                }
             }
         }
     }

@@ -54,7 +54,9 @@ class PostDetailImage extends React.Component {
         //If an admin
         if (user.roles.includes('admin') || user.roles.includes('download-temp')) {
             actions.push(downloadAction);
-            if (!purchased) actions.push(purchaseAction);
+            if (!purchased && !user.roles.includes('download-temp')) {
+                actions.push(purchaseAction);
+            }
         } else {
             // Check if the post is purchased
             if (user.outlet && !purchased) {
