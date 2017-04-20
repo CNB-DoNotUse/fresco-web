@@ -79,16 +79,9 @@ class Recommend extends React.Component {
             sendPreview
         } = this.state;
         const missing = [];
-        if (!title) missing.push("a title");
-        if (!body) missing.push("a body");
         if (sendPreview) {
-            if (missing.length > 0) {
-                const msg = `You are missing: ${missing.join(', ')}`
-                return $.snackbar({ content: msg });
-            } else {
-                this.onConfirmation(true);
-                return
-            }
+            this.onConfirmation(true);
+            return;
         }
         if (!sendToAll && outlets.length === 0) missing.push("outlet(s) to send to");
 
@@ -222,6 +215,8 @@ class Recommend extends React.Component {
 
                 <TitleBody onChange={(nextState) => { this.onChange(nextState)}}
                     body={body}
+                    placeholderTitle="Re: New Recommended Content"
+                    placeholderBody="Top content picks from your Fresco editor"
                     title={title}/>
 
                 <RestrictByOutlet

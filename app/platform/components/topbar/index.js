@@ -128,12 +128,12 @@ class TopBar extends React.Component {
         }
 
 	    // this is the share dropdown that contains the option to recommended
-        // a gallery to outlets 
+        // a gallery to outlets
         if (isGalleryDetail && galleryRating === 2) {
             topbarItems.push(
                 <Dropdown
                     options={['Recommend']}
-                    selected={'Share'}
+                    selected={''}
                     onSelected={this.onSelectVerified}
                     modalList={true}
                     modalFunctions={modalFunctions}
