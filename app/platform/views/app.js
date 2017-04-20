@@ -11,6 +11,8 @@ require('script!bootstrap-material-design/dist/js/ripples');
 require('script!alertify.js/dist/js/alertify');
 import '../../sass/platform/screen.scss';
 
+import { checkIfInactive } from 'app/platform/components/dialogs/inactivity-alert';
+
 /**
  * Root App Wrapper
  */
@@ -34,7 +36,7 @@ class App extends React.Component {
 
         this.trackUser();
         startChat();
-
+        checkIfInactive();
     }
 
     /**

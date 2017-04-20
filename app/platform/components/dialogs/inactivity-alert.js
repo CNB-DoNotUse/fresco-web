@@ -1,9 +1,22 @@
-import { getFromSessionStorage, setInSessionStorage } from './storage';
+import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import React from 'react';
-import api from './api';
+import api from 'app/lib/api';
+
+const assignmentParams = { direction: "desc", sortBy: "created_at", limit: 1 };
 
 // makes an api call to see if an assignment has been made in the last 12 hours
-const checkIfInactive = () => {
+export const checkIfInactive = () => {
+    api.get('assignment/list', assignmentParams)
+        .then((res) => {
+            console.log(res);
+            debugger
+            if (res.length > 0) {
+                const lastAssignment = res[0];
+            }
+        })
+        .catch((err) => {
+            console.log("nope");
+        });
 
 }
 
