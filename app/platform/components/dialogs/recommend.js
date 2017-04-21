@@ -87,7 +87,9 @@ class Recommend extends React.Component {
 
         if (missing.length > 0) {
             const msg = `You are missing: ${missing.join(', ')}`
-            return $.snackbar({ content: msg });
+            $.snackbar({ content: msg });
+            debugger
+            return;
         }
 
         this.setState({confirm: true});

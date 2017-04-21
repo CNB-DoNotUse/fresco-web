@@ -9,7 +9,6 @@ export const checkIfInactive = () => {
     api.get('assignment/list', assignmentParams)
         .then((res) => {
             console.log(res);
-            debugger
             if (res.length > 0) {
                 const lastAssignment = res[0];
             }
@@ -27,7 +26,8 @@ const checkIfNotified = () => {
 
 //helper method to record that a notification has been served, so that it only serves it once per session
 const markNotified = () => {
-    setInSessionStorage('notifications', { inactivity: true });
+    const timeNotified = new Date();
+    setInSessionStorage('notifications', { inactivity: timeNotified });
 }
 
 //actual react component of the alert

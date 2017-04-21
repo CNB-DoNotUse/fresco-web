@@ -10,7 +10,7 @@ require('script!bootstrap-material-design/dist/js/material');
 require('script!bootstrap-material-design/dist/js/ripples');
 require('script!alertify.js/dist/js/alertify');
 import '../../sass/platform/screen.scss';
-
+import SnackbarModal from 'app/platform/components/dialogs/snackbar-modal';
 import { checkIfInactive } from 'app/platform/components/dialogs/inactivity-alert';
 
 /**
@@ -66,6 +66,7 @@ class App extends React.Component {
                     <div className="col-md-12 col-lg-10">
                         {children}
                     </div>
+                    <SnackbarModal/>
                 </div>
             </div>
         );
