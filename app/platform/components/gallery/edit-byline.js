@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { isImportedGallery } from 'app/lib/models';
+import { isImportedGallery } from 'app/lib/galleries';
 import utils from 'utils';
 
 /**
