@@ -164,7 +164,7 @@ class GalleryDetail extends React.Component {
                     defaultVerified={verifiedToggle}
                     isGalleryDetail={true}
                     galleryRating={gallery.rating}
-                    modalFunctions={[() => toggleRecommend()]}
+                    modalFunctions={[toggleRecommend.bind(this)]}
                     verifiedToggle
                     timeToggle
                 />
@@ -233,7 +233,7 @@ class GalleryDetail extends React.Component {
                     user={user}
                 />
                 <Recommend
-                    toggle={() => toggleRecommend()}
+                    toggle={toggleRecommend.bind(this)}
                     visible={recommendToggled}
                     onUpdateGallery={(g) => this.onUpdateGallery(g)}
                     gallery={gallery}
