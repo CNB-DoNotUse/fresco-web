@@ -13,6 +13,11 @@ import { recommendGallery } from 'app/lib/galleries';
  * Gallery Recommendation Object
  * Component for recommending galleries to outlets
  */
+
+export function toggleRecommend() {
+    this.setState({ recommendToggled: !this.state.recommendToggled });
+}
+
 class Recommend extends React.Component {
 
     state = this.getStateFromProps(this.props);
@@ -87,7 +92,9 @@ class Recommend extends React.Component {
 
         if (missing.length > 0) {
             const msg = `You are missing: ${missing.join(', ')}`
-            return $.snackbar({ content: msg });
+            $.snackbar({ content: msg });
+            debugger
+            return;
         }
 
         this.setState({confirm: true});

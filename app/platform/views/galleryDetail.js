@@ -10,7 +10,7 @@ import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import Sidebar from './../components/gallery/sidebar';
 import Edit from './../components/gallery/edit';
-import Recommend from 'app/platform/components/dialogs/recommend';
+import Recommend, { toggleRecommend } from 'app/platform/components/dialogs/recommend';
 import App from './app';
 import ItemsDialog from '../components/dialogs/items';
 import UserItem from '../components/global/user-item';
@@ -136,10 +136,6 @@ class GalleryDetail extends React.Component {
         this.setState({ editToggled: !this.state.editToggled });
     }
 
-    toggleRecommend() {
-        this.setState({ recommendToggled: !this.state.recommendToggled });
-    }
-
     render() {
         const { user } = this.props;
         const {
@@ -168,7 +164,7 @@ class GalleryDetail extends React.Component {
                     defaultVerified={verifiedToggle}
                     isGalleryDetail={true}
                     galleryRating={gallery.rating}
-                    modalFunctions={[() => this.toggleRecommend()]}
+                    modalFunctions={[() => toggleRecommend()]}
                     verifiedToggle
                     timeToggle
                 />
@@ -237,7 +233,7 @@ class GalleryDetail extends React.Component {
                     user={user}
                 />
                 <Recommend
-                    toggle={() => this.toggleRecommend()}
+                    toggle={() => toggleRecommend()}
                     visible={recommendToggled}
                     onUpdateGallery={(g) => this.onUpdateGallery(g)}
                     gallery={gallery}
