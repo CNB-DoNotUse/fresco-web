@@ -7,6 +7,7 @@
  */
 .dialog-modal--confirm {
     @extend .dialog-modal;
+    z-index: 7;
 
     &.no-input {
         height: 128px;
@@ -34,7 +35,7 @@
 
         div, form {
             width:100%;
-            margin:0;
+            // margin:0;
         }
 
         input {
@@ -42,10 +43,13 @@
             font-size: 16px;
             line-height: 1.5;
         }
+        .form_group {
+            margin-bottom: 5px;
+        }
     }
 
     .dialog-modal__footer {
-        height:64px;
+        height:auto;
         font-size: 14px;
         font-weight: 500;
         padding: 12px;
