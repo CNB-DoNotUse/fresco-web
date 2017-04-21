@@ -55,7 +55,10 @@ class Dropdown extends React.Component {
 
     getCaretIconClassName() {
         const { active } = this.state;
-        const { reverseCaretDirection } = this.props;
+        const { reverseCaretDirection, icon } = this.props;
+        if (icon) {
+            return `mdi mdi-${icon}`;
+        }
 
         if (reverseCaretDirection) {
             return `mdi ${active ? 'mdi-menu-down' : 'mdi-menu-up'}`;
@@ -102,25 +105,26 @@ class Dropdown extends React.Component {
             title,
             dropdownActions,
             children,
+            modalList = false,
+            modalFunctions
         } = this.props;
         const { active } = this.state;
-
         let list = '';
         if (options) {
-            // If options are passed, use those
             list = (
                 <ul className="list">
                     {options.map((option, i) => (
                         <li
                             className={option === this.state.selected ? 'active' : ''}
                             key={i}
-                            onClick={(e) => this.optionClicked(e, i)}
-                        >
+                            onClick={ modalList ? modalFunctions[i] : (e) => this.optionClicked(e, i)}
+                            >
                             <span>{option}</span>
                         </li>
                     ))}
                 </ul>
             );
+            // If options are passed, use those
         }
 
         return (

@@ -41,6 +41,7 @@ class Purchases extends React.Component {
         return this.state[outletsKey];
     }
 
+    // part of outlets
     findOutlets = (q) => {
         if (q.length === 0) {
             this.setState({ availableOutlets: [] });

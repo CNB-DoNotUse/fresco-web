@@ -20,7 +20,9 @@ const TitleBody = ({
     title,
     body,
     onChange,
-    onlyOneField
+    onlyOneField,
+    placeholderTitle = "Title",
+    placeholderBody = "Body"
 }) => {
     if (onlyOneField) {
         return (
@@ -28,7 +30,7 @@ const TitleBody = ({
                 <textarea
                     type="text"
                     className="form-control floating-label"
-                    placeholder="Body"
+                    placeholder={placeholderBody}
                     value={body || ''}
                     onChange={onChangeBody(onChange)}
                 />
@@ -37,23 +39,23 @@ const TitleBody = ({
     }
 
     return(
-    <span>
-        <input
-            type="text"
-            className="form-control floating-label"
-            placeholder="Title"
-            value={title || ''}
-            onChange={onChangeTitle(onChange)}
-        />
+        <span>
+            <input
+                type="text"
+                className="form-control floating-label"
+                placeholder={placeholderTitle}
+                value={title || ''}
+                onChange={onChangeTitle(onChange)}
+            />
 
-        <textarea
-            type="text"
-            className="form-control floating-label"
-            placeholder="Body"
-            value={body || ''}
-            onChange={onChangeBody(onChange)}
-        />
-    </span>
+            <textarea
+                type="text"
+                className="form-control floating-label"
+                placeholder={placeholderBody}
+                value={body || ''}
+                onChange={onChangeBody(onChange)}
+            />
+        </span>
 )};
 
 TitleBody.propTypes = {

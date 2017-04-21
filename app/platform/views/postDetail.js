@@ -8,6 +8,7 @@ import PostRelated from './../components/post/related';
 import PostRelatedTags from './../components/post/related-tags';
 import PostDetailImage from './../components/post/detail-image';
 import GalleryEdit from './../components/gallery/edit';
+import Recommend, { toggleRecommend } from 'app/platform/components/dialogs/recommend';
 
 /**
  * Post Detail Parent Object, made of a side column and PostList
@@ -31,7 +32,7 @@ class PostDetail extends React.Component {
 
     render() {
         const { user, title, verifier } = this.props;
-        const { gallery, galleryEditToggled, post } = this.state;
+        const { gallery, galleryEditToggled, post, recommendToggled = false } = this.state;
         const editable = (user.roles.includes('admin')) && !!gallery.id;
         const page = 'postDetail';
         return (
@@ -42,6 +43,9 @@ class PostDetail extends React.Component {
                     title={title}
                     editable={editable}
                     edit={() => this.toggleGalleryEdit()}
+                    isPostDetail={true}
+                    galleryRating={gallery.rating}
+                    modalFunctions={[toggleRecommend.bind(this)]}
                 />
 
                 <div className="content">
@@ -67,6 +71,13 @@ class PostDetail extends React.Component {
                     toggle={() => this.toggleGalleryEdit()}
                     visible={galleryEditToggled && editable}
                     onUpdateGallery={(g) => this.onUpdateGallery(g)}
+                />
+                <Recommend
+                    toggle={toggleRecommend.bind(this)}
+                    visible={recommendToggled}
+                    onUpdateGallery={(g) => this.onUpdateGallery(g)}
+                    gallery={gallery}
+                    user={user}
                 />
             </App>
         );
