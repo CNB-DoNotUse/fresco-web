@@ -133,7 +133,7 @@ class TopBar extends React.Component {
             topbarItems.push(
                 <Dropdown
                     options={['Recommend']}
-                    selected={''}
+                    selected=""
                     onSelected={this.onSelectVerified}
                     modalList={true}
                     modalFunctions={modalFunctions}
