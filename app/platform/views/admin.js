@@ -137,19 +137,6 @@ class Admin extends React.Component {
 
     refresh = () => {
         this.getData({ tab: this.state.activeTab }, (data) => {
-            const oldData = this.state[this.state.activeTab];
-            const newData = differenceBy(data, oldData, 'id');
-
-            const updatedData = oldData.map(old => {
-                const updated = data.find(d => d.id === old.id);
-                if (updated
-                    && get(updated, 'posts.length', 0) !== get(old, 'posts.length', 0)) {
-                    return Object.assign({}, old, { posts: updated.posts });
-                }
-
-                return old;
-            }).concat(newData);
-
             this.setState({ [this.state.activeTab]: updatedData });
         });
     };
