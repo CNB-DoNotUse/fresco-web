@@ -137,7 +137,7 @@ class Admin extends React.Component {
 
     refresh = () => {
         this.getData({ tab: this.state.activeTab }, (data) => {
-            this.setState({ [this.state.activeTab]: updatedData });
+            this.setState({ [this.state.activeTab]: data });
         });
     };
 

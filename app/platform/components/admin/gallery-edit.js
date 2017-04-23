@@ -49,7 +49,7 @@ export default class GalleryEdit extends React.Component {
             posts: gallery.posts,
             is_nsfw: gallery.is_nsfw,
             owner: gallery.owner,
-            ...this.getInitialLocationData(),
+            ...this.getInitialLocationData(gallery),
             bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
         };
     }
@@ -256,8 +256,11 @@ export default class GalleryEdit extends React.Component {
         return { posts_update, posts_remove };
     }
 
-    getInitialLocationData() {
-        const { gallery } = this.props;
+    getInitialLocationData(gallery = null) {
+        if(!gallery) {
+            gallery = this.props.gallery;
+        }
+
         const location = gallery.location || get(gallery, 'posts[0].location');
         const address = gallery.address || get(gallery, 'posts[0].address');
 
@@ -303,7 +306,7 @@ export default class GalleryEdit extends React.Component {
         if (!gallery) {
             return <div />;
         }
-
+        
         return (
             <div className="dialog admin-edit-pane">
                 <div className="dialog-body" style={{ visibility: 'visible' }} >

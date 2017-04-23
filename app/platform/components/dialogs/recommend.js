@@ -219,27 +219,28 @@ class Recommend extends React.Component {
 
         return (
             <div className="dialog-modal__body">
-
                 <TitleBody onChange={(nextState) => { this.onChange(nextState)}}
                     body={body}
                     placeholderTitle="Re: New Recommended Content"
                     placeholderBody="Top content picks from your Fresco editor"
-                    title={title}/>
+                    title={title}
+                />
 
                 <RestrictByOutlet
                     onChange={() => {this.toggleAllOutlets()}}
                     sendToAll={sendToAll && !sendPreview}
                     outlets={outlets}
                     disabled={sendPreview}
-                    updateItems={s => this.setState({ outlets: s })}/>
+                    updateItems={s => this.setState({ outlets: s })}
+                />
+
                 <div className="form-group-default">
                     <div className="checkbox">
                     <label>
                         <input
                             type="checkbox"
                             checked={sendPreview}
-                            onChange={() => this.onChange({sendPreview: !sendPreview,
-                                                            sendToAll: false})}
+                            onChange={() => this.onChange({sendPreview: !sendPreview, sendToAll: false})}
                         />
                     Send preview to me
                     </label>
