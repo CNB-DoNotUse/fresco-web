@@ -1,6 +1,7 @@
 // https://github.com/erikras/ducks-modular-redux
 import api from 'app/lib/api';
-import { verifyGallery, verifyUser, verifyAssignment } from 'app/lib/models';
+import { verifyUser, verifyAssignment } from 'app/lib/models';
+import { verifyGallery } from 'app/lib/galleries';
 import { fromJS, Map, List } from 'immutable';
 import differenceBy from 'lodash/differenceBy';
 import get from 'lodash/get';
@@ -195,7 +196,6 @@ const verifyGalleryListUpdate = ({ data, state }) => {
             const galleries = state.get('galleries', List()).toJS();
             const newGallery = get(differenceBy(data.galleries, galleries, 'id'), '[0]');
             if (!newGallery) return resolve();
-
             verifyGallery(newGallery)
                 .then(() => resolve())
                 .catch(() => reject('Invalid gallery id'));
