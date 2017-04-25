@@ -60,7 +60,7 @@ class Galleries extends React.Component {
 
             return 0;
         }
-debugger
+
         return galleries.sort(sortListItem).map((gallery, i) => (
             <AdminGalleryListItem
                 type="gallery"

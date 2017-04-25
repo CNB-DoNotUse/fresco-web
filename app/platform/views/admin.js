@@ -185,12 +185,12 @@ class Admin extends React.Component {
      */
     loadInitial() {
         this.getData({ tab: 'submissions' }, (submissions) => {
-            if(submissions.length) {
-                this.setState({
-                    activeTab: 'submissions',
-                    submissions: this.state.submissions.concat(submissions)
-                });
-            } else {
+            // if(submissions.length) {
+            //     this.setState({
+            //         activeTab: 'submissions',
+            //         submissions: this.state.submissions.concat(submissions)
+            //     });
+            // } else {
                 this.getData({ tab: 'imports' }, (imports) => {
                     this.setState({
                         activeTab: (imports.length && !this.state.submissions.length)
@@ -199,7 +199,7 @@ class Admin extends React.Component {
                         imports: this.state.imports.concat(imports),
                     });
                 });
-            }
+            // }
         });
     }
 
