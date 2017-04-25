@@ -25,9 +25,9 @@ class Admin extends React.Component {
     }
 
     componentDidMount() {
-        setInterval(() => {
+        // setInterval(() => {
             if (this.props.activeTab !== '') this.refresh();
-        }, 5000);
+        // }, 5000);
         this.loadInitial();
     }
 
@@ -130,7 +130,6 @@ class Admin extends React.Component {
     removeSubmission(id, cb) {
         const { submissions } = this.state;
         if (!id || !submissions || !cb) return;
-
         this.setState({ submissions: submissions.filter(a => a.id !== id) },
             () => cb(this.state.submissions));
     }

@@ -106,6 +106,7 @@ export default class GalleryEdit extends React.Component {
 
         saveGallery(gallery.id, params)
         .then(() => {
+            debugger
             deletePosts(postsToDelete);
         })
         .then(() => {

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import findIndex from 'lodash/findIndex';
-import GalleryListItem from './gallery-list-item';
+import AdminGalleryListItem from './gallery-list-item';
 import GalleryEdit from './gallery-edit';
 
 /**
@@ -27,7 +27,6 @@ class Galleries extends React.Component {
     onUpdateGallery(id) {
         const { galleries, removeGallery } = this.props;
         const index = findIndex(galleries, { id });
-
         removeGallery(id, (arr) => {
             this.setActiveGallery(arr[index] || arr[index + 1] || arr[index - 1]);
         });
@@ -63,7 +62,7 @@ class Galleries extends React.Component {
         }
 
         return galleries.sort(sortListItem).map((gallery, i) => (
-            <GalleryListItem
+            <AdminGalleryListItem
                 type="gallery"
                 gallery={gallery}
                 key={i}
@@ -76,21 +75,26 @@ class Galleries extends React.Component {
     render() {
         const { activeGallery } = this.state;
 
+        // TODO: make it so the bootstrap classes change when there is an active gallery
+        // TODO: double check mobile layout
+        const fullWidth = "col-md-6 col-lg-12";
+        const listWidth = "col-md-6 col-lg-4";
+        const detailWidth = "col-md-6 col-lg-8";
         return (
             <div className="container-fluid admin">
-                <div className="col-md-6 col-lg-7 list" onScroll={(e) => this.onScroll(e)}>
+                <div className={`${ activeGallery ? listWidth : fullWidth } list`} onScroll={(e) => this.onScroll(e)}>
                     {this.renderGalleries()}
                 </div>
-                <div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">
-                    {activeGallery && activeGallery.id
-                        ? <GalleryEdit
+                {activeGallery && activeGallery.id ?
+                    <div className="col-md-6 col-lg-8 form-group-default admin-edit-pane">
+                        <GalleryEdit
                             galleryType={this.props.galleryType}
                             gallery={activeGallery}
                             onUpdateGallery={(id) => this.onUpdateGallery(id)}
                         />
-                        : null
-                    }
-                </div>
+                    </div>
+                : null
+                }
             </div>
         );
     }
@@ -104,4 +108,3 @@ Galleries.propTypes = {
 };
 
 export default Galleries;
-

@@ -41,12 +41,7 @@ const AdminGalleryListItem = ({ gallery, active, onClick }) => {
                     />
                 </a>
             </div>
-            <div className="flexy list-item-caption">
-                <p className="md-type-body1">{gallery.caption || 'No Caption'}</p>
-            </div>
-            <div className="list-item-owner">
-                {galleryOwnerText}
-            </div>
+    
             <div className="list-item-assignment">
                 {gallery.assignment
                     ? <p
@@ -80,4 +75,3 @@ AdminGalleryListItem.propTypes = {
 };
 
 export default AdminGalleryListItem;
-

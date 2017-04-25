@@ -706,6 +706,8 @@ div.list {
 	}
 
 	div.list-item {
+		display: flex;
+		justify-content: space-between;
 		padding: 16px;
 		position:relative;
 		cursor: 'pointer';
