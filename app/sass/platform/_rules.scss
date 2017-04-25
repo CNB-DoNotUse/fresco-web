@@ -708,6 +708,7 @@ div.list {
 	div.list-item {
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
 		padding: 16px;
 		position:relative;
 		cursor: 'pointer';
@@ -752,15 +753,13 @@ div.list {
 			p.md-type-body1,
 			p.md-type-body2,
 			p.md-type-caption {
-				line-height: 36px;
+				line-height: 18px;
 				display:inline-block;
 				margin: 0;
 			}
 			> span,
 			> p {
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
+				text-align: center;
 			}
 		}
 		div:last-child {

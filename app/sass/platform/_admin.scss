@@ -49,6 +49,24 @@
 }
 
 .list-item-assignment {
-	height: auto;
 	max-width: 130px;
+}
+
+.list-item > div {
+	display: flex;
+	align-items: center;
+}
+
+.list-item > div > * {
+	vertical-align: middle;
+}
+
+.admin-edit-pane .gallery-images, .admin-edit-pane .autocomplete-map {
+	width: calc(50% - 20px);
+	margin-left: 10px;
+	margin-right: 10px;
+	max-height: 400px;
+	display: inline-block;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
