@@ -44,7 +44,6 @@ class Galleries extends React.Component {
     }
 
     setActiveGallery(activeGallery) {
-        debugger
         this.setState({ activeGallery });
     }
 
