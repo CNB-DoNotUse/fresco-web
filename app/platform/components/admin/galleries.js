@@ -10,7 +10,7 @@ import GalleryEdit from './gallery-edit';
  * @extends React.Component
  */
 class Galleries extends React.Component {
-    state = { activeGallery: null, loading: false };
+    state = { activeGallery: null, loading: false, activeGallery: false };
 
     componentWillReceiveProps(nextProps) {
         if (this.props.galleryType !== nextProps.galleryType) {
@@ -44,6 +44,7 @@ class Galleries extends React.Component {
     }
 
     setActiveGallery(activeGallery) {
+        debugger
         this.setState({ activeGallery });
     }
 
@@ -66,7 +67,7 @@ class Galleries extends React.Component {
                 type="gallery"
                 gallery={gallery}
                 key={i}
-                active={!!activeGallery && activeGallery.id === gallery.id}
+                active={activeGallery && activeGallery.id === gallery.id}
                 onClick={() => this.setActiveGallery(gallery)}
             />
         ));

@@ -7,11 +7,13 @@ import api from 'app/lib/api';
 import { deletePosts } from 'app/lib/models';
 import { isImportedGallery, saveGallery } from 'app/lib/galleries';
 import AutocompleteMap from '../global/autocomplete-map';
-import ExplicitCheckbox from '../global/explicit-checkbox';
+import { ExplicitCheckbox, EditAllLocations } from '../global/checkbox';
 import ChipInput from '../global/chip-input';
 import AssignmentChipInput from '../global/assignment-chip-input';
 import EditPosts from './../gallery/edit-posts';
 import EditByline from './../gallery/edit-byline';
+import DispatchMap from 'app/platform/components/dispatch/dispatch-map';
+import { merge } from 'lodash';
 
 /**
  *	Admin Gallery Edit component.
@@ -58,6 +60,10 @@ export default class GalleryEdit extends React.Component {
             owner: gallery.owner,
             ...this.getInitialLocationData(),
             bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
+            currentPostIndex: 0,
+            editAll: true,
+            address: gallery.posts[0].address,
+            location: gallery.posts[0].location
         };
     }
 
@@ -68,7 +74,7 @@ export default class GalleryEdit extends React.Component {
         if (this.state.loading) return;
 
         this.setState(this.getStateFromProps(this.props));
-    };
+    }
 
     /**
      * Updates state map location when AutocompleteMap gives new location
@@ -80,8 +86,20 @@ export default class GalleryEdit extends React.Component {
     /**
      * Updates state map location when AutocompleteMap gives new location from drag
      */
+
     onMapDataChange(data) {
-        if (data.source === 'markerDrag') this.setState(data);
+        const { address, location, source } = data;
+        const stateCopy = merge({}, this.state);
+        const { posts, currentPostIndex, editAll } = stateCopy;
+        if (editAll) {
+            if (source === 'markerDrag') this.setState(data);
+        } else {
+            if (source === 'markerDrag') {
+                posts[currentPostIndex].location = location;
+                posts[currentPostIndex].address = address;
+                this.setState({posts});
+            }
+        }
     }
 
     onChangeOwner = (owner) => {
@@ -92,7 +110,7 @@ export default class GalleryEdit extends React.Component {
             external_account_name: gallery.external_account_name,
             external_source: gallery.external_source,
         });
-    };
+    }
 
     /**
      * Gets all form data and verifies gallery.
@@ -106,7 +124,6 @@ export default class GalleryEdit extends React.Component {
 
         saveGallery(gallery.id, params)
         .then(() => {
-            debugger
             deletePosts(postsToDelete);
         })
         .then(() => {
@@ -283,11 +300,20 @@ export default class GalleryEdit extends React.Component {
         this.setState({ is_nsfw: !this.state.is_nsfw });
     };
 
+    onChangeEditAll = () => {
+        this.setState({ editAll: !this.state.editAll });
+    }
+
 	/**
 	 * Called when caption input fires keyUp event
 	 */
     handleChangeCaption(e) {
         this.setState({ caption: e.target.value });
+    }
+
+
+    onSliderChange = (currentPostIndex) => {
+        this.setState({currentPostIndex});
     }
 
     render() {
@@ -306,6 +332,8 @@ export default class GalleryEdit extends React.Component {
             posts,
             owner,
             bylineDisabled,
+            currentPostIndex,
+            editAll
         } = this.state;
 
         if (!gallery) {
@@ -322,9 +350,20 @@ export default class GalleryEdit extends React.Component {
                             onToggleDeletePost={p => this.onToggleDeletePost(p)}
                             canDelete
                             refreshInterval
+                            afterChange={this.onSliderChange.bind(this)}
                         />
                     </div>
 
+                    <AutocompleteMap
+                        location={ editAll ? location : posts[currentPostIndex].location }
+                        address={ editAll ? address : posts[currentPostIndex].address }
+                        onPlaceChange={(p) => this.onPlaceChange(p)}
+                        onMapDataChange={(data) => this.onMapDataChange(data)}
+                        disabled={galleryType !== 'submissions'}
+                        draggable={galleryType === 'submissions'}
+                        hasRadius={false}
+                        rerender
+                        />
                     <EditByline
                         gallery={gallery}
                         disabled={bylineDisabled}
@@ -393,17 +432,11 @@ export default class GalleryEdit extends React.Component {
                         is_nsfw={is_nsfw}
                         onChange={this.onChangeIsNSFW}
                     />
-
-                    <AutocompleteMap
-                        location={location}
-                        address={address}
-                        onPlaceChange={(p) => this.onPlaceChange(p)}
-                        onMapDataChange={(data) => this.onMapDataChange(data)}
-                        disabled={galleryType === 'submissions'}
-                        draggable={galleryType !== 'submissions'}
-                        hasRadius={false}
-                        rerender
+                    <EditAllLocations
+                        editAll={editAll}
+                        onChange={this.onChangeEditAll}
                     />
+
                 </div>
                 <div className="dialog-foot">
                     <button
