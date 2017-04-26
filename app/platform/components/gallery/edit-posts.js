@@ -32,7 +32,7 @@ const renderPost = (post) => {
 const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
     unionBy(originalPosts, editingPosts, 'id').map((p, i) => {
         const deleteToggled = !find(editingPosts, { id: p.id });
-
+        
         return (
             <div key={`post${i}`} className={`frick-frame ${deleteToggled ? 'frick-delete' : ''}`}>
                 {renderPost(p)}

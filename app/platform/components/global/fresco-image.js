@@ -50,7 +50,7 @@ class FrescoImage extends React.Component {
         const { src, size } = prevProps;
 
         if ((src !== this.props.src) || (size !== this.props.size)) {
-            this.setInitialSource(src, size);
+            this.setInitialSource(this.props.src, this.props.size);
         }
     }
 

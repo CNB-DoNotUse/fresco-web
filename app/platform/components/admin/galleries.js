@@ -44,24 +44,16 @@ class Galleries extends React.Component {
     }
 
     setActiveGallery(activeGallery) {
-        this.setState({ activeGallery });
+        if(!this.state.activeGallery || activeGallery.id !== this.state.activeGallery.id) {
+            this.setState({ activeGallery });
+        }
     }
 
     renderGalleries() {
         const { galleries } = this.props;
         const { activeGallery } = this.state;
 
-        function sortListItem(a, b) {
-            if (a.created_at > b.created_at) {
-                return -1;
-            } else if (a.created_at < b.created_at) {
-                return 1;
-            }
-
-            return 0;
-        }
-
-        return galleries.sort(sortListItem).map((gallery, i) => (
+        return galleries.map((gallery, i) => (
             <AdminGalleryListItem
                 type="gallery"
                 gallery={gallery}

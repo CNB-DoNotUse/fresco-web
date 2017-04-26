@@ -237,6 +237,8 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 				.description{
 					font-size:13px;
 					line-height:20px;
+				    max-width: 350px;
+				    display: block;
 					@include rgba(color, 0, 0, 0, 0.54);
 				}
 			}
