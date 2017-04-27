@@ -32,11 +32,13 @@ module.exports = {
         } else if (window.timeFormat === 'absolute' || absolute) {
             //Checks if the timestamp is within the last day
             if (timeOnly) {
-                return moment.tz(timestamp, userTimezone).format(format || 'h:mm A z');
+                if ((moment(Date.now()).startOf('day').isSame(moment(timestamp).startOf('day')))) {
+                    return moment.tz(timestamp, userTimezone).format(format || 'h:mm A z');
+                } else {
+                    return moment.tz(timestamp, userTimezone).format(format || 'MMM Do, YYYY, h:mm A z');
+                }
             }
-            // if (!(moment(Date.now()).startOf('day').isSame(moment(timestamp).startOf('day')))) {
-                return moment.tz(timestamp, userTimezone).format(format || 'MMM Do, YYYY, h:mm A z');
-            // }
+            return moment.tz(timestamp, userTimezone).format(format || 'MMM Do, YYYY, h:mm A z');
 
         }
 

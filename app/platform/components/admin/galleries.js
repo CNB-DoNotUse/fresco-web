@@ -67,14 +67,9 @@ class Galleries extends React.Component {
     render() {
         const { activeGallery } = this.state;
 
-        // TODO: make it so the bootstrap classes change when there is an active gallery
-        // TODO: double check mobile layout
-        const fullWidth = "col-md-6 col-lg-12";
-        const listWidth = "col-md-6 col-lg-4";
-        const detailWidth = "col-md-6 col-lg-8";
         return (
             <div className="container-fluid admin">
-                <div className={`${ activeGallery ? listWidth : fullWidth } list`} onScroll={(e) => this.onScroll(e)}>
+                <div className="col-md-6 col-lg-4 list" onScroll={(e) => this.onScroll(e)}>
                     {this.renderGalleries()}
                 </div>
                 {activeGallery && activeGallery.id ?
