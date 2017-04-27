@@ -61,23 +61,31 @@
 	vertical-align: middle;
 }
 
-.admin-edit-pane > .dialog-body > .edit-container {
+.admin-edit-pane > .dialog-body .edit-inputs {
 	display: flex;
 	flex-flow: column;
 	flex-wrap: wrap;
-	max-height: 400px;
-	overflow-y: scroll;
+	max-height: 350px;
+	overflow-x: scroll;
 }
 
-.admin-edit-pane .edit-container > * {
+.admin-edit-pane .info-container {
+	display: flex;
+	flex-flow: row;
+}
+
+.admin-edit-pane .edit-container {
+	display: flex;
+	flex-flow: row;
+}
+
+.admin-edit-pane .edit-inputs,
+.admin-edit-pane .info-container > *,
+.admin-edit-pane .meta-user,
+.admin-edit-pane .post-map {
 	width: calc(50% - 20px);
-	margin-left: 10px;
-	margin-right: 10px;
-	max-height: 500px;
-	// display: inline-block;
-	// display: inline-block;
-	// overflow-y: scroll;
-	// overflow-x: hidden;
+	margin: 10px;
+	max-height: 600px;
 }
 
 .admin-edit-pane .gallery-images {
@@ -97,4 +105,16 @@
 			margin-left: 10px;
 		}
 	}
+}
+
+.admin-edit-pane .checkboxes {
+	display: flex;
+	.explicit, .edit-all {
+		width: 50%;
+		margin-left: 10px;
+		label {
+			white-space: nowrap;
+		}
+	}
+
 }
