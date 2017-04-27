@@ -350,11 +350,7 @@ export default class GalleryEdit extends React.Component {
         if (!gallery) {
             return <div />;
         }
-<<<<<<< HEAD
-        
-=======
-        debugger
->>>>>>> feature-admin-page
+
         return (
             <div className="dialog admin-edit-pane">
                 <div className="dialog-body" style={{ visibility: 'visible' }} >
