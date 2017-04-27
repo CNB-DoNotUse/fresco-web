@@ -62,10 +62,10 @@ const AdminGalleryListItem = ({ gallery, active, onClick }) => {
                             refreshInterval
                         />
                     </a>
+                    { !postsLocation && locationWarning }
                 </div>
 
                 <div className="list-item-assignment">
-                    { !postsLocation && locationWarning }
                     <p
                         className="md-type-body1 gallery-list-item--location"
                     >

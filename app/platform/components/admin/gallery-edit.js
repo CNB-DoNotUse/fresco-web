@@ -14,6 +14,8 @@ import EditPosts from './../gallery/edit-posts';
 import EditByline from './../gallery/edit-byline';
 import DispatchMap from 'app/platform/components/dispatch/dispatch-map';
 import { merge } from 'lodash';
+import time from 'app/lib/time';
+import UserItem from 'app/platform/components/global/user-item';
 
 /**
  *	Admin Gallery Edit component.
@@ -80,8 +82,21 @@ export default class GalleryEdit extends React.Component {
      * Updates state map location when AutocompleteMap gives new location
      */
     onPlaceChange(place) {
-        this.setState({ address: place.address, location: place.location });
+        const { editAll, currentPostIndex } = this.state;
+        if (editAll) {
+            this.setState({ address: place.address, location: place.location });
+        } else {
+            const stateCopy = merge({}, this.state);
+            const { posts } = stateCopy;
+            posts[currentPostIndex].location = place.location;
+            posts[currentPostIndex].address = place.address;
+            this.setState({posts});
+        }
+
     }
+
+    //there is alot of overlap in onPlaceChange and onMapDataChange
+    // due to the fact that they both need to modify a single post
 
     /**
      * Updates state map location when AutocompleteMap gives new location from drag
@@ -339,7 +354,7 @@ export default class GalleryEdit extends React.Component {
         if (!gallery) {
             return <div />;
         }
-
+        debugger
         return (
             <div className="dialog admin-edit-pane">
                 <div className="dialog-body" style={{ visibility: 'visible' }} >
@@ -353,90 +368,83 @@ export default class GalleryEdit extends React.Component {
                             afterChange={this.onSliderChange.bind(this)}
                         />
                     </div>
+                    <section className="edit-container">
+                        <h4>{time.formatTime(posts[currentPostIndex].created_at, true, true)}</h4>
+                        <AutocompleteMap
+                            location={ editAll ? location : posts[currentPostIndex].location }
+                            address={ editAll ? address : posts[currentPostIndex].address }
+                            onPlaceChange={(p) => this.onPlaceChange(p)}
+                            onMapDataChange={(data) => this.onMapDataChange(data)}
+                            disabled={galleryType !== 'submissions'}
+                            draggable={galleryType === 'submissions'}
+                            hasRadius={false}
+                            rerender
+                            />
+                        <UserItem user={owner}/>
 
-                    <AutocompleteMap
-                        location={ editAll ? location : posts[currentPostIndex].location }
-                        address={ editAll ? address : posts[currentPostIndex].address }
-                        onPlaceChange={(p) => this.onPlaceChange(p)}
-                        onMapDataChange={(data) => this.onMapDataChange(data)}
-                        disabled={galleryType !== 'submissions'}
-                        draggable={galleryType === 'submissions'}
-                        hasRadius={false}
-                        rerender
+                        {isImportedGallery(gallery) && (
+                            <ChipInput
+                                model="users"
+                                placeholder="Owner"
+                                queryAttr="full_name"
+                                altAttr="username"
+                                items={owner ? [owner] : []}
+                                updateItems={res => this.onChangeOwner(res[0])}
+                                className="dialog-row"
+                                createNew={false}
+                                multiple={false}
+                                search
+                            />
+                        )}
+
+                        <textarea
+                            type="text"
+                            className="form-control floating-label"
+                            placeholder="Caption"
+                            onChange={(e) => this.handleChangeCaption(e)}
+                            value={caption}
+                            ref={r => { this.galleryCaption = r; }}
                         />
-                    <EditByline
-                        gallery={gallery}
-                        disabled={bylineDisabled}
-                        external_account_name={external_account_name}
-                        external_source={external_source}
-                        onChangeExtAccountName={a =>
-                                this.setState({ external_account_name: a })}
-                        onChangeExtSource={s =>
-                                this.setState({ external_source: s })}
-                    />
 
-                    {isImportedGallery(gallery) && (
-                        <ChipInput
-                            model="users"
-                            placeholder="Owner"
-                            queryAttr="full_name"
-                            altAttr="username"
-                            items={owner ? [owner] : []}
-                            updateItems={res => this.onChangeOwner(res[0])}
-                            className="dialog-row"
-                            createNew={false}
+                        <AssignmentChipInput
+                            model="assignments"
+                            placeholder="Assignment"
+                            queryAttr="title"
+                            items={assignment ? [assignment] : []}
+                            locationHint={gallery.location}
+                            updateItems={a => this.setState({ assignment: a[0] })}
                             multiple={false}
-                            search
+                            className="dialog-row"
+                            autocomplete
                         />
-                    )}
 
-                    <textarea
-                        type="text"
-                        className="form-control floating-label"
-                        placeholder="Caption"
-                        onChange={(e) => this.handleChangeCaption(e)}
-                        value={caption}
-                        ref={r => { this.galleryCaption = r; }}
-                    />
+                        <ChipInput
+                            model="tags"
+                            items={tags}
+                            updateItems={(t) => this.setState({ tags: t })}
+                            autocomplete={false}
+                            multiple
+                        />
 
-                    <AssignmentChipInput
-                        model="assignments"
-                        placeholder="Assignment"
-                        queryAttr="title"
-                        items={assignment ? [assignment] : []}
-                        locationHint={gallery.location}
-                        updateItems={a => this.setState({ assignment: a[0] })}
-                        multiple={false}
-                        className="dialog-row"
-                        autocomplete
-                    />
+                        <ChipInput
+                            model="stories"
+                            queryAttr="title"
+                            items={stories}
+                            updateItems={this.updateStories}
+                            className="dialog-row"
+                            autocomplete
+                        />
 
-                    <ChipInput
-                        model="tags"
-                        items={tags}
-                        updateItems={(t) => this.setState({ tags: t })}
-                        autocomplete={false}
-                        multiple
-                    />
+                        <ExplicitCheckbox
+                            is_nsfw={is_nsfw}
+                            onChange={this.onChangeIsNSFW}
+                        />
+                        <EditAllLocations
+                            editAll={editAll}
+                            onChange={this.onChangeEditAll}
+                        />
 
-                    <ChipInput
-                        model="stories"
-                        queryAttr="title"
-                        items={stories}
-                        updateItems={this.updateStories}
-                        className="dialog-row"
-                        autocomplete
-                    />
-
-                    <ExplicitCheckbox
-                        is_nsfw={is_nsfw}
-                        onChange={this.onChangeIsNSFW}
-                    />
-                    <EditAllLocations
-                        editAll={editAll}
-                        onChange={this.onChangeEditAll}
-                    />
-
+                    </section>
                 </div>
                 <div className="dialog-foot">
                     <button
