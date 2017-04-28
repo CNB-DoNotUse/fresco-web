@@ -32,7 +32,7 @@ export const EditAllLocations = ({ editAll, onChange }) => (
                     checked={editAll}
                     onChange={(e) => onChange(e)}
                 />
-            Edit every posts location
+            Edit all locations
             </label>
         </div>
     </div>

@@ -30,16 +30,27 @@
 	}
 }
 
-.list-item {
+.admin {
+	.list-item {
+		justify-content: space-between;
+		.list-item-caption {
+			overflow:hidden;
+			text-overflow: ellipsis;
+		}
 
-	.list-item-caption {
-		overflow:hidden;
-		text-overflow: ellipsis;
+		.list-item-caption {
+			width: 40%;
+		}
+
+		> div {
+			display: flex;
+			align-items: center;
+		}
+		.gallery-list-item--preview > * {
+			margin-right: 10px;
+		}
 	}
 
-	.list-item-caption {
-		width: 40%;
-	}
 }
 
 .twitter-import, .upload-import {
@@ -52,64 +63,38 @@
 	max-width: 130px;
 }
 
-.list-item > div {
-	display: flex;
-	align-items: center;
-}
 
-.list-item > div > * {
-	vertical-align: middle;
-}
-
-.admin-edit-pane > .dialog-body .edit-inputs {
-	display: flex;
-	flex-flow: column;
-	flex-wrap: wrap;
-	max-height: 350px;
-	overflow-x: scroll;
-}
-
-.admin-edit-pane .info-container {
-	display: flex;
-	flex-flow: row;
-	align-items: center;
-}
-
-.admin-edit-pane .edit-container {
-	display: flex;
-	flex-flow: row;
-}
-
-.admin-edit-pane .edit-inputs,
-.admin-edit-pane .info-container > *,
-.admin-edit-pane .meta-user,
-.admin-edit-pane .post-map {
-	width: calc(50% - 20px);
-	margin: 10px;
-	max-height: 600px;
-}
-
-.admin-edit-pane .gallery-images {
-	width: 100%;
-	height: 500px;
-	padding-bottom: 30px;
-	* {
-		height: 100%;
-		width: auto;
-		margin-left: auto;
-		margin-right: auto;
-	}
-	.slick-dots {
-		width: 100%;
-		height: auto;
-		li:not(:first-child) {
-			margin-left: 10px;
+.admin-edit-pane {
+	overflow-y: scroll;
+	li {
+		list-style: none;
+		span {
+			margin-right: 16px;
+			vertical-align: middle;
 		}
 	}
-}
-
-.admin-edit-pane .checkboxes {
-	display: flex;
+	strong {
+		color: #64bd61;
+		font-weight: normal;
+	}
+	.gallery-images {
+		width: 100%;
+		height: 500px;
+		padding-bottom: 30px;
+		* {
+			height: 100%;
+			width: auto;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		.slick-dots {
+			width: 100%;
+			height: auto;
+			li:not(:first-child) {
+				margin-left: 10px;
+			}
+		}
+	}
 	.explicit, .edit-all {
 		width: 50%;
 		margin-left: 10px;
@@ -117,5 +102,21 @@
 			white-space: nowrap;
 		}
 	}
+	>.dialog-body {
+		position: relative;
+	}
 
+	.gallery-edit--left {
+		width: calc(50% - 60px);
+		position: absolute;
+		> *:not(:last-child) {
+			margin: 16px 0;
+		}
+	}
+	.gallery-edit--right {
+		position: absolute;
+		width: calc(50% - 30px);
+		left: 50%;
+		overflow-y: scroll;
+	}
 }
