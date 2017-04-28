@@ -94,7 +94,6 @@ class Admin extends React.Component {
             if (!data) {
                 return cb([]);
             }
-
             return cb(data);
         });
     };

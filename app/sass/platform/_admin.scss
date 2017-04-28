@@ -112,11 +112,15 @@
 		> *:not(:last-child) {
 			margin: 16px 0;
 		}
+		overflow: hidden;
 	}
 	.gallery-edit--right {
 		position: absolute;
 		width: calc(50% - 30px);
 		left: 50%;
 		overflow-y: scroll;
+	}
+	.meta-user-name__secondary{
+		width: 50%;
 	}
 }

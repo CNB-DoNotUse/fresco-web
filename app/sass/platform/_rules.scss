@@ -762,7 +762,7 @@ div.list {
 			}
 			> span,
 			> p {
-				white-space: nowrap;
+				white-space: wrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
@@ -868,6 +868,9 @@ div.list {
 				padding-top: 0;
 			}
 		}
+	}
+	> .dialog-body.admin-assignment-edit {
+		height: auto;
 	}
 	> .dialog-foot {
 		position: absolute;

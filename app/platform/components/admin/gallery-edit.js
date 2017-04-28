@@ -73,8 +73,10 @@ export default class GalleryEdit extends React.Component {
         let confirmHeader, confirmBody, confirmButton, confirmFunction;
         switch (type) {
             case "verify":
-                const { posts, editAll } = this.state;
-                if ((!editAll || posts.length === 1) && !postsHaveLocation(posts)) {
+                const { galleryType } = this.props;
+                const { posts, editAll, location } = this.state;
+                // this is the conditional that determines whether to prevent an admin from adding location-less posts
+                if (((!editAll || posts.length === 1) || (editAll && !location)) && (!postsHaveLocation(posts)) && !(galleryType === 'imports')) {
                     confirmHeader = "There's a missing location";
                     confirmBody = "Please check that all posts have a location";
                     confirmButton = "Dismiss";
@@ -328,8 +330,8 @@ export default class GalleryEdit extends React.Component {
         posts_update = posts.map(p => pickBy({
             id: p.id,
             address,
-            lat: location.lat,
-            lng: location.lng,
+            lat: location ? location.lat : null,
+            lng: location ? location.lng : null,
             rating,
             assignment_id: assignment ? assignment.id : null,
         }, (v, k) => k === 'id' || p[k] !== v));
