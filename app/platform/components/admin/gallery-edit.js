@@ -76,7 +76,9 @@ export default class GalleryEdit extends React.Component {
                 const { galleryType } = this.props;
                 const { posts, editAll, location } = this.state;
                 // this is the conditional that determines whether to prevent an admin from adding location-less posts
-                if (((!editAll || posts.length === 1) || (editAll && !location)) && (!postsHaveLocation(posts)) && !(galleryType === 'imports')) {
+                // const x = ((!editAll || (editAll && !location)) && (!postsHaveLocation(posts)) && !(galleryType === 'imports'));
+                // debugger
+                if ((!editAll || (editAll && !location)) && (!postsHaveLocation(posts)) && !(galleryType === 'imports')) {
                     confirmHeader = "There's a missing location";
                     confirmBody = "Please check that all posts have a location";
                     confirmButton = "Dismiss";
