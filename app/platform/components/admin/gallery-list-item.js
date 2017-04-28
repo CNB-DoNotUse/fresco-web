@@ -33,25 +33,9 @@ const AdminGalleryListItem = ({ gallery, active, onClick }) => {
     } else if (postsLocation) {
         address = postsLocation;
     }
-
-    //still experimenting with another layout
-    // if (active) {
-    //     return (
-    //         <div onClick={onClick} className={`list-item ${active ? 'active' : ''}`} >
-    //             <EditPosts
-    //                 originalPosts={gallery.posts}
-    //                 editingPosts={posts}
-    //                 onToggleDeletePost={p => this.onToggleDeletePost(p)}
-    //                 canDelete
-    //                 refreshInterval
-    //                 afterChange={this.onSliderChange.bind(this)}
-    //             />
-    //         </div>
-    //     );
-    // } else {
         return (
             <div onClick={onClick} className={`list-item ${active ? 'active' : ''}`} >
-                <div>
+                <div className="gallery-list-item--preview">
                     <a href={`/gallery/${gallery.id}`} target="_blank">
                         <FrescoImage
                             className="img-circle"
@@ -63,15 +47,14 @@ const AdminGalleryListItem = ({ gallery, active, onClick }) => {
                         />
                     </a>
                     { !postsLocation && locationWarning }
-                </div>
-
-                <div className="list-item-assignment">
                     <p
                         className="md-type-body1 gallery-list-item--location"
-                    >
+                        >
                         {address}
                     </p>
                 </div>
+
+
                 <div className="list-item-timestamp">
                     <p className="md-type-body1">{time.formatTime(gallery.created_at, true, true)}</p>
                 </div>

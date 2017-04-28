@@ -3,6 +3,7 @@ import findIndex from 'lodash/findIndex';
 import AdminGalleryListItem from './gallery-list-item';
 import GalleryEdit from './gallery-edit';
 
+
 /**
  * Galleries - component for managing submissions
  * and imports galleries in admin view
@@ -10,11 +11,11 @@ import GalleryEdit from './gallery-edit';
  * @extends React.Component
  */
 class Galleries extends React.Component {
-    state = { activeGallery: null, loading: false, activeGallery: false };
+    state = { activeGallery: false, loading: false, activeGallery: false };
 
     componentWillReceiveProps(nextProps) {
         if (this.props.galleryType !== nextProps.galleryType) {
-            this.setState({ activeGallery: null });
+            this.setState({ activeGallery: false });
         }
     }
 
@@ -52,13 +53,13 @@ class Galleries extends React.Component {
     renderGalleries() {
         const { galleries } = this.props;
         const { activeGallery } = this.state;
-
         return galleries.map((gallery, i) => (
+
             <AdminGalleryListItem
                 type="gallery"
                 gallery={gallery}
                 key={i}
-                active={activeGallery && activeGallery.id === gallery.id}
+                active={(activeGallery) && (activeGallery.id === gallery.id)}
                 onClick={() => this.setActiveGallery(gallery)}
             />
         ));

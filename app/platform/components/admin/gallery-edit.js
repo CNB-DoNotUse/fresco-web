@@ -16,6 +16,8 @@ import DispatchMap from 'app/platform/components/dispatch/dispatch-map';
 import { merge } from 'lodash';
 import time from 'app/lib/time';
 import UserItem from 'app/platform/components/global/user-item';
+import { postsHaveLocation } from 'app/lib/models';
+import Confirm from 'app/platform/components/dialogs/confirm';
 
 /**
  *	Admin Gallery Edit component.
@@ -35,6 +37,10 @@ export default class GalleryEdit extends React.Component {
             this.setState(this.getStateFromProps(nextProps));
             this.galleryCaption.className = this.galleryCaption.className.replace(/\bempty\b/, '');
         }
+    }
+
+    componentDidUpdate() {
+        $.material.init();
     }
 
     getStateFromProps(props) {
@@ -58,8 +64,46 @@ export default class GalleryEdit extends React.Component {
             currentPostIndex: 0,
             editAll: true,
             address: gallery.posts[0].address,
-            location: gallery.posts[0].location
+            location: gallery.posts[0].location,
+            confirm: false
         };
+    }
+
+    onFirstClick = (type) => {
+        let confirmHeader, confirmBody, confirmButton, confirmFunction;
+        switch (type) {
+            case "verify":
+                const { posts, editAll } = this.state;
+                if ((!editAll || posts.length === 1) && !postsHaveLocation(posts)) {
+                    confirmHeader = "There's a missing location";
+                    confirmBody = "Please check that all posts have a location";
+                    confirmButton = "Dismiss";
+                    confirmFunction = this.onConfirmCancel.bind(this);
+                } else {
+                    confirmHeader = "Verify Gallery";
+                    confirmBody = "Are you sure you want to verify this gallery?";
+                    confirmButton = "Verify";
+                    confirmFunction = this.onVerify.bind(this);
+                }
+                break;
+            case "skip":
+                confirmHeader = "Skip Gallery";
+                confirmBody = "Are you sure you want to skip this gallery?";
+                confirmButton = "Skip";
+                confirmFunction = this.onSkip.bind(this);
+                break;
+            case "delete":
+                confirmHeader = "Delete Gallery";
+                confirmBody = "WARNING: Are you sure you want to delete this gallery?";
+                confirmButton = "Delete";
+                confirmFunction = this.onRemove.bind(this);
+                break;
+        }
+        this.setState({confirm: true, confirmHeader, confirmBody, confirmButton, confirmFunction });
+    }
+
+    onConfirmCancel = () => {
+        this.setState({ confirm: false, confirmHeader: '', confirmBody: '', confirmButton: '' });
     }
 
     /**
@@ -258,6 +302,10 @@ export default class GalleryEdit extends React.Component {
         return params;
     }
 
+
+
+
+// TODO: EDIT THIS SO THAT IT CANNOT ALTER LOCATIONS IF THER ARE ALREADY
     getPostsParams() {
         const { gallery } = this.props;
         const { address, location, rating, assignment } = this.state;
@@ -344,13 +392,41 @@ export default class GalleryEdit extends React.Component {
             owner,
             bylineDisabled,
             currentPostIndex,
-            editAll
+            editAll,
+            confirm,
+            confirmBody,
+            confirmHeader,
+            confirmButton,
+            confirmFunction
         } = this.state;
 
         if (!gallery) {
             return <div />;
         }
+        const shouldNotEdit = postsHaveLocation(gallery.posts);
+        let locationChoice;
+        if (posts.length === 1) {
+            locationChoice = (
+                <div className="edit-all">
 
+                </div>
+            );
+        } else {
+            if (shouldNotEdit) {
+                locationChoice = (
+                    <div className="edit-all">
+                        <strong>All posts have locations</strong>
+                    </div>
+                );
+            } else {
+                locationChoice =  (
+                    <EditAllLocations
+                        editAll={editAll}
+                        onChange={this.onChangeEditAll}
+                        />
+                );
+            }
+        }
         return (
             <div className="dialog admin-edit-pane">
                 <div className="dialog-body" style={{ visibility: 'visible' }} >
@@ -364,90 +440,82 @@ export default class GalleryEdit extends React.Component {
                             afterChange={this.onSliderChange.bind(this)}
                         />
                     </div>
-                    <section className="info-container">
-                        <h4>{time.formatTime(posts[currentPostIndex].created_at, true, true)}</h4>
-
-                        <UserItem user={owner}/>
-                    </section>
-                    <section className="checkboxes">
-                        <EditAllLocations
-                            editAll={editAll}
-                            onChange={this.onChangeEditAll}
+                    <section className="gallery-edit--left">
+                        <UserItem user={owner ? owner : gallery.curator}/>
+                        <li>
+                            <span className="mdi mdi-camera icon"></span>
+                            {time.formatTime(posts[currentPostIndex].created_at, true, true)}
+                        </li>
+                        { locationChoice }
+                        <AutocompleteMap
+                            location={ editAll ? location : posts[currentPostIndex].location }
+                            address={ editAll ? address : posts[currentPostIndex].address }
+                            onPlaceChange={(p) => this.onPlaceChange(p)}
+                            onMapDataChange={(data) => this.onMapDataChange(data)}
+                            disabled={shouldNotEdit ? true : false}
+                            draggable={!shouldNotEdit ? true : false}
+                            hasRadius={false}
+                            rerender
                             />
+                    </section>
+
+                    <section className="gallery-edit--right">
+                        {isImportedGallery(gallery) && (
+                            <ChipInput
+                                model="users"
+                                placeholder="Owner"
+                                queryAttr="full_name"
+                                altAttr="username"
+                                items={owner ? [owner] : []}
+                                updateItems={res => this.onChangeOwner(res[0])}
+                                className="dialog-row"
+                                createNew={false}
+                                multiple={false}
+                                search
+                            />
+                        )}
+
+                        <textarea
+                            type="text"
+                            className="form-control floating-label"
+                            placeholder="Caption"
+                            onChange={(e) => this.handleChangeCaption(e)}
+                            value={caption}
+                            ref={r => { this.galleryCaption = r; }}
+                        />
+
+                        <AssignmentChipInput
+                            model="assignments"
+                            placeholder="Assignment"
+                            queryAttr="title"
+                            items={assignment ? [assignment] : []}
+                            locationHint={gallery.location}
+                            updateItems={a => this.setState({ assignment: a[0] })}
+                            multiple={false}
+                            className="dialog-row"
+                            autocomplete
+                        />
+
+                        <ChipInput
+                            model="tags"
+                            items={tags}
+                            updateItems={(t) => this.setState({ tags: t })}
+                            autocomplete={false}
+                            multiple
+                        />
+
+                        <ChipInput
+                            model="stories"
+                            queryAttr="title"
+                            items={stories}
+                            updateItems={this.updateStories}
+                            className="dialog-row"
+                            autocomplete
+                        />
                         <ExplicitCheckbox
                             is_nsfw={is_nsfw}
                             onChange={this.onChangeIsNSFW}
                             />
-                    </section>
-
-                    <section className="edit-container">
-                        <section className="post-map">
-
-                            <AutocompleteMap
-                                location={ editAll ? location : posts[currentPostIndex].location }
-                                address={ editAll ? address : posts[currentPostIndex].address }
-                                onPlaceChange={(p) => this.onPlaceChange(p)}
-                                onMapDataChange={(data) => this.onMapDataChange(data)}
-                                disabled={galleryType !== 'submissions'}
-                                draggable={galleryType === 'submissions'}
-                                hasRadius={false}
-                                rerender
-                                />
-                        </section>
-                        <section className="edit-inputs">
-                            {isImportedGallery(gallery) && (
-                                <ChipInput
-                                    model="users"
-                                    placeholder="Owner"
-                                    queryAttr="full_name"
-                                    altAttr="username"
-                                    items={owner ? [owner] : []}
-                                    updateItems={res => this.onChangeOwner(res[0])}
-                                    className="dialog-row"
-                                    createNew={false}
-                                    multiple={false}
-                                    search
-                                />
-                            )}
-
-                            <textarea
-                                type="text"
-                                className="form-control floating-label"
-                                placeholder="Caption"
-                                onChange={(e) => this.handleChangeCaption(e)}
-                                value={caption}
-                                ref={r => { this.galleryCaption = r; }}
-                            />
-
-                            <AssignmentChipInput
-                                model="assignments"
-                                placeholder="Assignment"
-                                queryAttr="title"
-                                items={assignment ? [assignment] : []}
-                                locationHint={gallery.location}
-                                updateItems={a => this.setState({ assignment: a[0] })}
-                                multiple={false}
-                                className="dialog-row"
-                                autocomplete
-                            />
-
-                            <ChipInput
-                                model="tags"
-                                items={tags}
-                                updateItems={(t) => this.setState({ tags: t })}
-                                autocomplete={false}
-                                multiple
-                            />
-
-                            <ChipInput
-                                model="stories"
-                                queryAttr="title"
-                                items={stories}
-                                updateItems={this.updateStories}
-                                className="dialog-row"
-                                autocomplete
-                            />
-                        </section>
                     </section>
                 </div>
                 <div className="dialog-foot">
@@ -462,7 +530,7 @@ export default class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right"
-                        onClick={() => this.setState({ rating: 2 }, () => this.onVerify())}
+                        onClick={() => this.setState({ rating: 2 }, this.onFirstClick("verify")) }
                         disabled={loading}
                     >
                         Verify
@@ -470,7 +538,7 @@ export default class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right"
-                        onClick={() => this.setState({ rating: 1 }, () => this.onSkip())}
+                        onClick={() => this.setState({ rating: 1, confirm: true }, this.onFirstClick("skip"))}
                         disabled={loading}
                     >
                         Skip
@@ -478,11 +546,24 @@ export default class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right"
-                        onClick={() => this.onRemove()}
+                        onClick={ () => this.onFirstClick("delete") }
                         disabled={loading}
                     >
                         Delete
                     </button>
+                    { confirm &&
+                        <Confirm
+                            toggled={confirm}
+                            body={confirmBody}
+                            header={confirmHeader}
+                            confirmText={confirmButton}
+                            disabled={false}
+                            hasInput={false}
+                            onCancel={this.onConfirmCancel}
+                            onConfirm={confirmFunction}
+
+                            />
+                    }
                 </div>
             </div>
 		);
