@@ -50,7 +50,10 @@
 			margin-right: 10px;
 		}
 	}
-
+	.list-item.assignment > div:nth-child(2) * {
+		font-weight: 500;
+		padding-right: 10px;
+	}
 }
 
 .twitter-import, .upload-import {

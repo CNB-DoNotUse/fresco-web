@@ -18,9 +18,11 @@ class AdminAssignmentListItem extends React.Component {
             location = assignment.location.coordinates.join(', ');
         }
 
+        const outlets = assignment.outlets.map((outlet) => outlet.title).join(", ");
+
         return (
             <div
-                className={`list-item ${active ? 'active' : ''}`}
+                className={`list-item assignment ${active ? 'active' : ''}`}
                 onClick={setActiveAssignment}
             >
                 <div>
@@ -38,6 +40,7 @@ class AdminAssignmentListItem extends React.Component {
                     </a>
                 </div>
                 <div className="flexy list-item-caption">
+                    <p className="md-type-body1">{outlets}</p>
                     <p className="md-type-body1">
                         <a href={`/assignment/${assignment.id}`} target="_blank">
                             {assignment.title}
@@ -67,4 +70,3 @@ AdminAssignmentListItem.propTypes = {
 };
 
 export default AdminAssignmentListItem;
-
