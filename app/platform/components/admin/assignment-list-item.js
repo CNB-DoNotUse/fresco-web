@@ -41,6 +41,8 @@ class AdminAssignmentListItem extends React.Component {
                 </div>
                 <div className="flexy list-item-caption">
                     <p className="md-type-body1">{outlets}</p>
+                </div>
+                <div className="flexy list-item-caption">
                     <p className="md-type-body1">
                         <a href={`/assignment/${assignment.id}`} target="_blank">
                             {assignment.title}
@@ -56,7 +58,7 @@ class AdminAssignmentListItem extends React.Component {
                     </p>
                 </div>
                 <div>
-                    <p className="md-type-body1">{time.formatTime(assignment.created_at)}</p>
+                    <p className="md-type-body1">{time.formatTime(assignment.created_at, true, true)}</p>
                 </div>
             </div>
         );

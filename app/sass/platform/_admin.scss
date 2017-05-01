@@ -33,13 +33,14 @@
 .admin {
 	.list-item {
 		justify-content: space-between;
-		.list-item-caption {
+		.list-item-caption, .list-item-timestamp * {
 			overflow:hidden;
+			white-space: nowrap;
 			text-overflow: ellipsis;
 		}
 
 		.list-item-caption {
-			width: 40%;
+			width: auto;
 		}
 
 		> div {
