@@ -70,7 +70,7 @@ class AutocompleteMap extends React.Component {
                 />
             );
         }
-
+ 
         return (
             <div className="map-group autocomplete-map form-group-default">
                 <LocationAutocomplete

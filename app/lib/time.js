@@ -23,7 +23,7 @@ module.exports = {
         };
     },
 
-    formatTime(timestamp, absolute = false, format = null) {
+    formatTime(timestamp, absolute = false, timeOnly = false, format = null) {
         const userTimezone = moment.tz.guess();
 
         if (!absolute &&
@@ -31,11 +31,15 @@ module.exports = {
             return moment(timestamp).fromNow();
         } else if (window.timeFormat === 'absolute' || absolute) {
             //Checks if the timestamp is within the last day
-            if (moment(Date.now()).startOf('day').isSame(moment(timestamp).startOf('day'))) {
-                return moment.tz(timestamp, userTimezone).format(format || 'h:mm A z');
+            if (timeOnly) {
+                if ((moment(Date.now()).startOf('day').isSame(moment(timestamp).startOf('day')))) {
+                    return moment.tz(timestamp, userTimezone).format(format || 'h:mm A z');
+                } else {
+                    return moment.tz(timestamp, userTimezone).format(format || 'MMM Do, YYYY, h:mm A z');
+                }
             }
-
             return moment.tz(timestamp, userTimezone).format(format || 'MMM Do, YYYY, h:mm A z');
+
         }
 
         return '';

@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import findIndex from 'lodash/findIndex';
-import GalleryListItem from './gallery-list-item';
+import AdminGalleryListItem from './gallery-list-item';
 import GalleryEdit from './gallery-edit';
+
 
 /**
  * Galleries - component for managing submissions
@@ -10,11 +11,11 @@ import GalleryEdit from './gallery-edit';
  * @extends React.Component
  */
 class Galleries extends React.Component {
-    state = { activeGallery: null, loading: false };
+    state = { activeGallery: false, loading: false, activeGallery: false };
 
     componentWillReceiveProps(nextProps) {
         if (this.props.galleryType !== nextProps.galleryType) {
-            this.setState({ activeGallery: null });
+            this.setState({ activeGallery: false });
         }
     }
 
@@ -27,7 +28,6 @@ class Galleries extends React.Component {
     onUpdateGallery(id) {
         const { galleries, removeGallery } = this.props;
         const index = findIndex(galleries, { id });
-
         removeGallery(id, (arr) => {
             this.setActiveGallery(arr[index] || arr[index + 1] || arr[index - 1]);
         });
@@ -45,29 +45,21 @@ class Galleries extends React.Component {
     }
 
     setActiveGallery(activeGallery) {
-        this.setState({ activeGallery });
+        if(!this.state.activeGallery || activeGallery.id !== this.state.activeGallery.id) {
+            this.setState({ activeGallery });
+        }
     }
 
     renderGalleries() {
         const { galleries } = this.props;
         const { activeGallery } = this.state;
+        return galleries.map((gallery, i) => (
 
-        function sortListItem(a, b) {
-            if (a.created_at > b.created_at) {
-                return -1;
-            } else if (a.created_at < b.created_at) {
-                return 1;
-            }
-
-            return 0;
-        }
-
-        return galleries.sort(sortListItem).map((gallery, i) => (
-            <GalleryListItem
+            <AdminGalleryListItem
                 type="gallery"
                 gallery={gallery}
                 key={i}
-                active={!!activeGallery && activeGallery.id === gallery.id}
+                active={(activeGallery) && (activeGallery.id === gallery.id)}
                 onClick={() => this.setActiveGallery(gallery)}
             />
         ));
@@ -78,19 +70,19 @@ class Galleries extends React.Component {
 
         return (
             <div className="container-fluid admin">
-                <div className="col-md-6 col-lg-7 list" onScroll={(e) => this.onScroll(e)}>
+                <div className="col-md-6 col-lg-4 list" onScroll={(e) => this.onScroll(e)}>
                     {this.renderGalleries()}
                 </div>
-                <div className="col-md-6 col-lg-5 form-group-default admin-edit-pane">
-                    {activeGallery && activeGallery.id
-                        ? <GalleryEdit
+                {activeGallery && activeGallery.id ?
+                    <div className="col-md-6 col-lg-8 form-group-default admin-edit-pane">
+                        <GalleryEdit
                             galleryType={this.props.galleryType}
                             gallery={activeGallery}
                             onUpdateGallery={(id) => this.onUpdateGallery(id)}
                         />
-                        : null
-                    }
-                </div>
+                    </div>
+                : null
+                }
             </div>
         );
     }
@@ -104,4 +96,3 @@ Galleries.propTypes = {
 };
 
 export default Galleries;
-

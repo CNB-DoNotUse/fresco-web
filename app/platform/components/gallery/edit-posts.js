@@ -32,7 +32,7 @@ const renderPost = (post) => {
 const renderPosts = ({ editingPosts, originalPosts, onToggleDelete }) => (
     unionBy(originalPosts, editingPosts, 'id').map((p, i) => {
         const deleteToggled = !find(editingPosts, { id: p.id });
-
+        
         return (
             <div key={`post${i}`} className={`frick-frame ${deleteToggled ? 'frick-delete' : ''}`}>
                 {renderPost(p)}
@@ -145,6 +145,7 @@ class EditPosts extends React.Component {
             onToggleDeletePost,
             onToggleDeleteUpload,
             className,
+            afterChange,
         } = this.props;
 
         const uploadsJSX = uploads.length
@@ -164,6 +165,7 @@ class EditPosts extends React.Component {
                 swipeToSlide
                 draggable
                 dots
+                afterChange={afterChange}
             >
                 {uploadsJSX
                     ? postsJSX.concat(uploadsJSX)

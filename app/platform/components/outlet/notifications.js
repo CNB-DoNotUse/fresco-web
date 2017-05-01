@@ -33,7 +33,25 @@ class Notifications extends React.Component {
 		this.props.updateNotification(option, index, e);
 	};
 
-	renderNotificationList (notifications) {
+	/**
+	 * Checks if a setting is applied to all notificaiton settings
+	 * @param  {String} setting The setting to check
+	 * @return {Bool} Yes if all are check, no if not
+	 */
+	allSelected = (setting) => {
+		for (var i = 0; i < this.props.notificationSettings.length; i++) {
+			let notifSetting = this.props.notificationSettings[i];
+
+			//Check if the option exist first, and if it's set
+			if(notifSetting.options.hasOwnProperty(setting) && !notifSetting['options'][setting]) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	renderNotificationList(notifications) {
 	    if (!notifications.length) {
 	        return <div className="outlet-locations-container" />;
 	    }
@@ -79,7 +97,7 @@ class Notifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
-									checked={every(notificationSettings, 'options.send_sms')}
+									checked={this.allSelected('send_sms')}
 									onChange={this.updateNotification('send_sms')} />
 							</label>
 						</div>
@@ -88,7 +106,7 @@ class Notifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
-									checked={every(notificationSettings, 'options.send_email')}
+									checked={this.allSelected('send_email')}
 									onChange={this.updateNotification('send_email')} />
 							</label>
 						</div>
@@ -97,7 +115,7 @@ class Notifications extends React.Component {
 							<label>
 								<input
 									type="checkbox"
-									checked={every(notificationSettings, 'options.send_fresco')}
+									checked={this.allSelected('send_fresco')}
 									onChange={this.updateNotification('send_fresco')} />
 							</label>
 						</div>
@@ -129,6 +147,7 @@ const NotificaitonItem = ({ notification, updateNotification, index }) => {
 					<label>
 						<input
 							type="checkbox"
+							disabled={!options.hasOwnProperty('send_sms')}
 							checked={options.send_sms || false}
 							onChange={updateNotification('send_sms', index)} />
 					</label>
@@ -138,6 +157,7 @@ const NotificaitonItem = ({ notification, updateNotification, index }) => {
 					<label>
 						<input
 							type="checkbox"
+							disabled={!options.hasOwnProperty('send_email')}
 							checked={options.send_email || false}
 							onChange={updateNotification('send_email', index)} />
 					</label>
@@ -147,6 +167,7 @@ const NotificaitonItem = ({ notification, updateNotification, index }) => {
 					<label>
 						<input
 							type="checkbox"
+							disabled={!options.hasOwnProperty('send_fresco')}
 							checked={options.send_fresco || false}
 							onChange={updateNotification('send_fresco', index)} />
 					</label>
