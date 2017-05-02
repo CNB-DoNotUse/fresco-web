@@ -10,6 +10,7 @@ require('script!bootstrap-material-design/dist/js/material');
 require('script!bootstrap-material-design/dist/js/ripples');
 require('script!alertify.js/dist/js/alertify');
 import '../../sass/platform/screen.scss';
+
 import SnackbarModal from 'app/platform/components/dialogs/snackbar-modal';
 import { checkIfInactive } from 'app/platform/components/dialogs/inactivity-alert';
 
@@ -17,6 +18,14 @@ import { checkIfInactive } from 'app/platform/components/dialogs/inactivity-aler
  * Root App Wrapper
  */
 class App extends React.Component {
+
+    state = {
+        alert: false,
+        title: '',
+        body: '',
+        timeout: 5000,
+        href: ''
+    }
 
     static propTypes = {
         query: PropTypes.string,
@@ -36,7 +45,20 @@ class App extends React.Component {
 
         this.trackUser();
         startChat();
-        checkIfInactive();
+        checkIfInactive(this.renderAlert);
+    };
+
+    renderAlert = ({content, href, timeout}) => {
+        this.setState({ alert: true, content, href, timeout });
+    }
+
+    closeAlert = () => {
+        debugger
+        this.setState({ alert: false, content: '', href: '', timeout: 5000 });
+    }
+
+    getChildContext() {
+        return { openAlert: this.renderAlert, closeAlert: this.closeAlert };
     }
 
     /**
@@ -55,6 +77,7 @@ class App extends React.Component {
 
     render() {
         const { query, user, children } = this.props;
+        const { content, timeout, href, alert } = this.state;
         return (
             <div>
                 <div className="container-fluid">
@@ -67,10 +90,24 @@ class App extends React.Component {
                         {children}
                     </div>
                 </div>
+                <div id="snackbar-container">
+                    <div className={`snackbar ${ alert ? 'snackbar-opened' : ''}`}
+                        onClick={this.closeAlert}>
+                        <SnackbarModal
+                            content={content}
+                            timeout={timeout}
+                            href={href}
+                            />
+                    </div>
+                </div>
             </div>
         );
     }
 }
-// <SnackbarModal/>
+
+App.childContextTypes = {
+  openAlert: PropTypes.func,
+  closeAlert: PropTypes.func,
+};
 
 export default App;
