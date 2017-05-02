@@ -10,7 +10,7 @@ export const checkIfInactive = (openAlert) => {
     api.get('assignment/list', assignmentParams)
         .then((res) => {
             if (res.length > 0) {
-                if (!time.past12Hours(res[0].created_at) && !checkIfNotified()) {
+                if (time.past12Hours(res[0].created_at) && !checkIfNotified()) {
                     openAlert({ content: "You haven't made an assignment in 12+ hours. Fresco works best with momentum. Expect quality responses after three consecutive days of posting assignments consistently.", timeout: 10000 });
                     markNotified();
                 }
@@ -21,7 +21,7 @@ export const checkIfInactive = (openAlert) => {
         });
 }
 
-// checks if a notification has been sent
+// checks if there is a record of an inactivity alert in the session storage
 const checkIfNotified = () => {
     if (getFromSessionStorage('notifications', 'inactivity', false)) {
         return !time.past12Hours(getFromSessionStorage('notifications','inactivity'));
@@ -34,10 +34,5 @@ const checkIfNotified = () => {
 const markNotified = () => {
     const timeNotified = new Date().toString();
     setInSessionStorage('notifications', { inactivity: timeNotified });
-
-}
-
-//actual react component of the alert
-const InactiveNotification = () => {
 
 }
