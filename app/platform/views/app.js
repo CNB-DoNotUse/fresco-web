@@ -66,11 +66,11 @@ class App extends React.Component {
                     <div className="col-md-12 col-lg-10">
                         {children}
                     </div>
-                    <SnackbarModal/>
                 </div>
             </div>
         );
     }
 }
+// <SnackbarModal/>
 
 export default App;
