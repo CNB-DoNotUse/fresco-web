@@ -1,17 +1,19 @@
 import { getFromSessionStorage, setInSessionStorage } from 'app/lib/storage';
 import React from 'react';
 import api from 'app/lib/api';
-import time from 'app/lib/time';
 
 const assignmentParams = { direction: "desc", sortBy: "created_at", limit: 1 };
 
+function past12Hours(lastAssignmentTime) {
+    return (new Date() -  new Date(lastAssignmentTime) > 43200000);
+}
 // makes an api call to see if an assignment has been made in the last 12 hours
 export const checkIfInactive = (openAlert) => {
     api.get('assignment/list', assignmentParams)
         .then((res) => {
             console.log(res);
             if (res.length > 0) {
-                if (time.past12Hours(res[0].created_at) && !checkIfNotified()) {
+                if (past12Hours(res[0].created_at) && !checkIfNotified()) {
                     openAlert({ content: "You haven't made an assignment in 12+ hours. Fresco works best with momentum. Expect quality responses after three consecutive days of posting assignments consistently.", timeout: 10000 });
                     markNotified();
                 }
@@ -26,7 +28,7 @@ export const checkIfInactive = (openAlert) => {
 // checks if there is a record of an inactivity alert in the session storage
 const checkIfNotified = () => {
     if (getFromSessionStorage('notifications', 'inactivity', false)) {
-        return !time.past12Hours(getFromSessionStorage('notifications','inactivity'));
+        return !past12Hours(getFromSessionStorage('notifications','inactivity'));
     } else {
         return false;
     }
