@@ -10,7 +10,6 @@ class SnackbarModal extends React.Component {
 
     componentDidUpdate() {
         const { timeout } = this.props;
-        debugger
         setTimeout(this.context.closeAlert, timeout);
     }
 

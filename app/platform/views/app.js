@@ -53,7 +53,6 @@ class App extends React.Component {
     }
 
     closeAlert = () => {
-        debugger
         this.setState({ alert: false, content: '', href: '', timeout: 5000 });
     }
 
