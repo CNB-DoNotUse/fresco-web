@@ -273,6 +273,7 @@ export default class GalleryEdit extends React.Component {
             rating,
             is_nsfw,
             owner,
+            editAll,
         } = this.state;
         const { gallery } = this.props;
 
@@ -284,7 +285,6 @@ export default class GalleryEdit extends React.Component {
         let params = {
             tags,
             caption,
-            address,
             is_nsfw,
             ...this.getPostsParams(),
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
@@ -294,47 +294,45 @@ export default class GalleryEdit extends React.Component {
             owner_id: owner ? owner.id : null,
         };
 
+        if (editAll) params.address = address;
+
         // Make sure our params are valid types and don't have any empty arrays
         // Special exception if the param is a `bool`
         params = pickBy(params, (v, k) => {
             if (gallery[k] === v) return false;
             return Array.isArray(v) ? v.length : true;
         });
-
         return params;
     }
 
 
 
 
-// TODO: EDIT THIS SO THAT IT CANNOT ALTER LOCATIONS IF THER ARE ALREADY
+// TODO: EDIT THIS SO THAT IT CANNOT ALTER LOCATIONS IF THEy ARE ALREADY
     getPostsParams() {
         const { gallery } = this.props;
-        const { address, location, rating, assignment } = this.state;
+        const { address, location, rating, assignment, editAll } = this.state;
         const { posts_remove } = utils.getRemoveAddParams('posts', gallery.posts, this.state.posts);
 
         // check to see if should save locations on all gallery's posts
         const posts = this.state.posts.filter(p => !posts_remove.includes(p.id));
-        const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
+        // const sameLocation = isEqual(this.getInitialLocationData(), { address, location });
         let posts_update;
-
-        if (sameLocation || !posts) {
-            posts_update = posts.map(p => ({
+        if (!editAll) {
+            posts_update = posts.map((p) => ({
                 id: p.id,
+                address: p.address,
+                location: p.location,
                 rating,
                 assignment_id: assignment ? assignment.id : null,
             }));
+        } else {
+            posts_update = posts.map(p => pickBy({
+                id: p.id,
+                rating,
+                assignment_id: assignment ? assignment.id : null,
+            }, (v, k) => k === 'id' || p[k] !== v));
         }
-
-        // filter out unchanged params
-        posts_update = posts.map(p => pickBy({
-            id: p.id,
-            address,
-            lat: location ? location.lat : null,
-            lng: location ? location.lng : null,
-            rating,
-            assignment_id: assignment ? assignment.id : null,
-        }, (v, k) => k === 'id' || p[k] !== v));
 
         return { posts_update, posts_remove };
     }
