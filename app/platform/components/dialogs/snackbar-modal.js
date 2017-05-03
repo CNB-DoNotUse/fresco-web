@@ -13,10 +13,18 @@ class SnackbarModal extends React.Component {
         setTimeout(this.context.closeAlert, timeout);
     }
 
+    onClick = () => {
+        const win = window.open( this.props.href, '_blank');
+        win.focus();
+    }
+
+
     render() {
         const { content, href, timeout } = this.props;
+        let click = () => {};
+        if (href) click
         return (
-            <span className="snackbar-content">
+            <span onClick={this.onClick} className="snackbar-content">
                 {content || ''}
             </span>
         );
