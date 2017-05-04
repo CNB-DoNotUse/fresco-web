@@ -97,7 +97,6 @@ router.get('/reset/:token', (req, res, next) => {
     if (!req.params.token) {
         return next();
     }
-
     // Make request for invite
     API.request({
         method: 'GET',

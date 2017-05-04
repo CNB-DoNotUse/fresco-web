@@ -111,7 +111,7 @@ class ChipInput extends React.Component {
         const { queryAttr, altAttr, createNew } = this.props;
         const { suggestions, query } = this.state;
         const keyCode = e.keyCode;
-
+        
         //If we're hitting escape, or we're hitting backspace and there's no query
         if(e.keyCode === 27 || ( (e.keyCode === 8 || e.keyCode === 46) && query.length === 0 )) {
             this.setState({ suggestions: [] });

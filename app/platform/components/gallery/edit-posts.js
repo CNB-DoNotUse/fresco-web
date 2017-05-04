@@ -145,6 +145,7 @@ class EditPosts extends React.Component {
             onToggleDeletePost,
             onToggleDeleteUpload,
             className,
+            afterChange,
         } = this.props;
 
         const uploadsJSX = uploads.length
@@ -164,6 +165,7 @@ class EditPosts extends React.Component {
                 swipeToSlide
                 draggable
                 dots
+                afterChange={afterChange}
             >
                 {uploadsJSX
                     ? postsJSX.concat(uploadsJSX)

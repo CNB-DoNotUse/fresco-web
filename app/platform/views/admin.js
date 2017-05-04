@@ -25,9 +25,9 @@ class Admin extends React.Component {
     }
 
     componentDidMount() {
-        setInterval(() => {
+        // setInterval(() => {
             if (this.props.activeTab !== '') this.refresh();
-        }, 5000);
+        // }, 5000);
         this.loadInitial();
     }
 
@@ -94,7 +94,6 @@ class Admin extends React.Component {
             if (!data) {
                 return cb([]);
             }
-
             return cb(data);
         });
     };
@@ -130,7 +129,6 @@ class Admin extends React.Component {
     removeSubmission(id, cb) {
         const { submissions } = this.state;
         if (!id || !submissions || !cb) return;
-
         this.setState({ submissions: submissions.filter(a => a.id !== id) },
             () => cb(this.state.submissions));
     }
@@ -173,12 +171,12 @@ class Admin extends React.Component {
      */
     loadInitial() {
         this.getData({ tab: 'submissions' }, (submissions) => {
-            if(submissions.length) {
-                this.setState({
-                    activeTab: 'submissions',
-                    submissions: this.state.submissions.concat(submissions)
-                });
-            } else {
+            // if(submissions.length) {
+            //     this.setState({
+            //         activeTab: 'submissions',
+            //         submissions: this.state.submissions.concat(submissions)
+            //     });
+            // } else {
                 this.getData({ tab: 'imports' }, (imports) => {
                     this.setState({
                         activeTab: (imports.length && !this.state.submissions.length)
@@ -187,7 +185,7 @@ class Admin extends React.Component {
                         imports: this.state.imports.concat(imports),
                     });
                 });
-            }
+            // }
         });
     }
 

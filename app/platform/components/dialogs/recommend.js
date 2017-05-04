@@ -93,7 +93,6 @@ class Recommend extends React.Component {
         if (missing.length > 0) {
             const msg = `You are missing: ${missing.join(', ')}`
             $.snackbar({ content: msg });
-            debugger
             return;
         }
 
