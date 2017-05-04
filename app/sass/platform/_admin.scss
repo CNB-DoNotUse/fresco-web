@@ -33,6 +33,9 @@
 .admin {
 	.list-item {
 		justify-content: space-between;
+		@include transition(background-color 0.3s ease);
+
+
 		.list-item-caption, .list-item-timestamp * {
 			overflow:hidden;
 			white-space: nowrap;
@@ -47,9 +50,20 @@
 			display: flex;
 			align-items: center;
 		}
-		.gallery-list-item--preview > * {
-			margin-right: 10px;
+
+		.gallery-list-item--preview {
+		    max-width: 50%;
+
+		    & > * {
+				margin-right: 10px;
+		    }
 		}
+
+		.gallery-list-item--location {
+		    text-overflow: ellipsis;
+		    white-space: nowrap;
+		}
+
 	}
 	.list-item.assignment > div:nth-child(2) * {
 		font-weight: 500;
@@ -111,17 +125,18 @@
 	}
 
 	.gallery-edit--left {
-		width: calc(50% - 60px);
-		position: absolute;
+		width: calc(50% - 30px);
+		margin-right:30px;
+		float:left;
+
 		> *:not(:last-child) {
 			margin: 16px 0;
 		}
 		overflow: hidden;
 	}
 	.gallery-edit--right {
-		position: absolute;
-		width: calc(50% - 30px);
-		left: 50%;
+		float:left;
+		width:50%;
 		overflow-y: scroll;
 	}
 	.meta-user-name__secondary{
