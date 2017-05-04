@@ -762,7 +762,7 @@ div.list {
 			}
 			> span,
 			> p {
-				white-space: wrap;
+				white-space:nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
@@ -848,7 +848,7 @@ div.list {
 		height:100%;
 		overflow: auto;
 
-		> div  {
+		.form-wrap {
 			overflow:auto;
 		}
 

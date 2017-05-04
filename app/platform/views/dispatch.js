@@ -240,13 +240,10 @@ class Dispatch extends React.Component {
                         addLocationButton
                     />
 
-                    {this.props.user.roles.includes('admin') ?
+                    {this.props.user.roles.includes('admin') &&
                         <button
                             className="btn btn-flat pull-right mt12 mr16"
-                            onClick={this.downloadStats} >Download Stats (.xlsx)</button>
-                        :
-                            ''
-                    }
+                            onClick={this.downloadStats}>Download Stats (.xlsx)</button>}
                 </TopBar>
 
                 <DispatchMap

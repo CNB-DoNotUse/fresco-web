@@ -172,7 +172,7 @@ export default class GalleryEdit extends React.Component {
      */
     onVerify() {
         if (this.state.loading) return;
-        // this.setState({ loading: true });
+        this.setState({ loading: true });
         const { onUpdateGallery, gallery } = this.props;
         const params = this.getFormData();
         const postsToDelete = get(params, 'posts_remove', []);
