@@ -61,7 +61,7 @@ const ListItems = ({ user }) => {
 
                 <Item
                     link="/archive/stories"
-                    icon="mdi-newspaper"
+                    icon="mdi-archive"
                     text="Stories"
                 />
             </ul>
@@ -82,4 +82,3 @@ ListItems.propTypes = {
 };
 
 export default ListItems;
-
