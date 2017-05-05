@@ -24,7 +24,7 @@ class SnackbarModal extends React.Component {
         let click = () => {};
         if (href) click
         return (
-            <span onClick={this.onClick} className="snackbar-content">
+            <span onClick={ href ? this.onClick : this.context.closeAlert } className="snackbar-content">
                 {content || ''}
             </span>
         );
