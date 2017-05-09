@@ -13,17 +13,21 @@ export const EDIT_NEW_STORY = 'EDIT_NEW_STORY';
 // export const CREATE_STORY = 'CREATE_STORY';
 // export const DELETE_POST = 'DELETE_POST';
 // export const DELETE_STORY = 'DELETE_STORY';
-export const CHANGE_FILTER = 'CHANGE_FILTER';
+export const CHANGE_SEARCH = 'CHANGE_SEARCH';
 // export const PURCHASE_STORY = 'PURCHASE_STORY';
 export const REMOVE_STORY = 'REMOVE_STORY';
 // export const
 
 // tentative
 export const RECEIVE_USER_STATUS = 'RECEIVE_USER_STATUS';
-export const DOWNLOAD_POSTS = 'DOWNLOAD_POSTS';
+
 // export const
 
 //sync actions
+export const changeSearch = searchParam => ({
+    type: CHANGE_SEARCH,
+    searchParam
+})
 export const receiveStories = stories => ({
     type: RECEIVE_STORIES,
     stories,
@@ -63,11 +67,6 @@ export const editNewStory = story => ({
 //     type: CREATE_STORY,
 //     error,
 // });
-
-export const receiveError = error => ({
-    type: RECEIVE_ERROR,
-    error,
-});
 
 // async actions
 export function createStory(story) {
