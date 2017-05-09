@@ -1,55 +1,60 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './app';
-import TopBar from './../components/topbar';
-import StoryList from './../components/global/story-list';
-import utils from 'utils';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import configureStore from 'app/redux/store/immutableStore';
+import Root from '../containers/Root';
+import Stories from '../containers/Stories';
 
-/**
- * Stories Parent Object, contains StoryList composed of StoryCells
- */
-class Stories extends React.Component {
-    /**
-     * Returns array of posts with offset and callback, used in child PostList
-     */
-    loadStories = (last, callback) => {
-        const params = {
-            last,
-            limit: 20,
-            sortBy: 'updated_at',
-        };
+// Needed for onTouchTap
+// http://stackoverflow.com/a/34015469/988941
+injectTapEventPlugin();
 
-        $.ajax({
-            url: '/api/story/recent',
-            type: 'GET',
-            data: params,
-            dataType: 'json',
-            success: (stories) => callback(stories),
-            error: (xhr, status, error) => {
-                $.snackbar({ content:  'Couldn\'t fetch any stories!' });
-            }
-        });
-    };
+const { user } = window.__initialProps__;
 
-    render() {
-        return (
-            <App user={this.props.user} page="stories">
-                <TopBar
-                    title="Stories"
-                    timeToggle
-                    tagToggle
-                />
-
-                <StoryList
-                    loadStories={this.loadStories}
-                    scrollable
-                />
-            </App>
-        );
-    }
+// default state for search,
+// TODO: draw from local storage, save feature?
+let location;
+if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+        location = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+        }
+    });    
+} else {
+  location = {
+      lat: 40.7127837,
+      lng: 74.0059413,
+  }
+}
+const searchParams  = {
+    verified: true,
+    unverified: false,
+    seen: true,
+    unseen: false,
+    purchased: true,
+    notPurchased: false,
+    downloaded: true,
+    notDownloaded: false,
+    capturedTime: true,
+    relativeTime: true,
+    location,
+    address: '',
+    searchTerm: '',
+    users: [],
+    assignments:[],
+    tags: [],
+    loading: false
 }
 
+const store = configureStore({ user, searchParams });
+
 ReactDOM.render(
-    <Stories user={window.__initialProps__.user} />,
+    <Root store={store}>
+        <MuiThemeProvider>
+            <Stories />
+        </MuiThemeProvider>
+    </Root>,
     document.getElementById('app')
 );
