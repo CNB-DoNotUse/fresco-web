@@ -17,7 +17,7 @@ const userMiddleware = {
         userLib
             .refreshBearer(req)
             .then(() => next())
-            .catch(() => userMiddleware.logout(req, res))
+            .catch(() => userMiddleware.logout(req, res, '/account'))
     },
 
     /**
@@ -34,9 +34,9 @@ const userMiddleware = {
                 userLib
                     .saveSession(req, response.body)
                     .then(() => next())
-                    .catch(() => userMiddleware.logout(req, res))
+                    .catch(() => userMiddleware.logout(req, res, '/account'))
             })
-            .catch(() => userMiddleware.logout(req, res))
+            .catch(() => userMiddleware.logout(req, res, '/account'))
     },
 
     /**
@@ -59,11 +59,12 @@ const userMiddleware = {
 
     /**
      * Logs the user out and redirects
+     * @param {redirect} String Optional redirect endpoint
      */
-    logout(req, res) {
+    logout(req, res, redirect = '/') {
         const end = () => {
             req.session.destroy(() => {
-                res.redirect('/');
+                res.redirect(redirect);
             });
         }
 

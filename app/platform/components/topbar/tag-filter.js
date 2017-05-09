@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import Tag from '../global/tag';
 import Dropdown from '../global/dropdown';
 
+
+
 export default class TagFilter extends React.Component {
     static propTypes = {
         onTagInput: PropTypes.func,

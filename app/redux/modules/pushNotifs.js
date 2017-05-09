@@ -1,6 +1,7 @@
 // https://github.com/erikras/ducks-modular-redux
 import api from 'app/lib/api';
-import { verifyGallery, verifyUser, verifyAssignment } from 'app/lib/models';
+import { verifyUser, verifyAssignment } from 'app/lib/models';
+import { verifyGallery } from 'app/lib/galleries';
 import { fromJS, Map, List } from 'immutable';
 import differenceBy from 'lodash/differenceBy';
 import get from 'lodash/get';
@@ -47,7 +48,6 @@ export const getTemplateState = (template) => ({
 * @return {string} msg error message, empty if there are no errors
 */
 const getTemplateErrors = (template, getState) => {
-    console.log(typeof template);
     const templateData = getState().getIn(['pushNotifs', 'templates', template], Map());
     const {restrictByUser,
         restrictByLocation,
@@ -195,7 +195,6 @@ const verifyGalleryListUpdate = ({ data, state }) => {
             const galleries = state.get('galleries', List()).toJS();
             const newGallery = get(differenceBy(data.galleries, galleries, 'id'), '[0]');
             if (!newGallery) return resolve();
-
             verifyGallery(newGallery)
                 .then(() => resolve())
                 .catch(() => reject('Invalid gallery id'));

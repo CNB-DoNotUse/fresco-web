@@ -46,7 +46,8 @@ export const RestrictByLocation = ({
     onChange,
     location,
     address,
-    radius }) => (
+    radius
+}) => (
     <span>
         <div className="checkbox form-group push-notifs__checkbox">
             <label>
@@ -96,7 +97,8 @@ export const RestrictByUser = ({
     onChange,
     disabled = false,
     multipleUsers = true,
-    users }) => (
+    users
+}) => (
     <span>
         <div className="checkbox form-group push-notifs__checkbox">
             <label>

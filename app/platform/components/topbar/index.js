@@ -112,6 +112,10 @@ class TopBar extends React.Component {
             defaultVerified,
             defaultChron,
             roles,
+            isGalleryDetail = false,
+            isPostDetail = false,
+            galleryRating,
+            modalFunctions
         } = this.props;
         const topbarItems = [];
 
@@ -124,9 +128,22 @@ class TopBar extends React.Component {
             );
         }
 
-		// If showing both the capture type and time type toggles, put the time
-		// type toggle into the dropdown for capture time. Otherwise, display
-		// it separately.
+	    // this is the share dropdown that contains the option to recommended
+        // a gallery to outlets
+        if ((isGalleryDetail || isPostDetail) && galleryRating === 2) {
+            topbarItems.push(
+                <Dropdown
+                    options={['Recommend']}
+                    selected=""
+                    onSelected={this.onSelectVerified}
+                    modalList={true}
+                    modalFunctions={modalFunctions}
+                    key="share"
+                    inList
+                    icon="share"
+                    />
+            );
+        }
         if (chronToggle) {
             let timeToggleCmp;
 
@@ -140,6 +157,9 @@ class TopBar extends React.Component {
                     />
                 );
             }
+            // If showing both the capture type and time type toggles, put the time
+            // type toggle into the dropdown for capture time. Otherwise, display
+            // it separately.
             topbarItems.push(
                 <Dropdown
                     options={['By capture time', 'By upload time']}
@@ -162,7 +182,6 @@ class TopBar extends React.Component {
                 />
             );
         }
-
         if (verifiedToggle && roles.includes('admin')) {
             topbarItems.push(
                 <Dropdown

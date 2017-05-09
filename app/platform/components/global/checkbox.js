@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 /**
  * Stateless explicit checkbox
  */
-const ExplicitCheckbox = ({ is_nsfw, onChange }) => (
+export const ExplicitCheckbox = ({ is_nsfw, onChange }) => (
     <div className="dialog-row explicit">
         <div className="checkbox">
             <label>
@@ -23,5 +23,17 @@ ExplicitCheckbox.propTypes = {
     onChange: PropTypes.func
 }
 
-export default ExplicitCheckbox;
-
+export const EditAllLocations = ({ editAll, onChange }) => (
+    <div className="dialog-row edit-all">
+        <div className="checkbox">
+            <label>
+                <input
+                    type="checkbox"
+                    checked={editAll}
+                    onChange={(e) => onChange(e)}
+                />
+            Edit all locations
+            </label>
+        </div>
+    </div>
+);

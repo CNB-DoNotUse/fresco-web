@@ -56,10 +56,11 @@ export default class Confirm extends React.Component {
     );
 
     render() {
-        const { toggled, header, confirmText, hasInput, onCancel, disabled, body } = this.props;
+        const { toggled, header, confirmText, hasInput, onCancel, disabled, body, zIndex } = this.props;
 
         return (
-            <Base toggled={toggled}>
+            <Base toggled={toggled}
+                zIndex={zIndex}>
                 <div className={`dialog-modal--confirm ${toggled ? 'toggled' : ''}`}>
                     <div className="dialog-modal__header">
                         <h3>{header}</h3>
@@ -67,7 +68,7 @@ export default class Confirm extends React.Component {
 
                     {(hasInput || body) && this.renderBody()}
 
-                    <div className="dialog-modal__footer">
+                    <div className="dialog-modal__footer clearfix">
                         <button
                             className="cancel btn"
                             onClick={onCancel}

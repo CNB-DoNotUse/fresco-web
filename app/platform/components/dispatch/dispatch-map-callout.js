@@ -10,6 +10,10 @@ export default class DispatchMapCallout extends React.Component {
 		super(props);
 	}
 
+	clicked() {
+		 window.location.assign(`/assignment/${this.props.assignment.id}`)
+	}
+
 	render() {
 		const { assignment } = this.props;
 		const { photo_count, video_count, accepted_count } = assignment;
@@ -44,6 +48,7 @@ export default class DispatchMapCallout extends React.Component {
 							type="button" 
 							className="btn btn-flat assignment-callout-button pull-right"
 							id="callout-selector"
+							onClick={this.clicked}
 							data-id={assignment.id} >
 							See All
 						</button>

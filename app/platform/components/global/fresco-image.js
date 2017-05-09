@@ -50,7 +50,7 @@ class FrescoImage extends React.Component {
         const { src, size } = prevProps;
 
         if ((src !== this.props.src) || (size !== this.props.size)) {
-            this.setInitialSource(src, size);
+            this.setInitialSource(this.props.src, this.props.size);
         }
     }
 
@@ -105,7 +105,6 @@ class FrescoImage extends React.Component {
             this.loadTimeout = setTimeout(this.onTimeout, this.state.timeout);
         }
     };
-
     /**
     * on right click, prevent menu on images so users cannot save image as
     */
@@ -114,7 +113,6 @@ class FrescoImage extends React.Component {
         e.preventDefault();
         return false;
     }
-
 
     render() {
         let placeholderStyle = {};
