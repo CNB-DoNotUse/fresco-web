@@ -132,8 +132,6 @@ class TopBar extends React.Component {
                     <span className="mdi mdi-menu icon" />
                 </button>
 
-                <div className="spacer" />
-
                 {title ? <h1 className="md-type-title">{title}</h1> : ''}
 
                 {this.renderTabs()}
