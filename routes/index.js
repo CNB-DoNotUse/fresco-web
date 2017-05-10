@@ -49,7 +49,10 @@ router.get('/:modal?', (req, res, next) => {
         loggedIn: req.session.user ? true : false,
         modal: req.params.modal,
         modals: routes.modals,
-        aliases: routes.aliases
+        aliases: routes.aliases,
+        signup: false,
+        ref: false,
+        autoplay: false
     });
 });
 

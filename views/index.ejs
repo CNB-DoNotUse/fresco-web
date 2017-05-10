@@ -1,6 +1,6 @@
 <% include segments/head %>
 
-<% 
+<%
     const showModal = typeof(modal) !== 'undefined';
 
     display = showModal ? 'none' : '';
@@ -23,7 +23,7 @@
                 </li>
             <% } else { %>
                 <li data-event="modal" data-modal="account">NEWS DASHBOARD</li>
-            <% } %> 
+            <% } %>
         </ul>
     </div>
 
@@ -31,16 +31,16 @@
         <div></div>
     </div>
 
-    <span 
-        class="mdi mdi-arrow-down-bold modal-action" 
-        id="landing-arrow" 
-        data-event="scroll" 
-        data-element="_hero">    
+    <span
+        class="mdi mdi-arrow-down-bold modal-action"
+        id="landing-arrow"
+        data-event="scroll"
+        data-element="_hero">
     </span>
 
     <%- include('segments/landing', {display: display}) %>
 
-    <%- include('modals/modal-wrap', {modals: modals}) %>
+    <%- include('modals/modal-wrap', {modals: modals }) %>
 
     <%- include('segments/footer', {display: display}) %>
 </div>
