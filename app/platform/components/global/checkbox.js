@@ -38,7 +38,6 @@ export const EditAllLocations = ({ editAll, onChange }) => (
     </div>
 );
 
-
 export const GenericCheckbox = ({ checked, text, className, onChange }) => (
     <div className={`dialog-row ${className}`}>
         <div className="checkbox">

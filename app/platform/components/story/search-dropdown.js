@@ -22,8 +22,7 @@ class SearchDropdown extends React.Component {
                 notDownloaded
             }
         } = this.props;
-
-        return(
+        return (
             <div className="filters">
                 <GenericCheckbox
                     checked={verified}
@@ -89,6 +88,11 @@ class SearchDropdown extends React.Component {
         );
     }
 
+    onMapChange = (loc) => {
+        this.props.onChange('address', true)(loc.address);
+        this.props.onChange('location', true)(loc.location);
+    }
+
     render() {
         const {
             focus,
@@ -101,12 +105,8 @@ class SearchDropdown extends React.Component {
                     <p>Location</p>
                     <AutocompleteMap
                         address=""
-                        onPlaceChange={
-                            (loc) => {
-                                onChange('address', true)(loc.address);
-                                onChange('location', true)(loc.location)
-                            }
-                        }
+                        onPlaceChange={ this.onMapChange }
+                        onMapDataChange={ this.onMapChange }
                         location={searchParams.location}
                         address={searchParams.address}
                         draggable
