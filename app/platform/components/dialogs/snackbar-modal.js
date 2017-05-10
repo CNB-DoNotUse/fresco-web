@@ -14,8 +14,13 @@ class SnackbarModal extends React.Component {
     }
 
     onClick = () => {
-        const win = window.open( this.props.href, '_blank');
-        win.focus();
+        if (this.props.href) {
+            const win = window.open( this.props.href, '_blank');
+            win.focus();
+        } else {
+            this.context.closeAlert();
+        }
+        return;
     }
 
 
