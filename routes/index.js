@@ -8,10 +8,6 @@ const API  = require('../lib/api');
  * Root index for the landing page
  */
 
-function contains(string1, string2) {
-    return string2.split(string1).length > 0;
-}
-
 // use regex to parse the ref param?
 
 router.get('/:modal?', (req, res, next) => {
