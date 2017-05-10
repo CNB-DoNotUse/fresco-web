@@ -27,13 +27,11 @@ class AssignmentListItem extends React.Component {
                 <div className="flexy">
                     <span className="md-type-body2">{assignment.title}</span>
                     
-                    <span className="md-type-caption md-type-black-secondary">
-                        {`${location} • ${expiredText}`}
-                    </span>
+                    <span className="md-type-caption md-type-black-secondary">{`${location} • ${expiredText}`}</span>
 
                 </div>
 
-                {global ? <span className="mdi mdi-logout-variant icon"></span> : ''}
+                {global && <span className="mdi mdi-logout-variant icon"></span>}
             </div>
         )
 

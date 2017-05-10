@@ -215,16 +215,6 @@ class Edit extends React.Component {
         });
     }
 
-    /**
-     * onScroll - stopPropagation of event
-     * (prevents post/list and other parent cmp scroll listeners from triggering)
-     *
-     * @param {object} e event
-     */
-    onScroll = (e) => {
-        e.stopPropagation();
-    };
-
     getInitialLocationData() {
         const { gallery } = this.props;
         const location = gallery.location || get(gallery, 'posts[0].location');
@@ -545,146 +535,148 @@ class Edit extends React.Component {
 
         return (
             <div className="dialog-body">
-                <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    {isOriginalGallery && (
-                        <EditByline
-                            gallery={gallery}
-                            disabled={bylineDisabled}
-                            external_source={external_source}
-                            external_account_name={external_account_name}
-                            onChangeExtAccountName={(a) =>
-                                this.setState({ external_account_name: a })
-                            }
-                            onChangeExtSource={(s) =>
-                                this.setState({ external_source: s })
-                            }
-                        />
-                    )}
+                <div className="form-wrap">
+                    <div className="dialog-col col-xs-12 col-md-7 form-group-default">
+                        {isOriginalGallery && (
+                            <EditByline
+                                gallery={gallery}
+                                disabled={bylineDisabled}
+                                external_source={external_source}
+                                external_account_name={external_account_name}
+                                onChangeExtAccountName={(a) =>
+                                    this.setState({ external_account_name: a })
+                                }
+                                onChangeExtSource={(s) =>
+                                    this.setState({ external_source: s })
+                                }
+                            />
+                        )}
 
-                    {isImportedGallery(gallery) && (
-                        <ChipInput
-                            model="users"
-                            placeholder="Owner"
-                            queryAttr="full_name"
-                            altAttr="username"
-                            items={owner ? [owner] : []}
-                            updateItems={res => this.onChangeOwner(res[0])}
-                            className="dialog-row"
-                            createNew={false}
+                        {isImportedGallery(gallery) && (
+                            <ChipInput
+                                model="users"
+                                placeholder="Owner"
+                                queryAttr="full_name"
+                                altAttr="username"
+                                items={owner ? [owner] : []}
+                                updateItems={res => this.onChangeOwner(res[0])}
+                                className="dialog-row"
+                                createNew={false}
+                                multiple={false}
+                                search
+                            />
+                        )}
+
+                        <div className="dialog-row">
+                            <textarea
+                                id="gallery-edit-caption"
+                                type="text"
+                                className="form-control floating-label"
+                                value={caption}
+                                placeholder="Caption"
+                                onChange={e => this.setState({ caption: e.target.value })}
+                            />
+                        </div>
+
+                        <AssignmentChipInput
+                            model="assignments"
+                            placeholder="Assignment"
+                            queryAttr="title"
+                            items={assignments}
+                            locationHint={gallery.location}
+                            updateItems={a => this.setState({ assignments: a })}
                             multiple={false}
+                            disabled={assignments.length > 1}
+                            className="dialog-row"
+                            autocomplete />
+
+                        <ChipInput
+                            model="tags"
+                            items={tags}
+                            modifyText={t => `#${t}`}
+                            updateItems={t => this.setState({ tags: t })}
+                            autocomplete={false}
+                            className="dialog-row"
+                        />
+
+                        <ChipInput
+                            model="stories"
+                            queryAttr="title"
+                            items={stories}
+                            updateItems={s => this.setState({ stories: s })}
+                            className="dialog-row"
+                            createNew
+                            autocomplete
+                        />
+
+                        <ChipInput
+                            model="articles"
+                            queryAttr="link"
+                            items={articles}
+                            updateItems={a => this.setState({ articles: a })}
+                            className="dialog-row"
+                            createNew
                             search
                         />
-                    )}
 
-                    <div className="dialog-row">
-                        <textarea
-                            id="gallery-edit-caption"
-                            type="text"
-                            className="form-control floating-label"
-                            value={caption}
-                            placeholder="Caption"
-                            onChange={e => this.setState({ caption: e.target.value })}
+                        {!isOriginalGallery && (
+                            <ChipInput
+                                model="posts"
+                                items={posts}
+                                queryAttr="id"
+                                updateItems={this.onChangePostsChips}
+                                className="dialog-row"
+                                createNew={false}
+                                idLookup
+                            />
+                        )}
+
+                        <div className="dialog-row">
+                            <div className="checkbox">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={shouldHighlight}
+                                        onChange={this.onChangeHighlighted}
+                                    />
+                                    Highlighted
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className="dialog-row">
+                            <div className="checkbox">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={updateHighlightedAt}
+                                        onChange={this.onChangeHighlightedAt}
+                                    />
+                                    Bring To Top
+                                </label>
+                            </div>
+                        </div>
+
+                        <ExplicitCheckbox
+                            is_nsfw={is_nsfw}
+                            onChange={this.onChangeIsNSFW}
                         />
                     </div>
 
-                    <AssignmentChipInput
-                        model="assignments"
-                        placeholder="Assignment"
-                        queryAttr="title"
-                        items={assignments}
-                        locationHint={gallery.location}
-                        updateItems={a => this.setState({ assignments: a })}
-                        multiple={false}
-                        disabled={assignments.length > 1}
-                        className="dialog-row"
-                        autocomplete />
-
-                    <ChipInput
-                        model="tags"
-                        items={tags}
-                        modifyText={t => `#${t}`}
-                        updateItems={t => this.setState({ tags: t })}
-                        autocomplete={false}
-                        className="dialog-row"
-                    />
-
-                    <ChipInput
-                        model="stories"
-                        queryAttr="title"
-                        items={stories}
-                        updateItems={s => this.setState({ stories: s })}
-                        className="dialog-row"
-                        createNew
-                        autocomplete
-                    />
-
-                    <ChipInput
-                        model="articles"
-                        queryAttr="link"
-                        items={articles}
-                        updateItems={a => this.setState({ articles: a })}
-                        className="dialog-row"
-                        createNew
-                        search
-                    />
-
-                    {!isOriginalGallery && (
-                        <ChipInput
-                            model="posts"
-                            items={posts}
-                            queryAttr="id"
-                            updateItems={this.onChangePostsChips}
-                            className="dialog-row"
-                            createNew={false}
-                            idLookup
+                    {visible && get(posts, 'length') || get(uploads, 'length') ? (
+                        <EditPosts
+                            originalPosts={gallery.posts}
+                            editingPosts={posts}
+                            uploads={uploads}
+                            onToggleDeletePost={p => this.onToggleDeletePost(p)}
+                            onToggleDeleteUpload={(u, i) => this.onToggleDeleteUpload(u, i)}
+                            className="dialog-col col-xs-12 col-md-5"
+                            canDelete
                         />
-                    )}
+                    ) : null}
 
-                    <div className="dialog-row">
-                        <div className="checkbox">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={shouldHighlight}
-                                    onChange={this.onChangeHighlighted}
-                                />
-                                Highlighted
-                            </label>
-                        </div>
-                    </div>
-
-                    <div className="dialog-row">
-                        <div className="checkbox">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={updateHighlightedAt}
-                                    onChange={this.onChangeHighlightedAt}
-                                />
-                                Bring To Top
-                            </label>
-                        </div>
-                    </div>
-
-                    <ExplicitCheckbox
-                        is_nsfw={is_nsfw}
-                        onChange={this.onChangeIsNSFW}
-                    />
+                    {this.renderMap()}
                 </div>
-
-                {visible && get(posts, 'length') || get(uploads, 'length') ? (
-                    <EditPosts
-                        originalPosts={gallery.posts}
-                        editingPosts={posts}
-                        uploads={uploads}
-                        onToggleDeletePost={p => this.onToggleDeletePost(p)}
-                        onToggleDeleteUpload={(u, i) => this.onToggleDeleteUpload(u, i)}
-                        className="dialog-col col-xs-12 col-md-5"
-                        canDelete
-                    />
-                ) : null}
-
-                {this.renderMap()}
             </div>
         );
     }

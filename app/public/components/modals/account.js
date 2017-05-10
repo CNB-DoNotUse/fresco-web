@@ -30,17 +30,20 @@ Account.prototype.init = function() {
 	//Run on load
 	// this.updatePosition(window.innerWidth);
 
+	// opens the signup form if it finds an element with "signup-auto"
+	const openSignup = document.getElementById('signup-auto');
+	if (openSignup) this.openSignUp(false);
+
 	window.addEventListener('resize', () => {
 		this.updatePosition(window.innerWidth);
 	});
-
 	this.enableLogin();
 	this.enableSignup();
 }
 
 Account.prototype.enableLogin = function() {
 	this.loginForm.addEventListener('submit', this.processLogin);
-	
+
 	this.loginButton.addEventListener('keydown', (e) => {
 		if(e.keyCode == 13) {
 			this.processLogin();
@@ -55,10 +58,9 @@ Account.prototype.enableLogin = function() {
 			$(this.login).velocity({'margin-top' : '12%'}, {duration: 500});
 
 			//Slide up and hide the `Sign Up` form
-			$(this.signUpForm).velocity("slideUp", { 
+			$(this.signUpForm).velocity("slideUp", {
 				duration: 500,
 				complete: () => {
-
 					//Swap sign up title back to normal
 					$(this.signUpFormHeader).find('h3').velocity({opacity : 0}, function(){
 						this[0].innerHTML = 'TRY OUT FRESCO NEWS';
@@ -67,40 +69,43 @@ Account.prototype.enableLogin = function() {
 
 				}
 			});
-		} 
+		}
 		//Process Login
 		else
 			this.processLogin();
 	});
 }
 
+// made this a class function, so that it can be used to open the sign up by default
+Account.prototype.openSignUp = function(delay = true) {
+	if(this.signUpForm.style.display == 'none' || this.signUpForm.style.display == ''){
+		//Check if we're in a desktop view to adjust the top margin
+		if(window.innerWidth > this.screen.tablet){
+			$(this.loginForm).velocity("slideUp", { duration: 500 });
+			$(this.login).velocity({'margin-top' : '10px'}, {duration: 500});
+		}
+
+		//Slide downt the sign up form
+		$(this.signUpForm).velocity("slideDown", {
+			duration: delay ? 500 : 0,
+			complete: () => {
+				//Swap the title
+				$(this.signUpFormHeader).find('h3').velocity({opacity : 0}, function(){
+					this[0].innerHTML = 'START MY DEMO';
+					$(this).velocity({opacity : 1});
+				});
+			}
+		});
+	}
+	else{
+		this.processSignup();
+	}
+}
+
 Account.prototype.enableSignup = function() {
 	this.signUpForm.addEventListener('submit', this.processSignup);
 
-	this.signUpFormHeader.addEventListener('click', () => {
-		if(this.signUpForm.style.display == 'none' || this.signUpForm.style.display == ''){
-			//Check if we're in a desktop view to adjust the top margin
-			if(window.innerWidth > this.screen.tablet){
-				$(this.loginForm).velocity("slideUp", { duration: 500 });
-				$(this.login).velocity({'margin-top' : '10px'}, {duration: 500});
-			}
-
-			//Slide downt the sign up form
-			$(this.signUpForm).velocity("slideDown", { 
-				duration: 500,
-				complete: () => {
-					//Swap the title
-					$(this.signUpFormHeader).find('h3').velocity({opacity : 0}, function(){
-						this[0].innerHTML = 'START MY DEMO';
-						$(this).velocity({opacity : 1});
-					});
-				}
-			});
-		}
-		else{
-			this.processSignup();
-		}
-	});
+	this.signUpFormHeader.addEventListener('click', this.openSignUp.bind(this));
 }
 
 /**
@@ -108,7 +113,7 @@ Account.prototype.enableSignup = function() {
  */
 Account.prototype.processSignup = function() {
 	if(this.signupProcessing) return;
-	
+
 	this.signupProcessing = true;
 
 	//Set up fields
@@ -202,7 +207,7 @@ Account.prototype.processSignup = function() {
 }
 
 //Re-enables login
-Account.prototype.reEnableSignup = function() {	
+Account.prototype.reEnableSignup = function() {
 	this.signupProcessing = false;
 	this.signUpLoader.style.display = 'none';
 	this.signUpHeaderText.innerHTML = 'START MY DEMO';
@@ -211,7 +216,7 @@ Account.prototype.reEnableSignup = function() {
 /**
  * Calls login to process
  */
-Account.prototype.processLogin = function() {	
+Account.prototype.processLogin = function() {
 	if(this.loginProcessing) return;
 
 	this.loginProcessing = true;
@@ -241,7 +246,7 @@ Account.prototype.processLogin = function() {
  	.fail((error) => {
  	    this.reEnableLogin();
 
- 	    return $.snackbar({ 
+ 	    return $.snackbar({
  	    	content: resolveError(error.responseJSON.error.msg, 'There was an error logging you in. Please try again in a bit.')
  	    });
  	});
@@ -250,7 +255,7 @@ Account.prototype.processLogin = function() {
 /**
  * Re-enables login elements
  */
-Account.prototype.reEnableLogin = function() {	
+Account.prototype.reEnableLogin = function() {
 	this.loginProcessing = false;
 	this.loginLoader.style.display = 'none';
 	this.loginHeaderText.innerHTML = 'LOG IN';
@@ -289,7 +294,7 @@ function resolveError(err, _default){
 	    case 'Unauthorized':
 	    	return 'The email or password you entered isn\'t correct!'
 	    default:
-	    	return _default || 'Seems like we ran into an error!'     
+	    	return _default || 'Seems like we ran into an error!'
 	}
 }
 

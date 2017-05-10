@@ -7,12 +7,30 @@ const API  = require('../lib/api');
 /**
  * Root index for the landing page
  */
+
+function contains(string1, string2) {
+    return string2.split(string1).length > 0;
+}
+
+// use regex to parse the ref param?
+
 router.get('/:modal?', (req, res, next) => {
     if(req.params.modal){
         const modal = req.params.modal;
-
         if(modal == 'partners') {
-            res.redirect('/account');
+            console.log(req.query);
+            res.render('index', {
+                page: 'index',
+                loggedIn: req.session.user ? true : false,
+                modal: "account",
+                modals: routes.modals,
+                aliases: routes.aliases,
+                signup: req.query.signup === 'true' ? true : false,
+                ref: req.query.ref,
+                autoplay: req.query.autoplay === 'true' ? true : false
+            });
+            return;
+            // res.redirect('/account');
         } else if((modal === 'account' || modal === 'login') && req.session.user) {
             res.redirect(config.DASH_HOME);
         }

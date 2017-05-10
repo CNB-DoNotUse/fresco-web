@@ -3,8 +3,9 @@ const head          = require('./lib/head');
 const utils         = require('./lib/utils');
 const routes        = require('./lib/routes');
 const API           = require('./lib/api');
-const userMiddleware = require('./middleware/user');
 const redis         = require('./lib/redis');
+const cron         = require('./lib/cron');
+const userMiddleware = require('./middleware/user');
 const express       = require('express');
 const compression   = require('compression');
 const path          = require('path');
@@ -19,6 +20,8 @@ const base64        = require('base-64');
 const app           = express();
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+
+cron();
 
 /**
  * Set up local head and global for all templates
@@ -129,10 +132,15 @@ app.use((req, res, next) => {
         return next();
     }
 
+    //Saves redirect for us
+    const saveRedirect = (cb) => {
+        req.session.redirect = req.url;
+        req.session.save(cb);
+    }
+
     // Check if there is no sessioned user
     if (!req.session.user || !req.session.token || !req.session.token.token) {
-        req.session.redirect = req.url;
-        return req.session.save((error) => {
+        return saveRedirect((error) => {
             res.redirect('/account');
         });
     }
@@ -142,14 +150,18 @@ app.use((req, res, next) => {
 
     // Check if the token has expired
     if (tokenExpired) {
-        //Bearer token has expired, so refresh the token
-        return userMiddleware.refreshBearer(req, res, next);
+        return saveRedirect(() => {
+            //Bearer token has expired, so refresh the token
+            return userMiddleware.refreshBearer(req, res, next);
+        });
     }
 
     // Check if the session has expired
     if (!req.session.user.TTL || req.session.user.TTL - now < 0) {
-       //Session has expired, so refresh the user
-       return userMiddleware.refresh(req, res, next);
+        return saveRedirect(() => {
+            //Session has expired, so refresh the user
+            return userMiddleware.refresh(req, res, next);
+        });
    }
 
     return next();

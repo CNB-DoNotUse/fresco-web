@@ -249,98 +249,100 @@ export default class AssignmentEdit extends React.Component {
 
         return (
             <div className="dialog-body">
-                <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    <div className="dialog-row">
-                        <input
-                            type="text"
-                            className="form-control floating-label"
-                            placeholder="Title"
-                            title="Title"
-                            name="title"
-                            value={title}
-                            onChange={this.onChangeInput}
-                        />
-                    </div>
-
-                    <div className="dialog-row">
-                        <textarea
-                            type="text"
-                            className="form-control floating-label"
-                            placeholder="Caption"
-                            name="caption"
-                            title="Caption"
-                            value={caption}
-                            onChange={this.onChangeInput}
-                        />
-                    </div>
-
-                    {user.roles.includes('admin') && (
-                        <ChipInput
-                            model="outlets"
-                            queryAttr="title"
-                            className="dialog-row"
-                            items={outlets}
-                            updateItems={o => this.setState({ outlets: o })}
-                            autocomplete
-                        />
-                    )}
-
-                    {user.roles.includes('admin') && (
-                        <div className="checkbox form-group">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="isAcceptable"
-                                    disabled={globalLocation}
-                                    onChange={this.onChangeInput}
-                                    checked={isAcceptable}
-                                />
-                                Acceptable
-                            </label>
-                        </div>
-                    )}
-                </div>
-
-                <div className="dialog-col col-xs-12 col-md-5 form-group-default">
-
-                    <div className="dialog-row map-group">
-                        <div className="checkbox form-group">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    disabled={isAcceptable}
-                                    onChange={this.onChangeGlobal}
-                                    checked={globalLocation}
-                                />
-                                Global
-                            </label>
-                        </div>
-
-                        {!globalLocation && (
-                            <AutocompleteMap
-                                address={address}
-                                location={location}
-                                radius={Math.round(utils.milesToFeet(radius))}
-                                onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
-                                onPlaceChange={(p) => this.onPlaceChange(p)}
-                                onMapDataChange={(d) => this.onMapDataChange(d)}
-                                draggable
-                                rerender
-                                hasRadius
-                            />
-                        )}
-                    </div>
-
-                    <div className="dialog-row">
-                        <div className="form-group-default">
+                <div className="form-wrap">
+                    <div className="dialog-col col-xs-12 col-md-7 form-group-default">
+                        <div className="dialog-row">
                             <input
                                 type="text"
                                 className="form-control floating-label"
-                                data-hint="hours from now"
-                                placeholder="Expiration time"
-                                value={utils.hoursToExpiration(endsAt)}
-                                onChange={(e) => this.onChangeEndsAt(e)}
+                                placeholder="Title"
+                                title="Title"
+                                name="title"
+                                value={title}
+                                onChange={this.onChangeInput}
                             />
+                        </div>
+
+                        <div className="dialog-row">
+                            <textarea
+                                type="text"
+                                className="form-control floating-label"
+                                placeholder="Caption"
+                                name="caption"
+                                title="Caption"
+                                value={caption}
+                                onChange={this.onChangeInput}
+                            />
+                        </div>
+
+                        {user.roles.includes('admin') && (
+                            <ChipInput
+                                model="outlets"
+                                queryAttr="title"
+                                className="dialog-row"
+                                items={outlets}
+                                updateItems={o => this.setState({ outlets: o })}
+                                autocomplete
+                            />
+                        )}
+
+                        {user.roles.includes('admin') && (
+                            <div className="checkbox form-group">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="isAcceptable"
+                                        disabled={globalLocation}
+                                        onChange={this.onChangeInput}
+                                        checked={isAcceptable}
+                                    />
+                                    Acceptable
+                                </label>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="dialog-col col-xs-12 col-md-5 form-group-default">
+
+                        <div className="dialog-row map-group">
+                            <div className="checkbox form-group">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        disabled={isAcceptable}
+                                        onChange={this.onChangeGlobal}
+                                        checked={globalLocation}
+                                    />
+                                    Global
+                                </label>
+                            </div>
+
+                            {!globalLocation && (
+                                <AutocompleteMap
+                                    address={address}
+                                    location={location}
+                                    radius={Math.round(utils.milesToFeet(radius))}
+                                    onRadiusUpdate={(r) => this.onRadiusUpdate(r)}
+                                    onPlaceChange={(p) => this.onPlaceChange(p)}
+                                    onMapDataChange={(d) => this.onMapDataChange(d)}
+                                    draggable
+                                    rerender
+                                    hasRadius
+                                />
+                            )}
+                        </div>
+
+                        <div className="dialog-row">
+                            <div className="form-group-default">
+                                <input
+                                    type="text"
+                                    className="form-control floating-label"
+                                    data-hint="hours from now"
+                                    placeholder="Expiration time"
+                                    value={utils.hoursToExpiration(endsAt)}
+                                    onChange={(e) => this.onChangeEndsAt(e)}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

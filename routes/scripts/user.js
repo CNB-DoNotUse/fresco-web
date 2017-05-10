@@ -12,7 +12,9 @@ router.post('/login', userMiddleware.login);
 /**
  * Logs the user out and redirects
  */
-router.get('/logout', userMiddleware.logout);
+router.get('/logout', (req, res, next) => {
+    userMiddleware.logout(req, res);
+});
 
 /**
  * Registers a new user account, optionally with an outlet

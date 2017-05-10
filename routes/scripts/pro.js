@@ -12,6 +12,7 @@ const mandrill_client = new mandrill.Mandrill(config.MANDRILL);
  * Adds a pro user as a lead into zoho
  */
 router.post('/signup', (req, res, next) => {
+    console.log("here~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~``");
     let params = {
         firstname : req.body.firstname,
         lastname  : req.body.lastname,
