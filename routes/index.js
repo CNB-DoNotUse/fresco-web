@@ -50,9 +50,9 @@ router.get('/:modal?', (req, res, next) => {
         modal: req.params.modal,
         modals: routes.modals,
         aliases: routes.aliases,
-        signup: false,
-        ref: false,
-        autoplay: false
+        signup: req.query.signup === 'true' ? true : false,
+        ref: req.query.ref,
+        autoplay: req.query.autoplay === 'true' ? true : false
     });
 });
 
