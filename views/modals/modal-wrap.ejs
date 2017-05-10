@@ -1,5 +1,5 @@
 <% modals.forEach((currentModal) => { %>
-    <% if(typeof(currentModal) === 'string') { %> 
+    <% if(typeof(currentModal) === 'string') { %>
 
         <% // Check if there's an alias for the modal we're on %>
         <% if(aliases[modal] !== null && aliases[modal] == currentModal) { %>
@@ -12,6 +12,6 @@
 
         <% } %>
 
-        <%- include(currentModal, {active: active}) %>
+        <%- include(currentModal, {active: active, signup: signup, ref: ref, autoplay: autoplay}) %>
     <% } %>
 <% }); %>
