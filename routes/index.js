@@ -83,6 +83,9 @@ router.get('/join/:token', (req, res, next) => {
             modal: 'join',
             aliases: routes.aliases,
             modals: routes.modals.concat('join'),
+            signup: req.query.signup === 'true' ? true : false,
+            ref: req.query.ref,
+            autoplay: req.query.autoplay === 'true' ? true : false
         });
     })
     .catch(error => {
@@ -103,7 +106,10 @@ router.get('/reset/success', (req, res, next) => {
         page: 'index',
         modal: 'reset-success',
         aliases: routes.aliases,
-        modals: routes.modals
+        modals: routes.modals,
+        signup: req.query.signup === 'true' ? true : false,
+        ref: req.query.ref,
+        autoplay: req.query.autoplay === 'true' ? true : false
     });
 });
 
@@ -129,6 +135,9 @@ router.get('/reset/:token', (req, res, next) => {
             hasOutlet: body.outlet !== undefined,
             aliases: routes.aliases,
             modals: routes.modals.concat('reset'),
+            signup: req.query.signup === 'true' ? true : false,
+            ref: req.query.ref,
+            autoplay: req.query.autoplay === 'true' ? true : false
         });
     })
     .catch(error => {
