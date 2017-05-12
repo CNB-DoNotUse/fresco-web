@@ -21,7 +21,7 @@ if ("geolocation" in navigator) {
             lat: position.coords.latitude,
             lng: position.coords.longitude
         }
-    });    
+    });
 } else {
   location = {
       lat: 40.7127837,
@@ -48,8 +48,125 @@ const searchParams  = {
     loading: false
 }
 
-const store = configureStore({ user, searchParams });
+const stories = {
+    1 : {
+        user,
+        id: 1,
+        caption: "This event is LIT",
+        thumbnails: ["http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"],
+        posts: [
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+        ]
+    },
+    2 : {
+        user,
+        id: 2,
+        caption: "This event is LIT",
+        thumbnails: ["http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"],
+        posts: [
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+            {
+                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
+                location: {
+                    coordinates: [ -74.0110538, 40.7038987 ]
+                },
+                captured_at: "2017-05-10T21:46:51.000Z",
+                updated_at: "2017-05-10T21:46:51.000Z"
+            },
+        ]
+    }
 
+}
+
+
+
+const store = configureStore({ user, searchParams, stories });
 ReactDOM.render(
     <Root store={store}>
         <MuiThemeProvider>

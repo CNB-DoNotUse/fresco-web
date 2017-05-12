@@ -61,28 +61,11 @@ class Stories extends React.Component {
         });
     };
 
-    changeState = (partOfState, valuePresent) => {
-        if (valuePresent) {
-            return (value) => {
-                const currentState = get(this.state, partOfState);
-                const newState = merge({}, this.state)
-                newState[partOfState] = value;
-                this.setState(newState);
-                return;
-            }
-        } else {
-            const currentState = get(this.state, partOfState);
-            const newState = merge({}, this.state)
-            newState[partOfState] = !currentState;
-            this.setState(newState);
-        }
-        return;
-    }
-
     render() {
         const {
             changeSearch,
-            searchParams
+            searchParams,
+            stories
         } = this.props;
         return (
             <App user={this.props.user} page="stories">
@@ -93,6 +76,7 @@ class Stories extends React.Component {
                 <StoryList
                     loadStories={this.loadStories}
                     scrollable
+                    stories={ stories }
                 />
             </App>
         );
@@ -106,9 +90,11 @@ class Stories extends React.Component {
 const mapStateToProps = (state) => {
     const user = state.get('user', Map()).toJS();
     const searchParams = state.get('searchParams', Map()).toJS();
+    const stories = state.get('stories', Map()).toJS();
     return ({
         user,
         searchParams,
+        stories
     });
 }
 

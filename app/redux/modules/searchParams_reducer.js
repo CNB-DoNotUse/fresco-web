@@ -24,6 +24,7 @@ const searchParams = (state = {}, action) => {
         default:
             return state;
     }
+    // add api calls to search params
 }
 
 export default searchParams;

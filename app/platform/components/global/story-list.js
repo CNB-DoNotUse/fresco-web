@@ -18,25 +18,25 @@ export default class StoryList extends React.Component {
         reloadStories: false,
     };
 
-    state = {
-        stories: [],
-    };
-
-    componentDidMount() {
-        this.loadInitialStories();
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.reloadStories) this.loadInitialStories();
-    }
-
-    loadInitialStories() {
-        // Access parent var load method
-        this.props.loadStories(null, (stories) => {
-            // Set stories from successful response
-            this.setState({ stories });
-        });
-    }
+    // state = {
+    //     stories: [],
+    // };
+    //
+    // componentDidMount() {
+    //     this.loadInitialStories();
+    // }
+    //
+    // componentWillReceiveProps(nextProps) {
+    //     if (nextProps.reloadStories) this.loadInitialStories();
+    // }
+    //
+    // loadInitialStories() {
+    //     // Access parent var load method
+    //     this.props.loadStories(null, (stories) => {
+    //         // Set stories from successful response
+    //         this.setState({ stories });
+    //     });
+    // }
 
     // Scroll listener for main window
     scroll = (e) => {
@@ -61,6 +61,15 @@ export default class StoryList extends React.Component {
         }
     };
 
+    unpackStories = () => {
+        const { stories } = this.props;
+        const storiesArray = [];
+        for (let id in stories) {
+            storiesArray.push(stories[id]);
+        }
+        return storiesArray;
+    }
+
     render() {
         return (
             <div
@@ -69,7 +78,7 @@ export default class StoryList extends React.Component {
                 onScroll={this.props.scrollable ? this.scroll : null}
             >
                 <div className="row tiles" id="stories">
-                    {this.state.stories.map((story, i) => (
+                    {this.unpackStories().map((story, i) => (
                         <StoryCell story={story} key={i} />
                     ))}
                 </div>
