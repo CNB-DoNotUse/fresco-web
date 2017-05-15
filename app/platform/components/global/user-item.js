@@ -112,10 +112,12 @@ const UserActive = ({ user, active }) => (
         <a href={`/user/${user.id}`}>
             <span className="meta-user-name__primary">{`${user.full_name}`}</span>
         </a>
-        <p>
-            <span className={ active ? "active-circle" : "inactive-circle"}></span>
-            {active ? "Active" : "Inactive"}
-        </p>
+        <section>
+            <div className={ active ? "green circle" : " gray circle"}></div>
+            <p>
+                {active ? "Active" : "Inactive"}
+            </p>
+        </section>
     </div>
 );
 

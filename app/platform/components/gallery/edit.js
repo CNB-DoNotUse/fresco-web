@@ -134,6 +134,7 @@ class Edit extends React.Component {
             this.setState({ loading: false });
         });
     };
+    // @ttention there may be a bug here in the onSave promise chain
 
     onChangeFileInput(e) {
         const files = e.target.files;
