@@ -27,14 +27,15 @@ export default class StoryCell extends React.Component {
 			<div>
 				<section className="story-info">
 					<UserItem user={ story.user }
-						metaType="story"
-						storyInfo={ storyInfo } />
-					<button className="download-story">Download</button>
+					 	metaType="story"
+					 	storyInfo={ storyInfo } />
+					<div className="download-story">Download New</div>
 				</section>
 			</div>
 		);
 	}
 }
+
 // <div className='col-xs-6 col-md-3 tile story' onClick={this.onClick}>
 // 	<div className="tile-body">
 // 		<div className="tile__frame"></div>

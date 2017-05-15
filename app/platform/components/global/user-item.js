@@ -64,21 +64,12 @@ const UserFlagsMeta = ({ offense_count = 0, report_count = 0}) => {
     );
 };
 
-const UserActive = ({ active }) => (
-    <div className="meta-user-name">
-        {!!full_name &&
-            <a href={`/user/${id}`}>
-                <span className="meta-user-name__primary">{`${full_name}`}</span>
-            </a>
-        }
-    <p>
-        <div className={ active ? "active-circle" : "inactive-circle"}></div>
-        {active ? "Active" : "Inactive"}
-    </p>
-)
-
-const UserItem = ({ user, metaType = 'media', storyInfo = '' }) => {
-    let caption, videos, images;
+// this is the component used to display user info
+// TODO: add singular and plural displays
+const UserItem = ({ user, metaType = 'media', storyInfo = ''}) => {
+    let caption;
+    let videos;
+    let images;
     if (storyInfo) {
         caption = storyInfo.caption;
         videos = storyInfo.videos;
@@ -87,16 +78,10 @@ const UserItem = ({ user, metaType = 'media', storyInfo = '' }) => {
     let handle;
     switch (metaType) {
         case 'story':
-            handle = <UserActive active={true}/>;
-            break;
-        case 'media':
-            handle = <UserMediaMeta {...user} />;
-            break;
-        case 'flags':
-            handle = <UserFlagsMeta {...user} />;
+            handle = <UserActive active={true} user={ user }/>;
             break;
         default:
-
+            handle = <UserName {...user} />;
     }
     return (
         <div className="meta-user">
@@ -107,8 +92,9 @@ const UserItem = ({ user, metaType = 'media', storyInfo = '' }) => {
                 }
             </div>
             <div className="meta-user-text">
-                <UserName {...user} />
                 { handle }
+                { metaType === 'media' && <UserMediaMeta {...user} /> }
+                { metaType === 'flags' && <UserFlagsMeta {...user} /> }
                 { storyInfo ?
                     <section>
                         <p>{caption}</p>
@@ -120,6 +106,18 @@ const UserItem = ({ user, metaType = 'media', storyInfo = '' }) => {
         </div>
     );
 }
+
+const UserActive = ({ user, active }) => (
+    <div className="meta-user-name">
+        <a href={`/user/${user.id}`}>
+            <span className="meta-user-name__primary">{`${user.full_name}`}</span>
+        </a>
+        <p>
+            <span className={ active ? "active-circle" : "inactive-circle"}></span>
+            {active ? "Active" : "Inactive"}
+        </p>
+    </div>
+);
 
 
 UserItem.propTypes = {

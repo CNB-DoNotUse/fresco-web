@@ -11,7 +11,6 @@ function past12Hours(lastAssignmentTime) {
 export const checkIfInactive = (openAlert) => {
     api.get('assignment/list', assignmentParams)
         .then((res) => {
-            console.log(res);
             if (res.length > 0) {
                 if (past12Hours(res[0].created_at) && !checkIfNotified()) {
                     openAlert({ content: "You haven't made an assignment in 12+ hours. Fresco works best with momentum. Expect quality responses after three consecutive days of posting assignments consistently.", timeout: 10000 });
