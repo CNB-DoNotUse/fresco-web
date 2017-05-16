@@ -150,6 +150,9 @@ Account.prototype.processSignup = function() {
 		},
 		'password' : {
 			value: document.getElementById('outlet-password').value
+		},
+		'source' : {
+			value: document.getElementById('referer').value
 		}
 	};
 
@@ -169,7 +172,7 @@ Account.prototype.processSignup = function() {
 	}
 
 	//Define updated params
-	params = {
+	const paramsSend = {
 	    email: params.email.value,
 	    username: params.username.value,
 	    password: params.password.value,
@@ -182,6 +185,8 @@ Account.prototype.processSignup = function() {
 		    type: params.type.value
 	    }
 	};
+	// added to send up referer field for ad analytics
+	if (params.source.value) paramsSend.outlet.source = params.source.value;
 
 	//Hide the text
  	this.signUpHeaderText.innerHTML = '';
@@ -191,7 +196,7 @@ Account.prototype.processSignup = function() {
  	$.ajax({
  	    url: "/scripts/user/register",
  	    method: 'POST',
- 	    data: JSON.stringify(params),
+ 	    data: JSON.stringify(paramsSend),
  	    contentType: 'application/json'
  	})
  	.done((response) => {

@@ -4,7 +4,6 @@ const utils         = require('./lib/utils');
 const routes        = require('./lib/routes');
 const API           = require('./lib/api');
 const redis         = require('./lib/redis');
-const cron         = require('./lib/cron');
 const userMiddleware = require('./middleware/user');
 const express       = require('express');
 const compression   = require('compression');
@@ -21,7 +20,6 @@ const app           = express();
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
-cron();
 
 /**
  * Set up local head and global for all templates
