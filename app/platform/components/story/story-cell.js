@@ -1,5 +1,4 @@
 import React from 'react';
-import FrescoImage from './fresco-image';
 import time from 'app/lib/time';
 import UserItem from 'app/platform/components/global/user-item';
 
@@ -30,6 +29,23 @@ export default class StoryCell extends React.Component {
 					 	metaType="story"
 					 	storyInfo={ storyInfo } />
 					<div className="download-story">Download New</div>
+				</section>
+				<section className="story-thumbnails">
+					<div>
+						<FrescoImage
+							size="50"
+							src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"/>
+						<p className="post-location">New York, NY</p>
+						<div className="circle blue"></div>
+						<p className="post-time">5 minutes ago</p>
+					</div>
+					<div>
+						<FrescoImage
+							size="50"
+							src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"/>
+						<p className="post-location">New York, NY</p>
+						<p className="post-time">5 minutes ago</p>
+					</div>
 				</section>
 			</div>
 		);

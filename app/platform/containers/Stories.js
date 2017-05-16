@@ -8,7 +8,7 @@ import * as storyActions from 'app/redux/actions/stories.js';
 import ReactDOM from 'react-dom';
 import App from 'app/platform/views/app';
 import StoriesTopBar from 'app/platform/components/story/topbar';
-import StoryList from 'app/platform/components/global/story-list';
+import StoryList from 'app/platform/components/story/story-list';
 import utils from 'utils';
 import merge from 'lodash/merge';
 
