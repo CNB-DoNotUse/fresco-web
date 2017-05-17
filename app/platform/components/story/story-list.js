@@ -75,13 +75,12 @@ export default class StoryList extends React.Component {
             <div
                 className="container-fluid fat grid"
                 ref="grid"
-                onScroll={this.props.scrollable ? this.scroll : null}
-            >
-                <div className="row tiles" id="stories">
+                onScroll={this.props.scrollable ? this.scroll : null} >
+                <ul className="row tiles" id="stories">
                     {this.unpackStories().map((story, i) => (
                         <StoryCell story={story} key={i} />
                     ))}
-                </div>
+                </ul>
             </div>
         );
     }

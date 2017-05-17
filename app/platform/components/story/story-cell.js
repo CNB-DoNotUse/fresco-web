@@ -1,7 +1,7 @@
 import React from 'react';
 import time from 'app/lib/time';
 import UserItem from 'app/platform/components/global/user-item';
-
+import { StoryThumbnail, StoryViewAll } from 'app/platform/components/story/story-thumbnail';
 /**
  * Single Story Cell, child of StoryList
  */
@@ -18,36 +18,34 @@ export default class StoryCell extends React.Component {
 	}
 
 	render() {
-		const {story} = this.props;
+		const { story } = this.props;
 		const timestamp = story.updated_at || story.created_at;
 		const timeString = time.formatTime(timestamp);
 		const storyInfo = { videos: 0, images: 0, caption: story.caption };
 		return(
-			<div>
+			<li>
 				<section className="story-info">
 					<UserItem user={ story.user }
 					 	metaType="story"
 					 	storyInfo={ storyInfo } />
 					<div className="download-story">Download New</div>
 				</section>
-				<section className="story-thumbnails">
-					<div>
-						<FrescoImage
-							size="50"
-							src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"/>
-						<p className="post-location">New York, NY</p>
-						<div className="circle blue"></div>
-						<p className="post-time">5 minutes ago</p>
-					</div>
-					<div>
-						<FrescoImage
-							size="50"
-							src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"/>
-						<p className="post-location">New York, NY</p>
-						<p className="post-time">5 minutes ago</p>
-					</div>
-				</section>
-			</div>
+				<ul className="story-thumbnails">
+					<StoryThumbnail
+						src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"
+						location="New York, NY"
+						postTime="5 minutes ago"/>
+					<StoryThumbnail
+						src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"
+						location="New York, NY"
+						postTime="5 minutes ago"
+						unread={ true }/>
+					<StoryViewAll
+						storyLink=""
+						owner={ story.user.username }
+						numLeft={ 5 }/>
+				</ul>
+			</li>
 		);
 	}
 }
