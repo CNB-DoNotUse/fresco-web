@@ -1,5 +1,8 @@
 @import "../../fonts/nota/nota";
 
+.navbar.stories {
+    margin-bottom: 0;
+}
 nav.stories {
 	z-index: 2;
 	>:first-child {
@@ -16,6 +19,12 @@ nav.stories {
 		> * {
 			width: 50%;
 		}
+        @media (max-width: 1525px) {
+            flex-flow: column;
+            > * {
+                width: 100%;
+            }
+        }
 	}
 	input[type="radio"]:checked+span+span+p {
 		font-weight: 500;
@@ -24,6 +33,8 @@ nav.stories {
 	label > p {
 		display: inline;
 		padding-left: 16px;
+        font-size: 14px;
+        white-space: nowrap;
 	}
 	label > p.bold {
 		color: black;
@@ -45,8 +56,9 @@ nav.stories {
 				padding-left: 5px;
 			}
 		}
-		>span {
+		>span, section > span:last-child {
 			float: right;
+            cursor: pointer;
 		}
 		position: relative;
 		>div.normal {
@@ -55,24 +67,35 @@ nav.stories {
 			top: 146%;
 			width: 100%;
 			height: auto;
-			@include box-shadow(-5px 5px 5px 2px rgba(0, 0, 0 , 0.24));
+			@include box-shadow(-3px 3px 3px 2px rgba(0, 0, 0 , 0.24));
 			display: flex;
 			justify-content: space-between;
 			> * {
 				width: 50%;
-				padding: 24px;
+				padding: 24px 0 24px 24px;
 			}
+            >*:last-child {
+                padding-right: 24px;
+            }
 		}
 		>div.none {
 			display: none;
 		}
 	}
 }
+#stories {
+    font-size: 0;
+
+}
+#stories > li:not(:first-child) > .story-info {
+    border-top: solid 1px rgba(207, 207, 207, 1);
+}
 
 .story-info {
+    font-size: 14px;
     display: flex;
     justify-content: space-between;
-    border: solid 1px rgba(0, 0, 0, 0.12);
+    border-bottom: solid 1px rgba(207, 207, 207, 1);
     background-color: white;
     > .meta-user {
         padding-left: 16px;
@@ -143,6 +166,7 @@ nav.stories {
 
 .story-thumbnails {
     // @ttention might want a media query here
+    font-size: 14px;
     display: flex;
     height: auto;
     padding: 0 0 10px 0;
@@ -155,9 +179,15 @@ nav.stories {
         width: auto;
         height: 100%;
 
-        >img {
+        >img, .story-num-left {
             width: 180px;
             height: 180px;
+            background-color: $fresco-bg;
+            text-align: center;
+            color: rgba(0, 0, 0, 0.12);
+            vertical-align: middle;
+            font-size: 2em;
+            line-height: 180px;
         }
         .post-location {
             margin: 12px 0 0 12px;
@@ -168,6 +198,13 @@ nav.stories {
             font-size: 12px;
             color: rgba(0, 0, 0, 0.54);
         }
+    }
+    >li:hover {
+        .story-num-left {
+            background-color: #e3e3dd;
+        }
+        cursor: pointer;
+        background-color: $fresco-bg;
     }
     .circle {
         top: 75%;
