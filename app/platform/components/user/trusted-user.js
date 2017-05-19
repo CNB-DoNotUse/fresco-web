@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Card from 'app/platform/components/global/card';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import Confirm from 'app/platform/components/dialogs/confirm';
+import api from 'app/lib/api';
 
 class TrustedUser extends React.Component {
 
@@ -11,11 +13,11 @@ class TrustedUser extends React.Component {
         this.state = {
             trusted,
             rating,
+            confirm: false,
         }
     }
 
     handleChange = (e, index, val) => {
-        debugger
         let trusted;
         switch (val) {
             case "trusted":
@@ -28,46 +30,98 @@ class TrustedUser extends React.Component {
                 trusted = null;
                 break;
         }
-        this.setState({ trusted }, () => { console.log(this.state);});
+        this.setState({ trusted }
+        );
         return;
     }
 
-    mapStateToSelect = () => {
-        if (this.state.trusted) {
+    mapTrustedStateToSelect = (objWithTrustedState) => {
+        let state;
+        if (objWithTrustedState.hasOwnProperty("detailUser")) {
+            state = objWithTrustedState.detailUser.trusted;
+        } else {
+            state = objWithTrustedState.trusted;
+        }
+        if (state) {
             return "trusted";
-        } else if (!this.state.trusted && typeof (this.state.trusted) === "object") {
+        } else if (!state && typeof (state) === "object") {
             return "automatic";
         } else {
             return "untrusted";
         }
     }
 
-    onSave() {
-        // package information
-        // send to api user/:id/updated
-        // display snackbar confirmation
+    onSave = () => {
+        const { confirm, trusted } = this.state;
+        const { detailUser: { id } } = this.props;
+        if (!confirm) { //first click
+            if (this.mapTrustedStateToSelect(this.props) === this.mapTrustedStateToSelect(this.state)) {
+                // no change has been made
+                this.context.openAlert({content: "There is nothing to change"});
+                return;
+            } else {
+                this.setState({ confirm: true }, () => { console.log(this.state); })
+            }
+        } else { //after confirm
+            const params = { trusted };
+            api.post(`user/${id}/update`, params)
+                .then((res) => {
+                    // @ttention case for redux
+                    location.reload();
+                })
+                .catch((err) => {
+                    this.context.openAlert({ content: err.msg });
+                    this.setState({ confirm: false });
+                })
+        }
+    }
+
+    onCancel = () => {
+        const { detailUser: { trusted } } = this.props;
+        this.setState({ confirm: false, trusted });
+    }
+
+
+    confirmMessage = () => {
+        const { detailUser } = this.props;
+        return `Are you sure you want to change ${detailUser.full_name}'s status to ${this.mapTrustedStateToSelect(this.state)}?`;
     }
 
     render() {
+        const { confirm } = this.state;
         return (
             <Card
-                saveFunc={() => {}}
+                saveFunc={ this.onSave }
                 headerText="Trust status">
                 <div id="trusted-select">
-                    <SelectField value={ this.mapStateToSelect() }
+                    <SelectField value={ this.mapTrustedStateToSelect(this.state) }
                         onChange={this.handleChange}>
                         {
                             [ <MenuItem value="trusted" key={0} primaryText="Trusted" />,
                             <MenuItem value="untrusted" key={1} primaryText="Untrusted" />,
                             <MenuItem value="automatic" key={2} primaryText="Automatic" /> ]
                         }
-
                     </SelectField>
                     <p>Users automatically become trusted when their rating reaches 85%, unless defined otherwise.</p>
                 </div>
+                { confirm &&
+                    <Confirm
+                        toggled={ confirm }
+                        body={ this.confirmMessage() }
+                        header="Change trusted status"
+                        confirmText="Save"
+                        onCancel={ this.onCancel }
+                        onConfirm={ this.onSave }/>
+                }
             </Card>
         );
     }
 }
+
+TrustedUser.contextTypes = {
+    openAlert: PropTypes.func,
+    closeAlert: PropTypes.func
+};
+
 
 export default TrustedUser;

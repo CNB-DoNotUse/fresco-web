@@ -90,7 +90,7 @@ const UserItem = ({ user, metaType = 'media', storyInfo = ''}) => {
                     ? <img src={user.avatar} />
                     : <i className="mdi mdi-account" />
                 }
-                { true
+                { user.trusted
                     ? <i className="mdi mdi-check-circle"></i>
                     : <div></div>}
             </div>

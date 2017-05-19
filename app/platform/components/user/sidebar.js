@@ -8,6 +8,8 @@ import TrustedUser from 'app/platform/components/user/trusted-user.js';
  * @description Column on the left of the user page
  */
 class Sidebar extends React.Component {
+
+
     render() {
         const { detailUser, user } = this.props;
         const avatar = detailUser.avatar || utils.defaultAvatar;
