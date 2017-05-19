@@ -714,7 +714,7 @@ div.list {
 		// cursor: 'pointer';
 		padding: 16px;
 		position:relative;
-		cursor:pointer;
+		cursor: 'pointer';
 
 		@include display(flex);
 
@@ -762,7 +762,7 @@ div.list {
 			}
 			> span,
 			> p {
-				white-space:nowrap;
+				white-space: wrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
@@ -816,8 +816,6 @@ div.list {
 
 // dialog
 .dialog {
-	$footerHeight:64px;
-
 	position: relative;
 	border-radius: 2px;
 	padding: 0;
@@ -844,14 +842,10 @@ div.list {
 	}
 	> .dialog-body {
 		border-radius: 2px;
-		padding:24px 32px 0px;
-		height:100%;
-		overflow: auto;
-
-		.form-wrap {
-			overflow:auto;
-		}
-
+		padding:24px 32px 88px;
+		height: calc(100% - 88px);
+		max-height: 100%;
+		overflow-y: auto;
 
 		.slick-slider{
 			margin-bottom:20px;
@@ -874,19 +868,15 @@ div.list {
 				padding-top: 0;
 			}
 		}
-
-		&:after {
-		    content: "";
-		    padding-bottom:88px;
-		    display: block;
-		}
 	}
-
+	> .dialog-body.admin-assignment-edit {
+		height: auto;
+	}
 	> .dialog-foot {
 		position: absolute;
 		z-index: 2;
 		bottom: 0px;
-		height:$footerHeight;
+		height: 64px;
 		padding: 14px 16px;
 		border-top: 1px solid $color-black-4;
 		~ .dialog-body {
@@ -1036,13 +1026,13 @@ div.list {
 		float:left;
 	}
 	.spacer {
-        float: left;
-		display: inline-block;
-		@media (max-width: 1199px) {
-			display: none;
-		}
-		width: 24px;
-        height: 100%;
+        // float: left;
+		// display: inline-block;
+		// @media (max-width: 1199px) {
+		// 	display: none;
+		// }
+		// width: 24px;
+        // height: 100%;
 	}
 	> .tab-control {
         float: left;
@@ -1057,6 +1047,7 @@ div.list {
 		}
 	}
 	> h1 {
+		padding-left: 24px;
         float: left;
 		display: inline-block;
 		max-width: 50%;
@@ -1438,6 +1429,37 @@ div.list {
 		> .grid {
 			width: 100%;
 		}
+	}
+	.card {
+		width: 100%;
+		margin-left: 0;
+		.title {
+			line-height: 14px;
+		}
+		.btn-save {
+			border-top: 1px solid rgba(0, 0, 0, 0.12);
+			color: rgba(0, 0, 0, 0.26);
+			width: 100%;
+			margin: 0;
+		}
+		.btn-save:hover {
+			color: $fresco-blue;
+		}
+		.primary {
+
+		}
+		p {
+			font-size: 12px;
+			line-height: 1.33;
+			color: rgba(0, 0, 0, 0.54);
+			padding: 10px 16px;
+		}
+		#trusted-select > div {
+			// selects material.io dropdown
+			width: calc(100% - 16px);
+			padding: 0 16px;
+		}
+
 	}
 }
 
