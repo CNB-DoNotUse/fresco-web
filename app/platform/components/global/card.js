@@ -3,13 +3,13 @@ import React from 'react';
 class Card extends React.Component {
 
     render() {
-        const { saveFunc, headerText, moreHeaderText, children } = this.props;
+        const { saveFunc, headerText, rating, ratingColor, children } = this.props;
         return (
             <div className="card settings-user-account">
                 <div className="header">
                     <div className="title">{ headerText }</div>
-                    { moreHeaderText ?
-                        <span className="right">{ moreHeaderText }</span>
+                    { rating ?
+                        <div className={`right ${ratingColor}`}>{ rating }</div>
                         : <div></div> }
 
                 </div>
