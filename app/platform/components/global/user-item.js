@@ -57,7 +57,7 @@ const UserFlagsMeta = ({ offense_count = 0, report_count = 0}) => {
         <div className="meta-user-stats">
             <span className="meta-user-counts">
                 {offenses}
-                <span> &bull; </span>
+                <span> &bull; </span> 
                 {reports}
             </span>
         </div>
