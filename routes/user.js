@@ -60,8 +60,18 @@ router.get('/:id?', (req, res, next) => {
         });
     } else {
         // Render currently logged in user otherwise
-        const user = req.session.user;
-        renderUserDetail(user, user, req, res);
+        API.request({
+            token: req.session.token.token,
+            url: `/user/${req.session.user.id}`,
+        }).then(response => {
+            renderUserDetail(response.body, req.session.user, req, res);
+        }).catch(err => {
+            console.log(err);
+            next({
+                message: 'User not found!',
+                status: 404,
+            });
+        });
     }
 });
 
