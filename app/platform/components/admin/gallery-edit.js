@@ -23,6 +23,8 @@ import Confirm from 'app/platform/components/dialogs/confirm';
  *	Admin Gallery Edit component.
  *	Delete, Skip, Verify galleries
  */
+
+// @attention need to write documentation
 export default class GalleryEdit extends React.Component {
     static propTypes = {
         gallery: PropTypes.object.isRequired,

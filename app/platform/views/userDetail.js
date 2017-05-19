@@ -7,6 +7,8 @@ import Sidebar from './../components/user/sidebar';
 import TopBar from './../components/topbar';
 import PostList from './../components/post/list';
 import '../../sass/platform/user.scss';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 /**
  * User Detail Parent Object, made of a user side column and PostList
@@ -52,38 +54,39 @@ class UserDetail extends React.Component {
         const { verifiedToggle } = this.state;
         const page = 'userDetail';
         return (
-            <App
-                user={user}
-                page={page}
-            >
-                <TopBar
-                    title={detailUser.full_name}
-                    editIcon="mdi-settings"
-                    editable={editable}
-                    edit={() => this.edit()}
-                    onVerifiedToggled={this.onVerifiedToggled}
-                    roles={user.roles}
-                    defaultVerified={verifiedToggle}
-                    verifiedToggle
-                    timeToggle
-                />
-
-                <Sidebar
+            <MuiThemeProvider>
+                <App
                     user={user}
-                    detailUser={detailUser}
-                />
-
-                <div className="col-sm-8 tall">
-                    <PostList
-                        loadPosts={this.loadPosts}
-                        size="large"
-                        scrollable
-                        onlyVerified={verifiedToggle}
-                        page={page}
-                        user={user}
+                    page={page}
+                >
+                    <TopBar
+                        title={detailUser.full_name}
+                        editIcon="mdi-settings"
+                        editable={editable}
+                        edit={() => this.edit()}
+                        onVerifiedToggled={this.onVerifiedToggled}
+                        roles={user.roles}
+                        defaultVerified={verifiedToggle}
+                        verifiedToggle
+                        timeToggle
                     />
-                </div>
-            </App>
+                        <Sidebar
+                            user={user}
+                            detailUser={detailUser}
+                        />
+
+                    <div className="col-sm-8 tall">
+                        <PostList
+                            loadPosts={this.loadPosts}
+                            size="large"
+                            scrollable
+                            onlyVerified={verifiedToggle}
+                            page={page}
+                            user={user}
+                        />
+                    </div>
+                </App>
+            </MuiThemeProvider>
         );
     }
 }
@@ -94,6 +97,8 @@ UserDetail.propTypes = {
     detailUser: PropTypes.object,
     title: PropTypes.string,
 };
+
+injectTapEventPlugin();
 
 ReactDOM.render(
     <UserDetail

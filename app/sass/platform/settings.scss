@@ -90,7 +90,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 	.card-form{
 		overflow:auto;
-		
+
 		input, textarea{
 			border:none;
 			resize:none;
@@ -98,7 +98,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 			padding:14px 16px;
 		}
 
-		button{
+		button:not(.primary, .cancel ){
 			text-align:right;
 			margin:0;
 			height:48px;
@@ -117,7 +117,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		.changed{
 			color:#0047BB;
 		}
-		
+
 		.disabled {
 		    color: rgba(0,0,0, 0.54);
 		}
@@ -128,7 +128,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		padding:0 16px;
 		@include rgba(border-color, 0, 0, 0, 0.12);
 		height:48px;
-		
+
 		input{
 			border:none;
 			height:100%;

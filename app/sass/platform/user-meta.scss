@@ -34,6 +34,22 @@ $imageWidth:40;
             color: #fff;
             font-size: 26px;
         }
+        .mdi-check-circle {
+            height: 14px;
+            width: 14px;
+            position: absolute;
+            top: 8px;
+            left: 90%;
+            border-radius: 50%;
+            background-color: white;
+        }
+        .mdi-check-circle:before {
+            position: absolute;
+            color: $fresco-blue;
+            font-size: 14px;
+            top: -20%;
+            right: -1%;
+        }
     }
 
     .meta-user-text {
@@ -90,4 +106,5 @@ $imageWidth:40;
             }
         }
     }
+
 }

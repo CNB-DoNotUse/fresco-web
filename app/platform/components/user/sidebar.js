@@ -1,21 +1,24 @@
 import React, { PropTypes } from 'react';
 import utils from 'utils';
 import UserItem from 'platform/components/global/user-item';
+import TrustedUser from 'app/platform/components/user/trusted-user.js';
 
 /**
  * User Sidebar parent object
  * @description Column on the left of the user page
  */
 class Sidebar extends React.Component {
-    render() {
-        const { detailUser } = this.props;
-        const avatar = detailUser.avatar || utils.defaultAvatar;
 
+
+    render() {
+        const { detailUser, user } = this.props;
+        const avatar = detailUser.avatar || utils.defaultAvatar;
+        const admin = user.roles.includes('admin');
         return (
             <div className="col-sm-4 profile hidden-xs">
                 <div className="container-fluid fat">
                     <div>
-                        <div className="col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+                        <div className="col-sm-10 col-md-8">
                             <img
                                 className="img-responsive img-avatar"
                                 src={avatar}
@@ -47,6 +50,10 @@ class Sidebar extends React.Component {
                                                 </a>
                                             </li>
                                         )}
+
+                                        { admin ?
+                                            <TrustedUser detailUser={ detailUser }/>
+                                            : <div></div> }
                                     </ul>
                                 </div>
                             </div>

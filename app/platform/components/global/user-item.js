@@ -90,6 +90,9 @@ const UserItem = ({ user, metaType = 'media', storyInfo = ''}) => {
                     ? <img src={user.avatar} />
                     : <i className="mdi mdi-account" />
                 }
+                { user.trusted
+                    ? <i className="mdi mdi-check-circle"></i>
+                    : <div></div>}
             </div>
             <div className="meta-user-text">
                 { handle }

@@ -1430,6 +1430,37 @@ div.list {
 			width: 100%;
 		}
 	}
+	.card {
+		width: 100%;
+		margin-left: 0;
+		.title {
+			line-height: 14px;
+		}
+		.btn-save {
+			border-top: 1px solid rgba(0, 0, 0, 0.12);
+			color: rgba(0, 0, 0, 0.26);
+			width: 100%;
+			margin: 0;
+		}
+		.btn-save:hover {
+			color: $fresco-blue;
+		}
+		.primary {
+
+		}
+		p {
+			font-size: 12px;
+			line-height: 1.33;
+			color: rgba(0, 0, 0, 0.54);
+			padding: 10px 16px;
+		}
+		#trusted-select > div {
+			// selects material.io dropdown
+			width: calc(100% - 16px);
+			padding: 0 16px;
+		}
+
+	}
 }
 
 
