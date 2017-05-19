@@ -1436,12 +1436,17 @@ div.list {
 		.title {
 			line-height: 14px;
 		}
-		button {
+		.btn-save {
 			border-top: 1px solid rgba(0, 0, 0, 0.12);
 			color: rgba(0, 0, 0, 0.26);
+			width: 100%;
+			margin: 0;
 		}
-		button:hover {
+		.btn-save:hover {
 			color: $fresco-blue;
+		}
+		.primary {
+
 		}
 		p {
 			font-size: 12px;
@@ -1454,6 +1459,7 @@ div.list {
 			width: calc(100% - 16px);
 			padding: 0 16px;
 		}
+
 	}
 }
 
