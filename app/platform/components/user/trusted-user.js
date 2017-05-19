@@ -112,7 +112,8 @@ class TrustedUser extends React.Component {
                 ratingColor={ this.ratingColor(detailUser.rating) }>
                 <div id="trusted-select">
                     <SelectField value={ this.mapTrustedStateToSelect(this.state) }
-                        onChange={this.handleChange}>
+                        onChange={this.handleChange}
+                        fullWidth={ true }>
                         {
                             [ <MenuItem value="trusted" key={0} primaryText="Trusted" />,
                             <MenuItem value="untrusted" key={1} primaryText="Untrusted" />,
