@@ -1,9 +1,7 @@
 /* Sass Document */
 
 /*------------------------------------------------------------------------------------
-
 Copyright 2016 Fresco News, Inc. All Rights Reserved.
-
 -------------------------------------------------------------------------------------*/
 
 /**
@@ -20,10 +18,10 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 .reset-success {
     text-align:center;
-   
+
     .body{
         padding:21px 31px 19px;
-        
+
         h2 {
             font-family:$nota;
             font-size: 24px;
@@ -40,6 +38,11 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
             text-align: center;
             color: rgba(0, 0, 0, 0.54);
         }
+
+		li {
+			list-style: none;
+			display: block;
+		}
     }
 
 }
