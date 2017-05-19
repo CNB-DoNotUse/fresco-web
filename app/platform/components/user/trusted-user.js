@@ -60,13 +60,15 @@ class TrustedUser extends React.Component {
                 this.context.openAlert({content: "There is nothing to change"});
                 return;
             } else {
-                this.setState({ confirm: true }, () => { console.log(this.state); })
+                this.setState({ confirm: true })
             }
         } else { //after confirm
             const params = { trusted };
             api.post(`user/${id}/update`, params)
                 .then((res) => {
                     // @ttention case for redux
+                    window.__initialProps__.detailUser = res;
+                    // console.log(res);
                     location.reload();
                 })
                 .catch((err) => {
@@ -87,12 +89,27 @@ class TrustedUser extends React.Component {
         return `Are you sure you want to change ${detailUser.full_name}'s status to ${this.mapTrustedStateToSelect(this.state)}?`;
     }
 
+    convertRating(rating = 0) {
+        return `${Math.floor(rating * 100)}%`;
+    }
+
+    ratingColor(rating = 0) {
+        if (Math.floor(rating * 100) < 85) {
+            return 'red';
+        } else {
+            return 'green';
+        }
+    }
+
     render() {
         const { confirm } = this.state;
+        const { detailUser } = this.props;
         return (
             <Card
                 saveFunc={ this.onSave }
-                headerText="Trust status">
+                headerText="Trust status"
+                rating={ this.convertRating(detailUser.rating) }
+                ratingColor={ this.ratingColor(detailUser.rating) }>
                 <div id="trusted-select">
                     <SelectField value={ this.mapTrustedStateToSelect(this.state) }
                         onChange={this.handleChange}>
