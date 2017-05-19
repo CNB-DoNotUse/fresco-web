@@ -6,8 +6,13 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 
 @import '../global/mixins';
 
-.left, .right{
+.left {
 	float:left;
+
+}
+
+.right {
+	float: right;
 	max-width:590px;
 }
 

@@ -1433,9 +1433,19 @@ div.list {
 	.card {
 		width: 100%;
 		margin-left: 0;
-		.title {
+		.header {
 			line-height: 14px;
+			.green {
+				color: #64bd61;
+			}
+			.red {
+				color: $fresco-error;
+			}
 		}
+		.title {
+			display: inline;
+		}
+
 		.btn-save {
 			border-top: 1px solid rgba(0, 0, 0, 0.12);
 			color: rgba(0, 0, 0, 0.26);
