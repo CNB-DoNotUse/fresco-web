@@ -11,6 +11,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 .account{
 	overflow:auto;
 	max-width:98%;
+	height: 100%;
 	@include mobile{
 		max-width:100%;
 	}
@@ -24,14 +25,14 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 	.presentation{
 		float:left;
 		overflow:hidden;
-		height:auto;
+		height:75%;
 		margin:9% 0 20px 0;
 		width:$fallBackWidth;
 		width:$width;
 
 		@include desktop-large{
 			margin:4% 0 20px 0;
-			height:603px;
+			// height:603px;
 		}
 
 		@include border-radius(2px);
@@ -40,7 +41,7 @@ Copyright 2016 Fresco News, Inc. All Rights Reserved.
 		@include tablet{
 			float:none;
 			width:95%;
-			height:400px;
+			// height:400px;
 			margin:6% auto 30px;
 		}
 		@include mobile{

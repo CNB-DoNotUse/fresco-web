@@ -24,7 +24,7 @@
 @import "../modals/reset";
 
 .wrapper{
-	height:auto;
+	// height:auto;
 	overflow:hidden;
 
 	&.full {
@@ -51,28 +51,27 @@
 /*
     Generic text banner, shows up on reset password page
  */
-.text-banner {      
-    text-shadow:0 2px 2px #000;     
-    text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);      
-    text-align: center;     
-    color: #FFF;        
-    font-weight: 700;       
-    line-height:1.5em;      
-    font-size:30px;     
-    max-width:500px;        
-    margin:0 auto;      
-    position:absolute;      
-    top:40%;        
-    left:0; right:0;        
+.text-banner {
+    text-shadow:0 2px 2px #000;
+    text-shadow:0 2px 2px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    color: #FFF;
+    font-weight: 700;
+    line-height:1.5em;
+    font-size:30px;
+    max-width:500px;
+    margin:0 auto;
+    position:absolute;
+    top:40%;
+    left:0; right:0;
 }
 
 
  @keyframes animateBackground {
- 	from { 
+ 	from {
  		@include transform(scale(2, 2) translate(0px, 46px));
  	}
- 	to   { 
+ 	to   {
  		@include transform( scale(1,1) translate(0px, 0px));
  	}
 }
-
