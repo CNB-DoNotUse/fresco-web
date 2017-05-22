@@ -42,3 +42,9 @@ $desktop-width-large: 1440px;
       @content;
     }
 }
+
+@mixin small-height {
+    @media (max-height: 1100px) {
+        @content;
+    }
+}
