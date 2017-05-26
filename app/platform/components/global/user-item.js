@@ -124,6 +124,22 @@ const UserActive = ({ user, active }) => (
     </div>
 );
 
+export const UserChip = ({ user, clickFunc }) => (
+    <li className="meta-user" onClick={ () => clickFunc(user.id) } >
+        <div className="meta-user-icon">
+            {user.avatar
+                ? <img src={user.avatar} />
+                : <i className="mdi mdi-account" />
+            }
+            { user.trusted
+                ? <i className="mdi mdi-check-circle"></i>
+                : <div></div>}
+        </div>
+        <span className="meta-user-name__primary">{`${user.full_name}`}</span>
+        <span className="meta-user-name__secondary">{`@${user.username}`}</span>
+    </li>
+)
+
 
 UserItem.propTypes = {
     user: PropTypes.object,
