@@ -13,7 +13,7 @@ export default class StoryCell extends React.Component {
 		this.onClick = this.onClick.bind(this);
 	}
 
-	onClick() {
+	onClick = () => {
 		window.location = '/story/' + this.props.story.id;
 	}
 
@@ -21,7 +21,7 @@ export default class StoryCell extends React.Component {
 		const { story } = this.props;
 		const timestamp = story.updated_at || story.created_at;
 		const timeString = time.formatTime(timestamp);
-		const storyInfo = { videos: 0, images: 0, caption: story.caption };
+		const storyInfo = { videos: 0, images: 0, caption: story.title };
 		const storyThumbs = story.posts.map((post, ind) => (
 			<StoryThumbnail
 				key={ind}
@@ -31,13 +31,10 @@ export default class StoryCell extends React.Component {
 		))
 		return(
 			<li>
-				<a href={`story/${story.id}`}>
-				<section className="story-info">
-					<UserItem user={ story.owner }
-					 	metaType="story"
-					 	storyInfo={ storyInfo } />
-					<div className="download-story">Download New</div>
-				</section>
+				<a href={'/story/' + story.id}>
+				<StoryTitle
+					owner={ story.owner }
+					storyInfo={ storyInfo }/>
 				</a>
 
 				<ul className="story-thumbnails">
@@ -51,6 +48,15 @@ export default class StoryCell extends React.Component {
 		);
 	}
 }
+
+export const StoryTitle = ({ owner, storyInfo }) => (
+	<section className="story-info">
+		<UserItem user={ owner }
+			metaType="story"
+			storyInfo={ storyInfo } />
+		<div className="download-story">Download New</div>
+	</section>
+)
 
 // <StoryThumbnail
 // 	src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"

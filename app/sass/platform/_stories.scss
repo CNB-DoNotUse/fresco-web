@@ -322,3 +322,20 @@ nav.stories {
         background-color: #0047bb;
     }
 }
+
+// individual stories
+.story-container {
+    padding: 64px 0;
+    .grid{
+        padding: 1px 0;
+    }
+    .story-summary {
+        padding: 24px;
+        img {
+            width: 192px;
+            height: 192px;
+            margin-right: 24px;
+        }
+        @include display(flex);
+    }
+}

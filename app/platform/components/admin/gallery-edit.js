@@ -178,12 +178,15 @@ export default class GalleryEdit extends React.Component {
         const params = this.getFormData();
         const postsToDelete = get(params, 'posts_remove', []);
 
-        saveGallery(gallery.id, params)
+        //bug in these lines!
+        // https://trello.com/c/jbQRjUEw/211-unable-to-verify-gallery-bug
+        saveGallery(gallery.id, params) //passing
         .then(() => {
-            deletePosts(postsToDelete);
+            deletePosts(postsToDelete); //check this method probably no
+            debugger
         })
         .then(() => {
-            onUpdateGallery(gallery.id);
+            onUpdateGallery(gallery.id); //or this method more likely
             $.snackbar({
                 content: 'Gallery verified! Click to open',
                 timeout: 5000,
@@ -289,6 +292,7 @@ export default class GalleryEdit extends React.Component {
             caption,
             is_nsfw,
             ...this.getPostsParams(),
+            // @ttention get rid of stories!!
             ...utils.getRemoveAddParams('stories', gallery.stories, stories),
             external_account_name,
             external_source,

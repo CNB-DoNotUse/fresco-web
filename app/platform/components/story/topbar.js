@@ -104,12 +104,13 @@ class StoriesTopBar extends React.Component {
             getUsers,
             getAssignments,
             getTags,
-            resetParams
+            resetParams,
+            title
         } = this.props;
         const { searchTerm } = searchParams;
         return(
             <nav className="navbar stories navbar-fixed-top navbar-default">
-                <h1 className="md-type-title">Stories</h1>
+                <h1 className="md-type-title">{title}</h1>
                 <section className="stories-search">
 
                     {

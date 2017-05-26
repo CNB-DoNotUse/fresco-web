@@ -74,4 +74,3 @@ BulkSelect.defaultProps = {
 };
 
 export default BulkSelect;
-

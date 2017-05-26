@@ -25,6 +25,8 @@ class Galleries extends React.Component {
      * @param {number} id Called on updating gallery
      * to set next active assignment and remove updated
      */
+
+    //  @ttention could be causing a bug ???
     onUpdateGallery(id) {
         const { galleries, removeGallery } = this.props;
         const index = findIndex(galleries, { id });

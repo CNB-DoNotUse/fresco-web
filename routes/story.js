@@ -13,6 +13,29 @@ const newStory = (id = 1) => ({
      curator_id: "Bkq1gr2N05OV",
      assignment_id: "wOo1PZ9j8Kvl",
      outlet_id: "Z6rg1Vw3Mjkz",
+     owner: {
+         avatar: null,
+         bio: "",
+         blocked: false,
+         blocking: false,
+         created_at: "2017-03-30T21:09:40.944Z",
+         disabled: false,
+         followed_count: 2,
+         following: false,
+         following_count: 4,
+         full_name: "Revanth",
+         id: "Bkq1gr2z05OV",
+         location: "",
+         object: "user",
+         photo_count: 1,
+         rating: 0,
+         submission_count: 2,
+         suspended_until: null,
+         trusted: null,
+         twitter_handle: null,
+         username: "revanth",
+         video_count: 1,
+     },
      title: "Piet Mondrian raises from the dead",
      caption: "Now present at the MoMA in new performance piece",
      tags: ["cucu", "freedom", "piet mondrian", "red", "white", "blue"],
@@ -36,7 +59,7 @@ const newStory = (id = 1) => ({
              license: 0,
              location: {
                  coordinates: [ -74.0110538, 40.7038987 ],
-                 type: point
+                 type: "point"
              },
              object: "post",
              outlet_id: null,
@@ -90,7 +113,7 @@ const newStory = (id = 1) => ({
              license: 0,
              location: {
                  coordinates: [ -74.0110538, 40.7038987 ],
-                 type: point
+                 type: "point"
              },
              object: "post",
              outlet_id: null,
@@ -144,7 +167,7 @@ const newStory = (id = 1) => ({
              license: 0,
              location: {
                  coordinates: [ -74.0110538, 40.7038987 ],
-                 type: point
+                 type: "point"
              },
              object: "post",
              outlet_id: null,
@@ -198,7 +221,7 @@ const newStory = (id = 1) => ({
              license: 0,
              location: {
                  coordinates: [ -74.0110538, 40.7038987 ],
-                 type: point
+                 type: "point"
              },
              object: "post",
              outlet_id: null,
@@ -252,7 +275,7 @@ const newStory = (id = 1) => ({
              license: 0,
              location: {
                  coordinates: [ -74.0110538, 40.7038987 ],
-                 type: point
+                 type: "point"
              },
              object: "post",
              outlet_id: null,
@@ -306,7 +329,7 @@ const newStory = (id = 1) => ({
              license: 0,
              location: {
                  coordinates: [ -74.0110538, 40.7038987 ],
-                 type: point
+                 type: "point"
              },
              object: "post",
              outlet_id: null,
@@ -353,10 +376,9 @@ router.get('/:id', (req, res, next) => {
         url: '/story/' + req.params.id,
     }).then(response => {
         const props = {
-            story: newStory,
+            story: newStory(),
             user: req.session.user
         };
-        console.log("here");
         res.render('app', {
             props: JSON.stringify(props),
             config: config,
@@ -365,7 +387,20 @@ router.get('/:id', (req, res, next) => {
             page: 'storyDetail',
             title : 'Story'
         });
-    });
+    }).catch( () => {
+        const props = {
+            story: newStory(),
+            user: req.session.user
+        };
+        res.render('app', {
+            props: JSON.stringify(props),
+            config: config,
+            alerts: req.alerts,
+            referral: req.session.referral,
+            page: 'storyDetail',
+            title : 'Story'
+        });
+    })
 });
 
 module.exports = router;

@@ -50,6 +50,7 @@ class Stories extends React.Component {
         return (
             <App user={this.props.user} page="stories">
                 <StoriesTopBar
+                    title="Stories"
                     searchParams={ searchParams }
                     onChange={ changeSearch }
                     getUsers={ getUsers }
