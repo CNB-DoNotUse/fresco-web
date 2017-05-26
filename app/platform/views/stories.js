@@ -5,6 +5,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import configureStore from 'app/redux/store/immutableStore';
 import Root from '../containers/Root';
 import Stories from '../containers/Stories';
+import { getFromLocalStorage } from 'app/lib/storage';
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -28,145 +29,404 @@ if ("geolocation" in navigator) {
       lng: 74.0059413,
   }
 }
-const searchParams  = {
+export const initialSearchParams  = {
     verified: true,
     unverified: false,
-    seen: true,
-    unseen: false,
     purchased: true,
     notPurchased: false,
-    downloaded: true,
-    notDownloaded: false,
     capturedTime: true,
     relativeTime: true,
     location,
     address: '',
+    radius: 250,
     searchTerm: '',
-    users: [],
-    assignments:[],
-    tags: [],
-    loading: false
+    users: {},
+    assignments:{},
+    tags: {},
+    loading: false,
+    errors: {},
+    params: { users: {}, assignments: {}, tags: {} }
 }
 
-const stories = {
-    1 : {
-        user,
-        id: 1,
-        caption: "This event is LIT",
-        thumbnails: ["http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"],
-        posts: [
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-        ]
-    },
-    2 : {
-        user,
-        id: 2,
-        caption: "This event is LIT",
-        thumbnails: ["http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"],
-        posts: [
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-            {
-                image: "http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg",
-                location: {
-                    coordinates: [ -74.0110538, 40.7038987 ]
-                },
-                captured_at: "2017-05-10T21:46:51.000Z",
-                updated_at: "2017-05-10T21:46:51.000Z"
-            },
-        ]
+export const newStory = (id = 1) => ({
+     id,
+     owner_id: "Bkq1gr2N05OV",
+     owner: {
+         avatar: null,
+         bio: "",
+         blocked: false,
+         blocking: false,
+         created_at: "2017-03-30T21:09:40.944Z",
+         disabled: false,
+         followed_count: 2,
+         following: false,
+         following_count: 4,
+         full_name: "Revanth",
+         id: "Bkq1gr2z05OV",
+         location: "",
+         object: "user",
+         photo_count: 1,
+         rating: 0,
+         submission_count: 2,
+         suspended_until: null,
+         trusted: null,
+         twitter_handle: null,
+         username: "revanth",
+         video_count: 1,
+     },
+     curator_id: "Bkq1gr2N05OV",
+     assignment_id: "wOo1PZ9j8Kvl",
+     outlet_id: "Z6rg1Vw3Mjkz",
+     title: "Piet Mondrian raises from the dead",
+     caption: "Now present at the MoMA in new performance piece",
+     tags: ["cucu", "freedom", "piet mondrian", "red", "white", "blue"],
+     rating: 1,
+     created_at: "2017-05-10T21:46:51.000Z",
+     highlighted_at: "2017-05-10T21:46:51.000Z",
+     posts: [
+         {
+             address: "9 S William St, New York, NY",
+             assignment_id: "rYd0yDEW8Dp5",
+             captured_at: "2017-05-15T16:20:06.000Z",
+             created_at: "2017-05-15T16:20:36.507Z",
+             curator_id: null,
+             duration: null,
+             exclusive_to: null,
+             exclusive_until: null,
+             height: 3024,
+             id: "nEZ1lapQ73Lg",
+             image: "http://www.piet-mondrian.org/images/paintings/composition-c.jpg",
+             is_nsfw: false,
+             license: 0,
+             location: {
+                 coordinates: [ -74.0110538, 40.7038987 ],
+                 type: "point"
+             },
+             object: "post",
+             outlet_id: null,
+             owner: {
+                 avatar: null,
+                 bio: "",
+                 blocked: false,
+                 blocking: false,
+                 created_at: "2017-03-30T21:09:40.944Z",
+                 disabled: false,
+                 followed_count: 2,
+                 following: false,
+                 following_count: 4,
+                 full_name: "Revanth",
+                 id: "Bkq1gr2z05OV",
+                 location: "",
+                 object: "user",
+                 photo_count: 1,
+                 rating: 0,
+                 submission_count: 2,
+                 suspended_until: null,
+                 trusted: null,
+                 twitter_handle: null,
+                 username: "revanth",
+                 video_count: 1,
+             },
+             owner_id: "Bkq1gr2z05OV",
+             parent: {},
+             parent_id: "xYV1RPxJd8Re",
+             purchased: false,
+             rating: 2,
+             status: 2,
+             stream: null,
+             updated_at: "2017-05-15T16:24:20.008Z",
+             video: null,
+             width: 4032,
+         },
+         {
+             address: "9 S William St, New York, NY",
+             assignment_id: "rYd0yDEW8Dp5",
+             captured_at: "2017-05-15T16:20:06.000Z",
+             created_at: "2017-05-15T16:20:36.507Z",
+             curator_id: null,
+             duration: null,
+             exclusive_to: null,
+             exclusive_until: null,
+             height: 3024,
+             id: "nEZ1lapQ73Lg",
+             image: "http://www.piet-mondrian.org/images/paintings/composition-c.jpg",
+             is_nsfw: false,
+             license: 0,
+             location: {
+                 coordinates: [ -74.0110538, 40.7038987 ],
+                 type: "point"
+             },
+             object: "post",
+             outlet_id: null,
+             owner: {
+                 avatar: null,
+                 bio: "",
+                 blocked: false,
+                 blocking: false,
+                 created_at: "2017-03-30T21:09:40.944Z",
+                 disabled: false,
+                 followed_count: 2,
+                 following: false,
+                 following_count: 4,
+                 full_name: "Revanth",
+                 id: "Bkq1gr2z05OV",
+                 location: "",
+                 object: "user",
+                 photo_count: 1,
+                 rating: 0,
+                 submission_count: 2,
+                 suspended_until: null,
+                 trusted: null,
+                 twitter_handle: null,
+                 username: "revanth",
+                 video_count: 1,
+             },
+             owner_id: "Bkq1gr2z05OV",
+             parent: {},
+             parent_id: "xYV1RPxJd8Re",
+             purchased: false,
+             rating: 2,
+             status: 2,
+             stream: null,
+             updated_at: "2017-05-15T16:24:20.008Z",
+             video: null,
+             width: 4032,
+         },
+         {
+             address: "9 S William St, New York, NY",
+             assignment_id: "rYd0yDEW8Dp5",
+             captured_at: "2017-05-15T16:20:06.000Z",
+             created_at: "2017-05-15T16:20:36.507Z",
+             curator_id: null,
+             duration: null,
+             exclusive_to: null,
+             exclusive_until: null,
+             height: 3024,
+             id: "nEZ1lapQ73Lg",
+             image: "http://www.piet-mondrian.org/images/paintings/composition-c.jpg",
+             is_nsfw: false,
+             license: 0,
+             location: {
+                 coordinates: [ -74.0110538, 40.7038987 ],
+                 type: "point"
+             },
+             object: "post",
+             outlet_id: null,
+             owner: {
+                 avatar: null,
+                 bio: "",
+                 blocked: false,
+                 blocking: false,
+                 created_at: "2017-03-30T21:09:40.944Z",
+                 disabled: false,
+                 followed_count: 2,
+                 following: false,
+                 following_count: 4,
+                 full_name: "Revanth",
+                 id: "Bkq1gr2z05OV",
+                 location: "",
+                 object: "user",
+                 photo_count: 1,
+                 rating: 0,
+                 submission_count: 2,
+                 suspended_until: null,
+                 trusted: null,
+                 twitter_handle: null,
+                 username: "revanth",
+                 video_count: 1,
+             },
+             owner_id: "Bkq1gr2z05OV",
+             parent: {},
+             parent_id: "xYV1RPxJd8Re",
+             purchased: false,
+             rating: 2,
+             status: 2,
+             stream: null,
+             updated_at: "2017-05-15T16:24:20.008Z",
+             video: null,
+             width: 4032,
+         },
+         {
+             address: "9 S William St, New York, NY",
+             assignment_id: "rYd0yDEW8Dp5",
+             captured_at: "2017-05-15T16:20:06.000Z",
+             created_at: "2017-05-15T16:20:36.507Z",
+             curator_id: null,
+             duration: null,
+             exclusive_to: null,
+             exclusive_until: null,
+             height: 3024,
+             id: "nEZ1lapQ73Lg",
+             image: "http://www.piet-mondrian.org/images/paintings/composition-c.jpg",
+             is_nsfw: false,
+             license: 0,
+             location: {
+                 coordinates: [ -74.0110538, 40.7038987 ],
+                 type: "point"
+             },
+             object: "post",
+             outlet_id: null,
+             owner: {
+                 avatar: null,
+                 bio: "",
+                 blocked: false,
+                 blocking: false,
+                 created_at: "2017-03-30T21:09:40.944Z",
+                 disabled: false,
+                 followed_count: 2,
+                 following: false,
+                 following_count: 4,
+                 full_name: "Revanth",
+                 id: "Bkq1gr2z05OV",
+                 location: "",
+                 object: "user",
+                 photo_count: 1,
+                 rating: 0,
+                 submission_count: 2,
+                 suspended_until: null,
+                 trusted: null,
+                 twitter_handle: null,
+                 username: "revanth",
+                 video_count: 1,
+             },
+             owner_id: "Bkq1gr2z05OV",
+             parent: {},
+             parent_id: "xYV1RPxJd8Re",
+             purchased: false,
+             rating: 2,
+             status: 2,
+             stream: null,
+             updated_at: "2017-05-15T16:24:20.008Z",
+             video: null,
+             width: 4032,
+         },
+         {
+             address: "9 S William St, New York, NY",
+             assignment_id: "rYd0yDEW8Dp5",
+             captured_at: "2017-05-15T16:20:06.000Z",
+             created_at: "2017-05-15T16:20:36.507Z",
+             curator_id: null,
+             duration: null,
+             exclusive_to: null,
+             exclusive_until: null,
+             height: 3024,
+             id: "nEZ1lapQ73Lg",
+             image: "http://www.piet-mondrian.org/images/paintings/composition-c.jpg",
+             is_nsfw: false,
+             license: 0,
+             location: {
+                 coordinates: [ -74.0110538, 40.7038987 ],
+                 type: "point"
+             },
+             object: "post",
+             outlet_id: null,
+             owner: {
+                 avatar: null,
+                 bio: "",
+                 blocked: false,
+                 blocking: false,
+                 created_at: "2017-03-30T21:09:40.944Z",
+                 disabled: false,
+                 followed_count: 2,
+                 following: false,
+                 following_count: 4,
+                 full_name: "Revanth",
+                 id: "Bkq1gr2z05OV",
+                 location: "",
+                 object: "user",
+                 photo_count: 1,
+                 rating: 0,
+                 submission_count: 2,
+                 suspended_until: null,
+                 trusted: null,
+                 twitter_handle: null,
+                 username: "revanth",
+                 video_count: 1,
+             },
+             owner_id: "Bkq1gr2z05OV",
+             parent: {},
+             parent_id: "xYV1RPxJd8Re",
+             purchased: false,
+             rating: 2,
+             status: 2,
+             stream: null,
+             updated_at: "2017-05-15T16:24:20.008Z",
+             video: null,
+             width: 4032,
+         },
+         {
+             address: "9 S William St, New York, NY",
+             assignment_id: "rYd0yDEW8Dp5",
+             captured_at: "2017-05-15T16:20:06.000Z",
+             created_at: "2017-05-15T16:20:36.507Z",
+             curator_id: null,
+             duration: null,
+             exclusive_to: null,
+             exclusive_until: null,
+             height: 3024,
+             id: "nEZ1lapQ73Lg",
+             image: "http://www.piet-mondrian.org/images/paintings/composition-c.jpg",
+             is_nsfw: false,
+             license: 0,
+             location: {
+                 coordinates: [ -74.0110538, 40.7038987 ],
+                 type: "point"
+             },
+             object: "post",
+             outlet_id: null,
+             owner: {
+                 avatar: null,
+                 bio: "",
+                 blocked: false,
+                 blocking: false,
+                 created_at: "2017-03-30T21:09:40.944Z",
+                 disabled: false,
+                 followed_count: 2,
+                 following: false,
+                 following_count: 4,
+                 full_name: "Revanth",
+                 id: "Bkq1gr2z05OV",
+                 location: "",
+                 object: "user",
+                 photo_count: 1,
+                 rating: 0,
+                 submission_count: 2,
+                 suspended_until: null,
+                 trusted: null,
+                 twitter_handle: null,
+                 username: "revanth",
+                 video_count: 1,
+             },
+             owner_id: "Bkq1gr2z05OV",
+             parent: {},
+             parent_id: "xYV1RPxJd8Re",
+             purchased: false,
+             rating: 2,
+             status: 2,
+             stream: null,
+             updated_at: "2017-05-15T16:24:20.008Z",
+             video: null,
+             width: 4032,
+         }
+     ]
+ })
+
+const stories = () => {
+    const theseStories = {};
+    for (let x = 0; x < 8; x ++) {
+        theseStories[x] = newStory(x);
     }
-
+    return theseStories;
+}
+let searchParams;
+if (localStorage.getItem("searchParams")) {
+    searchParams = JSON.parse(localStorage.getItem("searchParams"));
+} else {
+    searchParams = initialSearchParams;
 }
 
 
-
-const store = configureStore({ user, searchParams, stories });
+const store = configureStore({ user, searchParams, stories: stories() });
 ReactDOM.render(
     <Root store={store}>
         <MuiThemeProvider>
