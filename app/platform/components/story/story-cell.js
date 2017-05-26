@@ -22,27 +22,29 @@ export default class StoryCell extends React.Component {
 		const timestamp = story.updated_at || story.created_at;
 		const timeString = time.formatTime(timestamp);
 		const storyInfo = { videos: 0, images: 0, caption: story.caption };
+		const storyThumbs = story.posts.map((post, ind) => (
+			<StoryThumbnail
+				key={ind}
+				src={`${post.image}`}
+				location="New York, NY"
+				postTime="5 minutes ago"/>
+		))
 		return(
 			<li>
+				<a href={`story/${story.id}`}>
 				<section className="story-info">
-					<UserItem user={ story.user }
+					<UserItem user={ story.owner }
 					 	metaType="story"
 					 	storyInfo={ storyInfo } />
 					<div className="download-story">Download New</div>
 				</section>
+				</a>
+
 				<ul className="story-thumbnails">
-					<StoryThumbnail
-						src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"
-						location="New York, NY"
-						postTime="5 minutes ago"/>
-					<StoryThumbnail
-						src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"
-						location="New York, NY"
-						postTime="5 minutes ago"
-						unread={ true }/>
+					{ storyThumbs }
 					<StoryViewAll
 						storyLink=""
-						owner={ story.user.username }
+						owner={ story.owner.username }
 						numLeft={ 5 }/>
 				</ul>
 			</li>
@@ -50,34 +52,15 @@ export default class StoryCell extends React.Component {
 	}
 }
 
-// <div className='col-xs-6 col-md-3 tile story' onClick={this.onClick}>
-// 	<div className="tile-body">
-// 		<div className="tile__frame"></div>
-//
-// 		<div className="hover">
-// 			<p className="md-type-body1">{story.caption}</p>
-// 		</div>
-//
-// 		<StoryCellImages thumbnails={story.thumbnails} />
-// 	</div>
-// 	<div className="tile-foot">
-// 		<div className="hover">
-// 			<a href={'/story/'+ story.id} className="md-type-body2">See all</a>
-//
-// 			<span className="right-info">
-// 					{story.gallery_count + ' ' + (story.gallery_count == 1 ? 'gallery' : 'galleries')}
-// 			</span>
-// 		</div>
-//
-// 		<div>
-// 			<div>
-// 				<span className="md-type-body2">{this.props.story.title}</span>
-//
-// 				<span className="md-type-caption timestring" data-timestamp={timestamp}>{timeString}</span>
-// 			</div>
-// 		</div>
-// 	</div>
-// </div>
+// <StoryThumbnail
+// 	src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"
+// 	location="New York, NY"
+// 	postTime="5 minutes ago"/>
+// <StoryThumbnail
+// 	src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"
+// 	location="New York, NY"
+// 	postTime="5 minutes ago"
+// 	unread={ true }/>
 
 /**
  * Post Cell Images

@@ -2,10 +2,30 @@ import React, { PropTypes } from 'react';
 import AutocompleteMap from './../global/autocomplete-map';
 import RadioGroup from './../global/radio-group';
 import { GenericCheckbox, GenericRadio } from 'app/platform/components/global/checkbox';
+import { setInLocalStorage, getFromLocalStorage } from 'app/lib/storage';
+
+
 
 class SearchDropdown extends React.Component {
     constructor(props) {
         super(props);
+
+    }
+
+    componentDidUpdate(prevProps) {
+        const { getUsers,
+            getAssignments,
+            getTags,
+            searchParams: {
+                searchTerm
+            }
+        } = this.props;
+        if (prevProps.searchParams.searchTerm !== searchTerm && searchTerm !== "") {
+            getUsers(searchTerm);
+            getAssignments(searchTerm);
+            // no API support for searching tags...yet
+            // getTags(searchTerm);
+        }
 
     }
 
@@ -14,12 +34,10 @@ class SearchDropdown extends React.Component {
             searchParams: {
                 verified,
                 unverified,
-                seen,
-                unseen,
                 purchased,
                 notPurchased,
                 downloaded,
-                notDownloaded
+                notDownloaded,
             }
         } = this.props;
         return (
@@ -35,16 +53,6 @@ class SearchDropdown extends React.Component {
                     className=""
                     onChange={ () => onChange('unverified') }/>
                 <GenericCheckbox
-                    checked={seen}
-                    text="Seen"
-                    className=""
-                    onChange={ () => onChange('seen') }/>
-                <GenericCheckbox
-                    checked={unseen}
-                    text="Unseen"
-                    className=""
-                    onChange={ () => onChange('unseen') }/>
-                <GenericCheckbox
                     checked={purchased}
                     text="Purchased"
                     className=""
@@ -54,18 +62,12 @@ class SearchDropdown extends React.Component {
                     text="Not purchased"
                     className=""
                     onChange={ () => onChange('notPurchased') }/>
-                <GenericCheckbox
-                    checked={downloaded}
-                    text="Downloaded"
-                    className=""
-                    onChange={ () => onChange('downloaded') }/>
-                <GenericCheckbox
-                    checked={notDownloaded}
-                    text="Not downloaded"
-                    className=""
-                    onChange={ () => onChange('notDownloaded') }/>
             </div>
         );
+    }
+
+    getChosenParams = () => {
+        const { users, assignments } = this.props.searchParams.params;
     }
 
     sortByRadio = () => {
@@ -93,34 +95,52 @@ class SearchDropdown extends React.Component {
         this.props.onChange('location', true)(loc.location);
     }
 
+    onSavePreference = () => {
+        setInLocalStorage("searchParams", this.props.searchParams);
+        // snackbar
+    }
+
+    onRadiusUpdate = (radius) => {
+        this.props.onChange('radius', true)(radius);
+    }
+
     render() {
         const {
             focus,
             onChange,
-            searchParams
+            searchParams,
+            resetParams,
+            usersAndAssignments,
         } = this.props;
         return (
-            <div className={ focus ? "normal" : "none" }>
-                <section>
-                    <p>Location</p>
-                    <AutocompleteMap
-                        address=""
-                        onPlaceChange={ this.onMapChange }
-                        onMapDataChange={ this.onMapChange }
-                        location={searchParams.location}
-                        address={searchParams.address}
-                        draggable
-                        hasRadius/>
-                </section>
-                <section>
-                    <p>Search</p>
-                    <p>Filters</p>
-                    { this.filterCheckboxes() }
-                    <p>Sort By</p>
-                    { this.sortByRadio() }
-                    <p>Display</p>
-                    { this.displayRadio() }
-                </section>
+            <div className={ focus ? "normal search-dropdown" : "none search-dropdown" }>
+                <div className="search-dropdown--body">
+                    <section className="search-dropdown--location">
+                        <AutocompleteMap
+                            onPlaceChange={ this.onMapChange }
+                            onMapDataChange={ this.onMapChange }
+                            location={searchParams.location}
+                            address={searchParams.address}
+                            radius={searchParams.radius}
+                            onRadiusUpdate={ this.onRadiusUpdate }
+                            draggable
+                            hasRadius/>
+                    </section>
+                    <section className="search-dropdown--options">
+                        <p>Search</p>
+                        { usersAndAssignments }
+                        <p>Filters</p>
+                        { this.filterCheckboxes() }
+                        <p>Sort By</p>
+                        { this.sortByRadio() }
+                        <p>Display</p>
+                        { this.displayRadio() }
+                    </section>
+                </div>
+                <div className="search-dropdown--buttons">
+                    <div className="button" onClick={ resetParams }>Reset</div>
+                    <div className="button" onClick={ this.onSavePreference }>Save</div>
+                </div>
             </div>
         );
     }
