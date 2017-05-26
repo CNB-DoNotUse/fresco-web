@@ -1,5 +1,11 @@
 @import "../../fonts/nota/nota";
 
+/**
+* Styles for everything on the stories page
+*/
+
+
+//navigation topbar for stories
 .navbar.stories {
     margin-bottom: 0;
 }
@@ -39,11 +45,79 @@ nav.stories {
 	label > p.bold {
 		color: black;
 	}
+    .autocomplete-dropdown {
+        display: none;
+        top: 100%;
 
+        width: 67%;
+        @include box-shadow(-3px 3px 5px 0px rgba(0, 0, 0 , 0.24));
+        left: 10px;
+        position: absolute;
+        @include flex-direction(column);
+        background: white;
+        z-index: 1;
+        > section {
+            padding: 8px 24px;
+            width: 100%;
+            ul {
+                padding: 0;
+                margin: 0;
+                @include display(flex);
+                @include flex-direction(row);
+                @include flex-wrap(wrap);
+                @include justify-content(flex-start);
+                > :hover {
+                    background-color: #ddddd6;
+                    cursor: pointer;
+                    @include border-radius(16px);
+                }
+                >li {
+                    list-style: none;
+                    background: $fresco-bg;
+                    text-overflow: ellipsis;
+                    width: auto;
+                    height: 32px;
+                    @include border-radius(16px);
+                    border-radius: 16px;
+                    margin: 0 10px 10px 0;
+                    vertical-align: middle;
+                    line-height: 32px;
+                    padding: 0 10px;
+                }
+                .meta-user {
+                    @include display(flex);
+                    @include align-items(center);
+                    @include justify-content(space-between);
+                    padding: 0;
+                    >.meta-user-icon {
+                        transform: scale(.6);
+                    }
+                    >span {
+                        padding-right: 10px;
+                    }
+                    >span:last-child {
+                        color: rgba(0, 0, 0, 0.54);
+                    }
+                }
+            }
+        }
+        > .search-assignments {
+            li {
+                width: 100%;
+            }
+        }
+    }
+
+    .show.autocomplete-dropdown {
+        @include display(flex);
+    }
+    //search bar and dropdowns
 	.stories-search {
-		min-width: 50%;
+		width: 50%;
+        max-width: 1000px;
+        position: relative;
 		@media (max-width: 1000px) {
-			min-width: 66%;
+			width: 66%;
 		}
 		>section {
 			display: flex;
@@ -60,29 +134,63 @@ nav.stories {
 			float: right;
             cursor: pointer;
 		}
-		position: relative;
-		>div.normal {
+
+		.search-dropdown {
+            position: absolute;
 			background: $color-shade-2;
-			position: absolute;
 			top: 146%;
 			width: 100%;
 			height: auto;
-			@include box-shadow(-3px 3px 3px 2px rgba(0, 0, 0 , 0.24));
-			display: flex;
-			justify-content: space-between;
-			> * {
-				width: 50%;
-				padding: 24px 0 24px 24px;
-			}
-            >*:last-child {
-                padding-right: 24px;
+			@include box-shadow(-5px 5px 10px 0px rgba(0, 0, 0 , 0.24));
+            >.search-dropdown--body {
+                @include display(flex);
+                @include justify-content(space-between);
+                > * {
+                    width: 50%;
+                    padding: 24px 0 24px 24px;
+                }
+                >*:last-child {
+                    padding-right: 24px;
+                }
+                p {
+                    font-weight: 500;
+                    color: rgba(0, 0, 0, 0.54);
+                }
+            }
+            >.search-dropdown--buttons {
+                border-top: 1px solid rgba(207, 207, 207, 1);
+                @include display(flex);
+                @include justify-content(space-between);
+                >.button {
+                    padding: 18px 24px;
+                    font-size: 15px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                }
+                >.button:first-child {
+                    color: #d0021b;
+                }
+                >.button:last-child {
+                    color: #0047bb;
+                }
+                >.button:hover {
+                    cursor: pointer;
+                    color: black;
+                }
+                >.button:active {
+                    background-color: rgba(207, 207, 207, 1);
+                }
             }
 		}
-		>div.none {
-			display: none;
-		}
+
+        // autocomplete Dropdown
+
+        >div.none {
+            display: none;
+        }
 	}
 }
+
 #stories {
     font-size: 0;
 
