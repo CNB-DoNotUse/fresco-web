@@ -120,7 +120,6 @@ class StoryDetail extends React.Component {
             sortBy,
             limit: 10,
         };
-
         $.ajax({
             url: `/api/story/${story.id}/posts`,
             type: 'GET',

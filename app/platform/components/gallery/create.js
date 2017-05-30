@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import utils from 'utils';
 import EditPosts from './edit-posts';
 import ChipInput from '../global/chip-input';
+import api from 'app/lib/api';
+import * as Promise from 'bluebird';
 
 /**
  * Description : Component for creating a gallery
@@ -16,6 +18,7 @@ class Create extends React.Component {
         rating: 2,
         caption: '',
         loading: false,
+        title: ''
     };
 
     componentDidMount() {
@@ -50,6 +53,7 @@ class Create extends React.Component {
             stories: [],
             articles: [],
             caption: '',
+            title: ""
         });
     }
 
@@ -58,7 +62,7 @@ class Create extends React.Component {
  	 */
     createGallery() {
         if (this.state.loading) return;
-        const { caption, rating, tags, stories, articles } = this.state;
+        const { caption, rating, tags, stories, articles, title } = this.state;
         const { posts, onHide, setSelectedPosts } = this.props;
 
         // Generate post ids for update
@@ -71,46 +75,41 @@ class Create extends React.Component {
         const { articles_add, articles_new } = utils.getRemoveAddParams('articles', [], articles);
 
         const params = {
-            caption,
-            posts_add: postIds,
-            tags,
-            rating,
-            stories_add,
-            stories_new,
-            articles_add,
-            articles_new,
+            owner_id: null,
+            title,
+            caption
         };
 
         this.setState({ loading: true });
-        $.ajax({
-            url: '/api/gallery/import',
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(params),
-        })
-        .done((res) => {
-            onHide();
-            setSelectedPosts([]);
+        api.post("story/create", params)
+        .then((res) => {
+            Promise.each(postIds, (id) => api.post(`story/${res.id}/posts/${id}/add` ))
+                .then((res2) => {
+                    onHide();
+                    setSelectedPosts([]);
 
-            $.snackbar({
-                content: 'Gallery successfully saved! Click here to view it',
-                timeout: 5000,
-            }).click(() => {
-                const win = window.open(`/gallery/${res.id}`, '_blank');
-                win.focus();
-            });
+                    $.snackbar({
+                        content: 'Story successfully saved! Click here to view it',
+                        timeout: 5000,
+                    }).click(() => {
+                        const win = window.open(`/story/${res.id}`, '_blank');
+                        win.focus();
+                    });
+                })
+        }).catch(() => {
+
         })
-        .fail((err) => {
-            this.setState({ loading: false });
-            $.snackbar({
-                content: utils.resolveError(err, 'There was an error creating your gallery!'),
-            });
-        });
+        // .fail((err) => {
+        //     this.setState({ loading: false });
+        //     $.snackbar({
+        //         content: utils.resolveError(err, 'There was an error creating your gallery!'),
+        //     });
+        // });
     }
 
     render() {
         const { posts, onHide } = this.props;
-        const { caption, tags, stories, articles, rating, loading } = this.state;
+        const { caption, tags, stories, articles, rating, loading, title } = this.state;
 
         return (
             <div onScroll={this.onScroll}>
@@ -120,7 +119,7 @@ class Create extends React.Component {
                     <div className="col-xs-12 col-lg-12 edit-new dialog">
 
                         <div className="dialog-head">
-                            <span className="md-type-title">Create Gallery</span>
+                            <span className="md-type-title">Create Story</span>
                             <span
                                 className="mdi mdi-close pull-right icon toggle-edit toggler"
                                 onClick={onHide}
@@ -165,32 +164,16 @@ class Create extends React.Component {
                                         onChange={(e) => this.setState({ caption: e.target.value })}
                                     />
                                 </div>
+                                <div className="dialog-row">
+                                    <textarea
+                                        value={title}
+                                        type="text"
+                                        className="form-control floating-label"
+                                        placeholder="title"
+                                        onChange={(e) => this.setState({ title: e.target.value })}
+                                    />
+                                </div>
 
-                                <ChipInput
-                                    model="tags"
-                                    items={tags}
-                                    updateItems={(t) => this.setState({ tags: t })}
-                                    autocomplete={false}
-                                    className="dialog-row"
-                                />
-
-                                <ChipInput
-                                    model="stories"
-                                    queryAttr="title"
-                                    items={stories}
-                                    updateItems={(s) => this.setState({ stories: s })}
-                                    className="dialog-row"
-                                    autocomplete
-                                />
-
-                                <ChipInput
-                                    model="articles"
-                                    queryAttr="link"
-                                    items={articles}
-                                    updateItems={(a) => this.setState({ articles: a })}
-                                    className="dialog-row"
-                                    autocomplete
-                                />
 
                                 <div className="dialog-row">
                                     <div className="checkbox">

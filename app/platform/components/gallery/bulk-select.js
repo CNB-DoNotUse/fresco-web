@@ -52,7 +52,7 @@ class BulkSelect extends React.Component {
                             type="button"
                             className="btn btn-flat pull-right toggle-gcreate toggler"
                         >
-                            Create gallery
+                            Create story
                         </button>
                     </div>
 
