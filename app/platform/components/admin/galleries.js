@@ -31,6 +31,7 @@ class Galleries extends React.Component {
         removeGallery(id, (arr) => {
             this.setActiveGallery(arr[index] || arr[index + 1] || arr[index - 1]);
         });
+        return;
     }
 
     onScroll(e) {
@@ -45,6 +46,10 @@ class Galleries extends React.Component {
     }
 
     setActiveGallery(activeGallery) {
+        if(!activeGallery) {
+            this.setState({ activeGallery: false });
+            return;
+        }
         if(!this.state.activeGallery || activeGallery.id !== this.state.activeGallery.id) {
             this.setState({ activeGallery });
         }
