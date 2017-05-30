@@ -45,6 +45,10 @@ class Galleries extends React.Component {
     }
 
     setActiveGallery(activeGallery) {
+        if(!activeGallery) {
+              this.setState({ activeGallery: false });
+              return;
+          }
         if(!this.state.activeGallery || activeGallery.id !== this.state.activeGallery.id) {
             this.setState({ activeGallery });
         }
