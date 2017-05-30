@@ -373,12 +373,15 @@ const newStory = (id = 1) => ({
 router.get('/:id', (req, res, next) => {
     api.request({
         token: req.session.token.token,
-        url: '/story/' + req.params.id,
+        url: `/story/${req.params.id}`,
+        method: "GET"
     }).then(response => {
+        console.log("here");
         const props = {
-            story: newStory(),
+            story: res.body,
             user: req.session.user
         };
+        console.log("_________props: " + JSON.stringify(props));
         res.render('app', {
             props: JSON.stringify(props),
             config: config,
@@ -387,11 +390,12 @@ router.get('/:id', (req, res, next) => {
             page: 'storyDetail',
             title : 'Story'
         });
-    }).catch( () => {
+    }).catch( (err) => {
         const props = {
             story: newStory(),
             user: req.session.user
         };
+        // console.log("err: " + err);
         res.render('app', {
             props: JSON.stringify(props),
             config: config,
