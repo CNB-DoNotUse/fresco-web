@@ -9,7 +9,6 @@ import { setInLocalStorage, getFromLocalStorage } from 'app/lib/storage';
 class SearchDropdown extends React.Component {
     constructor(props) {
         super(props);
-
     }
 
     componentDidUpdate(prevProps) {
