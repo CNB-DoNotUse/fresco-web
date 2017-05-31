@@ -73,6 +73,7 @@ class SearchDropdown extends React.Component {
     sortByRadio = () => {
         return (
             <GenericRadio
+                className="sortby-time"
                 input1="Captured time"
                 input2="Upload time"
                 name="capture_time"
@@ -83,6 +84,7 @@ class SearchDropdown extends React.Component {
     displayRadio = () => {
         return (
             <GenericRadio
+                className="display-time"
                 input1="Relative time"
                 input2="Absolute time"
                 name="relative_time"
