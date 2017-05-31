@@ -53,7 +53,7 @@ class Sidebar extends React.Component {
                                         )}
 
                                         { admin ?
-                                            <TrustedUser detailUser={ detailUser }/>
+                                            <TrustedUser user={ user } detailUser={ detailUser }/>
                                             : <div></div> }
                                     </ul>
                                 </div>

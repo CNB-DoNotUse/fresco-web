@@ -4,6 +4,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Confirm from 'app/platform/components/dialogs/confirm';
 import api from 'app/lib/api';
+import { mergeReferral } from 'app/lib/referral';
 
 class TrustedUser extends React.Component {
 
@@ -53,7 +54,7 @@ class TrustedUser extends React.Component {
 
     onSave = () => {
         const { confirm, trusted } = this.state;
-        const { detailUser: { id } } = this.props;
+        const { detailUser } = this.props;
         if (!confirm) { //first click
             if (this.mapTrustedStateToSelect(this.props) === this.mapTrustedStateToSelect(this.state)) {
                 // no change has been made
@@ -64,12 +65,24 @@ class TrustedUser extends React.Component {
             }
         } else { //after confirm
             const params = { trusted };
-            api.post(`user/${id}/update`, params)
+            const { user } = this.props;
+            api.post(`user/${detailUser.id}/update`, params)
                 .then((res) => {
                     // @ttention case for redux
                     window.__initialProps__.detailUser = res;
                     // console.log(res);
                     location.reload();
+
+                    if(analytics) {
+                        analytics.track("User trusted status change", mergeReferral({
+                            user_id: detailUser.id,
+                            admin: user.id,
+                            rating: detailUser.rating,
+                            previous_status: this.mapTrustedStateToSelect(this.props),
+                            new_status: this.mapTrustedStateToSelect(this.state),
+                            time: new Date().toString()
+                        }))
+                    }
                 })
                 .catch((err) => {
                     this.context.openAlert({ content: err.msg });
