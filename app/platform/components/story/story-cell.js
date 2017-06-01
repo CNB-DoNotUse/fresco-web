@@ -33,12 +33,12 @@ export default class StoryCell extends React.Component {
 	}
 
 	render() {
-		const { story } = this.props;
+		const { story, key } = this.props;
 		const timestamp = story.updated_at || story.created_at;
 		const timeString = time.formatTime(timestamp);
 		const storyInfo = { videos: 0, images: 0, caption: story.title };
 		return(
-			<li>
+			<li key={key}>
 				<StoryTitle
 					owner={ story.owner }
 					storyInfo={ storyInfo }/>
