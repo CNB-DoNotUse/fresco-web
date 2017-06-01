@@ -374,7 +374,7 @@ router.get('/:id', (req, res, next) => {
     api.request({
         token: req.session.token.token,
         url: `/story/${req.params.id}`,
-        method: "GET"
+        method: "GET",
     }).then(response => {
         console.log("here");
         const props = {
@@ -395,7 +395,7 @@ router.get('/:id', (req, res, next) => {
             story: newStory(),
             user: req.session.user
         };
-        // console.log("err: " + err);
+        console.log("err: " + err);
         res.render('app', {
             props: JSON.stringify(props),
             config: config,
