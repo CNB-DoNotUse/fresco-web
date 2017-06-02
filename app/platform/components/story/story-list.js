@@ -18,6 +18,14 @@ export default class StoryList extends React.Component {
         reloadStories: false,
     };
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            contentWidth: 0,
+            thumbnails: 0
+        }
+    }
+
     // state = {
     //     stories: [],
     // };
@@ -37,6 +45,28 @@ export default class StoryList extends React.Component {
     //         this.setState({ stories });
     //     });
     // }
+
+    componentDidMount() {
+        this.setThumbnails();
+        window.addEventListener("resize", this.setThumbnails);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.setThumbnails);
+    }
+
+    calcNumThumbnails = (width) => {
+		return Math.floor(width / 188) - 1;
+	}
+
+    setThumbnails = () => {
+        const storiesContainer = document.getElementById("stories")
+        const contentWidth = storiesContainer.scrollWidth;
+        this.setState({
+            contentWidth,
+            thumbnails: this.calcNumThumbnails(contentWidth)
+        });
+    }
 
     // Scroll listener for main window
     scroll = (e) => {
@@ -78,7 +108,7 @@ export default class StoryList extends React.Component {
                 onScroll={this.props.scrollable ? this.scroll : null} >
                 <ul className="row tiles" id="stories">
                     {this.unpackStories().map((story, i) => (
-                        <StoryCell story={story} key={i} />
+                        <StoryCell story={story} key={i} thumbnails={this.state.thumbnails} />
                     ))}
                 </ul>
             </div>

@@ -10,10 +10,12 @@ export const StoryThumbnail = ({ src, location, postTime, key, unread }) => (
     </li>
 );
 // @ttention add anchor point for storyLink
-export const StoryViewAll = ({ storyLink, numLeft, owner }) => (
+export const StoryViewAll = ({ storyID, numLeft, owner }) => (
     <li className="story-more">
-        <div className="story-num-left">{ `+${numLeft}` }</div>
-        <p className="post-location">View all submissions</p>
-        <p className="post-time">{ `See all of ${owner}'s content` }</p>
+        <a href={`/story/${storyID}`}>
+            <div className="story-num-left">{ `+${numLeft}` }</div>
+            <p className="post-location">View story in detail</p>
+            <p className="post-time">{ `See all of ${owner}'s content` }</p>
+        </a>
     </li>
 )

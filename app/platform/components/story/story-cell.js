@@ -7,48 +7,52 @@ import { StoryThumbnail, StoryViewAll } from 'app/platform/components/story/stor
  */
 export default class StoryCell extends React.Component {
 
-	constructor(props) {
-		super(props);
-
-		this.onClick = this.onClick.bind(this);
-	}
-
 	onClick = () => {
 		window.location = '/story/' + this.props.story.id;
 	}
 
+	packageThumbnails = () => {
+		const { story, thumbnails } = this.props;
+		const storyThumbs = [];
+		for (let x = 0; x < thumbnails; x ++) {
+			storyThumbs.push(
+				<StoryThumbnail
+					key={`${story.posts[x].id}${x}`}
+					src={`${story.posts[x].image}`}
+					location={story.posts[x].address}
+					postTime="5 minutes ago"/>
+			)
+		}
+		storyThumbs.push(
+			<StoryViewAll
+				storyID={ story.id }
+				owner={ story.owner.username }
+				numLeft={ story.posts.length - thumbnails }/>
+		);
+		return storyThumbs;
+	}
+
 	render() {
-		const { story } = this.props;
+		const { story, key } = this.props;
 		const timestamp = story.updated_at || story.created_at;
 		const timeString = time.formatTime(timestamp);
 		const storyInfo = { videos: 0, images: 0, caption: story.title };
-		const storyThumbs = story.posts.map((post, ind) => (
-			<StoryThumbnail
-				key={ind}
-				src={`${post.image}`}
-				location="New York, NY"
-				postTime="5 minutes ago"/>
-		))
 		return(
-			<li>
-				<a href={'/story/' + story.id}>
+			<li key={key}>
 				<StoryTitle
 					owner={ story.owner }
 					storyInfo={ storyInfo }/>
-				</a>
-
 				<ul className="story-thumbnails">
-					{ storyThumbs }
-					<StoryViewAll
-						storyLink=""
-						owner={ story.owner.username }
-						numLeft={ 5 }/>
+					{ this.packageThumbnails() }
 				</ul>
 			</li>
 		);
 	}
 }
 
+/**
+ * StoryTitle is a header for an individual story
+ */
 export const StoryTitle = ({ owner, storyInfo }) => (
 	<section className="story-info">
 		<UserItem user={ owner }
@@ -58,18 +62,8 @@ export const StoryTitle = ({ owner, storyInfo }) => (
 	</section>
 )
 
-// <StoryThumbnail
-// 	src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"
-// 	location="New York, NY"
-// 	postTime="5 minutes ago"/>
-// <StoryThumbnail
-// 	src="http://i1.kym-cdn.com/photos/images/facebook/000/632/652/6ca.jpg"
-// 	location="New York, NY"
-// 	postTime="5 minutes ago"
-// 	unread={ true }/>
-
 /**
- * Post Cell Images
+ * Post Cell Images DEPRECATED
  */
 class StoryCellImages extends React.Component {
 
