@@ -23,7 +23,7 @@ export default class StoryList extends React.Component {
     // };
     //
     // componentDidMount() {
-    //     this.loadInitialStories();
+    //     this.props.getStories();
     // }
     //
     // componentWillReceiveProps(nextProps) {

@@ -155,7 +155,7 @@ class StoryDetail extends React.Component {
                 <div className="story-container">
                     <StorySummary
                         title={story.title}
-                        body={ fillerBody }/>
+                        body={ story.caption }/>
                     <StoryTitle
                         owner={ story.owner }
                         storyInfo={{ videos: 0, images: 0, caption: story.title }}/>

@@ -19,7 +19,8 @@ import { changeSearch,
     getTags,
     moveUser,
     moveAssignment,
-    resetParams
+    resetParams,
+    getStories,
 } from 'app/redux/actions/stories';
 
 /**
@@ -45,7 +46,8 @@ class Stories extends React.Component {
             getTags,
             moveAssignment,
             moveUser,
-            resetParams
+            resetParams,
+            getStories
         } = this.props;
         return (
             <App user={this.props.user} page="stories">
@@ -61,7 +63,7 @@ class Stories extends React.Component {
                     resetParams={resetParams}/>
 
                 <StoryList
-                    loadStories={this.loadStories}
+                    getStories={ getStories }
                     scrollable
                     stories={ stories }
                 />
@@ -98,7 +100,8 @@ const mapDispatchToProps = (dispatch) => ({
     getTags: (query) => dispatch(getTags(query)),
     moveUser: (userID) => dispatch(moveUser(userID)),
     moveAssignment: (assignmentID) => dispatch(moveAssignment(assignmentID)),
-    resetParams: () => dispatch(resetParams())
+    resetParams: () => dispatch(resetParams()),
+    getStories: () => dispatch(getStories())
 });
 
 export default connect(
