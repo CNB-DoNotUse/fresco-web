@@ -29,10 +29,19 @@ export default class DispatchMap extends React.Component {
     componentDidMount() {
         // Set up session storage for location
         if (!window.sessionStorage.dispatch) {
-            window.sessionStorage.dispatch = JSON.stringify({
-                mapCenter: { lat: 40.7, lng: -74 },
-                mapZoom: 12,
-            });
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    window.sessionStorage.dispatch = JSON.stringify({
+                        mapCenter: { lat: position.coords.latitude, lng: position.coords.longitude },
+                        mapZoom: 12,
+                    });
+                })
+            } else {
+                window.sessionStorage.dispatch = JSON.stringify({
+                    mapCenter: { lat: 40.7, lng: -74 },
+                    mapZoom: 12,
+                });
+            }
         }
 
         // Grab dispatch info saved in local storage
@@ -129,7 +138,9 @@ export default class DispatchMap extends React.Component {
             //Check if there's already a new assignment marker and a previous new assignment
             if(newAssignmentMarker && newAssignmentCircle && prevNewAssignment){
                 //Compare to make sure we don't change the marker unless its position hasn't actually changed
-                if(JSON.stringify(newAssignment.location) !== JSON.stringify(prevNewAssignment.location)){
+                if(JSON.stringify(newAssignment.location) !== JSON.stringify(prevNewAssignment.location) &&
+                    JSON.stringify(newAssignment.location) !== '{"lat":0,"lng":0}' ){
+
                     newAssignmentMarker.setPosition(newAssignment.location);
                     newAssignmentCircle.setCenter(newAssignmentMarker.getPosition());
 
@@ -151,7 +162,9 @@ export default class DispatchMap extends React.Component {
                 };
 
                 //Update the maps center to reflect the new positon of the marker
-                map.setCenter(newAssignmentMarker.getPosition());
+                if (JSON.stringify(newAssignmentMarker.getPosition()) !== '{"lat":0,"lng":0}') {
+                    map.setCenter(newAssignmentMarker.getPosition());
+                }
 
                 google.maps.event.addListener(newAssignmentMarker, 'dragend', (ev) => {
                     //Send up location to the parent
@@ -170,7 +183,7 @@ export default class DispatchMap extends React.Component {
                 this.setState({  newAssignmentMarker, newAssignmentCircle });
 
                 //Update the position to the parent component
-                updateNewAssignment(location, null, null);
+                updateNewAssignment({lat: 0, lng: 0}, null, null);
             }
         } else if(prevProps.newAssignment) {
             newAssignmentMarker.setMap(null);
@@ -384,7 +397,7 @@ export default class DispatchMap extends React.Component {
 
         //Default to position or center of map
         if(!position){
-            position = {lat: map.getCenter().lat(), lng: map.getCenter().lng()};
+            position = {lat: 0, lng: 0};
         }
 
         return new google.maps.Marker({
@@ -416,9 +429,9 @@ export default class DispatchMap extends React.Component {
     }
 
     /**
-     * Updates all the user markers on the map. Compares the passed in 
-     * new users, to the current state users, if there are matching users with 
-     * different locations, the markers on the map will be updated. Sets state at 
+     * Updates all the user markers on the map. Compares the passed in
+     * new users, to the current state users, if there are matching users with
+     * different locations, the markers on the map will be updated. Sets state at
      * the end with updated users and markers.
      * @param {newUsers} Object The new users to update the map with. Organized by the hash id
      */

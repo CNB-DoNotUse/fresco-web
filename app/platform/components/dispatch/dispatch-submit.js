@@ -137,7 +137,6 @@ export default class DispatchSubmit extends React.Component {
         const radiusInMiles = utils.feetToMiles(parseFloat(this.refs['radius'].value));
 
         if (radiusInMiles == 'NaN') return;
-
         this.props.updateNewAssignment(
             this.props.newAssignment.location,
             radiusInMiles,

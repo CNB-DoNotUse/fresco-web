@@ -70,38 +70,35 @@ export default class GalleryEdit extends React.Component {
     }
 
     onFirstClick = (type) => {
-        return () => {
-
-            let confirmHeader, confirmBody, confirmButton, confirmFunction;
-            switch (type) {
-                case "verify":
-                    const { galleryType } = this.props;
-                    const { posts, editAll, location } = this.state;
-                    // this is the conditional that determines whether to prevent an admin from adding location-less posts
-                    if ((!editAll || (editAll && !location)) && (!postsHaveLocation(posts)) && !(galleryType === 'imports')) {
-                        confirmHeader = "There's a missing location";
-                        confirmBody = "Please check that all posts have a location";
-                        confirmButton = "Dismiss";
-                        confirmFunction = this.onConfirmCancel.bind(this);
-                    } else {
-                        this.onVerify();
-                        return;
-                    }
-                    break;
-                case "skip":
-                    this.onSkip();
+        let confirmHeader, confirmBody, confirmButton, confirmFunction;
+        switch (type) {
+            case "verify":
+                const { galleryType } = this.props;
+                const { posts, editAll, location } = this.state;
+                // this is the conditional that determines whether to prevent an admin from adding location-less posts
+                if ((!editAll || (editAll && !location)) && (!postsHaveLocation(posts)) && !(galleryType === 'imports')) {
+                    confirmHeader = "There's a missing location";
+                    confirmBody = "Please check that all posts have a location";
+                    confirmButton = "Dismiss";
+                    confirmFunction = this.onConfirmCancel.bind(this);
+                } else {
+                    this.onVerify();
                     return;
-                case "delete":
-                    confirmHeader = "Delete Gallery";
-                    confirmBody = "WARNING: Are you sure you want to delete this gallery?";
-                    confirmButton = "Delete";
-                    confirmFunction = this.onRemove.bind(this);
-                    break;
-            }
-            this.setState({confirm: true, confirmHeader, confirmBody, confirmButton, confirmFunction });
+                }
+                break;
+            case "skip":
+                this.onSkip();
+                return;
+            case "delete":
+                confirmHeader = "Delete Gallery";
+                confirmBody = "WARNING: Are you sure you want to delete this gallery?";
+                confirmButton = "Delete";
+                confirmFunction = this.onRemove.bind(this);
+                break;
         }
-
+        this.setState({confirm: true, confirmHeader, confirmBody, confirmButton, confirmFunction });
     }
+
 
     onConfirmCancel = () => {
         this.setState({ confirm: false, confirmHeader: '', confirmBody: '', confirmButton: '' });
@@ -534,7 +531,7 @@ export default class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right"
-                        onClick={() => this.setState({ rating: 2 }, this.onFirstClick("verify")) }
+                        onClick={() => this.setState({ rating: 2 }, () => this.onFirstClick("verify")) }
                         disabled={loading}
                     >
                         Verify
@@ -542,7 +539,7 @@ export default class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right"
-                        onClick={() => this.setState({ rating: 1 }, this.onFirstClick("skip"))}
+                        onClick={() => this.setState({ rating: 1 }, () => this.onFirstClick("skip"))}
                         disabled={loading}
                     >
                         Skip
