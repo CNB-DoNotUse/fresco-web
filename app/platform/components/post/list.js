@@ -19,7 +19,6 @@ class PostList extends React.Component {
         super(props);
 
         this.loading = false;
-
         this.state = {
             posts: props.posts || [],
             scrollable: props.scrollable,

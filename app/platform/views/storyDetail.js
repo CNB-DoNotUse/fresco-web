@@ -18,7 +18,6 @@ import StoriesTopBar from 'app/platform/components/story/topbar';
  * Story Detail Parent Object, made of a side column and PostList
  */
 
-const fillerBody = "When the war ended in 1918, Mondrian returned to France where he would remain until 1938. Immersed in the crucible of artistic innovation that was post-war Paris, he flourished in an atmosphere of intellectual freedom that enabled him to embrace an art of pure abstraction for the rest of his life. Mondrian began producing grid-based paintings in late 1919, and in 1920, the style for which he came to be renowned began to appear. In the early paintings of this style the lines delineating the rectangular forms are relatively thin, and they are gray, not black. The lines also tend to fade as they approach the edge of the painting, rather than stopping abruptly. The forms themselves, smaller and more numerous than in later paintings, are filled with primary colors, black, or gray, and nearly all of them are colored; only a few are left white. Piet Mondriaan abstract painting Composition II in Red, Blue, and Yellow, 1930 Composition II in Red, Blue, and Yellow, 1930 During late 1920 and 1921, Mondrian's paintings arrive at what is to casual observers their definitive and mature form. Thick black lines now separate the forms, which are larger and fewer in number, and more of the forms are left white. This was not the culmination of his artistic evolution, however. Although the refinements became subtler, Mondrian's work continued to evolve during his years in Paris.";
 
 class StoryDetail extends React.Component {
     state = {
@@ -125,8 +124,8 @@ class StoryDetail extends React.Component {
             type: 'GET',
             data: params,
             dataType: 'json',
-        }).always(() => {
-            callback(story.posts);
+        }).always((posts) => {
+            callback(posts);
         })
         // .done((res) => {
         //     callback(res);
@@ -136,6 +135,25 @@ class StoryDetail extends React.Component {
         //     callback([]);
         // });
     };
+
+    getPosts = () => {
+        const { story, sortBy } = this.state;
+        const params = {
+            sortBy,
+            limit: 10,
+        };
+        let posts;
+        $.ajax({
+            url: `/api/story/${story.id}/posts`,
+            type: 'GET',
+            data: params,
+            dataType: 'json',
+        }).always((something) => {
+            debugger
+            posts = something;
+        });
+        return posts;
+    }
 
     render() {
         const { user } = this.props;
@@ -148,7 +166,7 @@ class StoryDetail extends React.Component {
                 page={page}
             >
                 <StoriesTopBar
-                    title={`${story.owner.full_name}'s story from New York`}
+                    title={`${story.owner.full_name}'s story from ${story.address}`}
                     searchParams={ initialSearchParams }
                     onChange={() => {}}/>
 
