@@ -82,18 +82,13 @@ export default class GalleryEdit extends React.Component {
                     confirmButton = "Dismiss";
                     confirmFunction = this.onConfirmCancel.bind(this);
                 } else {
-                    confirmHeader = "Verify Gallery";
-                    confirmBody = "Are you sure you want to verify this gallery?";
-                    confirmButton = "Verify";
-                    confirmFunction = this.onVerify.bind(this);
+                    this.onVerify();
+                    return;
                 }
                 break;
             case "skip":
-                confirmHeader = "Skip Gallery";
-                confirmBody = "Are you sure you want to skip this gallery?";
-                confirmButton = "Skip";
-                confirmFunction = this.onSkip.bind(this);
-                break;
+                this.onSkip();
+                return;
             case "delete":
                 confirmHeader = "Delete Gallery";
                 confirmBody = "WARNING: Are you sure you want to delete this gallery?";
@@ -102,6 +97,7 @@ export default class GalleryEdit extends React.Component {
                 break;
         }
         this.setState({confirm: true, confirmHeader, confirmBody, confirmButton, confirmFunction });
+
     }
 
     onConfirmCancel = () => {
@@ -170,7 +166,7 @@ export default class GalleryEdit extends React.Component {
     /**
      * Gets all form data and verifies gallery.
      */
-    onVerify() {
+    onVerify = () => {
         if (this.state.loading) return;
         this.setState({ loading: true });
         const { onUpdateGallery, gallery } = this.props;
@@ -200,7 +196,7 @@ export default class GalleryEdit extends React.Component {
     /**
      * Removes gallery
      */
-    onRemove() {
+    onRemove = () => {
         if (this.state.loading) return;
         this.setState({ loading: true });
         const { onUpdateGallery, gallery } = this.props;
@@ -224,7 +220,7 @@ export default class GalleryEdit extends React.Component {
     /**
      * Skips gallery
      */
-    onSkip() {
+    onSkip = () => {
         if (this.state.loading) return;
         this.setState({ loading: true });
         const { onUpdateGallery, gallery } = this.props;
@@ -288,7 +284,7 @@ export default class GalleryEdit extends React.Component {
             caption,
             is_nsfw,
             ...this.getPostsParams(),
-            ...utils.getRemoveAddParams('stories', gallery.stories, stories),
+            ...utils.getRemoveAddParams('stories', gallery.stories || [], stories),
             external_account_name,
             external_source,
             rating,
@@ -543,7 +539,7 @@ export default class GalleryEdit extends React.Component {
                     <button
                         type="button"
                         className="btn btn-flat pull-right"
-                        onClick={() => this.setState({ rating: 1, confirm: true }, this.onFirstClick("skip"))}
+                        onClick={() => this.setState({ rating: 1 }, this.onFirstClick("skip"))}
                         disabled={loading}
                     >
                         Skip
