@@ -70,33 +70,36 @@ export default class GalleryEdit extends React.Component {
     }
 
     onFirstClick = (type) => {
-        let confirmHeader, confirmBody, confirmButton, confirmFunction;
-        switch (type) {
-            case "verify":
-                const { galleryType } = this.props;
-                const { posts, editAll, location } = this.state;
-                // this is the conditional that determines whether to prevent an admin from adding location-less posts
-                if ((!editAll || (editAll && !location)) && (!postsHaveLocation(posts)) && !(galleryType === 'imports')) {
-                    confirmHeader = "There's a missing location";
-                    confirmBody = "Please check that all posts have a location";
-                    confirmButton = "Dismiss";
-                    confirmFunction = this.onConfirmCancel.bind(this);
-                } else {
-                    this.onVerify();
+        return () => {
+
+            let confirmHeader, confirmBody, confirmButton, confirmFunction;
+            switch (type) {
+                case "verify":
+                    const { galleryType } = this.props;
+                    const { posts, editAll, location } = this.state;
+                    // this is the conditional that determines whether to prevent an admin from adding location-less posts
+                    if ((!editAll || (editAll && !location)) && (!postsHaveLocation(posts)) && !(galleryType === 'imports')) {
+                        confirmHeader = "There's a missing location";
+                        confirmBody = "Please check that all posts have a location";
+                        confirmButton = "Dismiss";
+                        confirmFunction = this.onConfirmCancel.bind(this);
+                    } else {
+                        this.onVerify();
+                        return;
+                    }
+                    break;
+                case "skip":
+                    this.onSkip();
                     return;
-                }
-                break;
-            case "skip":
-                this.onSkip();
-                return;
-            case "delete":
-                confirmHeader = "Delete Gallery";
-                confirmBody = "WARNING: Are you sure you want to delete this gallery?";
-                confirmButton = "Delete";
-                confirmFunction = this.onRemove.bind(this);
-                break;
+                case "delete":
+                    confirmHeader = "Delete Gallery";
+                    confirmBody = "WARNING: Are you sure you want to delete this gallery?";
+                    confirmButton = "Delete";
+                    confirmFunction = this.onRemove.bind(this);
+                    break;
+            }
+            this.setState({confirm: true, confirmHeader, confirmBody, confirmButton, confirmFunction });
         }
-        this.setState({confirm: true, confirmHeader, confirmBody, confirmButton, confirmFunction });
 
     }
 
