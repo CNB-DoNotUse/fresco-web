@@ -21,7 +21,6 @@ class AdminAssignmentListItem extends React.Component {
         const outlets = assignment.outlets.map((outlet) => outlet.title).join(", ");
 
         const defaultLocale = assignment.location && ( assignment.location.coordinates[0] === 0 && assignment.location.coordinates[1] === 0 )
-        debugger
         return (
             <div
                 className={`list-item assignment ${active ? 'active' : ''}`}
