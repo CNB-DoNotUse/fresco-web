@@ -115,7 +115,8 @@ Account.prototype.processSignup = function() {
 	if(this.signupProcessing) return;
 
 	this.signupProcessing = true;
-
+	let refererVal = null;
+	if (document.getElementById('referer')) referereVal = document.getElementById('referer').value;
 	//Set up fields
 	let params = {
 		'title': {
@@ -152,7 +153,7 @@ Account.prototype.processSignup = function() {
 			value: document.getElementById('outlet-password').value
 		},
 		'source' : {
-			value: document.getElementById('referer').value
+			value: refererVal
 		}
 	};
 
