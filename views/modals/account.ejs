@@ -139,5 +139,8 @@
 		<% if(signup){ %>
 			<div id="signup-auto"></div>
 		<% } %>
+		<% if(ref) { %>
+			<input id="referer" type="hidden" value=<%- ref %>></input>	
+		<%} %>
 	</div>
 </div>

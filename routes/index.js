@@ -8,10 +8,6 @@ const API  = require('../lib/api');
  * Root index for the landing page
  */
 
-function contains(string1, string2) {
-    return string2.split(string1).length > 0;
-}
-
 // use regex to parse the ref param?
 
 router.get('/:modal?', (req, res, next) => {
@@ -50,9 +46,9 @@ router.get('/:modal?', (req, res, next) => {
         modal: req.params.modal,
         modals: routes.modals,
         aliases: routes.aliases,
-        signup: false,
-        ref: false,
-        autoplay: false
+        signup: req.query.signup === 'true' ? true : false,
+        ref: req.query.ref,
+        autoplay: req.query.autoplay === 'true' ? true : false
     });
 });
 
@@ -87,6 +83,9 @@ router.get('/join/:token', (req, res, next) => {
             modal: 'join',
             aliases: routes.aliases,
             modals: routes.modals.concat('join'),
+            signup: req.query.signup === 'true' ? true : false,
+            ref: req.query.ref,
+            autoplay: req.query.autoplay === 'true' ? true : false
         });
     })
     .catch(error => {
@@ -107,7 +106,10 @@ router.get('/reset/success', (req, res, next) => {
         page: 'index',
         modal: 'reset-success',
         aliases: routes.aliases,
-        modals: routes.modals
+        modals: routes.modals,
+        signup: req.query.signup === 'true' ? true : false,
+        ref: req.query.ref,
+        autoplay: req.query.autoplay === 'true' ? true : false
     });
 });
 
@@ -133,6 +135,9 @@ router.get('/reset/:token', (req, res, next) => {
             hasOutlet: body.outlet !== undefined,
             aliases: routes.aliases,
             modals: routes.modals.concat('reset'),
+            signup: req.query.signup === 'true' ? true : false,
+            ref: req.query.ref,
+            autoplay: req.query.autoplay === 'true' ? true : false
         });
     })
     .catch(error => {
