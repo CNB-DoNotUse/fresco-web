@@ -1649,7 +1649,7 @@ div.admin {
 	position: fixed;
 	z-index: $z-dialog-under;
 	bottom: -276px;
-	right: 32px;
+	right: 80px;
 	margin: 0;
 	padding: 0;
 	width: 640px;
@@ -1685,9 +1685,9 @@ div.admin {
 .edit {
 	position: fixed;
 	top: 105%;
-	left: 5%;
+	left: 20%;
 	z-index: $z-dialog-over;
-	width: 90%;
+	width: 66%;
 	height: 90%;
 	border-radius: 2px;
 	@include transition-duration(0.3s);

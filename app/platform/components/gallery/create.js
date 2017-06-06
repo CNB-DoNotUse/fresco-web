@@ -154,7 +154,7 @@ class Create extends React.Component {
                         </div>
 
                         <div className="dialog-body">
-                            <div className="dialog-col col-xs-12 col-md-7 form-group-default">
+                            <div className="dialog-col col-xs-12 col-md-5 form-group-default">
                                 <div className="dialog-row">
                                     <textarea
                                         value={caption}
@@ -191,7 +191,7 @@ class Create extends React.Component {
 
                             <EditPosts
                                 originalPosts={posts}
-                                className="dialog-col col-xs-12 col-md-5"
+                                className="dialog-col col-xs-12 col-md-7"
                             />
                         </div>
                     </div>

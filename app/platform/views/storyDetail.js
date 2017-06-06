@@ -166,7 +166,7 @@ class StoryDetail extends React.Component {
                 page={page}
             >
                 <StoriesTopBar
-                    title={`${story.owner.full_name}'s story from ${story.address}`}
+                    title={`${story.owner ? story.owner.full_name : 'Fresco'}'s story from ${story.address || 'New York, NY'}`}
                     searchParams={ initialSearchParams }
                     onChange={() => {}}/>
 
@@ -174,9 +174,11 @@ class StoryDetail extends React.Component {
                     <StorySummary
                         title={story.title}
                         body={ story.caption }/>
-                    <StoryTitle
-                        owner={ story.owner }
-                        storyInfo={{ videos: 0, images: 0, caption: story.title }}/>
+                    { story.owner &&
+                        <StoryTitle
+                            owner={ story.owner }
+                            storyInfo={{ videos: 0, images: 0, caption: story.title }}/>
+                    }
 
                         <PostList
                             loadPosts={this.loadPosts}
