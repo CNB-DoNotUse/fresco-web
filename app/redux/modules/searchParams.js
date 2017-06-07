@@ -21,7 +21,7 @@ import { setInLocalStorage } from 'app/lib/storage';
 import { fromJS } from 'immutable';
 
 const searchParams = (state = {}, action) => {
-    const newState = state.toJS();
+    const newState = state.toJS ? state.toJS() : state;
     switch (action.type) {
         case CHANGE_SEARCH:
             const { param, value } = action.searchParam;

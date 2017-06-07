@@ -2,7 +2,6 @@ import api from 'app/lib/api';
 import utils from 'utils';
 import { enableLoading, toggleSnackbar, toggleModal } from './ui';
 import { findById } from 'app/lib/helpers';
-import { initialSearchParams } from 'app/platform/views/stories';
 
 export const RECEIVE_STORIES = 'RECEIVE_STORIES';
 export const RECEIVE_ONE_STORY = 'RECEIVE_ONE_STORY';
@@ -101,7 +100,24 @@ export const editNewStory = story => ({
 
 export const resetParams = () => ({
     type: RESET_PARAMS,
-    params: initialSearchParams
+    params: {
+        verified: true,
+        unverified: false,
+        purchased: true,
+        notPurchased: false,
+        capturedTime: true,
+        relativeTime: true,
+        location,
+        address: '',
+        radius: 250,
+        searchTerm: '',
+        users: {},
+        assignments:{},
+        tags: {},
+        loading: false,
+        errors: {},
+        params: { users: {}, assignments: {}, tags: {} }
+    }
 })
 // export const createStory = story => ({
 //     type: CREATE_STORY,
