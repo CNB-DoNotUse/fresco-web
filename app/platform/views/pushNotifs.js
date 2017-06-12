@@ -9,7 +9,7 @@ import PushNotifs from '../containers/PushNotifs';
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
-
+debugger
 const { user } = window.__initialProps__;
 const store = configureStore({ user });
 
@@ -21,4 +21,3 @@ ReactDOM.render(
     </Root>,
     document.getElementById('app')
 );
-

@@ -4,6 +4,7 @@ import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 import EditPosts from './edit-posts';
 import ChipInput from '../global/chip-input';
+import NewBulkEdit from 'app/platform/components/admin/new-bulk-edit';
 
 /**
  * Component for editing multiple posts at once (from possibly different galleries)
@@ -40,7 +41,7 @@ class BulkEdit extends React.Component {
             if (Array.isArray(res)) galleries = res;
             else galleries = [res];
         })
-        .then(() => this.setState(this.getStateFromGalleries(galleries)));
+        .then(() => this.setState(this.getStateFromGalleries(galleries), () => console.log("here")));
     }
 
     /**
@@ -214,7 +215,9 @@ class BulkEdit extends React.Component {
                             />
                         </div>
 
-                        {this.renderBody()}
+                        <NewBulkEdit
+                            posts={this.props.posts}
+                            onUpdateGallery={() => {}}/>
                         {this.renderFooter()}
                     </div>
                 </div>

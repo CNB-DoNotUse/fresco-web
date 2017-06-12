@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PostsArchive from 'app/platform/components/archive/posts';
+import configureStore from 'app/redux/store/immutableStore';
+
 
 /**
  * Photos Parent View

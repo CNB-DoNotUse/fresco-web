@@ -5,7 +5,7 @@ import createLogger from 'redux-logger';
 import rootReducer from '../modules/reducer';
 
 /**
- * Immutable js store. 
+ * Immutable js store.
  */
 export default function configureStore(initialState) {
     const middleware = [thunk];
@@ -38,7 +38,6 @@ export default function configureStore(initialState) {
     } else {
         enhancer = applyMiddleware(...middleware);
     }
-
     // See https://github.com/rackt/redux/releases/tag/v3.1.0
     const store = createStore(rootReducer, fromJS(initialState), enhancer);
 

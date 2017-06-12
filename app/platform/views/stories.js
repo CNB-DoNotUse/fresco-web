@@ -857,7 +857,7 @@ if (localStorage.getItem("searchParams")) {
     searchParams = initialSearchParams;
 }
 
-
+console.log( "somehting");
 const store = configureStore({ user, searchParams, stories: stories() });
 ReactDOM.render(
     <Root store={store}>
