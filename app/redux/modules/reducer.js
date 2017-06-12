@@ -5,6 +5,7 @@ import pushNotifs from './pushNotifs';
 import user from './user';
 import searchParams from './searchParams';
 import stories from './stories';
+import storyCreation from './story_creation_reducer'
 
 /**
  * Old main reducer.
@@ -15,5 +16,6 @@ export default combineReducers({
     pushNotifs,
     user,
     searchParams,
-    stories
+    stories,
+    storyCreation
 });

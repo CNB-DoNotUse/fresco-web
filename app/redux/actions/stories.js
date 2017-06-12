@@ -152,14 +152,7 @@ export function getTags(query) {
     }
 }
 
-export function createStory(story) {
-    return (dispatch) => {
-        return api.post('story/create', story)
-          .then(oneStory => dispatch(receiveOneStory(oneStory)),
-          error => dispatch(receiveError(error))
-        );
-    };
-}
+
 
 export function deleteStory(story_id) {
     return (dispatch) => {
