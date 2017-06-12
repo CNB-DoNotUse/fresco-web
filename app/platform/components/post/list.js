@@ -171,7 +171,8 @@ class PostList extends React.Component {
      * toggle selected or unselected in the post-list and bulk edit
      */
     togglePost = (passedPost) => {
-        const { selectedPosts } = this.state;
+        const selectedPosts = this.props.storyCreation.posts;
+        const { addPost, removePost } = this.props.postFunctions;
         const roles = this.props.user.roles;
 
         // Check if `not` CM
@@ -181,15 +182,12 @@ class PostList extends React.Component {
         // Post not found, so add
         let newSelected = [];
         if (!selectedPosts.some(s => s.id === passedPost.id)) {
-            // Make sure we haven't reached the limit
-            if (selectedPosts.length >= utils.limits.galleryItems) {
-                $.snackbar({ content: `Galleries can only contain up to ${utils.limits.galleryItems} items!` });
-                return;
-            }
-            newSelected = selectedPosts.concat(passedPost);
+            // newSelected = selectedPosts.concat(passedPost);
+            addPost(passedPost);
         } else {
             // No post found
-            newSelected = selectedPosts.filter(post => post.id !== passedPost.id);
+            removePost(passedPost);
+            // newSelected = selectedPosts.filter(post => post.id !== passedPost.id);
         }
 
         this.setSelectedPosts(newSelected);
@@ -269,9 +267,9 @@ class PostList extends React.Component {
     }
 
     render() {
-        const { className, onScroll } = this.props;
+        const { className, onScroll, storyCreation } = this.props;
+        const selectedPosts = storyCreation.posts;
         const {
-            selectedPosts,
             scrollable,
             galleryBulkEditToggled,
             galleryCreateToggled,

@@ -9,6 +9,19 @@ import PostList from '../post/list';
 import TopBar from '../topbar';
 import TagFilter from '../topbar/tag-filter';
 import LocationDropdown from '../topbar/location-dropdown';
+import { connect } from 'react-redux';
+import { Map } from 'immutable';
+
+import {
+    addPost,
+    removePost,
+    addTag,
+    removeTag,
+    changeCaption,
+    changeTitle,
+    changeHighlighted,
+    clearFields
+} from 'app/redux/actions/stories_create';
 
 /**
  * Archive Component (composed of PostList and Navbar)
@@ -30,6 +43,7 @@ class Posts extends React.Component {
     };
 
     reloadPosts = false;
+
 
     onVerifiedToggled = (verifiedToggle) => {
         this.setState({ verifiedToggle });
@@ -97,12 +111,12 @@ class Posts extends React.Component {
     };
 
     render() {
-        const { user, title, page } = this.props;
+        const { user, title, page, storyCreation, storyFunctions, postFunctions } = this.props;
         const { sortBy, verifiedToggle, location, tags } = this.state;
-
+        console.log(this.props);
         return (
             <App
-                user={user} 
+                user={user}
                 page={page}
             >
                 <TopBar
@@ -139,10 +153,39 @@ class Posts extends React.Component {
                     scrollable
                     user={user}
                     page={page}
+                    storyCreation={storyCreation}
+                    postFunctions={postFunctions}
+                    storyFunction={storyFunctions}
                 />
             </App>
         );
     }
 }
 
-export default Posts;
+
+const mapStateToProps = (state) => {
+    const storyCreation = state.get('storyCreation', Map());
+    return ({
+        storyCreation
+    });
+}
+
+const mapDispatchToProps = (dispatch) => ({
+    postFunctions: {
+        addPost: (post) => dispatch(addPost(post)),
+        removePost: (post) => dispatch(removePost(post))
+    },
+    storyFunctions: {
+        addTag: (tag) => dispatch(addTag(tag)),
+        removeTag: (tag) => dispatch(removeTag(tag)),
+        changeCaption: (caption) => dispatch(changeCaption(caption)),
+        changeTitle: (title) => dispatch(changeTitle(title)),
+        changeHighlighted: (highlighted) => dispatch(changeHighlighted(highlighted)),
+        clearFields: () => dispatch(clearFields())
+    }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Posts);

@@ -178,7 +178,7 @@ class BulkEdit extends React.Component {
                     className="btn btn-flat"
                     disabled={loading}
                 >
-                    Clear All
+                    Clear fields
                 </button>
                 <button
                     onClick={() => this.onClickSave()}
@@ -186,7 +186,7 @@ class BulkEdit extends React.Component {
                     className="btn btn-flat pull-right"
                     disabled={loading}
                 >
-                    Save
+                    Edit posts
                 </button>
                 <button
                     onClick={this.props.onHide}
@@ -194,7 +194,7 @@ class BulkEdit extends React.Component {
                     className="btn btn-flat pull-right toggle-bedit"
                     disabled={loading}
                 >
-                    Discard
+                    Discard changes
                 </button>
             </div>
         );

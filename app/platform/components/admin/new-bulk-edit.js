@@ -42,24 +42,10 @@ export default class NewBulkEdit extends React.Component {
         const { posts } = props;
 
         return {
-            // assignment: get(gallery, 'assignments[0]'),
-            // editButtonsEnabled: false,
-            // tags: gallery.tags || [],
-            // stories: gallery.stories || [],
-            // caption: gallery.caption || 'No Caption',
             loading: false,
-            // external_account_name: gallery.external_account_name,
-            // external_source: gallery.external_source,
-            // rating: gallery.rating,
             posts: posts,
-            // is_nsfw: gallery.is_nsfw,
-            // owner: gallery.owner,
-            // ...this.getInitialLocationData(gallery),
-            // bylineDisabled: (isImportedGallery(gallery) && !!gallery.owner),
             currentPostIndex: 0,
             editAll: true,
-            // address: gallery.posts[0].address,
-            // location: gallery.posts[0].location,
             confirm: false
         };
     }
@@ -83,12 +69,6 @@ export default class NewBulkEdit extends React.Component {
                     confirmFunction = this.onVerify.bind(this);
                 }
                 break;
-            // case "skip":
-            //     confirmHeader = "Skip Gallery";
-            //     confirmBody = "Are you sure you want to skip this gallery?";
-            //     confirmButton = "Skip";
-            //     confirmFunction = this.onSkip.bind(this);
-            //     break;
             case "delete":
                 confirmHeader = "Delete Gallery";
                 confirmBody = "WARNING: Are you sure you want to delete this gallery?";
@@ -151,99 +131,6 @@ export default class NewBulkEdit extends React.Component {
         }
     }
 
-    // onChangeOwner = (owner) => {
-    //     const { gallery } = this.props;
-    //     this.setState({
-    //         owner,
-    //         bylineDisabled: !!owner,
-    //         external_account_name: gallery.external_account_name,
-    //         external_source: gallery.external_source,
-    //     });
-    // }
-
-    /**
-     * Gets all form data and verifies gallery.
-     */
-    // onVerify() {
-    //     if (this.state.loading) return;
-    //     this.setState({ loading: true });
-    //     const { onUpdateGallery, gallery } = this.props;
-    //     const params = this.getFormData();
-    //     const postsToDelete = get(params, 'posts_remove', []);
-    //
-    //     //bug in these lines!
-    //     // https://trello.com/c/jbQRjUEw/211-unable-to-verify-gallery-bug
-    //     saveGallery(gallery.id, params) //passing
-    //     .then(() => {
-    //         deletePosts(postsToDelete); //check this method probably no
-    //         debugger
-    //     })
-    //     .then(() => {
-    //         onUpdateGallery(gallery.id); //or this method more likely
-    //         $.snackbar({
-    //             content: 'Gallery verified! Click to open',
-    //             timeout: 5000,
-    //         }).click(() => {
-    //             const win = window.open(`/gallery/${gallery.id}`, '_blank');
-    //             win.focus();
-    //         });
-    //     })
-    //     .catch(() => {
-    //         this.setState({ loading: false });
-    //         $.snackbar({ content: 'Unable to verify gallery' });
-    //     });
-    // }
-
-    /**
-     * Removes gallery
-     */
-    // onRemove() {
-    //     if (this.state.loading) return;
-    //     this.setState({ loading: true });
-    //     const { onUpdateGallery, gallery } = this.props;
-    //
-    //     $.ajax({
-    //         url: `/api/gallery/${gallery.id}/delete`,
-    //         method: 'POST',
-    //         dataType: 'json',
-    //         contentType: 'application/json',
-    //     })
-    //     .done(() => {
-    //         onUpdateGallery(gallery.id);
-    //         $.snackbar({ content: 'Gallery deleted' });
-    //     })
-    //     .fail(() => {
-    //         this.setState({ loading: false });
-    //         $.snackbar({ content: 'Unable to delete gallery' });
-    //     });
-    // }
-
-    /**
-     * Skips gallery
-     */
-    // onSkip() {
-    //     if (this.state.loading) return;
-    //     this.setState({ loading: true });
-    //     const { onUpdateGallery, gallery } = this.props;
-    //     const { rating } = this.state;
-    //     const params = { ...this.getPostsParams(), rating };
-    //     const postsToDelete = get(params, 'posts_remove', []);
-    //
-    //     saveGallery(gallery.id, params)
-    //     .then(() => {
-    //         deletePosts(postsToDelete);
-    //     })
-    //     .then(() => {
-    //         onUpdateGallery(gallery.id);
-    //         $.snackbar({ content: 'Gallery skipped! Click to open', timeout: 5000 })
-    //             .click(() => { window.open(`/gallery/${gallery.id}`); });
-    //     })
-    //     .catch(() => {
-    //         this.setState({ loading: false });
-    //         $.snackbar({ content: 'Unable to skip gallery' });
-    //     });
-    // }
-
     onToggleDeletePost(post) {
         let { posts } = this.state;
         if (posts.some(p => p.id === post.id)) {
@@ -264,13 +151,9 @@ export default class NewBulkEdit extends React.Component {
         const {
             tags,
             caption,
-            address,
             stories,
-            external_account_name,
-            external_source,
             rating,
             is_nsfw,
-            owner,
             editAll,
         } = this.state;
         const { gallery } = this.props;
@@ -302,9 +185,6 @@ export default class NewBulkEdit extends React.Component {
         });
         return params;
     }
-
-
-
 
 // TODO: EDIT THIS SO THAT IT CANNOT ALTER LOCATIONS IF THEy ARE ALREADY
     getPostsParams() {
@@ -375,29 +255,22 @@ export default class NewBulkEdit extends React.Component {
 
     render() {
         const {
-            location,
-            address,
-            stories,
             tags,
             caption,
             assignment,
             loading,
-            external_account_name,
-            external_source,
             is_nsfw,
             posts,
             owner,
-            bylineDisabled,
             currentPostIndex,
-            editAll,
             confirm,
             confirmBody,
             confirmHeader,
             confirmButton,
             confirmFunction
         } = this.state;
-
-        const shouldNotEdit = postsHaveLocation(posts);
+        const currentPost = posts[currentPostIndex];
+        // const shouldNotEdit = postsHaveLocation(posts);
 
         return (
             <div className="dialog admin-edit-pane">
@@ -413,36 +286,35 @@ export default class NewBulkEdit extends React.Component {
                         />
                     </div>
                     <section className="gallery-edit--left">
-                        <UserItem user={posts[currentPostIndex].owner}/>
+                        <UserItem user={currentPost.owner}/>
                         <li>
                             <span className="mdi mdi-camera icon"></span>
-                            {time.formatTime(posts[currentPostIndex].created_at, true, true)}
+                            {time.formatTime(currentPost.created_at, true, true)}
                         </li>
-                        <AutocompleteMap
-                            location={ posts[currentPostIndex].location }
-                            address={ posts[currentPostIndex].address }
-                            onPlaceChange={(p) => this.onPlaceChange(p)}
-                            onMapDataChange={(data) => this.onMapDataChange(data)}
-                            disabled={shouldNotEdit ? true : false}
-                            draggable={!shouldNotEdit ? true : false}
-                            hasRadius={false}
-                            rerender
+                        <ExplicitCheckbox
+                            is_nsfw={currentPost.is_nsfw}
+                            onChange={this.onChangeIsNSFW}
+                            />
+
+                        <ChipInput
+                            model="tags"
+                            items={ currentPost.tags }
+                            updateItems={(t) => this.setState({ tags: t })}
+                            autocomplete={false}
+                            multiple
                             />
                     </section>
 
                     <section className="gallery-edit--right">
-
-                        <ChipInput
-                            model="tags"
-                            items={ posts[currentPostIndex].tags }
-                            updateItems={(t) => this.setState({ tags: t })}
-                            autocomplete={false}
-                            multiple
-                        />
-
-                        <ExplicitCheckbox
-                            is_nsfw={posts[currentPostIndex].is_nsfw}
-                            onChange={this.onChangeIsNSFW}
+                        <AutocompleteMap
+                            location={ currentPost.location }
+                            address={ currentPost.address }
+                            onPlaceChange={(p) => this.onPlaceChange(p)}
+                            onMapDataChange={(data) => this.onMapDataChange(data)}
+                            disabled={currentPost.location ? true : false}
+                            draggable={!currentPost.location ? true : false}
+                            hasRadius={false}
+                            rerender
                             />
                     </section>
                 </div>
