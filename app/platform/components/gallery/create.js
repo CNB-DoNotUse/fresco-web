@@ -12,13 +12,7 @@ import * as Promise from 'bluebird';
 
 class Create extends React.Component {
     state = {
-        tags: [],
-        stories: [],
-        articles: [],
-        rating: 2,
-        caption: '',
         loading: false,
-        title: ''
     };
 
     componentDidMount() {
@@ -26,11 +20,45 @@ class Create extends React.Component {
     }
 
     onCreate() {
-        this.createGallery();
-    }
+        if (this.state.loading) return;
+        const { onHide, storyCreation, storyFunctions } = this.props;
 
-    onChangeHighlighted() {
-        this.setState({ rating: this.state.rating === 2 ? 3 : 2 });
+        // Generate post ids for update
+        const postIds = storyCreation.posts.map((p) => p.id);
+        if (postIds.length === 0) {
+            $.snackbar({ content: 'Galleries must have at least 1 post' });
+            return;
+        }
+
+        const params = {
+            owner_id: null,
+            title: storyCreation.title,
+            caption: storyCreation.caption,
+            tags: storyCreation.tags
+        };
+
+        this.setState({ loading: true });
+        api.post("story/create", params)
+        .then((res) => {
+            Promise.each(postIds, (id) => api.post(`story/${res.id}/posts/${id}/add` ))
+                .then((res2) => {
+                    onHide();
+                    storyFunctions.clearFields();
+
+                    $.snackbar({
+                        content: 'Story successfully saved! Click here to view it',
+                        timeout: 5000,
+                    }).click(() => {
+                        const win = window.open(`/story/${res.id}`, '_blank');
+                        win.focus();
+                    });
+                })
+        }).catch((err) => {
+            this.setState({ loading: false });
+            $.snackbar({
+                content: utils.resolveError(err, 'There was an error creating your story!'),
+            });
+        })
     }
 
     /**
@@ -43,74 +71,10 @@ class Create extends React.Component {
         e.stopPropagation();
     };
 
-    /**
-     * Clears the form of inputed data
-     * @return {[type]} [description]
-     */
-    clear() {
-        this.setState({
-            tags: [],
-            stories: [],
-            articles: [],
-            caption: '',
-            title: ""
-        });
-    }
-
-    /**
-     * Creates the gallery on button click
- 	 */
-    createGallery() {
-        if (this.state.loading) return;
-        const { caption, rating, tags, stories, articles, title } = this.state;
-        const { posts, onHide, setSelectedPosts } = this.props;
-
-        // Generate post ids for update
-        const postIds = posts.map((p) => p.id);
-        if (postIds.length === 0) {
-            $.snackbar({ content: 'Galleries must have at least 1 post' });
-            return;
-        }
-        const { stories_add, stories_new } = utils.getRemoveAddParams('stories', [], stories);
-        const { articles_add, articles_new } = utils.getRemoveAddParams('articles', [], articles);
-
-        const params = {
-            owner_id: null,
-            title,
-            caption
-        };
-
-        this.setState({ loading: true });
-        api.post("story/create", params)
-        .then((res) => {
-            Promise.each(postIds, (id) => api.post(`story/${res.id}/posts/${id}/add` ))
-                .then((res2) => {
-                    onHide();
-                    setSelectedPosts([]);
-
-                    $.snackbar({
-                        content: 'Story successfully saved! Click here to view it',
-                        timeout: 5000,
-                    }).click(() => {
-                        const win = window.open(`/story/${res.id}`, '_blank');
-                        win.focus();
-                    });
-                })
-        }).catch(() => {
-
-        })
-        // .fail((err) => {
-        //     this.setState({ loading: false });
-        //     $.snackbar({
-        //         content: utils.resolveError(err, 'There was an error creating your gallery!'),
-        //     });
-        // });
-    }
-
     render() {
-        const { posts, onHide } = this.props;
-        const { caption, tags, stories, articles, rating, loading, title } = this.state;
-
+        const { posts, onHide, storyFunctions } = this.props;
+        const { loading } = this.state;
+        const { caption, tags, rating, title } = this.props.storyCreation;
         return (
             <div onScroll={this.onScroll}>
                 <div className="dim toggle-gcreate toggled" />
@@ -128,7 +92,7 @@ class Create extends React.Component {
 
                         <div className="dialog-foot">
                             <button
-                                onClick={() => this.clear()}
+                                onClick={ storyFunctions.clear }
                                 type="button"
                                 className="btn btn-flat"
                                 disabled={loading}
@@ -157,35 +121,30 @@ class Create extends React.Component {
                             <div className="dialog-col col-xs-12 col-md-5 form-group-default">
                                 <div className="dialog-row">
                                     <textarea
+                                        value={title}
+                                        type="text"
+                                        className="form-control floating-label"
+                                        placeholder="Title"
+                                        onChange={(e) => storyFunctions.changeTitle(e.currentTarget.value)}
+                                        />
+                                </div>
+                                <div className="dialog-row">
+                                    <textarea
                                         value={caption}
                                         type="text"
                                         className="form-control floating-label"
                                         placeholder="Caption"
-                                        onChange={(e) => this.setState({ caption: e.target.value })}
+                                        onChange={(e) => { storyFunctions.changeCaption(e.currentTarget.value)}}
                                     />
                                 </div>
                                 <div className="dialog-row">
-                                    <textarea
-                                        value={title}
-                                        type="text"
-                                        className="form-control floating-label"
-                                        placeholder="title"
-                                        onChange={(e) => this.setState({ title: e.target.value })}
-                                    />
-                                </div>
-
-
-                                <div className="dialog-row">
-                                    <div className="checkbox">
-                                        <label>
-                                            <input
-                                                type="checkbox"
-                                                checked={rating === 3}
-                                                onChange={() => this.onChangeHighlighted()}
-                                            />
-                                            Highlighted
-                                        </label>
-                                    </div>
+                                    <ChipInput
+                                        model="tags"
+                                        items={ tags }
+                                        updateItems={(t) => storyFunctions.addTag(t)}
+                                        autocomplete={false}
+                                        multiple
+                                        />
                                 </div>
                             </div>
 

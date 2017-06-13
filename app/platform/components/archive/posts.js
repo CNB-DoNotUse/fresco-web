@@ -20,7 +20,8 @@ import {
     changeCaption,
     changeTitle,
     changeHighlighted,
-    clearFields
+    clearFields,
+    clearPosts
 } from 'app/redux/actions/stories_create';
 
 /**
@@ -33,6 +34,7 @@ class Posts extends React.Component {
         type: PropTypes.oneOf(['photo', 'video', null]),
         page: PropTypes.oneOf(['photos', 'videos', 'archive']),
         title: PropTypes.oneOf(['Archive', 'Photos', 'Videos']),
+        store: PropTypes.object
     };
 
     state = {
@@ -113,7 +115,6 @@ class Posts extends React.Component {
     render() {
         const { user, title, page, storyCreation, storyFunctions, postFunctions } = this.props;
         const { sortBy, verifiedToggle, location, tags } = this.state;
-        console.log(this.props);
         return (
             <App
                 user={user}
@@ -154,8 +155,8 @@ class Posts extends React.Component {
                     user={user}
                     page={page}
                     storyCreation={storyCreation}
+                    storyFunctions={storyFunctions}
                     postFunctions={postFunctions}
-                    storyFunction={storyFunctions}
                 />
             </App>
         );
@@ -180,8 +181,9 @@ const mapDispatchToProps = (dispatch) => ({
         removeTag: (tag) => dispatch(removeTag(tag)),
         changeCaption: (caption) => dispatch(changeCaption(caption)),
         changeTitle: (title) => dispatch(changeTitle(title)),
-        changeHighlighted: (highlighted) => dispatch(changeHighlighted(highlighted)),
-        clearFields: () => dispatch(clearFields())
+        changeHighlighted: () => dispatch(changeHighlighted()),
+        clearFields: () => dispatch(clearFields()),
+        clearPosts: () => dispatch(clearPosts())
     }
 });
 

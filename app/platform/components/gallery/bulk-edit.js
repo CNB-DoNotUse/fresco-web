@@ -22,27 +22,27 @@ class BulkEdit extends React.Component {
         posts: [],
     };
 
-    componentWillMount() {
-        this.getStateFromProps(this.props);
-    }
+    // componentWillMount() {
+    //     this.getStateFromProps(this.props);
+    // }
 
     componentDidMount() {
         $.material.init();
     }
 
-    getStateFromProps(props) {
-        const galleryIds = uniq(props.posts.map(p => p.parent_id)).filter(id => !!id);
-        let galleries;
-
-        $.ajax({
-            url: `/api/gallery/${galleryIds.join(',')}`,
-        })
-        .then((res) => {
-            if (Array.isArray(res)) galleries = res;
-            else galleries = [res];
-        })
-        .then(() => this.setState(this.getStateFromGalleries(galleries), () => console.log("here")));
-    }
+    // getStateFromProps(props) {
+    //     const galleryIds = uniq(props.posts.map(p => p.parent_id)).filter(id => !!id);
+    //     let galleries;
+    //     debugger
+    //     $.ajax({
+    //         url: `/api/gallery/${galleryIds.join(',')}`,
+    //     })
+    //     .then((res) => {
+    //         if (Array.isArray(res)) galleries = res;
+    //         else galleries = [res];
+    //     })
+    //     .then(() => this.setState(this.getStateFromGalleries(galleries), () => console.log("here")));
+    // }
 
     /**
      * Save the edits made to each gallery

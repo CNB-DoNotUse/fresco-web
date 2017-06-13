@@ -27,12 +27,12 @@ export default class NewBulkEdit extends React.Component {
 
     state = this.getStateFromProps(this.props);
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.gallery.id !== nextProps.gallery.id) {
-            this.setState(this.getStateFromProps(nextProps));
-            this.galleryCaption.className = this.galleryCaption.className.replace(/\bempty\b/, '');
-        }
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     if (this.props.gallery.id !== nextProps.gallery.id) {
+    //         this.setState(this.getStateFromProps(nextProps));
+    //         this.galleryCaption.className = this.galleryCaption.className.replace(/\bempty\b/, '');
+    //     }
+    // }
 
     componentDidUpdate() {
         $.material.init();
