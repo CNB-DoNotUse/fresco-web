@@ -5,6 +5,7 @@ import uniqBy from 'lodash/uniqBy';
 import EditPosts from './edit-posts';
 import ChipInput from '../global/chip-input';
 import NewBulkEdit from 'app/platform/components/admin/new-bulk-edit';
+import * as Promise from 'bluebird';
 
 /**
  * Component for editing multiple posts at once (from possibly different galleries)

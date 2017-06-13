@@ -1695,6 +1695,137 @@ div.admin {
 	> .edit-current,
 	> .edit-new {
 		height: 100%;
+		.admin-edit-pane {
+			.dialogue-body {
+				height: 100%;
+			}
+			border-left: 1px solid rgba(0, 0, 0, 0.12);
+			background: #ffffff;
+			height: 100%;
+			.gallery-images {
+				.slick-dots li button:before {
+					font-size:8px;
+				}
+			}
+
+			.dialog {
+				height: 100%;
+			}
+		}
+
+		.byline-affiliation {
+			margin-top: 8px;
+		}
+
+		.admin-assignment-edit {
+			.form-control {
+				margin-top: 16px;
+			}
+			// First input
+			.titleInput {
+				margin-top:0;
+			}
+		}
+
+		.admin {
+			.list-item {
+				justify-content: space-between;
+				.list-item-caption, .list-item-timestamp * {
+					overflow:hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+				}
+
+				.list-item-caption {
+					width: auto;
+				}
+
+				> div {
+					// @ttention turn this into the mixin
+					display: flex;
+					align-items: center;
+				}
+				.gallery-list-item--preview > * {
+					margin-right: 10px;
+				}
+			}
+			.list-item.assignment > div:nth-child(2) * {
+				font-weight: 500;
+				padding-right: 10px;
+			}
+		}
+
+		.twitter-import, .upload-import {
+		    &:disabled {
+		        opacity: 0.26;
+		    }
+		}
+
+		.list-item-assignment {
+			max-width: 130px;
+		}
+
+
+		.admin-edit-pane {
+			overflow-y: scroll;
+			li {
+				list-style: none;
+				span {
+					margin-right: 16px;
+					vertical-align: middle;
+				}
+			}
+			strong {
+				color: #64bd61;
+				font-weight: normal;
+			}
+			.gallery-images {
+				width: 100%;
+				height: 500px;
+				padding-bottom: 30px;
+				* {
+					height: 100%;
+					width: auto;
+					margin-left: auto;
+					margin-right: auto;
+				}
+				.slick-dots {
+					width: 100%;
+					height: auto;
+					li:not(:first-child) {
+						margin-left: 10px;
+					}
+				}
+			}
+			.explicit, .edit-all {
+				width: 50%;
+				margin-left: 10px;
+				label {
+					white-space: nowrap;
+				}
+			}
+			>.dialog-body {
+				position: relative;
+			}
+
+			.gallery-edit--left {
+				width: calc(50% - 60px);
+				position: absolute;
+				> *:not(:last-child) {
+					margin: 16px 0;
+				}
+				overflow: hidden;
+			}
+			.gallery-edit--right {
+				position: absolute;
+				width: calc(50% - 30px);
+				left: 50%;
+				overflow-y: scroll;
+			}
+			.meta-user-name__secondary{
+				width: 50%;
+			}
+		}
 	}
 	> .edit-current {
 		border-top-left-radius: 2px;
