@@ -13,7 +13,8 @@ export const CAPTION = 'CAPTION';
 export const TITLE = 'TITLE';
 export const HIGHLIGHTED = 'HIGHLIGHTED';
 export const CREATE_STORY = 'CREATE_STORY';
-export const CLEAR = 'CLEAR';
+export const CLEAR_FIELDS = 'CLEAR_FIELDS';
+export const CLEAR_POSTS = 'CLEAR_POSTS';
 
 export const addPost = post => ({
     type: ADD_POST,
@@ -45,13 +46,15 @@ export const changeTitle = title => ({
     title
 })
 
-export const changeHighlighted = highlighted => ({
+export const changeHighlighted = () => ({
     type: HIGHLIGHTED,
-    highlighted
 })
 
 export const clearFields = () => ({
-    type: CLEAR
+    type: CLEAR_FIELDS
+})
+export const clearPosts = () => ({
+    type: CLEAR_POSTS
 })
 // export function createStory(story) {
 //     return (dispatch) => {
