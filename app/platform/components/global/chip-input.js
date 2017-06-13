@@ -111,7 +111,7 @@ class ChipInput extends React.Component {
         const { queryAttr, altAttr, createNew } = this.props;
         const { suggestions, query } = this.state;
         const keyCode = e.keyCode;
-        
+
         //If we're hitting escape, or we're hitting backspace and there's no query
         if(e.keyCode === 27 || ( (e.keyCode === 8 || e.keyCode === 46) && query.length === 0 )) {
             this.setState({ suggestions: [] });
@@ -342,7 +342,6 @@ class ChipInput extends React.Component {
         } = this.props;
         const itemsJSX = items.map((item, i) => {
             const text = queryAttr ? item[queryAttr] : item;
-
             return (
                 <Tag
                     text={this.modifyText(text)}

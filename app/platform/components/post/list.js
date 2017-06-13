@@ -22,7 +22,6 @@ class PostList extends React.Component {
         this.state = {
             posts: props.posts || [],
             scrollable: props.scrollable,
-            selectedPosts: getFromSessionStorage('post/list', 'selectedPosts', []),
             galleryCreateToggled: false,
             galleryBulkEditToggled: false,
         };
@@ -99,19 +98,6 @@ class PostList extends React.Component {
         });
     };
 
-    onToggleGalleryBulkEdit = () => {
-        if (this.state.selectedPosts.length > 1) {
-            this.setState({ galleryBulkEditToggled: !this.state.galleryBulkEditToggled });
-        } else {
-            this.setState({ galleryBulkEditToggled: false });
-            $.snackbar({ content: 'Select more than one gallery to edit' });
-        }
-    };
-
-    onToggleGalleryCreate = () => {
-        this.setState({ galleryCreateToggled: !this.state.galleryCreateToggled });
-    };
-
     /**
      * Scroll listener for main window
      */
@@ -143,7 +129,8 @@ class PostList extends React.Component {
     };
 
     onToggleGalleryBulkEdit = () => {
-        if (this.state.selectedPosts.length > 1) {
+        const selectedPosts = this.props.storyCreation.posts;
+        if (selectedPosts.length > 1) {
             this.setState({ galleryBulkEditToggled: !this.state.galleryBulkEditToggled });
         } else {
             this.setState({ galleryBulkEditToggled: false });
@@ -226,12 +213,11 @@ class PostList extends React.Component {
             onMouseLeaveList,
             scrollTo,
             page,
-            user
+            user,
+            storyCreation
         } = this.props;
-        const {
-            posts,
-            selectedPosts,
-        } = this.state;
+        const { posts } = this.state;
+        const selectedPosts = storyCreation ? storyCreation.posts : [];
 
         if (!posts || !posts.length) return '';
 
@@ -267,14 +253,13 @@ class PostList extends React.Component {
     }
 
     render() {
-        const { className, onScroll, storyCreation } = this.props;
-        const selectedPosts = storyCreation.posts;
+        const { className, onScroll, storyCreation, storyFunctions } = this.props;
+        const selectedPosts = storyCreation ? storyCreation.posts : [];
         const {
             scrollable,
             galleryBulkEditToggled,
             galleryCreateToggled,
         } = this.state;
-
         return (
             <div ref={(r) => { this.area = r; }}>
                 <div
@@ -284,7 +269,7 @@ class PostList extends React.Component {
                 >
                     {this.renderPosts()}
 
-                    {(selectedPosts && selectedPosts.length > 1) && (
+                    {(selectedPosts && selectedPosts.length > 0) && (
                         <GalleryBulkSelect
                             posts={selectedPosts}
                             setSelectedPosts={this.setSelectedPosts}
@@ -305,6 +290,8 @@ class PostList extends React.Component {
                             posts={selectedPosts}
                             setSelectedPosts={this.setSelectedPosts}
                             onHide={this.onToggleGalleryCreate}
+                            storyFunctions={storyFunctions}
+                            storyCreation={storyCreation}
                         />
                     )}
                 </div>
