@@ -1,17 +1,26 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PostsArchive from 'app/platform/components/archive/posts';
-
+import { Provider } from 'react-redux';
+import configureStore from 'app/redux/store/immutableStore';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 /**
- * Videos Parent View
+ * Archive Parent View
  * @description View page for all content
  */
-ReactDOM.render(
-    <PostsArchive
-        user={window.__initialProps__.user}
-        title={window.__initialProps__.title}
-        page="videos"
-        type="video"
-    />,
+
+ injectTapEventPlugin();
+
+ const store = configureStore();
+ ReactDOM.render(
+     <Provider store={ store }>
+        <PostsArchive
+            user={window.__initialProps__.user}
+            title={window.__initialProps__.title}
+            page="videos"
+            type="video"
+        />
+    </Provider>,
     document.getElementById('app')
 );
