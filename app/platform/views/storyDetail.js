@@ -12,6 +12,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { StoryTitle } from 'app/platform/components/story/story-cell';
 import StoriesTopBar from 'app/platform/components/story/topbar';
+import GMap from 'app/platform/components/global/gmap';
 
 
 /**
@@ -207,7 +208,7 @@ class StoryDetail extends React.Component {
 
 const StorySummary = ({title, body}) => (
     <div className="story-summary">
-        <img src="https://68.media.tumblr.com/aad28541ff453dda1cc3351c66d9c145/tumblr_oqkp4m3vT11qans75o1_540.png"></img>
+        <GMap/>
         <section>
             <h2>{title}</h2>
             <p>{body}</p>
