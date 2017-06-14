@@ -337,8 +337,13 @@ nav.stories {
 
 // individual stories
 .story-container {
+    height: 100%;
     padding: 64px 0;
+    // >.story-info {
+    //     height: 100%;
+    // }
     .grid{
+        max-height: 100%;
         padding: 1px 0;
     }
     .story-summary {
