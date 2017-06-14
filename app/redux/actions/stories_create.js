@@ -15,6 +15,7 @@ export const HIGHLIGHTED = 'HIGHLIGHTED';
 export const CREATE_STORY = 'CREATE_STORY';
 export const CLEAR_FIELDS = 'CLEAR_FIELDS';
 export const CLEAR_POSTS = 'CLEAR_POSTS';
+export const INDEX = 'INDEX';
 
 export const addPost = post => ({
     type: ADD_POST,
@@ -47,7 +48,7 @@ export const changeTitle = title => ({
 })
 
 export const changeHighlighted = () => ({
-    type: HIGHLIGHTED,
+    type: HIGHLIGHTED
 })
 
 export const clearFields = () => ({
@@ -55,6 +56,11 @@ export const clearFields = () => ({
 })
 export const clearPosts = () => ({
     type: CLEAR_POSTS
+})
+
+export const changePostIndex = (index) => ({
+    type: INDEX,
+    index
 })
 // export function createStory(story) {
 //     return (dispatch) => {

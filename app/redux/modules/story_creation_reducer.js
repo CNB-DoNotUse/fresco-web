@@ -10,7 +10,8 @@ import {
     TITLE,
     HIGHLIGHTED,
     CLEAR_FIELDS,
-    CLEAR_POSTS
+    CLEAR_POSTS,
+    INDEX
 } from 'app/redux/actions/stories_create';
 
 const initialState = {
@@ -18,6 +19,7 @@ const initialState = {
     title: '',
     posts: [],
     tags: [],
+    currentIndex: 0
 }
 
 const storyCreation = (state = initialState, action) => {
@@ -82,6 +84,10 @@ const storyCreation = (state = initialState, action) => {
             newerInitial.caption = state.caption;
             newerInitial.tags = state.tags;
             return newerInitial;
+            break;
+        case INDEX:
+            newState.index = action.index;
+            return newState;
             break;
         default:
             return state;
