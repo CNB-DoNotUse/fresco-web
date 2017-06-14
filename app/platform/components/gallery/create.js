@@ -118,6 +118,11 @@ class Create extends React.Component {
                         </div>
 
                         <div className="dialog-body">
+                            <div className="gallery-images">
+                                <EditPosts
+                                    originalPosts={posts}
+                                    afterChange={ storyFunctions.changePostIndex }/>
+                            </div>
                             <div className="dialog-col col-xs-12 col-md-5 form-group-default">
                                 <div className="dialog-row">
                                     <textarea
@@ -148,10 +153,6 @@ class Create extends React.Component {
                                 </div>
                             </div>
 
-                            <EditPosts
-                                originalPosts={posts}
-                                className="dialog-col col-xs-12 col-md-7"
-                            />
                         </div>
                     </div>
                 </div>
@@ -160,6 +161,10 @@ class Create extends React.Component {
     }
 }
 
+// <EditPosts
+//     originalPosts={posts}
+//     className="dialog-col col-xs-12 col-md-7"
+//     />
 Create.propTypes = {
     onHide: PropTypes.func.isRequired,
     setSelectedPosts: PropTypes.func.isRequired,

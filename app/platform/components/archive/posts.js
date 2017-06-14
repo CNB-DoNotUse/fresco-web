@@ -21,7 +21,8 @@ import {
     changeTitle,
     changeHighlighted,
     clearFields,
-    clearPosts
+    clearPosts,
+    changePostIndex
 } from 'app/redux/actions/stories_create';
 
 /**
@@ -183,7 +184,8 @@ const mapDispatchToProps = (dispatch) => ({
         changeTitle: (title) => dispatch(changeTitle(title)),
         changeHighlighted: () => dispatch(changeHighlighted()),
         clearFields: () => dispatch(clearFields()),
-        clearPosts: () => dispatch(clearPosts())
+        clearPosts: () => dispatch(clearPosts()),
+        changePostIndex: (index) => dispatch(changePostIndex(index))
     }
 });
 

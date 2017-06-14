@@ -183,7 +183,6 @@ export default class GalleryEdit extends React.Component {
         saveGallery(gallery.id, params) //passing
         .then(() => {
             deletePosts(postsToDelete); //check this method probably no
-            debugger
         })
         .then(() => {
             onUpdateGallery(gallery.id); //or this method more likely

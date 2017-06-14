@@ -40,14 +40,6 @@ class BulkSelect extends React.Component {
                         </button>
 
                         <button
-                            onClick={() => onToggleEdit()}
-                            type="button"
-                            className="btn btn-flat pull-right toggle-edit toggler"
-                        >
-                            Edit
-                        </button>
-
-                        <button
                             onClick={() => onToggleCreate()}
                             type="button"
                             className="btn btn-flat pull-right toggle-gcreate toggler"

@@ -23,33 +23,12 @@ class BulkEdit extends React.Component {
         posts: [],
     };
 
-    // componentWillMount() {
-    //     this.getStateFromProps(this.props);
-    // }
-
     componentDidMount() {
         $.material.init();
     }
 
-    // getStateFromProps(props) {
-    //     const galleryIds = uniq(props.posts.map(p => p.parent_id)).filter(id => !!id);
-    //     let galleries;
-    //     debugger
-    //     $.ajax({
-    //         url: `/api/gallery/${galleryIds.join(',')}`,
-    //     })
-    //     .then((res) => {
-    //         if (Array.isArray(res)) galleries = res;
-    //         else galleries = [res];
-    //     })
-    //     .then(() => this.setState(this.getStateFromGalleries(galleries), () => console.log("here")));
-    // }
-
-    /**
-     * Save the edits made to each gallery
-     */
     onClickSave() {
-        this.saveGalleries();
+
     }
 
     /**
@@ -62,47 +41,8 @@ class BulkEdit extends React.Component {
         e.stopPropagation();
     };
 
-    getStateFromGalleries(galleries) {
-        if (!galleries) return { galleries: [], tags: [], stories: [], caption: '' };
-        const tags = uniq(galleries.reduce((p, c) => (p.concat(c.tags)), []));
-        const stories = uniqBy(galleries.reduce((p, c) => (p.concat(c.stories)), []), 'id');
-        const caption = galleries.reduce((p, c) => (p === c.caption ? p : ''), galleries[0].caption);
-        const posts = uniqBy(galleries.reduce((p, c) => (p.concat(c.posts)), []), 'id');
+    getStateFromProps(posts) {
 
-        return { galleries, tags, stories, caption, posts };
-    }
-
-    saveGallery(gallery, data) {
-        if (!gallery || !data) return null;
-        const { tags, caption, stories } = data;
-
-        const params = {
-            tags,
-            caption,
-            ...utils.getRemoveAddParams('stories', gallery.stories, stories),
-        };
-
-        return $.ajax(`/api/gallery/${gallery.id}/update`, {
-            data: JSON.stringify(params),
-            method: 'post',
-            contentType: 'application/json',
-        });
-    }
-
-    saveGalleries() {
-        const { loading, galleries, caption, tags, stories } = this.state;
-        if (loading) return;
-        this.setState({ loading: true });
-
-        Promise.all(galleries.map(g => this.saveGallery(g, { caption, tags, stories })))
-        .then(() => {
-            $.snackbar({ content: 'Galleries updated!' });
-        }, () => {
-            $.snackbar({ content: 'There was an error updating galleries.' });
-        })
-        .then(() => {
-            this.setState({ loading: false });
-        });
     }
 
     clear() {
@@ -114,50 +54,6 @@ class BulkEdit extends React.Component {
      */
     revert() {
         this.setState(this.getStateFromGalleries(this.state.galleries));
-    }
-
-    renderBody() {
-        const { caption, tags, stories, posts } = this.state;
-
-        return (
-            <div className="dialog-body">
-                <div className="dialog-col col-xs-12 col-md-7 form-group-default">
-                    <div className="dialog-row">
-                        <textarea
-                            type="text"
-                            className="form-control floating-label"
-                            placeholder="Caption"
-                            value={caption}
-                            onChange={e => this.setState({ caption: e.target.value })}
-                        />
-                    </div>
-
-                    <ChipInput
-                        model="tags"
-                        items={tags}
-                        updateItems={t => this.setState({ tags: t })}
-                        autocomplete={false}
-                    />
-
-                    <ChipInput
-                        model="stories"
-                        queryAttr="title"
-                        items={stories}
-                        updateItems={(s) => this.setState({ stories: s })}
-                        className="dialog-row"
-                        autocomplete
-                    />
-                </div>
-
-                {posts && (
-                    <EditPosts
-                        className="dialog-col col-xs-12 col-md-5"
-                        canDelete={false}
-                        originalPosts={posts}
-                    />
-                )}
-            </div>
-        );
     }
 
     renderFooter() {
