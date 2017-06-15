@@ -74,7 +74,7 @@ class PublicGallerySlider extends React.Component {
     }
 
     render() {
-        const { posts } = this.props;
+        const { posts, showArrows = true } = this.props;
         const settings = {
             dots: posts.length > 1,
             arrows: true,
@@ -82,8 +82,8 @@ class PublicGallerySlider extends React.Component {
             infinite: false,
             beforeChange: this.beforeChange,
             afterChange: this.afterChange,
-            nextArrow: <NextArrow />,
-            prevArrow: <PrevArrow />,
+            nextArrow: <NextArrow showArrows={showArrows} />,
+            prevArrow: <PrevArrow showArrows={showArrows} />,
         };
 
         return (
@@ -94,26 +94,35 @@ class PublicGallerySlider extends React.Component {
     }
 }
 
-var NextArrow = React.createClass({
+let NextArrow = React.createClass({
   render: function () {
-    return (
-      <span {...this.props} className="mdi mdi-chevron-right slick-arrow slick-next"></span>
-    );
+    if (this.props.showArrows) {
+      return (
+        <span {...this.props} className="mdi mdi-chevron-right slick-arrow slick-next"/>
+      );
+    } else {
+        return ( <span/> )
+    }
   }
 });
 
 
-var PrevArrow = React.createClass({
+let PrevArrow = React.createClass({
   render: function () {
-    return (
-      <span {...this.props} className="mdi mdi-chevron-left slick-arrow slick-prev"></span>
-    );
+    if (this.props.showArrows) {
+      return (
+          <span {...this.props} className="mdi mdi-chevron-left slick-arrow slick-prev"/>
+      );
+    } else {
+      return ( <span/> )
+    }
   }
 });
 
 
 PublicGallerySlider.propTypes = {
     posts: PropTypes.array,
+    showArrows: PropTypes.bool,
     userAgent: PropTypes.string,
 };
 

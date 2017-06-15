@@ -18,18 +18,25 @@ router.get('/:id', (req, res, next) => {
     // Make request for post
     API.request({
         url: `/post/${req.params.id}`,
-        token: req.session.token.token
+        token: req.session.token ? req.session.token.token : ''
     })
     .then(response => {
         post = response.body || {};
         return API.request({
             url: `/gallery/${response.body.parent_id}`,
-            token: req.session.token.token
+            token: req.session.token ? req.session.token.token : ''
         });
     })
     .then(response => {
         gallery = response.body || {};
         title = utils.getBylineFromPost(post, true);
+
+        let page = 'publicPost';
+
+        if (req.session.user) {
+            res.locals.section = 'platform';
+            page = 'postDetail';
+        }
 
         res.render('app', {
             props: JSON.stringify({
@@ -52,8 +59,58 @@ router.get('/:id', (req, res, next) => {
             },
             alerts: req.alerts,
             referral: req.session.referral,
-            page: 'postDetail'
+            page: page
         });
+
+        // // User is logged in, show the platform page
+        // if (req.session.user) {
+        //     res.render('app', {
+        //         props: JSON.stringify({
+        //             gallery,
+        //             post,
+        //             title,
+        //             user: req.session.user,
+        //         }),
+        //         title,
+        //         og: {
+        //             title,
+        //             image: utils.formatImg(post.image, 'large'),
+        //             url: req.originalUrl,
+        //             description: gallery.caption,
+        //         },
+        //         twitter: {
+        //             title,
+        //             description: gallery.caption,
+        //             image: utils.formatImg(post.image, 'large'),
+        //         },
+        //         alerts: req.alerts,
+        //         referral: req.session.referral,
+        //         page: 'postDetail'
+        //     });
+        // } else {
+        //     // User is not logged in, show public post page
+        //     res.render('app', {
+        //         props: JSON.stringify({
+        //             post,
+        //             gallery,
+        //             title,
+        //             userAgent: req.headers['user-agent']
+        //         }),
+        //         title,
+        //         og: {
+        //             title,
+        //             image: utils.formatImg(post.image, 'large'),
+        //             url: req.originalUrl,
+        //             description: gallery.caption
+        //         },
+        //         twitter: {
+        //             title,
+        //             description: gallery.caption,
+        //             image: utils.formatImg(post.image, 'large')
+        //         },
+        //         page: 'publicPost'
+        //     });
+        // }
     })
     .catch(error => {
         let message = 'Unable to load post!';
