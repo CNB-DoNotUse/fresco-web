@@ -1,7 +1,7 @@
 const express   = require('express');
 const config    = require('../lib/config');
 const router    = express.Router();
-
+const helper = require('../lib/helpers');
 /**
  * Master dispatch page
  */
@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => {
     }
 
     var props = {
-        user: req.session.user,
+        user: helper.userAdminRoles(req.session.user),
         outlet : req.session.user.outlet,
         title: 'Dispatch'
     }

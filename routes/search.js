@@ -1,6 +1,6 @@
 const express = require('express');
-
 const router = express.Router();
+const helper = require('../lib/helpers');
 
 /**
  * Search page
@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
     }
 
     const props = {
-        user: req.session.user,
+        user: helper.userAdminRoles(req.session.user),
         location,
         tags,
         query,

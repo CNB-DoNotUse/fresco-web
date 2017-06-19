@@ -1,13 +1,14 @@
 const express = require('express');
 const API = require('../lib/api');
 const router = express.Router();
+const helper = require('../lib/helpers');
 
 /**
  * User settings page
  */
 router.get('/settings', (req, res) => {
     const props = {
-        user: req.session.user,
+        user: helper.userAdminRoles(req.session.user),
         title: 'User Settings',
     };
 
@@ -26,7 +27,7 @@ router.get('/settings', (req, res) => {
 function renderUserDetail(detailUser, user, req, res) {
     const title = detailUser.full_name;
     const props = {
-        user,
+        user: helper.userAdminRoles(user),
         editable: user.id === detailUser.id,
         title,
         detailUser,
@@ -60,7 +61,7 @@ router.get('/:id?', (req, res, next) => {
         });
     } else {
         // Render currently logged in user otherwise
-        const user = req.session.user;
+        const user = helper.userAdminRoles(req.session.user);
         renderUserDetail(user, user, req, res);
     }
 });

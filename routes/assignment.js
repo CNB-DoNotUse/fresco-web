@@ -1,12 +1,12 @@
 const express = require('express');
 const config = require('../lib/config');
 const API = require('../lib/api');
-
+const helper = require('../lib/helpers');
 const router = express.Router();
 
 const fetchAcceptedUsers = ({ roles, assignmentId, token }) => {
     //Only admins should see this data
-    if (!roles.includes('admin')) {
+    if (!helper.rolesHasAdmin(roles)) {
         return Promise.resolve([]);
     }
 
@@ -23,7 +23,7 @@ router.get('/:id', (req, res, next) => {
     let token = req.session.token.token;
 
     API
-        .request({ token, url: `/assignment/${req.params.id}` })
+        .request({ token, url: `/assignment/${req.params.id}/?expand[]=outlets` })
         .then((assignmentRes) => {
             const assignment = assignmentRes.body;
             const alerts = req.alerts || [];
@@ -42,7 +42,7 @@ router.get('/:id', (req, res, next) => {
             })
             .then(() => {
                 res.render('app', {
-                    props: JSON.stringify({ user, assignment, acceptedUsers }),
+                    props: JSON.stringify({ user: helper.userAdminRoles(user), assignment, acceptedUsers }),
                     title: assignment.title,
                     page: 'assignmentDetail',
                     config,
@@ -51,7 +51,8 @@ router.get('/:id', (req, res, next) => {
                 });
             });
         })
-        .catch(() => {
+        .catch((err) => {
+            console.log("error: " + JSON.stringify(err));
             next({
                 message: 'Assignment not found!',
                 status: 404,

@@ -2,6 +2,7 @@ const express = require('express');
 const utils = require('../lib/utils');
 const API = require('../lib/api');
 const router = express.Router();
+const helper = require('../lib/helpers');
 
 /**
  * Renders gallery from route
@@ -11,7 +12,7 @@ function render(gallery, user, req, res) {
 
     // User is logged in, show full gallery page
     if (user) {
-        const props = { gallery, title, user };
+        const props = { gallery, title, user: helper.userAdminRoles(user) };
 
         res.locals.section = 'platform';
         res.render('app', {
@@ -57,7 +58,7 @@ router.get('/:id', (req, res, next) => {
         url: `/gallery/${req.params.id}`,
     })
     .then(response => {
-        render(response.body, req.session.user, req, res);
+        render(response.body, helper.userAdminRoles(req.session.user), req, res);
     })
     .catch(error => {
         next({

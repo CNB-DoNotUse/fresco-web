@@ -2,6 +2,7 @@ const express = require('express');
 const config = require('../lib/config');
 const router = express.Router();
 const API = require('../lib/api');
+const helper = require('../lib/helpers');
 
 /**
  *  Outlet settings page for current logged in user
@@ -36,7 +37,7 @@ router.get('/settings', (req, res, next) => {
         const title = 'Outlet Settings';
         const props = {
             title,
-            user,
+            user: helper.userAdminRoles(user),
             outlet,
             payment,
             stripePublishableKey: config.STRIPE_PUBLISHABLE,
@@ -75,7 +76,7 @@ router.get('/:id?', (req, res, next) => {
     .then(response => {
         const outlet = response.body;
         const title = outlet.title;
-        const props = JSON.stringify({ user, title, outlet });
+        const props = JSON.stringify({ user: helper.userAdminRoles(user), title, outlet });
 
         return res.render('app', {
             title,
@@ -86,6 +87,7 @@ router.get('/:id?', (req, res, next) => {
         });
     })
     .catch(error => {
+        console.log("outlet error: " + JSON.stringify(error));
         next({
             message: 'It seems like we couldn\'t locate your outlet!',
             status: error.status || 500,

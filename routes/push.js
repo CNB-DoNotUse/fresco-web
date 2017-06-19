@@ -1,16 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const helper = require('../lib/helpers');
+
 
 router.get('/', (req, res, next) => {
     const { user } = req.session;
 
-    if (user.roles.includes('admin')) {
+    if (helper.isAdmin(user)) {
         res.render('app', {
             title: 'Push Notifications',
             alerts: req.alerts,
             referral: req.session.referral,
             page: 'pushNotifs',
-            props: JSON.stringify({ user }),
+            props: JSON.stringify({ user: helper.userAdminRoles(user) }),
         });
     } else {
         next({

@@ -1,13 +1,14 @@
 const express = require('express');
 const config = require('../lib/config');
 const router = express.Router();
+const helper = require('../lib/helpers');
 
 /**
  * Index Content Page
  */
 router.get('/', (req, res) => {
     const title = 'Archive';
-    const props = { user: req.session.user, title };
+    const props = { user: helper.userAdminRoles(req.session.user), title };
 
     res.render('app', {
         title,
@@ -26,7 +27,7 @@ router.get('/galleries', (req, res) => {
     const props = { user: req.session.user, title };
 
     res.render('app', {
-        user: req.session.user,
+        user: helper.serAdminRoles(req.session.user),
         title,
         config,
         alerts: req.alerts,
@@ -41,7 +42,7 @@ router.get('/galleries', (req, res) => {
  */
 router.get('/stories', (req, res) => {
     const title = 'Stories';
-    const props = { user: req.session.user };
+    const props = { user: helper.userAdminRoles(req.session.user) };
 
     res.render('app', {
         title,
@@ -66,7 +67,7 @@ router.get('/:filter', (req, res) => {
     }
 
     const title = req.params.filter[0].toUpperCase() + req.params.filter.slice(1);
-    const props = { user: req.session.user, title };
+    const props = { user: helper.userAdminRoles(req.session.user), title };
 
     return res.render('app', {
         title,

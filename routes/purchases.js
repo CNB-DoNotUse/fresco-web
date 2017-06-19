@@ -1,13 +1,13 @@
 const express = require('express');
 const config = require('../lib/config');
-
 const router = express.Router();
+const helper = require('../lib/helpers');
 
 /**
  * Root purchases page
  */
 router.get('/', (req, res, next) => {
-    if (!req.session.user.roles.includes('admin')) {
+    if (!helper.isAdmin(req.session.user)) {
         return next({
             message: config.ERR_PAGE_MESSAGES[403],
             status: 403,
@@ -16,12 +16,12 @@ router.get('/', (req, res, next) => {
 
     const title = 'Purchases';
     const props = {
-        user: req.session.user,
+        user: helper.userAdminRoles(req.session.user),
         title,
     };
-
+// @ttention why is used being rendered twice
     res.render('app', {
-        user: req.session.user,
+        user: helper.userAdminRoles(req.session.user),
         title,
         alerts: req.alerts,
         referral: req.session.referral,

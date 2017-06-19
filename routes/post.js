@@ -3,6 +3,7 @@ const utils = require('../lib/utils');
 const config = require('../lib/config');
 const API = require('../lib/api');
 const router = express.Router();
+const helper = require('../lib/helpers');
 
 /**
  * Description : Post Specific Routes ~ prefix /gallery/~
@@ -36,7 +37,7 @@ router.get('/:id', (req, res, next) => {
                 gallery,
                 post,
                 title,
-                user: req.session.user,
+                user: helper.userAdminRoles(req.session.user),
             }),
             title,
             og: {
@@ -56,6 +57,7 @@ router.get('/:id', (req, res, next) => {
         });
     })
     .catch(error => {
+        console.log('post Error: ' + JSON.stringify(error));
         let message = 'Unable to load post!';
 
         if(error.status === 404)

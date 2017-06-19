@@ -2,9 +2,10 @@ const express = require('express');
 const config = require('../lib/config');
 const API = require('../lib/api');
 const router = express.Router();
+const helper = require('../lib/helpers');
 
 router.get('/:id', (req, res, next) => {
-    let user = req.session.user;
+    let user = helper.userAdminRoles(req.session.user);
     let token = req.session.token.token;
 
     API.request({
