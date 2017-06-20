@@ -52,10 +52,10 @@ class Edit extends React.Component {
         return {
             tags: gallery.tags || [],
             stories: gallery.stories,
-            assignments: gallery.assignments,
+            assignments: gallery.assignments || [],
             caption: gallery.caption || 'No Caption',
             posts: gallery.posts,
-            articles: gallery.articles,
+            articles: gallery.articles || [],
             rating: gallery.rating,
             is_nsfw: gallery.is_nsfw,
             isOriginalGallery: isOriginalGallery(this.props.gallery),
@@ -543,7 +543,6 @@ class Edit extends React.Component {
         } = this.state;
 
         if (!gallery) return '';
-        debugger
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
