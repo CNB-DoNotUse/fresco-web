@@ -349,7 +349,7 @@ export default class DispatchSubmit extends React.Component {
                     </div>
                     <div />
 
-                    {user.roles.includes('admin') && (
+                    {user.admin && (
                         <div className="checkbox form-group">
                             <label>
                                 <input
