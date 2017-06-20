@@ -246,7 +246,6 @@ export default class AssignmentEdit extends React.Component {
         } = this.state;
         const { user } = this.props;
         const globalLocation = this.isGlobalLocation();
-
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">
@@ -274,7 +273,7 @@ export default class AssignmentEdit extends React.Component {
                         />
                     </div>
 
-                    {user.roles.includes('admin') && (
+                    {user.admin && (
                         <ChipInput
                             model="outlets"
                             queryAttr="title"
@@ -285,7 +284,7 @@ export default class AssignmentEdit extends React.Component {
                         />
                     )}
 
-                    {user.roles.includes('admin') && (
+                    {user.admin && (
                         <div className="checkbox form-group">
                             <label>
                                 <input

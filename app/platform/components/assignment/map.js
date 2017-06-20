@@ -205,28 +205,26 @@ class AssignmentMap extends React.Component {
         const circleRadius = Math.round(utils.milesToFeet(assignment.radius));
 
         return (
-            <div className="row">
-                <div className="col-sm-11 col-md-10 col-sm-offset-1">
-                    <div className="assignment__map-ctr">
-                        <GoogleMap
-                            ref={(r) => { this.googleMap = r; }}
-                            initialLocation={initialLocation}
-                            zoom={13}
-                            draggable={false}
-                            panTo={panTo}
-                            onTilesloaded={this.onTilesLoaded}
-                        >
-                            <CenterMarker />
-                            <Circle
-                                ref={(r) => { this.mapCircle = r; }}
-                                radius={circleRadius}
-                            />
-                            {this.renderDataMarkers()}
-                            {this.renderUserLocMarkers()}
-                        </GoogleMap>
-                    </div>
-                </div>
+
+            <div className="assignment__map-ctr">
+                <GoogleMap
+                    ref={(r) => { this.googleMap = r; }}
+                    initialLocation={initialLocation}
+                    zoom={13}
+                    draggable={false}
+                    panTo={panTo}
+                    onTilesloaded={this.onTilesLoaded}
+                >
+                    <CenterMarker />
+                    <Circle
+                        ref={(r) => { this.mapCircle = r; }}
+                        radius={circleRadius}
+                    />
+                    {this.renderDataMarkers()}
+                    {this.renderUserLocMarkers()}
+                </GoogleMap>
             </div>
+
         );
     }
 }

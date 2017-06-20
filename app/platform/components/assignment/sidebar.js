@@ -29,7 +29,6 @@ class Sidebar extends React.Component {
             + moment(expirationTime).fromNow();
         const createdText = 'Created at ' + time.formatTime(assignment.created_at, true);
         const { photo_count, video_count } = assignment;
-
         return (
             <div className="meta-list">
                 <ul className="md-type-subhead">
@@ -50,7 +49,7 @@ class Sidebar extends React.Component {
                         <span className="mdi mdi-clock icon" />
                         <span>{expiredText}</span>
                     </li>
-                    {user.roles.includes('admin') && (
+                    {user.admin && (
                         assignment.outlets.map((o, i) => (
                             <li key={i}>
                                 <span className="mdi mdi-account-multiple icon" />
@@ -70,7 +69,7 @@ class Sidebar extends React.Component {
                             {video_count + ' video' + (utils.isPlural(video_count) ? 's' : '')}
                         </span>
                     </li>
-                    {user.roles.includes('admin') ? (
+                    {user.admin ? (
                         <li style={{ cursor: 'pointer' }} onClick={onClickAccepted}>
                             <span className="mdi mdi-account-multiple icon" />
                             <span>{`${acceptedCount} accepted ${acceptedCount === 1 ? 'user' : 'users'}`}</span>
@@ -90,38 +89,37 @@ class Sidebar extends React.Component {
         const { assignment, expireAssignment, loading, map } = this.props;
         const expireButton = (
             <button
-                className="btn fat tall btn-error assignment-expire"
+                className="fat tall btn-error assignment-expire"
                 onClick={expireAssignment}
                 disabled={loading}
             >
-                Expire
+                Expire Assignment
             </button>
         );
 
         return (
-            <div className="col-sm-4 profile hidden-xs">
-                <div className="row">
-                    <div className="col-sm-10 col-md-8 col-sm-offset-1">
-                        <div className="meta">
-                            <div className="meta-description" id="story-description">
-                                {assignment.caption || 'No Description'}
-                            </div>
-
-                            {moment().diff(assignment.ends_at) < 1 && (
-                                <div className="meta-user">{expireButton}</div>
-                            )}
-
-                            {this.renderStats()}
-                        </div>
+            <div className="assignent-info-container">
+                <section className='assignment-map'>
+                    {map}
+                </section>
+                <section className='assignment-description'>
+                    <div className="meta-description" id="story-description">
+                        {assignment.title || 'No Title'}
                     </div>
-                </div>
+                    <div className="meta-description" id="story-description">
+                        {assignment.caption || 'No Description'}
+                    </div>
+                </section>
+                <section className='assignment-info'>
+                    {this.renderStats()}
+                    {moment().diff(assignment.ends_at) < 1 && (
+                        <div className="meta-user">{expireButton}</div>
+                    )}
 
-                {map}
+                </section>
             </div>
-
         );
     }
 }
 
 export default Sidebar;
-
