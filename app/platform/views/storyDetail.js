@@ -13,6 +13,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import { StoryTitle } from 'app/platform/components/story/story-cell';
 import StoriesTopBar from 'app/platform/components/story/topbar';
 import GMap from 'app/platform/components/global/gmap';
+import AssignmentMap from 'app/platform/components/assignment/map';
+import { getLatLngFromGeo } from 'app/lib/location';
 
 
 /**
@@ -26,6 +28,7 @@ class StoryDetail extends React.Component {
         editToggled: false,
         story: this.props.story,
         sortBy: getFromSessionStorage('topbar', 'sortBy', 'created_at'),
+        markerData: [],
         initialSearchParams: {
             verified: true,
             unverified: false,
@@ -125,40 +128,47 @@ class StoryDetail extends React.Component {
             type: 'GET',
             data: params,
             dataType: 'json',
-        }).always((posts) => {
-            callback(posts);
+        }).done((res) => {
+            callback(res);
+            this.setMarkersFromPosts(res)
         })
-        // .done((res) => {
-        //     callback(res);
-        // })
-        // .fail(() => {
-        //     $.snackbar({ content: 'Couldn\'t load posts!' });
-        //     callback([]);
-        // });
+        .fail(() => {
+            $.snackbar({ content: 'Couldn\'t load posts!' });
+            callback([]);
+        });
     };
 
-    getPosts = () => {
-        const { story, sortBy } = this.state;
-        const params = {
-            sortBy,
-            limit: 10,
+    setMarkersFromPosts(posts) {
+        if (!posts || !posts.length) return;
+        const markerImageUrl = (isVideo) => {
+            if (isVideo) {
+                return {
+                    normal: '/images/video-marker.png',
+                    active: '/images/video-marker-active.png',
+                };
+            }
+
+            return {
+                normal: '/images/photo-marker.png',
+                active: '/images/photo-marker-active.png',
+            };
         };
-        let posts;
-        $.ajax({
-            url: `/api/story/${story.id}/posts`,
-            type: 'GET',
-            data: params,
-            dataType: 'json',
-        }).always((something) => {
-            debugger
-            posts = something;
-        });
-        return posts;
+
+        const markers = posts.map((p) => {
+            if (!p.location) return null;
+            return {
+                id: p.id,
+                position: getLatLngFromGeo(p.location),
+                iconUrl: markerImageUrl(!!p.stream),
+            };
+        }).filter(m => !!m);
+
+        this.setState({ markerData: this.state.markerData.concat(markers) });
     }
 
     render() {
         const { user } = this.props;
-        const { story, sortBy, editToggled, loading, initialSearchParams } = this.state;
+        const { story, sortBy, editToggled, loading, initialSearchParams, markerData } = this.state;
         // const { story } = this.props;
         const page = 'storyDetail';
         return (
@@ -174,7 +184,8 @@ class StoryDetail extends React.Component {
                 <div className="story-container">
                     <StorySummary
                         title={story.title}
-                        body={ story.caption }/>
+                        body={ story.caption }
+                        markerData={markerData}/>
                     { story.owner &&
                         <StoryTitle
                             owner={ story.owner }
@@ -206,9 +217,61 @@ class StoryDetail extends React.Component {
     }
 }
 
-const StorySummary = ({title, body}) => (
+const dummyAssignment = {
+    accepted:
+false,
+accepted_count:
+0,
+address:
+"Equitable Life Building, 120 Broadway, New York, NY 10271, USA",
+approved_at:
+null,
+caption:
+"Thanks Chris",
+created_at:
+"2017-05-10T21:44:35.891Z",
+curated_at:
+"2017-05-10T21:45:10.762Z",
+// curator:
+// {…}
+curator_id:
+"dYOJ8vnb8ML4",
+ends_at:
+"2018-07-01T13:45:10.285Z",
+id:
+"bWB0JaRY8Qqx",
+
+is_acceptable:
+false,
+location: {coordinates:
+{ lat: 40, lng: -72 }},
+object:
+"assignment",
+// outlets:
+// Array[1],
+photo_count:
+1,
+radius:
+1.89,
+rating:
+1,
+starts_at:
+"2017-05-10T21:44:35.320Z",
+// thumbnails:
+// Array[1],
+title:
+"Mike Runs Again",
+updated_at:
+"2017-05-10T21:45:10.762Z",
+video_count:
+0
+}
+
+const StorySummary = ({title, body, markerData}) => (
     <div className="story-summary">
-        <GMap/>
+        <AssignmentMap
+            markerData={markerData}
+            assignment={dummyAssignment}/>
         <section>
             <h2>{title}</h2>
             <p>{body}</p>

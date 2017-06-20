@@ -17,6 +17,7 @@ import AcceptedUser from '../components/assignment/accepted-user';
 import App from './app';
 import 'app/sass/platform/_assignment';
 import 'app/sass/platform/_posts';
+import { StoryTitle } from 'app/platform/components/story/story-cell';
 
 /**
  * Assignment Detail Parent Object, made of a side column and PostList
@@ -41,11 +42,16 @@ class AssignmentDetail extends React.Component {
     };
 
     componentDidMount() {
-        setInterval(() => {
+        const fetchInterval = setInterval(() => {
             if (!this.state.editToggled) {
                 this.fetchAssignment();
             }
         }, 5000);
+        this.setState({fetchInterval});
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.fetchInterval);
     }
 
     onVerifiedToggled = (verifiedToggle) => {
@@ -261,9 +267,8 @@ class AssignmentDetail extends React.Component {
     }
 
     render() {
-        const { user } = this.props;
+        const { user, assignment } = this.props;
         const {
-            assignment,
             editToggled,
             verifiedToggle,
             loading,
@@ -293,7 +298,6 @@ class AssignmentDetail extends React.Component {
                     chronToggle
                     verifiedToggle
                 />
-
                 <Sidebar
                     assignment={assignment}
                     expireAssignment={this.expireAssignment}
@@ -310,7 +314,6 @@ class AssignmentDetail extends React.Component {
                     )}
                     onClickAccepted={this.onClickAccepted}
                 />
-
                 <div className="col-sm-8 tall">
                     <PostList
                         loadPosts={this.loadPosts}
@@ -339,7 +342,7 @@ class AssignmentDetail extends React.Component {
                     visible={editToggled}
                 />
 
-                {user.roles.includes('admin') && (
+            {user.admin && (
                     <ItemsDialog
                         toggled={acceptedDialog}
                         onClose={() => this.setState({ acceptedDialog: false })}

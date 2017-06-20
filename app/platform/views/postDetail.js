@@ -33,7 +33,7 @@ class PostDetail extends React.Component {
     render() {
         const { user, title, verifier } = this.props;
         const { gallery, galleryEditToggled, post, recommendToggled = false } = this.state;
-        const editable = (user.roles.includes('admin')) && !!gallery.id;
+        const editable = (user.admin) && !!gallery.id;
         const page = 'postDetail';
         return (
             <App
@@ -61,7 +61,6 @@ class PostDetail extends React.Component {
                         </div>
                     </div>
 
-                    <PostRelated gallery={gallery} />
 
                     <PostRelatedTags tags={gallery.tags} />
                 </div>
@@ -83,6 +82,8 @@ class PostDetail extends React.Component {
         );
     }
 }
+// this used to go above PostRelatedTags, but unclear how this should be in phase 1 and 2
+// <PostRelated gallery={gallery} />
 
 PostDetail.propTypes = {
     user: PropTypes.object,

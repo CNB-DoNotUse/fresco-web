@@ -157,7 +157,7 @@ class GalleryDetail extends React.Component {
                 page={page}>
                 <TopBar
                     title={title}
-                    editable={user.roles.includes('admin')}
+                    editable={user.admin}
                     roles={user.roles}
                     edit={() => this.toggleEdit()}
                     onVerifiedToggled={this.onVerifiedToggled}
