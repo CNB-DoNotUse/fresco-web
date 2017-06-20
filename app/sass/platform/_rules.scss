@@ -424,12 +424,12 @@ div.settings > div.form-group-default > button.btn.btn-facebook {
 	> .row:first-child {
 		@include display(flex);
 		> div.main {
-			max-width: 1120px;
+			max-width: 1500px;
 			padding: 96px 24px 32px;
 			> div {
 				padding: 0 24px;
 				> div.card {
-					width:auto;
+					width: 100%;
 					margin-bottom: 24px;
 					> div.card-body {
 						width:100%;
