@@ -369,3 +369,54 @@ nav.stories {
         @include display(flex);
     }
 }
+
+.assignent-info-container {
+    padding-top: 64px;
+    height: 50%;
+    button {
+        background-color: white;
+        color: red;
+        border: none;
+        text-transform: uppercase;
+        width: 90%;
+        font-weight: 500;
+        margin: 0 5%;
+    }
+    li, ul {
+        list-style: none;
+    }
+    >section {
+        width: 33%;
+        height: 100%;
+        margin: 24px;
+    }
+    .assignment-info {
+        li {
+            margin: 12px 0;
+            span:first-child {
+                margin-right: 12px;
+                color: rgba(0, 0, 0, 0.54);
+            }
+        }
+    }
+    .assignment-description {
+        >div:first-child{
+            font-size: 16px;
+        	font-weight: 500;
+        	line-height: 1.75;
+        	color: rgba(0, 0, 0, 0.87);
+        }
+        >div:last-child {
+            font-size: 14px;
+        	line-height: 1.43;
+        	color: rgba(0, 0, 0, 0.54);
+        }
+    }
+    @include display(flex);
+    @include justify-content(space-between);
+}
+@media (max-width: 1000px) {
+    .assignment-info-container {
+        display: block;
+    }
+}
