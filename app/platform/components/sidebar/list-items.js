@@ -11,17 +11,16 @@ const ListItems = ({ user }) => {
     let push;
     let stats;
     let moderation;
-
     if (user.outlet) {
         dispatch = <Item link="/dispatch" icon="mdi-map" text="Dispatch" />;
         outlet = <Item link="/outlet" icon="mdi-account-multiple" text={user.outlet.title} />;
     }
-    if (user.roles.includes('admin')) {
+    if (user.admin) {
         admin = <Item link="/admin" icon="mdi-dots-horizontal" text="Admin" />;
         push = <Item link="/push" icon="mdi-message-plus" text="Push" />;
         moderation = <Item link="/moderation" icon="mdi-flag-variant" text="Moderation" />;
     }
-    if (user.roles.includes('admin')) {
+    if (user.admin) {
         purchases = <Item link="/purchases" icon="mdi-currency-usd" text="Purchases" />;
         stats = <Item link="/stats" icon="mdi-chart-line" text="Stats" />;
     }

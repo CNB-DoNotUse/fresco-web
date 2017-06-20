@@ -13,7 +13,6 @@ class Sidebar extends React.Component {
     render() {
         const { detailUser, user } = this.props;
         const avatar = detailUser.avatar || utils.defaultAvatar;
-        const admin = user.roles.includes('admin');
         return (
             <div className="col-sm-4 profile hidden-xs">
                 <div className="container-fluid fat">
@@ -51,7 +50,7 @@ class Sidebar extends React.Component {
                                             </li>
                                         )}
 
-                                        { admin ?
+                                        { user.admin ?
                                             <TrustedUser detailUser={ detailUser }/>
                                             : <div></div> }
                                     </ul>

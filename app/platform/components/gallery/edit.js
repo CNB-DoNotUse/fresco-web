@@ -543,7 +543,7 @@ class Edit extends React.Component {
         } = this.state;
 
         if (!gallery) return '';
-
+        debugger
         return (
             <div className="dialog-body">
                 <div className="dialog-col col-xs-12 col-md-7 form-group-default">

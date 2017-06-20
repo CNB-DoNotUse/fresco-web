@@ -39,8 +39,8 @@ class PostCellActions extends React.Component {
         let key = 0;
 
         // Check if we're CM or greater
-        if (user.roles.includes('admin') || user.roles.includes('download-temp')) {
-            if (editable && user.roles.includes('admin')) {
+        if (user.admin || user.canDownload) {
+            if (editable && user.admin) {
                 actions.push(
                     <span
                         key={++key}
@@ -51,7 +51,7 @@ class PostCellActions extends React.Component {
             }
 
             // Show the purhcased icon if the post hasn't been purchased
-            if (!purchased && !user.roles.includes('download-temp')) {
+            if (!purchased && !user.canDownload) {
                 actions.push(
                     <PurchaseAction
                         post={post}

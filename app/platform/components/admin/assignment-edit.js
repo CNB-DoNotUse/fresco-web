@@ -266,7 +266,7 @@ export default class AssignmentEdit extends React.Component {
                         defaultValue={expirationTime}
                     />
 
-                    {user.roles.includes('admin') && (
+                {user.admin && (
                         <div className="checkbox form-group">
                             <label>
                                 <input
