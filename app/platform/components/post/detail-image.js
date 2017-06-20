@@ -97,7 +97,7 @@ class PostDetailImage extends React.Component {
         }
 
         return (
-            <div className="col-xs-12 col-md-8 post-media-wrap">
+            <div className="col-xs-12 col-md-7 post-media-wrap">
                 <div className="card panel">
                     <div className="card-foot small">
                         {actions}

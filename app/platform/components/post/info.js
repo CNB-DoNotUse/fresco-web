@@ -58,7 +58,7 @@ export default class PostInfo extends React.Component {
         }
 
 		return (
-			<div className="col-xs-12 col-md-4 meta">
+			<div className="col-xs-12 col-md-5 meta">
 				<div className="row">
 					<div className="col-xs-12 col-sm-7 col-md-12">
                         {userIcon}
