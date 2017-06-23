@@ -35,7 +35,8 @@ export default {
     },
 
     get(url, body = {}, headers = {}) {
-        return fetch(`${url}?${qs.stringify(body)}`, {
+        const newURL = url.slice(-1) === "&" ? `${url}${qs.stringify(body)}` : `${url}?${qs.stringify(body)}`
+        return fetch(newURL, {
             method: 'GET',
             credentials: 'include',
             headers: Object.assign({
@@ -47,4 +48,3 @@ export default {
         .then(parseJSON)
     },
 };
-
