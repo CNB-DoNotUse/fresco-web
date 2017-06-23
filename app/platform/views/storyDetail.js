@@ -217,56 +217,6 @@ class StoryDetail extends React.Component {
     }
 }
 
-const dummyAssignment = {
-    accepted:
-false,
-accepted_count:
-0,
-address:
-"Equitable Life Building, 120 Broadway, New York, NY 10271, USA",
-approved_at:
-null,
-caption:
-"Thanks Chris",
-created_at:
-"2017-05-10T21:44:35.891Z",
-curated_at:
-"2017-05-10T21:45:10.762Z",
-// curator:
-// {…}
-curator_id:
-"dYOJ8vnb8ML4",
-ends_at:
-"2018-07-01T13:45:10.285Z",
-id:
-"bWB0JaRY8Qqx",
-
-is_acceptable:
-false,
-location: {coordinates:
-{ lat: 40, lng: -72 }},
-object:
-"assignment",
-// outlets:
-// Array[1],
-photo_count:
-1,
-radius:
-1.89,
-rating:
-1,
-starts_at:
-"2017-05-10T21:44:35.320Z",
-// thumbnails:
-// Array[1],
-title:
-"Mike Runs Again",
-updated_at:
-"2017-05-10T21:45:10.762Z",
-video_count:
-0
-}
-
 const StorySummary = ({title, body, markerData}) => (
     <div className="story-summary">
         <AssignmentMap

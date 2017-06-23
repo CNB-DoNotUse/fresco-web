@@ -18,17 +18,19 @@ router.get('/:id', (req, res, next) => {
 
     // Make request for post
     API.request({
-        url: `/post/${req.params.id}`,
+        url: `/post/${req.params.id}/?expand[]=owner&expand[]=story`,
         token: req.session.token.token
     })
     .then(response => {
+        // console.log("post: " + JSON.stringify(response.body));
         post = response.body || {};
         return API.request({
-            url: `/gallery/${response.body.parent_id}`,
+            url: `/gallery/${response.body.parent_id}/?expand[]=posts`,
             token: req.session.token.token
         });
     })
     .then(response => {
+        // console.log("parent: " + JSON.stringify(response.body));
         gallery = response.body || {};
         title = utils.getBylineFromPost(post, true);
 

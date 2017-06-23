@@ -183,7 +183,7 @@ class Purchases extends React.Component {
         }
 
         $.ajax({
-            url: '/api/purchase/list',
+            url: '/api/purchase/list/?expand[]=assignment&expand[]=outlet&expand[]=post&expand[]=user',
             type: 'GET',
             data: $.param(params)
         })

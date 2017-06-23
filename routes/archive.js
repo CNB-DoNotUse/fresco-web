@@ -27,7 +27,7 @@ router.get('/galleries', (req, res) => {
     const props = { user: req.session.user, title };
 
     res.render('app', {
-        user: helper.serAdminRoles(req.session.user),
+        user: helper.userAdminRoles(req.session.user),
         title,
         config,
         alerts: req.alerts,
