@@ -35,7 +35,6 @@ class PostList extends React.Component {
     componentWillMount() {
         // Check if list is initialzied with posts, then don't load anything
         if (this.state.posts.length) return;
-
         this.loadInitialPosts();
     }
 

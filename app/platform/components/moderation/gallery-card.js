@@ -42,7 +42,6 @@ export default class GalleryCard extends Component {
             onDelete,
             opacity,
         } = this.props;
-
         return (
             <div
                 style={{ opacity }}
@@ -109,4 +108,3 @@ export default class GalleryCard extends Component {
         );
     }
 }
-

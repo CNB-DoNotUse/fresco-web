@@ -26,7 +26,6 @@ export default class Body extends React.Component {
             }
 
             const posts = [];
-
             for (let i = 0; i < purchases.length; i++) {
                 if(purchases[i].post) {
                     posts.push(Object.assign(purchases[i].post, { purchase_id: purchases[i].id }));
@@ -68,7 +67,7 @@ export default class Body extends React.Component {
         };
 
         $.ajax({
-            url: '/api/purchase/list',
+            url: '/api/purchase/list/?expand[]=post',
             type: 'GET',
             data: $.param(params),
         })

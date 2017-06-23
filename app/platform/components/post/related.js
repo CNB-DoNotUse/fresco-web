@@ -14,11 +14,10 @@ export default class PostRelated extends React.Component {
 
     constructor(props) {
         super(props);
-        debugger
         if (this.props.gallery.posts.length > 1) {
             this.state.stories.gallery = this.props.gallery.posts;
             this.state.selectedTab = 'gallery';
-        } 
+        }
     }
 
     state = {

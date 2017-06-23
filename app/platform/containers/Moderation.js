@@ -17,7 +17,7 @@ import ConfirmDialog from '../components/dialogs/confirm';
 import SuspendedUser from '../components/moderation/suspended-user';
 
 class Moderation extends React.PureComponent {
-    
+
     static propTypes = {
         activeTab: PropTypes.string.isRequired,
         onSetActiveTab: PropTypes.func.isRequired,
@@ -51,7 +51,7 @@ class Moderation extends React.PureComponent {
     componentDidMount() {
         $.material.init();
         this.fetchCurrentTab();
-        this.props.fetchSuspendedUsers();
+        // this.props.fetchSuspendedUsers();
     }
 
     componentDidUpdate(prevProps) {
@@ -64,9 +64,7 @@ class Moderation extends React.PureComponent {
     fetchCurrentTab() {
         const { fetchGalleries, fetchUsers, activeTab } = this.props;
 
-        if (activeTab === 'galleries') {
-            fetchGalleries();
-        } else if (activeTab === 'users') {
+        if (activeTab === 'users') {
             fetchUsers();
         }
     }
@@ -87,23 +85,8 @@ class Moderation extends React.PureComponent {
         } = this.props;
 
         let entitiesJSX;
-
-        if (activeTab === 'galleries') {
-            entitiesJSX = galleries.size > 0 ? (
-                galleries.toJS().map(g => (
-                    <GalleryCard
-                        key={`gallery-card-${g.id}`}
-                        {...g}
-                        reportData={reports.getIn(['galleries', g.id], Map()).toJS()}
-                        onClickReportsIndex={partial(onClickReportsIndex, 'galleries', g.id)}
-                        onSuspend={partial(onSuspend, 'gallery', g.owner && g.id)}
-                        onSkip={partial(fadeOutCard, 'gallery', g.id, onSkip)}
-                        onDelete={partial(onRequestDelete, 'gallery', g.id)}
-                        onToggleGraphic={partial(onToggleGraphic, g.id)}
-                    />
-                ))
-            ) : [];
-        } else if (activeTab === 'users') {
+        const theseGals = galleries.toJS();
+        if (activeTab === 'users') {
             entitiesJSX = users.size > 0 ? (
                 users.toJS().map(u => (
                     <UserCard
@@ -156,7 +139,7 @@ class Moderation extends React.PureComponent {
                 <div className="moderation container-fluid">
                     <TopBar
                         title="Moderation"
-                        tabs={['galleries', 'users']}
+                        tabs={['users']}
                         setActiveTab={onSetActiveTab}
                         activeTab={activeTab}
                         onClickFilter={partial(onClickFilter, activeTab)}
@@ -267,4 +250,3 @@ export default connect(mapStateToProps, {
     onCancelDelete: moderationActions.cancelDeleteCard,
     fadeOutCard: moderationActions.fadeOutCard,
 })(Moderation);
-
