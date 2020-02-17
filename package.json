@@ -27,7 +27,7 @@
     "connect-redis": "^3.0.1",
     "cookie-parser": "~1.4.1",
     "cron": "^1.2.1",
-    "debug": "~2.2.0",
+    "debug": "~4.1.1",
     "detect-node": "^2.0.3",
     "ejs": "~2.5.1",
     "email-templates": "https://github.com/rpm0618/node-email-templates.git#temp-compiled",
